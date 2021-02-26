@@ -1,0 +1,23 @@
+.alignCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2%;
+}
+
+.counterOne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2%;
+  padding: 3%;
+  background-color: aqua;
+}
+.counterTwo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2%;
+  padding: 3%;
+  background-color: burlywood;
+}
