@@ -6,12 +6,12 @@ import './CRXAppBar.scss'
 type Position =  'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'
 type Colors = 'default' | 'inherit' | 'primary' | 'secondary' | 'transparent'
 
-interface CRXAppBarProps {
+interface CBXAppBarProps {
     children : React.ReactNode,
     id? : string,
     className? : string,
     position? : Position,
-    color : Colors
+    color? : Colors
 }
 
 const theme = createMuiTheme({
@@ -27,15 +27,13 @@ const theme = createMuiTheme({
     },
 });
 
-const CRXAppBar = ({children, id, className, position = "relative", color} : CRXAppBarProps) => {
+const CRXAppBar = ({children, id, className, position = 'relative', color = 'primary'} : CBXAppBarProps) => {
     return (
-        <>
         <ThemeProvider theme={theme}>
-        <AppBar id={id} className={"CRXAppBar " + className} position={position} color={color}>
+        <AppBar id={id} className={"CBXAppBar " + className} position={position} color={color}>
             { children }
         </AppBar>
         </ThemeProvider>
-        </>
     )
 }
 

@@ -13,7 +13,8 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "declaration": true,
-    "target": "es5",
+    "target": "es5",    
+    "allowJs": true,
     "module": "esnext",
     "jsx": "react"
   },

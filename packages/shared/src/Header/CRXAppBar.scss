@@ -1,0 +1,82 @@
+
+$orange : #d74b00;
+$Gray28 : #282828;
+$Gray33 : #333;
+$Nero   : #d1d2d4;
+$White  : #fff;
+$Black  : #000;
+$Grayf5 : #f5f5f5;
+$Gray58 : #58585a;
+ 
+.CRXAppBar{
+    background: #000 /*url('./headerBg.png') repeat center center*/;
+    border-top: 4px solid $orange;
+    border-bottom: 2px solid $Gray28;
+    height: 57px;
+
+    .topBarMenu{
+        position: relative;
+        top:-3px;
+        padding-right: 20px;
+        &:after {
+            height: 13px;
+            width: 0.090rem;
+            background-color: $Gray58;
+            position: absolute;
+            content: " ";
+            top:2px;
+            right:8px;
+        }
+    }
+
+    .getacDropDownBtn{
+        padding: 0px 5px;
+        border-radius: 0px;
+        margin-left: 5px;
+        font-size: 13px;
+        position: relative;
+        top: -4px;
+    }
+
+    .appLogo {
+        display: inline-block;
+        width: 100px;
+        position: relative;
+        top: -3px;
+    }
+
+    .appTitle {
+        position: relative;
+        &::before {
+            content: " ";
+            position: absolute;
+            left: 7px;
+            background-color: #d1d2d4;
+            width: 1px;
+            height: 37px;
+            top: 3px;
+        }
+    }
+}
+
+.navPanelButton{
+    padding: 0px !important;
+    position: relative !important;
+    top: 8px;
+    .panelIcon{
+        font-size: 24px;
+        color:$Nero;
+    }
+}.active  {
+    background: transparent !important;
+    &::before {
+        border-left: 10px solid transparent !important;
+        border-right: 10px solid transparent !important;
+        border-bottom: 10px solid transparent !important;
+    }
+}
+
+.getacMaterHeadMenu{
+    display: inline-block;
+    vertical-align: top;
+}

@@ -2,10 +2,12 @@
   "name": "@cb/shared",
   "version": "0.0.0",
   "main": "build/index.js",
-  "typings": "build/index.d.ts",
+  "types": "build/index",
   "scripts": {
-    "build": "tsc",
-    "start": "tsc -w"
+    "build": "yarn clean && tsc && yarn copy-files",
+    "start": "yarn clean && yarn copy-files && tsc -w",
+    "clean": "rimraf build/",
+    "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.scss src/**/*.css src/**/*.png src/**/*.jpg build/"
   },
   "private": true,
   "peerDependencies": {
@@ -15,10 +17,15 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "typescript": "^4.1.2"
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "sass": "^1.32.8"
   }
 }
