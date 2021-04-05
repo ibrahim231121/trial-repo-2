@@ -1,3 +1,5 @@
+export { default as Header } from "./Header";
+export { default as Button } from "./Button/IrsaButton";
 export { default as CRXAppBar } from "./Header";
 export { default as CRXButton } from "./controls/CRXButton/CRXButton";
 export { default as TextField } from "./controls/CRXTextField";
@@ -11,3 +13,5 @@ export { default as CRXIcon } from './CRXIcon/CBXIcon';
 export { default as CRXPaper } from './CRXPaper/CRXPaper';
 export { default as CBXAppBar } from './CBXAppBar/CBXAppBar';
 export { default as CRXHeading } from './CRXTypography/Typography'
+export { default as CRXDataTable } from "./DataTable/DataTable";
+export { Order, HeadCellProps } from "./DataTable/DataTableTypes";

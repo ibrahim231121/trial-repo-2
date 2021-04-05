@@ -8,6 +8,7 @@ import { useFetchData } from "./utils/Api/ApiCustomHook";
 import CounterPage from "./Application/Assets/components/CounterPage";
 
 // Type for Data Required
+
 // type UserState = {
 //   activity: string;
 //   type: string;
