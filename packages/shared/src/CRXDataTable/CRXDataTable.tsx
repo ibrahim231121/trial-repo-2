@@ -8,12 +8,12 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from '@material-ui/core/IconButton';
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Order, useStyles, DataTableProps, theme} from "./DataTableTypes"
+import { Order, useStyles, DataTableProps, theme} from "./CRXDataTableTypes"
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import Checkbox from '@material-ui/core/Checkbox';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TablePagination from '@material-ui/core/TablePagination';
-import DataTableToolbar from "./DataTableToolbar"
+import DataTableToolbar from "./CRXDataTableToolbar"
 import { ThemeProvider } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ListItem from "@material-ui/core/ListItem";
@@ -25,25 +25,24 @@ import List from "@material-ui/core/List";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Grid from "@material-ui/core/Grid";
 
-export default function DataTable(props: DataTableProps) {
+export default function CRXDataTable(props: DataTableProps) {
   const {dataRows, headCells, orderParam, orderByParam, searchHeader, columnVisibilityBar, allowDragableToList} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  //const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>(orderParam);
   const [orderBy, setOrderBy] = React.useState<string>(orderByParam);
   const [orderColumn, setOrderColumn] = useState(
-    new Array(headCells.length).fill(null).map((n, i) => i)
+    new Array(headCells.length).fill(null).map((_, i) => i)
   );
 
   useEffect(() => {
     stableSort(containers.dataTable.rows, getComparator(order, orderBy))
   },[])
 
-  const keyId = headCells.filter(n => n.keyCol === true).map((v => v.value)).toString()
+  const keyId = headCells.filter(n => n.keyCol === true).map((v => v.id)).toString()
 
   const secondRows: any[] = [];
 
@@ -71,7 +70,6 @@ export default function DataTable(props: DataTableProps) {
   }
   
   function getComparator<Key extends keyof any>(order: Order, orderBy: Key,): 
-    //(a: { [key in Key]: number | string | Person | Date | any }, b: { [key in Key]: number | string | Person | Date | any }) => number {
     (a: { [key in Key]: any }, b: { [key in Key]: any }) => number {
     return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
   }
@@ -84,7 +82,6 @@ export default function DataTable(props: DataTableProps) {
       return a[1] - b[1];
     });
     containers.dataTable.rows = (stabilizedThis.map((el) => el[0]))
-    //return stabilizedThis.map((el) => el[0]);
   }
 
   const createSortHandler = (property: any) => () => {
@@ -137,12 +134,8 @@ export default function DataTable(props: DataTableProps) {
     setPage(0);
   };
 
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDense(event.target.checked);
-  // };
-
   const onReorderEnd = useCallback(
-    ({ oldIndex, newIndex}, e) => {
+    ({ oldIndex, newIndex}, _) => {
       const newOrder = [...orderColumn];
       const moved = newOrder.splice(oldIndex, 1);
       newOrder.splice(newIndex, 0, moved[0]);
@@ -266,18 +259,9 @@ export default function DataTable(props: DataTableProps) {
                             <DragableCell
                               index={i} key={colIdx} 
                               value={
-                                    //   <TableCell className={classes.headerStickness} 
-                                    //     style={{minWidth:`${headCells[colIdx].minWidth}`}}
-                                    //     key={headCells[colIdx].value}
-                                    //     align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                                    //     padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
-                                    //     sortDirection={orderBy === headCells[colIdx].value ? order : false}
-                                    //   >
-                                    //   {headCells[colIdx].label}
-                                    // </TableCell>
                                     <div className={classes.headerStickness}
                                         style={{minWidth:`${headCells[colIdx].minWidth}`}}
-                                        key={headCells[colIdx].value}>
+                                        key={headCells[colIdx].id}>
                                       <label> 
                                           {headCells[colIdx].label} 
                                       </label>
@@ -288,13 +272,11 @@ export default function DataTable(props: DataTableProps) {
                         </TableHead>
                         {(headCells[colIdx].sort === true) ? (
                               <TableSortLabel 
-                                //active={orderBy === headCells[colIdx].value}
-                                direction={orderBy === headCells[colIdx].value ? order : 'asc'}
-                                onClick={createSortHandler(headCells[colIdx].value)}
+                                direction={orderBy === headCells[colIdx].id ? order : 'asc'}
+                                onClick={createSortHandler(headCells[colIdx].id)}
                                 >
-                                {(orderBy === headCells[colIdx].value) ? (
+                                {(orderBy === headCells[colIdx].id) ? (
                                     <span> 
-                                      {/* className={classes.visuallyHidden}> */}
                                     {order === 'desc' ? 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
                                           <SwapVertIcon/>
@@ -331,8 +313,6 @@ export default function DataTable(props: DataTableProps) {
                           inputProps={{ 'aria-label': 'select all desserts' }}
                         />
                       </TableCell>
-
-                      {/* <TableCell className={classes.searchHeaderStickness}></TableCell>   */}
                       {orderColumn.map((colIdx, i) => (
                         //index needs to be CURRENT
                         //key needs to be STATIC
@@ -341,12 +321,11 @@ export default function DataTable(props: DataTableProps) {
                           value={
                                     <TableCell className={classes.searchHeaderStickness} 
                                       style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
-                                      key={headCells[colIdx].value}
+                                      key={headCells[colIdx].id}
                                       align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
                                       padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
-                                      sortDirection={orderBy === headCells[colIdx].value ? order : false}
+                                      sortDirection={orderBy === headCells[colIdx].id ? order : false}
                                     >    
-                                      {/* {children[colIdx]} */}
                                       {headCells[colIdx].searchFilter === true ? 
                                           headCells[colIdx].searchComponent(container.rows, headCells, colIdx)
                                           :
@@ -365,11 +344,9 @@ export default function DataTable(props: DataTableProps) {
                     <RootRef rootRef={provided.innerRef}>
                       <TableBody>
                         {
-                          //stableSort(container.rows, getComparator(order, orderBy))
                           container.rows
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                           .map((row : any, index: number) => {
-                          //.map((row, index) => {
                             const isItemSelected = isSelected(row[keyId]);
                             const labelId = `checkbox with default color-${index}`;
                             return (
@@ -383,7 +360,7 @@ export default function DataTable(props: DataTableProps) {
                                       >
                                         {console.log(index + (page*rowsPerPage))}
                                         <TableCell>
-                                        <Draggable draggableId={row[keyId]} key={row[keyId]} index={index}>
+                                        <Draggable draggableId={row[keyId].toString()} key={row[keyId]} index={index}>
                                         {(provided: any) => (
                                                 <ListItem 
                                                   key={row[keyId]}
@@ -419,7 +396,7 @@ export default function DataTable(props: DataTableProps) {
                                           <TableCell  key={i}
                                             align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
                                             style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible  === true) ? "" : "none"}`}}>
-                                            {headCells[colIdx].dataComponent(row[headCells[colIdx].value])}
+                                            {headCells[colIdx].dataComponent(row[headCells[colIdx].id])}
                                           </TableCell>
                                         )}
                                     </TableRow>
@@ -463,7 +440,6 @@ export default function DataTable(props: DataTableProps) {
                                     key={row[keyId]}
                                     role={undefined}
                                     dense
-                                    // button
                                     ContainerComponent="li"
                                     ContainerProps={{ ref: provided.innerRef }}
                                     {...provided.draggableProps}

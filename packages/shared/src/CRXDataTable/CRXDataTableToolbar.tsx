@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import "@material-ui/icons"
-import {DataTableToolbarProps, useToolbarStyles, HeadCellProps} from "./DataTableTypes"
+import {DataTableToolbarProps, useToolbarStyles, HeadCellProps} from "./CRXDataTableTypes"
 import MultiSelect from "react-multi-select-component";
 
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
@@ -18,7 +18,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       //console.log(selected)
       if(selected !== null)
       {
-        headCells.map((headCell, x) => {
+        headCells.map((_, x) => {
             headCells[x].visible = false  
         }) 
         selected.map((select) => {  
@@ -33,22 +33,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     },[selected])
 
     return (
-      // <Toolbar
-      //   className={clsx(classes.root, {
-      //     [classes.highlight]: numSelected > 0,
-      //   })}
-      // >
       <Toolbar
         className={clsx(classes.root)}>
-        {/* {numSelected > 0 ? ( */}
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
             <b>{rowCount}</b> assets
           </Typography>
-        {/* ) : ( 
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            
-          </Typography>
-         )} */}
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton aria-label="delete">
@@ -59,10 +48,6 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           <>
               { columnVisibilityBar === true ? (
                   <>
-                  {/* <IconButton aria-label="delete" size="small">
-                    <FilterListIcon style={{ fontSize: 30 }}></FilterListIcon>
-                  </IconButton> */}
-
                   <MultiSelect className={classes.alignment}
                     options={headCells}
                     value= {selected}

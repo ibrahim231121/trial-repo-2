@@ -6,11 +6,11 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 
 import store from "./Redux/store";
-import MasterMain from "./MasterMain";
+//import MasterMain from "./MasterMain";
 
 ReactDOM.render(
   <Provider store={store}>
-    <MasterMain />
+    <App />
   </Provider>,
   document.getElementById("root")
 );

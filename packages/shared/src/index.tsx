@@ -13,5 +13,5 @@ export { default as CRXIcon } from './CRXIcon/CBXIcon';
 export { default as CRXPaper } from './CRXPaper/CRXPaper';
 export { default as CBXAppBar } from './CBXAppBar/CBXAppBar';
 export { default as CRXHeading } from './CRXTypography/Typography'
-export { default as CRXDataTable } from "./DataTable/DataTable";
-export { Order, HeadCellProps } from "./DataTable/DataTableTypes";
+export { default as CRXDataTable } from "./CRXDataTable/CRXDataTable";
+export { Order, HeadCellProps } from "./CRXDataTable/CRXDataTableTypes";

@@ -2,6 +2,7 @@
   "name": "@cb/evm",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://10.227.141.246:8080",
   "dependencies": {
     "@cb/shared": "0.0.0",
     "@reduxjs/toolkit": "^1.5.0",

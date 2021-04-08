@@ -10,11 +10,9 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
       theme.palette.type === 'light'
         ? {
             color: theme.palette.secondary.main,
-            //backgroundColor: lighten(theme.palette.secondary.light, 0.85),
           }
         : {
             color: theme.palette.text.primary,
-            //backgroundColor: theme.palette.secondary.dark,
           },
     title: {
       flex: '1 1 100%',
@@ -53,21 +51,12 @@ export const theme = createMuiTheme({
       icon:{
         color: 'white',
       },
-      // root:{
-      //   color: 'white',
-      // },
-      // active:{
-      //   color: "white"
-      // },
     },
   }
 });
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // root: {
-    //   width: '100%',
-    // },
     root: {
         '& > *': {
           borderBottom: 'unset', width: '100%',
@@ -105,7 +94,7 @@ export type Order = 'asc' | 'desc';
 
 export interface HeadCellProps {
   disablePadding: boolean;
-  //id: keyof RowDataProps;
+  id: any;
   value: any;
   label: string;
   align: string;
