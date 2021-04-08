@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Button } from "@cb/shared";
+import { CRXButton } from "@cb/shared";
 
 import "./CounterPage.css";
 import {
@@ -20,19 +20,19 @@ const CounterPage = () => {
       <div className="counterOne">
         <h1>Counter</h1>
         <input onChange={(e) => setInputValue(Number(e.target.value))} />
-        <Button
+        <CRXButton
           onClick={() => dispatch(incrementActionCreator({ val: inputValue }))}
         >
           Add
-        </Button>
-        <Button onClick={() => dispatch(decrementActionCreator())}>
+        </CRXButton>
+        <CRXButton onClick={() => dispatch(decrementActionCreator())}>
           Decrement
-        </Button>
+        </CRXButton>
       </div>
       <div className="counterTwo">
         <h1>CounterTwo</h1>
-        <Button onClick={() => dispatch(inc())}>Add 1</Button>
-        <Button onClick={() => dispatch(dec())}>Dec 1</Button>
+        <CRXButton onClick={() => dispatch(inc())}>Add 1</CRXButton>
+        <CRXButton onClick={() => dispatch(dec())}>Dec 1</CRXButton>
       </div>
     </div>
   );

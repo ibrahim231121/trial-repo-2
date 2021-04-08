@@ -1,0 +1,65 @@
+.advanceSerachContainer {
+  width: 100%;
+  background: #f2f2f2;
+  padding: 30px 0px;
+  margin-top: 10px;
+
+  .adVSelectBox {
+    width: 30%;
+    height: 37px;
+    outline: none;
+    border: none;
+    border-radius: 0px;
+    padding: 0;
+    font-size: 14px;
+    text-indent: 12px;
+    box-sizing: border-box;
+    border: #797979 solid 1px;
+  }
+
+  .adVInputBox {
+    width: 50%;
+    margin: 0 15px;
+    height: 37px;
+    outline: none;
+    border-radius: 0px;
+    padding: 0;
+    font-size: 14px;
+    text-indent: 12px;
+    box-sizing: border-box;
+    border: #797979 solid 1px;
+  }
+
+  .advRow {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    .removeBtn {
+      padding: 0;
+      line-height: 0;
+      font-size: 18px;
+      border: 0px;
+    }
+  }
+
+  .AddRemove-Search-Criteria-btn {
+    background: #fff;
+    border: 1px solid #797979;
+    border-radius: 0px;
+    height: 37px;
+    width: 197px;
+    margin-left: 8.3%;
+    display: flex;
+    place-items: center;
+
+    span.btn-text {
+      padding-left: 10px;
+      padding-top: 3px;
+      font-size: 14px;
+    }
+
+    &:focus {
+      outline: 0px;
+    }
+  }
+}

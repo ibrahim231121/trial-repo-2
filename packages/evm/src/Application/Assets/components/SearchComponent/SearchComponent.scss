@@ -1,0 +1,22 @@
+.container {
+  width: 100%;
+}
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.searchAsset {
+  width: 30%;
+}
+.advanceContainer {
+  display: flex;
+}
+.main {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+.advanceSearchTextField {
+  width: 45%;
+}
