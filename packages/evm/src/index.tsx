@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import './Assets/Icons/icomoon/icomoon.css'
 import App from "./App";
 
 import { Provider } from "react-redux";
