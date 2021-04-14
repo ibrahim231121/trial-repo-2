@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./PredictiveSearchBox.scss";
 
+
 interface Props {
   onSet: (e: any) => void;
 }
@@ -24,7 +25,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     setSearchQuerry(value);
 
     if (value.length > 2) {
-      fetchData();
+     await fetchData();
     }
     setShowSearch(true);
   };
@@ -46,7 +47,6 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       ],
     },
   };
-
   // fetchData
   const fetchData = () => {
     fetch(url, {
@@ -78,6 +78,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
   }, []);
+  // console.log(showSearch);
+  // console.log(searchQuerry);
   return (
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">
@@ -91,11 +93,49 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
           {searchData &&
             showSearch &&
             searchQuerry &&
-            searchData.map((val: any) => (
-              <div tabIndex={-1} key={val.id} className="option">
-                Unit: {val.asset.unit} - Asset: {val.asset.assetName}
-              </div>
-            ))}
+            searchData.map((e:any) => {
+              
+              if(e.asset.assetName.toLocaleLowerCase().includes(searchQuerry.toLocaleLowerCase()))
+              {
+                return <div>{e.asset.assetName}</div>
+              }
+              if(e.cadId.toLocaleLowerCase().includes(searchQuerry.toLocaleLowerCase()))
+              {
+                return <div>{e.cadId}</div>
+              }
+              if (e.categories.length>0) {
+             
+                e.categories.map((cat:any) => {
+                  if(cat.toLocaleLowerCase().includes(searchQuerry.toLocaleLowerCase()))
+                  {
+                    return <div>{cat}</div>
+                  }
+                }
+                )
+              } 
+              
+             
+//  else if(e.cadId.toLowerCase().includes(searchQuerry.split(" "))) return <div>e.cadId</div>
+//  else if (e.asset.recordedBy.length > 0){
+//    return e.asset.recordedBy.map((r:any) => {
+//      if(r.toLowerCase().includes(searchQuerry))
+//      {
+//      return <div>{r}</div>;}
+
+//    });
+//  }
+
+// return  <div tabIndex={-1}  className="option">
+// {/* {val.asset.recordedBy.map((x: any) => (
+//   <div>{x}</div>
+// ))} */}
+// {e.asset.assetName}
+// </div>
+
+
+
+            })
+            }
         </div>
         {children}
       </div>

@@ -5,16 +5,22 @@ import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXDropDown, CRXButton, CRXDateRangePicker } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
 const SearchComponent = () => {
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+
   const [selectOption, setSelectOption] = React.useState("Please Select");
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showDate, setShowDate] = React.useState(false);
+  const [showDateRange, setShowDateRange] = React.useState(false);
+  const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
+
   const [querryString, setQuerryString] = React.useState("");
   const [startDate, setStartDate] = React.useState<any>();
   const [endDate, setEndDate] = React.useState(new Date().toISOString());
   const [searchData, setSearchData] = React.useState<any>();
-  console.log("searchData", searchData);
+
+
   const url = "/Evidence?Size=10&Page=1";
-  const querry = {
+  const QUERRY = {
     bool: {
       must: [
         {
@@ -45,6 +51,27 @@ const SearchComponent = () => {
       ],
     },
   };
+  const AdvancedSearchQuerry: any = {
+    bool: {
+      must: [
+        {
+          range: {
+            "asset.recordingStarted": {
+              gte: "2020-03-26T21:20:15.172Z",
+            },
+          },
+        },
+        {
+          range: {
+            "asset.recordingEnded": {
+              lte: "2020-03-26T21:20:15.172Z",
+            },
+          },
+        },
+      ],
+    },
+  };
+
   const dateOptions = [
     { value: "today", displayText: "today " },
     { value: "yesterday", displayText: " yesterday" },
@@ -55,19 +82,21 @@ const SearchComponent = () => {
     { value: "custom", displayText: "custom" },
   ];
   // fetchData
-  const fetchData = () => {
+  const fetchData = (querry: any) => {
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
         "Group-Ids": "1,2,3,4,5",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(querry),
+      body: JSON.stringify(querry || QUERRY),
     })
       .then((response) => response.json())
       .then((res) => {
         setSearchData(res);
+        return res
       });
+      
   };
   const getDate = (type: string) => {
     switch (type) {
@@ -106,15 +135,70 @@ const SearchComponent = () => {
         return new Date().toISOString();
     }
   };
+  console.log(searchData)
   const Search = () => {
     const date = getDate(selectOption);
     console.log(startDate);
     console.log(endDate);
     if (date != "custom") {
       setStartDate(date);
-      fetchData();
+      fetchData(QUERRY);
     }
   };
+  const handleClickOutSide = (e: MouseEvent) => {
+    const { current: wrap } = wrapperRef;
+    if (
+      wrapperRef.current !== null &&
+      !wrapperRef.current.contains(e.target as HTMLElement)
+    ) {
+      setShowDateRange(false);
+    }
+  };
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutSide);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutSide);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let obj: any = {};
+
+    if (addvancedOptions) {
+      obj = addvancedOptions.map((x: any) => {
+        if (x.inputValue) {
+          return { key: x.value, inputValue: x.inputValue };
+        }
+      });
+
+      obj.map((o: any) => {
+        if (o.key == "username") {
+          const val = {
+            bool: {
+              should: [{ match: { "asset.recordedBy": `${o.inputValue}` } }],
+            },
+          };
+          AdvancedSearchQuerry.bool.must.push(val);
+        } else if (o.key == "unitId") {
+          const val = {
+            bool: {
+              should: [{ match: { "asset.unit": `${o.inputValue}` } }],
+            },
+          };
+          AdvancedSearchQuerry.bool.must.push(val);
+        } else if (o.key == "category"){
+          const val = {
+            bool: {
+              should: [{ match: { categories: `${o.inputValue}` } }],
+            },
+          };
+          AdvancedSearchQuerry.bool.must.push(val);
+        }
+      });
+      debugger;
+      fetchData(AdvancedSearchQuerry);
+    }
+  }, [addvancedOptions]);
   return (
     <div>
       <div
@@ -135,11 +219,18 @@ const SearchComponent = () => {
             onChange={(e: any) => setSelectOption(e.target.value)}
             options={dateOptions}
           >
-            <button onClick={() => setShowDate(true)}>
+            <button
+              style={{ background: "none", border: "none" }}
+              onClick={() => setShowDateRange(true)}
+            >
               <TodayIcon className="searchToday" />
             </button>
-            {showDate && (
-              <CRXDateRangePicker onChange={(data: any) => console.log(data)} />
+            {showDateRange && (
+              <div ref={wrapperRef}>
+                <CRXDateRangePicker
+                  onChange={(data: any) => console.log(data)}
+                />
+              </div>
             )}
           </CRXDropDown>
         </div>
@@ -193,7 +284,9 @@ const SearchComponent = () => {
         >
           Advanced Search
         </CRXButton>
-        {showAdvance && <AdvanceOptions />}
+        {showAdvance && (
+          <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} />
+        )}
       </div>
     </div>
   );

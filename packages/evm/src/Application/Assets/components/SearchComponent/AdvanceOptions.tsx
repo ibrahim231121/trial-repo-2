@@ -14,13 +14,17 @@ interface OptionsProps {
   value: string;
   id: string;
 }
+interface Props {
+  getOptions: (options: any) => void;
+}
 
-const AdvancedSearch = () => {
+const AdvancedSearch: React.FC<Props> = ({ getOptions }) => {
   const selectRef = useRef<any>(null);
   const refs: any = [useRef(), useRef(), useRef()];
   const [selectsLength, setSelectsLength] = useState(1);
   const [disableButton, setDisableButton] = useState(true);
   const [currentInput, setCurrentInput] = useState<string | null>(null);
+  const [currentSelect, setCurrentSelect] = useState<string | null>(null);
 
   const [options, setOptions] = useState<IOptions[]>([
     {
@@ -56,7 +60,12 @@ const AdvancedSearch = () => {
       newOptions = options.filter((opt) => opt.usedBy == i || !opt.isUsed);
       select.push(
         <div className="advRow" key={i}>
-          <select className="adVSelectBox" ref={selectRef} id={i.toString()}>
+          <select
+            className="adVSelectBox"
+            ref={selectRef}
+            id={i.toString()}
+            onChange={(e) => setCurrentSelect(e.target.value)}
+          >
             {newOptions.map((val, i) => (
               <Options key={i} id={val._id} value={val.value} />
             ))}
@@ -90,7 +99,15 @@ const AdvancedSearch = () => {
       found.isUsed = true;
       setOptions([...options]);
     }
-
+    if (selectRef.current.id == 1) {
+      let newFound: any = options.filter((x) => x.usedBy == null);
+      if (newFound) {
+        // setOptions([...options]);
+        newFound[0].usedBy = 2;
+        newFound[0].isUsed = true;
+        setOptions([...options]);
+      }
+    }
     if (selectsLength <= 2) {
       setSelectsLength((state) => state + 1);
     }
@@ -108,12 +125,10 @@ const AdvancedSearch = () => {
   };
 
   const AdvancedSearch = () => {
-    const values = [{ key: "", value: "" }];
     for (let i = 0; i < selectsLength; i++) {
       const { value } = refs[i].current;
 
-      let findCurrent: number;
-
+      // currentSelect
       let findOpt = options.find((opt) => i == opt.usedBy);
       let index = options.findIndex((opt) => i == opt.usedBy);
       if (findOpt) {
@@ -121,20 +136,34 @@ const AdvancedSearch = () => {
         options[index] = findOpt;
         setOptions([...options]);
       } else {
-        findOpt = options.find((opt) => (i + 1).toString() == opt._id);
+        // findOpt = options.find((opt) => (i + 1).toString() == opt._id);
+        findOpt = options.find(
+          (opt) => currentSelect == opt.value && opt.inputValue == null
+        );
 
         const findCurrentIndex = options.findIndex(
-          (opt) => (i + 1).toString() == opt._id
+          (opt) => currentSelect == opt.value
         );
         if (findOpt) {
           findOpt.inputValue = currentInput;
           options[findCurrentIndex] = findOpt;
           setOptions([...options]);
+        } else {
+          findOpt = options.find((opt) => selectRef.current.value == opt.value);
+
+          const findCurrentIndex = options.findIndex(
+            (opt) => selectRef.current.value == opt.value
+          );
+          if (findOpt) {
+            findOpt.inputValue = currentInput;
+            options[findCurrentIndex] = findOpt;
+            setOptions([...options]);
+          }
         }
       }
     }
+    getOptions(options);
   };
-  console.log(options);
   const SearchBox = () => {};
   return (
     <div className="advanceSerachContainer">
