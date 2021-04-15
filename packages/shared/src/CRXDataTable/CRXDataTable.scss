@@ -1,0 +1,177 @@
+.AssetsDataGrid {
+    border: 1px solid #cccccc;
+    box-shadow: none !important;
+    border-radius:0px !important;
+    table {
+        tr{
+            th.MuiTableCell-sizeSmall{
+                padding:7px;
+            }
+            th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox{
+                padding-left: 15px !important;
+            }
+        }
+
+        thead {
+            tr {
+                th.CRXDataTableLabelCell{
+                    border-bottom: 0px;
+                    border-right:1px solid #ccc;
+                }
+                th.TableSearchAbleHead {
+                    border-top:1px solid #ccc;
+                    border-right:1px solid #ccc;
+                    &:focus {
+                        outline: 0px;
+                        box-shadow: 0px;
+                    }
+                }
+            }
+        }
+        tbody{
+            tr{
+                td.MuiTableCell-root{
+
+                }
+                td.DataTableBodyCell{
+                    border-right:1px solid #ccc;
+                    padding: 2px 7px;
+                    .MuiListItemSecondaryAction-root{
+                        z-index: -1 !important;
+                    }
+                }
+                &:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                td {
+                    &:first-child {
+                        background: #333333;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                        color: #d1d2d4;
+                    }
+                }
+            }
+        }
+    }
+
+    .draggableCellIcon {
+        padding: 0px;
+        
+    }
+}
+
+.dataTablePages {
+    border: 1px solid #cccccc;
+    border-top:0px;
+    .MuiTablePagination-toolbar {
+        border-bottom: 1px solid #cccccc;
+    }
+}
+
+.checkedDataTable {
+    .MuiPopover-paper {
+        min-width: 400px;
+        max-width: 450px;
+        padding: 15px;
+        box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0px;
+    }
+
+    .MuiGrid-item {
+        padding: 1px 8px !important;
+        &:focus {
+            outline: 0px;
+        }
+    }
+
+    .MuiGrid-container {
+        &:focus {
+            outline: 0px;
+        }
+    }
+}
+
+.footerDRP {
+    border-top: 1px solid #d1d2d4;
+    padding: 15px 0px 0;
+    margin-top: 19px;
+
+    .closeDRP  {
+        width: 50%;
+    }
+}
+
+.footerDRPReOrder {
+    border-top: 1px solid #d1d2d4;
+    padding: 15px 0px 0;
+    margin-top: 19px;
+    .closeDRP  {
+        width: 100%;
+    }
+}
+
+.DRPTitle {
+    font-size: 22px !important;
+    color:#333;
+    padding-bottom: 20px;
+}
+
+ul.columnList {
+    padding-left: 17px;
+    li {
+        display: block;
+        padding:0px 0px;
+    }
+}
+
+.columnReOrderOpup {
+    .MuiPopover-paper {
+        min-width: 450px;
+        max-width: 600px;
+        padding: 15px;
+        box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0px;
+    }
+}
+
+.dataTabAssets {
+    .MuiToolbar-regular{
+        min-height: 42px;
+    }
+}
+
+.dataTableColumnShoHide{
+    .dataIconButton {
+        font-size: 18px;
+        color:#333;
+        padding: 0px 7px;
+        &:hover {
+            background: transparent !important;
+        }
+        &.MuiIconButton-root {
+            &:hover {
+                background: transparent !important;
+            }
+        }
+    }
+}
+
+
+.AssetsDataGrid::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+    
+}
+
+.AssetsDataGrid::-webkit-scrollbar{
+    width: 5px;
+    background-color: #F5F5F5;
+}
+
+.AssetsDataGrid::-webkit-scrollbar-thumb{
+        background-color: #333333;
+        border: 2px solid #555555;
+}

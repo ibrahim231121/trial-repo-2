@@ -1,0 +1,31 @@
+.ManageAssetDataTable {
+    .CRXSimpleSelect {
+        background: #d1d2d4;
+        color:#333;
+    }
+
+    .CBX-input {
+        input {
+            background: #d1d2d4;
+            color:#333;
+        }
+    }
+
+    .CRXDataTableLabelCell {
+        .makeStyles-headerStickness-6 {
+            label {
+                white-space: nowrap; 
+            }
+        }
+    }
+}
+
+.assetThumb {
+    width: 100px;
+    height: 50px;
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+}

@@ -12,3 +12,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.advanceSearchContent {
+  padding-top: 30px;
+}
+
+.advanceSearchContent .icon > button  {
+  background: transparent;
+  border: 0px;
+}
+
+.rdrCalendarWrapper {
+  position: absolute;
+    right: -9px;
+    top: 32px;
+    background: #fff;
+    border: 1px solid #ccc;
+}
+
+.dataTabAssets {
+  margin-top: 90px;
+}

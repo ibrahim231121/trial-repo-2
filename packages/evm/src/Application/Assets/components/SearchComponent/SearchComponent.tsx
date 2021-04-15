@@ -4,6 +4,7 @@ import TodayIcon from "@material-ui/icons/Today";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXDropDown, CRXButton, CRXDateRangePicker } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
+import MasterMain from '../DataGrid/MasterMain'
 const SearchComponent = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -201,6 +202,7 @@ const SearchComponent = () => {
   }, [addvancedOptions]);
   return (
     <div>
+       
       <div
         style={{
           display: "flex",
@@ -288,6 +290,8 @@ const SearchComponent = () => {
           <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} />
         )}
       </div>
+     
+      <div className="dataTabAssets"><MasterMain /></div>
     </div>
   );
 };
