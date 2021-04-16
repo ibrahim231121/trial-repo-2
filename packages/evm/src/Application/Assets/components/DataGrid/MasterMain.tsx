@@ -72,7 +72,6 @@ const personTemplate = (rowData: Person) => {
 const dateTimeTemplate = (dateTime: Date) => {
   const stillUtc = moment.utc(dateTime).toDate();
   const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
-  //console.log(local);
   return (
       <React.Fragment>
           {localDateTime}
@@ -103,7 +102,6 @@ const textTemplate = (text: string) => {
 }
 
 const searchText = () => {
-  // const {rows, headCells, colIdx } = props
   return (
     <TextField onChange={textSearch} value="Demo"/>
   );
@@ -161,7 +159,7 @@ const assetRecordedByTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.recordedBy}</p>
+          <p style={{maxHeight:"8px"}}>{rowData.recordedBy.map((item:any) => item).join(', ')}</p>
         </div>
       </React.Fragment>
   );
@@ -186,8 +184,10 @@ const assetStatusTemplate = (rowData: any) => {
 }
 //-----------------
 
-const MasterMain = () => {
-    const dummyData = [
+const MasterMain = (props:any) => {
+
+    const dummyData = 
+    [
       createData({name:"Faisal akhtar", age:30, email:"faisalakhter@gmail.com", url:"https://www.google.com"},'1','Video','Traffic','Case Number 35364','In Car','faisal.akhtar','Dallas TX PD', dataAndTime, moment(new Date()).add(10, 'days').format('DD MMM YYYY'), '55d 11hr'),
       createData({name:"Missam akhtar", age:25, email:"faisalakhter@gmail.com", url:"https://www.dfgfdgf.com"},'2','Photo','Jail Check','General Incident','Rear Camera','missam.akhtar','Dallas TX PD', dataAndTime, moment(new Date()).add(1, 'days').format('DD MMM YYYY'), '25d 22hr'), 
       createData({name:"Zuhaib Ahmed", age:52, email:"faisalakhter@gmail.com", url:"https://www.fgfgdfg.com"},'3','Video','Arrest','Case Number 52665','Body warn','zuhaib.ahmed','Dallas TX PD', dataAndTime, moment(new Date()).add(3, 'days').format('DD MMM YYYY'), '25d 22hr'),
@@ -222,57 +222,26 @@ const MasterMain = () => {
       createData({name:"Faizan Nasir", age:31, email:"faisalakhter@gmail.com", url:"https://www.ioyufgsrf.com"},'32','Video','Arrest','General Incident','Body warn','faisal.akhtar','Dallas TX PD', dataAndTime, moment(new Date()).add(12, 'days').format('DD MMM YYYY'), '24 11hr'), 
       createData({name:"Shakeel Ahmed", age:21, email:"faisalakhter@gmail.com", url:"https://www.kdfgfdhg.com"},'33','Photo','Traffic','Case Number 951263','Body warn','missam.akhtar','FL Worth TX PD', dataAndTime, moment(new Date()).add(5, 'days').format('DD MMM YYYY'), '21d 11hr'), 
     ]
+
+    const [rows, setRows] = React.useState<any[]>(props.rows);
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof RowDataProps>('id');
-    //const [rowsHeader, setRowsHeader]= React.useState<RowDataProps[]>(dummyData);
-    // let rowsHeader: RowDataProps[] = dummyData;
-    // const [rows, setRows]= React.useState<RowDataProps[]>(dummyData);
-    //const [rowsHeader, setRowsHeader]= React.useState<RowProps[]>([]);
-    let rowsHeader: RowProps[] = [];
-    const [rows, setRows]= React.useState<RowProps[]>([])
-
-    useEffect(() => {  
-      fetchData()
-    },[])
-
-    const fetchData = () => {
-      fetch(url, {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Group-Ids": "3",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(querry),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          rowsHeader = res
-          //setRowsHeader(res)
-          setRows(res);
-        });
-    };
-
-    const searchDropDown = (rowsParam: RowProps[], headCells: HeadCellProps[], colIdx: number) => {
-
-      const options = rowsHeader.map((r: any, _) => {
+    const [orderBy, setOrderBy] = React.useState<any>('id');  
+    
+    const searchDropDown = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => 
+    {
+      const options = props.rows.map((r: any, _: any) => {
         let option: any = {}
         let x = headCells[colIdx].value
         if(x.toString() == "recordedBy")
-        {
           option["value"] = r[headCells[colIdx].id].recordedBy[0]
-        }
         else if(x.toString() == "status")
-        {
           option["value"] = r[headCells[colIdx].id].status
-        }
         else 
-        {
           option["value"] = r[headCells[colIdx].value]
-        }
         return option
       })  
       
-      let unique: any = options.map(x => x);
+      let unique: any = options.map((x:any) => x);
     
       if(options.length > 0)
       {
@@ -297,41 +266,11 @@ const MasterMain = () => {
                 id="simpleSelectBox" 
                 onChange={(e: any) => selectChange(e,colIdx)} 
                 onClick={(e : any) => console.log(e)}  
-                value="value Here" 
+                value={unique.value} 
               />
           </div>
       );
     }
-
-    const selectChange=(e: any, colIdx: number)  =>{  
-      //setRows((prevArr)=>(prevArr.filter((x:any) => x[headCells[colIdx].value] === e.target.value)))
-      //console.log(headCells[colIdx].value)
-      if(headCells[colIdx].value.toString() == "status")
-      {
-        const dataRows = rowsHeader.filter( (x:any) => x[headCells[colIdx].id].status === e.target.value)
-        setRows(dataRows) 
-      }
-      else 
-      {
-        const dataRows = rowsHeader.filter( (x:any) => x[headCells[colIdx].value] === e.target.value)
-        setRows(dataRows)  
-      }
-       
-    }
-
-    // const [headCells, setHeadCells] = useState<HeadCellProps[]>([
-    //   { label: 'Asset Thumbnail',id: 'asset',     value: 'asset',      align: "left",    disablePadding: false,dataComponent: personTemplate,minWidth:"100px"} ,
-    //   { label: 'Asset ID',       id: 'id',        value: 'id',    align: "left",   disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"150px"},
-    //   { label: 'Type',           id: 'type',      value: 'type',       align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-    //   { label: 'Tags',           id: 'tags',      value: 'tags',       align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-    //   { label: 'Description',    id: 'description',value: 'description',align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchText, minWidth:"150px"},
-    //   { label: 'Device',         id: 'devices',   value: 'devices',     align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-    //   { label: 'User',           id: 'user',      value: 'user',       align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-    //   { label: 'Station',        id: 'station',   value: 'station',    align: "left",    disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-    //   { label: 'Captured',       id: 'captured',  value: 'captured',   align: "left",  disablePadding: false,dataComponent: dateTimeTemplate,  sort: true,searchFilter:true, searchComponent: searchText,minWidth:"200px"},
-    //   { label: 'Uploaded',       id: 'uploaded',  value: 'uploaded',   align: "left",  disablePadding: false,dataComponent: textTemplate,      sort: true,searchFilter:true, searchComponent: searchText, minWidth:"100px"},
-    //   { label: 'Life Span',      id: 'lifeSpan',  value: 'lifeSpan',   align: "left",   disablePadding: false,dataComponent: textTemplate,minWidth:"100px",searchFilter:false,}
-    // ]);
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
@@ -346,22 +285,19 @@ const MasterMain = () => {
       { label: 'Status',    id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
-    const url = "/Evidence?Size=10&Page=1";
-    const querry = 
-    {
-      "bool":{
-        "must":[
-          {
-                  "query_string": {
-                  "query": "aaa S123CAD",
-                  "fields": [ "asset.assetName","categories","cADId","asset.recordedBy" ]
-              }
-          }
-          
-              ]
+    const selectChange=(e: any, colIdx: number)  =>{  
+      if(headCells[colIdx].value.toString() == "status")
+      {
+        const dataRows = props.rows.filter( (x:any) => x[headCells[colIdx].id].status === e.target.value)
+        setRows(dataRows)
       }
+      else 
+      {
+        const dataRows = props.rows.filter( (x:any) => x[headCells[colIdx].value] === e.target.value)
+        setRows(dataRows) 
+      }
+       
     }
-
     return (
       <>
       {rows &&  <CRXDataTable

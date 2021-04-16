@@ -290,8 +290,11 @@ const SearchComponent = () => {
           <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} />
         )}
       </div>
-     
-      <div className="dataTabAssets"><MasterMain /></div>
+      {searchData &&
+        <div className="dataTabAssets" >
+            <MasterMain key={Math.random()} rows={searchData} />
+        </div>
+      }
     </div>
   );
 };

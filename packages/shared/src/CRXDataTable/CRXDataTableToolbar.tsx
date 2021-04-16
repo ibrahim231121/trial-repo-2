@@ -312,7 +312,7 @@ const SortableList = SortableContainer((props: any) => {
     onReOrderChange(event.target.checked,index)
   }
   return (
-    <li>
+    <span>
       {orderColumn.map((colIdx: any, index: number) => (
         <SortableItem 
           key={colIdx} 
@@ -335,6 +335,6 @@ const SortableList = SortableContainer((props: any) => {
                 } 
         />
       ))}
-    </li>
+    </span>
   );
 });

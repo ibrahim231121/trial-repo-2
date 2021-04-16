@@ -40,7 +40,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
-  console.log("Free")
+
   const keyId = headCells.filter(n => n.keyCol === true).map((v => v.id)).toString()
 
   const secondRows: any[] = [];
@@ -289,8 +289,7 @@ export default function CRXDataTable(props: DataTableProps) {
                           </TableRow>
                         </TableHead>
                         {(headCells[colIdx].sort === true) ? (
-                              <span 
-                                //direction={orderBy === headCells[colIdx].id ? order : 'asc'}                              
+                              <span                          
                                 onClick={createSortHandler(headCells[colIdx].id)}
                                 >
                                 {(orderBy === headCells[colIdx].id) ? (
