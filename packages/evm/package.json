@@ -2,7 +2,7 @@
   "name": "@cb/evm",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://10.227.141.232:8080",
+  "proxy": "http://cbsrv1:8080",
   "dependencies": {
     "@cb/shared": "0.0.0",
     "@material-ui/icons": "^4.11.2",

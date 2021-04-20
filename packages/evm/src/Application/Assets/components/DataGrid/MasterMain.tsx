@@ -7,6 +7,12 @@ import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
 type Order = 'asc' | 'desc';
 
+type SearchObject = {
+  columnName: string;
+  colIdx: number;
+  value: any;
+}
+
 interface HeadCellProps {
   disablePadding: boolean;
   id: any;
@@ -90,20 +96,11 @@ const iconTemplate = () => {
   );
 }
 
-const textSearch = () => {
-
-}
 const textTemplate = (text: string) => {
   return (
       <div className="filterOption">
         {text}
       </div>
-  );
-}
-
-const searchText = () => {
-  return (
-    <TextField onChange={textSearch} value="Demo"/>
   );
 }
 
@@ -165,11 +162,12 @@ const assetRecordedByTemplate = (rowData: any) => {
   );
 }
 const assetExpiryDateTemplate = (rowData: any) => {
+  const stillUtc = moment.utc(rowData.expiryDate).toDate();
+  const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
   return (
       <React.Fragment>
-        <div style={{textAlign:"left"}}>
-          <p>{rowData.expiryDate}</p>
-        </div>
+          {localDateTime}
+          
       </React.Fragment>
   );
 }
@@ -226,6 +224,13 @@ const MasterMain = (props:any) => {
     const [rows, setRows] = React.useState<any[]>(props.rows);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('id');  
+    const [searchData , setSearchData] = React.useState<SearchObject[]>([])
+
+    const searchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+      return (
+        <TextField onChange={(e: any) => selectChange(e,colIdx)}  />
+      );
+    }
     
     const searchDropDown = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => 
     {
@@ -234,6 +239,10 @@ const MasterMain = (props:any) => {
         let x = headCells[colIdx].value
         if(x.toString() == "recordedBy")
           option["value"] = r[headCells[colIdx].id].recordedBy[0]
+        else if(x.toString() == "assetName")
+          option["value"] = r[headCells[colIdx].id].assetName
+        else if(x.toString() == "assetType")
+          option["value"] = r[headCells[colIdx].id].assetType
         else if(x.toString() == "status")
           option["value"] = r[headCells[colIdx].id].status
         else 
@@ -274,30 +283,59 @@ const MasterMain = (props:any) => {
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label: 'ID',        id:"id",     value: 'id',      align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"125px", visible:false},
-      { label: 'Asset Name',id:"asset",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText},
-      { label: 'Asset Type',id:"asset",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchText},
-      { label: 'Unit',      id:"asset",  value: 'unit',  align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText},
-      { label: 'Device',    id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
-      { label: 'Station',   id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
-      { label: 'Recorded By',id:"asset",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
-      { label: 'Expiry Date', id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px"},
-      { label: 'Status',    id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
+      { label:'ID',             id:"id",     value: 'id',      align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"125px", visible:false},
+      { label:'Asset Thumbnail',id:"asset",  value: "assetId",  align: "left",  disablePadding: false, dataComponent: personTemplate},
+      { label:'Asset Name',     id:"asset",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText},
+      { label:'Asset Type',     id:"asset",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
+      { label:'Unit',           id:"asset",  value: 'unit',  align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText},
+      { label:'Device',         id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
+      { label:'Station',        id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
+      { label:'Recorded By',    id:"asset",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
+      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px"},
+      { label:'Status',         id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
-    const selectChange=(e: any, colIdx: number)  =>{  
-      if(headCells[colIdx].value.toString() == "status")
+    const selectChange=(e: any, colIdx: number)  =>
+    { 
+      if(e.target.value !== "" && e.target.value !== undefined)
       {
-        const dataRows = props.rows.filter( (x:any) => x[headCells[colIdx].id].status === e.target.value)
-        setRows(dataRows)
+        let newItem = {
+          columnName: headCells[colIdx].value.toString(),
+          colIdx,
+          value: e.target.value
+        }     
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].value.toString()))))
+        setSearchData((prevArr)=>([...prevArr, newItem]))
+
       }
       else 
-      {
-        const dataRows = props.rows.filter( (x:any) => x[headCells[colIdx].value] === e.target.value)
-        setRows(dataRows) 
-      }
-       
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].value.toString()))))
     }
+
+    useEffect(() => {
+      console.log(searchData)
+      let dataRows: any = props.rows
+      searchData.forEach((el:SearchObject) => {
+        if(el.columnName === "assetName")
+          dataRows = dataRows.filter(function(x: any) {
+                          return x[headCells[el.colIdx].id].assetName.toLowerCase().indexOf(el.value.toLowerCase()) !== -1
+                      })
+        if(el.columnName === "assetType")
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].assetType === el.value) 
+        if(el.columnName === "devices")
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
+        if(el.columnName === "station")
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
+        if(el.columnName === "recordedBy")
+          dataRows = dataRows.filter(function(x: any) {
+                          return x[headCells[el.colIdx].id].recordedBy[0].toLowerCase().includes(el.value.toLowerCase())
+                      })
+        if(el.columnName === "status")
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].status === el.value) 
+      })
+      setRows(dataRows) 
+    }, [searchData])
+
     return (
       <>
       {rows &&  <CRXDataTable

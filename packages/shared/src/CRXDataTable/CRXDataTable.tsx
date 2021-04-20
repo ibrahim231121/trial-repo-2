@@ -320,7 +320,8 @@ export default function CRXDataTable(props: DataTableProps) {
                     ))}
                   </DragableHead>
                   {searchHeader === true ? 
-                    <DragableHead axis="x" onSortEnd={onReorderEnd}>
+                    <TableHead>
+                    <TableRow>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} ></TableCell>
                       <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}>            
                         <Checkbox style={{color:"white"}}
@@ -331,29 +332,23 @@ export default function CRXDataTable(props: DataTableProps) {
                         />
                       </TableCell>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} ></TableCell>
-                      {orderColumn.map((colIdx, i) => (
-                        //index needs to be CURRENT
-                        //key needs to be STATIC
-                        <DragableCell
-                          index={i} key={colIdx} 
-                          value={
-                                    <TableCell className={classes.searchHeaderStickness  + " TableSearchAbleHead"} 
-                                      style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
-                                      key={headCells[colIdx].id}
-                                      align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                                      padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
-                                      sortDirection={orderBy === headCells[colIdx].id ? order : false}
-                                    >    
-                                      {headCells[colIdx].searchFilter === true ? 
-                                          headCells[colIdx].searchComponent(container.rows, headCells, colIdx)
-                                          :
-                                          null
-                                      }
-                                    </TableCell>
-                                }
-                        />
+                      {orderColumn.map((colIdx, _) => (
+                          <TableCell className={classes.searchHeaderStickness  + " TableSearchAbleHead"} 
+                            style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
+                            key={colIdx}
+                            align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
+                            padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
+                            sortDirection={orderBy === headCells[colIdx].id ? order : false}
+                          >    
+                            {headCells[colIdx].searchFilter === true ? 
+                                headCells[colIdx].searchComponent(container.rows, headCells, colIdx)
+                                :
+                                null
+                            }
+                          </TableCell>
                       ))}
-                    </DragableHead>
+                    </TableRow>
+                    </TableHead>
                     :
                     null
                   }

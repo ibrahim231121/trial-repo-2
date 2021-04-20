@@ -106,7 +106,7 @@ const CRXSelectBox = ({
         aria-label="None"
         value=""
       >
-        Please Select
+        All
       </StyledMenuItem>
       {option}
     </Select>
