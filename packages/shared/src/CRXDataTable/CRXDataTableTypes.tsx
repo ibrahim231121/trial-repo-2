@@ -133,4 +133,5 @@ export type DataTableProps = {
   columnVisibilityBar?: boolean;
   allowDragableToList?: boolean;
   className?: string;
+  allowRowReOrdering?: boolean;
 }

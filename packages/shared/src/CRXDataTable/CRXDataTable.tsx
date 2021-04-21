@@ -29,7 +29,7 @@ import Grid from "@material-ui/core/Grid";
 import './CRXDataTable.scss'
 
 export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList} = props;
+  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -190,22 +190,27 @@ export default function CRXDataTable(props: DataTableProps) {
     if (start === end) {
       // Move the item within the list
       // Start by making a new list without the dragged item
-      console.log("If");
-      const newList = start.rows.filter((_: any, idx: any) => idx !== startIndex);
-      destinationIndex = destination.index + (page*rowsPerPage)
-      // Then insert the item at the right location
-      newList.splice(destinationIndex, 0, start.rows[startIndex]);
+      if(allowRowReOrdering)
+      {
+        console.log("If");
+        const newList = start.rows.filter((_: any, idx: any) => idx !== startIndex);
+        destinationIndex = destination.index + (page*rowsPerPage)
+        // Then insert the item at the right location
+        newList.splice(destinationIndex, 0, start.rows[startIndex]);
 
-      // Then create a new copy of the column object
-      const newCol = {
-        id: start.id,
-        rows: newList
-      };
+        // Then create a new copy of the column object
+        const newCol = {
+          id: start.id,
+          rows: newList
+        };
 
-      // Update the state
-      setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
+        // Update the state
+        setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
+      }
       return null;
-    } else {
+    } 
+    else 
+    {
       // If start is different from end, we need to update multiple columns
       // Filter the start list like before
       //const newStartList = start.rows.filter((_: any, idx: any) => idx !== source.index);
@@ -296,11 +301,11 @@ export default function CRXDataTable(props: DataTableProps) {
                                     <span> 
                                     {order === 'desc' ? 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                          <i className="fas fa-sort"></i>
+                                          <i className="fas fa-sort-down"></i>
                                       </IconButton>
                                       : 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                           <i className="fas fa-sort"></i>
+                                           <i className="fas fa-sort-up"></i>
                                       </IconButton>
                                       }
                                     </span>

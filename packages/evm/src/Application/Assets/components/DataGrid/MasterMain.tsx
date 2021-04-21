@@ -346,7 +346,7 @@ const MasterMain = (props:any) => {
                   searchHeader={true}
                   columnVisibilityBar={true}   
                   allowDragableToList={true}
-                  className="ManageAssetDataTable"    
+                  className="ManageAssetDataTable"  
                 />    
       }
     </>               

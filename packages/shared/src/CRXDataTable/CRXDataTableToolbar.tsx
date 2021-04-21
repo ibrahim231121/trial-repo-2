@@ -234,7 +234,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 ) : null
               }
           </div>          
-          <div className="dataTableColumnShoHide">
+          <div className="dataTableColumnShoHide" style={{display:"none"}}>
              <IconButton
                 aria-controls="CustomizeColumns"
                 className="dataIconButton"
