@@ -35,6 +35,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [open, setOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>(orderParam);
   const [orderBy, setOrderBy] = React.useState<string>(orderByParam);
+  
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
@@ -64,6 +65,21 @@ export default function CRXDataTable(props: DataTableProps) {
       rows: rows
     };
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
+
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset"); 
+    if(checkOrderPreset !== null)
+    {
+      let arr = JSON.parse(checkOrderPreset).map((x:any) => x.order)
+      //console.log("arr",arr)
+      setOrderColumn(arr)
+
+      JSON.parse(checkOrderPreset).map((x: any) => {
+        headCells[x.order].visible = x.value
+      }) 
+
+      console.log(headCells)
+    }
+
   },[])
 
   useEffect(() => {  
@@ -267,7 +283,8 @@ export default function CRXDataTable(props: DataTableProps) {
                     rowCount={container.rows.length}
                     columnVisibilityBar={columnVisibilityBar}
                     onChange={onColumnVisibility}
-                    onReOrder={onReOrdering}  />
+                    onReOrder={onReOrdering}  
+                    orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table className={classes.table} 
                   aria-label="simple table"

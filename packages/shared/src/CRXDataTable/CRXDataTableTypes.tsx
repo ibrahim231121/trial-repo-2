@@ -123,6 +123,7 @@ export interface DataTableToolbarProps {
   columnVisibilityBar?: boolean;
   onChange: () => void;
   onReOrder: (event: number[]) => void;
+  orderingColumn: number[];
 }
 
 export type DataTableProps = {
