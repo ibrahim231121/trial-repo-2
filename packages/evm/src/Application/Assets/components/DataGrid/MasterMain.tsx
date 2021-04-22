@@ -231,6 +231,11 @@ const MasterMain = (props:any) => {
         <TextField onChange={(e: any) => selectChange(e,colIdx)}  />
       );
     }
+    const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+      return (
+        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+      );
+    }
     
     const searchDropDown = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => 
     {
@@ -291,12 +296,17 @@ const MasterMain = (props:any) => {
       { label:'Device',         id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Station',        id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Recorded By',    id:"asset",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
-      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px"},
+      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDate},
       { label:'Status',         id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>
     { 
+      if(headCells[colIdx].value.toString() === "expiryDate")
+      {
+        
+        console.log("Hello",e.target.value,"Hello")
+      }
       if(e.target.value !== "" && e.target.value !== undefined)
       {
         let newItem = {
@@ -330,11 +340,22 @@ const MasterMain = (props:any) => {
           dataRows = dataRows.filter(function(x: any) {
                           return x[headCells[el.colIdx].id].recordedBy[0].toLowerCase().includes(el.value.toLowerCase())
                       })
+        if(el.columnName === "expiryDate")
+        {
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id].expiryDate) === DateFormat(el.value)) 
+        }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].status === el.value) 
       })
+      
       setRows(dataRows) 
     }, [searchData])
+
+    function DateFormat(value: any) {
+      const stillUtc = moment.utc(value).toDate();
+      const localDate = moment(stillUtc).local().format('YYYY-MM-DD');
+      return localDate
+    }
 
     return (
       <>
