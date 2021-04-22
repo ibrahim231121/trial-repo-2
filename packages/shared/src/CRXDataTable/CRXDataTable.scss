@@ -5,7 +5,7 @@
     table {
         tr{
             th.MuiTableCell-sizeSmall{
-                padding:7px;
+                padding:0px 7px;
             }
             th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox{
                 padding-left: 15px !important;
@@ -52,6 +52,37 @@
                     }
                 }
             }
+        }
+
+        .crxTableHeaderSize {
+            height: 35px;
+            align-items: center;
+            // .makeStyles-headerStickness-8 {
+                
+            //         opacity: 1 !important;
+            //         visibility: visible !important;
+                
+            // }
+            div {
+                label {
+                   font-size: 14px;
+                   color:#d1d2d4;
+                }
+            }
+            .GridSortIcon{
+                button {
+                    span{
+                        i {
+                            font-size:18px;
+                            color:#d1d2d4;
+                        }
+                    }
+                }
+            }
+        }
+
+        .tableSearchHead {
+            height: 51px;
         }
     }
 
@@ -174,4 +205,34 @@ ul.columnList {
 .AssetsDataGrid::-webkit-scrollbar-thumb{
         background-color: #333333;
         border: 2px solid #555555;
+}
+
+
+.draggFocus {
+    border:2px solid #cccccc;
+    cursor: grab;
+}
+
+.helperClass {
+    border: 2px solid #ccc;
+    cursor: move;
+    padding: 3px 10px 0 10px;
+    text-align: center;
+    position: relative ;
+    width: auto !important;
+    height: 35px !important;
+    opacity: 0.7;
+    align-items: center;
+    .dragIcon {
+        font-size: 18px;
+        color: #d1d2d4;
+        float: left;
+        position: relative;
+        top: 3px;
+        margin-right: 10px;
+    }
+
+    label {
+        float: right;
+    }
 }

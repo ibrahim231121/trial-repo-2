@@ -3,7 +3,10 @@
     transition: all 0.25s ease-in-out;
     padding: 0px 10px;
     min-width: 100px;
-    
+    min-height: 30px;
+    .MuiInputBase-input {
+        padding: 0px;
+    }
     select{
         padding: 5px;
         min-width: 250px;
@@ -58,8 +61,8 @@
     }
     .CRXSelectIconArrow{
         position: relative;
-        top: 0px;
-        font-size: 12px;
+        top: -1px;
+        font-size: 14px;
     }
 
 }.error{

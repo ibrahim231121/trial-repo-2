@@ -13,6 +13,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 
 const checkboxStyle = makeStyles({
   root: {
@@ -187,7 +188,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                                 <Grid item xs={6}>
                                 <FormControlLabel
                                   value={i.label}
-                                  control={<Checkbox checked={selected[index].visible} onChange={(e) => handleCheckChange(e,index)}
+                                  control={<CRXCheckBox checked={selected[index].visible} onChange={(e) => handleCheckChange(e,index)}
                                     checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
                                     icon={<span className={chkStyle.icon} />}
                                     className={chkStyle.root + " shoHideCheckbox"}

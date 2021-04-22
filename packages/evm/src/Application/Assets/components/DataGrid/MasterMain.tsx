@@ -129,7 +129,7 @@ const assetNameTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.assetName}</p>
+          {rowData.assetName}
         </div>
       </React.Fragment>
   );
@@ -138,7 +138,7 @@ const assetTypeTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.assetType}</p>
+          {rowData.assetType}
         </div>
       </React.Fragment>
   );
@@ -147,7 +147,7 @@ const assetUnitTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.unit}</p>
+          {rowData.unit}
         </div>
       </React.Fragment>
   );
@@ -156,7 +156,7 @@ const assetRecordedByTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.recordedBy.map((item:any) => item).join(', ')}</p>
+          {rowData.recordedBy.map((item:any) => item).join(', ')}
         </div>
       </React.Fragment>
   );
@@ -271,6 +271,7 @@ const MasterMain = (props:any) => {
       return (
           <div className="filterSelect">
               <CRXSelectBox 
+                className="selectFilter"
                 options={unique} 
                 id="simpleSelectBox" 
                 onChange={(e: any) => selectChange(e,colIdx)} 
@@ -281,6 +282,11 @@ const MasterMain = (props:any) => {
       );
     }
 
+    const dateExpireComponent = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+      return (
+        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+      )
+    }
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
       { label:'ID',             id:"id",     value: 'id',      align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"125px", visible:false},
@@ -291,7 +297,7 @@ const MasterMain = (props:any) => {
       { label:'Device',         id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Station',        id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Recorded By',    id:"asset",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
-      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px"},
+      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: dateExpireComponent,},
       { label:'Status',         id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
     ]);
 

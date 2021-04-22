@@ -1,0 +1,15 @@
+.crxSelectedDark {
+    color: #333;
+    font-size: 18px;
+}
+
+.crxSelectedLight {
+    color: #F2F2F2;
+    font-size: 18px;
+}
+
+.CRXCheckBox {
+    &:hover {
+        background: none !important;
+    }
+}
