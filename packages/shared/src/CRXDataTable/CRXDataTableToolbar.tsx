@@ -75,8 +75,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
       }) 
-      let orderingColumns = localStorage.getItem("orderColumns");
-      if(orderingColumns !== null)
+      let checkOrderPreset = localStorage.getItem("checkOrderPreset");
+      if(checkOrderPreset !== null)
         setOnPreSet(true)
       else
         setOnPreSet(false)
@@ -118,6 +118,10 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
 
     const closeHandle = () => {
       setAnchorEl(null);
+    }
+
+    const onSavecloseHandle = () => {
+      setAnchorEl(null);
       let checkOrderPreset = orderColumn.map((i, _) => {
         let rObj: any = {}
         rObj["order"] = i
@@ -125,19 +129,18 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
         return rObj
      })
 
-      console.log(checkOrderPreset)
       if(onPreset)
       {
-        localStorage.setItem("orderColumns", JSON.stringify(orderColumn));
         localStorage.setItem("checkOrderPreset", JSON.stringify(checkOrderPreset));
+        alert("Success: Your Customized columns have been saved.")
       }
       else
       {
-        localStorage.removeItem("orderColumns");
         localStorage.removeItem("checkOrderPreset");
+        alert("Success: Your Customized columns have been cleared.")
       }
     }
-   
+    
     const resetToDefault = () => {
       headCells.map((headCell, x) => {
         if(headCell.keyCol === false || headCell.keyCol === undefined)
@@ -219,10 +222,9 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                                 (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
                                 <Grid item xs={6}>
                                 <FormControlLabel
-								  key={index}
-                                  control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
-                                  value={i.label}
+								                  key={index}
                                   value={headCells[i].label}
+                                  control={<Checkbox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
                                     checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
                                     icon={<span className={chkStyle.icon} />}
                                     className={chkStyle.root + " shoHideCheckbox"}
@@ -242,7 +244,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       <Grid item xs={7}>
                         <CRXButton 
                           id="closeDropDown"
-                          onClick={closeHandle}
+                          onClick={onSavecloseHandle}
                           color="primary"
                           variant="contained" 
                           className="closeDRP"
