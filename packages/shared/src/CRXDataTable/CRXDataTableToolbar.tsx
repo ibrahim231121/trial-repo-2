@@ -75,7 +75,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
       }) 
-      let orderingColumns = localStorage.getItem("orderColumns");
+      let orderingColumns = localStorage.getItem("checkOrderPreset");
       if(orderingColumns !== null)
         setOnPreSet(true)
       else
@@ -118,23 +118,25 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
 
     const closeHandle = () => {
       setAnchorEl(null);
+    }
+
+    const onSavecloseHandle = () => {
       let checkOrderPreset = orderColumn.map((i, _) => {
         let rObj: any = {}
         rObj["order"] = i
         rObj["value"] = headCells[i].visible
         return rObj
-     })
+      })
 
-      console.log(checkOrderPreset)
       if(onPreset)
       {
-        localStorage.setItem("orderColumns", JSON.stringify(orderColumn));
         localStorage.setItem("checkOrderPreset", JSON.stringify(checkOrderPreset));
+        alert("Success: Your Customized columns have been saved.")
       }
       else
       {
-        localStorage.removeItem("orderColumns");
         localStorage.removeItem("checkOrderPreset");
+        alert("Success: Your Customized columns have been cleared.")
       }
     }
    
@@ -240,7 +242,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       <Grid item xs={4}>
                         <CRXButton 
                           id="closeDropDown"
-                          onClick={closeHandle}
+                          onClick={onSavecloseHandle}
                           color="primary"
                           variant="contained" 
                           className="closeDRP CRXPrimaryButton"
