@@ -17,12 +17,18 @@ const theme = createMuiTheme({
         primary: {
             main: "#333333",
             light: '#0066ff',
+            
         },
         secondary: {
             main: "#ffffff",
         },
         
     },
+    props : {
+        MuiButtonBase : { 
+            disableRipple: true,
+        }
+    }
   });
 
 const CRXButton = ({id, children, color, variant, className, disabled, onClick, ...props} : buttonProps) => {

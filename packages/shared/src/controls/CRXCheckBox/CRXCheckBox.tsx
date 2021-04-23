@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
   icon: {
     borderRadius: 0,
-    border:"1px solid #d5d6d8",
+    border:"1px solid #d1d2d4",
     width: 16,
     height: 16,
     boxShadow: 'none',

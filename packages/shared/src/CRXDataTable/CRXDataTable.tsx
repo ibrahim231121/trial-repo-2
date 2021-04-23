@@ -291,9 +291,9 @@ export default function CRXDataTable(props: DataTableProps) {
                   size='small'
                   stickyHeader>
                   <DragableHead hideSortableGhost={false}  helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} ></TableCell>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} ></TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} >Actions</TableCell> 
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '50px'}} ></TableCell>
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '58px'}}></TableCell>  
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>Actions</TableCell> 
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC

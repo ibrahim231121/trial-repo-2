@@ -20,7 +20,7 @@
         }
         .p-submenu-icon{
             position: absolute;
-            right: 5%;
+            right: 5px;
             top: 32%;
             color: #d1d2d4;
         }
@@ -95,6 +95,24 @@
         .p-menuitem-link{
             background: #404041;
             border-left:4px #d1d2d4 solid;
+        }
+    }
+
+    ul {
+        li {
+            a {
+                height: 80px;
+                padding: 19px 5px 19px 3px  !important;
+            }
+        }
+    }
+
+    ul.p-submenu-list {
+        .p-menuitem {
+            a.p-menuitem-link {
+                height: auto;
+                padding: 0.75rem 15px !important;
+            }
         }
     }
 }

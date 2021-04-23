@@ -11,10 +11,10 @@
         }
     }
     &.MuiButton-containedPrimary {
-        color: #d1d2d4;
+        color: #d1d2d4 !important;
         &:hover {
-            background-color: #6e6e6e;
-            color: #f5f5f5;
+            background-color: #6e6e6e !important;
+            color: #f5f5f5 !important;
         }
 
         &:focus {
@@ -78,5 +78,18 @@
             background-color: #e7e7e7;
             color:#333333;
         }
+    }
+}
+
+.CRXPrimaryButton {
+    background: #333333 !important;
+    color: #d1d2d4 !important;
+    &:hover {
+        background: #6e6e6e !important;
+        color: #f5f5f5 !important;
+    }
+    &:focus {
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
     }
 }

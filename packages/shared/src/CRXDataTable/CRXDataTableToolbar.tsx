@@ -213,16 +213,15 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       }}
                     >
                     <CRXTypography className="DRPTitle" variant="h3" >Show / hide columns</CRXTypography>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={0}>
                       {orderColumn.map((i: number, index: number) => {
                        return(  
                                 (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
-                                <Grid item xs={6}>
+                                <Grid item xs={6} className="showHideList">
                                 <FormControlLabel
-								  key={index}
+								                  key={index}
                                   control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
-                                  value={i.label}
-                                  value={headCells[i].label}
+                                    value={headCells[i].label}
                                     checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
                                     icon={<span className={chkStyle.icon} />}
                                     className={chkStyle.root + " shoHideCheckbox"}
@@ -238,19 +237,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       })}
                     </Grid>
                     <div className="footerDRP">
-                    <Grid container spacing={2}>
-                      <Grid item xs={7}>
+                    <Grid container spacing={0}>
+                      <Grid item xs={4}>
                         <CRXButton 
                           id="closeDropDown"
                           onClick={closeHandle}
                           color="primary"
                           variant="contained" 
-                          className="closeDRP"
+                          className="closeDRP CRXPrimaryButton"
                           >
-                            Save and Close
+                            Close
                           </CRXButton>
                       </Grid>
-                      <Grid item xs={5}>
+                      <Grid item xs={4}>
                         <CRXButton 
                           id="resetCheckBox"
                           onClick={resetToDefault}
@@ -261,15 +260,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                             Reset to default
                           </CRXButton>
                       </Grid>
-                      <Grid item xs={5}>
+                      <Grid item xs={4}>
                           <FormControlLabel
-                            control={<Checkbox checked={onPreset}
+                            control={<CRXCheckBox checked={onPreset}
                               onChange={(e) => handlePreset(e)}
-                              checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
-                              icon={<span className={chkStyle.icon} />}
-                              className={chkStyle.root + " shoHideCheckbox"}
-                              disableRipple={true} 
-                              color="default" />}
+                              className=" shoHideCheckbox"
+                             />}
                             label="Save as preset"
                             labelPlacement="end"
                           />
