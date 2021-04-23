@@ -63,10 +63,9 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     setCurrentInput(e.target.value);
     if (!value) {
       setShowSearchCriteria(false);
+      setDisableButton(true);
     }
-    if (selectsLength === 2) {
-      setShowSearchCriteria(false);
-    }
+    console.log(selectsLength);
     let found = options.find((opt: any) => id === opt._id);
 
     console.log(found);
@@ -118,8 +117,13 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const Add = () => {
     setDisableButton(true);
     setCurrentInput(null);
+
     setShowSearchCriteria(false);
     let found = options.find((opt: any) => currentSelect === opt.value);
+    if (selectsLength === 3) {
+      setDisableButton(false);
+      setShowSearchCriteria(false);
+    }
     if (found) {
       found.usedBy = selectRef.current.id;
       found.isUsed = true;
