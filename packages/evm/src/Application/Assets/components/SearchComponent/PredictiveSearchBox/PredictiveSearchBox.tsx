@@ -17,11 +17,13 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
   const [searchQuerry, setSearchQuerry] = useState<any>();
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = useState<string>("");
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
   //onChange
   const handleOnChange = async (e: any) => {
     const { value } = e.target;
+    setInputValue(value);
     onSet(value);
 
     const worker: Worker = new SearchWorker();
@@ -105,11 +107,20 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
         <input
           type="text"
           placeholder="Type to search.."
+          value={inputValue}
           onChange={handleOnChange}
           onKeyDown={(e: any) => onKeyDown(e.code)}
         />
         <div className="autocom-box">
-          {showSearch && outCome && <Outcome data={outCome} />}
+          {showSearch && outCome && (
+            <Outcome
+              data={outCome}
+              setValue={(val: any) => {
+                setShowSearch(false);
+                setInputValue(val);
+              }}
+            />
+          )}
         </div>
         {children}
       </div>

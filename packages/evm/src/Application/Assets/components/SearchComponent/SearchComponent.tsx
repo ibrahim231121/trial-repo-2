@@ -282,7 +282,7 @@ const SearchComponent = () => {
           Advanced Search
         </CRXButton>
         {showAdvance && (
-          <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} />
+          <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} hideOptions={()=>setShowAdvance(false)} />
         )}
       </div>
       {searchData && (

@@ -1,14 +1,15 @@
 import React from "react";
+import "./Outcome.scss";
 
-const Outcome = ({ data }: { data: any }) => {
+const Outcome = ({ data, setValue }: { data: any; setValue: any }) => {
   const [outCome, setOutCome] = React.useState<string[]>();
+
   React.useEffect(() => {
     getUniqueRecords();
   }, [data]);
 
   const getUniqueRecords = () => {
     var uniqueRec: string[] = [];
-
     data.forEach((x: any) => {
       if (uniqueRec.indexOf(x) === -1) {
         uniqueRec.push(x);
@@ -18,11 +19,13 @@ const Outcome = ({ data }: { data: any }) => {
   };
 
   return (
-    <div>
-      {outCome?.map((x) => (
-        <div>{x}</div>
+    <>
+      {outCome?.map((x, i) => (
+        <li onClick={(e: any) => setValue(e.target.id)} id={x}>
+          {x}
+        </li>
       ))}
-    </div>
+    </>
   );
 };
 
