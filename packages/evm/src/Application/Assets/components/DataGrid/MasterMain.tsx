@@ -338,6 +338,10 @@ const MasterMain = (props:any) => {
                       })
         if(el.columnName === "assetType")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].assetType === el.value) 
+        if(el.columnName === "unit")
+          dataRows = dataRows.filter(function(x: any) {
+                          return x[headCells[el.colIdx].id].unit.toLowerCase().indexOf(el.value.toLowerCase()) !== -1
+                      })
         if(el.columnName === "devices")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
         if(el.columnName === "station")
