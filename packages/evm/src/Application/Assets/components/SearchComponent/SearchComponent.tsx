@@ -1,10 +1,10 @@
 import React from "react";
-import PredictiveSearchBox from "./PredictiveSearchBox";
+import PredictiveSearchBox from "./PredictiveSearchBox/PredictiveSearchBox";
 import TodayIcon from "@material-ui/icons/Today";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXDropDown, CRXButton, CRXDateRangePicker } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
-import MasterMain from '../DataGrid/MasterMain'
+import MasterMain from "../DataGrid/MasterMain";
 const SearchComponent = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -18,8 +18,6 @@ const SearchComponent = () => {
   const [startDate, setStartDate] = React.useState<any>();
   const [endDate, setEndDate] = React.useState(new Date().toISOString());
   const [searchData, setSearchData] = React.useState<any>();
-
-
   const url = "/Evidence?Size=10&Page=1";
   const QUERRY = {
     bool: {
@@ -95,9 +93,8 @@ const SearchComponent = () => {
       .then((response) => response.json())
       .then((res) => {
         setSearchData(res);
-        return res
+        return res;
       });
-      
   };
   const getDate = (type: string) => {
     switch (type) {
@@ -136,7 +133,7 @@ const SearchComponent = () => {
         return new Date().toISOString();
     }
   };
-  console.log(searchData)
+  console.log(searchData);
   const Search = () => {
     const date = getDate(selectOption);
     console.log(startDate);
@@ -173,21 +170,21 @@ const SearchComponent = () => {
       });
 
       obj.map((o: any) => {
-        if (o.key == "username") {
+        if (o != undefined && o.key == "username") {
           const val = {
             bool: {
               should: [{ match: { "asset.recordedBy": `${o.inputValue}` } }],
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o.key == "unitId") {
+        } else if (o != undefined && o.key == "unitId") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o.key == "category"){
+        } else if (o != undefined && o.key == "category") {
           const val = {
             bool: {
               should: [{ match: { categories: `${o.inputValue}` } }],
@@ -196,13 +193,11 @@ const SearchComponent = () => {
           AdvancedSearchQuerry.bool.must.push(val);
         }
       });
-      debugger;
       fetchData(AdvancedSearchQuerry);
     }
   }, [addvancedOptions]);
   return (
     <div>
-       
       <div
         style={{
           display: "flex",
@@ -243,7 +238,7 @@ const SearchComponent = () => {
           variant="outlined"
           className="PreSearchButton"
           onClick={Search}
-          disabled={querryString.length < 3 ? true : false}
+          disabled={querryString.length < 1 ? true : false}
         >
           Search
         </CRXButton>
@@ -287,14 +282,17 @@ const SearchComponent = () => {
           Advanced Search
         </CRXButton>
         {showAdvance && (
-          <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} />
+          <AdvanceOptions
+            getOptions={(e) => setAddvancedOptions(e)}
+            hideOptions={() => setShowAdvance(false)}
+          />
         )}
       </div>
-      {searchData &&
-        <div className="dataTabAssets" >
-            <MasterMain key={Math.random()} rows={searchData} />
+      {searchData && (
+        <div className="dataTabAssets">
+          <MasterMain key={Math.random()} rows={searchData} />
         </div>
-      }
+      )}
     </div>
   );
 };
