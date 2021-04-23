@@ -29,15 +29,14 @@
 
 .search-input .autocom-box {
   padding: 0;
-  pointer-events: none;
   max-height: 280px;
   overflow-y: auto;
+  border: 1px solid #cccccc;
 }
 
 .search-input.active .autocom-box {
   padding: 10px 8px;
   opacity: 1;
-  pointer-events: auto;
 }
 
 .autocom-box li {
@@ -179,3 +178,4 @@
     }
   }
 }
+
