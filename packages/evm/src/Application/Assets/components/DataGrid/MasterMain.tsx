@@ -129,7 +129,7 @@ const assetNameTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.assetName}</p>
+          {rowData.assetName}
         </div>
       </React.Fragment>
   );
@@ -138,7 +138,7 @@ const assetTypeTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.assetType}</p>
+          {rowData.assetType}
         </div>
       </React.Fragment>
   );
@@ -147,7 +147,16 @@ const assetUnitTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.unit}</p>
+          {rowData.unit}
+        </div>
+      </React.Fragment>
+  );
+}
+const assetCategoryTemplate = (rowData: any) => {
+  return (
+      <React.Fragment>
+        <div style={{textAlign:"left"}}>
+          {rowData.map((item:any) => item).join(', ')}
         </div>
       </React.Fragment>
   );
@@ -156,13 +165,23 @@ const assetRecordedByTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData.recordedBy.map((item:any) => item).join(', ')}</p>
+          {rowData.recordedBy.map((item:any) => item).join(', ')}
         </div>
       </React.Fragment>
   );
 }
 const assetExpiryDateTemplate = (rowData: any) => {
   const stillUtc = moment.utc(rowData.expiryDate).toDate();
+  const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
+  return (
+      <React.Fragment>
+          {localDateTime}
+          
+      </React.Fragment>
+  );
+}
+const assetHolduntillTemplate = (rowData: any) => {
+  const stillUtc = moment.utc(rowData).toDate();
   const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
   return (
       <React.Fragment>
@@ -231,6 +250,11 @@ const MasterMain = (props:any) => {
         <TextField onChange={(e: any) => selectChange(e,colIdx)}  />
       );
     }
+    const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+      return (
+        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+      );
+    }
     
     const searchDropDown = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => 
     {
@@ -271,6 +295,7 @@ const MasterMain = (props:any) => {
       return (
           <div className="filterSelect">
               <CRXSelectBox 
+                className="selectFilter"
                 options={unique} 
                 id="simpleSelectBox" 
                 onChange={(e: any) => selectChange(e,colIdx)} 
@@ -281,17 +306,24 @@ const MasterMain = (props:any) => {
       );
     }
 
+    const dateExpireComponent = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+      return (
+        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+      )
+    }
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
       { label:'ID',             id:"id",     value: 'id',      align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"125px", visible:false},
-      { label:'Asset Thumbnail',id:"asset",  value: "assetId",  align: "left",  disablePadding: false, dataComponent: personTemplate},
-      { label:'Asset Name',     id:"asset",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText},
+      { label:'Asset Thumbnail',id:"asset",  value: "assetId",  align: "left",  disablePadding: false, dataComponent: personTemplate, minWidth:"100px"},
+      { label:'Asset Name',     id:"asset",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"180px"},
       { label:'Asset Type',     id:"asset",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
-      { label:'Unit',           id:"asset",  value: 'unit',  align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText},
+      //{ label:'Unit',           id:"asset",  value: 'unit',  align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText},
+      { label:'Categories',     id:"categories",  value: 'categories',  align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"150px"},
       { label:'Device',         id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Station',        id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
       { label:'Recorded By',    id:"asset",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
-      { label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px"},
+      //{ label:'Expiry Date',    id:'asset',value: 'expiryDate',   align: "center",  disablePadding: false,dataComponent: assetExpiryDateTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDate},
+      { label:'Expiry Date',    id:'holdUntill',value: 'holdUntill',   align: "center",  disablePadding: false,dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDate},
       { label:'Status',         id:'asset',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
@@ -313,7 +345,6 @@ const MasterMain = (props:any) => {
     }
 
     useEffect(() => {
-      console.log(searchData)
       let dataRows: any = props.rows
       searchData.forEach((el:SearchObject) => {
         if(el.columnName === "assetName")
@@ -322,6 +353,10 @@ const MasterMain = (props:any) => {
                       })
         if(el.columnName === "assetType")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].assetType === el.value) 
+        if(el.columnName === "unit")
+          dataRows = dataRows.filter(function(x: any) {
+                          return x[headCells[el.colIdx].id].unit.toLowerCase().indexOf(el.value.toLowerCase()) !== -1
+                      })
         if(el.columnName === "devices")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
         if(el.columnName === "station")
@@ -330,11 +365,31 @@ const MasterMain = (props:any) => {
           dataRows = dataRows.filter(function(x: any) {
                           return x[headCells[el.colIdx].id].recordedBy[0].toLowerCase().includes(el.value.toLowerCase())
                       })
+        if(el.columnName === "expiryDate")
+        {
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id].expiryDate) === DateFormat(el.value)) 
+        }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].status === el.value) 
       })
+      
       setRows(dataRows) 
     }, [searchData])
+    
+    useEffect(() => {
+      console.log("Rows",rows)
+      rows.map((r,i) => {
+        //if(Object.keys(r.asset) === "asset")
+        //console.log(Object.(r["asset"]))
+      })
+
+    },[])
+
+    function DateFormat(value: any) {
+      const stillUtc = moment.utc(value).toDate();
+      const localDate = moment(stillUtc).local().format('YYYY-MM-DD');
+      return localDate
+    }
 
     return (
       <>
@@ -346,7 +401,7 @@ const MasterMain = (props:any) => {
                   searchHeader={true}
                   columnVisibilityBar={true}   
                   allowDragableToList={true}
-                  className="ManageAssetDataTable"    
+                  className="ManageAssetDataTable"  
                 />    
       }
     </>               

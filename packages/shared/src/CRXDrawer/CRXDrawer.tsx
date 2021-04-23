@@ -12,7 +12,7 @@ type CBXDrawerProps = {
     button? : React.ReactNode,
     className? : string,
     backdropProps : string,
-    btnStyle? :  string
+    btnStyle? :  string,
 }
 
 const CRXDrawer = ({children, backdropProps = "0", anchor, btnStyle, variant, button, className} : CBXDrawerProps) => {
@@ -38,11 +38,12 @@ const CRXDrawer = ({children, backdropProps = "0", anchor, btnStyle, variant, bu
 
     setState({ ...state, [anchor]: open });
   };
-
+  
   return (
     <>
         <Button className={"drawerButton " + btnStyle} onClick={toggleDrawer(anchor, true)}>{button}</Button>
         <Drawer 
+          
           className={"CBXdrawerPanel " + className} 
           anchor={anchor} open={state[anchor]} 
           onClose={toggleDrawer(anchor, false)} 

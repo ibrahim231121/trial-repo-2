@@ -20,7 +20,7 @@ const useStyle = makeStyles(() => ({
   menuT: {
     borderRadius: "0px",
     border: "1px solid #bebebe",
-    minWidth: "250px !important",
+    minWidth: "200px !important",
     marginLeft: "5px",
   },
 }));
@@ -29,8 +29,8 @@ const useStyle = makeStyles(() => ({
 const StyledMenuItem = withStyles(() => ({
   root: {
     fontSize: "14px",
-    color: "#333",
-
+    color: "#333333",
+    height:"30px",
     borderRadius: "0px",
     "&:hover": {
       backgroundColor: "#f5f5f5",
@@ -96,7 +96,7 @@ const CRXSelectBox = ({
         ) : (
           <a
             {...props}
-            className={"CRXSelectIconArrow " + "fas fa-chevron-down"}
+            className={"CRXSelectIconArrow " + "fas fa-sort-down"}
           ></a>
         )
       }

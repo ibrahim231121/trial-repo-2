@@ -9,11 +9,8 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from '@material-ui/core/IconButton';
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Order, useStyles, DataTableProps, theme} from "./CRXDataTableTypes"
-//import SwapVertIcon from '@material-ui/icons/SwapVert';
 import Button from '@material-ui/core/Button';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Checkbox from '@material-ui/core/Checkbox';
-//import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TablePagination from '@material-ui/core/TablePagination';
 import DataTableToolbar from "./CRXDataTableToolbar"
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -26,10 +23,11 @@ import RootRef from "@material-ui/core/RootRef";
 import List from "@material-ui/core/List";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Grid from "@material-ui/core/Grid";
+import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import './CRXDataTable.scss'
 
 export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList} = props;
+  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -37,6 +35,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [open, setOpen] = React.useState(false);
   const [order, setOrder] = React.useState<Order>(orderParam);
   const [orderBy, setOrderBy] = React.useState<string>(orderByParam);
+  
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
@@ -65,6 +64,21 @@ export default function CRXDataTable(props: DataTableProps) {
       rows: rows
     };
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
+
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset"); 
+    if(checkOrderPreset !== null)
+    {
+      let arr = JSON.parse(checkOrderPreset).map((x:any) => x.order)
+      //console.log("arr",arr)
+      setOrderColumn(arr)
+
+      JSON.parse(checkOrderPreset).map((x: any) => {
+        headCells[x.order].visible = x.value
+      }) 
+
+      console.log(headCells)
+    }
+
   },[])
 
   useEffect(() => {  
@@ -156,7 +170,15 @@ export default function CRXDataTable(props: DataTableProps) {
     },
     [orderColumn, setOrderColumn]
   );
-
+  
+  const onMoveReorder = (e : any) => {
+    debugger;
+    let targetHead = e.helper;
+    if(targetHead != null) {
+      targetHead.innerHTML += '<i class="fas fa-grip-vertical dragIcon"></i>';
+    }
+    console.log(e, targetHead)
+  }
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   function onColumnVisibility(){
@@ -168,6 +190,7 @@ export default function CRXDataTable(props: DataTableProps) {
   function onReOrdering(orderColumnParam: number[]){
     setOrderColumn(orderColumnParam)
   }
+
 
   const onDragEnd = ({ source, destination }: any) => {
     // Make sure we have a valid destination
@@ -190,22 +213,27 @@ export default function CRXDataTable(props: DataTableProps) {
     if (start === end) {
       // Move the item within the list
       // Start by making a new list without the dragged item
-      console.log("If");
-      const newList = start.rows.filter((_: any, idx: any) => idx !== startIndex);
-      destinationIndex = destination.index + (page*rowsPerPage)
-      // Then insert the item at the right location
-      newList.splice(destinationIndex, 0, start.rows[startIndex]);
+      if(allowRowReOrdering)
+      {
+        console.log("If");
+        const newList = start.rows.filter((_: any, idx: any) => idx !== startIndex);
+        destinationIndex = destination.index + (page*rowsPerPage)
+        // Then insert the item at the right location
+        newList.splice(destinationIndex, 0, start.rows[startIndex]);
 
-      // Then create a new copy of the column object
-      const newCol = {
-        id: start.id,
-        rows: newList
-      };
+        // Then create a new copy of the column object
+        const newCol = {
+          id: start.id,
+          rows: newList
+        };
 
-      // Update the state
-      setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
+        // Update the state
+        setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
+      }
       return null;
-    } else {
+    } 
+    else 
+    {
       // If start is different from end, we need to update multiple columns
       // Filter the start list like before
       //const newStartList = start.rows.filter((_: any, idx: any) => idx !== source.index);
@@ -254,16 +282,17 @@ export default function CRXDataTable(props: DataTableProps) {
                     rowCount={container.rows.length}
                     columnVisibilityBar={columnVisibilityBar}
                     onChange={onColumnVisibility}
-                    onReOrder={onReOrdering}  />
+                    onReOrder={onReOrdering}  
+                    orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table className={classes.table} 
                   aria-label="simple table"
                   size='small'
                   stickyHeader>
-                  <DragableHead axis="x" onSortEnd={onReorderEnd}>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} ></TableCell>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} ></TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} >Actions</TableCell> 
+                  <DragableHead hideSortableGhost={false}  helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '50px'}} ></TableCell>
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '58px'}}></TableCell>  
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>Actions</TableCell> 
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC
@@ -271,9 +300,8 @@ export default function CRXDataTable(props: DataTableProps) {
                       <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
                           style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                           align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
-                        <div className={classes.headerCellDiv}>
-                        <TableHead>
-                          <TableRow>
+                        <div className={classes.headerCellDiv + " crxTableHeaderSize"}>
+                       
                             <DragableCell
                               index={i} key={colIdx} 
                               value={
@@ -286,21 +314,20 @@ export default function CRXDataTable(props: DataTableProps) {
                                     </div>
                                     }
                             />  
-                          </TableRow>
-                        </TableHead>
+                         
                         {(headCells[colIdx].sort === true) ? (
-                              <span                          
+                              <span  className="GridSortIcon"                         
                                 onClick={createSortHandler(headCells[colIdx].id)}
                                 >
                                 {(orderBy === headCells[colIdx].id) ? (
                                     <span> 
                                     {order === 'desc' ? 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                          <i className="fas fa-sort"></i>
+                                          <i className="fas fa-sort-down"></i>
                                       </IconButton>
                                       : 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                           <i className="fas fa-sort"></i>
+                                           <i className="fas fa-sort-up"></i>
                                       </IconButton>
                                       }
                                     </span>
@@ -322,13 +349,13 @@ export default function CRXDataTable(props: DataTableProps) {
                   {searchHeader === true ? 
                     <TableHead>
                     <TableRow>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} ></TableCell>
+                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} ></TableCell>
                       <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}>            
-                        <Checkbox style={{color:"white"}}
-                          indeterminate={selected.length > 0 && selected.length < container.rows.length}
+                        <CRXCheckBox 
                           checked={container.rows.length > 0 && selected.length === container.rows.length}
                           onChange={handleSelectAllClick}
-                          inputProps={{ 'aria-label': 'select all desserts' }}
+                          inputProps='select all desserts'
+                          lightMode={true}
                         />
                       </TableCell>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} ></TableCell>
@@ -399,10 +426,9 @@ export default function CRXDataTable(props: DataTableProps) {
                                         </Draggable> 
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell CellCheckBox">
-                                          <Checkbox onClick={() => handleClick(row[keyId])}
-                                            color="default"
+                                          <CRXCheckBox onClick={() => handleClick(row[keyId])}
                                             checked={isItemSelected}
-                                            inputProps={{ 'aria-labelledby': labelId }}
+                                            inputProps={ labelId }
                                           />
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell">

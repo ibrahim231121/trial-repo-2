@@ -13,6 +13,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 
 const checkboxStyle = makeStyles({
   root: {
@@ -63,16 +64,27 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [customizeColumn, setCustomize] = useState<any>(null)
-    const [orderColumn, setOrderColumn] = useState(
-      new Array(headCells.length).fill(null).map((_, i) => i)
-    );
+    const [orderColumn, setOrderColumn] = useState(props.orderingColumn)
+    const [onPreset, setOnPreSet] = useState<boolean>()
+    // const [orderColumn, setOrderColumn] = useState(
+    //   new Array(headCells.length).fill(null).map((_, i) => i)
+    // );
 
     useEffect(() => {
       headCells.map((headCell: any, x) => {
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
       }) 
+      let orderingColumns = localStorage.getItem("orderColumns");
+      if(orderingColumns !== null)
+        setOnPreSet(true)
+      else
+        setOnPreSet(false)
     },[])
+
+    useEffect(() => {
+      setOrderColumn(props.orderingColumn)
+    }, [props.orderingColumn])
 
     const openHandleClick = (event : any) => {
       setAnchorEl(event.currentTarget);
@@ -100,8 +112,30 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       onChange()
     }
 
+    const handlePreset = (event: any) => {
+        setOnPreSet(event.target.checked)
+    }
+
     const closeHandle = () => {
       setAnchorEl(null);
+      let checkOrderPreset = orderColumn.map((i, _) => {
+        let rObj: any = {}
+        rObj["order"] = i
+        rObj["value"] = headCells[i].visible
+        return rObj
+     })
+
+      console.log(checkOrderPreset)
+      if(onPreset)
+      {
+        localStorage.setItem("orderColumns", JSON.stringify(orderColumn));
+        localStorage.setItem("checkOrderPreset", JSON.stringify(checkOrderPreset));
+      }
+      else
+      {
+        localStorage.removeItem("orderColumns");
+        localStorage.removeItem("checkOrderPreset");
+      }
     }
    
     const resetToDefault = () => {
@@ -125,7 +159,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           setSelected(prevState  => ({...prevState}))
         }
       }) 
-      let sortOrder = orderColumn.sort((a, b) => a - b)
+      let sortOrder = orderColumn.sort((a: number, b: number) => a - b)
       setOrderColumn(sortOrder)
       onChange()
     }
@@ -133,7 +167,6 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const onReorderEnd = useCallback(
       
       ({ oldIndex, newIndex}, _) => {
-        //debugger
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
@@ -180,20 +213,20 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       }}
                     >
                     <CRXTypography className="DRPTitle" variant="h3" >Show / hide columns</CRXTypography>
-                    <Grid container spacing={2}>
-                      {headCells.map((i, index) => {
+                    <Grid container spacing={0}>
+                      {orderColumn.map((i: number, index: number) => {
                        return(  
-                                (i.keyCol === false || i.keyCol === undefined) ? 
-                                <Grid item xs={6}>
+                                (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
+                                <Grid item xs={6} className="showHideList">
                                 <FormControlLabel
-                                  value={i.label}
-                                  control={<Checkbox checked={selected[index].visible} onChange={(e) => handleCheckChange(e,index)}
-                                    checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
-                                    icon={<span className={chkStyle.icon} />}
-                                    className={chkStyle.root + " shoHideCheckbox"}
-                                    disableRipple={true} 
-                                    color="default" />}
-                                  label={i.label}
+								                  key={index}
+                                  value={headCells[i].label}
+                                  control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
+                                    className="shoHideCheckbox"
+                                    inputProps="primary checkbox"
+                                    />
+                                  }
+                                  label={headCells[i].label}
                                   labelPlacement="end"
                                 />
                                 </Grid>
@@ -203,19 +236,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       })}
                     </Grid>
                     <div className="footerDRP">
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
+                    <Grid container spacing={0}>
+                      <Grid item xs={4}>
                         <CRXButton 
                           id="closeDropDown"
                           onClick={closeHandle}
                           color="primary"
                           variant="contained" 
-                          className="closeDRP"
+                          className="closeDRP CRXPrimaryButton"
                           >
                             Close
                           </CRXButton>
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={4}>
                         <CRXButton 
                           id="resetCheckBox"
                           onClick={resetToDefault}
@@ -226,6 +259,17 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                             Reset to default
                           </CRXButton>
                       </Grid>
+                      <Grid item xs={4}>
+                          <FormControlLabel
+                            control={<CRXCheckBox checked={onPreset}
+                              onChange={(e) => handlePreset(e)}
+                              className="shoHideCheckbox"
+                              inputProps="primary checkbox"
+                             />}
+                            label="Save as preset"
+                            labelPlacement="end"
+                          />
+                        </Grid>
                     </Grid>
                     </div>
                     </Menu>
@@ -234,7 +278,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 ) : null
               }
           </div>          
-          <div className="dataTableColumnShoHide">
+          <div className="dataTableColumnShoHide" style={{display:"none"}}>
              <IconButton
                 aria-controls="CustomizeColumns"
                 className="dataIconButton"

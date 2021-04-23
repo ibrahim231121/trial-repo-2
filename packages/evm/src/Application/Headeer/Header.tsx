@@ -15,7 +15,7 @@ const AppHeader = () => {
         <div className="CRXAppHeader">
             <CRXRows
                 container={true}
-                spacing={2}
+                spacing={0}
             >
                 <CRXColumn item xs={4}>
                     <div className="CRXLogoMenu">

@@ -8,6 +8,7 @@ const CRXLeftSideBar = () => {
         className="CRXLeftPanel"
         anchor="left"
         button={ToggleButton}
+        
         >
             <CRXLefNavigation />
         </CRXDrawer>
