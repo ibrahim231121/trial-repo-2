@@ -6,11 +6,12 @@ import './CheckBox.scss'
 interface Props {
   name?: string;
   label?: string;
-  checked: boolean;
+  checked?: boolean;
   inputProps: string,
   lightMode? : boolean,
   onChange?: (e: any) => void;
   onClick? : (e : any) => void;
+  className? : string,
 }
 
 const useStyles = makeStyles({
@@ -35,13 +36,13 @@ const useStyles = makeStyles({
     },
   },
 });
-const CRXCheckBox: React.FC<Props> = ({ checked, lightMode = false, onChange, name, onClick, inputProps = 'uncontrolled-checkbox' }) => {
+const CRXCheckBox: React.FC<Props> = ({ className, checked, lightMode = false, onChange, name, onClick, inputProps = 'uncontrolled-checkbox' }) => {
   const classes = useStyles();
   const checkBoxSelected = lightMode ? 'crxSelectedLight' : 'crxSelectedDark'
   return (
     <>
       <Checkbox
-        className={classes.root + " CRXCheckBox"}
+        className={classes.root + " CRXCheckBox " + className}
         checked={checked}
         disableRipple
         onChange={onChange}

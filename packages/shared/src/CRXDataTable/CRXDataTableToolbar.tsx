@@ -220,13 +220,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                                 <Grid item xs={6} className="showHideList">
                                 <FormControlLabel
 								                  key={index}
+                                  value={headCells[i].label}
                                   control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
-                                    value={headCells[i].label}
-                                    checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
-                                    icon={<span className={chkStyle.icon} />}
-                                    className={chkStyle.root + " shoHideCheckbox"}
-                                    disableRipple={true} 
-                                    color="default" />}
+                                    className="shoHideCheckbox"
+                                    inputProps="primary checkbox"
+                                    />
+                                  }
                                   label={headCells[i].label}
                                   labelPlacement="end"
                                 />
@@ -264,7 +263,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           <FormControlLabel
                             control={<CRXCheckBox checked={onPreset}
                               onChange={(e) => handlePreset(e)}
-                              className=" shoHideCheckbox"
+                              className="shoHideCheckbox"
+                              inputProps="primary checkbox"
                              />}
                             label="Save as preset"
                             labelPlacement="end"

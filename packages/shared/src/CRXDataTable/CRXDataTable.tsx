@@ -39,7 +39,6 @@ export default function CRXDataTable(props: DataTableProps) {
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
-  const [dragIcon , setDraggIcon] = useState<object>(null);
 
   const keyId = headCells.filter(n => n.keyCol === true).map((v => v.id)).toString()
 
