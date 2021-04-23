@@ -238,7 +238,7 @@ const SearchComponent = () => {
           variant="outlined"
           className="PreSearchButton"
           onClick={Search}
-          disabled={querryString.length < 3 ? true : false}
+          disabled={querryString.length < 1 ? true : false}
         >
           Search
         </CRXButton>
@@ -282,7 +282,10 @@ const SearchComponent = () => {
           Advanced Search
         </CRXButton>
         {showAdvance && (
-          <AdvanceOptions getOptions={(e) => setAddvancedOptions(e)} hideOptions={()=>setShowAdvance(false)} />
+          <AdvanceOptions
+            getOptions={(e) => setAddvancedOptions(e)}
+            hideOptions={() => setShowAdvance(false)}
+          />
         )}
       </div>
       {searchData && (

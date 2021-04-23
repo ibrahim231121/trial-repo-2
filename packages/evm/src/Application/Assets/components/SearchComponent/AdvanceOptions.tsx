@@ -56,11 +56,29 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     },
   ]);
 
+  const onInputChange = (e: any) => {
+    const { value, id } = e.target;
+    setShowSearchCriteria(true);
+    setDisableButton(false);
+    setCurrentInput(e.target.value);
+    if (!value) {
+      setShowSearchCriteria(false);
+    }
+    if (selectsLength === 2) {
+      setShowSearchCriteria(false);
+    }
+    let found = options.find((opt: any) => id === opt._id);
+
+    console.log(found);
+  };
+
   const Select = () => {
     var select: any = [];
     let newOptions = options;
     for (let i = 0; i < selectsLength; i++) {
-      newOptions = options.filter((opt: IOptions) => opt.usedBy == i || !opt.isUsed);
+      newOptions = options.filter(
+        (opt: IOptions) => opt.usedBy == i || !opt.isUsed
+      );
       console.log(newOptions);
       select.push(
         <div className="advRow" key={i}>
@@ -80,11 +98,9 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
           </select>
           <input
             ref={refs[i]}
+            id={(i + 1).toString()}
             className="adVInputBox"
-            onChange={(e) => {
-              setDisableButton(false);
-              setCurrentInput(e.target.value);
-            }}
+            onChange={(e: any) => onInputChange(e)}
           />
           <button className="removeBtn" onClick={() => Remove(i)}>
             X
@@ -97,8 +113,6 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const onSelectInputChange = (value: string) => {
     setCurrentSelect(value);
-    setShowSearchCriteria(true);
-  
   };
 
   const Add = () => {
@@ -118,8 +132,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const Remove = (id: number) => {
     let found = options.find((opt: any) => id == opt.usedBy);
-    if (found && refs[1].current != undefined) {
-    setRemovingOption(found.value)
+    if (found && selectsLength > 1) {
+      setRemovingOption(found.value);
       found.usedBy = null;
       found.isUsed = false;
       setOptions([...options]);
@@ -200,10 +214,6 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 };
 
 const Options: React.FC<OptionsProps> = ({ id, value }) => {
-  return (
-    <option value={value}>
-      {value}
-    </option>
-  );
+  return <option value={value}>{value}</option>;
 };
 export default AdvancedSearch;
