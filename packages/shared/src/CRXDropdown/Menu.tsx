@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Menu, Button, Icon } from '@material-ui/core';
+import { Menu, Button, MenuItem, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
@@ -22,18 +22,28 @@ const DropdownStyle = makeStyles({
     },
 })
 
+type RefType = {
+    className? : string,
+    lable : string,
+    router? : object
+}
+
 type propsTypes = {
     wrapper? : string,
     name : string,
     btnClass : string,
-    id : any,
+    id? : any,
     disableRipple? : boolean,
     children : React.ReactNode,
     className? : string,
     iconButton? : boolean,
-    iconHtml? : React.ReactNode
+    iconHtml? : React.ReactNode,
+    MenuList : RefType[]
+
 }
-const Menus = ({id, iconHtml, iconButton = false, className, disableRipple = true, children, wrapper, name, btnClass} : propsTypes) => {
+
+
+const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, name, btnClass, MenuList} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
@@ -52,6 +62,10 @@ const Menus = ({id, iconHtml, iconButton = false, className, disableRipple = tru
     const activeClass:string = active ? "active" : "remove" ;
 
     const buttonChild = iconButton ? iconHtml : name;
+
+    const ListOfMenu = MenuList.map((item:any, index:number) => {
+        return <MenuItem key={index}>{item.label}</MenuItem>
+    });
     return (
         <div className={"GetacMenu " + wrapper}>
             <Button
@@ -66,25 +80,27 @@ const Menus = ({id, iconHtml, iconButton = false, className, disableRipple = tru
                 {iconButton ? " " : <Icon className="CRXDRPIcon"><ArrowDropDownIcon /></Icon>}
             </Button>
             <Menu
-            anchorEl={open}
-            id={id}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
+                anchorEl={open}
+                id={id}
+                elevation={0}
+                getContentAnchorEl={null}
                 keepMounted
                 open={Boolean(open)}
                 onClose={handleCloseMenu}
                 classes = {{
                     paper : className 
                 }}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
             
             >
-            {children}
+            {ListOfMenu}
             </Menu>
         </div>
     )

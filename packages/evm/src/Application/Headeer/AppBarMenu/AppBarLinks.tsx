@@ -2,6 +2,16 @@ import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
 import AppsIcon from '@material-ui/icons/Apps';
 
+const listOFMenu = [
+    {
+        label : 'Real-time command',
+        router : "RealTimeCommand"
+    },
+    {
+        label : 'Getac Enterprise',
+        router : "/"
+    }
+];
 const CRXAppDropdown = () => {
     const icon = <AppsIcon />;
     return (
@@ -13,11 +23,8 @@ const CRXAppDropdown = () => {
             btnClass="appsDropDown"
             iconHtml={icon}
             wrapper="applicationsMenu"
-        >
-            <CRXItem>Real-time command</CRXItem>
-            <CRXItem>Getac Enterprise</CRXItem>
-        
-        </CRXMenu>
+            MenuList={listOFMenu}
+        />
         </div>
     )
 }

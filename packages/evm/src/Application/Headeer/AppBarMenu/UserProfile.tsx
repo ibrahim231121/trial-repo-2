@@ -1,6 +1,17 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
 
+const listOFMenu = [
+    {
+        label : 'User Profile',
+        router : "userProfile"
+    },
+    {
+        label : 'Logout',
+        router : "Logout"
+    },
+];
+
 const CRXUserProfile = () => {
     return (
         <div className="department">
@@ -9,10 +20,8 @@ const CRXUserProfile = () => {
             name="UserName"  //Get Current User name and add here
             className="DarkTheme"
             btnClass="customButton"
-            >
-            <CRXItem>User Profile</CRXItem>
-            <CRXItem>Logout</CRXItem>
-        </CRXMenu>
+            MenuList = {listOFMenu}
+            />
         </div>
     )
 }

@@ -37,3 +37,12 @@ code {
 .makeStyles-contentShift-10 .mainContainer{
   padding-left: 50px;
 }
+
+.mainContainer{
+  padding-top: 70px !important;
+}
+
+.CRXActiveBreadcrumb {
+  background: #fff;
+    margin-top: -3px;
+}
