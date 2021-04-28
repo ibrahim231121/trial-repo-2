@@ -51,7 +51,7 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                     </div>
                 </CRXColumn>
             </CRXRows>
-            <CRXActiveBreadcrumb />
+            <CRXActiveBreadcrumb shiftContent={open}/>
         </div>
     )
 }
