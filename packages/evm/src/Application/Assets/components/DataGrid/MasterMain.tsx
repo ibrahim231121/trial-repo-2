@@ -241,6 +241,7 @@ const MasterMain = (props:any) => {
     ]
 
     const [rows, setRows] = React.useState<any[]>(props.rows);
+    const [dataRows, setDataRows] = React.useState<any[]>();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('id');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([])
@@ -369,6 +370,10 @@ const MasterMain = (props:any) => {
         {
           dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id].expiryDate) === DateFormat(el.value)) 
         }
+        if(el.columnName === "holdUntill")
+        {
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].value]) === DateFormat(el.value)) 
+        }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id].status === el.value) 
       })
@@ -376,14 +381,6 @@ const MasterMain = (props:any) => {
       setRows(dataRows) 
     }, [searchData])
     
-    useEffect(() => {
-      console.log("Rows",rows)
-      rows.map((r,i) => {
-        //if(Object.keys(r.asset) === "asset")
-        //console.log(Object.(r["asset"]))
-      })
-
-    },[])
 
     function DateFormat(value: any) {
       const stillUtc = moment.utc(value).toDate();

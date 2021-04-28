@@ -172,7 +172,6 @@ export default function CRXDataTable(props: DataTableProps) {
   );
   
   const onMoveReorder = (e : any) => {
-    debugger;
     let targetHead = e.helper;
     if(targetHead != null) {
       targetHead.innerHTML += '<i class="fas fa-grip-vertical dragIcon"></i>';
