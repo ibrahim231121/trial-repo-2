@@ -25,19 +25,19 @@ const DropdownStyle = makeStyles({
 type propsTypes = {
     wrapper? : string,
     name : string,
-    ref : React.RefAttributes<any>,
     btnClass : string,
     id : any,
     disableRipple? : boolean,
     children : React.ReactNode,
     className? : string,
+    iconButton? : boolean,
+    iconHtml? : React.ReactNode
 }
-const Menus = React.forwardRef(({id, className, disableRipple = true, children, wrapper, name, btnClass} : propsTypes) => {
+const Menus = ({id, iconHtml, iconButton = false, className, disableRipple = true, children, wrapper, name, btnClass} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
     const [active , setActive] = useState<boolean>(false);
-    const drpMenu = React.useRef();
     const handleOpenMenu = (event : any) => {
         
         setAnchorOpen(event.currentTarget);
@@ -50,6 +50,8 @@ const Menus = React.forwardRef(({id, className, disableRipple = true, children, 
     };
 
     const activeClass:string = active ? "active" : "remove" ;
+
+    const buttonChild = iconButton ? iconHtml : name;
     return (
         <div className={"GetacMenu " + wrapper}>
             <Button
@@ -59,13 +61,12 @@ const Menus = React.forwardRef(({id, className, disableRipple = true, children, 
                 className={"CRXDropDownBtn " + customClass.button + " " + btnClass + " " +  activeClass }
                 onClick={handleOpenMenu}
                 disableRipple={disableRipple}
-                >
-                 {name}
-                <Icon className="CRXDRPIcon"><ArrowDropDownIcon /></Icon>
+            >
+                {buttonChild}
+                {iconButton ? " " : <Icon className="CRXDRPIcon"><ArrowDropDownIcon /></Icon>}
             </Button>
             <Menu
             anchorEl={open}
-            ref={drpMenu}
             id={id}
             anchorOrigin={{
                 vertical: 'bottom',
@@ -87,6 +88,6 @@ const Menus = React.forwardRef(({id, className, disableRipple = true, children, 
             </Menu>
         </div>
     )
-})
+}
 
 export default Menus;

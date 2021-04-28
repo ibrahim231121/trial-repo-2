@@ -81,6 +81,20 @@
             content: " ";
         }
     }
+
+    .panelButton {
+        padding-left: 23px;
+        padding-top: 2px;
+        padding-right: 32px;
+        .MuiIconButton-root {
+            padding: 7px 0px;
+
+            .icon-menu {
+                font-size: 28px;
+                color:#d1d2d4
+            }
+        }
+    }
 }
 
 .MasterHeadRight {
@@ -124,5 +138,17 @@
     }
     .active {
         color: #d74b00;
+    }
+}
+
+.applicationsMenu {
+    margin-top: 9px;
+    margin-right: 9px;
+    .MuiSvgIcon-root {
+        font-size: 30px;
+        color: #d1d2d4;
+    }
+    .CRXDropDownBtn  {
+        min-width: 30px
     }
 }
