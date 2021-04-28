@@ -16,7 +16,7 @@ type containerProps = {
 
 const containerStyle = makeStyles({
     root : {
-        padding: "15px 25px"
+        padding: "15px 0px"
     },
 })
 

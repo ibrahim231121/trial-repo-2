@@ -1,17 +1,27 @@
 import React from "react";
-import { CRXDrawer, CRXIcon } from '@cb/shared'
+import { CRXDrawer, CRXIcon, CRXFixedPanel } from '@cb/shared'
 import CRXLefNavigation from './Navigation'
 const ToggleButton = <CRXIcon className="toggleIcon"> <i className="fas fa-bars"></i> </CRXIcon>
-const CRXLeftSideBar = () => {
+
+interface propsTypes {
+    onClick : (e : any) => void,
+    onClose : (e : any) => void,
+    open : boolean
+}
+const CRXLeftSideBar = ({onClick, onClose, open} : propsTypes) => {
+
     return (
-        <CRXDrawer
+        <CRXFixedPanel
         className="CRXLeftPanel"
         anchor="left"
-        button={ToggleButton}
-        
+        open={open}
+        variant="persistent"
+        onClick={onClick}
+        onClose={onClose}
         >
             <CRXLefNavigation />
-        </CRXDrawer>
+        </CRXFixedPanel>
+       
     )
 }
 

@@ -1,8 +1,17 @@
 import { CRXBreadcrumb, CBXLink } from "@cb/shared";
+import clsx from 'clsx'
+import { CRXPanelStyle } from "@cb/shared";
 
-const CRXActiveBreadcrumb = () => {
+type propsType = {
+    shiftContent? : boolean
+}
+const CRXActiveBreadcrumb = ({shiftContent = true} : propsType) => {
+    const classes = CRXPanelStyle();
     return (
-        <div className="CRXActiveBreadcrumb">
+        <div className={"CRXActiveBreadcrumb " + clsx(classes.bradCrumscontent, {
+            [classes.bradCrumscontentShift]: shiftContent,
+          })}
+        >
             <CRXBreadcrumb>
                 <CBXLink className="brdLinks"  href="/" >
                     Home

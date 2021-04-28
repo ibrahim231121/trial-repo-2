@@ -33,3 +33,7 @@ code {
 .dataTabAssets {
   margin-top: 90px;
 }
+
+.makeStyles-contentShift-10 .mainContainer{
+  padding-left: 50px;
+}
