@@ -137,3 +137,8 @@ export type DataTableProps = {
   className?: string;
   allowRowReOrdering?: boolean;
 }
+
+export type OrderData = {
+  order: Order;
+  orderBy: string;
+}

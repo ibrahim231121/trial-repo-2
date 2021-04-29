@@ -8,7 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from '@material-ui/core/IconButton';
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
-import { Order, useStyles, DataTableProps, theme} from "./CRXDataTableTypes"
+import { Order, OrderData, useStyles, DataTableProps, theme} from "./CRXDataTableTypes"
 import Button from '@material-ui/core/Button';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TablePagination from '@material-ui/core/TablePagination';
@@ -33,9 +33,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = React.useState(false);
-  const [order, setOrder] = React.useState<Order>(orderParam);
-  const [orderBy, setOrderBy] = React.useState<string>(orderByParam);
-  
+  const [orderData, setOrderData] = React.useState<OrderData>({order: orderParam, orderBy: orderByParam});
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
@@ -58,32 +56,27 @@ export default function CRXDataTable(props: DataTableProps) {
   const [containers, setContainers] = useState(initialContainers);
 
   useEffect(() => {
-    let rows = stableSort(dataRows, getComparator(order, orderBy))
+
+    let rows = stableSort(dataRows, getComparator(orderData.order, orderData.orderBy))
     const dataTable = {
       id: "dataTable",
       rows: rows
     };
+
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
     let checkOrderPreset = localStorage.getItem("checkOrderPreset"); 
     if(checkOrderPreset !== null)
     {
       let arr = JSON.parse(checkOrderPreset).map((x:any) => x.order)
-      //console.log("arr",arr)
       setOrderColumn(arr)
 
       JSON.parse(checkOrderPreset).map((x: any) => {
         headCells[x.order].visible = x.value
       }) 
-
-      console.log(headCells)
     }
 
   },[])
-
-  useEffect(() => {  
-    setContainers(initialContainers)
-  },[dataRows])
 
   function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -107,7 +100,7 @@ export default function CRXDataTable(props: DataTableProps) {
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    containers.dataTable.rows = (stabilizedThis.map((el) => el[0]))
+    containers.dataTable.rows = stabilizedThis.map((el) => el[0])
     return containers.dataTable.rows
   }
 
@@ -115,12 +108,18 @@ export default function CRXDataTable(props: DataTableProps) {
     handleRequestSort(property);
   };
 
-  const handleRequestSort = (property: any) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-    stableSort(containers.dataTable.rows, getComparator(order, orderBy))
+  const handleRequestSort = async (property: any) => {
+    const isAsc = orderData.orderBy === property && orderData.order === 'asc';
+    setOrderData({order: (isAsc ? 'desc' : 'asc'), orderBy: property})
   };
+
+  useEffect(() => {
+    stableSort(containers.dataTable.rows, getComparator(orderData.order, orderData.orderBy))
+    if(open === true )
+      setOpen(false)
+    else
+      setOpen(true)
+  },[orderData])
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -318,15 +317,15 @@ export default function CRXDataTable(props: DataTableProps) {
                               <span  className="GridSortIcon"                         
                                 onClick={createSortHandler(headCells[colIdx].id)}
                                 >
-                                {(orderBy === headCells[colIdx].id) ? (
+                                {(orderData.orderBy === headCells[colIdx].id) ? (
                                     <span> 
-                                    {order === 'desc' ? 
+                                    {orderData.order === 'desc' ? 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                          <i className="fas fa-sort-down"></i>
+                                          <i className="fas fa-sort-up"></i>                                       
                                       </IconButton>
                                       : 
                                       <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                           <i className="fas fa-sort-up"></i>
+                                           <i className="fas fa-sort-down"></i>
                                       </IconButton>
                                       }
                                     </span>
@@ -364,7 +363,7 @@ export default function CRXDataTable(props: DataTableProps) {
                             key={colIdx}
                             align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
                             padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
-                            sortDirection={orderBy === headCells[colIdx].id ? order : false}
+                            sortDirection={orderData.orderBy === headCells[colIdx].id ? orderData.order : false}
                           >    
                             {headCells[colIdx].searchFilter === true ? 
                                 headCells[colIdx].searchComponent(container.rows, headCells, colIdx)
