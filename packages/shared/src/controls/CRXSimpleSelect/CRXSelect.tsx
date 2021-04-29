@@ -88,18 +88,7 @@ const CRXSelectBox = ({
         },
         getContentAnchorEl: null,
       }}
-      IconComponent={(props) =>
-        icon ? (
-          <a {...props} onClick={onClick} className="CRXSelectIcon">
-            {IconName}
-          </a>
-        ) : (
-          <a
-            {...props}
-            className={"CRXSelectIconArrow " + "fas fa-sort-down"}
-          ></a>
-        )
-      }
+      
     >
       <StyledMenuItem
         style={{ minWidth: "auto", left: "0px" }}
