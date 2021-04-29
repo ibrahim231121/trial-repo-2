@@ -146,7 +146,6 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       setShowSearchCriteria(false);
     }
   };
-  console.log(options);
 
   const Add = () => {
     setDisableButton(true);

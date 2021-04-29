@@ -98,8 +98,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       await setShowSearch(true);
     }
   };
-  // console.log(showSearch);
-  // console.log(searchQuerry);
+  console.log(searchData);
   return (
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">

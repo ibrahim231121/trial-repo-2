@@ -18,7 +18,6 @@ const fetchData = async (querry: any, value: string) => {
 self.addEventListener("message", async (event: MessageEvent) => {
   const { searchData, value } = event.data;
 
-  console.log("searchData", searchData);
   if (event.data.value.length >= 3) {
     const querry = {
       bool: {
