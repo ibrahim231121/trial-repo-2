@@ -144,7 +144,6 @@ const MasterMain = (props:any) => {
     })
 
     const [rows, setRows] = React.useState<any[]>(reformattedRows);
-    const [dataRows, setDataRows] = React.useState<any[]>();
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('assetName');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
@@ -290,7 +289,6 @@ const MasterMain = (props:any) => {
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value) 
       })
-      
       setRows(dataRows) 
     }, [searchData])
     

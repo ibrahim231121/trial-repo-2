@@ -78,6 +78,10 @@ export default function CRXDataTable(props: DataTableProps) {
 
   },[])
 
+  useEffect(() => {
+    setContainers(initialContainers)
+  },[dataRows])
+
   function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
