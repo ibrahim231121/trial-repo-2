@@ -8,7 +8,7 @@ interface IOptions {
   _id: string;
   usedBy: number | null;
   isUsed: boolean;
-  inputValue: string | null;
+  inputValue: string;
 }
 interface OptionsProps {
   value: string;
@@ -36,7 +36,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       _id: "1",
       usedBy: null,
       isUsed: false,
-      inputValue: null,
+      inputValue: "",
     },
     {
       value: "unitId",
@@ -44,7 +44,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       _id: "2",
       usedBy: null,
       isUsed: false,
-      inputValue: null,
+      inputValue: "",
     },
     {
       value: "category",
@@ -52,7 +52,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       _id: "3",
       usedBy: null,
       isUsed: false,
-      inputValue: null,
+      inputValue: "",
     },
   ]);
 
@@ -87,6 +87,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
             id={i.toString()}
             className="adVInputBox"
             onChange={(e: any) => onInputChange(e)}
+            value={selectedOpt?.inputValue}
           />
           <button className="removeBtn" onClick={() => Remove(i)}>
             X
@@ -111,6 +112,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       if (id == opt.usedBy) {
         opt.usedBy = null;
         opt.isUsed = false;
+        opt.inputValue = "";
       }
     });
     let found: IOptions | undefined = options.find(
@@ -130,46 +132,54 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     if (found) {
       found.inputValue = value;
     }
-
-    if (currentSelect && value && selectsLength !== 3) {
+    if (selectsLength === 3) {
+      setShowSearchCriteria(false);
+    }
+    if (currentSelect && value) {
       setShowSearchCriteria(true);
       setDisableButton(false);
     } else {
       setShowSearchCriteria(false);
       setDisableButton(true);
     }
+    if (selectsLength === 3) {
+      setShowSearchCriteria(false);
+    }
   };
   console.log(options);
+
   const Add = () => {
     setDisableButton(true);
     setCurrentInput(null);
     setCurrentSelect(null);
     setShowSearchCriteria(false);
     let found = options.find((opt: any) => currentSelect === opt.value);
-    if (selectsLength === 3) {
-      setDisableButton(false);
-      setShowSearchCriteria(false);
-    }
-    console.log(typeof selectRef.current.id);
+
     if (found) {
       found.usedBy = Number(selectRef.current.id);
       found.isUsed = true;
       setOptions([...options]);
     }
+
     if (selectsLength <= 2) {
       setSelectsLength((state: any) => state + 1);
+    }
+    if (selectsLength === 3) {
+      setDisableButton(false);
+      setShowSearchCriteria(false);
     }
   };
 
   const Remove = (id: number) => {
     setShowSearchCriteria(true);
-
+    setCurrentSelect(null);
     let found = options.find((opt: any) => id == opt.usedBy);
 
     if (found && selectsLength > 1) {
       setRemovingOption(found.value);
       found.usedBy = null;
       found.isUsed = false;
+      found.inputValue = "";
       setOptions([...options]);
 
       if (selectsLength - 1 !== id) {
@@ -209,7 +219,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         const findCurrentIndex = options.findIndex(
           (opt: any) => currentSelect == opt.value
         );
-        if (findOpt) {
+        if (findOpt && currentInput) {
           findOpt.inputValue = currentInput;
           options[findCurrentIndex] = findOpt;
           setOptions([...options]);
@@ -221,7 +231,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
           const findCurrentIndex = options.findIndex(
             (opt: any) => selectRef.current.value == opt.value
           );
-          if (findOpt) {
+          if (findOpt && currentInput) {
             findOpt.inputValue = currentInput;
             options[findCurrentIndex] = findOpt;
             setOptions([...options]);
