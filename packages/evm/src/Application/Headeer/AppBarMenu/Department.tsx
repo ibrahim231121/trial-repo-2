@@ -1,22 +1,36 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
+
+const listOFMenu = [
+    {
+        label : 'Department name',
+        router : "Department name"
+    },
+    {
+        label : 'Department name',
+        router : "Department name"
+    },
+    {
+        label : 'Department name',
+        router : "Department name"
+    },
+    {
+        label : 'Department name',
+        router : "Department name"
+    }
+];
+
 const CRXDepartment = () => {
     return (
         <div className="department">
-             <CRXMenu
-            id="userProfile"
-            name="Departments"
-            className="DarkTheme"
-            btnClass="customButton"
-        >
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-            <CRXItem>Department name</CRXItem>
-        </CRXMenu>
+            <CRXMenu
+                id="Departments"
+                name="Departments"
+                className="DarkTheme"
+                btnClass="customButton"
+                MenuList = {listOFMenu}
+            />
+        
         </div>
     )
 }

@@ -1,5 +1,25 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
+
+const listOFMenu = [
+    {
+        label : 'Karachi',
+        router : "Karachi"
+    },
+    {
+        label : 'Islamabad',
+        router : "Islamabad"
+    },
+    {
+        label : 'Getac Station',
+        router : "GetacStation"
+    },
+    {
+        label : 'USA Station',
+        router : "USAStation"
+    }
+];
+
 const CRXStation = () => {
     return (
         <div className="department">
@@ -8,13 +28,8 @@ const CRXStation = () => {
                 name="All Stations"
                 className="DarkTheme"
                 btnClass="customButton"
-            >
-            <CRXItem>Karachi</CRXItem>
-            <CRXItem>Islamabad</CRXItem>
-            <CRXItem>Getac Station</CRXItem>
-            <CRXItem>USA Station</CRXItem>
-            {/* We can add menu item by loop */}
-        </CRXMenu>
+                MenuList = {listOFMenu}
+            />
         </div>
     )
 }

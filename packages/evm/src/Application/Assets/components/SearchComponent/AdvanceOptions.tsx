@@ -56,36 +56,23 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     },
   ]);
 
-  const onInputChange = (e: any) => {
-    const { value, id } = e.target;
-    setShowSearchCriteria(true);
-    setDisableButton(false);
-    setCurrentInput(e.target.value);
-    if (!value) {
-      setShowSearchCriteria(false);
-      setDisableButton(true);
-    }
-    console.log(selectsLength);
-    let found = options.find((opt: any) => id === opt._id);
-
-    console.log(found);
-  };
-
   const Select = () => {
     var select: any = [];
     let newOptions = options;
+    let selectedOpt;
     for (let i = 0; i < selectsLength; i++) {
       newOptions = options.filter(
         (opt: IOptions) => opt.usedBy == i || !opt.isUsed
       );
-      console.log(newOptions);
+      selectedOpt = newOptions.find((opt: any) => opt.usedBy == i);
       select.push(
         <div className="advRow" key={i}>
           <select
             className="adVSelectBox"
             ref={selectRef}
             id={i.toString()}
-            onChange={(e) => onSelectInputChange(e.target.value)}
+            onChange={(e) => onSelectInputChange(e)}
+            value={selectedOpt?.value}
           >
             <option value="" selected disabled hidden>
               Please Select
@@ -97,7 +84,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
           </select>
           <input
             ref={refs[i]}
-            id={(i + 1).toString()}
+            id={i.toString()}
             className="adVInputBox"
             onChange={(e: any) => onInputChange(e)}
           />
@@ -110,22 +97,62 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     return select;
   };
 
-  const onSelectInputChange = (value: string) => {
+  const onSelectInputChange = (e: any) => {
+    const { value, id } = e.target;
     setCurrentSelect(value);
+    if (currentInput && value) {
+      setShowSearchCriteria(true);
+      setDisableButton(false);
+    }
+    if (selectsLength === 3) {
+      setShowSearchCriteria(false);
+    }
+    options.forEach((opt: IOptions) => {
+      if (id == opt.usedBy) {
+        opt.usedBy = null;
+        opt.isUsed = false;
+      }
+    });
+    let found: IOptions | undefined = options.find(
+      (opt: any) => value == opt.value
+    );
+    if (found) {
+      found.usedBy = selectsLength - 1;
+      found.isUsed = true;
+      setOptions([...options]);
+    }
   };
 
+  const onInputChange = (e: any) => {
+    const { value, id } = e.target;
+    setCurrentInput(value);
+    let found = options.find((opt: any) => id == opt.usedBy);
+    if (found) {
+      found.inputValue = value;
+    }
+
+    if (currentSelect && value && selectsLength !== 3) {
+      setShowSearchCriteria(true);
+      setDisableButton(false);
+    } else {
+      setShowSearchCriteria(false);
+      setDisableButton(true);
+    }
+  };
+  console.log(options);
   const Add = () => {
     setDisableButton(true);
     setCurrentInput(null);
-
+    setCurrentSelect(null);
     setShowSearchCriteria(false);
     let found = options.find((opt: any) => currentSelect === opt.value);
     if (selectsLength === 3) {
       setDisableButton(false);
       setShowSearchCriteria(false);
     }
+    console.log(typeof selectRef.current.id);
     if (found) {
-      found.usedBy = selectRef.current.id;
+      found.usedBy = Number(selectRef.current.id);
       found.isUsed = true;
       setOptions([...options]);
     }
@@ -135,15 +162,31 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   };
 
   const Remove = (id: number) => {
+    setShowSearchCriteria(true);
+
     let found = options.find((opt: any) => id == opt.usedBy);
+
     if (found && selectsLength > 1) {
       setRemovingOption(found.value);
       found.usedBy = null;
       found.isUsed = false;
       setOptions([...options]);
+
+      if (selectsLength - 1 !== id) {
+        options.forEach((opt: any) => {
+          if (opt.usedBy > 0) {
+            let val = opt.usedBy - 1;
+            opt.usedBy = val < 0 ? null : val;
+            return opt;
+          }
+        });
+      }
       setSelectsLength((state: any) => state - 1);
-    } else {
+    } else if (selectsLength === 1) {
       hideOptions();
+    } else {
+      setSelectsLength((state: any) => state - 1);
+      setShowSearchCriteria(true);
     }
   };
 
@@ -151,7 +194,6 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     for (let i = 0; i < selectsLength; i++) {
       const { value } = refs[i].current;
 
-      // currentSelect
       let findOpt = options.find((opt: any) => i == opt.usedBy);
       let index = options.findIndex((opt: any) => i == opt.usedBy);
       if (findOpt) {

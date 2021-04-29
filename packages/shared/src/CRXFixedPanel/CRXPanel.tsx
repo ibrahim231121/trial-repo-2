@@ -14,13 +14,12 @@ interface propsType {
   onClick: (e : any) => void,
   onClose : (e : any) => void,
   children : React.ReactNode,
-  ref? : any,
   anchor : Anchor,
   variant : Variant ,
   className? : string
 }
 
-const CRXFixedPanel = ({className, open, onClick, onClose, children, ref, anchor, variant = "temporary"} : propsType) => {
+const CRXFixedPanel = ({className, open, onClick, onClose, children, anchor, variant = "temporary"} : propsType) => {
   const classes = CRXPanelStyle();
   return (
     <div>
@@ -36,7 +35,6 @@ const CRXFixedPanel = ({className, open, onClick, onClose, children, ref, anchor
       
       </div>
       <Drawer
-        ref = {ref}
         className={classes.drawer + " crxPanel " + className}
         variant={variant}
         anchor={anchor}

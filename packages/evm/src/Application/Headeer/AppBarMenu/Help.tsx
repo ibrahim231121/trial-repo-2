@@ -1,6 +1,26 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
 
+const listOFMenu = [
+    {
+        label : 'User Guide',
+        router : "UserGuide"
+    },
+    {
+        label : 'Release Notes',
+        router : "ReleaseNotes"
+    },
+    {
+        label : 'Help Request',
+        router : "HelpRequest"
+    },
+    {
+        label : 'About',
+        router : "About"
+    }
+];
+
+
 const CRXHelp = () => {
     return (
         <div className="department">
@@ -9,12 +29,8 @@ const CRXHelp = () => {
                 name="Help"  //Get Current User name and add here
                 className="DarkTheme"
                 btnClass="customButton"
-            >
-            <CRXItem>User Guide</CRXItem>
-            <CRXItem>Release Notes</CRXItem>
-            <CRXItem>Help Request</CRXItem>
-            <CRXItem>About</CRXItem>
-        </CRXMenu>
+                MenuList = {listOFMenu}
+            />
         </div>
     )
 }

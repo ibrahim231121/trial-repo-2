@@ -14,7 +14,7 @@ function App() {
   return (
     
     <>
-      <CRXAppBar>
+      <CRXAppBar position="fixed">
           <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
       </CRXAppBar>
       
