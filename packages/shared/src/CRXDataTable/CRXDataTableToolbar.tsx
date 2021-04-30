@@ -138,6 +138,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
         localStorage.removeItem("checkOrderPreset");
         alert("Success: Your Customized columns have been cleared.")
       }
+      setCustomize(null)
     }
    
     const resetToDefault = () => {
@@ -261,17 +262,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                             Reset to default
                           </CRXButton>
                       </Grid>
-                      <Grid item xs={4}>
-                          <FormControlLabel
-                            control={<CRXCheckBox checked={onPreset}
-                              onChange={(e) => handlePreset(e)}
-                              className="shoHideCheckbox"
-                              inputProps="primary checkbox"
-                             />}
-                            label="Save as preset"
-                            labelPlacement="end"
-                          />
-                        </Grid>
+                      
                     </Grid>
                     </div>
                     </Menu>
@@ -280,7 +271,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 ) : null
               }
           </div>          
-          <div className="dataTableColumnShoHide" style={{display:"none"}}>
+          <div className="dataTableColumnShoHide">
              <IconButton
                 aria-controls="CustomizeColumns"
                 className="dataIconButton"
@@ -321,7 +312,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 <Grid item >
                   <CRXButton 
                     id="closeDropDown"
-                    onClick={customizeColumnClose}
+                    onClick={onSavecloseHandle}
                     color="primary"
                     variant="contained" 
                     className="closeDRP"
@@ -339,6 +330,17 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     >
                       Reset to default
                     </CRXButton>
+                </Grid>
+                <Grid item>
+                  <FormControlLabel
+                    control={<CRXCheckBox checked={onPreset}
+                      onChange={(e) => handlePreset(e)}
+                      className="shoHideCheckbox"
+                      inputProps="primary checkbox"
+                      />}
+                    label="Save as preset"
+                    labelPlacement="end"
+                  />
                 </Grid>
               </Grid>
               </div>
