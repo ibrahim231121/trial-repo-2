@@ -133,7 +133,6 @@ const SearchComponent = () => {
         return new Date().toISOString();
     }
   };
-  console.log(searchData);
   const Search = () => {
     const date = getDate(selectOption);
     console.log(startDate);
