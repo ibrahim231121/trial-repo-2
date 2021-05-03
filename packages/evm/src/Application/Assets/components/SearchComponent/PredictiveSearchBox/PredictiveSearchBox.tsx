@@ -26,7 +26,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     setInputValue(value);
     onSet(value);
 
-    const worker: Worker = new SearchWorker();
+    const worker = useSearchWorker.getInstance();
+
     //message recieved from worker.
     worker.addEventListener(
       "message",
@@ -37,11 +38,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     );
 
     if (value.length >= 3) {
-      const data = await fetchData();
-
-      if (data) {
-        worker.postMessage({ searchData, value });
-      }
+      await fetchData();
+      await worker.postMessage({ searchData, value });
     }
     setShowSearch(true);
   };
@@ -96,7 +94,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       await setShowSearch(true);
     }
   };
-  console.log(searchData);
+  // console.log("searchData", searchData);
+  // console.log("outcome", outCome);
   return (
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">
