@@ -387,15 +387,12 @@ export default function CRXDataTable(props: DataTableProps) {
                     <TableHead>
                     <TableRow>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} ></TableCell>
-                      <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}>            
-                        <CRXCheckBox 
-                          checked={container.rows.length > 0 && selected.length === container.rows.length}
-                          onChange={handleSelectAllClick}
-                          inputProps='select all desserts'
-                          lightMode={true}
-                        />
+                      <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}></TableCell>
+                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} >
+                        <Button >
+                          <MoreVertIcon className={classes.iconArrows}/>
+                        </Button>
                       </TableCell>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} ></TableCell>
                       {orderColumn.map((colIdx, _) => (
                           <TableCell className={classes.searchHeaderStickness  + " TableSearchAbleHead"} 
                             style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
