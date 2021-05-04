@@ -14,7 +14,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TablePagination from '@material-ui/core/TablePagination';
 import DataTableToolbar from "./CRXDataTableToolbar"
 import { ThemeProvider } from '@material-ui/core/styles';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Draggable from "react-draggable";
+import { DragDropContext, Droppable, Draggable as DragDnd } from "react-beautiful-dnd";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
@@ -23,15 +24,15 @@ import RootRef from "@material-ui/core/RootRef";
 import List from "@material-ui/core/List";
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Grid from "@material-ui/core/Grid";
-import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
-import './CRXDataTable.scss'
+import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox';
+import './CRXDataTable.scss';
 
 export default function CRXDataTable(props: DataTableProps) {
   const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [orderData, setOrderData] = React.useState<OrderData>({order: orderParam, orderBy: orderByParam});
   const [orderColumn, setOrderColumn] = useState(
@@ -269,6 +270,18 @@ export default function CRXDataTable(props: DataTableProps) {
     }
   };
 
+  const resizeRow = (props:any) => {
+      const { colIdx, deltaX } = props;
+      let value = headCells[colIdx].minWidth
+
+      let x = parseInt(value) + parseInt(deltaX)
+      headCells[colIdx].minWidth = x.toString()  
+      if(open === true )
+        setOpen(false)
+      else
+        setOpen(true)  
+    }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {Object.values(containers).map((container: any) => {
@@ -287,11 +300,13 @@ export default function CRXDataTable(props: DataTableProps) {
                     onReOrder={onReOrdering}  
                     orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
-                <Table className={classes.table} 
+                <Table 
+                  className={classes.table} 
                   aria-label="simple table"
                   size='small'
                   stickyHeader>
-                  <DragableHead hideSortableGhost={false}  helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
+                  <DragableHead lockAxis="x"
+                    hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '50px'}} ></TableCell>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '58px'}}></TableCell>  
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>Actions</TableCell> 
@@ -308,7 +323,12 @@ export default function CRXDataTable(props: DataTableProps) {
                               index={i} key={colIdx} 
                               value={
                                     <div className={classes.headerStickness}
-                                        style={{minWidth:`${headCells[colIdx].minWidth}`}}
+                                        style={
+                                          {
+                                            minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
+                                            maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
+                                          }
+                                        } 
                                         key={headCells[colIdx].id}>
                                       <label> 
                                           {headCells[colIdx].label} 
@@ -343,7 +363,22 @@ export default function CRXDataTable(props: DataTableProps) {
                             null
                           )
                         }    
-                        </div>     
+                        <Draggable
+                          axis="none"
+                          defaultClassName="DragHandle"
+                          defaultClassNameDragging="DragHandleActive"
+                          onDrag={(_, { deltaX }) =>
+                            resizeRow({
+                              colIdx,
+                              deltaX
+                            })
+                          }
+                          position={{ x: 0, y: 0}}
+                        >
+                          <span className="DragHandleIcon">⋮</span>
+                        </Draggable>
+                        </div>  
+                           
                       </TableCell>  
                       </>
                     ))}
@@ -401,7 +436,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                         selected={isItemSelected}
                                       >
                                         <TableCell className="DataTableBodyCell">
-                                        <Draggable draggableId={row[keyId].toString()} key={row[keyId]} index={index}>
+                                        <DragDnd draggableId={row[keyId].toString()} key={row[keyId]} index={index}>
                                         {(provided: any) => (
                                                 <ListItem 
                                                   className="draggableCellIcon"
@@ -425,7 +460,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                                   </ListItemSecondaryAction>
                                                 </ListItem>
                                               )}
-                                        </Draggable> 
+                                        </DragDnd> 
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell CellCheckBox">
                                           <CRXCheckBox onClick={() => handleClick(row[keyId])}
