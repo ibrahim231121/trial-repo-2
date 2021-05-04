@@ -17,7 +17,7 @@ const CRXActiveBreadcrumb = ({shiftContent = true} : propsType) => {
                     Home
                 </CBXLink>
                 <CBXLink  className="brdLinks active" href="#" >
-                    Manage Assets
+                   Assets
                 </CBXLink>
             </CRXBreadcrumb>
         </div>

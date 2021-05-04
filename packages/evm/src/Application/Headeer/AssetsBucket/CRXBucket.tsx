@@ -9,7 +9,7 @@ const CRXAssetsBucketPanel = () => {
         className="CRXBucketPanel"
         anchor="right"
         button={ToggleButton}
-        btnStyle="iconButtonStyle"
+        btnStyle="bucketIconButton"
         >
            Assets Bucket
         </CRXDrawer>

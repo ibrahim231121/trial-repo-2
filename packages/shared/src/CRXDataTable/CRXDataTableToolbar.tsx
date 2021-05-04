@@ -243,7 +243,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       <Grid item xs={4}>
                         <CRXButton 
                           id="closeDropDown"
-                          onClick={onSavecloseHandle}
+                          onClick={closeHandle}
                           color="primary"
                           variant="contained" 
                           className="closeDRP CRXPrimaryButton"

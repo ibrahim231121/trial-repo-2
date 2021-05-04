@@ -29,7 +29,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
 
     setInputValue(value);
     onSet(value);
-    const worker: Worker = new SearchWorker();
+    const worker = useSearchWorker.getInstance();
+
     //message recieved from worker.
     worker.addEventListener(
       "message",

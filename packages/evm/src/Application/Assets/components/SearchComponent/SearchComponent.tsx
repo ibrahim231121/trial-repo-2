@@ -5,6 +5,7 @@ import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXDropDown, CRXButton, CRXDateRangePicker } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
 import MasterMain from "../DataGrid/MasterMain";
+import "./SearchComponent.scss"
 const SearchComponent = () => {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -181,7 +182,7 @@ const SearchComponent = () => {
     }
   }, [addvancedOptions]);
   return (
-    <div>
+    <div className="advanceSearchContent">
       <div
         style={{
           display: "flex",
@@ -190,7 +191,7 @@ const SearchComponent = () => {
         }}
       >
         <div style={{ width: "100%" }}>
-          <label className="dateTimeLabel">Search {"<Assets>"}</label>
+          <label className="dateTimeLabel">Search Assets</label>
           <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
         </div>
         <div style={{ width: "100%" }}>

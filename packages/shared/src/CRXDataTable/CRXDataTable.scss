@@ -252,3 +252,29 @@ ul.columnList {
     }
 }
 
+// ---- Classes for Resizing Column
+  .DragHandle {
+    flex: 0 0 16px;
+    z-index: 2;
+    cursor: col-resize;
+    color: #ffffff;
+  }
+  .DragHandle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .DragHandleActive,
+  .DragHandleActive:hover {
+    color: #ffffff;
+    z-index: 3;
+  }
+  
+  .DragHandleIcon {
+    flex: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+// ---------
+

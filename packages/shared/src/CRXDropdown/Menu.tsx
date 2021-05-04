@@ -13,7 +13,7 @@ const DropdownStyle = makeStyles({
         boxShadow: "none",
         alignItems: "flex-end",
         padding: "0px",
-        fontSize: "13px",
+        fontSize: "14px",
         "&:hover" : {
             backgroundColor : "transparent",
             color: "#fff",
@@ -28,6 +28,7 @@ type RefType = {
     router? : object
 }
 
+type horizontalPro = 'left' | 'right' | 'center';
 type propsTypes = {
     wrapper? : string,
     name : string,
@@ -38,12 +39,13 @@ type propsTypes = {
     className? : string,
     iconButton? : boolean,
     iconHtml? : React.ReactNode,
-    MenuList : RefType[]
+    MenuList : RefType[],
+    horizontal? : horizontalPro,
 
 }
 
 
-const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, name, btnClass, MenuList} : propsTypes) => {
+const Menus = ({id, iconHtml, iconButton, horizontal = "right", className, disableRipple, wrapper, name, btnClass, MenuList} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
@@ -92,11 +94,11 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, nam
                 }}
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'left',
+                    horizontal: horizontal,
                   }}
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'left',
+                    horizontal: horizontal,
                   }}
             
             >
