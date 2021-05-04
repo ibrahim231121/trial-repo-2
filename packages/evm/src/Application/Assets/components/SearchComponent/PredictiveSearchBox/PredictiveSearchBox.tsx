@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./PredictiveSearchBox.scss";
 import SearchWorker from "../../../utils/search.worker";
+import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
 
 interface Props {
@@ -14,7 +15,6 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     };
   }, []);
   const [searchData, setSearchData] = useState<any>();
-  const [searchQuerry, setSearchQuerry] = useState<any>();
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
@@ -26,9 +26,9 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     setInputValue(value);
     onSet(value);
 
-    const worker: Worker = new SearchWorker();
-    worker.postMessage({ value });
+    const worker = useSearchWorker.getInstance();
 
+    //message recieved from worker.
     worker.addEventListener(
       "message",
       function (e) {
@@ -37,13 +37,9 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       false
     );
 
-    setSearchQuerry(value);
     if (value.length >= 3) {
-      const data = await fetchData();
-
-      if (data) {
-        worker.postMessage({ searchData, value });
-      }
+      await fetchData();
+      await worker.postMessage({ searchData, value });
     }
     setShowSearch(true);
   };
@@ -53,7 +49,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       must: [
         {
           query_string: {
-            query: `${searchQuerry}*`,
+            query: `${inputValue}*`,
             fields: [
               "asset.assetName",
               "categories",
@@ -98,7 +94,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       await setShowSearch(true);
     }
   };
-  console.log(searchData);
+  // console.log("searchData", searchData);
+  // console.log("outcome", outCome);
   return (
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">

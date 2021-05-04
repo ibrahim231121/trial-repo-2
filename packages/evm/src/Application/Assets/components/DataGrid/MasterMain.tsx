@@ -19,7 +19,8 @@ interface HeadCellProps {
   align: string;
   sort?: boolean;
   visible?: boolean;
-  minWidth?: string;
+  minWidth: string;
+  maxWidth?: string;
   dataComponent?: any;
   searchFilter?: boolean; 
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
@@ -223,17 +224,17 @@ const MasterMain = (props:any) => {
     }
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label:'ID',             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, minWidth:"125px", visible:false},
-      { label:'Asset Thumbnail',id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"100px"},
-      { label:'Asset Name',     id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120px"},
-      { label:'Asset Type',     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown},
-      { label:'Unit',           id:"unit",  value: 'unit',  align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100px"},
-      { label:'Categories',     id:"categories",  value: 'categories',  align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150px"},
-      { label:'Device',         id:"devices",value: 'devices',  align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80px"},
-      { label:'Station',        id:"station",value: 'station', align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120px"},
-      { label:'Recorded By',    id:"recordedBy",value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90px"},
-      { label:'Expiry Date',    id:'holdUntill',value: 'holdUntill',   align: "center",  disablePadding: false,dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120px", searchFilter:true, searchComponent: searchDate},
-      { label:'Status',         id:'status',value: 'status',   align: "left",  disablePadding: false,dataComponent: assetStatusTemplate,  sort: true, minWidth:"90px", searchFilter:true, searchComponent: searchDropDown},
+      { label:'ID',             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
+      { label:'Asset Thumbnail',id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155"},
+      { label:'Asset Name',     id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
+      { label:'Asset Type',     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
+      { label:'Unit',           id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
+      { label:'Categories',     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
+      { label:'Device',         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80"},
+      { label:'Station',        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
+      { label:'Recorded By',    id:"recordedBy", value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
+      { label:'Expiry Date',    id:'holdUntill', value: 'holdUntill', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
+      { label:'Status',         id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>

@@ -53,22 +53,7 @@ const SearchComponent = () => {
   };
   const AdvancedSearchQuerry: any = {
     bool: {
-      must: [
-        {
-          range: {
-            "asset.recordingStarted": {
-              gte: "2020-03-26T21:20:15.172Z",
-            },
-          },
-        },
-        {
-          range: {
-            "asset.recordingEnded": {
-              lte: "2020-03-26T21:20:15.172Z",
-            },
-          },
-        },
-      ],
+      must: [],
     },
   };
 

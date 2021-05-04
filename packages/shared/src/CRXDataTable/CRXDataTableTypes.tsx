@@ -83,7 +83,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333",
       color: "#d1d2d4",
       whiteSpace : 'nowrap',
-      width: "92%"
       
     },
     searchHeaderStickness: {
@@ -109,7 +108,8 @@ export interface HeadCellProps {
   align: string;
   sort?: boolean;
   visible?: boolean;
-  minWidth?: string;
+  minWidth: string;
+  maxWidth?: string;
   dataComponent?: any;
   searchFilter?: boolean; 
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
