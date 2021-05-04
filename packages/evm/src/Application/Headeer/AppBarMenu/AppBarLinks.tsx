@@ -4,7 +4,7 @@ import AppsIcon from '@material-ui/icons/Apps';
 
 const listOFMenu = [
     {
-        label : 'Real-time command',
+        label : 'REAL TIME Command',
         router : "RealTimeCommand"
     },
     {
@@ -19,11 +19,12 @@ const CRXAppDropdown = () => {
         <CRXMenu
             id="applications"
             iconButton={true}
-            className="DarkTheme"
+            className="DarkTheme applicationMenu"
             btnClass="appsDropDown"
             iconHtml={icon}
             wrapper="applicationsMenu"
             MenuList={listOFMenu}
+            horizontal="left"
         />
         </div>
     )

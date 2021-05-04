@@ -73,7 +73,7 @@ createStyles({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
-    paddingLeft: "90px",
+    paddingLeft: "88px",
   },
 }),
 );

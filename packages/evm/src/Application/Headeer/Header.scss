@@ -66,7 +66,7 @@
     }
 
     .AppName {
-        font-size: 20px;
+        font-size: 24px;
         font-weight: bold;
         padding-left: 30px;
         line-height: 54px;
@@ -76,21 +76,21 @@
             height: 32px;
             width: 1px;
             left: 16px;
-            top: 11px;
+            top: 10.5px;
             background: #e6e6e6;
             content: " ";
         }
     }
 
     .panelButton {
-        padding-left: 23px;
-        padding-top: 2px;
-        padding-right: 32px;
+        padding-left: 25px;
+        padding-top: 7px;
+        padding-right: 30px;
         .MuiIconButton-root {
             padding: 7px 0px;
 
             .icon-menu {
-                font-size: 28px;
+                font-size: 26px;
                 color:#d1d2d4
             }
         }
@@ -99,7 +99,7 @@
 
 .MasterHeadRight {
     text-align: right;
-    padding-right: 15px;
+    padding-right: 17px;
 
     ul#rightMenu{
         list-style: none;
@@ -109,6 +109,7 @@
           display: inline-block;
           padding: 0 10px;
           position: relative;
+          top: -4px;
           &:after {
               width: 2px;
               height: 14px;
@@ -142,13 +143,17 @@
 }
 
 .applicationsMenu {
-    margin-top: 9px;
-    margin-right: 9px;
+    margin-top: 14px;
+    margin-right: 7px;
     .MuiSvgIcon-root {
-        font-size: 30px;
+        font-size: 24px;
         color: #d1d2d4;
     }
     .CRXDropDownBtn  {
         min-width: 30px
     }
+}
+
+.applicationMenu {
+    margin-top: 12px;
 }

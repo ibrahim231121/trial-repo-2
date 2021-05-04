@@ -13,14 +13,7 @@ code {
     monospace;
 }
 
-.advanceSearchContent {
-  padding-top: 30px;
-}
 
-.advanceSearchContent .icon > button  {
-  background: transparent;
-  border: 0px;
-}
 
 .rdrCalendarWrapper {
   position: absolute;

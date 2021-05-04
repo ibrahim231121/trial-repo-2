@@ -8,8 +8,12 @@ import CRXAppDropdown from './AppBarMenu/AppBarLinks'
 import CRXHelp from './AppBarMenu/Help'
 import  CRXActiveBreadcrumb from './CRXBreadcrumb'
 import CRXAssetsBucketPanel from './AssetsBucket/CRXBucket'
+import CRXNotficationPanel from './CRXNotifications/CRXNotificationPanel';
+import CRXGlobalSearchPanel from './CRXGlobalSearch/CRXSearchPanel';
 import AppLogo from '../../Assets/Images/AppLogo.png'
 import './Header.scss'
+
+
 
 interface propsTypes {
     onClick : (e : any) => void,
@@ -48,6 +52,8 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                             <li><CRXHelp /></li>
                         </ul>
                         <CRXAssetsBucketPanel />
+                        <CRXNotficationPanel />
+                        <CRXGlobalSearchPanel />
                     </div>
                 </CRXColumn>
             </CRXRows>
