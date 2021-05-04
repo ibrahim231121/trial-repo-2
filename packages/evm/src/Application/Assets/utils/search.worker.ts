@@ -1,43 +1,15 @@
 //always add these two lines at the top.
 declare const self: Worker;
 export default {} as typeof Worker & { new (): Worker };
-const URL = "/Evidence?Size=10&Page=1";
-let Data: any;
-const fetchData = async (querry: any, value: string) => {
-  let data = await fetch(URL, {
-    method: "POST", // or 'PUT'
-    headers: {
-      "Group-Ids": "1,2,3,4,5",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(querry),
-  });
-  return (data = await data.json());
-};
+
 
 self.addEventListener("message", async (event: MessageEvent) => {
   const { searchData, value } = event.data;
 
   if (event.data.value.length >= 3) {
-    const querry = {
-      bool: {
-        must: [
-          {
-            query_string: {
-              query: `${value}*`,
-              fields: [
-                "asset.assetName",
-                "categories",
-                "cADId",
-                "asset.recordedBy",
-              ],
-            },
-          },
-        ],
-      },
-    };
+
+    
     let found: string = "";
-    const newData = await fetchData(querry, value);
     found = searchData.map((data: any) => {
       if (data.cadId.toLowerCase().startsWith(value.toLowerCase())) {
         self.postMessage(data.cadId);
