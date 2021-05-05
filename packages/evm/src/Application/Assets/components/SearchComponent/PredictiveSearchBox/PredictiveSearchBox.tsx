@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./PredictiveSearchBox.scss";
 import SearchWorker from "../../../utils/search.worker";
-//import useSearchWorker from "../../../utils/useSearchWorker";
+import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
 
 interface Props {
