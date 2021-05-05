@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import { CRXButton } from "@cb/shared";
+import { CRXButton, CRXSelectBox } from "@cb/shared";
 interface IOptions {
   value: string;
   key: string;
@@ -75,23 +75,28 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
             value={selectedOpt?.value}
           >
             <option value="" selected disabled hidden>
-              Please Select
+              -- Select a search criteria --
             </option>
 
             {newOptions.map((val: any, i: number) => (
               <Options key={i} id={val._id} value={val.value} />
             ))}
           </select>
-          <input
-            ref={refs[i]}
-            id={i.toString()}
-            className="adVInputBox"
-            onChange={(e: any) => onInputChange(e)}
-            value={selectedOpt?.inputValue}
-          />
-          <button className="removeBtn" onClick={() => Remove(i)}>
-            X
-          </button>
+          {selectedOpt?.isUsed && (
+            <div>
+              <input
+                ref={refs[i]}
+                id={i.toString()}
+                className="adVInputBox"
+                onChange={(e: any) => onInputChange(e)}
+                value={selectedOpt?.inputValue}
+                placeholder={`Search by ${selectedOpt?.value}`}
+              />
+              <button className="removeBtn" onClick={() => Remove(i)}>
+                X
+              </button>
+            </div>
+          )}
         </div>
       );
     }

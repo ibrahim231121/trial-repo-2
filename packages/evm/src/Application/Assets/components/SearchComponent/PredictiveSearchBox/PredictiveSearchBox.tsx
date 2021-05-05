@@ -7,7 +7,6 @@ interface Props {
   onSet: (e: any) => void;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
- 
   const url = "/Evidence?Size=10&Page=1";
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
@@ -41,9 +40,9 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     }
   };
 
-  const getQuery = (searchVal:string) =>{
-    return{ 
-        bool: {
+  const getQuery = (searchVal: string) => {
+    return {
+      bool: {
         must: [
           {
             query_string: {
@@ -57,10 +56,10 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
             },
           },
         ],
-    },
-    }
-  }
-  const fetchData = async (searchVal:string) => {
+      },
+    };
+  };
+  const fetchData = async (searchVal: string) => {
     let data = await fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
