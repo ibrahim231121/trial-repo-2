@@ -19,6 +19,7 @@ const SearchComponent = () => {
   const [startDate, setStartDate] = React.useState<any>();
   const [endDate, setEndDate] = React.useState(new Date().toISOString());
   const [searchData, setSearchData] = React.useState<any>();
+  const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=10&Page=1";
   const QUERRY = {
     bool: {
@@ -264,7 +265,7 @@ const SearchComponent = () => {
           variant="outlined"
           className="PreSearchButton"
         >
-          Advanced Search
+          <i className={"fas fa-sort-down " + iconRotate}></i> Advanced Search
         </CRXButton>
         {showAdvance && (
           <AdvanceOptions
