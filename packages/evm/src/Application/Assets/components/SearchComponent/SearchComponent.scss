@@ -25,7 +25,13 @@
   padding-top: 30px;
 }
 
-.advanceSearchContent .icon > button  {
+.advanceSearchContent .icon > button {
   background: transparent;
   border: 0px;
+}
+
+.predictiveSearch {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 }

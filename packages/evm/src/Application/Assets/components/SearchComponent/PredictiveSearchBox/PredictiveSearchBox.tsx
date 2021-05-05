@@ -3,19 +3,18 @@ import "./PredictiveSearchBox.scss";
 import SearchWorker from "../../../utils/search.worker";
 import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
-
+import { TextField } from "@cb/shared";
 interface Props {
   onSet: (e: any) => void;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
- 
   React.useEffect(() => {
     document.addEventListener("mousedown", handleClickOutSide);
     return () => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
   }, []);
-  
+
   const url = "/Evidence?Size=10&Page=1";
   const [searchData, setSearchData] = useState<any>();
   const [showSearch, setShowSearch] = useState<any>(false);
@@ -40,7 +39,6 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       false
     );
 
-    
     if (value.length >= 3) {
       const data = await fetchData(value);
       if (data) {
@@ -48,14 +46,14 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
         setShowSearch(true);
       }
     }
-    if(value.length < 3){
+    if (value.length < 3) {
       setShowSearch(false);
     }
   };
 
-  const getQuery = (searchVal:string) =>{
-    return{ 
-        bool: {
+  const getQuery = (searchVal: string) => {
+    return {
+      bool: {
         must: [
           {
             query_string: {
@@ -69,10 +67,10 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
             },
           },
         ],
-    },
-    }
-  }
-  const fetchData = async (searchVal:string) => {
+      },
+    };
+  };
+  const fetchData = async (searchVal: string) => {
     let data = await fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -97,7 +95,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">
         <a href="" target="_blank" hidden></a>
-        <input
+        <TextField
           type="text"
           placeholder="Type to search.."
           value={inputValue}
