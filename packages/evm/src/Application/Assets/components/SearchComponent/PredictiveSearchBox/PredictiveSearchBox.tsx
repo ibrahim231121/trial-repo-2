@@ -3,7 +3,7 @@ import "./PredictiveSearchBox.scss";
 import SearchWorker from "../../../utils/search.worker";
 import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
-
+import { TextField } from "@cb/shared";
 interface Props {
   onSet: (e: any) => void;
 }
@@ -14,6 +14,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
   }, []);
+
+  const url = "/Evidence?Size=10&Page=1";
   const [searchData, setSearchData] = useState<any>();
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
@@ -23,56 +25,61 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
   //onChange
   const handleOnChange = async (e: any) => {
     const { value } = e.target;
+
     setInputValue(value);
     onSet(value);
-
     const worker = useSearchWorker.getInstance();
 
     //message recieved from worker.
     worker.addEventListener(
       "message",
       function (e) {
-        setOutCome((state: any) => [...state, e.data]);
+        setOutCome(e.data);
       },
       false
     );
 
     if (value.length >= 3) {
-      await fetchData();
-      await worker.postMessage({ searchData, value });
+      const data = await fetchData(value);
+      if (data) {
+        worker.postMessage({ data, value });
+        setShowSearch(true);
+      }
     }
-    setShowSearch(true);
+    if (value.length < 3) {
+      setShowSearch(false);
+    }
   };
-  const url = "/Evidence?Size=10&Page=1";
-  const querry = {
-    bool: {
-      must: [
-        {
-          query_string: {
-            query: `${inputValue}*`,
-            fields: [
-              "asset.assetName",
-              "categories",
-              "cADId",
-              "asset.recordedBy",
-            ],
+
+  const getQuery = (searchVal: string) => {
+    return {
+      bool: {
+        must: [
+          {
+            query_string: {
+              query: `${searchVal}*`,
+              fields: [
+                "asset.assetName",
+                "categories",
+                "cADId",
+                "asset.recordedBy",
+              ],
+            },
           },
-        },
-      ],
-    },
+        ],
+      },
+    };
   };
-  const fetchData = async () => {
+  const fetchData = async (searchVal: string) => {
     let data = await fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
         "Group-Ids": "1,2,3,4,5",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(querry),
+      body: JSON.stringify(getQuery(searchVal)),
     });
     data = await data.json();
-    await setSearchData(data);
-    await setShowSearch(true);
     return data;
   };
   const handleClickOutSide = (e: MouseEvent) => {
@@ -84,28 +91,15 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       setShowSearch(false);
     }
   };
-  const onKeyDown = async (code: any) => {
-    if (code === "Backspace") {
-      setSearchData([]);
-      setShowSearch(false);
-      setOutCome([]);
-      const data = await fetchData();
-      await setSearchData(data);
-      await setShowSearch(true);
-    }
-  };
-  // console.log("searchData", searchData);
-  // console.log("outcome", outCome);
   return (
     <div className="wrapper" ref={wrapperRef}>
       <div className="search-input">
         <a href="" target="_blank" hidden></a>
-        <input
+        <TextField
           type="text"
           placeholder="Type to search.."
           value={inputValue}
           onChange={handleOnChange}
-          onKeyDown={(e: any) => onKeyDown(e.code)}
         />
         <div className="autocom-box">
           {showSearch && outCome && (
