@@ -75,7 +75,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
             value={selectedOpt?.value}
           >
             <option value="" selected disabled hidden>
-              Please Select
+              -- Select a search criteria --
             </option>
 
             {newOptions.map((val: any, i: number) => (
@@ -90,6 +90,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 className="adVInputBox"
                 onChange={(e: any) => onInputChange(e)}
                 value={selectedOpt?.inputValue}
+                placeholder={`Search by ${selectedOpt?.value}`}
               />
               <button className="removeBtn" onClick={() => Remove(i)}>
                 X

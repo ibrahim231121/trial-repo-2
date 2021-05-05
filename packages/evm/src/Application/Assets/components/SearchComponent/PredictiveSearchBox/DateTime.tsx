@@ -1,7 +1,7 @@
 import React from "react";
 import { CRXDropDown, CRXDateRangePicker } from "@cb/shared";
 import TodayIcon from "@material-ui/icons/Today";
-
+import "./DateTime.scss";
 const DateTime = () => {
   const [selectOption, setSelectOption] = React.useState("Please Select");
   const [showDate, setShowDate] = React.useState(false);
@@ -92,7 +92,7 @@ const DateTime = () => {
           style={{ background: "none", border: "none" }}
           onClick={() => setShowDateRange(true)}
         >
-          <TodayIcon className="searchToday" />
+          <TodayIcon />
         </button>
         {showDateRange && (
           <div ref={wrapperRef}>

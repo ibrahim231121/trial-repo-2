@@ -1,7 +1,7 @@
 import React from "react";
 import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXButton } from "@cb/shared";
-
+import "./PredictiveSearchBox/PredictiveSearchBox.scss";
 const SelectedAsset = () => {
   return (
     <>
