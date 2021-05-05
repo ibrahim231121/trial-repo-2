@@ -7,6 +7,20 @@ interface Props {
   onSet: (e: any) => void;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
+
+  React.useEffect(() => {
+    const worker = useSearchWorker.getInstance();
+    var showDataList = (e:any) =>{
+      setOutCome(e.data);
+    }
+    //message recieved from worker.
+    worker.addEventListener("message",showDataList,false);
+    return () => {
+      worker.removeEventListener("message",showDataList);
+    };
+  },[]);
+  
+
   const url = "/Evidence?Size=10&Page=1";
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
@@ -16,11 +30,6 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
   const handleOnChange = async (e: any) => {
     const { value } = e.target; 
     const worker = useSearchWorker.getInstance();
-
-    //message recieved from worker.
-    worker.addEventListener("message",(e) => {
-        setOutCome(e.data);},false);
-
     if(value){
       if (value && value.length >= 3) {
         const data = await fetchData(value);
@@ -75,6 +84,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
   const onChangeAutoComplete = (e : any,value:any) =>{
     if(value && value != null){
       setInputValue(value);
+      onSet(value);
     }
     setShowSearch(false);
   }

@@ -100,7 +100,7 @@ const SearchComponent = () => {
       <div className="predictiveSearch">
         <div style={{ width: "100%" }}>
           <label className="dateTimeLabel">Search Assets</label>
-          <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
+          <PredictiveSearchBox onSet={(e) => { setQuerryString(e)}} />
         </div>
         <div style={{ width: "100%" }}>
           <DateTime />
