@@ -3,6 +3,8 @@ import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox } from "@cb/
 import moment from 'moment';
 import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
+
+
 type Order = 'asc' | 'desc';
 
 type SearchObject = {
@@ -312,7 +314,7 @@ const MasterMain = (props:any) => {
                   orderByParam={orderBy}
                   searchHeader={true}
                   columnVisibilityBar={true}   
-                  allowDragableToList={true}
+                  allowDragableToList={false}
                   className="ManageAssetDataTable"  
                 />    
       }
