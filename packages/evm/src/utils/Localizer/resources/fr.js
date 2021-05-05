@@ -1,19 +1,25 @@
 export const resources = {
     fr: {
       translation: {
-        "Login Name": "AbdulRahim",
-        "Password" : "aaaaaaaa",
-        "Confirm Password" : "aaaaaaaaaa",
-        "Toggle RTL": "aaaaaaaaaaaaa",
-        "Back to Login" : "aaaaaaaaaaa",
-        "Header 1":"aaaaaaaaaa",
-        "Header 2":"aaaaaaaaaa",
-        "Row 1 column 1":"aaaaaaaaaaaaaa",
-        "Row 1 column 2":"aaaaaaaaaaaaaa",
-        "Row 2 column 1":"aaaaaaaaaaaaaa",
-        "Row 2 column 2":"aaaaaaaaaaaaaa",
-        "Row 3 column 1":"aaaaaaaaaaaaaa",
-        "Row 3 column 2":"aaaaaaaaaaaaaa",
+        "assets": "fr-Assets",
+        "Show / hide columns": "fr-Show / hide columns",
+        "Close" : "fr-Close",
+        "Reset to default" : "fr-Reset to default",
+        "Customize columns": "fr-Customize columns",
+        "Save and close" : "fr-Save and close",
+        "Save as preset" : "fr-Save as preset",
+        "Actions": "fr-Actions",
+        "ID":"fr-ID",
+        "Asset Thumbnail":"fr-Asset Thumbnail",
+        "Asset Name":"fr-Asset Name",
+        "Asset Type":"fr-Asset Type",
+        "Unit":"fr-Unit",
+        "Categories":"fr-Categories",
+        "Device":"fr-Device",
+        "Station":"fr-Station",
+        "Recorded By":"fr-Recorded By",
+        "Expiry Date":"fr-Expiry Date",
+        "Status":"fr-Status",
       }
     }
   };

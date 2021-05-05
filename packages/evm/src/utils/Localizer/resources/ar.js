@@ -1,19 +1,25 @@
 export const resources = {
     ar: {
       translation: {
-        "Login Name": "اسم الدخول",
-        "Password" : "كلمه السر",
-        "Confirm Password" : "تأكيد كلمة المرور",
-        "Toggle RTL": "تبديل RTL",
-        "Back to Login" : "العودة إلى تسجيل الدخول",
-        "Header 1":"رأس 1",
-        "Header 2":"رأس 2",
-        "Row 1 column 1":"الصف 1 عمود 1",
-        "Row 1 column 2":"الصف 1 عمود 2",
-        "Row 2 column 1":"الصف 2 عمود 1",
-        "Row 2 column 2":"الصف 2 عمود 2",
-        "Row 3 column 1":"الصف 3 عمود 1",
-        "Row 3 column 2":"الصف 3 عمود 2",
+        "assets": "ar-Assets",
+        "Show / hide columns": "ar-Show / hide columns",
+        "Close" : "ar-Close",
+        "Reset to default" : "ar-Reset to default",
+        "Customize columns": "ar-Customize columns",
+        "Save and close" : "ar-Save and close",
+        "Save as preset" : "ar-Save as preset",
+        "Actions": "ar-Actions",
+        "ID":"ar-ID",
+        "Asset Thumbnail":"ar-Asset Thumbnail",
+        "Asset Name":"ar-Asset Name",
+        "Asset Type":"ar-Asset Type",
+        "Unit":"ar-Unit",
+        "Categories":"ar-Categories",
+        "Device":"ar-Device",
+        "Station":"ar-Station",
+        "Recorded By":"ar-Recorded By",
+        "Expiry Date":"ar-Expiry Date",
+        "Status":"ar-Status",
       }
     }
   };
