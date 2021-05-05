@@ -26,6 +26,7 @@ import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Grid from "@material-ui/core/Grid";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox';
 import './CRXDataTable.scss';
+import {useTranslation} from 'react-i18next'; 
 
 export default function CRXDataTable(props: DataTableProps) {
   const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
@@ -38,7 +39,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
-
+  const {t} = useTranslation<string>();
   const keyId = headCells.filter(n => n.keyCol === true).map((v => v.id)).toString()
 
   const secondRows: any[] = [];
@@ -309,7 +310,7 @@ export default function CRXDataTable(props: DataTableProps) {
                     hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '50px'}} ></TableCell>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '58px'}}></TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>Actions</TableCell> 
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>{t('Actions')}</TableCell> 
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC

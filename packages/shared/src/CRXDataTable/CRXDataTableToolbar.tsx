@@ -14,6 +14,7 @@ import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
+import {useTranslation} from 'react-i18next'; 
 
 const checkboxStyle = makeStyles({
   root: {
@@ -69,6 +70,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     // const [orderColumn, setOrderColumn] = useState(
     //   new Array(headCells.length).fill(null).map((_, i) => i)
     // );
+    const {t} = useTranslation<string>();
 
     useEffect(() => {
       headCells.map((headCell: any, x) => {
@@ -183,7 +185,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       <Toolbar
         className={clsx(classes.root)}>
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-            <b>{rowCount}</b> assets
+            <b>{rowCount}</b> {t('assets')}  
           </Typography>
         
           <div className="dataTableColumnShoHide">
@@ -215,7 +217,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >Show / hide columns</CRXTypography>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Show / hide columns')}</CRXTypography>
                     <Grid container spacing={0}>
                       {orderColumn.map((i: number, index: number) => {
                        return(  
@@ -248,7 +250,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           variant="contained" 
                           className="closeDRP CRXPrimaryButton"
                           >
-                            Close
+                            {t('Close')}
                           </CRXButton>
                       </Grid>
                       <Grid item xs={4}>
@@ -259,7 +261,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           variant="outlined" 
                           className="resetCheckBox"
                           >
-                            Reset to default
+                            {t('Reset to default')}
                           </CRXButton>
                       </Grid>
                       
@@ -298,7 +300,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   horizontal: 'left',
                 }}
               >
-              <CRXTypography className="DRPTitle" variant="h3" >Customize columns</CRXTypography>
+              <CRXTypography className="DRPTitle" variant="h3" >{t('Customize columns')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
                   orderColumn={orderColumn} 
@@ -317,7 +319,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="contained" 
                     className="closeDRP"
                     >
-                      Save and close
+                      {t('Save and close')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -328,7 +330,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="outlined" 
                     className="resetCheckBox"
                     >
-                      Reset to default
+                      {t('Reset to default')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -338,7 +340,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       className="shoHideCheckbox"
                       inputProps="primary checkbox"
                       />}
-                    label="Save as preset"
+                    label={t('Save as preset')}
                     labelPlacement="end"
                   />
                 </Grid>
