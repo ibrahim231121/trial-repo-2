@@ -1,7 +1,8 @@
 import React from "react";
-import { CRXDropDown, CRXDateRangePicker } from "@cb/shared";
+import { CRXDropDown, CRXDateRangePicker, CRXModal } from "@cb/shared";
 import TodayIcon from "@material-ui/icons/Today";
 import "./DateTime.scss";
+import DatePicker from "./DatePicker";
 const DateTime = () => {
   const [selectOption, setSelectOption] = React.useState("Please Select");
   const [showDate, setShowDate] = React.useState(false);
@@ -9,6 +10,7 @@ const DateTime = () => {
   const [startDate, setStartDate] = React.useState<any>();
   const [endDate, setEndDate] = React.useState(new Date().toISOString());
   const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const [open, setOpen] = React.useState(false);
 
   const dateOptions = [
     { value: "today", displayText: "today " },
@@ -88,18 +90,16 @@ const DateTime = () => {
         onChange={(e: any) => setSelectOption(e.target.value)}
         options={dateOptions}
       >
-        <button
-          style={{ background: "none", border: "none" }}
-          onClick={() => setShowDateRange(true)}
-        >
+        <button onClick={() => setOpen(true)}>
           <TodayIcon />
         </button>
-        {showDateRange && (
-          <div ref={wrapperRef}>
-            <CRXDateRangePicker onChange={(data: any) => console.log(data)} />
-          </div>
-        )}
       </CRXDropDown>
+      <CRXModal isOpen={open}>
+        <DatePicker
+          customSelected={selectOption}
+          onClose={() => setOpen(false)}
+        />
+      </CRXModal>
     </>
   );
 };
