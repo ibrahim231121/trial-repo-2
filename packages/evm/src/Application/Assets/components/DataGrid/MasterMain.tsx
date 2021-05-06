@@ -235,7 +235,7 @@ const MasterMain = (props:any) => {
       { label:`${t('Categories')}`,      id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
       { label:`${t('Device')}`,          id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80"},
       { label:`${t('Station')}`,         id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
-      { label:`${t('Recorded By')}`,     id:"recordedBy", value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
+      { label:`${t('User Name')}`,       id:"recordedBy",   value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
       { label:`${t('Expiry Date')}`,     id:'holdUntill', value: 'holdUntill', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
       { label:`${t('Status')}`,          id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
