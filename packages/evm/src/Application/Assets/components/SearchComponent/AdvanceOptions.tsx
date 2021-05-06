@@ -270,7 +270,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       <CRXButton
         color="secondary"
         variant="outlined"
-        className="PreSearchButton"
+        className="advanceSearchButton"
         type="button"
         onClick={AdvancedSearch}
         disabled={disableButton}
