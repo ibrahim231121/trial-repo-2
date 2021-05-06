@@ -7,6 +7,7 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import "./EditableSelect.scss";
 import CloseIcon from '@material-ui/icons/Close';
+
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -68,8 +69,10 @@ const CRXAutocomplete = ({
   className,
   placeHolder
 }: selectBoxProps) => {
+
   const data = options;
   const classes = optionStyle()
+  
   // const renderCheckBox = (option: renderCheck, selected: boolean) => {
   //   if (CheckBox === true) {
   //     return (

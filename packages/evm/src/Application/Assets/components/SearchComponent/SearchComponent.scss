@@ -22,7 +22,7 @@
 }
 
 .advanceSearchContent {
-  padding-top: 30px;
+  padding-top: 15px;
 }
 
 .advanceSearchContent .icon > button {
@@ -38,6 +38,7 @@
 
 .searchComponents {
   padding: 0 106px;
+  padding-top: 40px;
 }
 
 .advanceSearchChildren {
@@ -54,4 +55,10 @@
     padding-bottom:12px;
     display: block;
   }
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
 }

@@ -133,6 +133,9 @@
         &:hover {
           background: transparent;
         }
+        &:focus {
+          background: transparent;
+        }
       }
       .listIcon {
         font-size: 30px;

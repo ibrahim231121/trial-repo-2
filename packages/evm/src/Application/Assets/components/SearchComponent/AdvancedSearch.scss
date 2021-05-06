@@ -18,7 +18,7 @@
   }
 
   .adVInputBox {
-    width: 92%;
+    width: 90%;
     margin: 0 15px;
     height: 30px;
     outline: none;
@@ -102,6 +102,11 @@
       top: 0px;
     }
     &:hover {
+      background: transparent;
+      color:#333;
+      border: 0px;
+    }
+    &:focus {
       background: transparent;
       color:#333;
       border: 0px;

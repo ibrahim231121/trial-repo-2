@@ -97,6 +97,7 @@ const SearchComponent = () => {
   }, [addvancedOptions]);
   return (
     <div className="advanceSearchChildren">
+      <div className="pageTitle">Assets</div>
       <div className="searchComponents">
         <div className="predictiveSearch">
           <CRXRows container spacing={0}>
