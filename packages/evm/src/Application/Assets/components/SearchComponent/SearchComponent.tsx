@@ -12,7 +12,8 @@ const SearchComponent = () => {
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
 
   const [querryString, setQuerryString] = React.useState("");
-
+  const [searchEndDate, setSearchEndDate] = React.useState<string>("");
+  const [searchStartDate, setSearchStartDate] = React.useState<string>("");
   const [searchData, setSearchData] = React.useState<any>();
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=10&Page=1";
@@ -95,6 +96,8 @@ const SearchComponent = () => {
       fetchData(AdvancedSearchQuerry);
     }
   }, [addvancedOptions]);
+  console.log("searchStartDate", searchStartDate);
+  console.log("searchEndDate", searchEndDate);
   return (
     <div className="advanceSearchContent">
       <div className="predictiveSearch">
@@ -103,7 +106,10 @@ const SearchComponent = () => {
           <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
         </div>
         <div style={{ width: "100%" }}>
-          <DateTime />
+          <DateTime
+            searchStartDate={(v: any) => setSearchStartDate(v)}
+            searchEndDate={(v: any) => setSearchEndDate(v)}
+          />
         </div>
       </div>
       <div className="preSearcBtnContent">

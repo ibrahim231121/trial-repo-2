@@ -7,7 +7,7 @@ interface Props {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value: string;
   id?: string;
-  className? : string,
+  className?: string;
 }
 
 const DropDown: React.FC<Props> = ({
@@ -26,6 +26,7 @@ const DropDown: React.FC<Props> = ({
           value={value}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e)}
         >
+          <option value={-1}>Please Select</option>
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.displayText}

@@ -15,24 +15,29 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-export default function CRXDateTimePicker() {
+type Props = {
+  date: any;
+  onChange: (e: any) => void;
+};
+const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
   const classes = useStyles();
-
+  console.log(date);
   return (
     <form className={classes.container} noValidate>
       <TextField
         style={{ width: "260px" }}
         id="datetime-local"
         type="datetime-local"
-        defaultValue="2017-05-24T10:30"
+        defaultValue={date}
         className={classes.textField}
         InputLabelProps={{
           shrink: true,
         }}
         variant="outlined"
-        onChange={(e) => console.log(e.target.value)}
+        onChange={onChange}
       />
     </form>
   );
-}
+};
+
+export default CRXDateTimePicker;
