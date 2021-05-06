@@ -32,7 +32,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const [options, setOptions] = useState<IOptions[]>([
     {
-      value: "Recorded By",
+      value: "username",
       key: "User Name",
       _id: "1",
       usedBy: null,
