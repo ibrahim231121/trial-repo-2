@@ -70,12 +70,18 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border:1px solid #797979;
+      border:2px solid #cecece;
       border-radius: 0px;
-
+      &:hover {
+        border: 2px solid #888787;
+      }
       select{
-        height: 38px;
+        height: 27px;
         font-size: 14px;
+      }
+      .icon {
+        right: -2px;
+        top: 2px;
       }
   }
 }
