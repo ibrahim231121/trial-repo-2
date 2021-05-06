@@ -1,6 +1,6 @@
 .wrapper {
   max-width: 100%;
-  margin: 0px 15px;
+  margin: 0px 0 0 15px;
 }
 
 .wrapper .search-input {
@@ -123,6 +123,7 @@
       .listParentBtn {
         padding: 3px 0px;
         color: #fff;
+        border:0px;
         &:hover {
           background: transparent;
         }
@@ -144,6 +145,7 @@
         border-radius: 100px;
         top: 48px;
         color: #fff;
+        display: none;
       } 
     }
 

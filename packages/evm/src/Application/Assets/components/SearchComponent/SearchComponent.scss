@@ -23,8 +23,6 @@
 
 .advanceSearchContent {
   padding-top: 30px;
-  padding-left: 45px;
-  padding-right: 45px;
 }
 
 .advanceSearchContent .icon > button {
@@ -36,4 +34,24 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
+}
+
+.searchComponents {
+  padding: 0 106px;
+}
+
+.advanceSearchChildren {
+  
+  .topColumn {
+    padding-right: 15px;  
+  }
+
+  .searchLabel {
+    font-size: 14px;
+    color:#333;
+    padding:0px 0 0 0px;
+    margin:0px;
+    padding-bottom:12px;
+    display: block;
+  }
 }
