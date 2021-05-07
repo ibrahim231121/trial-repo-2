@@ -96,8 +96,8 @@ const SearchComponent = () => {
       fetchData(AdvancedSearchQuerry);
     }
   }, [addvancedOptions]);
-  console.log("searchStartDate", searchStartDate);
-  console.log("searchEndDate", searchEndDate);
+  // console.log("searchStartDate", searchStartDate);
+  // console.log("searchEndDate", searchEndDate);
   return (
     <div className="advanceSearchChildren">
       <div className="pageTitle">Assets</div>
@@ -124,12 +124,12 @@ const SearchComponent = () => {
           >
             Search
           </CRXButton>
-        <div style={{ width: "100%" }}>
+        {/* <div style={{ width: "100%" }}>
           <DateTime
             searchStartDate={(v: any) => setSearchStartDate(v)}
             searchEndDate={(v: any) => setSearchEndDate(v)}
           />
-        </div>
+        </div> */}
         <div className="middleContent">
           <SelectedAsset />
         </div>

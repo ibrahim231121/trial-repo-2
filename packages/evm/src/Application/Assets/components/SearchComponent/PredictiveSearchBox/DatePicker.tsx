@@ -3,8 +3,8 @@ import { CRXDateTimePicker } from "@cb/shared";
 type Props = {
   onClose: () => void;
   selectedOption?: any;
-  endDate: string;
-  startDate: string;
+  endDate: Object | undefined;
+  startDate: Object | undefined;
   searchStartDate: (e: any) => void;
   searchEndDate: (e: any) => void;
 };
@@ -58,16 +58,23 @@ const DatePicker: React.FC<Props> = ({
   const [StartDate, setStartDate] = useState(startDate);
   const [EndDate, setEndDate] = useState(endDate);
 
+React.useEffect(() => {
+    setStartDate(startDate)
+    setEndDate(endDate);
+    console.log("Use Effect");
+}, [startDate,endDate])
+  console.log(" Start Date = ", startDate);
+  console.log("End date ", endDate);
   return (
     <div>
       <div style={{ display: "flex" }}>
         <CRXDateTimePicker
-          date={StartDate}
+          date={startDate}
           onChange={(e: any) => searchStartDate(e.target.value)}
         />
         <div>to</div>
         <CRXDateTimePicker
-          date={EndDate}
+          date={endDate}
           onChange={(e: any) => searchEndDate(e.target.value)}
         />
       </div>

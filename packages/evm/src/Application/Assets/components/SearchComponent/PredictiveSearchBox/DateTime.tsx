@@ -9,9 +9,9 @@ type Props = {
   searchEndDate: (e: any) => void;
 };
 const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
-  const [selectOption, setSelectOption] = React.useState("Please Select");
-  const [startDate, setStartDate] = React.useState<any>("");
-  const [endDate, setEndDate] = React.useState<string>("");
+
+  const [startDate, setStartDate] = React.useState<Object>();
+  const [endDate, setEndDate] = React.useState<Object>();
 
   const [open, setOpen] = React.useState(false);
   const dateOptions = [
@@ -24,22 +24,49 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
     { value: "custom", displayText: "custom" },
   ];
 
+  const [selectOption, setSelectOption] = React.useState("");
+
   const onSelctionCahnge = (e: any) => {
-    console.log("Moment Date = " , moment());
+    var now = moment();
+    // console.log("Moment Date = " , now);
+    // console.log("Current Date = " , now.format())
+    // console.log("UTC Date 1 = " , now.utc(true).format()) // keeplocaltime : true
+    // console.log("UTC Date 2  = " , now.utc(false).format()) // keeplocaltime : false
+    // console.log(typeof(now.utc(false).format()));
+
+    // console.log('now ' + now.toString())
+    // console.log('start ' + now.startOf('day').toString())
+    // console.log('end ' + now.endOf('day').toString())
+
+
+    //console.log(typeof(new Date()))
     const { value } = e.target;
     setSelectOption(value);
 
     switch (value) {
+
       case "Please Select":
         setStartDate("");
         setEndDate("");
         break;
 
       case "today":
-        setStartDate(
-          new Date(new Date().setHours(0, 0, 0, 0)).toISOString().split(".")[0]
-        );
-        setEndDate(new Date().toISOString().split(".")[0]);
+        // setStartDate(
+        //   new Date(new Date().setHours(0, 0, 0, 0)).toISOString().split(".")[0]
+        // );
+        // setEndDate(new Date().toISOString().split(".")[0]);
+        // var date  = new Date();
+        // date.get
+        // console.log('start1 ' + now.startOf('day'))
+        // console.log('end1 ' + now.endOf('day'))
+    
+       // console.log( typeof(now.endOf('day')))
+       console.log("AAA"); 
+       console.log(typeof(now.startOf('day').toDate()));
+       setStartDate(now.startOf('day').toDate());
+        setEndDate(now.endOf('day').toDate());
+        
+
         break;
 
       case "yesterday":
@@ -53,6 +80,7 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
   };
   return (
     <>
+     
       <label className="dateTimeLabel">Date and Time</label>
       <CRXDropDown
         value={selectOption}
