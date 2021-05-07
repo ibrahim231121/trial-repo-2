@@ -55,7 +55,7 @@
 
         &:hover {
             background: #404041;
-            border-left:4px #d74b00 solid;
+            border-left:4px #d1d2d4 solid;
             .p-menuitem-text {
                 color:#fff;
             }
@@ -66,9 +66,14 @@
                 color:#fff;
             }
         }
+        
     }
 
     ul {
+        a.p-menuitem-active {
+            background: #151515;
+            border-left:4px #d74b00 solid;          
+        }
         li.p-menuitem {
             ul.p-submenu-list {
                 background: #404041;
