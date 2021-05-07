@@ -28,7 +28,7 @@ const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
         style={{ width: "260px" }}
         id="datetime-local"
         type="datetime-local"
-        value={date}
+        defaultValue={date}
         //value={date}
         className="calenderInput"
         variant="outlined"
