@@ -124,12 +124,7 @@ const SearchComponent = () => {
           >
             Search
           </CRXButton>
-        <div style={{ width: "100%" }}>
-          <DateTime
-            searchStartDate={(v: any) => setSearchStartDate(v)}
-            searchEndDate={(v: any) => setSearchEndDate(v)}
-          />
-        </div>
+        
         <div className="middleContent">
           <SelectedAsset />
         </div>
