@@ -1,4 +1,4 @@
-import { CRXBreadcrumb, CBXLink } from "@cb/shared";
+import { CRXBreadcrumb, CBXLink, CRXTitle } from "@cb/shared";
 import clsx from 'clsx'
 import { CRXPanelStyle } from "@cb/shared";
 
@@ -20,6 +20,7 @@ const CRXActiveBreadcrumb = ({shiftContent = true} : propsType) => {
                    Assets
                 </CBXLink>
             </CRXBreadcrumb>
+            <CRXTitle text="Assets" className="titlePage" />
         </div>
     )
 }

@@ -318,18 +318,25 @@ export default function CRXDataTable(props: DataTableProps) {
                       <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
                           style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                           align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
-                        <div className={classes.headerCellDiv + " crxTableHeaderSize"}>
+                        <div className={classes.headerCellDiv + " crxTableHeaderSize"}
+                        style={
+                          {
+                            minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
+                            maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
+                          }
+                        } 
+                        >
                        
                             <DragableCell
                               index={i} key={colIdx} 
                               value={
                                     <div className={classes.headerStickness}
-                                        style={
-                                          {
-                                            minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
-                                            maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
-                                          }
-                                        } 
+                                        // style={
+                                        //   {
+                                        //     minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
+                                        //     maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
+                                        //   }
+                                        // } 
                                         key={headCells[colIdx].id}>
                                       <label> 
                                           {headCells[colIdx].label} 
@@ -337,8 +344,9 @@ export default function CRXDataTable(props: DataTableProps) {
                                     </div>
                                     }
                             />  
-                         
+                      <div className="gridSortResize">
                         {(headCells[colIdx].sort === true) ? (
+                        
                               <span  className="GridSortIcon"                         
                                 onClick={createSortHandler(headCells[colIdx].id)}
                                 >
@@ -376,8 +384,9 @@ export default function CRXDataTable(props: DataTableProps) {
                           }
                           position={{ x: 0, y: 0}}
                         >
-                          <span className="DragHandleIcon">⋮</span>
+                          <span className="DragHandleIcon"></span>
                         </Draggable>
+                        </div>
                         </div>  
                            
                       </TableCell>  

@@ -38,10 +38,15 @@
                     padding: 2px 7px;
                     font-size: 14px;
                     color:#333;
+                    vertical-align: top;
+                    line-height: 38px;
                     .MuiListItemSecondaryAction-root{
                         z-index: -1 !important;
                     }
                     
+                }
+                .CellCheckBox {
+                    vertical-align: middle;
                 }
                 &:nth-child(even) {
                     background-color: #f2f2f2;
@@ -52,6 +57,13 @@
                         padding-left: 15px;
                         padding-right: 15px;
                         color: #d1d2d4;
+                        vertical-align: middle;
+                    }
+                    &:nth-child(2) {
+                        vertical-align: middle;
+                    }
+                    &:nth-child(3) {
+                        vertical-align: middle;
                     }
                 }
             }
@@ -60,6 +72,7 @@
         .crxTableHeaderSize {
             height: 35px;
             align-items: center;
+            justify-content: center;
             // .makeStyles-headerStickness-8 {
                 
             //         opacity: 1 !important;
@@ -80,6 +93,23 @@
                             color:#d1d2d4;
                         }
                     }
+                }
+            }
+            .gridSortResize {
+                position: absolute;
+                right:0px;
+                display: flex;
+
+                .GridSortIcon {
+                    padding-right: 3px;
+                }
+                
+                .DragHandleIcon {
+                    flex: 0 0 12px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                 }
             }
         }
@@ -269,12 +299,6 @@ ul.columnList {
     z-index: 3;
   }
   
-  .DragHandleIcon {
-    flex: 0 0 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+ 
 // ---------
 

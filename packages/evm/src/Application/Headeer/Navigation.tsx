@@ -10,6 +10,7 @@ const CRXLefNavigation = () => {
         {
            label:'Assets',
            icon:'icon-file-video NaveIcon',
+           
            items:[
               {
                  label:'Left',

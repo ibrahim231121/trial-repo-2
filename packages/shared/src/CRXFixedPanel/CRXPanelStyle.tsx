@@ -61,7 +61,7 @@ createStyles({
   },
   bradCrumscontent: {
     flexGrow: 1,
-    padding: "15px 40px",
+    padding: "3px 40px 0",
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
