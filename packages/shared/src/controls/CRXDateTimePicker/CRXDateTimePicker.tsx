@@ -21,7 +21,7 @@ type Props = {
 };
 const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
   const classes = useStyles();
-  //console.log("The Date  = ", date);
+  
   return (
     <form className={classes.container} noValidate>
       <TextField
@@ -30,10 +30,7 @@ const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
         type="datetime-local"
         value={date}
         //value={date}
-        className={classes.textField}
-        InputLabelProps={{
-          shrink: true,
-        }}
+        className="calenderInput"
         variant="outlined"
         onChange={onChange}
       />

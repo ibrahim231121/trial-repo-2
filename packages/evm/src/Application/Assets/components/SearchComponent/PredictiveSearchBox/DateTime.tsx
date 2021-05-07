@@ -1,5 +1,5 @@
 import React from "react";
-import { CRXDropDown, CRXDateRangePicker, CRXModal } from "@cb/shared";
+import { CRXDropDown, CRXDateRangePicker, CRXDropContainer, CRXModal } from "@cb/shared";
 import TodayIcon from "@material-ui/icons/Today";
 import "./DateTime.scss";
 import DatePicker from "./DatePicker";
@@ -78,8 +78,18 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
         break;
     }
   };
+
+  const data = <DatePicker
+                searchStartDate={(v: any) => searchStartDate(v)}
+                searchEndDate={(v: any) => searchEndDate(v)}
+                selectedOption={selectOption}
+                onClose={() => setOpen(false)}
+                startDate={startDate}
+                endDate={endDate}
+              />
+  const img = <i className="far fa-calendar-alt"></i>;
   return (
-    <>
+    <div className="dateRangeContainer">
      
       <label className="dateTimeLabel">Date and Time</label>
       <CRXDropDown
@@ -87,21 +97,14 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
         onChange={onSelctionCahnge}
         options={dateOptions}
       >
-        <button onClick={() => setOpen(true)}>
-          <TodayIcon />
-        </button>
-      </CRXDropDown>
-      <CRXModal isOpen={open}>
-        <DatePicker
-          searchStartDate={(v: any) => searchStartDate(v)}
-          searchEndDate={(v: any) => searchEndDate(v)}
-          selectedOption={selectOption}
-          onClose={() => setOpen(false)}
-          startDate={startDate}
-          endDate={endDate}
+       <CRXDropContainer 
+         icon={img}
+         content={data}
+         className="dateRangeButton"
+         paperClass="CRXDateRange"
         />
-      </CRXModal>
-    </>
+      </CRXDropDown>
+    </div>
   );
 };
 
