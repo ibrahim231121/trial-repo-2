@@ -1,6 +1,6 @@
 .wrapper {
   max-width: 100%;
-  margin: 0px 15px;
+  margin: 0px 0 0 15px;
 }
 
 .wrapper .search-input {
@@ -70,12 +70,18 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border:1px solid #797979;
+      border:2px solid #cecece;
       border-radius: 0px;
-
+      &:hover {
+        border: 2px solid #888787;
+      }
       select{
-        height: 38px;
+        height: 27px;
         font-size: 14px;
+      }
+      .icon {
+        right: -2px;
+        top: 2px;
       }
   }
 }
@@ -123,7 +129,11 @@
       .listParentBtn {
         padding: 3px 0px;
         color: #fff;
+        border:0px;
         &:hover {
+          background: transparent;
+        }
+        &:focus {
           background: transparent;
         }
       }
@@ -144,6 +154,7 @@
         border-radius: 100px;
         top: 48px;
         color: #fff;
+        display: none;
       } 
     }
 

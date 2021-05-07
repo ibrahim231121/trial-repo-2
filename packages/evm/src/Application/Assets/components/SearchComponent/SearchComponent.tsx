@@ -1,6 +1,6 @@
 import React from "react";
 import PredictiveSearchBox from "./PredictiveSearchBox/PredictiveSearchBox";
-import { CRXButton } from "@cb/shared";
+import { CRXButton, CRXRows, CRXColumn } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
 import MasterMain from "../DataGrid/MasterMain";
 import "./SearchComponent.scss";
@@ -120,45 +120,50 @@ const SearchComponent = () => {
   console.log("searchStartDate", searchStartDate);
   console.log("searchEndDate", searchEndDate);
   return (
-    <div className="advanceSearchContent">
-      <div className="predictiveSearch">
-        <div style={{ width: "100%" }}>
-          <label className="dateTimeLabel">Search Assets</label>
-          <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
+    <div className="advanceSearchChildren">
+      <div className="pageTitle">Assets</div>
+      <div className="searchComponents">
+        <div className="predictiveSearch">
+          <CRXRows container spacing={0}>
+            <CRXColumn item xs={6} className="topColumn">
+              <label className="searchLabel">Search Assets</label>
+              <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
+            </CRXColumn>
+            <CRXColumn item xs={6}>
+              <DateTime
+                              searchStartDate={(v: any) => setSearchStartDate(v)}
+                              searchEndDate={(v: any) => setSearchEndDate(v)}
+              />
+            </CRXColumn>
+          </CRXRows>
         </div>
-        <div style={{ width: "100%" }}>
-          <DateTime
-            searchStartDate={(v: any) => setSearchStartDate(v)}
-            searchEndDate={(v: any) => setSearchEndDate(v)}
-          />
+        <div className="preSearcBtnContent">
+          <CRXButton
+            className="PreSearchButton"
+            onClick={Search}
+            disabled={querryString.length < 1 ? true : false}
+          >
+            Search
+          </CRXButton>
+        
+        <div className="middleContent">
+          <SelectedAsset />
         </div>
-      </div>
-      <div className="preSearcBtnContent">
-        <CRXButton
-          className="PreSearchButton"
-          onClick={Search}
-          disabled={querryString.length < 1 ? true : false}
-        >
-          Search
-        </CRXButton>
-      </div>
-      <div className="middleContent">
-        <SelectedAsset />
-      </div>
 
-      <div className="advanceSearchContet">
-        <CRXButton
-          onClick={() => setShowAdvance(!showAdvance)}
-          className="PreSearchButton"
-        >
-          <i className={"fas fa-sort-down " + iconRotate}></i> Advanced Search
-        </CRXButton>
-        {showAdvance && (
-          <AdvanceOptions
-            getOptions={(e) => setAddvancedOptions(e)}
-            hideOptions={() => setShowAdvance(false)}
-          />
-        )}
+        <div className="advanceSearchContet">
+          <CRXButton
+            onClick={() => setShowAdvance(!showAdvance)}
+            className="PreSearchButton"
+          >
+            <i className={"fas fa-sort-down " + iconRotate}></i> Advanced Search
+          </CRXButton>
+          {showAdvance && (
+            <AdvanceOptions
+              getOptions={(e) => setAddvancedOptions(e)}
+              hideOptions={() => setShowAdvance(false)}
+            />
+          )}
+        </div>
       </div>
       {searchData && (
         <div className="dataTabAssets">
@@ -166,7 +171,9 @@ const SearchComponent = () => {
         </div>
       )}
     </div>
-  );
-};
+    </div>
+ 
+ )};
+
 
 export default SearchComponent;

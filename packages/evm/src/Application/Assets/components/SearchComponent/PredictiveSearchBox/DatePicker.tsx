@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CRXDateTimePicker } from "@cb/shared";
+import { CRXDateTimePicker, CRXButton } from "@cb/shared";
 type Props = {
   onClose: () => void;
   selectedOption?: any;
@@ -60,18 +60,20 @@ const DatePicker: React.FC<Props> = ({
 
   return (
     <div>
-      <div style={{ display: "flex" }}>
+      <div className="calenderDTP">
         <CRXDateTimePicker
           date={StartDate}
           onChange={(e: any) => searchStartDate(e.target.value)}
         />
-        <div>to</div>
+        <div className="centerContent">to</div>
         <CRXDateTimePicker
           date={EndDate}
           onChange={(e: any) => searchEndDate(e.target.value)}
         />
       </div>
-      <button onClick={onClose}>Close</button>
+      <div className="paperFooter">
+        <CRXButton className="clearButton" onClick={onClose}>Clear</CRXButton>
+      </div>
     </div>
   );
 };

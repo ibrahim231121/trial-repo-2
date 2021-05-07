@@ -33,7 +33,7 @@ const DropDown: React.FC<Props> = ({
             </option>
           ))}
         </select>
-        <div className={`icon  ${className}`}>{children}</div>
+        <div className={className}>{children}</div>
       </div>
     </div>
   );

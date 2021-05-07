@@ -3,6 +3,7 @@ import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox } from "@cb/
 import moment from 'moment';
 import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
+import {useTranslation} from 'react-i18next'; 
 
 
 type Order = 'asc' | 'desc';
@@ -145,7 +146,7 @@ const MasterMain = (props:any) => {
       
       reformattedRows.push(obj)
     })
-
+    const {t} = useTranslation<string>();
     const [rows, setRows] = React.useState<any[]>(reformattedRows);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('assetName');  
@@ -226,17 +227,17 @@ const MasterMain = (props:any) => {
     }
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label:'ID',             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
-      { label:'Asset Thumbnail',id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155"},
-      { label:'Asset Name',     id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
-      { label:'Asset Type',     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
-      { label:'Unit',           id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
-      { label:'Categories',     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
-      { label:'Device',         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80"},
-      { label:'Station',        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
-      { label:'Recorded By',    id:"recordedBy", value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
-      { label:'Expiry Date',    id:'holdUntill', value: 'holdUntill', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
-      { label:'Status',         id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
+      { label: `${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
+      { label: `${t('Asset Thumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155"},
+      { label:`${t('Asset Name')}`,      id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
+      { label:`${t('Asset Type')}`,      id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
+      { label:`${t('Unit')}`,            id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
+      { label:`${t('Categories')}`,      id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
+      { label:`${t('Device')}`,          id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80"},
+      { label:`${t('Station')}`,         id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120"},
+      { label:`${t('User Name')}`,       id:"recordedBy",   value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
+      { label:`${t('Expiry Date')}`,     id:'holdUntill', value: 'holdUntill', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
+      { label:`${t('Status')}`,          id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>

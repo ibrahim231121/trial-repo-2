@@ -1,6 +1,6 @@
 import React from "react";
-import { CRXDrawer, CRXIcon } from '@cb/shared'
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { CRXDrawer, CRXIcon, CRXHeading } from '@cb/shared'
+import GlobalSearch from "./GlobalSearchContent";
 import './CRXGlobalSearch.scss';
 const ToggleButton = <CRXIcon className="bucketIcon"> <i className="fas fa-search"></i> </CRXIcon>
 
@@ -12,7 +12,10 @@ const CRXGlobalSearchPanel = () => {
         button={ToggleButton}
         btnStyle="GlobalSearchIconButton"
         >
-           Global Search panel
+           <CRXHeading variant="h2" align="left" className="globalSearchHeading">
+                Global Search
+           </CRXHeading>
+           <GlobalSearch />
         </CRXDrawer>
     )
 }

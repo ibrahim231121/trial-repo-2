@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import { CRXButton, CRXSelectBox } from "@cb/shared";
+import MinimizeIcon from '@material-ui/icons/Minimize';
+import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 interface IOptions {
   value: string;
   key: string;
@@ -31,7 +32,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const [options, setOptions] = useState<IOptions[]>([
     {
-      value: "Recorded By",
+      value: "username",
       key: "User Name",
       _id: "1",
       usedBy: null,
@@ -67,36 +68,43 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       selectedOpt = newOptions.find((opt: any) => opt.usedBy == i);
       select.push(
         <div className="advRow" key={i}>
-          <select
-            className="adVSelectBox"
-            ref={selectRef}
-            id={i.toString()}
-            onChange={(e) => onSelectInputChange(e)}
-            value={selectedOpt?.value}
-          >
-            <option value="" selected disabled hidden>
-              -- Select a search criteria --
-            </option>
-
-            {newOptions.map((val: any, i: number) => (
-              <Options key={i} id={val._id} value={val.value} />
-            ))}
-          </select>
-          {selectedOpt?.isUsed && (
-            <div>
-              <input
-                ref={refs[i]}
+          <CRXRows container spacing={0}>
+            <CRXColumn item xs={6}>
+              <select
+                className="adVSelectBox"
+                ref={selectRef}
                 id={i.toString()}
-                className="adVInputBox"
-                onChange={(e: any) => onInputChange(e)}
-                value={selectedOpt?.inputValue}
-                placeholder={`Search by ${selectedOpt?.value}`}
-              />
-              <button className="removeBtn" onClick={() => Remove(i)}>
-                X
-              </button>
-            </div>
+                onChange={(e) => onSelectInputChange(e)}
+                value={selectedOpt?.value}
+              >
+                <option value="" selected disabled hidden>
+                  -- Select a search criteria --
+                </option>
+
+                {newOptions.map((val: any, i: number) => (
+                  <Options key={i} id={val._id} value={val.value} />
+                ))}
+              </select>
+            </CRXColumn>
+          {selectedOpt?.isUsed && (
+            <CRXColumn item xs={6}>
+              
+                <input
+                  ref={refs[i]}
+                  id={i.toString()}
+                  className="adVInputBox"
+                  onChange={(e: any) => onInputChange(e)}
+                  value={selectedOpt?.inputValue}
+                  placeholder={`Search by ${selectedOpt?.value}`}
+                />
+                
+                <button className="removeBtn" onClick={() => Remove(i)}>
+                  <MinimizeIcon />
+                </button>
+              </CRXColumn>
+            
           )}
+          </CRXRows>
         </div>
       );
     }
@@ -262,7 +270,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       <CRXButton
         color="secondary"
         variant="outlined"
-        className="PreSearchButton"
+        className="advanceSearchButton"
         type="button"
         onClick={AdvancedSearch}
         disabled={disableButton}
