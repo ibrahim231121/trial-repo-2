@@ -1,6 +1,7 @@
 .getac-simple-select {
   border: 2px solid rgb(206, 206, 206);
   transition: all 0.25s ease-in-out;
+  height:30px;
   select {
     padding: 5px;
     min-width: 250px;
@@ -38,6 +39,10 @@
     input {
       font-size: 14px;
       color: #74767c;
+      height: 10px;
+    }
+    .MuiAutocomplete-clearIndicator {
+      padding: 1px;
     }
   }
   .MuiChip-root {

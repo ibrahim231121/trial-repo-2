@@ -1,53 +1,51 @@
 import React, { useState, useRef } from "react";
 import "./PredictiveSearchBox.scss";
-import SearchWorker from "../../../utils/search.worker";
 import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
-import { TextField } from "@cb/shared";
+import {EditableSelect} from '@cb/shared'
 interface Props {
   onSet: (e: any) => void;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
+
   React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutSide);
+    const worker = useSearchWorker.getInstance();
+    var showDataList = (e:any) =>{
+      setOutCome(e.data);
+    }
+    //message recieved from worker.
+    worker.addEventListener("message",showDataList,false);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutSide);
+      worker.removeEventListener("message",showDataList);
     };
-  }, []);
+  },[]);
+  
 
   const url = "/Evidence?Size=10&Page=1";
-  const [searchData, setSearchData] = useState<any>();
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
   //onChange
   const handleOnChange = async (e: any) => {
-    const { value } = e.target;
-
-    setInputValue(value);
-    onSet(value);
+    const { value } = e.target; 
     const worker = useSearchWorker.getInstance();
-
-    //message recieved from worker.
-    worker.addEventListener(
-      "message",
-      function (e) {
-        setOutCome(e.data);
-      },
-      false
-    );
-
-    if (value.length >= 3) {
-      const data = await fetchData(value);
-      if (data) {
-        worker.postMessage({ data, value });
-        setShowSearch(true);
+    if(value){
+      if (value && value.length >= 3) {
+        const data = await fetchData(value);
+        if (data) {
+          worker.postMessage({ data, value });
+          setShowSearch(true);
+        }
       }
-    }
-    if (value.length < 3) {
-      setShowSearch(false);
+      if(value && value.length < 3){
+        setShowSearch(false);
+        setOutCome([]);
+      }
+      onSet(value);
+    }else{
+      onSet("");
+      setOutCome([]);
     }
   };
 
@@ -82,38 +80,25 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
     data = await data.json();
     return data;
   };
-  const handleClickOutSide = (e: MouseEvent) => {
-    const { current: wrap } = wrapperRef;
-    if (
-      wrapperRef.current !== null &&
-      !wrapperRef.current.contains(e.target as HTMLElement)
-    ) {
-      setShowSearch(false);
+
+  const onChangeAutoComplete = (e : any,value:any) =>{
+    if(value && value != null){
+      setInputValue(value);
+      onSet(value);
     }
-  };
+    setShowSearch(false);
+  }
+
   return (
-    <div className="wrapper" ref={wrapperRef}>
-      <div className="search-input">
-        <a href="" target="_blank" hidden></a>
-        <TextField
-          type="text"
-          placeholder="Type to search.."
-          value={inputValue}
-          onChange={handleOnChange}
-        />
-        <div className="autocom-box">
-          {showSearch && outCome && (
-            <Outcome
-              data={outCome}
-              setValue={(val: any) => {
-                setShowSearch(false);
-                setInputValue(val);
-              }}
-            />
-          )}
-        </div>
-        {children}
-      </div>
+    <div>
+      <EditableSelect
+          id="combo-box-demo"
+          options={outCome}
+          placeHolder={"Search for asset by AssetID#, CAD#, Categories and RecordedBy"}
+          onChange={onChangeAutoComplete}
+          onInputChange={handleOnChange}
+          clearText={()=>setInputValue("")}
+      />
     </div>
   );
 };
