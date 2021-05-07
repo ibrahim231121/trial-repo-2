@@ -14,7 +14,6 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
   const [endDate, setEndDate] = React.useState<string>("");
 
   const [open, setOpen] = React.useState(false);
-
   const dateOptions = [
     { value: "today", displayText: "today " },
     { value: "yesterday", displayText: " yesterday" },
@@ -26,6 +25,7 @@ const DateTime: React.FC<Props> = ({ searchStartDate, searchEndDate }) => {
   ];
 
   const onSelctionCahnge = (e: any) => {
+    console.log("Moment Date = " , moment());
     const { value } = e.target;
     setSelectOption(value);
 

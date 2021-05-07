@@ -109,7 +109,10 @@ const SearchComponent = () => {
               <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
             </CRXColumn>
             <CRXColumn item xs={6}>
-              <DateTime />
+              <DateTime
+                              searchStartDate={(v: any) => setSearchStartDate(v)}
+                              searchEndDate={(v: any) => setSearchEndDate(v)}
+              />
             </CRXColumn>
           </CRXRows>
         </div>
@@ -152,7 +155,9 @@ const SearchComponent = () => {
         </div>
       )}
     </div>
-  );
-};
+    </div>
+ 
+ )};
+
 
 export default SearchComponent;
