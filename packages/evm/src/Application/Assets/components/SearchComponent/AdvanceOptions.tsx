@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import MinimizeIcon from '@material-ui/icons/Minimize';
+import MinimizeIcon from "@material-ui/icons/Minimize";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 interface IOptions {
   value: string;
@@ -86,9 +86,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 ))}
               </select>
             </CRXColumn>
-          {selectedOpt?.isUsed && (
-            <CRXColumn item xs={6}>
-              
+            {selectedOpt?.isUsed && (
+              <CRXColumn item xs={6}>
                 <input
                   ref={refs[i]}
                   id={i.toString()}
@@ -97,13 +96,12 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                   value={selectedOpt?.inputValue}
                   placeholder={`Search by ${selectedOpt?.value}`}
                 />
-                
+
                 <button className="removeBtn" onClick={() => Remove(i)}>
                   <MinimizeIcon />
                 </button>
               </CRXColumn>
-            
-          )}
+            )}
           </CRXRows>
         </div>
       );
@@ -184,6 +182,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const Remove = (id: number) => {
     setShowSearchCriteria(true);
+    setDisableButton(false);
     setCurrentSelect(null);
     let found = options.find((opt: any) => id == opt.usedBy);
 
