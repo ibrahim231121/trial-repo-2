@@ -15,7 +15,7 @@ const SearchComponent = () => {
 
   const [searchData, setSearchData] = React.useState<any>();
   const iconRotate = showAdvance ? " " : "rotate90";
-  const url = "/Evidence?Size=10&Page=1";
+  const url = "/Evidence?Size=500&Page=1";
   const QUERRY = {
     bool: {
       must: [
