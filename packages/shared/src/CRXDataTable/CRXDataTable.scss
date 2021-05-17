@@ -17,6 +17,7 @@
                 th.CRXDataTableLabelCell{
                     border-bottom: 0px;
                     border-right:1px solid #ccc;
+                    z-index: 3;
                 }
                 th.TableSearchAbleHead {
                     border-top:1px solid #ccc;
@@ -97,11 +98,14 @@
             }
             .gridSortResize {
                 position: absolute;
-                right:0px;
+                right:-1px;
+                top: 0px;
                 display: flex;
 
                 .GridSortIcon {
                     padding-right: 3px;
+                    position: relative;
+                    top: 5px;
                 }
                 
                 .DragHandleIcon {
@@ -284,20 +288,62 @@ ul.columnList {
 
 // ---- Classes for Resizing Column
   .DragHandle {
-    flex: 0 0 16px;
-    z-index: 2;
     cursor: col-resize;
-    color: #ffffff;
+    color: #337e05;
+    height: 100vh;
+    width: 2px;
+    background: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover {
+        background: #33ff00;
+        &::before {
+            height: 35px;
+            width: 5px;
+            background: #33ff00;
+            position: absolute;
+            top: 0px;
+            right: -3px;
+            content: "";
+            z-index: 99;
+        }
+        &::after {
+            height: 8px;
+            width: 8px;
+            border-radius: 100px;
+            background: #33ff00;
+            position: absolute;
+            top: 34px;
+            right: -3px;
+            content: "";
+        }
+    }
+    &:focus {
+        background: #33ff00;
+        &::before {
+            height: 35px;
+            width: 5px;
+            background: #33ff00;
+            position: absolute;
+            top: 0px;
+            right: -3px;
+            content: "";
+            z-index: 99;
+        }
+        &::after {
+            height: 8px;
+            width: 8px;
+            border-radius: 100px;
+            background: #33ff00;
+            position: absolute;
+            top: 34px;
+            right: -3px;
+            content: "";
+        }
+    }
   }
-  .DragHandle:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  
-  .DragHandleActive,
-  .DragHandleActive:hover {
-    color: #ffffff;
-    z-index: 3;
-  }
+
   
  
 // ---------

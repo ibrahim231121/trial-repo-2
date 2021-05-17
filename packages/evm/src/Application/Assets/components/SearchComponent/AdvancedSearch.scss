@@ -1,7 +1,7 @@
 .advanceSerachContainer {
   width: 95%;
   background: #f2f2f2;
-  padding: 21px 25px;
+  padding: 23px 25px;
   margin: 4px auto 0;
 
   .adVSelectBox {
@@ -37,7 +37,7 @@
   .advRow {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 32px;
     .removeBtn {
       padding: 0;
       line-height: 0;
@@ -80,7 +80,7 @@
 }
 
 .advanceSearchContet {
-  padding-top:37px;
+  padding-top:0px;
   text-align: center;
 
   .PreSearchButton {
@@ -88,7 +88,7 @@
     background: transparent;
     min-width: 100px;
     border: 0px;
-    margin-top:45px;
+    margin-top:36px;
     color:#d74b00;
     
     i{
@@ -117,7 +117,7 @@
     font-size: 14px;
     background: #e4e4e4;
     min-width: 100px;
-    margin-top: 45px;
+    margin-top: 48px;
     &:hover {
       background: #231f20;
       color:#f5f5f5;
