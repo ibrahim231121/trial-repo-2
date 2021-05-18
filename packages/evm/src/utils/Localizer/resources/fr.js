@@ -18,7 +18,7 @@ export const resources = {
         "Device":"fr-Device",
         "Station":"fr-Station",
         "Recorded By":"fr-Recorded By",
-        "Expiry Date":"fr-Expiry Date",
+        "Captured":"fr-Captured",
         "Status":"fr-Status",
       }
     }
