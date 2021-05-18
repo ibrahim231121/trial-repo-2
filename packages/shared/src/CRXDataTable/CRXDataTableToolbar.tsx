@@ -15,6 +15,7 @@ import CRXTypography from '../CRXTypography/Typography'
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
+import Tooltip from '@material-ui/core/Tooltip';
 
 const checkboxStyle = makeStyles({
   root: {
@@ -274,6 +275,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               }
           </div>          
           <div className="dataTableColumnShoHide">
+            <Tooltip title="Customize Columns" placement="top-start">         
              <IconButton
                 aria-controls="CustomizeColumns"
                 className="dataIconButton"
@@ -283,6 +285,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               >
                 <i className="fas fa-columns"></i>
               </IconButton>
+            </Tooltip>
               <Menu
                 id="CustomizeColumns"
                 anchorEl={customizeColumn}

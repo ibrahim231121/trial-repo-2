@@ -326,24 +326,17 @@ export default function CRXDataTable(props: DataTableProps) {
                           }
                         } 
                         >
-                       
-                            <DragableCell
+                            {/* <DragableCell
                               index={i} key={colIdx} 
-                              value={
+                              value={ */}
                                     <div className={classes.headerStickness}
-                                        // style={
-                                        //   {
-                                        //     minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
-                                        //     maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
-                                        //   }
-                                        // } 
                                         key={headCells[colIdx].id}>
                                       <label> 
                                           {headCells[colIdx].label} 
                                       </label>
                                     </div>
-                                    }
-                            />  
+                                    {/* }
+                            />   */}
                       <div className="gridSortResize">
                         {(headCells[colIdx].sort === true) ? (
                         

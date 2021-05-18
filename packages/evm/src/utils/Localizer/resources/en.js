@@ -46,7 +46,7 @@ export const resources = {
         "Device":"Device",
         "Station":"Station",
         "Recorded By":"Recorded By",
-        "Expiry Date":"Expiry Date",
+        "Captured":"Captured",
         "Status":"Status"
       }
     }
