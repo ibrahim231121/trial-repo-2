@@ -1,5 +1,5 @@
 .getac-simple-select {
-  border: 2px solid rgb(206, 206, 206);
+  border: 1px solid #d1d2d4;
   transition: all 0.25s ease-in-out;
   height:30px;
   select {
@@ -9,7 +9,7 @@
     color: #444;
   }
   &:hover {
-    border: 2px solid #888787;
+    border: 1px solid #888787;
     transition: all 0.25s ease-in-out;
   }
   &:focus {

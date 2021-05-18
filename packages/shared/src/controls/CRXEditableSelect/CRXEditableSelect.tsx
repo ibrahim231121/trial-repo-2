@@ -5,6 +5,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
+import {Popper} from '@material-ui/core'
 import "./EditableSelect.scss";
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -21,7 +22,7 @@ interface selectBoxProps {
   placeHolder?: string;
   onChange: (e: any,value:any) => void;
   onInputChange: (e: any) => void;
-  freeSolo : boolean,
+  freeSolo : boolean
 }
 
 interface renderCheck {
@@ -32,12 +33,16 @@ interface renderCheck {
 
 const optionStyle = makeStyles((theme: Theme) =>
 createStyles({
+  "& .MuiAutocomplete-popper" : {
+    width: "100%"
+  },
   option: {
-    minHeight: '33px',
+    height: '33px',
     alignItems: 'flex-start',
-    paddingLeft: "5px",
-    paddingRight: "5px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
     fontSize:"14px",
+    margin:"0px",
     color:"#333",
     "&:hover": {
       backgroundColor: "#f5f5f5"
@@ -50,11 +55,20 @@ createStyles({
   },
   paper : {
     borderRadius: "0px",
-    border: "1px solid #bebebe",
-    boxShadow: "none",
-    marignTop: "-10px",
-    padding:"0px"
-  }
+    border: "0px solid #bebebe",
+    boxShadow: "rgba(0,0,0,0.20) 0px 0px 4px 0px",
+    marginTop: "0px !important",
+    padding:"0px",
+    '& .MuiAutocomplete-paper' : {
+      margin: "0px 0 !important",
+    },
+    '& .MuiAutocomplete-listbox' : {
+      padding:"0px",
+      top:"-10px",
+      border: "1px solid #bebebe",
+    }
+  },
+ 
 }))
 
 const CRXAutocomplete = ({
@@ -90,7 +104,6 @@ const CRXAutocomplete = ({
   //     return <>{option.title} </>;
   //   }
   // };
-
   return (
     <Autocomplete
       multiple={multiple}
@@ -107,11 +120,13 @@ const CRXAutocomplete = ({
       onInputChange={onInputChange}
       classes={{
         option: classes.option,
-        paper: classes.paper,
+        paper : classes.paper
       }}
       onChange={(e,value) => {
         return onChange(e,value);
       }}
+      
+      
       // renderOption={(option: renderCheck, { selected }) =>
       //   renderCheckBox(option, selected)
       // }

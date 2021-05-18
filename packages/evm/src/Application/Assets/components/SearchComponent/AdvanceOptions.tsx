@@ -68,7 +68,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       selectedOpt = newOptions.find((opt: any) => opt.usedBy == i);
       select.push(
         <div className="advRow" key={i}>
-          <CRXRows container spacing={0}>
+          <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
               <select
                 className="adVSelectBox"
@@ -88,7 +88,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
             </CRXColumn>
           {selectedOpt?.isUsed && (
             <CRXColumn item xs={6}>
-              
+              <div className="advanceInputBoxContent">
                 <input
                   ref={refs[i]}
                   id={i.toString()}
@@ -99,8 +99,9 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 />
                 
                 <button className="removeBtn" onClick={() => Remove(i)}>
-                  <MinimizeIcon />
+                  
                 </button>
+                </div>
               </CRXColumn>
             
           )}
