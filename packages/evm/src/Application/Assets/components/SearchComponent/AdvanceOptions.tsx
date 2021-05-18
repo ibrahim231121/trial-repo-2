@@ -269,8 +269,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <span className="btn-text">Add search criteria </span>
       </button>
       <CRXButton
-        color="secondary"
-        variant="outlined"
+        color="primary"
+        variant="contained"
         className="advanceSearchButton"
         type="button"
         onClick={AdvancedSearch}
