@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { CRXDateTimePicker, CRXButton } from "@cb/shared";
 import { DateContext } from "../DateContext";
+import { CRXDropDown, CRXTooltip } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
 import { dateOptions } from "../../../../../utils/constant";
 
@@ -22,7 +23,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose }) => {
     setSelectedOption(e.target.value);
   };
   return (
-    <div>
+    <div className="calenderContent">
       <div className="calenderDTP">
         <CRXDateTimePicker
           date={startDate.split("+")[0]}
@@ -36,12 +37,13 @@ const DatePickerIcon: React.FC<Props> = ({ onClose }) => {
         />
       </div>
 
-      <div>
+      <div className="selectBoxContent">
         <CRXSelectBox
           value={selectedOptionValue}
           onChange={onChange}
           options={dateOptions}
         />
+        <CRXTooltip title="Select from pre-selection" placement="right"/>
       </div>
 
       <div className="paperFooter">

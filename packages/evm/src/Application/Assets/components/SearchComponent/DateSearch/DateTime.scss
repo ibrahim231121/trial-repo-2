@@ -35,7 +35,7 @@
     }
   }
   
-
+.calenderContent{
   .calenderDTP {
     display: flex;
     padding: 25px;
@@ -43,7 +43,15 @@
       padding: 0px 15px;
     }
   }
-
+  .selectBoxContent {
+    padding-left: 11px;
+    padding-right: 25px;
+    display: flex;
+    .wrapper {
+      margin-right: 15px;
+    }
+  }
+}
   .calenderInput {
     .MuiOutlinedInput-input {
       padding: 5px 14px;
