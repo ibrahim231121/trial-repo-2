@@ -1,17 +1,14 @@
 import React from "react";
-import {
-  CRXDropDown,
-  CRXDateRangePicker,
-  CRXDropContainer,
-  CRXModal,
-} from "@cb/shared";
-import TodayIcon from "@material-ui/icons/Today";
-import "./DateTime.scss";
-import DatePickerIcon from "./DatePickerIcon";
 import moment from "moment";
+import DatePickerIcon from "./DatePickerIcon";
+import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
 import { dateOptions } from "../../../../../utils/constant";
+import "./DateTime.scss";
+import { DateContext } from "../DateContext";
 
 const DateTime: React.FC = () => {
+  const { setSelectedOption, selectedOptionValue } =
+    React.useContext(DateContext);
   const [startDate, setStartDate] = React.useState<Object>();
   const [endDate, setEndDate] = React.useState<Object>();
 
@@ -19,8 +16,12 @@ const DateTime: React.FC = () => {
 
   const [selectOption, setSelectOption] = React.useState("");
 
-  const onSelctionCahnge = (e: any) => {
+  const onChange = (e: any) => {
+    setSelectedOption(e.target.value);
     var now = moment();
+    var m = moment();
+    debugger;
+
     // console.log("Moment Date = " , now);
     // console.log("Current Date = " , now.format())
     // console.log("UTC Date 1 = " , now.utc(true).format()) // keeplocaltime : true
@@ -82,8 +83,8 @@ const DateTime: React.FC = () => {
     <div className="dateRangeContainer">
       <label className="dateTimeLabel">Date and Time</label>
       <CRXDropDown
-        value={selectOption}
-        onChange={onSelctionCahnge}
+        value={selectedOptionValue}
+        onChange={onChange}
         options={dateOptions}
       >
         <CRXDropContainer
@@ -93,6 +94,12 @@ const DateTime: React.FC = () => {
           paperClass="CRXDateRange"
         />
       </CRXDropDown>
+
+      {/* <CRXSelectBox
+        value={selectedOptionValue}
+        onChange={onChange}
+        options={dateOptions}
+      /> */}
     </div>
   );
 };
