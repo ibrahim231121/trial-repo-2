@@ -27,3 +27,4 @@ export { default as CRXPanelStyle } from "./CRXFixedPanel/CRXPanelStyle";
 export { default as CRXModal } from "./CRXModal/CRXModal";
 export {default as CRXDropContainer} from './CRXDropContainer'
 export { default as CRXTitle } from './controls/CRXPageTitle/'
+export { default as CRXTooltip} from './controls/CRXTooltip/CRXTooltip'
