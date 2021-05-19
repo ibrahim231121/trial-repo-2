@@ -8,6 +8,7 @@ import DateTime from "./PredictiveSearchBox/DateTime";
 import SelectedAsset from "./SelectedAsset";
 const SearchComponent = () => {
   const [showAdvance, setShowAdvance] = React.useState(false);
+  const [showBottomSearch, setShowBottomSearch] = React.useState(true);
 
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
 
@@ -57,6 +58,7 @@ const SearchComponent = () => {
   };
   const Search = () => {
     fetchData(QUERRY);
+    setShowBottomSearch(false);
   };
   React.useEffect(() => {
     let obj: any = {};
@@ -97,7 +99,6 @@ const SearchComponent = () => {
   }, [addvancedOptions]);
   return (
     <div className="advanceSearchChildren">
-      
       <div className="searchComponents">
         <div className="predictiveSearch">
           <CRXRows container spacing={0}>
@@ -119,24 +120,30 @@ const SearchComponent = () => {
             Search
           </CRXButton>
         </div>
-        <div className="middleContent">
-          <SelectedAsset />
-        </div>
 
-        <div className="advanceSearchContet">
-          <CRXButton
-            onClick={() => setShowAdvance(!showAdvance)}
-            className="PreSearchButton"
-          >
-            <i className={"fas fa-sort-down " + iconRotate}></i> Advanced Search
-          </CRXButton>
-          {showAdvance && (
-            <AdvanceOptions
-              getOptions={(e) => setAddvancedOptions(e)}
-              hideOptions={() => setShowAdvance(false)}
-            />
-          )}
-        </div>
+        {showBottomSearch && (
+          <>
+            <div className="middleContent">
+              <SelectedAsset />
+            </div>
+
+            <div className="advanceSearchContet">
+              <CRXButton
+                onClick={() => setShowAdvance(!showAdvance)}
+                className="PreSearchButton"
+              >
+                <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
+                Search
+              </CRXButton>
+              {showAdvance && (
+                <AdvanceOptions
+                  getOptions={(e) => setAddvancedOptions(e)}
+                  hideOptions={() => setShowAdvance(false)}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
       {searchData && (
         <div className="dataTabAssets">

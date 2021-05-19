@@ -70,10 +70,13 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border:2px solid #cecece;
+      border:1px solid #d1d2d4;
       border-radius: 0px;
       &:hover {
-        border: 2px solid #888787;
+        border: 1px solid #888787;
+      }
+      &:focus {
+        border: 3px solid #888787;
       }
       select{
         height: 27px;
@@ -138,7 +141,7 @@
         }
       }
       .listIcon {
-        font-size: 30px;
+        font-size: 26px;
       }
 
       .count-badge {
@@ -173,3 +176,17 @@
 
 }
 
+
+.combo-box-Search {
+  position: relative;
+  .customIcon {
+    position: absolute;
+    left: 11px;
+    top:7px;
+    color: #76787e;
+  }
+
+  #combo-box-demo {
+    text-indent: 25px;
+  }
+}

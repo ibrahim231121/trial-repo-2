@@ -8,7 +8,7 @@ const SelectedAsset = () => {
       <div className="listOfContent">
         <div className="listButton">
           <CRXButton className="listParentBtn">
-            <ImageSearchIcon className="listIcon" />
+            <i className="far fa-file-search listIcon"></i>
           </CRXButton>
           <div className="count-badge">120</div>
         </div>
@@ -17,7 +17,7 @@ const SelectedAsset = () => {
       <div className="listOfContent">
         <div className="listButton">
           <CRXButton className="listParentBtn">
-            <ImageSearchIcon className="listIcon" />
+          <i className="far fa-file-search listIcon"></i>
           </CRXButton>
           <div className="count-badge">15</div>
         </div>
@@ -26,7 +26,7 @@ const SelectedAsset = () => {
       <div className="listOfContent">
         <div className="listButton">
           <CRXButton className="listParentBtn">
-            <ImageSearchIcon className="listIcon" />
+          <i className="far fa-file-search listIcon"></i>
           </CRXButton>
           <div className="count-badge">5</div>
         </div>

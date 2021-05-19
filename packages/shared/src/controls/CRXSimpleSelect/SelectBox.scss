@@ -1,9 +1,10 @@
 .CRXSimpleSelect{
-    border:2px solid rgb(206, 206, 206);
+    border:1px solid rgb(206, 206, 206);
     transition: all 0.25s ease-in-out;
     padding: 0px 10px;
     min-width: 100px;
     min-height: 30px;
+    font-size: 14px !important;
     .MuiInputBase-input {
         padding: 0px;
     }
@@ -21,7 +22,7 @@
         }
     }
     &:hover {
-        border:2px solid #888787;
+        border:1px solid #888787;
         transition: all 0.25s ease-in-out;
     }
     &:focus {
@@ -80,4 +81,12 @@
 
 .topLevel{
     margin-top: 25px;
+}
+
+.paperStyle {
+    border-Radius: 0px !important;
+    border: 1px solid #bebebe;
+    min-Width: "200px";
+    margin-Left: 0px !important;
+    margin-top: 8px !important;
 }
