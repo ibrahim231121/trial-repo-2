@@ -1,11 +1,13 @@
 import React from "react";
 import SearchComponent from "../components/SearchComponent/SearchComponent";
-import { CRXContainer }  from '@cb/shared'
+import { DateContextProvider } from "../components/SearchComponent/DateContext";
 
 const MannageAsset = () => {
   return (
     <div className="advanceSearchContent">
+      <DateContextProvider>
         <SearchComponent />
+      </DateContextProvider>
     </div>
   );
 };

@@ -4,16 +4,16 @@ import { CRXButton, CRXRows, CRXColumn } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
 import MasterMain from "../DataGrid/MasterMain";
 import "./SearchComponent.scss";
-import DateTime from "./PredictiveSearchBox/DateTime";
+import DateTime from "./DateSearch/DateTime";
 import SelectedAsset from "./SelectedAsset";
+import { DateContext } from "./DateContext";
+
 const SearchComponent = () => {
+  const { startDate, endDate } = React.useContext(DateContext);
+
   const [showAdvance, setShowAdvance] = React.useState(false);
-
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
-
   const [querryString, setQuerryString] = React.useState("");
-  const [searchEndDate, setSearchEndDate] = React.useState<string>("");
-  const [searchStartDate, setSearchStartDate] = React.useState<string>("");
   const [searchData, setSearchData] = React.useState<any>();
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=10&Page=1";
@@ -58,21 +58,21 @@ const SearchComponent = () => {
   };
   //
   const Search = () => {
-    if (searchStartDate) {
+    if (startDate) {
       QUERRY.bool.must.push({
         range: {
           "asset.recordingStarted": {
-            gte: `${searchStartDate}`,
+            gte: `${startDate}`,
           },
         },
       });
     }
 
-    if (searchEndDate) {
+    if (endDate) {
       QUERRY.bool.must.push({
         range: {
           "asset.recordingEnded": {
-            lte: `${searchEndDate}`,
+            lte: `${endDate}`,
           },
         },
       });
@@ -117,11 +117,9 @@ const SearchComponent = () => {
       fetchData(AdvancedSearchQuerry);
     }
   }, [addvancedOptions]);
-  // console.log("searchStartDate", searchStartDate);
-  // console.log("searchEndDate", searchEndDate);
+
   return (
     <div className="advanceSearchChildren">
-      
       <div className="searchComponents">
         <div className="predictiveSearch">
           <CRXRows container spacing={0}>
@@ -130,10 +128,7 @@ const SearchComponent = () => {
               <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
             </CRXColumn>
             <CRXColumn item xs={6}>
-              <DateTime
-                              searchStartDate={(v: any) => setSearchStartDate(v)}
-                              searchEndDate={(v: any) => setSearchEndDate(v)}
-              />
+              <DateTime />
             </CRXColumn>
           </CRXRows>
         </div>
@@ -145,35 +140,35 @@ const SearchComponent = () => {
           >
             Search
           </CRXButton>
-        
-        <div className="middleContent">
-          <SelectedAsset />
-        </div>
 
-        <div className="advanceSearchContet">
-          <CRXButton
-            onClick={() => setShowAdvance(!showAdvance)}
-            className="PreSearchButton"
-          >
-            <i className={"fas fa-sort-down " + iconRotate}></i> Advanced Search
-          </CRXButton>
-          {showAdvance && (
-            <AdvanceOptions
-              getOptions={(e) => setAddvancedOptions(e)}
-              hideOptions={() => setShowAdvance(false)}
-            />
-          )}
+          <div className="middleContent">
+            <SelectedAsset />
+          </div>
+
+          <div className="advanceSearchContet">
+            <CRXButton
+              onClick={() => setShowAdvance(!showAdvance)}
+              className="PreSearchButton"
+            >
+              <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
+              Search
+            </CRXButton>
+            {showAdvance && (
+              <AdvanceOptions
+                getOptions={(e) => setAddvancedOptions(e)}
+                hideOptions={() => setShowAdvance(false)}
+              />
+            )}
+          </div>
         </div>
+        {searchData && (
+          <div className="dataTabAssets">
+            <MasterMain key={Math.random()} rows={searchData} />
+          </div>
+        )}
       </div>
-      {searchData && (
-        <div className="dataTabAssets">
-          <MasterMain key={Math.random()} rows={searchData} />
-        </div>
-      )}
     </div>
-    </div>
- 
- )};
-
+  );
+};
 
 export default SearchComponent;

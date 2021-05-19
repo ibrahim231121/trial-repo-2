@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { CRXDateTimePicker, CRXButton } from "@cb/shared";
+import { DateContext } from "../DateContext";
+import { CRXDropDown } from "@cb/shared";
+import { dateOptions } from "../../../../../utils/constant";
 type Props = {
   onClose: () => void;
   selectedOption?: any;
   endDate: Object | undefined;
   startDate: Object | undefined;
-  searchStartDate: (e: any) => void;
-  searchEndDate: (e: any) => void;
 };
 const getDate = (type: string) => {
   switch (type) {
@@ -48,41 +49,50 @@ const getDate = (type: string) => {
   }
 };
 
-const DatePicker: React.FC<Props> = ({
-  onClose,
-  endDate,
-  startDate,
-  searchStartDate,
-  searchEndDate,
-}) => {
+const DatePickerIcon: React.FC<Props> = ({ onClose, endDate, startDate }) => {
+  const { setStartDateValue, setEndDateValue } = useContext(DateContext);
   const [StartDate, setStartDate] = useState(startDate);
   const [EndDate, setEndDate] = useState(endDate);
+  const [selectOption, setSelectOption] = React.useState("");
 
-React.useEffect(() => {
-    setStartDate(startDate)
+  React.useEffect(() => {
+    setStartDate(startDate);
     setEndDate(endDate);
-    console.log("Use Effect");
-}, [startDate,endDate])
-  console.log(" Start Date = ", startDate);
-  console.log("End date ", endDate);
+  }, [startDate, endDate]);
+
+  const onSelctionCahnge = (e: any) => {
+    console.log(e.target.value);
+    setSelectOption(e.target.value);
+  };
   return (
     <div>
       <div className="calenderDTP">
         <CRXDateTimePicker
           date={startDate}
-          onChange={(e: any) => searchStartDate(e.target.value)}
+          onChange={(e: any) => setStartDateValue(e.target.value)}
         />
         <div className="centerContent">to</div>
         <CRXDateTimePicker
           date={endDate}
-          onChange={(e: any) => searchEndDate(e.target.value)}
+          onChange={(e: any) => setEndDateValue(e.target.value)}
         />
       </div>
+
+      <div>
+        <CRXDropDown
+          value={selectOption}
+          onChange={onSelctionCahnge}
+          options={dateOptions}
+        />
+      </div>
+
       <div className="paperFooter">
-        <CRXButton className="clearButton" onClick={onClose}>Clear</CRXButton>
+        <CRXButton className="clearButton" onClick={onClose}>
+          Clear
+        </CRXButton>
       </div>
     </div>
   );
 };
 
-export default DatePicker;
+export default DatePickerIcon;
