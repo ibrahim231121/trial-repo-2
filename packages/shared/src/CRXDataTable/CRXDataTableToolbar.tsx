@@ -16,6 +16,7 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
 import Tooltip from '@material-ui/core/Tooltip';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const checkboxStyle = makeStyles({
   root: {
@@ -304,6 +305,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   horizontal: 'left',
                 }}
               >
+              <div style={{position:'absolute', top:"-20px", right:"0px"}}>
+                <IconButton aria-label="clear"  onClick={customizeColumnClose} >
+                  <ClearIcon fontSize="small"/>
+                </IconButton>
+              </div>
               <CRXTypography className="DRPTitle" variant="h3" >{t('Customize columns')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
