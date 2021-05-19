@@ -47,7 +47,7 @@ export const resources = {
         "Station":"Station",
         "Recorded By":"Recorded By",
         "Captured":"Captured",
-        "Status":"Status"
+        "File Status":"File Status"
       }
     }
   };

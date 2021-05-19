@@ -19,7 +19,7 @@ export const resources = {
         "Station":"fr-Station",
         "Recorded By":"fr-Recorded By",
         "Captured":"fr-Captured",
-        "Status":"fr-Status",
+        "File Status":"fr-File Status",
       }
     }
   };

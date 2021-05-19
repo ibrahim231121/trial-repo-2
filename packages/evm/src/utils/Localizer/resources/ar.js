@@ -19,7 +19,7 @@ export const resources = {
         "Station":"ar-Station",
         "Recorded By":"ar-Recorded By",
         "Captured":"ar-Captured",
-        "Status":"ar-Status",
+        "File Status":"ar-File Status",
       }
     }
   };

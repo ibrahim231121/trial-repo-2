@@ -59,6 +59,7 @@ const checkboxStyle = makeStyles({
   },
 });
 
+
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const classes = useToolbarStyles();
     const chkStyle = checkboxStyle();
@@ -68,9 +69,6 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const [customizeColumn, setCustomize] = useState<any>(null)
     const [orderColumn, setOrderColumn] = useState(props.orderingColumn)
     const [onPreset, setOnPreSet] = useState<boolean>()
-    // const [orderColumn, setOrderColumn] = useState(
-    //   new Array(headCells.length).fill(null).map((_, i) => i)
-    // );
     const {t} = useTranslation<string>();
 
     useEffect(() => {
@@ -78,11 +76,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
       }) 
-      let orderingColumns = localStorage.getItem("checkOrderPreset");
-      if(orderingColumns !== null)
+      let checkOrderPreset = localStorage.getItem("checkOrderPreset");
+      if(checkOrderPreset !== null)
         setOnPreSet(true)
       else
-        setOnPreSet(false)
+        setOnPreSet(false)  
     },[])
 
     useEffect(() => {
@@ -105,14 +103,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       selected[index].visible = event.target.checked;     
       headCells[index].visible = selected[index].visible 
       setSelected(prevState  => ({...prevState}))
-      onChange()
-    }
-
-    const handleCustomizeChange = (checked: boolean, index: number) => {
-      selected[index].visible =  checked;
-      headCells[index].visible = selected[index].visible 
-      setSelected(prevState  => ({...prevState}))
-      onChange()
+      onChange()    
     }
 
     const handlePreset = (event: any) => {
@@ -123,7 +114,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       setAnchorEl(null);
     }
 
-    const onSavecloseHandle = () => {
+    function onSavecloseHandle() {
+
       let checkOrderPreset = orderColumn.map((i, _) => {
         let rObj: any = {}
         rObj["order"] = i
@@ -138,10 +130,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       }
       else
       {
+        let orderingColumns = localStorage.getItem("checkOrderPreset");
         localStorage.removeItem("checkOrderPreset");
-        alert("Success: Your Customized columns have been cleared.")
+        if(orderingColumns !== null)
+          alert("Success: Your Customized columns have been cleared.")
       }
-      setCustomize(null)
+      setCustomize(null)    
     }
    
     const resetToDefault = () => {
@@ -170,12 +164,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       onChange()
     }
 
-    const onReorderEnd = useCallback(
-      
+    const handleCustomizeChange = (checked: boolean, index: number) => {
+      selected[index].visible = checked;     
+      headCells[index].visible = selected[index].visible 
+      setSelected(prevState  => ({...prevState}))
+      onChange()
+    }
+
+    const onReorderEnd = useCallback(    
       ({ oldIndex, newIndex}, _) => {
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
+
         setOrderColumn(newOrder);
         onReOrder(newOrder)
       },
@@ -364,6 +365,7 @@ const SortableList = SortableContainer((props: any) => {
   const handleCheckChange = (event: any, index: number) => {    
     onReOrderChange(event.target.checked,index)
   }
+
   return (
     <span>
       {orderColumn.map((colIdx: any, index: number) => (

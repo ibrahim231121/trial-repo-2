@@ -68,11 +68,12 @@ export default function CRXDataTable(props: DataTableProps) {
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
     let checkOrderPreset = localStorage.getItem("checkOrderPreset"); 
+    
     if(checkOrderPreset !== null)
     {
       let arr = JSON.parse(checkOrderPreset).map((x:any) => x.order)
       setOrderColumn(arr)
-
+      
       JSON.parse(checkOrderPreset).map((x: any) => {
         headCells[x.order].visible = x.value
       }) 
