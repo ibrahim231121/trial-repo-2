@@ -210,6 +210,7 @@ const MasterMain = (props:any) => {
           <div className="filterSelect">
               <CRXSelectBox 
                 className="selectFilter"
+                popover="dropdownPaper"
                 options={unique} 
                 id="simpleSelectBox" 
                 onChange={(e: any) => selectChange(e,colIdx)} 
