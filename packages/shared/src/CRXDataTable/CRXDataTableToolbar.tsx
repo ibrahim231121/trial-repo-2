@@ -64,7 +64,7 @@ const checkboxStyle = makeStyles({
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const classes = useToolbarStyles();
     const chkStyle = checkboxStyle();
-    const { headCells, rowCount, columnVisibilityBar, onChange, onReOrder } = props;
+    const {headCells, rowCount, columnVisibilityBar, onChange, onReOrder } = props;
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [customizeColumn, setCustomize] = useState<any>(null)
@@ -73,6 +73,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const {t} = useTranslation<string>();
 
     useEffect(() => {
+      
       headCells.map((headCell: any, x) => {
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
@@ -82,6 +83,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
         setOnPreSet(true)
       else
         setOnPreSet(false)  
+
     },[])
 
     useEffect(() => {
@@ -152,14 +154,13 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     }
 
     const resetToCustomizeDefault = () => {
-      headCells.map((headCell, x) => {
-        if(headCell.keyCol === false || headCell.keyCol === undefined)
-        {
-          selected[x].visible = true 
-          headCell.visible = selected[x].visible
-          setSelected(prevState  => ({...prevState}))
-        }
-      }) 
+
+      let local_headCells = localStorage.getItem("headCells");  
+      if(local_headCells !== null)
+      {
+        let headCells = JSON.parse(local_headCells)
+        setSelected(headCells)
+      }
       let sortOrder = orderColumn.sort((a: number, b: number) => a - b)
       setOrderColumn(sortOrder)
       onChange()
