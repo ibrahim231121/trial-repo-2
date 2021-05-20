@@ -111,18 +111,19 @@ const SearchComponent = () => {
             </CRXColumn>
           </CRXRows>
         </div>
-        <div className="preSearcBtnContent">
-          <CRXButton
-            className="PreSearchButton"
-            onClick={Search}
-            disabled={querryString.length < 1 ? true : false}
-          >
-            Search
-          </CRXButton>
-        </div>
 
         {showBottomSearch && (
           <>
+            <div className="preSearcBtnContent">
+              <CRXButton
+                className="PreSearchButton"
+                onClick={Search}
+                disabled={querryString.length < 1 ? true : false}
+              >
+                Search
+              </CRXButton>
+            </div>
+
             <div className="middleContent">
               <SelectedAsset />
             </div>
