@@ -7,9 +7,10 @@ import { dateOptions } from "../../../../../utils/constant";
 
 type Props = {
   onClose: () => void;
+  dropDownCustomValue: (v: any) => void;
 };
 
-const DatePickerIcon: React.FC<Props> = ({ onClose }) => {
+const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
   const {
     setStartDateValue,
     setEndDateValue,
@@ -20,8 +21,17 @@ const DatePickerIcon: React.FC<Props> = ({ onClose }) => {
   } = useContext(DateContext);
 
   const onChange = (e: any) => {
-    setSelectedOption(e.target.value);
+    const { value } = e.target;
+    setSelectedOption(value);
   };
+
+  React.useEffect(() => {
+    if (selectedOptionValue === "custom" && startDate && endDate) {
+      // alert("working");
+      dropDownCustomValue("hehehehe");
+    }
+  }, [startDate, endDate]);
+
   return (
     <div className="calenderContent">
       <div className="calenderDTP">
@@ -43,7 +53,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose }) => {
           onChange={onChange}
           options={dateOptions}
         />
-        <CRXTooltip title="Select from pre-selection" placement="right"/>
+        <CRXTooltip title="Select from pre-selection" placement="right" />
       </div>
 
       <div className="paperFooter">

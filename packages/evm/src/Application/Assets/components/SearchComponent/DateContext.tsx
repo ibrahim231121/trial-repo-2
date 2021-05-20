@@ -18,7 +18,11 @@ export const DateContextProvider: React.FC = ({ children }) => {
 
   const setSelectedOption = (val: any) => {
     setSelection(val);
+    setEndDate("");
+    setStartDate("");
+
     const m = moment();
+
     if (val !== "last calendar month") {
       setEndDateValue(m.format());
     }
@@ -47,6 +51,8 @@ export const DateContextProvider: React.FC = ({ children }) => {
         break;
 
       default:
+        setSelection(val);
+        setEndDate("");
         break;
     }
   };
