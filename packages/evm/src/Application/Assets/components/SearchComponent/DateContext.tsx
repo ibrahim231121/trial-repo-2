@@ -22,23 +22,29 @@ export const DateContextProvider: React.FC = ({ children }) => {
     setStartDate("");
 
     const m = moment();
+    const startingDate=moment();
+    const endingDate=moment();
 
     if (val !== "last calendar month") {
-      setEndDateValue(m.format());
+      setEndDateValue(m.endOf("day").set("second",0).format());
     }
 
     switch (val) {
       case "last 30 days":
-        setStartDateValue(m.startOf("day").subtract(30, "days").format());
+        setStartDateValue(startingDate.startOf("day").subtract(30, "days").format());
+        setEndDateValue(endingDate.endOf("day").set("second",0).format());
         break;
       case "last 7 days":
-        setStartDateValue(m.startOf("day").subtract(7, "days").format());
+        setStartDateValue(startingDate.startOf("day").subtract(7, "days").format());
+        setEndDateValue(endingDate.endOf("day").subtract(1, "days").set("second",0).format());
         break;
       case "yesterday":
-        setStartDateValue(m.startOf("day").subtract(1, "days").format());
+        setStartDateValue(startingDate.startOf("day").subtract(1, "days").format());
+        setEndDateValue(endingDate.endOf("day").subtract(1, "days").format());
         break;
       case "today":
-        setStartDateValue(m.startOf("day").format());
+       setEndDateValue(endingDate.endOf("day").set("second",0).format());
+        setStartDateValue(startingDate.startOf("day").format());
         break;
 
       case "current calendar month":

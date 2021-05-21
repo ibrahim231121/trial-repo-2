@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { CRXDateTimePicker, CRXButton } from "@cb/shared";
 import { DateContext } from "../DateContext";
-import { CRXDropDown, CRXTooltip } from "@cb/shared";
+import { CRXTooltip } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
 import { dateOptions } from "../../../../../utils/constant";
 
@@ -19,18 +19,24 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
     startDate,
     endDate,
   } = useContext(DateContext);
-
+  React.useEffect(() => {
+    if (selectedOptionValue === "custom" && startDate && endDate) {
+      dropDownCustomValue("customRange");
+    }
+  }, [startDate, endDate]);
   const onChange = (e: any) => {
     const { value } = e.target;
+    dropDownCustomValue(value)
     setSelectedOption(value);
   };
 
-  React.useEffect(() => {
-    if (selectedOptionValue === "custom" && startDate && endDate) {
-      // alert("working");
-      dropDownCustomValue("hehehehe");
-    }
-  }, [startDate, endDate]);
+
+  const onClear = () => {
+    setStartDateValue("");
+    setEndDateValue("");
+    setSelectedOption("");
+  };
+  
 
   return (
     <div className="calenderContent">
@@ -57,7 +63,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
       </div>
 
       <div className="paperFooter">
-        <CRXButton className="clearButton" onClick={onClose}>
+        <CRXButton className="clearButton" onClick={onClear}>
           Clear
         </CRXButton>
       </div>
