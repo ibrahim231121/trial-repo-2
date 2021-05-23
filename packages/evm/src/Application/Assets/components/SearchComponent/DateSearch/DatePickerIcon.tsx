@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState,useContext } from "react";
 import { CRXDateTimePicker, CRXButton } from "@cb/shared";
 import { DateContext } from "../DateContext";
 import { CRXTooltip } from "@cb/shared";
@@ -11,6 +11,9 @@ type Props = {
 };
 
 const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
+  const [start, setStart] = useState("")
+  const [end, setEnd] = useState("")
+
   const {
     setStartDateValue,
     setEndDateValue,
@@ -36,20 +39,26 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
     setEndDateValue("");
     setSelectedOption("");
   };
-  
 
   return (
     <div className="calenderContent">
       <div className="calenderDTP">
         <CRXDateTimePicker
           date={startDate.split("+")[0]}
-          onChange={(e: any) => setStartDateValue(e.target.value)}
+          onChange={(e: any) => {
+            setSelectedOption("custom")
+            setStart(e.target.value)
+
+            setStartDateValue(e.target.value)}}
         />
 
         <div className="centerContent">to</div>
         <CRXDateTimePicker
           date={endDate.split("+")[0]}
-          onChange={(e: any) => setEndDateValue(e.target.value)}
+          onChange={(e: any) => {
+            setSelectedOption("custom")
+            setEnd(e.target.value)
+            setEndDateValue(e.target.value)}}
         />
       </div>
 
