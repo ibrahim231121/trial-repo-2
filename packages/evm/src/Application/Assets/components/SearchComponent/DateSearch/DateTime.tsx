@@ -20,7 +20,7 @@ const DateTime: React.FC = () => {
     setSelectedOption(e.target.value);
     var now = moment();
     var m = moment();
-    debugger;
+    
 
     // console.log("Moment Date = " , now);
     // console.log("Current Date = " , now.format())

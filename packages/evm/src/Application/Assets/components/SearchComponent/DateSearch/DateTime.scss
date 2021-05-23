@@ -44,18 +44,16 @@
     }
   }
   .selectBoxContent {
-    padding-left: 11px;
+    padding-left: 25px;
     padding-right: 25px;
     display: flex;
-    .wrapper {
+    .daysSelection {
       margin-right: 15px;
+      width: 260px;
     }
   }
 }
   .calenderInput {
-    .MuiOutlinedInput-input {
-      padding: 5px 14px;
-    }
     .MuiOutlinedInput-notchedOutline {
       border-radius: 0px;
     }

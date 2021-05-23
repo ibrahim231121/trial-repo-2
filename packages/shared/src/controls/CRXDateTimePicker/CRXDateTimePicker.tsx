@@ -1,7 +1,7 @@
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-
+import './CRXDateTimePicker.scss'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
 type Props = {
   date: any;
   onChange: (e: any) => void;
+  className? : string 
 };
-const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
+const CRXDateTimePicker: React.FC<Props> = ({ date, onChange, className }) => {
   const classes = useStyles();
   
   return (
@@ -30,7 +31,7 @@ const CRXDateTimePicker: React.FC<Props> = ({ date, onChange }) => {
         type="datetime-local"
         defaultValue={date}
         //value={date}
-        className="calenderInput"
+        className={"calenderInput CBX-datePicker "  + className}
         variant="outlined"
         onChange={onChange}
       />

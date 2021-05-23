@@ -26,7 +26,7 @@ const DropDown: React.FC<Props> = ({
           value={value}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e)}
         >
-          <option value={-1}>Please Select</option>
+          <option value="">Please Select</option>
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.displayText}
