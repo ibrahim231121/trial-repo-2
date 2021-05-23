@@ -9,6 +9,8 @@ interface propsType {
     className?: string,
     content : React.ReactNode,
     paperClass? : string, 
+    paperState: boolean,
+    onClick : (e : any) => void
 }
 
 // const theme = createMuiTheme({
@@ -24,24 +26,27 @@ interface propsType {
 //     },
 //   });
 
-const CRXDropContainer = ({icon, color, className, paperClass, content} : propsType) => {
-    const [state, setstate] = React.useState<boolean>(false)
+const CRXDropContainer = ({icon, onClick, paperState, color, className, paperClass, content} : propsType) => {
+    //const [state, setstate] = React.useState<boolean>(false)
 
-    const clickHandler = () => {
-        setstate(state == false ? true : false);
-    }
+    // const clickHandler = () => {
+    //     setstate(state == false ? true : false);
+        
+    // }
+
+    
     return (
         <div className="iconContent">
             <IconButton
                 color={color}
                 className={"buttonStyle " + className}
                 component="div"
-                onClick={clickHandler}
+                onClick={onClick}
                 disableRipple={true}
             >
               <div className="iconStyle">{icon}</div>
             </IconButton>
-            {state ? 
+            {paperState ? 
             <Paper className={"paperStyle " + paperClass} variant="outlined" square>
                 {content} 
             </Paper> : " "

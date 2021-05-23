@@ -43,8 +43,10 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
   return (
     <div className="calenderContent">
       <div className="calenderDTP">
-        <CRXDateTimePicker
-          date={startDate.split("+")[0]}
+        <TextField
+          value={startDate.split("+")[0]}
+          type="datetime-local"
+          defaultValue={startDate.split("+")[0]}
           onChange={(e: any) => {
             setSelectedOption("custom")
             setStart(e.target.value)
@@ -53,8 +55,10 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
         />
 
         <div className="centerContent">to</div>
-        <CRXDateTimePicker
-          date={endDate.split("+")[0]}
+        <TextField
+          value={endDate.split("+")[0]}
+          type="datetime-local"
+          defaultValue={endDate.split("+")[0]}
           onChange={(e: any) => {
             setSelectedOption("custom")
             setEnd(e.target.value)

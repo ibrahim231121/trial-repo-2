@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DatePickerIcon from "./DatePickerIcon";
 import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
 import { dateOptions } from "../../../../../utils/constant";
@@ -12,6 +12,7 @@ const DateTime: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
+  const [state, setstate] = React.useState(false);
 
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
@@ -19,7 +20,21 @@ const DateTime: React.FC = () => {
   };
 
 
+  const CRXdropContainer = () => {
+      setstate(state == false ? true : false);
+  }
 
+  // React.useEffect(() => {
+    
+    
+  //     document.addEventListener('click', function() {
+  //       setstate(false)
+  //     });
+    
+  //   return () => {
+  //     document.removeEventListener('click', CRXdropContainer);
+  //   }
+  // },[state]);
 
   const setDropDownValueFunction=(v:any)=>{
     const find = dateOptionsState.filter(x=>x.value!=="customRange")
@@ -51,12 +66,15 @@ const DateTime: React.FC = () => {
         value={dropDownValue?dropDownValue:selectedOptionValue}
         onChange={onSelectionChange}
         options={dateOptionsState}
+        disabled={state}
       >
         <CRXDropContainer
           icon={img}
           content={data}
           className="dateRangeButton"
           paperClass="CRXDateRange"
+          onClick={CRXdropContainer}
+          paperState={state}
         />
       </CRXDropDown>
     </div>
