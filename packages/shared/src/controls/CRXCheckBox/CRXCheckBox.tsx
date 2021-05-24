@@ -7,7 +7,7 @@ interface Props {
   name?: string;
   label?: string;
   checked?: boolean;
-  inputProps: string,
+  inputProps?: string,
   lightMode? : boolean,
   onChange?: (e: any) => void;
   onClick? : (e : any) => void;

@@ -392,12 +392,11 @@ const SortableList = SortableContainer((props: any) => {
                   (selected[colIdx].keyCol === false || selected[colIdx].keyCol === undefined) ? 
                     <FormControlLabel
                       value={selected[colIdx].label}
-                      control={<Checkbox checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)}
-                      checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
-                      icon={<span className={chkStyle.icon} />}
+                      control={<CRXCheckBox checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
+                     //icon={<span className={chkStyle.icon} />}
                       className={chkStyle.root + " shoHideCheckbox"}
-                      disableRipple={true} 
-                      color="default" />}
+                      
+                      //color="default" />}
                       label={selected[colIdx].label}
                       labelPlacement="end"
                     />
