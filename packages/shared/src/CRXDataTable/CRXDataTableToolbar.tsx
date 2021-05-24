@@ -16,6 +16,7 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
 import Tooltip from '@material-ui/core/Tooltip';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const checkboxStyle = makeStyles({
   root: {
@@ -59,30 +60,30 @@ const checkboxStyle = makeStyles({
   },
 });
 
+
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const classes = useToolbarStyles();
     const chkStyle = checkboxStyle();
-    const { headCells, rowCount, columnVisibilityBar, onChange, onReOrder } = props;
+    const {headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder } = props;
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [customizeColumn, setCustomize] = useState<any>(null)
     const [orderColumn, setOrderColumn] = useState(props.orderingColumn)
     const [onPreset, setOnPreSet] = useState<boolean>()
-    // const [orderColumn, setOrderColumn] = useState(
-    //   new Array(headCells.length).fill(null).map((_, i) => i)
-    // );
     const {t} = useTranslation<string>();
 
     useEffect(() => {
+      
       headCells.map((headCell: any, x) => {
           selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
           setSelected(prevState  => ({...prevState}))
       }) 
-      let orderingColumns = localStorage.getItem("checkOrderPreset");
-      if(orderingColumns !== null)
+      let checkOrderPreset = localStorage.getItem("checkOrderPreset");
+      if(checkOrderPreset !== null)
         setOnPreSet(true)
       else
-        setOnPreSet(false)
+        setOnPreSet(false)  
+
     },[])
 
     useEffect(() => {
@@ -105,14 +106,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       selected[index].visible = event.target.checked;     
       headCells[index].visible = selected[index].visible 
       setSelected(prevState  => ({...prevState}))
-      onChange()
-    }
-
-    const handleCustomizeChange = (checked: boolean, index: number) => {
-      selected[index].visible =  checked;
-      headCells[index].visible = selected[index].visible 
-      setSelected(prevState  => ({...prevState}))
-      onChange()
+      onChange()    
     }
 
     const handlePreset = (event: any) => {
@@ -123,7 +117,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       setAnchorEl(null);
     }
 
-    const onSavecloseHandle = () => {
+    function onSavecloseHandle() {
+
       let checkOrderPreset = orderColumn.map((i, _) => {
         let rObj: any = {}
         rObj["order"] = i
@@ -138,44 +133,52 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       }
       else
       {
+        let orderingColumns = localStorage.getItem("checkOrderPreset");
         localStorage.removeItem("checkOrderPreset");
-        alert("Success: Your Customized columns have been cleared.")
+        if(orderingColumns !== null)
+          alert("Success: Your Customized columns have been cleared.")
       }
-      setCustomize(null)
+      setCustomize(null)    
     }
    
-    const resetToDefault = () => {
-      headCells.map((headCell, x) => {
-        if(headCell.keyCol === false || headCell.keyCol === undefined)
-        {
-          selected[x].visible = true
-          headCell.visible = selected[x].visible
-          setSelected(prevState  => ({...prevState}))
-        }
-      }) 
-      onChange()
+    const clearAllFilters = () => {
+      // headCells.map((headCell, x) => {
+      //   if(headCell.keyCol === false || headCell.keyCol === undefined)
+      //   {
+      //     selected[x].visible = true
+      //     headCell.visible = selected[x].visible
+      //     setSelected(prevState  => ({...prevState}))
+      //   }
+      // }) 
+      onClearAll()
     }
 
     const resetToCustomizeDefault = () => {
-      headCells.map((headCell, x) => {
-        if(headCell.keyCol === false || headCell.keyCol === undefined)
-        {
-          selected[x].visible = true 
-          headCell.visible = selected[x].visible
-          setSelected(prevState  => ({...prevState}))
-        }
-      }) 
+
+      let local_headCells = localStorage.getItem("headCells");  
+      if(local_headCells !== null)
+      {
+        let headCells = JSON.parse(local_headCells)
+        setSelected(headCells)
+      }
       let sortOrder = orderColumn.sort((a: number, b: number) => a - b)
       setOrderColumn(sortOrder)
       onChange()
     }
 
-    const onReorderEnd = useCallback(
-      
+    const handleCustomizeChange = (checked: boolean, index: number) => {
+      selected[index].visible = checked;     
+      headCells[index].visible = selected[index].visible 
+      setSelected(prevState  => ({...prevState}))
+      onChange()
+    }
+
+    const onReorderEnd = useCallback(    
       ({ oldIndex, newIndex}, _) => {
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
+
         setOrderColumn(newOrder);
         onReOrder(newOrder)
       },
@@ -225,8 +228,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >{t('Show / hide columns')}</CRXTypography>
-                    <Grid container spacing={0}>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tables columns filter')}</CRXTypography>
+                    {/* <Grid container spacing={0}>
                       {orderColumn.map((i: number, index: number) => {
                        return(  
                                 (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
@@ -247,7 +250,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                                 null
                               )
                       })}
-                    </Grid>
+                    </Grid> */}
                     <div className="footerDRP">
                     <Grid container spacing={0}>
                       <Grid item xs={4}>
@@ -264,12 +267,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       <Grid item xs={4}>
                         <CRXButton 
                           id="resetCheckBox"
-                          onClick={resetToDefault}
+                          onClick={clearAllFilters}
                           color="default"
                           variant="outlined" 
                           className="resetCheckBox"
                           >
-                            {t('Reset to default')}
+                            {t('Clear all filters')}
                           </CRXButton>
                       </Grid>
                       
@@ -310,6 +313,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   horizontal: 'left',
                 }}
               >
+              <div style={{position:'absolute', top:"-20px", right:"0px"}}>
+                <IconButton aria-label="clear"  onClick={customizeColumnClose} >
+                  <ClearIcon fontSize="small"/>
+                </IconButton>
+              </div>
               <CRXTypography className="DRPTitle" variant="h3" >{t('Customize columns')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
@@ -373,6 +381,7 @@ const SortableList = SortableContainer((props: any) => {
   const handleCheckChange = (event: any, index: number) => {    
     onReOrderChange(event.target.checked,index)
   }
+
   return (
     <span>
       {orderColumn.map((colIdx: any, index: number) => (

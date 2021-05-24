@@ -2,9 +2,10 @@ export const resources = {
     fr: {
       translation: {
         "assets": "fr-Assets",
-        "Show / hide columns": "fr-Show / hide columns",
+        "Tables columns filter": "fr-Tables columns filter",
         "Close" : "fr-Close",
         "Reset to default" : "fr-Reset to default",
+        "Clear all filters": "fr-Clear all filters",
         "Customize columns": "fr-Customize columns",
         "Save and close" : "fr-Save and close",
         "Save as preset" : "fr-Save as preset",
@@ -19,7 +20,7 @@ export const resources = {
         "Station":"fr-Station",
         "Recorded By":"fr-Recorded By",
         "Captured":"fr-Captured",
-        "Status":"fr-Status",
+        "File Status":"fr-File Status",
       }
     }
   };

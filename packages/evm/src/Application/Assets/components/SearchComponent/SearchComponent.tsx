@@ -6,6 +6,9 @@ import MasterMain from "../DataGrid/MasterMain";
 import "./SearchComponent.scss";
 import DateTime from "./PredictiveSearchBox/DateTime";
 import SelectedAsset from "./SelectedAsset";
+import queries from "../../QueryManagement/queries";
+import constants from '../../utils/constants'
+
 const SearchComponent = () => {
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showBottomSearch, setShowBottomSearch] = React.useState(true);
@@ -42,6 +45,7 @@ const SearchComponent = () => {
 
   // fetchData
   const fetchData = (querry: any) => {
+    
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -56,10 +60,31 @@ const SearchComponent = () => {
         return res;
       });
   };
+
   const Search = () => {
     fetchData(QUERRY);
     setShowBottomSearch(false);
   };
+
+  const shortcutData = [
+    {
+      text: "UnCategorized Assets",
+      query : queries.GetAssetsUnCategorized(),
+      renderData : function(){ fetchData(this.query) }
+    },
+    {
+      text: "Trash",
+      query : queries.GetAssetsBySatus(constants.AssetStatus.Trash),
+      renderData : function(){ fetchData(this.query) }
+    },
+    {
+      text: "Deleted",
+      query : queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
+      renderData : function(){ fetchData(this.query) } 
+    }   
+  ]
+
+
   React.useEffect(() => {
     let obj: any = {};
 
@@ -78,7 +103,7 @@ const SearchComponent = () => {
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "unitId") {
+        } else if (o != undefined && o.key == "description") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
@@ -97,6 +122,7 @@ const SearchComponent = () => {
       fetchData(AdvancedSearchQuerry);
     }
   }, [addvancedOptions]);
+
   return (
     <div className="advanceSearchChildren">
       <div className="searchComponents">
@@ -111,20 +137,21 @@ const SearchComponent = () => {
             </CRXColumn>
           </CRXRows>
         </div>
-        <div className="preSearcBtnContent">
-          <CRXButton
-            className="PreSearchButton"
-            onClick={Search}
-            disabled={querryString.length < 1 ? true : false}
-          >
-            Search
-          </CRXButton>
-        </div>
 
-        {showBottomSearch && (
+
+            <div className="preSearcBtnContent">
+              <CRXButton
+                className="PreSearchButton"
+                onClick={Search}
+                disabled={querryString.length < 1 ? true : false}
+              >
+                Search
+              </CRXButton>
+            </div>
+            {showBottomSearch && (
           <>
             <div className="middleContent">
-              <SelectedAsset />
+              <SelectedAsset  shortcutData={shortcutData} />
             </div>
 
             <div className="advanceSearchContet">

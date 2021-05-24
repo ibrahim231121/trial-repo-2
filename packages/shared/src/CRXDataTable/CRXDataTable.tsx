@@ -29,7 +29,7 @@ import './CRXDataTable.scss';
 import {useTranslation} from 'react-i18next'; 
 
 export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
+  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, onClearAll} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -41,6 +41,7 @@ export default function CRXDataTable(props: DataTableProps) {
   );
   const {t} = useTranslation<string>();
   const keyId = headCells.filter(n => n.keyCol === true).map((v => v.id)).toString()
+  const [allColHide, setAllColHide] = React.useState<boolean>(false);
 
   const secondRows: any[] = [];
 
@@ -68,11 +69,12 @@ export default function CRXDataTable(props: DataTableProps) {
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
     let checkOrderPreset = localStorage.getItem("checkOrderPreset"); 
+    
     if(checkOrderPreset !== null)
     {
       let arr = JSON.parse(checkOrderPreset).map((x:any) => x.order)
       setOrderColumn(arr)
-
+      
       JSON.parse(checkOrderPreset).map((x: any) => {
         headCells[x.order].visible = x.value
       }) 
@@ -186,15 +188,22 @@ export default function CRXDataTable(props: DataTableProps) {
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   function onColumnVisibility(){
-    if(open === true )
-      setOpen(false)
-    else
-      setOpen(true)
+    let a = 0;
+    headCells.map((x,_) => {   
+      if(!x.visible)
+      {
+        a = a + 1
+        if(a === headCells.length)
+          setAllColHide(true)
+        else
+          setAllColHide(false)
+      }
+    })
+    setOpen(!open)
   }
   function onReOrdering(orderColumnParam: number[]){
     setOrderColumn(orderColumnParam)
   }
-
 
   const onDragEnd = ({ source, destination }: any) => {
     // Make sure we have a valid destination
@@ -283,6 +292,10 @@ export default function CRXDataTable(props: DataTableProps) {
         setOpen(true)  
     }
 
+  const onClearAllFilter = () => {
+    onClearAll()
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {Object.values(containers).map((container: any) => {
@@ -298,6 +311,7 @@ export default function CRXDataTable(props: DataTableProps) {
                     rowCount={container.rows.length}
                     columnVisibilityBar={columnVisibilityBar}
                     onChange={onColumnVisibility}
+                    onClearAll={onClearAllFilter}
                     onReOrder={onReOrdering}  
                     orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
@@ -308,9 +322,9 @@ export default function CRXDataTable(props: DataTableProps) {
                   stickyHeader>
                   <DragableHead lockAxis="x"
                     hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '50px'}} ></TableCell>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '58px'}}></TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} style={{width : '80px'}}>{t('Actions')}</TableCell> 
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '50px'}}></TableCell>
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '58px'}}></TableCell>  
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : `${((allColHide === undefined || allColHide) ? '0px':'80px')}`}}>{t('Actions')}</TableCell> 
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC

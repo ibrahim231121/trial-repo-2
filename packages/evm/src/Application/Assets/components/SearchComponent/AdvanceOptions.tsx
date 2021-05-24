@@ -40,8 +40,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       inputValue: "",
     },
     {
-      value: "unitId",
-      key: "Unit Id",
+      value: "description",
+      key: "description",
       _id: "2",
       usedBy: null,
       isUsed: false,
