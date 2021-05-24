@@ -91,7 +91,7 @@ const SearchComponent = () => {
     if (addvancedOptions) {
       obj = addvancedOptions.map((x: any) => {
         if (x.inputValue) {
-          return { key: x.value, inputValue: x.inputValue };
+          return { key: x.key, inputValue: x.inputValue };
         }
       });
 
@@ -103,7 +103,7 @@ const SearchComponent = () => {
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "description") {
+        } else if (o != undefined && o.key == "unit") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
