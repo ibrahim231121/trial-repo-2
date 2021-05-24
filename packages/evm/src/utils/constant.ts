@@ -5,5 +5,5 @@ export const dateOptions = [
   { value: "last 30 days", displayText: "last 30 days" },
   { value: "current calendar month", displayText: "current calendar month" },
   { value: "last calendar month", displayText: "last calendar month" },
-  { value: "custom", displayText: "custom" },
+  { value: "custom", displayText: "custom range" },
 ];

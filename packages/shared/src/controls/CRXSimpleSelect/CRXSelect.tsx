@@ -63,7 +63,7 @@ const CRXSelectBox = ({
   const option = Object.assign(options).map((data: any, i: number) => {
     return (
       <StyledMenuItem aria-label="None" key={i} value={data.value}>
-        {data.value}
+        {data.displayText?data.displayText: data.value}
       </StyledMenuItem>
     );
   });
