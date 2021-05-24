@@ -8,11 +8,12 @@ import { DateContext } from "../DateContext";
 const DateTime: React.FC = () => {
   const { setSelectedOption, selectedOptionValue ,endDate , startDate } =
     React.useContext(DateContext);
-
+    
   const [open, setOpen] = React.useState(false);
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
   const [state, setstate] = React.useState(false);
+  const popupRef = React.useRef<HTMLDivElement>(null);
 
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
@@ -20,21 +21,24 @@ const DateTime: React.FC = () => {
   };
 
 
-  const CRXdropContainer = () => {
-      setstate(state == false ? true : false);
+  const outSideClickContainer = (e : MouseEvent) => {
+    // debugger;
+    // const { current: wrap } = popupRef;
+    // if (
+    //   popupRef.current !== null &&
+    //   !popupRef.current.contains(e.target as HTMLElement)
+    // ) {
+    //   setstate(false);
+    // }
   }
 
-  // React.useEffect(() => {
+  React.useEffect(() => {
     
-    
-  //     document.addEventListener('click', function() {
-  //       setstate(false)
-  //     });
-    
-  //   return () => {
-  //     document.removeEventListener('click', CRXdropContainer);
-  //   }
-  // },[state]);
+      window.addEventListener('mousedown', outSideClickContainer);
+    return () => {
+      window.removeEventListener('mousedown', outSideClickContainer);
+    }
+  },[]);
 
   const setDropDownValueFunction=(v:any)=>{
     const find = dateOptionsState.filter(x=>x.value!=="customRange")
@@ -73,8 +77,9 @@ const DateTime: React.FC = () => {
           content={data}
           className="dateRangeButton"
           paperClass="CRXDateRange"
-          onClick={CRXdropContainer}
+          onClick={() => setstate(!state)}
           paperState={state}
+          ref={popupRef}
         />
       </CRXDropDown>
     </div>

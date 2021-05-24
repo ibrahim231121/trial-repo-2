@@ -78,8 +78,8 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
       </div>
 
       <div className="paperFooter">
-        <CRXButton className="clearButton" onClick={onClear}>
-          Clear
+        <CRXButton className="clearButton" color="primary" variant="contained" onClick={onClear}>
+          Reset to default
         </CRXButton>
       </div>
     </div>

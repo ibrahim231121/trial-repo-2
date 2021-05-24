@@ -49,7 +49,7 @@
     display: flex;
     .daysSelection {
       margin-right: 15px;
-      width: 260px;
+      width: 247px;
     }
   }
 }
@@ -57,4 +57,11 @@
     .MuiOutlinedInput-notchedOutline {
       border-radius: 0px;
     }
+  }
+
+  div[class*='makeStyles-menuT-']
+  {
+    min-width: 246px !important;
+    margin-left: 1px;
+    margin-top: 5px;
   }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { RefObject } from 'react'
 import { IconButton, Paper  } from '@material-ui/core'
 //import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import './CRXDropContent.scss'
@@ -10,30 +10,11 @@ interface propsType {
     content : React.ReactNode,
     paperClass? : string, 
     paperState: boolean,
-    onClick : (e : any) => void
+    onClick : (e : any) => void,
+    ref? : RefObject<HTMLDivElement>
 }
 
-// const theme = createMuiTheme({
-//     palette: {
-//         primary: {
-//             main: "#333333",
-//             light: '#0066ff',
-//         },
-//         secondary: {
-//             main: "#ffffff",
-//         },
-        
-//     },
-//   });
-
-const CRXDropContainer = ({icon, onClick, paperState, color, className, paperClass, content} : propsType) => {
-    //const [state, setstate] = React.useState<boolean>(false)
-
-    // const clickHandler = () => {
-    //     setstate(state == false ? true : false);
-        
-    // }
-
+const CRXDropContainer = ({icon, ref, onClick, paperState, color, className, paperClass, content} : propsType) => {
     
     return (
         <div className="iconContent">
@@ -47,7 +28,7 @@ const CRXDropContainer = ({icon, onClick, paperState, color, className, paperCla
               <div className="iconStyle">{icon}</div>
             </IconButton>
             {paperState ? 
-            <Paper className={"paperStyle " + paperClass} variant="outlined" square>
+            <Paper ref={ref} className={"paperStyle " + paperClass} variant="outlined" square>
                 {content} 
             </Paper> : " "
              }
