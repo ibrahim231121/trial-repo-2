@@ -14,6 +14,7 @@ const DateTime: React.FC = () => {
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
   const [state, setstate] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(false);
   const popupRef = React.useRef<HTMLDivElement>(null);
 
   const onSelectionChange = (e: any) => {
