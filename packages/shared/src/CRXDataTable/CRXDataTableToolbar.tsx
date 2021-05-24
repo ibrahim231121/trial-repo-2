@@ -270,7 +270,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           onClick={clearAllFilters}
                           color="default"
                           variant="outlined" 
-                          className="resetCheckBox"
+                          className="clearAllFilterBtn"
                           >
                             {t('Clear all filters')}
                           </CRXButton>
