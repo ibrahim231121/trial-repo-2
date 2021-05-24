@@ -184,6 +184,13 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       },
       [orderColumn, setOrderColumn]
     );
+    
+    const onSortableStart = (e:any) => {
+      e.helper.className = "onSortDragable";
+      e.helper.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
+      e.helper.innerHTML += '<i class="fas fa-scrubber leftCircle"></i>';
+      e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
+    }
 
     return (
       <Toolbar
@@ -263,7 +270,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           onClick={clearAllFilters}
                           color="default"
                           variant="outlined" 
-                          className="resetCheckBox"
+                          className="clearAllFilterBtn"
                           >
                             {t('Clear all filters')}
                           </CRXButton>
@@ -317,6 +324,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   orderColumn={orderColumn} 
                   selected={selected} 
                   chkStyle={chkStyle} 
+                  lockAxis="y"
+                  onSortStart={onSortableStart}
                   onSortEnd={onReorderEnd} 
                   onReOrderChange={handleCustomizeChange}/>
               </ul>
