@@ -55,6 +55,8 @@ const DateTime: React.FC = () => {
     setDateOptionsState(dateOptions)
     setSelectedOption(v)
     setDropDownValue(null)
+    setDisabled(false)
+
 
    }
   }
