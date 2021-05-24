@@ -2,9 +2,10 @@ export const resources = {
     ar: {
       translation: {
         "assets": "ar-Assets",
-        "Show / hide columns": "ar-Show / hide columns",
+        "Tables columns filter": "ar-Tables columns filter",
         "Close" : "ar-Close",
         "Reset to default" : "ar-Reset to default",
+        "Clear all filters": "ar-Clear all filters",
         "Customize columns": "ar-Customize columns",
         "Save and close" : "ar-Save and close",
         "Save as preset" : "ar-Save as preset",

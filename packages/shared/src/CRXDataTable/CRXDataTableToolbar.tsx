@@ -64,7 +64,7 @@ const checkboxStyle = makeStyles({
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const classes = useToolbarStyles();
     const chkStyle = checkboxStyle();
-    const {headCells, rowCount, columnVisibilityBar, onChange, onReOrder } = props;
+    const {headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder } = props;
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [customizeColumn, setCustomize] = useState<any>(null)
@@ -141,16 +141,16 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       setCustomize(null)    
     }
    
-    const resetToDefault = () => {
-      headCells.map((headCell, x) => {
-        if(headCell.keyCol === false || headCell.keyCol === undefined)
-        {
-          selected[x].visible = true
-          headCell.visible = selected[x].visible
-          setSelected(prevState  => ({...prevState}))
-        }
-      }) 
-      onChange()
+    const clearAllFilters = () => {
+      // headCells.map((headCell, x) => {
+      //   if(headCell.keyCol === false || headCell.keyCol === undefined)
+      //   {
+      //     selected[x].visible = true
+      //     headCell.visible = selected[x].visible
+      //     setSelected(prevState  => ({...prevState}))
+      //   }
+      // }) 
+      onClearAll()
     }
 
     const resetToCustomizeDefault = () => {
@@ -221,8 +221,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >{t('Show / hide columns')}</CRXTypography>
-                    <Grid container spacing={0}>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tables columns filter')}</CRXTypography>
+                    {/* <Grid container spacing={0}>
                       {orderColumn.map((i: number, index: number) => {
                        return(  
                                 (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
@@ -243,7 +243,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                                 null
                               )
                       })}
-                    </Grid>
+                    </Grid> */}
                     <div className="footerDRP">
                     <Grid container spacing={0}>
                       <Grid item xs={4}>
@@ -260,12 +260,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       <Grid item xs={4}>
                         <CRXButton 
                           id="resetCheckBox"
-                          onClick={resetToDefault}
+                          onClick={clearAllFilters}
                           color="default"
                           variant="outlined" 
                           className="resetCheckBox"
                           >
-                            {t('Reset to default')}
+                            {t('Clear all filters')}
                           </CRXButton>
                       </Grid>
                       

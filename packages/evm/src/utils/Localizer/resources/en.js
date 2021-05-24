@@ -30,9 +30,10 @@ export const resources = {
     en: {
       translation: {
         "assets": "Assets",
-        "Show / hide columns": "Show / hide columns",
+        "Tables columns filter": "Tables columns filter",
         "Close" : "Close",
         "Reset to default" : "Reset to default",
+        "Clear all filters": "Clear all filters",
         "Customize columns": "Customize columns",
         "Save and close" : "Save and close",
         "Save as preset" : "Save as preset",

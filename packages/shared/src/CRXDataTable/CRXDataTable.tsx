@@ -29,7 +29,7 @@ import './CRXDataTable.scss';
 import {useTranslation} from 'react-i18next'; 
 
 export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering} = props;
+  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, onClearAll} = props;
   const classes = useStyles();
   const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -292,6 +292,10 @@ export default function CRXDataTable(props: DataTableProps) {
         setOpen(true)  
     }
 
+  const onClearAllFilter = () => {
+    onClearAll()
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {Object.values(containers).map((container: any) => {
@@ -307,6 +311,7 @@ export default function CRXDataTable(props: DataTableProps) {
                     rowCount={container.rows.length}
                     columnVisibilityBar={columnVisibilityBar}
                     onChange={onColumnVisibility}
+                    onClearAll={onClearAllFilter}
                     onReOrder={onReOrdering}  
                     orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
