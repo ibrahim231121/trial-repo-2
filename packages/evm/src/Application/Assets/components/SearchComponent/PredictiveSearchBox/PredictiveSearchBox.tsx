@@ -90,11 +90,12 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
   }
 
   return (
-    <div>
+    <div className="combo-box-Search">
+      <i className="fal fa-search customIcon"></i>
       <EditableSelect
           id="combo-box-demo"
           options={outCome}
-          placeHolder={"Search for asset by AssetID#, CAD#, Categories and RecordedBy"}
+          placeHolder={"Search assets by ID#, case#, CAD#, categories, etc."}
           onChange={onChangeAutoComplete}
           onInputChange={handleOnChange}
           clearText={()=>setInputValue("")}

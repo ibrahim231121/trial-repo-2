@@ -6,17 +6,22 @@ import MasterMain from "../DataGrid/MasterMain";
 import "./SearchComponent.scss";
 import DateTime from "./DateSearch/DateTime";
 import SelectedAsset from "./SelectedAsset";
+import queries from "../../QueryManagement/queries";
+import constants from '../../utils/constants'
+
 import { DateContext } from "./DateContext";
 
 const SearchComponent = () => {
   const { startDate, endDate } = React.useContext(DateContext);
 
   const [showAdvance, setShowAdvance] = React.useState(false);
+  const [showBottomSearch, setShowBottomSearch] = React.useState(true);
+
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
   const iconRotate = showAdvance ? " " : "rotate90";
-  const url = "/Evidence?Size=10&Page=1";
+  const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
     bool: {
       must: [
@@ -42,6 +47,7 @@ const SearchComponent = () => {
 
   // fetchData
   const fetchData = (querry: any) => {
+    
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -56,7 +62,7 @@ const SearchComponent = () => {
         return res;
       });
   };
-  //
+
   const Search = () => {
     if (startDate) {
       QUERRY.bool.must.push({
@@ -79,7 +85,28 @@ const SearchComponent = () => {
     }
 
     fetchData(QUERRY);
+    setShowBottomSearch(false);
   };
+
+  const shortcutData = [
+    {
+      text: "UnCategorized Assets",
+      query : queries.GetAssetsUnCategorized(),
+      renderData : function(){ fetchData(this.query) }
+    },
+    {
+      text: "Trash",
+      query : queries.GetAssetsBySatus(constants.AssetStatus.Trash),
+      renderData : function(){ fetchData(this.query) }
+    },
+    {
+      text: "Deleted",
+      query : queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
+      renderData : function(){ fetchData(this.query) } 
+    }   
+  ]
+
+
   React.useEffect(() => {
     let obj: any = {};
 
@@ -98,7 +125,7 @@ const SearchComponent = () => {
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "unitId") {
+        } else if (o != undefined && o.key == "description") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
@@ -132,35 +159,40 @@ const SearchComponent = () => {
             </CRXColumn>
           </CRXRows>
         </div>
-        <div className="preSearcBtnContent">
-          <CRXButton
-            className="PreSearchButton"
-            onClick={Search}
-            disabled={querryString.length < 1 ? true : false}
-          >
-            Search
-          </CRXButton>
 
-          <div className="middleContent">
-            <SelectedAsset />
-          </div>
 
-          <div className="advanceSearchContet">
-            <CRXButton
-              onClick={() => setShowAdvance(!showAdvance)}
-              className="PreSearchButton"
-            >
-              <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
-              Search
-            </CRXButton>
-            {showAdvance && (
-              <AdvanceOptions
-                getOptions={(e) => setAddvancedOptions(e)}
-                hideOptions={() => setShowAdvance(false)}
-              />
-            )}
-          </div>
-        </div>
+            <div className="preSearcBtnContent">
+              <CRXButton
+                className="PreSearchButton"
+                onClick={Search}
+                disabled={querryString.length < 1 ? true : false}
+              >
+                Search
+              </CRXButton>
+            </div>
+            {showBottomSearch && (
+          <>
+            <div className="middleContent">
+              <SelectedAsset  shortcutData={shortcutData} />
+            </div>
+
+            <div className="advanceSearchContet">
+              <CRXButton
+                onClick={() => setShowAdvance(!showAdvance)}
+                className="PreSearchButton"
+              >
+                <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
+                Search
+              </CRXButton>
+              {showAdvance && (
+                <AdvanceOptions
+                  getOptions={(e) => setAddvancedOptions(e)}
+                  hideOptions={() => setShowAdvance(false)}
+                />
+              )}
+            </div>
+          </>
+        )}
         {searchData && (
           <div className="dataTabAssets">
             <MasterMain key={Math.random()} rows={searchData} />

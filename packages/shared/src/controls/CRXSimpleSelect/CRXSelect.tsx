@@ -14,6 +14,7 @@ type SelectBoxProps = {
   IconName?: React.ReactElement<any>;
   icon?: boolean;
   options: Object[];
+  popover? : string
 };
 
 //Style For Select Menu Paper
@@ -22,7 +23,7 @@ const useStyle = makeStyles(() => ({
     borderRadius: "0px",
     border: "1px solid #bebebe",
     minWidth: "200px !important",
-    marginLeft: "5px",
+    marginLeft: "0px",
   },
 }));
 
@@ -53,6 +54,7 @@ const CRXSelectBox = ({
   value,
   id,
   className,
+  popover,
   options,
   icon = false,
   IconName,
@@ -88,7 +90,7 @@ const CRXSelectBox = ({
           horizontal: "center",
         },
         classes: {
-          paper: classes.menuT,
+          paper: popover + " paperStyle",
         },
         getContentAnchorEl: null,
       }}

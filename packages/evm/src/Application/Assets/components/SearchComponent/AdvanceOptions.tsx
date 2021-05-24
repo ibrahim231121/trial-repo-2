@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import MinimizeIcon from '@material-ui/icons/Minimize';
+import MinimizeIcon from "@material-ui/icons/Minimize";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 interface IOptions {
   value: string;
@@ -40,8 +40,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       inputValue: "",
     },
     {
-      value: "unitId",
-      key: "Unit Id",
+      value: "description",
+      key: "description",
       _id: "2",
       usedBy: null,
       isUsed: false,
@@ -68,7 +68,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       selectedOpt = newOptions.find((opt: any) => opt.usedBy == i);
       select.push(
         <div className="advRow" key={i}>
-          <CRXRows container spacing={0}>
+          <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
               <select
                 className="adVSelectBox"
@@ -88,7 +88,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
             </CRXColumn>
           {selectedOpt?.isUsed && (
             <CRXColumn item xs={6}>
-              
+              <div className="advanceInputBoxContent">
                 <input
                   ref={refs[i]}
                   id={i.toString()}
@@ -97,13 +97,13 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                   value={selectedOpt?.inputValue}
                   placeholder={`Search by ${selectedOpt?.value}`}
                 />
-                
+
                 <button className="removeBtn" onClick={() => Remove(i)}>
-                  <MinimizeIcon />
+                  
                 </button>
+                </div>
               </CRXColumn>
-            
-          )}
+            )}
           </CRXRows>
         </div>
       );
@@ -184,6 +184,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
 
   const Remove = (id: number) => {
     setShowSearchCriteria(true);
+    setDisableButton(false);
     setCurrentSelect(null);
     let found = options.find((opt: any) => id == opt.usedBy);
 
@@ -268,8 +269,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <span className="btn-text">Add search criteria </span>
       </button>
       <CRXButton
-        color="secondary"
-        variant="outlined"
+        color="primary"
+        variant="contained"
         className="advanceSearchButton"
         type="button"
         onClick={AdvancedSearch}

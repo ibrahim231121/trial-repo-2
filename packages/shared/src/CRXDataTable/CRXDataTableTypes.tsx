@@ -73,7 +73,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },    
     container: {
       maxHeight: 800,
-      overflow:'auto'
+      overflow:'hidden'
     },
     headerStickness: {
       top: 0,
@@ -122,6 +122,7 @@ export interface DataTableToolbarProps {
   rowCount: number;
   columnVisibilityBar?: boolean;
   onChange: () => void;
+  onClearAll: () => void;
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
 }
@@ -136,6 +137,7 @@ export type DataTableProps = {
   allowDragableToList?: boolean;
   className?: string;
   allowRowReOrdering?: boolean;
+  onClearAll: () => void;
 }
 
 export type OrderData = {

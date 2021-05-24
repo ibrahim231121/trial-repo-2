@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox } from "@cb/shared";
 import moment from 'moment';
 import './ManageAssetGrid.scss'
@@ -141,7 +141,7 @@ const MasterMain = (props:any) => {
       obj["devices"] = row["devices"]
       obj["station"] = row["station"]
       obj["recordedBy"] = row.asset["recordedBy"]
-      obj["holdUntill"] = row["holdUntill"]
+      obj["recordingStarted"] = row.asset["recordingStarted"]
       obj["status"] = row.asset["status"]
       
       reformattedRows.push(obj)
@@ -151,16 +151,16 @@ const MasterMain = (props:any) => {
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('assetName');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
-    
 
-    const searchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+    
+    const searchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {   
       return (
-        <TextField onChange={(e: any) => selectChange(e,colIdx)}  />
+        <TextField id={"CRX_" + colIdx} onChange={(e: any) => selectChange(e,colIdx)} />
       );
     }
     const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
       return (
-        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+        <TextField id={"CRX_" + colIdx} type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
       );
     }
     
@@ -210,8 +210,9 @@ const MasterMain = (props:any) => {
           <div className="filterSelect">
               <CRXSelectBox 
                 className="selectFilter"
+                popover="dropdownPaper"
                 options={unique} 
-                id="simpleSelectBox" 
+                id={colIdx} 
                 onChange={(e: any) => selectChange(e,colIdx)} 
                 onClick={(e : any) => console.log(e)}  
                 value={unique.value} 
@@ -220,24 +221,19 @@ const MasterMain = (props:any) => {
       );
     }
 
-    const dateExpireComponent = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
-      return (
-        <TextField type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
-      )
-    }
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label: `${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
-      { label: `${t('Asset Thumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
-      { label:`${t('Asset ID')}`,      id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
-      { label:`${t('Asset Type')}`,      id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Description')}`,            id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
-      { label:`${t('Categories')}`,      id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
-      { label:`${t('Device')}`,          id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
-      { label:`${t('Station')}`,         id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
+      { label:`${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
+      { label:`${t('Asset Thumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
+      { label:`${t('Asset ID')}`,       id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
+      { label:`${t('Asset Type')}`,     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
+      { label:`${t('Description')}`,    id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
+      { label:`${t('Categories')}`,     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
+      { label:`${t('Device')}`,         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
+      { label:`${t('Station')}`,        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
       { label:`${t('Username')}`,       id:"recordedBy",   value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
-      { label:`${t('Expiry Date')}`,     id:'holdUntill', value: 'holdUntill', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
-      { label:`${t('Status')}`,          id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown, visible: false},
+      { label:`${t('Captured')}`,       id:'recordingStarted', value: 'recordingStarted', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
+      { label:`${t('File Status')}`,    id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>
@@ -286,7 +282,7 @@ const MasterMain = (props:any) => {
         {
           dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].value]) === DateFormat(el.value)) 
         }
-        if(el.columnName === "holdUntill")
+        if(el.columnName === "recordingStarted")
         {
           dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].value]) === DateFormat(el.value)) 
         }
@@ -297,7 +293,8 @@ const MasterMain = (props:any) => {
     }, [searchData])
     
     useEffect(() => {    
-      setRows(reformattedRows)    
+      setRows(reformattedRows) 
+      localStorage.setItem("headCells", JSON.stringify(headCells));   
     },[])
 
     function DateFormat(value: any) {
@@ -306,9 +303,22 @@ const MasterMain = (props:any) => {
       return localDate
     }
 
+    const onClearAll = () => {
+      setSearchData([]);
+      (document.getElementById('CRX_2') as HTMLInputElement).value = "";
+      (document.getElementById('CRX_4') as HTMLInputElement).value = "";
+      (document.getElementById('CRX_9') as HTMLInputElement).value = "";
+      (document.getElementById('CRX_3') as HTMLDivElement).innerHTML = "";
+      (document.getElementById('CRX_5') as HTMLDivElement).innerHTML = "";
+      (document.getElementById('CRX_6') as HTMLDivElement).innerHTML = "";
+      (document.getElementById('CRX_7') as HTMLDivElement).innerHTML = "";
+      (document.getElementById('CRX_8') as HTMLDivElement).innerHTML = "";
+      (document.getElementById('CRX_10') as HTMLDivElement).innerHTML = "";
+    }
+
     return (
       <>
-      {rows &&  <CRXDataTable
+      <CRXDataTable
                   dataRows={rows} 
                   headCells={headCells}
                   orderParam={order} 
@@ -316,9 +326,10 @@ const MasterMain = (props:any) => {
                   searchHeader={true}
                   columnVisibilityBar={true}   
                   allowDragableToList={false}
-                  className="ManageAssetDataTable"  
+                  className="ManageAssetDataTable"
+                  onClearAll={onClearAll}
                 />    
-      }
+      
     </>               
     )
 }
