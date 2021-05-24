@@ -38,7 +38,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue }) => {
     setStartDateValue("");
     setEndDateValue("");
     setSelectedOption("");
-    dropDownCustomValue("clearAll")
+    // dropDownCustomValue("clearAll")
   };
 
   return (
