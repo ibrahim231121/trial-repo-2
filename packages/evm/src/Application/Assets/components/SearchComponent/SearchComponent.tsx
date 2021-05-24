@@ -103,7 +103,7 @@ const SearchComponent = () => {
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "unitId") {
+        } else if (o != undefined && o.key == "description") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
