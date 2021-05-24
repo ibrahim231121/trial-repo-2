@@ -6,17 +6,23 @@ import "./DateTime.scss";
 import { DateContext } from "../DateContext";
 
 const DateTime: React.FC = () => {
-  const { setSelectedOption, selectedOptionValue ,endDate , startDate } =
+  const { setSelectedOption, selectedOptionValue ,endDate , startDate , setStartDateValue,
+    setEndDateValue,} =
     React.useContext(DateContext);
 
   const [open, setOpen] = React.useState(false);
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
   const [state, setstate] = React.useState(false);
-
+  const [disabled, setDisabled] = React.useState(false);
+  
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
     setSelectedOption(value);
+    if (value==="custom") {
+      setStartDateValue("")
+      setEndDateValue("")
+    }
   };
 
 
@@ -43,6 +49,7 @@ const DateTime: React.FC = () => {
       setDropDownValue(v)
       find.push({value: "customRange", displayText: `${startDate} - ${endDate}`})
       setDateOptionsState(find)
+      setDisabled(true)
     }
    else{
     setDateOptionsState(dateOptions)
@@ -66,7 +73,7 @@ const DateTime: React.FC = () => {
         value={dropDownValue?dropDownValue:selectedOptionValue}
         onChange={onSelectionChange}
         options={dateOptionsState}
-        disabled={state}
+        disabled={state || disabled}
       >
         <CRXDropContainer
           icon={img}

@@ -18,10 +18,10 @@ export const DateContextProvider: React.FC = ({ children }) => {
 
   const setSelectedOption = (val: any) => {
     setSelection(val);
-    if (val !== "custom") {
-      setEndDate("");
-      setStartDate("");
-    }
+    // if (val !== "custom") {
+    //   setEndDate("");
+    //   setStartDate("");
+    // }
     const startingDate = moment();
     const endingDate = moment();
 
