@@ -28,6 +28,7 @@ interface HeadCellProps {
   searchFilter?: boolean; 
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
+  headerText?: string;
 }
 
 const thumbTemplate = (rowData: any) => {
@@ -153,14 +154,31 @@ const MasterMain = (props:any) => {
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
 
     
-    const searchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {   
+    const SearchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {  
+
+      function handleChange(e: any,colIdx: number) {
+        selectChange(e,colIdx)   
+        headCells[colIdx].headerText = e.target.value   
+      }
+
       return (
-        <TextField id={"CRX_" + colIdx} onChange={(e: any) => selectChange(e,colIdx)} />
+        <TextField value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText} 
+          id={"CRX_" + colIdx} 
+          onChange={(e: any) => handleChange(e,colIdx)} />
       );
     }
+
     const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+
+      function handleChange(e: any,colIdx: number) {
+        selectChange(e,colIdx)   
+        headCells[colIdx].headerText = e.target.value   
+      }
+
       return (
-        <TextField id={"CRX_" + colIdx} type="date" onChange={(e: any) => selectChange(e,colIdx)}  />
+        <TextField value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText} 
+          id={"CRX_" + colIdx} type="date" 
+          onChange={(e: any) => handleChange(e,colIdx)}  />
       );
     }
     
@@ -205,6 +223,11 @@ const MasterMain = (props:any) => {
           }
         }
       }
+
+      function handleChange(e: any,colIdx: number) {
+        selectChange(e,colIdx)   
+        headCells[colIdx].headerText = e.target.value   
+      }
     
       return (
           <div className="filterSelect">
@@ -213,9 +236,9 @@ const MasterMain = (props:any) => {
                 popover="dropdownPaper"
                 options={unique} 
                 id={colIdx} 
-                onChange={(e: any) => selectChange(e,colIdx)} 
+                onChange={(e: any) => handleChange(e,colIdx)} 
                 onClick={(e : any) => console.log(e)}  
-                value={unique.value} 
+                value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText}  
               />
           </div>
       );
@@ -223,17 +246,17 @@ const MasterMain = (props:any) => {
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label:`${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchText, keyCol:true, visible:false , minWidth:"120"},
-      { label:`${t('Asset Thumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
-      { label:`${t('Asset ID')}`,       id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth:"120"},
-      { label:`${t('Asset Type')}`,     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Description')}`,    id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: searchText, minWidth: "100"},
+      { label:`${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: SearchText, keyCol:true, visible:false , minWidth:"120"},
+      { label:`${t('AssetThumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
+      { label:`${t('AssetID')}`,       id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"120"},
+      { label:`${t('AssetType')}`,     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
+      { label:`${t('Description')}`,    id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
       { label:`${t('Categories')}`,     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
       { label:`${t('Device')}`,         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
       { label:`${t('Station')}`,        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
       { label:`${t('Username')}`,       id:"recordedBy",   value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
       { label:`${t('Captured')}`,       id:'recordingStarted', value: 'recordingStarted', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
-      { label:`${t('File Status')}`,    id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
+      { label:`${t('FileStatus')}`,    id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>
@@ -305,15 +328,11 @@ const MasterMain = (props:any) => {
 
     const onClearAll = () => {
       setSearchData([]);
-      (document.getElementById('CRX_2') as HTMLInputElement).value = "";
-      (document.getElementById('CRX_4') as HTMLInputElement).value = "";
-      (document.getElementById('CRX_9') as HTMLInputElement).value = "";
-      (document.getElementById('CRX_3') as HTMLDivElement).innerHTML = "";
-      (document.getElementById('CRX_5') as HTMLDivElement).innerHTML = "";
-      (document.getElementById('CRX_6') as HTMLDivElement).innerHTML = "";
-      (document.getElementById('CRX_7') as HTMLDivElement).innerHTML = "";
-      (document.getElementById('CRX_8') as HTMLDivElement).innerHTML = "";
-      (document.getElementById('CRX_10') as HTMLDivElement).innerHTML = "";
+      let headCellReset = headCells.map((headCell,i) => {
+        headCell.headerText = ""
+        return headCell
+      })
+      setHeadCells(headCellReset);
     }
 
     return (

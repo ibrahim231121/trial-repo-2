@@ -30,25 +30,25 @@ export const resources = {
     en: {
       translation: {
         "assets": "Assets",
-        "Tables columns filter": "Tables columns filter",
+        "Tablescolumnsfilter": "Tables columns filter",
         "Close" : "Close",
-        "Reset to default" : "Reset to default",
-        "Clear all filters": "Clear all filters",
-        "Customize columns": "Customize columns",
-        "Save and close" : "Save and close",
-        "Save as preset" : "Save as preset",
+        "Resettodefault" : "Reset to default",
+        "Clearallfilters": "Clear all filters",
+        "Customizecolumns": "Customize columns",
+        "Saveandclose" : "Save and close",
+        "Saveaspreset" : "Save as preset",
         "Actions": "Actions",
         "ID":"ID",
-        "Asset Thumbnail":"Asset Thumbnail",
-        "Asset Name":"Asset Name",
-        "Asset Type":"Asset Type",
+        "AssetThumbnail":"Asset Thumbnail",
+        "AssetName":"Asset Name",
+        "AssetType":"Asset Type",
         "Unit":"Unit",
         "Categories":"Categories",
         "Device":"Device",
         "Station":"Station",
         "Recorded By":"Recorded By",
         "Captured":"Captured",
-        "File Status":"File Status"
+        "FileStatus":"File Status"
       }
     }
   };
