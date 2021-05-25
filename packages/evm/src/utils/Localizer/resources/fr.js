@@ -15,7 +15,7 @@ export const resources = {
         "Asset Name":"fr-Asset Name",
         "Asset Type":"fr-Asset Type",
         "Unit":"fr-Unit",
-        "Categories":"fr-Categories",
+        "Categories":"fr-Category",
         "Device":"fr-Device",
         "Station":"fr-Station",
         "Recorded By":"fr-Recorded By",

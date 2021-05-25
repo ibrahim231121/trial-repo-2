@@ -43,7 +43,7 @@ export const resources = {
         "Asset Name":"Asset Name",
         "Asset Type":"Asset Type",
         "Unit":"Unit",
-        "Categories":"Categories",
+        "Categories":"Category",
         "Device":"Device",
         "Station":"Station",
         "Recorded By":"Recorded By",
