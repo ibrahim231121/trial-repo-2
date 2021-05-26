@@ -67,7 +67,7 @@ const SearchComponent = () => {
 
   const shortcutData = [
     {
-      text: "UnCategorized Assets",
+      text: "Uncategorized Assets",
       query : queries.GetAssetsUnCategorized(),
       renderData : function(){ fetchData(this.query) }
     },
@@ -77,7 +77,7 @@ const SearchComponent = () => {
       renderData : function(){ fetchData(this.query) }
     },
     {
-      text: "Deleted",
+      text: "Approaching Deletion",
       query : queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
       renderData : function(){ fetchData(this.query) } 
     }   
