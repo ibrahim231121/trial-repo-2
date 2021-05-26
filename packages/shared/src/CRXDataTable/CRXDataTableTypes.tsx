@@ -3,8 +3,9 @@ import { createStyles, makeStyles, createMuiTheme, Theme } from '@material-ui/co
 export const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
+      paddingBottom: theme.spacing(2.9),
     },
     highlight:
       theme.palette.type === 'light'
@@ -16,6 +17,7 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
           },
     title: {
       flex: '1 1 100%',
+      lineHeight: "0"
     },
     alignment:{
       textAlign: "left",

@@ -42,7 +42,10 @@
       height: 10px;
     }
     .MuiAutocomplete-clearIndicator {
-      padding: 1px;
+      padding: 4px 0px;
+    }
+    &.MuiIconButton-root:hover {
+      background-color: transparent !important;
     }
   }
   .MuiChip-root {

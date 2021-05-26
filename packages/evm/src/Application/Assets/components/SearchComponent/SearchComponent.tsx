@@ -12,12 +12,10 @@ import constants from '../../utils/constants'
 const SearchComponent = () => {
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showBottomSearch, setShowBottomSearch] = React.useState(true);
-
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
-
   const [querryString, setQuerryString] = React.useState("");
-
   const [searchData, setSearchData] = React.useState<any>();
+  const [brdState, setBrdState] = React.useState<any>('');
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY = {
@@ -64,6 +62,7 @@ const SearchComponent = () => {
   const Search = () => {
     fetchData(QUERRY);
     setShowBottomSearch(false);
+    setBrdState("Search result");
   };
 
   const shortcutData = [
@@ -138,7 +137,7 @@ const SearchComponent = () => {
           </CRXRows>
         </div>
 
-
+          
             <div className="preSearcBtnContent">
               <CRXButton
                 className="PreSearchButton"
@@ -148,6 +147,7 @@ const SearchComponent = () => {
                 Search
               </CRXButton>
             </div>
+           
             {showBottomSearch && (
           <>
             <div className="middleContent">

@@ -192,6 +192,9 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
     }
 
+    const onSortMoveStart = (e : any) => {
+      console.log(e);
+    }
     return (
       <Toolbar
         className={clsx(classes.root)}>
@@ -326,6 +329,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   chkStyle={chkStyle} 
                   lockAxis="y"
                   onSortStart={onSortableStart}
+                  onSortMove={onSortMoveStart}
                   onSortEnd={onReorderEnd} 
                   onReOrderChange={handleCustomizeChange}/>
               </ul>
@@ -392,7 +396,7 @@ const SortableList = SortableContainer((props: any) => {
                   (selected[colIdx].keyCol === false || selected[colIdx].keyCol === undefined) ? 
                     <FormControlLabel
                       value={selected[colIdx].label}
-                      control={<CRXCheckBox checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
+                      control={<CRXCheckBox className="customizeCheckBox" checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
                      //icon={<span className={chkStyle.icon} />}
                       className={chkStyle.root + " shoHideCheckbox"}
                       

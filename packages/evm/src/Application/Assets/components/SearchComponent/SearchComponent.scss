@@ -34,6 +34,10 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
+  .MuiGrid-container
+  {
+    width: 65%;
+  }
 }
 
 .searchComponents {
