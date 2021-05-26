@@ -14,7 +14,16 @@
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: #797979 solid 1px;
+    border: #d1d2d4 solid 1px;
+    font-family: "Helvetica", "Arial", sans-serif !important;
+    background-color: #fff;
+    text-align: left;
+    &:hover {
+      border-color: #888787;
+    }
+    &:focus {
+      border: #888787 solid 3px !important;
+    }
   }
 
   .adVInputBox {

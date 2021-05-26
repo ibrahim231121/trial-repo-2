@@ -28,7 +28,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [currentInput, setCurrentInput] = useState<string | null>(null);
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
   const [removingOption, setRemovingOption] = useState<string | null>(null);
-
+  const arrowIcon = <i className="fas fa-caret-down"></i>;
   const [options, setOptions] = useState<IOptions[]>([
     {
       value: "User Name",
@@ -90,6 +90,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                   value={selectedOpt?.value}
                   onChange={(e: any) => onSelectInputChange(e)}
                   options={newOptions}
+                  defaultValue="Please Select"
                 />
               </span>
             </CRXColumn>
