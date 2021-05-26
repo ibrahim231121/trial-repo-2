@@ -150,6 +150,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       //     setSelected(prevState  => ({...prevState}))
       //   }
       // }) 
+      setAnchorEl(null);
       onClearAll()
     }
 
@@ -231,7 +232,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tables columns filter')}</CRXTypography>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tablescolumnsfilter')}</CRXTypography>
                     {/* <Grid container spacing={0}>
                       {orderColumn.map((i: number, index: number) => {
                        return(  
@@ -275,7 +276,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           variant="outlined" 
                           className="clearAllFilterBtn"
                           >
-                            {t('Clear all filters')}
+                            {t('Clearallfilters')}
                           </CRXButton>
                       </Grid>
                       
@@ -321,7 +322,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   <ClearIcon fontSize="small"/>
                 </IconButton>
               </div>
-              <CRXTypography className="DRPTitle" variant="h3" >{t('Customize columns')}</CRXTypography>
+              <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
                   orderColumn={orderColumn} 
@@ -343,7 +344,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="contained" 
                     className="closeDRP"
                     >
-                      {t('Save and close')}
+                      {t('Saveandclose')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -354,7 +355,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="outlined" 
                     className="resetCheckBox"
                     >
-                      {t('Reset to default')}
+                      {t('Resettodefault')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -364,7 +365,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       className="shoHideCheckbox"
                       inputProps="primary checkbox"
                       />}
-                    label={t('Save as preset')}
+                    label={t('Saveaspreset')}
                     labelPlacement="end"
                   />
                 </Grid>

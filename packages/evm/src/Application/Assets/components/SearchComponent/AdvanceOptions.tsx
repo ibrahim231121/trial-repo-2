@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import MinimizeIcon from "@material-ui/icons/Minimize";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 interface IOptions {
   value: string;
@@ -70,7 +69,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <div className="advRow" key={i}>
           <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
-              <select
+              {/* <select
                 className="adVSelectBox"
                 ref={selectRef}
                 id={i.toString()}
@@ -84,23 +83,32 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 {newOptions.map((val: any, i: number) => (
                   <Options key={i} id={val._id} value={val.value} />
                 ))}
-              </select>
-            </CRXColumn>
-          {selectedOpt?.isUsed && (
-            <CRXColumn item xs={6}>
-              <div className="advanceInputBoxContent">
-                <input
-                  ref={refs[i]}
-                  id={i.toString()}
-                  className="adVInputBox"
-                  onChange={(e: any) => onInputChange(e)}
-                  value={selectedOpt?.inputValue}
-                  placeholder={`Search by ${selectedOpt?.value}`}
+              </select> */}
+              <span ref={selectRef} id={i.toString()}>
+                <CRXSelectBox
+                  className="adVSelectBox"
+                  value={selectedOpt?.value}
+                  onChange={(e: any) => onSelectInputChange(e)}
+                  options={newOptions}
                 />
+              </span>
+            </CRXColumn>
+            {selectedOpt?.isUsed && (
+              <CRXColumn item xs={6}>
+                <div className="advanceInputBoxContent">
+                  <input
+                    ref={refs[i]}
+                    id={i.toString()}
+                    className="adVInputBox"
+                    onChange={(e: any) => onInputChange(e)}
+                    value={selectedOpt?.inputValue}
+                    placeholder={`Search by ${selectedOpt?.value}`}
+                  />
 
-                <button className="removeBtn" onClick={() => Remove(i)}>
-                  
-                </button>
+                  <button
+                    className="removeBtn"
+                    onClick={() => Remove(i)}
+                  ></button>
                 </div>
               </CRXColumn>
             )}
