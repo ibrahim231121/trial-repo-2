@@ -317,7 +317,6 @@ const MasterMain = (props:any) => {
     
     useEffect(() => {    
       setRows(reformattedRows) 
-      localStorage.setItem("headCells", JSON.stringify(headCells));   
     },[])
 
     function DateFormat(value: any) {
