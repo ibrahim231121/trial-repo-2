@@ -104,6 +104,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                     onChange={(e: any) => onInputChange(e)}
                     value={selectedOpt?.inputValue}
                     placeholder={`Search by ${selectedOpt?.value}`}
+                    autoComplete="off"
                   />
 
                   <button
