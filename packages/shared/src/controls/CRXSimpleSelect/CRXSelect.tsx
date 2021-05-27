@@ -105,6 +105,7 @@ const CRXSelectBox = ({
         style={{ minWidth: "auto", left: "0px" }}
         aria-label="None"
         value={defaultOptionText}
+        disabled
       >
         {defaultOptionText}
       </StyledMenuItem>
