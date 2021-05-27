@@ -40,6 +40,10 @@
       font-size: 14px;
       color: #74767c;
       height: 10px;
+      &:focus {
+        outline: 3px solid #888787;
+        height: 9px;
+      }
     }
     .MuiAutocomplete-clearIndicator {
       padding: 4px 0px;

@@ -1,16 +1,8 @@
 import React from "react";
-import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
-import {Popper} from '@material-ui/core'
 import "./EditableSelect.scss";
-import CloseIcon from '@material-ui/icons/Close';
-
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 interface selectBoxProps {
   multiple?: boolean;
@@ -25,16 +17,15 @@ interface selectBoxProps {
   freeSolo : boolean
 }
 
-interface renderCheck {
-  selected?: boolean;
-  title?: string;
-  year?: number;
-}
-
 const optionStyle = makeStyles((theme: Theme) =>
 createStyles({
   "& .MuiAutocomplete-popper" : {
     width: "100%"
+  },
+  root : {
+    "&:focus" : {
+      border :"3px solid #888787"
+    }
   },
   option: {
     height: '33px',
@@ -44,20 +35,23 @@ createStyles({
     fontSize:"14px",
     margin:"0px",
     color:"#333",
+    borderBottom: "1px solid transparent",
     "&:hover": {
-      backgroundColor: "#f5f5f5"
+      backgroundColor: "#f5f5f5",
+      borderBottom: "1px solid #e7e8ea",
     },
     "&:focus": {
       backgroundColor: "#6e6e6e",
       color:"#f5f5f5",
+      borderBottom: "1px solid #6e6e6e",
     }
     
   },
   paper : {
     borderRadius: "0px",
     border: "0px solid #bebebe",
-    boxShadow: "rgba(0,0,0,0.20) 0px 0px 4px 0px",
-    marginTop: "0px !important",
+    boxShadow: "rgba(0,0,0,0.20) 0px 0px 5px 0px",
+    marginTop: "3px !important",
     padding:"0px",
     '& .MuiAutocomplete-paper' : {
       margin: "0px 0 !important",
@@ -66,6 +60,8 @@ createStyles({
       padding:"0px",
       top:"-10px",
       border: "1px solid #bebebe",
+      borderTop:"0px",
+      maxHeight:"201px"
     }
   },
  
@@ -77,8 +73,6 @@ const CRXAutocomplete = ({
   onChange,
   onInputChange,
   options,
-  CheckBox,
-  clearText,
   id,
   className,
   placeHolder
@@ -86,37 +80,19 @@ const CRXAutocomplete = ({
 
   const data = options;
   const classes = optionStyle()
-  
-  // const renderCheckBox = (option: renderCheck, selected: boolean) => {
-  //   if (CheckBox === true) {
-  //     return (
-  //       <>
-  //         <Checkbox
-  //           icon={icon}
-  //           checkedIcon={checkedIcon}
-  //           style={{ marginRight: 8 }}
-  //           checked={selected}
-  //         />
-  //         {option.title ? option.title : " "}
-  //       </>
-  //     );
-  //   } else {
-  //     return <>{option.title} </>;
-  //   }
-  // };
+  const handleOnOpen = (e : any) => {
+    console.log(e)
+  }
   return (
     <Autocomplete
       multiple={multiple}
-      className={"getac-simple-select " + className}
+      className={"getac-simple-select " + className + " " + classes.root}
       id={id}
       freeSolo={freeSolo}
-      //closeIcon={<button onClick={clearText}> <CloseIcon   fontSize="small" /></button>}
       options={data}
-      // disableCloseOnSelect
       autoSelect={true}
       getOptionLabel={(option: any) => option
       }
-      // onCancel= {(e : object, reason : string) => (console.log("dasda"))}
       onInputChange={onInputChange}
       classes={{
         option: classes.option,
@@ -125,11 +101,7 @@ const CRXAutocomplete = ({
       onChange={(e,value) => {
         return onChange(e,value);
       }}
-      
-      
-      // renderOption={(option: renderCheck, { selected }) =>
-      //   renderCheckBox(option, selected)
-      // }
+      onOpen={(e) => handleOnOpen(e)}
       renderInput={(params: object) => (
         <TextField
          placeholder={placeHolder}
