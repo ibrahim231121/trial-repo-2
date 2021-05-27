@@ -59,7 +59,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [containers, setContainers] = useState(initialContainers);
 
   useEffect(() => {
-
+    localStorage.setItem("headCells", JSON.stringify(headCells));   
     let rows = stableSort(dataRows, getComparator(orderData.order, orderData.orderBy))
     const dataTable = {
       id: "dataTable",
