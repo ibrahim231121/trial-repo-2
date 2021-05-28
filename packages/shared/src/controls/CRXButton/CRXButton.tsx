@@ -16,7 +16,6 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       main: "#333333",
-      light: "#0066ff",
     },
     secondary: {
       main: "#ffffff",
@@ -43,7 +42,7 @@ const CRXButton = ({
     <ThemeProvider theme={theme}>
       <Button
         id={id}
-        color={color || "secondary"}
+        color={color || "primary"}
         variant={variant || "outlined"}
         className={"CRXButton " + className}
         onClick={onClick}

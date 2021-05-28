@@ -1,4 +1,4 @@
-.CBX-input{
+.CBX-datePicker{
     width: 100%;
     .MuiInput-underline{
         &:before {
@@ -25,19 +25,19 @@
         text-indent: 10px;
         height: 28px;
 
-            &:hover{
-                border:1px solid #888787;
-            }
-            &:focus{
-                border-color: #888787;
-                border-width: 3px;
-            }
+        &:hover{
+            border:1px solid #888787;
         }
         &:focus{
-            border-color: #888787;
+            border:2px solid #888787;
         }
     }
-    
+
+    .Mui-focused {
+        border:2px solid #888787;
+        outline: none !important;
+    }
+}
 
 .disabled {
     background: #d1d2d4;

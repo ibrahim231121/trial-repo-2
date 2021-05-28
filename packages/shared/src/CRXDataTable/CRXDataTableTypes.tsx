@@ -116,6 +116,7 @@ export interface HeadCellProps {
   searchFilter?: boolean; 
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
+  headerText?: string;
 }
 
 export interface DataTableToolbarProps {

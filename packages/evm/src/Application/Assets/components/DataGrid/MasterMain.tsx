@@ -138,6 +138,7 @@ const MasterMain = (props:any) => {
       obj["assetName"] = row.asset["assetName"]
       obj["assetType"] = row.asset["assetType"]
       obj["unit"] = row.asset["unit"]
+      obj["description"] = row["description"]
       obj["categories"] = row["categories"]   
       obj["devices"] = row["devices"]
       obj["station"] = row["station"]
@@ -250,7 +251,7 @@ const MasterMain = (props:any) => {
       { label:`${t('AssetThumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
       { label:`${t('AssetID')}`,       id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"120"},
       { label:`${t('AssetType')}`,     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Description')}`,    id:"unit",       value: 'unit',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
+      { label:`${t('Description')}`,    id:"description", value: 'description',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
       { label:`${t('Categories')}`,     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
       { label:`${t('Device')}`,         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
       { label:`${t('Station')}`,        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
@@ -285,7 +286,7 @@ const MasterMain = (props:any) => {
                       })
         if(el.columnName === "assetType")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value) 
-        if(el.columnName === "unit")
+        if(el.columnName === "description")
           dataRows = dataRows.filter(function(x: any) {
                           return x[headCells[el.colIdx].value].toLowerCase().indexOf(el.value.toLowerCase()) !== -1
                       })
@@ -335,8 +336,8 @@ const MasterMain = (props:any) => {
     }
 
     return (
-      <>
-      <CRXDataTable
+      <React.Fragment >
+      { rows && <CRXDataTable
                   dataRows={rows} 
                   headCells={headCells}
                   orderParam={order} 
@@ -347,8 +348,8 @@ const MasterMain = (props:any) => {
                   className="ManageAssetDataTable"
                   onClearAll={onClearAll}
                 />    
-      
-    </>               
+      }
+    </React.Fragment>               
     )
 }
 

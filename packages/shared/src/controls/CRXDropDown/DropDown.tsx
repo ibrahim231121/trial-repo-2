@@ -7,7 +7,9 @@ interface Props {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value: string;
   id?: string;
-  className? : string,
+  className?: string;
+  disabled? : boolean
+
 }
 
 const DropDown: React.FC<Props> = ({
@@ -17,6 +19,7 @@ const DropDown: React.FC<Props> = ({
   value,
   id,
   className,
+  disabled
 }) => {
   return (
     <div className="wrapper">
@@ -25,14 +28,16 @@ const DropDown: React.FC<Props> = ({
           id={id}
           value={value}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e)}
+          disabled={disabled}
         >
+          <option value="">Please Select</option>
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.displayText}
             </option>
           ))}
         </select>
-        <div className={`icon  ${className}`}>{children}</div>
+        <div className={className}>{children}</div>
       </div>
     </div>
   );

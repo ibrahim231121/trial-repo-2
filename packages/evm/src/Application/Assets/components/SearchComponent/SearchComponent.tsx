@@ -4,21 +4,25 @@ import { CRXButton, CRXRows, CRXColumn } from "@cb/shared";
 import AdvanceOptions from "./AdvanceOptions";
 import MasterMain from "../DataGrid/MasterMain";
 import "./SearchComponent.scss";
-import DateTime from "./PredictiveSearchBox/DateTime";
 import SelectedAsset from "./SelectedAsset";
 import queries from "../../QueryManagement/queries";
-import constants from '../../utils/constants'
+import constants from "../../utils/constants";
+
+import DateTimeComponent from "../../../../components/DateTimeComponent";
 
 const SearchComponent = () => {
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showBottomSearch, setShowBottomSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
+  const [startDate, setStartDate] = React.useState("");
+  
+  const [endDate, setEndDate] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>('');
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
-  const QUERRY = {
+  const QUERRY: any = {
     bool: {
       must: [
         {
@@ -40,10 +44,8 @@ const SearchComponent = () => {
       must: [],
     },
   };
-
   // fetchData
   const fetchData = (querry: any) => {
-    
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -60,6 +62,26 @@ const SearchComponent = () => {
   };
 
   const Search = () => {
+    if (startDate) {
+      QUERRY.bool.must.push({
+        range: {
+          "asset.recordingStarted": {
+            gte: `${startDate}`,
+          },
+        },
+      });
+    }
+
+    if (endDate) {
+      QUERRY.bool.must.push({
+        range: {
+          "asset.recordingEnded": {
+            lte: `${endDate}`,
+          },
+        },
+      });
+    }
+
     fetchData(QUERRY);
     setShowBottomSearch(false);
     setBrdState("Search result");
@@ -68,21 +90,26 @@ const SearchComponent = () => {
   const shortcutData = [
     {
       text: "Uncategorized Assets",
-      query : queries.GetAssetsUnCategorized(),
-      renderData : function(){ fetchData(this.query) }
+      query: queries.GetAssetsUnCategorized(),
+      renderData: function () {
+        fetchData(this.query);
+      },
     },
     {
       text: "Trash",
-      query : queries.GetAssetsBySatus(constants.AssetStatus.Trash),
-      renderData : function(){ fetchData(this.query) }
+      query: queries.GetAssetsBySatus(constants.AssetStatus.Trash),
+      renderData: function () {
+        fetchData(this.query);
+      },
     },
     {
       text: "Approaching Deletion",
-      query : queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
-      renderData : function(){ fetchData(this.query) } 
-    }   
-  ]
-
+      query: queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
+      renderData: function () {
+        fetchData(this.query);
+      },
+    },
+  ];
 
   React.useEffect(() => {
     let obj: any = {};
@@ -132,7 +159,10 @@ const SearchComponent = () => {
               <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
             </CRXColumn>
             <CRXColumn item xs={6}>
-              <DateTime />
+                <DateTimeComponent
+                  getStartDate={(val: any) => setStartDate(val)}
+                  getEndDate={(val: any) => setEndDate(val)}
+                />
             </CRXColumn>
           </CRXRows>
         </div>
@@ -151,7 +181,7 @@ const SearchComponent = () => {
             {showBottomSearch && (
           <>
             <div className="middleContent">
-              <SelectedAsset  shortcutData={shortcutData} />
+              <SelectedAsset shortcutData={shortcutData} />
             </div>
 
             <div className="advanceSearchContet">
@@ -162,6 +192,7 @@ const SearchComponent = () => {
                 <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
                 Search
               </CRXButton>
+
               {showAdvance && (
                 <AdvanceOptions
                   getOptions={(e) => setAddvancedOptions(e)}
@@ -171,12 +202,12 @@ const SearchComponent = () => {
             </div>
           </>
         )}
+        {searchData && (
+          <div className="dataTabAssets">
+            <MasterMain key={Math.random()} rows={searchData} />
+          </div>
+        )}
       </div>
-      {searchData && (
-        <div className="dataTabAssets">
-          <MasterMain key={Math.random()} rows={searchData} />
-        </div>
-      )}
     </div>
   );
 };

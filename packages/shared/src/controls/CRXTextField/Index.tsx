@@ -17,9 +17,10 @@ interface InputProps {
   required?: boolean;
   errorMsg?: string;
   placeholder?: string,
+  defaultValue? : any,
 }
 
-const CRXInput = ({ value, placeholder, name, onChange, className, errorMsg, error, disabled, required, id, type,}: InputProps) => {
+const CRXInput = ({ value, defaultValue, placeholder, name, onChange, className, errorMsg, error, disabled, required, id, type,}: InputProps) => {
   
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
@@ -45,6 +46,7 @@ const CRXInput = ({ value, placeholder, name, onChange, className, errorMsg, err
     <>
       <TextField
         value={value}
+        defaultValue={defaultValue}
         name={name}
         disabled={disabled}
         error={error}
