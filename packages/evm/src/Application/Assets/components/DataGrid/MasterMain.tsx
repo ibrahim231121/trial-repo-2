@@ -130,7 +130,6 @@ const assetStatusTemplate = (rowData: any) => {
 const MasterMain = (props:any) => {
 
     let reformattedRows: any[] = [];
-    console.log("Data", props.rows)
     props.rows.map((row:any, i:number) => {
 
       let obj: any = {}

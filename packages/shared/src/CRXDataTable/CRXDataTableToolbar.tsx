@@ -157,10 +157,15 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const resetToCustomizeDefault = () => {
 
       let local_headCells = localStorage.getItem("headCells");  
+      
       if(local_headCells !== null)
       {
-        let headCells = JSON.parse(local_headCells)
-        setSelected(headCells)
+        let headCells_private = JSON.parse(local_headCells)
+        console.log("HeadCells", headCells_private)
+        headCells.map((x: any, i: number) => {
+          headCells[i].visible = headCells_private[i].visible
+        })
+        setSelected(headCells_private)
       }
       let sortOrder = orderColumn.sort((a: number, b: number) => a - b)
       setOrderColumn(sortOrder)

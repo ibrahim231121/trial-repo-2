@@ -189,6 +189,7 @@ export default function CRXDataTable(props: DataTableProps) {
 
   function onColumnVisibility(){
     let a = 0;
+    
     headCells.map((x,_) => {   
       if(!x.visible)
       {
