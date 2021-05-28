@@ -104,6 +104,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                     onChange={(e: any) => onInputChange(e)}
                     value={selectedOpt?.inputValue}
                     placeholder={`Search by ${selectedOpt?.value}`}
+                    autoComplete="off"
                   />
 
                   <button
@@ -267,7 +268,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   return (
     <div className="advanceSerachContainer">
       {Select()}
-
+      <div className="advancedSearchBottom">
       <button
         className="AddRemove-Search-Criteria-btn"
         type="button"
@@ -277,6 +278,15 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <AddIcon fontSize="small" />{" "}
         <span className="btn-text">Add search criteria </span>
       </button>
+      <button
+        className="resetAdvancedSearchBtn"
+        type="button"
+       
+      disabled={showSearchCriteria ? false : true}
+      >
+      <span className="btn-text">Reset advanced search</span>
+      </button>
+      </div>
       <CRXButton
         color="primary"
         variant="contained"
