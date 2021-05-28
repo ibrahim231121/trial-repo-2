@@ -13,13 +13,13 @@ import DateTimeComponent from "../../../../components/DateTimeComponent";
 const SearchComponent = () => {
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showBottomSearch, setShowBottomSearch] = React.useState(true);
-
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
   
   const [endDate, setEndDate] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
+  const [brdState, setBrdState] = React.useState<any>('');
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
@@ -84,11 +84,12 @@ const SearchComponent = () => {
 
     fetchData(QUERRY);
     setShowBottomSearch(false);
+    setBrdState("Search result");
   };
 
   const shortcutData = [
     {
-      text: "UnCategorized Assets",
+      text: "Uncategorized Assets",
       query: queries.GetAssetsUnCategorized(),
       renderData: function () {
         fetchData(this.query);
@@ -102,7 +103,7 @@ const SearchComponent = () => {
       },
     },
     {
-      text: "Deleted",
+      text: "Approaching Deletion",
       query: queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
       renderData: function () {
         fetchData(this.query);
@@ -116,7 +117,7 @@ const SearchComponent = () => {
     if (addvancedOptions) {
       obj = addvancedOptions.map((x: any) => {
         if (x.inputValue) {
-          return { key: x.value, inputValue: x.inputValue };
+          return { key: x.key, inputValue: x.inputValue };
         }
       });
 
@@ -128,7 +129,7 @@ const SearchComponent = () => {
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "description") {
+        } else if (o != undefined && o.key == "unit") {
           const val = {
             bool: {
               should: [{ match: { "asset.unit": `${o.inputValue}` } }],
@@ -166,16 +167,18 @@ const SearchComponent = () => {
           </CRXRows>
         </div>
 
-        <div className="preSearcBtnContent">
-          <CRXButton
-            className="PreSearchButton"
-            onClick={Search}
-            disabled={querryString.length < 1 ? true : false}
-          >
-            Search
-          </CRXButton>
-        </div>
-        {showBottomSearch && (
+          
+            <div className="preSearcBtnContent">
+              <CRXButton
+                className="PreSearchButton"
+                onClick={Search}
+                disabled={querryString.length < 1 ? true : false}
+              >
+                Search
+              </CRXButton>
+            </div>
+           
+            {showBottomSearch && (
           <>
             <div className="middleContent">
               <SelectedAsset shortcutData={shortcutData} />

@@ -1,7 +1,7 @@
 .advanceSerachContainer {
   width: 580px;
   background: #f2f2f2;
-  padding: 23px 25px;
+  padding: 23px 27px;
   margin: 4px auto 0;
 
   .adVSelectBox {
@@ -14,7 +14,16 @@
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: #797979 solid 1px;
+    border: #d1d2d4 solid 1px;
+    font-family: "Helvetica", "Arial", sans-serif !important;
+    background-color: #fff;
+    text-align: left;
+    &:hover {
+      border-color: #888787;
+    }
+    &:focus {
+      border: #888787 solid 3px !important;
+    }
   }
 
   .adVInputBox {
@@ -134,5 +143,28 @@
   .advanceSearchButton {
     min-width: 100px;
     margin-top: 48px;
+  }
+
+  .advancedSearchBottom {
+    display: flex;
+    width: 100%;
+    position: relative;
+
+    .resetAdvancedSearchBtn
+    {
+      justify-content: flex-end;
+      position: absolute;
+      right: 24px;
+      background: transparent;
+      border: 0px;
+      height:40px;
+      &:hover {
+        cursor: pointer;
+      }
+      span {
+        color:#C34400;
+        font: normal normal normal 14px/16px Arial;
+      }
+    }
   }
 }

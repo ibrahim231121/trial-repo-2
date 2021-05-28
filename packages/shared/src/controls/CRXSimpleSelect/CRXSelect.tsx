@@ -14,7 +14,10 @@ type SelectBoxProps = {
   IconName?: React.ReactElement<any>;
   icon?: boolean;
   options: Object[];
-  popover? : string
+  popover? : string,
+  defaultOption : boolean,
+  defaultOptionText : string,
+  IconComponent? : any
 };
 
 //Style For Select Menu Paper
@@ -59,6 +62,9 @@ const CRXSelectBox = ({
   icon = false,
   IconName,
   onClick,
+  IconComponent,
+  defaultOption = true,
+  defaultOptionText = "Please Select"
   defaultValue,
 }: SelectBoxProps) => {
   const classes = useStyle();
@@ -76,7 +82,8 @@ const CRXSelectBox = ({
       native={false}
       className={"CRXSimpleSelect " + className}
       value={value}
-      defaultValue={defaultValue}
+      displayEmpty={true}
+      defaultValue={defaultOptionText}
       onChange={onChange}
       input={<InputBase />}
       displayEmpty
@@ -96,12 +103,15 @@ const CRXSelectBox = ({
       }}
       
     >
+      {(defaultOption &&
       <StyledMenuItem
         style={{ minWidth: "auto", left: "0px" }}
-        value=""
+        value={defaultOptionText}
+        disabled
       >
-        Please select
+        {defaultOptionText}
       </StyledMenuItem>
+       )}
       {option}
     </Select>
   );

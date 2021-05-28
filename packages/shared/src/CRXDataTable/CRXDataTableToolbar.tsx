@@ -150,6 +150,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       //     setSelected(prevState  => ({...prevState}))
       //   }
       // }) 
+      setAnchorEl(null);
       onClearAll()
     }
 
@@ -184,8 +185,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       },
       [orderColumn, setOrderColumn]
     );
+    
+    const onSortableStart = (e:any) => {
+      e.helper.className = "onSortDragable";
+      e.helper.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
+      e.helper.innerHTML += '<i class="fas fa-scrubber leftCircle"></i>';
+      e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
+    }
 
+    const onSortMoveStart = (e : any) => {
+      console.log(e);
+    }
     return (
+
       <Toolbar
         className={clsx(classes.root)}>
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
@@ -221,29 +233,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tables columns filter')}</CRXTypography>
-                    {/* <Grid container spacing={0}>
-                      {orderColumn.map((i: number, index: number) => {
-                       return(  
-                                (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
-                                <Grid item xs={6} className="showHideList">
-                                <FormControlLabel
-								                  key={index}
-                                  value={headCells[i].label}
-                                  control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
-                                    className="shoHideCheckbox"
-                                    inputProps="primary checkbox"
-                                    />
-                                  }
-                                  label={headCells[i].label}
-                                  labelPlacement="end"
-                                />
-                                </Grid>
-                                :
-                                null
-                              )
-                      })}
-                    </Grid> */}
+                    <div style={{position:'absolute', top:"-20px", right:"0px"}}>
+                      
+                    </div>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tablescolumnsfilter')} </CRXTypography>
+
                     <div className="footerDRP">
                     <Grid container spacing={0}>
                       <Grid item xs={4}>
@@ -263,9 +257,9 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                           onClick={clearAllFilters}
                           color="default"
                           variant="outlined" 
-                          className="resetCheckBox"
+                          className="clearAllFilterBtn"
                           >
-                            {t('Clear all filters')}
+                            {t('Clearallfilters')}
                           </CRXButton>
                       </Grid>
                       
@@ -277,6 +271,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 ) : null
               }
           </div>          
+          
           <div className="dataTableColumnShoHide">
             <Tooltip title="Customize Columns" placement="top-start">         
              <IconButton
@@ -311,12 +306,15 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   <ClearIcon fontSize="small"/>
                 </IconButton>
               </div>
-              <CRXTypography className="DRPTitle" variant="h3" >{t('Customize columns')}</CRXTypography>
+              <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
                   orderColumn={orderColumn} 
                   selected={selected} 
                   chkStyle={chkStyle} 
+                  lockAxis="y"
+                  onSortStart={onSortableStart}
+                  onSortMove={onSortMoveStart}
                   onSortEnd={onReorderEnd} 
                   onReOrderChange={handleCustomizeChange}/>
               </ul>
@@ -330,7 +328,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="contained" 
                     className="closeDRP"
                     >
-                      {t('Save and close')}
+                      {t('Saveandclose')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -341,7 +339,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     variant="outlined" 
                     className="resetCheckBox"
                     >
-                      {t('Reset to default')}
+                      {t('Resettodefault')}
                     </CRXButton>
                 </Grid>
                 <Grid item>
@@ -351,7 +349,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                       className="shoHideCheckbox"
                       inputProps="primary checkbox"
                       />}
-                    label={t('Save as preset')}
+                    label={t('Saveaspreset')}
                     labelPlacement="end"
                   />
                 </Grid>
@@ -359,7 +357,9 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               </div>
               </Menu>
           </div>     
+      
       </Toolbar>
+
     );
 };
 
@@ -383,12 +383,11 @@ const SortableList = SortableContainer((props: any) => {
                   (selected[colIdx].keyCol === false || selected[colIdx].keyCol === undefined) ? 
                     <FormControlLabel
                       value={selected[colIdx].label}
-                      control={<Checkbox checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)}
-                      checkedIcon={<span className={clsx(chkStyle.icon, chkStyle.checkedIcon)} />}
-                      icon={<span className={chkStyle.icon} />}
+                      control={<CRXCheckBox className="customizeCheckBox" checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
+                     //icon={<span className={chkStyle.icon} />}
                       className={chkStyle.root + " shoHideCheckbox"}
-                      disableRipple={true} 
-                      color="default" />}
+                      
+                      //color="default" />}
                       label={selected[colIdx].label}
                       labelPlacement="end"
                     />

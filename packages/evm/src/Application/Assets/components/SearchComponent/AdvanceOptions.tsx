@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
-import MinimizeIcon from "@material-ui/icons/Minimize";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 interface IOptions {
   value: string;
@@ -29,27 +28,27 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [currentInput, setCurrentInput] = useState<string | null>(null);
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
   const [removingOption, setRemovingOption] = useState<string | null>(null);
-
+  const arrowIcon = <i className="fas fa-caret-down"></i>;
   const [options, setOptions] = useState<IOptions[]>([
     {
-      value: "username",
-      key: "User Name",
+      value: "User Name",
+      key: "username",
       _id: "1",
       usedBy: null,
       isUsed: false,
       inputValue: "",
     },
     {
-      value: "description",
-      key: "description",
+      value: "Unit ID",
+      key: "unit",
       _id: "2",
       usedBy: null,
       isUsed: false,
       inputValue: "",
     },
     {
-      value: "category",
-      key: "Category",
+      value: "Category",
+      key: "category",
       _id: "3",
       usedBy: null,
       isUsed: false,
@@ -70,7 +69,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <div className="advRow" key={i}>
           <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
-              <select
+              {/* <select
                 className="adVSelectBox"
                 ref={selectRef}
                 id={i.toString()}
@@ -84,23 +83,34 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 {newOptions.map((val: any, i: number) => (
                   <Options key={i} id={val._id} value={val.value} />
                 ))}
-              </select>
-            </CRXColumn>
-          {selectedOpt?.isUsed && (
-            <CRXColumn item xs={6}>
-              <div className="advanceInputBoxContent">
-                <input
-                  ref={refs[i]}
-                  id={i.toString()}
-                  className="adVInputBox"
-                  onChange={(e: any) => onInputChange(e)}
-                  value={selectedOpt?.inputValue}
-                  placeholder={`Search by ${selectedOpt?.value}`}
+              </select> */}
+              <span ref={selectRef} id={i.toString()}>
+                <CRXSelectBox
+                  className="adVSelectBox"
+                  value={selectedOpt?.value}
+                  onChange={(e: any) => onSelectInputChange(e)}
+                  options={newOptions}
+                  defaultValue="Please Select"
                 />
+              </span>
+            </CRXColumn>
+            {selectedOpt?.isUsed && (
+              <CRXColumn item xs={6}>
+                <div className="advanceInputBoxContent">
+                  <input
+                    ref={refs[i]}
+                    id={i.toString()}
+                    className="adVInputBox"
+                    onChange={(e: any) => onInputChange(e)}
+                    value={selectedOpt?.inputValue}
+                    placeholder={`Search by ${selectedOpt?.value}`}
+                    autoComplete="off"
+                  />
 
-                <button className="removeBtn" onClick={() => Remove(i)}>
-                  
-                </button>
+                  <button
+                    className="removeBtn"
+                    onClick={() => Remove(i)}
+                  ></button>
                 </div>
               </CRXColumn>
             )}
@@ -258,7 +268,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   return (
     <div className="advanceSerachContainer">
       {Select()}
-
+      <div className="advancedSearchBottom">
       <button
         className="AddRemove-Search-Criteria-btn"
         type="button"
@@ -268,6 +278,15 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
         <AddIcon fontSize="small" />{" "}
         <span className="btn-text">Add search criteria </span>
       </button>
+      <button
+        className="resetAdvancedSearchBtn"
+        type="button"
+       
+      disabled={showSearchCriteria ? false : true}
+      >
+      <span className="btn-text">Reset advanced search</span>
+      </button>
+      </div>
       <CRXButton
         color="primary"
         variant="contained"

@@ -59,7 +59,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [containers, setContainers] = useState(initialContainers);
 
   useEffect(() => {
-
+    localStorage.setItem("headCells", JSON.stringify(headCells));   
     let rows = stableSort(dataRows, getComparator(orderData.order, orderData.orderBy))
     const dataTable = {
       id: "dataTable",
@@ -297,10 +297,11 @@ export default function CRXDataTable(props: DataTableProps) {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} >
       {Object.values(containers).map((container: any) => {
         return (
-          <Grid item > 
+          <React.Fragment key={container.id}>
+          <Grid item> 
             {container.id === "dataTable" ?  (
               <ThemeProvider theme={theme}>
               <div className={classes.root}>
@@ -320,7 +321,7 @@ export default function CRXDataTable(props: DataTableProps) {
                   aria-label="simple table"
                   size='small'
                   stickyHeader>
-                  <DragableHead lockAxis="x"
+                  <DragableHead lockAxis="x" 
                     hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '50px'}}></TableCell>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '58px'}}></TableCell>  
@@ -328,7 +329,6 @@ export default function CRXDataTable(props: DataTableProps) {
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC
-                      <>
                       <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
                           style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                           align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
@@ -340,18 +340,13 @@ export default function CRXDataTable(props: DataTableProps) {
                           }
                         } 
                         >
-                            {/* <DragableCell
-                              index={i} key={colIdx} 
-                              value={ */}
-                                    <div className={classes.headerStickness}
-                                        key={headCells[colIdx].id}>
-                                      <label> 
-                                          {headCells[colIdx].label} 
-                                      </label>
-                                    </div>
-                                    {/* }
-                            />   */}
-                      <div className="gridSortResize">
+                        <div className={classes.headerStickness}
+                            key={headCells[colIdx].id}>
+                          <label> 
+                              {headCells[colIdx].label} 
+                          </label>
+                        </div>
+                        <div className="gridSortResize">
                         {(headCells[colIdx].sort === true) ? (
                         
                               <span  className="GridSortIcon"                         
@@ -397,7 +392,6 @@ export default function CRXDataTable(props: DataTableProps) {
                         </div>  
                            
                       </TableCell>  
-                      </>
                     ))}
                   </DragableHead>
                   {searchHeader === true ? 
@@ -430,7 +424,7 @@ export default function CRXDataTable(props: DataTableProps) {
                     :
                     null
                   }
-                  <Droppable droppableId={container.id}>
+                  <Droppable droppableId={container.id} key={container.id}>
                   {(provided: any) => (
                     <RootRef rootRef={provided.innerRef}>
                       <TableBody>
@@ -441,7 +435,7 @@ export default function CRXDataTable(props: DataTableProps) {
                             const isItemSelected = isSelected(row[keyId]);
                             const labelId = `checkbox with default color-${index}`;
                             return (
-                              <React.Fragment>
+                              <React.Fragment key={index}>
                                       <TableRow hover
                                         key={row[keyId]}
                                         role="checkbox"
@@ -525,13 +519,13 @@ export default function CRXDataTable(props: DataTableProps) {
                 <div>
                   Raw JSON
                 <div style={{border: "1px solid black"}} >
-                  <Droppable droppableId={container.id}>
+                  <Droppable droppableId={container.id} key={container.id}>
                   {(provided: any) => (
                     <RootRef rootRef={provided.innerRef}>
                       <List>
-                        {container.rows.map((row: any) => {
+                        {container.rows.map((row: any, index: number) => {
                           return (
-                              <>
+                              <React.Fragment key={index}>
                                 <ListItem
                                     key={row[keyId]}
                                     role={undefined}
@@ -555,7 +549,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                 </ListItem>
-                              </>
+                              </React.Fragment>
                           );
                         })}
                         {provided.placeholder}
@@ -571,6 +565,7 @@ export default function CRXDataTable(props: DataTableProps) {
               </>
             )}
           </Grid>
+          </React.Fragment>
         );
       })}
     </DragDropContext>

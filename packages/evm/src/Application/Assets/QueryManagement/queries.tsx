@@ -11,7 +11,20 @@ let GetAssetsBySatus = (status : string) =>{
 }
 
 let GetAssetsUnCategorized = () =>{
-
+    return {
+            bool: {
+                must: [
+                    {
+                        script: {
+                            script: 
+                            {
+                                source: "doc['categories.keyword'].length == 0"
+                            }
+                        }
+                    }
+                ]
+            }           
+    }
 }
 
 export default {

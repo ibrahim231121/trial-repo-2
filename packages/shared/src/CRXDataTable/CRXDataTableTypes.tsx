@@ -3,8 +3,9 @@ import { createStyles, makeStyles, createMuiTheme, Theme } from '@material-ui/co
 export const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
+      paddingBottom: theme.spacing(2.9),
     },
     highlight:
       theme.palette.type === 'light'
@@ -16,6 +17,7 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
           },
     title: {
       flex: '1 1 100%',
+      lineHeight: "0"
     },
     alignment:{
       textAlign: "left",
@@ -72,7 +74,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       border: 0, clip: 'rect(0 0 0 0)', height: 1, margin: -1, overflow: 'hidden', padding: 0, position: 'absolute', top: 20, width: 1,
     },    
     container: {
-      maxHeight: 800,
+      // maxHeight: 800,
       overflow:'hidden'
     },
     headerStickness: {
@@ -114,6 +116,7 @@ export interface HeadCellProps {
   searchFilter?: boolean; 
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
+  headerText?: string;
 }
 
 export interface DataTableToolbarProps {
