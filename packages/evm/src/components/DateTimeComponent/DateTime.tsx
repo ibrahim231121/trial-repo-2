@@ -1,33 +1,48 @@
 import React, { useEffect } from "react";
 import DatePickerIcon from "./DatePickerIcon";
 import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
-import { dateOptions } from "../../../../../utils/constant";
+import { dateOptions } from "../../utils/constant";
 import "./DateTime.scss";
-import { DateContext } from "../DateContext";
+import { DateContext } from "./DateContext";
+type Props = {
+  getStartDate: (v: string) => void;
+  getEndDate: (v: string) => void;
+};
+const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
+  const {
+    setSelectedOption,
+    selectedOptionValue,
+    endDate,
+    startDate,
+    setStartDateValue,
+    setEndDateValue,
+  } = React.useContext(DateContext);
 
-const DateTime: React.FC = () => {
-  const { setSelectedOption, selectedOptionValue ,endDate , startDate , setStartDateValue,
-    setEndDateValue,} =
-    React.useContext(DateContext);
-    
   const [open, setOpen] = React.useState(false);
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
   const [state, setstate] = React.useState(false);
-  const [disabled, setDisabled] = React.useState(false);
   const popupRef = React.useRef<HTMLDivElement>(null);
 
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
-    setSelectedOption(value);
-    if (value==="custom") {
-      setStartDateValue("")
-      setEndDateValue("")
+    if (value === "custom") {
+      setStartDateValue("");
+      setEndDateValue("");
+    } else {
+      const find = dateOptionsState.filter((x) => x.value !== "customRange");
+      setDateOptionsState(find);
+      setDropDownValue(null);
     }
+    setSelectedOption(value);
   };
 
-
-  const outSideClickContainer = (e : MouseEvent) => {
+  React.useEffect(() => {
+    getStartDate(startDate);
+    getEndDate(endDate);
+  }, [endDate, startDate]);
+  
+  const outSideClickContainer = (e: MouseEvent) => {
     // debugger;
     // const { current: wrap } = popupRef;
     // if (
@@ -36,35 +51,30 @@ const DateTime: React.FC = () => {
     // ) {
     //   setstate(false);
     // }
-  }
+  };
 
   React.useEffect(() => {
-    
-      window.addEventListener('mousedown', outSideClickContainer);
+    window.addEventListener("mousedown", outSideClickContainer);
     return () => {
-      window.removeEventListener('mousedown', outSideClickContainer);
+      window.removeEventListener("mousedown", outSideClickContainer);
+    };
+  }, []);
+
+  const setDropDownValueFunction = (v: any) => {
+    const find = dateOptionsState.filter((x) => x.value !== "customRange");
+    if (v === "customRange") {
+      setDropDownValue(v);
+      find.push({
+        value: "customRange",
+        displayText: `${startDate} - ${endDate}`,
+      });
+      setDateOptionsState(find);
+    } else {
+      setDateOptionsState(dateOptions);
+      setSelectedOption(v);
+      setDropDownValue(null);
     }
-  },[]);
-
-  const setDropDownValueFunction=(v:any)=>{
-    const find = dateOptionsState.filter(x=>x.value!=="customRange")
-
-    if (v==="customRange") {
-      setDropDownValue(v)
-      find.push({value: "customRange", displayText: `${startDate} - ${endDate}`})
-      setDateOptionsState(find)
-      setDisabled(true)
-    }
- 
-   else{
-    setDateOptionsState(dateOptions)
-    setSelectedOption(v)
-    setDropDownValue(null)
-    setDisabled(false)
-
-
-   }
-  }
+  };
 
   const data = (
     <DatePickerIcon
@@ -77,10 +87,10 @@ const DateTime: React.FC = () => {
     <div className="dateRangeContainer">
       <label className="dateTimeLabel">Date and Time</label>
       <CRXDropDown
-        value={dropDownValue?dropDownValue:selectedOptionValue}
+        value={dropDownValue ? dropDownValue : selectedOptionValue}
         onChange={onSelectionChange}
         options={dateOptionsState}
-        disabled={state || disabled}
+        disabled={state}
       >
         <CRXDropContainer
           icon={img}

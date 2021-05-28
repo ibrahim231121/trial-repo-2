@@ -1,9 +1,9 @@
 import React, { useState,useContext } from "react";
 import { CRXDateTimePicker, CRXButton, TextField } from "@cb/shared";
-import { DateContext } from "../DateContext";
+import { DateContext } from "./DateContext";
 import { CRXTooltip } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
-import { dateOptions } from "../../../../../utils/constant";
+import { dateOptions } from "../../utils/constant";
 
 type Props = {
   onClose: () => void;
