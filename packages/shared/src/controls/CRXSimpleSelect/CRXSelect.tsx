@@ -6,6 +6,7 @@ import "./SelectBox.scss";
 //Select box props Types
 type SelectBoxProps = {
   value: any;
+  defaultValue: any,
   id: string;
   className?: string;
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
@@ -64,12 +65,13 @@ const CRXSelectBox = ({
   IconComponent,
   defaultOption = true,
   defaultOptionText = "Please Select"
+  defaultValue,
 }: SelectBoxProps) => {
   const classes = useStyle();
   const option = Object.assign(options).map((data: any, i: number) => {
     return (
       <StyledMenuItem aria-label="None" key={i} value={data.value}>
-        {data.value}
+        {data.displayText?data.displayText: data.value}
       </StyledMenuItem>
     );
   });
@@ -84,6 +86,7 @@ const CRXSelectBox = ({
       defaultValue={defaultOptionText}
       onChange={onChange}
       input={<InputBase />}
+      displayEmpty
       MenuProps={{
         anchorOrigin: {
           vertical: "bottom",
@@ -103,7 +106,6 @@ const CRXSelectBox = ({
       {(defaultOption &&
       <StyledMenuItem
         style={{ minWidth: "auto", left: "0px" }}
-        aria-label="None"
         value={defaultOptionText}
         disabled
       >
