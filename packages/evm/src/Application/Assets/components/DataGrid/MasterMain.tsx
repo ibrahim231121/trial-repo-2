@@ -344,7 +344,7 @@ const MasterMain = (props:any) => {
                   orderByParam={orderBy}
                   searchHeader={true}
                   columnVisibilityBar={true}   
-                  allowDragableToList={true}
+                  allowDragableToList={false}
                   className="ManageAssetDataTable"
                   onClearAll={onClearAll}
                 />    
