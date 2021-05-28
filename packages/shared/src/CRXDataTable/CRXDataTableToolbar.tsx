@@ -197,6 +197,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       console.log(e);
     }
     return (
+
       <Toolbar
         className={clsx(classes.root)}>
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
@@ -232,29 +233,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                         horizontal: 'left',
                       }}
                     >
-                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tablescolumnsfilter')}</CRXTypography>
-                    {/* <Grid container spacing={0}>
-                      {orderColumn.map((i: number, index: number) => {
-                       return(  
-                                (headCells[i].keyCol === false || headCells[i].keyCol === undefined) ? 
-                                <Grid item xs={6} className="showHideList">
-                                <FormControlLabel
-								                  key={index}
-                                  value={headCells[i].label}
-                                  control={<CRXCheckBox checked={selected[i].visible} onChange={(e) => handleCheckChange(e,i)}
-                                    className="shoHideCheckbox"
-                                    inputProps="primary checkbox"
-                                    />
-                                  }
-                                  label={headCells[i].label}
-                                  labelPlacement="end"
-                                />
-                                </Grid>
-                                :
-                                null
-                              )
-                      })}
-                    </Grid> */}
+                    <div style={{position:'absolute', top:"-20px", right:"0px"}}>
+                      
+                    </div>
+                    <CRXTypography className="DRPTitle" variant="h3" >{t('Tablescolumnsfilter')} </CRXTypography>
+
                     <div className="footerDRP">
                     <Grid container spacing={0}>
                       <Grid item xs={4}>
@@ -288,6 +271,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 ) : null
               }
           </div>          
+          
           <div className="dataTableColumnShoHide">
             <Tooltip title="Customize Columns" placement="top-start">         
              <IconButton
@@ -373,7 +357,9 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               </div>
               </Menu>
           </div>     
+      
       </Toolbar>
+
     );
 };
 
