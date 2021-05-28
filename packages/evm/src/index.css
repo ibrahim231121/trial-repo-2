@@ -39,3 +39,8 @@ code {
   background: #fff;
     margin-top: -3px;
 }
+
+.linkColor {
+  color: #D74B00;
+  cursor: pointer;
+}

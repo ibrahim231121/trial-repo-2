@@ -54,7 +54,7 @@ const textTemplate = (text: string) => {
 const assetNameTemplate = (rowData: any) => {
   return (
       <React.Fragment>
-        <div style={{textAlign:"left"}}>
+        <div className="linkColor" style={{textAlign:"left"}}>
           {rowData}
         </div>
       </React.Fragment>
@@ -90,7 +90,7 @@ const assetCategoryTemplate = (rowData: any) => {
 const assetRecordedByTemplate = (rowData: any[]) => {
   return (
       <React.Fragment>
-        <div style={{textAlign:"left"}}>
+        <div style={{textAlign:"left"}} className="linkColor">
           {rowData.map((item:any) => item).join(', ')}
         </div>
       </React.Fragment>
