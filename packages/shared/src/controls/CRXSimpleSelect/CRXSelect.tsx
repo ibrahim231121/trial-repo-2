@@ -64,7 +64,7 @@ const CRXSelectBox = ({
   onClick,
   IconComponent,
   defaultOption = true,
-  defaultOptionText = "Please Select"
+  defaultOptionText = "Please Select",
   defaultValue,
 }: SelectBoxProps) => {
   const classes = useStyle();
