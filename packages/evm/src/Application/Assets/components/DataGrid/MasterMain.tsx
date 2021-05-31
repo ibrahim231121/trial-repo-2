@@ -17,7 +17,7 @@ type SearchObject = {
 interface HeadCellProps {
   disablePadding: boolean;
   id: any;
-  value: any;
+  //value: any;
   label: string;
   align: string;
   sort?: boolean;
@@ -187,17 +187,17 @@ const MasterMain = (props:any) => {
     {
       let options = reformattedRows.map((r: any, _: any) => {
         let option: any = {}
-        let x = headCells[colIdx].value
-          option["value"] = r[headCells[colIdx].value]
+        let x = headCells[colIdx].id
+          option["value"] = r[headCells[colIdx].id]
         return option
       })  
 
       // For those properties which contains an array
-      if(headCells[colIdx].value.toString() === "categories" || headCells[colIdx].value.toString() === "recordedBy")
+      if(headCells[colIdx].id.toString() === "categories" || headCells[colIdx].id.toString() === "recordedBy")
       {
         let moreOptions: any = []
         reformattedRows.map((r: any, _: any) => {
-          let x = headCells[colIdx].value
+          let x = headCells[colIdx].id
           r[x].forEach((element: any) => {
             let moreOption: any = {}
             moreOption["value"] = element
@@ -247,17 +247,17 @@ const MasterMain = (props:any) => {
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>
     ([
-      { label:`${t('ID')}`,             id:"id",         value: 'id',         align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: SearchText, keyCol:true, visible:false , minWidth:"120"},
-      { label:`${t('AssetThumbnail')}`,id:"assetId",    value: "assetId",    align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
-      { label:`${t('AssetID')}`,       id:"assetName",  value: "assetName",  align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"120"},
-      { label:`${t('AssetType')}`,     id:"assetType",  value: 'assetType',  align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Description')}`,    id:"description", value: 'description',       align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
-      { label:`${t('Categories')}`,     id:"categories", value: 'categories', align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
-      { label:`${t('Device')}`,         id:"devices",    value: 'devices',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
-      { label:`${t('Station')}`,        id:"station",    value: 'station',    align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Username')}`,       id:"recordedBy",   value: 'recordedBy', align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
-      { label:`${t('Captured')}`,       id:'recordingStarted', value: 'recordingStarted', align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
-      { label:`${t('FileStatus')}`,    id:'status',     value: 'status',     align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
+      { label:`${t('ID')}`,            id:"id",              align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: SearchText, keyCol:true, visible:false , minWidth:"120"},
+      { label:`${t('AssetThumbnail')}`,id:"assetId",         align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
+      { label:`${t('AssetID')}`,       id:"assetName",       align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"120"},
+      { label:`${t('AssetType')}`,     id:"assetType",       align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
+      { label:`${t('Description')}`,   id:"description",     align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
+      { label:`${t('Categories')}`,    id:"categories",      align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
+      { label:`${t('Device')}`,        id:"devices",         align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
+      { label:`${t('Station')}`,       id:"station",         align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
+      { label:`${t('Username')}`,      id:"recordedBy",      align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
+      { label:`${t('Captured')}`,      id:'recordingStarted',align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
+      { label:`${t('FileStatus')}`,    id:'status',          align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>
@@ -265,16 +265,16 @@ const MasterMain = (props:any) => {
       if(e.target.value !== "" && e.target.value !== undefined)
       {
         let newItem = {
-          columnName: headCells[colIdx].value.toString(),
+          columnName: headCells[colIdx].id.toString(),
           colIdx,
           value: e.target.value
         }     
-        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].value.toString()))))
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].id.toString()))))
         setSearchData((prevArr)=>([...prevArr, newItem]))
 
       }
       else 
-        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].value.toString()))))
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].id.toString()))))
     }
 
     useEffect(() => {
@@ -282,36 +282,36 @@ const MasterMain = (props:any) => {
       searchData.forEach((el:SearchObject) => {
         if(el.columnName === "assetName")
           dataRows = dataRows.filter(function(x: any) {
-                          return x[headCells[el.colIdx].value].toLowerCase().indexOf(el.value.toLowerCase()) !== -1
+                          return x[headCells[el.colIdx].id].toLowerCase().indexOf(el.value.toLowerCase()) !== -1
                       })
         if(el.columnName === "assetType")
-          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value) 
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value) 
         if(el.columnName === "description")
           dataRows = dataRows.filter(function(x: any) {
-                          return x[headCells[el.colIdx].value].toLowerCase().indexOf(el.value.toLowerCase()) !== -1
+                          return x[headCells[el.colIdx].id].toLowerCase().indexOf(el.value.toLowerCase()) !== -1
                       })
         if(el.columnName === "categories")
           dataRows = dataRows.filter(function(x: any) {
-                        return x[headCells[el.colIdx].value].map((item:any) => item).join(', ').toLowerCase().includes(el.value.toLowerCase())
+                        return x[headCells[el.colIdx].id].map((item:any) => item).join(', ').toLowerCase().includes(el.value.toLowerCase())
                       })
         if(el.columnName === "devices")
-          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value)
         if(el.columnName === "station")
-          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value)
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value)
         if(el.columnName === "recordedBy")
           dataRows = dataRows.filter(function(x: any) {
-                        return x[headCells[el.colIdx].value].map((item:any) => item).join(', ').toLowerCase().includes(el.value.toLowerCase())
+                        return x[headCells[el.colIdx].id].map((item:any) => item).join(', ').toLowerCase().includes(el.value.toLowerCase())
                       })
         if(el.columnName === "expiryDate")
         {
-          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].value]) === DateFormat(el.value)) 
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) === DateFormat(el.value)) 
         }
         if(el.columnName === "recordingStarted")
         {
-          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].value]) === DateFormat(el.value)) 
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) === DateFormat(el.value)) 
         }
         if(el.columnName === "status")
-          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].value] === el.value) 
+          dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value) 
       })
       setRows(dataRows) 
     }, [searchData])
