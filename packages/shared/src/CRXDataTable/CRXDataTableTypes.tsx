@@ -105,7 +105,7 @@ export type Order = 'asc' | 'desc';
 export interface HeadCellProps {
   disablePadding: boolean;
   id: any;
-  value: any;
+  //value: any;
   label: string;
   align: string;
   sort?: boolean;

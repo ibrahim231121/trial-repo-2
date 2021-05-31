@@ -8,7 +8,6 @@ import "@material-ui/icons"
 import Menu from '@material-ui/core/Menu';
 import { makeStyles } from '@material-ui/core/styles';
 import {DataTableToolbarProps, useToolbarStyles, HeadCellProps} from "./CRXDataTableTypes"
-import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
@@ -201,6 +200,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const onSortMoveStart = (e : any) => {
       console.log(e);
     }
+    
     return (
 
       <Toolbar
