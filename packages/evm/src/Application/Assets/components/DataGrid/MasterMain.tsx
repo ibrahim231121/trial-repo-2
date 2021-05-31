@@ -337,6 +337,71 @@ const MasterMain = (props:any) => {
 
     return (
       <React.Fragment >
+        {/* <div style={{width: "500px", height: "300px", overflow: "auto"}}>
+          <table className="freeze-table" width="700px">
+            <thead>
+              <tr>
+                <th style={{minWidth:"55px",width:"55px"}} className="col-id-no fixed-header">Id</th>
+                <th style={{minWidth:"100px",width:"100px"}} className="col-first-name fixed-header">First Name</th>
+                <th style={{minWidth:"75px",width:"75px"}}>Last Name</th>
+                <th style={{minWidth:"300px",width:"300px"}}>Address</th>
+                <th style={{minWidth:"100px",width:"100px"}}>Phone</th>
+                <th style={{minWidth:"75px",width:"75px"}}>DOB</th>
+              </tr>
+              <tr>
+                <th style={{minWidth:"55px",width:"55px"}} className="col-id-no fixed-header"></th>
+                <th style={{minWidth:"100px",width:"100px"}} className="col-first-name fixed-header"></th>
+                <th style={{minWidth:"75px",width:"75px"}}></th>
+                <th style={{minWidth:"300px",width:"300px"}}></th>
+                <th style={{minWidth:"100px",width:"100px"}}></th>
+                <th style={{minWidth:"75px",width:"75px"}}></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="col-id-no" scope="row">31</td>
+                <td className="col-first-name" scope="row">Barry</td>
+                <td>Allen</td>
+                <td>Florida, United States of America</td>
+                <td>2111111</td>
+                <td>02-02-1983</td>
+              </tr>
+              <tr>
+                <td className="col-id-no" scope="row">53</td>
+                <td className="col-first-name" scope="row">Jerry</td>
+                <td>Iyori</td>
+                <td>Karachi, Islamic Republic of Pakistan</td>
+                <td>5444444</td>
+                <td>26-11-1987</td>
+              </tr>
+              <tr>
+                <td className="col-id-no" scope="row">64</td>
+                <td className="col-first-name" scope="row">Kenn</td>
+                <td>Moiz</td>
+                <td>Lahore, Islamic Republic of Pakistan</td>
+                <td>35555555</td>
+                <td>23-02-1982</td>
+              </tr>
+              <tr>
+                <td className="col-id-no" scope="row">23</td>
+                <td className="col-first-name" scope="row">Peter</td>
+                <td>Parkar</td>
+                <td>Florida, Azerbaijan</td>
+                <td>87777777</td>
+                <td>14-02-1984</td>
+              </tr>
+              <tr>
+                <td className="col-id-no" scope="row">76  </td>
+                <td className="col-first-name" scope="row">Barry</td>
+                <td>Allen</td>
+                <td>Palestine, Turkey Istanbul</td>
+                <td>96666666</td>
+                <td>04-02-1985</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div> */}
       { rows && <CRXDataTable
                   dataRows={rows} 
                   headCells={headCells}

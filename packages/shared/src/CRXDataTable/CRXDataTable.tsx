@@ -324,9 +324,17 @@ export default function CRXDataTable(props: DataTableProps) {
                   stickyHeader>
                   <DragableHead lockAxis="x" 
                     hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '50px'}}></TableCell>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : '58px'}}></TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} style={{width : `${((allColHide === undefined || allColHide) ? '0px':'80px')}`}}>{t('Actions')}</TableCell> 
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                        style={{width: '50px', minWidth: "50px", left: 0, position: "sticky", zIndex: 4}}>
+                    </TableCell>
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                        style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
+                    </TableCell>  
+                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                        style={{width: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`,
+                                minWidth: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`, left: 113, position: "sticky", zIndex: 4}}>
+                        {t('Actions')}
+                    </TableCell> 
                     {orderColumn.map((colIdx, i) => (
                       //index needs to be CURRENT
                       //key needs to be STATIC
@@ -398,9 +406,14 @@ export default function CRXDataTable(props: DataTableProps) {
                   {searchHeader === true ? 
                     <TableHead>
                     <TableRow>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} ></TableCell>
-                      <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}></TableCell>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} >
+                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} 
+                          style={{left: 0, position: "sticky", zIndex: 3}}>
+                      </TableCell>
+                      <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}
+                          style={{left: 55, position: "sticky", zIndex: 3}}>
+                      </TableCell>
+                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} 
+                          style={{left: 113, position: "sticky", zIndex: 3}}>
                         <Button >
                           <MoreVertIcon className={classes.iconArrows}/>
                         </Button>
@@ -444,7 +457,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                         tabIndex={-1}
                                         selected={isItemSelected}
                                       >
-                                        <TableCell className="DataTableBodyCell">
+                                        <TableCell className="DataTableBodyCell col-one" scope="row">
                                         <DragDnd draggableId={row[keyId].toString()} key={row[keyId]} index={index}>
                                         {(provided: any) => (
                                                 <ListItem 
@@ -471,13 +484,13 @@ export default function CRXDataTable(props: DataTableProps) {
                                               )}
                                         </DragDnd> 
                                         </TableCell>
-                                        <TableCell className="DataTableBodyCell CellCheckBox">
+                                        <TableCell className="DataTableBodyCell CellCheckBox col-two" scope="row">
                                           <CRXCheckBox onClick={() => handleClick(row[keyId])}
                                             checked={isItemSelected}
                                             inputProps={ labelId }
                                           />
                                         </TableCell>
-                                        <TableCell className="DataTableBodyCell">
+                                        <TableCell className="DataTableBodyCell col-three" scope="row">
                                         <Button >
                                           <MoreVertIcon />
                                         </Button>
