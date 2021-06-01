@@ -173,6 +173,8 @@ const SearchComponent = () => {
                 className="PreSearchButton"
                 onClick={Search}
                 disabled={querryString.length < 1 ? true : false}
+                color="primary"
+                variant="contained"
               >
                 Search
               </CRXButton>
@@ -188,6 +190,7 @@ const SearchComponent = () => {
               <CRXButton
                 onClick={() => setShowAdvance(!showAdvance)}
                 className="PreSearchButton"
+                
               >
                 <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
                 Search
