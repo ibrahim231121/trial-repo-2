@@ -40,7 +40,7 @@ export const resources = {
         "Actions": "Actions",
         "ID":"ID",
         "AssetThumbnail":"Asset Thumbnail",
-        "AssetName":"Asset Name",
+        "AssetID":"Asset ID",
         "AssetType":"Asset Type",
         "Unit":"Unit",
         "Categories":"Category",
