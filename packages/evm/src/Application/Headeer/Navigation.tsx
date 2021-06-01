@@ -70,6 +70,7 @@ const CRXLefNavigation = () => {
         {
            label:'Live Video',
            icon:'fas fa-video NaveIcon',
+           classes: 'liveVideoTab',
            items:[
               {
                  label:'Edit',
@@ -100,6 +101,7 @@ const CRXLefNavigation = () => {
         {
             label:'Maps',
             icon:'icon-compass2 NaveIcon',
+            classes : 'mapsTab',
             items:[
                {
                   label:'Analytics Map',
@@ -115,6 +117,7 @@ const CRXLefNavigation = () => {
         {
             label:'ALPR',
             icon:'fas fa-address-card NaveIcon',
+            classes : 'aplrTab',
             items:[
                 {
                   label:'Plate Captures',
@@ -143,6 +146,7 @@ const CRXLefNavigation = () => {
         {
             label:'Reports',
             icon:'icon-file-text NaveIcon',
+            classes : 'reportingTab',
             items:[
                {
                   label:'Analytics Map',

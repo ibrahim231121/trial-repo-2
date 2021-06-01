@@ -107,7 +107,19 @@
         li {
             a {
                 height: 80px;
-                padding: 19px 5px 19px 3px  !important;
+                padding: 20px 5px 19px 3px  !important;
+            }
+            a.liveVideoTab {
+                height: 93px;
+            }
+            a.mapsTab {
+                height: 81px;
+            }
+            a.aplrTab {
+                height: 83px;
+            }
+            a.reportingTab {
+                height: 82px ;
             }
         }
     }

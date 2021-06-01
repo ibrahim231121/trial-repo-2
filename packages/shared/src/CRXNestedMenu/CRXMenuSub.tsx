@@ -13,6 +13,7 @@ type itemsProps = {
     template : any,
     target : React.AnchorHTMLAttributes<HTMLAnchorElement> | any,
     className : string,
+    classes? : string,
 }
 
 interface propsT {
@@ -125,7 +126,7 @@ const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
         const submenuIcon = item.items && <span className={submenuIconClassName}></span>;
         const submenu = renderSubmenu(item);
         let content = (
-            <a href={item.url || '#'} className={linkClassName} target={item.target} role="menuitem" aria-haspopup={item.items != null}
+            <a href={item.url || '#'} className={linkClassName + " " + item.classes} target={item.target} role="menuitem" aria-haspopup={item.items != null}
                 onClick={(event) => onItemClick(event, item)} >
                 {icon}
                 {label}
