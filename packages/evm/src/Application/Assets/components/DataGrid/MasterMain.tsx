@@ -249,15 +249,15 @@ const MasterMain = (props:any) => {
     ([
       { label:`${t('ID')}`,            id:"id",              align: "right", disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: SearchText, keyCol:true, visible:false , minWidth:"120"},
       { label:`${t('AssetThumbnail')}`,id:"assetId",         align: "left",  disablePadding: false, dataComponent: thumbTemplate, minWidth:"155", maxWidth : "171"},
-      { label:`${t('AssetID')}`,       id:"assetName",       align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"120"},
-      { label:`${t('AssetType')}`,     id:"assetType",       align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Description')}`,   id:"description",     align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "100"},
+      { label:`${t('AssetID')}`,       id:"assetName",       align: "left",  disablePadding: false, dataComponent: assetNameTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth:"180"},
+      { label:`${t('AssetType')}`,     id:"assetType",       align: "left",  disablePadding: false, dataComponent: assetTypeTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"200", visible: false},
+      { label:`${t('Description')}`,   id:"description",     align: "left",  disablePadding: false, dataComponent: assetUnitTemplate, sort: true, searchFilter:true, searchComponent: SearchText, minWidth: "200"},
       { label:`${t('Categories')}`,    id:"categories",      align: "left",  disablePadding: false, dataComponent: assetCategoryTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"150"},
-      { label:`${t('Device')}`,        id:"devices",         align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"80", visible: false},
+      { label:`${t('Device')}`,        id:"devices",         align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"100", visible: false},
       { label:`${t('Station')}`,       id:"station",         align: "left",  disablePadding: false, dataComponent: textTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"120", visible: false},
-      { label:`${t('Username')}`,      id:"recordedBy",      align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"90"},
+      { label:`${t('Username')}`,      id:"recordedBy",      align: "left",  disablePadding: false, dataComponent: assetRecordedByTemplate, sort: true, searchFilter:true, searchComponent: searchDropDown, minWidth:"135"},
       { label:`${t('Captured')}`,      id:'recordingStarted',align: "center",disablePadding: false, dataComponent: assetHolduntillTemplate,  sort: true, minWidth:"120", searchFilter:true, searchComponent: searchDate},
-      { label:`${t('FileStatus')}`,    id:'status',          align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"90", searchFilter:true, searchComponent: searchDropDown},
+      { label:`${t('FileStatus')}`,    id:'status',          align: "left",  disablePadding: false, dataComponent: assetStatusTemplate,  sort: true, minWidth:"110", searchFilter:true, searchComponent: searchDropDown},
     ]);
 
     const selectChange=(e: any, colIdx: number)  =>
