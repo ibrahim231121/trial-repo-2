@@ -318,7 +318,7 @@ export default function CRXDataTable(props: DataTableProps) {
                     orderingColumn={orderColumn}/>
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table 
-                  className={classes.table} 
+                  className={"CRXDataTableCustom " + classes.table} 
                   aria-label="simple table"
                   size='small'
                   stickyHeader>

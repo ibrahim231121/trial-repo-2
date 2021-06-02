@@ -128,14 +128,11 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       if(onPreset)
       {
         localStorage.setItem("checkOrderPreset", JSON.stringify(checkOrderPreset));
-        alert("Success: Your Customized columns have been saved.")
       }
       else
       {
         let orderingColumns = localStorage.getItem("checkOrderPreset");
         localStorage.removeItem("checkOrderPreset");
-        if(orderingColumns !== null)
-          alert("Success: Your Customized columns have been cleared.")
       }
       setCustomize(null)    
     }
