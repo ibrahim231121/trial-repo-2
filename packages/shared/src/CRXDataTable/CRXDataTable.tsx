@@ -35,6 +35,7 @@ export default function CRXDataTable(props: DataTableProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
+  const [checkBoxClass, setCheckClass] = React.useState(false);
   const [orderData, setOrderData] = React.useState<OrderData>({order: orderParam, orderBy: orderByParam});
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
@@ -156,6 +157,7 @@ export default function CRXDataTable(props: DataTableProps) {
     }
   
     setSelected(newSelected);
+    setCheckClass(!checkBoxClass);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -488,11 +490,13 @@ export default function CRXDataTable(props: DataTableProps) {
                                           <CRXCheckBox onClick={() => handleClick(row[keyId])}
                                             checked={isItemSelected}
                                             inputProps={ labelId }
+                                            selectedRow={isItemSelected}
+                                            lightMode={true}
                                           />
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell col-three" scope="row">
                                         <Button >
-                                          <MoreVertIcon />
+                                          <MoreVertIcon className={isItemSelected ? 'lightColorIcon' : 'DarkIconColor'}/>
                                         </Button>
                                         </TableCell>
                                         {orderColumn.map((colIdx, i) =>

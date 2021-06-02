@@ -38,6 +38,9 @@ export const theme = createMuiTheme({
         '&$selected:hover': { // <-- mixing the two classes
           backgroundColor: '#f2f2f2',    
         },
+        '&:hover' : {
+          backgroundColor : "#333333",
+        },
       },
     },
 
