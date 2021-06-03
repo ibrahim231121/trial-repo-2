@@ -419,10 +419,46 @@ ul.columnList {
     left: 113px;
     position: sticky;
 }
-tr:nth-child(even) td[scope=row] {
-    background-color: #f2f2f2;
-}
-tr:nth-child(odd) td[scope=row] {
-    background-color: white;
-}
+// tr:nth-child(even) td[scope=row] {
+//     background-color: #f2f2f2;
+// }
+// tr:nth-child(odd) td[scope=row] {
+//     background-color: white;
+// }
+
+// tr.Mui-selected:nth-child(odd) td[scope=row] {
+//     background-color:#231f20 !important;
+//     &:hover {
+//         background-color: #333 !important;
+//     }
+// }
+
+// tr.Mui-selected:nth-child(even) td[scope=row] {
+//     background-color:#231f20 !important;
+//     &:hover {
+//         background-color: #333 !important;
+//     }
+// }
 //-------------------
+
+
+.CRXDataTableCustom {
+    tr {
+    &.Mui-selected  {
+            background-color:#231f20 !important;
+            td.DataTableBodyCell {
+                color: #D1D2D4;
+            }
+        }
+    &:hover {
+        background-color: #333 !important;
+            td.DataTableBodyCell {
+                color: #D1D2D4;
+            }
+        }
+    }
+}
+
+.lightColorIcon {
+    color:#D1D2D4;
+}

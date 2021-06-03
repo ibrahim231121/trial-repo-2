@@ -120,7 +120,7 @@ const assetStatusTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div style={{textAlign:"left"}}>
-          <p style={{maxHeight:"8px"}}>{rowData}</p>
+          {rowData}
         </div>
       </React.Fragment>
   );

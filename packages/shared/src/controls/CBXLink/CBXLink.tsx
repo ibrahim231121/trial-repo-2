@@ -5,12 +5,13 @@ type CBXLinkProps ={
     children : React.ReactNode,
     className? : string,
     id? : string,
-    href: string
+    href: string,
+    onClick?:(event:any)=>void
 }
-const CBXLink = ({children,  className, id, href} : CBXLinkProps) => {
+const CBXLink = ({children,  className, id, href,onClick} : CBXLinkProps) => {
     return (
         <>
-        <Link href={href} id={id} className={className}>
+        <Link href={href} id={id} className={className} onClick={onClick}>
             {children}
         </Link>
         </>

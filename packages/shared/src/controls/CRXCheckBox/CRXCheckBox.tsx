@@ -12,6 +12,7 @@ interface Props {
   onChange?: (e: any) => void;
   onClick? : (e : any) => void;
   className? : string,
+  selectedRow? : boolean,
 }
 
 const useStyles = makeStyles({
@@ -36,9 +37,10 @@ const useStyles = makeStyles({
     },
   },
 });
-const CRXCheckBox: React.FC<Props> = ({ className, checked, lightMode = false, onChange, name, onClick, inputProps = 'uncontrolled-checkbox' }) => {
+const CRXCheckBox: React.FC<Props> = ({ className, selectedRow = false,  checked, lightMode = false, onChange, name, onClick, inputProps = 'uncontrolled-checkbox' }) => {
   const classes = useStyles();
-  const checkBoxSelected = lightMode ? 'crxSelectedLight' : 'crxSelectedDark'
+  const checkBoxSelected = lightMode ? 'crxSelectedLight' : 'crxSelectedDark';
+  const checkBoxIconClass = selectedRow ? 'fal fa-check-square crxCheckForDarBg' : 'fas fa-check-square';
   return (
     <>
       <Checkbox
@@ -47,7 +49,7 @@ const CRXCheckBox: React.FC<Props> = ({ className, checked, lightMode = false, o
         disableRipple
         onChange={onChange}
         name={name}
-        checkedIcon={<span className={"fas fa-check-square " + checkBoxSelected} />}
+        checkedIcon={<span className={checkBoxIconClass + " " + checkBoxSelected} />}
         icon={<span className={classes.icon} />}
         inputProps={{ 'aria-label': inputProps }}
         onClick={onClick}

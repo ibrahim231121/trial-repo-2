@@ -7,19 +7,22 @@ import "./SearchComponent.scss";
 import SelectedAsset from "./SelectedAsset";
 import queries from "../../QueryManagement/queries";
 import constants from "../../utils/constants";
-
 import DateTimeComponent from "../../../../components/DateTimeComponent";
+import { useDispatch } from "react-redux";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
-const SearchComponent = () => {
+const SearchComponent = (props: any) => {
+  console.log(props);
+  const dispatch = useDispatch();
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showBottomSearch, setShowBottomSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
-  
+
   const [endDate, setEndDate] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
-  const [brdState, setBrdState] = React.useState<any>('');
+  const [brdState, setBrdState] = React.useState<any>("");
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
@@ -82,6 +85,7 @@ const SearchComponent = () => {
       });
     }
 
+    dispatch(enterPathActionCreator({ val: "Search Result" }));
     fetchData(QUERRY);
     setShowBottomSearch(false);
     setBrdState("Search result");
@@ -110,6 +114,9 @@ const SearchComponent = () => {
       },
     },
   ];
+  React.useEffect(() => {
+      dispatch(enterPathActionCreator({ val: "" })) 
+  }, []);
 
   React.useEffect(() => {
     let obj: any = {};
@@ -159,28 +166,27 @@ const SearchComponent = () => {
               <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
             </CRXColumn>
             <CRXColumn item xs={6}>
-                <DateTimeComponent
-                  getStartDate={(val: any) => setStartDate(val)}
-                  getEndDate={(val: any) => setEndDate(val)}
-                />
+              <DateTimeComponent
+                getStartDate={(val: any) => setStartDate(val)}
+                getEndDate={(val: any) => setEndDate(val)}
+              />
             </CRXColumn>
           </CRXRows>
         </div>
 
-          
-            <div className="preSearcBtnContent">
-              <CRXButton
-                className="PreSearchButton"
-                onClick={Search}
-                disabled={querryString.length < 1 ? true : false}
-                color="primary"
-                variant="contained"
-              >
-                Search
-              </CRXButton>
-            </div>
-           
-            {showBottomSearch && (
+        <div className="preSearcBtnContent">
+          <CRXButton
+            className="PreSearchButton"
+            onClick={Search}
+            disabled={querryString.length < 1 ? true : false}
+            color="primary"
+            variant="contained"
+          >
+            Search
+          </CRXButton>
+        </div>
+
+        {showBottomSearch && (
           <>
             <div className="middleContent">
               <SelectedAsset shortcutData={shortcutData} />
@@ -190,7 +196,6 @@ const SearchComponent = () => {
               <CRXButton
                 onClick={() => setShowAdvance(!showAdvance)}
                 className="PreSearchButton"
-                
               >
                 <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
                 Search
