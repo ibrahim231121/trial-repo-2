@@ -3,11 +3,13 @@ import "./PredictiveSearchBox.scss";
 import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
 import {EditableSelect} from '@cb/shared'
+import { useDispatch } from "react-redux";
+import { enterPathActionCreator } from "../../../../../Redux/pathNameReducer";
 interface Props {
   onSet: (e: any) => void;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
-
+const dispatch = useDispatch()
   React.useEffect(() => {
     const worker = useSearchWorker.getInstance();
     var showDataList = (e:any) =>{
@@ -44,6 +46,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
       }
       onSet(value);
     }else{
+      dispatch(enterPathActionCreator({val:""}))
       onSet("");
       setOutCome([]);
     }
@@ -99,6 +102,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
           onChange={onChangeAutoComplete}
           onInputChange={handleOnChange}
           clearText={()=>setInputValue("")}
+
       />
     </div>
   );

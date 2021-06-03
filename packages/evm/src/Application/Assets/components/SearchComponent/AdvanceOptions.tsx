@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
+import {advancedSearchOptions} from "../../utils/constants"
 interface IOptions {
   value: string;
   key: string;
@@ -27,34 +28,8 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [disableButton, setDisableButton] = useState(true);
   const [currentInput, setCurrentInput] = useState<string | null>(null);
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
-  const [removingOption, setRemovingOption] = useState<string | null>(null);
   const arrowIcon = <i className="fas fa-caret-down"></i>;
-  const [options, setOptions] = useState<IOptions[]>([
-    {
-      value: "User Name",
-      key: "username",
-      _id: "1",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    },
-    {
-      value: "Unit ID",
-      key: "unit",
-      _id: "2",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    },
-    {
-      value: "Category",
-      key: "category",
-      _id: "3",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    },
-  ]);
+  const [options, setOptions] = useState<IOptions[]>(advancedSearchOptions);
 
   const Select = () => {
     var select: any = [];
@@ -87,6 +62,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
               <span ref={selectRef} id={i.toString()}>
                 <CRXSelectBox
                   className="adVSelectBox"
+                  id={i.toString()}
                   value={selectedOpt?.value}
                   onChange={(e: any) => onSelectInputChange(e)}
                   options={newOptions}
@@ -132,7 +108,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       setShowSearchCriteria(false);
     }
     options.forEach((opt: IOptions) => {
-      if (id == opt.usedBy) {
+      if (selectRef.current.id == opt.usedBy) {
         opt.usedBy = null;
         opt.isUsed = false;
         opt.inputValue = "";
@@ -199,7 +175,6 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     let found = options.find((opt: any) => id == opt.usedBy);
 
     if (found && selectsLength > 1) {
-      setRemovingOption(found.value);
       found.usedBy = null;
       found.isUsed = false;
       found.inputValue = "";
@@ -264,28 +239,39 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     }
     getOptions(options);
   };
+  const reset=()=>{
+    // setSelectsLength(1)
+    // const changedData= options.map(x=>{
+    //   if (x.usedBy) {
+    //     x.usedBy = null;
+    //     x.isUsed = false;
+    //   }
+    //   return x
+    // })
+    // console.log(changedData);
+    // setOptions(advancedSearchOptions)
+  }
   const SearchBox = () => {};
   return (
     <div className="advanceSerachContainer">
       {Select()}
       <div className="advancedSearchBottom">
-      <button
-        className="AddRemove-Search-Criteria-btn"
-        type="button"
-        onClick={() => Add()}
-        disabled={showSearchCriteria ? false : true}
-      >
-        <AddIcon fontSize="small" />{" "}
-        <span className="btn-text">Add search criteria </span>
-      </button>
-      <button
-        className="resetAdvancedSearchBtn"
-        type="button"
-       
-      disabled={showSearchCriteria ? false : true}
-      >
-      <span className="btn-text">Reset advanced search</span>
-      </button>
+        <button
+          className="AddRemove-Search-Criteria-btn"
+          type="button"
+          onClick={() => Add()}
+          disabled={showSearchCriteria ? false : true}
+        >
+          <AddIcon fontSize="small" />{" "}
+          <span className="btn-text">Add search criteria </span>
+        </button>
+        <button
+          className="resetAdvancedSearchBtn"
+          type="button"
+          disabled={showSearchCriteria ? false : true}
+        >
+          <span className="btn-text" onClick={()=>reset()}>Reset advanced search</span>
+        </button>
       </div>
       <CRXButton
         color="primary"
