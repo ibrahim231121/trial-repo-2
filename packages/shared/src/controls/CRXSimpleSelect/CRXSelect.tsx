@@ -86,7 +86,6 @@ const CRXSelectBox = ({
       defaultValue={defaultOptionText}
       onChange={onChange}
       input={<InputBase />}
-      displayEmpty
       MenuProps={{
         anchorOrigin: {
           vertical: "bottom",

@@ -104,7 +104,7 @@ const SearchComponent = () => {
     },
     {
       text: "Approaching Deletion",
-      query: queries.GetAssetsBySatus(constants.AssetStatus.Deleted),
+      query: queries.GetAssetsApproachingDeletion(startDate,endDate),
       renderData: function () {
         fetchData(this.query);
       },

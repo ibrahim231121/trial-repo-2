@@ -27,7 +27,31 @@ let GetAssetsUnCategorized = () =>{
     }
 }
 
+let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
+    return {
+        bool: {
+            must: [
+                {
+                    range: {
+                        "asset.expiryDate": {
+                        gte: `${startDate}`,
+                        },
+                    },
+                },
+                {
+                    range: {
+                        "asset.expiryDate": {
+                        lte: `${endDate}`,
+                        },
+                    },
+                }
+            ]
+        }           
+    }
+}
+
 export default {
     GetAssetsBySatus,
-    GetAssetsUnCategorized
+    GetAssetsUnCategorized,
+    GetAssetsApproachingDeletion
 }
