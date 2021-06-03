@@ -1,6 +1,6 @@
 import counterReducer from './counterReducer';
 import counterTwoReducer from './counterTwoReducer';
-import pathNameReducer from './pathNameReducer';
+import pathNameReducer from './breadCrumbReducer';
 
 //combine Reducers
 export const reducer = {

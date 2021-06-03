@@ -4,11 +4,12 @@ import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
 import {EditableSelect} from '@cb/shared'
 import { useDispatch } from "react-redux";
-import { enterPathActionCreator } from "../../../../../Redux/pathNameReducer";
+import { enterPathActionCreator } from "../../../../../Redux/breadCrumbReducer";
 interface Props {
   onSet: (e: any) => void;
+  value:string;
 }
-const PredictiveSearchBox: React.FC<Props> = ({ children, onSet }) => {
+const PredictiveSearchBox: React.FC<Props> = ({ children, onSet,value }) => {
 const dispatch = useDispatch()
   React.useEffect(() => {
     const worker = useSearchWorker.getInstance();
@@ -30,10 +31,11 @@ const dispatch = useDispatch()
 
   //onChange
   const handleOnChange = async (e: any) => {
+    if( e &&  e.target && e.target != null){
     const { value } = e.target; 
     const worker = useSearchWorker.getInstance();
     if(value){
-      if (value && value.length >= 3) {
+      if (value && value.length >= 3 && !value.startsWith("#")) {
         const data = await fetchData(value);
         if (data) {
           worker.postMessage({ data, value });
@@ -50,6 +52,7 @@ const dispatch = useDispatch()
       onSet("");
       setOutCome([]);
     }
+  }
   };
 
   const getQuery = (searchVal: string) => {
@@ -102,6 +105,7 @@ const dispatch = useDispatch()
           onChange={onChangeAutoComplete}
           onInputChange={handleOnChange}
           clearText={()=>setInputValue("")}
+          value={value}
 
       />
     </div>

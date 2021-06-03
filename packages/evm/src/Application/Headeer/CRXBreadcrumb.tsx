@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { CRXPanelStyle } from "@cb/shared";
 import { withRouter, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { enterPathActionCreator } from "../../Redux/pathNameReducer";
+import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
 
 const ActiveBreadcrumb: React.FC<any> = (props) => {
   const dispatch = useDispatch();

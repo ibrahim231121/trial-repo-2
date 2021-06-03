@@ -16,7 +16,7 @@ self.addEventListener("message", async (event: MessageEvent) => {
           cadId: data.cadId 
         }
     });
- 
+
     const keywordsResult = compactedSearchData.reduce((compactedSearch : Array<string>, item:any) => {
       compactedSearch.push(item.cadId);
       compactedSearch.push(item.assetName);
@@ -30,7 +30,7 @@ self.addEventListener("message", async (event: MessageEvent) => {
                                     .filter((keyword : string, index:Number, self:string[]) => 
                                       keyword.toLowerCase().startsWith(value.toLowerCase()) 
                                       && self.indexOf(keyword) === index)
-                                      
+                                     
     self.postMessage(keywordSearched);
   }
 });

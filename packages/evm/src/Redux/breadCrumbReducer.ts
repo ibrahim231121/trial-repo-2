@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const pathNameSlice = createSlice({
+const breadCrumbSlice = createSlice({
   name: "pathName",
   initialState: "",
   reducers: {
@@ -10,8 +10,8 @@ const pathNameSlice = createSlice({
   },
 });
 
-export default pathNameSlice;
-export const { enterPathName: enterPathActionCreator } = pathNameSlice.actions;
+export default breadCrumbSlice;
+export const { enterPathName: enterPathActionCreator } = breadCrumbSlice.actions;
 
 
 
