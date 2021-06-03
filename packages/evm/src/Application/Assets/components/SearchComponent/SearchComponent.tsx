@@ -9,7 +9,7 @@ import queries from "../../QueryManagement/queries";
 import constants from "../../utils/constants";
 import DateTimeComponent from "../../../../components/DateTimeComponent";
 import { useDispatch } from "react-redux";
-import { enterPathActionCreator } from "../../../../Redux/pathNameReducer";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 const SearchComponent = (props: any) => {
   console.log(props);

@@ -4,7 +4,7 @@ import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
 import {EditableSelect} from '@cb/shared'
 import { useDispatch } from "react-redux";
-import { enterPathActionCreator } from "../../../../../Redux/pathNameReducer";
+import { enterPathActionCreator } from "../../../../../Redux/breadCrumbReducer";
 interface Props {
   onSet: (e: any) => void;
 }
