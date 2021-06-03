@@ -59,6 +59,7 @@ const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
         }
 
         if (item.command) {
+            
             item.command({
                 originalEvent: event,
                 item: item

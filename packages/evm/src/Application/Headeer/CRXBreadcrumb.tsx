@@ -27,14 +27,14 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
         </Link>
       );
     } else if (isLast && pathLastState.length == 0) {
-      return <h5 key={name}>{name}</h5>;
+      return <a className="breadCrumbItem" key={name}>{name}</a>;
     } else if (isLast && pathLastState.length != 0) {
       return (
-        <div style={{ display: "flex" }}>
-          <CBXLink key={name} href={routeTo}>
+        <div>
+          <CBXLink className="breadCrumbItem" key={name} href={routeTo}>
             {name}
-          </CBXLink>
-          /<h5 key={pathLastState}>{pathLastState}</h5>
+          </CBXLink> 
+           / <a className="breadCrumbItem" key={pathLastState}>{pathLastState}</a>
         </div>
       );
     }
@@ -52,14 +52,14 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
       }
     >
       <CRXBreadcrumb>
-        <Link className="brdLinks" to="/">
+        <Link className="brdLinks breadCrumbItem" to="/">
           Home
         </Link>
         {pathnames.map((name: any, index: number) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
           const isLast = index === pathnames.length - 1;
           name = name.charAt(0).toUpperCase() + name.slice(1);
-          return <div>{checkPath(isLast, name, routeTo)}</div>;
+          return <span>{checkPath(isLast, name, routeTo)}</span>;
         })}
       </CRXBreadcrumb>
       <CRXTitle

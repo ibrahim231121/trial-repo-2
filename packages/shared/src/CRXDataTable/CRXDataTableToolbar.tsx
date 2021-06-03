@@ -177,6 +177,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
 
     const onReorderEnd = useCallback(    
       ({ oldIndex, newIndex}, _) => {
+       
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
@@ -195,9 +196,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     }
 
     const onSortMoveStart = (e : any) => {
-      console.log(e);
+     console.log(e)
     }
     
+    const onSortOverEnd = (e : any) => {
+      //console.log(e)
+    }
     return (
 
       <Toolbar
@@ -309,15 +313,20 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 </IconButton>
               </div>
               <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
+              <CRXTypography className="subTItle" variant="h5" >{t('Select to show a column. Drag and drop to recorder.')}</CRXTypography>
               <ul className="columnList">
                 <SortableList 
                   orderColumn={orderColumn} 
                   selected={selected} 
                   chkStyle={chkStyle} 
+                  hideSortableGhost={false}
+                  disableAutoscroll={true}
                   lockAxis="y"
                   onSortStart={onSortableStart}
                   onSortMove={onSortMoveStart}
-                  onSortEnd={onReorderEnd} 
+                  onSortEnd={onReorderEnd}
+                  onSortOver={onSortOverEnd}
+                  lockToContainerEdges={true}
                   onReOrderChange={handleCustomizeChange}/>
               </ul>
               <div className="footerDRPReOrder">

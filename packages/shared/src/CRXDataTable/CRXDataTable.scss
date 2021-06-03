@@ -75,6 +75,7 @@
             height: 35px;
             align-items: center;
             justify-content: center;
+            text-align: center;
             // .makeStyles-headerStickness-8 {
                 
             //         opacity: 1 !important;
@@ -104,7 +105,7 @@
                 display: flex;
 
                 .GridSortIcon {
-                    padding-right: 3px;
+                    padding-right: 12px;
                     position: relative;
                     top: 5px;
                 }
@@ -196,7 +197,8 @@
 .DRPTitle {
     font-size: 20px !important;
     color:#333;
-    padding-bottom: 45px;
+    padding-bottom: 40px;
+    padding-left: 11px;
 }
 
 ul.columnList {
@@ -397,6 +399,25 @@ ul.columnList {
         font-size: 10px;
     }
 
+    .ghostLi {
+      z-index: 9999;
+      list-style: none;
+      border:3px solid #CCCCCC !important;
+      background: #F2F2F2;
+      padding-left: 15px !important;
+      position: relative;
+      opacity: 0.5 !important;
+      visibility: visible !important;
+      
+      .sortAbledragIcon {
+        position: absolute;
+        right:15px;
+        top:8px;
+            &:focus {
+                cursor: move;
+            }
+        }
+    }
 /* ---------*/
 
 .clearAllFilterBtn {
@@ -419,12 +440,12 @@ ul.columnList {
     left: 113px;
     position: sticky;
 }
-// tr:nth-child(even) td[scope=row] {
-//     background-color: #f2f2f2;
-// }
-// tr:nth-child(odd) td[scope=row] {
-//     background-color: white;
-// }
+tr:nth-child(even) td[scope=row] {
+    background-color: #f2f2f2;
+}
+tr:nth-child(odd) td[scope=row] {
+    background-color: white;
+}
 
 // tr.Mui-selected:nth-child(odd) td[scope=row] {
 //     background-color:#231f20 !important;
@@ -442,23 +463,31 @@ ul.columnList {
 //-------------------
 
 
+//Do not remove it
 .CRXDataTableCustom {
-    tr {
-    &.Mui-selected  {
-            background-color:#231f20 !important;
-            td.DataTableBodyCell {
-                color: #D1D2D4;
-            }
-        }
-    &:hover {
-        background-color: #333 !important;
-            td.DataTableBodyCell {
-                color: #D1D2D4;
-            }
-        }
-    }
+    // tr {
+    // &.Mui-selected  {
+    //         background-color:#231f20 !important;
+    //         td.DataTableBodyCell {
+    //             color: #D1D2D4;
+    //         }
+    //     }
+    // &:hover {
+    //     background-color: #333 !important;
+    //         td.DataTableBodyCell {
+    //             color: #D1D2D4;
+    //         }
+    //     }
+    // }
 }
 
-.lightColorIcon {
-    color:#D1D2D4;
+// .lightColorIcon {
+//     color:#D1D2D4;
+// }
+
+.subTItle  {
+    font-size: 16px !important;
+    color: #333;
+    padding-bottom: 20px;
+    padding-left: 11px;
 }

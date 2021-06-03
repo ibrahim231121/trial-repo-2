@@ -1,7 +1,15 @@
 import { CRXNestedMenu } from "@cb/shared";
+import { useHistory } from "react-router-dom";
 import './Navigation.scss'
 
 const CRXLefNavigation = () => {
+   const history = useHistory();
+   const navigateToPage = (path : any) => {
+		console.log('Navigate to path ' + path);
+		history.push(path);
+        //showInfoMessage(this,'Navigation',path);
+	}
+
     const items = [
         {
            label:'Home',
@@ -10,11 +18,11 @@ const CRXLefNavigation = () => {
         {
            label:'Assets',
            icon:'icon-file-video NaveIcon',
-           
+           url : "/assets",
            items:[
               {
-                 label:'Left',
-                 
+                 label:'Assets',
+                 command:()=>{ navigateToPage("/assets")},
               },
               {
                  label:'Right',

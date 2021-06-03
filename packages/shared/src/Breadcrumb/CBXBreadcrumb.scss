@@ -1,0 +1,22 @@
+.CRXBreadcrumb {
+    height: 32px;
+    .breadCrumbItem {
+        font-size: 12px;
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif !important;
+
+        &:hover {
+            color: #C34400;
+            cursor: pointer;
+        }
+        &:focus {
+            color: #C34400;
+        }
+    }
+
+    .MuiBreadcrumbs-separator {
+        position: relative;
+        top: 2px;
+        transform: rotate(14deg);
+    }
+}
