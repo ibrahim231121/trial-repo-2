@@ -12,10 +12,10 @@ import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 const SearchComponent = (props: any) => {
-  console.log(props);
   const dispatch = useDispatch();
   const [showAdvance, setShowAdvance] = React.useState(false);
-  const [showBottomSearch, setShowBottomSearch] = React.useState(true);
+  const [showAdvanceSearch, setAdvanceSearch] = React.useState(true); //showShortCutSearch
+  const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
@@ -23,6 +23,7 @@ const SearchComponent = (props: any) => {
   const [endDate, setEndDate] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>("");
+  const [predictiveText, setPredictiveText] = React.useState("");
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
@@ -48,7 +49,7 @@ const SearchComponent = (props: any) => {
     },
   };
   // fetchData
-  const fetchData = (querry: any) => {
+  const fetchData = (querry: any, searchType:any) => {
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -57,11 +58,20 @@ const SearchComponent = (props: any) => {
       },
       body: JSON.stringify(querry || QUERRY),
     })
-      .then((response) => response.json())
-      .then((res) => {
+    .then((response) => response.json())
+    .then((res) => {
         setSearchData(res);
         return res;
-      });
+    })
+    .then(()=>{
+      if(searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch ){
+        setShowShortCutSearch(false);
+        setAdvanceSearch(false);
+      }
+      else if (searchType === constants.SearchType.AdvanceSearch){
+      }
+      dispatch(enterPathActionCreator({ val: "Search Results" }));
+    })
   };
 
   const Search = () => {
@@ -85,32 +95,35 @@ const SearchComponent = (props: any) => {
       });
     }
 
-    dispatch(enterPathActionCreator({ val: "Search Result" }));
-    fetchData(QUERRY);
-    setShowBottomSearch(false);
-    setBrdState("Search result");
+    //dispatch(enterPathActionCreator({ val: "Search Result" }));
+    fetchData(QUERRY, constants.SearchType.SimpleSearch);
+    setAdvanceSearch(false);
+    //setBrdState("Search result");
   };
 
   const shortcutData = [
     {
-      text: "Uncategorized Assets",
+      text: "Not Categorized",
       query: queries.GetAssetsUnCategorized(),
       renderData: function () {
-        fetchData(this.query);
+        setPredictiveText("#"+this.text);
+        fetchData(this.query,constants.SearchType.ShortcutSearch);
       },
     },
     {
       text: "Trash",
       query: queries.GetAssetsBySatus(constants.AssetStatus.Trash),
       renderData: function () {
-        fetchData(this.query);
+        setPredictiveText("#"+this.text);
+        fetchData(this.query,constants.SearchType.ShortcutSearch);
       },
     },
     {
       text: "Approaching Deletion",
       query: queries.GetAssetsApproachingDeletion(startDate,endDate),
       renderData: function () {
-        fetchData(this.query);
+        setPredictiveText("#"+this.text);
+        fetchData(this.query,constants.SearchType.ShortcutSearch);
       },
     },
   ];
@@ -152,7 +165,7 @@ const SearchComponent = (props: any) => {
           AdvancedSearchQuerry.bool.must.push(val);
         }
       });
-      fetchData(AdvancedSearchQuerry);
+      fetchData(AdvancedSearchQuerry, constants.SearchType.AdvanceSearch);
     }
   }, [addvancedOptions]);
 
@@ -163,7 +176,9 @@ const SearchComponent = (props: any) => {
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className="topColumn">
               <label className="searchLabel">Search Assets</label>
-              <PredictiveSearchBox onSet={(e) => setQuerryString(e)} />
+              <PredictiveSearchBox 
+              onSet={(e) => setQuerryString(e)}
+              value={predictiveText} />
             </CRXColumn>
             <CRXColumn item xs={6}>
               <DateTimeComponent
@@ -186,12 +201,16 @@ const SearchComponent = (props: any) => {
           </CRXButton>
         </div>
 
-        {showBottomSearch && (
+        {showShortCutSearch && (
           <>
             <div className="middleContent">
               <SelectedAsset shortcutData={shortcutData} />
             </div>
 
+            </>
+        )}
+        {showAdvanceSearch && (
+            <>
             <div className="advanceSearchContet">
               <CRXButton
                 onClick={() => setShowAdvance(!showAdvance)}

@@ -2,6 +2,13 @@ const AssetStatus ={
     Deleted : "Deleted",
     Trash : "Trash",   
 }
+
+const SearchType = {
+   SimpleSearch: "SimpleSearch",
+   AdvanceSearch: "AdvanceSearch",
+   ShortcutSearch: "ShortcutSearch"
+}
+
 export const advancedSearchOptions= [
     {
       value: "User Name",
@@ -32,4 +39,4 @@ export const advancedSearchOptions= [
 const AssetUnCategorized  = "UnCategorized";
 
 
-export default { AssetStatus, AssetUnCategorized}
+export default { AssetStatus, AssetUnCategorized, SearchType}

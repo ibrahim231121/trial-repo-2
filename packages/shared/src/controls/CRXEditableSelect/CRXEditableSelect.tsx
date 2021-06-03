@@ -14,7 +14,8 @@ interface selectBoxProps {
   placeHolder?: string;
   onChange: (e: any,value:any) => void;
   onInputChange: (e: any) => void;
-  freeSolo : boolean
+  freeSolo : boolean;
+  value:string
 }
 
 const optionStyle = makeStyles((theme: Theme) =>
@@ -75,7 +76,8 @@ const CRXAutocomplete = ({
   options,
   id,
   className,
-  placeHolder
+  placeHolder,
+  value
 }: selectBoxProps) => {
 
   const data = options;
@@ -91,6 +93,7 @@ const CRXAutocomplete = ({
       freeSolo={freeSolo}
       options={data}
       autoSelect={true}
+      value={value}
       getOptionLabel={(option: any) => option
       }
       onInputChange={onInputChange}
