@@ -321,6 +321,7 @@ export default function CRXDataTable(props: DataTableProps) {
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table 
                   className={"CRXDataTableCustom " + classes.table} 
+                  style={{width: `${((allColHide === undefined || allColHide) ? '188px':'100%')}`}}
                   aria-label="simple table"
                   size='small'
                   stickyHeader>
@@ -333,8 +334,7 @@ export default function CRXDataTable(props: DataTableProps) {
                         style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
                     </TableCell>  
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`,
-                                minWidth: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`, left: 113, position: "sticky", zIndex: 4}}>
+                        style={{width: '80px', minWidth: '80px', left: 113, position: "sticky", zIndex: 4}}>
                         {t('Actions')}
                     </TableCell> 
                     {orderColumn.map((colIdx, i) => (
@@ -425,7 +425,7 @@ export default function CRXDataTable(props: DataTableProps) {
                             style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                             key={colIdx}
                             align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                            padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
+                            //padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
                             sortDirection={orderData.orderBy === headCells[colIdx].id ? orderData.order : false}
                           >    
                             {headCells[colIdx].searchFilter === true ? 
