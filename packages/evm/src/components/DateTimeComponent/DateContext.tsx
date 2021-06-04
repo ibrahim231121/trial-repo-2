@@ -56,10 +56,11 @@ export const DateContextProvider: React.FC = ({ children }) => {
 
         break;
       case "last calendar month":
-        setEndDateValue(endingDate.startOf("month").format());
-        setStartDateValue(
-          startingDate.subtract(1, "months").endOf("month").format()
-        );
+      
+
+        setStartDate(startingDate.subtract(1, "months").startOf("month").format())  
+        setEndDateValue(endingDate.subtract(1, "months").endOf("month").format());
+
         break;
 
       default:
