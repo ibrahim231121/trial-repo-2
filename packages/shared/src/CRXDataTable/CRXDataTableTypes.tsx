@@ -107,7 +107,7 @@ export const useStyles = makeStyles((theme: Theme) =>
 export type Order = 'asc' | 'desc';
 
 export interface HeadCellProps {
-  disablePadding: boolean;
+  //disablePadding: boolean;
   id: any;
   //value: any;
   label: string;

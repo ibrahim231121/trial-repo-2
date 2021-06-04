@@ -425,7 +425,7 @@ export default function CRXDataTable(props: DataTableProps) {
                             style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                             key={colIdx}
                             align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                            padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
+                            //padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
                             sortDirection={orderData.orderBy === headCells[colIdx].id ? orderData.order : false}
                           >    
                             {headCells[colIdx].searchFilter === true ? 
