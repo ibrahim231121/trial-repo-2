@@ -333,8 +333,8 @@ export default function CRXDataTable(props: DataTableProps) {
                         style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
                     </TableCell>  
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`,
-                                minWidth: `${((allColHide === undefined || allColHide) ? '0px':'80px')}`, left: 113, position: "sticky", zIndex: 4}}>
+                        style={{width: `${((allColHide === undefined || allColHide) ? '80px':'80px')}`,
+                                minWidth: `${((allColHide === undefined || allColHide) ? '80px':'80px')}`, left: 113, position: "sticky", zIndex: 4}}>
                         {t('Actions')}
                     </TableCell> 
                     {orderColumn.map((colIdx, i) => (
