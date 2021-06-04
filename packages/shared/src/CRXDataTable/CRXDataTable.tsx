@@ -321,6 +321,7 @@ export default function CRXDataTable(props: DataTableProps) {
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table 
                   className={"CRXDataTableCustom " + classes.table} 
+                  style={{width: `${((allColHide === undefined || allColHide) ? '188px':'100%')}`}}
                   aria-label="simple table"
                   size='small'
                   stickyHeader>
@@ -333,8 +334,7 @@ export default function CRXDataTable(props: DataTableProps) {
                         style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
                     </TableCell>  
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: `${((allColHide === undefined || allColHide) ? '80px':'80px')}`,
-                                minWidth: `${((allColHide === undefined || allColHide) ? '80px':'80px')}`, left: 113, position: "sticky", zIndex: 4}}>
+                        style={{width: '80px', minWidth: '80px', left: 113, position: "sticky", zIndex: 4}}>
                         {t('Actions')}
                     </TableCell> 
                     {orderColumn.map((colIdx, i) => (
