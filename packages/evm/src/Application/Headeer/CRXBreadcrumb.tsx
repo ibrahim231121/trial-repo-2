@@ -31,10 +31,10 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
     } else if (isLast && pathLastState.length != 0) {
       return (
         <div>
-          <CBXLink className="breadCrumbItem" key={name} href={routeTo}>
+          <CBXLink className="active" key={name} href={routeTo}>
             {name}
           </CBXLink> 
-           / <a className="breadCrumbItem" key={pathLastState}>{pathLastState}</a>
+           <span className="spratorBread">/</span> <a className="breadCrumbItem" key={pathLastState}>{pathLastState}</a>
         </div>
       );
     }

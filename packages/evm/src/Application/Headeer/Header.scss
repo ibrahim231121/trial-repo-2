@@ -138,7 +138,17 @@
         text-decoration: none;
     }
     .active {
-        color: #d74b00;
+        color: #C34400;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .spratorBread {
+        position: relative;
+        top: 2px;
+        transform: rotate(11deg);
+        padding: 0 5px 0 8px;
+        display: inline-block;
     }
 }
 
