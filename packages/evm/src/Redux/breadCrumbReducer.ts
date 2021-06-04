@@ -5,8 +5,7 @@ const breadCrumbSlice = createSlice({
   initialState: "",
   reducers: {
     enterPathName: (state, action: PayloadAction<{ val: any }>) =>
-   // console.log(action)
-       state=action.payload.val
+      action.payload.val,
   },
 });
 

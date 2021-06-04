@@ -4,6 +4,7 @@ import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
 import { dateOptions } from "../../utils/constant";
 import "./DateTime.scss";
 import { DateContext } from "./DateContext";
+import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
 type Props = {
   getStartDate: (v: string) => void;
   getEndDate: (v: string) => void;
@@ -22,7 +23,6 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
   const [state, setstate] = React.useState(false);
-  const popupRef = React.useRef<HTMLDivElement>(null);
 
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
@@ -60,26 +60,21 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
       window.removeEventListener("mousedown", outSideClickContainer);
     };
   }, []);
-  const  converDate=(time24:string)=> {
-    var ts = time24;
-    var H = +ts.substr(0, 2);
-    var h:any = (H % 12) || 12;
-    h = (h < 10)?("0"+h):h;  // leading 0 at the left for 1 digit hours
-    var ampm = H < 12 ? " AM" : " PM";
-    ts = h + ts.substr(2, 3) + ampm;
-    return ts;
-  };
+  const convertDateTime=(date:string)=>{
+    const newDate= date.split("T")
+    newDate[0]= newDate[0].replace(/\-/g, '/')
+    newDate[1]=convertTimeToAmPm(newDate[1])
+    return newDate
+  }
   const setDropDownValueFunction = (v: any) => {
     const find = dateOptionsState.filter((x) => x.value !== "customRange");
     if (v === "customRange") {
       setDropDownValue(v);
-      const newStartDate= startDate.split("T")
-      newStartDate[0]= newStartDate[0].replace(/\-/g, '/')
-      newStartDate[1]=newStartDate[1]
-      console.log( newStartDate);
+    const newStartDateTime= convertDateTime(startDate)
+    const newEndDateTime= convertDateTime(endDate)
       find.push({
         value: "customRange",
-        displayText: `${startDate} - ${endDate}`,
+        displayText: `${newStartDateTime[0]}  ${newStartDateTime[1]}  -  ${newEndDateTime[0]}   ${newEndDateTime[1]} `,
       });
       setDateOptionsState(find);
     } else {
@@ -112,7 +107,6 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
           paperClass="CRXDateRange"
           onClick={() => setstate(!state)}
           paperState={state}
-          ref={popupRef}
         />
       </CRXDropDown>
     </div>

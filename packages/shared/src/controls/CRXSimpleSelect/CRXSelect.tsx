@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { InputBase, Select, MenuItem } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import "./SelectBox.scss";
@@ -6,7 +6,7 @@ import "./SelectBox.scss";
 //Select box props Types
 type SelectBoxProps = {
   value: any;
-  defaultValue: any,
+  defaultValue: any;
   id: string;
   className?: string;
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
@@ -14,10 +14,11 @@ type SelectBoxProps = {
   IconName?: React.ReactElement<any>;
   icon?: boolean;
   options: Object[];
-  popover? : string,
-  defaultOption : boolean,
-  defaultOptionText : string,
-  IconComponent? : any
+  popover?: string;
+  defaultOption: boolean;
+  defaultOptionText: string;
+  ref?: any;
+  IconComponent?: any;
 };
 
 //Style For Select Menu Paper
@@ -35,7 +36,7 @@ const StyledMenuItem = withStyles(() => ({
   root: {
     fontSize: "14px",
     color: "#333333",
-    height:"30px",
+    height: "30px",
     borderRadius: "0px",
     "&:hover": {
       backgroundColor: "#f5f5f5",
@@ -52,69 +53,74 @@ const StyledMenuItem = withStyles(() => ({
   },
 }))(MenuItem);
 
-const CRXSelectBox = ({
-  onChange,
-  value,
-  id,
-  className,
-  popover,
-  options,
-  icon = false,
-  IconName,
-  onClick,
-  IconComponent,
-  defaultOption = true,
-  defaultOptionText = "Please Select",
-  defaultValue,
-}: SelectBoxProps) => {
-  const classes = useStyle();
-  const option = Object.assign(options).map((data: any, i: number) => {
-    return (
-      <StyledMenuItem aria-label="None" key={i} value={data.value}>
-        {data.displayText?data.displayText: data.value}
-      </StyledMenuItem>
-    );
-  });
+const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
+  (
+    {
+      onChange,
+      value,
+      id,
+      className,
+      popover,
+      options,
+      icon = false,
+      IconName,
+      onClick,
+      IconComponent,
+      defaultOption = true,
+      defaultOptionText = "Please Select",
+      defaultValue,
+    },
+    ref
+  ) => {
+    const classes = useStyle();
+    const option = Object.assign(options).map((data: any, i: number) => {
+      return (
+        <StyledMenuItem aria-label="None" key={i} value={data.value}>
+          {data.displayText ? data.displayText : data.value}
+        </StyledMenuItem>
+      );
+    });
 
-  return (
-    <Select
-      id={"CRX_" + id}
-      native={false}
-      className={"CRXSimpleSelect " + className}
-      value={value}
-      displayEmpty={true}
-      defaultValue={defaultOptionText}
-      onChange={onChange}
-      input={<InputBase />}
-      MenuProps={{
-        anchorOrigin: {
-          vertical: "bottom",
-          horizontal: "center",
-        },
-        transformOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-        classes: {
-          paper: popover + " paperStyle",
-        },
-        getContentAnchorEl: null,
-      }}
-      
-    >
-      {(defaultOption &&
-      <StyledMenuItem
-        style={{ minWidth: "auto", left: "0px" }}
-        value={defaultOptionText}
-        disabled
+    return (
+      <Select
+        ref={ref}
+        id="fagg"
+        native={false}
+        className={"CRXSimpleSelect " + className}
+        value={value}
+        displayEmpty={true}
+        defaultValue={defaultOptionText}
+        onChange={onChange}
+        input={<InputBase id={id} />}
+        MenuProps={{
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "center",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+          classes: {
+            paper: popover + " paperStyle",
+          },
+          getContentAnchorEl: null,
+        }}
       >
-        {defaultOptionText}
-      </StyledMenuItem>
-       )}
-      {option}
-    </Select>
-  );
-};
+        {defaultOption && (
+          <StyledMenuItem
+            style={{ minWidth: "auto", left: "0px" }}
+            value={defaultOptionText}
+            disabled
+          >
+            {defaultOptionText}
+          </StyledMenuItem>
+        )}
+        {option}
+      </Select>
+    );
+  }
+);
 
 export default CRXSelectBox;
 

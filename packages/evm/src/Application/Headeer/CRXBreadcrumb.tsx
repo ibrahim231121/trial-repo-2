@@ -19,7 +19,6 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
     if (!isLast) {
       return (
         <Link
-          key={name}
           to={routeTo}
           onClick={() => dispatch(enterPathActionCreator({ val: "" }))}
         >
@@ -40,7 +39,6 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
     }
   };
 
-  console.log(pathnames);
   const classes = CRXPanelStyle();
   return (
     <div

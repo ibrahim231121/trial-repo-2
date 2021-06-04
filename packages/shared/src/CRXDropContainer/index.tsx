@@ -11,10 +11,9 @@ interface propsType {
     paperClass? : string, 
     paperState: boolean,
     onClick : (e : any) => void,
-    ref? : RefObject<HTMLDivElement>
 }
 
-const CRXDropContainer = ({icon, ref, onClick, paperState, color, className, paperClass, content} : propsType) => {
+const CRXDropContainer = ({icon, onClick, paperState, color, className, paperClass, content} : propsType) => {
     
     return (
         <div className="iconContent">
@@ -28,7 +27,7 @@ const CRXDropContainer = ({icon, ref, onClick, paperState, color, className, pap
               <div className="iconStyle">{icon}</div>
             </IconButton>
             {paperState ? 
-            <Paper ref={ref} className={"paperStyle " + paperClass} variant="outlined" square>
+            <Paper className={"paperStyle " + paperClass} variant="outlined" square>
                 {content} 
             </Paper> : " "
              }
