@@ -10,6 +10,7 @@ import constants from "../../utils/constants";
 import DateTimeComponent from "../../../../components/DateTimeComponent";
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
+import { scroller }  from  "react-scroll";
 
 const SearchComponent = (props: any) => {
   const dispatch = useDispatch();
@@ -69,6 +70,12 @@ const SearchComponent = (props: any) => {
         setAdvanceSearch(false);
       }
       else if (searchType === constants.SearchType.AdvanceSearch){
+          scroller.scrollTo("dataTabAssets", {
+            duration: 800,
+            delay: 100,
+            smooth: true,
+            offset:-150
+          });
       }
       dispatch(enterPathActionCreator({ val: "Search Results" }));
     })
