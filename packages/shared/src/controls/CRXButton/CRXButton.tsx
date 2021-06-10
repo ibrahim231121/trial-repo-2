@@ -47,6 +47,7 @@ const CRXButton = ({
         className={"CRXButton " + className}
         onClick={onClick}
         disabled={disabled}
+        disableRipple={true}
         {...props}
       >
         {children}

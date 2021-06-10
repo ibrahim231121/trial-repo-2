@@ -176,32 +176,45 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     }
 
     const onReorderEnd = useCallback(    
-      ({ oldIndex, newIndex}, _) => {
-       
+      ({ oldIndex, newIndex}, e) => {
+        console.log(e);
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
-
+        
         setOrderColumn(newOrder);
-        onReOrder(newOrder)
+        onReOrder(newOrder);
+        for(var i in Object.entries(e.target.children)){
+            Object.entries<any>(e.target.children)[i][1].className = ""
+        }
       },
       [orderColumn, setOrderColumn]
+      
     );
     
     const onSortableStart = (e:any) => {
       e.helper.className = "onSortDragable";
       e.helper.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
-      e.helper.innerHTML += '<i class="fas fa-scrubber leftCircle"></i>';
-      e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
+      e.helper.innerHTML += '<div class="dragableGuide"><i class="fas fa-scrubber leftCircle"></i><i class="fas fa-scrubber rightCircle"></i></div>'
+      // e.helper.innerHTML += '<i class="fas fa-scrubber leftCircle"></i>';
+      // e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
+
+      e.node.className = "ghostView";
+      e.node.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
+      
     }
 
     const onSortMoveStart = (e : any) => {
-     console.log(e)
+      const guideLine = document.getElementsByClassName("dragableGuide") as HTMLCollectionOf<HTMLElement>;
+      
+      guideLine[0].style.position = "relative";
+      guideLine[0].style.top = "40px";
     }
     
-    const onSortOverEnd = (e : any) => {
-      //console.log(e)
-    }
+    
+    // const onSortEndFunc = (e : any) => {
+    //   //console.log(e)
+    // }
     return (
 
       <Toolbar
@@ -295,7 +308,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 anchorEl={customizeColumn}
                 className="columnReOrderOpup"
                 getContentAnchorEl={null}
-                keepMounted
+                keepMounted= {true}
+                disableScrollLock= {false} 
                 open={Boolean(customizeColumn)}
                 onClose={customizeColumnClose}
                 anchorOrigin={{
@@ -307,14 +321,17 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   horizontal: 'left',
                 }}
               >
-              <div style={{position:'absolute', top:"-20px", right:"0px"}}>
-                <IconButton aria-label="clear"  onClick={customizeColumnClose} >
-                  <ClearIcon fontSize="small"/>
-                </IconButton>
-              </div>
+              <div className="popupFreezTitle">
+                <div style={{position:'absolute', top:"-10px", right:"0px"}}>
+                  <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={customizeColumnClose} >
+                    <ClearIcon fontSize="small"/>
+                  </IconButton>
+                </div>
+              
               <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
               <CRXTypography className="subTItle" variant="h5" >{t('Select to show a column. Drag and drop to recorder.')}</CRXTypography>
-              <ul className="columnList">
+              </div>
+              <div className="columnList">
                 <SortableList 
                   orderColumn={orderColumn} 
                   selected={selected} 
@@ -325,13 +342,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   onSortStart={onSortableStart}
                   onSortMove={onSortMoveStart}
                   onSortEnd={onReorderEnd}
-                  onSortOver={onSortOverEnd}
                   lockToContainerEdges={true}
+                  transitionDuration={0}
                   onReOrderChange={handleCustomizeChange}/>
-              </ul>
+              </div>
               <div className="footerDRPReOrder">
-              <Grid container spacing={2}>
-                <Grid item >
+              
                   <CRXButton 
                     id="closeDropDown"
                     onClick={onSavecloseHandle}
@@ -341,8 +357,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     >
                       {t('Saveandclose')}
                     </CRXButton>
-                </Grid>
-                <Grid item>
+                
                   <CRXButton 
                     id="resetCheckBox"
                     onClick={resetToCustomizeDefault}
@@ -352,8 +367,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     >
                       {t('Resettodefault')}
                     </CRXButton>
-                </Grid>
-                <Grid item>
+                
                   <FormControlLabel
                     control={<CRXCheckBox checked={onPreset}
                       onChange={(e) => handlePreset(e)}
@@ -363,8 +377,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                     label={t('Saveaspreset')}
                     labelPlacement="end"
                   />
-                </Grid>
-              </Grid>
+                
+              
               </div>
               </Menu>
           </div>     
@@ -385,7 +399,7 @@ const SortableList = SortableContainer((props: any) => {
   }
 
   return (
-    <span>
+    <ul className="columnUlList">
       {orderColumn.map((colIdx: any, index: number) => (
         <SortableItem 
           key={colIdx} 
@@ -407,6 +421,6 @@ const SortableList = SortableContainer((props: any) => {
                 } 
         />
       ))}
-    </span>
+    </ul>
   );
 });
