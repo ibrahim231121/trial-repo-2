@@ -395,6 +395,7 @@
       position: absolute;
       right:13px;
       top:10px;
+      display: none;
       &:focus {
           cursor: move;
       }
