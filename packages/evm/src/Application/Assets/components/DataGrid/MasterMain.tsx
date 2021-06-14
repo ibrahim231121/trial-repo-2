@@ -191,7 +191,7 @@ const MasterMain = (props:any) => {
             getEndDate={(val: any) => endDatehandleChange(val)}
             minDate={moment(props.startDate).local().format('YYYY-MM-DDTHH:MM')}
             maxDate={moment(props.endDate).local().format('YYYY-MM-DDTHH:MM')}
-            showChildDropDown
+            showChildDropDown={true}
             dateOptions={basicDateOptions}
           />
         </CRXColumn>

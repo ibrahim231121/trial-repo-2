@@ -35,7 +35,7 @@ const DateTimeComponent: React.FC<Props> = ({
         getEndDate={(val: any) => setEndDate(val)}
         minDate={minDate}
         maxDate={maxDate}
-        showChildDropDown={showChildDropDown ? showChildDropDown : true}
+        showChildDropDown={showChildDropDown ? false : true}
         disabled={disabled}
         dateOptions={dateOptions}
         defaultValue={defaultValue?defaultValue:"last 30 days"}

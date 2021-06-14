@@ -118,7 +118,7 @@ const DateTime: React.FC<Props> = ({
       dropDownCustomValue={(v: any) => setDropDownValueFunction(v)}
       minDate={minDate}
       maxDate={maxDate}
-      showChildDropDown={showChildDropDown===false?false:true}
+      showChildDropDown={showChildDropDown}
       dateOptions={dateOptions}
     />
   );
