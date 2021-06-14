@@ -314,7 +314,7 @@ const SearchComponent = (props: any) => {
         )}
         {searchData && (
           <div className="dataTabAssets">
-            <MasterMain key={Math.random()} rows={searchData} />
+            <MasterMain key={Math.random()} rows={searchData} startDate={startDate} endDate={endDate}/>
           </div>
         )}
       </div>

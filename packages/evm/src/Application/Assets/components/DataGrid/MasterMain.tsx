@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox, CRXInputDatePicker, CRXColumn } from "@cb/shared";
+import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox, CRXColumn } from "@cb/shared";
 import DateTimeComponent from "../../../../components/DateTimeComponent";
 import moment from 'moment';
 import './ManageAssetGrid.scss'
@@ -189,8 +189,8 @@ const MasterMain = (props:any) => {
           <DateTimeComponent
             getStartDate={(val: any) => startDatehandleChange(val,colIdx)}
             getEndDate={(val: any) => endDatehandleChange(val)}
-            minDate="2021-06-15T00:00"
-            maxDate="2021-06-20T00:00"
+            minDate={moment(props.startDate).local().format('YYYY-MM-DDTHH:MM')}
+            maxDate={moment(props.endDate).local().format('YYYY-MM-DDTHH:MM')}
             showChildDropDown
             dateOptions={basicDateOptions}
           />
