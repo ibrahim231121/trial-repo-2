@@ -6,7 +6,7 @@ import CRXStation from "./AppBarMenu/CRXStation";
 import CRXUserProfile from './AppBarMenu/UserProfile'
 import CRXAppDropdown from './AppBarMenu/AppBarLinks'
 import CRXHelp from './AppBarMenu/Help'
-import  CRXActiveBreadcrumb from './CRXBreadcrumb'
+import  CRXActiveBreadcrumb from './Breadcrumb'
 import CRXAssetsBucketPanel from './AssetsBucket/CRXBucket'
 import CRXNotficationPanel from './CRXNotifications/CRXNotificationPanel';
 import CRXGlobalSearchPanel from './CRXGlobalSearch/CRXSearchPanel';

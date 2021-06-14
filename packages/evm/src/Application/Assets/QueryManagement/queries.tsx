@@ -10,10 +10,24 @@ let GetAssetsBySatus = (status : string) =>{
     }
 }
 
-let GetAssetsUnCategorized = () =>{
+let GetAssetsUnCategorized = (startDate : string, endDate :string) =>{
     return {
             bool: {
                 must: [
+                    {
+                        range: {
+                            "asset.recordingStarted": {
+                            gte: `${startDate}`,
+                            },
+                        },
+                    },
+                    {
+                        range: {
+                            "asset.recordingStarted": {
+                            lte: `${endDate}`,
+                            },
+                        },
+                    },
                     {
                         script: {
                             script: 
@@ -28,7 +42,8 @@ let GetAssetsUnCategorized = () =>{
 }
 
 let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
-    return {
+
+    var approachingDeletion =  {
         bool: {
             must: [
                 {
@@ -48,6 +63,7 @@ let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
             ]
         }           
     }
+    return approachingDeletion;
 }
 
 export default {

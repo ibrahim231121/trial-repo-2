@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import DatePickerIcon from "./DatePickerIcon";
 import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
-import { dateOptions } from "../../utils/constant";
+//import { dateOptions } from "../../utils/constant";
 import "./DateTime.scss";
 import { DateContext } from "./DateContext";
 import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
@@ -10,7 +10,11 @@ type Props = {
   getEndDate: (v: string) => void;
   minDate?: string;
   maxDate?: string;
-  showChildDropDown: boolean; 
+  defaultValue?: string;
+
+  showChildDropDown: boolean;
+  disabled?: boolean;
+  dateOptions: any
 };
 const DateTime: React.FC<Props> = ({
   getStartDate,
@@ -18,6 +22,8 @@ const DateTime: React.FC<Props> = ({
   minDate,
   maxDate,
   showChildDropDown,
+  disabled,
+  dateOptions, defaultValue
 }) => {
   const {
     setSelectedOption,
@@ -25,25 +31,47 @@ const DateTime: React.FC<Props> = ({
     endDate,
     startDate,
     setStartDateValue,
-    setEndDateValue,
+    setEndDateValue,setDeafaultValue
   } = React.useContext(DateContext);
-
+  const ref: any = React.useRef(null);
   const [open, setOpen] = React.useState(false);
+  const [openContainerState, setOpenContainerState] = React.useState(false);
+
   const [dropDownValue, setDropDownValue] = React.useState(null);
   const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
-  const [state, setstate] = React.useState(false);
+
+  //runs only on mount
+  React.useEffect(() => {
+    if (dateOptions && dateOptions.length > 0) {
+      let firstOption = dateOptions[0]
+      setDateOptionsState(dateOptions);
+      setSelectedOption(defaultValue, dateOptions)
+    }
+    if (defaultValue) {
+      setDeafaultValue(defaultValue)
+    }
+  }, []);
+
+  //runs when start date or end date changes
+  React.useEffect(() => {
+    getStartDate(startDate);
+    getEndDate(endDate);
+  }, [endDate, startDate]);
+
 
   const onSelectionChange = (e: any) => {
     const { value } = e.target;
     if (value === "custom") {
       setStartDateValue("");
       setEndDateValue("");
-    } else {
-      const find = dateOptionsState.filter((x) => x.value !== "customRange");
+      setOpenContainerState(true);
+    }
+    else {
+      const find = dateOptionsState.filter((x: any) => x.value !== "customRange");
       setDateOptionsState(find);
       setDropDownValue(null);
     }
-    setSelectedOption(value);
+    setSelectedOption(value, dateOptions);
   };
 
   React.useEffect(() => {
@@ -51,32 +79,24 @@ const DateTime: React.FC<Props> = ({
     getEndDate(endDate);
   }, [endDate, startDate]);
 
-  const outSideClickContainer = (e: MouseEvent) => {
-    // debugger;
-    // const { current: wrap } = popupRef;
-    // if (
-    //   popupRef.current !== null &&
-    //   !popupRef.current.contains(e.target as HTMLElement)
-    // ) {
-    //   setstate(false);
-    // }
-  };
-
   React.useEffect(() => {
-    setSelectedOption("last 30 days");
-    window.addEventListener("mousedown", outSideClickContainer);
-    return () => {
-      window.removeEventListener("mousedown", outSideClickContainer);
-    };
-  }, []);
+    if (dateOptions && dateOptions.length > 0) {
+      let firstOption = dateOptions[0]
+      setDateOptionsState(dateOptions);
+      setSelectedOption(defaultValue, dateOptions)
+    }
+  }, [dateOptions]);
+
+
   const convertDateTime = (date: string) => {
     const newDate = date.split("T");
-    newDate[0] = newDate[0].replace(/\-/g, "/");
+    const [yy, mm, dd] = newDate[0].split("-");
+    newDate[0] = `${mm}/${dd}/${yy}`;
     newDate[1] = convertTimeToAmPm(newDate[1]);
     return newDate;
   };
   const setDropDownValueFunction = (v: any) => {
-    const find = dateOptionsState.filter((x) => x.value !== "customRange");
+    const find = dateOptionsState.filter((x: any) => x.value !== "customRange");
     if (v === "customRange") {
       setDropDownValue(v);
       const newStartDateTime = convertDateTime(startDate);
@@ -88,37 +108,34 @@ const DateTime: React.FC<Props> = ({
       setDateOptionsState(find);
     } else {
       setDateOptionsState(dateOptions);
-      setSelectedOption(v);
+      setSelectedOption(v, dateOptions);
       setDropDownValue(null);
     }
   };
 
   const data = (
     <DatePickerIcon
-      onClose={() => setOpen(false)}
       dropDownCustomValue={(v: any) => setDropDownValueFunction(v)}
       minDate={minDate}
       maxDate={maxDate}
       showChildDropDown={showChildDropDown}
+      dateOptions={dateOptions}
     />
   );
   const img = <i className="far fa-calendar-alt"></i>;
   return (
-    <div className="dateRangeContainer">
-      <label className="dateTimeLabel">Date and Time</label>
+    <div className="dateRangeContainer" ref={ref}>
       <CRXDropDown
         value={dropDownValue ? dropDownValue : selectedOptionValue}
         onChange={onSelectionChange}
         options={dateOptionsState}
-        disabled={state}
+        disabled={disabled}
       >
         <CRXDropContainer
           icon={img}
           content={data}
-          className="dateRangeButton"
-          paperClass="CRXDateRange"
-          onClick={() => setstate(!state)}
-          paperState={state}
+          openState={openContainerState}
+          stateStatus={(a: any) => setOpenContainerState(a)}
         />
       </CRXDropDown>
     </div>

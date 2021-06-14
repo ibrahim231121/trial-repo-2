@@ -1,6 +1,21 @@
+const assetShortCutPrefix = "#";
+
 const AssetStatus ={
     Deleted : "Deleted",
     Trash : "Trash",   
+}
+
+const AssetShortCuts ={
+  NotCategorized : "Not Categorized",
+  Trash:"Trash",
+  ApproachingDeletion:"Approaching Deletion"
+}
+
+const AssetShortCutsWithPrefix = {
+
+  NotCategorized : assetShortCutPrefix + AssetShortCuts.NotCategorized,
+  Trash:assetShortCutPrefix + AssetShortCuts.Trash,
+  ApproachingDeletion:assetShortCutPrefix + AssetShortCuts.ApproachingDeletion,
 }
 
 const SearchType = {
@@ -39,4 +54,4 @@ export const advancedSearchOptions= [
 const AssetUnCategorized  = "UnCategorized";
 
 
-export default { AssetStatus, AssetUnCategorized, SearchType}
+export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}

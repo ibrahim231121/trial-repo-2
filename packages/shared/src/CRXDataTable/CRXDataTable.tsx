@@ -328,7 +328,7 @@ export default function CRXDataTable(props: DataTableProps) {
                   <DragableHead lockAxis="x" 
                     hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: '50px', minWidth: "50px", left: 0, position: "sticky", zIndex: 4}}>
+                        style={{width: '55px', minWidth: "55px", left: 0, position: "sticky", zIndex: 4}}>
                     </TableCell>
                     <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                         style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
@@ -409,13 +409,13 @@ export default function CRXDataTable(props: DataTableProps) {
                     <TableHead>
                     <TableRow>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} 
-                          style={{left: 0, position: "sticky", zIndex: 3}}>
+                          style={{left: 0, position: "sticky", zIndex: 4}}>
                       </TableCell>
                       <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-                          style={{left: 55, position: "sticky", zIndex: 3}}>
+                          style={{left: 55, position: "sticky", zIndex: 4}}>
                       </TableCell>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} 
-                          style={{left: 113, position: "sticky", zIndex: 3}}>
+                          style={{left: 113, position: "sticky", zIndex: 4}}>
                         <Button >
                           <MoreVertIcon className={classes.iconArrows}/>
                         </Button>

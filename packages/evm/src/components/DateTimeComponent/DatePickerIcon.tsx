@@ -2,17 +2,16 @@ import React, { useState,useContext } from "react";
 import { CRXSelectBox,CRXInputDatePicker,CRXButton ,CRXTooltip} from "@cb/shared";
 
 import { DateContext } from "./DateContext";
-import { dateOptions } from "../../utils/constant";
 
 type Props = {
-  onClose: () => void;
   dropDownCustomValue: (v: any) => void;
   minDate?:string;
   maxDate?:string;
-  showChildDropDown:boolean
+  showChildDropDown:boolean;
+dateOptions:any
 };
 
-const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,maxDate,showChildDropDown }) => {
+const DatePickerIcon: React.FC<Props> = ({dropDownCustomValue , minDate,maxDate,showChildDropDown, dateOptions }) => {
   const [start, setStart] = useState("")
   const [end, setEnd] = useState("")
 
@@ -22,7 +21,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
     setSelectedOption,
     selectedOptionValue,
     startDate,
-    endDate,
+    endDate,defaultValue
   } = useContext(DateContext);
   React.useEffect(() => {
     if (selectedOptionValue === "custom" && startDate && endDate) {
@@ -31,16 +30,21 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
   }, [startDate, endDate]);
   const onChange = (e: any) => {
     const { value } = e.target;
+    setSelectedOption(value,dateOptions);
     dropDownCustomValue(value)
-    setSelectedOption(value);
   };
 
 
   const onClear = () => {
     setStartDateValue("");
     setEndDateValue("");
-    setSelectedOption("");
-  };
+  //       if(dateOptions && dateOptions.length > 0 ){
+  //     let firstOption = dateOptions[0]
+  //     setSelectedOption(firstOption.value, dateOptions)
+  // }
+  debugger
+  setSelectedOption(defaultValue,dateOptions)
+};
 
   return (
     <div className="calenderContent">
@@ -48,9 +52,9 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
         <CRXInputDatePicker
           value={startDate.split("+")[0]}
           type="datetime-local"
-          defaultValue={startDate.split("+")[0]}
+          // defaultValue={startDate.split("+")[0]}
           onChange={(e: any) => {
-            setSelectedOption("custom")
+            setSelectedOption("custom",dateOptions)
             setStart(e.target.value)
             setStartDateValue(e.target.value)}}
             minDate={minDate}
@@ -61,10 +65,9 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
         <CRXInputDatePicker
           value={endDate.split("+")[0]}
           type="datetime-local"
-          defaultValue={endDate.split("+")[0]}
+          // defaultValue={endDate.split("+")[0]}
           onChange={(e: any) => {
-            setSelectedOption("custom")
-            setEnd(e.target.value)
+            setSelectedOption("custom",dateOptions)
             setEndDateValue(e.target.value)}}
             minDate={minDate}
             maxDate={maxDate}
@@ -74,7 +77,8 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
     {showChildDropDown &&   <div className="selectBoxContent">
         <CRXSelectBox
           value={selectedOptionValue}
-          defaultValue={selectedOptionValue}
+          defaultOption={false}
+          // defaultValue={selectedOptionValue}
           onChange={onChange}
           options={dateOptions}
           className="daysSelection"
@@ -82,7 +86,7 @@ const DatePickerIcon: React.FC<Props> = ({ onClose, dropDownCustomValue,minDate,
         <CRXTooltip title="Select from pre-selection" placement="right" />
       </div>}
 
-      <div className="paperFooter">
+      <div className="paperFooter" style={{marginTop:"25%"}}>
         <CRXButton className="clearButton" color="primary" variant="contained" onClick={onClear}>
           Reset to default
         </CRXButton>

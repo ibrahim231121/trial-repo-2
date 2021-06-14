@@ -10,7 +10,8 @@ import constants from "../../utils/constants";
 import DateTimeComponent from "../../../../components/DateTimeComponent";
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
-import { scroller }  from  "react-scroll";
+import { scroller } from "react-scroll";
+import { basicDateOptions,approachingDeletionDateOptions } from "../../../../utils/constant";
 
 const SearchComponent = (props: any) => {
   const dispatch = useDispatch();
@@ -20,8 +21,9 @@ const SearchComponent = (props: any) => {
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
-
   const [endDate, setEndDate] = React.useState("");
+  const [dateOptionsState, setDateOptionsState] = React.useState(basicDateOptions);
+  const [defaultDateValue, setDefaultDateValue] = React.useState("");
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>("");
   const [predictiveText, setPredictiveText] = React.useState("");
@@ -50,7 +52,7 @@ const SearchComponent = (props: any) => {
     },
   };
   // fetchData
-  const fetchData = (querry: any, searchType:any) => {
+  const fetchData = (querry: any, searchType: any) => {
     fetch(url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -59,22 +61,24 @@ const SearchComponent = (props: any) => {
       },
       body: JSON.stringify(querry || QUERRY),
     })
-    .then((response) => response.json())
-    .then((res) => {
+      .then((response) => response.json())
+      .then((res) => {
         setSearchData(res);
         return res;
-    })
-    .then(()=>{
-      if(searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch ){
-        setShowShortCutSearch(false);
-        setAdvanceSearch(false);
-      }
-      else if (searchType === constants.SearchType.AdvanceSearch){
-          scroller.scrollTo("dataTabAssets", {
-            duration: 800,
+      })
+      .then(() => {
+        if (
+          searchType === constants.SearchType.SimpleSearch ||
+          searchType === constants.SearchType.ShortcutSearch
+        ) {
+          setShowShortCutSearch(false);
+          setAdvanceSearch(false);
+        } else if (searchType === constants.SearchType.AdvanceSearch) {
+          scroller.scrollTo("advanceSearchContet", {
+            duration: 100,
             delay: 100,
             smooth: true,
-            offset:-142
+            offset: -130,
           });
       }
       dispatch(enterPathActionCreator({ val: "Search Results" }));
@@ -89,60 +93,98 @@ const SearchComponent = (props: any) => {
   };
 
   const Search = () => {
-    if (startDate) {
-      QUERRY.bool.must.push({
-        range: {
-          "asset.recordingStarted": {
-            gte: `${startDate}`,
-          },
-        },
-      });
-    }
+   
 
-    if (endDate) {
-      QUERRY.bool.must.push({
-        range: {
-          "asset.recordingEnded": {
-            lte: `${endDate}`,
-          },
-        },
-      });
-    }
+    const NormalSearch =() =>{
 
-    //dispatch(enterPathActionCreator({ val: "Search Result" }));
+      if (startDate) {
+        QUERRY.bool.must.push({
+          range: {
+            "asset.recordingStarted": {
+              gte: `${startDate}`,
+            },
+          },
+        });
+      }
+  
+      if (endDate) {
+        QUERRY.bool.must.push({
+          range: {
+            "asset.recordingEnded": {
+              lte: `${endDate}`,
+            },
+          },
+        });
+      }
+
+          //dispatch(enterPathAction Creator({ val: "Search Result" }));
     fetchData(QUERRY, constants.SearchType.SimpleSearch);
     setAdvanceSearch(false);
     //setBrdState("Search result");
+  
+    }
+
+    if(querryString && querryString.length > 0 && querryString.startsWith(constants.assetShortCutPrefix)){
+
+      let exactShortCutName = querryString.substring(1);
+      let shortCut = shortcutData.find(x => x.text === exactShortCutName);
+      if(shortCut){
+
+        if(shortCut.text === constants.AssetShortCuts.ApproachingDeletion){
+          shortCut.renderData(startDate,endDate);
+        }else{
+          shortCut.renderData();
+        }
+         
+      }else{
+        NormalSearch();
+      }
+    }else{
+      NormalSearch();
+    }
   };
 
   const shortcutData = [
     {
-      text: "Not Categorized",
-      query: queries.GetAssetsUnCategorized(),
+      text: constants.AssetShortCuts.NotCategorized,
+      query: () => queries.GetAssetsUnCategorized(startDate,endDate),
       renderData: function () {
-        setPredictiveText("#"+this.text);
-        fetchData(this.query,constants.SearchType.ShortcutSearch);
+        setPredictiveText( constants.AssetShortCutsWithPrefix.NotCategorized);
+        setQuerryString( constants.AssetShortCutsWithPrefix.NotCategorized);
+        fetchData(this.query(), constants.SearchType.ShortcutSearch);
       },
     },
     {
-      text: "Trash",
-      query: queries.GetAssetsBySatus(constants.AssetStatus.Trash),
+      text: constants.AssetShortCuts.Trash,
+      query: () => queries.GetAssetsBySatus(constants.AssetStatus.Trash),
       renderData: function () {
-        setPredictiveText("#"+this.text);
-        fetchData(this.query,constants.SearchType.ShortcutSearch);
+        setPredictiveText(constants.AssetShortCutsWithPrefix.Trash);
+        setQuerryString(constants.AssetShortCutsWithPrefix.Trash);
+        fetchData(this.query(), constants.SearchType.ShortcutSearch);
       },
     },
     {
-      text: "Approaching Deletion",
-      query: queries.GetAssetsApproachingDeletion(startDate,endDate),
-      renderData: function () {
-        setPredictiveText("#"+this.text);
-        fetchData(this.query,constants.SearchType.ShortcutSearch);
+      text: constants.AssetShortCuts.ApproachingDeletion,
+      query: (startDate1:string,endDate1:string) => queries.GetAssetsApproachingDeletion(startDate1,endDate1)   ,
+      renderData: function (startDate:string = "",endDate:string="") {
+        setPredictiveText(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
+        setQuerryString(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
+        setDateOptionsState(approachingDeletionDateOptions);
+        
+        if(startDate === ""){
+          startDate = approachingDeletionDateOptions[0].startDate();
+        }
+        if(endDate  === ""){
+          endDate = approachingDeletionDateOptions[0].endDate();
+        }
+        setDefaultDateValue(approachingDeletionDateOptions[0].value);
+        fetchData( this.query(startDate,endDate), constants.SearchType.ShortcutSearch); 
       },
     },
   ];
+
   React.useEffect(() => {
-      dispatch(enterPathActionCreator({ val: "" })) 
+    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
 
   React.useEffect(() => {
@@ -183,6 +225,19 @@ const SearchComponent = (props: any) => {
     }
   }, [addvancedOptions]);
 
+
+  const onChangePredictiveSearch = (e:
+    
+    any)=>{
+    setQuerryString(e)
+    if(e.startsWith("#") && e === constants.AssetShortCutsWithPrefix.ApproachingDeletion ){
+        setDateOptionsState(approachingDeletionDateOptions);
+    }
+    else{
+      setDateOptionsState(basicDateOptions);
+    }
+  }
+
   return (
     <div className="advanceSearchChildren">
       <div className="searchComponents">
@@ -190,14 +245,19 @@ const SearchComponent = (props: any) => {
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className="topColumn">
               <label className="searchLabel">Search Assets</label>
-              <PredictiveSearchBox 
-              onSet={(e) => setQuerryString(e)}
-              value={predictiveText} />
+              <PredictiveSearchBox
+                onSet={(e) => onChangePredictiveSearch(e)}
+                value={predictiveText}
+              />
             </CRXColumn>
             <CRXColumn item xs={6}>
+              <label className="dateTimeLabel">Date and Time</label>
+
               <DateTimeComponent
-                getStartDate={(val: any) => setStartDate(val)}
-                getEndDate={(val: any) => setEndDate(val)}
+                getStartDate={(val: any) => { setStartDate(val)}}
+                getEndDate={(val: any) => {  setEndDate(val) } }
+                dateOptions={dateOptionsState}
+                defaultValue={defaultDateValue}
                 // minDate="2021-06-15T00:00"
                 // maxDate="2021-06-20T00:00"
                 // showChildDropDown={false}
@@ -223,14 +283,20 @@ const SearchComponent = (props: any) => {
             <div className="middleContent">
               <SelectedAsset shortcutData={shortcutData} />
             </div>
-
-            </>
+          </>
         )}
         {showAdvanceSearch && (
-            <>
+          <>
             <div className="advanceSearchContet">
               <CRXButton
-                onClick={() => setShowAdvance(!showAdvance)}
+                onClick={() => {
+                  scroller.scrollTo("advanceSearchContet", {
+                    duration: 100,
+                    delay: 100,
+                    smooth: true,
+                    offset: -70,
+                  });
+                  setShowAdvance(!showAdvance)}}
                 className="PreSearchButton"
               >
                 <i className={"fas fa-sort-down " + iconRotate}></i> Advanced

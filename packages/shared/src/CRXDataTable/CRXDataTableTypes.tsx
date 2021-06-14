@@ -79,7 +79,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     container: {
       // maxHeight: 800,
       overflowY:'hidden',
-      overflowX:'hidden'
+      overflowX:'auto'
     },
     headerStickness: {
       top: 0,

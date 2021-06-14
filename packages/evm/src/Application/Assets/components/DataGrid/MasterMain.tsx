@@ -5,7 +5,7 @@ import moment from 'moment';
 import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
 import {useTranslation} from 'react-i18next'; 
-
+import { basicDateOptions } from "../../../../utils/constant";
 
 type Order = 'asc' | 'desc';
 
@@ -103,16 +103,6 @@ const assetRecordedByTemplate = (rowData: any[]) => {
       </React.Fragment>
   );
 }
-const assetExpiryDateTemplate = (rowData: any) => {
-  const stillUtc = moment.utc(rowData).toDate();
-  const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
-  return (
-      <React.Fragment>
-          {localDateTime}
-          
-      </React.Fragment>
-  );
-}
 const assetHolduntillTemplate = (rowData: any) => {
   const stillUtc = moment.utc(rowData).toDate();
   const localDateTime = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
@@ -135,7 +125,7 @@ const assetStatusTemplate = (rowData: any) => {
 //-----------------
 
 const MasterMain = (props:any) => {
-
+    
     let reformattedRows: any[] = [];
     props.rows.map((row:any, i:number) => {
 
@@ -158,7 +148,7 @@ const MasterMain = (props:any) => {
     const {t} = useTranslation<string>();
     const [rows, setRows] = React.useState<any[]>(reformattedRows);
     const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<any>('assetName');  
+    const [orderBy, setOrderBy] = React.useState<any>('recordingStarted');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
     const [dateTime, setDateTime] = React.useState<DateTimeProps>({startDate: "", endDate: "", colIdx: 0});
 
@@ -202,6 +192,7 @@ const MasterMain = (props:any) => {
             minDate="2021-06-15T00:00"
             maxDate="2021-06-20T00:00"
             showChildDropDown
+            dateOptions={basicDateOptions}
           />
         </CRXColumn>
       );

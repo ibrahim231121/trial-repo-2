@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
-import {advancedSearchOptions} from "../../utils/constants"
+import { advancedSearchOptions } from "../../utils/constants";
 interface IOptions {
   value: string;
   key: string;
@@ -30,6 +30,17 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
   const arrowIcon = <i className="fas fa-caret-down"></i>;
   const [options, setOptions] = useState<IOptions[]>(advancedSearchOptions);
+const initialState= advancedSearchOptions
+  React.useEffect(() => {
+   //cleanUp after unmounting
+    return () => {
+      options.forEach(x=>{
+        x.usedBy= null
+        x.isUsed= false
+        x.inputValue= ""
+      }) 
+    };
+  }, []);
 
   const Select = () => {
     var select: any = [];
@@ -63,7 +74,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
                 <CRXSelectBox
                   className="adVSelectBox"
                   id={i.toString()}
-                  value={selectedOpt?.value}
+                  value={selectedOpt ? selectedOpt.value : "Please Select"}
                   onChange={(e: any) => onSelectInputChange(e)}
                   options={newOptions}
                   defaultValue="Please Select"
@@ -108,7 +119,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
       setShowSearchCriteria(false);
     }
     options.forEach((opt: IOptions) => {
-      if (selectRef.current.id == opt.usedBy) {
+      if (selectsLength-1 == opt.usedBy) {
         opt.usedBy = null;
         opt.isUsed = false;
         opt.inputValue = "";
@@ -154,7 +165,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     let found = options.find((opt: any) => currentSelect === opt.value);
 
     if (found) {
-      found.usedBy = Number(selectRef.current.id);
+      found.usedBy = Number(selectsLength-1);
       found.isUsed = true;
       setOptions([...options]);
     }
@@ -239,18 +250,16 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
     }
     getOptions(options);
   };
-  const reset=()=>{
-    // setSelectsLength(1)
-    // const changedData= options.map(x=>{
-    //   if (x.usedBy) {
-    //     x.usedBy = null;
-    //     x.isUsed = false;
-    //   }
-    //   return x
-    // })
-    // console.log(changedData);
-    // setOptions(advancedSearchOptions)
-  }
+  const reset = () => {
+    setSelectsLength(1)
+    setDisableButton(true)
+    options.forEach(x=>{
+      x.usedBy= null
+      x.isUsed= false
+      x.inputValue= ""
+    }) 
+     setOptions([...options]);
+  };
   const SearchBox = () => {};
   return (
     <div className="advanceSerachContainer">
@@ -270,7 +279,9 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
           type="button"
           disabled={showSearchCriteria ? false : true}
         >
-          <span className="btn-text" onClick={()=>reset()}>Reset advanced search</span>
+          <span className="btn-text" onClick={() => reset()}>
+            Reset advanced search
+          </span>
         </button>
       </div>
       <CRXButton

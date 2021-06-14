@@ -10,21 +10,22 @@ interface Props {
   value:string;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet,value }) => {
-const dispatch = useDispatch()
-  React.useEffect(() => {
-    const worker = useSearchWorker.getInstance();
-    var showDataList = (e:any) =>{
-      setOutCome(e.data);
-    }
-    //message recieved from worker.
-    worker.addEventListener("message",showDataList,false);
-    return () => {
-      worker.removeEventListener("message",showDataList);
-    };
-  },[]);
+// const dispatch = useDispatch()
+//   React.useEffect(() => {
+//     const worker = useSearchWorker.getInstance();
+//     var showDataList = (e:any) =>{
+//       setOutCome(e.data);
+//     }
+//     //message recieved from worker.
+//     worker.addEventListener("message",showDataList,false);
+//     return () => {
+//       worker.removeEventListener("message",showDataList);
+//     };
+//   },[]);
   
 
   const url = "/Evidence?Size=10&Page=1";
+  const predictiveUrl="/Evidence/predictive";
   const [showSearch, setShowSearch] = useState<any>(false);
   const [outCome, setOutCome] = useState<any>([]);
   const [inputValue, setInputValue] = useState<string>("");
@@ -38,7 +39,8 @@ const dispatch = useDispatch()
       if (value && value.length >= 3 && !value.startsWith("#")) {
         const data = await fetchData(value);
         if (data) {
-          worker.postMessage({ data, value });
+         // worker.postMessage({ data, value });
+         setOutCome(data);
           setShowSearch(true);
         }
       }
@@ -48,7 +50,6 @@ const dispatch = useDispatch()
       }
       onSet(value);
     }else{
-      dispatch(enterPathActionCreator({val:""}))
       onSet("");
       setOutCome([]);
     }
@@ -75,14 +76,15 @@ const dispatch = useDispatch()
     };
   };
   const fetchData = async (searchVal: string) => {
-    let data = await fetch(url, {
+    let data = await fetch(predictiveUrl, {
       method: "POST", // or 'PUT'
       headers: {
-        "Group-Ids": "1,2,3,4,5",
+        "Group-Ids": "1,2,3,4,5,6,7,8,9",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(getQuery(searchVal)),
     });
+    
     data = await data.json();
     return data;
   };

@@ -30,7 +30,6 @@ const DropDown: React.FC<Props> = ({
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e)}
           disabled={disabled}
         >
-          <option value="">Please Select</option>
           {options.map((option, index) => (
             <option key={index} value={option.value}>
               {option.displayText}

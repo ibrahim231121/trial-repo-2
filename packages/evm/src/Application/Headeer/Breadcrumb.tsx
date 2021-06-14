@@ -57,7 +57,7 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
           const isLast = index === pathnames.length - 1;
           name = name.charAt(0).toUpperCase() + name.slice(1);
-          return <span>{checkPath(isLast, name, routeTo)}</span>;
+          return <span key={name}>{checkPath(isLast, name, routeTo)}</span>;
         })}
       </CRXBreadcrumb>
       <CRXTitle

@@ -1,38 +1,88 @@
-import React, { RefObject } from 'react'
-import { IconButton, Paper  } from '@material-ui/core'
+import React from "react";
+import { Dialog, IconButton, Menu } from "@material-ui/core";
 //import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import './CRXDropContent.scss'
+import "./CRXDropContent.scss";
+import { makeStyles } from "@material-ui/core/styles";
 
 interface propsType {
-    icon? : any,
-    color?: 'default' | 'primary' | 'secondary',
-    className?: string,
-    content : React.ReactNode,
-    paperClass? : string, 
-    paperState: boolean,
-    onClick : (e : any) => void,
+  icon?: any;
+  color?: "default" | "primary" | "secondary";
+  className?: string;
+  content: React.ReactNode;
+  menuClass?: string;
+  stateStatus:(v:boolean)=>void,
+  openState: boolean;
 }
+const useStyles = makeStyles(() => ({
+  root: {
+    backgroundColor: "transparent",
+  },
 
-const CRXDropContainer = ({icon, onClick, paperState, color, className, paperClass, content} : propsType) => {
-    
-    return (
-        <div className="iconContent">
-            <IconButton
-                color={color}
-                className={"buttonStyle " + className}
-                component="div"
-                onClick={onClick}
-                disableRipple={true}
-            >
-              <div className="iconStyle">{icon}</div>
-            </IconButton>
-            {paperState ? 
-            <Paper className={"paperStyle " + paperClass} variant="outlined" square>
-                {content} 
-            </Paper> : " "
-             }
-        </div>
-    )
-}
+  paper: {
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    overflow: "hidden",
+  },
+  modalbox: {},
+}));
+const CRXDropContainer: React.FC<propsType> = ({
+  icon,
+  color,
+  className,
+  content,
+  openState,
+  stateStatus
+}) => {
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(openState);
+  
+  
+  React.useEffect(() => {
+    // setOpen(openState);
+    stateStatus(open)
+  }, [open]);
+
+  React.useEffect(() => {
+    setOpen(openState);
+  }, [openState]);
+
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  return (
+    <div className="iconContent">
+      <IconButton
+        color={color}
+        className={"buttonStyle " + className}
+        component="div"
+        onClick={handleClickOpen}
+        disableRipple={true}
+      >
+        <div className="iconStyle">{icon}</div>
+      </IconButton>
+      <div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          BackdropProps={{
+            classes: {
+              root: classes.root,
+            },
+          }}
+          className={classes.modalbox}
+        >
+          {content}
+        </Dialog>
+      </div>
+    </div>
+  );
+};
 
 export default CRXDropContainer;

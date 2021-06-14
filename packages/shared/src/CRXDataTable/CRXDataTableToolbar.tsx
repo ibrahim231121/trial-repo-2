@@ -157,7 +157,6 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
       if(local_headCells !== null)
       {
         let headCells_private = JSON.parse(local_headCells)
-        console.log("HeadCells", headCells_private)
         headCells.map((x: any, i: number) => {
           headCells[i].visible = headCells_private[i].visible
         })
