@@ -37,11 +37,12 @@
                 }
                 td.DataTableBodyCell{
                     border-right:1px solid #ccc;
-                    padding: 2px 7px;
+                    padding: 2px 9px;
                     font-size: 14px;
                     color:#333;
                     vertical-align: top;
                     line-height: 38px;
+                    text-indent: 5px;
                     .MuiListItemSecondaryAction-root{
                         z-index: -1 !important;
                     }
@@ -184,10 +185,12 @@
 
 .footerDRPReOrder {
     border-top: 1px solid #d1d2d4;
-    padding: 15.5px 0px 0;
-    margin-top: 19px;
+    padding: 23px 0px 16px 28px;
+    margin-top: 0px;
     .closeDRP  {
-        width: 142px;
+        width: 134px;
+        padding: 6px 0px;
+        margin-right: 17px;
         span {
             color:#d1d2d4
         }
@@ -195,32 +198,42 @@
 }
 
 .DRPTitle {
-    font-size: 20px !important;
+    font-size: 18px !important;
     color:#333;
-    padding-bottom: 40px;
+    padding-bottom: 33px;
     padding-left: 11px;
 }
 
-ul.columnList {
-    padding-left: 0px;
-    li {
-        display: block;
-        padding:0px 0px;
-        border:3px solid transparent;
-        margin-bottom: 5px;
-        .MuiFormControlLabel-root{
-            margin-left: 0px !important;
+.columnList {
+    padding:102px 0px 0px 15px;
+    ul.columnUlList {
+        padding-left: 0px;
+        max-height: 301px;
+        overflow: auto;
+        li {
+            display: block;
+            padding:0px 0px;
+            border:3px solid transparent;
+            margin-bottom: 5px;
+            .MuiFormControlLabel-root{
+                margin-left: 0px !important;
+                .customizeCheckBox  {
+                    padding: 9px 15px 9px 9px;
+                }
+                .MuiFormControlLabel-label {
+                    font-size: 14px;
+                    color:#333;
+                }
+            }
+            
         }
     }
-
 }
 
 .columnReOrderOpup {
     .MuiPopover-paper {
-        min-width: 450px;
-        max-width: 600px;
-        max-height: 480px;
-        padding: 15px;
+        width: 528px;
+        padding: 0px;
         box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
         border: 1px solid #d1d2d4;
         border-radius: 0px;
@@ -359,22 +372,36 @@ ul.columnList {
   .onSortDragable {
       z-index: 9999;
       list-style: none;
-      border:3px solid #CCCCCC;
+      border:3px solid #CCCCCC !important;
       background: #F2F2F2;
-      padding-left: 15px;
+      padding-left: 11px;
       position: relative;
+      width: 469px !important;
+      opacity: 0.90;
+  }
+
+  .ghostView {
+    z-index: 9999;
+    list-style: none;
+    border:3px solid #CCCCCC !important;
+    background: #F2F2F2;
+    padding-left: 11px;
+    position: relative;
+    width: 469px !important;
+    opacity: 0.5;
   }
 
   .sortAbledragIcon {
       position: absolute;
-      right:15px;
-      top:8px;
+      right:13px;
+      top:10px;
+      display: none;
       &:focus {
           cursor: move;
       }
   }
  
-  .onSortDragable::after {
+  .dragableGuide::after {
       content: "";
       position: absolute;
       top:-11px;
@@ -486,8 +513,33 @@ tr:nth-child(odd) td[scope=row] {
 // }
 
 .subTItle  {
-    font-size: 16px !important;
+    font-size: 14px !important;
     color: #333;
     padding-bottom: 20px;
     padding-left: 11px;
+}
+
+.popupFreezTitle {
+    position: fixed;
+    padding-left: 15px;
+    padding-top: 14px;
+    width: 528px;
+}
+
+#resetCheckBox {
+    border: 0px;
+    margin-right: 40px;
+}
+
+.closePopup {
+    &:hover {
+        background-color: transparent !important;
+    }
+    .MuiSvgIcon-fontSizeSmall {
+        font-size: 16px;
+        color: #d1d1d4;
+        &:hover {
+            color: #333;
+        }
+    }
 }

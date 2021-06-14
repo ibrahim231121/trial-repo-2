@@ -74,10 +74,17 @@ const SearchComponent = (props: any) => {
             duration: 800,
             delay: 100,
             smooth: true,
-            offset:-150
+            offset:-142
           });
       }
       dispatch(enterPathActionCreator({ val: "Search Results" }));
+      
+      const titleCOnt = document.getElementsByClassName('titlePage');
+      var appendClass = document.getElementsByClassName('bottomLine');
+      if(appendClass.length === 0){
+        titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
+        console.log(titleCOnt);
+      }
     })
   };
 
