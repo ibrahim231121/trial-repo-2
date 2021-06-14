@@ -198,6 +198,9 @@ const SearchComponent = (props: any) => {
               <DateTimeComponent
                 getStartDate={(val: any) => setStartDate(val)}
                 getEndDate={(val: any) => setEndDate(val)}
+                // minDate="2021-06-15T00:00"
+                // maxDate="2021-06-20T00:00"
+                // showChildDropDown={false}
               />
             </CRXColumn>
           </CRXRows>

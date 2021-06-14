@@ -8,8 +8,17 @@ import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
 type Props = {
   getStartDate: (v: string) => void;
   getEndDate: (v: string) => void;
+  minDate?: string;
+  maxDate?: string;
+  showChildDropDown: boolean; 
 };
-const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
+const DateTime: React.FC<Props> = ({
+  getStartDate,
+  getEndDate,
+  minDate,
+  maxDate,
+  showChildDropDown,
+}) => {
   const {
     setSelectedOption,
     selectedOptionValue,
@@ -41,7 +50,7 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
     getStartDate(startDate);
     getEndDate(endDate);
   }, [endDate, startDate]);
-  
+
   const outSideClickContainer = (e: MouseEvent) => {
     // debugger;
     // const { current: wrap } = popupRef;
@@ -54,24 +63,24 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
   };
 
   React.useEffect(() => {
-    setSelectedOption("last 30 days")
+    setSelectedOption("last 30 days");
     window.addEventListener("mousedown", outSideClickContainer);
     return () => {
       window.removeEventListener("mousedown", outSideClickContainer);
     };
   }, []);
-  const convertDateTime=(date:string)=>{
-    const newDate= date.split("T")
-    newDate[0]= newDate[0].replace(/\-/g, '/')
-    newDate[1]=convertTimeToAmPm(newDate[1])
-    return newDate
-  }
+  const convertDateTime = (date: string) => {
+    const newDate = date.split("T");
+    newDate[0] = newDate[0].replace(/\-/g, "/");
+    newDate[1] = convertTimeToAmPm(newDate[1]);
+    return newDate;
+  };
   const setDropDownValueFunction = (v: any) => {
     const find = dateOptionsState.filter((x) => x.value !== "customRange");
     if (v === "customRange") {
       setDropDownValue(v);
-    const newStartDateTime= convertDateTime(startDate)
-    const newEndDateTime= convertDateTime(endDate)
+      const newStartDateTime = convertDateTime(startDate);
+      const newEndDateTime = convertDateTime(endDate);
       find.push({
         value: "customRange",
         displayText: `${newStartDateTime[0]}  ${newStartDateTime[1]}  -  ${newEndDateTime[0]}   ${newEndDateTime[1]} `,
@@ -88,6 +97,9 @@ const DateTime: React.FC<Props> = ({ getStartDate, getEndDate }) => {
     <DatePickerIcon
       onClose={() => setOpen(false)}
       dropDownCustomValue={(v: any) => setDropDownValueFunction(v)}
+      minDate={minDate}
+      maxDate={maxDate}
+      showChildDropDown={showChildDropDown}
     />
   );
   const img = <i className="far fa-calendar-alt"></i>;
