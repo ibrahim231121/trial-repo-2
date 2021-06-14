@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox } from "@cb/shared";
+import {CRXDataTable, Order, HeadCellProps, TextField, CRXSelectBox, CRXInputDatePicker, CRXColumn } from "@cb/shared";
+import DateTimeComponent from "../../../../components/DateTimeComponent";
 import moment from 'moment';
 import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
@@ -12,6 +13,12 @@ type SearchObject = {
   columnName: string;
   colIdx: number;
   value: any;
+}
+
+type DateTimeProps = {
+  startDate: string;
+  endDate: string;
+  colIdx: number;
 }
 
 interface HeadCellProps {
@@ -153,6 +160,7 @@ const MasterMain = (props:any) => {
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('assetName');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
+    const [dateTime, setDateTime] = React.useState<DateTimeProps>({startDate: "", endDate: "", colIdx: 0});
 
     
     const SearchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {  
@@ -164,12 +172,22 @@ const MasterMain = (props:any) => {
 
       return (
         <TextField value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText} 
-          id={"CRX_" + colIdx} 
+          id={"CRX_" + colIdx.toString()} 
           onChange={(e: any) => handleChange(e,colIdx)} />
       );
     }
 
     const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
+
+      function startDatehandleChange(val: any,colIdx: number) {
+        setDateTime((state: DateTimeProps) => ({ ...state, ["startDate"]: val, ["colIdx"]: colIdx})); 
+        //headCells[colIdx].headerText = e.target.value   
+      }
+
+      function endDatehandleChange(val: any) {
+        setDateTime((state: DateTimeProps) => ({ ...state, ["endDate"]: val}));
+        //headCells[colIdx].headerText = e.target.value   
+      }
 
       function handleChange(e: any,colIdx: number) {
         selectChange(e,colIdx)   
@@ -177,9 +195,15 @@ const MasterMain = (props:any) => {
       }
 
       return (
-        <TextField value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText} 
-          id={"CRX_" + colIdx} type="date" 
-          onChange={(e: any) => handleChange(e,colIdx)}  />
+        <CRXColumn item xs={11}>
+          <DateTimeComponent
+            getStartDate={(val: any) => startDatehandleChange(val,colIdx)}
+            getEndDate={(val: any) => endDatehandleChange(val)}
+            minDate="2021-06-15T00:00"
+            maxDate="2021-06-20T00:00"
+            showChildDropDown
+          />
+        </CRXColumn>
       );
     }
     
@@ -236,7 +260,7 @@ const MasterMain = (props:any) => {
                 className="selectFilter"
                 popover="dropdownPaper"
                 options={unique} 
-                id={colIdx} 
+                id={colIdx.toString()} 
                 onChange={(e: any) => handleChange(e,colIdx)} 
                 onClick={(e : any) => console.log(e)}  
                 value={(headCells[colIdx].headerText === undefined) ? headCells[colIdx].headerText = "" : headCells[colIdx].headerText}  
@@ -278,6 +302,32 @@ const MasterMain = (props:any) => {
     }
 
     useEffect(() => {
+      
+      if(dateTime.startDate !== "" && dateTime.startDate !== undefined && dateTime.startDate != null && 
+      dateTime.endDate !== "" && dateTime.endDate !== undefined && dateTime.endDate != null)
+      {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.startDate,dateTime.endDate]
+        }     
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[dateTime.colIdx].id.toString()))))
+        setSearchData((prevArr)=>([...prevArr, newItem]))
+        
+      }
+      else 
+        setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[dateTime.colIdx].id.toString()))))
+    },[dateTime])
+
+    useEffect(() => {
+      dataArrayBuilder()
+    }, [searchData])
+    
+    useEffect(() => {    
+      setRows(reformattedRows) 
+    },[])
+
+    const dataArrayBuilder = () => {
       let dataRows: any = reformattedRows
       searchData.forEach((el:SearchObject) => {
         if(el.columnName === "assetName")
@@ -308,17 +358,14 @@ const MasterMain = (props:any) => {
         }
         if(el.columnName === "recordingStarted")
         {
-          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) === DateFormat(el.value)) 
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) && 
+                                                 DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])) 
         }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value) 
       })
-      setRows(dataRows) 
-    }, [searchData])
-    
-    useEffect(() => {    
-      setRows(reformattedRows) 
-    },[])
+      setRows(dataRows)
+    }
 
     function DateFormat(value: any) {
       const stillUtc = moment.utc(value).toDate();
@@ -337,71 +384,6 @@ const MasterMain = (props:any) => {
 
     return (
       <React.Fragment >
-        {/* <div style={{width: "500px", height: "300px", overflow: "auto"}}>
-          <table className="freeze-table" width="700px">
-            <thead>
-              <tr>
-                <th style={{minWidth:"55px",width:"55px"}} className="col-id-no fixed-header">Id</th>
-                <th style={{minWidth:"100px",width:"100px"}} className="col-first-name fixed-header">First Name</th>
-                <th style={{minWidth:"75px",width:"75px"}}>Last Name</th>
-                <th style={{minWidth:"300px",width:"300px"}}>Address</th>
-                <th style={{minWidth:"100px",width:"100px"}}>Phone</th>
-                <th style={{minWidth:"75px",width:"75px"}}>DOB</th>
-              </tr>
-              <tr>
-                <th style={{minWidth:"55px",width:"55px"}} className="col-id-no fixed-header"></th>
-                <th style={{minWidth:"100px",width:"100px"}} className="col-first-name fixed-header"></th>
-                <th style={{minWidth:"75px",width:"75px"}}></th>
-                <th style={{minWidth:"300px",width:"300px"}}></th>
-                <th style={{minWidth:"100px",width:"100px"}}></th>
-                <th style={{minWidth:"75px",width:"75px"}}></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="col-id-no" scope="row">31</td>
-                <td className="col-first-name" scope="row">Barry</td>
-                <td>Allen</td>
-                <td>Florida, United States of America</td>
-                <td>2111111</td>
-                <td>02-02-1983</td>
-              </tr>
-              <tr>
-                <td className="col-id-no" scope="row">53</td>
-                <td className="col-first-name" scope="row">Jerry</td>
-                <td>Iyori</td>
-                <td>Karachi, Islamic Republic of Pakistan</td>
-                <td>5444444</td>
-                <td>26-11-1987</td>
-              </tr>
-              <tr>
-                <td className="col-id-no" scope="row">64</td>
-                <td className="col-first-name" scope="row">Kenn</td>
-                <td>Moiz</td>
-                <td>Lahore, Islamic Republic of Pakistan</td>
-                <td>35555555</td>
-                <td>23-02-1982</td>
-              </tr>
-              <tr>
-                <td className="col-id-no" scope="row">23</td>
-                <td className="col-first-name" scope="row">Peter</td>
-                <td>Parkar</td>
-                <td>Florida, Azerbaijan</td>
-                <td>87777777</td>
-                <td>14-02-1984</td>
-              </tr>
-              <tr>
-                <td className="col-id-no" scope="row">76  </td>
-                <td className="col-first-name" scope="row">Barry</td>
-                <td>Allen</td>
-                <td>Palestine, Turkey Istanbul</td>
-                <td>96666666</td>
-                <td>04-02-1985</td>
-              </tr>
-            </tbody>
-
-          </table>
-        </div> */}
       { rows && <CRXDataTable
                   dataRows={rows} 
                   headCells={headCells}
