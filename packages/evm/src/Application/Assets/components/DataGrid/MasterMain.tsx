@@ -349,8 +349,8 @@ const MasterMain = (props:any) => {
         }
         if(el.columnName === "recordingStarted")
         {
-          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) && 
-                                                 DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])) 
+          // dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) && 
+          //                                        DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])) 
         }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value) 
