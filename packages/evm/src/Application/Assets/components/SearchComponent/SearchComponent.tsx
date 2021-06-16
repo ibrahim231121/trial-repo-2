@@ -190,8 +190,8 @@ const SearchComponent = (props: any) => {
   React.useEffect(() => {
     let obj: any = {};
 
-    if (addvancedOptions) {
-      obj = addvancedOptions.map((x: any) => {
+    if (addvancedOptions  && addvancedOptions.options) {
+      obj = addvancedOptions.options.map((x: any) => {
         if (x.inputValue) {
           return { key: x.key, inputValue: x.inputValue };
         }
@@ -221,6 +221,27 @@ const SearchComponent = (props: any) => {
           AdvancedSearchQuerry.bool.must.push(val);
         }
       });
+
+      if (addvancedOptions.startDate) {	
+               AdvancedSearchQuerry.bool.must.push({	
+                 range: {	
+                 "asset.recordingStarted": {	
+                    gte: `${addvancedOptions.startDate}`,	
+                   },	
+                },	
+               });	
+              }	
+          	
+              if (addvancedOptions.endDate) {	
+                AdvancedSearchQuerry.bool.must.push({	
+                  range: {	
+                   "asset.recordingEnded": {	
+                      lte: `${ addvancedOptions.endDate}`,	
+                    },	
+                 },	
+               });	
+              }
+
       fetchData(AdvancedSearchQuerry, constants.SearchType.AdvanceSearch);
     }
   }, [addvancedOptions]);

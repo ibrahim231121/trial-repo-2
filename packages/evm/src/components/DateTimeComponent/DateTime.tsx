@@ -11,7 +11,7 @@ type Props = {
   minDate?: string;
   maxDate?: string;
   defaultValue?: string;
-
+  reset: boolean;
   showChildDropDown: boolean;
   disabled?: boolean;
   dateOptions: any
@@ -23,7 +23,7 @@ const DateTime: React.FC<Props> = ({
   maxDate,
   showChildDropDown,
   disabled,
-  dateOptions, defaultValue
+  dateOptions, defaultValue,reset
 }) => {
   const {
     setSelectedOption,
@@ -51,7 +51,11 @@ const DateTime: React.FC<Props> = ({
       setDeafaultValue(defaultValue)
     }
   }, []);
-
+  useEffect(() => {
+    if (reset) {
+    setSelectedOption(defaultValue, dateOptions)
+    }
+  }, [reset])
   //runs when start date or end date changes
   React.useEffect(() => {
     getStartDate(startDate);

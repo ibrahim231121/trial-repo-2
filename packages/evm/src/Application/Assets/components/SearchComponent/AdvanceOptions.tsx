@@ -2,7 +2,10 @@ import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
-import { advancedSearchOptions } from "../../utils/constants";
+import {advancedSearchOptions } from "../../utils/constants";
+import { basicDateOptions } from "../../../../utils/constant";
+import DateTimeComponent from "../../../../components/DateTimeComponent";
+
 interface IOptions {
   value: string;
   key: string;
@@ -30,6 +33,13 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
   const arrowIcon = <i className="fas fa-caret-down"></i>;
   const [options, setOptions] = useState<IOptions[]>(advancedSearchOptions);
+  const [startDate, setStartDate] = React.useState("");	
+  const [endDate, setEndDate] = React.useState("");
+  const [dateOptionsState, setDateOptionsState] = React.useState(basicDateOptions);
+  const [defaultDateValue, setDefaultDateValue] = React.useState("");
+  
+  const [resetDateOptions, setResetDateOptions] = useState(false);
+
 const initialState= advancedSearchOptions
   React.useEffect(() => {
    //cleanUp after unmounting
@@ -55,21 +65,6 @@ const initialState= advancedSearchOptions
         <div className="advRow" key={i}>
           <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
-              {/* <select
-                className="adVSelectBox"
-                ref={selectRef}
-                id={i.toString()}
-                onChange={(e) => onSelectInputChange(e)}
-                value={selectedOpt?.value}
-              >
-                <option value="" selected disabled hidden>
-                  -- Select a search criteria --
-                </option>
-
-                {newOptions.map((val: any, i: number) => (
-                  <Options key={i} id={val._id} value={val.value} />
-                ))}
-              </select> */}
               <span ref={selectRef} id={i.toString()}>
                 <CRXSelectBox
                   className="adVSelectBox"
@@ -248,8 +243,13 @@ const initialState= advancedSearchOptions
         }
       }
     }
-    getOptions(options);
+    getOptions({options,startDate,endDate});
   };
+  
+  React.useEffect(() => {
+    setResetDateOptions(false)
+  }, [resetDateOptions])
+
   const reset = () => {
     setSelectsLength(1)
     setDisableButton(true)
@@ -257,12 +257,28 @@ const initialState= advancedSearchOptions
       x.usedBy= null
       x.isUsed= false
       x.inputValue= ""
-    }) 
+    })     
      setOptions([...options]);
+     setResetDateOptions(true)
   };
   const SearchBox = () => {};
   return (
+  
     <div className="advanceSerachContainer">
+       <CRXRows container spacing={2}>	
+          <CRXColumn item xs={3}>
+            <label className="dateTimeLabel">Date and Time</label>
+         	</CRXColumn>
+          <CRXColumn item xs={9}>	           
+           <DateTimeComponent	
+                getStartDate={(val: any) => setStartDate(val)}	
+                getEndDate={(val: any) => setEndDate(val)}	
+                dateOptions={dateOptionsState}
+                defaultValue={defaultDateValue}
+                reset={resetDateOptions}
+              />	
+             </CRXColumn> 	
+        </CRXRows>
       {Select()}
       <div className="advancedSearchBottom">
         <button

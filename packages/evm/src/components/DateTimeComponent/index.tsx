@@ -9,6 +9,7 @@ type Props = {
   maxDate?: string;
   defaultValue?: string;
   disabled?: boolean;
+  reset?: boolean;
   dateOptions: any;
 };
 const DateTimeComponent: React.FC<Props> = ({
@@ -18,7 +19,7 @@ const DateTimeComponent: React.FC<Props> = ({
   maxDate,
   showChildDropDown,
   disabled,
-  dateOptions, defaultValue
+  dateOptions, defaultValue,reset=false
 }) => {
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
@@ -31,6 +32,7 @@ const DateTimeComponent: React.FC<Props> = ({
   return (
     <DateContextProvider>
       <DateTime
+        reset={reset}
         getStartDate={(val: any) => setStartDate(val)}
         getEndDate={(val: any) => setEndDate(val)}
         minDate={minDate}

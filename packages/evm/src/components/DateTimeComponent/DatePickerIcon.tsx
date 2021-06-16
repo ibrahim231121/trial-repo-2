@@ -42,7 +42,6 @@ const DatePickerIcon: React.FC<Props> = ({dropDownCustomValue , minDate,maxDate,
   //     let firstOption = dateOptions[0]
   //     setSelectedOption(firstOption.value, dateOptions)
   // }
-  debugger
   setSelectedOption(defaultValue,dateOptions)
 };
 
