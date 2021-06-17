@@ -145,13 +145,23 @@ const MasterMain = (props:any) => {
       
       reformattedRows.push(obj)
     })
+
+    let requiredDateOptions: any[]
+    requiredDateOptions = basicDateOptions.map((x,i) => {
+    if(x.value === "custom")
+      return x
+    if( DateFormat(x.startDate()) >= DateFormat(props.dateTimeObj.startDate) && 
+        DateFormat(x.endDate()) <= DateFormat(props.dateTimeObj.endDate) && x.value != "custom")
+      return x
+    })
+    requiredDateOptions = requiredDateOptions.filter(x => x != undefined)
+
     const {t} = useTranslation<string>();
     const [rows, setRows] = React.useState<any[]>(reformattedRows);
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('recordingStarted');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
-    const [dateTime, setDateTime] = React.useState<DateTimeProps>({startDate: "", endDate: "", colIdx: 0});
-
+    const [dateTime, setDateTime] = React.useState<DateTimeProps>({startDate: "", endDate: "", colIdx: 0});   
     
     const SearchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {  
 
@@ -169,30 +179,40 @@ const MasterMain = (props:any) => {
 
     const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
 
+      let defaultText: string = ""
+      let reset: boolean = false
+          
+      if(requiredDateOptions.length === 1) 
+        defaultText = requiredDateOptions[requiredDateOptions.length-1].value
+      else
+        defaultText = requiredDateOptions[requiredDateOptions.length-2].value
+
+      if(headCells[colIdx].headerText === "filled" || headCells[colIdx].headerText  === undefined)
+        reset = false
+      else
+        reset = true
+
       function startDatehandleChange(val: any,colIdx: number) {
         setDateTime((state: DateTimeProps) => ({ ...state, ["startDate"]: val, ["colIdx"]: colIdx})); 
-        //headCells[colIdx].headerText = e.target.value   
+        headCells[colIdx].headerText = "filled"  
       }
 
       function endDatehandleChange(val: any) {
         setDateTime((state: DateTimeProps) => ({ ...state, ["endDate"]: val}));
-        //headCells[colIdx].headerText = e.target.value   
-      }
+        headCells[colIdx].headerText = "filled"   
+      }   
 
-      function handleChange(e: any,colIdx: number) {
-        selectChange(e,colIdx)   
-        headCells[colIdx].headerText = e.target.value   
-      }
-
-      return (
-        <CRXColumn item xs={11}>
-          <DateTimeComponent
+      return ( 
+        <CRXColumn item xs={11} >
+          <DateTimeComponent key={defaultText}
             getStartDate={(val: any) => startDatehandleChange(val,colIdx)}
             getEndDate={(val: any) => endDatehandleChange(val)}
-            minDate={moment(props.startDate).local().format('YYYY-MM-DDTHH:MM')}
-            maxDate={moment(props.endDate).local().format('YYYY-MM-DDTHH:MM')}
+            minDate={moment(props.dateTimeObj.startDate).local().format('YYYY-MM-DDTHH:MM')}
+            maxDate={moment(props.dateTimeObj.endDate).local().format('YYYY-MM-DDTHH:MM')}
             showChildDropDown={true}
-            dateOptions={basicDateOptions}
+            dateOptions={requiredDateOptions}
+            defaultValue={defaultText}
+            reset={reset}
           />
         </CRXColumn>
       );
@@ -292,8 +312,7 @@ const MasterMain = (props:any) => {
         setSearchData((prevArr)=>(prevArr.filter((e)=>(e.columnName !== headCells[colIdx].id.toString()))))
     }
 
-    useEffect(() => {
-      
+    useEffect(() => {      
       if(dateTime.startDate !== "" && dateTime.startDate !== undefined && dateTime.startDate != null && 
       dateTime.endDate !== "" && dateTime.endDate !== undefined && dateTime.endDate != null)
       {
@@ -314,7 +333,7 @@ const MasterMain = (props:any) => {
       dataArrayBuilder()
     }, [searchData])
     
-    useEffect(() => {    
+    useEffect(() => {   
       setRows(reformattedRows) 
     },[])
 
@@ -349,8 +368,8 @@ const MasterMain = (props:any) => {
         }
         if(el.columnName === "recordingStarted")
         {
-          // dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) && 
-          //                                        DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])) 
+          dataRows = dataRows.filter( (x:any) => DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) && 
+                                                 DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])) 
         }
         if(el.columnName === "status")
           dataRows = dataRows.filter( (x:any) => x[headCells[el.colIdx].id] === el.value) 

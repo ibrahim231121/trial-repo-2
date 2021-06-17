@@ -27,6 +27,7 @@ const SearchComponent = (props: any) => {
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>("");
   const [predictiveText, setPredictiveText] = React.useState("");
+  const [dateTimeObj, setDateTimeObj] = React.useState({startDate: "", endDate: ""})
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
@@ -94,7 +95,7 @@ const SearchComponent = (props: any) => {
 
   const Search = () => {
    
-
+    setDateTimeObj({startDate: startDate, endDate: endDate})
     const NormalSearch =() =>{
 
       if (startDate) {
@@ -259,6 +260,11 @@ const SearchComponent = (props: any) => {
     }
   }
 
+  const getAllOptions = (e: any) => {
+    setAddvancedOptions(e)
+    setDateTimeObj({startDate: e.startDate, endDate: e.endDate})
+  }
+
   return (
     <div className="advanceSearchChildren">
       <div className="searchComponents">
@@ -326,7 +332,7 @@ const SearchComponent = (props: any) => {
 
               {showAdvance && (
                 <AdvanceOptions
-                  getOptions={(e) => setAddvancedOptions(e)}
+                  getOptions={(e) => getAllOptions(e)}
                   hideOptions={() => setShowAdvance(false)}
                 />
               )}
@@ -335,7 +341,7 @@ const SearchComponent = (props: any) => {
         )}
         {searchData && (
           <div className="dataTabAssets">
-            <MasterMain key={Math.random()} rows={searchData} startDate={startDate} endDate={endDate}/>
+            <MasterMain key={Math.random()} rows={searchData} dateTimeObj={dateTimeObj}/>
           </div>
         )}
       </div>
