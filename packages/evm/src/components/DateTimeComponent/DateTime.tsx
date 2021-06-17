@@ -31,7 +31,7 @@ const DateTime: React.FC<Props> = ({
     endDate,
     startDate,
     setStartDateValue,
-    setEndDateValue,setDeafaultValue
+    setEndDateValue,setDefaultValue
   } = React.useContext(DateContext);
   const ref: any = React.useRef(null);
   const [open, setOpen] = React.useState(false);
@@ -48,7 +48,7 @@ const DateTime: React.FC<Props> = ({
       setSelectedOption(defaultValue, dateOptions)
     }
     if (defaultValue) {
-      setDeafaultValue(defaultValue)
+      setDefaultValue(defaultValue)
     }
   }, []);
   useEffect(() => {

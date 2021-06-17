@@ -11,7 +11,7 @@ import DateTimeComponent from "../../../../components/DateTimeComponent";
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { scroller } from "react-scroll";
-import { basicDateOptions,approachingDeletionDateOptions } from "../../../../utils/constant";
+import { basicDateOptions,approachingDeletionDateOptions, basicDateDefaultValue } from "../../../../utils/constant";
 
 const SearchComponent = (props: any) => {
   const dispatch = useDispatch();
@@ -256,6 +256,7 @@ const SearchComponent = (props: any) => {
         setDateOptionsState(approachingDeletionDateOptions);
     }
     else{
+      setDefaultDateValue(basicDateDefaultValue);
       setDateOptionsState(basicDateOptions);
     }
   }

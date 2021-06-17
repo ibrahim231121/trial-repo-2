@@ -7,13 +7,13 @@ export const DateContextProvider: React.FC = ({ children }) => {
   const [startDate, setStartDate] = React.useState<string>("");
   const [endDate, setEndDate] = React.useState<string>("");
   const [selectedOptionValue, setSelection] = React.useState<string>("");
-  const [deafaultValue, setDeafault] = React.useState<string>("");
+  const [defaultValue, setDefault] = React.useState<string>("");
 
   const setEndDateValue = (val: any) => {
     setEndDate(val);
   };
-  const setDeafaultValue = (val: any) => {
-    setDeafault(val);
+  const setDefaultValue = (val: any) => {
+    setDefault(val);
   };
 
   const setStartDateValue = (val: any) => {
@@ -28,6 +28,7 @@ export const DateContextProvider: React.FC = ({ children }) => {
     // }
     // const startingDate = moment();
     // const endingDate = moment();
+
     let selectedDateOption = dateOptions.find((x:any) => x.value === val)
 
 
@@ -81,7 +82,7 @@ export const DateContextProvider: React.FC = ({ children }) => {
         setStartDateValue,
         setEndDateValue,
         setSelectedOption,
-        selectedOptionValue,setDeafaultValue,deafaultValue
+        selectedOptionValue,setDefaultValue,defaultValue
       }}
     >
       {children}

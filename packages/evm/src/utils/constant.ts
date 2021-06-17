@@ -1,5 +1,7 @@
 import moment from "moment";
 
+const basicDateDefaultValue ="last 30 days";
+
 const basicDateOptions = [
   
     { 
@@ -75,5 +77,6 @@ const approachingDeletionDateOptions = [
 
 export {
   basicDateOptions,
-  approachingDeletionDateOptions
+  approachingDeletionDateOptions,
+  basicDateDefaultValue
 }
