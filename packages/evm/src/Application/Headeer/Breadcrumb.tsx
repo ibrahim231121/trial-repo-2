@@ -6,15 +6,14 @@ import { withRouter, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
 
-const ActiveBreadcrumb: React.FC<any> = (props) => {
+const ActiveBreadcrumb: React.FC<any> = React.memo((props) => {
   const dispatch = useDispatch();
   const pathLastState = useSelector((state: any) => state.pathName);
   const {
-    history,
     location: { pathname },
   } = props;
-  const pathnames = pathname.split("/").filter((x: any) => x);
 
+  const pathnames = pathname.split("/").filter((x: any) => x);
   const checkPath = (isLast: any, name: string, routeTo: string) => {
     if (!isLast) {
       return (
@@ -26,14 +25,21 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
         </Link>
       );
     } else if (isLast && pathLastState.length == 0) {
-      return <a className="breadCrumbItem" key={name}>{name}</a>;
+      return (
+        <a className="breadCrumbItem" key={name}>
+          {name}
+        </a>
+      );
     } else if (isLast && pathLastState.length != 0) {
       return (
         <div>
           <CBXLink className="active" key={name} href={routeTo}>
             {name}
-          </CBXLink> 
-           <span className="spratorBread">/</span> <a className="breadCrumbItem" key={pathLastState}>{pathLastState}</a>
+          </CBXLink>
+          <span className="spratorBread">/</span>{" "}
+          <span className="breadCrumbItem" key={pathLastState}>
+            {pathLastState}
+          </span>
         </div>
       );
     }
@@ -49,7 +55,7 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
         })
       }
     >
-      <CRXBreadcrumb>
+      <CRXBreadcrumb  maxItems={3}>
         <Link className="brdLinks breadCrumbItem" to="/">
           Home
         </Link>
@@ -70,6 +76,6 @@ const ActiveBreadcrumb: React.FC<any> = (props) => {
       />
     </div>
   );
-};
+});
 
 export default withRouter(ActiveBreadcrumb);

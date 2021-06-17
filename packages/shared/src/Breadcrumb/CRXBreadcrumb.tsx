@@ -5,9 +5,9 @@ import './CBXBreadcrumb.scss'
 interface BreadcrumbProps {
     children : React.ReactNode,
 }
-const CRXBreadcrumb = ({children} : BreadcrumbProps) => {
+const CRXBreadcrumb : React.FC<BreadcrumbProps>= ({children,...others}) => {
   return (
-    <Breadcrumbs className="CRXBreadcrumb" aria-label="breadcrumb">
+    <Breadcrumbs {...others}className="CRXBreadcrumb" aria-label="breadcrumb">
       { children }
     </Breadcrumbs>
   );
