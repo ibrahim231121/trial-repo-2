@@ -69,7 +69,8 @@ const ActiveBreadcrumb: React.FC<any> = React.memo((props) => {
       <CRXTitle
         text={
           pathnames.length > 0
-            ? pathnames[0].charAt(0).toUpperCase() + pathnames[0].slice(1)
+            ? pathnames[pathnames.length - 1].charAt(0).toUpperCase() +
+              pathnames[pathnames.length - 1].slice(1)
             : "Home"
         }
         className="titlePage"
