@@ -11,6 +11,7 @@ import DateTimeComponent from "../../../../components/DateTimeComponent";
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { scroller } from "react-scroll";
+import moment  from "moment";
 import { basicDateOptions,approachingDeletionDateOptions, basicDateDefaultValue } from "../../../../utils/constant";
 
 const SearchComponent = (props: any) => {
@@ -97,7 +98,6 @@ const SearchComponent = (props: any) => {
    
     setDateTimeObj({startDate: startDate, endDate: endDate})
     const NormalSearch =() =>{
-
       if (startDate) {
         QUERRY.bool.must.push({
           range: {
@@ -173,10 +173,10 @@ const SearchComponent = (props: any) => {
         setDateOptionsState(approachingDeletionDateOptions);
         
         if(startDate === ""){
-          startDate = approachingDeletionDateOptions[0].startDate();
+          startDate = moment(approachingDeletionDateOptions[0].startDate()).toISOString();
         }
         if(endDate  === ""){
-          endDate = approachingDeletionDateOptions[0].endDate();
+          endDate = moment(approachingDeletionDateOptions[0].endDate()).toISOString();
         }
         setDefaultDateValue(approachingDeletionDateOptions[0].value);
         fetchData( this.query(startDate,endDate), constants.SearchType.ShortcutSearch); 
@@ -282,8 +282,8 @@ const SearchComponent = (props: any) => {
               <label className="dateTimeLabel">Date and Time</label>
 
               <DateTimeComponent
-                getStartDate={(val: any) => { setStartDate(val)}}
-                getEndDate={(val: any) => {  setEndDate(val) } }
+                getStartDate={(val: any) => setStartDate(moment(val).toISOString()) }
+                getEndDate={(val: any) => setEndDate(moment(val).set("second", 59).toISOString()) }
                 dateOptions={dateOptionsState}
                 defaultValue={defaultDateValue}
                 // minDate="2021-06-15T00:00"
