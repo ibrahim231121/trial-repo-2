@@ -3,6 +3,7 @@ import Routes from "./Routes";
 import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle } from "@cb/shared";
 import AppHeader from './Application/Headeer/Header'
+import Footer from './Application/Headeer/Footer'
 
 import {useTranslation} from 'react-i18next'; 
 import "../../evm/src/utils/Localizer/i18n"
@@ -64,6 +65,11 @@ function App() {
         <Routes />
       </CRXContainer>
       </main>
+
+      <footer>
+        <Footer />        
+      </footer>
+
     </div>
   );
 }

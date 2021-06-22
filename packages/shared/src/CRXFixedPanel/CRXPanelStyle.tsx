@@ -49,7 +49,7 @@ createStyles({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    
+    height: "100vh"
   },
 
   contentShift: {
@@ -58,6 +58,7 @@ createStyles({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+    height: "100vh"
   },
   bradCrumscontent: {
     flexGrow: 1,
