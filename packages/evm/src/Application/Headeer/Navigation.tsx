@@ -4,10 +4,8 @@ import './Navigation.scss'
 
 const CRXLefNavigation = () => {
    const history = useHistory();
-   const navigateToPage = (path : any) => {
-		console.log('Navigate to path ' + path);
+   const navigateToPage = (path : string) => {
 		history.push(path);
-        //showInfoMessage(this,'Navigation',path);
 	}
 
     const items = [
@@ -207,6 +205,7 @@ const CRXLefNavigation = () => {
         },
 
     ];
+    
     return (
         <CRXNestedMenu className="CRXLeftMenu" model={items} />
     )
