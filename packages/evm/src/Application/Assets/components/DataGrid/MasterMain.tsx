@@ -150,8 +150,8 @@ const MasterMain = (props:any) => {
     requiredDateOptions = basicDateOptions.map((x,i) => {
     if(x.value === "custom")
       return x
-    if( DateFormat(x.startDate()) >= DateFormat(props.dateTimeObj.startDate) && 
-        DateFormat(x.endDate()) <= DateFormat(props.dateTimeObj.endDate) && x.value != "custom")
+    if( DateFormat(x.startDate()) >= DateFormat(props.dateTimeDropDown.startDate) && 
+        DateFormat(x.endDate()) <= DateFormat(props.dateTimeDropDown.endDate) && x.value != "custom")
       return x
     })
     requiredDateOptions = requiredDateOptions.filter(x => x != undefined)
@@ -179,13 +179,7 @@ const MasterMain = (props:any) => {
 
     const searchDate = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {
 
-      let defaultText: string = ""
       let reset: boolean = false
-          
-      if(requiredDateOptions.length === 1) 
-        defaultText = requiredDateOptions[requiredDateOptions.length-1].value
-      else
-        defaultText = requiredDateOptions[requiredDateOptions.length-2].value
 
       if(headCells[colIdx].headerText === "filled" || headCells[colIdx].headerText  === undefined)
         reset = false
@@ -204,15 +198,16 @@ const MasterMain = (props:any) => {
 
       return ( 
         <CRXColumn item xs={11} >
-          <DateTimeComponent key={defaultText}
+          <DateTimeComponent 
             getStartDate={(val: any) => startDatehandleChange(val,colIdx)}
             getEndDate={(val: any) => endDatehandleChange(val)}
-            minDate={moment(props.dateTimeObj.startDate).local().format('YYYY-MM-DDTHH:MM')}
-            maxDate={moment(props.dateTimeObj.endDate).local().format('YYYY-MM-DDTHH:MM')}
-            showChildDropDown={true}
+            minDate={moment(props.dateTimeDropDown.startDate).local().format('YYYY-MM-DDTHH:MM')}
+            maxDate={moment(props.dateTimeDropDown.endDate).local().format('YYYY-MM-DDTHH:MM')}
+            //showChildDropDown={true}
             dateOptions={requiredDateOptions}
-            defaultValue={defaultText}
+            defaultValue={props.dateTimeDropDown.selectedDateOptionValue}
             reset={reset}
+            getSelectedDateOptionValue={(v:string)=>{}}
           />
         </CRXColumn>
       );

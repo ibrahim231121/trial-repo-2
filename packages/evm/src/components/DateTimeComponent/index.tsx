@@ -4,6 +4,7 @@ import DateTime from "./DateTime";
 type Props = {
   getStartDate: (v: string) => void;
   getEndDate: (v: string) => void;
+  getSelectedDateOptionValue:(v: string) => void;
   minDate?: string;
   showChildDropDown?: boolean;
   maxDate?: string;
@@ -14,7 +15,7 @@ type Props = {
 };
 const DateTimeComponent: React.FC<Props> = ({
   getStartDate,
-  getEndDate,
+  getEndDate,getSelectedDateOptionValue,
   minDate,
   maxDate,
   showChildDropDown,
@@ -23,11 +24,15 @@ const DateTimeComponent: React.FC<Props> = ({
 }) => {
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
+  const [selectedValue, setSelectedValue] = React.useState("");
 
   React.useEffect(() => {
     getStartDate(startDate);
     getEndDate(endDate);
-  }, [endDate, startDate]);
+    getSelectedDateOptionValue(selectedValue)
+  }, [endDate, startDate,selectedValue]);
+ 
+ 
 
   return (
     <DateContextProvider>
@@ -41,6 +46,7 @@ const DateTimeComponent: React.FC<Props> = ({
         disabled={disabled}
         dateOptions={dateOptions}
         defaultValue={defaultValue?defaultValue:"last 30 days"}
+        getSelectedDateOptionValue={val=>setSelectedValue(val)}
       />
     </DateContextProvider>
   );

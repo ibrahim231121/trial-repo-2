@@ -37,6 +37,7 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [endDate, setEndDate] = React.useState("");
   const [dateOptionsState, setDateOptionsState] = React.useState(basicDateOptions);
   const [defaultDateValue, setDefaultDateValue] = React.useState("");
+  const [selectedDateOptionValue, setSelectedDateOptionValue] = React.useState("");
   
   const [resetDateOptions, setResetDateOptions] = useState(false);
 
@@ -243,7 +244,7 @@ const initialState= advancedSearchOptions
         }
       }
     }
-    getOptions({options,startDate,endDate});
+    getOptions({options,startDate,endDate,selectedDateOptionValue});
   };
   
   React.useEffect(() => {
@@ -275,7 +276,8 @@ const initialState= advancedSearchOptions
                 getEndDate={(val: any) => setEndDate(val)}	
                 dateOptions={dateOptionsState}
                 defaultValue={defaultDateValue}
-                reset={resetDateOptions}
+                 getSelectedDateOptionValue={(v:any)=>setSelectedDateOptionValue(v)}
+                 reset={resetDateOptions}
               />	
              </CRXColumn> 	
         </CRXRows>

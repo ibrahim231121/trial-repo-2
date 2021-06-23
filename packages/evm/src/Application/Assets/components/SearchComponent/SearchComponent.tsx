@@ -28,7 +28,8 @@ const SearchComponent = (props: any) => {
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>("");
   const [predictiveText, setPredictiveText] = React.useState("");
-  const [dateTimeObj, setDateTimeObj] = React.useState({startDate: "", endDate: ""})
+  const [dateTimeDropDown, setDateTimeDropDown] = React.useState({startDate: "", endDate: "", selectedDateOptionValue: ""})
+  const [selectedDateOptionValue, setSelectedDateOptionValue] = React.useState("");
   const iconRotate = showAdvance ? " " : "rotate90";
   const url = "/Evidence?Size=500&Page=1";
   const QUERRY: any = {
@@ -96,7 +97,7 @@ const SearchComponent = (props: any) => {
 
   const Search = () => {
    
-    setDateTimeObj({startDate: startDate, endDate: endDate})
+    setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
     const NormalSearch =() =>{
       if (startDate) {
         QUERRY.bool.must.push({
@@ -263,7 +264,7 @@ const SearchComponent = (props: any) => {
 
   const getAllOptions = (e: any) => {
     setAddvancedOptions(e)
-    setDateTimeObj({startDate: e.startDate, endDate: e.endDate})
+    setDateTimeDropDown({startDate: e.startDate, endDate: e.endDate, selectedDateOptionValue: e.selectedDateOptionValue})
   }
 
   return (
@@ -286,6 +287,8 @@ const SearchComponent = (props: any) => {
                 getEndDate={(val: any) => setEndDate(moment(val).set("second", 59).toISOString()) }
                 dateOptions={dateOptionsState}
                 defaultValue={defaultDateValue}
+                 getSelectedDateOptionValue={(v:string)=>setSelectedDateOptionValue(v)}
+
                 // minDate="2021-06-15T00:00"
                 // maxDate="2021-06-20T00:00"
                 // showChildDropDown={false}
@@ -342,7 +345,7 @@ const SearchComponent = (props: any) => {
         )}
         {searchData && (
           <div className="dataTabAssets">
-            <MasterMain key={Math.random()} rows={searchData} dateTimeObj={dateTimeObj}/>
+            <MasterMain key={Math.random()} rows={searchData} dateTimeDropDown={dateTimeDropDown}/>
           </div>
         )}
       </div>

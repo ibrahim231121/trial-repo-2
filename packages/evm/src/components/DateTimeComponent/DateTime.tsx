@@ -8,6 +8,7 @@ import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
 type Props = {
   getStartDate: (v: string) => void;
   getEndDate: (v: string) => void;
+  getSelectedDateOptionValue:(v: string) => void;
   minDate?: string;
   maxDate?: string;
   defaultValue?: string;
@@ -19,6 +20,7 @@ type Props = {
 const DateTime: React.FC<Props> = ({
   getStartDate,
   getEndDate,
+  getSelectedDateOptionValue,
   minDate,
   maxDate,
   showChildDropDown,
@@ -60,7 +62,8 @@ const DateTime: React.FC<Props> = ({
   React.useEffect(() => {
     getStartDate(startDate);
     getEndDate(endDate);
-  }, [endDate, startDate]);
+    getSelectedDateOptionValue(selectedOptionValue)
+  }, [endDate, startDate,selectedOptionValue]);
 
 
   const onSelectionChange = (e: any) => {
