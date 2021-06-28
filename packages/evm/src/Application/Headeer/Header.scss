@@ -140,21 +140,35 @@
     padding-left: 41px;
     padding-top: 8px;
     .brdLinks {
-        color:#C34400;
+        color:#d74b00;
         text-decoration: none;
     }
     .active {
-        color: #C34400;
+        color: #d74b00;
         font-size: 12px;
         font-family: Arial, Helvetica, sans-serif;
+
+
+        &:hover {
+            color: #d74b00;
+            text-decoration: underline;
+            cursor: default;
+            }
+        &:focus {
+            color: #d74b00;
+            text-decoration: underline;
+            cursor: default;
+        }
+
     }
 
     .spratorBread {
         position: relative;
-        top: 2px;
-        transform: rotate(11deg);
-        padding: 0 5px 0 8px;
+        top: 0px;
+        font-size: 12px;
         display: inline-block;
+        margin-right: 4px;
+        margin-left: 8px;
     }
 }
 

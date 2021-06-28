@@ -1,22 +1,49 @@
 .CRXBreadcrumb {
     height: 32px;
+    line-height: 28px !important;
+
+    li {color:#333333 !important;}
+
+    span {
+
+        .breadCrumbItem {
+
+            &:hover {
+                color: #333333;
+                text-decoration: none;
+                }
+            &:focus {
+                color: #333333;
+                text-decoration: none;
+            }
+
+        } 
+
+    }
+
     .breadCrumbItem {
         font-size: 12px;
         color: #333333;
         font-family: Arial, Helvetica, sans-serif !important;
 
-        // &:hover {
-        //     color: #C34400;
-        //     cursor: pointer;
-        // }
-        // &:focus {
-        //     color: #C34400;
-        // }
+            &:hover {
+                color: #d74b00;
+                text-decoration: underline;
+                cursor: default;
+                }
+            &:focus {
+                color: #d74b00;
+                text-decoration: underline;
+                cursor: default;
+            }
+      
+
     }
+
 
     .MuiBreadcrumbs-separator {
         position: relative;
-        top: 2px;
-        transform: rotate(14deg);
+        top: 1px;
+        font-size: 12px;
     }
 }
