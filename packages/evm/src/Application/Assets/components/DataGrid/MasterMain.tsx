@@ -6,6 +6,7 @@ import './ManageAssetGrid.scss'
 import thumbImg from '../../../../Assets/Images/thumb.png'
 import {useTranslation} from 'react-i18next'; 
 import { basicDateOptions } from "../../../../utils/constant";
+import ActionMenu from '../ActionMenu';
 
 type Order = 'asc' | 'desc';
 
@@ -124,7 +125,7 @@ const assetStatusTemplate = (rowData: any) => {
 }
 //-----------------
 
-const MasterMain = (props:any) => {
+const MasterMain :React.FC<any>= (props) => {
     
     let reformattedRows: any[] = [];
     props.rows.map((row:any, i:number) => {
@@ -161,6 +162,7 @@ const MasterMain = (props:any) => {
     const [order, setOrder] = React.useState<Order>('asc');
     const [orderBy, setOrderBy] = React.useState<any>('recordingStarted');  
     const [searchData , setSearchData] = React.useState<SearchObject[]>([]);
+    const [selectedItems , setSelectedItems] = React.useState<any>([]);
     const [dateTime, setDateTime] = React.useState<DateTimeProps>({startDate: "", endDate: "", colIdx: 0});   
     
     const SearchText = (rowsParam: any[], headCells: HeadCellProps[], colIdx: number) => {  
@@ -390,6 +392,7 @@ const MasterMain = (props:any) => {
     return (
       <React.Fragment >
       { rows && <CRXDataTable
+                  actionComponent={<ActionMenu  isSelected={selectedItems.length > 0 ? true:false}/>}
                   dataRows={rows} 
                   headCells={headCells}
                   orderParam={order} 
@@ -399,6 +402,7 @@ const MasterMain = (props:any) => {
                   allowDragableToList={false}
                   className="ManageAssetDataTable"
                   onClearAll={onClearAll}
+                  getSelectedItems={(v:any)=>setSelectedItems(v)}
                 />    
       }
     </React.Fragment>               

@@ -345,7 +345,11 @@ const SearchComponent = (props: any) => {
         )}
         {searchData && (
           <div className="dataTabAssets">
-            <MasterMain key={Math.random()} rows={searchData} dateTimeDropDown={dateTimeDropDown}/>
+            <MasterMain
+              key={Math.random()}
+              rows={searchData}
+              dateTimeDropDown={dateTimeDropDown}
+            />
           </div>
         )}
       </div>

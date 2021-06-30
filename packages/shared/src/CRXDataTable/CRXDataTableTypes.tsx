@@ -1,4 +1,9 @@
-import { createStyles, makeStyles, createMuiTheme, Theme } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  createMuiTheme,
+  Theme,
+} from "@material-ui/core/styles";
 
 export const useToolbarStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -8,7 +13,7 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(2.9),
     },
     highlight:
-      theme.palette.type === 'light'
+      theme.palette.type === "light"
         ? {
             color: theme.palette.secondary.main,
           }
@@ -16,30 +21,32 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.primary,
           },
     title: {
-      flex: '1 1 100%',
-      lineHeight: "0"
+      flex: "1 1 100%",
+      lineHeight: "0",
     },
-    alignment:{
+    alignment: {
       textAlign: "left",
       fontSize: "12pt",
       width: "300px",
       zIndex: 3,
-    }
-  }),
+    },
+  })
 );
 
 export const theme = createMuiTheme({
   overrides: {
     MuiTableRow: {
       root: {
-        '&$selected': { // <-- mixing the two classes
-          backgroundColor: '#f2f2f2',    
+        "&$selected": {
+          // <-- mixing the two classes
+          backgroundColor: "#f2f2f2",
         },
-        '&$selected:hover': { // <-- mixing the two classes
-          backgroundColor: '#f2f2f2',    
+        "&$selected:hover": {
+          // <-- mixing the two classes
+          backgroundColor: "#f2f2f2",
         },
-        '&:hover' : {
-          backgroundColor : "#333333",
+        "&:hover": {
+          backgroundColor: "#333333",
         },
       },
     },
@@ -53,58 +60,72 @@ export const theme = createMuiTheme({
     },
 
     MuiTableSortLabel: {
-      icon:{
-        color: 'white',
+      icon: {
+        color: "white",
       },
     },
-  }
+  },
 });
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-        '& > *': {
-          borderBottom: 'unset', width: '100%',
-        },
+      "& > *": {
+        borderBottom: "unset",
+        width: "100%",
+      },
     },
     paper: {
-      width: '100%', marginBottom: theme.spacing(2),
+      width: "100%",
+      marginBottom: theme.spacing(2),
     },
     table: {
       //width: 188,
     },
     visuallyHidden: {
-      border: 0, clip: 'rect(0 0 0 0)', height: 1, margin: -1, overflow: 'hidden', padding: 0, position: 'absolute', top: 20, width: 1,
-    },    
+      border: 0,
+      clip: "rect(0 0 0 0)",
+      height: 1,
+      margin: -1,
+      overflow: "hidden",
+      padding: 0,
+      position: "absolute",
+      top: 20,
+      width: 1,
+    },
     container: {
       // maxHeight: 800,
-      overflowY:'hidden',
-      overflowX:'auto'
+      overflowY: "hidden",
+      overflowX: "auto",
     },
     headerStickness: {
       top: 0,
       left: 0,
       zIndex: 2,
-      position:'sticky',
+      position: "sticky",
       backgroundColor: "#333333",
       color: "#d1d2d4",
-      whiteSpace : 'nowrap',
-      
+      whiteSpace: "nowrap",
     },
     searchHeaderStickness: {
-      top: 35, left: 0, zIndex: 2, position:'sticky', backgroundColor: "#333333", color: "#d1d2d4"
+      top: 35,
+      left: 0,
+      zIndex: 2,
+      position: "sticky",
+      backgroundColor: "#333333",
+      color: "#d1d2d4",
     },
     headerCellDiv: {
-      display: "flex"
+      display: "flex",
     },
     iconArrows: {
       color: "#d1d2d4",
-      maxHeight: "25px"
+      maxHeight: "25px",
     },
-  }),
+  })
 );
 
-export type Order = 'asc' | 'desc';
+export type Order = "asc" | "desc";
 
 export interface HeadCellProps {
   //disablePadding: boolean;
@@ -117,8 +138,8 @@ export interface HeadCellProps {
   minWidth: string;
   maxWidth?: string;
   dataComponent?: any;
-  searchFilter?: boolean; 
-  searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component) 
+  searchFilter?: boolean;
+  searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
 }
@@ -145,9 +166,11 @@ export type DataTableProps = {
   className?: string;
   allowRowReOrdering?: boolean;
   onClearAll: () => void;
-}
+  actionComponent?: React.ReactNode;
+  getSelectedItems:(v:any)=>void
+};
 
 export type OrderData = {
   order: Order;
   orderBy: string;
-}
+};

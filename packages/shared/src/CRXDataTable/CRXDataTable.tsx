@@ -139,26 +139,19 @@ export default function CRXDataTable(props: DataTableProps) {
     setSelected([]);
   };
 
-  const handleClick = (name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: string[] = [];
-  
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
+  const handleClick = (rawData: any) => {
+    const {id} = rawData
+    const found=selected.find((row:any)=>row.id===id)
+    if (found) {
+    const newSelected=  selected.filter((row:any)=>row.id!==id)
+      setSelected(newSelected)
+    }else{
+      setSelected(prev=>[...prev,rawData])
     }
-  
-    setSelected(newSelected);
-    setCheckClass(!checkBoxClass);
   };
+  useEffect(() => {
+    props.getSelectedItems(selected)
+  }, [selected])
 
   const handleChangePage = (event: unknown, newPage: number) => {
     console.log(event)
@@ -187,7 +180,10 @@ export default function CRXDataTable(props: DataTableProps) {
     }
     console.log(e, targetHead)
   }
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (id: string) => {
+    const findIndex= selected.findIndex((val:any)=>val.id==id)
+    return findIndex === -1 ? false:true
+  }
 
   function onColumnVisibility(){
     let a = 0;
@@ -448,7 +444,7 @@ export default function CRXDataTable(props: DataTableProps) {
                           container.rows
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                           .map((row : any, index: number) => {
-                            const isItemSelected = isSelected(row[keyId]);
+                            const isItemSelected = isSelected(row.id);
                             const labelId = `checkbox with default color-${index}`;
                             return (
                               <React.Fragment key={index}>
@@ -487,7 +483,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                         </DragDnd> 
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell CellCheckBox col-two" scope="row">
-                                          <CRXCheckBox onClick={() => handleClick(row[keyId])}
+                                          <CRXCheckBox onClick={() => handleClick(row)}
                                             checked={isItemSelected}
                                             inputProps={ labelId }
                                             selectedRow={isItemSelected}
@@ -495,9 +491,9 @@ export default function CRXDataTable(props: DataTableProps) {
                                           />
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell col-three" scope="row">
-                                        <Button >
-                                          <MoreVertIcon className={isItemSelected ? 'lightColorIcon' : 'DarkIconColor'}/>
-                                        </Button>
+                                        <span>
+                                          {props.actionComponent}  
+                                        </span>
                                         </TableCell>
                                         {orderColumn.map((colIdx, i) =>
                                               <TableCell className="DataTableBodyCell"  key={i}
