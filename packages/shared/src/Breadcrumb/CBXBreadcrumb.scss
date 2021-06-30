@@ -1,49 +1,63 @@
 .CRXBreadcrumb {
-    height: 32px;
-    line-height: 28px !important;
+  height: 32px;
+  line-height: 28px !important;
 
-    li {color:#333333 !important;}
+  li {
+    a {
+      color: #d74b00;
+      font-size: 12px;
+      text-decoration: none;
 
-    span {
-
-        .breadCrumbItem {
-
-            &:hover {
-                color: #333333;
-                text-decoration: none;
-                }
-            &:focus {
-                color: #333333;
-                text-decoration: none;
-            }
-
-        } 
-
+      &:hover {
+        color: #d74b00;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      &:focus {
+        color: #d74b00;
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
+  }
 
+  span {
     .breadCrumbItem {
-        font-size: 12px;
+      color: #333333;
+      &:hover {
         color: #333333;
-        font-family: Arial, Helvetica, sans-serif !important;
-
-            &:hover {
-                color: #d74b00;
-                text-decoration: underline;
-                cursor: default;
-                }
-            &:focus {
-                color: #d74b00;
-                text-decoration: underline;
-                cursor: default;
-            }
-      
-
+        text-decoration: none;
+        cursor: default;
+      }
+      &:focus {
+        color: #333333;
+        text-decoration: none;
+        cursor: default;
+      }
     }
+  }
 
+  .breadCrumbItem {
+    font-size: 12px;
+    color: #d74b00;
+    font-family: Arial, Helvetica, sans-serif !important;
 
-    .MuiBreadcrumbs-separator {
-        position: relative;
-        top: 1px;
-        font-size: 12px;
+    &:hover {
+      color: #d74b00;
+      text-decoration: underline;
+      cursor: pointer;
     }
+    &:focus {
+      color: #d74b00;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  .MuiBreadcrumbs-separator {
+    position: relative;
+    top: 1px;
+    font-size: 12px;
+    color: #333333;
+  }
 }
