@@ -535,7 +535,8 @@ tr:nth-child(odd) td[scope="row"] {
 .col-three {
   left: 113px;
   position: sticky;
-  .rc-menu {
+  ul:first-child {
+
     left: 75px !important;
     z-index: 99999 !important;
   }

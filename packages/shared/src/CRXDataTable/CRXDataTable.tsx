@@ -31,7 +31,7 @@ import {useTranslation} from 'react-i18next';
 export default function CRXDataTable(props: DataTableProps) {
   const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, onClearAll} = props;
   const classes = useStyles();
-  const [selected, setSelected] = React.useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
@@ -133,25 +133,25 @@ export default function CRXDataTable(props: DataTableProps) {
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelecteds = containers.dataTable.rows.map((n: any) => n[keyId]);
-      setSelected(newSelecteds);
+      setSelectedItems(newSelecteds);
       return;
     }
-    setSelected([]);
+    setSelectedItems([]);
   };
 
   const handleClick = (rawData: any) => {
     const {id} = rawData
-    const found=selected.find((row:any)=>row.id===id)
+    const found=selectedItems.find((row:any)=>row.id===id)
     if (found) {
-    const newSelected=  selected.filter((row:any)=>row.id!==id)
-      setSelected(newSelected)
+    const newSelected=  selectedItems.filter((row:any)=>row.id!==id)
+      setSelectedItems(newSelected)
     }else{
-      setSelected(prev=>[...prev,rawData])
+      setSelectedItems(prev=>[...prev,rawData])
     }
   };
   useEffect(() => {
-    props.getSelectedItems(selected)
-  }, [selected])
+    props.getSelectedItems(selectedItems)
+  }, [selectedItems])
 
   const handleChangePage = (event: unknown, newPage: number) => {
     console.log(event)
@@ -181,7 +181,7 @@ export default function CRXDataTable(props: DataTableProps) {
     console.log(e, targetHead)
   }
   const isSelected = (id: string) => {
-    const findIndex= selected.findIndex((val:any)=>val.id==id)
+    const findIndex= selectedItems.findIndex((val:any)=>val.id==id)
     return findIndex === -1 ? false:true
   }
 
@@ -306,7 +306,7 @@ export default function CRXDataTable(props: DataTableProps) {
               <div className={classes.root}>
                 
                 <DataTableToolbar 
-                    numSelected={selected.length} 
+                    numSelected={selectedItems.length} 
                     headCells={headCells} 
                     rowCount={container.rows.length}
                     columnVisibilityBar={columnVisibilityBar}

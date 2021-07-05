@@ -13,7 +13,6 @@ type Props = {
   isSelected: boolean;
 };
 const ActionMenu: React.FC<Props> = ({ isSelected }) => {
-  console.log(isSelected);
   return (
     <Menu
       align="start"
@@ -27,21 +26,36 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
         </MenuButton>
       }
     >
-      {!isSelected && (
-        <MenuItem onClick={() => alert()}>
-          <i className="fal fa-expand-arrows-alt"></i>
+      <MenuItem>
+        <span>Add to asset bucket</span>
+      </MenuItem>
 
-          <span>Categories </span>
-        </MenuItem>
-      )}
+      <MenuDivider />
       <MenuItem>
         <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Tag case </span>
+        <span>Categorize </span>
       </MenuItem>
       <MenuItem>
+        <span>Set as primary asset</span>
+      </MenuItem>
+      <MenuItem>
+        <i className="fal fa-expand-arrows-alt"></i>
+        <span>Assign to case</span>
+      </MenuItem>
+
+      <MenuItem>
+        <i className="fal fa-expand-arrows-alt"></i>
         <span>Assign user </span>
       </MenuItem>
+
+      <MenuItem>
+        <span>Modify Retention</span>
+      </MenuItem>
+
+      <MenuItem>
+        <span>TBD</span>
+      </MenuItem>
+
       <MenuItem>
         <i className="fal fa-expand-arrows-alt"></i>
 
@@ -61,46 +75,36 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
           <span>Metadata overlaid video</span>
         </MenuItem>
       </SubMenu>
-
-      <SubMenu label="Retentions">
-        <MenuItem>items</MenuItem>
-      </SubMenu>
       <MenuDivider />
+      <MenuItem>
+        <i className="fal fa-expand-arrows-alt"></i>
+
+        <span>Open in Getac AI Tools App</span>
+      </MenuItem>
+      <MenuDivider />
+      <MenuItem>
+        <i className="fal fa-expand-arrows-alt"></i>
+        <span>Link asset</span>
+      </MenuItem>
 
       <MenuItem disabled>
-        <span>Add to asset bucket</span>
+        <span>Link to this group</span>
       </MenuItem>
       <MenuDivider />
 
       <MenuItem>
         <i className="fal fa-expand-arrows-alt"></i>
 
-        <span>Open in Getac AI tools App</span>
+        <span>Move asset</span>
       </MenuItem>
 
-      <MenuItem>
+      <MenuItem disabled>
         <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Copy</span>
+        <span>Move to this group</span>
       </MenuItem>
-
       <MenuItem>
         <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Paste</span>
-      </MenuItem>
-
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Cut</span>
-      </MenuItem>
-      <MenuDivider />
-
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Lock</span>
+        <span>Restrict access</span>
       </MenuItem>
     </Menu>
   );
