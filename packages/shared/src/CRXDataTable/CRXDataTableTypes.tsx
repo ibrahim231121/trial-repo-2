@@ -153,6 +153,7 @@ export interface DataTableToolbarProps {
   onClearAll: () => void;
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
+  closePopupIcon?:any;
 }
 
 export type DataTableProps = {
@@ -167,7 +168,8 @@ export type DataTableProps = {
   allowRowReOrdering?: boolean;
   onClearAll: () => void;
   actionComponent?: React.ReactNode;
-  getSelectedItems:(v:any)=>void
+  getSelectedItems:(v:any)=>void;
+  closePopupIcon?:any;
 };
 
 export type OrderData = {

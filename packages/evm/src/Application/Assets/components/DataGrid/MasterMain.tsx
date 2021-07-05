@@ -8,6 +8,7 @@ import {useTranslation} from 'react-i18next';
 import { basicDateOptions } from "../../../../utils/constant";
 import ActionMenu from '../ActionMenu';
 
+import closeIcon from '../../../../Assets/Icons/icomoon/SVG/1134-cross2.svg';
 type Order = 'asc' | 'desc';
 
 type SearchObject = {
@@ -404,6 +405,7 @@ const MasterMain :React.FC<any>= (props) => {
                   className="ManageAssetDataTable"
                   onClearAll={onClearAll}
                   getSelectedItems={(v:any)=>setSelectedItems(v)}
+                  closePopupIcon={closeIcon}
                 />    
       }
     </React.Fragment>               

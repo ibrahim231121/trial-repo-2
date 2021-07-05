@@ -1,593 +1,585 @@
 .AssetsDataGrid {
-  border: 1px solid #cccccc;
-  margin-top: 2px;
-  box-shadow: none !important;
-  border-radius: 0px !important;
-  overflow-y: auto !important;
-  table {
-    tr {
-      th.MuiTableCell-sizeSmall {
-        padding: 0px 7px;
-      }
-      th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
-        padding-left: 15px !important;
-      }
-    }
-
-    thead {
-      tr {
-        th.CRXDataTableLabelCell {
-          border-bottom: 0px;
-          border-right: 1px solid #ccc;
-          z-index: 3;
-        }
-        th.TableSearchAbleHead {
-          border-top: 1px solid #ccc;
-          border-right: 1px solid #ccc;
-          &:focus {
-            outline: 0px;
-            box-shadow: 0px;
-          }
-        }
-      }
-    }
-    tbody {
-      tr {
-        td.MuiTableCell-root {
-        }
-        td.DataTableBodyCell {
-          border-right: 1px solid #ccc;
-          padding: 2px 9px;
-          font-size: 14px;
-          color: #333;
-          vertical-align: top;
-          line-height: 38px;
-          text-indent: 5px;
-          .MuiListItemSecondaryAction-root {
-            z-index: -1 !important;
-          }
-        }
-        .CellCheckBox {
-          vertical-align: middle;
-        }
-        &:nth-child(even) {
-          background-color: #f2f2f2;
-        }
-        td {
-          &:first-child {
-            background: #333333;
-            padding-left: 15px;
-            padding-right: 15px;
-            color: #d1d2d4;
-            vertical-align: middle;
-          }
-          &:nth-child(2) {
-            vertical-align: middle;
-          }
-          &:nth-child(3) {
-            vertical-align: middle;
-          }
-        }
-      }
-    }
-
-    .crxTableHeaderSize {
-      height: 35px;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      // .makeStyles-headerStickness-8 {
-
-      //         opacity: 1 !important;
-      //         visibility: visible !important;
-
-      // }
-      div {
-        label {
-          font-size: 14px;
-          color: #d1d2d4;
-        }
-      }
-      .GridSortIcon {
-        button {
-          span {
-            i {
-              font-size: 18px;
-              color: #d1d2d4;
+    border: 1px solid #cccccc;
+    margin-top: 2px;
+    box-shadow: none !important;
+    border-radius:0px !important;
+    table {
+        tr{
+            th.MuiTableCell-sizeSmall{
+                padding:0px 7px;
             }
-          }
-        }
-      }
-      .gridSortResize {
-        position: absolute;
-        right: -1px;
-        top: 0px;
-        display: flex;
-
-        .GridSortIcon {
-          padding-right: 12px;
-          position: relative;
-          top: 5px;
+            th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox{
+                padding-left: 15px !important;
+            }
         }
 
-        .DragHandleIcon {
-          flex: 0 0 12px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+        thead {
+            tr {
+                th.CRXDataTableLabelCell{
+                    border-bottom: 0px;
+                    border-right:1px solid #ccc;
+                    z-index: 3;
+                }
+                th.TableSearchAbleHead {
+                    border-top:1px solid #ccc;
+                    border-right:1px solid #ccc;
+                    &:focus {
+                        outline: 0px;
+                        box-shadow: 0px;
+                    }
+                }
+            }
         }
-      }
+        tbody{
+            tr{
+                td.MuiTableCell-root{
+
+                }
+                td.DataTableBodyCell{
+                    border-right:1px solid #ccc;
+                    padding: 2px 9px;
+                    font-size: 14px;
+                    color:#333;
+                    vertical-align: top;
+                    line-height: 38px;
+                    text-indent: 5px;
+                    .MuiListItemSecondaryAction-root{
+                        z-index: -1 !important;
+                    }
+                    
+                }
+                .CellCheckBox {
+                    vertical-align: middle;
+                }
+                &:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                td {
+                    &:first-child {
+                        background: #333333;
+                        padding-left: 15px;
+                        padding-right: 15px;
+                        color: #d1d2d4;
+                        vertical-align: middle;
+                    }
+                    &:nth-child(2) {
+                        vertical-align: middle;
+                    }
+                    &:nth-child(3) {
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
+
+        .crxTableHeaderSize {
+            height: 35px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            // .makeStyles-headerStickness-8 {
+                
+            //         opacity: 1 !important;
+            //         visibility: visible !important;
+                
+            // }
+            div {
+                label {
+                   font-size: 14px;
+                   color:#d1d2d4;
+                }
+            }
+            .GridSortIcon{
+                button {
+                    span{
+                        i {
+                            font-size:18px;
+                            color:#d1d2d4;
+                        }
+                    }
+                }
+            }
+            .gridSortResize {
+                position: absolute;
+                right:-1px;
+                top: 0px;
+                display: flex;
+
+                .GridSortIcon {
+                    padding-right: 12px;
+                    position: relative;
+                    top: 5px;
+                }
+                
+                .DragHandleIcon {
+                    flex: 0 0 12px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+        }
+
+        .tableSearchHead {
+            height: 51px;
+        }
     }
 
-    .tableSearchHead {
-      height: 51px;
+    .draggableCellIcon {
+        padding: 0px;
+        
     }
-  }
-
-  .draggableCellIcon {
-    padding: 0px;
-  }
 }
 
 .dataTablePages {
-  border: 1px solid #cccccc;
-  border-top: 0px;
-  .MuiTablePagination-toolbar {
-    border-bottom: 1px solid #cccccc;
-  }
+    border: 1px solid #cccccc;
+    border-top:0px;
+    .MuiTablePagination-toolbar {
+        border-bottom: 1px solid #cccccc;
+    }
 }
 
 .checkedDataTable {
-  .MuiPopover-paper {
-    max-width: 550px;
-    padding: 15px 25px 8px 25px;
-    box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
-    border: 1px solid #d1d2d4;
-    border-radius: 0px;
-  }
-
-  .MuiGrid-item {
-    padding: 1px 8px !important;
-    &:focus {
-      outline: 0px;
+    .MuiPopover-paper {
+        max-width: 550px;
+        padding: 15px 25px 8px 25px;
+        box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0px;
     }
-    &.showHideList {
-      padding-bottom: 3px !important;
-      label {
-        span.MuiFormControlLabel-label {
-          font-size: 14px;
-          color: #333;
+
+    .MuiGrid-item {
+        padding: 1px 8px !important;
+        &:focus {
+            outline: 0px;
         }
-      }
+        &.showHideList {
+            padding-bottom: 3px !important;
+            label {
+                span.MuiFormControlLabel-label {
+                    font-size: 14px;
+                    color:#333;
+                }
+            }
+        }
     }
-  }
+    
 
-  .MuiGrid-container {
-    &:focus {
-      outline: 0px;
+    .MuiGrid-container {
+        &:focus {
+            outline: 0px;
+        }
     }
-  }
 }
 
 .footerDRP {
-  border-top: 1px solid #d1d2d4;
-  padding: 15px 0px 0;
-  margin-top: 32px;
+    border-top: 1px solid #d1d2d4;
+    padding: 15px 0px 0;
+    margin-top: 32px;
 
-  .closeDRP {
-    width: 100%;
-  }
+    .closeDRP  {
+        width: 100%;
+    }
 }
 
 .footerDRPReOrder {
-  border-top: 1px solid #d1d2d4;
-  padding: 23px 0px 16px 28px;
-  margin-top: 0px;
-  .closeDRP {
-    width: 134px;
-    padding: 6px 0px;
-    margin-right: 17px;
-    span {
-      color: #d1d2d4;
+    border-top: 1px solid #d1d2d4;
+    padding: 23px 0px 16px 28px;
+    margin-top: 0px;
+    .closeDRP  {
+        width: 128px;
+        height: 30px;
+        padding: 6px 0px;
+        margin-right: 30px;
+        span {
+            color:#d1d2d4;
+            font-size: 14px;
+        }
     }
-  }
 }
 
 .DRPTitle {
-  font-size: 18px !important;
-  color: #333;
-  padding-bottom: 33px;
-  padding-left: 11px;
+    font-size: 18px !important;
+    color:#333;
+    padding-bottom: 33px;
+    padding-left: 11px;
 }
 
 .columnList {
-  padding: 102px 0px 0px 15px;
-  ul.columnUlList {
-    padding-left: 0px;
-    max-height: 301px;
+    padding:102px 0px 0px 15px;
+    max-height: 433px;
     overflow: auto;
-    li {
-      display: block;
-      padding: 0px 0px;
-      border: 3px solid transparent;
-      margin-bottom: 5px;
-      .MuiFormControlLabel-root {
-        margin-left: 0px !important;
-        .customizeCheckBox {
-          padding: 9px 15px 9px 9px;
+    ul.columnUlList {
+        padding-left: 0px;
+        li {
+            display: block;
+            padding:0px 0px;
+            border:3px solid transparent;
+            margin-bottom: 5px;
+            transform: translate3d(0px, 0px, 0px) !important;
+            cursor: move;
+            .MuiFormControlLabel-root{
+                margin-left: 0px !important;
+                cursor: move;
+                .customizeCheckBox  {
+                    padding: 9px 15px 9px 9px;
+                }
+                .MuiFormControlLabel-label {
+                    font-size: 14px;
+                    color:#333;
+                }
+            }
+            &:hover {
+                cursor: move;
+                z-index: 9999;
+                list-style: none;
+                border: 3px solid #CCCCCC !important;
+                background: #F2F2F2;
+                position: relative;
+                width: 469px !important;
+                opacity: 0.9;
+                position: relative;
+                &:after {
+                    position: absolute;
+                    right: 13px;
+                    top: 10px;
+                    font-family: "Font Awesome 5 Pro";
+                    font-weight: 900;
+                    content: "\f58e";
+                }
+            }
         }
-        .MuiFormControlLabel-label {
-          font-size: 14px;
-          color: #333;
-        }
-      }
     }
-  }
 }
 
 .columnReOrderOpup {
-  .MuiPopover-paper {
-    width: 528px;
-    padding: 0px;
-    box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
-    border: 1px solid #d1d2d4;
-    border-radius: 0px;
-  }
+    .MuiPopover-paper {
+        width: 528px;
+        padding: 0px;
+        box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0px;
+    }
 }
 
 .dataTabAssets {
-  .MuiToolbar-regular {
-    min-height: 42px;
-  }
-}
-
-.dataTableColumnShoHide {
-  .dataIconButton {
-    font-size: 18px;
-    color: #333;
-    padding: 0px 7px 0px 26px;
-    &:hover {
-      background: transparent !important;
+    .MuiToolbar-regular{
+        min-height: 42px;
     }
-    &.MuiIconButton-root {
-      &:hover {
-        background: transparent !important;
-      }
+}
+
+.dataTableColumnShoHide{
+    .dataIconButton {
+        font-size: 18px;
+        color:#333;
+        padding: 0px 7px 0px 26px;
+        &:hover {
+            background: transparent !important;
+        }
+        &.MuiIconButton-root {
+            &:hover {
+                background: transparent !important;
+            }
+        }
     }
-  }
 }
 
-.AssetsDataGrid::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #f5f5f5;
-  margin-left: 192px;
+
+.AssetsDataGrid::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+    margin-left: 192px;
 }
 
-.AssetsDataGrid::-webkit-scrollbar {
-  width: 5px;
-  background-color: #f5f5f5;
+.AssetsDataGrid::-webkit-scrollbar{
+    width: 5px;
+    background-color: #F5F5F5;
 }
 
-.AssetsDataGrid::-webkit-scrollbar-thumb {
-  background-color: #333333;
-  border: 2px solid #555555;
+.AssetsDataGrid::-webkit-scrollbar-thumb{
+        background-color: #333333;
+        border: 2px solid #555555;
 }
+
 
 .draggFocus {
-  border: 2px solid #cccccc;
-  cursor: grab;
+    border:2px solid #cccccc;
+    cursor: grab;
 }
 
 .helperClass {
-  border: 2px solid #ccc;
-  cursor: move;
-  padding: 3px 10px 0 10px;
-  text-align: center;
-  position: relative;
-  width: auto !important;
-  height: 35px !important;
-  opacity: 0.7;
-  align-items: center;
-  .dragIcon {
-    font-size: 18px;
-    color: #d1d2d4;
-    float: left;
-    position: relative;
-    top: 3px;
-    margin-right: 10px;
-  }
+    border: 2px solid #ccc;
+    cursor: move;
+    padding: 3px 10px 0 10px;
+    text-align: center;
+    position: relative ;
+    width: auto !important;
+    height: 35px !important;
+    opacity: 0.7;
+    align-items: center;
+    .dragIcon {
+        font-size: 18px;
+        color: #d1d2d4;
+        float: left;
+        position: relative;
+        top: 3px;
+        margin-right: 10px;
+    }
 
-  label {
-    float: right;
-  }
+    label {
+        float: right;
+    }
 }
 
 // ---- Classes for Resizing Column
-.DragHandle {
-  cursor: col-resize;
-  color: #337e05;
-  height: 100vh;
-  width: 2px;
-  background: transparent;
-  position: absolute;
-  right: 0;
-  top: 0;
-  &:hover {
-    background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: "";
-      z-index: 99;
+  .DragHandle {
+    cursor: col-resize;
+    color: #337e05;
+    height: 100vh;
+    width: 2px;
+    background: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    &:hover {
+        background: #33ff00;
+        &::before {
+            height: 35px;
+            width: 5px;
+            background: #33ff00;
+            position: absolute;
+            top: 0px;
+            right: -3px;
+            content: "";
+            z-index: 99;
+        }
+        &::after {
+            height: 8px;
+            width: 8px;
+            border-radius: 100px;
+            background: #33ff00;
+            position: absolute;
+            top: 34px;
+            right: -3px;
+            content: "";
+        }
     }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: "";
+    &:focus {
+        background: #33ff00;
+        &::before {
+            height: 35px;
+            width: 5px;
+            background: #33ff00;
+            position: absolute;
+            top: 0px;
+            right: -3px;
+            content: "";
+            z-index: 99;
+        }
+        &::after {
+            height: 8px;
+            width: 8px;
+            border-radius: 100px;
+            background: #33ff00;
+            position: absolute;
+            top: 34px;
+            right: -3px;
+            content: "";
+        }
     }
   }
-  &:focus {
-    background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: "";
-      z-index: 99;
-    }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: "";
-    }
+
+  
+  /*On Dragable start */
+  .onSortDragable {
+      z-index: 9999;
+      list-style: none;
+      border:3px solid #CCCCCC !important;
+      background: #F2F2F2;
+      padding-left: 11px;
+      position: relative;
+      width: 469px !important;
+      opacity: 0.90;
   }
-}
 
-/*On Dragable start */
-.onSortDragable {
-  z-index: 9999;
-  list-style: none;
-  border: 3px solid #cccccc !important;
-  background: #f2f2f2;
-  padding-left: 11px;
-  position: relative;
-  width: 469px !important;
-  opacity: 0.9;
-}
-
-.ghostView {
-  z-index: 9999;
-  list-style: none;
-  border: 3px solid #cccccc !important;
-  background: #f2f2f2;
-  padding-left: 11px;
-  position: relative;
-  width: 469px !important;
-  opacity: 0.5;
-}
-
-.sortAbledragIcon {
-  position: absolute;
-  right: 13px;
-  top: 10px;
-  display: none;
-  &:focus {
-    cursor: move;
+  .ghostView {
+    z-index: 9999;
+    list-style: none;
+    border:3px solid #CCCCCC !important;
+    background: #F2F2F2;
+    padding-left: 11px;
+    position: relative;
+    width: 469px !important;
+    opacity: 0.5;
   }
-}
-
-.dragableGuide::after {
-  content: "";
-  position: absolute;
-  top: -11px;
-  left: 0px;
-  width: 100%;
-  height: 4px;
-  background: #33ff00;
-}
-.leftCircle {
-  color: #33ff00;
-  position: absolute;
-  left: -3px;
-  top: -14px;
-  font-size: 10px;
-}
-
-.rightCircle {
-  color: #33ff00;
-  position: absolute;
-  right: -3px;
-  top: -14px;
-  font-size: 10px;
-}
-
-.ghostLi {
-  z-index: 9999;
-  list-style: none;
-  border: 3px solid #cccccc !important;
-  background: #f2f2f2;
-  padding-left: 15px !important;
-  position: relative;
-  opacity: 0.5 !important;
-  visibility: visible !important;
 
   .sortAbledragIcon {
-    position: absolute;
-    right: 15px;
-    top: 8px;
-    &:focus {
-      cursor: move;
-    }
+      position: absolute;
+      right:13px;
+      top:10px;
+      &:focus {
+          cursor: move;
+      }
   }
+ 
+.dragableGuide {
+    position: relative;
+    width: 480px;
+    left: -6px;
+    &:after {
+        content: "";
+        position: absolute;
+        top:-11px;
+        left: 0px;
+        width: 100%;
+        height: 4px;
+        background: #33FF00;
+    }
+    .leftCircle {
+        color: #33FF00;
+        position: absolute;
+        left: -3px;
+        top: -14px;
+        font-size: 10px;
+    }
+
+    .rightCircle {
+        color: #33FF00;
+        position: absolute;
+        right: -3px;
+        top: -14px;
+        font-size: 10px;
+    }
+}
+.ghostLi {
+    z-index: 9999;
+    list-style: none;
+    border:3px solid #CCCCCC !important;
+    background: #F2F2F2;
+    padding-left: 15px !important;
+    position: relative;
+    opacity: 0.5 !important;
+    visibility: visible !important;
+    
+    .sortAbledragIcon {
+    position: absolute;
+    right:15px;
+    top:8px;
+        &:focus {
+            cursor: move;
+        }
+    }
 }
 /* ---------*/
 
 .clearAllFilterBtn {
-  width: 129px;
+    width: 129px;
 }
+
 
 //-------------------
 // Freezing Colummn
 //-------------------
 .col-one {
-  left: 0;
-  position: sticky;
-  z-index: 1;
+    left: 0;
+    position: sticky;
 }
 .col-two {
-  left: 55px;
-  position: sticky;
-  padding-left: 7px !important;
-  z-index: 1;
+    left: 55px;
+    position: sticky;
 }
 .col-three {
-  left: 113px;
-  position: sticky;
-  max-width: 80px;
-  padding-left: 2px !important;
-  z-index: 1;
+    left: 113px;
+    position: sticky;
 }
-tr:nth-child(even) td[scope="row"] {
-  background-color: #f2f2f2;
+tr:nth-child(even) td[scope=row] {
+    background-color: #f2f2f2;
 }
-
-tr:nth-child(odd) td[scope="row"] {
-  background-color: #fff;
+tr:nth-child(odd) td[scope=row] {
+    background-color: white;
 }
 
-td.col-two:hover,
-td.col-three:hover,
-td.col-three:hover .MuiButton-root {
-  background-color: #333 !important;
-  color: #d1d2d4 !important;
-}
+// tr.Mui-selected:nth-child(odd) td[scope=row] {
+//     background-color:#231f20 !important;
+//     &:hover {
+//         background-color: #333 !important;
+//     }
+// }
 
-tr.Mui-selected:nth-child(odd) td[scope="row"] {
-  background-color: #231f20 !important;
-  color: #d1d2d4;
-  .MuiButton-root {
-    color: #d1d2d4 !important;
-  }
-  &:hover {
-    background-color: #333 !important;
-  }
-}
-
-tr.Mui-selected:nth-child(even) td[scope="row"] {
-  background-color: #231f20 !important;
-  .MuiButton-root {
-    color: #d1d2d4 !important;
-  }
-  &:hover {
-    background-color: #333 !important;
-  }
-}
+// tr.Mui-selected:nth-child(even) td[scope=row] {
+//     background-color:#231f20 !important;
+//     &:hover {
+//         background-color: #333 !important;
+//     }
+// }
 //-------------------
+
 
 //Do not remove it
 .CRXDataTableCustom {
-  tr {
-    &.Mui-selected {
-      background-color: #231f20 !important;
-      td.DataTableBodyCell {
-        color: #d1d2d4;
-      }
-    }
-    &:hover {
-      background-color: #333 !important;
-      td.DataTableBodyCell {
-        color: #d1d2d4;
-      }
-    }
-    td:nth-child(2):hover ~ td.col-three {
-      background: #333 !important;
-      color: #d1d2d4;
-      .MuiButton-root {
-        color: #d1d2d4 !important;
-      }
-    }
-  }
+    // tr {
+    // &.Mui-selected  {
+    //         background-color:#231f20 !important;
+    //         td.DataTableBodyCell {
+    //             color: #D1D2D4;
+    //         }
+    //     }
+    // &:hover {
+    //     background-color: #333 !important;
+    //         td.DataTableBodyCell {
+    //             color: #D1D2D4;
+    //         }
+    //     }
+    // }
 }
-.subTItle {
-  font-size: 14px !important;
-  color: #333;
-  padding-bottom: 20px;
-  padding-left: 11px;
+
+// .lightColorIcon {
+//     color:#D1D2D4;
+// }
+
+.subTItle  {
+    font-size: 14px !important;
+    color: #333;
+    padding-bottom: 20px;
+    padding-left: 11px;
 }
 
 .popupFreezTitle {
-  position: fixed;
-  padding-left: 15px;
-  padding-top: 14px;
-  width: 528px;
+    position: fixed;
+    padding-left: 15px;
+    padding-top: 14px;
+    width: 525px;
+    background: #fff;
+    z-index: 4;
 }
 
 #resetCheckBox {
-  border: 0px;
-  margin-right: 40px;
+    border: 0px;
+    margin-right: 40px;
 }
 
 .closePopup {
-  &:hover {
-    background-color: transparent !important;
-  }
-  .MuiSvgIcon-fontSizeSmall {
-    font-size: 16px;
-    color: #d1d1d4;
     &:hover {
-      color: #333;
+        background-color: transparent !important;
     }
-  }
+    .MuiSvgIcon-fontSizeSmall {
+        font-size: 16px;
+        color: #d1d1d4;
+        &:hover {
+            color: #333;
+        }
+    }
+    .croseIcon {
+        width: 13px;
+        height: 13px;
+        filter: opacity(0.5);
+        &:hover {
+            filter: opacity(0.7);
+        }
+    }
 }
 
-.col-three {
-  left: 113px;
-  position: sticky;
-  ul:first-child {
-
-    left: 75px !important;
-    z-index: 99999 !important;
-  }
-
-  .MuiButton-label {
-    position: relative;
-  }
-
-  .rc-menu-button {
-    background: none;
-    border: none;
-
-    &:hover {
-      background: none;
-    }
-  }
-
-  .MuiButton-root {
-    &:hover {
-      background: none;
-    }
-  }
-
-  .rc-menu__item {
-    height: 30px !important;
-    padding: 0px 1.5rem !important;
-  }
+.sortDragHide {
+    display: none;
 }

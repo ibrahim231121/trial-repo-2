@@ -15,7 +15,6 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
 import Tooltip from '@material-ui/core/Tooltip';
-import ClearIcon from '@material-ui/icons/Clear';
 
 const checkboxStyle = makeStyles({
   root: {
@@ -63,14 +62,19 @@ const checkboxStyle = makeStyles({
 export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const classes = useToolbarStyles();
     const chkStyle = checkboxStyle();
-    const {headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder } = props;
+    const {headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder, closePopupIcon } = props;
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
     const [customizeColumn, setCustomize] = useState<any>(null)
     const [orderColumn, setOrderColumn] = useState(props.orderingColumn)
     const [onPreset, setOnPreSet] = useState<boolean>()
     const {t} = useTranslation<string>();
-
+    const DragList = React.useRef<React.ReactNode>(null);
+    const stateArry = headCells.map((i : any) => {
+      return i.id;
+    })
+    const [dragState, setDragState] = useState<any>(stateArry);
+    
     useEffect(() => {
       
       headCells.map((headCell: any, x) => {
@@ -168,6 +172,7 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     }
 
     const handleCustomizeChange = (checked: boolean, index: number) => {
+      
       selected[index].visible = checked;     
       headCells[index].visible = selected[index].visible 
       setSelected(prevState  => ({...prevState}))
@@ -176,15 +181,23 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
 
     const onReorderEnd = useCallback(    
       ({ oldIndex, newIndex}, e) => {
-        console.log(e);
         const newOrder = [...orderColumn];
         const moved = newOrder.splice(oldIndex, 1);
         newOrder.splice(newIndex, 0, moved[0]);
-        
         setOrderColumn(newOrder);
         onReOrder(newOrder);
-        for(var i in Object.entries(e.target.children)){
-            Object.entries<any>(e.target.children)[i][1].className = ""
+        var dx = document.querySelector(".ghostView");
+        if(dx != null) {
+           dx.children[1].remove();
+           dx.className = "";
+        }
+         for(var i in Object.entries(e.target.children)){
+            const clax = Object.entries<any>(e.target.children)[i][1];
+            if(clax.className === "ghostView")
+            Object.entries<any>(e.target.children)[i][1].className = "";
+            const targetState = headCells[i];
+            if(targetState != undefined)
+            setDragState({[targetState.id] : false});
         }
       },
       [orderColumn, setOrderColumn]
@@ -194,26 +207,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const onSortableStart = (e:any) => {
       e.helper.className = "onSortDragable";
       e.helper.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
-      e.helper.innerHTML += '<div class="dragableGuide"><i class="fas fa-scrubber leftCircle"></i><i class="fas fa-scrubber rightCircle"></i></div>'
-      // e.helper.innerHTML += '<i class="fas fa-scrubber leftCircle"></i>';
-      // e.helper.innerHTML += '<i class="fas fa-scrubber rightCircle"></i>';
-
       e.node.className = "ghostView";
       e.node.innerHTML += '<i class="fas fa-grip-vertical sortAbledragIcon"></i>';
       
     }
 
-    const onSortMoveStart = (e : any) => {
-      const guideLine = document.getElementsByClassName("dragableGuide") as HTMLCollectionOf<HTMLElement>;
-      
-      guideLine[0].style.position = "relative";
-      guideLine[0].style.top = "40px";
+    const onSortOverFunc = (e : any) => {
+      const head = headCells[e.newIndex].id;
+        if(e.newIndex > 0 ) {
+          
+          e.nodes[e.newIndex].node.style.transform = "translate3d(0px, 0px, 0px)";
+          setDragState({[head] : true})
+        }
     }
-    
-    
-    // const onSortEndFunc = (e : any) => {
-    //   //console.log(e)
-    // }
     return (
 
       <Toolbar
@@ -323,7 +329,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               <div className="popupFreezTitle">
                 <div style={{position:'absolute', top:"-10px", right:"0px"}}>
                   <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={customizeColumnClose} >
-                    <ClearIcon fontSize="small"/>
+                  {/* <span className="icon-cross2"></span> */}
+                  <img src={closePopupIcon} className="croseIcon"/>
                   </IconButton>
                 </div>
               
@@ -335,12 +342,13 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                   orderColumn={orderColumn} 
                   selected={selected} 
                   chkStyle={chkStyle} 
+                  dragHideState={dragState}
                   hideSortableGhost={false}
-                  disableAutoscroll={true}
+                  disableAutoscroll={false}
                   lockAxis="y"
                   onSortStart={onSortableStart}
-                  onSortMove={onSortMoveStart}
                   onSortEnd={onReorderEnd}
+                  onSortOver={onSortOverFunc}
                   lockToContainerEdges={true}
                   transitionDuration={0}
                   onReOrderChange={handleCustomizeChange}/>
@@ -387,38 +395,63 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     );
 };
 
-const SortableItem = SortableElement(({value}: any) => (
-  <li tabIndex={0}>{value}</li>
+const SortableItem = SortableElement(({value}: any, {index} : any) => (
+  <li tabIndex={index}>
+    {value}
+  </li>
+  
 ));
 
 const SortableList = SortableContainer((props: any) => {
-  const {orderColumn, selected, chkStyle, onReOrderChange} = props;
+  const {orderColumn, selected, chkStyle, onReOrderChange, dragHideState, id} = props;
   const handleCheckChange = (event: any, index: number) => {    
+
     onReOrderChange(event.target.checked,index)
   }
 
+  let hide:any; 
+  const dragableSortTarget = (colIdx : any) =>{
+      
+      const names : any = selected[colIdx].id;
+      if(colIdx > 0 && dragHideState[names] === true) {
+        return hide = ""
+      }else {
+        return hide = "sortDragHide"
+      }
+   }
   return (
     <ul className="columnUlList">
       {orderColumn.map((colIdx: any, index: number) => (
+        
+        dragableSortTarget(colIdx),
+        <>
+        {(selected[colIdx].keyCol === false || selected[colIdx].keyCol === undefined) ? 
+        <>
         <SortableItem 
           key={colIdx} 
-          index={index} 
+          index={index}
+          id={id}
           value={
-                  (selected[colIdx].keyCol === false || selected[colIdx].keyCol === undefined) ? 
-                    <FormControlLabel
-                      value={selected[colIdx].label}
-                      control={<CRXCheckBox className="customizeCheckBox" checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
-                     //icon={<span className={chkStyle.icon} />}
-                      className={chkStyle.root + " shoHideCheckbox"}
-                      
-                      //color="default" />}
-                      label={selected[colIdx].label}
-                      labelPlacement="end"
-                    />
-                  :
-                  null
-                } 
+   
+              <FormControlLabel
+                value={selected[colIdx].label}
+                control={<CRXCheckBox className="customizeCheckBox" checked={selected[colIdx].visible} onChange={(e) => handleCheckChange(e,colIdx)} />}
+                //icon={<span className={chkStyle.icon} />}
+                className={chkStyle.root + " shoHideCheckbox"}
+                
+                //color="default" />}
+                label={selected[colIdx].label}
+                labelPlacement="end"
+              />
+                  
+            } 
         />
+        <div className={"dragableGuide " + hide} ><i className="fas fa-scrubber leftCircle"></i><i className="fas fa-scrubber rightCircle"></i></div>
+            </>  
+        :
+        null
+      }
+        </>
       ))}
     </ul>
   );
