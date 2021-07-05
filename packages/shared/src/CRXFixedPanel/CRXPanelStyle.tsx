@@ -49,7 +49,7 @@ createStyles({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    height: "100vh"
+    
   },
 
   contentShift: {
@@ -58,11 +58,10 @@ createStyles({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
-    height: "100vh"
   },
   bradCrumscontent: {
     flexGrow: 1,
-    padding: "3px 40px 0",
+    padding: "3px 40px 7px 24px",
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

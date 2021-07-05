@@ -27,8 +27,9 @@ code {
   margin-top: 28px;
 }
 
-.makeStyles-contentShift-10 .mainContainer{
-  /* padding-left: 65px; */
+.makeStyles-content-9 .searchComponents{
+    padding: 0 4px 0px 0px;
+    padding-top: 44px;
 }
 
 .mainContainer{
@@ -36,7 +37,7 @@ code {
 }
 
 .CRXActiveBreadcrumb {
-  background: #fff;
+    background: #fff;
     margin-top: -3px;
 }
 
@@ -44,3 +45,8 @@ code {
   color: #FF6E20;
   cursor: pointer;
 }
+
+.linkColor:hover {
+  text-decoration: underline;
+}
+

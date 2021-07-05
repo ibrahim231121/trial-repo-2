@@ -1,8 +1,6 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import AppsIcon from '@material-ui/icons/Apps';
-import MenuIcon from '@material-ui/icons/Menu';
 import CRXPanelStyle  from "./CRXPanelStyle"
 import './CRXPanel.scss'
 

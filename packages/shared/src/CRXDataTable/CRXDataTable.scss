@@ -450,56 +450,82 @@
 .col-one {
   left: 0;
   position: sticky;
+  z-index: 1;
 }
 .col-two {
   left: 55px;
   position: sticky;
+  padding-left: 7px !important;
+  z-index: 1;
 }
-
+.col-three {
+  left: 113px;
+  position: sticky;
+  max-width: 80px;
+  padding-left: 2px !important;
+  z-index: 1;
+}
 tr:nth-child(even) td[scope="row"] {
   background-color: #f2f2f2;
 }
+
 tr:nth-child(odd) td[scope="row"] {
-  background-color: white;
+  background-color: #fff;
 }
 
-// tr.Mui-selected:nth-child(odd) td[scope=row] {
-//     background-color:#231f20 !important;
-//     &:hover {
-//         background-color: #333 !important;
-//     }
-// }
+td.col-two:hover,
+td.col-three:hover,
+td.col-three:hover .MuiButton-root {
+  background-color: #333 !important;
+  color: #d1d2d4 !important;
+}
 
-// tr.Mui-selected:nth-child(even) td[scope=row] {
-//     background-color:#231f20 !important;
-//     &:hover {
-//         background-color: #333 !important;
-//     }
-// }
+tr.Mui-selected:nth-child(odd) td[scope="row"] {
+  background-color: #231f20 !important;
+  color: #d1d2d4;
+  .MuiButton-root {
+    color: #d1d2d4 !important;
+  }
+  &:hover {
+    background-color: #333 !important;
+  }
+}
+
+tr.Mui-selected:nth-child(even) td[scope="row"] {
+  background-color: #231f20 !important;
+  .MuiButton-root {
+    color: #d1d2d4 !important;
+  }
+  &:hover {
+    background-color: #333 !important;
+  }
+}
 //-------------------
 
 //Do not remove it
 .CRXDataTableCustom {
-  // tr {
-  // &.Mui-selected  {
-  //         background-color:#231f20 !important;
-  //         td.DataTableBodyCell {
-  //             color: #D1D2D4;
-  //         }
-  //     }
-  // &:hover {
-  //     background-color: #333 !important;
-  //         td.DataTableBodyCell {
-  //             color: #D1D2D4;
-  //         }
-  //     }
-  // }
-  //}
-
-  // .lightColorIcon {
-  //     color:#D1D2D4;
+  tr {
+    &.Mui-selected {
+      background-color: #231f20 !important;
+      td.DataTableBodyCell {
+        color: #d1d2d4;
+      }
+    }
+    &:hover {
+      background-color: #333 !important;
+      td.DataTableBodyCell {
+        color: #d1d2d4;
+      }
+    }
+    td:nth-child(2):hover ~ td.col-three {
+      background: #333 !important;
+      color: #d1d2d4;
+      .MuiButton-root {
+        color: #d1d2d4 !important;
+      }
+    }
+  }
 }
-
 .subTItle {
   font-size: 14px !important;
   color: #333;

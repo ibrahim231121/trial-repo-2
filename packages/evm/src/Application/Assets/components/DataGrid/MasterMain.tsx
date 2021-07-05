@@ -43,6 +43,7 @@ const thumbTemplate = (rowData: any) => {
   return (
       <React.Fragment>
         <div className="assetThumb">
+          <i className="tumbPlayIcon icon-play3"></i>
           <img src={thumbImg} alt="Asset Thumb" />
         </div>
       </React.Fragment>

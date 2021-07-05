@@ -10,7 +10,7 @@ import  CRXActiveBreadcrumb from './Breadcrumb'
 import CRXAssetsBucketPanel from './AssetsBucket/CRXBucket'
 import CRXNotficationPanel from './CRXNotifications/CRXNotificationPanel';
 import CRXGlobalSearchPanel from './CRXGlobalSearch/CRXSearchPanel';
-import AppLogo from '../../Assets/Images/AppLogo.png'
+import AppLogo from '../../Assets/Images/getacLogo.png'
 import './Header.scss'
 
 
@@ -38,9 +38,9 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                         
                         <CRXAppDropdown />
                         <img src={AppLogo} className="appLogo"/>
-                        <CRXHeading align="left" className="AppName"  variant="h4">
+                        {/* <CRXHeading align="left" className="AppName"  variant="h4">
                             ENTERPRISE
-                        </CRXHeading>
+                        </CRXHeading> */}
                     </div>
                 </CRXColumn>
                 <CRXColumn item xs={8}>

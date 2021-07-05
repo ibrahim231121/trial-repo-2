@@ -58,32 +58,35 @@
 }
 
 .CRXLogoMenu {
-  display: flex;
-  .appLogo {
-    display: inline-block;
-    width: 120px;
-    position: relative;
-    top: -2px;
-  }
-  .toggleIcon {
-    color: #d1d2d4;
-    height: auto !important;
-  }
+    display: flex;
+    height:57px;
+    .appLogo {
+        display: inline-block;
+        width: 216px;
+        position: relative;
+        top: 11px;
+        height: 32px;
+    }   
+    .toggleIcon {
+        color:#d1d2d4;
+        height: auto !important;
+    }
 
-  .AppName {
-    font-size: 24px;
-    font-weight: bold;
-    padding-left: 30px;
-    line-height: 54px;
-    position: relative;
-    &:before {
-      position: absolute;
-      height: 32px;
-      width: 1px;
-      left: 16px;
-      top: 10.5px;
-      background: #e6e6e6;
-      content: " ";
+    .AppName {
+        font-size: 16px;
+        font-weight: bold;
+        padding-left: 30px;
+        line-height: 54px;
+        position: relative;
+        &:before {
+            position: absolute;
+            height: 32px;
+            width: 1px;
+            left: 16px;
+            top: 10.5px;
+            background: #e6e6e6;
+            content: " ";
+        }
     }
   }
 
