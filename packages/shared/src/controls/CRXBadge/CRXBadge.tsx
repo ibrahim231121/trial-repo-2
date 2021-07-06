@@ -9,7 +9,7 @@ type badgeProps = {
 
 const CRXBadge: React.FC<badgeProps> = ({ className, itemCount, children }) => {
   const [invisible, setInvisible] = React.useState(true);
-  const [colorClass] = React.useState('Grey');
+  const [colorClass] = React.useState('Orange');
 
   React.useEffect(() => {
     const checkVisiblity = itemCount > 0 ? false : true;

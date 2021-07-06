@@ -1,12 +1,14 @@
-import React from "react";
-import { CRXDrawer, CRXIcon } from "@cb/shared";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import "./CRXNotificationPanel.scss";
+import React from 'react';
+import { CRXDrawer, CRXIcon ,CRXBadge } from '@cb/shared';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import './CRXNotificationPanel.scss';
 
 const ToggleButton = (
-  <CRXIcon className="bucketIcon">
-    <i className="fas fa-bell"></i>
-  </CRXIcon>
+  <CRXBadge itemCount={1}>
+    <CRXIcon className='bucketIcon'>
+      <i className='fas fa-bell'></i>
+    </CRXIcon>
+  </CRXBadge>
 );
 
 const toggleState = () => {};
@@ -14,10 +16,10 @@ const toggleState = () => {};
 const CRXNotficationPanel = () => {
   return (
     <CRXDrawer
-      className="CRXNotficationPanel"
-      anchor="right"
+      className='CRXNotficationPanel'
+      anchor='right'
       button={ToggleButton}
-      btnStyle="NotificationIconButton"
+      btnStyle='NotificationIconButton'
       toggleState={toggleState}
     >
       Notification panel
