@@ -22,7 +22,7 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
       arrow
       menuButton={
         <MenuButton>
-          <MoreVertIcon />
+          <i className="far fa-ellipsis-v"></i>
         </MenuButton>
       }
     >

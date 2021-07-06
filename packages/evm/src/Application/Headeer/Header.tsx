@@ -51,9 +51,11 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                             <li><CRXUserProfile /></li>
                             <li><CRXHelp /></li>
                         </ul>
-                        <CRXAssetsBucketPanel />
-                        <CRXNotficationPanel />
-                        <CRXGlobalSearchPanel />
+                        <div className="panelContent">
+                            <CRXAssetsBucketPanel />
+                            <CRXNotficationPanel />
+                            <CRXGlobalSearchPanel />
+                        </div>
                     </div>
                 </CRXColumn>
             </CRXRows>

@@ -134,6 +134,12 @@
       }
     }
   }
+  .panelContent {
+    display: flex;
+    justify-content: right;
+    align-items: baseline;
+    place-content: flex-end;
+  }
 }
 
 .CRXActiveBreadcrumb {
