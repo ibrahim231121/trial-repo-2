@@ -1,41 +1,77 @@
-
 .CRXBucketPanel {
-    .MuiDrawer-paper {
-        top:57px  !important;
-        background: #f5f5f5;
-        overflow: visible;
-        border-left:1px solid #b7b8b9;
-        box-shadow: rgba(0,0,0,0.25) 0px 10px 10px 0px;
-        min-width: 400px;
-        padding: 10px;
-        border-bottom:3px #d74b00 solid;
-        height: 91.7vh;
+  .MuiDrawer-paper {
+    top: 57px !important;
+    background: #f5f5f5;
+    overflow: visible;
+    border-left: 1px solid #b7b8b9;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 10px 0px;
+    min-width: 400px;
+    padding: 10px;
+    border-bottom: 3px #d74b00 solid;
+    height: calc(100% - 60px);
+  }
+  .bucketPanelTitle {
+    text-align: left;
+    font-size: 18px;
+  }
+
+  .uploadContent {
+    border: 1px dotted #848080;
+    padding: 8px;
+    background: #fff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: left;
+    margin-top: 30px;
+    .iconArea {
+      font-size: 18px;
     }
+    .textArea {
+      font-size: 14px;
+      color: #333;
+      line-height: 17px;
+      text-align: left;
+      padding-left: 15px;
+      padding-right: 15px;
+      .textFileBrowser {
+        color: #d74b00;
+      }
+    }
+  }
+
+  .bucketContent {
+    text-align: center;
+    padding-top: 25%;
+  }
+  .topColumn {
+    color: #d1d2d4;
+  }
 }
 
 .bucketIcon {
-    color:#d1d2d4;
-    font-size: 20px !important;
+  color: #d1d2d4;
+  font-size: 20px !important;
 }
 
 .bucketIconButton {
-    padding:4px 0px !important;
-    line-height: 0px !important;
-    min-width: 80px !important;
-    border-radius: 0px  !important;
+  padding: 4px 0px !important;
+  line-height: 0px !important;
+  min-width: 80px !important;
+  border-radius: 0px !important;
 }
 
-.bucketIconButton:hover, .bucketIconButton:focus {
-    background-color: rgba(0,0,0,0.8) !important;
-    position: relative;
+.bucketIconButton:hover,
+.bucketIconButton:focus {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  position: relative;
 }
 
 .bucketIconButton:after {
-    position: absolute;
-    background: #555;
-    width: 2px;
-    height: 18px;
-    top: 5px;
-    right: 0px;
-    content: "";
+  position: absolute;
+  background: #555;
+  width: 2px;
+  height: 18px;
+  top: 5px;
+  right: 0px;
+  content: "";
 }
