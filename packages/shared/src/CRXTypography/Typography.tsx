@@ -24,10 +24,12 @@ type typoProps = {
     className? : string,
     align? : any,
     noWrap? : boolean,
+    onMouseEnter? : (e : any) => void,
+    onMouseLeave? : (e : any) => void
 }
-const CRXTypography = ({children, variant, align, id, className, noWrap = false} : typoProps) => {
+const CRXTypography = ({children, variant, align, id, className, onMouseEnter, onMouseLeave, noWrap = false} : typoProps) => {
     return (
-        <Typography id={id} align={align} className={className} noWrap={noWrap}  variant={variant}>
+        <Typography id={id} align={align} className={className} noWrap={noWrap} onMouseLeave={onMouseLeave} onMouseEnter={onMouseEnter}  variant={variant}>
             { children }
         </Typography>
     )

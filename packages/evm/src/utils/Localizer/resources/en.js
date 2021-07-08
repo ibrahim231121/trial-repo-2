@@ -48,7 +48,9 @@ export const resources = {
         "Station":"Station",
         "Recorded By":"Recorded By",
         "Captured":"Captured",
-        "FileStatus":"File Status"
+        "FileStatus":"File Status",
+        "SelectAll":"Select All",
+        "GroupedAssets":"Grouped Assets",
       }
     }
   };

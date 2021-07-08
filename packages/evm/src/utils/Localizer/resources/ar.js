@@ -21,6 +21,8 @@ export const resources = {
         "Recorded By":"ar-Recorded By",
         "Captured":"ar-Captured",
         "FileStatus":"ar-File Status",
+        "SelectAll":"ar-Select All",
+        "GroupedAssets":"ar-Grouped Assets",
       }
     }
   };

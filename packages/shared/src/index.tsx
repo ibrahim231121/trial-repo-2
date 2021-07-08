@@ -29,6 +29,7 @@ export {default as CRXDropContainer} from './CRXDropContainer'
 export { default as CRXTitle } from './controls/CRXPageTitle/'
 export { default as CRXTooltip} from './controls/CRXTooltip/CRXTooltip'
 export { default as CRXInputDatePicker} from './controls/CRXInputDatePicker'
+export { default as CRXPopOver} from './CRXPopOver/PopOver'
 export { default as CRXMultiSelect} from './controls/CRXMultiSelect/CRXMultiSelect'
 export { default as CRXBadge} from './controls/CRXBadge/CRXBadge'
 

@@ -21,6 +21,8 @@ export const resources = {
         "Recorded By":"fr-Recorded By",
         "Captured":"fr-Captured",
         "FileStatus":"fr-File Status",
+        "SelectAll":"fr-Select All",
+        "GroupedAssets":"fr-Grouped Assets",
       }
     }
   };

@@ -142,6 +142,8 @@ export interface HeadCellProps {
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
+  detailedDataComponentId?: string;
+  detailedDataComponent?: any;
 }
 
 export interface DataTableToolbarProps {
@@ -153,7 +155,7 @@ export interface DataTableToolbarProps {
   onClearAll: () => void;
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
-  closePopupIcon?:any;
+  closePopupIcon?: any;
 }
 
 export type DataTableProps = {
@@ -168,8 +170,8 @@ export type DataTableProps = {
   allowRowReOrdering?: boolean;
   onClearAll: () => void;
   actionComponent?: React.ReactNode;
-  getSelectedItems:(v:any)=>void;
-  closePopupIcon?:any;
+  getSelectedItems: (v: any) => void;
+  closePopupIcon?: any;
 };
 
 export type OrderData = {

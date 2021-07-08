@@ -18,6 +18,8 @@ import thumbImg from "../../../../Assets/Images/thumb.png";
 import { useTranslation } from "react-i18next";
 import { basicDateOptions } from "../../../../utils/constant";
 import ActionMenu from "../ActionMenu";
+import DetailedAssetPopup from "./DetailedAssetPopup";
+import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
 
 import closeIcon from "../../../../Assets/Icons/icomoon/SVG/1134-cross2.svg";
 type Order = "asc" | "desc";
@@ -49,6 +51,8 @@ interface HeadCellProps {
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
+  detailedDataComponentId?: string;
+  detailedDataComponent?: any;
 }
 
 const thumbTemplate = (rowData: any) => {
@@ -67,13 +71,16 @@ const textTemplate = (text: string) => {
 };
 
 //-----------------
-const assetNameTemplate = (rowData: any) => {
+const assetNameTemplate: React.FC<any> = (rowData) => {
   return (
     <>
-      <div className="alignLeft linkColor">{rowData}</div>
+      <div className="alignLeft linkColor">
+        {rowData}
+      </div>
     </>
   );
 };
+
 const assetTypeTemplate = (rowData: any) => {
   return (
     <>
@@ -107,9 +114,7 @@ const assetRecordedByTemplate = (rowData: any[]) => {
   );
 };
 const assetHolduntillTemplate = (rowData: any) => {
-  const stillUtc = moment.utc(rowData).toDate();
-  const localDateTime = moment(stillUtc).local().format("YYYY-MM-DD HH:mm:ss");
-  return <>{localDateTime}</>;
+  return dateDisplayFormat(rowData);
 };
 const assetStatusTemplate = (rowData: any) => {
   return (
@@ -122,39 +127,39 @@ const assetStatusTemplate = (rowData: any) => {
 
 const MasterMain: React.FC<any> = (props) => {
   let reformattedRows: any[] = [];
+
   props.rows.map((row: any, i: number) => {
     let obj: any = {};
     obj["id"] = row["id"];
-    obj["assetId"] = row.asset["assetId"];
-    obj["assetName"] = row.asset["assetName"];
-    obj["assetType"] = row.asset["assetType"];
-    obj["unit"] = row.asset["unit"];
+    obj["assetId"] = row.masterAsset["assetId"];
+    obj["assetName"] = row.masterAsset["assetName"];
+    obj["assetType"] = row.masterAsset["assetType"];
+    obj["unit"] = row.masterAsset["unit"];
     obj["description"] = row["description"];
     obj["categories"] = row["categories"];
     obj["devices"] = row["devices"];
     obj["station"] = row["station"];
-    obj["recordedBy"] = row.asset["recordedBy"];
-    obj["recordingStarted"] = row.asset["recordingStarted"];
-    obj["status"] = row.asset["status"];
+    obj["recordedBy"] = row.masterAsset["recordedBy"];
+    obj["recordingStarted"] = row.masterAsset["recordingStarted"];
+    obj["status"] = row.masterAsset["status"];
+    obj["asset"] = row["asset"].filter(
+      (x: any) => x.assetId !== row.masterAssetId
+    );
 
     reformattedRows.push(obj);
   });
 
-  let requiredDateOptions: any[];
-  console.log(basicDateOptions);
-  console.log(props.dateTimeObj);
-  requiredDateOptions = basicDateOptions.map((x, i) => {
-    console.log(x);
+  let requiredDateOptions = basicDateOptions.map((x, i) => {
     if (x.value === "custom") return x;
     if (
-      DateFormat(x.startDate()) >= DateFormat(props.dateTimeDropDown.startDate) &&
+      DateFormat(x.startDate()) >=
+        DateFormat(props.dateTimeDropDown.startDate) &&
       DateFormat(x.endDate()) <= DateFormat(props.dateTimeDropDown.endDate) &&
       x.value != "custom"
     )
       return x;
   });
   requiredDateOptions = requiredDateOptions.filter((x) => x != undefined);
-
 
   const { t } = useTranslation<string>();
   const [rows, setRows] = React.useState<any[]>(reformattedRows);
@@ -196,7 +201,6 @@ const MasterMain: React.FC<any> = (props) => {
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
-    let defaultText: string = "";
     let reset: boolean = false;
 
     if (
@@ -366,10 +370,10 @@ const MasterMain: React.FC<any> = (props) => {
       headCells[colIdx].headerText = e.target.value;
     }
     function GetClassName() {
-      return openState? "":"hide"
+      return openState ? "" : "hide";
     }
     function GetButtonClass() {
-      return buttonState? "":"hide"
+      return buttonState ? "" : "hide";
     }
     function OnCloseEffect(e: any, r: any) {
       if (filterValue.length > 0) {
@@ -487,6 +491,8 @@ const MasterMain: React.FC<any> = (props) => {
       searchFilter: true,
       searchComponent: SearchText,
       minWidth: "180",
+      detailedDataComponentId: "asset",
+      detailedDataComponent: DetailedAssetPopup,
     },
     {
       label: `${t("AssetType")}`,
@@ -768,5 +774,4 @@ const MasterMain: React.FC<any> = (props) => {
     </>
   );
 };
-
 export default MasterMain;

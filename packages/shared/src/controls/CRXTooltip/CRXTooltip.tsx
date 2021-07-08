@@ -5,7 +5,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 type tooltipProps = {
     placement? : string,
-    title : any,
+    title : string,
+    className? : string,
 }
 const CRXUseStyles = makeStyles((theme) => ({
     arrow: {
@@ -33,13 +34,15 @@ function CRXCustomizedTooltip(props : any) {
     return <Tooltip arrow classes={classes} {...props} />;
 }
   
-const CRXTooltip = ({placement, title} : tooltipProps) => {
+const CRXTooltip = ({placement, title, className} : tooltipProps) => {
     const clsxs = CRXIconStyle()
     return (
         <>
         <CRXCustomizedTooltip
             placement={placement}
-            title={title}>
+            title={title}
+            className={className}
+            >
 
             <i className={"fas fa-info-circle" + " " + clsxs.iconCls}></i>
         </CRXCustomizedTooltip>

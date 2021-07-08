@@ -154,6 +154,7 @@ const SearchComponent = (props: any) => {
         setPredictiveText( constants.AssetShortCutsWithPrefix.NotCategorized);
         setQuerryString( constants.AssetShortCutsWithPrefix.NotCategorized);
         fetchData(this.query(), constants.SearchType.ShortcutSearch);
+        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
       },
     },
     {
@@ -163,6 +164,7 @@ const SearchComponent = (props: any) => {
         setPredictiveText(constants.AssetShortCutsWithPrefix.Trash);
         setQuerryString(constants.AssetShortCutsWithPrefix.Trash);
         fetchData(this.query(), constants.SearchType.ShortcutSearch);
+        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
       },
     },
     {
@@ -181,6 +183,7 @@ const SearchComponent = (props: any) => {
         }
         setDefaultDateValue(approachingDeletionDateOptions[0].value);
         fetchData( this.query(startDate,endDate), constants.SearchType.ShortcutSearch); 
+        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
       },
     },
   ];

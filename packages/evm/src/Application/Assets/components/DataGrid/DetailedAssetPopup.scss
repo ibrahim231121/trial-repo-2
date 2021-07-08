@@ -1,0 +1,150 @@
+.CRXPopupOuterDiv {
+  text-align: right;
+  top: 30px;
+  position: relative;
+}
+.CRXPopupInnerDiv {
+  text-align: center;
+  width: 502px;
+  background-color: #f5f5f5;
+  border: 1px solid #707070;
+}
+
+.CRXPopupCrossButton {
+  text-align: right;
+  width: 500px;
+  padding-left: 10px;
+  height: 20px;
+}
+.CRXPopupHeader {
+  text-align: left;
+  width: 500px;
+  padding-left: 10px;
+  height: 25px;
+}
+.CRXPopupTableDiv {
+  text-align: left;
+  width: 500px;
+  padding-left: 10px;
+  overflow-y: scroll;
+  height: 420px;
+}
+.CRXPopupTableRow {
+  position: sticky;
+  top: 0px;
+  background-color: #f2f2f2;
+  z-index: 1;
+  height: 50px;
+  vertical-align: "sub";
+}
+.CRXPopupTableCellOne {
+  width: 40px;
+}
+.CRXPopupTableCellTwo {
+  width: 140px;
+}
+.CRXPopupTableCellThree {
+  width: 240px;
+}
+.CRXPopupTableCellFour {
+  width: 70px;
+}
+.CRXPopupTableImage {
+  width: 110px;
+  height: 61px;
+}
+.CRXPopupTableAssetName {
+  color: #FF6E20;
+  font-size: 14px !important;
+  width: 240px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.CRXPopupDetailFontSize {
+  font-size: 10pt;
+}
+.CRXPopupActionIcon {
+  text-align: center;
+}
+.CRXPopupSpacingBetweenRows {
+  height: 22px;
+}
+
+.CRXCloseButton {
+  border: none !important;
+  padding-right: 10px !important;
+  min-width: auto !important;
+  position: relative;
+  top: 5px;
+  i {
+    //font-size: 16pt;
+    color: #d1d2d4;
+    font-weight: 100;
+
+    &:hover {
+      color: #333333;
+    }
+  }
+}
+
+.CRXPopOverArrow {
+  &:before {
+    border: solid transparent;
+    content: " ";
+    display: block;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+    width: 0;
+    top: 99.8%;
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #707070;
+    left: 30px;
+    margin-left: -12px;
+    border-width: 10px;
+  }
+  &:after {
+    border: solid transparent;
+    content: " ";
+    display: block;
+    height: 0;
+    position: absolute;
+    pointer-events: none;
+    width: 0;
+    top: 99.8%;
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #f5f5f5;
+    left: 30px;
+    margin-left: -10px;
+    border-width: 8px;
+  }
+}
+.CRXPopoverTooltip {
+  background-color: #333333;
+}
+.CRXPopoverStyle {
+  .CRXPopOverArrow {
+    padding: 11px;
+    border-radius: 0;
+    background: #333333;
+    color: #d1d2d4;
+    font-size: 15px;
+    max-width: 236px;
+    word-break: break-all;
+
+    &:after {
+      border-top-color: #333333;
+    }
+
+    &:before {
+      border-top: 0;
+    }
+  }
+}
+.CRXPopoverCss {
+  .CRXPopOverArrow {
+    margin-left: -15px;
+    margin-top: -22px;
+  }
+}
