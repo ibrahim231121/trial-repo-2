@@ -15,7 +15,8 @@ const Footer = () => {
 
     return (
         <div className="footerDiv">
-            Copyright © Getac Video Solutions, Inc. and its subsidiaries. All rights reserved. |  Enterprise Version: {versionNumber}
+            © Copyright 2021 IRSA Video ®  |  Enterprise Version {versionNumber}
+            <i className="fas fa-chevron-up"></i>
         </div>
     )
             

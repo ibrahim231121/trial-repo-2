@@ -1,3 +1,22 @@
-.footerDiv{
-    padding-left: 80px;
+.footerDiv {
+  padding-left: 80px;
+  font-size: 0.75em;
+  position: relative;
+  color: #666666;
+  height: 30px;
+  display: flex;
+  align-items: center;
+
+  i {
+    font-weight: 400;
+    position: absolute;
+    right: 16px;
+    font-size: 24pt;
+    color: rgb(209, 210, 212);
+
+    &:hover {
+        color:#333333;
+        cursor: pointer;
+    }
+  }
 }
