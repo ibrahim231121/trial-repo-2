@@ -500,16 +500,16 @@ export default function CRXDataTable(props: DataTableProps) {
                                               <TableCell className="DataTableBodyCell"  key={i}
                                                 align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
                                                 style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible  === true) ? "" : "none"}`}}>
-                                                {headCells[colIdx].dataComponent(row[headCells[colIdx].id])}
                                                 {headCells[colIdx].detailedDataComponent !== undefined ? 
-                                                    (
-                                                      headCells[colIdx].detailedDataComponent(row[headCells[colIdx].detailedDataComponent !== undefined ?
-                                                        headCells[colIdx].detailedDataComponentId
-                                                        :
-                                                        headCells[colIdx].id]) 
+                                                    (headCells[colIdx].dataComponent(row[headCells[colIdx].id],row[headCells[colIdx].detailedDataComponentId !== undefined ?
+                                                                                          headCells[colIdx].detailedDataComponentId
+                                                                                          :
+                                                                                          headCells[colIdx].id
+                                                                                        ]
+                                                                                      )
                                                     )
                                                     : 
-                                                    null
+                                                    (headCells[colIdx].dataComponent(row[headCells[colIdx].id]))
                                                 }
                                               </TableCell>
                                         )}

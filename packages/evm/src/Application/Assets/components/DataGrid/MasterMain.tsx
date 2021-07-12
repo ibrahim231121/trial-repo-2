@@ -55,6 +55,14 @@ interface HeadCellProps {
   detailedDataComponent?: any;
 }
 
+type Asset = {
+  assetId: string;
+  assetName: string;
+  camera: string;
+  assetType: string;
+  recordingStarted: string;
+}
+
 const thumbTemplate = (rowData: any) => {
   return (
     <>
@@ -71,12 +79,13 @@ const textTemplate = (text: string) => {
 };
 
 //-----------------
-const assetNameTemplate: React.FC<any> = (rowData) => {
+const assetNameTemplate = (rowData:string, assets:Asset[]) => {
   return (
     <>
       <div className="alignLeft linkColor">
         {rowData}
       </div>
+      <DetailedAssetPopup asset={assets} />
     </>
   );
 };

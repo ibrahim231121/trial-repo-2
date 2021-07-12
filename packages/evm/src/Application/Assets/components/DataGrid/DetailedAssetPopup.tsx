@@ -21,6 +21,10 @@ type CheckValue = {
   assetId: string;
 };
 
+type AssetProps = {
+  asset: Asset[]
+}
+
 type Asset = {
   assetId: string;
   assetName: string;
@@ -29,7 +33,7 @@ type Asset = {
   recordingStarted: string;
 }
 
-function DetailedAssetPopup(asset: Asset[]) {
+const DetailedAssetPopup: React.FC<AssetProps> = ({asset}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const [groupedAsset, setGroupedAsset] = useState<Asset[]>();
