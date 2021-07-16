@@ -50,6 +50,7 @@ interface HeadCellProps {
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
+  headerArray?: [];
   detailedDataComponentId?: string;
   detailedDataComponent?: any;
 }
@@ -252,7 +253,7 @@ const MasterMain: React.FC<any> = (props) => {
       </CRXColumn>
     );
   };
-
+  
   const searchDropDown = (
     rowsParam: any[],
     headCells: HeadCellProps[],
@@ -334,7 +335,6 @@ const MasterMain: React.FC<any> = (props) => {
 
     let options = reformattedRows.map((row: any, _: any) => {
       let option: any = {};
-      let x = headCells[colIdx].id;
       option["value"] = row[headCells[colIdx].id];
       return option;
     });
@@ -375,7 +375,7 @@ const MasterMain: React.FC<any> = (props) => {
     function handleChange(e: any, colIdx: number, v: any) {
       setFilterValue((val: []) => [...v]);
       selectMultiChange(e, colIdx, v);
-      headCells[colIdx].headerText = e.target.value;
+      headCells[colIdx].headerArray = v;
     }
     function GetClassName() {
       return openState ? "" : "hide";
@@ -386,22 +386,26 @@ const MasterMain: React.FC<any> = (props) => {
     function OnCloseEffect(e: any, r: any) {
       if (filterValue.length > 0) {
         setButtonState(true);
-
         setOpenState(false);
-      } else {
+      }
+      else {
         setButtonState(false);
         setOpenState(true);
       }
     }
     function ClearFilter() {
-      
       setOpenState(true);
       setButtonState(false);
       setFilterValue([]);
+      headCells[colIdx].headerArray = [];
     }
 
     useEffect(() => {
-      if (filterValue.length == 0) {
+      ClearFilter();
+    }, [headCells]);
+
+    useEffect(() => {
+      if (filterValue.length === 0) {
         setSearchData((prevArr) =>
           prevArr.filter(
             (e) => e.columnName !== headCells[colIdx].id.toString()
@@ -443,7 +447,11 @@ const MasterMain: React.FC<any> = (props) => {
                 multiple={true}
                 CheckBox={true}
                 options={unique}
-                value={filterValue}
+                value={
+                  headCells[colIdx].headerArray === undefined
+                    ? (headCells[colIdx].headerArray = [])
+                    : headCells[colIdx].headerArray
+                }
                 autoComplete={false}
                 useRef={openState && buttonState}
                 isSearchable={isSearchable}
@@ -591,7 +599,7 @@ const MasterMain: React.FC<any> = (props) => {
   ]);
 
   const selectMultiChange = (e: any, colIdx: number, v: []) => {
-    if (v.length == 0) {
+    if (v.length === 0) {
       setSearchData((prevArr) =>
         prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
       );
@@ -752,11 +760,12 @@ const MasterMain: React.FC<any> = (props) => {
     return localDate;
   }
 
-  function onClearAll() {
+  const onClearAll = () => {
     
     setSearchData([]);
     let headCellReset = headCells.map((headCell, i) => {
       headCell.headerText = "";
+      headCell.headerArray = [];
       return headCell;
     });
     setHeadCells(headCellReset);
