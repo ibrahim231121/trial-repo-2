@@ -78,7 +78,7 @@ const textTemplate = (text: string) => {
 };
 
 //-----------------
-const assetNameTemplate = (rowData:string, assets:Asset[]) => {
+const assetNameTemplate = (rowData: string, assets: Asset[]) => {
   return (
     <>
       <div className="alignLeft linkColor">
@@ -161,7 +161,7 @@ const MasterMain: React.FC<any> = (props) => {
     if (x.value === "custom") return x;
     if (
       DateFormat(x.startDate()) >=
-        DateFormat(props.dateTimeDropDown.startDate) &&
+      DateFormat(props.dateTimeDropDown.startDate) &&
       DateFormat(x.endDate()) <= DateFormat(props.dateTimeDropDown.endDate) &&
       x.value != "custom"
     )
@@ -247,7 +247,7 @@ const MasterMain: React.FC<any> = (props) => {
           dateOptions={requiredDateOptions}
           defaultValue={props.dateTimeDropDown.selectedDateOptionValue}
           reset={reset}
-          getSelectedDateOptionValue={(v: string) => {}}
+          getSelectedDateOptionValue={(v: string) => { }}
         />
       </CRXColumn>
     );
@@ -394,10 +394,12 @@ const MasterMain: React.FC<any> = (props) => {
       }
     }
     function ClearFilter() {
+      
       setOpenState(true);
       setButtonState(false);
       setFilterValue([]);
     }
+
     useEffect(() => {
       if (filterValue.length == 0) {
         setSearchData((prevArr) =>
@@ -407,6 +409,7 @@ const MasterMain: React.FC<any> = (props) => {
         );
       }
     }, [filterValue]);
+
     return (
       <div className="">
         <CRXRows container spacing={2}>
@@ -588,7 +591,6 @@ const MasterMain: React.FC<any> = (props) => {
   ]);
 
   const selectMultiChange = (e: any, colIdx: number, v: []) => {
-    // debugger;
     if (v.length == 0) {
       setSearchData((prevArr) =>
         prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
@@ -750,7 +752,8 @@ const MasterMain: React.FC<any> = (props) => {
     return localDate;
   }
 
-  const onClearAll = () => {
+  function onClearAll() {
+    
     setSearchData([]);
     let headCellReset = headCells.map((headCell, i) => {
       headCell.headerText = "";

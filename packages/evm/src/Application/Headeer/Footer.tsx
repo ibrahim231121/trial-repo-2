@@ -1,25 +1,34 @@
-import React, {useEffect} from 'react'
+import React from 'react';
+import './footer.scss';
+import useGetFetch from '../../utils/Api/useGetFetch';
 
-import './footer.scss'
+const Footer = React.memo(() => {
+  const [versionNumber, setVersionNumber] = React.useState('');
+  const url = '/Evidence/Version';
+  const [getResponse, res] = useGetFetch<any>(url);
 
-const Footer = () => {
-    const [versionNumber, setVersionNumber] = React.useState("");
-    const url = "/Evidence/Version";
-    useEffect(()=>{
-        fetch(url, {
-            method: "GET", 
-        })
-        .then((response:Response) => response.text())
-        .then((res) => setVersionNumber(res.replace(/^"|"$/g, '')))
-    });
+  //   useEffect(()=>{
+  //       fetch(url, {
+  //           method: "GET",
+  //       })
+  //       .then((response:Response) => response.text())
+  //       .then((res) => setVersionNumber(res.replace(/^"|"$/g, '')))
+  //   });
 
-    return (
-        <div className="footerDiv">
-            © Copyright 2021 IRSA Video ®  |  Enterprise Version {versionNumber}
-            <i className="fas fa-chevron-up"></i>
-        </div>
-    )
-            
-    }
+  React.useEffect(() => {
+    getResponse();
+  }, [getResponse]);
+
+  React.useEffect(() => {
+    setVersionNumber(res); //res.replace(/^"|"$/g, '')
+  }, [res]);
+
+  return (
+    <div className='footerDiv'>
+      © Copyright 2021 IRSA Video ® | Enterprise Version {versionNumber}
+      <i className='fas fa-chevron-up'></i>
+    </div>
+  );
+});
 
 export default Footer;

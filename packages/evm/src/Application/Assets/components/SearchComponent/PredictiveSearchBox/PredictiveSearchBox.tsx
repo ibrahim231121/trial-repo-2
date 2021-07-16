@@ -1,59 +1,73 @@
-import React, { useState, useRef } from "react";
+import React from 'react';
 import "./PredictiveSearchBox.scss";
 import useSearchWorker from "../../../utils/useSearchWorker";
 import Outcome from "./Outcome";
-import {EditableSelect} from '@cb/shared'
+import { EditableSelect } from '@cb/shared'
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../../Redux/breadCrumbReducer";
+import usePostFetch from "../../../../../utils/Api/usePostFetch";
 interface Props {
   onSet: (e: any) => void;
-  value:string;
+  value: string;
 }
-const PredictiveSearchBox: React.FC<Props> = ({ children, onSet,value }) => {
-// const dispatch = useDispatch()
-//   React.useEffect(() => {
-//     const worker = useSearchWorker.getInstance();
-//     var showDataList = (e:any) =>{
-//       setOutCome(e.data);
-//     }
-//     //message recieved from worker.
-//     worker.addEventListener("message",showDataList,false);
-//     return () => {
-//       worker.removeEventListener("message",showDataList);
-//     };
-//   },[]);
-  
+const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
+  // const dispatch = useDispatch()
+  //   React.useEffect(() => {
+  //     const worker = useSearchWorker.getInstance();
+  //     var showDataList = (e:any) =>{
+  //       setOutCome(e.data);
+  //     }
+  //     //message recieved from worker.
+  //     worker.addEventListener("message",showDataList,false);
+  //     return () => {
+  //       worker.removeEventListener("message",showDataList);
+  //     };
+  //   },[]);
+
 
   const url = "/Evidence?Size=10&Page=1";
-  const predictiveUrl="/Evidence/predictive";
-  const [showSearch, setShowSearch] = useState<any>(false);
-  const [outCome, setOutCome] = useState<any>([]);
-  const [inputValue, setInputValue] = useState<string>("");
+  const predictiveUrl = "/Evidence/predictive";
+  const [showSearch, setShowSearch] = React.useState<any>(false);
+  const [outCome, setOutCome] = React.useState<any>([]);
+  const [inputValue, setInputValue] = React.useState<string>("");
+  const [methodFromHook, responseFromHook] = usePostFetch<any>(predictiveUrl);
+
+  React.useEffect(() => {
+    if (responseFromHook) {
+      setOutCome(responseFromHook);
+      setShowSearch(true);
+    }
+  }, [responseFromHook]);
 
   //onChange
   const handleOnChange = async (e: any) => {
-    if( e &&  e.target && e.target != null){
-    const { value } = e.target; 
-    const worker = useSearchWorker.getInstance();
-    if(value){
-      if (value && value.length >= 3 && !value.startsWith("#")) {
-        const data = await fetchData(value);
-        if (data) {
-         // worker.postMessage({ data, value });
-         setOutCome(data);
-          setShowSearch(true);
+    if (e && e.target && e.target != null) {
+      const { value } = e.target;
+      // const worker = useSearchWorker.getInstance();
+      if (value) {
+        if (value && value.length >= 3 && !value.startsWith("#")) {
+          /* Previous Logic */
+          // const data = await fetchData(value);
+          /* Current Logic */
+          fetchData(value);
+          /* Previous Logic */
+          // if (data) {
+          //   // worker.postMessage({ data, value });
+          //   setOutCome(data);
+          //   setShowSearch(true);
+          // }
+          /* Since above snippet depends on the reponse 'data', so i have written that logic in line no 35, where the response will be handled in useEffect.*/
         }
-      }
-      if(value && value.length < 3){
-        setShowSearch(false);
+        if (value && value.length < 3) {
+          setShowSearch(false);
+          setOutCome([]);
+        }
+        onSet(value);
+      } else {
+        onSet("");
         setOutCome([]);
       }
-      onSet(value);
-    }else{
-      onSet("");
-      setOutCome([]);
     }
-  }
   };
 
   const getQuery = (searchVal: string) => {
@@ -75,22 +89,29 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet,value }) => {
       },
     };
   };
+
   const fetchData = async (searchVal: string) => {
-    let data = await fetch(predictiveUrl, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Group-Ids": "1,2,3,4,5,6,7,8,9",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(getQuery(searchVal)),
+    /* Previous Fetch Logic */
+    // let data = await fetch(predictiveUrl, {
+    //   method: "POST", // or 'PUT'
+    //   headers: {
+    //     "Group-Ids": "1,2,3,4,5,6,7,8,9",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(getQuery(searchVal)),
+    // });
+    // data = await data.json();
+    // return data;
+
+    /* Applying usePostFetch Hook*/
+    methodFromHook(getQuery(searchVal), {
+      "Group-Ids": "1,2,3,4,5,6,7,8,9",
+      "Content-Type": "application/json",
     });
-    
-    data = await data.json();
-    return data;
   };
 
-  const onChangeAutoComplete = (e : any,value:any) =>{
-    if(value && value != null){
+  const onChangeAutoComplete = (e: any, value: any) => {
+    if (value && value != null) {
       setInputValue(value);
       onSet(value);
     }
@@ -101,13 +122,13 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet,value }) => {
     <div className="combo-box-Search">
       <i className="fal fa-search customIcon"></i>
       <EditableSelect
-          id="combo-box-demo"
-          options={outCome}
-          placeHolder={"Search assets by ID#, case#, CAD#, categories, etc."}
-          onChange={onChangeAutoComplete}
-          onInputChange={handleOnChange}
-          clearText={()=>setInputValue("")}
-          value={value}
+        id="combo-box-demo"
+        options={outCome}
+        placeHolder={"Search assets by ID#, case#, CAD#, categories, etc."}
+        onChange={onChangeAutoComplete}
+        onInputChange={handleOnChange}
+        clearText={() => setInputValue("")}
+        value={value}
 
       />
     </div>

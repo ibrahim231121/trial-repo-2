@@ -1,18 +1,23 @@
-import React from "react";
-import PredictiveSearchBox from "./PredictiveSearchBox/PredictiveSearchBox";
-import { CRXButton, CRXRows, CRXColumn } from "@cb/shared";
-import AdvanceOptions from "./AdvanceOptions";
-import MasterMain from "../DataGrid/MasterMain";
-import "./SearchComponent.scss";
-import SelectedAsset from "./SelectedAsset";
-import queries from "../../QueryManagement/queries";
-import constants from "../../utils/constants";
-import DateTimeComponent from "../../../../components/DateTimeComponent";
-import { useDispatch } from "react-redux";
-import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
-import { scroller } from "react-scroll";
-import moment  from "moment";
-import { basicDateOptions,approachingDeletionDateOptions, basicDateDefaultValue } from "../../../../utils/constant";
+import React from 'react';
+import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
+import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
+import AdvanceOptions from './AdvanceOptions';
+import MasterMain from '../DataGrid/MasterMain';
+import './SearchComponent.scss';
+import SelectedAsset from './SelectedAsset';
+import queries from '../../QueryManagement/queries';
+import constants from '../../utils/constants';
+import DateTimeComponent from '../../../../components/DateTimeComponent';
+import { useDispatch } from 'react-redux';
+import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
+import { scroller } from 'react-scroll';
+import moment from 'moment';
+import {
+  basicDateOptions,
+  approachingDeletionDateOptions,
+  basicDateDefaultValue,
+} from '../../../../utils/constant';
+import usePostFetch from '../../../../utils/Api/usePostFetch';
 
 const SearchComponent = (props: any) => {
   const dispatch = useDispatch();
@@ -20,18 +25,25 @@ const SearchComponent = (props: any) => {
   const [showAdvanceSearch, setAdvanceSearch] = React.useState(true); //showShortCutSearch
   const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
-  const [querryString, setQuerryString] = React.useState("");
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
-  const [dateOptionsState, setDateOptionsState] = React.useState(basicDateOptions);
-  const [defaultDateValue, setDefaultDateValue] = React.useState("");
+  const [querryString, setQuerryString] = React.useState('');
+  const [startDate, setStartDate] = React.useState('');
+  const [endDate, setEndDate] = React.useState('');
+  const [dateOptionsState, setDateOptionsState] =
+    React.useState(basicDateOptions);
+  const [defaultDateValue, setDefaultDateValue] = React.useState('');
   const [searchData, setSearchData] = React.useState<any>();
-  const [brdState, setBrdState] = React.useState<any>("");
-  const [predictiveText, setPredictiveText] = React.useState("");
-  const [dateTimeDropDown, setDateTimeDropDown] = React.useState({startDate: "", endDate: "", selectedDateOptionValue: ""})
-  const [selectedDateOptionValue, setSelectedDateOptionValue] = React.useState("");
-  const iconRotate = showAdvance ? " " : "rotate90";
-  const url = "/Evidence?Size=500&Page=1";
+  const [brdState, setBrdState] = React.useState<any>('');
+  const [predictiveText, setPredictiveText] = React.useState('');
+  const [dateTimeDropDown, setDateTimeDropDown] = React.useState({
+    startDate: '',
+    endDate: '',
+    selectedDateOptionValue: '',
+  });
+  const [selectedDateOptionValue, setSelectedDateOptionValue] =
+    React.useState('');
+  const iconRotate = showAdvance ? ' ' : 'rotate90';
+  const url = '/Evidence?Size=500&Page=1';
+  const [postDataForSearch, responseForSearch] = usePostFetch<any>(url);
   const QUERRY: any = {
     bool: {
       must: [
@@ -39,10 +51,10 @@ const SearchComponent = (props: any) => {
           query_string: {
             query: `${querryString}`,
             fields: [
-              "asset.assetName",
-              "categories",
-              "cADId",
-              "asset.recordedBy",
+              'asset.assetName',
+              'categories',
+              'cADId',
+              'asset.recordedBy',
             ],
           },
         },
@@ -54,94 +66,99 @@ const SearchComponent = (props: any) => {
       must: [],
     },
   };
+
+  React.useEffect(() => {
+    setSearchData(responseForSearch);
+  }, [responseForSearch]);
+
+
   // fetchData
   const fetchData = (querry: any, searchType: any) => {
-    fetch(url, {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Group-Ids": "1,2,3,4,5",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(querry || QUERRY),
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        setSearchData(res);
-        return res;
-      })
-      .then(() => {
-        if (
-          searchType === constants.SearchType.SimpleSearch ||
-          searchType === constants.SearchType.ShortcutSearch
-        ) {
-          setShowShortCutSearch(false);
-          setAdvanceSearch(false);
-        } else if (searchType === constants.SearchType.AdvanceSearch) {
-          scroller.scrollTo("advanceSearchContet", {
-            duration: 100,
-            delay: 100,
-            smooth: true,
-            offset: -130,
-          });
-      }
-      dispatch(enterPathActionCreator({ val: "Search Results" }));
-      
-      const titleCOnt = document.getElementsByClassName('titlePage');
-      var appendClass = document.getElementsByClassName('bottomLine');
-      if(appendClass.length === 0){
-        titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
-        console.log(titleCOnt);
-      }
-    })
+
+    /* Previous Fetch Logic */
+    // fetch(url, {
+    //   method: 'POST', // or 'PUT'
+    //   headers: {
+    //     'Group-Ids': '1,2,3,4,5',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(querry || QUERRY),
+    // }).then((response) => response.json()).then(res => setSearchData(res));
+    /* res => setSearchData(res) ==> This part is handled in useEffect, line no 70.  */
+
+    /* Applying usePostFetch Hook*/
+    postDataForSearch(querry || QUERRY, {
+      'Group-Ids': '1,2,3,4,5',
+      'Content-Type': 'application/json',
+    });
+
+    if (searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch) {
+      setShowShortCutSearch(false);
+      setAdvanceSearch(false);
+    } else if (searchType === constants.SearchType.AdvanceSearch) {
+      scroller.scrollTo('advanceSearchContet', {
+        duration: 100,
+        delay: 100,
+        smooth: true,
+        offset: -130,
+      });
+    }
+
+    dispatch(enterPathActionCreator({ val: 'Search Results' }));
+
+    const titleCOnt = document.getElementsByClassName('titlePage');
+    var appendClass = document.getElementsByClassName('bottomLine');
+    if (appendClass.length === 0) {
+      titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
+    }
   };
 
   const Search = () => {
-   
-    setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
-    const NormalSearch =() =>{
+    setDateTimeDropDown({ startDate, endDate, selectedDateOptionValue });
+    const NormalSearch = () => {
       if (startDate) {
         QUERRY.bool.must.push({
           range: {
-            "asset.recordingStarted": {
+            'asset.recordingStarted': {
               gte: `${startDate}`,
             },
           },
         });
       }
-  
+
       if (endDate) {
         QUERRY.bool.must.push({
           range: {
-            "asset.recordingEnded": {
+            'asset.recordingEnded': {
               lte: `${endDate}`,
             },
           },
         });
       }
 
-          //dispatch(enterPathAction Creator({ val: "Search Result" }));
-    fetchData(QUERRY, constants.SearchType.SimpleSearch);
-    setAdvanceSearch(false);
-    //setBrdState("Search result");
-  
-    }
+      //dispatch(enterPathAction Creator({ val: "Search Result" }));
+      fetchData(QUERRY, constants.SearchType.SimpleSearch);
+      setAdvanceSearch(false);
+      //setBrdState("Search result");
+    };
 
-    if(querryString && querryString.length > 0 && querryString.startsWith(constants.assetShortCutPrefix)){
-
+    if (
+      querryString &&
+      querryString.length > 0 &&
+      querryString.startsWith(constants.assetShortCutPrefix)
+    ) {
       let exactShortCutName = querryString.substring(1);
-      let shortCut = shortcutData.find(x => x.text === exactShortCutName);
-      if(shortCut){
-
-        if(shortCut.text === constants.AssetShortCuts.ApproachingDeletion){
-          shortCut.renderData(startDate,endDate);
-        }else{
+      let shortCut = shortcutData.find((x) => x.text === exactShortCutName);
+      if (shortCut) {
+        if (shortCut.text === constants.AssetShortCuts.ApproachingDeletion) {
+          shortCut.renderData(startDate, endDate);
+        } else {
           shortCut.renderData();
         }
-         
-      }else{
+      } else {
         NormalSearch();
       }
-    }else{
+    } else {
       NormalSearch();
     }
   };
@@ -149,12 +166,12 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: constants.AssetShortCuts.NotCategorized,
-      query: () => queries.GetAssetsUnCategorized(startDate,endDate),
+      query: () => queries.GetAssetsUnCategorized(startDate, endDate),
       renderData: function () {
-        setPredictiveText( constants.AssetShortCutsWithPrefix.NotCategorized);
-        setQuerryString( constants.AssetShortCutsWithPrefix.NotCategorized);
+        setPredictiveText(constants.AssetShortCutsWithPrefix.NotCategorized);
+        setQuerryString(constants.AssetShortCutsWithPrefix.NotCategorized);
         fetchData(this.query(), constants.SearchType.ShortcutSearch);
-        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
+        setDateTimeDropDown({ startDate, endDate, selectedDateOptionValue });
       },
     },
     {
@@ -164,38 +181,48 @@ const SearchComponent = (props: any) => {
         setPredictiveText(constants.AssetShortCutsWithPrefix.Trash);
         setQuerryString(constants.AssetShortCutsWithPrefix.Trash);
         fetchData(this.query(), constants.SearchType.ShortcutSearch);
-        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
+        setDateTimeDropDown({ startDate, endDate, selectedDateOptionValue });
       },
     },
     {
       text: constants.AssetShortCuts.ApproachingDeletion,
-      query: (startDate1:string,endDate1:string) => queries.GetAssetsApproachingDeletion(startDate1,endDate1)   ,
-      renderData: function (startDate:string = "",endDate:string="") {
-        setPredictiveText(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
+      query: (startDate1: string, endDate1: string) =>
+        queries.GetAssetsApproachingDeletion(startDate1, endDate1),
+      renderData: function (startDate: string = '', endDate: string = '') {
+        setPredictiveText(
+          constants.AssetShortCutsWithPrefix.ApproachingDeletion
+        );
         setQuerryString(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
         setDateOptionsState(approachingDeletionDateOptions);
-        
-        if(startDate === ""){
-          startDate = moment(approachingDeletionDateOptions[0].startDate()).toISOString();
+
+        if (startDate === '') {
+          startDate = moment(
+            approachingDeletionDateOptions[0].startDate()
+          ).toISOString();
         }
-        if(endDate  === ""){
-          endDate = moment(approachingDeletionDateOptions[0].endDate()).toISOString();
+        if (endDate === '') {
+          endDate = moment(
+            approachingDeletionDateOptions[0].endDate()
+          ).toISOString();
         }
         setDefaultDateValue(approachingDeletionDateOptions[0].value);
-        fetchData( this.query(startDate,endDate), constants.SearchType.ShortcutSearch); 
-        setDateTimeDropDown({startDate, endDate, selectedDateOptionValue})
+        fetchData(
+          this.query(startDate, endDate),
+          constants.SearchType.ShortcutSearch
+        );
+        setDateTimeDropDown({ startDate, endDate, selectedDateOptionValue });
       },
     },
   ];
 
   React.useEffect(() => {
-    dispatch(enterPathActionCreator({ val: "" }));
+    dispatch(enterPathActionCreator({ val: '' }));
   }, []);
 
   React.useEffect(() => {
     let obj: any = {};
 
-    if (addvancedOptions  && addvancedOptions.options) {
+    if (addvancedOptions && addvancedOptions.options) {
       obj = addvancedOptions.options.map((x: any) => {
         if (x.inputValue) {
           return { key: x.key, inputValue: x.inputValue };
@@ -203,21 +230,21 @@ const SearchComponent = (props: any) => {
       });
 
       obj.map((o: any) => {
-        if (o != undefined && o.key == "username") {
+        if (o != undefined && o.key == 'username') {
           const val = {
             bool: {
-              should: [{ match: { "asset.recordedBy": `${o.inputValue}` } }],
+              should: [{ match: { 'asset.recordedBy': `${o.inputValue}` } }],
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "unit") {
+        } else if (o != undefined && o.key == 'unit') {
           const val = {
             bool: {
-              should: [{ match: { "asset.unit": `${o.inputValue}` } }],
+              should: [{ match: { 'asset.unit': `${o.inputValue}` } }],
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == "category") {
+        } else if (o != undefined && o.key == 'category') {
           const val = {
             bool: {
               should: [{ match: { categories: `${o.inputValue}` } }],
@@ -227,86 +254,95 @@ const SearchComponent = (props: any) => {
         }
       });
 
-      if (addvancedOptions.startDate) {	
-               AdvancedSearchQuerry.bool.must.push({	
-                 range: {	
-                 "asset.recordingStarted": {	
-                    gte: `${addvancedOptions.startDate}`,	
-                   },	
-                },	
-               });	
-              }	
-          	
-              if (addvancedOptions.endDate) {	
-                AdvancedSearchQuerry.bool.must.push({	
-                  range: {	
-                   "asset.recordingEnded": {	
-                      lte: `${ addvancedOptions.endDate}`,	
-                    },	
-                 },	
-               });	
-              }
+      if (addvancedOptions.startDate) {
+        AdvancedSearchQuerry.bool.must.push({
+          range: {
+            'asset.recordingStarted': {
+              gte: `${addvancedOptions.startDate}`,
+            },
+          },
+        });
+      }
+
+      if (addvancedOptions.endDate) {
+        AdvancedSearchQuerry.bool.must.push({
+          range: {
+            'asset.recordingEnded': {
+              lte: `${addvancedOptions.endDate}`,
+            },
+          },
+        });
+      }
 
       fetchData(AdvancedSearchQuerry, constants.SearchType.AdvanceSearch);
     }
   }, [addvancedOptions]);
 
-
-  const onChangePredictiveSearch = (e:
-    
-    any)=>{
-    setQuerryString(e)
-    if(e.startsWith("#") && e === constants.AssetShortCutsWithPrefix.ApproachingDeletion ){
-        setDateOptionsState(approachingDeletionDateOptions);
-    }
-    else{
+  const onChangePredictiveSearch = (e: any) => {
+    setQuerryString(e);
+    if (
+      e.startsWith('#') &&
+      e === constants.AssetShortCutsWithPrefix.ApproachingDeletion
+    ) {
+      setDateOptionsState(approachingDeletionDateOptions);
+    } else {
       setDefaultDateValue(basicDateDefaultValue);
       setDateOptionsState(basicDateOptions);
     }
-  }
+  };
 
   const getAllOptions = (e: any) => {
-    setAddvancedOptions(e)
-    setDateTimeDropDown({startDate: e.startDate, endDate: e.endDate, selectedDateOptionValue: e.selectedDateOptionValue})
-  }
+    setAddvancedOptions(e);
+    setDateTimeDropDown({
+      startDate: e.startDate,
+      endDate: e.endDate,
+      selectedDateOptionValue: e.selectedDateOptionValue,
+    });
+  };
 
   return (
-    <div className="advanceSearchChildren">
-      <div className="searchComponents">
-        <div className="predictiveSearch">
+    <div className='advanceSearchChildren'>
+      <div className='searchComponents'>
+        <div className='predictiveSearch'>
           <CRXRows container spacing={0}>
-            <CRXColumn item xs={6} className="topColumn">
-              <label className="searchLabel">Search Assets</label>
+            <CRXColumn item xs={6} className='topColumn'>
+              <label className='searchLabel'>Search Assets</label>
               <PredictiveSearchBox
                 onSet={(e) => onChangePredictiveSearch(e)}
                 value={predictiveText}
               />
             </CRXColumn>
             <CRXColumn item xs={6}>
-              <label className="dateTimeLabel">Date and Time</label>
+              <label className='dateTimeLabel'>Date and Time</label>
 
               <DateTimeComponent
-                getStartDate={(val: any) => setStartDate(moment(val).toISOString()) }
-                getEndDate={(val: any) => setEndDate(moment(val).set("second", 59).toISOString()) }
+                getStartDate={(val: any) =>
+                  setStartDate(moment(val).toISOString())
+                }
+                getEndDate={(val: any) =>
+                  setEndDate(moment(val).set('second', 59).toISOString())
+                }
                 dateOptions={dateOptionsState}
                 defaultValue={defaultDateValue}
-                 getSelectedDateOptionValue={(v:string)=>setSelectedDateOptionValue(v)}
+                getSelectedDateOptionValue={(v: string) =>
+                  setSelectedDateOptionValue(v)
+                }
 
-                // minDate="2021-06-15T00:00"
-                // maxDate="2021-06-20T00:00"
-                // showChildDropDown={false}
+              // minDate="2021-06-15T00:00"
+              // maxDate="2021-06-20T00:00"
+              // showChildDropDown={false}
               />
             </CRXColumn>
           </CRXRows>
         </div>
 
-        <div className="preSearcBtnContent">
+        <div className='preSearcBtnContent'>
           <CRXButton
-            className="PreSearchButton"
+            className='PreSearchButton'
             onClick={Search}
             disabled={querryString.length < 1 ? true : false}
-            color="primary"
-            variant="contained"
+            color='primary'
+            variant='contained'
           >
             Search
           </CRXButton>
@@ -314,26 +350,27 @@ const SearchComponent = (props: any) => {
 
         {showShortCutSearch && (
           <>
-            <div className="middleContent">
+            <div className='middleContent'>
               <SelectedAsset shortcutData={shortcutData} />
             </div>
           </>
         )}
         {showAdvanceSearch && (
           <>
-            <div className="advanceSearchContet">
+            <div className='advanceSearchContet'>
               <CRXButton
                 onClick={() => {
-                  scroller.scrollTo("advanceSearchContet", {
+                  scroller.scrollTo('advanceSearchContet', {
                     duration: 100,
                     delay: 100,
                     smooth: true,
                     offset: -70,
                   });
-                  setShowAdvance(!showAdvance)}}
-                className="PreSearchButton"
+                  setShowAdvance(!showAdvance);
+                }}
+                className='PreSearchButton'
               >
-                <i className={"fas fa-sort-down " + iconRotate}></i> Advanced
+                <i className={'fas fa-sort-down ' + iconRotate}></i> Advanced
                 Search
               </CRXButton>
 
@@ -347,7 +384,7 @@ const SearchComponent = (props: any) => {
           </>
         )}
         {searchData && (
-          <div className="dataTabAssets">
+          <div className='dataTabAssets'>
             <MasterMain
               key={Math.random()}
               rows={searchData}
