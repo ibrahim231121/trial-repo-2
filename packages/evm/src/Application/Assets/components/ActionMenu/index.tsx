@@ -7,8 +7,7 @@ import {
   MenuDivider,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-
+import './index.scss'
 type Props = {
   isSelected: boolean;
 };
@@ -19,6 +18,7 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
       viewScroll="initial"
       direction="right"
       position="auto"
+      className="menuCss"
       arrow
       menuButton={
         <MenuButton>
@@ -26,86 +26,129 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
         </MenuButton>
       }
     >
-      <MenuItem>
-        <span>Add to asset bucket</span>
-      </MenuItem>
-
-      <MenuDivider />
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Categorize </span>
-      </MenuItem>
-      <MenuItem>
-        <span>Set as primary asset</span>
-      </MenuItem>
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Assign to case</span>
-      </MenuItem>
-
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Assign user </span>
-      </MenuItem>
-
-      <MenuItem>
-        <span>Modify Retention</span>
-      </MenuItem>
-
-      <MenuItem>
-        <span>TBD</span>
-      </MenuItem>
-
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Email </span>
-      </MenuItem>
-      <SubMenu label="Export">
         <MenuItem>
-          <span>File </span>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon"></div>
+            <div className="crx-menu-list">
+              Add to asset bucket
+            </div>
+          </div>
+        </MenuItem>   
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+            <i className="far fa-clipboard-list fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Categorize
+            </div>
+          </div>
         </MenuItem>
         <MenuItem>
-          <span>Metadata </span>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+            
+            </div>
+            <div className="crx-menu-list">
+              Set as primary asset
+            </div>
+          </div>
         </MenuItem>
         <MenuItem>
-          <span>Evidence overlaid video </span>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-user-tag fa-md"></i> 
+            </div>
+            <div className="crx-menu-list">
+                Assign user
+            </div>
+          </div>
         </MenuItem>
         <MenuItem>
-          <span>Metadata overlaid video</span>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
+              
+            </div>
+            <div className="crx-menu-list">
+                Modify Retention
+            </div>
+          </div>
         </MenuItem>
-      </SubMenu>
-      <MenuDivider />
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Open in Getac AI Tools App</span>
-      </MenuItem>
-      <MenuDivider />
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Link asset</span>
-      </MenuItem>
-
-      <MenuItem disabled>
-        <span>Link to this group</span>
-      </MenuItem>
-      <MenuDivider />
-
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-
-        <span>Move asset</span>
-      </MenuItem>
-
-      <MenuItem disabled>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Move to this group</span>
-      </MenuItem>
-      <MenuItem>
-        <i className="fal fa-expand-arrows-alt"></i>
-        <span>Restrict access</span>
-      </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-envelope fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+                Email
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
+              
+            </div>
+            <div className="crx-menu-list">
+              <SubMenu label="Export">
+                <MenuItem>File</MenuItem>
+                <MenuItem>Metadata</MenuItem>
+                <MenuItem>Evidence overlaid video</MenuItem>
+                <MenuItem>Metadata overlaid video</MenuItem>
+              </SubMenu>
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-link fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Link asset
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem disabled>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              
+            </div>
+            <div className="crx-menu-list disabledItem">
+            Link to this group
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+            <i className="far fa-external-link-square fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+            Move asset
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem disabled>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
+           
+            </div>
+            <div className="crx-menu-list disabledItem">
+              Move to this group
+            </div>
+          </div>
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+            <i className="far fa-user-lock fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Restrict access
+            </div>
+          </div>
+        </MenuItem>
     </Menu>
   );
 };

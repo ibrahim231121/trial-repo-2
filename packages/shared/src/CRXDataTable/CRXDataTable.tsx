@@ -413,9 +413,7 @@ export default function CRXDataTable(props: DataTableProps) {
                       </TableCell>
                       <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} 
                           style={{left: 113, position: "sticky", zIndex: 4}}>
-                        <Button >
-                          <MoreVertIcon className={classes.iconArrows}/>
-                        </Button>
+                        <div className={selectedItems.length > 1 ? "" : "disableHeaderActionMenu" }>{props.actionComponent} </div>   
                       </TableCell>
                       {orderColumn.map((colIdx, _) => (
                           <TableCell className={classes.searchHeaderStickness  + " TableSearchAbleHead"} 

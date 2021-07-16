@@ -1,0 +1,100 @@
+.rc-menu-container {
+    ul.rc-menu {
+      background-color: #404041;
+      width: 242px;
+      padding-top: 0 ;
+      padding-bottom: 0px;
+      border-radius: 0px;
+      .rc-menu__arrow {
+        background-color: #404041;
+        border: 1px solid transparent;
+        border-left-color: rgba(64, 64, 65, 0.1);
+        border-top-color: rgba(64, 64, 65, 0.1);
+      }
+      
+      .rc-menu__item {
+        padding: 0px 0px !important;
+          .crx-meu-content {
+              display: flex;
+              flex: 1;
+              flex-direction: row;
+              color: #D1D2D4;
+              font-size: 14px;
+              height: 33px;
+              line-height: 33px;
+              .crx-menu-icon {
+                  width: 38px;
+                  flex-direction: column;
+                  border-right: 1px solid #69696A;
+                  text-align: left;
+                  vertical-align: middle;
+                  padding-left: 2px;
+              }
+
+              .crx-menu-list {
+                flex-direction: column;
+                text-indent: 15px;
+                font-weight: normal;
+                font-family: Arial, Helvetica, sans-serif;
+                width: 203px;
+                text-align: left;
+                letter-spacing: 0.5px;
+                &.disabledItem {
+                    color: #69696A;
+                }
+                .rc-menu__submenu {
+                    .rc-menu {
+                        .rc-menu__item {
+                            color: #D1D2D4;
+                            &:hover {
+                                background: #231F20 !important;
+                                color: #f5f5f5;
+                              }
+                            &:focus {
+                            background: #231F20 !important;
+                            color: #f5f5f5;
+                            }
+                        }
+                    }
+                }
+              }
+
+              &:hover {
+                background: #231F20 !important;
+                color: #f5f5f5;
+              }
+
+              &:focus {
+                background: #231F20 !important;
+                color: #f5f5f5;
+              }
+          }
+
+          .groupingMenu {
+            .crx-menu-list {
+                border-bottom: 1px solid #69696A;
+            }
+          }
+      }
+        //Default CSS overRide Dont remove it
+        .rc-menu__item--hover {
+            background-color: transparent;
+        }
+    }
+  }
+
+  .TableSearchAbleHead {
+ 
+    .rc-menu-container {
+      .rc-menu {
+        .rc-menu__item {
+         .crx-meu-content {
+           .crx-menu-icon {
+             text-align: center;
+           }
+         }
+        }
+      }
+    }
+  
+}

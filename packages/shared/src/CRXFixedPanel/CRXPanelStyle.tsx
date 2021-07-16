@@ -43,8 +43,7 @@ createStyles({
     justifyContent: 'flex-end',
   },
   content: {
-    height:"100vh",
-    display:"table",
+    height:"100%",
     width:"100%",
     flexGrow: 1,
     padding: theme.spacing(3),

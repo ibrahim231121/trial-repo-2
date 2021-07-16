@@ -2,175 +2,172 @@
   border: 1px solid #cccccc;
   margin-top: 2px;
   box-shadow: none !important;
-  border-radius:0px !important;
+  border-radius: 0px !important;
+  overflow-y: visible;
   table {
-      tr{
-          th.MuiTableCell-sizeSmall{
-              padding:0px 7px;
-          }
-          th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox{
-              padding-left: 15px !important;
-          }
+    tr {
+      th.MuiTableCell-sizeSmall {
+        padding: 0px 7px;
       }
-
-      thead {
-          tr {
-              th.CRXDataTableLabelCell{
-                  border-bottom: 0px;
-                  border-right:1px solid #ccc;
-                  z-index: 3;
-              }
-              th.TableSearchAbleHead {
-                  border-top:1px solid #ccc;
-                  border-right:1px solid #ccc;
-                  &:focus {
-                      outline: 0px;
-                      box-shadow: 0px;
-                  }
-              }
-          }
+      th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
+        padding-left: 15px !important;
       }
-      tbody{
-          tr{
-              td.MuiTableCell-root{
+    }
 
-              }
-              td.DataTableBodyCell{
-                  border-right:1px solid #ccc;
-                  padding: 2px 9px;
-                  font-size: 14px;
-                  color:#333;
-                  vertical-align: top;
-                  line-height: 38px;
-                  text-indent: 5px;
-                  .MuiListItemSecondaryAction-root{
-                      z-index: -1 !important;
-                  }
-                  
-              }
-              .CellCheckBox {
-                  vertical-align: middle;
-              }
-              &:nth-child(even) {
-                  background-color: #f2f2f2;
-              }
-              td {
-                  &:first-child {
-                      background: #333333;
-                      padding-left: 15px;
-                      padding-right: 15px;
-                      color: #d1d2d4;
-                      vertical-align: middle;
-                  }
-                  &:nth-child(2) {
-                      vertical-align: middle;
-                  }
-                  &:nth-child(3) {
-                      vertical-align: middle;
-                      text-align: center;
-                  }
-              }
+    thead {
+      tr {
+        th.CRXDataTableLabelCell {
+          border-bottom: 0px;
+          border-right: 1px solid #ccc;
+          z-index: 3;
+        }
+        th.TableSearchAbleHead {
+          border-top: 1px solid #ccc;
+          border-right: 1px solid #ccc;
+          &:focus {
+            outline: 0px;
+            box-shadow: 0px;
           }
+        }
       }
+    }
+    tbody {
+      tr {
+        td.MuiTableCell-root {
+        }
+        td.DataTableBodyCell {
+          border-right: 1px solid #ccc;
+          padding: 2px 9px;
+          font-size: 14px;
+          color: #333;
+          vertical-align: top;
+          line-height: 38px;
+          text-indent: 5px;
+          .MuiListItemSecondaryAction-root {
+            z-index: -1 !important;
+          }
+        }
+        .CellCheckBox {
+          vertical-align: middle;
+        }
+        &:nth-child(even) {
+          background-color: #f2f2f2;
+        }
+        td {
+          &:first-child {
+            background: #404041;
+            padding-left: 15px;
+            padding-right: 15px;
+            color: #d1d2d4;
+            vertical-align: middle;
+          }
+          &:nth-child(2) {
+            vertical-align: middle;
+          }
+          &:nth-child(3) {
+            vertical-align: middle;
+            text-align: center;
+          }
+        }
+      }
+    }
 
-      .crxTableHeaderSize {
-          height: 35px;
-          align-items: center;
+    .crxTableHeaderSize {
+      height: 35px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      // .makeStyles-headerStickness-8 {
+
+      //         opacity: 1 !important;
+      //         visibility: visible !important;
+
+      // }
+      div {
+        label {
+          font-size: 14px;
+          color: #d1d2d4;
+        }
+      }
+      .GridSortIcon {
+        button {
+          span {
+            i {
+              font-size: 18px;
+              color: #d1d2d4;
+            }
+          }
+        }
+      }
+      .gridSortResize {
+        position: absolute;
+        right: -1px;
+        top: 0px;
+        display: flex;
+
+        .GridSortIcon {
+          padding-right: 12px;
+          position: relative;
+          top: 5px;
+        }
+
+        .DragHandleIcon {
+          flex: 0 0 12px;
+          display: flex;
+          flex-direction: column;
           justify-content: center;
-          text-align: center;
-          // .makeStyles-headerStickness-8 {
-              
-          //         opacity: 1 !important;
-          //         visibility: visible !important;
-              
-          // }
-          div {
-              label {
-                 font-size: 14px;
-                 color:#d1d2d4;
-              }
-          }
-          .GridSortIcon{
-              button {
-                  span{
-                      i {
-                          font-size:18px;
-                          color:#d1d2d4;
-                      }
-                  }
-              }
-          }
-          .gridSortResize {
-              position: absolute;
-              right:-1px;
-              top: 0px;
-              display: flex;
-
-              .GridSortIcon {
-                  padding-right: 12px;
-                  position: relative;
-                  top: 5px;
-              }
-              
-              .DragHandleIcon {
-                  flex: 0 0 12px;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                  align-items: center;
-              }
-          }
+          align-items: center;
+        }
       }
+    }
 
-      .tableSearchHead {
-          height: 51px;
-      }
+    .tableSearchHead {
+      height: 51px;
+    }
   }
 
   .draggableCellIcon {
-      padding: 0px;
-      
+    padding: 0px;
   }
 }
 
 .dataTablePages {
   border: 1px solid #cccccc;
-  border-top:0px;
+  border-top: 0px;
   .MuiTablePagination-toolbar {
-      border-bottom: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
   }
 }
 
 .checkedDataTable {
   .MuiPopover-paper {
-      max-width: 550px;
-      padding: 15px 25px 8px 25px;
-      box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
-      border: 1px solid #d1d2d4;
-      border-radius: 0px;
+    max-width: 550px;
+    padding: 15px 25px 8px 25px;
+    box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+    border: 1px solid #d1d2d4;
+    border-radius: 0px;
   }
 
   .MuiGrid-item {
-      padding: 1px 8px !important;
-      &:focus {
-          outline: 0px;
+    padding: 1px 8px !important;
+    &:focus {
+      outline: 0px;
+    }
+    &.showHideList {
+      padding-bottom: 3px !important;
+      label {
+        span.MuiFormControlLabel-label {
+          font-size: 14px;
+          color: #333;
+        }
       }
-      &.showHideList {
-          padding-bottom: 3px !important;
-          label {
-              span.MuiFormControlLabel-label {
-                  font-size: 14px;
-                  color:#333;
-              }
-          }
-      }
+    }
   }
-  
 
   .MuiGrid-container {
-      &:focus {
-          outline: 0px;
-      }
+    &:focus {
+      outline: 0px;
+    }
   }
 }
 
@@ -179,8 +176,8 @@
   padding: 15px 0px 0;
   margin-top: 32px;
 
-  .closeDRP  {
-      width: 100%;
+  .closeDRP {
+    width: 100%;
   }
 }
 
@@ -188,124 +185,122 @@
   border-top: 1px solid #d1d2d4;
   padding: 23px 0px 16px 28px;
   margin-top: 0px;
-  .closeDRP  {
-      width: 128px;
-      height: 30px;
-      padding: 6px 0px;
-      margin-right: 30px;
-      span {
-          color:#d1d2d4;
-          font-size: 14px;
-      }
+  .closeDRP {
+    width: 128px;
+    height: 30px;
+    padding: 6px 0px;
+    margin-right: 30px;
+    span {
+      color: #d1d2d4;
+      font-size: 14px;
+    }
   }
 }
 
 .DRPTitle {
   font-size: 18px !important;
-  color:#333;
+  color: #333;
   padding-bottom: 33px;
   padding-left: 11px;
 }
 
 .columnList {
-  padding:102px 0px 0px 15px;
+  padding: 102px 0px 0px 15px;
   max-height: 433px;
   overflow: auto;
   ul.columnUlList {
-      padding-left: 0px;
-      li {
-          display: block;
-          padding:0px 0px;
-          border:3px solid transparent;
-          margin-bottom: 5px;
-          transform: translate3d(0px, 0px, 0px) !important;
-          cursor: move;
-          .MuiFormControlLabel-root{
-              margin-left: 0px !important;
-              cursor: move;
-              .customizeCheckBox  {
-                  padding: 9px 15px 9px 9px;
-              }
-              .MuiFormControlLabel-label {
-                  font-size: 14px;
-                  color:#333;
-              }
-          }
-          &:hover {
-              cursor: move;
-              z-index: 9999;
-              list-style: none;
-              border: 3px solid #CCCCCC !important;
-              background: #F2F2F2;
-              position: relative;
-              width: 469px !important;
-              opacity: 0.9;
-              position: relative;
-              &:after {
-                  position: absolute;
-                  right: 13px;
-                  top: 10px;
-                  font-family: "Font Awesome 5 Pro";
-                  font-weight: 900;
-                  content: "\f58e";
-              }
-          }
+    padding-left: 0px;
+    li {
+      display: block;
+      padding: 0px 0px;
+      border: 3px solid transparent;
+      margin-bottom: 5px;
+      transform: translate3d(0px, 0px, 0px) !important;
+      cursor: move;
+      .MuiFormControlLabel-root {
+        margin-left: 0px !important;
+        cursor: move;
+        .customizeCheckBox {
+          padding: 9px 15px 9px 9px;
+        }
+        .MuiFormControlLabel-label {
+          font-size: 14px;
+          color: #333;
+        }
       }
+      &:hover {
+        cursor: move;
+        z-index: 9999;
+        list-style: none;
+        border: 3px solid #cccccc !important;
+        background: #f2f2f2;
+        position: relative;
+        width: 469px !important;
+        opacity: 0.9;
+        position: relative;
+        &:after {
+          position: absolute;
+          right: 13px;
+          top: 10px;
+          font-family: "Font Awesome 5 Pro";
+          font-weight: 900;
+          content: "\f58e";
+        }
+      }
+    }
   }
 }
 
 .columnReOrderOpup {
   .MuiPopover-paper {
-      width: 528px;
-      padding: 0px;
-      box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
-      border: 1px solid #d1d2d4;
-      border-radius: 0px;
+    width: 528px;
+    padding: 0px;
+    box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+    border: 1px solid #d1d2d4;
+    border-radius: 0px;
   }
 }
 
 .dataTabAssets {
-  .MuiToolbar-regular{
-      min-height: 42px;
+  .MuiToolbar-regular {
+    min-height: 42px;
   }
 }
 
-.dataTableColumnShoHide{
+.dataTableColumnShoHide {
   .dataIconButton {
-      font-size: 18px;
-      color:#333;
-      padding: 0px 7px 0px 26px;
+    font-size: 18px;
+    color: #333;
+    padding: 0px 7px 0px 26px;
+    &:hover {
+      background: transparent !important;
+    }
+    &.MuiIconButton-root {
       &:hover {
-          background: transparent !important;
+        background: transparent !important;
       }
-      &.MuiIconButton-root {
-          &:hover {
-              background: transparent !important;
-          }
-      }
+    }
   }
 }
 
-
-.AssetsDataGrid::-webkit-scrollbar-track{
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
+.AssetsDataGrid::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
   margin-left: 192px;
 }
 
-.AssetsDataGrid::-webkit-scrollbar{
+.AssetsDataGrid::-webkit-scrollbar {
   width: 5px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
-.AssetsDataGrid::-webkit-scrollbar-thumb{
-      background-color: #333333;
-      border: 2px solid #555555;
+.AssetsDataGrid::-webkit-scrollbar-thumb {
+  background-color: #333333;
+  border: 2px solid #555555;
 }
-
 
 .draggFocus {
-  border:2px solid #cccccc;
+  border: 2px solid #cccccc;
   cursor: grab;
 }
 
@@ -314,22 +309,22 @@
   cursor: move;
   padding: 3px 10px 0 10px;
   text-align: center;
-  position: relative ;
+  position: relative;
   width: auto !important;
   height: 35px !important;
   opacity: 0.7;
   align-items: center;
   .dragIcon {
-      font-size: 18px;
-      color: #d1d2d4;
-      float: left;
-      position: relative;
-      top: 3px;
-      margin-right: 10px;
+    font-size: 18px;
+    color: #d1d2d4;
+    float: left;
+    position: relative;
+    top: 3px;
+    margin-right: 10px;
   }
 
   label {
-      float: right;
+    float: right;
   }
 }
 
@@ -344,71 +339,70 @@
   right: 0;
   top: 0;
   &:hover {
+    background: #33ff00;
+    &::before {
+      height: 35px;
+      width: 5px;
       background: #33ff00;
-      &::before {
-          height: 35px;
-          width: 5px;
-          background: #33ff00;
-          position: absolute;
-          top: 0px;
-          right: -3px;
-          content: "";
-          z-index: 99;
-      }
-      &::after {
-          height: 8px;
-          width: 8px;
-          border-radius: 100px;
-          background: #33ff00;
-          position: absolute;
-          top: 34px;
-          right: -3px;
-          content: "";
-      }
+      position: absolute;
+      top: 0px;
+      right: -3px;
+      content: "";
+      z-index: 99;
+    }
+    &::after {
+      height: 8px;
+      width: 8px;
+      border-radius: 100px;
+      background: #33ff00;
+      position: absolute;
+      top: 34px;
+      right: -3px;
+      content: "";
+    }
   }
   &:focus {
+    background: #33ff00;
+    &::before {
+      height: 35px;
+      width: 5px;
       background: #33ff00;
-      &::before {
-          height: 35px;
-          width: 5px;
-          background: #33ff00;
-          position: absolute;
-          top: 0px;
-          right: -3px;
-          content: "";
-          z-index: 99;
-      }
-      &::after {
-          height: 8px;
-          width: 8px;
-          border-radius: 100px;
-          background: #33ff00;
-          position: absolute;
-          top: 34px;
-          right: -3px;
-          content: "";
-      }
+      position: absolute;
+      top: 0px;
+      right: -3px;
+      content: "";
+      z-index: 99;
+    }
+    &::after {
+      height: 8px;
+      width: 8px;
+      border-radius: 100px;
+      background: #33ff00;
+      position: absolute;
+      top: 34px;
+      right: -3px;
+      content: "";
+    }
   }
 }
 
-
 /*On Dragable start */
 .onSortDragable {
-    z-index: 9999;
-    list-style: none;
-    border:3px solid #CCCCCC !important;
-    background: #F2F2F2;
-    padding-left: 11px;
-    position: relative;
-    width: 469px !important;
-    opacity: 0.90;
+  z-index: 9999;
+  list-style: none;
+  border: 3px solid #cccccc !important;
+  background: #f2f2f2;
+  padding-left: 11px;
+  position: relative;
+  width: 469px !important;
+  opacity: 0.9;
 }
 
 .ghostView {
   z-index: 9999;
   list-style: none;
-  border:3px solid #CCCCCC !important;
-  background: #F2F2F2;
+  border: 3px solid #cccccc !important;
+  background: #f2f2f2;
   padding-left: 11px;
   position: relative;
   width: 469px !important;
@@ -416,12 +410,12 @@
 }
 
 .sortAbledragIcon {
-    position: absolute;
-    right:13px;
-    top:10px;
-    &:focus {
-        cursor: move;
-    }
+  position: absolute;
+  right: 13px;
+  top: 10px;
+  &:focus {
+    cursor: move;
+  }
 }
 
 .dragableGuide {
@@ -429,47 +423,47 @@
   width: 480px;
   left: -6px;
   &:after {
-      content: "";
-      position: absolute;
-      top:-11px;
-      left: 0px;
-      width: 100%;
-      height: 4px;
-      background: #33FF00;
+    content: "";
+    position: absolute;
+    top: -11px;
+    left: 0px;
+    width: 100%;
+    height: 4px;
+    background: #33ff00;
   }
   .leftCircle {
-      color: #33FF00;
-      position: absolute;
-      left: -3px;
-      top: -14px;
-      font-size: 10px;
+    color: #33ff00;
+    position: absolute;
+    left: -3px;
+    top: -14px;
+    font-size: 10px;
   }
 
   .rightCircle {
-      color: #33FF00;
-      position: absolute;
-      right: -3px;
-      top: -14px;
-      font-size: 10px;
+    color: #33ff00;
+    position: absolute;
+    right: -3px;
+    top: -14px;
+    font-size: 10px;
   }
 }
 .ghostLi {
   z-index: 9999;
   list-style: none;
-  border:3px solid #CCCCCC !important;
-  background: #F2F2F2;
+  border: 3px solid #cccccc !important;
+  background: #f2f2f2;
   padding-left: 15px !important;
   position: relative;
   opacity: 0.5 !important;
   visibility: visible !important;
-  
+
   .sortAbledragIcon {
-  position: absolute;
-  right:15px;
-  top:8px;
-      &:focus {
-          cursor: move;
-      }
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    &:focus {
+      cursor: move;
+    }
   }
 }
 /* ---------*/
@@ -477,7 +471,6 @@
 .clearAllFilterBtn {
   width: 129px;
 }
-
 
 //-------------------
 // Freezing Colummn
@@ -510,7 +503,6 @@ tr:nth-child(odd) td[scope="row"] {
   background-color: #fff;
 }
 
-
 td.col-two:hover,
 td.col-three:hover,
 td.col-three:hover .rc-menu-button {
@@ -521,53 +513,64 @@ td.col-three:hover .rc-menu-button {
 tr.Mui-selected:nth-child(odd) td[scope="row"] {
   background-color: #231f20 !important;
   color: #d1d2d4;
-.MuiButton-root {
-  color: #d1d2d4 !important;
-}
-&:hover {
-  background-color: #333 !important;
-}
+  .MuiButton-root {
+    color: #d1d2d4 !important;
+  }
+  &:hover {
+    background-color: #333 !important;
+  }
 }
 
 tr.Mui-selected:nth-child(even) td[scope="row"] {
-background-color: #231f20 !important;
-.MuiButton-root {
-  color: #d1d2d4 !important;
+  background-color: #231f20 !important;
+  .MuiButton-root {
+    color: #d1d2d4 !important;
+  }
+  &:hover {
+    background-color: #333 !important;
+  }
 }
-&:hover {
-  background-color: #333 !important;
-}
-}
-
 
 .CRXDataTableCustom {
-tr {
-  &.Mui-selected {
-    background-color: #231f20 !important;
-    td.DataTableBodyCell {
+  tr {
+    &.Mui-selected {
+      background-color: #231f20 !important;
+      td.DataTableBodyCell {
+        color: #d1d2d4;
+        .rc-menu-button {
+          color: #d1d2d4 !important;
+        }
+      }
+    }
+    &:hover {
+      background-color: #333 !important;
+      td.DataTableBodyCell {
+        color: #d1d2d4;
+      }
+    }
+    td:nth-child(2):hover ~ td.col-three {
+      background: #333 !important;
       color: #d1d2d4;
       .rc-menu-button {
         color: #d1d2d4 !important;
       }
     }
   }
-  &:hover {
-    background-color: #333 !important;
-    td.DataTableBodyCell {
-      color: #d1d2d4;
-    }
+
+  .rc-menu-button {
+    background: none;
+    border: none;
+    font-size: 23px;
   }
-  td:nth-child(2):hover ~ td.col-three {
-    background: #333 !important;
-    color: #d1d2d4;
-    .rc-menu-button {
-      color: #d1d2d4 !important;
+
+  th {
+    button {
+      color: #b3b4b6;
     }
-  }
-}
+  } 
 }
 
-.subTItle  {
+.subTItle {
   font-size: 14px !important;
   color: #333;
   padding-bottom: 20px;
@@ -590,61 +593,61 @@ tr {
 
 .closePopup {
   &:hover {
-      background-color: transparent !important;
+    background-color: transparent !important;
   }
   .MuiSvgIcon-fontSizeSmall {
-      font-size: 16px;
-      color: #d1d1d4;
-      &:hover {
-          color: #333;
-      }
+    font-size: 16px;
+    color: #d1d1d4;
+    &:hover {
+      color: #333;
+    }
   }
   .croseIcon {
-      width: 13px;
-      height: 13px;
-      filter: opacity(0.5);
-      &:hover {
-          filter: opacity(0.7);
-      }
+    width: 13px;
+    height: 13px;
+    filter: opacity(0.5);
+    &:hover {
+      filter: opacity(0.7);
+    }
   }
 }
 
 .col-three {
-left: 113px;
-position: sticky;
-ul:first-child {
-
-  left: 75px !important;
-  z-index: 99999 !important;
-}
-
-.MuiButton-label {
-  position: relative;
-}
-
-.rc-menu-button {
-  background: none;
-  border: none;
-  font-size: 23px;
-  color: #333;
-
-  &:hover {
-    background: none;
+  left: 113px;
+  position: sticky;
+  ul:first-child {
+    width: 242px;
+    left: 80px !important;
+    z-index: 99999 !important;
   }
-}
 
-.MuiButton-root {
-  &:hover {
-    background: none;
+  .MuiButton-label {
+    position: relative;
   }
-}
 
-.rc-menu__item {
-  height: 30px !important;
-  padding: 0px 1.5rem !important;
-}
+  .rc-menu-button {
+    background: none;
+    border: none;
+    font-size: 23px;
+    color: #333;
+
+    &:hover {
+      background: none;
+    }
+  }
+
+  .MuiButton-root {
+    &:hover {
+      background: none;
+    }
+  }
 }
 
 .sortDragHide {
   display: none;
+}
+
+.disableHeaderActionMenu { 
+  pointer-events: none;
+  opacity: 0.4;
 }

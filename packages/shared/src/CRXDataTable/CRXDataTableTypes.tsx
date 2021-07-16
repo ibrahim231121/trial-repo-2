@@ -56,6 +56,7 @@ export const theme = createMuiTheme({
         // color: '#d1d2d4',
         // borderBottom: "1px solid #cccccc",
         // borderLeft: "1px solid #cccccc"
+        textAlign: "center"
       },
     },
 
@@ -95,7 +96,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       // maxHeight: 800,
-      overflowY: "hidden",
+      
       overflowX: "auto",
     },
     headerStickness: {
