@@ -21,7 +21,6 @@ import ActionMenu from "../ActionMenu";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
 
-import closeIcon from "../../../../Assets/Icons/icomoon/SVG/1134-cross2.svg";
 type Order = "asc" | "desc";
 
 type SearchObject = {
@@ -777,7 +776,7 @@ const MasterMain: React.FC<any> = (props) => {
           className="ManageAssetDataTable"
           onClearAll={onClearAll}
           getSelectedItems={(v: any) => setSelectedItems(v)}
-          closePopupIcon={closeIcon}
+          
         />
       )}
     </>

@@ -329,8 +329,8 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
               <div className="popupFreezTitle">
                 <div style={{position:'absolute', top:"-10px", right:"0px"}}>
                   <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={customizeColumnClose} >
-                  {/* <span className="icon-cross2"></span> */}
-                  <img src={closePopupIcon} className="croseIcon"/>
+                  <span className="icon-cross2"></span>
+                  
                   </IconButton>
                 </div>
               

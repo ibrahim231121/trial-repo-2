@@ -1,0 +1,170 @@
+
+.crx-model {
+  .MuiDialog-scrollPaper {
+    .MuiDialog-paperScrollPaper {
+      overflow: hidden !important;
+      height: calc(100% - 192px) !important;
+    }
+  }
+  .MuiBackdrop-root {
+    background-color: #000 !important;
+    opacity:0.8 !important;
+  }
+  .MuiDialog-paper {
+    padding: 16px 0 0 0;
+    border-radius: 0;
+    max-width: 600px;
+    box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+    -webkit-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+    -moz-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+    -o-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+    -ms-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+  }
+
+  .modelTitle {
+    padding: 0 25px 0 25px;
+
+    h2 {
+      font-size: 1.125em;
+      color: #333333;
+    }
+  }
+
+  .CRXContent {
+    padding: 35px 25px 45px;
+    font-size: 0.875em;
+    color: #333333;
+    height: calc(100% - 97px);
+  }
+  .CRXFooter {
+    padding: 0 25px;
+    justify-content: flex-start;
+    height: 72px;
+
+    .modalPrimeryBtn {
+      background-color: #333;
+      border-radius: 0;
+      border:1px solid transparent;
+      padding: 2px 15px;
+
+      .MuiButton-label {
+        font-size: 14px;
+        color: #d1d2d4;
+        font-weight: 100;
+      }
+      &:hover {
+        background-color: #6e6e6e;
+        .MuiButton-label {
+          color: #f5f5f5;
+        }
+      }
+      &:focus {
+        background-color: #231f20;
+        .MuiButton-label {
+          color: #f5f5f5;
+        }
+      }
+    }
+
+    .modalSecrndoryBtn {
+      background-color: #fff;
+      border-radius: 0;
+      border:1px solid #878787;
+      padding: 1px 15px;
+      margin-left: 31px;
+
+      .MuiButton-label {
+        font-size: 14px;
+        color: #333333;
+        font-weight: 100;
+      }
+      &:hover {
+        background-color: #f5f5f5;
+        border:1px solid #333333;
+        .MuiButton-label {
+          color: #333333;
+        }
+      }
+      &:focus {
+        background-color: #231f20;
+        .MuiButton-label {
+          color: #f5f5f5;
+        }
+      }
+    }
+
+   
+  }
+  .CRXDivider {
+    border-color: #d1d2d4;
+  }
+
+  .CRXPopupCrossButton {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    width: auto;
+
+    i {
+      font-size: 16px;
+      color: #d1d2d4;
+    }
+  }
+}
+.CRXSecList {
+  margin-top: 15px !important;
+  max-height: 491px !important;
+  li {
+    border-bottom: 1px solid #d1d2d4;
+    position: static;
+    :last-child {
+    border-bottom:none !important
+  };
+  }
+}
+
+
+@media only screen and (max-width: 1024px) {
+  .crx-model {
+    .MuiDialog-scrollPaper {
+      .MuiDialog-paperScrollPaper {
+        overflow: hidden !important;
+        height: calc(100% - 64px) !important;
+      }
+    }
+  }
+  .CRXSecList {
+    max-height: calc(100% - 55px) !important;
+  }
+}
+
+@media only screen and (max-width: 1366px) {
+  .crx-model {
+    .MuiDialog-scrollPaper {
+      .MuiDialog-paperScrollPaper {
+        overflow: hidden !important;
+        height: calc(100% - 64px) !important;
+      }
+    }
+  }
+  .CRXSecList {
+    max-height: calc(100% - 55px) !important;
+  }
+}
+
+@media only screen and (max-width : 1536px){
+  .crx-model {
+    .MuiDialog-scrollPaper {
+      .MuiDialog-paperScrollPaper {
+        overflow: hidden !important;
+        height: calc(100% - 64px) !important;
+      }
+    }
+    .CRXContent {
+      height: calc(100% - 101px);
+    }
+  }
+  .CRXSecList {
+    max-height: calc(100% - 52px) !important;
+  }
+}

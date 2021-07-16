@@ -32,4 +32,5 @@ export { default as CRXInputDatePicker} from './controls/CRXInputDatePicker'
 export { default as CRXPopOver} from './CRXPopOver/PopOver'
 export { default as CRXMultiSelect} from './controls/CRXMultiSelect/CRXMultiSelect'
 export { default as CRXBadge} from './controls/CRXBadge/CRXBadge'
+export { default as CRXModalDialog } from './CRXModalDialog/modal'
 
