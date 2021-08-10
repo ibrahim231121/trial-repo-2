@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
 import AppHeader from './Application/Headeer/Header'
 import Footer from './Application/Headeer/Footer'
-import TestModalPage from './Application/ModalTest/ModalTest'
 import {useTranslation} from 'react-i18next'; 
 import "../../evm/src/utils/Localizer/i18n"
 

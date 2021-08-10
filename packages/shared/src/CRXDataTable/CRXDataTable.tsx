@@ -494,7 +494,7 @@ export default function CRXDataTable(props: DataTableProps) {
                                           />
                                         </TableCell>
                                         <TableCell className="DataTableBodyCell col-three" scope="row">
-                                        <span>
+                                        <span onClick={()=>props.getRowOnActionClick(row)}>
                                           {props.actionComponent}  
                                         </span>
                                         </TableCell>

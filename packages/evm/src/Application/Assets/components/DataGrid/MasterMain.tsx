@@ -132,7 +132,6 @@ const assetStatusTemplate = (rowData: any) => {
     </>
   );
 };
-//-----------------
 
 const MasterMain: React.FC<any> = (props) => {
   let reformattedRows: any[] = [];
@@ -176,6 +175,7 @@ const MasterMain: React.FC<any> = (props) => {
   const [orderBy, setOrderBy] = React.useState<any>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any>([]);
+  const [selectedActionRow, setSelectedActionRow] = React.useState<{}>();
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     startDate: "",
     endDate: "",
@@ -776,10 +776,12 @@ const MasterMain: React.FC<any> = (props) => {
       {rows && (
         <CRXDataTable
           actionComponent={
-            <ActionMenu isSelected={selectedItems.length > 0 ? true : false} />
+            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
           }
+          getSelectedItems={(v: any) => setSelectedItems(v)}
+          getRowOnActionClick={(val:any)=>setSelectedActionRow(val)}
           showToolbar={true}
-          dataRows={rows}
+          dataRows={rows} 
           headCells={headCells}
           orderParam={order}
           orderByParam={orderBy}
@@ -788,7 +790,6 @@ const MasterMain: React.FC<any> = (props) => {
           allowDragableToList={false}
           className="ManageAssetDataTable"
           onClearAll={onClearAll}
-          getSelectedItems={(v: any) => setSelectedItems(v)}
           
         />
       )}

@@ -4,17 +4,10 @@ import ActionMenu from "../../Assets/components/ActionMenu";
 import "./CRXBucket.scss";
 import { useTranslation } from "react-i18next";
 import thumbImg from "../../../Assets/Images/thumb.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/rootReducer";
 
-const ToggleButton = (
-  <CRXBadge itemCount={100}>
-      <CRXTooltip
-        className="bucketIcon"
-        title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
-        iconName="fas icon-drawer2"
-        placement="left"
-      ></CRXTooltip>
-    </CRXBadge>
-); 
+
 
 type SearchObject = {
   columnName: string;
@@ -84,57 +77,29 @@ const assetCategoryTemplate = (rowData: string[]) => {
 
 const CRXAssetsBucketPanel = () => {  
 
-  let reformattedRows: AssetBucket[] = [];
-
-  let obj: AssetBucket={
-    id : 1,
-    assetId : 123,
-    assetName : "asset123",
-    recordingStarted : "2021-07-01T13:50:15.172Z",
-    categories : ["Murder","Killing"]
-  };
-
-  reformattedRows.push(obj);
-
-  let obj1: AssetBucket={
-    id : 2,
-    assetId : 456,
-    assetName : "asset456",
-    recordingStarted : "2021-07-01T13:50:15.172Z",
-    categories : ["Snatching","Torchering"]
-  };
-
-  reformattedRows.push(obj1);
-
-  let obj2: AssetBucket={
-    id : 3,
-    assetId : 789,
-    assetName : "asset789",
-    recordingStarted : "2021-07-01T13:50:15.172Z",
-    categories : ["Snatching","Killing"]
-  };
-
-  reformattedRows.push(obj2);
-
-  let obj3: AssetBucket={
-    id : 4,
-    assetId : 102,
-    assetName : "asset102",
-    recordingStarted : "2021-07-01T13:50:15.172Z",
-    categories : ["Snatching","Killing"]
-  };
-
-  reformattedRows.push(obj3);
-   
   const [isOpen,setIsOpen]=React.useState<boolean>(false);
   const [selectedItems, setSelectedItems] = React.useState<AssetBucket[]>([]);
-  const [rows, setRows] = React.useState<AssetBucket[]>(reformattedRows);
+  const [rows, setRows] = React.useState<AssetBucket[]>([]);
   const { t } = useTranslation<string>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
-  console.log(orderBy);
 
+  const assetBucketData :any= useSelector((state:RootState) => state.assetBucket)
+  useEffect(() => {
+    const data:AssetBucket[]= assetBucketData.map((d:AssetBucket)=> ( { id:d.id,assetId:d.assetId,assetName:d.assetName,recordingStarted:d.recordingStarted,categories:d.categories}))
+    setRows(assetBucketData)
+  }, [assetBucketData])
+  const ToggleButton = (
+    <CRXBadge itemCount={assetBucketData.length}>
+        <CRXTooltip
+          className="bucketIcon"
+          title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
+          iconName="fas icon-drawer2"
+          placement="left"
+        ></CRXTooltip>
+      </CRXBadge>
+  ); 
   const toggleState = () =>
     setIsOpen((prevState) => (!prevState));
 
@@ -172,7 +137,7 @@ const CRXAssetsBucketPanel = () => {
       const [openState, setOpenState] = React.useState<boolean>(true);
       const [buttonState, setButtonState] = React.useState<boolean>(false);
   
-      let options = reformattedRows.map((row: any, _: any) => {
+      let options = rows.map((row: any, _: any) => {
         let option: any = {};
         let x = headCells[colIdx].id;
         option["value"] = row[headCells[colIdx].id];
@@ -184,7 +149,7 @@ const CRXAssetsBucketPanel = () => {
         headCells[colIdx].id.toString() === "categories"
       ) {
         let moreOptions: any = [];
-        reformattedRows.map((row: any, _: any) => {
+        rows.map((row: any, _: any) => {
           let x = headCells[colIdx].id;
           row[x].forEach((element: any) => {
             let moreOption: any = {};
@@ -394,7 +359,7 @@ const CRXAssetsBucketPanel = () => {
     }, [searchData]);
 
     const dataArrayBuilder = () => {
-      let dataRows: any = reformattedRows;
+      let dataRows: any = rows;
       searchData.forEach((el: SearchObject) => {       
         if (el.columnName === "assetName")
           dataRows = dataRows.filter(function (x: any) {
@@ -452,7 +417,7 @@ const CRXAssetsBucketPanel = () => {
       <div className="bucketViewLink">View on Assets Bucket page <i className="icon-arrow-up-right2"></i> </div>  
       <CRXDataTable
           actionComponent={
-            <ActionMenu isSelected={selectedItems.length > 0 ? true : false} />
+            <ActionMenu />
           }
           showToolbar={false}
           dataRows={rows}
@@ -462,7 +427,7 @@ const CRXAssetsBucketPanel = () => {
           searchHeader={true}
           columnVisibilityBar={true}
           allowDragableToList={false}
-          className="ManageAssetDataTable crxTableHeight"
+          className="ManageAssetDataTable crxTableHeight bucketDataTable"
           getSelectedItems={(v: any) => setSelectedItems(v)}
         />
     

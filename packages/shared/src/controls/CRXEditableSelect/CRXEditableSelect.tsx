@@ -83,7 +83,6 @@ const CRXAutocomplete = ({
   const data = options;
   const classes = optionStyle()
   const handleOnOpen = (e : any) => {
-    console.log(e)
   }
   return (
     <Autocomplete

@@ -1,11 +1,10 @@
-import counterReducer from './counterReducer';
-import counterTwoReducer from './counterTwoReducer';
+import { combineReducers } from '@reduxjs/toolkit'
 import pathNameReducer from './breadCrumbReducer';
+import assetBucketSlice from './AssetActionReducer';
 
 //combine Reducers
-export const reducer = {
-    counter:counterReducer.reducer,
-    counterTwo: counterTwoReducer.reducer,
-    pathName:pathNameReducer.reducer
-  }
- 
+export const reducer = combineReducers({
+    pathName:pathNameReducer.reducer,
+    assetBucket:assetBucketSlice.reducer
+  })
+  export type RootState = ReturnType<typeof reducer>

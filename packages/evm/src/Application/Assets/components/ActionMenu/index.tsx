@@ -8,10 +8,28 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import './index.scss'
+import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
+import { useDispatch } from "react-redux";
+
 type Props = {
-  isSelected: boolean;
+  selectedItems?: any; 
+  row?: any; 
 };
-const ActionMenu: React.FC<Props> = ({ isSelected }) => {
+
+const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
+  const dispatch = useDispatch()
+  const addToAssetBucket=()=>{
+    //if undefined it means header is clicked
+    if (row!==undefined) {
+      const find=selectedItems.findIndex((selected:any)=>selected.id===row.id)
+      const data=find===-1?row:selectedItems
+      dispatch(addAssetToBucketActionCreator(data))
+    }
+   else{
+    dispatch(addAssetToBucketActionCreator(selectedItems))
+   }
+  }
+
   return (
     <Menu
       align="start"
@@ -26,11 +44,12 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
         </MenuButton>
       }
     >
-        <MenuItem>
-          <div className="crx-meu-content groupingMenu crx-spac">
+
+        <MenuItem >
+          <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
             <div className="crx-menu-icon"></div>
             <div className="crx-menu-list">
-              Add to asset bucket
+              Add to asset bucket 
             </div>
           </div>
         </MenuItem>   

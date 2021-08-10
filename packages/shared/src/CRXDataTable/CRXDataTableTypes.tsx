@@ -56,7 +56,7 @@ export const theme = createMuiTheme({
         // color: '#d1d2d4',
         // borderBottom: "1px solid #cccccc",
         // borderLeft: "1px solid #cccccc"
-        textAlign: "center"
+        textAlign: "center",
       },
     },
 
@@ -96,7 +96,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     container: {
       // maxHeight: 800,
-      
+
       overflowX: "auto",
     },
     headerStickness: {
@@ -174,7 +174,8 @@ export type DataTableProps = {
   actionComponent?: React.ReactNode;
   getSelectedItems: (v: any) => void;
   closePopupIcon?: any;
-  showToolbar:boolean
+  showToolbar: boolean;
+  getRowOnActionClick: (data:any) => void;
 };
 
 export type OrderData = {
