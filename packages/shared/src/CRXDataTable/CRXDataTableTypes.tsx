@@ -174,6 +174,7 @@ export type DataTableProps = {
   actionComponent?: React.ReactNode;
   getSelectedItems: (v: any) => void;
   closePopupIcon?: any;
+  showToolbar:boolean
 };
 
 export type OrderData = {

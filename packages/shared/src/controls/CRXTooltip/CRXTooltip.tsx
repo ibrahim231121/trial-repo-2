@@ -7,6 +7,7 @@ type tooltipProps = {
     placement? : string,
     title : string,
     className? : string,
+    iconName: string
 }
 const CRXUseStyles = makeStyles((theme) => ({
     arrow: {
@@ -24,7 +25,7 @@ const CRXUseStyles = makeStyles((theme) => ({
 const CRXIconStyle = makeStyles(() => ({
     iconCls : {
         position:"relative",
-        top:"9px",
+        top:"1px",
         height:"17px"
     }
 }))
@@ -34,7 +35,7 @@ function CRXCustomizedTooltip(props : any) {
     return <Tooltip arrow classes={classes} {...props} />;
 }
   
-const CRXTooltip = ({placement, title, className} : tooltipProps) => {
+const CRXTooltip = ({placement, title, className,iconName} : tooltipProps) => {
     const clsxs = CRXIconStyle()
     return (
         <>
@@ -44,7 +45,7 @@ const CRXTooltip = ({placement, title, className} : tooltipProps) => {
             className={className}
             >
 
-            <i className={"fas fa-info-circle" + " " + clsxs.iconCls}></i>
+            <i className={iconName + " " + clsxs.iconCls}></i>
         </CRXCustomizedTooltip>
         </>
     )

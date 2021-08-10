@@ -29,7 +29,7 @@ import './CRXDataTable.scss';
 import {useTranslation} from 'react-i18next'; 
 
 export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, closePopupIcon, onClearAll} = props;
+  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, closePopupIcon, onClearAll,showToolbar} = props;
   const classes = useStyles();
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -305,7 +305,9 @@ export default function CRXDataTable(props: DataTableProps) {
               <ThemeProvider theme={theme}>
               <div className={classes.root}>
                 
-                <DataTableToolbar 
+                {
+                  showToolbar==true?
+                (<DataTableToolbar 
                     numSelected={selectedItems.length} 
                     headCells={headCells} 
                     rowCount={container.rows.length}
@@ -314,7 +316,9 @@ export default function CRXDataTable(props: DataTableProps) {
                     onClearAll={onClearAllFilter}
                     onReOrder={onReOrdering} 
                     closePopupIcon={closePopupIcon}
-                    orderingColumn={orderColumn}/>
+                    orderingColumn={orderColumn}/>)
+                    :null
+                }
                 <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
                 <Table 
                   className={"CRXDataTableCustom " + classes.table} 

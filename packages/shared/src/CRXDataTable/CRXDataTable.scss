@@ -4,6 +4,7 @@
   box-shadow: none !important;
   border-radius: 0px !important;
   overflow-y: visible;
+
   table {
     tr {
       th.MuiTableCell-sizeSmall {
@@ -588,7 +589,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     button {
       color: #b3b4b6;
     }
-  } 
+  }
 }
 
 .subTItle {
@@ -669,7 +670,13 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   display: none;
 }
 
-.disableHeaderActionMenu { 
+.disableHeaderActionMenu {
   pointer-events: none;
   opacity: 0.4;
 }
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) {
+  html {zoom: 81%;}
+ } /* ----------- Retina Screens ----------- */ 
+ @media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi) {
+   html {zoom:100%}
+  }

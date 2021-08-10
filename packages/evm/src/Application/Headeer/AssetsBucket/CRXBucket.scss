@@ -43,6 +43,14 @@
     text-align: center;
     padding-top: 25%;
   }
+  .bucketViewLink{
+    text-align: right;
+    padding-top: 45px;
+    padding-bottom: 21px;
+    color: #d74b00;
+    font-size: 14px;
+    font-weight: bold;
+  }
   .topColumn {
     color: #d1d2d4;
   }
@@ -74,4 +82,15 @@
   top: 5px;
   right: 0px;
   content: "";
+}
+.CRXDataTableCustom {
+
+  .CBX-input {
+    input {
+      width: 100px;
+    }
+  }
+}
+.centerPosition  {
+  width:180px;
 }

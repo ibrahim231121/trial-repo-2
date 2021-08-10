@@ -778,6 +778,7 @@ const MasterMain: React.FC<any> = (props) => {
           actionComponent={
             <ActionMenu isSelected={selectedItems.length > 0 ? true : false} />
           }
+          showToolbar={true}
           dataRows={rows}
           headCells={headCells}
           orderParam={order}

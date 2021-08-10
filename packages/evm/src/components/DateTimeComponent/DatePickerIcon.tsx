@@ -82,7 +82,7 @@ const DatePickerIcon: React.FC<Props> = ({dropDownCustomValue , minDate,maxDate,
           options={dateOptions}
           className="daysSelection"
         />
-        <CRXTooltip title="Select from pre-selection" placement="right" />
+        <CRXTooltip iconName="fas fa-info-circle" title="Select from pre-selection" placement="right" />
       </div>}
 
       <div className="paperFooter" style={{marginTop:"25%"}}>
