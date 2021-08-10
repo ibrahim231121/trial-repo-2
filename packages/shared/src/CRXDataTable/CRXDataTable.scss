@@ -179,7 +179,7 @@
 
 .footerDRPReOrder {
   border-top: 1px solid #d1d2d4;
-  padding: 23px 0px 16px 28px;
+  padding: 21px 0px 15px 28px;
   margin-top: 0px;
   .closeDRP {
     width: 128px;
@@ -191,62 +191,41 @@
       font-size: 14px;
     }
   }
+  .MuiFormControlLabel-root {
+    .MuiFormControlLabel-label {
+      font-size: 14px;
+      color: #333333;
+    }
+  }
 }
 
 .DRPTitle {
   font-size: 18px !important;
   color: #333;
-  padding-bottom: 38px;
+  padding-bottom: 40px;
   padding-left: 11px;
 }
 
-.columnList {
-  padding: 111px 0px 0px 15px;
-  max-height: 433px;
-  overflow: auto;
-  ul.columnUlList {
-    padding-left: 0px;
 
-    li {
-      display: block;
-      padding: 2px 0px;
-      border: 3px solid transparent;
-      margin-bottom: 0;
-      transform: translate3d(0px, 0px, 0px) !important;
-      cursor: move;
-      .MuiFormControlLabel-root {
-        margin-left: 0px !important;
-        cursor: move;
-        .customizeCheckBox {
-          padding: 11px 15px 9px 9px;
-        }
-        .MuiFormControlLabel-label {
-          font-size: 14px;
-          color: #333;
-        }
-      }
-    }
-  }
-}
 
 .columnReOrderOpup {
   .MuiPopover-paper {
     width: 528px;
     margin-left: -35px;
+    left: auto !important;
+    right: 40px;
     padding: 0px;
-    box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
+    box-shadow: 0px 0px 5px #00000033;
+    -webkit-box-shadow: 0px 0px 5px #00000033;
+    -moz-box-shadow: 0px 0px 5px #00000033;
+    -o-box-shadow: 0px 0px 5px #00000033;
+    -ms-box-shadow: 0px 0px 5px #00000033;
     border: 1px solid #d1d2d4;
     border-radius: 0px;
   }
   .closePopup {
-    span.icon-cross2 {
-      color: #d1d2d4;
-      font-weight: 100;
-      font-size: 16px;
-      &:hover {
-        color: #333333;
-      }
-    }
+    padding-right: 7px;
+    padding-top: 16px;
   }
 }
 
@@ -544,46 +523,17 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   }
 }
 
-.subTItle {
-  font-size: 14px !important;
-  color: #333;
-  padding-bottom: 20px;
-  padding-left: 11px;
-}
 
-.popupFreezTitle {
-  position: fixed;
-  padding-left: 15px;
-  padding-top: 10px;
-  width: 525px;
-  background: #fff;
-  z-index: 4;
-}
 
 #resetCheckBox {
   border: 0px;
   margin-right: 44px;
-}
-
-.closePopup {
+  color: #333333;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 0;
   &:hover {
-    background-color: transparent !important;
-  }
-  .MuiSvgIcon-fontSizeSmall {
-    font-size: 16px;
-    color: #d1d1d4;
-    &:hover {
-      color: #333;
-    }
-  }
-  .croseIcon {
-    width: 16px;
-    height: 16px;
-    filter: opacity(0.2);
-    color: #d1d2d4;
-    &:hover {
-      filter: opacity(0.7);
-    }
+    border: 1px solid #333333;
   }
 }
 
@@ -624,7 +574,113 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   display: none;
 }
 
-.disableHeaderActionMenu {
+
+.disableHeaderActionMenu { 
   pointer-events: none;
   opacity: 0.4;
+}
+
+#CustomizeColumns {
+  z-index: 999;
+  border-radius: 0px;
+  width: 521px;
+  .MuiPaper-elevation1 {
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+  }
+
+  .MuiPaper-rounded {
+    border-radius: 0px;
+  }
+
+  .subTItle {
+    font-size: 14px !important;
+    color: #333;
+    padding-bottom: 27px;
+    padding-left: 11px;
+  }
+  
+  .popupFreezTitle {
+    position: relative;
+    padding-left: 15px;
+    padding-top: 18px;
+    background: #fff;
+    z-index: 4;
+
+    .closePopup {
+      &:hover {
+        background-color: transparent !important;
+      }
+      .MuiSvgIcon-fontSizeSmall {
+        font-size: 16px;
+        color: #d1d1d4;
+        &:hover {
+          color: #333;
+        }
+      }
+      .croseIcon {
+        width: 16px;
+        height: 16px;
+        color: #d1d2d4;
+        font-size: 16px;
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+
+  }
+
+  .columnList {
+    padding: 0px 0px 0px 15px;
+    overflow: auto;
+    ul.columnUlList {
+      padding-left: 0px;
+      margin-top: 0px;
+      li {
+        display: block;
+        padding: 2px 0px;
+        border: 3px solid transparent;
+        margin-bottom: 0;
+        transform: translate3d(0px, 0px, 0px) !important;
+        cursor: move;
+        .MuiFormControlLabel-root {
+          margin-left: 0px !important;
+          cursor: move;
+          .customizeCheckBox {
+            padding: 11px 15px 9px 9px;
+          }
+          .MuiFormControlLabel-label {
+            font-size: 14px;
+            color: #333;
+          }
+        }
+        &:hover {
+          cursor: move;
+          z-index: 9999;
+          list-style: none;
+          border: 3px solid #cccccc !important;
+          background: #f2f2f2;
+          position: relative;
+          width: 469px !important;
+          opacity: 0.9;
+          position: relative;
+          &:after {
+            position: absolute;
+            right: 13px;
+            top: 10px;
+            font-family: "Font Awesome 5 Pro";
+            font-weight: 900;
+            content: "\f58e";
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1366px), 
+       screen and (max-height: 768px) {
+        .columnList {
+          height: 338px;
+        }
 }

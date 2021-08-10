@@ -6,6 +6,11 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import "@material-ui/icons"
 import Menu from '@material-ui/core/Menu';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+
 import { makeStyles } from '@material-ui/core/styles';
 import {DataTableToolbarProps, useToolbarStyles, HeadCellProps} from "./CRXDataTableTypes"
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -65,16 +70,17 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     const {headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder, closePopupIcon } = props;
     const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);
     const [anchorEl, setAnchorEl] = useState<any>(null)
-    const [customizeColumn, setCustomize] = useState<any>(null)
+    const [customizeColumn, setCustomize] = useState<boolean>(false)
     const [orderColumn, setOrderColumn] = useState(props.orderingColumn)
     const [onPreset, setOnPreSet] = useState<boolean>()
     const {t} = useTranslation<string>();
     const DragList = React.useRef<React.ReactNode>(null);
+    const anchorRef = React.useRef<HTMLButtonElement>(null);
     const stateArry = headCells.map((i : any) => {
       return i.id;
     })
     const [dragState, setDragState] = useState<any>(stateArry);
-    
+   
     useEffect(() => {
       
       headCells.map((headCell: any, x) => {
@@ -98,12 +104,19 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
     }
 
     const customizeColumnClose = () => {
-      setCustomize(null)
+      setCustomize(false)
     }
 
     const customizeColumnOpen = (event : any) => {
-      setCustomize(event.currentTarget);
+      setCustomize((prevOpen) => !prevOpen)
     }
+
+    const prevOpen = React.useRef(customizeColumn);
+    React.useEffect(() => {
+      prevOpen.current = customizeColumn;
+
+    }, [customizeColumn]); 
+     
 
     const handleCheckChange = (event: any, index: number) => {
       selected[index].visible = event.target.checked;     
@@ -138,18 +151,10 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
         let orderingColumns = localStorage.getItem("checkOrderPreset");
         localStorage.removeItem("checkOrderPreset");
       }
-      setCustomize(null)    
+      setCustomize(false)    
     }
    
     const clearAllFilters = () => {
-      // headCells.map((headCell, x) => {
-      //   if(headCell.keyCol === false || headCell.keyCol === undefined)
-      //   {
-      //     selected[x].visible = true
-      //     headCell.visible = selected[x].visible
-      //     setSelected(prevState  => ({...prevState}))
-      //   }
-      // }) 
       setAnchorEl(null);
       onClearAll()
     }
@@ -299,38 +304,37 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
           <div className="dataTableColumnShoHide">
             <Tooltip title="Customize Columns" placement="top-start">         
              <IconButton
-                aria-controls="CustomizeColumns"
-                className="dataIconButton"
+                ref={anchorRef}
+                aria-controls={customizeColumn ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
+                className="dataIconButton"
                 onClick={customizeColumnOpen}
                 disableRipple={true}
               >
                 <i className="fas fa-columns"></i>
               </IconButton>
             </Tooltip>
-              <Menu
-                id="CustomizeColumns"
-                anchorEl={customizeColumn}
-                className="columnReOrderOpup"
-                getContentAnchorEl={null}
-                keepMounted= {true}
-                disableScrollLock= {false} 
-                open={Boolean(customizeColumn)}
-                onClose={customizeColumnClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-              >
-              <div className="popupFreezTitle">
+             
+          <Popper 
+            id="CustomizeColumns"
+            className="columnReOrderOpup"
+            open={customizeColumn} 
+            anchorEl={anchorRef.current} 
+            role={undefined} 
+            placement="top-end"
+            transition disablePortal>
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{ transformOrigin: placement === 'top-end' ? 'right-start' : 'right-start' }}
+            >
+              <Paper>
+              <ClickAwayListener onClickAway={customizeColumnClose}>
+                <div>
+                <div className="popupFreezTitle">
                 <div style={{position:'absolute', top:"-10px", right:"0px"}}>
                   <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={customizeColumnClose} >
-                  <span className="icon-cross2"></span>
-                  
+                    <span className="icon-cross2 croseIcon"></span>
                   </IconButton>
                 </div>
               
@@ -387,7 +391,12 @@ export default function  EnhancedTableToolbar (props: DataTableToolbarProps){
                 
               
               </div>
-              </Menu>
+              </div>
+              </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
           </div>     
       
       </Toolbar>
