@@ -27,7 +27,7 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
       }
     >
         <MenuItem>
-          <div className="crx-meu-content groupingMenu">
+          <div className="crx-meu-content groupingMenu crx-spac">
             <div className="crx-menu-icon"></div>
             <div className="crx-menu-list">
               Add to asset bucket
@@ -140,7 +140,7 @@ const ActionMenu: React.FC<Props> = ({ isSelected }) => {
           </div>
         </MenuItem>
         <MenuItem>
-          <div className="crx-meu-content">
+          <div className="crx-meu-content crx-spac">
             <div className="crx-menu-icon">
             <i className="far fa-user-lock fa-md"></i>
             </div>
