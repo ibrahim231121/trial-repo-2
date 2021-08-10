@@ -56,37 +56,64 @@
 }
 
 .AssetsDataGrid{
-    &::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        background-color: #f5f5f5;
-        margin-left: 192px;
-    }
+
     &::-webkit-scrollbar {
-        width: 2px;
-        background-color: #f5f5f5;
-    }
-    &::-webkit-scrollbar-track-piece {
-        background-color: #f5f5f5;
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    }
-    &::-webkit-scrollbar-thumb {
-        background-color: #D1D2D4;
-        border: 2px solid transparent;
-        background-clip: content-box;
-        width: 400px;
-        height: 100px;
-    }
-    &::-webkit-scrollbar-thumb{
-        background: #D1D2D4;
+        width: 1em;
+        height: 15px;
+      }
+      
+      &::-webkit-scrollbar-track {
         border-radius: 0px;
-        width: 0px;
-        border: 2px solid transparent;
+        margin-left: 0px;
+        border-right: 0px;
+        margin-left: 0px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        border-radius: 0px;
+        background-color: #C8C8C8 ;
+        outline: 0px solid slategrey;
+        border: 2px solid rgba(0, 0, 0, 0);
         background-clip: content-box;
+      }
+      
+      &::-webkit-scrollbar-track-piece {
+        background-color: #f1f1f1;
+        border: 1px solid #D1D2D4;
+        border-right: 0px;
+        border-left: 0px;
+        margin-left: 0px;
+    }
+
+    &::-webkit-scrollbar-button:horizontal:decrement {
+        width: 210px;
+        height: 30px;
+        border: 0px solid transparent;
+        background:url('../../../../Assets/Images/scrollLeft21.jpg') no-repeat top right ;
+        background-size: contain;
+        background-position: 197px;
+        background-clip: border-box;
+        position: relative;
+        left: 190px;
+        margin-left: 180px;
+    }
+
+    &::-webkit-scrollbar-button:horizontal:increment {
+        width: 13px;
+        height: 2px;
+        border: 1px solid #D1D2D4;
+        border-left: 0px;
+        background:url('../../../../Assets/Images/scrollIconRight.png') no-repeat center center #f1f1f1; 
+        position: relative;
+        left: 180px;
+    }
+
+    &::-webkit-scrollbar:vertical {
+        display: none;
     }
 }
-.dropdownPaper {
-    // min-width: 257px !important
-}
+
+
 .hide{
     display: none;
 }

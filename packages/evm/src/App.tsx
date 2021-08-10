@@ -63,7 +63,6 @@ function App() {
       >
       <CRXContainer className="mainContainer" maxWidth="xl" disableGutters={true}>
         <Routes />
-        <TestModalPage />
       </CRXContainer>
       </main>
 
