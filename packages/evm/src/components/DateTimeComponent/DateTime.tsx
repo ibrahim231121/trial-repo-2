@@ -1,99 +1,114 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import DatePickerIcon from "./DatePickerIcon";
 import { CRXDropDown, CRXSelectBox, CRXDropContainer } from "@cb/shared";
-//import { dateOptions } from "../../utils/constant";
+import { basicDateDefaultValue, approachingDateDefaultValue, dateOptions , dateOptionsTypes} from "../../utils/constant";
 import "./DateTime.scss";
-import { DateContext } from "./DateContext";
+import { DateContext, DateTimeObject, DateTimeProp } from "./index";
 import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
-type Props = {
-  getStartDate: (v: string) => void;
-  getEndDate: (v: string) => void;
-  getSelectedDateOptionValue:(v: string) => void;
-  minDate?: string;
-  maxDate?: string;
-  defaultValue?: string;
-  reset: boolean;
-  showChildDropDown: boolean;
-  disabled?: boolean;
-  dateOptions: any
-};
-const DateTime: React.FC<Props> = ({
-  getStartDate,
-  getEndDate,
-  getSelectedDateOptionValue,
-  minDate,
-  maxDate,
-  showChildDropDown,
-  disabled,
-  dateOptions, defaultValue,reset
-}) => {
+import { useState } from "react";
+import moment from 'moment';
+
+const DateTime = () => {
+
   const {
-    setSelectedOption,
-    selectedOptionValue,
-    endDate,
-    startDate,
-    setStartDateValue,
-    setEndDateValue,setDefaultValue
-  } = React.useContext(DateContext);
+
+    disabled,
+    onSelectionChange,
+    openContainerState,
+    setOpenContainerState,
+    showCompact,
+    dateTimeDetail,
+    getDateTimeDropDown,
+    dateOptionType,   
+    reset,
+    minDate,
+    maxDate
+  } = useContext(DateContext);
+
   const ref: any = React.useRef(null);
-  const [open, setOpen] = React.useState(false);
-  const [openContainerState, setOpenContainerState] = React.useState(false);
 
-  const [dropDownValue, setDropDownValue] = React.useState(null);
-  const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions);
+  const [dateOptionsValues, setDateOptions]= useState<Array<DateTimeProp|undefined>>([]);
+  const [selectedDateOptionType, setSelectedDateOptionType] = useState<string>(dateOptionType);
 
-  //runs only on mount
-  React.useEffect(() => {
-    if (dateOptions && dateOptions.length > 0) {
-      let firstOption = dateOptions[0]
-      setDateOptionsState(dateOptions);
-      setSelectedOption(defaultValue, dateOptions)
+  const customRange = "customRange";
+
+  useEffect(()=>{
+    changeDateOption();
+
+  },[])
+
+  useEffect(()=>{
+
+    if(dateOptionType !== selectedDateOptionType){
+      setSelectedDateOptionType(dateOptionType);
+      changeDateOption();
     }
-    if (defaultValue) {
-      setDefaultValue(defaultValue)
+  },[dateOptionType])
+
+  useEffect(()=>{
+
+    if(reset){
+        var defaultValue : string = '';
+        if(dateOptionType === dateOptionsTypes.basicoptions){
+          defaultValue = basicDateDefaultValue;
+        }
+
+        else if(selectedDateOptionType === dateOptionsTypes.approachingDeletion){
+          defaultValue = approachingDateDefaultValue;
+        }
+
+        var dateValue  = dateOptionsValues.find(x=> x?.value === defaultValue);
+        if(dateValue != null){
+
+          var defaultDateValue : DateTimeObject = {
+            startDate : dateValue.startDate(),
+            endDate : dateValue.endDate(),
+            value : dateValue.value,
+            displayText : dateValue.displayText
+          }
+          getDateTimeDropDown(defaultDateValue);
+        }
+
+        var nonCustomDataOptionsValues = dateOptionsValues.filter(x=> x?.value !== customRange)
+        setDateOptions(nonCustomDataOptionsValues);
     }
-  }, []);
-  useEffect(() => {
-    if (reset) {
-    setSelectedOption(defaultValue, dateOptions)
+
+  },[reset])
+
+  const changeDateOption = () =>{
+
+    let dateValues : (DateTimeProp | undefined)[] = [];
+    if(dateOptionType === dateOptionsTypes.basicoptions ){
+      dateValues = dateOptions.basicoptions;
+    }else if(dateOptionType === dateOptionsTypes.approachingDeletion ){
+      dateValues = dateOptions.approachingDeletion;
+    }else{
+      dateValues = dateOptions.basicoptions;
     }
-  }, [reset])
-  //runs when start date or end date changes
-  React.useEffect(() => {
-    getStartDate(startDate);
-    getEndDate(endDate);
-    getSelectedDateOptionValue(selectedOptionValue)
-  }, [endDate, startDate,selectedOptionValue]);
+
+    if(!showCompact){
+      setDateOptions(dateValues);
+    }
 
 
-  const onSelectionChange = (e: any) => {
-    const { value } = e.target;
-    if (value === "custom") {
-      setStartDateValue("");
-      setEndDateValue("");
-      setOpenContainerState(true);
-    }
-    else {
-      const find = dateOptionsState.filter((x: any) => x.value !== "customRange");
-      setDateOptionsState(find);
-      setDropDownValue(null);
-    }
-    setSelectedOption(value, dateOptions);
-  };
+    else if(showCompact && (minDate === "" || minDate === undefined)  && ( maxDate === "" || maxDate === undefined) ){
+      let requiredDateOptions = dateValues.filter((x, i) => {
 
-  React.useEffect(() => {
-    getStartDate(startDate);
-    getEndDate(endDate);
-  }, [endDate, startDate]);
-
-  React.useEffect(() => {
-    if (dateOptions && dateOptions.length > 0) {
-      let firstOption = dateOptions[0]
-      setDateOptionsState(dateOptions);
-      setSelectedOption(defaultValue, dateOptions)
+        if (x && moment(x.startDate()) >=  moment(dateTimeDetail.startDate) &&
+          moment(x.endDate()) <= moment(dateTimeDetail.endDate)) { // add this check because by default it is showing DateTimeProp or undefined . 
+            return x;       
+        }
+      });
+  
+      if(requiredDateOptions != null && requiredDateOptions.length > 0 ){
+        setDateOptions(requiredDateOptions);
+      }
     }
-  }, [dateOptions]);
+    else if (showCompact && minDate !== "" && maxDate !== ""){
+      setDateOptions(dateValues);
+    }
 
+  }
 
   const convertDateTime = (date: string) => {
     const newDate = date.split("T");
@@ -102,47 +117,60 @@ const DateTime: React.FC<Props> = ({
     newDate[1] = convertTimeToAmPm(newDate[1]);
     return newDate;
   };
-  const setDropDownValueFunction = (v: any) => {
-    const find = dateOptionsState.filter((x: any) => x.value !== "customRange");
-    if (v === "customRange") {
-      setDropDownValue(v);
-      const newStartDateTime = convertDateTime(startDate);
-      const newEndDateTime = convertDateTime(endDate);
-      find.push({
-        value: "customRange",
-        displayText: `${newStartDateTime[0]}  ${newStartDateTime[1]}  -  ${newEndDateTime[0]}   ${newEndDateTime[1]} `,
-      });
-      setDateOptionsState(find);
-    } else {
-      setDateOptionsState(dateOptions);
-      setSelectedOption(v, dateOptions);
-      setDropDownValue(null);
+
+
+  const onOptionChange = (e: any, startDate : string = "", endDate : string = "", isCustomRange : boolean = false) => {
+    
+    const { value } = e.target;
+    if (value === "custom" && !openContainerState ) {
+      setOpenContainerState(true);
     }
+    else if (isCustomRange ) {
+      const filterDataValues = dateOptionsValues.filter((x: DateTimeProp | undefined) => x?.value !== customRange);
+
+      const newStartDateTime = startDate &&  convertDateTime(startDate);
+      const newEndDateTime = endDate &&  convertDateTime(endDate);
+
+      var dateTime = {
+        value: customRange,
+        displayText: `${newStartDateTime[0]}  ${newStartDateTime[1]}  -  ${newEndDateTime[0]}   ${newEndDateTime[1]} `,
+        endDate : ()=> endDate,
+        startDate : () => startDate
+      }
+
+      var datesOptionWithCustomRange = filterDataValues.concat(dateTime);
+      setDateOptions(datesOptionWithCustomRange);
+      onSelectionChange(dateTime)
+
+    }
+    else {
+      const dateOption = dateOptionsValues.find((x: DateTimeProp|undefined) => x?.value === value);
+      onSelectionChange(dateOption);
+    }
+
   };
 
-  const data = (
-    <DatePickerIcon
-      dropDownCustomValue={(v: any) => setDropDownValueFunction(v)}
-      minDate={minDate}
-      maxDate={maxDate}
-      showChildDropDown={showChildDropDown}
-      dateOptions={dateOptions}
-    />
-  );
+  const data = ( 
+            <DatePickerIcon 
+              dateOptionsValues={dateOptionsValues}
+              onOptionChange ={onOptionChange}
+              setDateOptions = { (dateOptions : (DateTimeProp | undefined)[]) =>{ setDateOptions(dateOptions)}} 
+               />
+            );
+
   const img = <i className="far fa-calendar-alt"></i>;
   return (
     <div className="dateRangeContainer" ref={ref}>
       <CRXDropDown
-        value={dropDownValue ? dropDownValue : selectedOptionValue}
-        onChange={onSelectionChange}
-        options={dateOptionsState}
-        disabled={disabled}
-      >
+        value={dateTimeDetail.value}
+        onChange={onOptionChange}
+        options={dateOptionsValues}
+        disabled={disabled}>
         <CRXDropContainer
           icon={img}
           content={data}
           openState={openContainerState}
-          stateStatus={(a: any) => setOpenContainerState(a)}
+          stateStatus={(status: boolean) => setOpenContainerState(status)}
         />
       </CRXDropDown>
     </div>

@@ -1,41 +1,27 @@
 import React, { useState, useCallback, useEffect } from "react";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
 import IconButton from '@material-ui/core/IconButton';
-import { SortableContainer, SortableElement } from "react-sortable-hoc";
 import { Order, OrderData, useStyles, DataTableProps, theme} from "./CRXDataTableTypes"
-import Button from '@material-ui/core/Button';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import TablePagination from '@material-ui/core/TablePagination';
 import DataTableToolbar from "./CRXDataTableToolbar"
 import { ThemeProvider } from '@material-ui/core/styles';
-import Draggable from "react-draggable";
-import { DragDropContext, Droppable, Draggable as DragDnd } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import DeleteIcon from "@material-ui/icons/Delete";
 import RootRef from "@material-ui/core/RootRef";
 import List from "@material-ui/core/List";
-import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Grid from "@material-ui/core/Grid";
-import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox';
 import './CRXDataTable.scss';
 import {useTranslation} from 'react-i18next'; 
+import DataTableContainer from "./CRXDataTableContainer"
 
-export default function CRXDataTable(props: DataTableProps) {
-  const {dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, closePopupIcon, onClearAll,showToolbar} = props;
+const CRXDataTable: React.FC<DataTableProps> = ({dataRows, headCells, orderParam, orderByParam, className, searchHeader, columnVisibilityBar, allowDragableToList, allowRowReOrdering, actionComponent, closePopupIcon, onClearAll, onResizeRow, getSelectedItems}) => {
   const classes = useStyles();
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
-  const [checkBoxClass, setCheckClass] = React.useState(false);
   const [orderData, setOrderData] = React.useState<OrderData>({order: orderParam, orderBy: orderByParam});
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
@@ -113,10 +99,6 @@ export default function CRXDataTable(props: DataTableProps) {
     return containers.dataTable.rows
   }
 
-  const createSortHandler = (property: any) => () => {
-    handleRequestSort(property);
-  };
-
   const handleRequestSort = async (property: any) => {
     const isAsc = orderData.orderBy === property && orderData.order === 'asc';
     setOrderData({order: (isAsc ? 'desc' : 'asc'), orderBy: property})
@@ -130,27 +112,19 @@ export default function CRXDataTable(props: DataTableProps) {
       setOpen(true)
   },[orderData])
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelecteds = containers.dataTable.rows.map((n: any) => n[keyId]);
-      setSelectedItems(newSelecteds);
-      return;
-    }
-    setSelectedItems([]);
-  };
-
-  const handleClick = (rawData: any) => {
-    const {id} = rawData
-    const found=selectedItems.find((row:any)=>row.id===id)
+  const handleClick = (row: any) => {
+    const {id} = row
+    const found=selectedItems.find((selectedItem:any)=>selectedItem.id===id)
     if (found) {
-    const newSelected=  selectedItems.filter((row:any)=>row.id!==id)
+    const newSelected=  selectedItems.filter((selectedItem:any)=>selectedItem.id!==id)
       setSelectedItems(newSelected)
     }else{
-      setSelectedItems(prev=>[...prev,rawData])
+      setSelectedItems(prev=>[...prev,row])
     }
   };
+
   useEffect(() => {
-    props.getSelectedItems(selectedItems)
+    getSelectedItems(selectedItems)
   }, [selectedItems])
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -180,10 +154,6 @@ export default function CRXDataTable(props: DataTableProps) {
     }
     console.log(e, targetHead)
   }
-  const isSelected = (id: string) => {
-    const findIndex= selectedItems.findIndex((val:any)=>val.id==id)
-    return findIndex === -1 ? false:true
-  }
 
   function onColumnVisibility(){
     let a = 0;
@@ -199,9 +169,6 @@ export default function CRXDataTable(props: DataTableProps) {
       }
     })
     setOpen(!open)
-  }
-  function onReOrdering(orderColumnParam: number[]){
-    setOrderColumn(orderColumnParam)
   }
 
   const onDragEnd = ({ source, destination }: any) => {
@@ -279,22 +246,6 @@ export default function CRXDataTable(props: DataTableProps) {
     }
   };
 
-  const resizeRow = (props:any) => {
-      const { colIdx, deltaX } = props;
-      let value = headCells[colIdx].minWidth
-
-      let x = parseInt(value) + parseInt(deltaX)
-      headCells[colIdx].minWidth = x.toString()  
-      if(open === true )
-        setOpen(false)
-      else
-        setOpen(true)  
-    }
-
-  const onClearAllFilter = () => {
-    onClearAll()
-  }
-
   return (
     <DragDropContext onDragEnd={onDragEnd} >
       {Object.values(containers).map((container: any) => {
@@ -305,238 +256,44 @@ export default function CRXDataTable(props: DataTableProps) {
               <ThemeProvider theme={theme}>
               <div className={classes.root}>
                 
-                {
-                  showToolbar==true?
-                (<DataTableToolbar 
-                    numSelected={selectedItems.length} 
-                    headCells={headCells} 
-                    rowCount={container.rows.length}
-                    columnVisibilityBar={columnVisibilityBar}
-                    onChange={onColumnVisibility}
-                    onClearAll={onClearAllFilter}
-                    onReOrder={onReOrdering} 
-                    closePopupIcon={closePopupIcon}
-                    orderingColumn={orderColumn}/>)
-                    :null
-                }
-                <TableContainer className={classes.container + " AssetsDataGrid " + className} component={Paper}>
-                <Table 
-                  className={"CRXDataTableCustom " + classes.table} 
-                  style={{width: `${((allColHide === undefined || allColHide) ? '188px':'100%')}`}}
-                  aria-label="simple table"
-                  size='small'
-                  stickyHeader>
-                  <DragableHead lockAxis="x" 
-                    hideSortableGhost={false} helperClass="helperClass" axis="x" onSortEnd={onReorderEnd} onSortStart={onMoveReorder}>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: '55px', minWidth: "55px", left: 0, position: "sticky", zIndex: 4}}>
-                    </TableCell>
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
-                    </TableCell>  
-                    <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                        style={{width: '80px', minWidth: '80px', left: 113, position: "sticky", zIndex: 4}}>
-                        {t('Actions')}
-                    </TableCell> 
-                    {orderColumn.map((colIdx, i) => (
-                      //index needs to be CURRENT
-                      //key needs to be STATIC
-                      <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
-                          style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
-                          align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
-                        <div className={classes.headerCellDiv + " crxTableHeaderSize"}
-                        style={
-                          {
-                            minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
-                            maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
-                          }
-                        } 
-                        >
-                        <div className={classes.headerStickness}
-                            key={headCells[colIdx].id}>
-                          <label> 
-                              {headCells[colIdx].label} 
-                          </label>
-                        </div>
-                        <div className="gridSortResize">
-                        {(headCells[colIdx].sort === true) ? (
-                        
-                              <span  className="GridSortIcon"                         
-                                onClick={createSortHandler(headCells[colIdx].id)}
-                                >
-                                {(orderData.orderBy === headCells[colIdx].id) ? (
-                                    <span> 
-                                    {orderData.order === 'desc' ? 
-                                      <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                          <i className="fas fa-sort-up"></i>                                       
-                                      </IconButton>
-                                      : 
-                                      <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                           <i className="fas fa-sort-down"></i>
-                                      </IconButton>
-                                      }
-                                    </span>
-                                ) : 
-                                <IconButton aria-label="expand row" size="small" className={classes.iconArrows}>
-                                     <i className="fas fa-sort"></i>
-                                </IconButton>
-                              }
-                              </span>
-                          ) : (
-                            null
-                          )
-                        }    
-                        <Draggable
-                          axis="none"
-                          defaultClassName="DragHandle"
-                          defaultClassNameDragging="DragHandleActive"
-                          onDrag={(_, { deltaX }) =>
-                            resizeRow({
-                              colIdx,
-                              deltaX
-                            })
-                          }
-                          position={{ x: 0, y: 0}}
-                        >
-                          <span className="DragHandleIcon"></span>
-                        </Draggable>
-                        </div>
-                        </div>  
-                           
-                      </TableCell>  
-                    ))}
-                  </DragableHead>
-                  {searchHeader === true ? 
-                    <TableHead>
-                    <TableRow>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead tableSearchHead"} 
-                          style={{left: 0, position: "sticky", zIndex: 4}}>
-                      </TableCell>
-                      <TableCell padding="checkbox" className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-                          style={{left: 55, position: "sticky", zIndex: 4}}>
-                      </TableCell>
-                      <TableCell className={classes.searchHeaderStickness + " TableSearchAbleHead"} 
-                          style={{left: 113, position: "sticky", zIndex: 4}}>
-                        <div className={selectedItems.length > 1 ? "" : "disableHeaderActionMenu" }>{props.actionComponent} </div>   
-                      </TableCell>
-                      {orderColumn.map((colIdx, _) => (
-                          <TableCell className={classes.searchHeaderStickness  + " TableSearchAbleHead"} 
-                            style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
-                            key={colIdx}
-                            align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                            //padding={headCells[colIdx].disablePadding ? 'none' : 'default'}
-                            sortDirection={orderData.orderBy === headCells[colIdx].id ? orderData.order : false}
-                          >    
-                            {headCells[colIdx].searchFilter === true ? 
-                                headCells[colIdx].searchComponent(container.rows, headCells, colIdx)
-                                :
-                                null
-                            }
-                          </TableCell>
-                      ))}
-                    </TableRow>
-                    </TableHead>
-                    :
-                    null
-                  }
-                  <Droppable droppableId={container.id} key={container.id}>
-                  {(provided: any) => (
-                    <RootRef rootRef={provided.innerRef}>
-                      <TableBody>
-                        {
-                          container.rows
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row : any, index: number) => {
-                            const isItemSelected = isSelected(row.id);
-                            const labelId = `checkbox with default color-${index}`;
-                            return (
-                              <React.Fragment key={index}>
-                                      <TableRow hover
-                                        key={row[keyId]}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        selected={isItemSelected}
-                                      >
-                                        <TableCell className="DataTableBodyCell col-one" scope="row">
-                                        <DragDnd draggableId={row[keyId].toString()} key={row[keyId]} index={index}>
-                                        {(provided: any) => (
-                                                <ListItem 
-                                                  className="draggableCellIcon"
-                                                  key={row[keyId]}
-                                                  role={undefined}
-                                                  dense
-                                                  button
-                                                  ContainerComponent="div"
-                                                  ContainerProps={{ ref: provided.innerRef }}
-                                                  {...provided.draggableProps}
-                                                  {...provided.dragHandleProps}
-                                                  >
-                                                  <DragIndicatorIcon />
-                                                  <ListItemSecondaryAction>
-                                                      <IconButton
-                                                        edge="end"
-                                                        aria-label="comments"
-                                                        question-uid={row[keyId]}
-                                                      >
-                                                      </IconButton>
-                                                  </ListItemSecondaryAction>
-                                                </ListItem>
-                                              )}
-                                        </DragDnd> 
-                                        </TableCell>
-                                        <TableCell className="DataTableBodyCell CellCheckBox col-two" scope="row">
-                                          <CRXCheckBox onClick={() => handleClick(row)}
-                                            checked={isItemSelected}
-                                            inputProps={ labelId }
-                                            selectedRow={isItemSelected}
-                                            lightMode={true}
-                                          />
-                                        </TableCell>
-                                        <TableCell className="DataTableBodyCell col-three" scope="row">
-                                        <span onClick={()=>props.getRowOnActionClick(row)}>
-                                          {props.actionComponent}  
-                                        </span>
-                                        </TableCell>
-                                        {orderColumn.map((colIdx, i) =>
-                                              <TableCell className="DataTableBodyCell"  key={i}
-                                                align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}
-                                                style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible  === true) ? "" : "none"}`}}>
-                                                {headCells[colIdx].detailedDataComponent !== undefined ? 
-                                                    (headCells[colIdx].dataComponent(row[headCells[colIdx].id],row[headCells[colIdx].detailedDataComponentId !== undefined ?
-                                                                                          headCells[colIdx].detailedDataComponentId
-                                                                                          :
-                                                                                          headCells[colIdx].id
-                                                                                        ]
-                                                                                      )
-                                                    )
-                                                    : 
-                                                    (headCells[colIdx].dataComponent(row[headCells[colIdx].id]))
-                                                }
-                                              </TableCell>
-                                        )}
-                                    </TableRow>
-                              </React.Fragment>
-                            );
-                          }
-                        )}
-                        {provided.placeholder}
-                        </TableBody>
-                    </RootRef>
-                  )}
-                </Droppable>
-              </Table>
-              </TableContainer>
-              <TablePagination
-                className="dataTablePages" 
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={container.rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
+              <DataTableToolbar 
+                  numSelected={selectedItems.length} 
+                  headCells={headCells} 
+                  rowCount={container.rows.length}
+                  columnVisibilityBar={columnVisibilityBar}
+                  onChange={onColumnVisibility}
+                  onClearAll={() => onClearAll()}
+                  onReOrder={(e: number[]) => setOrderColumn(e)} 
+                  closePopupIcon={closePopupIcon}
+                  orderingColumn={orderColumn}/>
+                <DataTableContainer 
+                  orderColumn={orderColumn}
+                  headCells={headCells}
+                  orderData={orderData}
+                  selectedItems={selectedItems}
+                  container={container}
+                  actionComponent={actionComponent}
+                  className={className}
+                  searchHeader={searchHeader}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  keyId={keyId}
+                  onHandleClick={handleClick}
+                  onHandleRequestSort={handleRequestSort}
+                  onMoveReorder={onMoveReorder}
+                  onReorderEnd={(e:any, _)=>onReorderEnd(e,_)}
+                  onResizeRow={(e:any)=>onResizeRow(e)}
+                  allColHide={allColHide}/>
+                <TablePagination
+                  className="dataTablePages" 
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={container.rows.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
               
               </div>
               </ThemeProvider>
@@ -599,17 +356,7 @@ export default function CRXDataTable(props: DataTableProps) {
   );
 }
 
-//Use the react-sortable-hoc wrappers around the matui elements
-const DragableHead = SortableContainer(( props: any) => {
-  return (
-    <TableHead>
-      <TableRow>
-        {props.children}
-      </TableRow>
-    </TableHead>
-  );
-});
+export default CRXDataTable;
 
-const DragableCell = SortableElement(( props: any) => {
-  return <>{props.value}</>;
-});
+
+

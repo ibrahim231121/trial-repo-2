@@ -11,15 +11,22 @@ import {
   CRXColumn,
   CRXRows,
 } from "@cb/shared";
-import DateTimeComponent from "../../../../components/DateTimeComponent";
+import { DateTimeComponent } from "../../../../components/DateTimeComponent";
 import moment from "moment";
 import "./ManageAssetGrid.scss";
 import thumbImg from "../../../../Assets/Images/thumb.png";
 import { useTranslation } from "react-i18next";
-import { basicDateOptions } from "../../../../utils/constant";
+import {
+  dateOptions,
+  dateOptionsTypes,
+  basicDateDefaultValue,
+  approachingDateDefaultValue,
+} from "../../../../utils/constant";
 import ActionMenu from "../ActionMenu";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
+import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
+import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
 
 type Order = "asc" | "desc";
 
@@ -32,13 +39,20 @@ type SearchObject = {
 type DateTimeProps = {
   startDate: string;
   endDate: string;
+  value: string;
+  displayText: string;
   colIdx: number;
 };
 
+type DateTimeObject = {
+  startDate: string;
+  endDate: string;
+  value: string;
+  displayText: string;
+};
+
 interface HeadCellProps {
-  //disablePadding: boolean;
   id: any;
-  //value: any;
   label: string;
   align: string;
   sort?: boolean;
@@ -51,6 +65,7 @@ interface HeadCellProps {
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
   headerArray?: [];
+  headerObject?: any;
   detailedDataComponentId?: string;
   detailedDataComponent?: any;
 }
@@ -61,7 +76,7 @@ type Asset = {
   camera: string;
   assetType: string;
   recordingStarted: string;
-}
+};
 
 const thumbTemplate = (rowData: any) => {
   return (
@@ -73,62 +88,12 @@ const thumbTemplate = (rowData: any) => {
     </>
   );
 };
-
-const textTemplate = (text: string) => {
-  return <div className="filterOption">{text}</div>;
-};
-
 //-----------------
 const assetNameTemplate = (rowData: string, assets: Asset[]) => {
   return (
     <>
-      <div className="alignLeft linkColor">
-        {rowData}
-      </div>
+      {textDisplay(rowData, "linkColor")}
       <DetailedAssetPopup asset={assets} />
-    </>
-  );
-};
-
-const assetTypeTemplate = (rowData: any) => {
-  return (
-    <>
-      <div className="alignLeft">{rowData}</div>
-    </>
-  );
-};
-const assetUnitTemplate = (rowData: any) => {
-  return (
-    <>
-      <div className="alignLeft">{rowData}</div>
-    </>
-  );
-};
-const assetCategoryTemplate = (rowData: any) => {
-  return (
-    <>
-      <div className="alignLeft">
-        {rowData.map((item: any) => item).join(", ")}
-      </div>
-    </>
-  );
-};
-const assetRecordedByTemplate = (rowData: any[]) => {
-  return (
-    <>
-      <div className="alignLeft linkColor">
-        {rowData.map((item: any) => item).join(", ")}
-      </div>
-    </>
-  );
-};
-const assetHolduntillTemplate = (rowData: any) => {
-  return dateDisplayFormat(rowData);
-};
-const assetStatusTemplate = (rowData: any) => {
-  return (
-    <>
-      <div className="alignLeft">{rowData}</div>
     </>
   );
 };
@@ -157,18 +122,6 @@ const MasterMain: React.FC<any> = (props) => {
     reformattedRows.push(obj);
   });
 
-  let requiredDateOptions = basicDateOptions.map((x, i) => {
-    if (x.value === "custom") return x;
-    if (
-      DateFormat(x.startDate()) >=
-      DateFormat(props.dateTimeDropDown.startDate) &&
-      DateFormat(x.endDate()) <= DateFormat(props.dateTimeDropDown.endDate) &&
-      x.value != "custom"
-    )
-      return x;
-  });
-  requiredDateOptions = requiredDateOptions.filter((x) => x != undefined);
-
   const { t } = useTranslation<string>();
   const [rows, setRows] = React.useState<any[]>(reformattedRows);
   const [order, setOrder] = React.useState<Order>("asc");
@@ -176,18 +129,23 @@ const MasterMain: React.FC<any> = (props) => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<{}>();
+
+  const [showDateCompact, setShowDateCompact] = React.useState(props.showDateCompact);
+
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     startDate: "",
     endDate: "",
+    value: "",
+    displayText: "",
     colIdx: 0,
   });
 
-  const SearchText = (
+  const searchText = (
     rowsParam: any[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
-    function handleChange(e: any, colIdx: number) {
+    function handleChange(e: any) {
       selectChange(e, colIdx);
       headCells[colIdx].headerText = e.target.value;
     }
@@ -200,7 +158,7 @@ const MasterMain: React.FC<any> = (props) => {
             : headCells[colIdx].headerText
         }
         id={"CRX_" + colIdx.toString()}
-        onChange={(e: any) => handleChange(e, colIdx)}
+        onChange={(e: any) => handleChange(e)}
       />
     );
   };
@@ -212,48 +170,70 @@ const MasterMain: React.FC<any> = (props) => {
   ) => {
     let reset: boolean = false;
 
+    let dateTimeObject: DateTimeProps = {
+      startDate: "",
+      endDate: "",
+      value: "",
+      displayText: "",
+      colIdx: 0,
+    };
+
     if (
-      headCells[colIdx].headerText === "filled" ||
-      headCells[colIdx].headerText === undefined
+      headCells[colIdx].headerObject !== null ||
+      headCells[colIdx].headerObject === undefined
     )
       reset = false;
     else reset = true;
 
-    function startDatehandleChange(val: any, colIdx: number) {
-      setDateTime((state: DateTimeProps) => ({
-        ...state,
-        ["startDate"]: val,
-        ["colIdx"]: colIdx,
-      }));
-      headCells[colIdx].headerText = "filled";
+    if (
+      headCells[colIdx].headerObject === undefined ||
+      headCells[colIdx].headerObject === null
+    ) {
+      dateTimeObject = {
+        startDate: props.dateTimeDetail.startDate,
+        endDate: props.dateTimeDetail.endDate,
+        value: props.dateTimeDetail.value,
+        displayText: props.dateTimeDetail.displayText,
+        colIdx: 0,
+      };
+    } else {
+      dateTimeObject = {
+        startDate: headCells[colIdx].headerObject.startDate,
+        endDate: headCells[colIdx].headerObject.endDate,
+        value: headCells[colIdx].headerObject.value,
+        displayText: headCells[colIdx].headerObject.displayText,
+        colIdx: 0,
+      };
     }
 
-    function endDatehandleChange(val: any) {
-      setDateTime((state: DateTimeProps) => ({ ...state, ["endDate"]: val }));
-      headCells[colIdx].headerText = "filled";
+    function onSelection(dateTime: DateTimeObject) {
+      dateTimeObject = {
+        startDate: dateTime.startDate,
+        endDate: dateTime.endDate,
+        colIdx: colIdx,
+        value: dateTime.value,
+        displayText: dateTime.displayText,
+      };
+
+      setDateTime(dateTimeObject);
+      headCells[colIdx].headerObject = dateTimeObject;
     }
 
     return (
       <CRXColumn item xs={11}>
         <DateTimeComponent
-          getStartDate={(val: any) => startDatehandleChange(val, colIdx)}
-          getEndDate={(val: any) => endDatehandleChange(val)}
-          minDate={moment(props.dateTimeDropDown.startDate)
-            .local()
-            .format("YYYY-MM-DDTHH:MM")}
-          maxDate={moment(props.dateTimeDropDown.endDate)
-            .local()
-            .format("YYYY-MM-DDTHH:MM")}
-          //showChildDropDown={true}
-          dateOptions={requiredDateOptions}
-          defaultValue={props.dateTimeDropDown.selectedDateOptionValue}
+          showCompact={showDateCompact}
           reset={reset}
-          getSelectedDateOptionValue={(v: string) => { }}
+          dateTimeDetail={dateTimeObject}
+          getDateTimeDropDown={(dateTime: DateTimeObject) => {
+            onSelection(dateTime);
+          }}
+          dateOptionType={props.dateOptionType}
         />
       </CRXColumn>
     );
   };
-  
+
   const searchDropDown = (
     rowsParam: any[],
     headCells: HeadCellProps[],
@@ -387,8 +367,7 @@ const MasterMain: React.FC<any> = (props) => {
       if (filterValue.length > 0) {
         setButtonState(true);
         setOpenState(false);
-      }
-      else {
+      } else {
         setButtonState(false);
         setOpenState(true);
       }
@@ -465,6 +444,7 @@ const MasterMain: React.FC<any> = (props) => {
       </div>
     );
   };
+
   const SearchMultiDropDown = (
     rowsParam: any[],
     headCells: HeadCellProps[],
@@ -472,6 +452,7 @@ const MasterMain: React.FC<any> = (props) => {
   ) => {
     return MultiDropDown(rowsParam, headCells, colIdx, true);
   };
+
   const NonSearchMultiDropDown = (
     rowsParam: any[],
     headCells: HeadCellProps[],
@@ -485,10 +466,10 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("ID")}`,
       id: "id",
       align: "right",
-      dataComponent: textTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: SearchText,
+      searchComponent: searchText,
       keyCol: true,
       visible: false,
       minWidth: "120",
@@ -508,7 +489,7 @@ const MasterMain: React.FC<any> = (props) => {
       dataComponent: assetNameTemplate,
       sort: true,
       searchFilter: true,
-      searchComponent: SearchText,
+      searchComponent: searchText,
       minWidth: "180",
       detailedDataComponentId: "asset",
       detailedDataComponent: DetailedAssetPopup,
@@ -517,7 +498,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("AssetType")}`,
       id: "assetType",
       align: "left",
-      dataComponent: assetTypeTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: SearchMultiDropDown,
@@ -528,17 +509,17 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Description")}`,
       id: "description",
       align: "left",
-      dataComponent: assetUnitTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: SearchText,
+      searchComponent: searchText,
       minWidth: "200",
     },
     {
       label: `${t("Categories")}`,
       id: "categories",
       align: "left",
-      dataComponent: assetCategoryTemplate,
+      dataComponent: (e: any) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: SearchMultiDropDown,
@@ -548,7 +529,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Device")}`,
       id: "devices",
       align: "left",
-      dataComponent: textTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: NonSearchMultiDropDown,
@@ -559,7 +540,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Station")}`,
       id: "station",
       align: "left",
-      dataComponent: textTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: NonSearchMultiDropDown,
@@ -570,7 +551,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Username")}`,
       id: "recordedBy",
       align: "left",
-      dataComponent: assetRecordedByTemplate,
+      dataComponent: (e: any) => multitextDisplay(e, "linkColor"),
       sort: true,
       searchFilter: true,
       searchComponent: SearchMultiDropDown,
@@ -580,7 +561,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Captured")}`,
       id: "recordingStarted",
       align: "center",
-      dataComponent: assetHolduntillTemplate,
+      dataComponent: dateDisplayFormat,
       sort: true,
       minWidth: "120",
       searchFilter: true,
@@ -590,7 +571,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("FileStatus")}`,
       id: "status",
       align: "left",
-      dataComponent: assetStatusTemplate,
+      dataComponent: (e: any) => textDisplay(e, ""),
       sort: true,
       minWidth: "110",
       searchFilter: true,
@@ -761,11 +742,24 @@ const MasterMain: React.FC<any> = (props) => {
   }
 
   const onClearAll = () => {
-    
     setSearchData([]);
     let headCellReset = headCells.map((headCell, i) => {
       headCell.headerText = "";
       headCell.headerArray = [];
+      return headCell;
+    });
+    setHeadCells(headCellReset);
+  };
+
+  const resizeRow = (e: any) => {
+    const { colIdx, deltaX } = e;
+    let value = headCells[colIdx].minWidth;
+
+    let x = parseInt(value) + parseInt(deltaX);
+    //headCells[colIdx].minWidth = x.toString()
+
+    let headCellReset = headCells.map((headCell, i) => {
+      if (i === colIdx) headCell.minWidth = x.toString();
       return headCell;
     });
     setHeadCells(headCellReset);
@@ -790,7 +784,7 @@ const MasterMain: React.FC<any> = (props) => {
           allowDragableToList={false}
           className="ManageAssetDataTable"
           onClearAll={onClearAll}
-          
+          onResizeRow={resizeRow}
         />
       )}
     </>

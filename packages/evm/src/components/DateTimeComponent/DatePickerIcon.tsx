@@ -1,92 +1,109 @@
 import React, { useState,useContext } from "react";
 import { CRXSelectBox,CRXInputDatePicker,CRXButton ,CRXTooltip} from "@cb/shared";
+import { basicDateDefaultValue , approachingDateDefaultValue,  dateOptionsTypes} from "../../utils/constant";
+import { DateContext, DateTimeProp, DateTimeObject } from "./index";
 
-import { DateContext } from "./DateContext";
+
 
 type Props = {
-  dropDownCustomValue: (v: any) => void;
-  minDate?:string;
-  maxDate?:string;
-  showChildDropDown:boolean;
-dateOptions:any
+  onOptionChange: (v: any, startDate:string, endDate:string, isCustomRange:boolean) => void;
+  dateOptionsValues:Array<DateTimeProp|undefined>;
+  setDateOptions : (dateOptions:(DateTimeProp | undefined)[])=> void
 };
 
-const DatePickerIcon: React.FC<Props> = ({dropDownCustomValue , minDate,maxDate,showChildDropDown, dateOptions }) => {
-  const [start, setStart] = useState("")
-  const [end, setEnd] = useState("")
-
+  const DatePickerIcon : React.FC<Props> = ({onOptionChange,dateOptionsValues,setDateOptions}) => {
+ 
   const {
-    setStartDateValue,
-    setEndDateValue,
-    setSelectedOption,
-    selectedOptionValue,
-    startDate,
-    endDate,defaultValue
+    dateTimeDetail,
+    getDateTimeDropDown,
+    dateOptionType,
+    showCompact,
+    minDate,
+    maxDate
   } = useContext(DateContext);
-  React.useEffect(() => {
-    if (selectedOptionValue === "custom" && startDate && endDate) {
-      dropDownCustomValue("customRange");
+
+  const onReset = () => {
+    var dateValue : DateTimeProp | undefined ;
+    if(dateOptionType === dateOptionsTypes.basicoptions){
+        dateValue =  dateOptionsValues.find(x=> x?.value === basicDateDefaultValue);
     }
-  }, [startDate, endDate]);
-  const onChange = (e: any) => {
-    const { value } = e.target;
-    setSelectedOption(value,dateOptions);
-    dropDownCustomValue(value)
-  };
 
+    else if(dateOptionType === dateOptionsTypes.approachingDeletion){
+      dateValue =  dateOptionsValues.find(x=> x?.value === approachingDateDefaultValue);
+    }else{
+      dateValue =  dateOptionsValues.find(x=> x?.value === basicDateDefaultValue);
+    }
 
-  const onClear = () => {
-    setStartDateValue("");
-    setEndDateValue("");
-  //       if(dateOptions && dateOptions.length > 0 ){
-  //     let firstOption = dateOptions[0]
-  //     setSelectedOption(firstOption.value, dateOptions)
-  // }
-  setSelectedOption(defaultValue,dateOptions)
+    setDateOptions(dateOptionsValues.filter(x => x?.value !== "customRange"))
+
+    if(dateValue != null){
+      var defaultDateValue : DateTimeObject = {
+        startDate : dateValue.startDate(),
+        endDate : dateValue.endDate(),
+        value : dateValue.value,
+        displayText : dateValue.displayText
+    }
+      getDateTimeDropDown(defaultDateValue);
+    
+    }
 };
+
+
+   var startDate : string = dateTimeDetail.startDate.split("+")[0];
+   var endDate  : string  = dateTimeDetail.endDate.split("+")[0];
+
+   var minStartDate : string = "";
+   var maxEndDate : string = "";
+
+   if(showCompact && ( minDate && minDate !== "") && ( maxDate &&  maxDate !== "") ){
+
+    console.log("Min Date = " , minDate);
+    console.log("Min Date = " , maxDate);
+    
+    minStartDate = minDate.split("+")[0];
+    maxEndDate = maxDate.split("+")[0];     
+   }
+   else if(showCompact){
+    minStartDate = startDate;
+    maxEndDate = endDate;
+   }
+
+
 
   return (
     <div className="calenderContent">
       <div className="calenderDTP">
         <CRXInputDatePicker
-          value={startDate.split("+")[0]}
+          value={startDate}
           type="datetime-local"
-          // defaultValue={startDate.split("+")[0]}
-          onChange={(e: any) => {
-            setSelectedOption("custom",dateOptions)
-            setStart(e.target.value)
-            setStartDateValue(e.target.value)}}
-            minDate={minDate}
-            maxDate={maxDate}
+          onChange={(e: any) => { onOptionChange(e,e.target.value, dateTimeDetail.endDate,true)}}
+          minDate={minStartDate}
+          maxDate={maxEndDate}
         />
 
         <div className="centerContent">to</div>
         <CRXInputDatePicker
-          value={endDate.split("+")[0]}
+          value={endDate}
           type="datetime-local"
-          // defaultValue={endDate.split("+")[0]}
-          onChange={(e: any) => {
-            setSelectedOption("custom",dateOptions)
-            setEndDateValue(e.target.value)}}
-            minDate={minDate}
-            maxDate={maxDate}
+          onChange={(e: any) => { onOptionChange(e,dateTimeDetail.startDate,e.target.value, true)}}
+          minDate={minStartDate}
+          maxDate={maxEndDate}
         />
       </div>
 
-    {showChildDropDown &&   <div className="selectBoxContent">
+     <div className="selectBoxContent">
         <CRXSelectBox
-          value={selectedOptionValue}
+          value={dateTimeDetail.value}
           defaultOption={false}
-          // defaultValue={selectedOptionValue}
-          onChange={onChange}
-          options={dateOptions}
+          onChange={onOptionChange}
+          options={dateOptionsValues}
           className="daysSelection"
         />
         <CRXTooltip iconName="fas fa-info-circle" title="Select from pre-selection" placement="right" />
-      </div>}
+      </div>
 
       <div className="paperFooter" style={{marginTop:"25%"}}>
-        <CRXButton className="clearButton" color="primary" variant="contained" onClick={onClear}>
+        <CRXButton className="clearButton" color="primary" variant="contained" onClick={onReset}>
           Reset to default
         </CRXButton>
       </div>

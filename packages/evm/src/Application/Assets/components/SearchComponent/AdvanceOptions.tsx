@@ -3,8 +3,8 @@ import "./AdvancedSearch.scss";
 import AddIcon from "@material-ui/icons/Add";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import {advancedSearchOptions } from "../../utils/constants";
-import { basicDateOptions } from "../../../../utils/constant";
-import DateTimeComponent from "../../../../components/DateTimeComponent";
+import { dateOptions, basicDateDefaultValue } from "../../../../utils/constant";
+import {DateTimeComponent } from "../../../../components/DateTimeComponent";
 
 interface IOptions {
   value: string;
@@ -21,9 +21,18 @@ interface OptionsProps {
 interface Props {
   getOptions: (options: any) => void;
   hideOptions: () => void;
+  dateOptionType: string
+  dateTimeDetail : DateTimeObject
 }
 
-const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
+type DateTimeObject = {
+  startDate:string;
+  endDate:string;
+  value:string;
+  displayText:string;
+}
+
+const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions, dateOptionType, dateTimeDetail }) => {
   const selectRef = useRef<any>(null);
   const refs: any = [useRef(), useRef(), useRef()];
   const [selectsLength, setSelectsLength] = useState(1);
@@ -35,12 +44,12 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions }) => {
   const [options, setOptions] = useState<IOptions[]>(advancedSearchOptions);
   const [startDate, setStartDate] = React.useState("");	
   const [endDate, setEndDate] = React.useState("");
-  const [dateOptionsState, setDateOptionsState] = React.useState(basicDateOptions);
+  const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions.basicoptions);
   const [defaultDateValue, setDefaultDateValue] = React.useState("");
   const [selectedDateOptionValue, setSelectedDateOptionValue] = React.useState("");
   
   const [resetDateOptions, setResetDateOptions] = useState(false);
-
+  const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>(dateTimeDetail);;
 const initialState= advancedSearchOptions
   React.useEffect(() => {
    //cleanUp after unmounting
@@ -244,7 +253,7 @@ const initialState= advancedSearchOptions
         }
       }
     }
-    getOptions({options,startDate,endDate,selectedDateOptionValue});
+    getOptions({options,dateTimeDropDown});
   };
   
   React.useEffect(() => {
@@ -272,12 +281,10 @@ const initialState= advancedSearchOptions
          	</CRXColumn>
           <CRXColumn item xs={9}>	           
            <DateTimeComponent	
-                getStartDate={(val: any) => setStartDate(val)}	
-                getEndDate={(val: any) => setEndDate(val)}	
-                dateOptions={dateOptionsState}
-                defaultValue={defaultDateValue}
-                 getSelectedDateOptionValue={(v:any)=>setSelectedDateOptionValue(v)}
+            dateTimeDetail={dateTimeDropDown}
                  reset={resetDateOptions}
+                 getDateTimeDropDown = {(dateTime:any)=> setDateTimeDropDown(dateTime)}
+                 dateOptionType={dateOptionType}
               />	
              </CRXColumn> 	
         </CRXRows>

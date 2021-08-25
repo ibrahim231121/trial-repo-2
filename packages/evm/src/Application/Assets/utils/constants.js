@@ -5,7 +5,7 @@ const AssetStatus ={
     Trash : "Trash",   
 }
 
-const AssetShortCuts ={
+const AssetShortCuts = {
   NotCategorized : "Not Categorized",
   Trash:"Trash",
   ApproachingDeletion:"Approaching Deletion"

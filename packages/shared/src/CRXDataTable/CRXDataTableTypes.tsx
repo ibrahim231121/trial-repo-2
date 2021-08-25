@@ -144,6 +144,7 @@ export interface HeadCellProps {
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
   headerText?: string;
   headerArray?: [];
+  headerObject?: any;
   detailedDataComponentId?: string;
   detailedDataComponent?: any;
 }
@@ -174,11 +175,71 @@ export type DataTableProps = {
   actionComponent?: React.ReactNode;
   getSelectedItems: (v: any) => void;
   closePopupIcon?: any;
-  showToolbar: boolean;
-  getRowOnActionClick: (data:any) => void;
+  onResizeRow: (e: any) => void;
 };
 
 export type OrderData = {
   order: Order;
   orderBy: string;
+};
+
+export type DataTableContainerProps = {
+  orderColumn: number[];
+  headCells: HeadCellProps[];
+  orderData: OrderData;
+  selectedItems: string[];
+  container: any;
+  actionComponent: React.ReactNode;
+  className: string | undefined;
+  searchHeader: boolean | undefined;
+  page: number;
+  rowsPerPage: number;
+  keyId: string;
+  onHandleClick: (e: any) => void;
+  onHandleRequestSort: (e: any) => void;
+  onMoveReorder: (e: any) => void;
+  onReorderEnd: (e: any, _: any) => void;
+  onResizeRow: (e: any) => void;
+  allColHide: boolean;
+};
+
+export type DataTableBodyProps = {
+  page: number;
+  rowsPerPage: number;
+  orderColumn: number[];
+  selectedItems: string[];
+  headCells: HeadCellProps[];
+  container: any;
+  actionComponent: React.ReactNode;
+  keyId: string;
+  onSetSelectedItems: (e: string[]) => void;
+};
+
+export type SearchHeaderProps = {
+  orderColumn: number[];
+  selectedItems: string[];
+  headCells: HeadCellProps[];
+  orderData: OrderData;
+  container: any;
+  actionComponent: React.ReactNode;
+};
+
+export type DataTableHeaderProps = {
+  orderColumn: number[];
+  headCells: HeadCellProps[];
+  orderData: OrderData;
+  onHandleRequestSort: (e: any) => void;
+  onResizeRow: (e: any) => void;
+};
+
+export type DataTableClearFilterProps = {
+  columnVisibilityBar: boolean | undefined;
+  onClearAll: () => void;
+};
+
+export type DataTableCustomizeColumnsProps = {
+  headCells: HeadCellProps[];
+  orderingColumn: number[];
+  onReorder: (e: any) => void;
+  onChange: () => void;
 };

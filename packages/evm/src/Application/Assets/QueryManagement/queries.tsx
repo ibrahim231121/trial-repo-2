@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 let GetAssetsBySatus = (status : string) =>{
     return {
         bool:{
@@ -10,6 +12,8 @@ let GetAssetsBySatus = (status : string) =>{
     }
 }
 
+           
+
 let GetAssetsUnCategorized = (startDate : string, endDate :string) =>{
     return {
             bool: {
@@ -17,14 +21,14 @@ let GetAssetsUnCategorized = (startDate : string, endDate :string) =>{
                     {
                         range: {
                             "asset.recordingStarted": {
-                            gte: `${startDate}`,
+                            gte: `${moment(startDate).toISOString()}`,
                             },
                         },
                     },
                     {
                         range: {
                             "asset.recordingStarted": {
-                            lte: `${endDate}`,
+                            lte: `${moment(endDate).toISOString()}`,
                             },
                         },
                     },
@@ -49,14 +53,14 @@ let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
                 {
                     range: {
                         "asset.expiryDate": {
-                        gte: `${startDate}`,
+                        gte: `${moment(startDate).toISOString()}`,
                         },
                     },
-                },
+                }, 
                 {
                     range: {
                         "asset.expiryDate": {
-                        lte: `${endDate}`,
+                        lte: `${moment(endDate).toISOString()}`,
                         },
                     },
                 }

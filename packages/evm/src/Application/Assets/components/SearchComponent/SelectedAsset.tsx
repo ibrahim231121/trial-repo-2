@@ -4,12 +4,12 @@ import { CRXButton } from "@cb/shared";
 import "./PredictiveSearchBox/PredictiveSearchBox.scss";
 import queries from "../../QueryManagement/queries";
 import constants from '../../utils/constants'
-
+import { DateTimeObject } from '../../../../components/DateTimeComponent';
 interface Props {
   shortcutData: {
     text: string,
-    query:any,
-    renderData:() => any
+    query:Object,
+    renderData:(data : DateTimeObject | undefined) => void
   }[]
 }
 
