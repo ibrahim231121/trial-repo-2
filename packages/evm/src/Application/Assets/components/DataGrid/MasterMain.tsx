@@ -25,6 +25,7 @@ import {
 import ActionMenu from "../ActionMenu";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
+import AssetThumbnail from "./AssetThumbnail"
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
 
@@ -78,14 +79,12 @@ type Asset = {
   recordingStarted: string;
 };
 
-const thumbTemplate = (rowData: any) => {
+const thumbTemplate = (rowData: string) => {
   return (
-    <>
-      <div className="assetThumb">
-        <i className="tumbPlayIcon icon-play3"></i>
-        <img src={thumbImg} alt="Asset Thumb" />
-      </div>
-    </>
+    <AssetThumbnail
+    rowData={rowData}
+    fontSize="61pt"
+    />
   );
 };
 //-----------------
@@ -100,7 +99,7 @@ const assetNameTemplate = (rowData: string, assets: Asset[]) => {
 
 const MasterMain: React.FC<any> = (props) => {
   let reformattedRows: any[] = [];
-
+  console.log(props.rows)
   props.rows.map((row: any, i: number) => {
     let obj: any = {};
     obj["id"] = row["id"];
@@ -476,7 +475,7 @@ const MasterMain: React.FC<any> = (props) => {
     },
     {
       label: `${t("AssetThumbnail")}`,
-      id: "assetId",
+      id: "assetType",
       align: "left",
       dataComponent: thumbTemplate,
       minWidth: "155",

@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
 import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
+import AssetThumbnail from "./AssetThumbnail"
 
 type CheckValue = {
   isChecked: boolean;
@@ -165,16 +166,16 @@ const DetailedAssetPopup: React.FC<AssetProps> = ({asset}) => {
                                 inputProps={id}
                                 className="customizeCheckBox"
                                 checked={selected[index].isChecked}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                  handleCheck(e, selected[index].assetId)
-                                }
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => handleCheck(e, selected[index].assetId)}
                               />
                             </td>
                             <td>
-                              <img
-                                src={thumbImg}
-                                alt="Asset Thumb"
-                                className="CRXPopupTableImage"
+                              <AssetThumbnail
+                              rowData={asset.assetType}
+                              fontSize={"61pt"}
+                              className={"CRXPopupTableImage"}
                               />
                             </td>
                             <td>
@@ -188,13 +189,13 @@ const DetailedAssetPopup: React.FC<AssetProps> = ({asset}) => {
                                 <div>
                                   <label className="CRXPopupDetailFontSize">
                                     {asset.camera}
-                                  </label>                        
+                                  </label>
                                 </div>
                               ) : (
                                 <div>
                                   <label className="CRXPopupDetailFontSize">
                                     {asset.assetType}
-                                  </label>                               
+                                  </label>
                                 </div>
                               )}
                               <label className="CRXPopupDetailFontSize">
