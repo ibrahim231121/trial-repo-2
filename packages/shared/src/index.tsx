@@ -35,3 +35,4 @@ export { default as CRXBadge} from './controls/CRXBadge/CRXBadge'
 export { default as CRXModalDialog } from './CRXModalDialog/modal'
 export { default as CRXConfirmDialog } from "./components/CRXConfirmDialog/CRXConfirmDialog"
 
+export { default as CRXAlert} from './components/CRXAlert/CRXAlert'
