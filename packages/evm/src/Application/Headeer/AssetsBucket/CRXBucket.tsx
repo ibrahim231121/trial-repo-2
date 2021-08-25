@@ -101,7 +101,7 @@ const CRXAssetsBucketPanel = () => {
       </CRXBadge>
   ); 
   const toggleState = () =>
-    setIsOpen((prevState) => (!prevState));
+    setIsOpen((prevState:boolean) => (!prevState));
 
     const SearchText = (
       rowsParam: any[],
@@ -379,7 +379,7 @@ const CRXAssetsBucketPanel = () => {
       });
       setRows(dataRows);
     };
-
+console.log(rows)
   return (
     <CRXDrawer
       className="CRXBucketPanel"
@@ -412,10 +412,10 @@ const CRXAssetsBucketPanel = () => {
           <span className="textFileBrowser">file browser</span>
         </div>
       </div>
-      {/* <div className="bucketContent">Your Asset Bucket is empty.</div> */}
-
-      <div className="bucketViewLink">View on Assets Bucket page <i className="icon-arrow-up-right2"></i> </div>  
-      <CRXDataTable
+      {rows.length>0?<>
+        <div className="bucketViewLink">View on Assets Bucket page <i className="icon-arrow-up-right2"></i> </div>  
+      
+      {<CRXDataTable
           actionComponent={
             <ActionMenu />
           }
@@ -429,7 +429,10 @@ const CRXAssetsBucketPanel = () => {
           allowDragableToList={false}
           className="ManageAssetDataTable crxTableHeight bucketDataTable"
           getSelectedItems={(v: any) => setSelectedItems(v)}
-        />
+        />}
+      </>:<div className="bucketContent">Your Asset Bucket is empty.</div>}
+
+      
     
     </CRXDrawer>
   );
