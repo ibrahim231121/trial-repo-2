@@ -9,7 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
-import { HeadCellProps, DataTableCustomizeColumnsProps } from "./CRXDataTableTypes"
+import { HeadCellProps, DataTableCustomizeColumnsProps, OrderValue } from "./CRXDataTableTypes"
 
 const checkboxStyle = makeStyles({
     root: {
@@ -53,25 +53,21 @@ const checkboxStyle = makeStyles({
     },
   });
 
-const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({headCells, orderingColumn, onReorder, onChange}) => {
+const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({headCells, orderingColumn, onReorder, onChange, onHeadCellChange}) => {
 
   const {t} = useTranslation<string>();
   const chkStyle = checkboxStyle();
-  const [customizeColumn, setCustomize] = useState<any>(null)
-  const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);  
+  const [customizeColumn, setCustomize] = useState<Element | undefined | null>(null)
+  //const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);  
   const [orderColumn, setOrderColumn] = useState(orderingColumn)
-  const stateArry = headCells.map((i : any) => {
+  const stateArry = headCells.map((i : HeadCellProps) => {
     return i.id;
   })
   const [dragState, setDragState] = useState<any>(stateArry);
   const [onPreset, setOnPreSet] = useState<boolean>()
 
   useEffect(() => {
-      
-    headCells.map((headCell: any, x) => {
-        selected[x].visible = (headCell.visible || headCell.visible === undefined) ? true : false 
-        setSelected(prevState  => ({...prevState}))
-    }) 
+
     let checkOrderPreset = localStorage.getItem("checkOrderPreset");
     if(checkOrderPreset !== null)
       setOnPreSet(true)
@@ -87,21 +83,18 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
   function onSavecloseHandle() {
 
     let checkOrderPreset = orderColumn.map((i, _) => {
-      let rObj: any = {}
-      rObj["order"] = i
-      rObj["value"] = headCells[i].visible
+      let rObj: OrderValue = {
+      order: i,
+      value: headCells[i].visible
+      }
       return rObj
     })
 
     if(onPreset)
-    {
       localStorage.setItem("checkOrderPreset", JSON.stringify(checkOrderPreset));
-    }
     else
-    {
-      let orderingColumns = localStorage.getItem("checkOrderPreset");
       localStorage.removeItem("checkOrderPreset");
-    }
+
     setCustomize(null)    
   }
 
@@ -112,21 +105,25 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
     if(local_headCells !== null)
     {
       let headCells_private = JSON.parse(local_headCells)
-      headCells.map((x: any, i: number) => {
-        headCells[i].visible = headCells_private[i].visible
-      })
-      setSelected(headCells_private)
+      //setSelected(headCells_private)
+      onHeadCellChange(headCells_private)
     }
+    
     let sortOrder = orderColumn.sort((a: number, b: number) => a - b)
     setOrderColumn(sortOrder)
-    onChange()
   }
 
   const handleCustomizeChange = (checked: boolean, index: number) => {
     
-    selected[index].visible = checked;     
-    headCells[index].visible = selected[index].visible 
-    setSelected(prevState  => ({...prevState}))
+    // selected[index].visible = checked;     
+    // setSelected(prevState  => ({...prevState}))
+
+    let headCellsArray = headCells.map((headCell: HeadCellProps, i: number) => {
+      if(i === index)
+        headCell.visible = checked
+      return headCell
+    }) 
+    onHeadCellChange(headCellsArray)
     onChange()
   }
 
@@ -175,17 +172,17 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
 
     <div className="dataTableColumnShoHide">
         <Tooltip title="Customize Columns" placement="top-start">         
-            <IconButton
+          <IconButton
             aria-controls="CustomizeColumns"
             className="dataIconButton"
             aria-haspopup="true"
-            onClick={(e: any) => setCustomize(e.currentTarget)}
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setCustomize(e.currentTarget)}
             disableRipple={true}
             >
             <i className="fas fa-columns"></i>
-            </IconButton>
+          </IconButton>
         </Tooltip>
-            <Menu
+        <Menu
             id="CustomizeColumns"
             anchorEl={customizeColumn}
             className="columnReOrderOpup"
@@ -217,7 +214,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
             <div className="columnList">
             <SortableList 
                 orderColumn={orderColumn} 
-                selected={selected} 
+                headCells={headCells} 
                 chkStyle={chkStyle} 
                 dragHideState={dragState}
                 hideSortableGhost={false}
@@ -253,18 +250,18 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
                 </CRXButton>
             
                 <FormControlLabel
-                control={<CRXCheckBox checked={onPreset}
-                    onChange={(e:any) => setOnPreSet(e.target.checked)}
-                    className="shoHideCheckbox"
-                    inputProps="primary checkbox"
-                    />}
-                label={t('Saveaspreset')}
-                labelPlacement="end"
+                  control={<CRXCheckBox checked={onPreset}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOnPreSet(e.target.checked)}
+                      className="shoHideCheckbox"
+                      inputProps="primary checkbox"
+                      />}
+                  label={t('Saveaspreset')}
+                  labelPlacement="end"
                 />
             
             
             </div>
-            </Menu>
+        </Menu>
     </div>  
   );
 };

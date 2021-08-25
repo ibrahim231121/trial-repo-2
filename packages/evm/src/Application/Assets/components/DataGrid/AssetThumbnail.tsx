@@ -2,12 +2,12 @@ import React from "react";
 import thumbImg from "../../../../Assets/Images/thumb.png";
 
 interface Props {
-  rowData:string;
+  assetType:string;
   fontSize:string;
   className?:string;
 }
 
-const AssetThumbnailIcon = (data: string) => {
+export const AssetThumbnailIcon = (data: string) : string => {
     switch (data) {
         case "PDFDoc":
         return "fas fa-file-pdf"
@@ -25,17 +25,18 @@ const AssetThumbnailIcon = (data: string) => {
         return "fas fa-file"
       }
 };
-const AssetThumbnail: React.FC<Props> = ({ rowData,fontSize,className=' ' }) => {
+
+export const AssetThumbnail: React.FC<Props> = ({ assetType,fontSize,className=' ' }) => {
   return (
     <>
       <div className={"assetThumb " + className}>
         <i
-          className={AssetThumbnailIcon(rowData)}
+          className={AssetThumbnailIcon(assetType)}
           style={{ fontSize: fontSize }}
         ></i>
-        {rowData === "Video" && <img src={thumbImg} alt="Asset Thumb" />}
+        {assetType === "Video" && <img src={thumbImg} alt="Asset Thumb" />}
       </div>
     </>
   );
 };
-export default AssetThumbnail;
+

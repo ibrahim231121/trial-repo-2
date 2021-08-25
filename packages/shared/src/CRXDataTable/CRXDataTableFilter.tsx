@@ -10,7 +10,7 @@ import { DataTableClearFilterProps } from "./CRXDataTableTypes"
 const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, onClearAll}) => {
 
   const {t} = useTranslation<string>();
-  const [anchorEl, setAnchorEl] = useState<any>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined | null>(null)
 
   const clearAllFilters = () => {
     setAnchorEl(null);
@@ -25,7 +25,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 aria-controls="dataTableShowHideOpt"
                 className="dataIconButton"
                 aria-haspopup="true"
-                onClick={(e: any) => setAnchorEl(e.currentTarget)}
+                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAnchorEl(e.currentTarget)}
                 disableRipple={true}
             >
                 <i className="fas fa-filter"></i>

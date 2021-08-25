@@ -128,6 +128,10 @@ export const useStyles = makeStyles((theme: Theme) =>
 
 export type Order = "asc" | "desc";
 
+export type ValueString = {
+  value: string;
+}
+
 export interface HeadCellProps {
   //disablePadding: boolean;
   id: any;
@@ -142,11 +146,9 @@ export interface HeadCellProps {
   searchFilter?: boolean;
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
   keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
-  headerText?: string;
-  headerArray?: [];
+  headerArray?: ValueString[];
   headerObject?: any;
   detailedDataComponentId?: string;
-  detailedDataComponent?: any;
 }
 
 export interface DataTableToolbarProps {
@@ -158,10 +160,11 @@ export interface DataTableToolbarProps {
   onClearAll: () => void;
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
-  closePopupIcon?: any;
+  onHeadCellChange: (e: HeadCellProps[]) => void;
 }
 
 export type DataTableProps = {
+  id: string;
   dataRows: any[];
   headCells: HeadCellProps[];
   orderParam: Order;
@@ -174,8 +177,11 @@ export type DataTableProps = {
   onClearAll: () => void;
   actionComponent?: React.ReactNode;
   getSelectedItems: (v: any) => void;
-  closePopupIcon?: any;
   onResizeRow: (e: any) => void;
+  onHeadCellChange: (e: HeadCellProps[]) => void;
+  getRowOnActionClick: (data:any) => void;
+  dragVisibility?: boolean;
+  showToolbar?: boolean;
 };
 
 export type OrderData = {
@@ -201,6 +207,8 @@ export type DataTableContainerProps = {
   onReorderEnd: (e: any, _: any) => void;
   onResizeRow: (e: any) => void;
   allColHide: boolean;
+  getRowOnActionClick: (data:any) => void;
+  dragVisibility?: boolean;
 };
 
 export type DataTableBodyProps = {
@@ -213,6 +221,8 @@ export type DataTableBodyProps = {
   actionComponent: React.ReactNode;
   keyId: string;
   onSetSelectedItems: (e: string[]) => void;
+  getRowOnActionClick: (data:any) => void;
+  dragVisibility?: boolean;
 };
 
 export type SearchHeaderProps = {
@@ -222,6 +232,7 @@ export type SearchHeaderProps = {
   orderData: OrderData;
   container: any;
   actionComponent: React.ReactNode;
+  dragVisibility?: boolean;
 };
 
 export type DataTableHeaderProps = {
@@ -230,6 +241,7 @@ export type DataTableHeaderProps = {
   orderData: OrderData;
   onHandleRequestSort: (e: any) => void;
   onResizeRow: (e: any) => void;
+  dragVisibility?: boolean;
 };
 
 export type DataTableClearFilterProps = {
@@ -240,6 +252,12 @@ export type DataTableClearFilterProps = {
 export type DataTableCustomizeColumnsProps = {
   headCells: HeadCellProps[];
   orderingColumn: number[];
-  onReorder: (e: any) => void;
+  onReorder: (e: number[]) => void;
   onChange: () => void;
+  onHeadCellChange: (e: HeadCellProps[]) => void;
 };
+
+export type OrderValue = {
+  order: number;
+  value: boolean | undefined;
+}

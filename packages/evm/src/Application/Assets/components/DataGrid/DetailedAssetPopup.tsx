@@ -15,26 +15,19 @@ import { useEffect } from "react";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
 import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
-import AssetThumbnail from "./AssetThumbnail"
+import { AssetThumbnail } from "./AssetThumbnail"
+import { Asset } from "../../../../components/SupportiveFunctions";
 
 type CheckValue = {
   isChecked: boolean;
   assetId: string;
 };
 
-type AssetProps = {
+type Props = {
   asset: Asset[]
 }
 
-type Asset = {
-  assetId: string;
-  assetName: string;
-  camera: string;
-  assetType: string;
-  recordingStarted: string;
-}
-
-const DetailedAssetPopup: React.FC<AssetProps> = ({asset}) => {
+const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const [groupedAsset, setGroupedAsset] = useState<Asset[]>();
@@ -173,9 +166,9 @@ const DetailedAssetPopup: React.FC<AssetProps> = ({asset}) => {
                             </td>
                             <td>
                               <AssetThumbnail
-                              rowData={asset.assetType}
-                              fontSize={"61pt"}
-                              className={"CRXPopupTableImage"}
+                                assetType={asset.assetType}
+                                fontSize={"61pt"}
+                                className={"CRXPopupTableImage"}
                               />
                             </td>
                             <td>

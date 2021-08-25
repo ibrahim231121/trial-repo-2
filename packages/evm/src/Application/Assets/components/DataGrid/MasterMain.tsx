@@ -1,47 +1,37 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-  CRXDataTable,
-  Order,
-  HeadCellProps,
-  TextField,
-  CRXSelectBox,
-  CRXMultiSelect,
-  CRXPaper,
-  CRXHeading,
-  CRXColumn,
-  CRXRows,
-} from "@cb/shared";
+import React, { useEffect } from "react";
+import { CRXDataTable, CRXColumn } from "@cb/shared";
 import { DateTimeComponent } from "../../../../components/DateTimeComponent";
-import moment from "moment";
+import {
+  SearchObject,
+  Order,
+  Asset,
+  ValueString,
+  HeadCellProps,
+  onResizeRow,
+  onClearAll,
+  onTextCompare,
+  onMultipleCompare,
+  onMultiToMultiCompare,
+  onDateCompare,
+  onSetHeadCellVisibility,
+  onSaveHeadCellData,
+  onSetSingleHeadCellVisibility,
+  onSetSearchDataValue,
+} from "../../../../components/SupportiveFunctions";
 import "./ManageAssetGrid.scss";
 import thumbImg from "../../../../Assets/Images/thumb.png";
 import { useTranslation } from "react-i18next";
-import {
-  dateOptions,
-  dateOptionsTypes,
-  basicDateDefaultValue,
-  approachingDateDefaultValue,
-} from "../../../../utils/constant";
 import ActionMenu from "../ActionMenu";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateDisplayFormat";
-import AssetThumbnail from "./AssetThumbnail"
+import { AssetThumbnail } from "./AssetThumbnail";
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
-
-type Order = "asc" | "desc";
-
-type SearchObject = {
-  columnName: string;
-  colIdx: number;
-  value: any;
-};
+import TextSearch from "./TextSearch";
+import MultSelectiDropDown from "./MultSelectiDropDown";
 
 type DateTimeProps = {
-  startDate: string;
-  endDate: string;
-  value: string;
-  displayText: string;
+  dateTimeObj: DateTimeObject;
   colIdx: number;
 };
 
@@ -52,128 +42,139 @@ type DateTimeObject = {
   displayText: string;
 };
 
-interface HeadCellProps {
-  id: any;
-  label: string;
-  align: string;
-  sort?: boolean;
-  visible?: boolean;
-  minWidth: string;
-  maxWidth?: string;
-  dataComponent?: any;
-  searchFilter?: boolean;
-  searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
-  keyCol?: boolean; // This is a Key column. Do not assign it to maximum 1 column
-  headerText?: string;
-  headerArray?: [];
-  headerObject?: any;
-  detailedDataComponentId?: string;
-  detailedDataComponent?: any;
-}
-
-type Asset = {
+type MasterAsset = {
   assetId: string;
   assetName: string;
-  camera: string;
   assetType: string;
+  unit: string;
+  recordedBy: string[];
   recordingStarted: string;
+  status: string;
 };
 
-const thumbTemplate = (rowData: string) => {
-  return (
-    <AssetThumbnail
-    rowData={rowData}
-    fontSize="61pt"
-    />
-  );
+type Evidence = {
+  id: number;
+  masterAssetId: string;
+  description: string;
+  categories: string[];
+  devices: string;
+  station: string;
+  asset: Asset[];
+  masterAsset: MasterAsset;
+};
+
+type EvidenceReformated = {
+  id: number;
+  asset: Asset[];
+  assetId: string;
+  assetName: string;
+  assetType: string;
+  description: string;
+  categories: string[];
+  devices: string;
+  station: string;
+  unit: string;
+  recordedBy: string[];
+  recordingStarted: string;
+  status: string;
+};
+
+type Props = {
+  rowsData: Evidence[];
+  dateOptionType: string;
+  dateTimeDetail: DateTimeObject;
+  showDateCompact: boolean;
 };
 //-----------------
-const assetNameTemplate = (rowData: string, assets: Asset[]) => {
+
+const thumbTemplate = (assetType: string) => {
+  return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
+};
+
+const assetNameTemplate = (assetName: string, assets: Asset[]) => {
   return (
     <>
-      {textDisplay(rowData, "linkColor")}
+      {textDisplay(assetName, "linkColor")}
       <DetailedAssetPopup asset={assets} />
     </>
   );
 };
 
-const MasterMain: React.FC<any> = (props) => {
-  let reformattedRows: any[] = [];
-  console.log(props.rows)
-  props.rows.map((row: any, i: number) => {
-    let obj: any = {};
-    obj["id"] = row["id"];
-    obj["assetId"] = row.masterAsset["assetId"];
-    obj["assetName"] = row.masterAsset["assetName"];
-    obj["assetType"] = row.masterAsset["assetType"];
-    obj["unit"] = row.masterAsset["unit"];
-    obj["description"] = row["description"];
-    obj["categories"] = row["categories"];
-    obj["devices"] = row["devices"];
-    obj["station"] = row["station"];
-    obj["recordedBy"] = row.masterAsset["recordedBy"];
-    obj["recordingStarted"] = row.masterAsset["recordingStarted"];
-    obj["status"] = row.masterAsset["status"];
-    obj["asset"] = row["asset"].filter(
-      (x: any) => x.assetId !== row.masterAssetId
-    );
+const MasterMain: React.FC<Props> = ({
+  rowsData,
+  dateOptionType,
+  dateTimeDetail,
+  showDateCompact,
+}) => {
+  let reformattedRows: EvidenceReformated[] = [];
 
-    reformattedRows.push(obj);
+  rowsData.map((row: Evidence, i: number) => {
+    let evidence: EvidenceReformated = {
+      id: row.id,
+      assetId: row.masterAsset.assetId,
+      assetName: row.masterAsset.assetName,
+      assetType: row.masterAsset.assetType,
+      unit: row.masterAsset.unit,
+      description: row.description,
+      categories: row.categories,
+      devices: row.devices,
+      station: row.station,
+      recordedBy: row.masterAsset.recordedBy,
+      recordingStarted: row.masterAsset.recordingStarted,
+      status: row.masterAsset.status,
+      asset: row.asset.filter((x: Asset) => x.assetId !== row.masterAssetId),
+    };
+
+    reformattedRows.push(evidence);
   });
 
   const { t } = useTranslation<string>();
-  const [rows, setRows] = React.useState<any[]>(reformattedRows);
+  const [rows, setRows] = React.useState<EvidenceReformated[]>(reformattedRows);
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<any>("recordingStarted");
+  const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [selectedItems, setSelectedItems] = React.useState<any>([]);
-  const [selectedActionRow, setSelectedActionRow] = React.useState<{}>();
-
-  const [showDateCompact, setShowDateCompact] = React.useState(props.showDateCompact);
+  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const [selectedActionRow, setSelectedActionRow] = React.useState<EvidenceReformated>();
 
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
-    startDate: "",
-    endDate: "",
-    value: "",
-    displayText: "",
+    dateTimeObj: {
+      startDate: "",
+      endDate: "",
+      value: "",
+      displayText: "",
+    },
     colIdx: 0,
   });
 
   const searchText = (
-    rowsParam: any[],
+    _: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
-    function handleChange(e: any) {
-      selectChange(e, colIdx);
-      headCells[colIdx].headerText = e.target.value;
-    }
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
+    };
 
     return (
-      <TextField
-        value={
-          headCells[colIdx].headerText === undefined
-            ? (headCells[colIdx].headerText = "")
-            : headCells[colIdx].headerText
-        }
-        id={"CRX_" + colIdx.toString()}
-        onChange={(e: any) => handleChange(e)}
-      />
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
   };
 
   const searchDate = (
-    rowsParam: any[],
+    _: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
     let reset: boolean = false;
 
     let dateTimeObject: DateTimeProps = {
-      startDate: "",
-      endDate: "",
-      value: "",
-      displayText: "",
+      dateTimeObj: {
+        startDate: "",
+        endDate: "",
+        value: "",
+        displayText: "",
+      },
       colIdx: 0,
     };
 
@@ -189,29 +190,35 @@ const MasterMain: React.FC<any> = (props) => {
       headCells[colIdx].headerObject === null
     ) {
       dateTimeObject = {
-        startDate: props.dateTimeDetail.startDate,
-        endDate: props.dateTimeDetail.endDate,
-        value: props.dateTimeDetail.value,
-        displayText: props.dateTimeDetail.displayText,
+        dateTimeObj: {
+          startDate: dateTimeDetail.startDate,
+          endDate: dateTimeDetail.endDate,
+          value: dateTimeDetail.value,
+          displayText: dateTimeDetail.displayText,
+        },
         colIdx: 0,
       };
     } else {
       dateTimeObject = {
-        startDate: headCells[colIdx].headerObject.startDate,
-        endDate: headCells[colIdx].headerObject.endDate,
-        value: headCells[colIdx].headerObject.value,
-        displayText: headCells[colIdx].headerObject.displayText,
+        dateTimeObj: {
+          startDate: headCells[colIdx].headerObject.startDate,
+          endDate: headCells[colIdx].headerObject.endDate,
+          value: headCells[colIdx].headerObject.value,
+          displayText: headCells[colIdx].headerObject.displayText,
+        },
         colIdx: 0,
       };
     }
 
     function onSelection(dateTime: DateTimeObject) {
       dateTimeObject = {
-        startDate: dateTime.startDate,
-        endDate: dateTime.endDate,
+        dateTimeObj: {
+          startDate: dateTime.startDate,
+          endDate: dateTime.endDate,
+          value: dateTime.value,
+          displayText: dateTime.displayText,
+        },
         colIdx: colIdx,
-        value: dateTime.value,
-        displayText: dateTime.displayText,
       };
 
       setDateTime(dateTimeObject);
@@ -223,241 +230,70 @@ const MasterMain: React.FC<any> = (props) => {
         <DateTimeComponent
           showCompact={showDateCompact}
           reset={reset}
-          dateTimeDetail={dateTimeObject}
+          dateTimeDetail={dateTimeObject.dateTimeObj}
           getDateTimeDropDown={(dateTime: DateTimeObject) => {
             onSelection(dateTime);
           }}
-          dateOptionType={props.dateOptionType}
+          dateOptionType={dateOptionType}
         />
       </CRXColumn>
     );
   };
 
-  const searchDropDown = (
-    rowsParam: any[],
-    headCells: HeadCellProps[],
-    colIdx: number
-  ) => {
-    let options = reformattedRows.map((row: any, _: any) => {
-      let option: any = {};
-      let x = headCells[colIdx].id;
-      option["value"] = row[headCells[colIdx].id];
-      return option;
-    });
-
-    // For those properties which contains an array
-    if (
-      headCells[colIdx].id.toString() === "categories" ||
-      headCells[colIdx].id.toString() === "recordedBy"
-    ) {
-      let moreOptions: any = [];
-      reformattedRows.map((row: any, _: any) => {
-        let x = headCells[colIdx].id;
-        row[x].forEach((element: any) => {
-          let moreOption: any = {};
-          moreOption["value"] = element;
-          moreOptions.push(moreOption);
-        });
-      });
-      options = moreOptions;
-    }
-    //------------------
-
-    let unique: any = options.map((x: any) => x);
-
-    if (options.length > 0) {
-      unique = [];
-      unique[0] = options[0];
-
-      for (var i = 0; i < options.length; i++) {
-        if (!unique.some((item: any) => item.value === options[i].value)) {
-          let value: any = {};
-          value["value"] = options[i].value;
-          unique.push(value);
-        }
-      }
-    }
-
-    function handleChange(e: any, colIdx: number) {
-      selectChange(e, colIdx);
-      headCells[colIdx].headerText = e.target.value;
-    }
-
-    return (
-      <div className="filterSelect">
-        <CRXSelectBox
-          className="selectFilter"
-          popover="dropdownPaper"
-          options={unique}
-          id={colIdx.toString()}
-          onChange={(e: any) => handleChange(e, colIdx)}
-          onClick={(e: any) => console.log(e)}
-          value={
-            headCells[colIdx].headerText === undefined
-              ? (headCells[colIdx].headerText = "")
-              : headCells[colIdx].headerText
-          }
-        />
-      </div>
-    );
-  };
-
-  const MultiDropDown = (
-    rowsParam: any[],
+  const searchMultiDropDown = (
+    rowsParam: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number,
-    isSearchable: boolean
   ) => {
-    const [filterValue, setFilterValue] = React.useState<any>([]);
-    const [openState, setOpenState] = React.useState<boolean>(true);
-    const [buttonState, setButtonState] = React.useState<boolean>(false);
+    const onSetSearchData = () => {
+      setSearchData((prevArr) =>
+        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+      );
+    };
 
-    let options = reformattedRows.map((row: any, _: any) => {
-      let option: any = {};
-      option["value"] = row[headCells[colIdx].id];
-      return option;
-    });
-
-    // For those properties which contains an array
-    if (
-      headCells[colIdx].id.toString() === "categories" ||
-      headCells[colIdx].id.toString() === "recordedBy"
-    ) {
-      let moreOptions: any = [];
-      reformattedRows.map((row: any, _: any) => {
-        let x = headCells[colIdx].id;
-        row[x].forEach((element: any) => {
-          let moreOption: any = {};
-          moreOption["value"] = element;
-          moreOptions.push(moreOption);
-        });
-      });
-      options = moreOptions;
-    }
-    //------------------
-
-    let unique: any = options.map((x: any) => x);
-
-    if (options.length > 0) {
-      unique = [];
-      unique[0] = options[0];
-
-      for (var i = 0; i < options.length; i++) {
-        if (!unique.some((item: any) => item.value === options[i].value)) {
-          let value: any = {};
-          value["value"] = options[i].value;
-          unique.push(value);
-        }
-      }
-    }
-
-    function handleChange(e: any, colIdx: number, v: any) {
-      setFilterValue((val: []) => [...v]);
-      selectMultiChange(e, colIdx, v);
+    const onSetHeaderArray = (v: ValueString[]) => {
       headCells[colIdx].headerArray = v;
-    }
-    function GetClassName() {
-      return openState ? "" : "hide";
-    }
-    function GetButtonClass() {
-      return buttonState ? "" : "hide";
-    }
-    function OnCloseEffect(e: any, r: any) {
-      if (filterValue.length > 0) {
-        setButtonState(true);
-        setOpenState(false);
-      } else {
-        setButtonState(false);
-        setOpenState(true);
-      }
-    }
-    function ClearFilter() {
-      setOpenState(true);
-      setButtonState(false);
-      setFilterValue([]);
-      headCells[colIdx].headerArray = [];
-    }
-
-    useEffect(() => {
-      ClearFilter();
-    }, [headCells]);
-
-    useEffect(() => {
-      if (filterValue.length === 0) {
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[colIdx].id.toString()
-          )
-        );
-      }
-    }, [filterValue]);
+    };
 
     return (
-      <div className="">
-        <CRXRows container spacing={2}>
-          <CRXColumn item xs={6}>
-            <CRXPaper
-              variant="outlined"
-              elevation={1}
-              square={true}
-              className={"centerPosition"}
-            >
-              <CRXHeading variant="h6" align="left">
-                {" "}
-              </CRXHeading>
-              <div className={GetButtonClass()}>
-                <button
-                  className="fas fa-filter"
-                  onClick={(e) => setOpenState((state) => !state)}
-                ></button>
-                <button
-                  className="fas fa-times"
-                  onClick={(e) => ClearFilter()}
-                ></button>
-              </div>
-
-              <CRXMultiSelect
-                className={GetClassName()}
-                onClose={(e: any, r: any) => {
-                  return OnCloseEffect(e, r);
-                }}
-                // name={"AssetType"}
-                multiple={true}
-                CheckBox={true}
-                options={unique}
-                value={
-                  headCells[colIdx].headerArray === undefined
-                    ? (headCells[colIdx].headerArray = [])
-                    : headCells[colIdx].headerArray
-                }
-                autoComplete={false}
-                useRef={openState && buttonState}
-                isSearchable={isSearchable}
-                onChange={(event: any, newValue: any) => {
-                  return handleChange(event, colIdx, newValue);
-                }}
-              />
-            </CRXPaper>
-          </CRXColumn>
-        </CRXRows>
-      </div>
+      <MultSelectiDropDown
+        headCells={headCells}
+        colIdx={colIdx}
+        reformattedRows={reformattedRows}
+        isSearchable={true}
+        onMultiSelectChange={onSelection}
+        onSetSearchData={onSetSearchData}
+        onSetHeaderArray={onSetHeaderArray}
+      />
     );
   };
 
-  const SearchMultiDropDown = (
-    rowsParam: any[],
+  const nonSearchMultiDropDown = (
+    rowsParam: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
-    return MultiDropDown(rowsParam, headCells, colIdx, true);
-  };
+    const onSetSearchData = () => {
+      setSearchData((prevArr) =>
+        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+      );
+    };
 
-  const NonSearchMultiDropDown = (
-    rowsParam: any[],
-    headCells: HeadCellProps[],
-    colIdx: number
-  ) => {
-    return MultiDropDown(rowsParam, headCells, colIdx, false);
+    const onSetHeaderArray = (v: ValueString[]) => {
+      headCells[colIdx].headerArray = v;
+    };
+
+    return (
+      <MultSelectiDropDown
+        headCells={headCells}
+        colIdx={colIdx}
+        reformattedRows={reformattedRows}
+        isSearchable={false}
+        onMultiSelectChange={onSelection}
+        onSetSearchData={onSetSearchData}
+        onSetHeaderArray={onSetHeaderArray}
+      />
+    );
   };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -465,10 +301,10 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("ID")}`,
       id: "id",
       align: "right",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: () => null,
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: () => null,
       keyCol: true,
       visible: false,
       minWidth: "120",
@@ -491,16 +327,15 @@ const MasterMain: React.FC<any> = (props) => {
       searchComponent: searchText,
       minWidth: "180",
       detailedDataComponentId: "asset",
-      detailedDataComponent: DetailedAssetPopup,
     },
     {
       label: `${t("AssetType")}`,
       id: "assetType",
       align: "left",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: SearchMultiDropDown,
+      searchComponent: searchMultiDropDown,
       minWidth: "200",
       visible: false,
     },
@@ -508,7 +343,7 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Description")}`,
       id: "description",
       align: "left",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -518,20 +353,20 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Categories")}`,
       id: "categories",
       align: "left",
-      dataComponent: (e: any) => multitextDisplay(e, ""),
+      dataComponent: (e: string[]) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: SearchMultiDropDown,
+      searchComponent: searchMultiDropDown,
       minWidth: "150",
     },
     {
       label: `${t("Device")}`,
       id: "devices",
       align: "left",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: NonSearchMultiDropDown,
+      searchComponent: nonSearchMultiDropDown,
       minWidth: "100",
       visible: false,
     },
@@ -539,10 +374,10 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Station")}`,
       id: "station",
       align: "left",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: NonSearchMultiDropDown,
+      searchComponent: nonSearchMultiDropDown,
       minWidth: "120",
       visible: false,
     },
@@ -550,10 +385,10 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("Username")}`,
       id: "recordedBy",
       align: "left",
-      dataComponent: (e: any) => multitextDisplay(e, "linkColor"),
+      dataComponent: (e: string[]) => multitextDisplay(e, "linkColor"),
       sort: true,
       searchFilter: true,
-      searchComponent: SearchMultiDropDown,
+      searchComponent: searchMultiDropDown,
       minWidth: "135",
     },
     {
@@ -570,81 +405,61 @@ const MasterMain: React.FC<any> = (props) => {
       label: `${t("FileStatus")}`,
       id: "status",
       align: "left",
-      dataComponent: (e: any) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       minWidth: "110",
       searchFilter: true,
-      searchComponent: NonSearchMultiDropDown,
+      searchComponent: nonSearchMultiDropDown,
     },
   ]);
 
-  const selectMultiChange = (e: any, colIdx: number, v: []) => {
-    if (v.length === 0) {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-    } else {
+  // Remane required
+  const onSelection = (v: ValueString[], colIdx: number) => {
+    if (v.length > 0) {
       for (var i = 0; i < v.length; i++) {
-        let newItem = {
-          columnName: headCells[colIdx].id.toString(),
-          colIdx,
-          value: v.map((x, i) => {
-            return x["value"];
-          }),
-        };
+        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
         setSearchData((prevArr) =>
           prevArr.filter(
             (e) => e.columnName !== headCells[colIdx].id.toString()
           )
         );
-        setSearchData((prevArr) => [...prevArr, newItem]);
+        setSearchData((prevArr) => [...prevArr, searchDataValue]);
       }
+    } else {
+      setSearchData((prevArr) =>
+        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+      );
     }
   };
 
-  const selectChange = (e: any, colIdx: number) => {
-    if (e.target.value !== "" && e.target.value !== undefined) {
-      let newItem = {
-        columnName: headCells[colIdx].id.toString(),
-        colIdx,
-        value: e.target.value,
-      };
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-      setSearchData((prevArr) => [...prevArr, newItem]);
-    } else
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-  };
-
   useEffect(() => {
-    if (
-      dateTime.startDate !== "" &&
-      dateTime.startDate !== undefined &&
-      dateTime.startDate != null &&
-      dateTime.endDate !== "" &&
-      dateTime.endDate !== undefined &&
-      dateTime.endDate != null
-    ) {
-      let newItem = {
-        columnName: headCells[dateTime.colIdx].id.toString(),
-        colIdx: dateTime.colIdx,
-        value: [dateTime.startDate, dateTime.endDate],
-      };
-      setSearchData((prevArr) =>
-        prevArr.filter(
-          (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
-        )
-      );
-      setSearchData((prevArr) => [...prevArr, newItem]);
-    } else
-      setSearchData((prevArr) =>
-        prevArr.filter(
-          (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
-        )
-      );
+    if (dateTime.colIdx !== 0) {
+      if (
+        dateTime.dateTimeObj.startDate !== "" &&
+        dateTime.dateTimeObj.startDate !== undefined &&
+        dateTime.dateTimeObj.startDate != null &&
+        dateTime.dateTimeObj.endDate !== "" &&
+        dateTime.dateTimeObj.endDate !== undefined &&
+        dateTime.dateTimeObj.endDate != null
+      ) {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate],
+        };
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, newItem]);
+      } else
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+    }
   }, [dateTime]);
 
   useEffect(() => {
@@ -652,116 +467,41 @@ const MasterMain: React.FC<any> = (props) => {
   }, [searchData]);
 
   useEffect(() => {
-    setRows(reformattedRows);
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells);
   }, []);
 
   const dataArrayBuilder = () => {
-    let dataRows: any = reformattedRows;
+    let dataRows: EvidenceReformated[] = reformattedRows;
     searchData.forEach((el: SearchObject) => {
-      if (el.columnName === "assetName")
-        dataRows = dataRows.filter(function (x: any) {
-          return (
-            x[headCells[el.colIdx].id]
-              .toLowerCase()
-              .indexOf(el.value.toLowerCase()) !== -1
-          );
-        });
-      //for multi select searchable dropdown
-      if (
-        ["assetType", "devices", "station", "status"].includes(el.columnName)
-      ) {
-        dataRows = dataRows.filter((x: any) => {
-          return el.value.includes(x[headCells[el.colIdx].id]);
-        });
-      }
-      if (["categories", "recordedBy"].includes(el.columnName)) {
-        dataRows = dataRows.filter((x: any) => {
-          return x[headCells[el.colIdx].id]
-            .map((y: any) => el.value.includes(y))
-            .includes(true);
-        });
-      }
-      if (el.columnName === "description")
-        dataRows = dataRows.filter(function (x: any) {
-          return (
-            x[headCells[el.colIdx].id]
-              .toLowerCase()
-              .indexOf(el.value.toLowerCase()) !== -1
-          );
-        });
-      // if (el.columnName === "categories")
-      //   dataRows = dataRows.filter(function (x: any) {
-      //     return x[headCells[el.colIdx].id]
-      //       .map((item: any) => item)
-      //       .join(", ")
-      //       .toLowerCase()
-      //       .includes(el.value.toLowerCase());
-      //   });
-      // if (el.columnName === "devices")
-      //   dataRows = dataRows.filter(
-      //     (x: any) => x[headCells[el.colIdx].id] === el.value
-      //   );
-      // if (el.columnName === "station")
-      //   dataRows = dataRows.filter(
-      //     (x: any) => x[headCells[el.colIdx].id] === el.value
-      //   );
-      // if (el.columnName === "recordedBy")
-      //   dataRows = dataRows.filter(function (x: any) {
-      //     return x[headCells[el.colIdx].id]
-      //       .map((item: any) => item)
-      //       .join(", ")
-      //       .toLowerCase()
-      //       .includes(el.value.toLowerCase());
-      //   });
-      if (el.columnName === "expiryDate") {
-        dataRows = dataRows.filter(
-          (x: any) =>
-            DateFormat(x[headCells[el.colIdx].id]) === DateFormat(el.value)
-        );
-      }
+      if (el.columnName === "assetName" || el.columnName === "description")
+        dataRows = onTextCompare(dataRows, headCells, el);
+      if (["assetType", "devices", "station", "status"].includes(el.columnName))
+        dataRows = onMultipleCompare(dataRows, headCells, el);
+      if (["categories", "recordedBy"].includes(el.columnName))
+        dataRows = onMultiToMultiCompare(dataRows, headCells, el);
       if (el.columnName === "recordingStarted") {
-        dataRows = dataRows.filter(
-          (x: any) =>
-            DateFormat(x[headCells[el.colIdx].id]) >= DateFormat(el.value[0]) &&
-            DateFormat(x[headCells[el.colIdx].id]) <= DateFormat(el.value[1])
-        );
+        dataRows = onDateCompare(dataRows, headCells, el);
       }
-      // if (el.columnName === "status")
-      //   dataRows = dataRows.filter(
-      //     (x: any) => x[headCells[el.colIdx].id] === el.value
-      //   );
     });
     setRows(dataRows);
   };
 
-  function DateFormat(value: any) {
-    const stillUtc = moment.utc(value).toDate();
-    const localDate = moment(stillUtc).local().format("YYYY-MM-DD");
-    return localDate;
-  }
-
-  const onClearAll = () => {
+  const clearAll = () => {
     setSearchData([]);
-    let headCellReset = headCells.map((headCell, i) => {
-      headCell.headerText = "";
-      headCell.headerArray = [];
-      return headCell;
-    });
+    let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
   };
 
-  const resizeRow = (e: any) => {
-    const { colIdx, deltaX } = e;
-    let value = headCells[colIdx].minWidth;
-
-    let x = parseInt(value) + parseInt(deltaX);
-    //headCells[colIdx].minWidth = x.toString()
-
-    let headCellReset = headCells.map((headCell, i) => {
-      if (i === colIdx) headCell.minWidth = x.toString();
-      return headCell;
-    });
+  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+    let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
+  };
+
+  const onSetHeadCells = (e: HeadCellProps[]) => {
+    let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
+    setHeadCells(headCellsArray);
   };
 
   return (
@@ -771,10 +511,11 @@ const MasterMain: React.FC<any> = (props) => {
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
           }
-          getSelectedItems={(v: any) => setSelectedItems(v)}
-          getRowOnActionClick={(val:any)=>setSelectedActionRow(val)}
+          getRowOnActionClick={(val: EvidenceReformated) =>
+            setSelectedActionRow(val)
+          }
           showToolbar={true}
-          dataRows={rows} 
+          dataRows={rows}
           headCells={headCells}
           orderParam={order}
           orderByParam={orderBy}
@@ -782,8 +523,11 @@ const MasterMain: React.FC<any> = (props) => {
           columnVisibilityBar={true}
           allowDragableToList={false}
           className="ManageAssetDataTable"
-          onClearAll={onClearAll}
+          onClearAll={clearAll}
+          getSelectedItems={(v: string[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
+          onHeadCellChange={onSetHeadCells}
+          dragVisibility={true}
         />
       )}
     </>

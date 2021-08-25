@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-type AssetNameProps = {
+type Props = {
     assetName: string
 }
 
-const AssetNameTooltip: React.FC<AssetNameProps> = ({assetName}) => {
+const AssetNameTooltip: React.FC<Props> = ({assetName}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);

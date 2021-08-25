@@ -434,14 +434,12 @@
   z-index: 1;
 }
 .col-two {
-  left: 55px;
   position: sticky;
   padding-left: 7px !important;
   z-index: 1;
 }
 
 .col-three {
-  left: 113px;
   position: sticky;
   max-width: 80px;
   padding-left: 2px !important;
@@ -538,7 +536,6 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
 }
 
 .col-three {
-  left: 113px;
   position: sticky;
   ul {
     &:first-child {

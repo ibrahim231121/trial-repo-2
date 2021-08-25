@@ -13,28 +13,32 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   headCells,
   orderData,
   container,
-  actionComponent
+  actionComponent,
+  dragVisibility
 }) => {
   const classes = useStyles();
 
   return (
     <TableHead>
       <TableRow>
-        <TableCell
-          className={
-            classes.searchHeaderStickness +
-            " TableSearchAbleHead tableSearchHead"
-          }
-          style={{ left: 0, position: "sticky", zIndex: 4 }}
-        ></TableCell>
+        {(dragVisibility === true || dragVisibility === undefined) ? 
+          <TableCell
+            className={
+              classes.searchHeaderStickness +
+              " TableSearchAbleHead tableSearchHead"
+            }
+            style={{ left: 0, position: "sticky", zIndex: 4 }}
+          ></TableCell>
+          : null
+        }
         <TableCell
           padding="checkbox"
           className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: 55, position: "sticky", zIndex: 4 }}
+          style={{ left: `${(dragVisibility === false) ? "0px" : "55px"}`, position: "sticky", zIndex: 4 }}
         ></TableCell>
         <TableCell
           className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: 113, position: "sticky", zIndex: 4 }}
+          style={{ left: `${(dragVisibility === false) ? "62px" : "113px"}`, position: "sticky", zIndex: 4 }}
         >
           <div
             className={

@@ -8,25 +8,31 @@ import {
 } from "./CRXDataTableTypes";
 import {useTranslation} from 'react-i18next'; 
 
-const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow}) => {
+const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility}) => {
 
   const classes = useStyles();
   const {t} = useTranslation<string>();
 
-  const resizeRow = (e:any) => {
+  const resizeRow = (e: {
+    colIdx: number;
+    deltaX: number;
+  }) => {
     onResizeRow(e) 
   }
 
   return (
     <>
+        {(dragVisibility === true || dragVisibility === undefined) ? 
+            <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                style={{width: '55px', minWidth: "55px", left: 0, position: "sticky", zIndex: 4}}>
+            </TableCell>
+        : null
+        }
         <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '55px', minWidth: "55px", left: 0, position: "sticky", zIndex: 4}}>
-        </TableCell>
-        <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '58px', minWidth: "58px", left: 55, position: "sticky", zIndex: 4}}>
+            style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "55px"}`, position: "sticky", zIndex: 4}}>
         </TableCell>  
         <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '80px', minWidth: '80px', left: 113, position: "sticky", zIndex: 4}}>
+            style={{width: '80px', minWidth: '80px', left: `${(dragVisibility === false) ? "62px" : "113px"}`, position: "sticky", zIndex: 4}}>
             {t('Actions')}
         </TableCell> 
         {orderColumn.map((colIdx, i) => (

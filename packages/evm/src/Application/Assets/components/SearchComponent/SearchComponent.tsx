@@ -446,7 +446,7 @@ const SearchComponent = (props: any) => {
           <div className='dataTabAssets'>
             <MasterMain
               key={Math.random()}
-              rows={searchData}
+              rowsData={searchData}
               showDateCompact={showAssetDateCompact}
               dateOptionType={dateOptionType === dateOptionsTypes.approachingDeletion ? "" : dateOptionType }
               dateTimeDetail={dateTimeAsset}

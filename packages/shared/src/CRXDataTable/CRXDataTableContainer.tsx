@@ -32,8 +32,10 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   onReorderEnd,
   onResizeRow,
   allColHide,
+  getRowOnActionClick,
+  dragVisibility,
 }) => {
-  
+
   const classes = useStyles();
 
   return (
@@ -64,6 +66,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             orderData={orderData}
             onHandleRequestSort={(e:any) => onHandleRequestSort(e)}
             onResizeRow={(e:any) => onResizeRow(e)}
+            dragVisibility={dragVisibility}
           />
         </DragableHead>
         {searchHeader === true ? (
@@ -74,6 +77,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             orderData={orderData}
             container={container}
             actionComponent={actionComponent}
+            dragVisibility={dragVisibility}
           />
         ) : null}
         <Droppable droppableId={container.id} key={container.id}>
@@ -89,7 +93,10 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
                 actionComponent={actionComponent}
                 keyId={keyId}
                 onSetSelectedItems={(row: any) => onHandleClick(row)}
+                getRowOnActionClick={getRowOnActionClick}
+                dragVisibility={dragVisibility}
               />
+              {/* {provided.placeholder} */}
             </RootRef>
           )}
         </Droppable>
