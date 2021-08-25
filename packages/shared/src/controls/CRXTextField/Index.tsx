@@ -11,17 +11,30 @@ interface InputProps {
   id?: string;
   type: string;
   name: string;
-  label?: string;
+  label?: string | undefined;
   disabled?: boolean;
   error?: boolean;
   required?: boolean;
   errorMsg?: string;
-  placeholder?: string,
-  defaultValue? : any,
+  placeholder?: string;
+  defaultValue?: any;
 }
 
-const CRXInput = ({ value, defaultValue, placeholder, name, onChange, className, errorMsg, error, disabled, required, id, type,}: InputProps) => {
-  
+const CRXInput = ({
+  value,
+  defaultValue,
+  placeholder,
+  name,
+  onChange,
+  className,
+  errorMsg,
+  error,
+  disabled,
+  required,
+  id,
+  type,
+  label,
+}: InputProps) => {
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
 
@@ -34,7 +47,7 @@ const CRXInput = ({ value, defaultValue, placeholder, name, onChange, className,
           display="block"
           gutterBottom
         >
-          <ErrorIcon className="errorState" /> {errorMsg}
+          {errorMsg}
         </Typography>
       );
     } else {
@@ -42,22 +55,56 @@ const CRXInput = ({ value, defaultValue, placeholder, name, onChange, className,
     }
   };
 
+
+  const reformatedLabel = () => {
+    if (required) {
+      return (
+        <span className="requiredLable">
+          {label} <span style={{color:`${error?"red":"black"}`}}>*</span>
+        </span>
+      );
+    } else {
+      return <span>{label} </span>;
+    }
+  };
+
   return (
     <>
-      <TextField
-        value={value}
-        defaultValue={defaultValue}
-        name={name}
-        disabled={disabled}
-        error={error}
-        onChange={onChange}
-        className={"CBX-input " + disableds + " " + errors + " " + className}
-        id={id}
-        required={required}
-        type={type}
-        placeholder={placeholder}
-      />
-      {errMsgContent()}
+      <span style={{ display: "flex" }}>
+        <Typography
+          variant="subtitle1"
+          className="label"
+          style={{ marginRight: "25px" }}
+        >
+          {reformatedLabel()}
+        </Typography>
+        <span>
+          <TextField
+            value={value}
+            defaultValue={defaultValue}
+            name={name}
+            disabled={disabled}
+            error={error}
+            onChange={onChange}
+            className={
+              "CBX-input " + disableds + " " + errors + " " + className
+            }
+            id={id}
+            type={type}
+            placeholder={placeholder}
+          />
+          {error && (
+            <Typography
+              className="errorStateContent"
+              variant="caption"
+              display="block"
+              gutterBottom
+            >
+              {errorMsg}
+            </Typography>
+          )}
+        </span>
+      </span>
     </>
   );
 };

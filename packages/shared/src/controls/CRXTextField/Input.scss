@@ -76,3 +76,13 @@
         vertical-align: bottom;
     }
 }
+
+.label{
+    margin-right: 25px;
+    .requiredLable{
+        display: flex;
+    }
+    .required {
+        color: red;
+      }
+}
