@@ -126,7 +126,7 @@ function App() {
         div3.id = "innerAssetId" + index.toString();
         var i3 = document.createElement("i");
         i3.className = "linkColor";
-        i3.innerHTML = "#" + con.assetId;
+        i3.innerHTML = con.assetName;
         div3.append(i3);
         divInner.appendChild(div3);
 

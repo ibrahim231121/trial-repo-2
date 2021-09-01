@@ -93,8 +93,10 @@ const DateTime = () => {
 
     else if(showCompact && (minDate === "" || minDate === undefined)  && ( maxDate === "" || maxDate === undefined) ){
       let requiredDateOptions = dateValues.filter((x, i) => {
+        if(x && x.value === "custom")
+        return x
 
-        if (x && moment(x.startDate()) >=  moment(dateTimeDetail.startDate) &&
+        if (x && moment(x.startDate()) >=  moment(dateTimeDetail.startDate) && x.value != "custom" &&
           moment(x.endDate()) <= moment(dateTimeDetail.endDate)) { // add this check because by default it is showing DateTimeProp or undefined . 
             return x;       
         }
