@@ -24,15 +24,15 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
     <>
         {(dragVisibility === true || dragVisibility === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                style={{width: '55px', minWidth: "55px", left: 0, position: "sticky", zIndex: 4}}>
+                style={{width: '60px', minWidth: "60px", left: 0, position: "sticky", zIndex: 4}}>
             </TableCell>
         : null
         }
         <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "55px"}`, position: "sticky", zIndex: 4}}>
+            style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4}}>
         </TableCell>  
         <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '80px', minWidth: '80px', left: `${(dragVisibility === false) ? "62px" : "113px"}`, position: "sticky", zIndex: 4}}>
+            style={{width: '80px', minWidth: '80px', left: `${(dragVisibility === false) ? "62px" : "118px"}`, position: "sticky", zIndex: 4}}>
             {t('Actions')}
         </TableCell> 
         {orderColumn.map((colIdx, i) => (

@@ -34,11 +34,11 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         <TableCell
           padding="checkbox"
           className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: `${(dragVisibility === false) ? "0px" : "55px"}`, position: "sticky", zIndex: 4 }}
+          style={{ left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4 }}
         ></TableCell>
         <TableCell
           className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: `${(dragVisibility === false) ? "62px" : "113px"}`, position: "sticky", zIndex: 4 }}
+          style={{ left: `${(dragVisibility === false) ? "62px" : "118px"}`, position: "sticky", zIndex: 4 }}
         >
           <div
             className={

@@ -10,6 +10,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import CRXCheckBox from '../controls/CRXCheckBox/CRXCheckBox'
 import {useTranslation} from 'react-i18next'; 
 import { HeadCellProps, DataTableCustomizeColumnsProps, OrderValue } from "./CRXDataTableTypes"
+//After refactoring
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 
 const checkboxStyle = makeStyles({
     root: {
@@ -57,15 +62,14 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
 
   const {t} = useTranslation<string>();
   const chkStyle = checkboxStyle();
-  const [customizeColumn, setCustomize] = useState<Element | undefined | null>(null)
-  //const [selected, setSelected] = React.useState<HeadCellProps[]>(headCells);  
+  const [customizeColumn, setCustomize] = useState<boolean>(false)
   const [orderColumn, setOrderColumn] = useState(orderingColumn)
   const stateArry = headCells.map((i : HeadCellProps) => {
     return i.id;
   })
   const [dragState, setDragState] = useState<any>(stateArry);
   const [onPreset, setOnPreSet] = useState<boolean>()
-
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
   useEffect(() => {
 
     let checkOrderPreset = localStorage.getItem("checkOrderPreset");
@@ -95,7 +99,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
     else
       localStorage.removeItem("checkOrderPreset");
 
-    setCustomize(null)    
+    setCustomize(false)    
   }
 
   const resetToCustomizeDefault = () => {
@@ -168,51 +172,52 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
       }
   }
 
+  const customizeColumnOpen = (event : any) => {
+    setCustomize((prevOpen) => !prevOpen)
+  }
   return (
 
     <div className="dataTableColumnShoHide">
         <Tooltip title="Customize Columns" placement="top-start">         
-          <IconButton
-            aria-controls="CustomizeColumns"
-            className="dataIconButton"
-            aria-haspopup="true"
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setCustomize(e.currentTarget)}
-            disableRipple={true}
-            >
-            <i className="fas fa-columns"></i>
-          </IconButton>
+            <IconButton
+                ref={anchorRef}
+                aria-controls={customizeColumn ? 'menu-list-grow' : undefined}
+                aria-haspopup="true"
+                className="dataIconButton"
+                onClick={customizeColumnOpen}
+                disableRipple={true}
+              >
+                <i className="fas fa-columns"></i>
+              </IconButton>
         </Tooltip>
-        <Menu
+        <Popper 
             id="CustomizeColumns"
-            anchorEl={customizeColumn}
             className="columnReOrderOpup"
-            getContentAnchorEl={null}
-            keepMounted= {true}
-            disableScrollLock= {false} 
-            open={Boolean(customizeColumn)}
-            onClose={() => setCustomize(null)}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-            }}
+            open={customizeColumn} 
+            anchorEl={anchorRef.current} 
+            role={undefined} 
+            placement="top-end"
+            transition disablePortal>
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{ transformOrigin: placement === 'top-end' ? 'right-start' : 'right-start' }}
             >
-            <div className="popupFreezTitle">
-            <div style={{position:'absolute', top:"-10px", right:"0px"}}>
-                <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={() => setCustomize(null)} >
-                <span className="icon-cross2"></span>
-                
-                </IconButton>
-            </div>
-            
-            <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
-            <CRXTypography className="subTItle" variant="h5" >{t('Select to show a column. Drag and drop to recorder.')}</CRXTypography>
-            </div>
-            <div className="columnList">
-            <SortableList 
+              <Paper>
+              <ClickAwayListener onClickAway={() => setCustomize(false)}>
+                <div>
+                <div className="popupFreezTitle">
+                <div style={{position:'absolute', top:"-10px", right:"0px"}}>
+                  <IconButton aria-label="clear" disableRipple={true} className="closePopup"  onClick={() => setCustomize(false)} >
+                    <span className="icon-cross2 croseIcon"></span>
+                  </IconButton>
+                </div>
+              
+              <CRXTypography className="DRPTitle" variant="h3" >{t('Customizecolumns')}</CRXTypography>
+              <CRXTypography className="subTItle" variant="h5" >{t('Select to show a column. Drag and drop to recorder.')}</CRXTypography>
+              </div>
+              <div className="columnList">
+              <SortableList 
                 orderColumn={orderColumn} 
                 headCells={headCells} 
                 chkStyle={chkStyle} 
@@ -226,42 +231,50 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
                 lockToContainerEdges={true}
                 transitionDuration={0}
                 onReOrderChange={handleCustomizeChange}/>
-            </div>
-            <div className="footerDRPReOrder">
+              </div>
+              
             
-                <CRXButton 
-                id="closeDropDown"
-                onClick={onSavecloseHandle}
-                color="primary"
-                variant="contained" 
-                className="closeDRP"
-                >
-                    {t('Saveandclose')}
-                </CRXButton>
-            
-                <CRXButton 
-                id="resetCheckBox"
-                onClick={resetToCustomizeDefault}
-                color="default"
-                variant="outlined" 
-                className="resetCheckBox"
-                >
-                    {t('Resettodefault')}
-                </CRXButton>
-            
-                <FormControlLabel
-                  control={<CRXCheckBox checked={onPreset}
+              <div className="footerDRPReOrder">
+              
+                  <CRXButton 
+                    id="closeDropDown"
+                    onClick={onSavecloseHandle}
+                    color="primary"
+                    variant="contained" 
+                    className="closeDRP"
+                    >
+                      {t('Saveandclose')}
+                    </CRXButton>
+                
+                  <CRXButton 
+                    id="resetCheckBox"
+                    onClick={resetToCustomizeDefault}
+                    color="default"
+                    variant="outlined" 
+                    className="resetCheckBox"
+                    >
+                      {t('Resettodefault')}
+                    </CRXButton>
+                
+                  <FormControlLabel
+                    control={<CRXCheckBox checked={onPreset}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOnPreSet(e.target.checked)}
                       className="shoHideCheckbox"
                       inputProps="primary checkbox"
                       />}
-                  label={t('Saveaspreset')}
-                  labelPlacement="end"
-                />
-            
-            
-            </div>
-        </Menu>
+                    label={t('Saveaspreset')}
+                    labelPlacement="end"
+                  />
+                
+              
+              </div>
+              </div>
+              </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
+        
     </div>  
   );
 };

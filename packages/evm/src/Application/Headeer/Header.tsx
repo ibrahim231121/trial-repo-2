@@ -47,7 +47,6 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                     <div className="MasterHeadRight">
                         <ul id="rightMenu">
                             <li><CRXDepartment /></li>
-                            <li><CRXStation /></li>
                             <li><CRXUserProfile /></li>
                             <li><CRXHelp /></li>
                         </ul>

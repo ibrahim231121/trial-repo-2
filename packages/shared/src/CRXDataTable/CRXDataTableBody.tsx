@@ -106,9 +106,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                 ) : null}
                 <TableCell
                   style={{
-                    left: `${dragVisibility === false ? "0px" : "55px"}`,
+                    left: `${dragVisibility === false ? "0px" : "60px"}`,
                   }}
-                  className="DataTableBodyCell CellCheckBox "
+                  className="DataTableBodyCell CellCheckBox col-two"
                   scope="row"
                 >
                   <CRXCheckBox
@@ -121,9 +121,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                 </TableCell>
                 <TableCell
                   style={{
-                    left: `${dragVisibility === false ? "62px" : "113px"}`,
+                    left: `${dragVisibility === false ? "60px" : "118px"}`,
                   }}
-                  className="DataTableBodyCell "
+                  className="DataTableBodyCell col-three"
                   scope="row"
                 >
                   <span onClick={() => getRowOnActionClick(row)}>

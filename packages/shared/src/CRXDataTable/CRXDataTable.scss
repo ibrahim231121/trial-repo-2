@@ -35,14 +35,15 @@
     tbody {
       tr {
         td.MuiTableCell-root {
+          color: #333;
         }
         td.DataTableBodyCell {
           border-right: 1px solid #ccc;
-          padding: 2px 9px;
+          padding:0px 9px 2px;
           font-size: 14px;
           color: #333;
           vertical-align: top;
-          line-height: 38px;
+          line-height: 25px;
           text-indent: 5px;
           .MuiListItemSecondaryAction-root {
             z-index: -1 !important;
@@ -68,6 +69,10 @@
           &:nth-child(3) {
             vertical-align: middle;
             text-align: center;
+          }
+          .gridDateTimeColumn {
+            padding-top: 7px;
+            
           }
         }
       }
@@ -458,7 +463,21 @@ td.col-two:hover,
 td.col-three:hover,
 td.col-three:hover .rc-menu-button {
   background-color: #333 !important;
-  color: #fff !important;
+  color: #D1D2D4 !important;
+}
+
+
+td.CellCheckBox{
+  &:hover {
+  .CRXCheckBox {
+      span {
+        span {
+          border-color: #D1D2D4;
+          background-color: #333;
+        }
+      }
+    }
+  }
 }
 
 tr.Mui-selected:nth-child(odd) td[scope="row"] {
@@ -487,7 +506,10 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     &.Mui-selected {
       background-color: #231f20 !important;
       td.DataTableBodyCell {
-        color: #d1d2d4;
+        color: #D1D2D4 !important;
+        .linkColor {
+          color: #FF6E20;
+        }
         .rc-menu-button {
           color: #d1d2d4 !important;
         }
@@ -496,7 +518,10 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     &:hover {
       background-color: #333 !important;
       td.DataTableBodyCell {
-        color: #d1d2d4;
+        color: #D1D2D4 !important;
+        .linkColor {
+          color: #FF6E20;
+        }
       }
     }
     td:nth-child(2):hover ~ td.col-three {
