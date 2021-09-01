@@ -58,12 +58,13 @@ const CRXAssetsBucketPanel = () => {
   }, [assetBucketData]);
 
   const ToggleButton = (
-    <CRXBadge itemCount={assetBucketData.length}>
+    <CRXBadge itemCount={assetBucketData.length} color="primary">
       <CRXTooltip
         className="bucketIcon"
         title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
         iconName="fas icon-drawer2"
         placement="left"
+        
       ></CRXTooltip>
     </CRXBadge>
   );

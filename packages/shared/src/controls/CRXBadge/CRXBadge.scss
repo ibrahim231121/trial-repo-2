@@ -1,23 +1,26 @@
-.CRXBadgeComponent-Grey {
+.bucketIconButton {
   .MuiBadge-badge {
-    padding-left: 6px;
-    padding-right: 6px;
+    padding: 0 6px;
     font-size: 12px;
     height: 13px;
     border-radius: 5px;
-    border: 1px solid #8A8888;
-    background-color:#333333;
+    line-height: 2px;
+    color:#fff;
+    top: 5px;
+    right:-7px;
   }
-}
+  .CRXBadgeComponent-default {
+    .MuiBadge-badge {
+      border: 1px solid #8a8888;
+      background-color: #333333;
+    }
+  }
 
-.CRXBadgeComponent-Orange {
-  .MuiBadge-badge {
-    padding-left: 6px;
-    padding-right: 6px;
-    font-size: 12px;
-    height: 13px;
-    border-radius: 5px;
-    border: 1px solid #4C4C4D;
-    background-color:#D74B00;
+  .CRXBadgeComponent-primary {
+    .MuiBadge-badge {
+      border: 1px solid #4c4c4d;
+      background-color: #d74b00;
+    }
   }
+  
 }

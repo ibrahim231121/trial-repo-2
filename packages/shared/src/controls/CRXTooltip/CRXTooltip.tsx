@@ -11,14 +11,15 @@ type tooltipProps = {
 }
 const CRXUseStyles = makeStyles((theme) => ({
     arrow: {
-      color: theme.palette.common.black,
-      top: "6px !important"
+      color: '#333333',
     },
     tooltip: {
-      backgroundColor: theme.palette.common.black,
-      color:"#D1D1D4",
+      backgroundColor: "#333333",
+      color:"#d1d2d4",
+      fontFamily:'Arial',
       fontSize: "14px",
-      padding:"8px 16px"
+      padding:"8px 16px",
+      boxShadow:"20% 0 5px #000000",
     },
 }));
 
@@ -44,7 +45,6 @@ const CRXTooltip = ({placement, title, className,iconName} : tooltipProps) => {
             title={title}
             className={className}
             >
-
             <i className={iconName + " " + clsxs.iconCls}></i>
         </CRXCustomizedTooltip>
         </>

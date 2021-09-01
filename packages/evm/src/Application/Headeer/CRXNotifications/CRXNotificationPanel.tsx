@@ -4,11 +4,12 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import './CRXNotificationPanel.scss';
 
 const ToggleButton = (
-  //<CRXBadge itemCount={1}>
+  // This functionality is coming soon //
+  // <CRXBadge color="secondary" variant="dot" className="crx-dot" itemCount={1}>
     <CRXIcon className='bucketIcon'>
       <i className='fas fa-bell'></i>
     </CRXIcon>
-  //</CRXBadge>
+  /* </CRXBadge> */
 );
 
 const toggleState = () => {};
