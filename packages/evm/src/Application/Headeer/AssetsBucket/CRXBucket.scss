@@ -83,17 +83,14 @@
   right: 0px;
   content: "";
 }
-.CRXDataTableCustom {
-
+.bucketDataTable{
+  height: 500px;
+  .centerPosition  {
+    width:180px;
+  }
   .CBX-input {
     input {
       width: 100px;
     }
   }
-}
-.centerPosition  {
-  width:180px;
-}
-.bucketDataTable{
-  height: 500px;
 }

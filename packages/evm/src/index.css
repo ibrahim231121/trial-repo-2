@@ -114,6 +114,11 @@ code {
   left: 320px;
   z-index: 999 !important;
   background-color: black;
+}
+
+.crx-main-container {
+  min-height:96.8vh !important;
+}
 }.testClass {
   display: flex;
   justify-content: center;

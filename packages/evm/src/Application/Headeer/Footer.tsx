@@ -1,11 +1,29 @@
-import React from 'react';
-import './footer.scss';
-import useGetFetch from '../../utils/Api/useGetFetch';
+import React, { useEffect } from "react";
+import "./footer.scss";
+import useGetFetch from "../../utils/Api/useGetFetch";
 
 const Footer = React.memo(() => {
-  const [versionNumber, setVersionNumber] = React.useState('');
-  const url = '/Evidence/Version';
+  const [versionNumber, setVersionNumber] = React.useState("");
+  const url = "/Evidence/Version";
   const [getResponse, res] = useGetFetch<any>(url);
+  const [showScroll, setShowScroll] = React.useState(false);
+
+  const checkScrollTop = () => {
+    if (!showScroll && window.pageYOffset > 10) {
+      setShowScroll(true);
+    } else if (showScroll && window.pageYOffset <= 10) {
+      setShowScroll(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkScrollTop);
+    return () => window.removeEventListener("scroll", checkScrollTop);
+  }, []);
+
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   //   useEffect(()=>{
   //       fetch(url, {
@@ -24,9 +42,14 @@ const Footer = React.memo(() => {
   }, [res]);
 
   return (
-    <div className='footerDiv'>
-      © Copyright 2021 IRSA Video ® | Enterprise Version {versionNumber}
-      <i className='fas fa-chevron-up'></i>
+    <div className="footerDiv">
+      Copyright © Getac Video Solutions, Inc. and its subsidiaries. All rights
+      reserved. | Enterprise Version: {versionNumber}
+      <i
+        className="fas fa-chevron-up"
+        onClick={scrollTop}
+        style={{ display: showScroll ? "flex" : "none" }}
+      ></i>
     </div>
   );
 });

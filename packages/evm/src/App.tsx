@@ -223,7 +223,7 @@ function App() {
       </CRXAppBar>
       
       <main 
-      className={clsx(classes.content, {
+      className={clsx(classes.content, 'crx-main-container', {
         [classes.contentShift]: open,
       })}
       >
