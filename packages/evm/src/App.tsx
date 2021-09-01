@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Routes from "./Routes";
-import clsx from "clsx";
-import { CRXAppBar, CRXContainer, CRXPanelStyle } from "@cb/shared";
+import clsx from 'clsx';
+import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import AppHeader from "./Application/Headeer/Header";
+import AppHeader from './Application/Headeer/Header'
 import { AssetThumbnailIcon } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
-import Footer from "./Application/Headeer/Footer";
-import { useTranslation } from "react-i18next";
-import "../../evm/src/utils/Localizer/i18n";
+import Footer from './Application/Headeer/Footer'
+import {useTranslation} from 'react-i18next'; 
+
+import "../../evm/src/utils/Localizer/i18n"
 import Img from "./Assets/Images/thumb.png";
+
 function App() {
   let culture: string = "en";
   const [resources, setResources] = useState<any>("");
@@ -215,29 +217,21 @@ function App() {
 
   return (
     <div dir={rtl}>
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        <CRXAppBar position="fixed">
-          <AppHeader
-            onClick={handleDrawerToggle}
-            onClose={handleDrawerToggle}
-            open={open}
-          />
-        </CRXAppBar>
-        <main
-          className={clsx(classes.content, {
-            [classes.contentShift]: open,
-          })}
-        >
-          <CRXContainer
-            className="mainContainer"
-            maxWidth="xl"
-            disableGutters={true}
-          >
-            <Routes />
-          </CRXContainer>
-        </main>
-      </DragDropContext>
-
+<DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <CRXAppBar position="fixed">
+          <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
+      </CRXAppBar>
+      
+      <main 
+      className={clsx(classes.content, {
+        [classes.contentShift]: open,
+      })}
+      >
+      <CRXContainer className="mainContainer" maxWidth="xl" disableGutters={true}>
+        <Routes />
+      </CRXContainer>
+      </main>
+</DragDropContext>
       <footer>
         <Footer />
       </footer>

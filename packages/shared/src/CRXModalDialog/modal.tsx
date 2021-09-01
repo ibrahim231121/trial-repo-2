@@ -46,11 +46,18 @@ const CRXModalDialog = (props: crxDialogProps) => {
     className, 
     maxWidth,
     secondaryButton = false,
-    cancelButtonTxt = "Secondry Button", 
+    cancelButtonTxt, 
     saveButtonTxt = "Primery Button" } = props;
 
   return (
-    <Dialog scroll="paper" id={id} className={"crx-model" + " " + className} aria-labelledby="simple-dialog-title" open={modelOpen} maxWidth={maxWidth}>
+    <Dialog 
+      scroll="paper" 
+      id={id} 
+      className={"crx-model" + " " + className} 
+      aria-labelledby="simple-dialog-title" 
+      open={modelOpen} 
+      maxWidth={maxWidth}
+      >
          <div className="CRXPopupCrossButton">
             <Button
               className={classes.CRXArrowStyle + " CRXCloseButton"}
@@ -59,7 +66,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
               <i className="icon-cross2 closeModalIcon"></i>
             </Button>
           </div>
-      <DialogTitle className="modelTitle">{title}</DialogTitle>
+        <DialogTitle className="modelTitle">{title}</DialogTitle>
         <div className="CRXContent">
           { children }
         </div>
@@ -68,8 +75,9 @@ const CRXModalDialog = (props: crxDialogProps) => {
         
             <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e : mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
             {
-              secondaryButton && 
+              secondaryButton &&
               <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e : mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
+              
             }
         </DialogActions>
     </Dialog>

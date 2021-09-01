@@ -114,4 +114,9 @@ code {
   left: 320px;
   z-index: 999 !important;
   background-color: black;
+}.testClass {
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  height: 100vh;
 }

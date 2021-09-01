@@ -42,32 +42,34 @@ const TestModalPage = () => {
         setOpen(false);
     }
     return (
-      <div>
+      <div className="testClass">
         
         <CRXButton variant="outlined" color="primary" onClick={handleClickOpen}>
           Open simple dialog
         </CRXButton>
         <CRXModalDialog 
           maxWidth="lg" 
-          saveButtoTxt="Save & Close" 
-          cancelButtonTxt="Cancel" 
-          title="Simple Model" 
+          saveButtonTxt="Primary action" 
+          cancelButtonTxt="Secondary action" 
+          title="Modal title here" 
           onSave={saveServerData} 
           modelOpen={open} 
           onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
-          secondaryBUtton={true}
+          secondaryButton={true}
         >
             Determine the max-width of the <b>dialog</b>. The dialog width grows with the size of the screen. Set to false to disable maxWidth.
 
 
-            <List className={classes.CRXSectionList + ' CRXSecList'}>
+            {/* <List className={classes.CRXSectionList + ' CRXSecList'}>
             {[0, 1, 2, 3, 4, 5 , 6 , 7 , 8 , 9 , 10 ,11 ,12 ,13 ,14 ,15].map((sectionId) => (
             
                   <ListSubheader>{`I'm sticky ${sectionId}`}</ListSubheader>
            
             ))}
-          </List>
-
+          </List> */}
+          <div className="dailogBottonText">
+            Another paragraph for information if needed. 
+          </div>
         </CRXModalDialog>
       </div>
     );

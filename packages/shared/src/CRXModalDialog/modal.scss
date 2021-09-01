@@ -4,6 +4,8 @@
     .MuiDialog-paperScrollPaper {
       overflow: hidden !important;
       height: calc(100% - 192px) !important;
+      height: calc(100% - 262px) !important;
+      top: 29px;
     }
   }
   .MuiBackdrop-root {
@@ -46,6 +48,7 @@
       border-radius: 0;
       border:1px solid transparent;
       padding: 2px 15px;
+      text-transform: none !important;
 
       .MuiButton-label {
         font-size: 14px;
@@ -70,8 +73,9 @@
       background-color: #fff;
       border-radius: 0;
       border:1px solid #878787;
-      padding: 1px 15px;
+      padding: 2px 15px;
       margin-left: 31px;
+      text-transform: none !important;
 
       .MuiButton-label {
         font-size: 14px;
@@ -110,6 +114,13 @@
       color: #d1d2d4;
     }
   }
+
+  .dailogBottonText {
+    position: absolute;
+    bottom: 115px;
+    color: #333;
+    font-size: 14px;
+  }
 }
 .CRXSecList {
   margin-top: 15px !important;
@@ -129,7 +140,8 @@
     .MuiDialog-scrollPaper {
       .MuiDialog-paperScrollPaper {
         overflow: hidden !important;
-        height: calc(100% - 64px) !important;
+        height: calc(100% - 262px) !important;
+        top: 29px;
       }
     }
   }
@@ -144,6 +156,8 @@
       .MuiDialog-paperScrollPaper {
         overflow: hidden !important;
         height: calc(100% - 64px) !important;
+        height: calc(100% - 262px) !important;
+        top: 29px;
       }
     }
   }
@@ -158,6 +172,8 @@
       .MuiDialog-paperScrollPaper {
         overflow: hidden !important;
         height: calc(100% - 64px) !important;
+        height: calc(100% - 262px) !important;
+        top: 29px;
       }
     }
     .CRXContent {
