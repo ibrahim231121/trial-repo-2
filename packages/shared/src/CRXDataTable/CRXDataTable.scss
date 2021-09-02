@@ -8,7 +8,7 @@
   table {
     tr {
       th.MuiTableCell-sizeSmall {
-        padding: 0px 7px;
+        padding: 0px 11px;
       }
       th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
         padding-left: 15px !important;
@@ -542,8 +542,23 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   th {
     button {
       color: #b3b4b6;
+      background: transparent;
+      box-shadow: none;
+      border: none;
+
     }
-  }
+    .fa-filter {
+      font-size: 14px;
+      padding: 0;
+      margin-right: 19px;
+      color: #D1D2D4;
+    }
+    .fa-times {         
+      font-size: 12px;
+      padding: 0;
+      width: 12px;}
+
+  } 
 }
 
 

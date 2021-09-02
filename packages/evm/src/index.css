@@ -119,7 +119,7 @@ code {
 .crx-main-container {
   min-height:96.8vh !important;
 }
-}.testClass {
+.testClass {
   display: flex;
   justify-content: center;
   place-items: center;
