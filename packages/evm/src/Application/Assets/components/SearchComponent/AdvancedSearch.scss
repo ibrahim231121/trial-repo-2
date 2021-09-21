@@ -4,6 +4,11 @@
   padding: 23px 27px;
   margin: 4px auto 0;
 
+  .Mui-focused {
+    border: 3px solid #888787 !important;
+    transition: all 0.25s ease-in-out;
+  }
+
   .adVSelectBox {
     width: 100%;
     height: 30px;
@@ -14,15 +19,14 @@
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: #d1d2d4 solid 1px;
+    border: 1px solid #d1d2d4;
     font-family: "Helvetica", "Arial", sans-serif !important;
     background-color: #fff;
     text-align: left;
     &:hover {
-      border-color: #888787;
-    }
-    &:focus {
-      border: #888787 solid 3px !important;
+      border: 1px solid #888787 !important;
+      border: none;
+      transition: all 0.25s ease-in-out;
     }
   }
 
@@ -36,7 +40,7 @@
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: #cecece solid 1px;
+    border: 1px solid #d1d2d4 ;
     &:hover {
       border: 1px solid #888787;
       transition: all 0.25s ease-in-out;
@@ -111,7 +115,7 @@
       margin-left: 0px;
     }
   }
-  .dateTimeLabel{
+  .dateTimeLabel {
     padding: 0px;
     padding-top: 6px;
   }

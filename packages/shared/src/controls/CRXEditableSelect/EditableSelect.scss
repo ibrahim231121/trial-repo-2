@@ -43,6 +43,7 @@
       &:focus {
         outline: 3px solid #888787;
         height: 7px;
+        transition: all 0.25s ease-in-out;
       }
     }
     .MuiAutocomplete-clearIndicator {

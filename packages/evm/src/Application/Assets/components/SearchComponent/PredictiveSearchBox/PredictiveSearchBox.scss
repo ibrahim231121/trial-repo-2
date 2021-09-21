@@ -70,14 +70,8 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border:1px solid #d1d2d4;
+      border:2px solid #d1d2d4;
       border-radius: 0px;
-      &:hover {
-        border: 1px solid #888787;
-      }
-      &:focus {
-        border: 3px solid #888787;
-      }
       select{
         height: 27px;
         font-size: 14px;

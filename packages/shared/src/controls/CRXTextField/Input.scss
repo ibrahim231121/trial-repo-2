@@ -1,80 +1,145 @@
-.CBX-input{
-    width: 100%;
-    .MuiInput-underline{
+.CBX-input {
+  width: 100%;
+  .MuiInput-underline {
+    &:before {
+      border: 0px solid #d1d2d4;
+    }
+    &:after {
+      border: 0px solid #d1d2d4;
+    }
+    &:hover {
+      border: 0px solid #d1d2d4;
+      &:not(.Mui-disabled) {
         &:before {
-            border:0px solid #d1d2d4;
+          border: 0px solid #d1d2d4;
         }
-        &:after {
-            border:0px solid #d1d2d4;
-        }
-        &:hover{
-            border:0px solid #d1d2d4;
-            &:not(.Mui-disabled) {
-                &:before{
-                    border:0px solid #d1d2d4;
-                }
-            }
-        }
-        &:focus{
-            border:0px solid #d1d2d4;
-        }
+      }
     }
-    input{
-        border: 1px solid #d1d2d4;
-        padding: 0px 0px;
-        text-indent: 10px;
-        height: 28px;
+    &:focus {
+      border: 0px solid #d1d2d4;
+    }
+  }
+  input {
+    outline: 1px solid #d1d2d4;
+    padding: 0 16px 0 0;
+    text-indent: 16px;
+    height: 30px;
+    background: #ffffff;
+    font-size: 14px;
 
-            &:hover{
-                border:1px solid #888787;
-            }
-            &:focus{
-                border-color: #888787;
-                border-width: 3px;
-            }
-        }
-        &:focus{
-            border-color: #888787;
-        }
+    &:hover {
+      outline: 1px solid #888787;
+      transition: all 0.25s ease-in-out;
     }
-    
-
-.disabled {
-    background: #d1d2d4;
-    .MuiInput-underline{
-        input {
-            background: #d1d2d4;
-            &:hover{
-                border:1px solid transparent;
-            }
-            &:focus{
-                border-color: transparent;
-            }
-        }
+    &:focus {
+      outline: 3px solid #888787;
+      transition: all 0.25s ease-in-out;
     }
+  }
+  &:focus {
+    outline: 3px solid #888787;
+    transition: all 0.25s ease-in-out;
+  }
+  .Mui-disabled {
+    background: #e5e5e5 !important;
+    border: none;
+    outline: 1px solid #e5e5e5;
+    color: #979797;
+    &:hover {
+      outline: 1px solid #e5e5e5;
+      border: none !important;
+    }
+    &:focus {
+      outline: none;
+      border: none;
+    }
+  }
+  .Mui-error {
+    input {
+      color: #74767c;
+      height: 27px;
+      outline: 2px solid #aa1d1d;
+      border: 1px solid transparent !important;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &::placeholder {
+        color:#74767c;
+      }
+      &::-webkit-input-placeholder {
+        color:#74767c;
+      }
+      
+      &:-ms-input-placeholder { 
+        color:#74767c;
+      }
+    }
+  }
 }
 
-.errors{
-    .MuiInput-underline{
-        input {
-            border:1px solid #aa1d1d;
-            &:hover{
-                border:1px solid #aa1d1d;
-            }
-            &:focus{
-                border-color: #aa1d1d;
-            }
-        }
-    }
-}
-
-.errorStateContent{
+.errorStateContent {
+  color: #aa1d1d;
+  padding-top: 7px;
+  .errorState {
     color: #aa1d1d;
-    padding-top:7px;
-    .errorState{
-        color: #aa1d1d;
-        vertical-align: bottom;
+    vertical-align: bottom;
+  }
+}
+
+.label {
+  margin-right: 25px;
+  .requiredLable {
+    display: flex;
+  }
+  .required {
+    color: #aa1d1d;
+  }
+}
+.crx-form-control {
+  h6 {
+    display: flex;
+    justify-content: flex-end;
+    width: 110px;
+    color: #333333;
+    font-size: 14px;
+    .requiredLable {
+      span {
+        margin-left: 7px;
+        font-size: 20px;
+        margin-top: -5px;
+      }
     }
+  }
+  .crx-clear-field {
+    position: relative;
+
+    &:hover {
+      .fa  {
+        display: block;
+      }
+    }
+
+    .fa {
+      position: absolute;
+      right: 0;
+      z-index: 99;
+      display: none;
+      cursor: pointer;
+      top: 8px;
+      font-size: 14px;
+      right: 8px;
+      color:#333333;
+    }
+  }
+}
 }
 
 .label{

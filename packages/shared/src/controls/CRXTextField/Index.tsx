@@ -60,7 +60,7 @@ const CRXInput = ({
     if (required) {
       return (
         <span className="requiredLable">
-          {label} <span style={{color:`${error?"red":"black"}`}}>*</span>
+          {label} <span style={{color:`${error?"#aa1d1d":"#000"}`}}>*</span>
         </span>
       );
     } else {

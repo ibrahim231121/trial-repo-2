@@ -1,6 +1,5 @@
 .getac-simple-select {
-  border: 2px solid rgb(206, 206, 206);
-  transition: all 0.25s ease-in-out;
+  outline: 1px solid #d1d2d4;
   select {
     padding: 5px;
     min-width: 250px;
@@ -8,11 +7,11 @@
     color: #444;
   }
   &:hover {
-    border: 2px solid #888787;
+    outline: 1px solid #888787;
     transition: all 0.25s ease-in-out;
   }
   &:focus {
-    border: 3px solid #888787;
+    outline: 3px solid #888787;
     transition: all 0.25s ease-in-out;
   }
   .MuiFormControl-root {
@@ -122,6 +121,9 @@ div[class*="MuiInput-underline"] {
       padding-right: 0;
       color: #333333;
     }
+  .MuiInputBase-root {
+    padding: 0px !important;
+  }
     svg {
       width: 13px;
       height: 17px;
@@ -206,6 +208,10 @@ div[class*="MuiInput-underline"] {
       &:focus {
         outline: none !important;
       }
+  .selectBoxTextField {
+    input {
+      font-size: 14px;
+      color: #74767c;
     }
   }
   div[class*="MuiInputBase-adornedEnd-"] {
@@ -232,6 +238,23 @@ div[class*="MuiInput-underline"] {
       }
     }
   }
+  }
+  .MuiChip-root {
+    background-color: #d7efff;
+    border-radius: 4px;
+  }
+  .MuiSvgIcon-fontSizeSmall {
+      font-size: 14px;
+      stroke: #333333;
+      color: #333333;
+  }
+  .MuiAutocomplete-endAdornment {
+    top: calc(50% - 9px) !important;
+  }
+}
+.error {
+  border: 2px solid #aa1d1d;
+}
 
   .MuiAutocomplete-endAdornment {
     .MuiAutocomplete-clearIndicator {
@@ -242,6 +265,13 @@ div[class*="MuiInput-underline"] {
       border: 2px solid #fff;
       outline: 1px solid #888787;
     }
+.MuiInput-underline {
+  &::before {
+    border: 0px !important;
+  }
+  &::after {
+    border: 0px !important;
+  }
     .MuiAutocomplete-popupIndicator {
       text-align: right;
       right: 5px;
@@ -348,6 +378,8 @@ div[class*="MuiInput-underline"] {
   .Mui-focused {
     display: none;
   }
+.topLevel {
+  margin-top: 25px;
 }
 .autocompleteSpacer {
   height: 30px;
