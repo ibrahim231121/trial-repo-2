@@ -43,13 +43,14 @@
 }
 
 .assetThumb {
-    width: 138px;
-    height: 77px;
-    margin: 12px 10px;
+    width: 110px;
+    height: 61px;
+    margin: 14px 0px;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-indent: 0px !important;
     img {
         width: 100%;
         height: 100%;
@@ -62,8 +63,10 @@
         color: #fff;
         display: flex;
         visibility: hidden;
+        z-index: 999;
     }
     &:hover {
+        
         .tumbPlayIcon {
             visibility: visible;
             &:hover {
@@ -71,7 +74,73 @@
             }
         }
     }
+    .tumbFontIcon {
+        font-size: 61px;
+        
+    }
+
+    .audioBackground {
+        background: #333;
+        width: 100%;
+        height: 61px;
+        color: #888787;
+        font-size: 52px;
+        text-align: center;
+        line-height: 67px;
+        padding: 5px 0;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: invert(100%) sepia(13%) saturate(500%) hue-rotate(130deg) brightness(90%) contrast(100%)
+        }
+    }
+
+    .assetsThumbGetac {
+        border:1px solid transparent;
+    }
+    &.CRXPopupTableImage {
+        color: #333;
+    }
 }
+
+.CRXDataTableCustom {
+    tr {
+        &:hover {
+            td {
+                &.DataTableBodyCell {
+                    .assetThumb {
+                        .audioBackground {
+                            background: #D1D2D4;
+                            color: #333333;
+                            img {
+                               filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg) brightness(70%) contrast(70%)
+                            }
+                        }
+                    }
+                    .assetsThumbGetac {
+                        border:1px solid #D1D2D4;
+                    }
+                }
+            }
+        }
+        &.Mui-selected {
+            td {
+                &.DataTableBodyCell {
+                    .assetThumb {
+                        .audioBackground {
+                            background: #D1D2D4;
+                            color: #333333;
+                            img {
+                                filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg) brightness(70%) contrast(70%)
+                             }
+                        }
+                    }
+                }
+            }
+        }
+    } 
+} 
 
 .selectFilter {
     width: 100%;
@@ -149,3 +218,4 @@
     width: 300px;
     background-color: #333 !important;
 }
+

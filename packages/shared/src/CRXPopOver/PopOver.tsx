@@ -20,6 +20,7 @@ const useStyles = makeStyles(() => ({
     overflowX: "unset",
     overflowY: "unset",
     backgroundColor: "#333333",
+    boxShadow : "none",
     "&::before": {
       },
     },

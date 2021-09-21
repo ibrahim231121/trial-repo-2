@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { CRXPopOver, CRXHeading } from "@cb/shared";
+import { CRXPopOver, CRXHeading, CRXTooltip } from "@cb/shared";
 
 import "./DetailedAssetPopup.scss";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
-  popover: {
-    pointerEvents: "none"
+  popper: {
+    width: "230px",
   },
-  paper: {
-    pointerEvents: "auto",
-    padding: theme.spacing(1)
+  arrow: {
+    Left : "201px"
   }
 }));
 
@@ -21,48 +20,24 @@ type Props = {
 
 const AssetNameTooltip: React.FC<Props> = ({assetName}) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const open = Boolean(anchorEl);
+  
+  
 
   const { t } = useTranslation<string>();
-
-  const handlePopoverOpen = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    setAnchorEl(null);
-  };
-
+  const assteTitle = <CRXHeading className="CRXPopupTableAssetName"> {assetName} </CRXHeading>
   return (
     <>
-      <CRXHeading
-        aria-owns={open ? "mouse-over-popover" : undefined}
-        aria-haspopup="true"
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-        className="CRXPopupTableAssetName"
-      >
-        {assetName}
-      </CRXHeading>
-      {assetName.length > 25 ? (
-        <CRXPopOver
-          open={open}
-          onClose={handlePopoverClose}
-          anchorEl={anchorEl}
-          onSetAnchorE1={(v: HTMLElement) => setAnchorEl(v)}
-          className={classes.popover + ' CRXPopoverStyle'}
-          classes={{
-            paper: classes.paper
-          }}
-        >
-          {assetName}
-        </CRXPopOver>
-      ) : null}
+      { assetName.length > 23 ? (
+        <CRXTooltip 
+          className="assetsGroupPopupTootip"
+          placement="top-end"
+          title={assetName}
+          content={assteTitle}
+         
+        />
+        
+      ): assteTitle 
+      }
     </>
   );
 };

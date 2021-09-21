@@ -29,7 +29,8 @@ const useStyles = makeStyles({
     boxShadow: 'none',
     backgroundColor: '#fff',
     'input:hover ~ &': {
-      border:"1px solid #333333",
+      border:"2px solid #333333",
+      borderRadius: "2px"
     },
     'input:disabled ~ &': {
       boxShadow: 'none',

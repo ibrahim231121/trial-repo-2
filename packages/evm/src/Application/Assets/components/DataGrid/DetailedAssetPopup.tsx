@@ -17,7 +17,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
 import { Asset } from "../../../../components/SupportiveFunctions";
-
 type CheckValue = {
   isChecked: boolean;
   assetId: string;
@@ -124,7 +123,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
               disableRipple={true}
               onClick={onClose}
             >
-              <i className="far fa-times fa-lg"></i>
+              <div className="icon-cross2 detailPopupCloseIcon"></div>
             </CRXButton>
           </div>
           <div className="CRXPopupHeader">
@@ -138,7 +137,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
                 <tr className="CRXPopupTableRow">
                   <td className="CRXPopupTableCellOne">
                     <CRXCheckBox
-                      className="customizeCheckBox"
+                      className="relatedAssetsCheckbox"
                       checked={checkAll}
                       onChange={(e:React.ChangeEvent<HTMLInputElement>) =>handleCheckAll(e)}
                     />
@@ -157,7 +156,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
                             <td>
                               <CRXCheckBox
                                 inputProps={id}
-                                className="customizeCheckBox"
+                                className="relatedAssetsCheckbox"
                                 checked={selected[index].isChecked}
                                 onChange={(
                                   e: React.ChangeEvent<HTMLInputElement>
@@ -167,7 +166,6 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
                             <td>
                               <AssetThumbnail
                                 assetType={asset.assetType}
-                                fontSize={"61pt"}
                                 className={"CRXPopupTableImage"}
                               />
                             </td>
@@ -196,10 +194,10 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
                               </label>
                             </td>
                             <td className="CRXPopupActionIcon">
-                              <MoreVertIcon />
+                              <i className="far fa-ellipsis-v actionIcon"></i>
                             </td>
                           </tr>
-                          <tr className="CRXPopupSpacingBetweenRows"></tr>
+                          
                         </>
                       );
                     })

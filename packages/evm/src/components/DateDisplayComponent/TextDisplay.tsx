@@ -1,5 +1,5 @@
 const textDisplay = (text: string, classes: string | undefined) => {
-  return <div className={classes}>{text}</div>;
+  return <div className={"dataTableSimpleText " + classes}>{text}</div>;
 };
 
 export default textDisplay;

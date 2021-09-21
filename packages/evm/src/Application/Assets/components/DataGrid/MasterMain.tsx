@@ -314,8 +314,8 @@ const MasterMain: React.FC<Props> = ({
       id: "assetType",
       align: "left",
       dataComponent: thumbTemplate,
-      minWidth: "155",
-      maxWidth: "171",
+      minWidth: "122",
+      maxWidth: "144",
     },
     {
       label: `${t("AssetID")}`,
