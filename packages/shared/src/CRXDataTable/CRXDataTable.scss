@@ -39,7 +39,7 @@
         }
         td.DataTableBodyCell {
           border-right: 1px solid #ccc;
-          padding:0px 9px 2px;
+          padding: 0px 9px 2px;
           font-size: 14px;
           color: #333;
           vertical-align: top;
@@ -72,7 +72,6 @@
           }
           .gridDateTimeColumn {
             padding-top: 7px;
-            
           }
         }
       }
@@ -83,7 +82,7 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-     
+
       div {
         label {
           font-size: 14px;
@@ -211,8 +210,6 @@
   padding-left: 11px;
 }
 
-
-
 .columnReOrderOpup {
   .MuiPopover-paper {
     width: 528px;
@@ -255,7 +252,6 @@
     }
   }
 }
-
 
 .draggFocus {
   border: 2px solid #cccccc;
@@ -463,16 +459,15 @@ td.col-two:hover,
 td.col-three:hover,
 td.col-three:hover .rc-menu-button {
   background-color: #333 !important;
-  color: #D1D2D4 !important;
+  color: #d1d2d4 !important;
 }
 
-
-td.CellCheckBox{
+td.CellCheckBox {
   &:hover {
-  .CRXCheckBox {
+    .CRXCheckBox {
       span {
         span {
-          border-color: #D1D2D4;
+          border-color: #d1d2d4;
           background-color: #333;
         }
       }
@@ -506,9 +501,9 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     &.Mui-selected {
       background-color: #231f20 !important;
       td.DataTableBodyCell {
-        color: #D1D2D4 !important;
+        color: #d1d2d4 !important;
         .linkColor {
-          color: #FF6E20;
+          color: #ff6e20;
         }
         .rc-menu-button {
           color: #d1d2d4 !important;
@@ -518,9 +513,9 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     &:hover {
       background-color: #333 !important;
       td.DataTableBodyCell {
-        color: #D1D2D4 !important;
+        color: #d1d2d4 !important;
         .linkColor {
-          color: #FF6E20;
+          color: #ff6e20;
         }
       }
     }
@@ -545,23 +540,24 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
       background: transparent;
       box-shadow: none;
       border: none;
-
     }
     .fa-filter {
       font-size: 14px;
       padding: 0;
       margin-right: 19px;
-      color: #D1D2D4;
+      color: #d1d2d4;
     }
-    .fa-times {         
+    .fa-times {
       font-size: 12px;
       padding: 0;
-      width: 12px;}
-
-  } 
+      width: 12px;
+    }
+    .crx-icon-filter {
+      height: 30px;
+      line-height: 30px;
+    }
+  }
 }
-
-
 
 #resetCheckBox {
   border: 0px;
@@ -611,8 +607,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   display: none;
 }
 
-
-.disableHeaderActionMenu { 
+.disableHeaderActionMenu {
   pointer-events: none;
   opacity: 0.4;
 }
@@ -622,7 +617,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
   border-radius: 0px;
   width: 521px;
   .MuiPaper-elevation1 {
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
   }
 
   .MuiPaper-rounded {
@@ -635,7 +630,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     padding-bottom: 27px;
     padding-left: 11px;
   }
-  
+
   .popupFreezTitle {
     position: relative;
     padding-left: 15px;
@@ -664,7 +659,6 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
         }
       }
     }
-
   }
 
   .columnList {
@@ -714,10 +708,13 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     }
   }
 }
-
-@media screen and (max-width: 1366px), 
-       screen and (max-height: 768px) {
-        .columnList {
-          height: 338px;
-        }
+.dateRangeContainer {
+  .wrapper {
+    margin: 0px 0 0 5px !important;
+  }
+}
+@media screen and (max-width: 1366px), screen and (max-height: 768px) {
+  .columnList {
+    height: 338px;
+  }
 }

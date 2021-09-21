@@ -86,11 +86,14 @@
 .bucketDataTable{
   height: 500px;
   .centerPosition  {
-    width:180px;
+    width:300px;
   }
-  .CBX-input {
-    input {
-      width: 100px;
-    }
+  // .CBX-input {
+  //   input {
+  //     width: 100px;
+  //   }
+  // }
+  th[class*="MuiTableCell-sizeSmall-"]{
+    padding: 0 12px;
   }
 }

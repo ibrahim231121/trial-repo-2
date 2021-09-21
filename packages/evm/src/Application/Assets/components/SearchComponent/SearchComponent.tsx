@@ -443,7 +443,7 @@ const SearchComponent = (props: any) => {
           </>
         )}
         {searchData && (
-          <div className='dataTabAssets'>
+          <div className='dataTabAssets dataTabAssets_table'>
             <MasterMain
               key={Math.random()}
               rowsData={searchData}

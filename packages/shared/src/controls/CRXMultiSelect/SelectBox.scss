@@ -40,7 +40,23 @@
       color: #74767c;
     }
   }
+
+  .selectBoxTextFieldAssets {
+    width: 287px;
+    margin-left: -2px;
+    .Mui-focused {
+      margin-top: 41px !important;
+      margin-bottom: 12px !important;
+      padding: 0px 10px !important;
+      min-height: 30px;
+      max-height: 150px;
+    }
+  }
   .MuiChip-root {
+    background-color: #d7efff;
+    border-radius: 4px;
+  }
+  div[class*="MuiChip-root-"] {
     background-color: #d7efff;
     border-radius: 4px;
   }
@@ -50,6 +66,14 @@
 }
 
 .MuiInput-underline {
+  &::before {
+    border: 0px !important;
+  }
+  &::after {
+    border: 0px !important;
+  }
+}
+div[class*="MuiInput-underline"] {
   &::before {
     border: 0px !important;
   }
@@ -69,23 +93,20 @@
 .crx-getac-dropdown {
   background: #333333;
   position: relative;
-  border: 1px solid #888787;
-  border-bottom: 2px solid #888787;
+  border: transparent;
   color: #333;
-  height: auto;
+  height: 30px;
   box-sizing: border-box;
-  margin-top: -1px;
+  margin-top: -2px;
   margin-left: 0.5px;
   min-height: 30px;
   font-family: Arial;
 
   &:hover {
-    border: 1px solid #888787;
-    border-bottom: 2px solid #888787;
+    border: transparent;
   }
   &:focus {
-    border: 1px solid #888787;
-    border-bottom: 2px solid #888787;
+    border: transparent;
   }
   .MuiChip-root {
     background-color: #ffffff;
@@ -94,20 +115,46 @@
     height: 20px;
     order: 2;
     font-size: 14px;
+    margin: 4px 4px !important;
     .MuiChip-label {
       padding-left: 6px;
       font-size: 14px;
       padding-right: 0;
-   
+      color: #333333;
     }
     svg {
       width: 13px;
       height: 17px;
-      margin-left: 3px;
-      color: #D1D2D4;
-      margin-right: 4px;
+      margin-left: 7px;
+      color: #d1d2d4;
+      margin-right: 7px;
       font-size: 14px;
-      stroke: #D1D2D4;
+      stroke: #d1d2d4;
+      stroke-width: 2px;
+    }
+  }
+  div[class*="MuiChip-root-"] {
+    background-color: #ffffff;
+    border-radius: 1px;
+    border: 1px solid #bebebe;
+    height: 20px;
+    order: 2;
+    font-size: 14px;
+    margin: 4px 4px !important;
+    div[class*="MuiChip-label-"] {
+      padding-left: 6px;
+      font-size: 14px;
+      padding-right: 0;
+      color: #333333;
+    }
+    svg {
+      width: 13px;
+      height: 17px;
+      margin-left: 7px;
+      color: #d1d2d4;
+      margin-right: 7px;
+      font-size: 14px;
+      stroke: #d1d2d4;
       stroke-width: 2px;
     }
   }
@@ -115,30 +162,42 @@
     margin-top: 42px;
     margin-bottom: 12px;
     border-bottom: 1px solid #888787;
+    min-height: 30px !important;
+    max-height: 150px !important;
     input {
-      height: 20px !important;
+      height: 18px !important;
+      &::placeholder {
+        color: transparent;
+      }
+    }
+  }
+  div[class*="MuiInputBase-adornedStart-"] {
+    margin-top: 42px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #888787;
+    min-height: 30px !important;
+    max-height: 150px !important;
+    input {
+      height: 18px !important;
+      &::placeholder {
+        color: transparent;
+      }
     }
   }
   .MuiInputBase-adornedEnd {
     background: #d1d2d4;
-    margin-left: 13px;
-    margin-right: 13px;
+    margin-left: 11px;
+    margin-right: 12px;
     position: inherit;
-    width: 91%;
+    width: 92%;
     padding: 0 6px !important;
-    border: 2px solid #FFFFFF;
-   
-
-    &:hover {
-      border: 2px solid #888787;
-    }
-    &:focus {
-      border: 2px solid #888787;
-    }
+    border: 1px solid #888787;
+    outline: 2px solid transparent;
 
     input {
       outline: none !important;
       color: #666666;
+      margin-left: 3px;
       padding: 0;
       order: 3;
       padding: 0;
@@ -149,45 +208,98 @@
       }
     }
   }
-  .MuiAutocomplete-endAdornment {
-    text-align: right;
-    right: 0 !important;
-    border: 2px solid #fff;
-    height: 30px;
-    order: 1;
-    top: 0;
-    position: absolute;
-    width: 285px;
+  div[class*="MuiInputBase-adornedEnd-"] {
     background: #d1d2d4;
-    outline: 1px solid #888787;
+    margin-left: 11px;
+    margin-right: 12px;
+    position: inherit;
+    width: 92%;
+    padding: 0 6px !important;
+    border: 1px solid #888787;
+    outline: 2px solid transparent;
 
+    input {
+      outline: none !important;
+      color: #666666;
+      margin-left: 3px;
+      padding: 0;
+      order: 3;
+      padding: 0;
+      height: 0;
+
+      &:focus {
+        outline: none !important;
+      }
+    }
+  }
+
+  .MuiAutocomplete-endAdornment {
     .MuiAutocomplete-clearIndicator {
       display: none;
     }
+    .MuiAutocomplete-popupIndicator.MuiAutocomplete-popupIndicatorOpen {
+      justify-content: flex-start !important;
+      border: 2px solid #fff;
+      outline: 1px solid #888787;
+    }
     .MuiAutocomplete-popupIndicator {
+      text-align: right;
+      right: 5px;
+      height: 30px;
+      order: 1;
+      top: 0;
+      justify-content: flex-end;
+      border-radius: 0;
+      position: absolute;
+      width: 285px;
+      background: #d1d2d4;
+      outline: 1px solid #888787;
+      border: 2px solid transparent;
+
       svg {
         color: #333333;
       }
-      &:hover {
-        background: none;
-        transition: unset !important;
-        transform: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-      }
-      &:focus {
-        background: none;
-        transition: unset !important;
-        transform: none !important;
-        box-shadow: none !important;
-        outline: none !important;
+    }
+  }
+
+  div[class*="MuiAutocomplete-endAdornment-"] {
+    left: 0;
+    button[class*="MuiAutocomplete-clearIndicator-"] {
+      display: none;
+    }
+    button[class*="MuiAutocomplete-popupIndicatorOpen-"] {
+      justify-content: flex-start !important;
+      border: 2px solid #fff !important;
+      outline: 1px solid #888787 !important;
+    }
+    button[class*="MuiAutocomplete-popupIndicator-"] {
+      text-align: right;
+      right: 0;
+      left:0;
+      height: 30px;
+      order: 1;
+      top: 0;
+      justify-content: flex-end;
+      border-radius: 0;
+      position: absolute;
+      width: 285px;
+      background: #d1d2d4;
+      outline: 1px solid #888787;
+      border: 2px solid transparent;
+
+      svg {
+        color: #333333;
       }
     }
   }
   .MuiFormControl-root {
     position: inherit;
+    background: #404041 0% 0% no-repeat padding-box;
   }
-
+  div[class*="MuiFormControl-root-"] {
+    position: inherit;
+    background: #404041 0% 0% no-repeat padding-box;
+  }
 }
 .AssetsDataGrid {
   .centerPosition {
@@ -196,13 +308,13 @@
     .croseIcon {
       width: 12px;
       height: 12px;
-      color: #D1D2D4;
+      color: #d1d2d4;
       font-size: 12px;
       font-weight: bolder;
     }
   }
   .CBX-input {
-    padding: 0 8px;
+    padding: 0 6px;
   }
   .wrapper {
     .select {
@@ -218,5 +330,79 @@
         }
       }
     }
-  } 
+  }
+}
+.Autocomplete_multi {
+  position: relative;
+  top: -14px;
+  .crx-getac-dropdown {
+    position: absolute;
+    width: 100%;
+  }
+  div[class*="MuiAutocomplete-root"] {
+    width: auto !important;
+  }
+}
+
+.openAutoMulti {
+  .Mui-focused {
+    display: none;
+  }
+}
+.autocompleteSpacer {
+  height: 30px;
+  line-height: 30px;
+}
+.autocompleteSpacer + .Autocomplete_multi {
+  top: -28px;
+}
+
+.autocompleteSpacer + .Autocomplete_multi {
+  .MuiInputBase-root {
+    margin-top: 41px !important;
+    margin-bottom: 12px !important;
+    padding: 0px 6px !important;
+    min-height: 30px;
+    max-height: 150px;
+    overflow: auto;
+  }
+}
+.autocompleteSpacer + .Autocomplete_multi {
+  div[class*="MuiInputBase-root-"] {
+    margin-top: 41px !important;
+    margin-bottom: 12px !important;
+    padding: 0px 6px !important;
+    min-height: 30px;
+    max-height: 150px;
+    overflow: auto;
+  }
+}
+.dataTabAssets_table {
+  .CRXPaper {
+    padding: 0px 6px;
+  }
+}
+.applyFieldBoreder {
+  .MuiInputBase-root {
+    outline: 2px solid #fff;
+    border: 1px solid transparent;
+  }
+}
+.applyFieldBoreder {
+  div[class*="MuiInputBase-root-"] {
+    outline: 2px solid #fff;
+    border: 1px solid transparent;
+  }
+}
+.removeFieldBoreder {
+  .MuiInputBase-root {
+    border: 1px solid #888787;
+    outline: 2px solid transparent;
+  }
+}
+.removeFieldBoreder {
+  div[class*="MuiInputBase-root-"] {
+    border: 1px solid #888787;
+    outline: 2px solid transparent;
+  }
 }

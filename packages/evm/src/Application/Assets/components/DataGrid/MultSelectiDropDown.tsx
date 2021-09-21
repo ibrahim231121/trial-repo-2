@@ -30,8 +30,9 @@ const MultSelectiDropDown: React.FC<Props> = ({
 }
   ) => {
     const [filterValue, setFilterValue] = React.useState<any>([]);
-    const [openState, setOpenState] = React.useState<boolean>(true);
+    const [openState, setOpenState] = React.useState<boolean>(false);
     const [buttonState, setButtonState] = React.useState<boolean>(false);
+    const [filterClick , setFilterClick] = React.useState<boolean>(false);
 
     let options = reformattedRows.map((row: any, _: any) => {
       let option: any = {};
@@ -62,7 +63,6 @@ const MultSelectiDropDown: React.FC<Props> = ({
     if (options.length > 0) {
       unique = [];
       unique[0] = options[0];
-
       for (var i = 0; i < options.length; i++) {
         if (!unique.some((item: any) => item.value === options[i].value)) {
           let value: any = {};
@@ -83,10 +83,13 @@ const MultSelectiDropDown: React.FC<Props> = ({
     }
 
     function GetButtonClass() {
-      return buttonState ? "" : "hide";
+      return buttonState ? "autocompleteSpacer" : "hide";
     }
 
     function OnCloseEffect(e: any, r: any) {
+      if(e.target.classList.contains("MuiSvgIcon-root") || e.target.hasAttribute("d") || e.target.classList.contains("MuiIconButton-label") || e.target.matches("span[class*='MuiIconButton-label-']") || e.target.matches("span[class*='MuiSvgIcon-root-']")  ) {
+        setFilterClick(true);
+       }
       if (filterValue.length > 0) {
         setButtonState(true);
         setOpenState(false);
@@ -95,6 +98,12 @@ const MultSelectiDropDown: React.FC<Props> = ({
         setOpenState(true);
       }
     }
+
+   function onOpenEffect(e:any) {
+    if(e.target.classList.contains("MuiSvgIcon-root") || e.target.hasAttribute("d") ||  e.target.classList.contains("MuiIconButton-label")  || e.target.matches("span[class*='MuiIconButton-label-']") || e.target.matches("span[class*='MuiSvgIcon-root-']") ) {
+      setFilterClick(false);
+    }
+   } 
 
     function ClearFilter() {
       setOpenState(true);
@@ -126,21 +135,24 @@ const MultSelectiDropDown: React.FC<Props> = ({
               <CRXHeading variant="h6" align="left">
                 {" "}
               </CRXHeading>
-              <div className={GetButtonClass()}>
+              <div className={GetButtonClass() + ' crx-icon-filter'}>
                 <button
                   className="fas fa-filter"
                   onClick={(e) => setOpenState((state) => !state)}
                 ></button>
                 <button
-                  className="icon-cross croseIcon"
+                  className="icon-cross2 croseIcon"
                   onClick={(e) => ClearFilter()}
                 ></button>
               </div>
 
               <CRXMultiSelect
-                className={GetClassName()}
+                className={` ${GetClassName()} ${filterClick ? "openAutoMulti" : "closeAutoMulti"} `}
                 onClose={(e: any, r: any) => {
-                  return OnCloseEffect(e, r);
+                  return OnCloseEffect(e, r)  
+                }}
+                onOpen={(e: any) => {
+                  return onOpenEffect(e);
                 }}
                 // name={"AssetType"}
                 multiple={true}
@@ -152,7 +164,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
                     : headCells[colIdx].headerArray
                 }
                 autoComplete={false}
-                useRef={openState && buttonState}
+                useRef={openState && buttonState }
                 isSearchable={isSearchable}
                 onChange={(event: any, newValue: any) => {
                   return handleChange(event, colIdx, newValue);

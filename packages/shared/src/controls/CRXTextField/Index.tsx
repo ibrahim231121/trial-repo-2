@@ -74,7 +74,6 @@ const CRXInput = ({
         <Typography
           variant="subtitle1"
           className="label"
-          style={{ marginRight: "25px" }}
         >
           {reformatedLabel()}
         </Typography>
