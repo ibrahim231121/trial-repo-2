@@ -43,7 +43,7 @@
     text-align: center;
     padding-top: 25%;
   }
-  .bucketViewLink{
+  .bucketViewLink {
     text-align: right;
     padding-top: 45px;
     padding-bottom: 21px;
@@ -95,5 +95,19 @@
   // }
   th[class*="MuiTableCell-sizeSmall-"]{
     padding: 0 12px;
+  }
+  table {
+    tr {
+      td {
+        &:nth-child(2) {
+          z-index: 3;
+        }
+        ul{
+          &:first-child {
+            left: 86px !important;
+          }
+        }
+      }
+    }
   }
 }

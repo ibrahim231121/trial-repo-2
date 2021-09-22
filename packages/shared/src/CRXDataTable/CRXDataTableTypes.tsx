@@ -15,11 +15,11 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     highlight:
       theme.palette.type === "light"
         ? {
-            color: theme.palette.secondary.main,
-          }
+          color: theme.palette.secondary.main,
+        }
         : {
-            color: theme.palette.text.primary,
-          },
+          color: theme.palette.text.primary,
+        },
     title: {
       flex: "1 1 100%",
       lineHeight: "0",
@@ -179,8 +179,8 @@ export type DataTableProps = {
   getSelectedItems: (v: any) => void;
   onResizeRow: (e: any) => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
-  getRowOnActionClick: (data:any) => void;
-  dragVisibility?: boolean;
+  getRowOnActionClick: (data: any) => void;
+  dragVisibility?: boolean; selectedItems: any; setSelectedItems: any;
   showToolbar?: boolean;
 };
 
@@ -207,7 +207,7 @@ export type DataTableContainerProps = {
   onReorderEnd: (e: any, _: any) => void;
   onResizeRow: (e: any) => void;
   allColHide: boolean;
-  getRowOnActionClick: (data:any) => void;
+  getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
 };
 
@@ -221,7 +221,7 @@ export type DataTableBodyProps = {
   actionComponent: React.ReactNode;
   keyId: string;
   onSetSelectedItems: (e: string[]) => void;
-  getRowOnActionClick: (data:any) => void;
+  getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
 };
 
@@ -233,6 +233,7 @@ export type SearchHeaderProps = {
   container: any;
   actionComponent: React.ReactNode;
   dragVisibility?: boolean;
+  getRowOnActionClick: (data: any) => void;
 };
 
 export type DataTableHeaderProps = {

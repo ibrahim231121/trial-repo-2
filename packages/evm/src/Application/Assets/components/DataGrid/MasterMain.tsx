@@ -528,6 +528,8 @@ const MasterMain: React.FC<Props> = ({
           onResizeRow={resizeRow}
           onHeadCellChange={onSetHeadCells}
           dragVisibility={true}
+          setSelectedItems={setSelectedItems}
+          selectedItems={selectedItems}
         />
       )}
     </>

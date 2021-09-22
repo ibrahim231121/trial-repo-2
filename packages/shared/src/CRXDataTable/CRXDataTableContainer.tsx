@@ -78,6 +78,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             container={container}
             actionComponent={actionComponent}
             dragVisibility={dragVisibility}
+            getRowOnActionClick={getRowOnActionClick}
           />
         ) : null}
         <Droppable droppableId={container.id} key={container.id}>

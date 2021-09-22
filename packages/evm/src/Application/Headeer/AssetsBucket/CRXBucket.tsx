@@ -7,7 +7,7 @@ import {
   CRXBadge,
   CRXTooltip,
 } from "@cb/shared";
-import ActionMenu from "../../Assets/components/ActionMenu";
+import BucketActionMenu from "../../Assets/components/ActionMenu/BucketActionMenu";
 import "./CRXBucket.scss";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -27,6 +27,7 @@ import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
 import multitextDisplay from "../../../components/DateDisplayComponent/MultiTextDisplay";
 import MultSelectiDropDown from "./../../../Application/Assets/components/DataGrid/MultSelectiDropDown";
 import TextSearch from "./../../../Application/Assets/components/DataGrid/TextSearch";
+import { assetRow } from "../../Assets/components/ActionMenu/types";
 
 interface AssetBucket {
   id: number;
@@ -41,13 +42,15 @@ const thumbTemplate = (assetType: string) => {
 };
 
 const CRXAssetsBucketPanel = () => {
-  const { t } = useTranslation<string>();
+
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket
   );
-  const [selectedItems, setSelectedItems] = React.useState<AssetBucket[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<assetRow[]>([]);
+  const [selectedActionRow, setSelectedActionRow] = React.useState<assetRow>();
   const [rows, setRows] = React.useState<AssetBucket[]>(assetBucketData);
+  const { t } = useTranslation<string>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -231,21 +234,27 @@ const CRXAssetsBucketPanel = () => {
           <div className="bucketViewLink">
             View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
           </div>
-            <CRXDataTable
-              actionComponent={<ActionMenu />}
-              showToolbar={false}
-              dataRows={rows}
-              headCells={headCells}
-              orderParam={order}
-              orderByParam={orderBy}
-              searchHeader={true}
-              columnVisibilityBar={true}
-              allowDragableToList={false}
-              className="ManageAssetDataTable crxTableHeight bucketDataTable"
-              getSelectedItems={(v: AssetBucket[]) => setSelectedItems(v)}
-              onResizeRow={resizeRow}
-              dragVisibility={false}
-            />
+          <CRXDataTable
+            actionComponent={<BucketActionMenu
+              row={selectedActionRow}
+              setSelectedItems={setSelectedItems}
+              selectedItems={selectedItems} />}
+            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+            showToolbar={false}
+            dataRows={rows}
+            headCells={headCells}
+            orderParam={order}
+            orderByParam={orderBy}
+            searchHeader={true}
+            columnVisibilityBar={true}
+            allowDragableToList={false}
+            className="ManageAssetDataTable crxTableHeight bucketDataTable"
+            getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
+            onResizeRow={resizeRow}
+            dragVisibility={false}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+          />
         </>
       ) : (
         <div className="bucketContent">Your Asset Bucket is empty.</div>

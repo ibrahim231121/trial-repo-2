@@ -42,9 +42,10 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   getRowOnActionClick,
   dragVisibility,
   showToolbar,
+  selectedItems,
+  setSelectedItems
 }) => {
   const classes = useStyles();
-  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
   const [open, setOpen] = React.useState<boolean>(false);

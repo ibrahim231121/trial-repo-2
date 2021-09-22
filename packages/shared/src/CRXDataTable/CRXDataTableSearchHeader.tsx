@@ -14,7 +14,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   orderData,
   container,
   actionComponent,
-  dragVisibility
+  dragVisibility,
+  getRowOnActionClick
 }) => {
   const classes = useStyles();
 
@@ -44,6 +45,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
             className={
               selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
             }
+            onClick={()=>getRowOnActionClick(undefined)}
           >
             {actionComponent}
           </div>
