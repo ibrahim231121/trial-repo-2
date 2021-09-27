@@ -6,7 +6,6 @@ import AppHeader from './Application/Headeer/Header'
 import Footer from './Application/Headeer/Footer'
 import MannageAsset from "./Application/Assets/pages/MannageAsset";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
-import Home from './Home/Home'
 import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";

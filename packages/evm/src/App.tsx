@@ -230,6 +230,7 @@ function App() {
       <CRXContainer className="mainContainer" maxWidth="xl" disableGutters={true}>
         <Routes />
       </CRXContainer>
+      </main>
       
 </DragDropContext>
       <footer>
