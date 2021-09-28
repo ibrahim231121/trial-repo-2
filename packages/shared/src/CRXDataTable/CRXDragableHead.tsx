@@ -14,8 +14,4 @@ const DragableHead = SortableContainer(( props: any) => {
     );
   });
 
-// const DragableCell = SortableElement(( props: any) => {
-//   return <>{props.value}</>;
-// });
-
 export default DragableHead;

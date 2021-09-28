@@ -62,6 +62,10 @@
             padding-right: 15px;
             color: #d1d2d4;
             vertical-align: middle;
+            &:hover {
+              border: 3px solid #ddd;
+              border-right: 0px;
+            }
           }
           &:nth-child(2) {
             vertical-align: middle;
@@ -127,7 +131,15 @@
   }
 
   .draggableCellIcon {
-    padding: 0px;
+    padding: 13px 0 0;
+    .grid-grip-icon {
+      display: block;
+      font-size: 20px;
+      color: #d1d2d4;
+      text-indent: 0;
+      position: relative;
+      top: -3px;
+    }
   }
 }
 
@@ -475,7 +487,7 @@ td.CellCheckBox {
   }
 }
 
-tr.Mui-selected:nth-child(odd) td[scope="row"] {
+tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
   background-color: #231f20 !important;
   color: #d1d2d4;
   .MuiButton-root {
@@ -526,6 +538,18 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
         color: #d1d2d4 !important;
       }
     }
+    td.col-one:hover ~ td.col-two, td.col-one:hover ~ td.col-three {
+      background: #333 !important;
+      color: #d1d2d4;
+      .rc-menu-button {
+        color: #d1d2d4 !important;
+      }
+      .CRXCheckBox span span {
+        border-color: #d1d2d4;
+        background-color: #333;
+      }
+    }
+
     td.DataTableBodyCell {
       .linkColor {
         top: 5px;

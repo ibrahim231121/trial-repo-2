@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField } from "@cb/shared";
-import { ValueString } from "../../../../components/SupportiveFunctions"
+import { ValueString } from "../../utils/globalDataTableFunctions"
 
 type Props = {
   headCells: any[];

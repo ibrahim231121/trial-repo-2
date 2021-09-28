@@ -6,6 +6,7 @@ import {
   CRXDataTable,
   CRXBadge,
   CRXTooltip,
+  CRXRootRef
 } from "@cb/shared";
 import BucketActionMenu from "../../Assets/components/ActionMenu/BucketActionMenu";
 import "./CRXBucket.scss";
@@ -22,17 +23,19 @@ import {
   onTextCompare,
   onMultiToMultiCompare,
   onSetSearchDataValue,
-} from "../../../components/SupportiveFunctions";
+} from "../../../utils/globalDataTableFunctions";
 import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
 import multitextDisplay from "../../../components/DateDisplayComponent/MultiTextDisplay";
-import MultSelectiDropDown from "./../../../Application/Assets/components/DataGrid/MultSelectiDropDown";
-import TextSearch from "./../../../Application/Assets/components/DataGrid/TextSearch";
+import MultSelectiDropDown from "../../../components/SearchComponents/MultSelectiDropDown";
+import TextSearch from "../../../components/SearchComponents/TextSearch";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import { assetRow } from "../../Assets/components/ActionMenu/types";
 
 interface AssetBucket {
   id: number;
   assetId: number;
   assetName: string;
+  assetType: string;
   recordingStarted: string;
   categories: string[];
 }
@@ -132,7 +135,7 @@ const CRXAssetsBucketPanel = () => {
     },
     {
       label: `${t("AssetThumbnail")}`,
-      id: "assetId",
+      id: "assetType",
       align: "left",
       dataComponent: thumbTemplate,
       minWidth: "80",
@@ -142,7 +145,7 @@ const CRXAssetsBucketPanel = () => {
       label: `${t("AssetID")}`,
       id: "assetName",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, "linkColor"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -200,7 +203,7 @@ const CRXAssetsBucketPanel = () => {
     setHeadCells(headCellReset);
   };
 
-  return (
+  return (  
     <CRXDrawer
       className="CRXBucketPanel"
       anchor="right"
@@ -210,56 +213,81 @@ const CRXAssetsBucketPanel = () => {
       toggleState={toggleState}
       variant="persistent"
     >
-      <CRXRows container spacing={0}>
-        <CRXColumn item xs={11} className="bucketPanelTitle">
-          <label>Your Asset Bucket</label>
-        </CRXColumn>
-        <CRXColumn item xs={1} className="topColumn">
-          <i className="fas fa-times" onClick={() => setIsOpen(false)}></i>
-        </CRXColumn>
-      </CRXRows>
+      <Droppable droppableId="assetBucketEmptyDroppable">
+      {(provided: any) => (
+        <CRXRootRef provided={provided}>
+          <>
+            <Draggable
+              draggableId="assetBucketEmptyDraggable"
+              index={0}
+              isDragDisabled={true}
+            >
+              {(provided: any) => (
+                <div id="divMainBucket"
+                  className="divMainBucket"
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >        
+                  <CRXRows container spacing={0}>
+                    <CRXColumn item xs={11} className="bucketPanelTitle">
+                      <label>Your Asset Bucket</label>
+                    </CRXColumn>
+                    <CRXColumn item xs={1} className="topColumn">
+                      <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
+                    </CRXColumn>
+                  </CRXRows>
 
-      <div className="uploadContent">
-        <div className="iconArea">
-          <i className="fas fa-layer-plus"></i>
-        </div>
-        <div className="textArea">
-          Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
-          <br />
-          <span className="textFileBrowser">file browser</span>
-        </div>
-      </div>
-      {rows.length > 0 ? (
-        <>
-          <div className="bucketViewLink">
-            View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
-          </div>
-          <CRXDataTable
-            actionComponent={<BucketActionMenu
-              row={selectedActionRow}
-              setSelectedItems={setSelectedItems}
-              selectedItems={selectedItems} />}
-            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-            showToolbar={false}
-            dataRows={rows}
-            headCells={headCells}
-            orderParam={order}
-            orderByParam={orderBy}
-            searchHeader={true}
-            columnVisibilityBar={true}
-            allowDragableToList={false}
-            className="ManageAssetDataTable crxTableHeight bucketDataTable"
-            getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
-            onResizeRow={resizeRow}
-            dragVisibility={false}
-            setSelectedItems={setSelectedItems}
-            selectedItems={selectedItems}
-          />
-        </>
-      ) : (
-        <div className="bucketContent">Your Asset Bucket is empty.</div>
-      )}
-    </CRXDrawer>
+                  <div className="uploadContent">
+                    <div className="iconArea">
+                      <i className="fas fa-layer-plus"></i>
+                    </div>
+                    <div className="textArea">
+                      Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
+                      <br />
+                      <span className="textFileBrowser">file browser</span>
+                    </div>
+                  </div>
+                  {rows.length > 0 ? (
+                    <>
+                      <div className="bucketViewLink">
+                        View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
+                      </div>
+                      <CRXDataTable
+                        tableId="assetBucket"
+                        actionComponent={<BucketActionMenu
+                        row={selectedActionRow}
+                        setSelectedItems={setSelectedItems}
+                        selectedItems={selectedItems} />}
+                        getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+                        showToolbar={false}
+                        dataRows={rows}
+                        headCells={headCells}
+                        orderParam={order}
+                        orderByParam={orderBy}
+                        searchHeader={true}
+                        columnVisibilityBar={true}
+                        allowDragableToList={false}
+                        className="ManageAssetDataTable crxTableHeight bucketDataTable"
+                        getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
+                        onResizeRow={resizeRow}
+                        dragVisibility={false}
+                        setSelectedItems={setSelectedItems}
+                        selectedItems={selectedItems}
+                      />
+                    </>
+                  ) : (
+                    <div className="bucketContent">Your Asset Bucket is empty.</div>
+                  )
+                }
+                </div>
+              )}
+            </Draggable>
+          </>
+        </CRXRootRef>      
+        )}
+      </Droppable>
+    </CRXDrawer>    
   );
 };
 

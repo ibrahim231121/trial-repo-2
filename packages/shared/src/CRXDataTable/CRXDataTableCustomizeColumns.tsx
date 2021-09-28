@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Menu from '@material-ui/core/Menu';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import IconButton from '@material-ui/core/IconButton';
@@ -109,7 +108,6 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
     if(local_headCells !== null)
     {
       let headCells_private = JSON.parse(local_headCells)
-      //setSelected(headCells_private)
       onHeadCellChange(headCells_private)
     }
     
@@ -118,9 +116,6 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({he
   }
 
   const handleCustomizeChange = (checked: boolean, index: number) => {
-    
-    // selected[index].visible = checked;     
-    // setSelected(prevState  => ({...prevState}))
 
     let headCellsArray = headCells.map((headCell: HeadCellProps, i: number) => {
       if(i === index)

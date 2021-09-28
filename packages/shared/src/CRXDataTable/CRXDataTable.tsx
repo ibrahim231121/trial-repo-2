@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from "react";
-// import IconButton from '@material-ui/core/IconButton';
 import {
   Order,
   OrderData,
@@ -12,19 +11,13 @@ import {
 import TablePagination from "@material-ui/core/TablePagination";
 import DataTableToolbar from "./CRXDataTableToolbar";
 import { ThemeProvider } from "@material-ui/core/styles";
-//import { DragDropContext, Droppable } from "react-beautiful-dnd";
-// import ListItem from "@material-ui/core/ListItem";
-// import ListItemText from "@material-ui/core/ListItemText";
-// import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-// import DeleteIcon from "@material-ui/icons/Delete";
-// import RootRef from "@material-ui/core/RootRef";
-// import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
 import "./CRXDataTable.scss";
 import { useTranslation } from "react-i18next";
 import DataTableContainer from "./CRXDataTableContainer";
 
 const CRXDataTable: React.FC<DataTableProps> = ({
+  tableId,
   dataRows,
   headCells,
   orderParam,
@@ -32,8 +25,6 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   className,
   searchHeader,
   columnVisibilityBar,
-  allowDragableToList,
-  allowRowReOrdering,
   actionComponent,
   onClearAll,
   onResizeRow,
@@ -63,17 +54,11 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     .toString();
   const [allColHide, setAllColHide] = React.useState<boolean>(false);
 
-  const secondRows: HeadCellProps[] = [];
-
   let initialContainers: any = {
-    dataTable: {
-      id: "dataTable",
+    tableId: {
+      id: tableId,
       rows: dataRows,
-    },
-    list: {
-      id: "list",
-      rows: secondRows,
-    },
+    }
   };
 
   const [containers, setContainers] = useState(initialContainers);
@@ -84,7 +69,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       getComparator(orderData.order, orderData.orderBy)
     );
     const dataTable = {
-      id: "dataTable",
+      id: tableId,
       rows: rows,
     };
 
@@ -141,8 +126,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       if (order !== 0) return order;
       return a[1] - b[1];
     });
-    containers.dataTable.rows = stabilizedThis.map((el) => el[0]);
-    return containers.dataTable.rows;
+    containers.tableId.rows = stabilizedThis.map((el) => el[0]);
+    return containers.tableId.rows;
   }
 
   const handleRequestSort = async (property: any) => {
@@ -152,7 +137,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
   useEffect(() => {
     stableSort(
-      containers.dataTable.rows,
+      containers.tableId.rows,
       getComparator(orderData.order, orderData.orderBy)
     );
     if (open === true) setOpen(false);
@@ -170,7 +155,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       );
       setSelectedItems(newSelected);
     } else {
-      setSelectedItems((prev) => [...prev, row]);
+      setSelectedItems((prev: any) => [...prev, row]);
     }
   };
 
@@ -217,97 +202,20 @@ const CRXDataTable: React.FC<DataTableProps> = ({
         else setAllColHide(false);
       }
     });
-    //setOpen(!open)
   }
 
-  const onDragEnd = (e: any) => {
-    console.log("Drag End", e);
-    // Make sure we have a valid destination
-    if (e.destination === undefined || e.destination === null) return null;
-    // Make sure we're actually moving the item
-    if (
-      e.source.droppableId === e.destination.droppableId &&
-      e.destination.index === e.source.index
-    )
-      return null;
-
-    // Set start and end variables
-    const start = containers[e.source.droppableId];
-    const end = containers[e.destination.droppableId];
-
-    const startIndex = e.source.index + page * rowsPerPage;
-    let destinationIndex = e.destination.index;
-
-    // If start is the same as end, we're in the same column
-    if (start === end) {
-      // Move the item within the list
-      // Start by making a new list without the dragged item
-      if (allowRowReOrdering) {
-        console.log("If");
-        const newList = start.rows.filter(
-          (_: any, idx: any) => idx !== startIndex
-        );
-        destinationIndex = e.destination.index + page * rowsPerPage;
-        // Then insert the item at the right location
-        newList.splice(destinationIndex, 0, start.rows[startIndex]);
-
-        // Then create a new copy of the column object
-        const newCol = {
-          id: start.id,
-          rows: newList,
-        };
-
-        // Update the state
-        setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
-      }
-      return null;
-    } else {
-      // If start is different from end, we need to update multiple columns
-      // Filter the start list like before
-      //const newStartList = start.rows.filter((_: any, idx: any) => idx !== source.index);
-      console.log("Else");
-      // Create a new start column
-      const newStartCol = {
-        id: start.id,
-        //rows: newStartList
-        rows: start.rows,
-      };
-
-      // Make a new end list array
-      const newEndList = end.rows;
-
-      // Insert the item into the end list
-      newEndList.splice(destinationIndex, 0, start.rows[startIndex]);
-
-      // Create a new end column
-      const newEndCol = {
-        id: end.id,
-        rows: newEndList,
-      };
-
-      // Update the state
-      setContainers((state: any) => ({
-        ...state,
-        [newStartCol.id]: newStartCol,
-        [newEndCol.id]: newEndCol,
-      }));
-      return null;
-    }
-  };
-
   return (
-    // <DragDropContext onDragEnd={onDragEnd} >
-    // </DragDropContext>
     <>
       {Object.values(containers).map((container: any) => {
         return (
           <React.Fragment key={container.id}>
             <Grid item>
-              {container.id === "dataTable" ? (
+              {container.id === tableId ? (
                 <ThemeProvider theme={theme}>
                   <div className={classes.root}>
                     {(showToolbar === undefined || showToolbar === true) && (
                       <DataTableToolbar
+                        Id={tableId}
                         numSelected={selectedItems.length}
                         headCells={headCells}
                         rowCount={container.rows.length}
@@ -354,57 +262,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                     />
                   </div>
                 </ThemeProvider>
-              ) : (
-                <>
-                  {/* {allowDragableToList === true ? (
-                <div>
-                  Raw JSON
-                <div style={{border: "1px solid black"}} >
-                  <Droppable droppableId={container.id} key={container.id}>
-                  {(provided: any) => (
-                    <RootRef rootRef={provided.innerRef}>
-                      <List>
-                        {container.rows.map((row: any, index: number) => {
-                          return (
-                              <React.Fragment key={index}>
-                                <ListItem
-                                    key={row[keyId]}
-                                    role={undefined}
-                                    dense
-                                    ContainerComponent="li"
-                                    ContainerProps={{ ref: provided.innerRef }}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    >
-                                    <ListItemText
-                                        style={{ fontFamily: "Quicksand" }}
-                                        primary={`${JSON.stringify(row)}`}
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <IconButton
-                                          edge="end"
-                                          aria-label="comments"
-                                          question-uid={row[keyId]}
-                                        >
-                                        <DeleteIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                              </React.Fragment>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </List>
-                    </RootRef>
-                  )}
-                </Droppable>
-                </div>
-                </div>
-                ) : (
-                  null
-                )} */}
-                </>
-              )}
+              ) : null
+              }
             </Grid>
           </React.Fragment>
         );

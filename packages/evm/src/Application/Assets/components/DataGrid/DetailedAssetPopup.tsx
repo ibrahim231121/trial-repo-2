@@ -16,7 +16,7 @@ import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateD
 import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
-import { Asset } from "../../../../components/SupportiveFunctions";
+import { Asset } from "../../../../utils/globalDataTableFunctions"
 type CheckValue = {
   isChecked: boolean;
   assetId: string;

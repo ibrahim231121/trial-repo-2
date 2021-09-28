@@ -1,9 +1,7 @@
 import React from "react";
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
-import RootRef from "@material-ui/core/RootRef";
 import Paper from "@material-ui/core/Paper";
-import { Droppable } from "react-beautiful-dnd";
 import {
   useStyles,
   DataTableContainerProps
@@ -77,30 +75,24 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             orderData={orderData}
             container={container}
             actionComponent={actionComponent}
+            getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
             getRowOnActionClick={getRowOnActionClick}
           />
         ) : null}
-        <Droppable droppableId={container.id} key={container.id}>
-          {(provided: any) => (
-            <RootRef rootRef={provided.innerRef}>
-              <DataTableBody
-                page={page}
-                rowsPerPage={rowsPerPage}
-                orderColumn={orderColumn}
-                selectedItems={selectedItems}
-                headCells={headCells}
-                container={container}
-                actionComponent={actionComponent}
-                keyId={keyId}
-                onSetSelectedItems={(row: any) => onHandleClick(row)}
-                getRowOnActionClick={getRowOnActionClick}
-                dragVisibility={dragVisibility}
-              />
-              {/* {provided.placeholder} */}
-            </RootRef>
-          )}
-        </Droppable>
+          <DataTableBody
+            page={page}
+            rowsPerPage={rowsPerPage}
+            orderColumn={orderColumn}
+            selectedItems={selectedItems}
+            headCells={headCells}
+            container={container}
+            actionComponent={actionComponent}
+            keyId={keyId}
+            onSetSelectedItems={(row: any) => onHandleClick(row)}
+            getRowOnActionClick={getRowOnActionClick}
+            dragVisibility={dragVisibility}
+          />
       </Table>
     </TableContainer>
   );

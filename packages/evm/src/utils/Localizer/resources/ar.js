@@ -1,7 +1,8 @@
 export const resources = {
     ar: {
       translation: {
-        "assets": "ar-Assets",
+        "assetDataTable": "ar-Assets",
+        "userGroupDataTable": "ar-User Groups",
         "Tables columns filter": "ar-Tables columns filter",
         "Close" : "ar-Close",
         "Resettodefault" : "ar-Reset to default",

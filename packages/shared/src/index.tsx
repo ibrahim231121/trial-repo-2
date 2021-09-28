@@ -36,3 +36,4 @@ export { default as CRXModalDialog } from './CRXModalDialog/modal'
 export { default as CRXConfirmDialog } from "./components/CRXConfirmDialog/CRXConfirmDialog"
 
 export { default as CRXAlert} from './components/CRXAlert/CRXAlert'
+export { default as CRXRootRef} from './controls/CRXRootRef/CRXRootRef'

@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-type State = {
-  name: string;
-  age: number;
-}
+
 const assetBucketSlice = createSlice({
   name: "assetBucket",
   initialState: [],

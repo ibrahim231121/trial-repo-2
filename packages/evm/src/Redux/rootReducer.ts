@@ -7,4 +7,4 @@ export const reducer = combineReducers({
     pathName:pathNameReducer.reducer,
     assetBucket:assetBucketSlice.reducer
   })
-  export type RootState = ReturnType<typeof reducer>
+export type RootState = ReturnType<typeof reducer>

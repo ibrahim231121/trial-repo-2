@@ -1,7 +1,8 @@
 export const resources = {
     fr: {
       translation: {
-        "assets": "fr-Assets",
+        "assetDataTable": "fr-Assets",
+        "userGroupDataTable": "fr-User Groups",
         "Tablescolumnsfilter": "fr-Tables columns filter",
         "Close" : "fr-Close",
         "Resettodefault" : "fr-Reset to default",

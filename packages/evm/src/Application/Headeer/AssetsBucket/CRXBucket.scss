@@ -1,4 +1,5 @@
 .CRXBucketPanel {
+  
   .MuiDrawer-paper {
     top: 57px !important;
     background: #f5f5f5;
@@ -6,13 +7,16 @@
     border-left: 1px solid #b7b8b9;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 10px 0px;
     min-width: 400px;
-    padding: 10px;
+    padding: 5px;
     border-bottom: 3px #d74b00 solid;
     height: calc(100% - 60px);
+    display: block;
   }
   .bucketPanelTitle {
     text-align: left;
     font-size: 18px;
+    color: #333;
+    padding-top: 4px;
   }
 
   .uploadContent {
@@ -53,6 +57,42 @@
   }
   .topColumn {
     color: #d1d2d4;
+    position: relative;
+    right: -14px;
+    top: 0px;
+  }
+  
+.divMainBucket {
+  height: 100%;
+  padding:0px 20px !important;
+  
+    border: 2px solid transparent;
+    border-image-source: url(../../../Assets/Images/borderImage01.png);
+    border-image-slice: 7 5;
+    border-image-width: 0px;
+    border-image-repeat: repeat;
+  
+    &:before {
+      width: 0; 
+      height: 0; 
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 7px solid #F5F5F5;
+      position: absolute;
+      right: 112px;
+      top: -7px;
+      content: " ";
+    }
+
+    #lightBgContent {
+      background: #fff;
+      opacity: 0.5;
+      width: calc(100% - 16px);
+      height: calc(100% - 14px);
+      position: absolute;
+      top: 7px;
+      left: 8px;
+    }
   }
 }
 
@@ -83,7 +123,7 @@
   right: 0px;
   content: "";
 }
-.bucketDataTable{
+.bucketDataTable {
   height: 500px;
   .centerPosition  {
     width:300px;

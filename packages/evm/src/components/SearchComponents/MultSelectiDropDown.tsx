@@ -6,7 +6,7 @@ import {
   CRXColumn,
   CRXRows,
 } from "@cb/shared";
-import { ValueString } from "../../../../components/SupportiveFunctions"
+import { ValueString } from "../../utils/globalDataTableFunctions"
 
 type Props = {
     headCells: any[],

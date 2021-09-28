@@ -29,7 +29,8 @@ export const resources = {
 
     en: {
       translation: {
-        "assets": "Assets",
+        "assetDataTable": "Assets",
+        "userGroupDataTable": "User Groups",
         "Tablescolumnsfilter": "Tables columns filter",
         "Close" : "Close",
         "Resettodefault" : "Reset to default",

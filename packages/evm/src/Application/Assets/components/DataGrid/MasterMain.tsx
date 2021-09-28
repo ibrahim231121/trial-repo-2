@@ -17,9 +17,8 @@ import {
   onSaveHeadCellData,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
-} from "../../../../components/SupportiveFunctions";
+} from "../../../../utils/globalDataTableFunctions";
 import "./ManageAssetGrid.scss";
-import thumbImg from "../../../../Assets/Images/thumb.png";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../ActionMenu";
 import DetailedAssetPopup from "./DetailedAssetPopup";
@@ -27,8 +26,8 @@ import dateDisplayFormat from "../../../../components/DateDisplayComponent/DateD
 import { AssetThumbnail } from "./AssetThumbnail";
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
-import TextSearch from "./TextSearch";
-import MultSelectiDropDown from "./MultSelectiDropDown";
+import TextSearch from "../../../../components/SearchComponents/TextSearch";
+import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -240,10 +239,11 @@ const MasterMain: React.FC<Props> = ({
     );
   };
 
-  const searchMultiDropDown = (
+  const searchAndNonSearchMultiDropDown = (
     rowsParam: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number,
+    isSearchable: boolean,
   ) => {
     const onSetSearchData = () => {
       setSearchData((prevArr) =>
@@ -260,35 +260,7 @@ const MasterMain: React.FC<Props> = ({
         headCells={headCells}
         colIdx={colIdx}
         reformattedRows={reformattedRows}
-        isSearchable={true}
-        onMultiSelectChange={onSelection}
-        onSetSearchData={onSetSearchData}
-        onSetHeaderArray={onSetHeaderArray}
-      />
-    );
-  };
-
-  const nonSearchMultiDropDown = (
-    rowsParam: EvidenceReformated[],
-    headCells: HeadCellProps[],
-    colIdx: number
-  ) => {
-    const onSetSearchData = () => {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-    };
-
-    const onSetHeaderArray = (v: ValueString[]) => {
-      headCells[colIdx].headerArray = v;
-    };
-
-    return (
-      <MultSelectiDropDown
-        headCells={headCells}
-        colIdx={colIdx}
-        reformattedRows={reformattedRows}
-        isSearchable={false}
+        isSearchable={isSearchable}
         onMultiSelectChange={onSelection}
         onSetSearchData={onSetSearchData}
         onSetHeaderArray={onSetHeaderArray}
@@ -335,7 +307,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,true),
       minWidth: "200",
       visible: false,
     },
@@ -356,7 +328,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,true),
       minWidth: "150",
     },
     {
@@ -366,7 +338,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: nonSearchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,false),
       minWidth: "100",
       visible: false,
     },
@@ -377,7 +349,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: nonSearchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,false),
       minWidth: "120",
       visible: false,
     },
@@ -388,7 +360,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string[]) => multitextDisplay(e, "linkColor"),
       sort: true,
       searchFilter: true,
-      searchComponent: searchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,true),
       minWidth: "135",
     },
     {
@@ -409,7 +381,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       minWidth: "110",
       searchFilter: true,
-      searchComponent: nonSearchMultiDropDown,
+      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData,columns,colIdx,false),
     },
   ]);
 
@@ -508,6 +480,7 @@ const MasterMain: React.FC<Props> = ({
     <>
       {rows && (
         <CRXDataTable
+          tableId="assetDataTable"
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
           }

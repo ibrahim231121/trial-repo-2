@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Menu,
   MenuItem,
@@ -9,18 +9,33 @@ import {
 import "@szhsin/react-menu/dist/index.css";
 import './index.scss'
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../Redux/rootReducer";
 
 type Props = {
   selectedItems?: any; 
   row?: any; 
 };
 
+interface AssetBucket {
+  id: number;
+  assetId: number;
+  assetName: string;
+  recordingStarted: string;
+  categories: string[];
+}
+
 const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
+
   const dispatch = useDispatch()
+  let addToAssetBucketDisabled: boolean = false
+  const assetBucketData: AssetBucket[] = useSelector(
+    (state: RootState) => state.assetBucket
+  );
+  
   const addToAssetBucket=()=>{
     //if undefined it means header is clicked
-    if (row!==undefined) {
+    if (row!==undefined && row !== null) {
       const find=selectedItems.findIndex((selected:any)=>selected.id===row.id)
       const data=find===-1?row:selectedItems
       dispatch(addAssetToBucketActionCreator(data))
@@ -28,6 +43,34 @@ const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
    else{
     dispatch(addAssetToBucketActionCreator(selectedItems))
    }
+  }
+
+  const MultiCompareAssetBucketData = (assetBucketData: AssetBucket[], selectedItems: any[]) => {
+    let assetBucketIds = assetBucketData.map((x: AssetBucket) => x.id);
+    let selectedItemIds = selectedItems.map((x: any) => x.id);
+    let value = selectedItemIds.map((x:number) => {
+      if(assetBucketIds.includes(x))
+        return true
+      else
+        return false
+    })
+    return value
+  }
+
+  if(row !== undefined && row !== null)
+  {
+    assetBucketData.map((data) => {
+      if(data.id === row.id)
+      addToAssetBucketDisabled = true
+    })
+  }
+  else if (selectedItems !== undefined && selectedItems.length > 0)
+  {
+    let value = MultiCompareAssetBucketData(assetBucketData, selectedItems);
+    if(value.includes(false))
+      addToAssetBucketDisabled = false
+    else  
+      addToAssetBucketDisabled = true
   }
 
   return (
@@ -48,7 +91,7 @@ const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
         <MenuItem >
           <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
             <div className="crx-menu-icon"></div>
-            <div className="crx-menu-list">
+            <div className={addToAssetBucketDisabled === false ? "crx-menu-list" : "crx-menu-list disabledItem"}>
               Add to asset bucket 
             </div>
           </div>

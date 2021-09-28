@@ -10,7 +10,7 @@ import DataTableClearFilter from "./CRXDataTableFilter"
 import DataTableCustomizeColumns from "./CRXDataTableCustomizeColumns"
 
 
-const DataTableToolbar: React.FC<DataTableToolbarProps> = ({headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder, orderingColumn, onHeadCellChange }) => {
+const DataTableToolbar: React.FC<DataTableToolbarProps> = ({Id, headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder, orderingColumn, onHeadCellChange }) => {
     const classes = useToolbarStyles();
     
     const {t} = useTranslation<string>();
@@ -20,7 +20,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({headCells, rowCount,
       <Toolbar
         className={clsx(classes.root)}>
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-            <b>{rowCount}</b> {t('assets')}  
+            <b>{rowCount}</b> {t(Id)}  
           </Typography>
 
           <DataTableClearFilter 

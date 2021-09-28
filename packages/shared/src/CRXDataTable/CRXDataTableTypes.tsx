@@ -152,6 +152,7 @@ export interface HeadCellProps {
 }
 
 export interface DataTableToolbarProps {
+  Id: string;
   numSelected: number;
   headCells: HeadCellProps[];
   rowCount: number;
@@ -164,23 +165,23 @@ export interface DataTableToolbarProps {
 }
 
 export type DataTableProps = {
-  id: string;
+  tableId: string;
   dataRows: any[];
   headCells: HeadCellProps[];
   orderParam: Order;
   orderByParam: string;
   searchHeader?: boolean;
   columnVisibilityBar?: boolean;
-  allowDragableToList?: boolean;
   className?: string;
-  allowRowReOrdering?: boolean;
   onClearAll: () => void;
   actionComponent?: React.ReactNode;
   getSelectedItems: (v: any) => void;
   onResizeRow: (e: any) => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
   getRowOnActionClick: (data: any) => void;
-  dragVisibility?: boolean; selectedItems: any; setSelectedItems: any;
+  dragVisibility?: boolean; 
+  selectedItems: string[]; 
+  setSelectedItems: any;
   showToolbar?: boolean;
 };
 
@@ -232,8 +233,8 @@ export type SearchHeaderProps = {
   orderData: OrderData;
   container: any;
   actionComponent: React.ReactNode;
+  getRowOnActionClick: (data:any) => void;
   dragVisibility?: boolean;
-  getRowOnActionClick: (data: any) => void;
 };
 
 export type DataTableHeaderProps = {
