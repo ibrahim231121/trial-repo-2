@@ -19,9 +19,7 @@ dateOptionsTypes,
   dateOptions
 } from '../../../../utils/constant';
 import usePostFetch from '../../../../utils/Api/usePostFetch';
-import { useState } from 'react';
-import { useEffect } from 'react';
-
+import { EVIDENCE_GET_URL } from '../../../../utils/Api/url'
 
 
 const AssetSearchType = {
@@ -67,8 +65,7 @@ const SearchComponent = (props: any) => {
                                                   });
 
   const iconRotate = showAdvance ? ' ' : 'rotate90';
-  const url = '/Evidence?Size=500&Page=1';
-  const [postDataForSearch, responseForSearch] = usePostFetch<any>(url);
+  const [postDataForSearch, responseForSearch] = usePostFetch<any>(EVIDENCE_GET_URL);
   
   const QUERRY: any = {
     bool: {

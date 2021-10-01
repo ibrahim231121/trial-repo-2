@@ -6,31 +6,17 @@ import { EditableSelect } from '@cb/shared'
 import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../../Redux/breadCrumbReducer";
 import usePostFetch from "../../../../../utils/Api/usePostFetch";
+import { EVIDENCE_PREDITIVE_URL } from '../../../../../utils/Api/url'
 interface Props {
   onSet: (e: any) => void;
   value: string;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
-  // const dispatch = useDispatch()
-  //   React.useEffect(() => {
-  //     const worker = useSearchWorker.getInstance();
-  //     var showDataList = (e:any) =>{
-  //       setOutCome(e.data);
-  //     }
-  //     //message recieved from worker.
-  //     worker.addEventListener("message",showDataList,false);
-  //     return () => {
-  //       worker.removeEventListener("message",showDataList);
-  //     };
-  //   },[]);
 
-
-  const url = "/Evidence?Size=10&Page=1";
-  const predictiveUrl = "/Evidence/predictive";
   const [showSearch, setShowSearch] = React.useState<any>(false);
   const [outCome, setOutCome] = React.useState<any>([]);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [methodFromHook, responseFromHook] = usePostFetch<any>(predictiveUrl);
+  const [methodFromHook, responseFromHook] = usePostFetch<any>(EVIDENCE_PREDITIVE_URL);
 
   React.useEffect(() => {
     if (responseFromHook) {

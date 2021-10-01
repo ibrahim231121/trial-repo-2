@@ -1,6 +1,6 @@
 import CryptoJS from "crypto-js";
+import { AUTHENTICATION_CODEVERIFIER_URL, AUTHENTICATION_LOGIN_URL } from '../../../evm/src/utils/Api/url'
 
-export const authorizationUrl = `http://127.0.0.1:8081/Authentication/Login`;
 const clientId = "cb8aa975-12ad-461a-8e95-06a0c1f45477";
 const code_challenge_Method = "SHA256";
 
@@ -14,7 +14,7 @@ export function checkVerifier() {
 
 export function getVerificationURL(y:string) {
   var x = sessionStorage.getItem("code_challenge_string");
-  return `/Authentication/CodeVerifier?client_id=${clientId}&authorizationcode=${y}&code_verifier=${x}`;
+  return AUTHENTICATION_CODEVERIFIER_URL+`?client_id=${clientId}&authorizationcode=${y}&code_verifier=${x}`;
 }
 
 export function utils() {

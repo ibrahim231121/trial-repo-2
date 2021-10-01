@@ -2,7 +2,7 @@
   "name": "@cb/evm",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://10.227.141.128:8085/",
+
   "config-overrides-path": "config-overrides.js",
   "dependencies": {
     "@cb/shared": "0.0.0",

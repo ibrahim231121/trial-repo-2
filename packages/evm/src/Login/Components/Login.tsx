@@ -3,7 +3,7 @@ import {CRXPaper} from '@cb/shared';
 import { useEffect } from "react";
 import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { utils } from "../../utils/settings";
-
+import { AUTHENTICATION_LOGIN_URL } from '../../utils/Api/url'
 
 export default function Login (){
 
@@ -22,7 +22,7 @@ export default function Login (){
   }, []);
   
     const buttonClick = () => {
-        window.location.href = `http://127.0.0.1:8081/Authentication/Login/${utils()}`;
+        window.location.href = AUTHENTICATION_LOGIN_URL+`${utils()}`;
       };
         return (
             <div className="login_box" >
