@@ -4,6 +4,7 @@ import {
   CRXRows,
   CRXColumn,
   CRXDataTable,
+  CRXAlert,
   CRXBadge,
   CRXTooltip,
   CRXRootRef
@@ -13,7 +14,7 @@ import "./CRXBucket.scss";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
-import { AssetThumbnail } from "../../Assets/components/DataGrid/AssetThumbnail"
+import { AssetThumbnail } from "../../Assets/components/DataGrid/AssetThumbnail";
 import {
   SearchObject,
   ValueString,
@@ -45,7 +46,6 @@ const thumbTemplate = (assetType: string) => {
 };
 
 const CRXAssetsBucketPanel = () => {
-
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket
@@ -70,7 +70,6 @@ const CRXAssetsBucketPanel = () => {
         title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
         iconName="fas icon-drawer2"
         placement="left"
-        
       ></CRXTooltip>
     </CRXBadge>
   );
@@ -237,7 +236,15 @@ const CRXAssetsBucketPanel = () => {
                       <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
                     </CRXColumn>
                   </CRXRows>
-
+      <CRXRows container spacing={0}>
+        <CRXColumn item xs={12} className="topColumn">
+          <CRXAlert
+            className="crx-alert-notification"
+            message="check it out"
+            type="success"
+          />
+        </CRXColumn>
+      </CRXRows>
                   <div className="uploadContent">
                     <div className="iconArea">
                       <i className="fas fa-layer-plus"></i>
