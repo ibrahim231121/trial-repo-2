@@ -34,6 +34,8 @@ export { default as CRXMultiSelect} from './controls/CRXMultiSelect/CRXMultiSele
 export { default as CRXBadge} from './controls/CRXBadge/CRXBadge'
 export { default as CRXModalDialog } from './CRXModalDialog/modal'
 export { default as CRXConfirmDialog } from "./components/CRXConfirmDialog/CRXConfirmDialog"
-
 export { default as CRXAlert} from './components/CRXAlert/CRXAlert'
 export { default as CRXRootRef} from './controls/CRXRootRef/CRXRootRef'
+export { default as CrxTabPanel} from './CRXTab/CrxTabPanel'
+export { default as CRXTabs} from './CRXTab/CrxTabs'
+
