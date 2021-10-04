@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import DataTableContainer from "./CRXDataTableContainer";
 
 const CRXDataTable: React.FC<DataTableProps> = ({
-  tableId,
+  id,
   dataRows,
   headCells,
   orderParam,
@@ -34,7 +34,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   dragVisibility,
   showToolbar,
   selectedItems,
-  setSelectedItems
+  setSelectedItems,
+  showCheckBoxesCol,
+  showActionCol,
+  showActionSearchHeaderCell,
+  showCountText,
+  showCustomizeIcon,
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -56,7 +61,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
   let initialContainers: any = {
     tableId: {
-      id: tableId,
+      id: id,
       rows: dataRows,
     }
   };
@@ -69,7 +74,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       getComparator(orderData.order, orderData.orderBy)
     );
     const dataTable = {
-      id: tableId,
+      id: id,
       rows: rows,
     };
 
@@ -210,12 +215,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
         return (
           <React.Fragment key={container.id}>
             <Grid item>
-              {container.id === tableId ? (
+              {container.id === id ? (
                 <ThemeProvider theme={theme}>
                   <div className={classes.root}>
                     {(showToolbar === undefined || showToolbar === true) && (
                       <DataTableToolbar
-                        Id={tableId}
+                        id={id}
                         numSelected={selectedItems.length}
                         headCells={headCells}
                         rowCount={container.rows.length}
@@ -225,10 +230,13 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         onReOrder={(e: number[]) => setOrderColumn(e)}
                         orderingColumn={orderColumn}
                         onHeadCellChange={onHeadCellChange}
+                        showCountText={showCountText}
+                        showCustomizeIcon={showCustomizeIcon}
                       />
                     )}
 
                     <DataTableContainer
+                      id={id}
                       orderColumn={orderColumn}
                       headCells={headCells}
                       orderData={orderData}
@@ -248,6 +256,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       allColHide={allColHide}
                       getRowOnActionClick={getRowOnActionClick}
                       dragVisibility={dragVisibility}
+                      showCheckBoxesCol={showCheckBoxesCol}
+                      showActionCol={showActionCol}
+                      showActionSearchHeaderCell={showActionSearchHeaderCell}
                     />
 
                     <TablePagination

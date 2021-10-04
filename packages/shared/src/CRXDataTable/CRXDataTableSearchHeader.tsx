@@ -8,14 +8,18 @@ import {
 } from "./CRXDataTableTypes";
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
+  id,
   orderColumn,
   selectedItems,
   headCells,
   orderData,
   container,
   actionComponent,
+  dragVisibility,
+  showCheckBoxesCol,
+  showActionCol,
+  showActionSearchHeaderCell,
   getRowOnActionClick,
-  dragVisibility
 }) => {
   const classes = useStyles();
 
@@ -28,27 +32,40 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               classes.searchHeaderStickness +
               " TableSearchAbleHead tableSearchHead"
             }
-            style={{ left: 0, position: "sticky", zIndex: 4 }}
+            style={{left: 0, position: "sticky", zIndex: 4 }}
           ></TableCell>
           : null
         }
+        {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
+          <TableCell
+            padding="checkbox"
+            className={classes.searchHeaderStickness + " TableSearchAbleHead"}
+            style={{left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4 }}
+          ></TableCell>
+        : null
+        }
         <TableCell
-          padding="checkbox"
           className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4 }}
-        ></TableCell>
-        <TableCell
-          className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{ left: `${(dragVisibility === false) ? "62px" : "118px"}`, position: "sticky", zIndex: 4 }}
+          style={{left: `${dragVisibility === false ? 
+                    (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
+                    : 
+                    (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
+                  }`,
+                  position: "sticky", 
+                  zIndex: 4 }}
         >
-          <div
-            className={
-              selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
-            }
-            onClick={() => getRowOnActionClick(null)}
-          >
-            {actionComponent}
-          </div>
+          {(showActionSearchHeaderCell) ?
+            <div
+              className={
+                selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
+              }
+				onClick={() => getRowOnActionClick(null)}
+            >
+              {actionComponent}
+            </div>
+            :
+            null
+          } 
         </TableCell>
         {orderColumn.map((colIdx, _) => (
           <TableCell

@@ -21,7 +21,7 @@ const usePostFetch = <T>(
         const result = await response.json();
         const data = result as T;
         await setResponse(data);
-      } catch (err) {
+      } catch (err: any) {
         await setErrorMsg(err.message);
       }
     },

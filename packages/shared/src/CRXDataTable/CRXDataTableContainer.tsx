@@ -13,6 +13,7 @@ import DataTableBody from "./CRXDataTableBody";
 import DataTableHeader from "./CRXDataTableHeader";
 
 const DataTableContainer: React.FC<DataTableContainerProps> = ({
+  id,
   keyId,
   orderColumn,
   headCells,
@@ -32,6 +33,9 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   allColHide,
   getRowOnActionClick,
   dragVisibility,
+  showCheckBoxesCol,
+  showActionCol,
+  showActionSearchHeaderCell,
 }) => {
 
   const classes = useStyles();
@@ -65,10 +69,12 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             onHandleRequestSort={(e:any) => onHandleRequestSort(e)}
             onResizeRow={(e:any) => onResizeRow(e)}
             dragVisibility={dragVisibility}
+            showCheckBoxesCol={showCheckBoxesCol}
           />
         </DragableHead>
         {searchHeader === true ? (
           <SearchHeader
+            id={id}
             orderColumn={orderColumn}
             selectedItems={selectedItems}
             headCells={headCells}
@@ -77,7 +83,10 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             actionComponent={actionComponent}
             getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
-            getRowOnActionClick={getRowOnActionClick}
+            
+            showCheckBoxesCol={showCheckBoxesCol}
+            showActionCol={showActionCol}
+            showActionSearchHeaderCell={showActionSearchHeaderCell}
           />
         ) : null}
           <DataTableBody
@@ -92,6 +101,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             onSetSelectedItems={(row: any) => onHandleClick(row)}
             getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
+			showCheckBoxesCol={showCheckBoxesCol}
           />
       </Table>
     </TableContainer>

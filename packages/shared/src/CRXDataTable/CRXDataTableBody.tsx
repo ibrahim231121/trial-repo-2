@@ -20,6 +20,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   onSetSelectedItems,
   getRowOnActionClick,
   dragVisibility,
+  showCheckBoxesCol,
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -81,24 +82,30 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             </Draggable>
                           </TableCell>
                         ) : null}
+                          {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
+                  <TableCell
+                    style={{
+                      left: `${dragVisibility === false ? "0px" : "60px"}`,
+                    }}
+                    className="DataTableBodyCell CellCheckBox col-two"
+                    scope="row"
+                  >
+                    <CRXCheckBox
+                      onClick={() => handleChange(row)}
+                      checked={isItemSelected}
+                      inputProps={labelId}
+                      selectedRow={isItemSelected}
+                      lightMode={true}
+                    />
+                  </TableCell>
+                ) : null}
                         <TableCell
                           style={{
-                            left: `${dragVisibility === false ? "0px" : "60px"}`,
-                          }}
-                          className="DataTableBodyCell CellCheckBox col-two"
-                          scope="row"
-                        >
-                          <CRXCheckBox
-                            onClick={() => handleChange(row)}
-                            checked={isItemSelected}
-                            inputProps={labelId}
-                            selectedRow={isItemSelected}
-                            lightMode={true}
-                          />
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            left: `${dragVisibility === false ? "60px" : "118px"}`,
+                            left: `${dragVisibility === false ? 
+                              (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
+                              : 
+                              (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
+                            }`,
                           }}
                           className="DataTableBodyCell col-three"
                           scope="row"

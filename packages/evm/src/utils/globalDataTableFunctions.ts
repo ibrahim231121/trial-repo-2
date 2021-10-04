@@ -84,8 +84,8 @@ export const onTextCompare = (
         ? ""
         : x[headCells[el.colIdx].id]
       )
-        .toLowerCase()
-        .indexOf(el.value[0].toLowerCase()) !== -1
+        .toString().toLowerCase()
+        .indexOf(el.value[0].toString().toLowerCase()) !== -1
     );
   });
   return dataRows;

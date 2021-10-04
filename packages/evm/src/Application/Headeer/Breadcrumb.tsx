@@ -15,7 +15,59 @@ const ActiveBreadcrumb: React.FC<any> = React.memo((props) => {
   const {
     location: { pathname },
   } = props;
-
+  const getPathnames = () => {
+    if (pathnames.length <= 0) {
+      return "Home"
+    }
+    if (pathnames[pathnames.length - 1] === "usergroups") {
+      return "Manage User Groups & Permissions"
+    }
+    if (pathnames[pathnames.length - 1] === "createusergroup") {
+      return "Create User Group"
+    }
+    return pathnames[pathnames.length - 1].charAt(0).toUpperCase() +
+      pathnames[pathnames.length - 1].slice(1)
+  }
+  const getPathUrl = (name: string) => {
+    switch (name) {
+      case 'Admin':
+        return <span>Admin</span>
+      case 'Usergroups':
+        return <a className="breadCrumbItem" key={name + 1}>
+          Manage User Groups & Permissions
+        </a>
+      case 'Createusergroup':
+        return <a className="breadCrumbItem" key={name}>
+          Create User Group
+        </a>
+      default:
+        break;
+    }
+  }
+  const getPathName = (name: string) => {
+    switch (name) {
+      case 'Admin':
+        return 'Admin'
+      case 'Usergroups':
+        return "Manage User Groups & Permissions";
+      case 'Createusergroup':
+        return "Create User Group"
+      default:
+        break;
+    }
+  }
+  const getLink = (name: string, routeTo: string) => {
+    if (name.toLowerCase() === "admin") {
+      return <span className="CRXBreadcrumb span breadCrumbItem">Admin</span>
+    }
+    return (
+      <Link
+        to={routeTo}
+        onClick={() => dispatch(enterPathActionCreator({ val: "" }))}
+      >
+        {getPathName(name)}
+      </Link>);
+  }
   function debounce(fn:()=>void, ms:number) {
     let timer:any=null
     return () => {
@@ -43,20 +95,12 @@ const ActiveBreadcrumb: React.FC<any> = React.memo((props) => {
 
   const pathnames = pathname.split("/").filter((x: any) => x);
   const checkPath = (isLast: any, name: string, routeTo: string) => {
+
     if (!isLast) {
-      return (
-        <Link
-          to={routeTo}
-          onClick={() => dispatch(enterPathActionCreator({ val: "" }))}
-        >
-          {name}
-        </Link>
-      );
+      return getLink(name, routeTo);
     } else if (isLast && pathLastState.length == 0) {
       return (
-        <a className="breadCrumbItem" key={name}>
-          {name}
-        </a>
+        getPathUrl(name)
       );
     } else if (isLast && pathLastState.length != 0) {
       return (
@@ -96,10 +140,7 @@ const ActiveBreadcrumb: React.FC<any> = React.memo((props) => {
       </CRXBreadcrumb>
       <CRXTitle
         text={
-          pathnames.length > 0
-            ? pathnames[pathnames.length - 1].charAt(0).toUpperCase() +
-              pathnames[pathnames.length - 1].slice(1)
-            : "Home"
+          getPathnames()
         }
         className="titlePage"
       />

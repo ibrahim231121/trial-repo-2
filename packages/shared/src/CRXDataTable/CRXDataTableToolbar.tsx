@@ -10,7 +10,19 @@ import DataTableClearFilter from "./CRXDataTableFilter"
 import DataTableCustomizeColumns from "./CRXDataTableCustomizeColumns"
 
 
-const DataTableToolbar: React.FC<DataTableToolbarProps> = ({Id, headCells, rowCount, columnVisibilityBar, onChange, onClearAll, onReOrder, orderingColumn, onHeadCellChange }) => {
+const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
+  id, 
+  headCells, 
+  rowCount, 
+  columnVisibilityBar, 
+  onChange, 
+  onClearAll, 
+  onReOrder, 
+  orderingColumn, 
+  onHeadCellChange,
+  showCountText,
+  showCustomizeIcon, 
+}) => {
     const classes = useToolbarStyles();
     
     const {t} = useTranslation<string>();
@@ -19,21 +31,24 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({Id, headCells, rowCo
 
       <Toolbar
         className={clsx(classes.root)}>
-          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-            <b>{rowCount}</b> {t(Id)}  
-          </Typography>
+            <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+              {(showCountText || showCountText === undefined) && <><b>{rowCount}</b> {t(id)}</> } 
+            </Typography>
+                          
 
           <DataTableClearFilter 
             columnVisibilityBar={columnVisibilityBar}
             onClearAll={() => onClearAll()} />
-
-          <DataTableCustomizeColumns
-            headCells={headCells}
-            orderingColumn={orderingColumn}
-            onReorder={(e:number[]) => onReOrder(e)}
-            onChange={onChange}
-            onHeadCellChange={onHeadCellChange}
-          />
+          {(showCustomizeIcon || showCountText === undefined) &&
+            <DataTableCustomizeColumns
+              headCells={headCells}
+              orderingColumn={orderingColumn}
+              onReorder={(e:number[]) => onReOrder(e)}
+              onChange={onChange}
+              onHeadCellChange={onHeadCellChange}
+              showCustomizeIcon={showCustomizeIcon}
+            />
+          }
 
       </Toolbar>
 

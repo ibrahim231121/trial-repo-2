@@ -8,7 +8,7 @@ import {
 } from "./CRXDataTableTypes";
 import {useTranslation} from 'react-i18next'; 
 
-const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility}) => {
+const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility,showCheckBoxesCol}) => {
 
   const classes = useStyles();
   const {t} = useTranslation<string>();
@@ -28,11 +28,21 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
             </TableCell>
         : null
         }
+        {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
+            <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4}}>
+            </TableCell>  
+        : null
+        }
         <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4}}>
-        </TableCell>  
-        <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '80px', minWidth: '80px', left: `${(dragVisibility === false) ? "62px" : "118px"}`, position: "sticky", zIndex: 4}}>
+            style={{width: '80px', minWidth: '80px', 
+                    left: `${dragVisibility === false ? 
+                        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
+                              : 
+                        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
+                    }`,
+                    position: "sticky", 
+                    zIndex: 4}}>
             {t('Actions')}
         </TableCell> 
         {orderColumn.map((colIdx, i) => (

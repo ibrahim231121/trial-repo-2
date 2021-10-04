@@ -480,7 +480,7 @@ const MasterMain: React.FC<Props> = ({
     <>
       {rows && (
         <CRXDataTable
-          tableId="assetDataTable"
+          id="assetDataTable"
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
           }
