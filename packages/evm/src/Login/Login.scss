@@ -1,184 +1,107 @@
-.logo_getac {
-    margin-top:32px;
-    margin-left:96px;
-    width:30%;
-  }
-  .box_paper_h2{
-    margin-top:25px;
-    margin-left:96px;
-    color: white;
-    font-size:22px;
-  }
-  .box_paper_span{
-    margin-top:49px;
-    margin-left:96px;
-    margin-right:96px;
-    color: white;
-    font-size:12px;
-  }
-  .box_paper_h3{
-    margin-top:45px;
-    margin-left:96px;
-    color: white;
-    font-size:18px
-  }
-  .box_paper_h1{
-    margin-top:32px;
-    margin-left:96px;
-    width:30%;
-  }
-  .button_login {
-    margin-top:22px !important;
-    margin-left:96px !important;
-    width:15%;
-    background-color: #e7e7e7 !important;
-    font-size:14px;
-    color:#333333;
-    margin-bottom:54px;
-    &:hover {
-       background-color: '#e7e7e7';
-       box-shadow:0px 0px 0px 1px  rgb(215 75 0) ;
-  }
-  &:active {
-      background-color: #e7e7e7;
-      box-shadow: 0px 0px 0px 2px  rgb(215 75 0);
-    }
-  }
-  .main_page {
-      position: relative;
-    }
-  .box_paper {
-    background-color: rgb(15 13 14  / 80%) !important;
-    width:70%;
-    margin-left: auto;
-    margin-right: auto;
-    height: 48vh;
-    z-index: 9;
-    display: 'flex';
-    flex-direction: 'column';
-  }  
-  .main_box {
-    background-color:rgb(15 13 14 / 60%) !important;
-    position: absolute;
-    width:100%;
-    height:70%;
-    z-index: 9;
-    display: flex;
-    align-items: center;
-  }
-  .DottedBox {
-    height: 100vh;
-    position: absolute !important;
-    width: 100%;
-    top: 0;
-  }
-  
-    .DottedBox img {
-      object-fit: cover;
-      height: 100vh;
-      width: 100%;
-    }
+.main_page {
+  position: relative;
+
   .login_box {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     height: 100vh;
-  }
 
-  .mainContainer {
-    margin-top: 0;
-    padding: 0 !important;
-  }
-
-  @media(max-width:1900px){
-    .box_paper{
-      height: 50vh;
-    }
-  }
-  
-    @media(max-width:1200px) {
-       .main_box{
-        height: 74%;
-       }
+    .main_box {
+      background:rgba(15,13,14,0.6) !important;
+      position: absolute;
+      width:100%;
+      height:455px;
+      z-index: 9;
+      display: flex;
+      padding: 0 0;
+      align-items: center;
       .box_paper {
-        width: 88% !important;
-        // height: 68% !important;
-      }
-    }
-    @media(max-width:830px) {
-      .box_paper {
-        // width: 95% !important;
-      }
-      .box_paper_h2 {
-        margin-top: 15px !important;   
-      }
-      .box_paper_h3 {
-        margin-top: 15px !important;   
-      }
-      .box_paper_span{
-        margin-top: 32px ;
-        font-size: 15px ;
-      }
-    }
-
-    @media(max-width:758px) {
-      .box_paper {
-        height: 54vh;
-      }
-    }
-    @media(max-width:680px) {
-      .box_paper {
-        width: 100% !important;
-        justify-content: center !important;
-        // height: 100% !important;
-      }
-      .button_login {
-        margin-left: 67px !important;
-      }
-      .box_paper_h1, .box_paper_h2 , .box_paper_h3 ,  .box_paper_span , button   {
-        margin-left: 65px ;
-      }
-    }
-
-    @media(max-width:600px) {
-      .button_login {
-        width: 23%;
-      }
-      .box_paper_span {
-        margin-top: 21px;
-        font-size: 14px;
-      }
-    }
+        background:rgba(15,13,14, 0.8) !important;
+        width:770px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 455px;
+        z-index: 9;
+        margin-top: 9px;
+        border-radius: 0 !important;
+        display: 'flex';
+        padding: 0 0;
+        flex-direction: 'column';
+        .inner_paper_box{
+           
+          .box_paper_h1{
+            margin-top:33px;
+            margin-left:96px;
+            width:30%;
+            width: 281px;
+            height: 50px;
+          }
+          .box_paper_h2{
+            margin-top:18px;
+            margin-left:96px;
+            color:#D1D2D4;
+            line-height: 26px;
+            font-weight: normal;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size:22px;
+            margin-bottom: 0;
+          }
+          .box_paper_h3{
+            margin-top:39px;
+            margin-left:96px;
+            color:#D1D2D4;
+            font-size:14px;
+            line-height: 16px;
+            margin-bottom: 0;
+            font-weight: normal;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+          .box_paper_span {
+            margin-top:44px;
+            margin-left:96px;
+            margin-right:96px;
+            color: #D1D2D4;
+            font-size:12px;
+            line-height:16px;
+            margin-bottom: 0;
+            font-family: Arial, Helvetica, sans-serif;
+          }
     
-    @media(max-width:500px) {
-      .box_paper {
-        height: 69vh;
-        margin-top: 10px;
+          .button_login {
+            background: #E7E7E7 0% 0% no-repeat padding-box !important; 
+            height: 30px;
+            width: 80px;
+            margin-left: 96px !important;
+            margin-top: 20px !important;
+            span {
+              color: #333333;
+              font-family: Arial, Helvetica, sans-serif;
+              font-weight: normal;
+              font-size: 14px;
+              line-height: 20px;
+            }
+            &:hover {
+              border: 1px solid #D74B00 !important;
+            }
+            &:active {
+              border: 2px solid #D74B00 !important;
+            }
+          }
+        }
       }
-      .box_paper_h1 {
-        margin-top: 80px;
-      }
+    }  
+  }
+  .DottedBox {
+    height: 100vh;
+    position: absolute !important;
+    width: 100%;
+    top: 0;
+    img {
+      object-fit: cover;
+      height: 100vh;
+      width: 100%;
     }
-    @media(max-width:430px) {
-      button {
-        width: 115px !important;
-      }
-     
-      .box_paper_span{ 
-        margin-right: 35px !important;
-      }
-    }
-  
-    @media(max-width:375px) {
-      .main_box {
-        height: 80% !important;
-      
-      }
-    }
-    @media(max-width:321px) {
-      .main_box {
-        height: 96% !important;
-       
-      }
-    }
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
+import { logOutUser } from '../../../Login/API/auth';
 
 const listOFMenu = [
     {
@@ -14,7 +15,7 @@ const listOFMenu = [
 
 const CRXUserProfile = () => {
     return (
-        <div className="department">
+        <div className="department" onClick={()=>logOutUser()}>
              <CRXMenu
             id="userProfile"
             name="UserName"  //Get Current User name and add here

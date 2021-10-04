@@ -56,16 +56,17 @@ export const isAuthenticated = () => {
 }
 
 
-export const logOutUser = (next:()=>void) =>{
+export const logOutUser = () =>{
+
     sessionStorage.removeItem('code_challenge_string');
         var opt;
         const options = { path:'/' };
         opt = cookies.remove('access_token',options)
         opt = localStorage.removeItem('username')
         opt = localStorage.removeItem('remember me')
-        window.location.reload(false);
-        next()
-      
+        // window.location.reload(false);
+        // next()
+        window.location.href = "/";
       
     
 } 

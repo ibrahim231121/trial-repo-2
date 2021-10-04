@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "start": "lerna run start --parallel",
+    "start": "(set PORT=3000 || export PORT=3000) && lerna run start --parallel",
     "build": "lerna run build"
   },
   "devDependencies": {

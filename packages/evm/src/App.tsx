@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import Routes from "../src/Routes";
+import Routes from "./Routes";
 import clsx from 'clsx';
-import { CRXAppBar, CRXContainer, CRXPanelStyle} from "@cb/shared";
-import { DragDropContext } from "react-beautiful-dnd";
+import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import AppHeader from './Application/Headeer/Header'
-import { AssetThumbnailIcon, AssetThumbnail } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
+import { AssetThumbnailIcon } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
 import Footer from './Application/Headeer/Footer'
 import {useTranslation} from 'react-i18next'; 
+
 import "../../evm/src/utils/Localizer/i18n"
-import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
-import { useDispatch } from "react-redux";
+import Img from "./Assets/Images/thumb.png";
 
 function App() {
   let culture: string = "en";
   const [resources, setResources] = useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
-  const dispatch = useDispatch()
+
   const [open, setOpen] = useState(true);
   const classes = CRXPanelStyle();
 
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
+
+  let initialContainers: any = {
+    dataTable: {
+      id: "dataTable",
+      rows: null,
+    },
+    list: {
+      id: "list",
+      rows: null,
+    },
+  };
+  const [containers, setContainers] = useState(initialContainers);
 
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
@@ -48,35 +59,17 @@ function App() {
   }, [culture, resources]);
 
   const onDragStart = (e: any) => {
-    
-    var divMainBucket : any = document.getElementById("divMainBucket")
-    if(divMainBucket !== null && e.source.droppableId === "assetDataTable")
-    {
-      var ligthBg = document.createElement("div");
-      ligthBg.id = "lightBgContent";
-      
-      var bucketParentClass:any = document.getElementsByClassName("CRXBucketPanel");
-      bucketParentClass[0].childNodes[0].style.borderBottomColor = "#EBA580";
-      divMainBucket.appendChild(ligthBg);
-      //divMainBucket.style.opacity = "0.5";
-      divMainBucket.style.background = "#fff";
-      divMainBucket.style.borderImageWidth= "3px";
-      divMainBucket.style.transform = "none";
-    }
-    
     let assetContainer = localStorage.getItem("AssetContainer");
     var draggableItem = document.getElementById(
-      "draggableItem" + e.source.index.toString() + e.source.droppableId
+      "draggableItem" + e.source.index.toString()
     );
-
-    
     if (assetContainer !== null && draggableItem !== null) {
+      console.log("Drag Start", JSON.parse(assetContainer));
 
       let divOuter = document.createElement("div");
       divOuter.className = "divOuter";
       divOuter.id = "divOuter";
       divOuter.style.display = "block";
-      
 
       let left: number = 0;
       let top: number = 0;
@@ -84,7 +77,7 @@ function App() {
       let container = JSON.parse(assetContainer);
 
       let divCount = document.createElement("div");
-      divCount.className = "divCount crxBadgeComponent-Grey";
+      divCount.className = "divCount MuiBadge-badge";
       divCount.id = "divCount";
       divCount.innerHTML = container.length;
       if (container.length > 1) divCount.style.display = "";
@@ -106,6 +99,9 @@ function App() {
 
         var i1 = document.createElement("i");
         i1.className = "icondrag fas fa-grip-vertical";
+        i1.style.position = "relative";
+        i1.style.top = "20px";
+        i1.style.left = "8px";
         div1.append(i1);
         divInner.appendChild(div1);
 
@@ -113,86 +109,41 @@ function App() {
         div2.className = "divImg";
         div2.id = "innerImg" + index.toString();
 
-        // var i2 = document.createElement("i");
-        // i2.className = AssetThumbnailIcon(con.assetType)
-        // div2.append(i2);
-        var i2 = <AssetThumbnail className="onDraggingThumb" assetType={con.assetType} fontSize="50pt" />
-        ReactDOM.render(i2, div2);       
+        // var img = document.createElement("img");
+        // img.className = "imgdrag";
+        // img.src = Img;
+        // div2.append(img);
+
+        var i2 = document.createElement("i");
+        i2.className = AssetThumbnailIcon(con.assetType)
+        i2.style.fontSize = "55pt";
+        div2.append(i2);
+
         divInner.appendChild(div2);
 
         var div3 = document.createElement("div");
         div3.className = "divAssetId";
         div3.id = "innerAssetId" + index.toString();
-        var i3 = document.createElement("a");
+        var i3 = document.createElement("i");
         i3.className = "linkColor";
         i3.innerHTML = con.assetName;
         div3.append(i3);
         divInner.appendChild(div3);
 
-        top = top + 7;
-        left = left + 7;
+        top = top + 5;
+        left = left + 5;
 
         divOuter.appendChild(divInner);
       });
-      
-       let classtd:HTMLCollectionOf<Element> = document.getElementsByClassName('CRXDataTableCustom');
-
-       for(let x = 0; classtd.length > x; x++) {
-        classtd[x].classList.add("draggingDropOn")
-       }
-      
-      if(draggableItem !== null) {
-        const getParent:HTMLElement | null = draggableItem.parentElement;
-        const createBorder : HTMLElement = document.createElement('div');
-        createBorder.id = 'draggingStartBorder';
-        var dragGrep = document.createElement("i");
-        dragGrep.className = "iconStartdrag fas fa-grip-vertical";
-        createBorder.append(dragGrep);
-        getParent != null && getParent.appendChild(createBorder);
-        
-      }
-
+      //draggableItem.appendChild(divCount);
       draggableItem.appendChild(divOuter);
-      // draggableItem.style.display = "flex";
-      // draggableItem.style.marginLeft = "5px";
-      // debugger;
+      draggableItem.style.display = "flex";
     }
   };
 
   const onDragEnd = (e: any) => {
-
     var divOuter = document.getElementById("divOuter");
-      if (divOuter !== null) divOuter.remove();
-
-    const startBorder = document.getElementById('draggingStartBorder');
-    startBorder && startBorder.remove();
-
-    var bucketParentClass:any = document.getElementsByClassName("CRXBucketPanel");
-     bucketParentClass[0].childNodes[0].style.borderBottomColor = "#D74B00";
-
-    var divMainBucket = document.getElementById("divMainBucket")
-    if(divMainBucket !== null)
-      {
-        divMainBucket.style.opacity = "1";
-        divMainBucket.style.color = "unset";
-        divMainBucket.style.background = "unset";
-        divMainBucket.style.borderImageWidth= "0px";
-
-        const findLightBg = document.getElementById("lightBgContent")
-        findLightBg && findLightBg.remove();
-      }
-
-    let container: any
-    let assetContainer = localStorage.getItem("AssetContainer");
-    if (assetContainer !== null)
-      container = JSON.parse(assetContainer);
-
-    localStorage.removeItem("AssetContainer");
-    
-    let classtd:any = document.getElementsByClassName('CRXDataTableCustom');
-    for(let x = 0; classtd.length > x; x++) {
-      classtd[x].classList.remove("draggingDropOn")
-    }
+    if (divOuter !== null) divOuter.remove();
     // Make sure we have a valid destination
     if (e.destination === undefined || e.destination === null) return null;
     // Make sure we're actually moving the item
@@ -201,46 +152,90 @@ function App() {
       e.destination.index === e.source.index
     )
       return null;
-      
-    if(e.destination.droppableId === "assetBucket" || e.destination.droppableId === "assetBucketEmptyDroppable")
-      dispatch(addAssetToBucketActionCreator(container))    
 
-    return null;
+    // Set start and end variables
+    const start = containers[e.source.droppableId];
+    const end = containers[e.destination.droppableId];
+
+    const startIndex = e.source.index; //+ (page*rowsPerPage)
+    let destinationIndex = e.destination.index;
+
+    // If start is the same as end, we're in the same column
+    if (start === end) {
+      // Move the item within the list
+      // Start by making a new list without the dragged item
+
+      // console.log("If");
+      // const newList = start.rows.filter((_: any, idx: any) => idx !== startIndex);
+      // destinationIndex = e.destination.index //+ (page*rowsPerPage)
+      // // Then insert the item at the right location
+      // newList.splice(destinationIndex, 0, start.rows[startIndex]);
+
+      // // Then create a new copy of the column object
+      // const newCol = {
+      //   id: start.id,
+      //   rows: newList
+      // };
+
+      // // Update the state
+      // setContainers((state: any) => ({ ...state, [newCol.id]: newCol }));
+      //}
+      return null;
+    } else {
+      // If start is different from end, we need to update multiple columns
+      // Filter the start list like before
+      //const newStartList = start.rows.filter((_: any, idx: any) => idx !== source.index);
+      console.log("Else");
+      // Create a new start column
+      const newStartCol = {
+        id: start.id,
+        //rows: newStartList
+        rows: start.rows,
+      };
+
+      // Make a new end list array
+      const newEndList = end.rows;
+
+      // Insert the item into the end list
+      newEndList.splice(destinationIndex, 0, start.rows[startIndex]);
+
+      // Create a new end column
+      const newEndCol = {
+        id: end.id,
+        rows: newEndList,
+      };
+
+      // Update the state
+      setContainers((state: any) => ({
+        ...state,
+        [newStartCol.id]: newStartCol,
+        [newEndCol.id]: newEndCol,
+      }));
+      return null;
+    }
   };
 
-  const onDragUpdate= (e: any) => {
-     
-    var divMainBucket = document.getElementById("divMainBucket")
-    if(e.destination !== null && (e.destination.droppableId === "assetBucketEmptyDroppable" || e.destination.droppableId === "assetBucket"))
-    {
-      if(divMainBucket !== null)
-      {
-        divMainBucket.style.transform = "none"
-      }
-    }
-  }
-  
   return (
     <div dir={rtl}>
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
-        <CRXAppBar position="fixed">
-            <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
-        </CRXAppBar>
-        
-        <main 
-          className={clsx(classes.content, 'crx-main-container', {
-            [classes.contentShift]: open,
-          })}
-          >
-           
-              <Routes />
-            
-        </main>
+<DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      {/* <CRXAppBar position="fixed">
+          <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
+      </CRXAppBar> */}
       
-      <footer>
+      {/* <main 
+      className={clsx(classes.content, 'crx-main-container', {
+        [classes.contentShift]: open,
+      })}
+      >
+      <CRXContainer className="mainContainer" maxWidth="xl" disableGutters={true}> */}
+        <Routes />
+      {/* </CRXContainer>
+      </main> */}
+      
+</DragDropContext>
+      {/* <footer>
         <Footer />
-      </footer>
-      </DragDropContext>
+      </footer>  */}
     </div>
   );
 }
