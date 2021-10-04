@@ -4,15 +4,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import './CheckBox.scss'
 
 interface Props {
-  name?: string;
+  name: string;
   label?: string;
-  checked?: boolean;
+  checked: boolean;
   inputProps?: string,
+  disabled?: boolean;
+  isError?:boolean;
   lightMode? : boolean,
-  onChange?: (e: any) => void;
-  onClick? : (e : any) => void;
+  onChange: (e: any) => void;
   className? : string,
   selectedRow? : boolean,
+
 }
 
 const useStyles = makeStyles({
@@ -23,43 +25,54 @@ const useStyles = makeStyles({
   },
   icon: {
     borderRadius: 0,
-    border:"1px solid #d1d2d4",
-    width: 16,
-    height: 16,
+    outline:"1px solid #d1d2d4",
+    width: 18,
+    height: 18,
+    fontSize:18,
     boxShadow: 'none',
-    backgroundColor: '#fff',
+    color:'#fff',
     'input:hover ~ &': {
       border:"2px solid #333333",
-      borderRadius: "2px"
+      borderRadius: "2px",
+      outline:"1px solid #333333",
+      backgroundColor: '#ffffff',
+    },
+    'input:selected ~ &': {
+      outline:"1px solid #d1d2d4",
+      backgroundColor: '#ffffff',
     },
     'input:disabled ~ &': {
       boxShadow: 'none',
-      background: 'rgba(206,217,224,.5)',
+      color: '#e5e5e5',
+      outline:'1px solid #979797',
+      background: '#e5e5e5',
     },
   },
 });
-const CRXCheckBox: React.FC<Props> = ({ className, selectedRow = false,  checked, lightMode = false, onChange, name, onClick, inputProps = 'uncontrolled-checkbox' }) => {
+const CRXCheckBox: React.FC<Props> = ({ className, selectedRow = false ,isError = false, disabled = false , checked, lightMode = false, onChange, name, inputProps = 'uncontrolled-checkbox' }) => {
   const classes = useStyles();
   const checkBoxSelected = lightMode ? 'crxSelectedLight' : 'crxSelectedDark';
   const checkBoxIconClass = selectedRow ? 'fal fa-check-square crxCheckForDarBg' : 'fas fa-check-square';
+  const disable = disabled ? "disabled" : '';
+  const error = isError ? 'error' : " ";
   return (
     <>
       <Checkbox
-        className={classes.root + " CRXCheckBox " + className}
+      
+        className={classes.root + " CRXCheckBox " + className  + disable }
         checked={checked}
         disableRipple
         onChange={onChange}
         name={name}
-        checkedIcon={<span className={checkBoxIconClass + " " + checkBoxSelected} />}
-        icon={<span className={classes.icon} />}
+        disabled={disabled}
+        checkedIcon={<span className={checkBoxIconClass + " " + checkBoxSelected + " " + error} />}
+        icon={<span className={classes.icon + " fas fa-square"} />}
         inputProps={{ 'aria-label': inputProps }}
-        onClick={onClick}
+    
+        
       />
     </>
   );
 };
 
 export default CRXCheckBox;
-// {
-//   /* <Checkbox name={​​​​​​name}​​​​​​ checked={​​​​​​value}​​​​​​ onChange={​​​​​​onChange}​​​​​​ /> */
-// }

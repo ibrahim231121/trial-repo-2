@@ -1,26 +1,113 @@
 .crxSelectedDark {
-    color: #333;
-    font-size: 18px;
+  color: #333;
+  font-size: 18px;
+  outline: 1px solid transparent;
+  width: 18px;
+  height: 18px;
+  .error {
+    border: 1px solid #aa1d1d;
+  }
 }
 
 .crxSelectedLight {
-    color: #F2F2F2;
-    font-size: 18px;
-    width: 16px;
-    height: 16px;
+  color: #333 !important;
+  outline: 1px solid transparent;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 
-    &::before {
-        position: relative;
-        left: -4px;
-    }
+  &::before {
+    position: relative;
+  }
+  .error {
+    color: transparent !important;
+  }
 }
-
 .crxCheckForDarBg {
-    color: #F2F2F2;
+  color: #d1d2d4 !important;
+  &::before {
+    left: 0;
+  }
+}
+.ManageAssetDataTable {
+  .crxCheckForDarBg {
+    color: #d1d2d4;
+    &::before {
+      left: -4px;
+    }
+  }
+  .CRXCheckBox{
+    .MuiIconButton-label {
+      span {
+        color:transparent;
+        background-color: transparent;
+      }
+      &:hover {
+        outline: 1px solid #d1d2d4;
+      }
+    }
+  }
+  .CRXCheckBox.Mui-checked {
+    .MuiIconButton-label {
+      &:hover {
+        outline: 1px solid transparent !important;
+      }
+    }
+  }
+  .CRXCheckBox{
+    span[class*="MuiIconButton-label-"] {
+      span {
+        color:transparent;
+        background-color: transparent !important;
+      }
+      &:hover {
+        outline: 1px solid #d1d2d4;
+      }
+    }
+  }
+ .CRXCheckBox.Mui-checked {
+    span[class*="MuiIconButton-label-"] {
+      &:hover {
+        outline: 1px solid transparent !important;
+      }
+    }
+  }
+}
+.CRXCheckBox.MuiCheckbox-colorSecondary.Mui-disabled {
+  .crxSelectedDark {
+    background-color: #979797;
+    color: #e5e5e5;
+    outline: 1px solid #979797;
+    box-shadow: none;
+    position: relative;
+    opacity: 0.7;
+    &::before {
+      position: absolute;
+      left:0.9px;
+    }
+  }
+  .crxSelectedLight {
+    color: transparent !important;
+    outline: 1px solid #979797;
+    box-shadow: none;
+  }
+}
+.CRXCheckBox {
+  &:hover {
+    background: none !important;
+  }
+}
+.CRXCheckBox  {
+  .error {
+    outline: 1px solid #aa1d1d;
+    background-color: #ffffff;
+    color: transparent !important;
+    width: 18px;
+    border: none;
+    height: 18px;
+  }
+  .crxSelectedLight.error {
+    background-color: transparent;
+  }
 }
 
-.CRXCheckBox {
-    &:hover {
-        background: none !important;
-    }
-}

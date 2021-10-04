@@ -24,8 +24,8 @@ const checkboxStyle = makeStyles({
     icon: {
       borderRadius: 0,
       border: "1px solid #797979",
-      width: 16,
-      height: 16,
+      width: 18,
+      height: 18,
       boxShadow: 'none',
       backgroundColor: '#fff',
       'input:hover ~ &': {
