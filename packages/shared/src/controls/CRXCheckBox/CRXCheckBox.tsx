@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import './CheckBox.scss'
 
 interface Props {
-  name: string;
+  name?: string;
   label?: string;
   checked: boolean;
   inputProps?: string,
@@ -26,14 +26,13 @@ const useStyles = makeStyles({
   icon: {
     borderRadius: 0,
     outline:"1px solid #d1d2d4",
-    width: 18,
-    height: 18,
-    fontSize:18,
+    width:"18px",
+    fontSize:"18px",
     boxShadow: 'none',
     color:'#fff',
     'input:hover ~ &': {
-      border:"2px solid #333333",
-      borderRadius: "2px",
+      border:"0px solid #333333",
+      borderRadius: "0px",
       outline:"1px solid #333333",
       backgroundColor: '#ffffff',
     },
@@ -53,8 +52,8 @@ const CRXCheckBox: React.FC<Props> = ({ className, selectedRow = false ,isError 
   const classes = useStyles();
   const checkBoxSelected = lightMode ? 'crxSelectedLight' : 'crxSelectedDark';
   const checkBoxIconClass = selectedRow ? 'fal fa-check-square crxCheckForDarBg' : 'fas fa-check-square';
-  const disable = disabled ? "disabled" : '';
-  const error = isError ? 'error' : " ";
+  const disable = disabled && "disabled";
+  const error = isError && 'error';
   return (
     <>
       <Checkbox

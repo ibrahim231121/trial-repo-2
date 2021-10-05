@@ -3,7 +3,7 @@
   font-size: 18px;
   outline: 1px solid transparent;
   width: 18px;
-  height: 18px;
+  // height: 14px;
   .error {
     border: 1px solid #aa1d1d;
   }
@@ -14,10 +14,11 @@
   outline: 1px solid transparent;
   font-size: 18px;
   width: 18px;
-  height: 18px;
+  // height: 14px;
 
   &::before {
     position: relative;
+    left: 0px;
   }
   .error {
     color: transparent !important;
@@ -27,6 +28,7 @@
   color: #d1d2d4 !important;
   &::before {
     left: 0;
+    position: relative;
   }
 }
 .ManageAssetDataTable {
@@ -34,6 +36,7 @@
     color: #d1d2d4;
     &::before {
       left: -4px;
+      position: relative;
     }
   }
   .CRXCheckBox{
@@ -104,7 +107,7 @@
     color: transparent !important;
     width: 18px;
     border: none;
-    height: 18px;
+    
   }
   .crxSelectedLight.error {
     background-color: transparent;
