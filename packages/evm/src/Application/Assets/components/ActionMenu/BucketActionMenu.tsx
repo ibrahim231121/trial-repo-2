@@ -25,7 +25,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
   const dispatch = useDispatch()
 
   const removeFromAssetBucket = () => {
-    if (row !== undefined) {
+    if (row) {
       const find = selectedItems.findIndex((selected: assetRow) => selected.id === row.id)
       const data = find === -1 ? row : selectedItems
       dispatch(removeAssetFromBucketActionCreator(data))

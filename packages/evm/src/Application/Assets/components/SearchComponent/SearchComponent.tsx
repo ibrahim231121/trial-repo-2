@@ -1,6 +1,6 @@
 import React from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
-import { CRXButton, CRXRows, CRXColumn , CRXAlert } from '@cb/shared';
+import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
 import AdvanceOptions from './AdvanceOptions';
 import MasterMain from '../DataGrid/MasterMain';
 import './SearchComponent.scss';
@@ -367,11 +367,6 @@ const SearchComponent = (props: any) => {
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents'>
-      <div className="toasterParent">
-      <CRXAlert className="crx-message-toast"  message="This is a toast message" alertType="toast"/> 
-      {error && <CRXAlert message="Something is wrong!"  type="error"/> }
-      
-      </div>
         <div className='predictiveSearch'>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
