@@ -54,7 +54,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
                   position: "sticky", 
                   zIndex: 4 }}
         >
-          {(showActionSearchHeaderCell) ?
+          {(showActionSearchHeaderCell || showActionSearchHeaderCell === undefined) ?
             <div
               className={
                 selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
