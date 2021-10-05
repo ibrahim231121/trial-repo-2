@@ -85,7 +85,6 @@ code {
   border: 1px solid #ccc;
   width: 332px;
   height: 89px;
-  /* box-shadow: 2px 2px 4px rgba(0,0,0,.20); */
 }
 
 .divInner div[id ^='innerDrag'] {
@@ -182,7 +181,6 @@ code {
   color: #333;
   font-size: 55px;
   position: relative;
-  /* top: 17px; */
 }
 .imgdrag {
   width: 115px;
@@ -225,4 +223,12 @@ code {
 .assetThumb.onDraggingThumb .tumbPlayIcon 
 {
   visibility: visible;
+}.crx-main-container {
+  min-height:96.8vh !important;
+}
+.testClass {
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  height: 100vh;
 }

@@ -6,8 +6,8 @@ const AssetStatus ={
 }
 
 const AssetShortCuts = {
-  NotCategorized : "Not Categorized",
   Trash:"Trash",
+  NotCategorized : "Not Categorized",
   ApproachingDeletion:"Approaching Deletion"
 }
 

@@ -1,20 +1,9 @@
 .getac-simple-select {
-  border: 1px solid #d1d2d4;
-  transition: all 0.25s ease-in-out;
-  height:30px;
   select {
     padding: 5px;
     min-width: 250px;
     font-size: 14px;
     color: #444;
-  }
-  &:hover {
-    border: 1px solid #888787;
-    transition: all 0.25s ease-in-out;
-  }
-  &:focus {
-    border: 3px solid #888787;
-    transition: all 0.25s ease-in-out;
   }
   .MuiFormControl-root {
     border-width: 0px !important;
@@ -39,10 +28,17 @@
     input {
       font-size: 14px;
       color: #74767c;
-      height: 10px;
+      height: 30px;
+      padding: 0px !important;
+      outline: 1px solid #cecece;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+        outline: 1px solid #888787;
+        transition: all 0.25s ease-in-out;
+      }
       &:focus {
         outline: 3px solid #888787;
-        height: 7px;
+        transition: all 0.25s ease-in-out;
         transition: all 0.25s ease-in-out;
       }
     }
@@ -74,6 +70,4 @@
 .topLevel {
   margin-top: 25px;
 }
-// .MuiIconButton-label {
-//   visibility: hidden;
-// }
+

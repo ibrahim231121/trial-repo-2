@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import "./AdvancedSearch.scss";
-import AddIcon from "@material-ui/icons/Add";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import {advancedSearchOptions } from "../../utils/constants";
 import { dateOptions, basicDateDefaultValue } from "../../../../utils/constant";
@@ -296,7 +295,7 @@ const initialState= advancedSearchOptions
           onClick={() => Add()}
           disabled={showSearchCriteria ? false : true}
         >
-          <AddIcon fontSize="small" />{" "}
+          <i className="fa fa-plus"></i>{" "}
           <span className="btn-text">Add search criteria </span>
         </button>
         <button

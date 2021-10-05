@@ -65,7 +65,7 @@ const CRXDropContainer: React.FC<propsType> = ({
         onClick={handleClickOpen}
         disableRipple={true}
       >
-        <div className="iconStyle">{icon}</div>
+        <div className="iconStyle"><i className="icon-calendar"></i></div>
       </IconButton>
       <div>
         <Dialog

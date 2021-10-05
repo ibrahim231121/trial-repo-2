@@ -6,26 +6,27 @@
     border-radius: 0px;
     position: relative;
     margin-top: -1px;
-
     select {
-      height: 28px;
+      height: 32px;
       width: 100%;
       outline: none;
-      border: none;
-      border-radius: 50px;
       padding:0;
       font-size: 14px;
       color:#333333;
       -webkit-appearance: none;
       -moz-appearance: none;
       text-indent: 10px;
+      font-family: Arial;
+      border: 1px solid #d1d2d4;
       &:focus {
         outline: 3px solid #888787;
         transition: all 0.25s ease-in-out;
+        border: none;
       }
       &:hover {
-        outline: 2px solid #888787;
+        outline: 1px solid #888787;
         transition: all 0.25s ease-in-out;
+        border: none;
       }
     }
 
@@ -48,8 +49,8 @@
     .iconContent {
       .iconStyle {
         position: relative;
-        top: 1px;
-        font-size: 16px;
+        top: 5px;
+        font-size: 14px;
       }
     }
   }
