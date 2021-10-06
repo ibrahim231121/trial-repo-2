@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../../../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +44,7 @@ const UserGroup: React.FC = () => {
     dispatch(getGroupUserCountAsync());
   }, []);
 
-
+  
 
   const groups: any = useSelector((state: RootState) => state.groupReducer.groups);
   const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
@@ -80,7 +80,7 @@ const UserGroup: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [groupUsersCount, groups]);
+  }, [groupUsersCount]);
 
   const searchText = (
     rowsParam: GroupUser[],
@@ -199,36 +199,36 @@ const UserGroup: React.FC = () => {
   };
 
   return (
-    <div style={{ marginLeft: "6%", marginTop: "5%" }}>
+    <div style={{ marginLeft: "6%", marginTop: "4%" }}>
       <CRXButton onClick={() => { history.push("/admin/usergroups/createusergroup") }}>
         Create Group
       </CRXButton>
       {
         rows && (
-          <CRXDataTable
-            id="userGroupDataTable"
-            actionComponent={<UserGroupActionMenu />}
-            showToolbar={true}
-            dataRows={rows}
-            headCells={headCells}
-            orderParam={order}
-            orderByParam={orderBy}
-            searchHeader={true}
-            columnVisibilityBar={true}
-            allowDragableToList={false}
-            className="ManageAssetDataTable crxTableHeight bucketDataTable"
-            onClearAll={clearAll}
-            getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
-            onResizeRow={resizeRow}
-            onHeadCellChange={onSetHeadCells}
-            setSelectedItems={setSelectedItems}
-            selectedItems={selectedItems}
-            dragVisibility={false}
-            showCheckBoxes={true}
-            showActionCol={true}
-            showActionSearchHeaderCell={false}
-            showCountText={false}
-            showCustomizeIcon={false}
+        <CRXDataTable
+          id="userGroupDataTable"
+          actionComponent={<UserGroupActionMenu />}
+          showToolbar={true}
+          dataRows={rows}
+          headCells={headCells}
+          orderParam={order}
+          orderByParam={orderBy}
+          searchHeader={true}
+          columnVisibilityBar={true}
+          allowDragableToList={false}
+          className="ManageAssetDataTable crxTableHeight bucketDataTable"
+          onClearAll={clearAll}
+          getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
+          onResizeRow={resizeRow}
+          onHeadCellChange={onSetHeadCells}
+          setSelectedItems={setSelectedItems}
+          selectedItems={selectedItems}
+          showActionSearchHeaderCell={false}
+          showCountText={false}
+          showCustomizeIcon={false}
+          dragVisibility={false}
+          showCheckBoxesCol={false}
+          showActionCol={true}
           />
         )
       }

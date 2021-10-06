@@ -7,6 +7,7 @@ import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
+import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
@@ -21,6 +22,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   getRowOnActionClick,
   dragVisibility,
   showCheckBoxesCol,
+  showActionCol,
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -82,31 +84,33 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             </Draggable>
                           </TableCell>
                         ) : null}
-                          {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
-                  <TableCell
-                    style={{
-                      left: `${dragVisibility === false ? "0px" : "60px"}`,
-                    }}
-                    className="DataTableBodyCell CellCheckBox col-two"
-                    scope="row"
-                  >
-                    <CRXCheckBox
-                      onChange={() => handleChange(row)}
-                      checked={isItemSelected}
-                      inputProps={labelId}
-                      selectedRow={isItemSelected}
-                      lightMode={false}
-                      name="checkBoxDataTable"
-                    />
-                  </TableCell>
-                ) : null}
+                        {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
+                          <TableCell
+                            style={{
+                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
+                              left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`
+                            }}
+                            className="DataTableBodyCell CellCheckBox col-two"
+                            scope="row"
+                          >
+                            <CRXCheckBox
+                              onClick={() => handleChange(row)}
+                              checked={isItemSelected}
+                              inputProps={labelId}
+                              selectedRow={isItemSelected}
+                              lightMode={true}
+                            />
+                          </TableCell>
+                        ) : null}
+                        {showActionCol === true || showActionCol === undefined ? (
                         <TableCell
                           style={{
-                            left: `${dragVisibility === false ? 
-                              (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
-                              : 
-                              (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
-                            }`,
+                            // left: `${dragVisibility === false ? 
+                            //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
+                            //   : 
+                            //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
+                            // }`,
+                            left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`
                           }}
                           className="DataTableBodyCell col-three"
                           scope="row"
@@ -115,6 +119,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             {actionComponent}
                           </span>
                         </TableCell>
+                        ) : null}
                         {orderColumn.map((colIdx, i) => (
                           <TableCell
                             className="DataTableBodyCell"

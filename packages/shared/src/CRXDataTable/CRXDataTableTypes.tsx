@@ -152,7 +152,7 @@ export interface HeadCellProps {
 }
 
 export interface DataTableToolbarProps {
-  id: string;
+  id:string;
   numSelected: number;
   headCells: HeadCellProps[];
   rowCount: number;
@@ -162,8 +162,8 @@ export interface DataTableToolbarProps {
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
   onHeadCellChange: (e: HeadCellProps[]) => void;
-  showCountText?: boolean;
-  showCustomizeIcon?: boolean;
+  showCountText?:boolean;
+  showCustomizeIcon?:boolean;
 }
 
 export type DataTableProps = {
@@ -185,11 +185,11 @@ export type DataTableProps = {
   selectedItems: string[];
   setSelectedItems: any;
   showToolbar?: boolean;
-  showCheckBoxesCol?: boolean;
-  showActionCol?: boolean;
-  showActionSearchHeaderCell?: boolean;
-  showCountText?: boolean;
-  showCustomizeIcon?: boolean;
+  showCheckBoxesCol?:boolean;
+  showActionCol?:boolean;
+  showActionSearchHeaderCell?:boolean;
+  showCountText?:boolean;
+  showCustomizeIcon?:boolean;
 };
 
 export type OrderData = {
@@ -198,7 +198,7 @@ export type OrderData = {
 };
 
 export type DataTableContainerProps = {
-  id: string;
+  id:string;
   orderColumn: number[];
   headCells: HeadCellProps[];
   orderData: OrderData;
@@ -218,11 +218,11 @@ export type DataTableContainerProps = {
   allColHide: boolean;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?: boolean;
-  showActionCol?: boolean;
-  showActionSearchHeaderCell?: boolean;
-  showCountText?: boolean;
-  showCustomizeIcon?: boolean;
+  showCheckBoxesCol?:boolean;
+  showActionCol?:boolean;
+  showActionSearchHeaderCell?:boolean;
+  showCountText?:boolean;
+  showCustomizeIcon?:boolean;
 };
 
 export type DataTableBodyProps = {
@@ -237,12 +237,12 @@ export type DataTableBodyProps = {
   onSetSelectedItems: (e: string[]) => void;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?: boolean;
-  showActionCol?: boolean;
+  showCheckBoxesCol?:boolean;
+  showActionCol?:boolean;
 };
 
 export type SearchHeaderProps = {
-  id: string;
+  id:string;
   orderColumn: number[];
   selectedItems: string[];
   headCells: HeadCellProps[];
@@ -251,9 +251,9 @@ export type SearchHeaderProps = {
   actionComponent: React.ReactNode;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?: boolean;
-  showActionCol?: boolean;
-  showActionSearchHeaderCell?: boolean;
+  showCheckBoxesCol?:boolean;
+  showActionCol?:boolean;
+  showActionSearchHeaderCell?:boolean;
 };
 
 export type DataTableHeaderProps = {
@@ -263,8 +263,8 @@ export type DataTableHeaderProps = {
   onHandleRequestSort: (e: any) => void;
   onResizeRow: (e: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?: boolean;
-  showActionCol?: boolean;
+  showCheckBoxesCol?:boolean;
+  showActionCol?:boolean;
 };
 
 export type DataTableClearFilterProps = {
@@ -278,7 +278,7 @@ export type DataTableCustomizeColumnsProps = {
   onReorder: (e: number[]) => void;
   onChange: () => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
-  showCustomizeIcon?: boolean;
+  showCustomizeIcon?:boolean;
 };
 
 export type OrderValue = {

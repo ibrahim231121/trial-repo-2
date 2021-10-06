@@ -7,8 +7,9 @@ import {
   DataTableHeaderProps
 } from "./CRXDataTableTypes";
 import {useTranslation} from 'react-i18next'; 
+import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
-const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility,showCheckBoxesCol}) => {
+const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility,showCheckBoxesCol,showActionCol}) => {
 
   const classes = useStyles();
   const {t} = useTranslation<string>();
@@ -30,21 +31,22 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         }
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-                style={{width: '58px', minWidth: "58px", left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4}}>
+                style={{width: '58px', minWidth: "58px", 
+                left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+                position: "sticky", zIndex: 4}}>
             </TableCell>  
         : null
         }
-        <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
-            style={{width: '80px', minWidth: '80px', 
-                    left: `${dragVisibility === false ? 
-                        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
-                              : 
-                        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
-                    }`,
-                    position: "sticky", 
-                    zIndex: 4}}>
-            {t('Actions')}
-        </TableCell> 
+        {(showActionCol === true || showActionCol === undefined) ? 
+            <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
+                style={{width: '80px', minWidth: '80px', 
+                        left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        position: "sticky", 
+                        zIndex: 4}}>
+                {t('Actions')}
+            </TableCell> 
+        : null
+        }
         {orderColumn.map((colIdx, i) => (
             //index needs to be CURRENT
             //key needs to be STATIC

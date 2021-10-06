@@ -500,9 +500,11 @@ const MasterMain: React.FC<Props> = ({
           getSelectedItems={(v: string[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
           onHeadCellChange={onSetHeadCells}
-          dragVisibility={true}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
+          dragVisibility={true}
+          showCheckBoxesCol={true}
+          showActionCol={true}
         />
       )}
     </>

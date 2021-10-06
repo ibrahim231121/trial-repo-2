@@ -263,9 +263,10 @@ const CRXAssetsBucketPanel = () => {
                       <CRXDataTable
                         tableId="assetBucket"
                         actionComponent={<BucketActionMenu
-                        row={selectedActionRow}
-                        setSelectedItems={setSelectedItems}
-                        selectedItems={selectedItems} />}
+                                            row={selectedActionRow}
+                                            setSelectedItems={setSelectedItems}
+                                            selectedItems={selectedItems} />
+                                        }
                         getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
                         showToolbar={false}
                         dataRows={rows}
@@ -278,9 +279,9 @@ const CRXAssetsBucketPanel = () => {
                         className="ManageAssetDataTable crxTableHeight bucketDataTable"
                         getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
                         onResizeRow={resizeRow}
-                        dragVisibility={false}
                         setSelectedItems={setSelectedItems}
                         selectedItems={selectedItems}
+                        dragVisibility={false}
                       />
                     </>
                   ) : (
@@ -290,6 +291,7 @@ const CRXAssetsBucketPanel = () => {
                 </div>
               )}
             </Draggable>
+            {provided.placeholder}
           </>
         </CRXRootRef>      
         )}

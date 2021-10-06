@@ -6,6 +6,7 @@ import {
   SearchHeaderProps,
   useStyles,
 } from "./CRXDataTableTypes";
+import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   id,
@@ -20,6 +21,10 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   showActionCol,
   showActionSearchHeaderCell,
   getRowOnActionClick,
+  dragVisibility,
+  showCheckBoxesCol,
+  showActionCol,
+  showActionSearchHeaderCell
 }) => {
   const classes = useStyles();
 
@@ -40,33 +45,34 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           <TableCell
             padding="checkbox"
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-            style={{left: `${(dragVisibility === false) ? "0px" : "60px"}`, position: "sticky", zIndex: 4 }}
+            style={{left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+                    position: "sticky", 
+                    zIndex: 4 }}
           ></TableCell>
         : null
         }
-        <TableCell
-          className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-          style={{left: `${dragVisibility === false ? 
-                    (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
-                    : 
-                    (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
-                  }`,
-                  position: "sticky", 
-                  zIndex: 4 }}
-        >
-          {(showActionSearchHeaderCell || showActionSearchHeaderCell === undefined) ?
-            <div
-              className={
-                selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
-              }
-				onClick={() => getRowOnActionClick(null)}
-            >
-              {actionComponent}
-            </div>
-            :
-            null
-          } 
-        </TableCell>
+        {(showActionCol === true || showActionCol === undefined) ? 
+          <TableCell
+            className={classes.searchHeaderStickness + " TableSearchAbleHead"}
+            style={{left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                    position: "sticky", 
+                    zIndex: 4 }}
+          >
+            {((showCheckBoxesCol || showCheckBoxesCol === undefined) && (showActionSearchHeaderCell || showActionSearchHeaderCell === undefined)) ?
+              <div
+                className={
+                  selectedItems.length > 1 ? "" : "disableHeaderActionMenu"
+                }
+                onClick={() => getRowOnActionClick(null)}
+              >
+                {actionComponent}
+              </div>
+              :
+              null
+            } 
+          </TableCell>
+        : null
+        }
         {orderColumn.map((colIdx, _) => (
           <TableCell
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}

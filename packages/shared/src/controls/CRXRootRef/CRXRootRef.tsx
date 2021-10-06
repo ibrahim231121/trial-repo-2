@@ -7,12 +7,12 @@ interface Props {
   }
 
 const CRXRootRef = ({provided,children} : Props) => {
- 
+
     return (
         <>
         <RootRef rootRef={provided.innerRef}>
             {children}
-            {provided.placeholder}
+            
         </RootRef>
         </>
     )

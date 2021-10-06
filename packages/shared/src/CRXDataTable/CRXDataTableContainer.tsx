@@ -70,6 +70,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             onResizeRow={(e:any) => onResizeRow(e)}
             dragVisibility={dragVisibility}
             showCheckBoxesCol={showCheckBoxesCol}
+            showActionCol={showActionCol}
           />
         </DragableHead>
         {searchHeader === true ? (
@@ -83,7 +84,6 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             actionComponent={actionComponent}
             getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
-            
             showCheckBoxesCol={showCheckBoxesCol}
             showActionCol={showActionCol}
             showActionSearchHeaderCell={showActionSearchHeaderCell}
@@ -102,6 +102,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
 			showCheckBoxesCol={showCheckBoxesCol}
+            showActionCol={showActionCol}
           />
       </Table>
     </TableContainer>
