@@ -17,6 +17,7 @@ const TabsDemo = () => {
   return (
     <div className="App" style={{marginTop : "120px", marginLeft:"90px"}}>
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs}/>
+    
       <CrxTabPanel value={value} index={0}>
         <div>Tab Panel one</div>
       </CrxTabPanel>

@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import { AUTHENTICATION_CODEVERIFIER_URL, AUTHENTICATION_LOGIN_URL } from '../../../evm/src/utils/Api/url'
 
-const clientId = "cb8aa975-12ad-461a-8e95-06a0c1f45477";
+const clientId = process.env.REACT_APP_CLIENT_ID
 const code_challenge_Method = "SHA256";
 
 export function codeChallengeRemove() {
@@ -23,9 +23,5 @@ export function utils() {
   sessionStorage.setItem("code_challenge_string", code_challenge_string);
   return `?client_id=${clientId}&code_challenge=${code_challenge}&code_challenge_Method=${code_challenge_Method}`;
 }
-
-
-
-
 
 

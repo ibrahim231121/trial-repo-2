@@ -36,6 +36,8 @@ interface Props {
   alertType: "inline" | "toast";
   showCloseButton: boolean;
   className: string;
+  open:boolean;
+  setShowSucess:any
 }
 const CRXAlert: React.FC<Props> = ({
   message,
@@ -43,16 +45,19 @@ const CRXAlert: React.FC<Props> = ({
   alertType = "inline",
   showCloseButton = true,
   className,
+  open,setShowSucess
 }) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [openState, setOpenState] = React.useState(open);
   const [openSnack, setOpenSnack] = React.useState(true);
+  
   const [showIcon, setshowIcon] = React.useState({
     success: true,
     error: false,
     warning: false,
     info: true,
   });
+  
   const messageType = {
     success: "Success",
     error: "Error",
@@ -67,16 +72,21 @@ const CRXAlert: React.FC<Props> = ({
     info: "fa-info-circle",
   };
   useEffect(() => {
+    setOpenState(open)
+  }, [open])
+
+  useEffect(() => {
     let timer: any = null;
     timer = setTimeout(() => {
       if (type === "success") {
-        setOpen(false);
+        setOpenState(false);
       }
     }, 7000);
     return () => {
       clearTimeout(timer);
     };
   }, []);
+  
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
     if (reason === "clickaway") {
       return;
@@ -88,7 +98,7 @@ const CRXAlert: React.FC<Props> = ({
     <div className={classes.root + " crx-message-alert"}>
       {alertType === "inline" ? (
         <>
-          <Fade in={open}>
+          <Fade in={openState}>
             <Alert
               severity={type}
               className={classes.notification + " " + className}
@@ -99,7 +109,8 @@ const CRXAlert: React.FC<Props> = ({
                   color="inherit"
                   size="small"
                   onClick={() => {
-                    setOpen(false);
+                    setShowSucess(false)
+                    setOpenState(false);
                   }}
                 >
                   {showIcon[type] && <i className="icon-cross"></i>}

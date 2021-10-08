@@ -7,6 +7,7 @@ import Footer from './Application/Headeer/Footer'
 import MannageAsset from "./Application/Assets/pages/MannageAsset";
 import UserGroup from "./Application/Admin/UserGroup/UserGroup";
 import CreateUserGroup from "./Application/Admin/UserGroup/CreateUserGroup";
+import Group from "./Application/Admin/Group/Group";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
 import Home from './Login/Components/Login'
 import Login from './Login/index';
@@ -37,9 +38,11 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path="/assets" exact={true} component={MannageAsset} />
-              <Route path="/admin/usergroups" exact={true} component={UserGroup} />
+              <PrivateRoute path="/assets" exact={true} component={MannageAsset}/>
+              <Route path="/admin/usergroups" exact={true} component={UserGroup}/>
               <Route path="/admin/usergroups/createusergroup" exact={true} component={CreateUserGroup} />
+              <Route path="/admin/group/creategroup" exact={true} component={Group} />
+              <Route path="/admin/group/" exact={true} component={Group} />
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>

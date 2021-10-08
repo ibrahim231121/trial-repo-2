@@ -502,6 +502,7 @@ const MasterMain: React.FC<Props> = ({
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
+          showActionSearchHeaderCell={true}
           dragVisibility={true}
           showCheckBoxesCol={true}
           showActionCol={true}

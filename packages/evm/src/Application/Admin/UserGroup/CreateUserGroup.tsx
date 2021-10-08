@@ -2,7 +2,7 @@ import React from 'react'
 
 const CreateUserGroup = () => {
     return (
-        <div>
+        <div style={{margin:'225px'}}>
             Create User Group
         </div>
     )

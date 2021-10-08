@@ -94,7 +94,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             scope="row"
                           >
                             <CRXCheckBox
-                              onClick={() => handleChange(row)}
+                              onChange={() => handleChange(row)}
                               checked={isItemSelected}
                               inputProps={labelId}
                               selectedRow={isItemSelected}

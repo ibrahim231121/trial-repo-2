@@ -21,7 +21,6 @@ type Props = {
 
 
 const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelectedItems }) => {
-
   const dispatch = useDispatch()
 
   const removeFromAssetBucket = () => {

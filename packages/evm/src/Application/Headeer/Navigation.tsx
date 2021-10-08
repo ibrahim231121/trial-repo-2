@@ -168,9 +168,11 @@ const CRXLefNavigation = () => {
          icon: 'fas fa-sitemap NaveIcon',
          items: [
             {
-               label: 'User Groups'
+               label: 'Manage User Groups & Permissions'
+            },
+            {
+               label: 'Manage Users'
             }
-
          ]
       },
 
