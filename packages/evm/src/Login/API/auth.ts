@@ -12,7 +12,10 @@ const expiresAt = 60*17;
 
 export const authenticate = (accessToken:string,idToken:string,refreshToken:string,next:() => void ) =>{
  
-
+    if (accessToken == null && idToken==null && refreshToken == null)
+    {
+        window.location.replace("/");
+    }
     // if (typeof window !== 'undefined'){
         decoded = jwt_decode(idToken)
           localStorage.setItem("refreshToken",refreshToken)

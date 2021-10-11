@@ -14,6 +14,11 @@ import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
+import IdleTimer from 'react-idle-timer'
+import Logout from "./Logout/index";
+import SessionRoute from './Routes/SessionRoute';
+import {logOutUserSessionExpired} from './Logout/API/auth'
+import Session from './SessionExpired/index'
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -22,11 +27,25 @@ const Routes = () => {
     setOpen(!open);
   };
 
+ //session expiration method
+ const handleOnIdle = () => {
+  localStorage.setItem("sessionRoute","sessionRoute")
+  logOutUserSessionExpired();
+  window.location.replace("/sessionExpiration");
+}
+
   return (
     <div>
+      <Switch>
       <HomeRoute path="/" exact={true} component={Login} />
-      <Route path={'/(.+)'} render={() => (
+      <HomeRoute exact path="/logout"  component={Logout} />
+      <SessionRoute  exact path="/sessionExpiration" component={Session} />
+      <Route exact path="/token/:token" component={Token}/>
         <>
+        <IdleTimer 
+          timeout={1200000}
+          onIdle={handleOnIdle}
+        > 
           <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
           </CRXAppBar>
@@ -41,18 +60,17 @@ const Routes = () => {
               <PrivateRoute path="/assets" exact={true} component={MannageAsset}/>
               <Route path="/admin/usergroups" exact={true} component={UserGroup}/>
               <Route path="/admin/usergroups/createusergroup" exact={true} component={CreateUserGroup} />
-              <Route path="/admin/group/creategroup" exact={true} component={Group} />
-              <Route path="/admin/group/" exact={true} component={Group} />
-              <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
+              
             </Switch>
           </main>
           <footer>
             <Footer />
           </footer>
+          </IdleTimer>
         </>
-      )}>
-      </Route>
+      </Switch>
+     
     </div>
   );
 };

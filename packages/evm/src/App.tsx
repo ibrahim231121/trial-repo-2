@@ -223,7 +223,7 @@ function App() {
   return (
     <div dir={rtl}>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
-        <CRXAppBar position="fixed">
+        {/* <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
         </CRXAppBar>
         
@@ -231,15 +231,15 @@ function App() {
           className={clsx(classes.content, 'crx-main-container', {
             [classes.contentShift]: open,
           })}
-          >
+          > */}
            
               <Routes />
             
-        </main>
+        {/* </main>
       
       <footer>
         <Footer />
-      </footer>
+      </footer> */}
       </DragDropContext>
     </div>
   );
