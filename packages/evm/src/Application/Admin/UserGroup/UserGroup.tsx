@@ -200,35 +200,35 @@ const UserGroup: React.FC = () => {
 
   return (
     <div style={{ marginLeft: "6%", marginTop: "4%" }}>
-      <CRXButton onClick={() => { history.push("/admin/usergroups/createusergroup") }}>
+      <CRXButton onClick={() => { history.push("/admin/usergroups/group/create") }}>
         Create Group
       </CRXButton>
       {
         rows && (
-        <CRXDataTable
-          id="userGroupDataTable"
-          actionComponent={<UserGroupActionMenu />}
-          showToolbar={true}
-          dataRows={rows}
-          headCells={headCells}
-          orderParam={order}
-          orderByParam={orderBy}
-          searchHeader={true}
-          columnVisibilityBar={true}
-          allowDragableToList={false}
-          className="ManageAssetDataTable crxTableHeight bucketDataTable"
-          onClearAll={clearAll}
-          getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
-          onHeadCellChange={onSetHeadCells}
-          setSelectedItems={setSelectedItems}
-          selectedItems={selectedItems}
-          showActionSearchHeaderCell={false}
-          showCountText={false}
-          showCustomizeIcon={false}
-          dragVisibility={false}
-          showCheckBoxesCol={false}
-          showActionCol={true}
+          <CRXDataTable
+            id="userGroupDataTable"
+            actionComponent={<UserGroupActionMenu />}
+            showToolbar={true}
+            dataRows={rows}
+            headCells={headCells}
+            orderParam={order}
+            orderByParam={orderBy}
+            searchHeader={true}
+            columnVisibilityBar={true}
+            allowDragableToList={false}
+            className="ManageAssetDataTable crxTableHeight bucketDataTable"
+            onClearAll={clearAll}
+            getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
+            onResizeRow={resizeRow}
+            onHeadCellChange={onSetHeadCells}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+            dragVisibility={false}
+            showCheckBoxesCol={false}
+            showActionCol={true}
+            showActionSearchHeaderCell={false}
+            showCountText={false}
+            showCustomizeIcon={false}
           />
         )
       }
