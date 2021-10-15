@@ -4,7 +4,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import {
   useStyles,
-  DataTableContainerProps
+  DataTableContainerProps,
 } from "./CRXDataTableTypes";
 import { useTranslation } from "react-i18next";
 import DragableHead from "./CRXDragableHead";
@@ -36,6 +36,9 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   showCheckBoxesCol,
   showActionCol,
   showActionSearchHeaderCell,
+  showHeaderCheckAll,
+  onSetCheckAll,
+  checkAllPageWise,
 }) => {
 
   const classes = useStyles();
@@ -76,6 +79,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
         {searchHeader === true ? (
           <SearchHeader
             id={id}
+            page={page}
             orderColumn={orderColumn}
             selectedItems={selectedItems}
             headCells={headCells}
@@ -87,6 +91,9 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             showCheckBoxesCol={showCheckBoxesCol}
             showActionCol={showActionCol}
             showActionSearchHeaderCell={showActionSearchHeaderCell}
+            showHeaderCheckAll={showHeaderCheckAll}
+            onSetCheckAll={onSetCheckAll}
+            checkAllPageWise={checkAllPageWise}
           />
         ) : null}
           <DataTableBody
@@ -101,7 +108,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             onSetSelectedItems={(row: any) => onHandleClick(row)}
             getRowOnActionClick={getRowOnActionClick}
             dragVisibility={dragVisibility}
-			showCheckBoxesCol={showCheckBoxesCol}
+			      showCheckBoxesCol={showCheckBoxesCol}
             showActionCol={showActionCol}
           />
       </Table>

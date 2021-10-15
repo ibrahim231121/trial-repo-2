@@ -1,32 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import {
   SearchHeaderProps,
   useStyles,
+  CheckAllPageWise
 } from "./CRXDataTableTypes";
+import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   id,
+  page,
   orderColumn,
   selectedItems,
   headCells,
   orderData,
   container,
   actionComponent,
-  dragVisibility,
-  showCheckBoxesCol,
-  showActionCol,
-  showActionSearchHeaderCell,
   getRowOnActionClick,
   dragVisibility,
   showCheckBoxesCol,
   showActionCol,
-  showActionSearchHeaderCell
+  showActionSearchHeaderCell,
+  showHeaderCheckAll,
+  onSetCheckAll,
+  checkAllPageWise,
 }) => {
   const classes = useStyles();
+
+  const [checkAll, setCheckAll] = React.useState<boolean>(false);
+
+  const handleCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckAll(event.target.checked);
+    onSetCheckAll(event.target.checked)
+  }
+
+  useEffect(() => {
+    let count: boolean = false
+    checkAllPageWise.map((item:CheckAllPageWise) => {
+      if(item.page === page)
+      {
+        count = true
+        setCheckAll(true)
+      }
+    })
+    if(!count)
+      setCheckAll(false)
+
+  },[page])
 
   return (
     <TableHead>
@@ -48,10 +71,20 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
             style={{left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
                     position: "sticky", 
                     zIndex: 4 }}
-          ></TableCell>
+          >
+            {(showHeaderCheckAll || showHeaderCheckAll === undefined) ? 
+              <CRXCheckBox
+                onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleCheckAll(e)}
+                checked={checkAll}
+                selectedRow={checkAll}
+                lightMode={true}
+              />
+            : null
+            }
+          </TableCell>
         : null
         }
-        {(showActionCol === true || showActionCol === undefined) ? 
+        {(showActionCol || showActionCol === undefined) ? 
           <TableCell
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
             style={{left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,

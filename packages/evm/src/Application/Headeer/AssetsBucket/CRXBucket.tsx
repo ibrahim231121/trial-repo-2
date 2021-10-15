@@ -318,7 +318,6 @@ const CRXAssetsBucketPanel = () => {
                       orderByParam={orderBy}
                       searchHeader={true}
                       columnVisibilityBar={true}
-                      allowDragableToList={false}
                       className="ManageAssetDataTable crxTableHeight bucketDataTable"
                       getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
                       onResizeRow={resizeRow}

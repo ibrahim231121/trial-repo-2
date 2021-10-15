@@ -190,6 +190,7 @@ export type DataTableProps = {
   showActionSearchHeaderCell?:boolean;
   showCountText?:boolean;
   showCustomizeIcon?:boolean;
+  showHeaderCheckAll?:boolean;
 };
 
 export type OrderData = {
@@ -223,6 +224,9 @@ export type DataTableContainerProps = {
   showActionSearchHeaderCell?:boolean;
   showCountText?:boolean;
   showCustomizeIcon?:boolean;
+  showHeaderCheckAll?:boolean;
+  onSetCheckAll:(e: boolean) => void;
+  checkAllPageWise:CheckAllPageWise[];
 };
 
 export type DataTableBodyProps = {
@@ -243,6 +247,7 @@ export type DataTableBodyProps = {
 
 export type SearchHeaderProps = {
   id:string;
+  page:number;
   orderColumn: number[];
   selectedItems: string[];
   headCells: HeadCellProps[];
@@ -254,6 +259,9 @@ export type SearchHeaderProps = {
   showCheckBoxesCol?:boolean;
   showActionCol?:boolean;
   showActionSearchHeaderCell?:boolean;
+  showHeaderCheckAll?:boolean;
+  onSetCheckAll: (e: boolean) => void;
+  checkAllPageWise:CheckAllPageWise[];
 };
 
 export type DataTableHeaderProps = {
@@ -285,4 +293,9 @@ export type DataTableCustomizeColumnsProps = {
 export type OrderValue = {
   order: number;
   value: boolean | undefined;
+}
+
+export type CheckAllPageWise = {
+  page:number;
+  isChecked: boolean;
 }

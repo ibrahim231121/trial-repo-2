@@ -488,7 +488,6 @@ const MasterMain: React.FC<Props> = ({
           orderByParam={orderBy}
           searchHeader={true}
           columnVisibilityBar={true}
-          allowDragableToList={false}
           className="ManageAssetDataTable"
           onClearAll={clearAll}
           getSelectedItems={(v: string[]) => setSelectedItems(v)}
@@ -500,6 +499,7 @@ const MasterMain: React.FC<Props> = ({
           dragVisibility={true}
           showCheckBoxesCol={true}
           showActionCol={true}
+          showHeaderCheckAll={true}
         />
       )}
     </>
