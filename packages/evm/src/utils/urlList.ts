@@ -2,24 +2,24 @@ export const urlList: any = {
     "/assets": [
         { type: "text", label: "Assets", }
     ],
-    "/admin/usergroups":[
+    "/admin/usergroups": [
         { type: "text", label: "Admin", },
-        { routeTo: "/admin/usergroups",  type: "text", label: "Manage User Groups & Permissions", }
+        { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
     ],
-    "/admin/usergroups/group":[
+    "/admin/usergroups/group": [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        { type: "text", label: "Group",  }
+        { type: "text", label: "Group", }
     ],
-    "/admin/usergroups/group/create":[
+    "/admin/usergroups/group/create": [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
         //{ routeTo: "/admin/usergroups/group", type: "link", label: "Group", },
         { type: "text", label: "Create User Group", }
     ],
-    "/admin/users":[
+    "/admin/users": [
         { type: "text", label: "Admin", },
-        { routeTo: "/admin/users",  type: "text", label: "Manage Users", }
+        { routeTo: "/admin/users", type: "text", label: "Manage Users", }
     ],
-    
-  };
+
+};

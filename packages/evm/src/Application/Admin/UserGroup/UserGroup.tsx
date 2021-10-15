@@ -9,7 +9,7 @@ import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
 import anchorDisplay from "../../../components/DateDisplayComponent/AnchorDisplay";
 import { useHistory } from "react-router-dom";
 import './index.scss'
-
+import { urlList } from "../../../utils/urlList"
 
 import {
   SearchObject,
@@ -44,7 +44,7 @@ const UserGroup: React.FC = () => {
     dispatch(getGroupUserCountAsync());
   }, []);
 
-  
+
 
   const groups: any = useSelector((state: RootState) => state.groupReducer.groups);
   const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
@@ -200,7 +200,7 @@ const UserGroup: React.FC = () => {
 
   return (
     <div style={{ marginLeft: "6%", marginTop: "4%" }}>
-      <CRXButton onClick={() => { history.push("/admin/usergroups/group/create") }}>
+      <CRXButton onClick={() => { history.push(Object.entries(urlList)[3][0].toString()) }}>
         Create Group
       </CRXButton>
       {

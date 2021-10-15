@@ -27,8 +27,8 @@ React.useEffect(()=>{
     setUrlPath(pathname.substring(0, pathname.length-1))
   }
 },[pathname])
-  function debounce(fn:()=>void, ms:number) {
-    let timer:any=null
+  function debounce(fn: () => void, ms: number) {
+    let timer: any = null
     return () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -44,7 +44,7 @@ React.useEffect(()=>{
     }, 1000);
 
     window.addEventListener("resize", debouncedEvent);
-    return ()=> {
+    return () => {
       window.removeEventListener('resize', debouncedEvent)
 }
   });

@@ -80,7 +80,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
-    let checkOrderPreset = localStorage.getItem("checkOrderPreset");
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id);
 
     if (checkOrderPreset !== null) {
       let arr = JSON.parse(checkOrderPreset).map((x: OrderValue) => x.order);
