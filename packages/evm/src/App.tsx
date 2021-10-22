@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
-import clsx from 'clsx';
-import { CRXAppBar, CRXContainer, CRXPanelStyle} from "@cb/shared";
+
+import {CRXPanelStyle} from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
-import AppHeader from './Application/Headeer/Header'
-import { AssetThumbnailIcon, AssetThumbnail } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
-import Footer from './Application/Headeer/Footer'
+
+import { AssetThumbnail } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
+
 import {useTranslation} from 'react-i18next'; 
 import "../../evm/src/utils/Localizer/i18n"
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
@@ -14,17 +14,11 @@ import { useDispatch } from "react-redux";
 
 function App() {
   let culture: string = "en";
-  const [resources, setResources] = useState<any>("");
+  const [resources, setResources] = React.useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch()
-  const [open, setOpen] = useState(true);
-  const classes = CRXPanelStyle();
-
-  const handleDrawerToggle = () => {
-    setOpen(!open);
-  };
-
+ 
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
       setResources(res.resources);
@@ -223,23 +217,7 @@ function App() {
   return (
     <div dir={rtl}>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
-        <CRXAppBar position="fixed">
-            <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
-        </CRXAppBar>
-        
-        <main 
-          className={clsx(classes.content, 'crx-main-container', {
-            [classes.contentShift]: open,
-          })}
-          >
-           
-              <Routes />
-            
-        </main>
-      
-      <footer>
-        <Footer />
-      </footer>
+       <Routes />
       </DragDropContext>
     </div>
   );

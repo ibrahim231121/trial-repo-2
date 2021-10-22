@@ -67,7 +67,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
     return i.id;
   })
   const [dragState, setDragState] = useState<any>(stateArry);
-  const [onPreset, setOnPreSet] = useState<boolean>()
+  const [onPreset, setOnPreSet] = useState<boolean>(false)
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   useEffect(() => {
 
@@ -165,7 +165,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
     }
   }
 
-  const customizeColumnOpen = (event: any) => {
+  const customizeColumnOpen = () => {
     setCustomize((prevOpen) => !prevOpen)
   }
   return (

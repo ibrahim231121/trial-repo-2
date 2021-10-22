@@ -104,8 +104,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       zIndex: 2,
       position: "sticky",
-      backgroundColor: "#333333",
-      color: "#d1d2d4",
+      backgroundColor: "#333333 !important",
+      color: "#d1d2d4 !important",
       whiteSpace: "nowrap",
     },
     searchHeaderStickness: {
@@ -113,8 +113,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       zIndex: 2,
       position: "sticky",
-      backgroundColor: "#333333",
-      color: "#d1d2d4",
+      backgroundColor: "#333333 !important",
+      color: "#d1d2d4 !important",
     },
     headerCellDiv: {
       display: "flex",

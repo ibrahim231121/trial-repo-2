@@ -11,7 +11,6 @@ import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
-  id,
   page,
   orderColumn,
   selectedItems,

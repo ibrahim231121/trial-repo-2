@@ -6,7 +6,6 @@ import {
   useStyles,
   DataTableContainerProps,
 } from "./CRXDataTableTypes";
-import { useTranslation } from "react-i18next";
 import DragableHead from "./CRXDragableHead";
 import SearchHeader from "./CRXDataTableSearchHeader";
 import DataTableBody from "./CRXDataTableBody";

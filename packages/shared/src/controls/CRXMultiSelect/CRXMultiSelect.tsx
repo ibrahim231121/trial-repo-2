@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
@@ -6,10 +6,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CheckBoxIcon from "@material-ui/icons/Check";
 import ClearSharpIcon from "@material-ui/icons/ClearSharp";
 import { makeStyles } from "@material-ui/core/styles";
-import { ClickAwayListener } from "@material-ui/core";
 
 import "./SelectBox.scss";
-import { classNames } from "../../CRXNestedMenu/ClassNames";
 
 interface selectBoxProps {
   multiple?: boolean;
@@ -100,11 +98,9 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     autoComplete = false,
     autoSelect = false,
     useRef,
-    isSearchable,
     options,
     value,
     onChange,
-    name = "",
     onClose,
     onOpen,
   } = props;
@@ -174,10 +170,10 @@ export default function CRXMultiSelect(props: selectBoxProps) {
         }}
         onChange={onChange}
         onInputChange={(e) => {
-          if(e.nativeEvent.data !== null) {
+          if(e.nativeEvent !== null) {
             settextFill(true);
           } 
-          if(e.nativeEvent.data == null) {
+          if(e.nativeEvent == null) {
             settextFill(false);
           } 
         }}

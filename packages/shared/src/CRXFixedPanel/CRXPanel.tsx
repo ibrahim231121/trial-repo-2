@@ -17,7 +17,7 @@ interface propsType {
   className? : string
 }
 
-const CRXFixedPanel = ({className, open, onClick, onClose, children, anchor, variant = "temporary"} : propsType) => {
+const CRXFixedPanel = ({className, open, onClick,  children, anchor, variant = "temporary"} : propsType) => {
   const classes = CRXPanelStyle();
   return (
     <div>

@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { Alert } from "@material-ui/lab";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+
 import { Button, Fade } from "@material-ui/core";
-import Snackbar, { SnackbarOrigin } from "@material-ui/core/Snackbar";
+import Snackbar from "@material-ui/core/Snackbar";
 import "./CRXAlert.scss";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       width: "100%",
@@ -51,12 +51,12 @@ const CRXAlert: React.FC<Props> = ({
   const [openState, setOpenState] = React.useState(open);
   const [openSnack, setOpenSnack] = React.useState(true);
   
-  const [showIcon, setshowIcon] = React.useState({
+  const showIcon = {
     success: true,
     error: false,
     warning: false,
     info: true,
-  });
+  };
   
   const messageType = {
     success: "Success",
@@ -87,7 +87,7 @@ const CRXAlert: React.FC<Props> = ({
     };
   }, []);
   
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+  const handleClose = (_?: React.SyntheticEvent, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }

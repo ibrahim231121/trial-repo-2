@@ -14,7 +14,6 @@ import DataTableToolbar from "./CRXDataTableToolbar";
 import { ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import "./CRXDataTable.scss";
-import { useTranslation } from "react-i18next";
 import DataTableContainer from "./CRXDataTableContainer";
 
 const CRXDataTable: React.FC<DataTableProps> = ({
@@ -54,7 +53,6 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
-  const { t } = useTranslation<string>();
   const keyId = headCells
     .filter((n) => n.keyCol === true)
     .map((v) => v.id)
