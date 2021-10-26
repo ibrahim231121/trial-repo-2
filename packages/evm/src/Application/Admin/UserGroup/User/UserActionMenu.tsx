@@ -14,7 +14,6 @@ type Props = {
 };
 
 const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
-
     return (
         <Menu
             align="start"
@@ -29,6 +28,44 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 </MenuButton>
             }
         >
+            <MenuItem >
+                <div className="crx-meu-content groupingMenu crx-spac">
+                    <div className="crx-menu-icon">
+                        <i className="fas fa-pen"></i>
+                    </div>
+                    <div className="crx-menu-list">
+                        Edit user
+                    </div>
+                </div>
+            </MenuItem>
+            {
+                row?.status.toLocaleLowerCase() == 'accountlocked' ?
+                    <MenuItem>
+                        <div className="crx-meu-content">
+                            <div className="crx-menu-icon">
+                                <i className="fas fa-lock"></i>
+                            </div>
+                            <div className="crx-menu-list">
+                                Unlock account
+                            </div>
+                        </div>
+                    </MenuItem>
+                    : <div></div>
+            }
+            {
+                row?.status.toLocaleLowerCase() != 'deactivated' ?
+                    <MenuItem>
+                        <div className="crx-meu-content">
+                            <div className="crx-menu-icon">
+
+                            </div>
+                            <div className="crx-menu-list">
+                                Deactivate account
+                            </div>
+                        </div>
+                    </MenuItem>
+                    : <div></div>
+            }
         </Menu>
     );
 };

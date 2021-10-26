@@ -500,6 +500,7 @@ const MasterMain: React.FC<Props> = ({
           showCheckBoxesCol={true}
           showActionCol={true}
           showHeaderCheckAll={true}
+          showTotalSelectedText={false}
         />
       )}
     </>

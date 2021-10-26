@@ -205,29 +205,30 @@ const UserGroup: React.FC = () => {
       </CRXButton>
       {
         rows && (
-        <CRXDataTable
-          id="userGroupDataTable"
-          actionComponent={<UserGroupActionMenu />}
-          showToolbar={true}
-          dataRows={rows}
-          headCells={headCells}
-          orderParam={order}
-          orderByParam={orderBy}
-          searchHeader={true}
-          columnVisibilityBar={true}
-          className="ManageAssetDataTable crxTableHeight bucketDataTable"
-          onClearAll={clearAll}
-          getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
-          onHeadCellChange={onSetHeadCells}
-          setSelectedItems={setSelectedItems}
-          selectedItems={selectedItems}
-          showActionSearchHeaderCell={false}
-          showCountText={false}
-          showCustomizeIcon={false}
-          dragVisibility={false}
-          showCheckBoxesCol={false}
-          showActionCol={true}
+          <CRXDataTable
+            id="userGroupDataTable"
+            actionComponent={<UserGroupActionMenu />}
+            showToolbar={true}
+            dataRows={rows}
+            headCells={headCells}
+            orderParam={order}
+            orderByParam={orderBy}
+            searchHeader={true}
+            columnVisibilityBar={true}
+            className="ManageAssetDataTable crxTableHeight bucketDataTable"
+            onClearAll={clearAll}
+            getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
+            onResizeRow={resizeRow}
+            onHeadCellChange={onSetHeadCells}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+            showActionSearchHeaderCell={false}
+            showCountText={false}
+            showCustomizeIcon={false}
+            dragVisibility={false}
+            showCheckBoxesCol={false}
+            showActionCol={true}
+            showTotalSelectedText={false}
           />
         )
       }

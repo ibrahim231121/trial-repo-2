@@ -22,19 +22,29 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   onHeadCellChange,
   showCountText,
   showCustomizeIcon,
+  numSelected,
+  showTotalSelectedText
 }) => {
   const classes = useToolbarStyles();
 
   const { t } = useTranslation<string>();
-
   return (
 
     <Toolbar
-      className={clsx(classes.root)}>
-      <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-        {(showCountText || showCountText === undefined) && <><b>{rowCount}</b> {t(id)}</>}
-      </Typography>
+      className={clsx("crxClearfilter " + classes.root)}>
 
+      {
+        (showCountText || showCountText === undefined) ?
+          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+            {<><b>{rowCount}</b> {t(id)}</>}
+          </Typography> : <></>
+      }
+      {
+        (showTotalSelectedText || showTotalSelectedText === undefined) ?
+          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+            {<>{numSelected} total users in group </>}
+          </Typography> : <></>
+      }
 
       <DataTableClearFilter
         columnVisibilityBar={columnVisibilityBar}

@@ -39,6 +39,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showActionCol,
   showActionSearchHeaderCell,
   showCountText,
+  showTotalSelectedText,
   showCustomizeIcon,
   showHeaderCheckAll,
 }) => {
@@ -154,9 +155,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   }, [orderData]);
 
   const handleSelectAllClick = (event: boolean) => {
-
-    if(event) 
-      setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, {page,isChecked:event}])
+    if (event)
+      setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: event }])
     else {
       const items = checkAllPageWise.filter(
         (Item: CheckAllPageWise) => Item.page !== page
@@ -164,19 +164,20 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       setCheckAllPageWise(items);
     }
 
-    const newSelecteds = containers.tableId.rows.slice(page*rowsPerPage, (page*rowsPerPage)+rowsPerPage)
+    const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
     if (event) {
-      newSelecteds.map((item:any) => {
+      setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox
+      newSelecteds.map((item: any) => {
         setSelectedItems((prev: any) => [...prev, item]);
       })
       return;
     }
-    else {   
-      var items = selectedItems.filter(function(objFromA:any) {
-        return !newSelecteds.find(function(objFromB:any) {
+    else {
+      var items = selectedItems.filter(function (objFromA: any) {
+        return !newSelecteds.find(function (objFromB: any) {
           return objFromA.id === objFromB.id
         })
-      })  
+      })
       setSelectedItems(items);
     }
   };
@@ -201,7 +202,6 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   }, [selectedItems]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    console.log(event);
     setPage(newPage);
   };
 
@@ -266,6 +266,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         onHeadCellChange={onHeadCellChange}
                         showCountText={showCountText}
                         showCustomizeIcon={showCustomizeIcon}
+                        showTotalSelectedText={showTotalSelectedText}
                       />
                     )}
 
