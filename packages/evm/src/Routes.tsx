@@ -19,6 +19,7 @@ import Logout from "./Logout/index";
 import SessionRoute from './Routes/SessionRoute';
 import {logOutUserSessionExpired} from './Logout/API/auth'
 import Session from './SessionExpired/index'
+import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -60,6 +61,7 @@ const Routes = () => {
               <PrivateRoute path="/assets" exact={true} component={MannageAsset}/>
               <Route path="/admin/usergroups" exact={true} component={UserGroup}/>
               <Route path="/admin/usergroups/createusergroup" exact={true} component={CreateUserGroup} />
+              <PrivateRoute path="/unitsAndDevices" exact={true} component={UnitAndDevices} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>

@@ -121,6 +121,12 @@ const CRXLefNavigation = () => {
       },
 
       {
+         label: 'Units & Devices',
+         icon: 'fas fa-laptop-code NaveIcon',
+         url: "/unitsAndDevices",
+      },
+
+      {
          label: 'ALPR',
          icon: 'fas fa-address-card NaveIcon',
          classes: 'aplrTab',

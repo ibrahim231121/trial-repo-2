@@ -139,6 +139,9 @@ console.log(props);
     if (pathnames[pathnames.length - 1] === "createusergroup") {
       return "Create User Group";
     }
+    if (pathnames[pathnames.length - 1] === "unitsAndDevices") {
+      return "Units & Devices";
+    }
     return (
       pathnames[pathnames.length - 1].charAt(0).toUpperCase() +
       pathnames[pathnames.length - 1].slice(1)
@@ -177,6 +180,12 @@ console.log(props);
         return (
           <a className="breadCrumbItem" key={name}>
             Create User Group
+          </a>
+        );
+        case "UnitsAndDevices":
+        return (
+          <a className="breadCrumbItem" key={name}>
+           Units & Devices
           </a>
         );
       default:
