@@ -142,6 +142,15 @@ console.log(props);
     if (pathnames[pathnames.length - 1] === "unitsAndDevices") {
       return "Units & Devices";
     }
+    if (pathnames[pathnames.length - 1] === "unitconfiguration") {
+      return "Manage Unit Configuration"; //page title
+    }
+    if (pathnames[pathnames.length - 1] === "unitconfigurationtemplate") {
+      return "Manage Unit Configuration Templates"; //page title
+    }
+    if (pathnames[pathnames.length - 1] === "createtemplate") {
+      return "Create Template"; //page title
+    }
     return (
       pathnames[pathnames.length - 1].charAt(0).toUpperCase() +
       pathnames[pathnames.length - 1].slice(1)
@@ -188,6 +197,24 @@ console.log(props);
            Units & Devices
           </a>
         );
+        case "Unitconfiguration": //breadcrum title
+          return (
+            <a className="breadCrumbItem" key={name}>
+              Unit Configuration 
+            </a>
+          );
+        case "Unitconfigurationtemplate": //breadcrum title
+          return (
+            <a className="breadCrumbItem" key={name}>
+              Unit Configuration Template
+            </a>
+          );
+          case "Createtemplate": //breadcrum title
+            return (
+              <a className="breadCrumbItem" key={name}>
+                Create Template
+              </a>
+            );
       default:
         break;
     }
@@ -199,6 +226,9 @@ console.log(props);
     Createusergroup: "Create User Group",
     Group: "Group",
     Create: "Create",
+    Unitconfiguration: "Unit Configuration",
+    Unitconfigurationtemplate: "Unit Configuration Template",
+    Createtemplate: "Create Unit Configuration Template",
   };
 
   const getLink = (name: string, routeTo: string) => {

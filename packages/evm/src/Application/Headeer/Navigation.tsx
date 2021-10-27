@@ -178,6 +178,16 @@ const CRXLefNavigation = () => {
             },
             {
                label: 'Manage Users'
+            },
+            {
+               label: 'Unit Configuration',
+               command: () => { navigateToPage("/admin/unitconfiguration") },
+               items:[
+                  {
+                     label: 'Unit Configuration Templates',
+                     command: () => { navigateToPage("/admin/unitconfigurationtemplate") },
+                  }
+               ]
             }
          ]
       },

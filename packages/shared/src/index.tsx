@@ -1,6 +1,6 @@
 export { default as CRXAppBar } from "./Header";
 export { default as CRXButton } from "./controls/CRXButton/CRXButton";
-export { default as TextField } from "./controls/CRXTextField";
+export { default as TextField } from "./controls/CRXTextField/CRXInput";
 export { default as EditableSelect } from "./controls/CRXEditableSelect/CRXEditableSelect";
 export { default as CRXContainer } from "./CRXContainer/CRXContainer";
 export { default as CRXSelectBox } from "./controls/CRXSimpleSelect/CRXSelect";

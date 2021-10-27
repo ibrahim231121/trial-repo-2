@@ -20,6 +20,10 @@ import SessionRoute from './Routes/SessionRoute';
 import {logOutUserSessionExpired} from './Logout/API/auth'
 import Session from './SessionExpired/index'
 import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
+import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfiguration";
+import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
+import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
+
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -62,6 +66,9 @@ const Routes = () => {
               <Route path="/admin/usergroups" exact={true} component={UserGroup}/>
               <Route path="/admin/usergroups/createusergroup" exact={true} component={CreateUserGroup} />
               <PrivateRoute path="/unitsAndDevices" exact={true} component={UnitAndDevices} />
+              <Route path="/admin/unitconfiguration" exact={true} component={UnitConfiguration} />
+              <Route path="/admin/unitconfiguration/unitconfigurationtemplate" exact={true} component={UnitConfigurationTemplate} />
+              <Route path="/admin/unitconfiguration/unitconfigurationtemplate/createtemplate" exact={true} component={CreateUnitConfigurationTemplate} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>
