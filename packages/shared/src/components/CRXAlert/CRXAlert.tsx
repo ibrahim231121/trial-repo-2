@@ -81,6 +81,9 @@ const CRXAlert: React.FC<Props> = ({
       if (type === "success") {
         setOpenState(false);
       }
+      else if (type === "info") {
+        setOpenState(false);
+      }
     }, 7000);
     return () => {
       clearTimeout(timer);

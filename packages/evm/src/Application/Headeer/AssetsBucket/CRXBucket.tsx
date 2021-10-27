@@ -12,7 +12,7 @@ import {
 import BucketActionMenu from "../../Assets/components/ActionMenu/BucketActionMenu";
 import "./CRXBucket.scss";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { AssetThumbnail } from "../../Assets/components/DataGrid/AssetThumbnail";
 import {
@@ -31,6 +31,7 @@ import MultSelectiDropDown from "../../../components/SearchComponents/MultSelect
 import TextSearch from "../../../components/SearchComponents/TextSearch";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { assetRow } from "../../Assets/components/ActionMenu/types";
+import { updateDuplicateFound, loadFromLocalStorage } from "../../../Redux/AssetActionReducer";
 
 interface AssetBucket {
   id: number;
@@ -45,7 +46,7 @@ const thumbTemplate = (assetType: string) => {
   return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
 };
 
-function usePrevious(value: number) {
+function usePrevious(value: any) {
   const ref: any = React.useRef();
   useEffect(() => {
     ref.current = value;
@@ -56,7 +57,10 @@ function usePrevious(value: number) {
 const CRXAssetsBucketPanel = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const assetBucketData: AssetBucket[] = useSelector(
-    (state: RootState) => state.assetBucket
+    (state: RootState) => state.assetBucket.assetBucketData
+  );
+  const isDuplicateFound: boolean = useSelector(
+    (state: RootState) => state.assetBucket.isDuplicateFound
   );
   const [selectedItems, setSelectedItems] = React.useState<assetRow[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<assetRow>();
@@ -65,30 +69,53 @@ const CRXAssetsBucketPanel = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
-  const [sucess, setSucess] = React.useState<{ show: boolean; msg: string }>({
-    show: false,
+  const [sucess, setSucess] = React.useState<{ msg: string }>({
+    msg: "",
+  });
+  const [attention, setAttention] = React.useState<{ msg: string }>({
     msg: "",
   });
   const [showSucess, setShowSucess] = React.useState<boolean>(false);
+  const [showAttention, setShowAttention] = React.useState<boolean>(false);
 
   const prevCount = usePrevious(assetBucketData.length);
+  const prevIsDuplicate = usePrevious(isDuplicateFound);
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    //const data:AssetBucket[]= assetBucketData.map((d:AssetBucket)=> ( { id:d.id,assetId:d.assetId,assetName:d.assetName,recordingStarted:d.recordingStarted,categories:d.categories}))
+    // on load check asset bucket exists in local storage
+    dispatch(loadFromLocalStorage());
+  }, [])
+
+  useEffect(() => {
+    if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined) {
+      setAttention({
+        msg: "An Asset you are attempting to add to the Asset Bucket has already been added",
+      });
+      setShowAttention(true);
+      dispatch(updateDuplicateFound());
+    }
+  }, [isDuplicateFound])
+
+  useEffect(() => {
     setRows(assetBucketData);
-    if (assetBucketData.length > prevCount) {
+    let local_assetBucket = localStorage.getItem("assetBucket");
+    if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0) {
+      //Do nothing
+    }
+    else if (assetBucketData.length > prevCount) {
       setSucess({
         msg: "You have added the selected assets to the asset bucket.",
-        show: true,
       });
       setShowSucess(true);
-    } else if (assetBucketData.length < prevCount) {
+    }
+    else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
       setShowSucess(true);
       setSucess({
         msg: `${totalRemoved} ${totalRemoved > 1 ? "assets" : "asset"
           } removed the asset bucket`,
-        show: true,
       });
     }
   }, [assetBucketData]);
@@ -96,6 +123,17 @@ const CRXAssetsBucketPanel = () => {
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
+
+  useEffect(() => {
+    let timer: any = null;
+    timer = setTimeout(() => {
+      setShowAttention((prev: boolean) => false);
+      setShowSucess((prev: boolean) => false);
+    }, 7000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isDuplicateFound == true]);
 
   useEffect(() => {
     let timer: any = null;
@@ -277,6 +315,13 @@ const CRXAssetsBucketPanel = () => {
                     </CRXRows>
                     <CRXRows container spacing={0}>
                       <CRXColumn item xs={12} className="topColumn">
+                        <CRXAlert
+                          className="crx-alert-notification"
+                          message={attention.msg}
+                          type="info"
+                          open={showAttention}
+                          setShowSucess={setShowAttention}
+                        />
                         <CRXAlert
                           className="crx-alert-notification"
                           message={sucess.msg}
