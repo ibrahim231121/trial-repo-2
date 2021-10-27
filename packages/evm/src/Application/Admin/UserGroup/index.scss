@@ -1,3 +1,116 @@
 .anchorStyle{
    text-decoration: none
 }
+.managePermissionBtn {
+   margin-top: 60px !important;
+   color: #D1D2D4 !important;
+   background-color:#333333 !important;
+   height: 30px !important;
+   .MuiButton-label {
+      font-family: Arial, Helvetica, sans-serif !important;
+      font-size: 14px !important;
+      line-height: 16px !important;
+      padding: 0 1px !important;
+      font-weight: normal;
+   }
+   &:hover {
+      color: #F5F5F5 !important;
+      background-color: #6E6E6E !important; 
+      border-color: #6E6E6E !important ;
+   }
+   &:active, &:focus {
+      color: #F5F5F5 !important;
+      background-color: #231F20 !important; 
+      border-color: #231F20 !important ;
+   }
+
+}
+.managePermissionTable {
+   margin-left: 65px !important;
+   .dataTableColumnShoHide  {
+      margin-top: -63px !important;
+   }
+}
+.crxTableDataUi {
+   margin-top: -38px;
+   table {
+      thead {
+         &:not(:first-child) {
+            th { 
+               padding: 0 8px !important;
+            }
+         }
+         &:first-child {
+            .crxTableHeaderSize {
+               max-width: 100% !important;
+            }
+            th {
+               &:nth-child(3) {
+                  width: 250px;
+               }
+               &:nth-child(4) {
+                  width: 350px;
+               }
+            }
+         }
+      }
+      tbody {
+         tr {
+            &:nth-child(odd) {
+               background-color: #FFFFFF;
+            }
+            &:nth-child(even) {
+               background-color:#F2F2F2;
+            }
+            .col-three {
+             background-color: transparent !important;
+            } 
+            &:hover {
+               .rc-menu-button {
+                  color: #d1d2d4;
+               }
+            }
+         }
+      }
+   }
+   th {
+      color: #D1D2D4;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+      padding: 0 18px !important;
+   }
+   td {
+      &:not(:first-child) {
+         text-align: left !important;
+         padding: 6px 9px 6px 10px !important;
+      }
+      &:first-child {
+         padding-right: 8px !important;
+         &:hover {
+            border:0 solid transparent !important;
+            border-right: 1px solid #ccc !important;
+            border-bottom: 1px solid #ccc !important;
+         }
+      }
+      &:nth-child(3) {
+            a {
+               color:#C34400 !important;
+               font-family: Arial, Helvetica, sans-serif;
+               line-height: 20px !important;
+               font-size: 14px !important;
+            }
+      }
+      &:nth-child(4) {
+            color:#333333 !important;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px !important;
+   }
+      .rc-menu-button  {
+         font-size: 18px;
+      }
+   }
+   .MuiTableHead-root {
+      height: 34px;
+   }
+}
