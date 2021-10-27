@@ -38,4 +38,5 @@ export { default as CRXAlert} from './components/CRXAlert/CRXAlert'
 export { default as CRXRootRef} from './controls/CRXRootRef/CRXRootRef'
 export { default as CrxTabPanel} from './CRXTab/CrxTabPanel'
 export { default as CRXTabs} from './CRXTab/CrxTabs'
+export { default as CRXDataTableMultiLevel} from './CRXDataTable/CRXDataTableMultiLevel'
 

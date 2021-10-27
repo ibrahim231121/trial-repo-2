@@ -301,3 +301,13 @@ export type CheckAllPageWise = {
   page: number;
   isChecked: boolean;
 }
+
+export type MultiLevelProps = {
+  rows: any[];
+  headCells: HeadCellProps[];
+  className?: string;
+  finalLevel: number;
+  onSetRow: (check:boolean, row:any) => void;
+  onSetCheckAllLevel: (e: boolean, type: string) => void;
+  onUnCheckAllParent: (e: boolean, row:any) => void;
+}
