@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
+import {makeStyles, createStyles} from '@material-ui/core/styles'
 import "./EditableSelect.scss";
 
 interface selectBoxProps {
@@ -18,7 +18,7 @@ interface selectBoxProps {
   value:string
 }
 
-const optionStyle = makeStyles((theme: Theme) =>
+const optionStyle = makeStyles(() =>
 createStyles({
   "& .MuiAutocomplete-popper" : {
     width: "100%"
@@ -82,7 +82,7 @@ const CRXAutocomplete = ({
 
   const data = options;
   const classes = optionStyle()
-  const handleOnOpen = (e : any) => {
+  const handleOnOpen = () => {
   }
   return (
     <Autocomplete
@@ -103,7 +103,7 @@ const CRXAutocomplete = ({
       onChange={(e,value) => {
         return onChange(e,value);
       }}
-      onOpen={(e) => handleOnOpen(e)}
+      onOpen={() => handleOnOpen()}
       renderInput={(params: object) => (
         <TextField
          placeholder={placeHolder}

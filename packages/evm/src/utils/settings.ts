@@ -12,9 +12,9 @@ export function checkVerifier() {
   return sessionStorage.getItem("code_challenge_string");
 }
 
-export function getVerificationURL(y:string) {
+export function getVerificationURL(y: string) {
   var x = sessionStorage.getItem("code_challenge_string");
-  return AUTHENTICATION_CODEVERIFIER_URL+`?client_id=${clientId}&authorizationcode=${y}&code_verifier=${x}`;
+  return AUTHENTICATION_CODEVERIFIER_URL + `?client_id=${clientId}&authorizationcode=${y}&code_verifier=${x}`;
 }
 
 export function utils() {
@@ -23,5 +23,9 @@ export function utils() {
   sessionStorage.setItem("code_challenge_string", code_challenge_string);
   return `?client_id=${clientId}&code_challenge=${code_challenge}&code_challenge_Method=${code_challenge_Method}`;
 }
+
+
+
+
 
 

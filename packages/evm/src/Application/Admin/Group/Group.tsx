@@ -1,5 +1,6 @@
 import React from "react";
-import { CRXTabs, CrxTabPanel,CRXButton } from "@cb/shared";
+import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
+import User from '../Group/components/User';
 
 const Group = () => {
   const [value, setValue] = React.useState(0);
@@ -11,7 +12,7 @@ const Group = () => {
     { label: "GROUP NAME", index: 0 },
     { label: "USERS", index: 1 },
     { label: "APPLICATION PERMISSIONS", index: 2 },
-    { label: "DATA PERMISSIONS", index: 3},
+    { label: "DATA PERMISSIONS", index: 3 },
   ];
   return (
     <div className="App" style={{ marginTop: "120px", marginLeft: "90px" }}>
@@ -23,7 +24,7 @@ const Group = () => {
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={1}>
-          <div>USERS</div>
+          <User></User>
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={2}>
@@ -35,16 +36,16 @@ const Group = () => {
         </CrxTabPanel>
       </>
       <div style={{
-              position: "absolute",
-              bottom: "40px",
-              display: "flex",
-              justifyContent: "space-between",
-              width: '92%'
+        position: "absolute",
+        bottom: "40px",
+        display: "flex",
+        justifyContent: "space-between",
+        width: '92%'
       }}>
-      <div>
-        <CRXButton disabled={true}>Save</CRXButton>
-        <CRXButton  disabled={true}>Cancel</CRXButton>
-      </div>
+        <div>
+          <CRXButton disabled={true}>Save</CRXButton>
+          <CRXButton disabled={true}>Cancel</CRXButton>
+        </div>
         <CRXButton>Close</CRXButton>
       </div>
     </div>

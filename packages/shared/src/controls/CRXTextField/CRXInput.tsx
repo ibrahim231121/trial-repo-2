@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography, TextField } from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
 import "./Input.scss";
 
 //Props type
@@ -38,22 +37,22 @@ const CRXInput = ({
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
 
-  const errMsgContent = () => {
-    if (error === true) {
-      return (
-        <Typography
-          className="errorStateContent"
-          variant="caption"
-          display="block"
-          gutterBottom
-        >
-          {errorMsg}
-        </Typography>
-      );
-    } else {
-      return;
-    }
-  };
+  // const errMsgContent = () => {
+  //   if (error === true) {
+  //     return (
+  //       <Typography
+  //         className="errorStateContent"
+  //         variant="caption"
+  //         display="block"
+  //         gutterBottom
+  //       >
+  //         {errorMsg}
+  //       </Typography>
+  //     );
+  //   } else {
+  //     return;
+  //   }
+  // };
 
 
   const reformatedLabel = () => {

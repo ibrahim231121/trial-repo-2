@@ -104,8 +104,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       zIndex: 2,
       position: "sticky",
-      backgroundColor: "#333333",
-      color: "#d1d2d4",
+      backgroundColor: "#333333 !important",
+      color: "#d1d2d4 !important",
       whiteSpace: "nowrap",
     },
     searchHeaderStickness: {
@@ -113,8 +113,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       left: 0,
       zIndex: 2,
       position: "sticky",
-      backgroundColor: "#333333",
-      color: "#d1d2d4",
+      backgroundColor: "#333333 !important",
+      color: "#d1d2d4 !important",
     },
     headerCellDiv: {
       display: "flex",
@@ -152,7 +152,7 @@ export interface HeadCellProps {
 }
 
 export interface DataTableToolbarProps {
-  id:string;
+  id: string;
   numSelected: number;
   headCells: HeadCellProps[];
   rowCount: number;
@@ -162,8 +162,9 @@ export interface DataTableToolbarProps {
   onReOrder: (event: number[]) => void;
   orderingColumn: number[];
   onHeadCellChange: (e: HeadCellProps[]) => void;
-  showCountText?:boolean;
-  showCustomizeIcon?:boolean;
+  showCountText?: boolean;
+  showCustomizeIcon?: boolean;
+  showTotalSelectedText?: boolean
 }
 
 export type DataTableProps = {
@@ -185,11 +186,13 @@ export type DataTableProps = {
   selectedItems: string[];
   setSelectedItems: any;
   showToolbar?: boolean;
-  showCheckBoxesCol?:boolean;
-  showActionCol?:boolean;
-  showActionSearchHeaderCell?:boolean;
-  showCountText?:boolean;
-  showCustomizeIcon?:boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
+  showActionSearchHeaderCell?: boolean;
+  showCountText?: boolean;
+  showTotalSelectedText?: boolean;
+  showCustomizeIcon?: boolean;
+  showHeaderCheckAll?: boolean;
 };
 
 export type OrderData = {
@@ -198,7 +201,7 @@ export type OrderData = {
 };
 
 export type DataTableContainerProps = {
-  id:string;
+  id: string;
   orderColumn: number[];
   headCells: HeadCellProps[];
   orderData: OrderData;
@@ -218,11 +221,14 @@ export type DataTableContainerProps = {
   allColHide: boolean;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?:boolean;
-  showActionCol?:boolean;
-  showActionSearchHeaderCell?:boolean;
-  showCountText?:boolean;
-  showCustomizeIcon?:boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
+  showActionSearchHeaderCell?: boolean;
+  showCountText?: boolean;
+  showCustomizeIcon?: boolean;
+  showHeaderCheckAll?: boolean;
+  onSetCheckAll: (e: boolean) => void;
+  checkAllPageWise: CheckAllPageWise[];
 };
 
 export type DataTableBodyProps = {
@@ -237,12 +243,13 @@ export type DataTableBodyProps = {
   onSetSelectedItems: (e: string[]) => void;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?:boolean;
-  showActionCol?:boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
 };
 
 export type SearchHeaderProps = {
-  id:string;
+  id: string;
+  page: number;
   orderColumn: number[];
   selectedItems: string[];
   headCells: HeadCellProps[];
@@ -251,9 +258,12 @@ export type SearchHeaderProps = {
   actionComponent: React.ReactNode;
   getRowOnActionClick: (data: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?:boolean;
-  showActionCol?:boolean;
-  showActionSearchHeaderCell?:boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
+  showActionSearchHeaderCell?: boolean;
+  showHeaderCheckAll?: boolean;
+  onSetCheckAll: (e: boolean) => void;
+  checkAllPageWise: CheckAllPageWise[];
 };
 
 export type DataTableHeaderProps = {
@@ -263,8 +273,8 @@ export type DataTableHeaderProps = {
   onHandleRequestSort: (e: any) => void;
   onResizeRow: (e: any) => void;
   dragVisibility?: boolean;
-  showCheckBoxesCol?:boolean;
-  showActionCol?:boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
 };
 
 export type DataTableClearFilterProps = {
@@ -273,15 +283,31 @@ export type DataTableClearFilterProps = {
 };
 
 export type DataTableCustomizeColumnsProps = {
+  id: string;
   headCells: HeadCellProps[];
   orderingColumn: number[];
   onReorder: (e: number[]) => void;
   onChange: () => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
-  showCustomizeIcon?:boolean;
+  showCustomizeIcon?: boolean;
 };
 
 export type OrderValue = {
   order: number;
   value: boolean | undefined;
+}
+
+export type CheckAllPageWise = {
+  page: number;
+  isChecked: boolean;
+}
+
+export type MultiLevelProps = {
+  rows: any[];
+  headCells: HeadCellProps[];
+  className?: string;
+  finalLevel: number;
+  onSetRow: (check:boolean, row:any) => void;
+  onSetCheckAllLevel: (e: boolean, type: string) => void;
+  onUnCheckAllParent: (e: boolean, row:any) => void;
 }

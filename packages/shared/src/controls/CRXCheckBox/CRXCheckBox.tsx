@@ -6,7 +6,7 @@ import './CheckBox.scss'
 interface Props {
   name?: string;
   label?: string;
-  checked: boolean;
+  checked?: boolean;
   inputProps?: string,
   disabled?: boolean;
   isError?:boolean;

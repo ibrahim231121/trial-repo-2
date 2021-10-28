@@ -5,7 +5,6 @@ import TableRow from "@material-ui/core/TableRow";
 import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
@@ -33,7 +32,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     onSetSelectedItems(row);
   };
 
-  const onMouseEvent = (e: any, row: any) => {
+  const onMouseEvent = (row: any) => {
     if (selectedItems.length > 0)
       localStorage.setItem("AssetContainer", JSON.stringify(selectedItems));
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
@@ -76,7 +75,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                 >
-                                  <a className="grid-grip-icon" onMouseDown={(e: any) => onMouseEvent(e, row)}>
+                                  <a className="grid-grip-icon" onMouseDown={() => onMouseEvent(row)}>
                                       <i className="fas fa-grip-vertical"></i>
                                   </a>
                                 </div>

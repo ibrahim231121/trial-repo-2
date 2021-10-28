@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { InputBase, Select, MenuItem } from "@material-ui/core";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import "./SelectBox.scss";
 
 //Select box props Types
@@ -22,14 +22,14 @@ type SelectBoxProps = {
 };
 
 //Style For Select Menu Paper
-const useStyle = makeStyles(() => ({
-  menuT: {
-    borderRadius: "0px",
-    border: "1px solid #bebebe",
-    minWidth: "200px !important",
-    marginLeft: "0px",
-  },
-}));
+// const useStyle = makeStyles(() => ({
+//   menuT: {
+//     borderRadius: "0px",
+//     border: "1px solid #bebebe",
+//     minWidth: "200px !important",
+//     marginLeft: "0px",
+//   },
+// }));
 
 //Style For Select Option Item
 const StyledMenuItem = withStyles(() => ({
@@ -62,17 +62,11 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       className,
       popover,
       options,
-      icon = false,
-      IconName,
-      onClick,
-      IconComponent,
       defaultOption = true,
       defaultOptionText = "Please Select",
-      defaultValue,
     },
     ref
   ) => {
-    const classes = useStyle();
     const option = Object.assign(options).map((data: any, i: number) => {
       return (
         <StyledMenuItem aria-label="None" key={i} value={data.value}>

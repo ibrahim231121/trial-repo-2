@@ -137,10 +137,10 @@ export const onSetHeadCellVisibility = (headCells: HeadCellProps[]) => {
   return headCellsArray;
 };
 
-export const onSaveHeadCellData = (headCells: HeadCellProps[]) => {
-  let getHeadCells = localStorage.getItem("headCells");
+export const onSaveHeadCellData = (headCells: HeadCellProps[], id: string) => {
+  let getHeadCells = localStorage.getItem("headCells_" + id);
   if (getHeadCells === null) {
-    localStorage.setItem("headCells", JSON.stringify(headCells));
+    localStorage.setItem("headCells_" + id, JSON.stringify(headCells));
   }
 };
 

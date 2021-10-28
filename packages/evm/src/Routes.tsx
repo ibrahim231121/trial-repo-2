@@ -6,15 +6,15 @@ import AppHeader from './Application/Headeer/Header'
 import Footer from './Application/Headeer/Footer'
 import MannageAsset from "./Application/Assets/pages/MannageAsset";
 import UserGroup from "./Application/Admin/UserGroup/UserGroup";
-import CreateUserGroup from "./Application/Admin/UserGroup/CreateUserGroup";
+import User from "./Application/Admin/UserGroup/User/User";
 import Group from "./Application/Admin/Group/Group";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
-import Home from './Login/Components/Login'
 import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
 import IdleTimer from 'react-idle-timer'
+import { urlList } from "./utils/urlList"
 import Logout from "./Logout/index";
 import SessionRoute from './Routes/SessionRoute';
 import {logOutUserSessionExpired} from './Logout/API/auth'
@@ -62,13 +62,16 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path="/assets" exact={true} component={MannageAsset}/>
-              <Route path="/admin/usergroups" exact={true} component={UserGroup}/>
-              <Route path="/admin/usergroups/createusergroup" exact={true} component={CreateUserGroup} />
-              <PrivateRoute path="/unitsAndDevices" exact={true} component={UnitAndDevices} />
-              <Route path="/admin/unitconfiguration" exact={true} component={UnitConfiguration} />
-              <Route path="/admin/unitconfiguration/unitconfigurationtemplate" exact={true} component={UnitConfigurationTemplate} />
-              <Route path="/admin/unitconfiguration/unitconfigurationtemplate/createtemplate" exact={true} component={CreateUnitConfigurationTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
+              <Route path={Object.entries(urlList)[1][0].toString()} exact={true} component={UserGroup} />
+              <Route path={Object.entries(urlList)[2][0].toString()} exact={true} component={Group} />
+              <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
+              <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
+              <Route path="/token/:token" exact={true} component={Token} />
+              <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
+              <PrivateRoute path="/admin/unitconfiguration" exact={true} component={UnitConfiguration} />
+              <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[7][0].toString()} exact={true} component={CreateUnitConfigurationTemplate} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>

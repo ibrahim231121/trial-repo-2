@@ -20,7 +20,7 @@ var dateOptions = {
         },
         { 
           value: "yesterday", 
-          displayText: " yesterday" ,
+          displayText: "yesterday" ,
           startDate : function(){ return moment().startOf("day").subtract(1, "days").set("second", 0).format() }, 
           endDate : function(){ return   moment().endOf("day").subtract(1, "days").set("second", 0).format() } 
           

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, IconButton, Menu } from "@material-ui/core";
+import { Dialog, IconButton} from "@material-ui/core";
 //import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import "./CRXDropContent.scss";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,7 +26,6 @@ const useStyles = makeStyles(() => ({
   modalbox: {},
 }));
 const CRXDropContainer: React.FC<propsType> = ({
-  icon,
   color,
   className,
   content,

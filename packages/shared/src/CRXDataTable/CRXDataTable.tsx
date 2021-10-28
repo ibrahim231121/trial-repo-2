@@ -7,13 +7,13 @@ import {
   HeadCellProps,
   OrderValue,
   theme,
+  CheckAllPageWise
 } from "./CRXDataTableTypes";
 import TablePagination from "@material-ui/core/TablePagination";
 import DataTableToolbar from "./CRXDataTableToolbar";
 import { ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import "./CRXDataTable.scss";
-import { useTranslation } from "react-i18next";
 import DataTableContainer from "./CRXDataTableContainer";
 
 const CRXDataTable: React.FC<DataTableProps> = ({
@@ -39,7 +39,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showActionCol,
   showActionSearchHeaderCell,
   showCountText,
+  showTotalSelectedText,
   showCustomizeIcon,
+  showHeaderCheckAll,
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -52,12 +54,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   const [orderColumn, setOrderColumn] = useState(
     new Array(headCells.length).fill(null).map((_, i) => i)
   );
-  const { t } = useTranslation<string>();
   const keyId = headCells
     .filter((n) => n.keyCol === true)
     .map((v) => v.id)
     .toString();
   const [allColHide, setAllColHide] = React.useState<boolean>(false);
+  const [checkAllPageWise, setCheckAllPageWise] = React.useState<CheckAllPageWise[]>([]);
 
   let initialContainers: any = {
     tableId: {
@@ -80,7 +82,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
     setContainers((state: any) => ({ ...state, [dataTable.id]: dataTable }));
 
-    let checkOrderPreset = localStorage.getItem("checkOrderPreset");
+    let checkOrderPreset = localStorage.getItem("checkOrderPreset_" + id);
 
     if (checkOrderPreset !== null) {
       let arr = JSON.parse(checkOrderPreset).map((x: OrderValue) => x.order);
@@ -138,6 +140,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   const handleRequestSort = async (property: any) => {
     const isAsc = orderData.orderBy === property && orderData.order === "asc";
     setOrderData({ order: isAsc ? "desc" : "asc", orderBy: property });
+    setPage(0);
+    setCheckAllPageWise([])
+    setSelectedItems([]);
   };
 
   useEffect(() => {
@@ -148,6 +153,34 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     if (open === true) setOpen(false);
     else setOpen(true);
   }, [orderData]);
+
+  const handleSelectAllClick = (event: boolean) => {
+    if (event)
+      setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: event }])
+    else {
+      const items = checkAllPageWise.filter(
+        (Item: CheckAllPageWise) => Item.page !== page
+      );
+      setCheckAllPageWise(items);
+    }
+
+    const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+    if (event) {
+      setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox
+      newSelecteds.map((item: any) => {
+        setSelectedItems((prev: any) => [...prev, item]);
+      })
+      return;
+    }
+    else {
+      var items = selectedItems.filter(function (objFromA: any) {
+        return !newSelecteds.find(function (objFromB: any) {
+          return objFromA.id === objFromB.id
+        })
+      })
+      setSelectedItems(items);
+    }
+  };
 
   const handleClick = (row: any) => {
     const { id } = row;
@@ -169,7 +202,6 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   }, [selectedItems]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    console.log(event);
     setPage(newPage);
   };
 
@@ -178,6 +210,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    setCheckAllPageWise([])
+    setSelectedItems([]);
   };
 
   const onReorderEnd = useCallback(
@@ -232,6 +266,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         onHeadCellChange={onHeadCellChange}
                         showCountText={showCountText}
                         showCustomizeIcon={showCustomizeIcon}
+                        showTotalSelectedText={showTotalSelectedText}
                       />
                     )}
 
@@ -259,6 +294,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       showCheckBoxesCol={showCheckBoxesCol}
                       showActionCol={showActionCol}
                       showActionSearchHeaderCell={showActionSearchHeaderCell}
+                      showHeaderCheckAll={showHeaderCheckAll}
+                      onSetCheckAll={handleSelectAllClick}
+                      checkAllPageWise={checkAllPageWise}
                     />
 
                     <TablePagination
