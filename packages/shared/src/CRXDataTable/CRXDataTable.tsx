@@ -201,7 +201,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     getSelectedItems(selectedItems);
   }, [selectedItems]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    console.log(event);
     setPage(newPage);
   };
 

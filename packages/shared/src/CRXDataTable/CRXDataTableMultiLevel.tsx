@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -12,7 +12,6 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import {
   useStyles,
   MultiLevelProps,
-  HeadCellProps,
   theme,
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
