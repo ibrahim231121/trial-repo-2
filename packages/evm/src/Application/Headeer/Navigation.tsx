@@ -123,7 +123,7 @@ const CRXLefNavigation = () => {
       {
          label: 'Units & Devices',
          icon: 'fas fa-laptop-code NaveIcon',
-         url: "/unitsAndDevices",
+         url: "/unitsanddevices",
       },
 
       {

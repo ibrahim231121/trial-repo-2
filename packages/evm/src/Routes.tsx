@@ -23,6 +23,7 @@ import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
 import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfiguration";
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
+import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
 
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
@@ -69,9 +70,10 @@ const Routes = () => {
               <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
-              <PrivateRoute path="/admin/unitconfiguration" exact={true} component={UnitConfiguration} />
+              <PrivateRoute path={Object.entries(urlList)[8][0].toString()} exact={true} component={UnitConfiguration} />
               <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
               <PrivateRoute path={Object.entries(urlList)[7][0].toString()} exact={true} component={CreateUnitConfigurationTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[9][0].toString() }  exact={true} component={UnitAndDevicesDetial} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>

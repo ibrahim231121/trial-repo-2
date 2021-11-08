@@ -39,4 +39,8 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { type: "text", label: "Manage Unit Configuration", },
     ],
+    "/unitsanddevices/detail": [
+        { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
+        { type: "text", label: "Unit Id", },
+    ],
 };

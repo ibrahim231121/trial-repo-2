@@ -55,6 +55,10 @@ React.useEffect(()=>{
       { routeTo: "/assets", type: "CBXLink", label: "Assets", },
       { type: "text",  label:breadCrumbValueRedux, }
     ],
+    "/unitsanddevices": [
+      { routeTo: "/unitsanddevices", type: "CBXLink", label: "Units & devices", },
+      { type: "text",  label:breadCrumbValueRedux, }
+    ],
   }
 
   const classes = CRXPanelStyle();

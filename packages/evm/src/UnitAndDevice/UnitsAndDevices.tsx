@@ -9,6 +9,7 @@ import textDisplay from "../components/DateDisplayComponent/TextDisplay";
 import anchorDisplay from "../components/DateDisplayComponent/AnchorDisplay";
 import { useHistory } from "react-router-dom";
 import './index.scss'
+import { enterPathActionCreator } from '../Redux/breadCrumbReducer';
 
 
 import {
@@ -60,15 +61,15 @@ const UnitAndDevices: React.FC = () => {
 
     let groupRows: GroupUser[] = [
 
-      {id:1, name:"Getac", description:"Getac", userCount:3},
+      {id:1, name:"Incar", description:"Getac", userCount:3},
 
-      {id:2, name:"Getac", description:"Getac", userCount:1},
+      {id:2, name:"BWC 3", description:"Getac", userCount:1},
 
-      {id:3, name:"Getac", description:"Getac", userCount:0},
+      {id:3, name:"BWC 4", description:"Getac", userCount:0},
 
-      {id:4, name:"Getac", description:"Getac", userCount:9},
+      {id:4, name:"DVR", description:"Getac", userCount:9},
 
-      {id:5, name:"Getac", description:"Getac", userCount:5},
+      {id:5, name:"BWC 2", description:"Getac", userCount:5},
 
     ]
 
@@ -117,6 +118,12 @@ const UnitAndDevices: React.FC = () => {
       );
     };
 
+    const unitDetail = (name: string) => {
+
+      //dispatch(enterPathActionCreator({ val: name }));
+
+      return <a href={"/unitsanddevices/detail"} >{name}</a>
+    };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -136,7 +143,7 @@ const UnitAndDevices: React.FC = () => {
       label: `${t("Getac")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => anchorDisplay(e, "anchorStyle"),
+      dataComponent: unitDetail,
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
