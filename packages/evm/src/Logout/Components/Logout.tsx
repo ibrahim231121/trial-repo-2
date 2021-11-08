@@ -2,12 +2,17 @@ import {CRXButton} from '@cb/shared';
 import {CRXPaper} from '@cb/shared';
 import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { timerActionCreator } from "./../../Redux/timerslice";
 export default function Logout (){
+    const dispatch = useDispatch()
+    useEffect(() => {
+    dispatch(timerActionCreator(2053)) },)
+
     const history = useHistory();
     const buttonClick = () => {
-       
-       
-      
+            
       history.push('/')
 
       };

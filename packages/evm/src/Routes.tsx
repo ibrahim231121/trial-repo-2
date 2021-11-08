@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Switch, Route } from "react-router-dom";
 import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
@@ -26,9 +26,59 @@ import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfigurati
 import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
 import AssetDetailsTemplate from "./Application/Assets/pages/AssetDetailsTemplate";
 
+import { isAuthenticated } from "./Login/API/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./Redux/rootReducer";
+import { timerActionCreator } from "../src/Redux/timerslice";
+import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
+interface CounterState {
+  path: string
+}
+
+const options: CounterState = {
+  path: '/' ,
+}
+const updatetokens = (refreshToken : string, accessToken: string)=>
+{
+  localStorage.setItem("refreshToken", refreshToken)      
+  cookies.set('access_token', accessToken, options)
+}
+
 const Routes = () => {
+  const dispatch = useDispatch()
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
+
+
+  const timer: number = useSelector((state: RootState) => state.timerReducers.value);
+  const timers = () => dispatch(timerActionCreator(timer - 1));
+  const refreshToken = localStorage.getItem('refreshToken')
+
+ 
+  useEffect(() => {
+    if (isAuthenticated()){
+
+     if (timer == 0){
+      fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
+           .then(response  => response.json())
+            .then(response =>                      
+                 updatetokens(response.refreshToken, response.accessToken)
+                 );
+      dispatch(timerActionCreator(2053)) //time in sec
+     }
+    
+      var id = setInterval(timers, 1000);      
+      return () => clearInterval(id);
+    }
+  },
+  
+);
+
+
+
 
   const handleDrawerToggle = () => {
     setOpen(!open);

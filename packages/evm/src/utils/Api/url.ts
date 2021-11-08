@@ -11,6 +11,7 @@ export const EVIDENCE_GET_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence?Size=500&Pa
 
 export const EVIDENCE_SEARCH_VERSION_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/Version`
 
+export const AUTHENTICATION_NewAccessToken_URL = `http://127.0.0.1:8081/Authentication/GetAccessToken`
 
 export const AUTHENTICATION_LOGIN_URL = `${BASE_URL_AUTHENTICATION_SERVICE}/Authentication/Login/`
 

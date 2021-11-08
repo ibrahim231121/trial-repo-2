@@ -1,6 +1,7 @@
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import { codeChallengeRemove } from '../../utils/settings';
+import { timerActionCreator } from './../../Redux/timerslice';
 
 interface IDecoded {
     RememberMe: string;
@@ -57,17 +58,18 @@ export const isAuthenticated = () => {
 
 
 export const logOutUser = () => {
-
     sessionStorage.removeItem('code_challenge_string');
-    var opt;
-    const options = { path: '/' };
-    opt = cookies.remove('access_token', options)
-    opt = localStorage.removeItem('username')
-    opt = localStorage.removeItem('remember me')
-    opt = localStorage.removeItem('assetBucket')
-    // window.location.reload(false);
-    // next()
-    window.location.href = "/";
+    
+
+        var opt;
+        const options = { path:'/' };
+        opt = cookies.remove('access_token',options)
+        opt = localStorage.removeItem('username')
+        opt = localStorage.removeItem('remember me')       
+        window.location.href = "/";
+      
+    
+} 
 
 
 }
