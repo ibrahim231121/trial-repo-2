@@ -43,4 +43,8 @@ export const urlList: any = {
         { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
         { type: "text", label: "Unit Id", },
     ],
+    "/assets/assetDetails/:id": [
+        { type: "text", label: "Assets", },
+        { type: "text", label: "Asset Details Page", },
+    ]
 };

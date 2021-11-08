@@ -24,6 +24,7 @@ import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfigu
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
 import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
+import AssetDetailsTemplate from "./Application/Assets/pages/AssetDetailsTemplate";
 
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
@@ -63,7 +64,7 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
+              <PrivateRoute  path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
               <Route path={Object.entries(urlList)[1][0].toString()} exact={true} component={UserGroup} />
               <Route path={Object.entries(urlList)[2][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
@@ -74,6 +75,7 @@ const Routes = () => {
               <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
               <PrivateRoute path={Object.entries(urlList)[7][0].toString()} exact={true} component={CreateUnitConfigurationTemplate} />
               <PrivateRoute path={Object.entries(urlList)[9][0].toString() }  exact={true} component={UnitAndDevicesDetial} />
+              <PrivateRoute  path={Object.entries(urlList)[10][0].toString()} exact={true} component={AssetDetailsTemplate} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>

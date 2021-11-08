@@ -28,6 +28,7 @@ import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay
 import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
 import TextSearch from "../../../../components/SearchComponents/TextSearch";
 import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
+import { CBXLink } from "@cb/shared";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -93,7 +94,7 @@ const thumbTemplate = (assetType: string) => {
 const assetNameTemplate = (assetName: string, assets: Asset[]) => {
   return (
     <>
-      {textDisplay(assetName, "linkColor")}
+      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/assetDetails/"+assetName} />
       <DetailedAssetPopup asset={assets} />
     </>
   );
