@@ -10,7 +10,7 @@ import React from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import './index.scss';
 type Props = {
-  title: string;
+  title?: string;
   content?: string;
   onConfirm: any;
   setIsOpen: any;
@@ -32,7 +32,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
     <Dialog open={isOpen}>
       <DialogTitle>
         <div style={{ display: "flex",    justifyContent:"space-between" }}>
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h6">{title || 'Please confirm'}</Typography>
           <CloseIcon onClick={() => setIsOpen(false)} />
         </div>
       </DialogTitle>
@@ -45,7 +45,13 @@ const CRXConfirmDialog: React.FC<Props> = ({
         {children ? (
           children
         ) : (
-          <Typography variant="subtitle2">{content}</Typography>
+          <Typography variant="subtitle2">{content?content:<span>
+            You are attempting to close the modal dialog.  If you close the modal dialog, any changes you've made will not be saved. You will not be able to undo this action.
+            <br/>
+            <br/>
+            Are you sure you would like to close the modal dialog?
+          </span>
+          }</Typography>
         )}
       </DialogContent>
       <div>

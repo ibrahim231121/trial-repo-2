@@ -1,9 +1,11 @@
 import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import User from '../Group/components/User';
+import { useHistory } from "react-router";
 
 const Group = () => {
   const [value, setValue] = React.useState(0);
+  const history = useHistory()
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -42,10 +44,10 @@ const Group = () => {
         justifyContent: "space-between",
         width: '92%'
       }}>
-        <div>
-          <CRXButton disabled={true}>Save</CRXButton>
-          <CRXButton disabled={true}>Cancel</CRXButton>
-        </div>
+      <div>
+        <CRXButton disabled={true}>Save</CRXButton>
+        <CRXButton  onClick={()=> history.push('/admin/usergroups')}>Cancel</CRXButton>
+      </div>
         <CRXButton>Close</CRXButton>
       </div>
     </div>

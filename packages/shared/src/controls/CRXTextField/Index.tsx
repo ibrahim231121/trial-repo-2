@@ -17,10 +17,12 @@ interface InputProps {
   errorMsg?: string;
   placeholder?: string;
   defaultValue?: any;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const CRXInput = ({
   value,
+  onBlur,
   defaultValue,
   placeholder,
   name,
@@ -54,12 +56,12 @@ const CRXInput = ({
   //   }
   // };
 
-
   const reformatedLabel = () => {
     if (required) {
       return (
         <span className="requiredLable">
-          {label} <span style={{color:`${error?"#aa1d1d":"#000"}`}}>*</span>
+          {label}{" "}
+          <span style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
         </span>
       );
     } else {
@@ -70,14 +72,12 @@ const CRXInput = ({
   return (
     <>
       <span style={{ display: "flex" }}>
-        <Typography
-          variant="subtitle1"
-          className="label"
-        >
+        <Typography variant="subtitle1" className="label">
           {reformatedLabel()}
         </Typography>
         <span>
           <TextField
+            onBlur={onBlur}
             value={value}
             defaultValue={defaultValue}
             name={name}

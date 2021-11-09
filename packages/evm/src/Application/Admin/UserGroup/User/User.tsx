@@ -28,6 +28,8 @@ import UserActionMenu from "./UserActionMenu"
 import { dateOptionsTypes } from './../../../../../src/utils/constant';
 import multitextDisplay from "../../../../components/DateDisplayComponent/MultiTextDisplay";
 import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
+import { CRXModalDialog } from "@cb/shared";
+import CreateUserForm from "./CreateUserForm";
 
 type User = {
     id: number;
@@ -70,6 +72,8 @@ const User: React.FC = () => {
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<User[]>();
+    const [open, setOpen] = React.useState(false);
+    const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
     const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
 
     const setData = () => {
@@ -436,11 +440,37 @@ const User: React.FC = () => {
         setHeadCells(headCellsArray);
     };
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+        setOpen(false);     
+    };
+    
+
     return (
         <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-            <CRXButton id={"createUser"}>
+            <CRXButton id={"createUser"} onClick={handleClickOpen}>
                 Create User
-            </CRXButton>
+            </CRXButton>     
+            <CRXModalDialog
+                className="createUser"
+                style={{minWidh:"550px"}}
+                maxWidth="xl" 
+                title="Create User" 
+                modelOpen={open} 
+                onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
+                closeWithConfirm={closeWithConfirm}
+            >
+                <CreateUserForm 
+                    setCloseWithConfirm={setCloseWithConfirm}  
+                    onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
+                />
+            </CRXModalDialog>
+
+
+
             {rows && (
                 <CRXDataTable
                     id="userDataTable"

@@ -18,3 +18,6 @@ export const GROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups?Page=1&Size=100`
 export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=100`
 
 export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=100`
+
+export const GROUP_USER_LIST = `${BASE_URL_USER_SERVICE}/Groups`
+export const USER = `${BASE_URL_USER_SERVICE}/users`
