@@ -16,8 +16,8 @@ type Props = {
   setIsOpen: any;
   isOpen: boolean;
   children?: React.ReactNode;
-  primary?:string,
-  secondary?:string
+  primary?: string,
+  secondary?: string
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -26,47 +26,47 @@ const CRXConfirmDialog: React.FC<Props> = ({
   onConfirm,
   setIsOpen,
   isOpen,
-  children,primary,secondary
+  children, primary, secondary
 }) => {
   return (
     <Dialog open={isOpen}>
       <DialogTitle>
-        <div style={{ display: "flex",    justifyContent:"space-between" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">{title || 'Please confirm'}</Typography>
           <CloseIcon onClick={() => setIsOpen(false)} />
         </div>
       </DialogTitle>
       <DialogContent
-      style={{
-        "overflowY": "scroll",
-        "maxHeight": "101px",
-      }}
+        style={{
+          "overflowY": "scroll",
+          "maxHeight": "101px",
+        }}
       >
         {children ? (
           children
         ) : (
-          <Typography variant="subtitle2">{content?content:<span>
+          <Typography variant="subtitle2">{content ? content : <span>
             You are attempting to close the modal dialog.  If you close the modal dialog, any changes you've made will not be saved. You will not be able to undo this action.
-            <br/>
-            <br/>
+            <br />
+            <br />
             Are you sure you would like to close the modal dialog?
           </span>
           }</Typography>
         )}
       </DialogContent>
       <div>
-      <hr/>
+        <hr />
 
       </div>
       <DialogActions style={{
-          "display":"flex",
-          "flexDirection":"row",
-          "justifyContent":"end",
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "end",
       }}>
         <Button className="primaryBtn"
-        style={{backgroundColor:"black",color:"white"}}
+          style={{ backgroundColor: "black", color: "white" }}
           onClick={() => {
-            onConfirm(); 
+            onConfirm();
             setIsOpen(false);
           }}
         >

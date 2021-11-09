@@ -82,7 +82,7 @@ const UserGroup: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [groupUsersCount]);
+  }, [groups, groupUsersCount]);
 
   const searchText = (
     rowsParam: GroupUser[],

@@ -32,7 +32,7 @@ import { CRXModalDialog } from "@cb/shared";
 import CreateUserForm from "./CreateUserForm";
 
 type User = {
-    id: number;
+    id: string;
     userName: string,
     firstName: string,
     lastName: string,

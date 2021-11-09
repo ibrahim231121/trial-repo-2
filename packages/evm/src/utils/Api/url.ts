@@ -23,3 +23,5 @@ export const GROUP_USER_LIST = `${BASE_URL_USER_SERVICE}/Groups`
 export const USER = `${BASE_URL_USER_SERVICE}/users`
 export const APPLICATION_PERMISSION_URL = `http://10.227.141.128:8088/Modules?Page=1&Size=100`
 
+
+export const USER_INFO_UPDATE_URL = `${BASE_URL_USER_SERVICE}/Users`
