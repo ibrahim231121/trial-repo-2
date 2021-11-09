@@ -154,19 +154,27 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     else setOpen(true);
   }, [orderData]);
 
+  const unCheckCurrentPage = () => {
+    const items = checkAllPageWise.filter(
+      (Item: CheckAllPageWise) => Item.page !== page
+    );
+    setCheckAllPageWise(items);
+  }
+
   const handleSelectAllClick = (event: boolean) => {
-    if (event)
+    if (event) {
+      // if commented then it will maintain old state
+      //setCheckAllPageWise([]); //remove previous selected CheckAllPageWise, then add new page.
       setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: event }])
+    }
     else {
-      const items = checkAllPageWise.filter(
-        (Item: CheckAllPageWise) => Item.page !== page
-      );
-      setCheckAllPageWise(items);
+      unCheckCurrentPage();
     }
 
     const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
     if (event) {
-      setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox
+      // if commented then it will maintain old state
+      //setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox.
       newSelecteds.map((item: any) => {
         setSelectedItems((prev: any) => [...prev, item]);
       })
@@ -192,6 +200,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
         (selectedItem: any) => selectedItem.id !== id
       );
       setSelectedItems(newSelected);
+      unCheckCurrentPage();
+      
     } else {
       setSelectedItems((prev: any) => [...prev, row]);
     }
@@ -199,10 +209,18 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
   useEffect(() => {
     getSelectedItems(selectedItems);
+    const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+      const newSelected = newSelecteds.map((item: any) => {
+        if(selectedItems.map((x:any) => x.id).includes(item.id))
+          return item.id
+        else  
+          return null
+      }).filter((y:any) => y !== null);
+      if(newSelected.length === rowsPerPage)
+        setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: true }])
   }, [selectedItems]);
 
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    console.log(event);
+  const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
 

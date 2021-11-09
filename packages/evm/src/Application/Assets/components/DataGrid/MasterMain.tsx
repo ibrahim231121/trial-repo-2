@@ -499,7 +499,7 @@ const MasterMain: React.FC<Props> = ({
           dragVisibility={true}
           showCheckBoxesCol={true}
           showActionCol={true}
-          showHeaderCheckAll={true}
+          showHeaderCheckAll={false}
           showTotalSelectedText={false}
         />
       )}

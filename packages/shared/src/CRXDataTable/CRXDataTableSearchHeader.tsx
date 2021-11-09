@@ -46,7 +46,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     if(!count)
       setCheckAll(false)
 
-  },[page])
+  },[page,checkAllPageWise])
 
   return (
     <TableHead>
