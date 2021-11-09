@@ -41,10 +41,6 @@ const UnitAndDevices: React.FC = () => {
   const dispatch = useDispatch();
   let history = useHistory();
 
-  React.useEffect(() => {
-    dispatch(getGroupAsync());
-    dispatch(getGroupUserCountAsync());
-  }, []);
 
   
 
@@ -56,6 +52,7 @@ const UnitAndDevices: React.FC = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<GroupUser[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<GroupUser[]>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<GroupUser>();
 
   const setData = () => {
 
@@ -218,7 +215,9 @@ const UnitAndDevices: React.FC = () => {
         <CRXDataTable
           id="Units & Devices"
           actionComponent={<UnitAndDevicesActionMenu />}
-
+          getRowOnActionClick={(val: GroupUser) =>
+            setSelectedActionRow(val)
+          }
 
           showToolbar={true}
           showCountText={true}

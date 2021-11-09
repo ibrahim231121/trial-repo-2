@@ -70,9 +70,3 @@ export const logOutUser = () => {
       
     
 } 
-
-
-}
-
-
-

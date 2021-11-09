@@ -25,12 +25,37 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             position="auto"
             className="menuCss"
             arrow
-            menuButton={
-                <MenuButton>
-                    <i className="fas fa-pen"></i>
-                </MenuButton>
-            }
+            menuButton={ <MenuButton><i className="far fa-ellipsis-v"></i></MenuButton> }
         >
+        <MenuItem>
+            <div className="crx-meu-content crx-spac groupingMenu">
+                <div className="crx-menu-icon">
+                <i className="fas fa-pen"></i>
+                </div>
+                <div className="crx-menu-list">
+                    Edit
+                </div>
+            </div>
+        </MenuItem>
+        <MenuItem>
+            <div className="crx-meu-content crx-spac">
+                <div className="crx-menu-icon">
+                </div>
+                <div className="crx-menu-list">
+                    Assign user(s)
+                </div>
+            </div>
+        </MenuItem>
+        <MenuItem>
+            <div className="crx-meu-content crx-spac">
+                <div className="crx-menu-icon">
+                </div>
+                <div className="crx-menu-list">
+                    Deactivate
+                </div>
+            </div>
+        </MenuItem>
+
         </Menu>
     );
 };
