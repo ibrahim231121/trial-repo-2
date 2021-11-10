@@ -1,0 +1,47 @@
+.dataPermissionColumn {
+    background: #333;
+    color: #f5f5f5;
+    text-align: center;
+    place-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    &:nth-child(2) {
+        border-left: 1px solid #f5f5f5;
+        border-right: 1px solid #f5f5f5;
+    }
+}
+
+.removeBtn {
+    padding: 0;
+    line-height: 0;
+    background: transparent;
+    font-size: 14px;
+    border: 0px;
+    color: #333;
+    border-radius: 100px;
+    vertical-align: middle;
+    position: relative;
+    &::before {
+      content: "\10f056";
+      font-family: "Font Awesome 5 Duotone";
+      position: relative;
+      right: 0px;
+      top: 0px;
+    }
+    .MuiSvgIcon-root {
+      fill: #fff;
+      position: relative;
+      top: -5px;
+      font-size: 1em;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .permissionCol {
+      padding: 10px 15px;
+    .adVSelectBox {
+        width: 100%;
+    }   
+  }

@@ -19,6 +19,7 @@ type SelectBoxProps = {
   defaultOptionText: string;
   ref?: any;
   IconComponent?: any;
+  disabled:boolean
 };
 
 //Style For Select Menu Paper
@@ -64,6 +65,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       options,
       defaultOption = true,
       defaultOptionText = "Please Select",
+      disabled=false
     },
     ref
   ) => {
@@ -74,7 +76,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         </StyledMenuItem>
       );
     });
-
+    
     return (
       <Select
         ref={ref}
@@ -100,6 +102,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
           },
           getContentAnchorEl: null,
         }}
+        disabled={disabled}
       >
         {defaultOption && (
           <StyledMenuItem

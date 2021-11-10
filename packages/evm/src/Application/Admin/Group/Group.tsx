@@ -3,6 +3,7 @@ import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import User from '../Group/components/User';
 import { useHistory } from "react-router";
 import Application from "../Group/components/Application"
+import DataPermission from "./components/DataPermission";
 
 const Group = () => {
   const [value, setValue] = React.useState(0);
@@ -35,7 +36,7 @@ const Group = () => {
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={3}>
-          <div>DATA PERMISSIONS</div>
+          <DataPermission></DataPermission>
         </CrxTabPanel>
       </>
       <div style={{
@@ -49,7 +50,7 @@ const Group = () => {
         <CRXButton disabled={true}>Save</CRXButton>
         <CRXButton  onClick={()=> history.push('/admin/usergroups')}>Cancel</CRXButton>
       </div>
-        <CRXButton>Close</CRXButton>
+        <CRXButton>Close</CRXButton> */}
       </div>
     </div>
   );
