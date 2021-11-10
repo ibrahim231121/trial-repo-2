@@ -34,7 +34,7 @@ const CRXInput = ({
   required,
   id,
   type,
-  label,
+  label,...others
 }: InputProps) => {
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
@@ -90,6 +90,7 @@ const CRXInput = ({
             id={id}
             type={type}
             placeholder={placeholder}
+            {...others}
           />
           {error && (
             <Typography

@@ -4,6 +4,7 @@ import User from '../Group/components/User';
 import { useHistory } from "react-router";
 import Application from "../Group/components/Application"
 import DataPermission from "./components/DataPermission";
+import GroupInfo from "./GroupInfo";
 
 const Group = () => {
   const [value, setValue] = React.useState(0);
@@ -24,7 +25,7 @@ const Group = () => {
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
 
         <CrxTabPanel value={value} index={0}>
-          <div>GROUP NAME</div>
+          <GroupInfo/>
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={1}>
