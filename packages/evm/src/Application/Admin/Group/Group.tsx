@@ -50,7 +50,7 @@ const Group = () => {
         <CRXButton disabled={true}>Save</CRXButton>
         <CRXButton  onClick={()=> history.push('/admin/usergroups')}>Cancel</CRXButton>
       </div>
-        <CRXButton>Close</CRXButton> */}
+        <CRXButton>Close</CRXButton> 
       </div>
     </div>
   );
