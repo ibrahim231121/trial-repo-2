@@ -26,6 +26,7 @@ import {
 import UserGroupActionMenu from "./UserGroupActionMenu";
 import TextSearch from "../../../components/SearchComponents/TextSearch";
 import { CRXButton } from "@cb/shared";
+import { CRXModalDialog } from "@cb/shared";
 
 type GroupUser = {
   id: number;
@@ -56,6 +57,7 @@ const UserGroup: React.FC = () => {
 
   const [reformattedRows, setReformattedRows] = React.useState<GroupUser[]>();
 
+
   const setData = () => {
 
     let groupRows: GroupUser[] = []
@@ -80,7 +82,7 @@ const UserGroup: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [groupUsersCount]);
+  }, [groups, groupUsersCount]);
 
   const searchText = (
     rowsParam: GroupUser[],

@@ -1,9 +1,14 @@
 import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import User from '../Group/components/User';
+import { useHistory } from "react-router";
+import Application from "../Group/components/Application"
+import DataPermission from "./components/DataPermission";
+import GroupInfo from "./GroupInfo";
 
 const Group = () => {
   const [value, setValue] = React.useState(0);
+  const history = useHistory()
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -20,7 +25,7 @@ const Group = () => {
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
 
         <CrxTabPanel value={value} index={0}>
-          <div>GROUP NAME</div>
+          <GroupInfo/>
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={1}>
@@ -28,11 +33,11 @@ const Group = () => {
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={2}>
-          <div>APPLICATION PERMISSIONS</div>
+          <Application></Application>
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={3}>
-          <div>DATA PERMISSIONS</div>
+          <DataPermission></DataPermission>
         </CrxTabPanel>
       </>
       <div style={{
@@ -42,11 +47,11 @@ const Group = () => {
         justifyContent: "space-between",
         width: '92%'
       }}>
-        <div>
-          <CRXButton disabled={true}>Save</CRXButton>
-          <CRXButton disabled={true}>Cancel</CRXButton>
-        </div>
-        <CRXButton>Close</CRXButton>
+      <div>
+        <CRXButton disabled={true}>Save</CRXButton>
+        <CRXButton  onClick={()=> history.push('/admin/usergroups')}>Cancel</CRXButton>
+      </div>
+        <CRXButton>Close</CRXButton> 
       </div>
     </div>
   );

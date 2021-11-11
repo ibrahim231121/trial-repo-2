@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -12,7 +12,6 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import {
   useStyles,
   MultiLevelProps,
-  HeadCellProps,
   theme,
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
@@ -40,15 +39,15 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>, colIdx:number) => {
     if(colIdx === finalLevel-1) {
       setCheckAllBasicLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"basic")
+      onSetCheckAllLevel(e.target.checked,"Basic")
     }
     else if(colIdx === finalLevel) {
       setCheckAllAdvanceLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"advance")
+      onSetCheckAllLevel(e.target.checked,"Advance")
     }
     else if(colIdx === finalLevel+1) {
       setCheckAllRestrictLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"restrict")
+      onSetCheckAllLevel(e.target.checked,"Restrictive")
     }
   }
 
@@ -56,11 +55,11 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
     setActive(!active)
     onSetRow(check, row)
     if(row.levelType !== undefined && check === false) {
-      if(row.levelType === "basic") 
+      if(row.levelType === "Basic") 
         setCheckAllBasicLevel(check)
-      else if(row.levelType === "advance") 
+      else if(row.levelType === "Advance") 
         setCheckAllAdvanceLevel(check)
-      else if(row.levelType === "restrict") 
+      else if(row.levelType === "Restrictive") 
         setCheckAllRestrictLevel(check)
       onUnCheckAllParent(check, row)
     }
@@ -235,21 +234,21 @@ const LastLevelRow: React.FC<any> = ({row, collapsible, child, onSetRow}) => {
           (child && child.length > 0) ? 
           <>
             <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
-                {child.filter((x:any) => x.levelType === "basic").map((item:any) => {                   
+                {child.filter((x:any) => x.levelType === "Basic").map((item:any) => {                   
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
                 )}
             </TableCell>
 
             <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
-                {child.filter((x:any) => x.levelType === "advance").map((item:any) => {
+                {child.filter((x:any) => x.levelType === "Advance").map((item:any) => {
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
                 )}
             </TableCell>
 
             <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
-                {child.filter((x:any) => x.levelType === "restrict").map((item:any) => {
+                {child.filter((x:any) => x.levelType === "Restrictive").map((item:any) => {
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
                 )}

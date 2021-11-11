@@ -4,6 +4,7 @@ import './modal.scss';
 
 //CRX Modal
 import { makeStyles } from "@material-ui/core/styles";
+import CRXConfirmDialog from '../components/CRXConfirmDialog/CRXConfirmDialog'
 
 type maxWith = 'lg' | 'md' | 'sm' | 'xl' | 'xs';
 type mouseEvents = React.MouseEvent<HTMLElement>; 
@@ -19,12 +20,16 @@ export interface crxDialogProps {
   saveButtonTxt: string,
   cancelButtonTxt: string,
   secondaryButton? : boolean,
+  primaryButton? : boolean,
+  closeWithConfirm? : boolean,
+  confirmContent:any,
   id? : string
 }
 
 
 
 const CRXModalDialog = (props: crxDialogProps) => {
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const widgetStyle = makeStyles({
     CRXArrowStyle: {
@@ -46,8 +51,9 @@ const CRXModalDialog = (props: crxDialogProps) => {
     className, 
     maxWidth,
     secondaryButton = false,
+    primaryButton = false,
     cancelButtonTxt, 
-    saveButtonTxt = "Primery Button" } = props;
+    saveButtonTxt = "Primery Button" ,closeWithConfirm} = props;
 
   return (
     <Dialog 
@@ -61,25 +67,35 @@ const CRXModalDialog = (props: crxDialogProps) => {
          <div className="CRXPopupCrossButton">
             <Button
               className={classes.CRXArrowStyle + " CRXCloseButton"}
-              onClick={onClose}
+              onClick={(e:any)=>closeWithConfirm ? setIsOpen(true):onClose(e)}
               disableRipple={true}>
               <i className="icon-cross2 closeModalIcon"></i>
             </Button>
           </div>
-        <DialogTitle className="modelTitle">{title}</DialogTitle>
-        <div className="CRXContent">
+        <DialogTitle className="modelTitle">{title }</DialogTitle>
+        <div className="CRXContent CRXContent_user ">
           { children }
+        <CRXConfirmDialog
+        setIsOpen={setIsOpen}
+        onConfirm={onClose}
+        isOpen={isOpen}
+        primary="Yes"
+        secondary="No"
+     />
         </div>
-        <Divider className="CRXDivider" />
+        {primaryButton || secondaryButton && <>
+          <Divider className="CRXDivider" />
+        
         <DialogActions className="CRXFooter">
         
-            <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e : mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
-            {
+           {primaryButton && <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e : mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
+        }    {
               secondaryButton &&
               <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e : mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
               
             }
         </DialogActions>
+        </>}
     </Dialog>
   );
 }

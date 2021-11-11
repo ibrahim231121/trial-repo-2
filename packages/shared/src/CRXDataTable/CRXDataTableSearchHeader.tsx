@@ -28,14 +28,12 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   checkAllPageWise,
 }) => {
   const classes = useStyles();
-
   const [checkAll, setCheckAll] = React.useState<boolean>(false);
 
   const handleCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckAll(event.target.checked);
     onSetCheckAll(event.target.checked)
   }
-
   useEffect(() => {
     let count: boolean = false
     checkAllPageWise.map((item:CheckAllPageWise) => {
@@ -48,7 +46,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     if(!count)
       setCheckAll(false)
 
-  },[page])
+  },[page,checkAllPageWise])
 
   return (
     <TableHead>
