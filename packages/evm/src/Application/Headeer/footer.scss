@@ -1,7 +1,7 @@
 .footerDiv {
   padding-left: 80px;
   font-size: 12px;
-  position: fixed;
+  position: sticky;
   color: #666666;
   height: 30px;
   display: flex;
@@ -13,7 +13,6 @@
   z-index: 1;
 
   i {
-    font-weight: 400;
     position: absolute;
     right: 16px;
     font-size: 24px;

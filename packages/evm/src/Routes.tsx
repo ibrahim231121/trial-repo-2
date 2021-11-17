@@ -31,7 +31,7 @@ const Routes = () => {
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
           </CRXAppBar>
           <main
-            className={clsx(classes.content, {
+            className={clsx(classes.content,'crx-main-container', {
               [classes.contentShift]: open,
             })}
           >
