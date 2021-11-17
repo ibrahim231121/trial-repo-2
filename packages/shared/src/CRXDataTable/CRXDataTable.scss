@@ -197,14 +197,34 @@
   border-top: 1px solid #d1d2d4;
   padding: 21px 0px 15px 28px;
   margin-top: 0px;
+  .closeDRP.Mui-disabled {
+    background-color: #e5e5e5 !important;
+    span {
+      color: #979797 !important;
+    }
+  }
   .closeDRP {
     width: 128px;
     height: 30px;
     padding: 6px 0px;
     margin-right: 32px;
+    background-color: #333333 !important;
+    box-shadow: none !important;
     span {
       color: #d1d2d4;
       font-size: 14px;
+    }
+    &:hover {
+      background-color: #6E6E6E !important;
+      span {
+        color: #F5F5F5;
+      }
+    }
+    &:focus {
+      background-color:#231F20 !important;
+      span {
+        color: #F5F5F5;
+      }
     }
   }
   .MuiFormControlLabel-root {
@@ -604,13 +624,16 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
 
 #resetCheckBox {
   border: 0px;
-  margin-right: 44px;
+  margin-right: 46px;
   color: #333333;
   height: 30px;
+  width: 130px;
+  padding: 0;
   border: 1px solid transparent;
   border-radius: 0;
   &:hover {
     border: 1px solid #333333;
+    background: #F5F5F5 !important;
   }
 }
 
