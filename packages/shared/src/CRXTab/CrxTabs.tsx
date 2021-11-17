@@ -2,6 +2,7 @@ import * as React from 'react';
 import {  withStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import  "./CrxTab.scss";
 
 const CrxTabsParent = withStyles({
     root: {
@@ -70,6 +71,7 @@ const CRXTabs = ({value, onChange, tabitems, selectionFollowsFocus = true} : Sty
             value={value}
             onChange={onChange}
             aria-label="ant example"
+            className="crxMainTab"
         >
           {tabItemsRender}
         </CrxTabsParent>
