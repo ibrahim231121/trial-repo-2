@@ -40,4 +40,5 @@ export { default as CrxTabPanel} from './CRXTab/CrxTabPanel'
 export { default as CRXTabs} from './CRXTab/CrxTabs'
 export { default as CRXDataTableMultiLevel} from './CRXDataTable/CRXDataTableMultiLevel'
 export { default as CRXMultiSelectBoxAutocomplete} from './controls/CRXMultiSelectAutocomplete/CRXAutocompleteSelect'
+export { default as CRXRadio} from './controls/CRXRadio/CRXRadio'
 

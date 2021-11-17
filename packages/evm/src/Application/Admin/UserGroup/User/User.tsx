@@ -75,6 +75,8 @@ const User: React.FC = () => {
     const [open, setOpen] = React.useState(false);
     const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
     const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
+    const [open, setOpen] = React.useState(false);
+    const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
 
     const setData = () => {
         let userRows: User[] = [];
