@@ -8,7 +8,7 @@ import { createStore } from 'redux';
 const persistConfig = {
   key: 'timerReducers',
   storage: storage,
-  whitelist: ['timerReducers'] // which reducer want to store
+  whitelist: ['timerReducers','cultureReducer'] // which reducer want to store
 };
 
 const pReducer = persistReducer(persistConfig,reducer);

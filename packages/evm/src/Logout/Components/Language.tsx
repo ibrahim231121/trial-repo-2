@@ -20,7 +20,7 @@ export default function Language() {
         top: '0px',
         right: '0px',
         zIndex: 9,
-        display: "flex",
+        display: "none",
         width: "149px",
         height: "40px",
         justifyContent: 'center',

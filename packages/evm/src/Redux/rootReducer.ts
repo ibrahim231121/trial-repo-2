@@ -4,12 +4,14 @@ import assetBucketSlice from './AssetActionReducer';
 import groupSlice from './GroupReducer';
 import userSlice from './UserReducer';
 import timerSlice from './timerslice';
+import cultureSlice from './languageSlice';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
-  groupReducer: groupSlice.reducer,
+  groupReducer: groupSlice.reducer, 
+  timerReducers: timerSlice.reducer,
   userReducer: userSlice.reducer,
- timerReducers: timerSlice.reducer
+  cultureReducer: cultureSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

@@ -11,14 +11,39 @@ import {useTranslation} from 'react-i18next';
 import "../../evm/src/utils/Localizer/i18n"
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { cultureActionCreator } from "./Redux/languageSlice";
+import { RootState } from "./Redux/rootReducer";
+import { CRXDropDown  } from "@cb/shared";
+import {CRXSelectBox} from "@cb/shared";
+import "./App.scss";
 
 function App() {
-  let culture: string = "en";
-  const [resources, setResources] = React.useState<any>("");
+ 
+  const value: string = useSelector((state: RootState) => state.cultureReducer.value);
+  const options=[
+    { value: "en", displayText: "English" },
+    { value: "fr", displayText: "French (CA)" },
+    { value: "pl", displayText: "Polish" },
+    { value: "uk", displayText: "English (UK)" },
+    { value: "isr", displayText: "Hebrew" },
+  ]
+  let culture:string = useSelector((state: RootState) => state.cultureReducer.value);
+  const [resources, setResources] = useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch()
- 
+  const [open, setOpen] = useState(true);
+  const classes = CRXPanelStyle();
+
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
+  const handleChange = (event:any) => {
+    dispatch(cultureActionCreator(event.target.value)) 
+  }
+  dispatch(cultureActionCreator(value))
+  
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
       setResources(res.resources);
@@ -39,6 +64,19 @@ function App() {
       i18n.changeLanguage("fr");
       setRTL("ltr");
     }
+    else if (i18n.language === "isr") {
+      i18n.changeLanguage("isr");
+      setRTL("ltr");
+    }
+    else if (i18n.language === "pl") {
+      i18n.changeLanguage("pl");
+      setRTL("ltr");
+    }
+    else if (i18n.language === "uk") {
+      i18n.changeLanguage("uk");
+      setRTL("ltr");
+    }
+    
   }, [culture, resources]);
 
   const onDragStart = (e: any) => {
@@ -216,6 +254,28 @@ function App() {
   
   return (
     <div dir={rtl}>
+   
+       {/* <CRXDropDown 
+            id="languageSelector"
+            options={options}
+            value={value}
+            onChange={handleChange} 
+            > 
+            <i className="far fa-globe language_world"></i>
+            <i className="fas fa-sort-down language_arrow"></i>
+            </CRXDropDown> */}
+        <div className="language_selector_app">
+          <CRXSelectBox 
+          options={options} 
+          id="simpleSelectBox" 
+          onChange={handleChange} 
+          value={value}
+          icon={true}
+           />
+          <i className="fal fa-globe world_language_icon"></i>
+        </div>
+
+      
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
         {/* <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
