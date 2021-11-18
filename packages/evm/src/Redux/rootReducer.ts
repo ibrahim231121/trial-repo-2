@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 import pathNameReducer from './breadCrumbReducer';
 import assetBucketSlice from './AssetActionReducer';
 import groupSlice from './GroupReducer';
+import unitSlice from './UnitReducer';
 import userSlice from './UserReducer';
 import timerSlice from './timerslice';
 import cultureSlice from './languageSlice';
@@ -12,6 +13,7 @@ export const reducer = combineReducers({
   groupReducer: groupSlice.reducer, 
   timerReducers: timerSlice.reducer,
   userReducer: userSlice.reducer,
-  cultureReducer: cultureSlice.reducer
+  cultureReducer: cultureSlice.reducer,
+  unitReducer: unitSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>
