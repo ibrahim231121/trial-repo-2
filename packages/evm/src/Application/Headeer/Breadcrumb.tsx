@@ -54,17 +54,13 @@ React.useEffect(()=>{
   "/assets": [
       { routeTo: "/assets", type: "CBXLink", label: "Assets", },
       { type: "text",  label:breadCrumbValueRedux, }
-    ],
-    "/unitsanddevices": [
-      { routeTo: "/unitsanddevices", type: "CBXLink", label: "Units & devices", },
-      { type: "text",  label:breadCrumbValueRedux, }
-    ],
+    ]
   }
 
   const classes = CRXPanelStyle();
 
   const getTitle = () => {
-    const paths = urlList[urlPath];
+    const paths = getUrlList();
     if(paths)
     {
       const pathName = paths[paths.length - 1].label
@@ -76,7 +72,7 @@ React.useEffect(()=>{
 
   const getPaths = () => 
   {
-    let paths:BreadCrumbItem[] = urlList[urlPath];
+    let paths:BreadCrumbItem[] = getUrlList();
     
     if(breadCrumbValueRedux){
       paths= breadCrumbPathRedux[urlPath]
@@ -110,6 +106,26 @@ React.useEffect(()=>{
       })
     )
   };
+  const getUrlList = () =>
+  {
+    let regex = /\b\/detail\b\//g;
+
+    if(regex.test(urlPath))
+    {
+      let urlPathArray = urlPath.split("/");
+      let detailIndex = urlPathArray.indexOf("detail");
+      let id = urlPathArray[detailIndex + 1];
+      urlPathArray[detailIndex + 1] = ":id"
+      let newUrlPath = urlPathArray.join("/");
+      let ret  = urlList[newUrlPath];
+      ret[ret.length - 1].label = ret[ret.length - 1].label.replace("<id>", id);
+      return ret
+    }
+    else
+    {
+      return urlList[urlPath];
+    }
+  };
 
   return (
     <div
@@ -120,7 +136,7 @@ React.useEffect(()=>{
         })
       }
     >
-      {urlList[urlPath] &&
+      {getUrlList() &&
       <>
         <CRXBreadcrumb  maxItems={width <= 650 ? 3 : 100}>
           <Link className="brdLinks breadCrumbItem" to="/">

@@ -39,12 +39,12 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { type: "text", label: "Manage Unit Configuration", },
     ],
-    "/unitsanddevices/detail": [
+    "/unitsanddevices/detail/:id": [
         { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-        { type: "text", label: "Unit Id", },
+        { type: "text", label: "Unit Detail: <id>"},
     ],
-    "/assets/assetDetails/:id": [
-        { type: "text", label: "Assets", },
-        { type: "text", label: "Asset Details Page", },
+    "/assets/detail/:id": [
+        { routeTo: "/assets", type: "link", label: "Assets", },
+        { type: "text", label: "Asset Detail: <id>" },
     ]
 };

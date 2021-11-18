@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UnitsAndDevicesDetail = () => {
+const UnitsAndDevicesDetail = (props:any) => {
 
     return (
 

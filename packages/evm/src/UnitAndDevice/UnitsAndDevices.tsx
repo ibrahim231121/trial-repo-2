@@ -28,6 +28,7 @@ import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
 import TextSearch from "../components/SearchComponents/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { logOutUser } from "../Login/API/auth";
+import { CBXLink } from "@cb/shared";
 
 type GroupUser = {
   id: number;
@@ -116,10 +117,7 @@ const UnitAndDevices: React.FC = () => {
     };
 
     const unitDetail = (name: string) => {
-
-      //dispatch(enterPathActionCreator({ val: name }));
-
-      return <a href={"/unitsanddevices/detail"} >{name}</a>
+      return(<CBXLink key={name} children = {name}  className={"linkColor"}  id={name} href={"/unitsanddevices/detail/"+name} />);
     };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
