@@ -14,11 +14,13 @@ export const AUTHENTICATION_LOGIN_URL = `${BASE_URL_AUTHENTICATION_SERVICE}/Auth
 
 export const AUTHENTICATION_CODEVERIFIER_URL = `${BASE_URL_AUTHENTICATION_SERVICE}/Authentication/CodeVerifier`
 
+export const AUTHENTICATION_EMAIL_SERVICE = `${BASE_URL_AUTHENTICATION_SERVICE}/Authentication/ActivateUser`
+
 export const GROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups?Page=1&Size=100`
 
 export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=100`
 
-export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=100`
+export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
 
 export const GROUP_USER_LIST = `${BASE_URL_USER_SERVICE}/Groups`
 export const USER = `${BASE_URL_USER_SERVICE}/users`

@@ -66,6 +66,7 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
   };
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
+    dispatch(getUsersInfoAsync());
   };
 
     return (
