@@ -32,8 +32,12 @@ type User = {
     lastName: string,
     groups: string[]
 }
+type infoProps = {
+    ids: Number[],
+    onChangeUserIds: any
+}
 
-const User: React.FC = () => {
+const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
 
@@ -69,9 +73,21 @@ const User: React.FC = () => {
                 }
             })
         }
+        //set selected users in edit case
+        let selectedUsers = userRows.filter(x => {
+            if (ids.indexOf(x.id) > -1)
+                return x;
+        });
+        setSelectedItems(selectedUsers);
         setRows(userRows)
         setReformattedRows(userRows);
     }
+
+    React.useEffect(() => {
+        if (rows.length > 0) {
+            onChangeUserIds(selectedItems.map(x => x.id));
+        }
+    }, [selectedItems]);
 
     React.useEffect(() => {
         setData();

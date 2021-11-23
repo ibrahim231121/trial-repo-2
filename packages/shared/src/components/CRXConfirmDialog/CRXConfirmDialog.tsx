@@ -18,6 +18,7 @@ type Props = {
   children?: React.ReactNode;
   primary?: string,
   secondary?: string
+  text?: string;
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -26,7 +27,8 @@ const CRXConfirmDialog: React.FC<Props> = ({
   onConfirm,
   setIsOpen,
   isOpen,
-  children, primary, secondary
+  children, primary, secondary,
+  text
 }) => {
   return (
     <Dialog open={isOpen}>
@@ -46,10 +48,12 @@ const CRXConfirmDialog: React.FC<Props> = ({
           children
         ) : (
           <Typography variant="subtitle2">{content ? content : <span>
-            You are attempting to close the modal dialog.  If you close the modal dialog, any changes you've made will not be saved. You will not be able to undo this action.
+            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog" )}. 
+            If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}, any changes you've made will not be saved. 
+            You will not be able to undo this action.
             <br />
             <br />
-            Are you sure you would like to close the modal dialog?
+            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}?
           </span>
           }</Typography>
         )}

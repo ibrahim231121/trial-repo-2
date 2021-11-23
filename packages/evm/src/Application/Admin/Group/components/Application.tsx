@@ -4,56 +4,24 @@ import { useTranslation } from "react-i18next";
 import { HeadCellProps } from "../../../../utils/globalDataTableFunctions";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { APPLICATION_PERMISSION_URL } from '../../../../utils/Api/url'
+import { idText } from "typescript";
+import { ApplicationPermission } from "../Group"
 
-type ApplicationPermission = {
-  id: number;
-  name: string;
-  level: number;
-  selected: boolean;
-  levelType?: string;
-  children?: ApplicationPermission[];
+
+type Props = {
+  subModulesIds: Number[];
+  applicationPermissions: ApplicationPermission[];
+  onSetAppPermissions: any; 
 }
 
-const Application: React.FC = () => {
+const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, applicationPermissions}) => {
   const { t } = useTranslation<string>();
 
-  const [rows, setRows] = React.useState<ApplicationPermission[]>([]);
-  const [getResponse, res] = useGetFetch<any>(APPLICATION_PERMISSION_URL,{ 'Content-Type': 'application/json', 'TenantId': '1' });
-  const finalLevel: number = 2 
+  const finalLevel: number = 2
 
-  React.useEffect(() => {
-    getResponse();
-  }, []);
+  const [applicationPermissionsActual, setApplicationPermissionsActual] = React.useState<ApplicationPermission[]>([]);
 
-  React.useEffect(() => {
-    // only for 2 levels
-    if(res !== undefined) {
-    let appPermission = res.map((response: any) => {
-      let x: ApplicationPermission = {
-        id: response.id,
-        name: response.name,
-        level: 1,
-        selected: false,
-        children: ((response.subModules && response.subModules.length > 0) ? 
-                    response.subModules.map((subModule: any) => {
-                      let y: ApplicationPermission = {
-                        id: subModule.id,
-                        name: subModule.name,
-                        level: 2,
-                        selected: false,
-                        levelType: subModule.subModuleGroupName
-                      }
-                      return y
-                    })
-                    : null
-                  )
-        }
-        return x
-      })
-      setRows(appPermission);
-    }
-  }, [res]);
-
+  const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(APPLICATION_PERMISSION_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // {
@@ -101,59 +69,108 @@ const Application: React.FC = () => {
     }
   ]);
 
-  const onSetRow = (check:boolean, row:any) => {
-    setCheckAllValues(check, row)
+  React.useEffect(() => {
+      getResponseAppPermission();
+  }, [])
+
+  const getPermissions = (AppPermissions: any) => {
+    let appPermission = AppPermissions.map((response: any) => {
+      let x: ApplicationPermission = {
+        id: response.id,
+        name: response.name,
+        level: 1,
+        selected: false,
+        children: ((response.subModules && response.subModules.length > 0) ?
+          response.subModules.map((subModule: any) => {
+            let y: ApplicationPermission = {
+              id: subModule.id,
+              name: subModule.name,
+              level: 2,
+              selected: subModulesIds.indexOf(subModule.id) > -1 ? true : false,
+              levelType: subModule.subModuleGroupName
+            }
+            return y
+          })
+          : null
+        )
+      }
+      return x
+    })
+    return appPermission
   }
 
-  const onSetCheckAllLevel = (checkAll: boolean, type:string) => {
-    rows.map((row: any) => {
+  React.useEffect(() => {
+    // only for 2 levels
+    if (resAppPermission !== undefined) {
+      //setApplicationPermissions(getPermissions(resAppPermission));
+      if(applicationPermissions.length === 0)
+        onSetAppPermissions(getPermissions(resAppPermission),onChangeAppPermissions())
+      setApplicationPermissionsActual(getPermissions(resAppPermission));
+    }
+  }, [resAppPermission]);
+
+  const onChangeAppPermissions = () => {
+    if (JSON.stringify(applicationPermissions) !== JSON.stringify(applicationPermissionsActual))
+     return true
+    else
+     return false
+  }
+
+  const onSetRow = (check: boolean, row: any) => {
+    setCheckAllValues(check, row)
+    onSetAppPermissions(applicationPermissions,onChangeAppPermissions())
+  }
+
+  const onSetCheckAllLevel = (checkAll: boolean, type: string) => {
+    applicationPermissions.map((row: any) => {
       return setCheckAllValues(checkAll, row, type)
     })
+    onSetAppPermissions(applicationPermissions,onChangeAppPermissions())
   }
 
-  const setCheckAllValues = (checkAll: boolean, row:ApplicationPermission, type?:string) => {
-    
-    if( 
-        (type !== undefined  && row.levelType === type) ||  // For Vertical CheckAll only
-        (type !== undefined && row.levelType === undefined && checkAll === false) || // For Vertical CheckAll only
-        (type === undefined)  // For Horizontal CheckAll only
-      ) 
-      row.selected = checkAll       
-    
-    if(row.children && row.children.length > 0) {
-      row.children.map((item:any) => {  
+  const setCheckAllValues = (checkAll: boolean, row: ApplicationPermission, type?: string) => {
+
+    if (
+      (type !== undefined && row.levelType === type) ||  // For Vertical CheckAll only
+      (type !== undefined && row.levelType === undefined && checkAll === false) || // For Vertical CheckAll only
+      (type === undefined)  // For Horizontal CheckAll only
+    )
+      row.selected = checkAll
+
+    if (row.children && row.children.length > 0) {
+      row.children.map((item: any) => {
         return setCheckAllValues(checkAll, item, type)
       });
     }
     return row
   }
-  
+
   // only for 2 levels
-  const onUnCheckAllParent = (check:boolean, row:any) => {
-    rows.map((item: any) => {
+  const onUnCheckAllParent = (check: boolean, row: any) => {
+    applicationPermissions.map((item: any) => {
       item.children.map((x: any) => {
-        if(x === row) {
+        if (x === row) {
           item.selected = false
           return true
         }
       })
-      
+
     })
   }
 
   return (
 
-      rows && (
-        <CRXDataTableMultiLevel
-          headCells={headCells}
-          rows={rows}
-          className="ManageAssetDataTable"
-          finalLevel={finalLevel}
-          onSetRow={onSetRow}
-          onSetCheckAllLevel={onSetCheckAllLevel}
-          onUnCheckAllParent={onUnCheckAllParent}
-        />
-      )
+    applicationPermissions && (
+      <CRXDataTableMultiLevel
+        headCells={headCells}
+        rows={applicationPermissions}
+        className="ManageAssetDataTable"
+        finalLevel={finalLevel}
+        onSetRow={onSetRow}
+        onSetCheckAllLevel={onSetCheckAllLevel}
+        onUnCheckAllParent={onUnCheckAllParent}
+      />
+    )
   )
 }
 

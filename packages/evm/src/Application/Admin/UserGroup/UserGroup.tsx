@@ -67,10 +67,10 @@ const UserGroup: React.FC = () => {
         if (index !== -1) {
           let count = groupUsersCount[index].userCount
           count = count ? count : 0
-          return { id: group.id, name: group.name, description: group.description, userCount: count }
+          return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: count }
         }
         else {
-          return { id: group.id, name: group.name, description: group.description, userCount: 0 }
+          return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: 0 }
         }
       })
 

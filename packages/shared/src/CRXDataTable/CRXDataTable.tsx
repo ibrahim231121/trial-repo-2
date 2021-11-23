@@ -142,7 +142,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     setOrderData({ order: isAsc ? "desc" : "asc", orderBy: property });
     setPage(0);
     setCheckAllPageWise([])
-    setSelectedItems([]);
+    //setSelectedItems([]);
   };
 
   useEffect(() => {
@@ -176,7 +176,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       // if commented then it will maintain old state
       //setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox.
       newSelecteds.map((item: any) => {
-        setSelectedItems((prev: any) => [...prev, item]);
+        setSelectedItems((prev: any) =>
+          [...(prev.filter((x: any) => x.id !== item.id)), item]
+        );
       })
       return;
     }
@@ -210,14 +212,14 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   useEffect(() => {
     getSelectedItems(selectedItems);
     const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
-      const newSelected = newSelecteds.map((item: any) => {
-        if(selectedItems.map((x:any) => x.id).includes(item.id))
-          return item.id
-        else  
-          return null
-      }).filter((y:any) => y !== null);
-      if(newSelected.length === rowsPerPage)
-        setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: true }])
+    const newSelected = newSelecteds.map((item: any) => {
+      if (selectedItems.map((x: any) => x.id).includes(item.id))
+        return item.id
+      else
+        return null
+    }).filter((y: any) => y !== null);
+    if (newSelected.length === rowsPerPage)
+      setCheckAllPageWise((prev: CheckAllPageWise[]) => [...prev, { page, isChecked: true }])
   }, [selectedItems]);
 
   const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -230,7 +232,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setCheckAllPageWise([])
-    setSelectedItems([]);
+    //setSelectedItems([]);
   };
 
   const onReorderEnd = useCallback(
