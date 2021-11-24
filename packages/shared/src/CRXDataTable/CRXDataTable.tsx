@@ -45,7 +45,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
   const [open, setOpen] = React.useState<boolean>(false);
   const [orderData, setOrderData] = React.useState<OrderData>({
     order: orderParam,

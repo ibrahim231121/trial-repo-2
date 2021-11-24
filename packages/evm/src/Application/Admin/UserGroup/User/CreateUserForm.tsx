@@ -273,7 +273,6 @@ const CreateUserForm: React.FC<Props> = ({
       middleInitial,
       lastName,
       email,
-      phoneNumber,
       userGroups,
       deactivationDate,
     } = formpayload;
@@ -293,7 +292,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
       setCloseWithConfirm(false);
-    } else if (userName && firstName && lastName && validateEmail(email) && userGroups.length > 0) {
+    } else if (userName && firstName && lastName && email ) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -617,6 +616,42 @@ const CreateUserForm: React.FC<Props> = ({
     );
   };
 
+
+const validatePhone = (phoneNumber : string) => {
+  const re =
+      /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/;
+    return re.test(String(phoneNumber));
+}
+
+const checkPhoneumber = () => {
+  const isPhoneValidate = validatePhone(formpayload.phoneNumber);
+  if (!formpayload.phoneNumber) {
+    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
+  }
+  else if (!isPhoneValidate) {
+    setFormPayloadErr({
+      ...formpayloadErr,
+      phoneNumberErr: "Please provide a valid phone number",
+    });
+  } 
+  else{
+    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
+  }
+};
+
+const checkUserGroup = () => {
+
+  if (formpayload.userGroups.length === 0 || !formpayload.userGroups) {
+    setFormPayloadErr({
+      ...formpayloadErr,
+      userGroupErr: "User group is required",
+    });
+  }
+   else {
+    setFormPayloadErr({ ...formpayloadErr, userGroupErr: "" });
+  }
+};
+
   return (
     <div className="modal_user_crx">
       <div>
@@ -708,30 +743,22 @@ const CreateUserForm: React.FC<Props> = ({
         <TextField
           error={!!formpayloadErr.phoneNumberErr}
           errorMsg={formpayloadErr.phoneNumberErr}
-          //required={true}
-          value={formpayload.phoneNumber}
+          value={formpayload.phoneNumber} 
           label="Phone Number"
-          onChange={(e: any) =>
+          onChange={
+            (e: any) =>
             setFormPayload({ ...formpayload, phoneNumber: e.target.value })
           }
-          onBlur={(e: any) =>
-            setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" })
-          }
+          onBlur={checkPhoneumber}
         />
-        {/* <TextField
-          value={formpayload.userGroup}
-          label="User Group"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, userGroup: e.target.value })
-          }
-        /> */}
         {
-          <div className="crxEditFilter">
-            <label>
-              User Group <span>*</span>
-            </label>
+          <div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <EditableSelect
+              label = "User Group"
+              required = {true}
+               error={!!formpayloadErr.userGroupErr}
+               errorMsg={formpayloadErr.userGroupErr}
                 multiple={true}
                 CheckBox={true}
                 className="CrxUserEditForm"
@@ -743,20 +770,10 @@ const CreateUserForm: React.FC<Props> = ({
                 id="userGroupList"
                 placeHolder="User Groups Name"
                 value={formpayload.userGroups}
+                onBlur = {checkUserGroup}
+                
               />
-              <div>
-                {error && (
-                  <label
-                    style={{
-                      fontSize: " 0.75rem",
-                      color: "red",
-                      margin: "0px",
-                    }}
-                  >
-                    User group is required.
-                  </label>
-                )}
-              </div>
+              
             </div>
           </div>
         }
