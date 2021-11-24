@@ -1,5 +1,5 @@
 .getac-simple-select {
-  border: 2px solid rgb(206, 206, 206);
+  border: 1px solid rgb(206, 206, 206);
   transition: all 0.25s ease-in-out;
   select {
     padding: 5px;
@@ -8,7 +8,7 @@
     color: #444;
   }
   &:hover {
-    border: 2px solid #888787;
+    border: 1px solid #888787;
     transition: all 0.25s ease-in-out;
   }
   &:focus {
@@ -43,7 +43,7 @@
 
   .selectBoxTextFieldAssets {
     width: 287px;
-    margin-left: -2px;
+    margin-left: 2px;
     .Mui-focused {
       margin-top: 41px !important;
       margin-bottom: 12px !important;
@@ -140,7 +140,7 @@ div[class*="MuiInput-underline"] {
     height: 20px;
     order: 2;
     font-size: 14px;
-    margin: 4px 4px !important;
+    margin: 4px 0 4px 3px !important;
     div[class*="MuiChip-label-"] {
       padding-left: 6px;
       font-size: 14px;
@@ -319,7 +319,10 @@ div[class*="MuiInput-underline"] {
   .wrapper {
     .select {
       padding-right: 30px;
+      background: #d1d2d4;
       select {
+        border: none;
+        background: #d1d2d4;
         &:hover {
           border: none;
           outline: none;
@@ -329,6 +332,7 @@ div[class*="MuiInput-underline"] {
           outline: none;
         }
       }
+      .iconContent {right:8px;}
     }
   }
 }

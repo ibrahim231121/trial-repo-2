@@ -2,6 +2,27 @@
   max-width: 100%;
   margin: 0px 0 0 16px;
 }
+.predictiveSearch {
+  .getac-simple-select {
+    border: 1px solid #888787 !important;
+  }
+  .dateTimeLabel {
+    padding-left: 16px;
+  }
+  .dateRangeContainer {
+    .wrapper {
+      margin: 0px 0 0 16px !important;
+
+      .select {
+        select {
+          border: none;
+          height: 28px;
+        }
+      }
+    }
+  
+  }
+}
 
 .wrapper .search-input {
   background: #fff;
@@ -70,10 +91,11 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border:2px solid #d1d2d4;
+      border: 1px solid #d1d2d4;
       border-radius: 0px;
+      margin-top: 0;
       select{
-        height: 27px;
+        height: 28px;
         font-size: 14px;
       }
       .icon {

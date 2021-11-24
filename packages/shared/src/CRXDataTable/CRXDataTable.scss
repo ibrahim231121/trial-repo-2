@@ -20,7 +20,7 @@
         th.CRXDataTableLabelCell {
           border-bottom: 0px;
           border-right: 1px solid #ccc;
-          z-index: 3;
+          z-index: 2;
         }
         th.TableSearchAbleHead {
           border-top: 1px solid #ccc;
@@ -39,7 +39,7 @@
         }
         td.DataTableBodyCell {
           border-right: 1px solid #ccc;
-          padding:0px 9px 2px 16px;
+          padding: 0px 9px 2px 16px;
           font-size: 14px;
           color: #333;
           vertical-align: top;
@@ -53,11 +53,19 @@
           vertical-align: middle;
         }
         &:nth-child(even) {
-          background-color: #f2f2f2;
+          background-color: #F2F2F2;
         }
+
+        &:nth-child(even) td:nth-child(3) {
+          background: #F2F2F2;
+        }
+        &:nth-child(even) td:nth-child(2) {
+          background: #F2F2F2;
+        }
+
         td {
           &:first-child {
-            background: #404041;
+            background: #333333;
             padding-left: 15px;
             padding-right: 15px;
             color: #d1d2d4;
@@ -145,10 +153,57 @@
 }
 
 .dataTablePages {
-  border: 0px;
-  border-top: 0px;
+  color: #333333 !important;
   .MuiTablePagination-toolbar {
     border-bottom: 0px solid #cccccc;
+  }
+  .Mui-focused {
+    background-color: #fff;
+    box-shadow: 0px 3px 6px #00000029;
+  }
+  div[class*="MuiTablePagination-actions-"] {
+    button {
+      width: 36px;
+      height: 36px;
+      border-radius: 0;
+      color: #333333;
+      &:hover {
+        background-color: #d1d2d4;
+      }
+      span {
+        display: none;
+      }
+      &:first-child {
+        &:before {
+          font-family: "Font Awesome 5 Pro";
+          font-weight: 900;
+          content: "\f104";
+          font-size: 18px !important;
+          padding-right: 2px;
+        }
+      }
+      &:last-child {
+        &:before {
+          font-family: "Font Awesome 5 Pro";
+          font-weight: 900;
+          content: "\f105";
+          font-size: 18px !important;
+          padding-left: 2px;
+        }
+      }
+    }
+    button.Mui-disabled {
+      background-color: transparent;
+      color: #d1d2d4;
+      &:hover {
+        background-color:transparent;
+      }
+    }
+  }
+  div[class*="MuiTablePagination-input-"] {
+    svg {
+      fill: #333333;
+    }
   }
 }
 
@@ -468,7 +523,7 @@
   z-index: 1;
 }
 .col-two {
-  position: sticky;
+  position: sticky !important;
   padding-left: 7px !important;
   z-index: 1;
 }
@@ -477,13 +532,12 @@
   position: sticky;
   max-width: 80px;
   padding-left: 2px !important;
-  z-index: 1;
+  z-index: 2;
 }
 
 tr:nth-child(even) td[scope="row"] {
-  background-color: #f2f2f2;
+  background-color: #fff;
 }
-
 tr:nth-child(odd) td[scope="row"] {
   background-color: #fff;
 }
@@ -500,10 +554,7 @@ td.CellCheckBox {
     .CRXCheckBox {
       span {
         span {
-          border-color: #d1d2d4;
-          color: transparent;
-
-          
+          color: #d1d2d4;
         }
       }
     }
@@ -512,7 +563,7 @@ td.CellCheckBox {
     span {
       span {
         &::before {
-          margin-left:-5px;
+          margin-left: -5px;
         }
       }
     }
@@ -520,7 +571,7 @@ td.CellCheckBox {
 }
 
 tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
-  background-color: #231f20 !important;
+  background-color: #231f20;
   color: #d1d2d4;
   .MuiButton-root {
     color: #d1d2d4 !important;
@@ -529,9 +580,17 @@ tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
     background-color: #333 !important;
   }
 }
+tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child){
+  &:hover {
+    background-color: #404041 !important;
 
+    button {
+      background-color: transparent !important;
+    }
+  }
+}
 tr.Mui-selected:nth-child(even) td[scope="row"] {
-  background-color: #231f20 !important;
+  // background-color: #231f20 !important;
   .MuiButton-root {
     color: #d1d2d4 !important;
   }
@@ -539,7 +598,10 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     background-color: #333 !important;
   }
 }
-
+tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
+  background-color: #231f20 !important;
+  color: #d1d2d4;
+}
 .CRXDataTableCustom {
   tr {
     &.Mui-selected {
@@ -570,7 +632,8 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
         color: #d1d2d4 !important;
       }
     }
-    td.col-one:hover ~ td.col-two, td.col-one:hover ~ td.col-three {
+    td.col-one:hover ~ td.col-two,
+    td.col-one:hover ~ td.col-three {
       background: #333 !important;
       color: #d1d2d4;
       .rc-menu-button {
@@ -750,6 +813,25 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
           .MuiFormControlLabel-label {
             font-size: 14px;
             color: #333;
+          }
+          .MuiIconButton-label {
+            span.crxSelectedDark  {
+              font-size: 18px;
+              &:hover {
+                color: transparent !important;
+              }
+            }
+            span {
+              font-size: 18px;
+              &:hover {
+                color: #333333;
+              }
+            }
+            input{
+              &:hover {
+                color: #333333;
+              }
+            }
           }
         }
         &:hover {

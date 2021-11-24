@@ -9,11 +9,30 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import "./SelectBox.scss";
 
+interface noOptionprops {
+  width: string;
+  marginLeft: string;
+  top: string;
+  whiteSpace: string;
+  overFlow: string;
+  textOverflow: string;
+  fontSize: string;
+  lineHeight: string;
+  marginTop : string;
+}
+interface paddingLeftprops {
+  marginLeft: string;
+  marginRight: string;
+  paddingRight: string;
+  paddingLeft: string;
+}
+
 interface selectBoxProps {
   multiple?: boolean;
   CheckBox?: boolean;
   id?: string;
   className?: string;
+  open: boolean;
   autoComplete?: boolean;
   autoSelect?: boolean;
   useRef?: boolean;
@@ -24,6 +43,8 @@ interface selectBoxProps {
   onClose: (e: any, v: any) => void;
   onOpen?: (e: any) => void;
   name: string;
+  noOptions?: noOptionprops;
+  paddLeft?: paddingLeftprops;
 }
 interface renderCheck {
   selected?: boolean;
@@ -31,65 +52,7 @@ interface renderCheck {
   year?: number;
 }
 
-const useStyles = makeStyles({
-  root: {
-    "&:hover": {
-      backgroundColor: "transparent !important",
-      boxShadow: "none !important",
-    },
-  },
-  listbox: {
-    borderRadius: "1px !important",
-    backgroundColor: "#404041",
-    paddingTop: "0px",
-    width: "286.8px",
-    marginLeft: "-12px",
-    border: "0 !important",
-    left: "0",
-    marginTop: "4px",
-    paddingBottom: "0",
-    position: "absolute",
-    maxHeight: "201px",
-    minHeight: "35.5px",
-    borderTop: "1px solid #888787 !important",
-    top: "7px",
-  },
-  noOptions: {
-    color: "#D1D2D4",
-    backgroundColor: "#404041",
-    height: "33px",
-    lineHeight: "5px",
-    marginLeft: "-12px",
-    width: "287px",
-    position: "absolute",
-    fontSize: "14px",
-  },
-  option: {
-    height: "33px",
-    color: "#D1D2D4",
-    fontSize: "14px",
-    border: "0 !important",
-    alignItems: "center",
-    padding: "8px 0 9px",
-    '&[data-focus="true"]': {
-      backgroundColor: "#6E6E6E",
-      borderColor: "0",
-      color: "#D1D2D4",
-      height:"33px",
-      overflowY:"hidden",
-    },
-    '&[aria-selected="true"]': {
-      backgroundColor: "#231F20",
-      borderColor: "transparent",
-      color: "#D1D2D4",
-      height:"33px",
-      overflowY:"hidden",
-    },
-  },
-});
 export default function CRXMultiSelect(props: selectBoxProps) {
-  const styles = useStyles();
-  const classes = useStyles();
   const {
     multiple = false,
     CheckBox,
@@ -103,7 +66,72 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     onChange,
     onClose,
     onOpen,
+    open,
+    noOptions,
+    paddLeft,
   } = props;
+  const useStyles = makeStyles({
+    root: {
+      marginLeft: paddLeft && paddLeft.marginLeft,
+      paddingRight: paddLeft && paddLeft.paddingRight,
+      paddingLeft: paddLeft && paddLeft.paddingLeft,
+      marginRight: paddLeft && paddLeft.marginRight,
+      "&:hover": {
+        backgroundColor: "transparent !important",
+        boxShadow: "none !important",
+      },
+    },
+    listbox: {
+      borderRadius: "1px !important",
+      backgroundColor: "#404041",
+      paddingTop: "0px",
+      width: noOptions && noOptions.width,
+      marginLeft: noOptions && noOptions.marginLeft,
+      border: "0 !important",
+      left: "0",
+      marginTop: noOptions && noOptions.marginTop,
+      paddingBottom: "0",
+      position: "absolute",
+      maxHeight: "201px",
+      minHeight: "35.5px",
+      borderTop: "1px solid #888787 !important",
+      top: noOptions && noOptions.top,
+    },
+    noOptions: {
+      color: "#D1D2D4",
+      backgroundColor: "#404041",
+      height: "33px",
+      lineHeight: "5px",
+      marginLeft: noOptions && noOptions.marginLeft,
+      width: noOptions && noOptions.width,
+      position: "absolute",
+      fontSize: "14px",
+    },
+    option: {
+      height: "33px",
+      color: "#D1D2D4",
+      fontSize: noOptions && noOptions.fontSize,
+      border: "0 !important",
+      alignItems: "center",
+      lineHeight: noOptions && noOptions.lineHeight,
+      padding: "8px 0 9px",
+      wordBreak: "break-all",
+      '&[data-focus="true"]': {
+        backgroundColor: "#6E6E6E",
+        borderColor: "0",
+        color: "#D1D2D4",
+        height: "33px",
+      },
+      '&[aria-selected="true"]': {
+        backgroundColor: "#231F20",
+        borderColor: "transparent",
+        color: "#D1D2D4",
+        height: "33px",
+      },
+    },
+  });
+  const styles = useStyles();
+  const classes = useStyles();
   const [textFill, settextFill] = React.useState<boolean>(false);
   const renderCheckBox = (option: renderCheck, selected: boolean) => {
     if (CheckBox) {
@@ -143,6 +171,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       <Autocomplete
         onClose={onClose}
         onOpen={onOpen}
+        // open={true}
         disableCloseOnSelect
         ChipProps={{
           deleteIcon: <ClearSharpIcon fontSize="large" fontWeight="bold" />,
@@ -157,7 +186,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
         classes={{
           option: styles.option,
           listbox: styles.listbox,
-          noOptions: styles.noOptions,
+          noOptions: styles.noOptions
         }}
         getOptionLabel={(option: renderCheck) =>
           option.value ? option.value : " "
@@ -170,18 +199,24 @@ export default function CRXMultiSelect(props: selectBoxProps) {
         }}
         onChange={onChange}
         onInputChange={(e) => {
-          if(e.nativeEvent !== null) {
+          if (e.nativeEvent.data !== null) {
             settextFill(true);
-          } 
-          if(e.nativeEvent == null) {
+          }
+          if (e.nativeEvent.data == null) {
             settextFill(false);
-          } 
+          }
         }}
         renderInput={(params: object) => {
           return (
             <div>
               <TextField
-                className={`selectBoxTextField selectBoxTextFieldAssets ${textFill == true ? 'applyFieldBoreder' : textFill == false ?  'removeFieldBoreder' : ''}`}
+                className={`selectBoxTextField selectBoxTextFieldAssets ${
+                  textFill == true
+                    ? "applyFieldBoreder"
+                    : textFill == false
+                    ? "removeFieldBoreder"
+                    : ""
+                }`}
                 {...params}
                 placeholder="search and select..."
                 inputRef={(input) => {

@@ -1,221 +1,259 @@
 .ManageAssetDataTable {
-    .CRXSimpleSelect {
-        background: #d1d2d4;
-        color:#333;
-    }
+  .CRXSimpleSelect {
+    background: #d1d2d4;
+    color: #333;
+  }
 
-    .CBX-input {
-        input {
-            background: #d1d2d4;
-            color:#333;
-            font-size: 14px;
-            height: 26px;
-            text-indent: 10px;
-            outline: 1px solid #888787;
-            border: 2px solid transparent;
-            margin: 12px 0;
-        }
-        .Mui-focused {
-            input {
-                border: 2px solid #fff;
-                outline:1px solid #888787;
-            }
-        }
+  .CBX-input {
+    input {
+      background: #d1d2d4;
+      color: #333;
+      font-size: 14px;
+      height: 26px;
+      text-indent: 10px;
+      outline: 1px solid #888787;
+      border: 2px solid transparent;
+      margin: 12px 0;
     }
+    .Mui-focused {
+      input {
+        border: 2px solid #fff;
+        outline: 1px solid #888787;
+      }
+    }
+  }
 
-    .CRXDataTableLabelCell {
-        .makeStyles-headerStickness-6 {
-            label {
-                white-space: nowrap; 
-            }
-        }
+  .CRXDataTableLabelCell {
+    .makeStyles-headerStickness-6 {
+      label {
+        white-space: nowrap;
+      }
     }
-   
-        th {
-            span {
-                span{
-                display: block;
-                width: 100%;
-            }
-            }
+  }
+
+  th {
+    span {
+      span {
+        display: block;
+        &::before {
+          left: 0 !important;
         }
- 
+      }
+    }
+  }
 }
 
 .assetThumb {
-    width: 110px;
-    height: 61px;
-    margin: 14px 0px;
-    position: relative;
+  width: 110px;
+  height: 61px;
+  margin: 14px 0px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-indent: 0px !important;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tumbPlayIcon {
+    position: absolute;
+    font-size: 30px;
+    color: #fff;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-indent: 0px !important;
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
+    visibility: hidden;
+    z-index: 999;
+  }
+  &:hover {
     .tumbPlayIcon {
-        position: absolute;
-        font-size: 30px;
-        color: #fff;
-        display: flex;
-        visibility: hidden;
-        z-index: 999;
+      visibility: visible;
+      &:hover {
+        font-size: 36px;
+      }
     }
-    &:hover {
-        
-        .tumbPlayIcon {
-            visibility: visible;
-            &:hover {
-                font-size: 36px;
-            }
-        }
-    }
-    .tumbFontIcon {
-        font-size: 61px;
-        
-    }
+  }
+  .tumbFontIcon {
+    font-size: 61px;
+  }
 
-    .audioBackground {
-        background: #333;
-        width: 100%;
-        height: 61px;
-        color: #888787;
-        font-size: 52px;
-        text-align: center;
-        line-height: 67px;
-        padding: 5px 0;
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: invert(100%) sepia(13%) saturate(500%) hue-rotate(130deg) brightness(90%) contrast(100%)
-        }
+  .audioBackground {
+    background: #333;
+    width: 100%;
+    height: 61px;
+    color: #888787;
+    font-size: 52px;
+    text-align: center;
+    line-height: 67px;
+    padding: 5px 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: invert(100%) sepia(13%) saturate(500%) hue-rotate(130deg)
+        brightness(90%) contrast(100%);
     }
+  }
 
-    .assetsThumbGetac {
-        border:1px solid transparent;
-    }
-    &.CRXPopupTableImage {
-        color: #333;
-    }
+  .assetsThumbGetac {
+    border: 1px solid transparent;
+  }
+  &.CRXPopupTableImage {
+    color: #333;
+  }
 }
 
 .CRXDataTableCustom {
-    tr {
-        &:hover {
-            td {
-                &.DataTableBodyCell {
-                    .assetThumb {
-                        .audioBackground {
-                            background: #D1D2D4;
-                            color: #333333;
-                            img {
-                               filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg) brightness(70%) contrast(70%)
-                            }
-                        }
-                    }
-                    .assetsThumbGetac {
-                        border:1px solid #D1D2D4;
-                    }
-                }
+  tr {
+    &:hover {
+      td {
+        &.DataTableBodyCell {
+          .assetThumb {
+            .audioBackground {
+              background: #d1d2d4;
+              color: #333333;
+              img {
+                filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg)
+                  brightness(70%) contrast(70%);
+              }
             }
+          }
+          .assetsThumbGetac {
+            border: 1px solid #d1d2d4;
+          }
         }
-        &.Mui-selected {
-            td {
-                &.DataTableBodyCell {
-                    .assetThumb {
-                        .audioBackground {
-                            background: #D1D2D4;
-                            color: #333333;
-                            img {
-                                filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg) brightness(70%) contrast(70%)
-                             }
-                        }
-                    }
-                }
+      }
+    }
+    &.Mui-selected {
+      td {
+        &.DataTableBodyCell {
+          .assetThumb {
+            .audioBackground {
+              background: #d1d2d4;
+              color: #333333;
+              img {
+                filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg)
+                  brightness(70%) contrast(70%);
+              }
             }
+          }
         }
-    } 
-} 
+      }
+    }
+  }
+}
 
 .selectFilter {
-    width: 100%;
+  width: 100%;
 }
 
-.AssetsDataGrid{
+.AssetsDataGrid {
+  &::-webkit-scrollbar {
+    width: 1em;
+    height: 15px;
+  }
 
-    &::-webkit-scrollbar {
-        width: 1em;
-        height: 15px;
-      }
-      
-      &::-webkit-scrollbar-track {
-        border-radius: 0px;
-        margin-left: 0px;
-        border-right: 0px;
-        margin-left: 0px;
-      }
-      
-      &::-webkit-scrollbar-thumb {
-        border-radius: 0px;
-        background-color: #C8C8C8 ;
-        outline: 0px solid slategrey;
-        border: 2px solid rgba(0, 0, 0, 0);
-        background-clip: content-box;
-      }
-      
-      &::-webkit-scrollbar-track-piece {
-        background-color: #f1f1f1;
-        border: 1px solid #D1D2D4;
-        border-right: 0px;
-        border-left: 0px;
-        margin-left: 0px;
-    }
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    margin-left: 0px;
+    border-right: 0px;
+    margin-left: 0px;
+  }
 
-    &::-webkit-scrollbar-button:horizontal:decrement {
-        width: 210px;
-        height: 30px;
-        border: 0px solid transparent;
-        background:url('../../../../Assets/Images/scrollLeft21.jpg') no-repeat top right ;
-        background-size: contain;
-        background-position: 197px;
-        background-clip: border-box;
-        position: relative;
-        left: 190px;
-        margin-left: 180px;
-    }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background-color: #c8c8c8;
+    outline: 0px solid slategrey;
+    border: 2px solid rgba(0, 0, 0, 0);
+    background-clip: content-box;
+  }
 
-    &::-webkit-scrollbar-button:horizontal:increment {
-        width: 13px;
-        height: 2px;
-        border: 1px solid #D1D2D4;
-        border-left: 0px;
-        background:url('../../../../Assets/Images/scrollIconRight.png') no-repeat center center #f1f1f1; 
-        position: relative;
-        left: 180px;
-    }
+  &::-webkit-scrollbar-track-piece {
+    background-color: #f1f1f1;
+    border: 1px solid #d1d2d4;
+    border-right: 0px;
+    border-left: 0px;
+    margin-left: 0px;
+  }
 
-    &::-webkit-scrollbar:vertical {
-        display: none;
-    }
-}
+  &::-webkit-scrollbar-button:horizontal:decrement {
+    width: 210px;
+    height: 30px;
+    border: 0px solid transparent;
+    background: url("../../../../Assets/Images/scrollLeft21.jpg") no-repeat top
+      right;
+    background-size: contain;
+    background-position: 197px;
+    background-clip: border-box;
+    position: relative;
+    left: 190px;
+    margin-left: 180px;
+  }
 
+  &::-webkit-scrollbar-button:horizontal:increment {
+    width: 13px;
+    height: 2px;
+    border: 1px solid #d1d2d4;
+    border-left: 0px;
+    background: url("../../../../Assets/Images/scrollIconRight.png") no-repeat
+      center center #f1f1f1;
+    position: relative;
+    left: 180px;
+  }
 
-.hide{
+  &::-webkit-scrollbar:vertical {
     display: none;
-}
-.alignLeft{
-    text-align: left;
-    padding-top: 7px;
+  }
 }
 
-.centerPosition{
-    text-align: center;
-    width: 300px;
-    background-color: #333 !important;
+.hide {
+  display: none;
+}
+.alignLeft {
+  text-align: left;
+  padding-top: 7px;
 }
 
+.centerPosition {
+  text-align: center;
+  width: 300px;
+  background-color: #333 !important;
+}
+
+
+.divMainBucket {
+  table {
+    tr {
+      td{
+        &:first-child {
+          background-color: #fff;
+          &:hover {
+            background-color: #333 !important;
+          }
+        }
+      }
+      .CellCheckBox{
+        &:hover ~ td {
+          background-color: #333 !important;
+          color: #d1d2d4;
+          .rc-menu-button{
+            color: #d1d2d4 !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.noOptionForAssets
+{
+  color: "#D1D2D4";
+  background-color: "#404041" !important;
+  height: "33px";
+  line-height: "5px";
+  margin-left: "-12px";
+  width: "287px" !important;
+  position: "absolute";
+  font-size: "14px";
+}

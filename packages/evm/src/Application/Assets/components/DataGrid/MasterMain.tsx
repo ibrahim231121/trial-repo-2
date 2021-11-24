@@ -249,6 +249,28 @@ const MasterMain: React.FC<Props> = ({
       headCells[colIdx].headerArray = v;
     };
 
+    const assetListerNoOptions = {
+      width : "287px",
+      marginLeft : "-12px",
+      whiteSpace : "nowrap",
+      overFlow : "hidden",
+      textOverflow : "ellipsis",
+      marginRight : "auto",
+      paddingLeft : "7px",
+      paddingRight : "7px",
+      fontSize : "14px",
+      top : "7px",
+      marginTop : "4px"
+    }
+
+    const PaddLeftNoOptions = {
+      marginLeft : "7px",
+      paddingRight : "7px",
+      marginRight : "7px",
+      paddingLeft : "7px"
+
+    }
+
     return (
       <MultSelectiDropDown
         headCells={headCells}
@@ -258,6 +280,8 @@ const MasterMain: React.FC<Props> = ({
         onMultiSelectChange={onSelection}
         onSetSearchData={onSetSearchData}
         onSetHeaderArray={onSetHeaderArray}
+        widthNoOption={assetListerNoOptions}
+        paddLeft={PaddLeftNoOptions}
       />
     );
   };

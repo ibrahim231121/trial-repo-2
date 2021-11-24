@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import {
   Order,
   OrderData,
-  useStyles,
   DataTableProps,
   HeadCellProps,
   OrderValue,
@@ -15,7 +14,30 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import "./CRXDataTable.scss";
 import DataTableContainer from "./CRXDataTableContainer";
-
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  selectDropdown: {
+    color: "#333333",
+    backgroundColor: "#fff",
+    boxShadow: "0px 3px 6px #00000029",
+  },
+  menuItem: {
+    "&:hover": {
+      backgroundColor: "#D1D2D4",
+    },
+    "&.Mui-selected": {
+      backgroundColor: "#D1D2D4",
+    },
+    "&.Mui-selected:hover": {
+      backgroundColor: "#D1D2D4",
+    },
+  },
+  root: {
+    paddingLeft: theme.spacing(0),
+    paddingRight: theme.spacing(0),
+    paddingBottom: theme.spacing(2.9),
+  },
+}));
 const CRXDataTable: React.FC<DataTableProps> = ({
   id,
   dataRows,
@@ -65,7 +87,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     tableId: {
       id: id,
       rows: dataRows,
-    }
+    },
   };
 
   const [containers, setContainers] = useState(initialContainers);
@@ -223,7 +245,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   }, [selectedItems]);
 
   const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
+    setPage(newPage); 
   };
 
   const handleChangeRowsPerPage = (
@@ -316,26 +338,33 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       showCheckBoxesCol={showCheckBoxesCol}
                       showActionCol={showActionCol}
                       showActionSearchHeaderCell={showActionSearchHeaderCell}
-                      showHeaderCheckAll={showHeaderCheckAll}
+                      showHeaderCheckAll={false}
+                      
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}
                     />
-
-                    <TablePagination
-                      className="dataTablePages"
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={container.rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      nextIconButtonProps={nextButton}
-                      onChangePage={handleChangePage}
-                      onChangeRowsPerPage={handleChangeRowsPerPage}
-                    />
+                    {(dataRows.length > 9) ?
+                      <TablePagination
+                        className="dataTablePages"  
+                        SelectProps={{
+                          MenuProps: {
+                            classes: { paper: classes.selectDropdown }
+                          },
+                        }}
+                        classes={{ menuItem: classes.menuItem }}
+                        rowsPerPageOptions={[10, 20, 25]}
+                        component="div"
+                        count={container.rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                      />
+                    : null
+                    }
                   </div>
                 </ThemeProvider>
-              ) : null
-              }
+              ) : null}
             </Grid>
           </React.Fragment>
         );
