@@ -15,7 +15,7 @@ const CRXLefNavigation = () => {
       },
       {
          label: 'Assets',
-         icon: 'icon-file-video NaveIcon',
+         icon: 'icon icon-file-video NaveIcon',
          url: "/assets",
          items: [
             {
@@ -106,7 +106,7 @@ const CRXLefNavigation = () => {
       },
       {
          label: 'Maps',
-         icon: 'icon-compass2 NaveIcon',
+         icon: 'icon icon-compass5 NaveIcon',
          classes: 'mapsTab',
          items: [
             {
@@ -151,7 +151,7 @@ const CRXLefNavigation = () => {
 
       {
          label: 'Reports',
-         icon: 'icon-file-text NaveIcon',
+         icon: 'icon icon-file-text NaveIcon',
          classes: 'reportingTab',
          items: [
             {

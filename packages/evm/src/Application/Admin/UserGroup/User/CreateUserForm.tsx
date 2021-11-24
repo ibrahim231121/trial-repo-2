@@ -6,6 +6,7 @@ import React, { SyntheticEvent, useEffect, useRef } from "react";
 import { GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
 import { EditableSelect } from "@cb/shared";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
+import { DateFormat } from "../../../../utils/globalDataTableFunctions"
 import { CRXAlert } from "@cb/shared";
 import moment from "moment";
 import { AUTHENTICATION_EMAIL_SERVICE } from "../../../../utils/Api/url";
@@ -34,14 +35,13 @@ interface userStateProps {
 }
 
 type account = {
-  isAdministrator: number;
+  isAdministrator: boolean;
   lastLogin: Date;
   passwordDetail: any;
   status: number;
   userName: string;
   password: string;
-  isPasswordResetRequired: boolean;
-};
+}
 
 const CreateUserForm: React.FC<Props> = ({
   onClose,
@@ -93,7 +93,8 @@ const CreateUserForm: React.FC<Props> = ({
   const url = `http://127.0.0.1:8085/Users`;
 
   React.useEffect(() => {
-    if (id) fetchUser();
+    if(id)
+      fetchUser();
   }, [id]);
 
   React.useEffect(() => {
@@ -133,13 +134,14 @@ const CreateUserForm: React.FC<Props> = ({
         phoneNumber,
         userGroups: userGroupNames,
       });
+      
     }
   }, [userPayload]);
 
   const fetchUser = async () => {
     const res = await fetch(`${USER}/${id}`, {
       method: "GET",
-      headers: { "Content-Type": "application/json", TenantId: "1" },
+      headers: { "Content-Type": "application/json", "TenantId": "1" },
     });
     var response = await res.json();
     setUserPayload(response);
@@ -159,25 +161,26 @@ const CreateUserForm: React.FC<Props> = ({
     };
     return (
       <>
-        <div style={{ display: "flex" }}>
-          <CRXButton className="secondary" onClick={onClickPass}>
+      <div className="crx-Generate-pass">
+        <div className="crxGeneratePassword">
+          <CRXButton className="primary" onClick={onClickPass}>
             Generate
           </CRXButton>
-
-          <div style={{ textAlign: "right" }}>
-            <TextField value={generatePassword} />
-            <CRXButton
-              className="secondary"
+          <TextField className="crx-generate-btn" value={generatePassword} />
+          </div>
+          <div style={{textAlign:"right"}}>  
+            <button
+              className="copyButton"
               onClick={() => {
                 navigator.clipboard.writeText(generatePassword);
               }}
             >
               Copy
-            </CRXButton>
+            </button>
           </div>
-        </div>
+       
 
-        <div>
+        <div className="crx-requird-check">
         <CRXCheckBox
           checked={isPasswordResetRequired}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -186,14 +189,16 @@ const CreateUserForm: React.FC<Props> = ({
         />
           <label>Require user to change password on next login</label>
         </div>
+        </div>
       </>
     );
   };
 
   const manuallyGeneratePass = () => {
     return (
-      <div>
+      <div className="crx-manually-generate-pass">
         <TextField
+		  className="crx-gente-field"
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
           label="Password"
@@ -204,6 +209,7 @@ const CreateUserForm: React.FC<Props> = ({
           onBlur={!id ? checkPassword : null}
         />
         <TextField
+         className="crx-gente-field"
           error={!!formpayloadErr.confirmPasswordErr}
           errorMsg={formpayloadErr.confirmPasswordErr}
           label="Confirm Password"
@@ -213,6 +219,7 @@ const CreateUserForm: React.FC<Props> = ({
           onChange={(e: any) => setConfirmPassword(e.target.value)}
           onBlur={!id ? checkConfirmPassword : null}
         />
+	<div className="crx-requird-check">
         <CRXCheckBox
           checked={isPasswordResetRequired}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -220,6 +227,7 @@ const CreateUserForm: React.FC<Props> = ({
           }
         />
         <label>Require user to change password on next login</label>
+        </div>
       </div>
     );
   };
@@ -300,12 +308,11 @@ const CreateUserForm: React.FC<Props> = ({
 
   }, [formpayload]);
 
-  const setAddPayload = () => {
-    let userGroupsListIDs = userGroupsList
-      ?.filter((item: any) => {
-        return formpayload.userGroups.some((e: any) => e === item.groupName);
-      })
-      .map((i: any) => i.groupId);
+  const onAdd = async () => {
+    if (formpayload.userGroups.length === 0) {
+      setError(true);
+    }
+    const url = `http://10.227.141.128:8088/Users`;
 
     const name = {
       first: formpayload.firstName,
@@ -313,7 +320,91 @@ const CreateUserForm: React.FC<Props> = ({
       middle: formpayload.middleInitial,
     };
 
-    let contacts = [];
+    let contacts = []
+    if (contacts.length === 0) {
+      contacts.push({contactType:1, number:formpayload.phoneNumber})
+    }
+
+    const account = {
+      isAdministrator: 1,
+      status: 1,
+      userName: formpayload.userName,
+      password: onSelectPasswordType()
+    };
+    
+    const payload = {
+      email: formpayload.email,
+      name,
+      account,
+      contacts,
+    };
+
+    //console.log("payload",payload)
+
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "TenantId": "1" },
+      body: JSON.stringify(payload),
+    })
+    .then(function(res) {
+      console.log("response-1",res)
+      if(res.ok) 
+        setReponseError("Successfully created")
+      else
+        return res.text();
+    })
+    .then(resp => {
+      if(resp !== undefined) {
+        let error = JSON.parse(resp)
+        console.log("response-2",error)
+        if(error.errors.Email.length > 0) {
+          setFormPayloadErr({
+            ...formpayloadErr,
+            emailErr: error.errors.Email[0],
+          })
+        }
+        if(error.errors.Number.length > 0) {
+          setFormPayloadErr({
+            ...formpayloadErr,
+            phoneNumberErr: error.errors.Number[0],
+          })
+        }
+      }
+    })
+    .catch(function(error) {
+      console.log("error",error);
+      return error;
+    }); 
+
+  }
+
+  const onSelectPasswordType = () => {
+    if(radioValue === "genTemp")
+      return generatePassword
+    else if(radioValue === "manual")
+      return password
+    else 
+      return ""
+  }
+
+  const onEdit = async () => {
+    if (formpayload.userGroups.length === 0) {
+      setError(true);
+    }
+
+    const name = {
+      first: formpayload.firstName,
+      last: formpayload.lastName,
+      middle: formpayload.middleInitial,
+    };
+
+    let contacts = userPayload.contacts.map((x: any) => {
+      if (x.contactType === 1) {
+        x.number = formpayload.phoneNumber;
+      }
+      return x;
+    });
+    const account = { ...userPayload.account, userName: formpayload.userName };
     if (contacts.length === 0) {
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
     }
@@ -461,7 +552,7 @@ const CreateUserForm: React.FC<Props> = ({
 
     await fetch(urlEdit, {
       method: "PUT",
-      headers: { "Content-Type": "application/json", TenantId: "1" },
+      headers: { "Content-Type": "application/json", "TenantId": "1" },
       body: JSON.stringify(payload),
     })
       .then(function (res) {
@@ -654,7 +745,7 @@ const checkUserGroup = () => {
 
   return (
     <div className="modal_user_crx">
-      <div>
+      <div className="modalEditCrx">
         <CRXAlert
           message={responseError}
           alertType="inline"
@@ -669,6 +760,7 @@ const checkUserGroup = () => {
           required={true}
           value={formpayload.userName}
           label="Username"
+          className="users-input"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, userName: e.target.value })
           }
@@ -686,6 +778,7 @@ const checkUserGroup = () => {
           errorMsg={formpayloadErr.firstNameErr}
           required={true}
           label="First Name"
+          className="users-input"
           value={formpayload.firstName}
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, firstName: e.target.value })
@@ -704,6 +797,7 @@ const checkUserGroup = () => {
           errorMsg={formpayloadErr.middleInitialErr}
           value={formpayload.middleInitial}
           label="Middle Initial"
+          className="users-input"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, middleInitial: e.target.value })
           }
@@ -717,6 +811,7 @@ const checkUserGroup = () => {
           required={true}
           value={formpayload.lastName}
           label="Last Name"
+          className="users-input"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, lastName: e.target.value })
           }
@@ -735,6 +830,7 @@ const checkUserGroup = () => {
           required={true}
           value={formpayload.email}
           label="Email"
+          className="users-input"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, email: e.target.value })
           }
@@ -745,14 +841,15 @@ const checkUserGroup = () => {
           errorMsg={formpayloadErr.phoneNumberErr}
           value={formpayload.phoneNumber} 
           label="Phone Number"
-          onChange={
-            (e: any) =>
+          className="users-input"
+          onChange={(e: any) =>
             setFormPayload({ ...formpayload, phoneNumber: e.target.value })
           }
           onBlur={checkPhoneumber}
         />
         {
-          <div>
+          <div className="crxEditFilter">
+            <label>User Group <span>*</span></label>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <EditableSelect
               label = "User Group"
@@ -776,21 +873,24 @@ const checkUserGroup = () => {
               
             </div>
           </div>
-        }
+        }       
         <TextField
           error={!!formpayloadErr.deactivationDateErr}
           errorMsg={formpayloadErr.deactivationDateErr}
           value={formpayload.deactivationDate}
+          className="users-input"
           type="date"
           label="Deactivation Date"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, deactivationDate: e.target.value })
           }
         />
-        <div style={{ display: "flex" }}>
-          <label style={{ width: "250px" }}>User Password Setup</label>
-          <div style={{ width: "300px" }}>
+        <div className="crxRadioBtn" style={{display: "flex"}}>
+          <label>User Password Setup</label>
+          <div className="user-radio-group">
             <CRXRadio
+            className="crxEditRadioBtn"
+            disableRipple={true}
               content={content}
               value={radioValue}
               setValue={setRadioValue}
@@ -798,7 +898,6 @@ const checkUserGroup = () => {
           </div>
         </div>
       </div>
-      <hr className="MuiDivider-root CRXDivider"></hr>
       <div className="crxFooterEditFormBtn">
         <CRXButton
           className="primary"
@@ -811,6 +910,7 @@ const checkUserGroup = () => {
           Cancel
         </CRXButton>
       </div>
+      <label style={{color:"Red"}}>{reponseError}</label>
     </div>
   );
 };

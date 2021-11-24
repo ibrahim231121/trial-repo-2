@@ -457,13 +457,14 @@ const User: React.FC = () => {
                 Create User
             </CRXButton>  
             <CRXModalDialog
-                className="createUser"
-                style={{minWidh:"550px"}}
+                className="createUser CrxCreateUser"
+                style={{minWidth:"680px"}}
                 maxWidth="xl" 
                 title="Create User" 
                 modelOpen={open} 
                 onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
+                subTitleText="Indicates required field"
             >
                 <CreateUserForm 
                     setCloseWithConfirm={setCloseWithConfirm}  
