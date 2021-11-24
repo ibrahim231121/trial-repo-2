@@ -82,7 +82,7 @@ const UnitAndDevices: React.FC = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<Unit[]>();
-  const [selectedActionRow, setSelectedActionRow] = React.useState<GroupUser>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
 
   const setData = () => {
     let unitRows: Unit[] = [];
@@ -441,7 +441,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
         <CRXDataTable
           id="Units & Devices"
           actionComponent={<UnitAndDevicesActionMenu />}
-          getRowOnActionClick={(val: GroupUser) =>
+          getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }
 

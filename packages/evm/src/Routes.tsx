@@ -25,6 +25,7 @@ import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/Con
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
 import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
 import AssetDetailsTemplate from "./Application/Assets/pages/AssetDetailsTemplate";
+import CreateComponent from "./components/CreateTemplate/CreateTemplate";
 
 import { isAuthenticated } from "./Login/API/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,6 +47,7 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
   localStorage.setItem("refreshToken", refreshToken)      
   cookies.set('access_token', accessToken, options)
 }
+
 
 const Routes = () => {
   const dispatch = useDispatch()
@@ -76,8 +78,6 @@ const Routes = () => {
   },
   
 );
-
-
 
 
   const handleDrawerToggle = () => {
@@ -114,12 +114,13 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute  path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
+              <PrivateRoute path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
               <Route path={Object.entries(urlList)[1][0].toString()} exact={true} component={UserGroup} />
               <Route path={Object.entries(urlList)[2][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
               <Route path="/token/:token" exact={true} component={Token} />
+              <Route  path="/test/CreateTemplate" component={CreateComponent} />
               <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
               <PrivateRoute path={Object.entries(urlList)[8][0].toString()} exact={true} component={UnitConfiguration} />
               <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
