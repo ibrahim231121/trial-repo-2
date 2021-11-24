@@ -26,6 +26,9 @@ import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfigurati
 import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
 import AssetDetailsTemplate from "./Application/Assets/pages/AssetDetailsTemplate";
 import CreateComponent from "./components/CreateTemplate/CreateTemplate";
+import CreateTemplate from "./Application/Admin/DevicesTemplate/CreateTemplate";
+import CloneTemplate from "./Application/Admin/DevicesTemplate/CloneTemplate";
+import DevicesTemplate from "./Application/Admin/DevicesTemplate/DevicesTemplate";
 
 import { isAuthenticated } from "./Login/API/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,7 +50,6 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
   localStorage.setItem("refreshToken", refreshToken)      
   cookies.set('access_token', accessToken, options)
 }
-
 
 const Routes = () => {
   const dispatch = useDispatch()
@@ -114,19 +116,22 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
+              <Route path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
               <Route path={Object.entries(urlList)[1][0].toString()} exact={true} component={UserGroup} />
               <Route path={Object.entries(urlList)[2][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
               <Route path="/token/:token" exact={true} component={Token} />
-              <Route  path="/test/CreateTemplate" component={CreateComponent} />
+              <PrivateRoute  path="/test/CreateTemplate" component={CreateComponent} />
               <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
               <PrivateRoute path={Object.entries(urlList)[8][0].toString()} exact={true} component={UnitConfiguration} />
               <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
               <PrivateRoute path={Object.entries(urlList)[7][0].toString()} exact={true} component={CreateUnitConfigurationTemplate} />
               <PrivateRoute path={Object.entries(urlList)[9][0].toString() }  exact={true} component={UnitAndDevicesDetial} />
               <PrivateRoute  path={Object.entries(urlList)[10][0].toString()} exact={true} component={AssetDetailsTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[11][0].toString()} exact={true} component={CreateTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[12][0].toString()} exact={true} component={CloneTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[13][0].toString()} exact={true} component={DevicesTemplate} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>

@@ -1,6 +1,7 @@
 import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import User from '../Group/components/User';
+import "../Group/group.scss";
 import { useHistory } from "react-router";
 import Application from "../Group/components/Application"
 import DataPermission from "./components/DataPermission";
@@ -20,15 +21,15 @@ const Group = () => {
     { label: "DATA PERMISSIONS", index: 3 },
   ];
   return (
-    <div className="App" style={{ marginTop: "120px", marginLeft: "90px" }}>
+    <div className= "App crxTabsPermission" style={{ marginTop: "120px", marginLeft: "90px" }}>
       <>
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
 
-        <CrxTabPanel value={value} index={0}>
+        <CrxTabPanel value={value} index={0}  >
           <GroupInfo/>
         </CrxTabPanel>
 
-        <CrxTabPanel value={value} index={1}>
+        <CrxTabPanel value={value} index={1}  >
           <User></User>
         </CrxTabPanel>
 

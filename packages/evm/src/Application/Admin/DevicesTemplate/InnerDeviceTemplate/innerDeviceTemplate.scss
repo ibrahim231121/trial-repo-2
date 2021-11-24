@@ -1,0 +1,40 @@
+//Template Information
+.stationLabel {
+    display: flex;
+    justify-content: space-between;
+    width: 710px;
+    margin-top: 29px;
+    .CRXSimpleSelect  {
+        width: 502px;
+    }
+}
+
+
+//Unit Setting
+
+.crxUnitSetting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    > span {
+        margin-bottom: 26px;
+    }
+    .MuiTypography-subtitle1 {
+        margin-right: 15px;
+        width: 8vw;
+        place-content: flex-start;
+    }
+    .MuiInput-formControl {
+        input {
+            width: 30vw;
+        }
+    }
+    .cusLabel {
+        display: block;
+        text-align: left;
+        width: 760px;
+        margin-bottom: 26px;
+    }
+}

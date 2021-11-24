@@ -1,12 +1,13 @@
+import { CRXCheckBox } from "@cb/shared";
 import { CRXButton } from "@cb/shared";
-import { TextField, CRXConfirmDialog } from "@cb/shared";
+import { TextField, CRXConfirmDialog, CRXRadio } from "@cb/shared";
 import { url } from "inspector";
 import React, { SyntheticEvent, useEffect } from "react";
 import { GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
 import { EditableSelect } from "@cb/shared";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 
-let USER_DATA = {};
+let USER_DATA={}
 interface Props {
   onClose: any;
   setCloseWithConfirm: any;
@@ -29,7 +30,10 @@ const CreateUserForm: React.FC<Props> = ({
   id,
 }) => {
   const [error, setError] = React.useState(false);
+const [radioValue, setRadioValue] = React.useState("sendAct");
+        const [generatePassword, setGeneratePassword] = React.useState("");
   const [formpayload, setFormPayload] = React.useState<userStateProps>({
+        
     userName: "",
     firstName: "",
     middleInitial: "",
@@ -77,10 +81,10 @@ const CreateUserForm: React.FC<Props> = ({
         middleInitial,
         lastName,
         email,
-        phoneNumber,
+      phoneNumber: "",
         userGroups: [],
         deactivationDate: "",
-      };
+    }
       setFormPayload({
         ...formpayload,
         email,
@@ -101,6 +105,71 @@ const CreateUserForm: React.FC<Props> = ({
     var response = await res.json();
     setUserPayload(response);
   };
+
+  
+  const generateTempPassComp = () => {
+    const onClickPass = () => {
+      var chars =
+        "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      var passwordLength = 12;
+      var password = "";
+      for (var i = 0; i <= passwordLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length);
+        password += chars.substring(randomNumber, randomNumber + 1);
+      }
+      setGeneratePassword(password);
+    };
+    return (
+      <>
+        <div style={{ display: "flex" }}>
+          <CRXButton className="secondary" onClick={onClickPass}>
+            Generate
+          </CRXButton>
+
+          <div>
+            <TextField value={generatePassword} />
+            <CRXButton
+              className="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(generatePassword);
+              }}
+            >
+              Copy
+            </CRXButton>
+          </div>
+        </div>
+
+        <div>
+          <CRXCheckBox />
+          <label>Require user to change password on next login</label>
+        </div>
+      </>
+    );
+  };
+  const manuallyGeneratePass = () => {
+    return (
+      <div>
+        <TextField label="Password" required={true} />
+        <TextField label="Confirm Password" required={true} />
+        <CRXCheckBox />
+        <label>Require user to change password on next login</label>
+      </div>
+    );
+  };
+
+  const content = [
+    { label: " Send Activation Link", value: "sendAct", Comp: () => {} },
+    {
+      label: "Generate Temporary Password",
+      value: "genTemp",
+      Comp: () => generateTempPassComp(),
+    },
+    {
+      label: "Manually Set Password",
+      value: "manual",
+      Comp: () => manuallyGeneratePass(),
+    },
+  ];
 
   const fetchGroups = async () => {
     const res = await fetch(GROUP_USER_LIST, {
@@ -130,8 +199,8 @@ const CreateUserForm: React.FC<Props> = ({
       userGroups,
       deactivationDate,
     } = formpayload;
-    if (userGroups.length > 0) {
-      setError(false);
+    if ( userGroups.length>0) {
+      setError(false)
     }
     if (
       userName ||
@@ -348,6 +417,14 @@ const CreateUserForm: React.FC<Props> = ({
             setFormPayload({ ...formpayload, deactivationDate: e.target.value })
           }
         />
+
+        <div>
+          <CRXRadio
+            content={content}
+            value={radioValue}
+            setValue={setRadioValue}
+          />
+      </div>
       </div>
       <div>
         <CRXButton

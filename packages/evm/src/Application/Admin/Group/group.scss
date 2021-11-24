@@ -1,3 +1,64 @@
+.crxTabsPermission {
+
+    div[role="tabpanel"]{
+        border-top: 1px solid #333;
+        margin-top: -2px;
+    } 
+
+    .MuiTab-root  {
+            padding: 0 25px;
+        &:nth-child(1) {
+            padding: 0 74px;
+        }
+        &:nth-child(2) {
+            padding: 0 97px;
+        }
+        &:nth-child(4) {
+            padding: 0 53px;
+        }
+    }
+    .MuiTab-textColorInherit { 
+        width: auto;
+    }
+
+
+@media(max-width:1200px) {
+    .MuiTab-root {
+        &:nth-child(1) {
+            padding: 0 60px !important;
+        }
+        &:nth-child(2) {
+            padding: 0 60px !important;
+        }
+        &:nth-child(3) {
+            padding: 0 20px !important;
+        }
+        &:nth-child(4) {
+            padding: 0 36px !important;
+        }
+    }
+}
+
+@media(max-width:1090px) {
+    .MuiTab-root {
+        &:nth-child(1) {
+            padding: 0 34px !important;
+        }
+        &:nth-child(2) {
+            padding: 0 43px !important;
+        }
+        &:nth-child(3) {
+            padding: 0 17px !important;
+        }
+        &:nth-child(4) {
+            padding: 0 26px !important;
+        }
+    }
+}
+}
+
+
+
 .crx-group-info-form {
   width: 100%;
   .crx-group-info {

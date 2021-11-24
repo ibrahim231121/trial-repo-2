@@ -46,5 +46,21 @@ export const urlList: any = {
     "/assets/detail/:id": [
         { routeTo: "/assets", type: "link", label: "Assets", },
         { type: "text", label: "Asset Detail: <id>" },
+    ],
+    "/admin/unitsdevicestemplate/createtemplate": [
+        { type: "link", label: "Admin", },
+        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
+        { type: "text", label: "Create Template: <template type>", }
+    ],
+    "/admin/unitsdevicestemplate/clonetemplate": [
+        { type: "link", label: "Admin", },
+        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
+        { type: "text", label: "<Template: CLONE - <Template given name by user>", }
+    ],
+    "/admin/unitsdevicestemplate/template": [
+        { type: "link", label: "Admin", },
+        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
+        { type: "text", label: "Template, <template type>: <template name>", }
     ]
+
 };

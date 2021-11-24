@@ -114,3 +114,26 @@
       height: 34px;
    }
 }
+.modal_user_crx {
+   margin-top: -20px;
+   overflow-y: scroll;
+   height: 408px;
+   padding-right: 20px;
+   div > span {
+      justify-content: space-between;
+   }
+   label {
+      margin-bottom: 17px;
+      display: block;
+   }
+   .MuiTypography-subtitle1 {
+      margin-right: 35px;
+      margin-bottom: 13px;
+   }
+   .getac-simple-select {
+      margin-bottom: 14px;
+   }
+   button {
+      margin: 0 14px 0 0;
+   }
+}
