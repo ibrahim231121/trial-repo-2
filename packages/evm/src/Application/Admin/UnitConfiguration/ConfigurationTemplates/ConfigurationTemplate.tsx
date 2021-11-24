@@ -11,7 +11,7 @@ import './ConfigurationTemplate.scss'
 import { CRXButton } from "@cb/shared";
 import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";
 import TextSearch from "../../../../components/SearchComponents/TextSearch";
-
+import { getConfigurationInfoAsync } from "../../../../Redux/TemplateConfiguration";
 import {
     SearchObject,
     ValueString,
@@ -22,7 +22,9 @@ import {
     onMultiToMultiCompare,
     onSetSingleHeadCellVisibility,
     onSetSearchDataValue,
-    onClearAll
+    onClearAll,
+    onSetHeadCellVisibility,
+    onSaveHeadCellData
   } from "../../../../utils/globalDataTableFunctions";
 
 
@@ -30,16 +32,28 @@ type ConfigTemplate = {
     id: number;
     name: string;
     type: string;
-    station: string
+    indicator: string
   }
 
 const ConfigurationTemplates: React.FC = () => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
-    let history = useHistory()
+  //  let history = useHistory()
 
-    const groups: any = useSelector((state: RootState) => state.groupReducer.groups);
-    const configTemplatCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
+
+    React.useEffect(() => {
+      dispatch(getConfigurationInfoAsync());
+  
+     let headCellsArray = onSetHeadCellVisibility(headCells);
+     setHeadCells(headCellsArray);
+     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable");  // will check this
+  
+    }, []);
+  
+
+
+    const UnitConfigurationTemplates: any = useSelector((state: RootState) => state.templateSlice.templateInfo);
+    //const configTemplatCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
     const [rows, setRows] = React.useState<ConfigTemplate[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -49,17 +63,18 @@ const ConfigurationTemplates: React.FC = () => {
 
     const setData = () => {
 
-      let configTemplateRows: ConfigTemplate[] = [
-  
-        {id:1, name:"BodyWorn Gen 2", type:"BWC02", station:"Memphis"},
-  
-        {id:2, name:"Bilal Incar", type:"InCar", station:"Poland"},
-  
-        {id:3, name:"BodyWorn general template", type:"BWC04", station:"NYPD"},
- 
-      ]
-  
-   
+      let configTemplateRows: ConfigTemplate[] = [];
+      if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
+        console.log(UnitConfigurationTemplates)
+        configTemplateRows = UnitConfigurationTemplates.map((template: any, i:number) => {
+              return {
+                  id: template.recId,
+                  name: template.name,
+                  type: template.type,
+                  indicator: template.indicator
+              }
+          })
+      }
       setRows(configTemplateRows);
       setReformattedRows(configTemplateRows);
   
@@ -67,7 +82,7 @@ const ConfigurationTemplates: React.FC = () => {
   
     React.useEffect(() => {
       setData();
-    }, [configTemplatCount]);
+    }, [UnitConfigurationTemplates]);
 
     const searchText = (
       rowsParam: ConfigTemplate[],
@@ -141,8 +156,8 @@ const ConfigurationTemplates: React.FC = () => {
         maxWidth: "100",
       },
       {
-        label: `${t("Station")}`,
-        id: "station",
+        label: `${t("Indicator")}`,
+        id: "indicator",
         align: "left",
         dataComponent: (e: string) => textDisplay(e, ""),
         sort: true,
@@ -152,6 +167,27 @@ const ConfigurationTemplates: React.FC = () => {
         maxWidth: "100",
       }
     ]);
+
+
+    useEffect(() => {
+      dataArrayBuilder();
+  }, [searchData]);
+
+
+  const dataArrayBuilder = () => {
+    if (reformattedRows !== undefined) {
+        let dataRows: ConfigTemplate[] = reformattedRows;
+        searchData.forEach((el: SearchObject) => {
+          if (el.columnName === "name" || el.columnName === "type" || el.columnName === "indicator" )
+                dataRows = onTextCompare(dataRows, headCells, el);
+           
+
+        }
+        );
+        setRows(dataRows);
+    }
+};
+
     const resizeRow = (e: { colIdx: number; deltaX: number }) => {
       let headCellReset = onResizeRow(e, headCells);
       setHeadCells(headCellReset);
@@ -169,23 +205,27 @@ const ConfigurationTemplates: React.FC = () => {
     };
 
     return (
-        <div style={{ marginLeft: "6%", marginTop: "6%" }}>
-          <CRXButton onClick={() => { history.push("/admin/unitconfiguration/unitconfigurationtemplate/createtemplate") }}>
+        <div style={{ marginLeft: "6%", marginTop: "10%" }}>
+          {/* <CRXButton onClick={() => { history.push("/admin/unitconfiguration/unitconfigurationtemplate/createtemplate") }}>
             Create Template
-          </CRXButton>
+          </CRXButton> */}
           {
             rows && (
             <CRXDataTable
               id="unitConfifTemplateDataTable"
               actionComponent={<ConfigTemplateActionMenu />}
               showToolbar={true}
+           
               dataRows={rows}
               headCells={headCells}
+           
               orderParam={order}
               orderByParam={orderBy}
               searchHeader={true}
+           
               columnVisibilityBar={true}
-              allowDragableToList={false}
+              allowDragableToList={true}
+             
               className="ManageAssetDataTable crxTableHeight bucketDataTable"
               onClearAll={clearAll}
               getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
@@ -193,9 +233,10 @@ const ConfigurationTemplates: React.FC = () => {
               onHeadCellChange={onSetHeadCells}
               setSelectedItems={setSelectedItems}
               selectedItems={selectedItems}
+            
               showActionSearchHeaderCell={true}
               showCountText={false}
-              showCustomizeIcon={true}
+              showCustomizeIcon={true} 
               dragVisibility={false}
               showCheckBoxesCol={true}
               showActionCol={true}

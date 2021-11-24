@@ -16,5 +16,5 @@ const store = createStore(pReducer);
 const persistor = persistStore(store);
 //exporting Actions
 
- 
-export { persistor, store };
+export {persistor, store}
+export default configureStore({reducer})
