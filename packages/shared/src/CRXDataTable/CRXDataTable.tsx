@@ -264,6 +264,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     });
   }
 
+  const nextButton = <i className="fas fa-angle-right"></i>;
   return (
     <>
       {Object.values(containers).map((container: any) => {
@@ -327,6 +328,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       count={container.rows.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
+                      nextIconButtonProps={nextButton}
                       onChangePage={handleChangePage}
                       onChangeRowsPerPage={handleChangeRowsPerPage}
                     />

@@ -315,7 +315,7 @@ const Group = () => {
   }
 
   return (
-    <div className="App crxTabsPermission" style={{ marginTop: "120px", marginLeft: "90px" }}>
+    <div className= "App crxTabsPermission" style={{  }}>
       <>
       <CRXAlert
                           className="crx-alert-notification"
@@ -357,19 +357,13 @@ const Group = () => {
           ></DataPermission>
         </CrxTabPanel>
       </>
-      <div style={{
-        position: "absolute",
-        bottom: "40px",
-        display: "flex",
-        justifyContent: "space-between",
-        width: '92%'
-      }}>
-        <div>
-          <CRXButton className="primary" onClick={onSave} disabled={isSaveButtonDisabled}>Save</CRXButton>
-          <CRXButton onClick={() => history.push(Object.entries(urlList)[1][0].toString())}>Cancel</CRXButton>
+      <div className="tab-bottom-buttons">
+        <div className="save-cancel-button-box">
+          <CRXButton  variant="contained" className="groupInfoTabButtons"  onClick={onSave} disabled={isSaveButtonDisabled}>Save</CRXButton>
+                    <CRXButton className="groupInfoTabButtons secondary" color="secondary" variant="outlined" onClick={() => history.push(Object.entries(urlList)[1][0].toString())}>Cancel</CRXButton>
         </div>
-        <CRXButton onClick={() => redirectPage()}
-          className="secondary">Close</CRXButton>
+     <CRXButton onClick={()=> redirectPage()} 
+          className="groupInfoTabButtons-Close secondary" color="secondary" variant="outlined">Close</CRXButton>
       </div>
       <CRXConfirmDialog
         setIsOpen={() => setIsOpen(false)}

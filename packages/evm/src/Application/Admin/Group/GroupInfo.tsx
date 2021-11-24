@@ -26,10 +26,14 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo }) => {
 
   return (
     <div className="crx-group-info-form CBX-input">
-      <label className="label">* Indicates required field</label>
+      <label className="indicates-label"><b>*</b> Indicates required field</label>
       <div className="crx-group-info">
-        <TextField required={true} label="Group Name" value={name} onChange={onChangeName} />
-        <TextField label="Description" multiline variant="outlined" rows={4} value={description} onChange={onChangeDescription} />
+        <div className="groupInfoInputs">
+          <TextField required={true} label="Group Name" value={name} onChange={onChangeName} />
+        </div>
+        <div className="groupInfoInputs">
+          <TextField label="Description" multiline variant="outlined" rows={4} value={description} onChange={onChangeDescription} />
+        </div>
       </div>
     </div>
   );

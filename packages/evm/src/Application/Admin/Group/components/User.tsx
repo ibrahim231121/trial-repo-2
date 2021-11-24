@@ -139,7 +139,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             keyCol: true,
             visible: false,
             minWidth: "80",
-            maxWidth: "100",
+            maxWidth: "80",
         },
         {
             label: `${t("Username")}`,
@@ -149,8 +149,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "260",
+            maxWidth: "260",
             visible: true,
         },
         {
@@ -161,8 +161,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "195",
+            maxWidth: "195",
             visible: true,
         },
         {
@@ -173,8 +173,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "195",
+            maxWidth: "195",
             visible: true,
         },
         {
@@ -184,8 +184,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             dataComponent: (e: string[]) => multitextDisplay(e, ""),
             sort: true,
             searchFilter: true,
-            searchComponent: () => { }, //(rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-            minWidth: "135",
+            searchComponent: searchText,//() => { }, //(rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+            minWidth: "318",
+            maxWidth: "318",
+            visible: true,
         },
     ]);
     const searchAndNonSearchMultiDropDown = (
@@ -270,7 +272,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         setHeadCells(headCellsArray);
     };
     return (
-        <div>
+        <div className="userDataTableParent">
             {rows && (
                 <CRXDataTable
                     id="group-userDataTable"
@@ -284,7 +286,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable crxTableHeight bucketDataTable"
+                    className="ManageAssetDataTable usersGroupDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: User[]) => setSelectedItems(v)}
                     onResizeRow={resizeRow}

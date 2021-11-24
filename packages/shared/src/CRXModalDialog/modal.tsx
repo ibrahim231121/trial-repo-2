@@ -73,7 +73,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
             </Button>
           </div>
         <DialogTitle className="modelTitle">{title }</DialogTitle>
-        <div className="CRXContent CRXContent_user ">
+        <div className="CRXContent CRXContent_user">
           { children }
         <CRXConfirmDialog
         setIsOpen={setIsOpen}
