@@ -70,8 +70,7 @@ const CRXAssetsBucketPanel = () => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [scrollHide, setScroll] = React.useState("");
-  const [sucess, setSucess] = React.useState<{ show: boolean; msg: string }>({
-    show: false,
+  const [sucess, setSucess] = React.useState<{  msg: string }>({
     msg: "",
   });
   const [attention, setAttention] = React.useState<{ msg: string }>({
@@ -383,46 +382,6 @@ const CRXAssetsBucketPanel = () => {
                         <span className="textFileBrowser">file browser</span>
                       </div>
                     </div>
-                    {rows.length > 0 ? (
-                      <>
-                        <div className="bucketViewLink">
-                          View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
-                        </div>
-                        <CRXDataTable
-                          tableId="assetBucket"
-                          actionComponent={<BucketActionMenu
-                            row={selectedActionRow}
-                            setSelectedItems={setSelectedItems}
-                            selectedItems={selectedItems} />
-                          }
-                          getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-                          showToolbar={false}
-                          dataRows={rows}
-                          headCells={headCells}
-                          orderParam={order}
-                          orderByParam={orderBy}
-                          searchHeader={true}
-                          columnVisibilityBar={true}
-                          className="ManageAssetDataTable crxTableHeight bucketDataTable"
-                          getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
-                          onResizeRow={resizeRow}
-                          setSelectedItems={setSelectedItems}
-                          selectedItems={selectedItems}
-                          dragVisibility={false}
-                          showTotalSelectedText={false}
-                        />
-                      </>
-                    ) : (
-                      <div className="bucketContent">Your Asset Bucket is empty.</div>
-                    )
-                    }
-                  </div>
-                  <div className="textArea">
-                    Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
-                    <br />
-                    <span className="textFileBrowser">file browser</span>
-                  </div>
-                </div>
                 {rows.length > 0 ? (
                   <>
                     <div className="bucketViewLink">

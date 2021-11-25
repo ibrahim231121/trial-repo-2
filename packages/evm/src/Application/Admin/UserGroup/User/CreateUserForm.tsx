@@ -35,12 +35,13 @@ interface userStateProps {
 }
 
 type account = {
-  isAdministrator: boolean;
+  isAdministrator: number;
   lastLogin: Date;
   passwordDetail: any;
   status: number;
   userName: string;
   password: string;
+  isPasswordResetRequired: boolean;
 }
 
 const CreateUserForm: React.FC<Props> = ({
@@ -85,8 +86,7 @@ const CreateUserForm: React.FC<Props> = ({
   const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
 
-  const [isPasswordResetRequired, setIsPasswordResetRequired] =
-    React.useState<boolean>(false);
+  const [isPasswordResetRequired, setIsPasswordResetRequired] = React.useState<boolean>(false);
 
   const [disableLink, setDisableLink] = React.useState(false);
 
@@ -308,89 +308,135 @@ const CreateUserForm: React.FC<Props> = ({
 
   }, [formpayload]);
 
-  const onAdd = async () => {
-    if (formpayload.userGroups.length === 0) {
-      setError(true);
-    }
-    const url = `http://10.227.141.128:8088/Users`;
+  // const onAdd = async () => {
+  //   if (formpayload.userGroups.length === 0) {
+  //     setError(true);
+  //   }
+  //   const url = `http://10.227.141.128:8088/Users`;
 
-    const name = {
-      first: formpayload.firstName,
-      last: formpayload.lastName,
-      middle: formpayload.middleInitial,
-    };
+  //   const name = {
+  //     first: formpayload.firstName,
+  //     last: formpayload.lastName,
+  //     middle: formpayload.middleInitial,
+  //   };
 
-    let contacts = []
-    if (contacts.length === 0) {
-      contacts.push({contactType:1, number:formpayload.phoneNumber})
-    }
+  //   let contacts = []
+  //   if (contacts.length === 0) {
+  //     contacts.push({contactType:1, number:formpayload.phoneNumber})
+  //   }
 
-    const account = {
-      isAdministrator: 1,
-      status: 1,
-      userName: formpayload.userName,
-      password: onSelectPasswordType()
-    };
+  //   const account = {
+  //     isAdministrator: 1,
+  //     status: 1,
+  //     userName: formpayload.userName,
+  //     password: onSelectPasswordType()
+  //   };
     
-    const payload = {
-      email: formpayload.email,
-      name,
-      account,
-      contacts,
-    };
+  //   const payload = {
+  //     email: formpayload.email,
+  //     name,
+  //     account,
+  //     contacts,
+  //   };
 
-    //console.log("payload",payload)
+  //   //console.log("payload",payload)
 
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "TenantId": "1" },
-      body: JSON.stringify(payload),
-    })
-    .then(function(res) {
-      console.log("response-1",res)
-      if(res.ok) 
-        setReponseError("Successfully created")
-      else
-        return res.text();
-    })
-    .then(resp => {
-      if(resp !== undefined) {
-        let error = JSON.parse(resp)
-        console.log("response-2",error)
-        if(error.errors.Email.length > 0) {
-          setFormPayloadErr({
-            ...formpayloadErr,
-            emailErr: error.errors.Email[0],
-          })
-        }
-        if(error.errors.Number.length > 0) {
-          setFormPayloadErr({
-            ...formpayloadErr,
-            phoneNumberErr: error.errors.Number[0],
-          })
-        }
-      }
-    })
-    .catch(function(error) {
-      console.log("error",error);
-      return error;
-    }); 
+  //   await fetch(url, {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json", "TenantId": "1" },
+  //     body: JSON.stringify(payload),
+  //   })
+  //   .then(function(res) {
+  //     console.log("response-1",res)
+  //     if(res.ok) 
+  //       setReponseError("Successfully created")
+  //     else
+  //       return res.text();
+  //   })
+  //   .then(resp => {
+  //     if(resp !== undefined) {
+  //       let error = JSON.parse(resp)
+  //       console.log("response-2",error)
+  //       if(error.errors.Email.length > 0) {
+  //         setFormPayloadErr({
+  //           ...formpayloadErr,
+  //           emailErr: error.errors.Email[0],
+  //         })
+  //       }
+  //       if(error.errors.Number.length > 0) {
+  //         setFormPayloadErr({
+  //           ...formpayloadErr,
+  //           phoneNumberErr: error.errors.Number[0],
+  //         })
+  //       }
+  //     }
+  //   })
+  //   .catch(function(error) {
+  //     console.log("error",error);
+  //     return error;
+  //   }); 
 
-  }
+  // }
 
-  const onSelectPasswordType = () => {
-    if(radioValue === "genTemp")
-      return generatePassword
-    else if(radioValue === "manual")
-      return password
-    else 
-      return ""
-  }
+  // const onSelectPasswordType = () => {
+  //   if(radioValue === "genTemp")
+  //     return generatePassword
+  //   else if(radioValue === "manual")
+  //     return password
+  //   else 
+  //     return ""
+  // }
 
-  const onEdit = async () => {
-    if (formpayload.userGroups.length === 0) {
-      setError(true);
-    }
+  // const onEdit = async () => {
+  //   if (formpayload.userGroups.length === 0) {
+  //     setError(true);
+  //   }
+
+  //   const name = {
+  //     first: formpayload.firstName,
+  //     last: formpayload.lastName,
+  //     middle: formpayload.middleInitial,
+  //   };
+
+  //   let contacts = userPayload.contacts.map((x: any) => {
+  //     if (x.contactType === 1) {
+  //       x.number = formpayload.phoneNumber;
+  //     }
+  //     return x;
+  //   });
+  //   const account = { ...userPayload.account, userName: formpayload.userName };
+  //   if (contacts.length === 0) {
+  //     contacts.push({ contactType: 1, number: formpayload.phoneNumber });
+  //   }
+
+  //   const account: account = {
+  //     isAdministrator: 1,
+  //     status: 1,
+  //     userName: formpayload.userName,
+  //     password: onSelectPasswordType(),
+  //     isPasswordResetRequired,
+  //     lastLogin: moment().toDate(),
+  //     passwordDetail: null,
+  //   };
+
+  //   const payload = {
+  //     email: formpayload.email,
+  //     name,
+  //     account,
+  //     contacts,
+  //     assignedGroupIds: userGroupsListIDs,
+  //     timeZone: "America/Chicago",
+  //   };
+
+  //     return payload
+  // }
+
+  const setAddPayload = () => {
+    let userGroupsListIDs = userGroupsList
+      ?.filter((item: any) => {
+        return formpayload.userGroups.some((e: any) => e === item.groupName);
+      })
+      .map((i: any) => i.groupId);
 
     const name = {
       first: formpayload.firstName,
@@ -398,13 +444,7 @@ const CreateUserForm: React.FC<Props> = ({
       middle: formpayload.middleInitial,
     };
 
-    let contacts = userPayload.contacts.map((x: any) => {
-      if (x.contactType === 1) {
-        x.number = formpayload.phoneNumber;
-      }
-      return x;
-    });
-    const account = { ...userPayload.account, userName: formpayload.userName };
+    let contacts = [];
     if (contacts.length === 0) {
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
     }
@@ -910,7 +950,6 @@ const checkUserGroup = () => {
           Cancel
         </CRXButton>
       </div>
-      <label style={{color:"Red"}}>{reponseError}</label>
     </div>
   );
 };

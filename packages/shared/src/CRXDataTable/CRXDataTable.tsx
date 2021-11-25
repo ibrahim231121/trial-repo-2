@@ -62,8 +62,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showActionSearchHeaderCell,
   showCountText,
   showTotalSelectedText,
-  showCustomizeIcon,
-  showHeaderCheckAll,
+  showCustomizeIcon
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -286,7 +285,6 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     });
   }
 
-  const nextButton = <i className="fas fa-angle-right"></i>;
   return (
     <>
       {Object.values(containers).map((container: any) => {

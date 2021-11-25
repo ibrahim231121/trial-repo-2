@@ -66,7 +66,6 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     onChange,
     onClose,
     onOpen,
-    open,
     noOptions,
     paddLeft,
   } = props;
@@ -199,11 +198,8 @@ export default function CRXMultiSelect(props: selectBoxProps) {
         }}
         onChange={onChange}
         onInputChange={(e) => {
-          if (e.nativeEvent.data !== null) {
+          if (e.nativeEvent !== null) {
             settextFill(true);
-          }
-          if (e.nativeEvent.data == null) {
-            settextFill(false);
           }
         }}
         renderInput={(params: object) => {
