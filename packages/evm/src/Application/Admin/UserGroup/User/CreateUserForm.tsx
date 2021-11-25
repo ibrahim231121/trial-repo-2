@@ -3,13 +3,12 @@ import { CRXButton } from "@cb/shared";
 import { TextField, CRXConfirmDialog, CRXRadio } from "@cb/shared";
 import { url } from "inspector";
 import React, { SyntheticEvent, useEffect, useRef } from "react";
-import { GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
+import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
 import { EditableSelect } from "@cb/shared";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { DateFormat } from "../../../../utils/globalDataTableFunctions"
 import { CRXAlert } from "@cb/shared";
 import moment from "moment";
-import { AUTHENTICATION_EMAIL_SERVICE } from "../../../../utils/Api/url";
 
 let USER_DATA = {};
 interface Props {
@@ -89,8 +88,6 @@ const CreateUserForm: React.FC<Props> = ({
   const [isPasswordResetRequired, setIsPasswordResetRequired] = React.useState<boolean>(false);
 
   const [disableLink, setDisableLink] = React.useState(false);
-
-  const url = `http://127.0.0.1:8085/Users`;
 
   React.useEffect(() => {
     if(id)
@@ -479,7 +476,7 @@ const CreateUserForm: React.FC<Props> = ({
   
     const payload = setAddPayload()
 
-    await fetch(url, {
+    await fetch(USER, {
       method: "POST",
       headers: { "Content-Type": "application/json", TenantId: "1" },
       body: JSON.stringify(payload),
@@ -586,7 +583,7 @@ const CreateUserForm: React.FC<Props> = ({
       return;
     }
 
-    const urlEdit = url + "/" + `${id}`;
+    const urlEdit = USER + "/" + `${id}`;
 
     const payload = setEditPayload()
 
