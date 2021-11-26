@@ -3,19 +3,25 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {makeStyles, createStyles} from '@material-ui/core/styles'
 import "./EditableSelect.scss";
+import { Typography } from "@material-ui/core";
 
 interface selectBoxProps {
   multiple?: boolean;
   options: any[];
   CheckBox?: boolean;
   id?: string;
+  label?: string | undefined;
   clearText:()=>void;
   className?: string;
   placeHolder?: string;
   onChange: (e: any,value:any) => void;
   onInputChange: (e: any) => void;
   freeSolo : boolean;
-  value:string
+  value:string;
+  required: boolean;
+  error?: boolean;
+  errorMsg?: string;
+  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const optionStyle = makeStyles(() =>
@@ -77,14 +83,39 @@ const CRXAutocomplete = ({
   id,
   className,
   placeHolder,
-  value
+  value,
+  label,
+  required,
+  error,
+  errorMsg,
+  onBlur,
 }: selectBoxProps) => {
 
   const data = options;
+  // const errors = error ? "errors" : " "; 
   const classes = optionStyle()
   const handleOnOpen = () => {
   }
+
+  const reformatedLabel = () => {
+    if (required) {
+      return (
+        <span className="requiredLable">
+          {label}{" "}
+          <span style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
+        </span>
+      );
+    } else {
+      return <span>{label} </span>;
+    }
+  };
   return (
+    <>
+      <span >
+        <Typography variant="subtitle1" className="label">
+          {reformatedLabel()}
+        </Typography>
+        <span>
     <Autocomplete
       multiple={multiple}
       className={"getac-simple-select " + className + " " + classes.root}
@@ -104,15 +135,35 @@ const CRXAutocomplete = ({
         return onChange(e,value);
       }}
       onOpen={() => handleOnOpen()}
+     
       renderInput={(params: object) => (
+              
         <TextField
          placeholder={placeHolder}
-          className="selectBoxTextField"
+         onBlur={onBlur}
+          className={"getac-simple-select"+ " " + "error" +  " " + "selectBoxTextField"}
+          error={error}
           {...params}
           variant="outlined"
+          InputLabelProps={ { required: required }} 
         />
+
       )}
     />
+    {error && (
+            <Typography
+              className="errorStateContent"
+              variant="caption"
+              display="block"
+              gutterBottom
+            >
+              {errorMsg}
+            </Typography>
+          )}
+        </span>
+      </span>
+    </>
+  
   );
 };
 

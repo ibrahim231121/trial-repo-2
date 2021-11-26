@@ -15,7 +15,7 @@ export const reducer = combineReducers({
   timerReducers: timerSlice.reducer,
   userReducer: userSlice.reducer,
 
- templateSlice: templateSlice.reducer
+ templateSlice: templateSlice.reducer,
   cultureReducer: cultureSlice.reducer,
   unitReducer: unitSlice.reducer
 })

@@ -32,8 +32,12 @@ type User = {
     lastName: string,
     groups: string[]
 }
+type infoProps = {
+    ids: Number[],
+    onChangeUserIds: any
+}
 
-const User: React.FC = () => {
+const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
 
@@ -69,9 +73,21 @@ const User: React.FC = () => {
                 }
             })
         }
+        //set selected users in edit case
+        let selectedUsers = userRows.filter(x => {
+            if (ids.indexOf(x.id) > -1)
+                return x;
+        });
+        setSelectedItems(selectedUsers);
         setRows(userRows)
         setReformattedRows(userRows);
     }
+
+    React.useEffect(() => {
+        if (rows.length > 0) {
+            onChangeUserIds(selectedItems.map(x => x.id));
+        }
+    }, [selectedItems]);
 
     React.useEffect(() => {
         setData();
@@ -123,7 +139,7 @@ const User: React.FC = () => {
             keyCol: true,
             visible: false,
             minWidth: "80",
-            maxWidth: "100",
+            maxWidth: "80",
         },
         {
             label: `${t("Username")}`,
@@ -133,8 +149,8 @@ const User: React.FC = () => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "260",
+            maxWidth: "260",
             visible: true,
         },
         {
@@ -145,8 +161,8 @@ const User: React.FC = () => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "195",
+            maxWidth: "195",
             visible: true,
         },
         {
@@ -157,8 +173,8 @@ const User: React.FC = () => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100",
-            maxWidth: "100",
+            minWidth: "195",
+            maxWidth: "195",
             visible: true,
         },
         {
@@ -168,8 +184,10 @@ const User: React.FC = () => {
             dataComponent: (e: string[]) => multitextDisplay(e, ""),
             sort: true,
             searchFilter: true,
-            searchComponent: () => { }, //(rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-            minWidth: "135",
+            searchComponent: searchText,//() => { }, //(rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+            minWidth: "318",
+            maxWidth: "318",
+            visible: true,
         },
     ]);
     const searchAndNonSearchMultiDropDown = (
@@ -254,7 +272,7 @@ const User: React.FC = () => {
         setHeadCells(headCellsArray);
     };
     return (
-        <div>
+        <div className="userDataTableParent">
             {rows && (
                 <CRXDataTable
                     id="group-userDataTable"
@@ -268,7 +286,7 @@ const User: React.FC = () => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable crxTableHeight bucketDataTable"
+                    className="ManageAssetDataTable usersGroupDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: User[]) => setSelectedItems(v)}
                     onResizeRow={resizeRow}

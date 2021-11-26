@@ -69,13 +69,15 @@ const CRXAssetsBucketPanel = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
-  const [sucess, setSucess] = React.useState<{ msg: string }>({
+  const [scrollHide, setScroll] = React.useState("");
+  const [sucess, setSucess] = React.useState<{  msg: string }>({
     msg: "",
   });
   const [attention, setAttention] = React.useState<{ msg: string }>({
     msg: "",
   });
   const [showSucess, setShowSucess] = React.useState<boolean>(false);
+  const [showMessageClx, setShowMessageClx] = React.useState<string>("bucketMessageHide");
   const [showAttention, setShowAttention] = React.useState<boolean>(false);
 
   const prevCount = usePrevious(assetBucketData.length);
@@ -108,10 +110,12 @@ const CRXAssetsBucketPanel = () => {
       setSucess({
         msg: "You have added the selected assets to the asset bucket.",
       });
+      setShowMessageClx("bucketMessageShow")
       setShowSucess(true);
     }
     else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
+      setShowMessageClx("bucketMessageShow")
       setShowSucess(true);
       setSucess({
         msg: `${totalRemoved} ${totalRemoved > 1 ? "assets" : "asset"
@@ -129,6 +133,7 @@ const CRXAssetsBucketPanel = () => {
     timer = setTimeout(() => {
       setShowAttention((prev: boolean) => false);
       setShowSucess((prev: boolean) => false);
+      setShowMessageClx("bucketMessageHide");
     }, 7000);
     return () => {
       clearTimeout(timer);
@@ -144,12 +149,14 @@ const CRXAssetsBucketPanel = () => {
       clearTimeout(timer);
     };
   }, [assetBucketData.length]);
+  
+  const bucketIconByState = assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2"
   const ToggleButton = (
     <CRXBadge itemCount={assetBucketData.length} color="primary">
       <CRXTooltip
         className="bucketIcon"
         title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
-        iconName="fas icon-drawer2"
+        iconName={"fas " + bucketIconByState}
         placement="left"
       ></CRXTooltip>
     </CRXBadge>
@@ -185,7 +192,28 @@ const CRXAssetsBucketPanel = () => {
     const onSetHeaderArray = (v: ValueString[]) => {
       headCells[colIdx].headerArray = v;
     };
+    const noOptionStyled = {
+      width : "107px",
+      marginLeft : "-11px",
+      whiteSpace : "nowrap",
+      overFlow : "hidden",
+      textOverflow : "ellipsis",
+      marginRight : "0",
+      paddingLeft : "5px !important",
+      paddingRight : "10px !important",
+      fontSize : "13px",
+      lineHeight : "15px",
+      top : "5px",
+      marginTop : "0"
+    }
+    const paddLeft = {
+      marginLeft : "2px",
+      paddingRight: "3px !important",
+      marginRight : "2px",
+      paddingLeft: "2px",
+      
 
+    }
     return (
       <MultSelectiDropDown
         headCells={headCells}
@@ -195,6 +223,8 @@ const CRXAssetsBucketPanel = () => {
         onMultiSelectChange={onSelection}
         onSetSearchData={onSetSearchData}
         onSetHeaderArray={onSetHeaderArray}
+        widthNoOption={noOptionStyled}
+        paddLeft={paddLeft}
       />
     );
   };
@@ -221,17 +251,17 @@ const CRXAssetsBucketPanel = () => {
       minWidth: "80",
       maxWidth: "100",
     },
-    {
-      label: `${t("AssetID")}`,
-      id: "assetName",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "linkColor"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100",
-    },
+    // {
+    //   label: `${t("AssetID")}`,
+    //   id: "assetName",
+    //   align: "left",
+    //   dataComponent: (e: string) => textDisplay(e, "linkColor"),
+    //   sort: true,
+    //   searchFilter: true,
+    //   searchComponent: searchText,
+    //   minWidth: "100",
+    //   maxWidth: "100",
+    // },
     {
       label: `${t("Categories")}`,
       id: "categories",
@@ -278,44 +308,55 @@ const CRXAssetsBucketPanel = () => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
-
+  
+  React.useEffect(() => {
+    const windowSize = window.screen.height;
+    if(windowSize < 1080 && rows.length < 3) {
+      setScroll("hideScroll");
+      
+    }else if(windowSize >= 1080 && rows.length < 4) {
+      setScroll("hideScroll");
+    }else {
+      setScroll("");
+    }
+  },[rows, sucess])
   return (
     <CRXDrawer
-      className="CRXBucketPanel"
-      anchor="right"
-      button={ToggleButton}
-      btnStyle="bucketIconButton"
-      isOpen={isOpen}
-      toggleState={toggleState}
-      variant="persistent"
-    >
-      <Droppable droppableId="assetBucketEmptyDroppable">
-        {(provided: any) => (
-          <CRXRootRef provided={provided}>
-            <>
-              <Draggable
-                draggableId="assetBucketEmptyDraggable"
-                index={0}
-                isDragDisabled={true}
-              >
-                {(provided: any) => (
-                  <div id="divMainBucket"
-                    className="divMainBucket"
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <CRXRows container spacing={0}>
-                      <CRXColumn item xs={11} className="bucketPanelTitle">
-                        <label>Your Asset Bucket</label>
-                      </CRXColumn>
-                      <CRXColumn item xs={1} className="topColumn">
-                        <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
-                      </CRXColumn>
-                    </CRXRows>
-                    <CRXRows container spacing={0}>
-                      <CRXColumn item xs={12} className="topColumn">
-                        <CRXAlert
+    className="CRXBucketPanel crxBucketPanelStyle"
+    anchor="right"
+    button={ToggleButton}
+    btnStyle="bucketIconButton"
+    isOpen={isOpen}
+    toggleState={toggleState}
+    variant="persistent"
+  >
+    <Droppable droppableId="assetBucketEmptyDroppable">
+    {(provided: any) => (
+      <CRXRootRef provided={provided}>
+        <>
+          <Draggable
+            draggableId="assetBucketEmptyDraggable"
+            index={0}
+            isDragDisabled={true}
+          >
+            {(provided: any) => (
+              <div id="divMainBucket"
+                className="divMainBucket"
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >        
+                <CRXRows container spacing={0}>
+                  <CRXColumn item xs={11} className="bucketPanelTitle">
+                    <label>Your Asset Bucket</label>
+                  </CRXColumn>
+                  <CRXColumn item xs={1} className="topColumn">
+                    <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
+                  </CRXColumn>
+                </CRXRows>
+    <CRXRows container spacing={0} className={showMessageClx}>
+      <CRXColumn item xs={12} className="topColumn">
+      <CRXAlert
                           className="crx-alert-notification"
                           message={attention.msg}
                           type="info"
@@ -341,48 +382,47 @@ const CRXAssetsBucketPanel = () => {
                         <span className="textFileBrowser">file browser</span>
                       </div>
                     </div>
-                    {rows.length > 0 ? (
-                      <>
-                        <div className="bucketViewLink">
-                          View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
-                        </div>
-                        <CRXDataTable
-                          tableId="assetBucket"
-                          actionComponent={<BucketActionMenu
-                            row={selectedActionRow}
-                            setSelectedItems={setSelectedItems}
-                            selectedItems={selectedItems} />
-                          }
-                          getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-                          showToolbar={false}
-                          dataRows={rows}
-                          headCells={headCells}
-                          orderParam={order}
-                          orderByParam={orderBy}
-                          searchHeader={true}
-                          columnVisibilityBar={true}
-                          className="ManageAssetDataTable crxTableHeight bucketDataTable"
-                          getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
-                          onResizeRow={resizeRow}
-                          setSelectedItems={setSelectedItems}
-                          selectedItems={selectedItems}
-                          dragVisibility={false}
-                          showTotalSelectedText={false}
-                        />
-                      </>
-                    ) : (
-                      <div className="bucketContent">Your Asset Bucket is empty.</div>
-                    )
-                    }
-                  </div>
-                )}
-              </Draggable>
-              {provided.placeholder}
-            </>
-          </CRXRootRef>
-        )}
-      </Droppable>
-    </CRXDrawer>
+                {rows.length > 0 ? (
+                  <>
+                    <div className="bucketViewLink">
+                      View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
+                    </div>
+                    <CRXDataTable
+                      tableId="assetBucket"
+                      actionComponent={<BucketActionMenu
+                                          row={selectedActionRow}
+                                          setSelectedItems={setSelectedItems}
+                                          selectedItems={selectedItems} />
+                                      }
+                      getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+                      showToolbar={false}
+                      dataRows={rows}
+                      headCells={headCells}
+                      orderParam={order}
+                      orderByParam={orderBy}
+                      searchHeader={true}
+                      columnVisibilityBar={true}
+                      className={`ManageAssetDataTable crxTableHeight bucketDataTable ${scrollHide}  ${ showMessageClx == "bucketMessageHide" ? '' : 'crxMessageShow' }`}
+                      getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
+                      onResizeRow={resizeRow}
+                      setSelectedItems={setSelectedItems}
+                      selectedItems={selectedItems}
+                      dragVisibility={false}
+                    />
+                  </>
+                ) : (
+                  <div className="bucketContent">Your Asset Bucket is empty.</div>
+                )
+              }
+              </div>
+            )}
+          </Draggable>
+          {provided.placeholder}
+        </>
+      </CRXRootRef>      
+      )}
+    </Droppable>
+  </CRXDrawer>  
   );
 };
 

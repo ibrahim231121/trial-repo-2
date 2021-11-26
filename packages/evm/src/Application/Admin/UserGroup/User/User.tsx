@@ -30,6 +30,7 @@ import multitextDisplay from "../../../../components/DateDisplayComponent/MultiT
 import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
 import CreateUserForm from "./CreateUserForm";
+import { CRXAlert } from '@cb/shared';
 
 type User = {
     id: string;
@@ -445,7 +446,8 @@ const User: React.FC = () => {
     };
 
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-        setOpen(false);     
+        setOpen(false); 
+        dispatch(getUsersInfoAsync());
     };
     
 
@@ -453,15 +455,16 @@ const User: React.FC = () => {
         <div style={{ marginLeft: "6%", marginTop: "10%" }}>
             <CRXButton id={"createUser"} onClick={handleClickOpen}>
                 Create User
-            </CRXButton>     
+            </CRXButton>  
             <CRXModalDialog
-                className="createUser"
-                style={{minWidh:"550px"}}
+                className="createUser CrxCreateUser"
+                style={{minWidth:"680px"}}
                 maxWidth="xl" 
                 title="Create User" 
                 modelOpen={open} 
                 onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
+                subTitleText="Indicates required field"
             >
                 <CreateUserForm 
                     setCloseWithConfirm={setCloseWithConfirm}  

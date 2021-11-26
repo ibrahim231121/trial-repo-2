@@ -1,0 +1,382 @@
+.crx-confirm-modal {
+  .MuiDialog-container {
+    align-items: flex-start;
+  }
+  .MuiPaper-root {
+    border: 1px solid #707070;
+    border-radius: 0;
+    min-height: 291px;
+    min-width: 445px;
+    overflow-x: hidden;
+    top: 126px;
+
+    .CRXPopupCrossButton {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 46px;
+      button {
+        &:hover {
+          background-color: transparent;
+        }
+        .MuiButton-label {
+          justify-content: center;
+          .closeModalIconUnblock {
+            font-size: 16px;
+            color: #d1d2d4;
+            &:hover {
+              color: #333333;
+            }
+          }
+        }
+      }
+    }
+    .MuiDialogContent-root {
+      color: #333333;
+      height: calc(100% - 97px);
+      overflow-y: auto;
+      font-size: 14px;
+      overflow-x: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 7px 53px 5px 27px;
+      .crxUplockContent {
+        p {
+          &:last-child {
+            margin-top: 34px;
+            margin-bottom: 42px;
+          }
+        }
+      }
+    }
+    .MuiDialogTitle-root {
+      padding: 15px 26px;
+      h6 {
+        font-size: 18px;
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: normal;
+      }
+    }
+
+    .crxConfirmFooterModal {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      padding: 14px 27px;
+      height: 74px;
+      button.Mui-disabled {
+        background: #e5e5e5;
+        color: #979797;
+      }
+      button {
+        font-size: 14px;
+        border-radius: 0;
+        height: 30px;
+        text-transform: revert;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .primaryBtn {
+        background: #333333;
+        color: #d1d2d4;
+        min-width: 187px;
+        padding: 0 11.5px;
+        margin-right: 32px;
+        &:hover {
+          background: #6e6e6e;
+          color: #f5f5f5;
+        }
+        &:focus {
+          background: #231f20;
+          color: #f5f5f5;
+        }
+      }
+      .secondaryBtn {
+        border: 1px solid #878787;
+        background: #ffffff;
+        color: #333333;
+        box-shadow: none;
+        min-width: 141px;
+        padding: 0 11.5px;
+        margin: 0;
+        &:hover {
+          border: 1px solid #333333;
+          background: #f5f5f5;
+          color: #333333;
+        }
+        &:focus {
+          background: #231f20;
+          color: #f5f5f5;
+          border: 1px solid transparent;
+        }
+      }
+    }
+    .CRXDivider {
+      background-color: #d1d2d4;
+    }
+  }
+}
+.CrxCreateUser {
+  .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
+    max-width: 685px;
+  }
+  .modelTitle {
+    h2 {
+      font-size: 16px;
+      color: #333333;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+    }
+  }
+  .CrxEditForm {
+    //padding: 40px 52px 47px 26px;
+    color: #333333;
+    // height: calc(100% - 97px);
+    // overflow-y: auto;
+    // overflow-x: hidden;
+
+    h6 {
+      width: 168.66px;
+    }
+    > span {
+      margin: 0 0 34px;
+      span.requiredLable {
+        span {
+          line-height: 24px;
+          margin-left: 7px;
+          font-size: 20px;
+          color: #333333;
+        }
+      }
+      span {
+        font-size: 14px;
+        color: #333333;
+        font-family: "Helvetica", "Arial", sans-serif;
+      }
+      .users-input {
+        width: 380px;
+      }
+      .errorStateContent {
+        font-size: 12px;
+        color: #aa1d1d;
+      }
+    }
+    .crxEditFilter {
+      display: flex;
+      label {
+        font-size: 14px;
+        color: #333333;
+        width: 168.66px;
+        font-family: Arial, Helvetica, sans-serif;
+        span {
+          font-size: 20px;
+          line-height: 24px;
+          margin-left: 2px;
+          color: #333333;
+        }
+      }
+      .CrxUserEditForm {
+        width: 380px;
+        margin: 0 0 33px;
+      }
+    }
+    .crxRadioBtn {
+      padding-top: 27px;
+      padding-bottom: 29px;
+      label {
+        margin-right: 44px;
+      }
+      .crxEditRadioBtn {
+        label {
+          margin-bottom: 30px;
+          .MuiButtonBase-root {
+            padding: 0 13px 0 0;
+          }
+        }
+        .crx-Generate-pass {
+          padding: 0 0 0 34px;
+          display: block;
+          width: 100%;
+          .crxGeneratePassword {
+            display: flex;
+            h6 {
+              width: auto;
+            }
+            .primary {
+              margin-right: 33px;
+              width: 90px;
+              border: none;
+            }
+          }
+          .crx-generate-btn {
+            width: 212px;
+          }
+          .copyButton {
+            background: none;
+            color: #979797;
+            border: none;
+            padding: 0;
+            justify-content: flex-end;
+            text-align: right;
+            font-size: 14px;
+            color: #d74b00;
+            padding-top: 4px;
+            padding-bottom: 25px;
+            font-family: Arial, Helvetica, sans-serif;
+            &:hover {
+              background: none;
+              border: none;
+            }
+            &:focus {
+              background: none;
+              border: none;
+            }
+          }
+        }
+        .MuiCheckbox-root {
+          padding-left: 0;
+          padding-right: 14px;
+        }
+        .crx-requird-check {
+          label {
+            width: 146px;
+            display: inline-flex;
+            margin-bottom: 27px;
+            font-size: 14px;
+          }
+        }
+      }
+      .crx-manually-generate-pass {
+        padding: 0 0 0 35px;
+        > span {
+          margin: 2px 0 39px;
+          display: block !important;
+
+          // .CBX-input {
+          //   width: 173px;
+          // }
+        }
+        h6 {
+          font-size: 14px;
+          display: inline-block;
+          width: auto;
+          margin-right: 30px;
+          .requiredLable {
+            span {
+              line-height: 24px;
+              margin-left: 7px;
+              font-size: 20px;
+              color: #333333;
+            }
+          }
+        }
+        .crx-requird-check {
+          float: right;
+          display: block;
+          label {
+            margin: 0 0 28px;
+          }
+          .CRXCheckBox {
+            padding-top: 0;
+          }
+        }
+        .crx-gente-field {
+          width: 173px;
+          float: right;
+        }
+      }
+    }
+  }
+  .crxFooterEditFormBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 25px;
+    height: 75px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #d1d2d4;
+    width: 100%;
+    background: #fff;
+    button {
+      font-size: 14px;
+      border-radius: 0;
+      height: 30px;
+      text-transform: revert;
+      font-family: Arial, Helvetica, sans-serif;
+      width: 80px;
+    }
+    button.Mui-disabled {
+      color: #979797;
+      background: #e5e5e5;
+      border: none;
+    }
+
+    .primary {
+      background: #333333;
+      color: #d1d2d4;
+      margin-right: 32px;
+      &:hover {
+        background: #6e6e6e;
+        color: #f5f5f5;
+        border: 1px solid transparent;
+      }
+      &:focus {
+        background: #231f20;
+        color: #f5f5f5;
+      }
+    }
+    .secondary {
+      border: 1px solid #878787;
+      background: #ffffff;
+      color: #333333;
+      box-shadow: none;
+      margin: 0;
+      &:hover {
+        border: 1px solid #878787;
+        background: #ffffff !important;
+        color: #333333;
+      }
+      &:focus {
+        background: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #878787;
+      }
+    }
+  }
+  .CRXDivider {
+    border: none;
+    margin: 0;
+    width: 100%;
+    height: 1px;
+    background: #d1d2d4;
+  }
+
+  .CRXPopupCrossButton {
+    width: 46px;
+    top: 7px;
+    right: 7px;
+    button {
+      &:hover {
+        background: transparent;
+      }
+      i {
+        &:hover {
+          color: #333333;
+        }
+        &:focus {
+          color: #333333;
+        }
+      }
+    }
+  }
+  .modalEditCrx {
+    padding-right: 11px;
+  }
+  .CrxIndicates {
+    margin-top: 38px;
+    padding-bottom: 0;
+  }
+}
+

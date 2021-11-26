@@ -23,6 +23,8 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     title: {
       flex: "1 1 100%",
       lineHeight: "0",
+      fontSize:"14px",
+      color:"#333"
     },
     alignment: {
       textAlign: "left",
@@ -76,12 +78,18 @@ export const useStyles = makeStyles((theme: Theme) =>
         width: "100%",
       },
     },
+
+    title : {
+      fontSize:"14px",
+      color:"#333"
+    },
     paper: {
       width: "100%",
       marginBottom: theme.spacing(2),
     },
     table: {
       //width: 188,
+      
     },
     visuallyHidden: {
       border: 0,

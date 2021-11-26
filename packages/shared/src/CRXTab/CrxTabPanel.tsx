@@ -9,7 +9,7 @@ interface TabPanelProps {
 
   const useStyles = makeStyles({
     root: {
-        border:"1px solid #333",
+        border:"1px solid #878787",
         borderTop: "0px",
         padding:"25px",
         minHeight : "400px"

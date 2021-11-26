@@ -25,10 +25,11 @@
   }
 
   .selectBoxTextField {
+    
     input {
       font-size: 14px;
       color: #74767c;
-      height: 30px;
+      height: 28px !important;
       padding: 0px !important;
       outline: 1px solid #cecece;
       transition: all 0.25s ease-in-out;
@@ -53,10 +54,43 @@
     background-color: #d7efff;
     border-radius: 4px;
   }
+
+  
+  .Mui-error {
+    input {
+      color: #74767c;
+      height: 27px;
+      outline: 2px solid #aa1d1d;
+      border: 1px solid transparent !important;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &::placeholder {
+        color:#74767c;
+      }
+      &::-webkit-input-placeholder {
+        color:#74767c;
+      }
+      
+      &:-ms-input-placeholder { 
+        color:#74767c;
+      }
+    }
+  }
 }
 .error {
   border: 2px solid #aa1d1d;
 }
+
+
 
 .MuiInput-underline {
   &::before {

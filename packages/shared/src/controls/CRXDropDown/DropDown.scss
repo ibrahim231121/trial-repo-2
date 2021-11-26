@@ -10,6 +10,8 @@
       height: 32px;
       width: 100%;
       outline: none;
+      border: none;
+      border-radius: 0;
       padding:0;
       font-size: 14px;
       color:#333333;
@@ -21,12 +23,12 @@
       &:focus {
         outline: 3px solid #888787;
         transition: all 0.25s ease-in-out;
-        border: none;
+        border-radius: 0;
       }
       &:hover {
         outline: 1px solid #888787;
         transition: all 0.25s ease-in-out;
-        border: none;
+        border-radius: 0;
       }
     }
 
@@ -49,7 +51,7 @@
     .iconContent {
       .iconStyle {
         position: relative;
-        top: 5px;
+        top: 0;
         font-size: 14px;
       }
     }

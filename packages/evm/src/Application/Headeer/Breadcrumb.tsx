@@ -20,10 +20,18 @@ const [urlPath,setUrlPath] =React.useState("")
   } = props;
   const [width, setWidth] = React.useState<number>(window.innerHeight);
 React.useEffect(()=>{
-  setUrlPath(pathname)
 
-  if(pathname[pathname.length-1] === "/")
-  {
+    let lastQueryParam = pathname.substring(props.location.pathname.lastIndexOf('/') + 1);
+    if (!isNaN(lastQueryParam)) {
+      //if id comes at the end so remove it, because urllist dont have dynamic route
+      lastQueryParam = pathname.substring(0, props.location.pathname.lastIndexOf('/'))
+      setUrlPath(lastQueryParam)
+    }
+    else {
+  setUrlPath(pathname)
+    }
+
+    if (pathname[pathname.length - 1] === "/") {
     setUrlPath(pathname.substring(0, pathname.length-1))
   }
 },[pathname])
@@ -61,8 +69,7 @@ React.useEffect(()=>{
 
   const getTitle = () => {
     const paths = getUrlList();
-    if(paths)
-    {
+    if (paths) {
       const pathName = paths[paths.length - 1].label
       return pathName
     }
@@ -70,8 +77,7 @@ React.useEffect(()=>{
      return ""
   }
 
-  const getPaths = () => 
-  {
+  const getPaths = () => {
     let paths:BreadCrumbItem[] = getUrlList();
     
     if(breadCrumbValueRedux){

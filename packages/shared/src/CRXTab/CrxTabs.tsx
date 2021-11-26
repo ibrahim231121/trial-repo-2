@@ -24,6 +24,8 @@ const CrxTabsParent = withStyles({
       borderRight: "0px",
       background:"#eee",
       color:"#333",
+      position:"sticky",
+      top: "186px",
       opacity: 1,
       '&:last-child' : {
         borderRight: "1px solid #333",

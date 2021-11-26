@@ -8,6 +8,23 @@ import {
 } from "@cb/shared";
 import { ValueString } from "../../utils/globalDataTableFunctions"
 
+interface noOptionprops {
+  width : string,
+  marginLeft : string,
+  overFlow : string,
+  textOverflow : string,
+  whiteSpace : string,
+  marginRight : string,
+  paddingLeft : string,
+  paddingRight: string,
+  marginTop : string
+}
+interface paddingLeftprops {
+  marginLeft : string,
+  paddingRight : string,
+  marginRight : string,
+  paddingLeft : string 
+}
 type Props = {
   headCells: any[],
   colIdx: number,
@@ -16,6 +33,8 @@ type Props = {
   onMultiSelectChange: (value: ValueString[], colIdx: number) => void
   onSetSearchData: () => void
   onSetHeaderArray: (e: any) => void,
+    widthNoOption?:noOptionprops,
+    paddLeft?: paddingLeftprops,
 }
 
 
@@ -27,6 +46,9 @@ const MultSelectiDropDown: React.FC<Props> = ({
   onMultiSelectChange,
   onSetSearchData,
   onSetHeaderArray,
+    widthNoOption,
+    paddLeft
+    
 }
 ) => {
   const [filterValue, setFilterValue] = React.useState<any>([]);
@@ -123,59 +145,64 @@ const MultSelectiDropDown: React.FC<Props> = ({
     }
   }, [filterValue]);
 
-  return (
-    <div className="">
-      <CRXRows container spacing={2}>
-        <CRXColumn item xs={6}>
-          <CRXPaper
-            variant="outlined"
-            elevation={1}
-            square={true}
-            className={"centerPosition"}
-          >
-            <CRXHeading variant="h6" align="left">
-              {" "}
-            </CRXHeading>
-            <div className={GetButtonClass() + ' crx-icon-filter'}>
-              <button
-                className="fas fa-filter"
-                onClick={(e) => setOpenState((state) => !state)}
-              ></button>
-              <button
-                className="icon-cross2 croseIcon"
-                onClick={(e) => ClearFilter()}
-              ></button>
-            </div>
+    const noOptionCss = widthNoOption
+    const paddLeftCss = paddLeft
 
-            <CRXMultiSelect
-              className={` ${GetClassName()} ${filterClick ? "openAutoMulti" : "closeAutoMulti"} `}
-              onClose={(e: any, r: any) => {
-                return OnCloseEffect(e, r)
-              }}
-              onOpen={(e: any) => {
-                return onOpenEffect(e);
-              }}
-              // name={"AssetType"}
-              multiple={true}
-              CheckBox={true}
-              options={unique}
-              value={
-                headCells[colIdx].headerArray === undefined
-                  ? (headCells[colIdx].headerArray = [])
-                  : headCells[colIdx].headerArray
-              }
-              autoComplete={false}
-              useRef={openState && buttonState}
-              isSearchable={isSearchable}
-              onChange={(event: any, newValue: any) => {
-                return handleChange(event, colIdx, newValue);
-              }}
-            />
-          </CRXPaper>
-        </CRXColumn>
-      </CRXRows>
-    </div>
-  );
-};
+    return (
+      <div className="">
+        <CRXRows container spacing={2}>
+          <CRXColumn item xs={6}>
+            <CRXPaper
+              variant="outlined"
+              elevation={1}
+              square={true}
+              className={"centerPosition"}
+            >
+              <CRXHeading variant="h6" align="left">
+                {" "}
+              </CRXHeading>
+              <div className={GetButtonClass() + ' crx-icon-filter'}>
+                <button
+                  className="fas fa-filter"
+                  onClick={(e) => setOpenState((state) => !state)}
+                ></button>
+                <button
+                  className="icon-cross2 croseIcon"
+                  onClick={(e) => ClearFilter()}
+                ></button>
+              </div>
+
+              <CRXMultiSelect
+                className={` ${GetClassName()} ${filterClick ? "openAutoMulti" : "closeAutoMulti"} `}
+                onClose={(e: any, r: any) => {
+                  return OnCloseEffect(e, r)  
+                }}
+                onOpen={(e: any) => {
+                  return onOpenEffect(e);
+                }}
+                noOptions={noOptionCss}
+                paddLeft={paddLeftCss}
+                // name={"AssetType"}
+                multiple={true}
+                CheckBox={true}
+                options={unique}
+                value={
+                  headCells[colIdx].headerArray === undefined
+                    ? (headCells[colIdx].headerArray = [])
+                    : headCells[colIdx].headerArray
+                }
+                autoComplete={false}
+                useRef={openState && buttonState }
+                isSearchable={isSearchable}
+                onChange={(event: any, newValue: any) => {
+                  return handleChange(event, colIdx, newValue);
+                }}
+              />
+            </CRXPaper>
+          </CRXColumn>
+        </CRXRows>
+      </div>
+    );
+  };
 
 export default MultSelectiDropDown;

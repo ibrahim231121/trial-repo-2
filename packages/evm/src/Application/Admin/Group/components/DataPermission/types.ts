@@ -9,7 +9,12 @@ type PermissionType = {
 }
 
 export type Station = {
-    id:number,
+    value:number,
+    label:string
+}
+
+export type StationResponse = {
+    id:string,
     name:string
 }
 
@@ -19,6 +24,7 @@ export type Category = {
 }
 
 export type PermissionData = {
+    id:number,
     type: PermissionType,
     permissionLevel: PermissionValue
     permissionValue: PermissionLevel,

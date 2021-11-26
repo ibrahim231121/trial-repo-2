@@ -1,7 +1,9 @@
 .crxTabsPermission {
-
+    margin-top: 149px; 
+    margin-left: 66px;
+    padding-right: 2px;
     div[role="tabpanel"]{
-        border-top: 1px solid #333;
+        border-top: 1px solid #878787;
         margin-top: -2px;
     } 
 
@@ -21,6 +23,27 @@
         width: auto;
     }
 
+    .tab-bottom-buttons {
+        padding-top: 23px;
+        width: 100%;
+        display: flex;
+        justify-content: "space-between";
+
+        .save-cancel-button-box {
+            width: 100%;
+            .groupInfoTabButtons {
+                min-width: 80px !important;
+                height: 30px;
+                margin-right: 31px;
+            }
+        }
+        .groupInfoTabButtons-Close {
+            min-width: 80px !important;
+            height: 30px;
+            margin-right: 0px;
+        }
+
+    }
 
 @media(max-width:1200px) {
     .MuiTab-root {
@@ -60,40 +83,58 @@
 
 
 .crx-group-info-form {
-  width: 100%;
+  width: 745px;
+  margin: 0 auto;
+  padding-top: 82px;
   .crx-group-info {
-    place-content: center;
-    justify-content: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     height: 300px;
+    padding-top: 45px;
     span {
       h6 {
-        margin-right: 15px;
-        width: 20vh;
+        margin-right: 0px;
+        width: 16.6vh;
         place-content: flex-start;
       }
     }
     .requiredLable {
       width: 100vh;
     }
-    .requiredLable{
-      span{
-        margin-top: 0px;
-      }
-    }
-    span {
-      margin-top: 10px;
-    }
+    
     input,textarea {
         width: 50vh;
+      }
+    .MuiOutlinedInput-multiline {
+        padding: 0;
+        border-radius: 0;
+        fieldset {
+            border: 0px;
     }
-    .MuiOutlinedInput-multiline {padding: 18.5px 0px 0 19px;border-radius: 0;}
+        &.Mui-focused {
+            fieldset {
+                border: 0px;
+    }
+    }
   }
-  .label {
-      display: flex;
-      place-content: center;
+    .groupInfoInputs {
+        padding-bottom: 30px;
   }
-  .label {place-content: center;display: flex;}
+    .inputLabelNoReq {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+}
+  }
+  .indicates-label {
+    font-style: italic;
+    font-size: 14px;
+    color: #333;
+    b {
+        font-size: 20px;
+    }
+  }
+  
 }

@@ -59,13 +59,13 @@ const CRXInput = ({
   const reformatedLabel = () => {
     if (required) {
       return (
-        <span className="requiredLable">
-          {label}{" "}
-          <span style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
-        </span>
+        <label className="requiredLable">
+          <span className="inputLabel">{label}{" "}</span>
+          <span className="inputLabelReq" style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
+        </label>
       );
     } else {
-      return <span>{label} </span>;
+      return <span className="inputLabelNoReq">{label} </span>;
     }
   };
 

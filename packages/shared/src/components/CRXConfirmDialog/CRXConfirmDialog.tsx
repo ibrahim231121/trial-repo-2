@@ -1,13 +1,14 @@
+import React from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   Typography,
   Button,
+  Divider,
   DialogActions,
 } from "@material-ui/core";
-import React from "react";
-import CloseIcon from "@material-ui/icons/Close";
+
 import './index.scss';
 type Props = {
   title?: string;
@@ -18,53 +19,55 @@ type Props = {
   children?: React.ReactNode;
   primary?: string,
   secondary?: string
+  className? : string
+  text?: string;
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
   title,
   content,
   onConfirm,
+  className,
   setIsOpen,
   isOpen,
-  children, primary, secondary
+  children, primary, secondary,
+  text
 }) => {
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} className={"crx-confirm-modal " + className}>
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">{title || 'Please confirm'}</Typography>
-          <CloseIcon onClick={() => setIsOpen(false)} />
+          
         </div>
       </DialogTitle>
-      <DialogContent
-        style={{
-          "overflowY": "scroll",
-          "maxHeight": "101px",
-        }}
-      >
+      <div className="CRXPopupCrossButton">
+            <Button
+              className={className + " CRXCloseButton"}
+              onClick={() => setIsOpen(false)} 
+              disableRipple={true}>
+              <i className="icon icon-cross2 closeModalIconUnblock"></i>
+            </Button>
+          </div>
+      <DialogContent>
         {children ? (
           children
         ) : (
           <Typography variant="subtitle2">{content ? content : <span>
-            You are attempting to close the modal dialog.  If you close the modal dialog, any changes you've made will not be saved. You will not be able to undo this action.
+            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog" )}. 
+            If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}, any changes you've made will not be saved. 
+            You will not be able to undo this action.
             <br />
             <br />
-            Are you sure you would like to close the modal dialog?
+            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}?
           </span>
           }</Typography>
         )}
       </DialogContent>
-      <div>
-        <hr />
-
-      </div>
-      <DialogActions style={{
-        "display": "flex",
-        "flexDirection": "row",
-        "justifyContent": "end",
-      }}>
-        <Button className="primaryBtn"
-          style={{ backgroundColor: "black", color: "white" }}
+      <Divider className="CRXDivider" />
+      <DialogActions className="crxConfirmFooterModal">
+        <Button className="primaryBtn" 
+        disableRipple={true}
           onClick={() => {
             onConfirm();
             setIsOpen(false);
@@ -72,7 +75,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
         >
           {primary || "primary"}
         </Button>
-        <Button onClick={() => setIsOpen(false)} className="secondaryBtn">  {secondary || "secondary"}</Button>
+        <Button onClick={() => setIsOpen(false)} disableRipple={true} className="secondaryBtn" variant="contained">  {secondary || "secondary"}</Button>
       </DialogActions>
     </Dialog>
   );

@@ -6,7 +6,7 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
     ],
-    "/admin/usergroups/group": [
+    "/admin/usergroups/group/:id": [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
         { type: "text", label: "Group", }
@@ -61,6 +61,11 @@ export const urlList: any = {
         { type: "link", label: "Admin", },
         { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
         { type: "text", label: "Template, <template type>: <template name>", }
-    ]
+    ],
+    "/admin/usergroups/group": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+        { type: "text", label: "Group", }
+    ],
 
 };
