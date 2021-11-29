@@ -222,3 +222,12 @@ code {
   place-items: center;
   height: 100vh;
 }
+
+
+.inlineDiv {
+  display: flex;
+}
+
+.columnse {
+  padding:  0 15px;
+}

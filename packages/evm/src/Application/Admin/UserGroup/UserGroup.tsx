@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { CRXDataTable } from "@cb/shared";
+import React, { useEffect, useState } from "react";
+import { CRXDataTable, CRXSelectBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../../../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
@@ -118,6 +118,30 @@ const UserGroup: React.FC = () => {
     );
   };
 
+  const [selectOptions, setSelectOption] = useState<any>([
+    {id : "", value : ""}
+  ])
+  const onSelectInputChange = (e : any) => {
+   
+  }
+
+  const simpleFilter = (data : any) => {
+    
+    const option = data.map((x : any, i:any) => {
+        return {id: x.id, value : x.description}
+    })
+    return (
+       <CRXSelectBox 
+        id="descriptionOption"
+        options={option}
+        className="adVSelectBox"
+        // value={selectedOpt ? selectedOpt.value : "Please Select"}
+        onChange={(e: any) => onSelectInputChange(e)}
+        defaultValue="Please Select"
+       />
+     
+    )
+  }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -150,7 +174,7 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: (e : any ) => simpleFilter(e),
       minWidth: "100",
       maxWidth: "100",
     },

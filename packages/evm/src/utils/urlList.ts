@@ -21,6 +21,10 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { routeTo: "/admin/users", type: "text", label: "Manage Users", }
     ],
+    "/admin/TestDemo": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
+    ],
     "/admin/usergroups/group": [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
