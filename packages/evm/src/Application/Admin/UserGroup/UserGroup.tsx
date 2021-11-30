@@ -225,7 +225,7 @@ const UserGroup: React.FC = () => {
   };
 
   return (
-    <div style={{ marginLeft: "6%", marginTop: "4%" }} className="managePermissionTable">
+    <div className="managePermissionTable">
       <CRXButton className="managePermissionBtn" onClick={() => { history.push(Object.entries(urlList)[3][0].toString()) }}>
         Create Group
       </CRXButton>
@@ -241,7 +241,7 @@ const UserGroup: React.FC = () => {
             orderByParam={orderBy}
             searchHeader={true}
             columnVisibilityBar={true}
-            className="ManageAssetDataTable crxTableHeight crxTableDataUi"
+            className="ManageAssetDataTable crxTableHeight bucketDataTable crxTableDataUi"
             onClearAll={clearAll}
             getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
             onResizeRow={resizeRow}
