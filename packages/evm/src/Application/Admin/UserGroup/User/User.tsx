@@ -452,8 +452,8 @@ const User: React.FC = () => {
     
 
     return (
-        <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-            <CRXButton id={"createUser"} onClick={handleClickOpen}>
+        <div className="crxManageUsers">
+            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>
                 Create User
             </CRXButton>  
             <CRXModalDialog
