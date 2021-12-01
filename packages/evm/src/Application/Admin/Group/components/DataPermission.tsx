@@ -102,8 +102,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     .map((x: Category) => {
                         return { value: x.id, label: x.name }
                     })
-                categories.push({ value: -1, label: 'All' })
-                categories.push({ value: -2, label: 'Uncategorized' })
+                categories.push({ value: -2, label: 'All' })
+                categories.push({ value: -1, label: 'Uncategorized' })
                 console.log("Categories");
                 console.log(categories);
                 setCategories(categories);
@@ -130,8 +130,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                         let StationR:Station = { value:parseInt(x.id), label:x.name}
                         return  StationR;
                     })
-                stations.push({ value: -1, label: 'All' })
-                stations.push({ value: -2, label: 'No Station' })
+                stations.push({ value: -2, label: 'All' })
+                stations.push({ value: -1, label: 'No Station' })
                 console.log("Station ");
                 console.log(stations);
                 setStations(stations);
