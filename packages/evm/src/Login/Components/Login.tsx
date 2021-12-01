@@ -7,19 +7,6 @@ import { AUTHENTICATION_LOGIN_URL } from '../../utils/Api/url'
 import {useTranslation} from 'react-i18next';
 export default function Login (){
   const {t} = useTranslation();
-  useEffect(() => {
-    const listener = (event: { code: string; preventDefault: () => void; }) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        buttonClick()
-        
-      }
-    };
-    document.addEventListener("keydown", listener);
-    return () => {
-      document.removeEventListener("keydown", listener);
-    };
-  }, []);
   
     const buttonClick = () => {
         window.location.href = AUTHENTICATION_LOGIN_URL+`${utils()}`;
