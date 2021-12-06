@@ -280,6 +280,7 @@ const CreateUserForm: React.FC<Props> = ({
       email,
       userGroups,
       deactivationDate,
+      phoneNumber
     } = formpayload;
     if (userGroups.length > 0) {
       setError(false);
@@ -297,7 +298,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
       setCloseWithConfirm(false);
-    } else if (userName && firstName && lastName && email ) {
+    } else if (userName && firstName && lastName && email && middleInitial && phoneNumber ) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -754,7 +755,7 @@ const validatePhone = (phoneNumber : string) => {
 const checkPhoneumber = () => {
   const isPhoneValidate = validatePhone(formpayload.phoneNumber);
   if (!formpayload.phoneNumber) {
-    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
+    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "Phone number required" });
   }
   else if (!isPhoneValidate) {
     setFormPayloadErr({
@@ -766,6 +767,19 @@ const checkPhoneumber = () => {
     setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
   }
 };
+
+const checkMiddleInitial = () => {
+  if(!formpayload.middleInitial){
+    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial is required" });
+  }
+  else if(formpayload.middleInitial.length < 3){
+    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial should be greater than 3 " })
+  }
+  else {
+    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "" })
+
+  }
+}
 
 const checkUserGroup = () => {
 
@@ -833,14 +847,13 @@ const checkUserGroup = () => {
           error={!!formpayloadErr.middleInitialErr}
           errorMsg={formpayloadErr.middleInitialErr}
           value={formpayload.middleInitial}
+          required={true}
           label="Middle Initial"
           className="users-input"
           onChange={(e: any) =>
             setFormPayload({ ...formpayload, middleInitial: e.target.value })
           }
-          onBlur={(e: any) =>
-            setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "" })
-          }
+          onBlur={checkMiddleInitial}
         />
         <TextField
           error={!!formpayloadErr.lastNameErr}
@@ -877,6 +890,7 @@ const checkUserGroup = () => {
           error={!!formpayloadErr.phoneNumberErr}
           errorMsg={formpayloadErr.phoneNumberErr}
           value={formpayload.phoneNumber} 
+          required={true}
           label="Phone Number"
           className="users-input"
           onChange={(e: any) =>
