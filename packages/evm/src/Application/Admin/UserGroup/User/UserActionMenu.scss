@@ -1,4 +1,4 @@
-.crx-confirm-modal {
+.crx-unblock-modal {
   .MuiDialog-container {
     align-items: flex-start;
   }
@@ -133,8 +133,8 @@
     }
     > span {
       margin: 0 0 34px;
-      span.requiredLable {
-        span {
+      label.requiredLable {
+        .inputLabelReq {
           line-height: 24px;
           margin-left: 7px;
           font-size: 20px;
@@ -155,22 +155,57 @@
       }
     }
     .crxEditFilter {
-      display: flex;
-      label {
-        font-size: 14px;
-        color: #333333;
-        width: 168.66px;
-        font-family: Arial, Helvetica, sans-serif;
-        span {
-          font-size: 20px;
-          line-height: 24px;
-          margin-left: 2px;
-          color: #333333;
+      > span {
+        display: flex;
+        h6 {
+          .requiredLable {
+            font-size: 14px;
+            color: #333333;
+            font-family: "Helvetica", "Arial", sans-serif;
+            span {
+              font-size: 20px;
+              line-height: 24px;
+              margin-left: 2px;
+              color: #333333;
+            }
+          }
         }
-      }
-      .CrxUserEditForm {
-        width: 380px;
-        margin: 0 0 33px;
+        .CrxUserEditForm {
+          width: 380px;
+          margin: 0 0 33px;
+          .selectBoxTextField {
+            .MuiInputBase-adornedEnd {
+              padding-left: 7px !important;
+              .MuiAutocomplete-tag {
+                border: 1px solid #bebebe;
+                height: 20px;
+                color: #333333;
+                border-radius: 1px;
+                background-color: #fff;
+                font-size: 14px;
+                align-items: flex-start;
+                margin:4px; 
+                .MuiChip-label {
+                  padding-left:8px;
+                  padding-right:0;
+                }
+                svg {
+                  width: 13px;
+                  height: 17px;
+                  margin-left: 5px;
+                  color: #d1d2d4;
+                  margin-right: 5px;
+                  font-size: 14px;
+                  stroke: #d1d2d4;
+                  stroke-width: 2px;
+                }
+              }
+              input {
+                outline: none;
+              }
+            }
+          }
+        }
       }
     }
     .crxRadioBtn {
@@ -244,10 +279,6 @@
         > span {
           margin: 2px 0 39px;
           display: block !important;
-
-          // .CBX-input {
-          //   width: 173px;
-          // }
         }
         h6 {
           font-size: 14px;
@@ -255,7 +286,9 @@
           width: auto;
           margin-right: 30px;
           .requiredLable {
-            span {
+            margin-bottom: 0;
+            margin-right: 0;
+            .inputLabelReq {
               line-height: 24px;
               margin-left: 7px;
               font-size: 20px;
@@ -265,12 +298,14 @@
         }
         .crx-requird-check {
           float: right;
-          display: block;
+          display: inline-flex;
           label {
-            margin: 0 0 28px;
+            margin: -2px 0 28px;
           }
           .CRXCheckBox {
             padding-top: 0;
+            align-items: flex-start;
+            padding-right: 13px;
           }
         }
         .crx-gente-field {
@@ -373,4 +408,3 @@
     padding-bottom: 0;
   }
 }
-

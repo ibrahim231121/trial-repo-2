@@ -840,7 +840,7 @@ const checkMiddleInitial = () => {
   };
 
   return (
-    <div className="modal_user_crx">
+    <div className="">
       <div className="modalEditCrx">
         <CRXToaster ref={toasterRef} />
         <CRXAlert
@@ -850,7 +850,7 @@ const checkMiddleInitial = () => {
           open={alert}
           setShowSucess={() => null}
         />
-        <div className="CrxIndicates"><sup>*</sup> Indicates required field</div>
+         <div className="CrxEditForm">
         <TextField
           error={!!formpayloadErr.userNameErr}
           errorMsg={formpayloadErr.userNameErr}
@@ -946,9 +946,7 @@ const checkMiddleInitial = () => {
         />
 
         {
-          <div className="crxEditFilter">
-            <label>User Group <span>*</span></label>
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div className="crxEditFilter">
               <EditableSelect
                 label="User Group"
                 required={true}
@@ -970,7 +968,6 @@ const checkMiddleInitial = () => {
               />
 
             </div>
-          </div>
 
         }
         
@@ -1013,6 +1010,7 @@ const checkMiddleInitial = () => {
           Cancel
         </CRXButton>
       </div>
+    </div>
     </div>
   );
 };
