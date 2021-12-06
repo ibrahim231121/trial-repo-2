@@ -12,6 +12,8 @@ import {
 import { PermissionData, PermissionValue, Category, Station, StationResponse } from './DataPermission/types'
 import "./dataPermission.scss"
 import { DataPermissionModel } from "../Group";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
@@ -234,32 +236,37 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             return []
     }
     return (
-        <div>
+    
+        <div className="crx-datapermission-tab">
             <div className="dataPermissionContent">
                 <CRXRows container="container" spacing={0}>
                     <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>Permission Type</CRXColumn>
-                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>Permission Value</CRXColumn>
+                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={6} spacing={0}>Permission Value</CRXColumn>
                     <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>Permission Level</CRXColumn>
                 </CRXRows>
             </div>
-            <div >
+            <div className="crxPermissionPageScroll">
+                <div>
+            <div className="crx-datapermission-col">
                 {
                     dataPermissions.map((permission, i) => {
-                        return <div key={i}>
+                        return <div className="crx-datapermission-item" key={i}>
                             <CRXRows container="container" spacing={0}>
                                 <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
                                     <CRXSelectBox
-                                        className="adVSelectBox"
+                                        className="adVSelectBox createUserSelectBox"
                                         id={i}
                                         value={permission.type.value > 0 ? permission.type.value : defaultPermissionType}
                                         onChange={(e: any) => onPermissionTypeChange(e, i)}
                                         options={permissionTypes}
+                                        icon={true}
+                                        popover={"crxSelectPermissionGroup"}
                                         defaultOptionText={defaultPermissionType}
                                         defaultValue={defaultPermissionType} />
                                 </CRXColumn>
-                                <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
+                                <CRXColumn className="permissionCol" container="container" item="item" xs={6} spacing={0}>
                                     <CRXMultiSelectBoxAutocomplete
-                                        className="adVSelectBox"
+                                        className="adVSelectBox "
                                         disabled={permission.type.value > 0 ? false : true}
                                         options={filterPermissionValuesBasedonType(permission.type.value)}
                                         multiple={false}
@@ -275,17 +282,19 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                 </CRXColumn>
                                 <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
                                     <CRXSelectBox
-                                        className="adVSelectBox"
+                                        className="adVSelectBox createUserSelectBox"
                                         id={i}
                                         disabled={permission.type.value > 0 ? false : true}
                                         value={permission.permissionLevel.value > 0 ? permission.permissionLevel.value : defaultPermissionLevel}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => onPermissionLevelChange(e, i)}
                                         options={permissionLevels}
+                                        icon={true}
+                                        popover={"crxSelectPermissionGroup"}
                                         defaultOptionText={defaultPermissionLevel}
                                         defaultValue={defaultPermissionLevel}
                                     />
                                 </CRXColumn>
-                                <CRXColumn container="container" item="item" xs={3} spacing={0} >
+                                <CRXColumn className="crx-permission-btn" container="container" item="item" xs={3} spacing={0} >
                                     {
                                         permission.type.value > 0 &&
                                         <button
@@ -299,14 +308,19 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     })
                 }
             </div>
+            </div>
+            </div>
+            <div className="crxPermissionBtnUSers">
             <CRXButton
                 className='PreSearchButton'
                 onClick={onAddPermission}
                 color='primary'
                 variant='contained'
-            > + Add Data Permissions
+            > + Add data permissions
             </CRXButton>
+            </div>
         </div>
+     
     )
 }
 

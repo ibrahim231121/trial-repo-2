@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { InputBase, Select, MenuItem } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles} from "@material-ui/core/styles";
 import "./SelectBox.scss";
 
 //Select box props Types
@@ -52,6 +52,16 @@ const StyledMenuItem = withStyles(() => ({
       },
     },
   },
+  iconStyle: {
+    position: 'absolute',
+    top: '0',
+    right: '0',
+    display: 'inline-block',
+    color: '#c0c0c0',
+    width: '24px',
+    height: '24px',
+    pointerEvents: 'none'
+}
 }))(MenuItem);
 
 const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
@@ -65,8 +75,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       options,
       defaultOption = true,
       defaultOptionText = "Please Select",
-      disabled=false
-    },
+      disabled=false,},
     ref
   ) => {
     const option = Object.assign(options).map((data: any, i: number) => {
@@ -76,12 +85,16 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         </StyledMenuItem>
       );
     });
-    
+
     return (
       <Select
         ref={ref}
         id="fagg"
         native={false}
+        IconComponent={props => (
+          <i {...props} className={`crxArrowDownSelect fas fa-caret-down ${props.className}`}>
+            
+          </i>)}
         className={"CRXSimpleSelect " + className}
         value={value}
         displayEmpty={true}
@@ -98,7 +111,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
             horizontal: "center",
           },
           classes: {
-            paper: popover + " paperStyle",
+            paper: popover + " paperStyle"
           },
           getContentAnchorEl: null,
         }}

@@ -5,6 +5,8 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 import './CRXAutocompleteSelect.scss'
 
+
+
 const useSelectBoxStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -29,54 +31,63 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         outline: "1px solid transparent",
       }
     },
-    icon: {
-      color: "#D1D2D4",
-      fontSize: "14px",
-      fontWeight: "normal",
-      paddingRight: "7px",
-      marginTop: "1px",
-      '&:hover': {
-        color: "#333333"
-      }
+    icon : {
+        color : "#D1D2D4",
+        fontSize:"14px",
+        fontWeight : "normal",
+        paddingRight:"0",
+        marginTop: "1px",
+        '&:hover' : {
+          color : "#333333"
+        }
     },
 
-    paper: {
-      borderRadius: "0px",
-      border: "1px solid #707070",
-      boxShadow: "0px 0px 5px #00000033",
-      marginTop: "0px",
-      marginLeft: "-7px",
-      maxHeight: "332px",
-      minHeight: "165px",
-      overflowY: "auto",
-      width: "497px",
-      position: "relative",
-      top: "9px",
-      left: "0px",
-      '& > ul': {
-        padding: "0px",
-        maxHeight: "100vh",
-        overflow: "hidden",
-      }
-    },
+    paper : {
+        borderRadius:"0px",
+        border: "1px solid #BEBEBE",
+        boxShadow: "0px 0px 5px #25252529",
+        marginTop:"0px",
+        marginLeft:"-3px",
+        maxHeight:"332px",
+        minHeight:"165px",
+        overflowY: "auto",
+        position:"relative",
+        top:"2px",
+        left:"0px",
+        '& > ul' : {
+            padding: "0px",
+            maxHeight: "100vh",
+            overflow:"hidden",
+        }
+    },  
     popper: {
 
     },
     option: {
-      height: '33px',
-      fontFamily: "Arial, Helvetica, sans-serif",
-      color: "#333",
-      fontSize: "14px",
-      alignItems: 'flex-start',
-      padding: "0px 15px",
-      placeItems: "center",
-      '&[aria-selected="true"]': {
-        backgroundColor: "#6E6E6E",
-        color: "#F5F5F5",
-        '&:hover': {
+        height: '33px',
+        fontFamily : "Arial, Helvetica, sans-serif",
+        color: "#333",
+        fontSize: "14px",
+        alignItems: 'flex-start',
+        padding: "0px 0",
+        placeItems: "center",
+        '&[data-focus="true"]': {
           backgroundColor: "#6E6E6E",
+          borderColor: "0",
           color: "#F5F5F5",
-        }
+          height: "33px",
+        },
+        // '&[aria-selected="true"]': {
+        //   backgroundColor: "red",
+        //   borderColor: "transparent",
+        //   color: "#D1D2D4",
+        //   height: "33px",
+        // },
+        
+        '&:hover' : {
+            backgroundColor : "#F5F5F5",
+            color: "#333333",
+        },
       },
       // '&[data-focus="true"]': {
       //   backgroundColor: "#6E6E6E",
@@ -89,7 +100,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         backgroundColor: "#6E6E6E",
         color: "#F5F5F5",
       },
-    },
+    
     popupIndicator: {
       backgroundColor: "transparent",
       color: "#333",
@@ -127,10 +138,12 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       '&:span': {
         padding: "0px"
       },
-    }
-
+    },
+      
   }),
 );
+
+
 
 interface multiSelectProps {
   multiple?: boolean,
@@ -146,6 +159,7 @@ interface multiSelectProps {
   placeHolder?: string,
   noOptionsText?: string
 }
+
 
 const MultiSelectBoxAutocomplete = ({
   id,
@@ -163,6 +177,7 @@ const MultiSelectBoxAutocomplete = ({
 }: multiSelectProps) => {
   const classes = useSelectBoxStyle();
   const [styelHeight, setAutoHeight] = React.useState<string>('31px')
+  const [selectOpt, setSelectOpt] = React.useState<string>("")
 
   React.useEffect(() => {
 
@@ -171,6 +186,14 @@ const MultiSelectBoxAutocomplete = ({
   }, [value, styelHeight])
 
   const opupOpenCret = <i className="fas fa-caret-down"></i>
+
+  onChange = (e) => {
+    if(e.target.value === 0) {
+      setSelectOpt(" crxDataPermissionArrowHide ")
+    }else {
+      setSelectOpt("")
+    }
+  }
   return (
     <>
       <Autocomplete
@@ -178,15 +201,15 @@ const MultiSelectBoxAutocomplete = ({
         defaultValue={defaultValue}
         autoComplete={autoComplete}
         filterSelectedOptions={false}
+        // open={true}
         noOptionsText={noOptionsText}
-        //open={true}
         disableClearable={disableClearable}
         disableCloseOnSelect={true}
         // freeSolo
         closeText=""
         openText=""
         style={{ height: styelHeight }}
-        className={"crxMultiAutocomplete " + className + " " + classes.root}
+        className={"crxMultiAutocomplete " + className + " " + classes.root + selectOpt }
         classes={{
           paper: classes.paper,
           popper: classes.popper,
@@ -203,23 +226,23 @@ const MultiSelectBoxAutocomplete = ({
         options={options}
         getOptionLabel={option => option.label ?? option}
         popupIcon={opupOpenCret}
-        renderOption={(option: any, { selected }) => (
-          <React.Fragment>
-            <i
-              className="far fa-check checkIcon"
-              style={{ visibility: selected ? 'visible' : 'hidden' }}
+        renderOption={(option : any, {selected }) => (
+            <React.Fragment>
+              <i
+                className="far fa-check checkIcon"
+                style={{ marginRight:"3px",visibility: selected ? 'visible' : 'hidden' }}
+              />
+              {option.label}
+            </React.Fragment>
+        )}
+          renderInput={(params : any) => (
+            <TextField
+              {...params}
+              variant="filled"
+              placeholder={placeHolder}
             />
-            {option.label}
-          </React.Fragment>
-        )}
 
-        renderInput={(params: any) => (
-          <TextField
-            {...params}
-            variant="filled"
-            placeholder={placeHolder}
-          />
-        )}
+          )}
       />
 
     </>
