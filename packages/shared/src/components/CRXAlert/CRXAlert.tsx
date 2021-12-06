@@ -17,13 +17,13 @@ const useStyles = makeStyles(() =>
       border: "1px solid #646464",
       color: "#666666",
       fontSize: "12px",
-      minHeight : "35px",
-      maxHeight:"50px",
+      minHeight: "35px",
+      maxHeight: "50px",
       paddingLeft: "14px",
       paddingRight: "18px",
       paddingTop: "0px",
-      display:"flex",
-      placeItems:"center",
+      display: "flex",
+      placeItems: "center",
       paddingBottom: "0px",
       boxShadow: "none",
     },
@@ -36,8 +36,8 @@ interface Props {
   alertType: "inline" | "toast";
   showCloseButton: boolean;
   className: string;
-  open:boolean;
-  setShowSucess:any
+  open: boolean;
+  setShowSucess: any;
 }
 const CRXAlert: React.FC<Props> = ({
   message,
@@ -45,19 +45,19 @@ const CRXAlert: React.FC<Props> = ({
   alertType = "inline",
   showCloseButton = true,
   className,
-  open,setShowSucess
+  open, setShowSucess
 }) => {
   const classes = useStyles();
   const [openState, setOpenState] = React.useState(open);
   const [openSnack, setOpenSnack] = React.useState(true);
-  
+
   const showIcon = {
     success: true,
     error: false,
     warning: false,
     info: true,
   };
-  
+
   const messageType = {
     success: "Success",
     error: "Error",
@@ -89,7 +89,7 @@ const CRXAlert: React.FC<Props> = ({
       clearTimeout(timer);
     };
   }, []);
-  
+
   const handleClose = (_?: React.SyntheticEvent, reason?: string) => {
     if (reason === "clickaway") {
       return;

@@ -3,8 +3,6 @@ import {
   Menu,
   MenuItem,
   MenuButton,
-  SubMenu,
-  MenuDivider,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import CreateUserForm from "./CreateUserForm";
@@ -15,14 +13,15 @@ import {
   updateUsersInfoAsync,
   getUsersInfoAsync,
 } from "../../../../Redux/UserReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./UserActionMenu.scss";
 type Props = {
   selectedItems?: any;
   row?: any;
+  showToastMsg(obj: any): any
 };
 
-const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
+const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
 
@@ -47,36 +46,39 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
     setIsOpen(true);
     setModalType("deactivate");
   };
-
-  const onConfirm = () => {
+  const dispatchNewCommand = (e: any) => {
     switch (modalType) {
-      case "unlock": {
-        dispatch(
-          updateUsersInfoAsync({
-            dispatch,
-            userId: row?.id,
-            columnToUpdate: "/account/status",
-            valueToUpdate: "Active",
-          })
-        );
+      case 'unlock': {
+        showToastMsg({ message: "You have unlocked the user account.", variant: "success", duration: 7000 });
         break;
       }
-      case "deactivate": {
-        dispatch(
-          updateUsersInfoAsync({
-            dispatch,
-            userId: row?.id,
-            columnToUpdate: "/account/status",
-            valueToUpdate: "Deactivated",
-          })
-        );
+      case 'deactivate': {
+        showToastMsg({ message: "You have deactivated the user account.", variant: "success", duration: 7000 });
         break;
       }
       default: {
         break;
       }
     }
-  };
+    dispatch(e);
+  }
+
+  const onConfirm = () => {
+    switch (modalType) {
+      case 'unlock': {
+        dispatch(updateUsersInfoAsync({ dispatchNewCommand, userId: row?.id, columnToUpdate: '/account/status', valueToUpdate: 'Active' }));
+        break;
+      }
+      case 'deactivate': {
+        dispatch(updateUsersInfoAsync({ dispatchNewCommand, userId: row?.id, columnToUpdate: '/account/status', valueToUpdate: 'Deactivated' }));
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
   const openCreateUserForm = () => {
     setOpen(true);
   };
@@ -90,18 +92,18 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
       <CRXModalDialog
         className="CrxCreateUser"
         style={{ minWidth: "550px" }}
-        
+
         title="Edit User"
         modelOpen={open}
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}
-        subTitleText="Indicates required field"
       >
         {row && (
           <CreateUserForm
             id={row.id}
             setCloseWithConfirm={setCloseWithConfirm}
             onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+            showToastMsg={showToastMsg}
           />
         )}
       </CRXModalDialog>

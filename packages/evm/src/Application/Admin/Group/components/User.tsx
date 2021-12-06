@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import { CRXDataTable, CRXColumn, CRXGlobalSelectFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,8 @@ import {
     onSetSearchDataValue,
     onClearAll,
     onSaveHeadCellData,
-    onSetHeadCellVisibility
+    onSetHeadCellVisibility,
+    onMultiToMultiCompare
 } from "../../../../utils/globalDataTableFunctions";
 import TextSearch from "../../../../components/SearchComponents/TextSearch";
 import { CRXButton } from "@cb/shared";
@@ -36,10 +37,26 @@ type infoProps = {
     ids: Number[],
     onChangeUserIds: any
 }
+interface renderCheckMultiselect {
+    value?: string,
+    id?: string,
+
+}
 
 const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
+
+    const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
+    
+
+    const [rows, setRows] = React.useState<User[]>([]);
+    const [order, setOrder] = React.useState<Order>("asc");
+    const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
+    const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
+    const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
+    const [reformattedRows, setReformattedRows] = React.useState<User[]>([]);
+    const [open, setOpen] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         dispatch(getUsersInfoAsync());
@@ -49,16 +66,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         onSaveHeadCellData(headCells, "group-userDataTable");
     }, []);
 
-    const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
-    const [rows, setRows] = React.useState<User[]>([]);
-    const [order, setOrder] = React.useState<Order>("asc");
-    const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
-    const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-    const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
-    const [reformattedRows, setReformattedRows] = React.useState<User[]>();
-    const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
-
-    const setData = () => {
+    const getUserRows = () => {
         let userRows: User[] = [];
         if (users && users.length > 0) {
             userRows = users.map((user: any) => {
@@ -73,6 +81,11 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                 }
             })
         }
+        return userRows
+    }
+
+    const setData = () => {
+        let userRows = getUserRows()
         //set selected users in edit case
         let selectedUsers = userRows.filter(x => {
             if (ids.indexOf(x.id) > -1)
@@ -90,7 +103,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     }, [selectedItems]);
 
     React.useEffect(() => {
-        setData();
+        setData()
     }, [users]);
 
     const searchText = (
@@ -126,6 +139,77 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
         );
     };
+    function findUniqueValue(value: any, index: any, self: any) {
+        return self.indexOf(value) === index;
+    }
+    const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:User[]) => {
+
+        if(colIdx === 4) {
+            
+        let groupNames: any = [];
+
+        if(initialRows.length > 0) {
+            initialRows.map((x: User) => {
+                groupNames.push(...x.groups);
+            });
+        }
+
+        groupNames = groupNames.filter(findUniqueValue);
+        let groups: any = [{ value: "No Groups"}];
+        groupNames.map((x: string) => { groups.push({ value: x}) })
+
+        const settingValues = (headCell: HeadCellProps) => {
+            let val: any = []
+            if(headCell.headerArray !== undefined) 
+                val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
+            else 
+                val = []
+            return val
+        }
+    
+        return (
+            <div>
+                
+                <CRXGlobalSelectFilter
+                    id="multiSelect"
+                    multiple={true}
+                    value={settingValues(headCells[colIdx])}
+                    onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+                    options={groups}
+                    CheckBox={true}
+                    checkSign={false}
+                    open={open}
+                    clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+                    getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
+                    getOptionSelected={(option: renderCheckMultiselect, value: renderCheckMultiselect) => option.value === value.value}
+                    onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+                    noOptionsText="No Group"
+                />
+            </div>
+        )
+        }
+
+    }
+
+    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+        let value: any[] = val.map((x) => {
+            let item = {
+                value: x.value
+            }
+            return item
+        })
+        onSelection(value, colIdx)
+        headCells[colIdx].headerArray = value;
+    }
+    const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultiselect[]) => {
+        setSearchData([]);
+        let headCellReset = onClearAll(headCells);
+        setHeadCells(headCellReset);
+    }
+    const openHandler = (_: React.SyntheticEvent) => {
+        console.log("onOpen")
+        //setOpen(true)
+    }
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
@@ -184,43 +268,14 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             dataComponent: (e: string[]) => multitextDisplay(e, ""),
             sort: true,
             searchFilter: true,
-            searchComponent: searchText,//() => { }, //(rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+            searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:User[]) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
             minWidth: "318",
             maxWidth: "318",
             visible: true,
         },
     ]);
-    const searchAndNonSearchMultiDropDown = (
-        rowsParam: User[],
-        headCells: HeadCellProps[],
-        colIdx: number,
-        isSearchable: boolean,
-    ) => {
-        const onSetSearchData = () => {
-            setSearchData((prevArr) =>
-                prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-            );
-        };
 
-        const onSetHeaderArray = (v: ValueString[]) => {
-            headCells[colIdx].headerArray = v;
-        };
-
-        return (
-            <MultSelectiDropDown
-                headCells={headCells}
-                colIdx={colIdx}
-                reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
-                // reformattedRows={reformattedRows}
-                isSearchable={isSearchable}
-                onMultiSelectChange={onSelection}
-                onSetSearchData={onSetSearchData}
-                onSetHeaderArray={onSetHeaderArray}
-            />
-        );
-    };
     const onSelection = (v: ValueString[], colIdx: number) => {
-
         if (v.length > 0) {
             for (var i = 0; i < v.length; i++) {
                 let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
@@ -237,7 +292,9 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             );
         }
     };
+
     useEffect(() => {
+        
         dataArrayBuilder();
     }, [searchData]);
 
@@ -245,13 +302,21 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         if (reformattedRows !== undefined) {
             let dataRows: User[] = reformattedRows;
             searchData.forEach((el: SearchObject) => {
-                if (el.columnName === "userName" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "groups" || el.columnName === "status")
+                if (el.columnName === "userName" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "status")
                     dataRows = onTextCompare(dataRows, headCells, el);
                 if (el.columnName === "lastLogin")
                     dataRows = onDateCompare(dataRows, headCells, el);
+                if (el.columnName === "groups") {
+                    dataRows = onMultiToMultiCompare(dataRows, headCells, el);
+                    if(el.value.includes("No Groups")) {
+                        reformattedRows.filter(i => i.groups.length === 0).map((x:User) => {
+                            dataRows.push(x)
+                        })
+                        
+                    }
+                }
 
-            }
-            );
+            });
             setRows(dataRows);
         }
     };
@@ -262,6 +327,9 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     const clearAll = () => {
+        const clearButton:any = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]
+        clearButton && clearButton.click()
+        setOpen(false)
         setSearchData([]);
         let headCellReset = onClearAll(headCells);
         setHeadCells(headCellReset);
@@ -274,12 +342,13 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     return (
         <div className="userDataTableParent">
             {rows && (
-                <CRXDataTable
+                <CRXDataTable 
                     id="group-userDataTable"
                     actionComponent={() => { }}
                     getRowOnActionClick={() => { }}
                     showToolbar={true}
                     dataRows={rows}
+                    initialRows={reformattedRows}
                     headCells={headCells}
                     orderParam={order}
                     orderByParam={orderBy}

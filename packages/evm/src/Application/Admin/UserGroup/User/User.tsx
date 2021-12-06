@@ -1,6 +1,6 @@
 
-import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import React, { useEffect, useRef, useState } from "react";
+import { CRXDataTable, CRXColumn, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import { DateTimeComponent } from "../../../../components/DateTimeComponent";
@@ -30,7 +30,6 @@ import multitextDisplay from "../../../../components/DateDisplayComponent/MultiT
 import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
 import CreateUserForm from "./CreateUserForm";
-import { CRXAlert } from '@cb/shared';
 
 type User = {
     id: string;
@@ -76,6 +75,7 @@ const User: React.FC = () => {
     const [open, setOpen] = React.useState(false);
     const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
     const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
+
 
     const setData = () => {
         let userRows: User[] = [];
@@ -441,34 +441,41 @@ const User: React.FC = () => {
         setHeadCells(headCellsArray);
     };
 
+    const toasterRef = useRef<typeof CRXToaster>(null)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const showToastMsg = (obj: any) => {
+        toasterRef.current.showToaster({
+            message: obj.message, variant: obj.variant, duration: obj.duration
+        });
+    }
+
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-        setOpen(false); 
+        setOpen(false);
         dispatch(getUsersInfoAsync());
     };
-    
 
     return (
         <div className="crxManageUsers">
-            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>
-                Create User
-            </CRXButton>  
+			<CRXToaster ref={toasterRef} />
+            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
+            </CRXButton>
             <CRXModalDialog
                 className="createUser CrxCreateUser"
-                style={{minWidth:"680px"}}
-                maxWidth="xl" 
-                title="Create User" 
-                modelOpen={open} 
-                onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
+                style={{ minWidth: "680px" }}
+                maxWidth="xl"
+                title="Create User"
+                modelOpen={open}
+                onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
-                subTitleText="Indicates required field"
             >
-                <CreateUserForm 
-                    setCloseWithConfirm={setCloseWithConfirm}  
-                    onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
+                <CreateUserForm
+                    setCloseWithConfirm={setCloseWithConfirm}
+                    onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                    showToastMsg={(obj: any) => showToastMsg(obj)}
                 />
             </CRXModalDialog>
 
@@ -477,7 +484,7 @@ const User: React.FC = () => {
             {rows && (
                 <CRXDataTable
                     id="userDataTable"
-                    actionComponent={<UserActionMenu row={selectedActionRow} selectedItems={selectedItems} />}
+                    actionComponent={<UserActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />}
                     getRowOnActionClick={(val: User) =>
                         setSelectedActionRow(val)
                     }

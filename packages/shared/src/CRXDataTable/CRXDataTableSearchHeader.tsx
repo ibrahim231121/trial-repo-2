@@ -26,6 +26,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   showHeaderCheckAll,
   onSetCheckAll,
   checkAllPageWise,
+  initialRows,
 }) => {
   const classes = useStyles();
   const [checkAll, setCheckAll] = React.useState<boolean>(false);
@@ -133,7 +134,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
               ? headCells[colIdx].searchComponent(
                   container.rows,
                   headCells,
-                  colIdx
+                  colIdx,
+                  initialRows
                 )
               : null}
           </TableCell>

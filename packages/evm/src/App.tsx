@@ -12,13 +12,15 @@ import "../../evm/src/utils/Localizer/i18n"
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
 
+import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
+
 function App() {
   let culture: string = "en";
   const [resources, setResources] = React.useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch()
- 
+  
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
       setResources(res.resources);
@@ -213,12 +215,40 @@ function App() {
       }
     }
   }
+
+  const icons = {
+    success : <i className="fas fa-check-circle successIcon"></i>,
+    attention : <i className="fas fa-info-circle infoIcon"></i>,
+    warning : <i className="fas fa-exclamation-triangle warningIcon"></i>,
+    error : <i className="fas fa-exclamation-circle errorIcon"></i>
+  }
   
   return (
     <div dir={rtl}>
+       <SnackbarProvider
+       maxSnack={100}
+       anchorOrigin={{
+           vertical: 'top',
+           horizontal: 'right',
+       }}
+       iconVariant={{
+           success: icons.success,
+           error: icons.error,
+           warning: icons.warning,
+           info: icons.attention, 
+       }}
+       className="toasterMsg"
+       classes={{
+           variantSuccess: "success",
+           variantError:"error",
+           variantWarning: "warning",
+           variantInfo: "info",
+       }}
+       >
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
        <Routes />
       </DragDropContext>
+      </SnackbarProvider>
     </div>
   );
 }

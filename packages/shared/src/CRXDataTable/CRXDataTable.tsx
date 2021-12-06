@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const CRXDataTable: React.FC<DataTableProps> = ({
   id,
   dataRows,
+  initialRows,
   headCells,
   orderParam,
   orderByParam,
@@ -319,6 +320,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       orderData={orderData}
                       selectedItems={selectedItems}
                       container={container}
+                      initialRows={initialRows}
                       actionComponent={actionComponent}
                       className={className}
                       searchHeader={searchHeader}

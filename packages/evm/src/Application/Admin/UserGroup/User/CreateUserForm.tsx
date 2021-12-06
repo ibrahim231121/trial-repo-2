@@ -1,6 +1,6 @@
 import { CRXCheckBox } from "@cb/shared";
 import { CRXButton } from "@cb/shared";
-import { TextField, CRXConfirmDialog, CRXRadio } from "@cb/shared";
+import { TextField, CRXConfirmDialog, CRXRadio, CRXToaster } from "@cb/shared";
 import { url } from "inspector";
 import React, { SyntheticEvent, useEffect, useRef } from "react";
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
@@ -15,6 +15,7 @@ interface Props {
   onClose: any;
   setCloseWithConfirm: any;
   id?: any;
+  showToastMsg(obj: any): any
 }
 
 type NameAndValue = {
@@ -47,6 +48,7 @@ const CreateUserForm: React.FC<Props> = ({
   onClose,
   setCloseWithConfirm,
   id,
+  showToastMsg
 }) => {
   const [error, setError] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState("sendAct");
@@ -88,9 +90,9 @@ const CreateUserForm: React.FC<Props> = ({
   const [isPasswordResetRequired, setIsPasswordResetRequired] = React.useState<boolean>(false);
 
   const [disableLink, setDisableLink] = React.useState(false);
-
+  const toasterRef = useRef<typeof CRXToaster>(null)
   React.useEffect(() => {
-    if(id)
+    if (id)
       fetchUser();
   }, [id]);
 
@@ -131,7 +133,7 @@ const CreateUserForm: React.FC<Props> = ({
         phoneNumber,
         userGroups: userGroupNames,
       });
-      
+
     }
   }, [userPayload]);
 
@@ -158,14 +160,14 @@ const CreateUserForm: React.FC<Props> = ({
     };
     return (
       <>
-      <div className="crx-Generate-pass">
-        <div className="crxGeneratePassword">
-          <CRXButton className="primary" onClick={onClickPass}>
-            Generate
-          </CRXButton>
-          <TextField className="crx-generate-btn" value={generatePassword} />
+        <div className="crx-Generate-pass">
+          <div className="crxGeneratePassword">
+            <CRXButton className="primary" onClick={onClickPass}>
+              Generate
+            </CRXButton>
+            <TextField className="crx-generate-btn" value={generatePassword} />
           </div>
-          <div style={{textAlign:"right"}}>  
+          <div style={{ textAlign: "right" }}>
             <button
               className="copyButton"
               onClick={() => {
@@ -175,17 +177,17 @@ const CreateUserForm: React.FC<Props> = ({
               Copy
             </button>
           </div>
-       
 
-        <div className="crx-requird-check">
-        <CRXCheckBox
-          checked={isPasswordResetRequired}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setIsPasswordResetRequired(e.target.checked)
-          }
-        />
-          <label>Require user to change password on next login</label>
-        </div>
+
+          <div className="crx-requird-check">
+            <CRXCheckBox
+              checked={isPasswordResetRequired}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setIsPasswordResetRequired(e.target.checked)
+              }
+            />
+            <label>Require user to change password on next login</label>
+          </div>
         </div>
       </>
     );
@@ -195,7 +197,7 @@ const CreateUserForm: React.FC<Props> = ({
     return (
       <div className="crx-manually-generate-pass">
         <TextField
-		  className="crx-gente-field"
+          className="crx-gente-field"
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
           label="Password"
@@ -206,7 +208,7 @@ const CreateUserForm: React.FC<Props> = ({
           onBlur={!id ? checkPassword : null}
         />
         <TextField
-         className="crx-gente-field"
+          className="crx-gente-field"
           error={!!formpayloadErr.confirmPasswordErr}
           errorMsg={formpayloadErr.confirmPasswordErr}
           label="Confirm Password"
@@ -216,14 +218,14 @@ const CreateUserForm: React.FC<Props> = ({
           onChange={(e: any) => setConfirmPassword(e.target.value)}
           onBlur={!id ? checkConfirmPassword : null}
         />
-	<div className="crx-requird-check">
-        <CRXCheckBox
-          checked={isPasswordResetRequired}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setIsPasswordResetRequired(e.target.checked)
-          }
-        />
-        <label>Require user to change password on next login</label>
+        <div className="crx-requird-check">
+          <CRXCheckBox
+            checked={isPasswordResetRequired}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setIsPasswordResetRequired(e.target.checked)
+            }
+          />
+          <label>Require user to change password on next login</label>
         </div>
       </div>
     );
@@ -329,7 +331,7 @@ const CreateUserForm: React.FC<Props> = ({
   //     userName: formpayload.userName,
   //     password: onSelectPasswordType()
   //   };
-    
+
   //   const payload = {
   //     email: formpayload.email,
   //     name,
@@ -466,7 +468,7 @@ const CreateUserForm: React.FC<Props> = ({
       timeZone: "America/Chicago",
     };
 
-      return payload
+    return payload
   }
 
   const onAdd = async () => {
@@ -474,9 +476,8 @@ const CreateUserForm: React.FC<Props> = ({
       setError(true);
       return;
     }
-  
-    const payload = setAddPayload()
 
+    const payload = setAddPayload()
     await fetch(USER, {
       method: "POST",
       headers: { "Content-Type": "application/json", TenantId: "1" },
@@ -522,6 +523,7 @@ const CreateUserForm: React.FC<Props> = ({
           } else if (!isNaN(+error)) {
             const userName = formpayload.firstName + " " + formpayload.lastName;
             sendEmail(formpayload.email, parseInt(error), userName);
+            showToastMsg({ message: "You have created the user account.", variant: "success", duration: 7000 });
             onClose();
           } else {
             setAlert(true);
@@ -547,35 +549,35 @@ const CreateUserForm: React.FC<Props> = ({
       })
       .map((i: any) => i.groupId);
 
-      const name = {
-        first: formpayload.firstName,
-        last: formpayload.lastName,
-        middle: formpayload.middleInitial,
-      };
+    const name = {
+      first: formpayload.firstName,
+      last: formpayload.lastName,
+      middle: formpayload.middleInitial,
+    };
 
-      let contacts = userPayload.contacts.map((x: any) => {
-        if (x.contactType === 1) {
-          x.number = formpayload.phoneNumber;
-        }
-        return x;
-      });
-
-      const account = { ...userPayload.account, userName: formpayload.userName };
-      if (contacts.length === 0) {
-        contacts.push({ contactType: 1, number: formpayload.phoneNumber });
+    let contacts = userPayload.contacts.map((x: any) => {
+      if (x.contactType === 1) {
+        x.number = formpayload.phoneNumber;
       }
-  
-      const payload = {
-        ...userPayload,
-        email: formpayload.email,
-        name,
-        account,
-        contacts,
-        assignedGroupIds: userGroupsListIDs,
-        timeZone: "America/Chicago",
-      };
+      return x;
+    });
 
-      return payload
+    const account = { ...userPayload.account, userName: formpayload.userName };
+    if (contacts.length === 0) {
+      contacts.push({ contactType: 1, number: formpayload.phoneNumber });
+    }
+
+    const payload = {
+      ...userPayload,
+      email: formpayload.email,
+      name,
+      account,
+      contacts,
+      assignedGroupIds: userGroupsListIDs,
+      timeZone: "America/Chicago",
+    };
+
+    return payload
   }
 
   const onEdit = async () => {
@@ -598,10 +600,12 @@ const CreateUserForm: React.FC<Props> = ({
           if (disableLink) {
             const userName = userPayload.name.first + ' ' + userPayload.name.last;
             sendEmail(payload.email, userPayload.id, userName);
+            showToastMsg({ message: "You have resent the activation link.", variant: "success", duration: 7000 });
           }
           onClose();
+          showToastMsg({ message: "You have updated the user account.", variant: "success", duration: 7000 });
         }
-        else 
+        else
           return res.text();
       })
       .then((resp) => {
@@ -746,27 +750,34 @@ const CreateUserForm: React.FC<Props> = ({
   };
 
 
-const validatePhone = (phoneNumber : string) => {
-  const re =
+  const validatePhone = (phoneNumber: string) => {
+    const re =
       /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/;
     return re.test(String(phoneNumber));
 }
 
-const checkPhoneumber = () => {
-  const isPhoneValidate = validatePhone(formpayload.phoneNumber);
-  if (!formpayload.phoneNumber) {
-    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "Phone number required" });
-  }
-  else if (!isPhoneValidate) {
-    setFormPayloadErr({
-      ...formpayloadErr,
-      phoneNumberErr: "Please provide a valid phone number",
-    });
-  } 
-  else{
-    setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
-  }
-};
+// const checkPhoneumber = () => {
+//   const isPhoneValidate = validatePhone(formpayload.phoneNumber);
+//   if (!formpayload.phoneNumber) {
+//     setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "Phone number required" });
+//   }
+
+  const checkPhoneumber = () => {
+    const isPhoneValidate = validatePhone(formpayload.phoneNumber);
+    if (!formpayload.phoneNumber) {
+      setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
+    }
+    else if (!isPhoneValidate) {
+      setFormPayloadErr({
+        ...formpayloadErr,
+        phoneNumberErr: "Please provide a valid phone number",
+      });
+    }
+    else {
+      setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "" });
+    }
+  };
+
 
 const checkMiddleInitial = () => {
   if(!formpayload.middleInitial){
@@ -781,22 +792,24 @@ const checkMiddleInitial = () => {
   }
 }
 
-const checkUserGroup = () => {
 
-  if (formpayload.userGroups.length === 0 || !formpayload.userGroups) {
-    setFormPayloadErr({
-      ...formpayloadErr,
-      userGroupErr: "User group is required",
-    });
-  }
-   else {
-    setFormPayloadErr({ ...formpayloadErr, userGroupErr: "" });
-  }
-};
+  const checkUserGroup = () => {
+
+    if (formpayload.userGroups.length === 0 || !formpayload.userGroups) {
+      setFormPayloadErr({
+        ...formpayloadErr,
+        userGroupErr: "User group is required",
+      });
+    }
+    else {
+      setFormPayloadErr({ ...formpayloadErr, userGroupErr: "" });
+    }
+  };
 
   return (
     <div className="modal_user_crx">
       <div className="modalEditCrx">
+        <CRXToaster ref={toasterRef} />
         <CRXAlert
           message={responseError}
           alertType="inline"
@@ -804,7 +817,7 @@ const checkUserGroup = () => {
           open={alert}
           setShowSucess={() => null}
         />
-        <label>* Indicates required field</label>
+        <div className="CrxIndicates"><sup>*</sup> Indicates required field</div>
         <TextField
           error={!!formpayloadErr.userNameErr}
           errorMsg={formpayloadErr.userNameErr}
@@ -818,9 +831,9 @@ const checkUserGroup = () => {
           onBlur={(e: any) =>
             !formpayload.userName
               ? setFormPayloadErr({
-                  ...formpayloadErr,
-                  userNameErr: "Username is required",
-                })
+                ...formpayloadErr,
+                userNameErr: "Username is required",
+              })
               : setFormPayloadErr({ ...formpayloadErr, userNameErr: "" })
           }
         />
@@ -837,9 +850,9 @@ const checkUserGroup = () => {
           onBlur={(e: any) =>
             !formpayload.firstName
               ? setFormPayloadErr({
-                  ...formpayloadErr,
-                  firstNameErr: "First Name is required",
-                })
+                ...formpayloadErr,
+                firstNameErr: "First Name is required",
+              })
               : setFormPayloadErr({ ...formpayloadErr, firstNameErr: "" })
           }
         />
@@ -868,9 +881,9 @@ const checkUserGroup = () => {
           onBlur={(e: any) =>
             !formpayload.lastName
               ? setFormPayloadErr({
-                  ...formpayloadErr,
-                  lastNameErr: "Last Name is required",
-                })
+                ...formpayloadErr,
+                lastNameErr: "Last Name is required",
+              })
               : setFormPayloadErr({ ...formpayloadErr, lastNameErr: "" })
           }
         />
@@ -889,7 +902,7 @@ const checkUserGroup = () => {
         <TextField
           error={!!formpayloadErr.phoneNumberErr}
           errorMsg={formpayloadErr.phoneNumberErr}
-          value={formpayload.phoneNumber} 
+          value={formpayload.phoneNumber}
           required={true}
           label="Phone Number"
           className="users-input"
@@ -903,28 +916,28 @@ const checkUserGroup = () => {
             <label>User Group <span>*</span></label>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <EditableSelect
-              label = "User Group"
-              required = {true}
-               error={!!formpayloadErr.userGroupErr}
-               errorMsg={formpayloadErr.userGroupErr}
+                label="User Group"
+                required={true}
+                error={!!formpayloadErr.userGroupErr}
+                errorMsg={formpayloadErr.userGroupErr}
                 multiple={true}
                 CheckBox={true}
                 className="CrxUserEditForm"
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   setFormPayload({ ...formpayload, userGroups: value });
                 }}
-                onInputChange={(e: any) => {}}
+                onInputChange={(e: any) => { }}
                 options={userGroupsList?.map((o: any) => o.groupName)}
                 id="userGroupList"
                 placeHolder="User Groups Name"
                 value={formpayload.userGroups}
-                onBlur = {checkUserGroup}
-                
+                onBlur={checkUserGroup}
+
               />
-              
+
             </div>
           </div>
-        }       
+        }
         <TextField
           error={!!formpayloadErr.deactivationDateErr}
           errorMsg={formpayloadErr.deactivationDateErr}
@@ -936,12 +949,12 @@ const checkUserGroup = () => {
             setFormPayload({ ...formpayload, deactivationDate: e.target.value })
           }
         />
-        <div className="crxRadioBtn" style={{display: "flex"}}>
+        <div className="crxRadioBtn" style={{ display: "flex" }}>
           <label>User Password Setup</label>
           <div className="user-radio-group">
             <CRXRadio
-            className="crxEditRadioBtn"
-            disableRipple={true}
+              className="crxEditRadioBtn"
+              disableRipple={true}
               content={content}
               value={radioValue}
               setValue={setRadioValue}

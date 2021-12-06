@@ -201,6 +201,7 @@ export type DataTableProps = {
   showTotalSelectedText?: boolean;
   showCustomizeIcon?: boolean;
   showHeaderCheckAll?: boolean;
+  initialRows?: any[];
 };
 
 export type OrderData = {
@@ -237,6 +238,7 @@ export type DataTableContainerProps = {
   showHeaderCheckAll?: boolean;
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
+  initialRows?: any[];
 };
 
 export type DataTableBodyProps = {
@@ -272,6 +274,7 @@ export type SearchHeaderProps = {
   showHeaderCheckAll?: boolean;
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
+  initialRows?: any[];
 };
 
 export type DataTableHeaderProps = {

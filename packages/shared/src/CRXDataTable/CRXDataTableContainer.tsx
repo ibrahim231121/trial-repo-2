@@ -38,6 +38,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   showHeaderCheckAll,
   onSetCheckAll,
   checkAllPageWise,
+  initialRows,
 }) => {
 
   const classes = useStyles();
@@ -93,6 +94,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             showHeaderCheckAll={showHeaderCheckAll}
             onSetCheckAll={onSetCheckAll}
             checkAllPageWise={checkAllPageWise}
+            initialRows={initialRows}
           />
         ) : null}
           <DataTableBody
