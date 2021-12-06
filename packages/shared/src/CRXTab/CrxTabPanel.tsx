@@ -12,14 +12,23 @@ interface TabPanelProps {
         border:"1px solid #878787",
         borderTop: "0px",
         padding:"25px",
-        minHeight : "400px"
+        paddingBottom : "0px",
+        overflowY:"auto",
+        '@media only screen and (max-width: 1920px)': {
+          height : "648px"
+        },
+        '@media only screen and (max-width: 1600px)': {
+          height : "431px"
+        },
+        '@media only screen and (max-width: 1366px)': {
+          height : "337px"
+        }
     },
   });
 
 const CrxTabPanel = (props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
     const classes = useStyles()
-    
     return (
       <div
         className={classes.root}

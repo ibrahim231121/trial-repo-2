@@ -47,15 +47,20 @@
   }
 
   .userDataTableParent {
-    width: 87.3%;
-    margin: 0 auto;
+    margin: 0px 81px;
     position: relative;
     top: -20px;
     font-family: Arial, Helvetica, sans-serif;
     .crxClearfilter {
+      position: sticky !important;
+      top: -19px;
+      background: #fff;
+      z-index: 99;
       padding-bottom: 4.2px;
     }
   .usersGroupDataTable {
+    overflow-x: initial !important;
+    margin-top: 0px;
     table { 
       tbody { 
         tr{
@@ -83,6 +88,8 @@
             line-height: 18px;
             text-align: left;
             vertical-align: middle;
+            padding-top: 7px;
+            padding-bottom: 7px;
             &:last-child {
             .dataTableSimpleText {
               white-space: nowrap;
@@ -92,9 +99,107 @@
             }
             }
           }
+          .CRXCheckBox {
+            position: relative;
+            left: 10px;
+              span {
+                input {
+                &:hover {
+                  & ~ span {
+                    color: #f5f5f5 !important;
+                  }
+                }
+              }
+            }
+          }
+      
          }
+          &.Mui-selected{
+            background-color: #231f20 !important;
+            td[scope=row] {
+              background-color: #231f20 !important;
+              
+            }
+          } 
         }
       }
+      tbody {
+        tr:nth-child(even) {
+          td:nth-child(3) {
+            background: inherit;
+          }
+        } 
+      }
+      thead {
+        tr {
+            th {
+                &.CRXDataTableLabelCell {
+                    top: 45px !important;
+                }
+                &.TableSearchAbleHead {
+                    top: 80px !important;
+                }
+            }
+        }
+    }
     }
   }
+
+  .dataTablePages {
+    position: fixed;
+    bottom: 112px;
+    width: 1550px;
+    background: #fff;
+    /* left: 0; */
+    z-index: 999;
+    border-top: 1px solid #ccc;
+  }
+}
+
+
+@media only screen and (max-width: 1366px) {
+  .userDataTableParent {
+      .dataTablePages {
+          position: fixed;
+          bottom: 111px !important;
+          width: 1019px !important;
+          background: #fff;
+          /* left: 0; */
+          z-index: 999;
+          border-top: 1px solid #ccc;
+          .MuiIconButton-root {
+            padding: 0px !important;
+            span {
+              .MuiSvgIcon-root {
+                  width: 23px !important;
+              }
+            }
+          }
+      
+      }
+      .crxClearfilter {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+      }
+      .dataTableColumnShoHide {
+        .dataIconButton {
+          padding-right: 4px;
+        }
+      }
+  } 
+}
+
+@media only screen and (max-width: 1620px) {
+  .userDataTableParent {
+      .dataTablePages {
+          position: fixed;
+          bottom: 114px;
+          width: 1190px;
+          background: #fff;
+          /* left: 0; */
+          z-index: 999;
+          border-top: 1px solid #ccc;
+      
+      }
+  } 
 }

@@ -10,12 +10,14 @@ import useGetFetch from "../../../utils/Api/useGetFetch";
 import { GROUP_GET_BY_ID_URL, CONTAINERMAPPING_INFO_GET_URL, SAVE_USER_GROUP_URL, UPSERT_CONTAINER_MAPPING_URL } from "../../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
 import { urlList } from "../../../utils/urlList"
-import { APPLICATION_PERMISSION_URL } from '../../../utils/Api/url'
-import { group } from "console";
 
 export type GroupInfoModel = {
   name: string;
   description: string;
+}
+export type GroupIdName = {
+  id: string;
+  name: string;
 }
 export type DataPermissionModel = {
   containerMappingId: number,
@@ -54,6 +56,7 @@ const Group = () => {
   const [error, setError] = useState<string>("");
 
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
+  const [groupIdName, setGroupIdName] = React.useState<GroupIdName>({ id: "", name: "" });
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -91,6 +94,7 @@ const Group = () => {
   React.useEffect(() => {
     if (res !== undefined) {
       setGroupInfo({ name: res.name, description: res.description });
+      setGroupIdName({id: res.id, name: res.name})
 
       if (res.members !== undefined && res.members.users !== undefined) {
         let lstUserIds: number[] = [];
@@ -113,7 +117,6 @@ const Group = () => {
       ContainerMappingRes.map((x: any) => {
         newDataPerModel.push({ containerMappingId: x.id, fieldType: x.fieldType, mappingId: x.mappingId, permission: x.groupMapping.permission });
       });
-      console.log("ne data per model");
       setDataPermissions(newDataPerModel);
       setDataPermissionsActual(newDataPerModel);
     }
@@ -158,9 +161,6 @@ const Group = () => {
       }
       return 0;
     });
-
-    console.log("dataPermissions String", JSON.stringify(dataPermissionString))
-    console.log("dataPermissionsActual String", JSON.stringify(dataPermissionActualString))
 
     if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp)) {
       setIsOpen(true)
@@ -261,8 +261,6 @@ const Group = () => {
       })
       .then(grpResponse => {
         if (status === 201 || status === 204) { //which means group has been created or updated now its time to save container permission for station and categories.
-          console.log("Group Response");
-          console.log(grpResponse.replace(/["']/g, ""));
           let groupId = 0;
           if (status === 201) {
             groupId = parseInt(grpResponse.replace(/["']/g, ""));
@@ -286,7 +284,6 @@ const Group = () => {
             "containerMappings": permissionsToAdd,
             "deletedContainerMappingIds": deletedDataPermissions
           }
-
           fetch(UPSERT_CONTAINER_MAPPING_URL, {
             method: 'PUT',
             headers: {
@@ -359,6 +356,7 @@ const Group = () => {
           <Application subModulesIds={subModulesIds}
             applicationPermissions={applicationPermissions}
             onSetAppPermissions={getAppPermissions}
+            groupIdName={groupIdName}
           ></Application>
         </CrxTabPanel>
 
@@ -388,10 +386,18 @@ const Group = () => {
         setIsOpen={() => setIsOpen(false)}
         onConfirm={closeDialog}
         isOpen={isOpen}
-        primary="Yes"
-        secondary="No"
+        className="userGroupNameConfirm"
+        primary="Yes, close"
+        secondary="No, do not close"
         text="user group form"
-      />
+      >
+        <div className="confirmMessage">
+        You are attempting to <strong>close</strong> the <strong>'user group form'</strong>. If you close the form, any changes you've made will not be saved. You will not be able to undo this action.
+        <div className="confirmMessageBottom">
+        Are you sure you would like to <strong>close</strong> the form?
+        </div>
+        </div>
+      </CRXConfirmDialog>
     </div>
   );
 };

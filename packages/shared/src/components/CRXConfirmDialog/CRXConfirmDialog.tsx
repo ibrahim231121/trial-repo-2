@@ -8,6 +8,7 @@ import {
   Divider,
   DialogActions,
 } from "@material-ui/core";
+import CRXButton from '../../controls/CRXButton/CRXButton'
 
 import './index.scss';
 type Props = {
@@ -66,16 +67,26 @@ const CRXConfirmDialog: React.FC<Props> = ({
       </DialogContent>
       <Divider className="CRXDivider" />
       <DialogActions className="crxConfirmFooterModal">
-        <Button className="primaryBtn" 
-        disableRipple={true}
+        <CRXButton 
+          id="yes"
+          className="primary" 
+          variant="contained"
           onClick={() => {
             onConfirm();
             setIsOpen(false);
           }}
         >
           {primary || "primary"}
-        </Button>
-        <Button onClick={() => setIsOpen(false)} disableRipple={true} className="secondaryBtn" variant="contained">  {secondary || "secondary"}</Button>
+        </CRXButton>
+
+        <CRXButton 
+          id="no"
+          onClick={() => setIsOpen(false)} 
+          className="secondary" 
+          variant="outlined"
+          color="secondary">  
+          {secondary || "secondary"}
+        </CRXButton>
       </DialogActions>
     </Dialog>
   );

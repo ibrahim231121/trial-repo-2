@@ -235,7 +235,7 @@ const CreateUserForm: React.FC<Props> = ({
           required={true}
           value={password}
           onChange={(e: any) => setPassword(e.target.value)}
-          onBlur={!id ? checkPassword : null}
+          onBlur={checkPassword}
         />
         <TextField
           className="crx-gente-field"
@@ -246,7 +246,7 @@ const CreateUserForm: React.FC<Props> = ({
           type="password"
           value={confirmPassword}
           onChange={(e: any) => setConfirmPassword(e.target.value)}
-          onBlur={!id ? checkConfirmPassword : null}
+          onBlur={checkConfirmPassword}
         />
         <div className="crx-requird-check">
           <CRXCheckBox

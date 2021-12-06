@@ -1,10 +1,32 @@
 .crxTabsPermission {
-    margin-top: 149px; 
+    margin-top: 118px; 
     margin-left: 66px;
     padding-right: 2px;
     div[role="tabpanel"]{
         border-top: 1px solid #878787;
         margin-top: -2px;
+        position: relative;
+        &::before {
+            width: 1543px;
+            height: 9px;
+            background: #fff;
+            position: fixed;
+            content: " ";
+            z-index: 3;
+            margin-top: -25px;
+            margin-left: 102px;
+        }
+        &::after {
+            // width: 1152px;
+            // height: 17px;
+            // background: #fff;
+            // position: fixed;
+            // content: " ";
+            // z-index: 9999;
+            // /* margin-top: -25px; */
+            // margin-left: 100px;
+            // bottom: 115px;
+        }
     } 
 
     .MuiTab-root  {
@@ -80,8 +102,6 @@
 }
 }
 
-
-
 .crx-group-info-form {
   width: 745px;
   margin: 0 auto;
@@ -91,11 +111,11 @@
     flex-direction: column;
     align-items: center;
     height: 300px;
-    padding-top: 45px;
+    padding-top: 43px;
     span {
       h6 {
         margin-right: 0px;
-        width: 16.6vh;
+        width: 125px;
         place-content: flex-start;
       }
     }
@@ -137,4 +157,45 @@
     }
   }
   
+}
+
+.userGroupNameConfirm {
+    .crxConfirmFooterModal {
+        button {
+            &.primary {
+                min-width: 90px;
+                height: 30px;
+                margin-right: 23px;
+            }
+        }
+    }
+    .confirmMessage {
+        font-size: 14px;
+        font-weight: normal;
+        letter-spacing: 0.3px;
+        line-height: 18px;
+        padding: 13px 13px 0px 2px;
+        color: #333;
+        padding-top: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        strong {
+            font-weight: bold;
+        }
+        .confirmMessageBottom {
+            padding-top: 34px;
+        }
+    }
+}
+
+@media only screen and (max-width: 1366px) {
+    .crxTabsPermission div[role=tabpanel]::before {
+        width: 1100px !important;
+        margin-left: 80px !important;
+    }
+}
+
+@media only screen and (max-width: 1620px) {
+    .crxTabsPermission div[role=tabpanel]::before {
+        width: 1243px;
+    }
 }

@@ -63,7 +63,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showActionSearchHeaderCell,
   showCountText,
   showTotalSelectedText,
-  showCustomizeIcon
+  showCustomizeIcon,
+  lightMode
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -339,7 +340,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       showActionCol={showActionCol}
                       showActionSearchHeaderCell={showActionSearchHeaderCell}
                       showHeaderCheckAll={false}
-                      
+                      lightMode={lightMode}
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}
                     />

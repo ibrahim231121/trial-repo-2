@@ -233,7 +233,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "260",
+            minWidth: "100%",
             maxWidth: "260",
             visible: true,
         },
@@ -245,7 +245,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "195",
+            minWidth: "100%",
             maxWidth: "195",
             visible: true,
         },
@@ -257,7 +257,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "195",
+            minWidth: "100%",
             maxWidth: "195",
             visible: true,
         },
@@ -269,7 +269,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:User[]) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-            minWidth: "318",
+            minWidth: "100%",
             maxWidth: "318",
             visible: true,
         },
@@ -369,6 +369,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     showCountText={false}
                     showCustomizeIcon={false}
                     showTotalSelectedText={true}
+                    lightMode={false}
                 />
             )
             }
