@@ -9,6 +9,8 @@ import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { DateFormat } from "../../../../utils/globalDataTableFunctions"
 import { CRXAlert } from "@cb/shared";
 import moment from "moment";
+import { CRXInputDatePicker } from "@cb/shared";
+import "./createUserForm.scss";
 
 let USER_DATA = {};
 interface Props {
@@ -31,7 +33,7 @@ interface userStateProps {
   email: string;
   phoneNumber: string;
   userGroups: string[];
-  deactivationDate: string;
+  deactivation_Date: string;
 }
 
 type account = {
@@ -61,7 +63,7 @@ const CreateUserForm: React.FC<Props> = ({
     email: "",
     phoneNumber: "",
     userGroups: [],
-    deactivationDate: "",
+    deactivation_Date: "",
   });
 
   const [formpayloadErr, setFormPayloadErr] = React.useState({
@@ -91,10 +93,15 @@ const CreateUserForm: React.FC<Props> = ({
 
   const [disableLink, setDisableLink] = React.useState(false);
   const toasterRef = useRef<typeof CRXToaster>(null)
+
+ 
+
   React.useEffect(() => {
     if (id)
       fetchUser();
   }, [id]);
+
+
 
   React.useEffect(() => {
     if (userPayload && id) {
@@ -104,6 +111,7 @@ const CreateUserForm: React.FC<Props> = ({
         account: { userName },
         contacts,
         userGroups,
+        deactivation_Date
       } = userPayload;
 
       const phoneNumber =
@@ -121,7 +129,7 @@ const CreateUserForm: React.FC<Props> = ({
         email,
         phoneNumber: "",
         userGroups: [],
-        deactivationDate: "",
+        deactivation_Date: "",
       };
       setFormPayload({
         ...formpayload,
@@ -131,11 +139,33 @@ const CreateUserForm: React.FC<Props> = ({
         middleInitial,
         lastName,
         phoneNumber,
+        deactivation_Date,
         userGroups: userGroupNames,
+
       });
 
     }
   }, [userPayload]);
+
+  
+  var current_date
+  if (formpayload.deactivation_Date != null) {
+    current_date = formpayload.deactivation_Date.split("Z")[0];
+  }
+  
+  
+  const minStartDate = () => {
+    var currentDate = new Date();
+    var mm = '' + (currentDate.getMonth() + 1);
+    var dd = '' + currentDate.getDate();
+    var yyyy = currentDate.getFullYear();
+
+    if (mm.length < 2)
+      mm = '0' + mm;
+    if (dd.length < 2)
+      dd= '0' + dd;
+    return [yyyy, mm, dd].join('-') + "T00:00:00";
+  }
 
   const fetchUser = async () => {
     const res = await fetch(`${USER}/${id}`, {
@@ -281,7 +311,7 @@ const CreateUserForm: React.FC<Props> = ({
       lastName,
       email,
       userGroups,
-      deactivationDate,
+      deactivation_Date,
       phoneNumber
     } = formpayload;
     if (userGroups.length > 0) {
@@ -293,7 +323,7 @@ const CreateUserForm: React.FC<Props> = ({
       lastName ||
       email ||
       userGroups.length ||
-      deactivationDate
+      deactivation_Date
     ) {
       setCloseWithConfirm(true);
     }
@@ -461,6 +491,7 @@ const CreateUserForm: React.FC<Props> = ({
 
     const payload = {
       email: formpayload.email,
+      deactivation_Date: formpayload.deactivation_Date,
       name,
       account,
       contacts,
@@ -570,6 +601,7 @@ const CreateUserForm: React.FC<Props> = ({
     const payload = {
       ...userPayload,
       email: formpayload.email,
+      deactivation_Date: formpayload.deactivation_Date,
       name,
       account,
       contacts,
@@ -611,6 +643,7 @@ const CreateUserForm: React.FC<Props> = ({
       .then((resp) => {
         if (resp !== undefined) {
           let error = JSON.parse(resp);
+
           if (error.errors !== undefined) {
             if (
               error.errors.Email !== undefined &&
@@ -911,6 +944,7 @@ const checkMiddleInitial = () => {
           }
           onBlur={checkPhoneumber}
         />
+
         {
           <div className="crxEditFilter">
             <label>User Group <span>*</span></label>
@@ -937,18 +971,23 @@ const checkMiddleInitial = () => {
 
             </div>
           </div>
+
         }
-        <TextField
-          error={!!formpayloadErr.deactivationDateErr}
-          errorMsg={formpayloadErr.deactivationDateErr}
-          value={formpayload.deactivationDate}
-          className="users-input"
-          type="date"
-          label="Deactivation Date"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, deactivationDate: e.target.value })
-          }
-        />
+        
+        <div className="dataPickerCustom">
+          <label>Deactivation Date</label>
+          <CRXInputDatePicker
+            value={current_date}
+            type="datetime-local"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
+            minDate={minStartDate()}
+            maxDate=""
+          />
+        </div>
+
+
+
         <div className="crxRadioBtn" style={{ display: "flex" }}>
           <label>User Password Setup</label>
           <div className="user-radio-group">

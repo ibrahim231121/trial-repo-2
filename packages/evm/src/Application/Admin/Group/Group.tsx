@@ -18,7 +18,7 @@ export type GroupInfoModel = {
   description: string;
 }
 export type DataPermissionModel = {
-  containerMappingId:number,
+  containerMappingId: number,
   mappingId: number,
   permission: number,
   fieldType: number,
@@ -38,7 +38,7 @@ const Group = () => {
   const [groupInfo, setGroupInfo] = React.useState<GroupInfoModel>({ name: "", description: "" });
   const [userIds, setUserIds] = React.useState<Number[]>([]);
   const [subModulesIds, setSubModulesIds] = React.useState<Number[]>([]);
-  
+
   const [deletedDataPermissions, setDeletedDataPermissions] = React.useState<number[]>([]);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -49,6 +49,9 @@ const Group = () => {
   const [dataPermissionsActual, setDataPermissionsActual] = React.useState<DataPermissionModel[]>([]);
 
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [messages, setMessages] = useState<string>("");
+  const [alertType, setAlertType] = useState<string>("inline");
+  const [error, setError] = useState<string>("");
 
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
 
@@ -60,6 +63,12 @@ const Group = () => {
     { label: "USERS", index: 1 },
     { label: "APPLICATION PERMISSIONS", index: 2 },
     { label: "DATA PERMISSIONS", index: 3 },
+  ];
+
+  const message = [
+    { messageType: "success", message: "User group saved successfully" },
+    { messageType: "error", message: "We're sorry. The group information, users, and application permissions were unable to be saved. Please retry or contact your System Administrator." },
+    { messageType: "error", message: "We're sorry. The data permissions were unable to be saved. Please retry or contact your System Administrator." }
   ];
 
   const { id } = useParams<{ id: string }>();
@@ -76,9 +85,9 @@ const Group = () => {
     }
   }, [])
 
-  React.useEffect(()=>{    
-      showSave();
-  },[groupInfo,userIds,dataPermissions,isAppPermissionsChange])
+  React.useEffect(() => {
+    showSave();
+  }, [groupInfo, userIds, dataPermissions, isAppPermissionsChange])
   React.useEffect(() => {
     if (res !== undefined) {
       setGroupInfo({ name: res.name, description: res.description });
@@ -97,15 +106,14 @@ const Group = () => {
     }
   }, [res])
 
-  React.useEffect(() => { 
+  React.useEffect(() => {
     if (ContainerMappingRes !== undefined) {
       let newDataPerModel: DataPermissionModel[] = [];
 
       ContainerMappingRes.map((x: any) => {
-        newDataPerModel.push({ containerMappingId:x.id, fieldType: x.fieldType, mappingId: x.mappingId, permission: x.groupMapping.permission });
+        newDataPerModel.push({ containerMappingId: x.id, fieldType: x.fieldType, mappingId: x.mappingId, permission: x.groupMapping.permission });
       });
       console.log("ne data per model");
-      console.log(newDataPerModel);
       setDataPermissions(newDataPerModel);
       setDataPermissionsActual(newDataPerModel);
     }
@@ -120,7 +128,9 @@ const Group = () => {
   }
   const onChangeDataPermission = (dataPermissionModel: DataPermissionModel[]) => {
     setDataPermissions(dataPermissionModel);
+    console.log("test", dataPermissions)
   }
+
   const redirectPage = () => {
 
     let groupInfo_temp: GroupInfoModel = {
@@ -129,28 +139,28 @@ const Group = () => {
     }
 
     let dataPermissionString = dataPermissions.sort((a: DataPermissionModel, b: DataPermissionModel) => {
-      if ( a.containerMappingId < b.containerMappingId ){
+      if (a.containerMappingId < b.containerMappingId) {
         return -1;
       }
-      if ( a.containerMappingId > b.containerMappingId ){
+      if (a.containerMappingId > b.containerMappingId) {
         return 1;
       }
       return 0;
     });
 
-    
+
     let dataPermissionActualString = dataPermissionsActual.sort((a: DataPermissionModel, b: DataPermissionModel) => {
-      if ( a.containerMappingId < b.containerMappingId ){
+      if (a.containerMappingId < b.containerMappingId) {
         return -1;
       }
-      if ( a.containerMappingId > b.containerMappingId ){
+      if (a.containerMappingId > b.containerMappingId) {
         return 1;
       }
       return 0;
     });
 
-    console.log("dataPermissions String",JSON.stringify(dataPermissionString))
-    console.log("dataPermissionsActual String",JSON.stringify(dataPermissionActualString))
+    console.log("dataPermissions String", JSON.stringify(dataPermissionString))
+    console.log("dataPermissionsActual String", JSON.stringify(dataPermissionActualString))
 
     if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp)) {
       setIsOpen(true)
@@ -189,7 +199,7 @@ const Group = () => {
     else if (JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)) {
       setIsSaveButtonDisabled(false);
     }
-    else{
+    else {
       setIsSaveButtonDisabled(true);
     }
   }
@@ -206,41 +216,37 @@ const Group = () => {
 
   const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {
 
-    let editCase =  !isNaN(+id);
+    let editCase = !isNaN(+id);
     let method = editCase ? 'PUT' : 'POST';
     var groupURL = SAVE_USER_GROUP_URL;
 
-    if(editCase){
-     groupURL =  groupURL + '/'+id;
-
+    if (editCase) {
+      groupURL = groupURL + '/' + id;
     }
-
-    let subModules =  applicationPermissions
-    .map(x=> x.children)
-    .flat(1)
-    .filter(x=> x?.selected=== true)
-    .map(x=>{return { "subModuleId":x?.id}})
+    
+    let subModules = applicationPermissions
+      .map(x => x.children)
+      .flat(1)
+      .filter(x => x?.selected === true)
+      .map(x => { return { "subModuleId": x?.id } })
 
     // if(editCase){
     //   subModules.map(x=> {return {...x, "id":parseInt(id)}})
     // }
 
-    console.log("Sub Modules");
-    console.log(subModules);
-
-    let userGroup  = {
-      name:groupInfo.name,
-      description:groupInfo.description,
+    let userGroup = {
+      name: groupInfo.name,
+      description: groupInfo.description,
       groupSubModules: subModules,
       //  groupSubModules: subModules.map(x=> { return { "subModuleId": x?.id}}),
       //groupSubModules: appPermissionSample.map(x=> { return { "subModuleId": x.id}}),
-      
-      members:{
-        users:userIds.map(x=> {return {"id": x} } )
+
+      members: {
+        users: userIds.map(x => { return { "id": x } })
       }
     }
-      let groupId = 0; 
-      let status  = 0;
+    let groupId = 0;
+    let status = 0;
     fetch(groupURL, {
       method: method,
       headers: {
@@ -249,44 +255,38 @@ const Group = () => {
       },
       body: JSON.stringify(userGroup)
     })
-    .then(res=>{
-      console.log("Response");
-      console.log(res);
-      status =   res.status;
-      console.log("status = " , status);
-      return res.text();
-    })
-    .then(grpResponse => {
-      if(status === 201 || status === 204){ //which means group has been created or updated now its time to save container permission for station and categories.
+      .then(res => {
+        status = res.status;
+        return res.text();
+      })
+      .then(grpResponse => {
+        if (status === 201 || status === 204) { //which means group has been created or updated now its time to save container permission for station and categories.
           console.log("Group Response");
           console.log(grpResponse.replace(/["']/g, ""));
           let groupId = 0;
-          if(status === 201){
+          if (status === 201) {
             groupId = parseInt(grpResponse.replace(/["']/g, ""));
           }
-          if(status === 204){
+          if (status === 204) {
             groupId = parseInt(id);
           }
           console.log("Group Id");
-          console.log(groupId);
-          let permissionsToAdd = dataPermissions.map(x=> {
-            return{
-              "id":x.containerMappingId,
-              "mappingId":x.mappingId,
-              "groupMapping":{
-                "groupId":groupId,
-                "permission":x.permission
+          let permissionsToAdd = dataPermissions.map(x => {
+            return {
+              "id": x.containerMappingId,
+              "mappingId": x.mappingId,
+              "groupMapping": {
+                "groupId": groupId,
+                "permission": x.permission
               },
-              "fieldType":x.fieldType
+              "fieldType": x.fieldType
             }
           })
           let dataPermissionObj = {
-            "containerMappings":permissionsToAdd,
-            "deletedContainerMappingIds" : deletedDataPermissions
+            "containerMappings": permissionsToAdd,
+            "deletedContainerMappingIds": deletedDataPermissions
           }
 
-          console.log("dataPermissionObj")
-          console.log(dataPermissionObj);
           fetch(UPSERT_CONTAINER_MAPPING_URL, {
             method: 'PUT',
             headers: {
@@ -295,36 +295,56 @@ const Group = () => {
             },
             body: JSON.stringify(dataPermissionObj)
           })
-          .then(container=>{
+            .then(container => {
+              if (container.status === 201 || container.status === 204) {
+                // history.push(Object.entries(urlList)[1][0].toString());
+              }
+              else if (container.status === 500 || container.status === 400 || container.status === 409 || container.status === 404) {
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 7000);
+                setAlertType("inline")
+                setMessages(message[2].message)
+                setError(message[2].messageType)
+              }
+            })
+            .catch((err: Error) => {
+              console.log("An error occured in permission");
+              console.log(err.message);
+            })
 
-            console.log("Container Response");
-            console.log(container);
-            history.push(Object.entries(urlList)[1][0].toString());
             setShowSuccess(true);
+            setAlertType("toast")
+            setMessages(message[0].message)
+            setError(message[0].messageType)
+        }
 
-
-          })
-          .catch((err:Error) => {
-            console.log("An error occured");
-            console.log(err);
-            console.log(err.message);
-          })
-      }
-    })
-
+        else if (status === 500 || status === 400) {
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 7000);
+          setMessages(message[1].message)
+          setError(message[1].messageType)
+        }
+        else if( status === 409 || status === 404){
+          let error = JSON.parse(grpResponse);
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 7000);
+          setMessages(error)
+          setError("error")
+        }
+      })
   }
 
   return (
     <div className= "App crxTabsPermission" style={{  }}>
       <>
-      <CRXAlert
-                          className="crx-alert-notification"
-                          message={"User group saved successfully"}
-                          type="success"
-                          open={showSuccess}
-                          setShowSucess={setShowSuccess}
-
-                        />
+        <CRXAlert
+          className="crx-alert-notification"
+          message={messages}
+          type={error}
+          open={showSuccess}
+          alertType={alertType}
+          setShowSucess={setShowSuccess}
+        />
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
 
         <CrxTabPanel value={value} index={0}  >
@@ -343,17 +363,16 @@ const Group = () => {
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={3}>
-          <DataPermission 
-            dataPermissionsInfo={dataPermissions} 
+          <DataPermission
+            dataPermissionsInfo={dataPermissions}
             onChangeDataPermission={onChangeDataPermission}
-            onDeletePermission={(id:number)=>{
+            onDeletePermission={(id: number) => {
               var deletedPermissions = deletedDataPermissions;
               deletedPermissions.push(id);
               console.log("Deleted Permission");
-              console.log(deletedDataPermissions);
-                setDeletedDataPermissions(deletedPermissions);
+              setDeletedDataPermissions(deletedPermissions);
             }}
-            
+
           ></DataPermission>
         </CrxTabPanel>
       </>
