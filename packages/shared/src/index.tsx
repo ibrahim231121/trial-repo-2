@@ -42,4 +42,4 @@ export { default as CRXDataTableMultiLevel} from './CRXDataTable/CRXDataTableMul
 export { default as CRXGlobalSelectFilter } from './controls/CRXGlobalFilterSelect/CRXAutocomplete'
 export { default as CRXMultiSelectBoxAutocomplete} from './controls/CRXMultiSelectAutocomplete/CRXAutocompleteSelect'
 export { default as CRXRadio} from './controls/CRXRadio/CRXRadio'
-
+export { default as CRXGlobalTooltip} from './controls/CRXGlobalTooltip/CRXGlobalTooltip'
