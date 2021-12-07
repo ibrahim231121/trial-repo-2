@@ -30,5 +30,8 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
     ],
-
+    "/admin/stations": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/stations", type: "text", label: "Manage Stations", }
+    ],
 };

@@ -172,10 +172,13 @@ const CRXLefNavigation = () => {
             },
             {
                label: 'Manage Users'
+            },
+            {
+               label: 'Manage Station',
+               command: () => { console.log("Manage Station") },
             }
          ]
       },
-
    ];
 
    return (
