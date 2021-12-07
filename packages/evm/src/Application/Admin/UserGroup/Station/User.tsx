@@ -461,7 +461,7 @@ const Station: React.FC = () => {
     return (
         <div className="crxManageUsers">
 			<CRXToaster ref={toasterRef} />
-            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
+            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>Create Station
             </CRXButton>
             <CRXModalDialog
                 className="createUser CrxCreateUser"
@@ -504,11 +504,11 @@ const Station: React.FC = () => {
                     setSelectedItems={setSelectedItems}
                     selectedItems={selectedItems}
                     dragVisibility={false}
-                    showCheckBoxes={true}
-                    showActionCol={true}
+                    showCheckBoxesCol={false}
+                    showActionCol={false}
                     showActionSearchHeaderCell={false}
                     showCountText={false}
-                    showCustomizeIcon={true}
+                    showCustomizeIcon={false}
                     showTotalSelectedText={false}
                 />
             )
