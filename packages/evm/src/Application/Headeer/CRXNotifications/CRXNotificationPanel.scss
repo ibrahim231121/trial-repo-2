@@ -1,0 +1,48 @@
+.CRXNotficationPanel {
+  .MuiDrawer-paper {
+    top: 57px !important;
+    background: #f5f5f5;
+    overflow: visible;
+    border-left: 1px solid #b7b8b9;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 10px 10px 0px;
+    min-width: 400px;
+    padding: 10px;
+    border-bottom: 3px #d74b00 solid;
+    height: 91.7vh;
+  }
+}
+
+.bucketIcon {
+  color: #d1d2d4;
+  font-size: 16px !important;
+}
+
+.NotificationIconButton {
+  padding: 4px 0px !important;
+  line-height: 0px !important;
+  position: relative;
+  min-width: 39px !important;
+  border-radius: 0px !important;
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    position: relative;
+  }
+  &:after {
+    position: absolute;
+    background: #555;
+    width: 2px;
+    height: 18px;
+    top: 5px;
+    right: -2px;
+    content: "";
+  }
+  .crx-dot {
+    .MuiBadge-badge {
+      background-color: #d74b00;
+      border:none;
+      padding: 0;
+      height: 8px;
+    }
+  }
+}

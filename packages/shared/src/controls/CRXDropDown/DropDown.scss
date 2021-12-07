@@ -1,0 +1,59 @@
+.wrapper {
+  max-width: 450px;
+  .select {
+    background: #fff;
+    width: 100%;
+    border-radius: 0px;
+    position: relative;
+    margin-top: -1px;
+    select {
+      height: 32px;
+      width: 100%;
+      outline: none;
+      border: none;
+      border-radius: 0;
+      padding:0;
+      font-size: 14px;
+      color:#333333;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-indent: 10px;
+      font-family: Arial;
+      border: 1px solid #d1d2d4;
+      &:focus {
+        outline: 3px solid #888787;
+        transition: all 0.25s ease-in-out;
+        border-radius: 0;
+      }
+      &:hover {
+        outline: 1px solid #888787;
+        transition: all 0.25s ease-in-out;
+        border-radius: 0;
+      }
+    }
+
+    .icon {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      text-align: center;
+      line-height: 55px;
+      font-size: 20px;
+      color: #221e1e;
+      cursor: pointer;
+      background: none;
+      border: none;
+      outline: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .iconContent {
+      .iconStyle {
+        position: relative;
+        top: 0;
+        font-size: 14px;
+      }
+    }
+  }
+}

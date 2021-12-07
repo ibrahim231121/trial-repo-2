@@ -1,0 +1,107 @@
+.getac-simple-select {
+  select {
+    padding: 5px;
+    min-width: 250px;
+    font-size: 14px;
+    color: #444;
+  }
+  .MuiFormControl-root {
+    border-width: 0px !important;
+    &:hover,
+    &:focus {
+      border-width: 0px !important;
+    }
+  }
+  fieldset {
+    border-width: 0px !important;
+    &:hover,
+    &:focus {
+      border-width: 0px !important;
+    }
+  }
+
+  .MuiInputBase-root {
+    padding: 0px !important;
+  }
+
+  .selectBoxTextField {
+    
+    input {
+      font-size: 14px;
+      color: #74767c;
+      height: 28px !important;
+      padding: 0px !important;
+      outline: 1px solid #cecece;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+        outline: 1px solid #888787;
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        outline: 3px solid #888787;
+        transition: all 0.25s ease-in-out;
+        transition: all 0.25s ease-in-out;
+      }
+    }
+    .MuiAutocomplete-clearIndicator {
+      padding: 2px 0px;
+    }
+    &.MuiIconButton-root:hover {
+      background-color: transparent !important;
+    }
+  }
+  .MuiChip-root {
+    background-color: #d7efff;
+    border-radius: 4px;
+  }
+
+  
+  .Mui-error {
+    input {
+      color: #74767c;
+      height: 27px;
+      outline: 2px solid #aa1d1d;
+      border: 1px solid transparent !important;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &:focus {
+        outline: 2px solid #aa1d1d;
+        border: 1px solid #888787 !important;
+        transition: all 0.25s ease-in-out;
+      }
+      &::placeholder {
+        color:#74767c;
+      }
+      &::-webkit-input-placeholder {
+        color:#74767c;
+      }
+      
+      &:-ms-input-placeholder { 
+        color:#74767c;
+      }
+    }
+  }
+}
+.error {
+  border: 2px solid #aa1d1d;
+}
+
+
+
+.MuiInput-underline {
+  &::before {
+    border: 0px !important;
+  }
+  &::after {
+    border: 0px !important;
+  }
+}
+
+.topLevel {
+  margin-top: 25px;
+}
+

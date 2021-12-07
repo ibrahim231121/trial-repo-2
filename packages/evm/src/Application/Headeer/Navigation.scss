@@ -1,0 +1,135 @@
+.CRXLeftMenu {
+    .p-menuitem-link {
+        display: block !important;
+        padding: 0.75rem 5px;
+        border-left:4px transparent solid;
+
+        .p-menuitem-text {
+            color:#d1d2d4;
+            text-align: center;
+            display: block;
+            font-size: 12px;
+            padding-top:3px;
+        }
+        .NaveIcon{
+            display: block;
+            font-size: 28px;
+            color:#d1d2d4;
+            text-align: center;
+            margin: 0px;
+        }
+        .p-submenu-icon{
+            position: absolute;
+            right: 5px;
+            top: 32%;
+            color: #d1d2d4;
+        }
+
+        &:focus {
+            box-shadow: none;
+            background: #151515;
+            border-left:4px #d74b00 solid;
+            .p-menuitem-text {
+                color:#fff;
+            }
+            .NaveIcon {
+                color:#fff;
+            }
+            .p-submenu-icon{
+                color:#fff;
+            }
+            &:hover {
+                background: #404041;
+                border-left:4px #d74b00 solid;
+                .p-menuitem-text {
+                    color:#fff;
+                }
+                .NaveIcon {
+                    color:#fff;
+                }
+                .p-submenu-icon{
+                    color:#fff;
+                }
+            }
+        }
+
+        &:hover {
+            background: #404041;
+            border-left:4px #d1d2d4 solid;
+            .p-menuitem-text {
+                color:#fff;
+            }
+            .NaveIcon {
+                color:#fff;
+            }
+            .p-submenu-icon{
+                color:#fff;
+            }
+        }
+        
+    }
+
+    ul {
+        a.p-menuitem-active {
+            background: #151515;
+            border-left:4px #d74b00 solid;          
+        }
+        li.p-menuitem {
+            ul.p-submenu-list {
+                background: #404041;
+                min-width: 180px;
+                .p-menuitem{
+                    a.p-menuitem-link{
+                        padding: 10px 16px;
+                        color: #b2b3b5;
+                        text-align: left;
+                        border-left: 0px;
+                        &:hover {
+                            background: #151515;
+                            border-left: 0px;
+                        }
+                        .p-menuitem-text {
+                            text-align: left;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .p-menuitem-active{
+        .p-menuitem-link{
+            background: #404041;
+            border-left:4px #d1d2d4 solid;
+        }
+    }
+
+    ul {
+        li {
+            a {
+                height: 80px;
+                padding: 20px 5px 19px 3px  !important;
+            }
+            a.liveVideoTab {
+                height: 93px;
+            }
+            a.mapsTab {
+                height: 81px;
+            }
+            a.aplrTab {
+                height: 83px;
+            }
+            a.reportingTab {
+                height: 82px ;
+            }
+        }
+    }
+
+    ul.p-submenu-list {
+        .p-menuitem {
+            a.p-menuitem-link {
+                height: auto;
+                padding: 0.75rem 15px !important;
+            }
+        }
+    }
+}

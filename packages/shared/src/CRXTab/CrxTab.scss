@@ -1,0 +1,107 @@
+.crxMainTab {
+    min-height: 34px !important;
+    border-bottom: 1px solid transparent !important;   
+    
+    .MuiTab-root {
+        border-top: 1px solid #333333;;
+        border-bottom: 2px solid #333333;
+        border-right: 1px solid #6E6E6E;
+        border-left: 1px solid #6E6E6E;
+        background-color: #333333;
+        width: 225px;
+        height: 34px;
+        min-height: 34px ;
+        span {
+            color: #D1D2D4 ;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 20px;
+            margin-top: 2px;
+        }   
+        &:hover {
+            background-color: #6E6E6E;
+            border-bottom: 2px solid #6E6E6E;
+            border-right: 1px solid #6E6E6E;
+            border-left: 1px solid #6E6E6E;
+            border-top: 1px solid #6E6E6E;
+            span {
+                color: #F5F5F5;
+                font-size: 14px;
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 20px;
+            }
+        }
+        &:focus {
+            background-color: white;
+            border-bottom: 2px solid #D74B00;
+            border-right: 1px solid #878787;
+            border-left: 1px solid #878787;
+            border-top: 1px solid #878787;
+            transition-duration: 0.30s;
+            transition-property: border-bottom;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);;
+            span {
+                color: #333333;
+                font-size: 14px;
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 20px;
+            }
+        }
+        &:active  {
+            background-color: #231F20 ;
+            border-bottom: 2px solid #231F20 !important;
+            border-right: 1px solid #231F20 !important;
+            border-left: 1px solid #231F20 !important;
+            border-top: 1px solid #231F20;
+            span {
+                color: #F5F5F5;
+                font-size: 14px;
+                font-family: Arial, Helvetica, sans-serif;
+                line-height: 20px;
+            }
+        }
+
+    }
+  
+    .MuiTabs-root {
+        min-height: 34px;
+    }
+   
+    .MuiTabs-indicator {
+        display: none;
+    }
+
+    .Mui-selected  {
+        background-color: white;
+        border-bottom: 2px solid #D74B00;
+        border-right: 1px solid #878787;
+        border-left: 1px solid #878787;
+        border-top: 1px solid #878787;
+        span {
+            color: #333333;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 20px;
+        }
+    }
+    .MuiTab-textColorInherit {
+        padding: 0 25px;
+    }  
+
+
+// media 
+    @media(max-width:1200px) {
+        .MuiTab-root {
+            width: 208px;
+        }
+    }
+    @media(max-width:1100px) {
+        .MuiTab-root {
+            width: 200px;
+        }
+    }
+}
+
+
+
+

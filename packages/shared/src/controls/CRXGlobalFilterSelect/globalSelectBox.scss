@@ -1,0 +1,135 @@
+.gridFilterGlobal {
+    position: relative;
+.crx-global-Select{
+    width: 325px;
+    // min-height: 30px;
+    &.darkTheme {
+        
+        background-color: #d1d2d4;
+    }
+    .MuiFormControl-root{
+        border-width: 0px !important;
+        max-height: inherit;
+        .MuiInputBase-root {
+            // min-height: 30px;
+            max-height: inherit;
+        }
+        &:hover, &:focus {
+            border-width:0px !important;
+        }
+    }
+    fieldset{
+        border-width: 0px !important;
+        &:hover, &:focus {
+            border-width:0px !important;
+        }
+    }
+
+    .MuiInputBase-root{
+        padding:0px !important;
+    }
+
+    .selectBoxTextField{
+        input{
+            font-size: 14px;
+            color:#333;
+            padding: 0px;
+            height: 26px;
+            position: relative;
+            top: 0px;
+        }
+    }
+    .MuiChip-root{
+        background-color: #fff;
+        border-radius: 1px;
+        border: 1pt solid #888787
+    }
+
+    .MuiAutocomplete-tag {
+        position: relative;
+        .MuiChip-deleteIcon {
+            opacity: 0;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &::after {
+            position: absolute;
+            content: "\f00d";
+            font-family: "Font Awesome 5 Pro";
+            color: #D1D2D4;
+            font-size: 14px;
+            right:7px;
+            &:hover {
+                color: #333;
+            }
+        }
+    }
+
+}
+.afterSelectedValue {
+    position: absolute;
+    background: #404041;
+    display: flex;
+    width: 100%;
+    z-index: 1;
+    height: 33px;
+    place-content: center;
+    place-items: center;
+    button {
+        background: transparent;
+        border:0px;
+        outline: 0px;
+        color: #D1D2D4;
+        width: 40px;
+        &:hover {
+            background: transparent;
+        }
+        &:focus {
+            background: transparent;
+            outline: none;
+        }
+    }
+}
+}
+.error{
+    border:2px solid #aa1d1d
+}
+
+.MuiInput-underline{
+    &::before {
+        border: 0px !important;
+    }
+    &::after {
+        border: 0px !important;
+    }
+}
+
+.topLevel{
+    margin-top: 25px;
+}
+
+.filteredStyle {
+    .selectBoxTextField {
+        // position: relative;
+        // top: 28px;
+        // background: #444;
+        // width: 302px;
+        // left: -9px;
+        // padding: 10px 0;
+    }
+}
+
+.checkIcon {
+    padding-right: 12px;
+}
+
+.selectBoxIcon, .selectBoxIconCecked {
+    color: #d1d2d4 !important;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.selectBoxIcon:hover, .selectBoxIconCecked:hover {
+    background: transparent !important;
+}

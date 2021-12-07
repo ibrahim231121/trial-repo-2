@@ -1,0 +1,47 @@
+
+$Gray28 : #282828;
+$Gray33 : #333;
+$Nero   : #d1d2d4;
+$White  : #fff;
+$Black  : #000;
+$Gray41 : #404041;
+$Gray51 : #515151;
+.MuiPaper-root.DarkTheme{
+    background-color: $Gray41;
+    border-radius: 0px !important;
+    ul{
+        min-width: 200px;
+        li{
+            color: $Nero !important;
+            font-size: 13px;
+            min-height: 33px;
+            &:hover {
+                background-color:$Gray28;
+                color: #fff !important
+            }
+            &:focus {
+                background-color:#282828;
+                color: #fff !important
+                }
+        }
+    }
+}
+
+.GetacMenu{
+    .active {
+        background-Color : $Gray28;
+        color: $White,
+    }
+}
+
+.CRXDropDownBtn {
+    border:0px;
+    border-radius: 0px;
+    box-shadow: none;
+
+    .CRXDRPIcon {
+        position: relative;
+        top: -8px;
+        font-size: 1rem;
+    }
+}

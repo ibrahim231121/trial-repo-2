@@ -1,0 +1,63 @@
+.CRXBreadcrumb {
+  height: 32px;
+  line-height: 28px !important;
+
+  li {
+    a {
+      color: #C34400;
+      font-size: 12px;
+      text-decoration: none;
+
+      &:hover {
+        color: #C34400;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      &:focus {
+        color: #C34400;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  span {
+    .breadCrumbItem {
+      color: #333333;
+      &:hover {
+        color: #333333;
+        text-decoration: none;
+        cursor: default;
+      }
+      &:focus {
+        color: #333333;
+        text-decoration: none;
+        cursor: default;
+      }
+    }
+  }
+
+  .breadCrumbItem {
+    font-size: 12px;
+    color: #C34400;
+    font-family: Arial, Helvetica, sans-serif !important;
+
+    &:hover {
+      color: #C34400;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    &:focus {
+      color: #C34400;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  .MuiBreadcrumbs-separator {
+    position: relative;
+    top: 1px;
+    font-size: 12px;
+    color: #333333;
+  }
+}

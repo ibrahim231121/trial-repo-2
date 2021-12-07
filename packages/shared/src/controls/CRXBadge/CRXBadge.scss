@@ -1,0 +1,26 @@
+.bucketIconButton {
+  .MuiBadge-badge {
+    padding: 0 6px;
+    font-size: 12px;
+    height: 13px;
+    border-radius: 5px;
+    line-height: 2px;
+    color:#fff;
+    top: 5px;
+    right:-7px;
+  }
+  .CRXBadgeComponent-default {
+    .MuiBadge-badge {
+      border: 1px solid #8a8888;
+      background-color: #333333;
+    }
+  }
+
+  .CRXBadgeComponent-primary {
+    .MuiBadge-badge {
+      border: 1px solid #4c4c4d;
+      background-color: #d74b00;
+    }
+  }
+  
+}

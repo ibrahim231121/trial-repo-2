@@ -1,0 +1,165 @@
+.CRXButton{
+    border-radius: 0px !important;
+    text-transform: unset !important;
+    min-height: 30px;
+    min-width: 80px;
+    font-family: Arial, Helvetica, sans-serif;
+    &.MuiButtonBase-root {
+        border-radius: 0px;
+    }
+    &.MuiButton-contained{
+        box-shadow: none;
+        &:hover {
+            box-shadow: none;
+        }
+    }
+    &.MuiButton-containedPrimary {
+        color: #707070 !important;
+        background: #333333 !important;
+        &:hover {
+            background-color: #6e6e6e !important;
+            color: #f5f5f5 !important;
+        }
+
+        &:focus {
+            background-color: #231f20 !important;
+            color: #f5f5f5;
+        }
+    }
+
+    &.MuiButton-containedSecondary {
+        border:1px solid #878787;
+        color:#333333;
+
+        &:hover {
+            background-color: #f5f5f5;
+            color:#333333;
+            border:1px inner #333333
+        }
+        &:focus {
+            background-color: #231f20;
+            color:#f5f5f5
+        }
+    }
+
+    &.MuiButton-outlinedSecondary{
+        border:1px solid #878787;
+        color:#333333;
+        &:hover {
+            background-color: #f5f5f5;
+            color:#333333;
+            border:1px inner #333333
+        }
+        &:focus {
+            background-color: #231f20;
+            color:#f5f5f5
+        }
+    }
+
+    &.Mui-disabled{
+        color:#979797;
+        background-color: #e5e5e5;
+        border-color: transparent;
+    }
+    .MuiButton-label{
+        text-transform: none;
+    }
+}
+
+.CRXLoginBtn{
+    &.MuiButton-outlinedSecondary{
+        background-color: #e7e7e7;
+        border-color: transparent;
+        outline: 2px solid transparent;
+        color:#333333;
+        &:hover {
+            border-color: #d74b00;
+            background-color: #e7e7e7;
+        }
+        &:focus {
+            border-color: transparent;
+            outline: 2px solid #d74b00;
+            background-color: #e7e7e7;
+            color:#333333;
+        }
+    }
+}
+
+.CRXPrimaryButton {
+    background: #333333 !important;
+    color: #d1d2d4 !important;
+    &:hover {
+        background: #6e6e6e !important;
+        color: #f5f5f5 !important;
+    }
+    &:focus {
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
+    }
+}
+
+.CRXButton.Mui-disabled{
+    background-color:#e5e5e5 !important;
+    color:  #979797 !important;
+}
+
+.primary{
+    font-size:14px;
+    height: 30px;
+    background: #333333!important;   
+    
+    color: #d1d2d4 !important;
+    border: 1px solid transparent !important;
+    margin-right: 30px;
+    &:hover {
+        background: #6e6e6e !important;
+        color:  #f5f5f5 !important;
+        border: 1px solid transparent ;
+
+    }
+    &:focus {
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid transparent ;
+
+    }
+}
+.secondary{
+    height: 30px;
+    font-size:14px;
+    border: 1px solid #878787;
+    background: #ffffff !important;
+    color:  #333333 !important;
+    &:hover {
+        background: #f5f5f5 !important;
+        color:  #333333 !important;
+        border: 1px solid  #333333 !important;
+    }
+    &:focus {
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid transparent ;
+    }
+}
+
+.tertiary {
+    height: 30px;
+    font-size:14px;
+    border: 1px solid transparent !important;
+    color:  #333333 !important;
+    &:hover {
+        background: #f5f5f5 !important;
+        color:  #333333 !important;
+        border: 1px solid #333333 !important;
+    }
+    &:focus {
+        background: #231f20 !important;
+        color: #f5f5f5 !important;
+        border: 1px solid transparent !important;
+    }
+}
+.tertiaryDisabled.Mui-disabled{
+    background: none !important;
+    color:  #979797 !important;
+    border: 1px solid transparent !important;
+}

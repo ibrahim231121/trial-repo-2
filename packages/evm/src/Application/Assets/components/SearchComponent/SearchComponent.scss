@@ -1,0 +1,94 @@
+.container {
+  width: 100%;
+}
+.searchContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.searchAsset {
+  width: 30%;
+}
+.advanceContainer {
+  display: flex;
+}
+.main {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+.advanceSearchTextField {
+  width: 45%;
+}
+
+.advanceSearchContent {
+  padding-top: 17px;
+}
+
+.advanceSearchContent .icon > button {
+  background: transparent;
+  border: 0px;
+}
+
+.predictiveSearch {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  .MuiGrid-container
+  {
+    width: 65%;
+  }
+}
+
+.makeStyles-content-9 {
+  &.makeStyles-contentShift-10 {
+    .searchComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 126px;
+      transition: 1s padding ease-out;
+    }
+  }
+}
+
+.makeStyles-content-9 {
+  .searchComponents {
+    padding-top: 126px;
+    transition: 1s padding ease-out;
+  }
+}
+//Its a fix for build issue not releted to work 
+.jss9 {
+  &.jss10 {
+    .searchComponents {
+      padding: 0 4px 0px 65px;
+      padding-top: 112px;
+    }
+  }
+}
+
+.advanceSearchChildren {
+  
+  .topColumn {
+    padding-right: 16px;  
+  }
+
+  .searchLabel {
+    font-size: 14px;
+    color:#333333;
+    padding:0px 0 0 0px;
+    margin:0px;
+    padding-bottom:15px;
+    display: block;
+    font-family: Arial;
+  }
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+}
+
+.toasterParent {
+  width: 40%;
+}
