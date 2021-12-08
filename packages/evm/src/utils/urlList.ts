@@ -34,4 +34,20 @@ export const urlList: any = {
         { type: "text", label: "Admin", },
         { routeTo: "/admin/stations", type: "text", label: "Manage Stations", }
     ],
+    "/admin/stations/:id": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+        { type: "text", label: "Station_Name", }
+    ],
+    "/admin/stations/create": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+        { type: "text", label: "Create Station", }
+    ],
+    "/admin/stations": [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+        { type: "text", label: "Station_Name", }
+    ],
+
 };
