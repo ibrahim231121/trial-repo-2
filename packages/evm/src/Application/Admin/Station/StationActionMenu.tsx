@@ -5,23 +5,22 @@ import {
   MenuButton,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
-import CreateUserForm from "./CreateUserForm";
 import { CRXModalDialog } from "@cb/shared";
 
 import { CRXConfirmDialog } from "@cb/shared";
 import {
   updateUsersInfoAsync,
   getUsersInfoAsync,
-} from "../../../../Redux/UserReducer";
+} from "../../../Redux/UserReducer";
 import { useDispatch } from "react-redux";
-import "./UserActionMenu.scss";
+import "./StationActionMenu.scss";
 type Props = {
   selectedItems?: any;
   row?: any;
   showToastMsg(obj: any): any
 };
 
-const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
+const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
 
@@ -98,14 +97,7 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}
       >
-        {row && (
-          <CreateUserForm
-            id={row.id}
-            setCloseWithConfirm={setCloseWithConfirm}
-            onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-            showToastMsg={showToastMsg}
-          />
-        )}
+       
       </CRXModalDialog>
       <CRXConfirmDialog
         className="crx-unblock-modal"
@@ -178,4 +170,4 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
     </>
   );
 };
-export default UserActionMenu;
+export default StationActionMenu;
