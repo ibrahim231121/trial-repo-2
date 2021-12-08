@@ -175,7 +175,7 @@ const CRXLefNavigation = () => {
             },
             {
                label: 'Manage Station',
-               command: () => { console.log("Manage Station") },
+               url: "/admin/stations"
             }
          ]
       },
