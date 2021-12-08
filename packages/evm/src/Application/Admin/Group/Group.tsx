@@ -9,7 +9,7 @@ import GroupInfo from "./GroupInfo";
 import useGetFetch from "../../../utils/Api/useGetFetch";
 import { GROUP_GET_BY_ID_URL, CONTAINERMAPPING_INFO_GET_URL, SAVE_USER_GROUP_URL, UPSERT_CONTAINER_MAPPING_URL } from "../../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
-import { urlList } from "../../../utils/urlList"
+import { urlList, urlNames } from "../../../utils/urlList"
 
 export type GroupInfoModel = {
   name: string;
@@ -179,7 +179,7 @@ const Group = () => {
       setValue(tabs[3].index);
     }
     else
-      history.push(Object.entries(urlList)[1][0].toString())
+      history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)
   }
 
   const showSave = () => {
@@ -206,7 +206,7 @@ const Group = () => {
 
   const closeDialog = () => {
     setIsOpen(false)
-    history.push(Object.entries(urlList)[1][0].toString())
+    history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)
   }
 
   const getAppPermissions = (appPermission: any, onChangeAppPermissions: boolean) => {
@@ -294,7 +294,7 @@ const Group = () => {
           })
             .then(container => {
               if (container.status === 201 || container.status === 204) {
-                // history.push(Object.entries(urlList)[1][0].toString());
+                // history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
               }
               else if (container.status === 500 || container.status === 400 || container.status === 409 || container.status === 404) {
                 setShowSuccess(true);
@@ -377,7 +377,7 @@ const Group = () => {
       <div className="tab-bottom-buttons">
         <div className="save-cancel-button-box">
           <CRXButton  variant="contained" className="groupInfoTabButtons"  onClick={onSave} disabled={isSaveButtonDisabled}>Save</CRXButton>
-                    <CRXButton className="groupInfoTabButtons secondary" color="secondary" variant="outlined" onClick={() => history.push(Object.entries(urlList)[1][0].toString())}>Cancel</CRXButton>
+                    <CRXButton className="groupInfoTabButtons secondary" color="secondary" variant="outlined" onClick={() => history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)}>Cancel</CRXButton>
         </div>
      <CRXButton onClick={()=> redirectPage()} 
           className="groupInfoTabButtons-Close secondary" color="secondary" variant="outlined">Close</CRXButton>

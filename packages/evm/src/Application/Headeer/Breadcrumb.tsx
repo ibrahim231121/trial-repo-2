@@ -5,7 +5,7 @@ import { CRXPanelStyle } from "@cb/shared";
 import { withRouter, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
-import { urlList } from "../../utils/urlList"
+import { urlList, urlNames } from "../../utils/urlList"
 
 type BreadCrumbItem = {
   type: string,
@@ -59,7 +59,9 @@ const Breadcrumb: React.FC<any> = (props) => {
 
   const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
   const breadCrumbPathRedux: any = {
-    "/assets": [
+    name: urlNames.assets,
+    url: "/assets",
+    details: [
       { routeTo: "/assets", type: "CBXLink", label: "Assets", },
       { type: "text", label: breadCrumbValueRedux, }
     ],
@@ -68,7 +70,7 @@ const Breadcrumb: React.FC<any> = (props) => {
   const classes = CRXPanelStyle();
 
   const getTitle = () => {
-    const paths = urlList[urlPath];
+    const paths = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (paths) {
       const pathName = paths[paths.length - 1].label
       return pathName
@@ -78,10 +80,9 @@ const Breadcrumb: React.FC<any> = (props) => {
   }
 
   const getPaths = () => {
-    let paths: BreadCrumbItem[] = urlList[urlPath];
-
+    let paths: BreadCrumbItem[] = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (breadCrumbValueRedux) {
-      paths = breadCrumbPathRedux[urlPath]
+      paths = breadCrumbPathRedux.details
     }
     return (
       paths && paths.map((path: BreadCrumbItem) => {
@@ -121,7 +122,7 @@ const Breadcrumb: React.FC<any> = (props) => {
         })
       }
     >
-      {urlList[urlPath] &&
+      {urlList.filter((item:any) => item.url === urlPath)[0] &&
         <>
           <CRXBreadcrumb maxItems={width <= 650 ? 3 : 100}>
             <Link className="brdLinks breadCrumbItem" to="/">

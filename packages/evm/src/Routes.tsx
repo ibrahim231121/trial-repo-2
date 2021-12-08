@@ -12,7 +12,7 @@ import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
-import { urlList } from "./utils/urlList"
+import { urlList, urlNames } from "./utils/urlList"
 import User from "./Application/Admin/UserGroup/User/User";
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
@@ -38,11 +38,11 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path={Object.entries(urlList)[0][0].toString()} exact={true} component={MannageAsset} />
-              <Route path={Object.entries(urlList)[1][0].toString()} exact={true} component={UserGroup} />
-              <Route path={Object.entries(urlList)[2][0].toString()} exact={true} component={Group} />
-              <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
-              <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>
