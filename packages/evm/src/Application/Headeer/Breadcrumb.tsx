@@ -14,13 +14,33 @@ type BreadCrumbItem = {
 }
 
 const Breadcrumb: React.FC<any> = (props) => {
-  const [urlPath, setUrlPath] = React.useState("")
-  const {
-    location: { pathname },
-  } = props;
-  const [width, setWidth] = React.useState<number>(window.innerHeight);
-  React.useEffect(() => {
 
+  const [urlPath, setUrlPath] = React.useState("")
+  const { location: { pathname }, } = props;
+  const [width, setWidth] = React.useState<number>(window.innerHeight);
+  const [otherLabels, setOtherLabels] = React.useState<string>("")
+
+  const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
+  // const breadCrumbPathRedux: any = {
+  //   name: urlNames.assets,
+  //   url: "/assets",
+  //   details: [
+  //     { routeTo: "/assets", type: "CBXLink", label: "Assets", },
+  //     { type: "text", label: breadCrumbValueRedux, }
+  //   ],
+  // }
+
+  React.useEffect(() => {
+    setOtherLabels("")
+  },[])
+
+  React.useEffect(() => {
+    if (breadCrumbValueRedux) {
+      setOtherLabels(breadCrumbValueRedux)
+    }
+  },[breadCrumbValueRedux])
+
+  React.useEffect(() => {
     let lastQueryParam = pathname.substring(props.location.pathname.lastIndexOf('/') + 1);
     if (!isNaN(lastQueryParam)) {
       //if id comes at the end so remove it, because urllist dont have dynamic route
@@ -35,6 +55,7 @@ const Breadcrumb: React.FC<any> = (props) => {
       setUrlPath(pathname.substring(0, pathname.length - 1))
     }
   }, [pathname])
+
   function debounce(fn: () => void, ms: number) {
     let timer: any = null
     return () => {
@@ -42,7 +63,7 @@ const Breadcrumb: React.FC<any> = (props) => {
       timer = setTimeout(() => {
         timer = null;
         fn();
-      }, ms);
+      }, ms); 
     };
   }
 
@@ -57,16 +78,6 @@ const Breadcrumb: React.FC<any> = (props) => {
     }
   });
 
-  const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
-  const breadCrumbPathRedux: any = {
-    name: urlNames.assets,
-    url: "/assets",
-    details: [
-      { routeTo: "/assets", type: "CBXLink", label: "Assets", },
-      { type: "text", label: breadCrumbValueRedux, }
-    ],
-  }
-
   const classes = CRXPanelStyle();
 
   const getTitle = () => {
@@ -79,40 +90,60 @@ const Breadcrumb: React.FC<any> = (props) => {
       return ""
   }
 
+  const updatePathDetails = (pathDetails: any, Pathurl: string) => {
+
+    let details = pathDetails.map((item:any) => {
+      if(item === pathDetails[pathDetails.length-1]) {
+        return {
+          routeTo: Pathurl,
+          type: "CBXLink",
+          label: item.label
+        }
+      }
+      else {
+        return item
+      }
+    })
+    return details
+  }
+
   const getPaths = () => {
     let paths: BreadCrumbItem[] = urlList.filter((item:any) => item.url === urlPath)[0].details;
+    let Pathurl =  urlList.filter((item:any) => item.url === urlPath)[0].url;
     if (breadCrumbValueRedux) {
-      paths = breadCrumbPathRedux.details
+      paths = updatePathDetails(paths, Pathurl)
     }
     return (
       paths && paths.map((path: BreadCrumbItem) => {
-        if (path.type === "link") {
-          return (
-            <Link className="brdLinks breadCrumbItem" to={path.routeTo}>
-              {path.label}
-            </Link>
-          );
-        }
-        else if (path.type === "text") {
-          return (
-            <span >
-              <label className="breadCrumbItem">{path.label}</label>
-            </span>
-          );
-        }
-        else {
-          return (
-            <>
-              <CBXLink className="active" href={path.routeTo}>
+          if (path.type === "link") {
+            return (
+              <Link className="brdLinks breadCrumbItem" to={path.routeTo}>
                 {path.label}
-              </CBXLink>
+              </Link>
+            );
+          }
+          else if (path.type === "text") {
+            return (
+              <span >
+                <label className="breadCrumbItem">{path.label}</label>
+              </span>
+            );
+          }
+          else {
+            return (
+              <>
+                <CBXLink className="active" href={path.routeTo}>
+                  {path.label}
+                </CBXLink>
 
-            </>
-          );
+              </>
+            );
+          }
         }
-      })
+      )
     )
   };
+  
   return (
     <div
       className={
@@ -128,8 +159,8 @@ const Breadcrumb: React.FC<any> = (props) => {
             <Link className="brdLinks breadCrumbItem" to="/">
               Home
             </Link>
-
-            {getPaths()}
+            {getPaths()} 
+            {otherLabels && <label>{otherLabels}</label>}
           </CRXBreadcrumb>
           <CRXTitle text={getTitle()} className="titlePage" />
         </>
