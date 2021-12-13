@@ -94,7 +94,7 @@ const CreateUserForm: React.FC<Props> = ({
   const [disableLink, setDisableLink] = React.useState(false);
   const toasterRef = useRef<typeof CRXToaster>(null)
 
- 
+
 
   React.useEffect(() => {
     if (id)
@@ -147,13 +147,13 @@ const CreateUserForm: React.FC<Props> = ({
     }
   }, [userPayload]);
 
-  
+
   var current_date
   if (formpayload.deactivation_Date != null) {
     current_date = formpayload.deactivation_Date.split("Z")[0];
   }
-  
-  
+
+
   const minStartDate = () => {
     var currentDate = new Date();
     var mm = '' + (currentDate.getMonth() + 1);
@@ -163,7 +163,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (mm.length < 2)
       mm = '0' + mm;
     if (dd.length < 2)
-      dd= '0' + dd;
+      dd = '0' + dd;
     return [yyyy, mm, dd].join('-') + "T00:00:00";
   }
 
@@ -330,7 +330,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
       setCloseWithConfirm(false);
-    } else if (userName && firstName && lastName && email && middleInitial && phoneNumber ) {
+    } else if (userName && firstName && lastName && email && middleInitial && phoneNumber) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -516,6 +516,10 @@ const CreateUserForm: React.FC<Props> = ({
     })
       .then(function (res) {
         if (res.ok) return res.json();
+        else if (res.status == 500) {
+          setAlert(true);
+          setResponseError("We're sorry. The form was unable to be saved. Please retry or contact your System Administrator.");
+        }
         else return res.text();
       })
       .then((resp) => {
@@ -636,6 +640,10 @@ const CreateUserForm: React.FC<Props> = ({
           }
           onClose();
           showToastMsg({ message: "You have updated the user account.", variant: "success", duration: 7000 });
+        }
+        else if (res.status == 500) {
+          setAlert(true);
+          setResponseError("We're sorry. The form was unable to be saved. Please retry or contact your System Administrator.");
         }
         else
           return res.text();
@@ -787,13 +795,13 @@ const CreateUserForm: React.FC<Props> = ({
     const re =
       /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/;
     return re.test(String(phoneNumber));
-}
+  }
 
-// const checkPhoneumber = () => {
-//   const isPhoneValidate = validatePhone(formpayload.phoneNumber);
-//   if (!formpayload.phoneNumber) {
-//     setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "Phone number required" });
-//   }
+  // const checkPhoneumber = () => {
+  //   const isPhoneValidate = validatePhone(formpayload.phoneNumber);
+  //   if (!formpayload.phoneNumber) {
+  //     setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: "Phone number required" });
+  //   }
 
   const checkPhoneumber = () => {
     const isPhoneValidate = validatePhone(formpayload.phoneNumber);
@@ -812,18 +820,18 @@ const CreateUserForm: React.FC<Props> = ({
   };
 
 
-const checkMiddleInitial = () => {
-  if(!formpayload.middleInitial){
-    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial is required" });
-  }
-  else if(formpayload.middleInitial.length < 3){
-    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial should be greater than 3 " })
-  }
-  else {
-    setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "" })
+  const checkMiddleInitial = () => {
+    if (!formpayload.middleInitial) {
+      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial is required" });
+    }
+    else if (formpayload.middleInitial.length < 3) {
+      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial should be greater than 3 " })
+    }
+    else {
+      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "" })
 
+    }
   }
-}
 
 
   const checkUserGroup = () => {
@@ -850,102 +858,102 @@ const checkMiddleInitial = () => {
           open={alert}
           setShowSucess={() => null}
         />
-         <div className="CrxEditForm">
-        <TextField
-          error={!!formpayloadErr.userNameErr}
-          errorMsg={formpayloadErr.userNameErr}
-          required={true}
-          value={formpayload.userName}
-          label="Username"
-          className="users-input"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, userName: e.target.value })
-          }
-          onBlur={(e: any) =>
-            !formpayload.userName
-              ? setFormPayloadErr({
-                ...formpayloadErr,
-                userNameErr: "Username is required",
-              })
-              : setFormPayloadErr({ ...formpayloadErr, userNameErr: "" })
-          }
-        />
-        <TextField
-          error={!!formpayloadErr.firstNameErr}
-          errorMsg={formpayloadErr.firstNameErr}
-          required={true}
-          label="First Name"
-          className="users-input"
-          value={formpayload.firstName}
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, firstName: e.target.value })
-          }
-          onBlur={(e: any) =>
-            !formpayload.firstName
-              ? setFormPayloadErr({
-                ...formpayloadErr,
-                firstNameErr: "First Name is required",
-              })
-              : setFormPayloadErr({ ...formpayloadErr, firstNameErr: "" })
-          }
-        />
-        <TextField
-          error={!!formpayloadErr.middleInitialErr}
-          errorMsg={formpayloadErr.middleInitialErr}
-          value={formpayload.middleInitial}
-          required={true}
-          label="Middle Initial"
-          className="users-input"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, middleInitial: e.target.value })
-          }
-          onBlur={checkMiddleInitial}
-        />
-        <TextField
-          error={!!formpayloadErr.lastNameErr}
-          errorMsg={formpayloadErr.lastNameErr}
-          required={true}
-          value={formpayload.lastName}
-          label="Last Name"
-          className="users-input"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, lastName: e.target.value })
-          }
-          onBlur={(e: any) =>
-            !formpayload.lastName
-              ? setFormPayloadErr({
-                ...formpayloadErr,
-                lastNameErr: "Last Name is required",
-              })
-              : setFormPayloadErr({ ...formpayloadErr, lastNameErr: "" })
-          }
-        />
-        <TextField
-          error={!!formpayloadErr.emailErr}
-          errorMsg={formpayloadErr.emailErr}
-          required={true}
-          value={formpayload.email}
-          label="Email"
-          className="users-input"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, email: e.target.value })
-          }
-          onBlur={checkEmail}
-        />
-        <TextField
-          error={!!formpayloadErr.phoneNumberErr}
-          errorMsg={formpayloadErr.phoneNumberErr}
-          value={formpayload.phoneNumber}
-          required={true}
-          label="Phone Number"
-          className="users-input"
-          onChange={(e: any) =>
-            setFormPayload({ ...formpayload, phoneNumber: e.target.value })
-          }
-          onBlur={checkPhoneumber}
-        />
+        <div className="CrxEditForm">
+          <TextField
+            error={!!formpayloadErr.userNameErr}
+            errorMsg={formpayloadErr.userNameErr}
+            required={true}
+            value={formpayload.userName}
+            label="Username"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, userName: e.target.value })
+            }
+            onBlur={(e: any) =>
+              !formpayload.userName
+                ? setFormPayloadErr({
+                  ...formpayloadErr,
+                  userNameErr: "Username is required",
+                })
+                : setFormPayloadErr({ ...formpayloadErr, userNameErr: "" })
+            }
+          />
+          <TextField
+            error={!!formpayloadErr.firstNameErr}
+            errorMsg={formpayloadErr.firstNameErr}
+            required={true}
+            label="First Name"
+            className="users-input"
+            value={formpayload.firstName}
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, firstName: e.target.value })
+            }
+            onBlur={(e: any) =>
+              !formpayload.firstName
+                ? setFormPayloadErr({
+                  ...formpayloadErr,
+                  firstNameErr: "First Name is required",
+                })
+                : setFormPayloadErr({ ...formpayloadErr, firstNameErr: "" })
+            }
+          />
+          <TextField
+            error={!!formpayloadErr.middleInitialErr}
+            errorMsg={formpayloadErr.middleInitialErr}
+            value={formpayload.middleInitial}
+            required={true}
+            label="Middle Initial"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, middleInitial: e.target.value })
+            }
+            onBlur={checkMiddleInitial}
+          />
+          <TextField
+            error={!!formpayloadErr.lastNameErr}
+            errorMsg={formpayloadErr.lastNameErr}
+            required={true}
+            value={formpayload.lastName}
+            label="Last Name"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, lastName: e.target.value })
+            }
+            onBlur={(e: any) =>
+              !formpayload.lastName
+                ? setFormPayloadErr({
+                  ...formpayloadErr,
+                  lastNameErr: "Last Name is required",
+                })
+                : setFormPayloadErr({ ...formpayloadErr, lastNameErr: "" })
+            }
+          />
+          <TextField
+            error={!!formpayloadErr.emailErr}
+            errorMsg={formpayloadErr.emailErr}
+            required={true}
+            value={formpayload.email}
+            label="Email"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, email: e.target.value })
+            }
+            onBlur={checkEmail}
+          />
+          <TextField
+            error={!!formpayloadErr.phoneNumberErr}
+            errorMsg={formpayloadErr.phoneNumberErr}
+            value={formpayload.phoneNumber}
+            required={true}
+            label="Phone Number"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, phoneNumber: e.target.value })
+            }
+            onBlur={checkPhoneumber}
+          />
 
-        {
+          {
             <div className="crxEditFilter">
               <EditableSelect
                 label="User Group"
@@ -969,48 +977,48 @@ const checkMiddleInitial = () => {
 
             </div>
 
-        }
-        
-        <div className="dataPickerCustom">
-          <label>Deactivation Date</label>
-          <CRXInputDatePicker
-            value={current_date}
-            type="datetime-local"
-            onChange={(e: any) =>
-              setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
-            minDate={minStartDate()}
-            maxDate=""
-          />
-        </div>
+          }
 
-
-
-        <div className="crxRadioBtn" style={{ display: "flex" }}>
-          <label>User Password Setup</label>
-          <div className="user-radio-group">
-            <CRXRadio
-              className="crxEditRadioBtn"
-              disableRipple={true}
-              content={content}
-              value={radioValue}
-              setValue={setRadioValue}
+          <div className="dataPickerCustom">
+            <label>Deactivation Date</label>
+            <CRXInputDatePicker
+              value={current_date}
+              type="datetime-local"
+              onChange={(e: any) =>
+                setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
+              minDate={minStartDate()}
+              maxDate=""
             />
           </div>
+
+
+
+          <div className="crxRadioBtn" style={{ display: "flex" }}>
+            <label>User Password Setup</label>
+            <div className="user-radio-group">
+              <CRXRadio
+                className="crxEditRadioBtn"
+                disableRipple={true}
+                content={content}
+                value={radioValue}
+                setValue={setRadioValue}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="crxFooterEditFormBtn">
+          <CRXButton
+            className="primary"
+            disabled={disableSave}
+            onClick={onSubmit}
+          >
+            Save
+          </CRXButton>
+          <CRXButton className="secondary" onClick={onClose}>
+            Cancel
+          </CRXButton>
         </div>
       </div>
-      <div className="crxFooterEditFormBtn">
-        <CRXButton
-          className="primary"
-          disabled={disableSave}
-          onClick={onSubmit}
-        >
-          Save
-        </CRXButton>
-        <CRXButton className="secondary" onClick={onClose}>
-          Cancel
-        </CRXButton>
-      </div>
-    </div>
     </div>
   );
 };

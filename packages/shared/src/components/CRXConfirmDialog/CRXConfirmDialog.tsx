@@ -20,7 +20,7 @@ type Props = {
   children?: React.ReactNode;
   primary?: string,
   secondary?: string
-  className? : string
+  className?: string
   text?: string;
 };
 
@@ -39,52 +39,52 @@ const CRXConfirmDialog: React.FC<Props> = ({
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">{title || 'Please confirm'}</Typography>
-          
+
         </div>
       </DialogTitle>
       <div className="CRXPopupCrossButton">
-            <Button
-              className={className + " CRXCloseButton"}
-              onClick={() => setIsOpen(false)} 
-              disableRipple={true}>
-              <i className="icon icon-cross2 closeModalIconUnblock"></i>
-            </Button>
-          </div>
+        <Button
+          className={className + " CRXCloseButton"}
+          onClick={() => setIsOpen(false)}
+          disableRipple={true}>
+          <i className="icon icon-cross2 closeModalIconUnblock"></i>
+        </Button>
+      </div>
       <DialogContent>
         {children ? (
           children
         ) : (
           <Typography variant="subtitle2">{content ? content : <span>
-            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog" )}. 
-            If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}, any changes you've made will not be saved. 
+            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog")}.
+            If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog")}, any changes you've made will not be saved.
             You will not be able to undo this action.
             <br />
             <br />
-            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}?
+            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog")}?
           </span>
           }</Typography>
         )}
       </DialogContent>
       <Divider className="CRXDivider" />
       <DialogActions className="crxConfirmFooterModal">
-        <CRXButton 
+        <CRXButton
           id="yes"
-          className="primary" 
+          className="primary"
           variant="contained"
           onClick={() => {
             onConfirm();
-            setIsOpen(false);
+            //setIsOpen(false);
           }}
         >
           {primary || "primary"}
         </CRXButton>
 
-        <CRXButton 
+        <CRXButton
           id="no"
-          onClick={() => setIsOpen(false)} 
-          className="secondary" 
+          onClick={() => setIsOpen(false)}
+          className="secondary"
           variant="outlined"
-          color="secondary">  
+          color="secondary">
           {secondary || "secondary"}
         </CRXButton>
       </DialogActions>
