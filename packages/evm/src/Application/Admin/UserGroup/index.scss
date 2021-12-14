@@ -130,6 +130,9 @@
          border: 1px solid #6E6E6E;
       }
    }
+   .CRXCheckBox {
+      margin-left: 2px !important;
+   }
 
    .AssetsDataGrid  {
       margin-top: -38px;
@@ -155,27 +158,26 @@
                min-width: 174px !important;
             }
             &:nth-child(5){
-               width: 156px !important;
+               width: 202px !important;
                min-width: 156px !important;
             }
             &:nth-child(6){
-               width: 156px !important;
+               width: 202px !important;
                min-width: 156px !important;
             }
             &:nth-child(7){
-               width: 263px !important;
+               width: 333px !important;
                min-width: 263px !important;
             }
             &:nth-child(8){
-               width: 112px !important;
+               width: 223px !important;
                min-width: 112px !important;
             }
             &:nth-child(9){
-               width: 161px !important;
+               width: 261px !important;
                min-width: 161px !important;
             }
             &:nth-child(10) {
-               //last column
                width: 244px !important;
                min-width: 244px !important;
                @media(max-width: 1380px) {
@@ -203,16 +205,6 @@
                         top: -14px;
                      }
                  }
-            //    @media(max-width:1600px) {
-            //    .select {
-            //       width: 152px;
-            //    }
-            // }
-            //  @media(max-width:1380px) {
-            //    .select {
-            //       width: 109px;
-            //    }
-            //  }
             }
          }
          .MuiTableRow-head {
@@ -224,26 +216,31 @@
          }
          tr {
             th {
+               & > span {
+                  display: block !important;
+               }
+               &:nth-child(7 ) {
+                
+                  .MuiInput-root {
+                     min-width: 235px !important;
+                     @media(max-width: 1380px) {
+                        width: 235px !important;
+                     }
+                  } 
+                }
                &:nth-child(9) {
-                  // .dateRangeContainer {
-                  //    margin-right: -10px;
-                  //    @media(max-width:1380px) {
-                  //       margin-right: -6px;
-                  //    }
-                  // }
+           
                   .wrapper {
                      margin: 0px -4px 0 5px !important;
-                     .select {
-                        width: 102%;
-                     }                 
+
+                  }
+                  .MuiGrid-root  {
+                     max-width: calc(100% - 11px);
                   }
                }
                &:nth-child(10) {
                   .MuiGrid-spacing-xs-2 {
                      padding-left: 3px;
-                     .centerPosition {
-                        width: auto !important;
-                     }
                  } 
                }
             }
@@ -289,9 +286,7 @@
             }
          }
        }
-       .Mui-checked {
-          left: 7px;
-       }
+       
    }
 
    .crxTableHeaderSize {
