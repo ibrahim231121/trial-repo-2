@@ -9,9 +9,11 @@ import anchorDisplay from "../../../../components/DateDisplayComponent/AnchorDis
 import { RootState } from "../../../../Redux/rootReducer";
 import './ConfigurationTemplate.scss'
 import { CRXButton } from "@cb/shared";
+import {  Menu, MenuButton , MenuItem } from "@szhsin/react-menu";
 import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";
 import TextSearch from "../../../../components/SearchComponents/TextSearch";
 import { getConfigurationInfoAsync } from "../../../../Redux/TemplateConfiguration";
+import { Link } from "react-router-dom";
 import {
     SearchObject,
     ValueString,
@@ -26,7 +28,7 @@ import {
     onSetHeadCellVisibility,
     onSaveHeadCellData
   } from "../../../../utils/globalDataTableFunctions";
-
+  import { CRXMenu } from "@cb/shared";
 
 type ConfigTemplate = {
     id: number;
@@ -38,7 +40,7 @@ type ConfigTemplate = {
 const ConfigurationTemplates: React.FC = () => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
-  //  let history = useHistory()
+    let history = useHistory()
 
 
     React.useEffect(() => {
@@ -204,11 +206,49 @@ const ConfigurationTemplates: React.FC = () => {
       setHeadCells(headCellsArray);
     };
 
+  //   const list = [
+  //     {label: "BC03" , router: "BC03"},
+  //     {label: "BC04" , router: "/assets"},
+  //     {label: "In-Car" , router: "In-Car"},
+  //     {label: "Master Dock" , router: "Master Dock"}
+  // ]
     return (
         <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-          {/* <CRXButton onClick={() => { history.push("/admin/unitconfiguration/unitconfigurationtemplate/createtemplate") }}>
+
+              {/* <CRXMenu 
+                id="menuCreateTemplate"
+                name="Create Template"
+                btnClass="CreateElementButton"
+                className="CreateElementMenu"
+                MenuList = {list}
+                disableRipple={true}
+                horizontal="left"
+            /> */}
+         <Menu
+        align="start"
+        viewScroll="initial"
+        direction="bottom"
+        position="auto"
+        arrow
+        menuButton={
+          <MenuButton>
             Create Template
-          </CRXButton> */}
+          </MenuButton>
+        }
+      >
+        <MenuItem >
+          <Link to="/admin/unitanddevices/createtemplate/BC04"> 
+            <div className="crx-menu-list">BC04</div>
+         </Link> 
+        </MenuItem>
+        <MenuItem >
+        <Link to="/admin/unitanddevices/createtemplate/BC03"> 
+            <div className="crx-menu-list">BC03</div> 
+            </Link>     
+        </MenuItem>
+      </Menu >
+
+
           {
             rows && (
             <CRXDataTable

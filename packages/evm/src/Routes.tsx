@@ -35,6 +35,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Redux/rootReducer";
 import { timerActionCreator } from "../src/Redux/timerslice";
 import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
+import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
+import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
@@ -132,6 +134,8 @@ const Routes = () => {
               <PrivateRoute path={Object.entries(urlList)[11][0].toString()} exact={true} component={CreateTemplate} />
               <PrivateRoute path={Object.entries(urlList)[12][0].toString()} exact={true} component={CloneTemplate} />
               <PrivateRoute path={Object.entries(urlList)[13][0].toString()} exact={true} component={DevicesTemplate} />
+              <PrivateRoute path={Object.entries(urlList)[15][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
+              <PrivateRoute path={Object.entries(urlList)[16][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path="*" component={ErrorPage} />
               
             </Switch>
