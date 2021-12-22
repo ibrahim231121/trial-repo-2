@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
 import { DateTimeComponent } from "../../../components/DateTimeComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { RootState } from "../../../Redux/rootReducer";
 import {
     SearchObject,
@@ -23,23 +22,24 @@ import {
 } from "../../../utils/globalDataTableFunctions";
 
 import TextSearch from "../../../components/SearchComponents/TextSearch";
-import dateDisplayFormat from "../../../components/DateDisplayComponent/DateDisplayFormat";
 import { CRXButton } from "@cb/shared";
-import UserActionMenu from "./StationActionMenu"
 import { dateOptionsTypes } from './../../../../src/utils/constant';
-import multitextDisplay from "../../../components/DateDisplayComponent/MultiTextDisplay";
+
 import MultSelectiDropDown from "../../../components/SearchComponents/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
+import { userInfo } from "os";
+import { getStationsInfoAsync } from "../../../Redux/StationReducer";
+import StationAnchorDisplay from "./StationAnchorDisplay";
+import StationActionMenu from "./StationActionMenu";
 
-type User = {
+type Station = {
     id: string;
-    userName: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    status: string,
-    lastLogin: string,
-    groups: string[]
+    name: string,
+    address: string,
+    city: string,
+    state: string,
+    zip: string,
+    country: string
 }
 
 type DateTimeProps = {
@@ -58,53 +58,51 @@ const Station: React.FC = () => {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        dispatch(getUsersInfoAsync());
+        dispatch(getStationsInfoAsync());
 
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);
         onSaveHeadCellData(headCells, "userDataTable");
     }, []);
 
-    const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
-    const [rows, setRows] = React.useState<User[]>([]);
+    const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
+    const [rows, setRows] = React.useState<Station[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-    const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
-    const [reformattedRows, setReformattedRows] = React.useState<User[]>();
+    const [selectedItems, setSelectedItems] = React.useState<Station[]>([]);
+    const [reformattedRows, setReformattedRows] = React.useState<Station[]>();
     const [open, setOpen] = React.useState(false);
     const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-    const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
-
-
+    const [selectedActionRow, setSelectedActionRow] = React.useState<Station>();
     const setData = () => {
-        let userRows: User[] = [];
-        if (users && users.length > 0) {
-            userRows = users.map((user: any) => {
+        let stationRows: Station[] = [];
+
+        if (stations && stations.length > 0) {
+            console.log("running")
+            stationRows = stations.map((station: any) => {
                 return {
-                    id: user.recId,
-                    userName: user.userName,
-                    firstName: user.fName,
-                    lastName: user.lName,
-                    lastLogin: user.lastLogin,
-                    groups: user.userGroups != null ? user.userGroups.split(',').map((x: string) => {
-                        return x.trim();
-                    }) : [],
-                    email: user.email,
-                    status: user.status
+                    id: station.id,
+                    name: station.name + "_" + station.id,
+                    // address: station.address,
+                    city: station.address.city,
+                    state: station.address.state,
+                    zip: station.address.zip,
+                    country: station.address.country
                 }
             })
         }
-        setRows(userRows)
-        setReformattedRows(userRows);
+        setRows(stationRows)
+        setReformattedRows(stationRows);
+        console.log("userRows", stationRows);
     }
 
     React.useEffect(() => {
         setData();
-    }, [users]);
+    }, [stations]);
 
     const searchText = (
-        rowsParam: User[],
+        rowsParam: Station[],
         headCells: HeadCellProps[],
         colIdx: number
     ) => {
@@ -148,7 +146,7 @@ const Station: React.FC = () => {
     });
 
     const searchDate = (
-        rowsParam: User[],
+        rowsParam: Station[],
         headCells: HeadCellProps[],
         colIdx: number
     ) => {
@@ -171,28 +169,6 @@ const Station: React.FC = () => {
         )
             reset = false;
         else reset = true;
-
-        if (
-            headCells[colIdx].headerObject === undefined ||
-            headCells[colIdx].headerObject === null
-        ) {
-            dateTimeObject = {
-                dateTimeObj: {
-                    startDate: reformattedRows !== undefined ? reformattedRows[0].lastLogin : "",
-                    endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].lastLogin : "",
-                    value: "custom",
-                    displayText: "custom range",
-                },
-                colIdx: 0,
-            };
-        } else {
-            dateTimeObject = {
-                dateTimeObj: {
-                    ...headCells[colIdx].headerObject
-                },
-                colIdx: 0,
-            };
-        }
 
         function onSelection(dateTime: DateTimeObject) {
             dateTimeObject = {
@@ -222,6 +198,7 @@ const Station: React.FC = () => {
     };
 
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
+
         {
             label: `${t("ID")}`,
             id: "id",
@@ -236,8 +213,19 @@ const Station: React.FC = () => {
             maxWidth: "100",
         },
         {
-            label: `${t("Username")}`,
-            id: "userName",
+            label: `${t("Station")}`,
+            id: "name",
+            align: "left",
+            dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
+            sort: true,
+            searchFilter: true,
+            searchComponent: searchText,
+            minWidth: "100",
+            maxWidth: "100",
+        },
+        {
+            label: `${t("Address")}`,
+            id: "address",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
             sort: true,
@@ -245,11 +233,10 @@ const Station: React.FC = () => {
             searchComponent: searchText,
             minWidth: "100",
             maxWidth: "100",
-            visible: true,
         },
         {
-            label: `${t("First Name")}`,
-            id: "firstName",
+            label: `${t("City")}`,
+            id: "city",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
             sort: true,
@@ -257,11 +244,10 @@ const Station: React.FC = () => {
             searchComponent: searchText,
             minWidth: "100",
             maxWidth: "100",
-            visible: true,
         },
         {
-            label: `${t("Last Name")}`,
-            id: "lastName",
+            label: `${t("State")}`,
+            id: "state",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
             sort: true,
@@ -269,11 +255,10 @@ const Station: React.FC = () => {
             searchComponent: searchText,
             minWidth: "100",
             maxWidth: "100",
-            visible: true,
         },
         {
-            label: `${t("Email")}`,
-            id: "email",
+            label: `${t("Zip Code")}`,
+            id: "zip",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
             sort: true,
@@ -281,11 +266,10 @@ const Station: React.FC = () => {
             searchComponent: searchText,
             minWidth: "100",
             maxWidth: "100",
-            visible: true,
         },
         {
-            label: `${t("Status")}`,
-            id: "status",
+            label: `${t("Country")}`,
+            id: "country",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
             sort: true,
@@ -293,44 +277,12 @@ const Station: React.FC = () => {
             searchComponent: searchText,
             minWidth: "100",
             maxWidth: "100",
-            visible: true,
-        },
-        {
-            label: `${t("Last Login")}`,
-            id: "lastLogin",
-            align: "center",
-            dataComponent: dateDisplayFormat,
-            sort: true,
-            minWidth: "120",
-            searchFilter: true,
-            searchComponent: searchDate,
-            visible: true,
-        },
-        // {
-        //     label: `${t("Groups")}`,
-        //     id: "groups",
-        //     align: "left",
-        //     dataComponent: (e: string) => textDisplay(e, ""),
-        //     sort: true,
-        //     searchFilter: true,
-        //     searchComponent: searchText,
-        //     minWidth: "100",
-        //     maxWidth: "100",
-        //     visible: true,
-        // }
-        {
-            label: `${t("Groups")}`,
-            id: "groups",
-            align: "left",
-            dataComponent: (e: string[]) => multitextDisplay(e, ""),
-            sort: true,
-            searchFilter: true,
-            searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-            minWidth: "135",
-        },
+        }
     ]);
+
+
     const searchAndNonSearchMultiDropDown = (
-        rowsParam: User[],
+        rowsParam: Station[],
         headCells: HeadCellProps[],
         colIdx: number,
         isSearchable: boolean,
@@ -412,7 +364,7 @@ const Station: React.FC = () => {
 
     const dataArrayBuilder = () => {
         if (reformattedRows !== undefined) {
-            let dataRows: User[] = reformattedRows;
+            let dataRows: Station[] = reformattedRows;
             searchData.forEach((el: SearchObject) => {
                 if (el.columnName === "userName" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "groups" || el.columnName === "status")
                     dataRows = onTextCompare(dataRows, headCells, el);
@@ -455,13 +407,13 @@ const Station: React.FC = () => {
 
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
         setOpen(false);
-        dispatch(getUsersInfoAsync());
+        dispatch(getStationsInfoAsync());
     };
 
     return (
         <div className="crxManageUsers">
-			<CRXToaster ref={toasterRef} />
-            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>Create Station
+            <CRXToaster ref={toasterRef} />
+            <CRXButton id={"createUser"} className="primary manageUserBtn" onClick={handleClickOpen}>Create Station
             </CRXButton>
             <CRXModalDialog
                 className="createUser CrxCreateUser"
@@ -472,7 +424,7 @@ const Station: React.FC = () => {
                 onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
             >
-                
+
             </CRXModalDialog>
 
 
@@ -480,8 +432,8 @@ const Station: React.FC = () => {
             {rows && (
                 <CRXDataTable
                     id="userDataTable"
-                    actionComponent={<UserActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />}
-                    getRowOnActionClick={(val: User) =>
+                    actionComponent={<StationActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />}
+                    getRowOnActionClick={(val: Station) =>
                         setSelectedActionRow(val)
                     }
                     showToolbar={true}
@@ -494,13 +446,13 @@ const Station: React.FC = () => {
                     allowDragableToList={false}
                     className="ManageAssetDataTable"
                     onClearAll={clearAll}
-                    getSelectedItems={(v: User[]) => setSelectedItems(v)}
+                    getSelectedItems={(v: Station[]) => setSelectedItems(v)}
                     onResizeRow={resizeRow}
                     onHeadCellChange={onSetHeadCells}
                     setSelectedItems={setSelectedItems}
                     selectedItems={selectedItems}
                     dragVisibility={false}
-                    showCheckBoxesCol={false}
+                    showCheckBoxesCol={true}
                     showActionCol={true}
                     showActionSearchHeaderCell={false}
                     showCountText={false}

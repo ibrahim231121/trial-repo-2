@@ -144,28 +144,6 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             <div className="crx-menu-list">Edit user</div>
           </div>
         </MenuItem>
-        {row?.status.toLocaleLowerCase() == "accountlocked" ? (
-          <MenuItem>
-            <div className="crx-meu-content" onClick={unlockUser}>
-              <div className="crx-menu-icon">
-                <i className="fas fa-lock"></i>
-              </div>
-              <div className="crx-menu-list">Unlock account</div>
-            </div>
-          </MenuItem>
-        ) : (
-          <div></div>
-        )}
-        {row?.status.toLocaleLowerCase() != "deactivated" ? (
-          <MenuItem>
-            <div className="crx-meu-content" onClick={deactivateUser}>
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">Deactivate account</div>
-            </div>
-          </MenuItem>
-        ) : (
-          <div></div>
-        )}
       </Menu>
     </>
   );

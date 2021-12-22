@@ -6,6 +6,8 @@ import { withRouter, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
 import { urlList } from "../../utils/urlList"
+import { RootState } from "../../Redux/rootReducer";
+import { getStationsInfoAsync } from "../../Redux/StationReducer";
 
 type BreadCrumbItem = {
   type: string,
@@ -56,8 +58,30 @@ const Breadcrumb: React.FC<any> = (props) => {
       window.removeEventListener('resize', debouncedEvent)
     }
   });
-
+  
   const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
+  const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
+   const [isRender, setIsRender] = useState(false);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(getStationsInfoAsync());
+    StationBreadcrumb();
+console.log("useEffect rendering")
+  },[isRender]);
+
+  useEffect(() => {
+    if(isRender==false){
+    setIsRender(true);
+    }
+  }, []);
+  const StationBreadcrumb = () => {
+   
+    let station = props.location.pathname.lastIndexOf("/");
+    let stationId: any = props.location.pathname.substring(station + 1, props.location.pathname.length);
+    let stationText = stations.find((x: any) => x?.id === stationId);
+    return stationText != undefined ? stationText.name : ""
+  }
+
   const breadCrumbPathRedux: any = {
     "/assets": [
       { routeTo: "/assets", type: "CBXLink", label: "Assets", },
@@ -65,13 +89,31 @@ const Breadcrumb: React.FC<any> = (props) => {
     ],
   }
 
-  const classes = CRXPanelStyle();
+  const StationbreadCrumbTitle: any = {
+    "/admin/stations":
+      [
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+        { type: "text", label: StationBreadcrumb(), }
+      ]
+  }
 
+  const classes = CRXPanelStyle();
   const getTitle = () => {
+    const stationPath = StationbreadCrumbTitle[urlPath]
     const paths = urlList[urlPath];
     if (paths) {
-      const pathName = paths[paths.length - 1].label
-      return pathName
+
+      if (stationPath != undefined) {
+        paths[paths.length - 1].label = StationBreadcrumb()
+        const pathName = paths[paths.length - 1].label
+        return pathName
+      }
+      else {
+
+        const pathName = paths[paths.length - 1].label
+        return pathName
+      }
     }
     else
       return ""

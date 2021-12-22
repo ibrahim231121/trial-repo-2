@@ -15,6 +15,7 @@ import HomeRoute from "./Routes/HomeRoute";
 import { urlList } from "./utils/urlList"
 import User from "./Application/Admin/UserGroup/User/User";
 import Station from "./Application/Admin/Station/Station";
+import StationDetail from "./Application/Admin/Station/StationDetail";
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -45,8 +46,9 @@ const Routes = () => {
               <Route path={Object.entries(urlList)[3][0].toString()} exact={true} component={Group} />
               <Route path={Object.entries(urlList)[4][0].toString()} exact={true} component={User} />
               <Route path={Object.entries(urlList)[7][0].toString()} exact={true} component={Station} />
-              <Route path={Object.entries(urlList)[8][0].toString()} exact={true} component={Station} />
-              <Route path={Object.entries(urlList)[9][0].toString()} exact={true} component={Station} />
+              <Route path={Object.entries(urlList)[8][0].toString()} exact={true} component={StationDetail} />
+              <Route path={Object.entries(urlList)[9][0].toString()} exact={true} component={StationDetail} />
+              <Route path={Object.entries(urlList)[10][0].toString()} exact={true} component={StationDetail} />
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>

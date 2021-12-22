@@ -1,3 +1,4 @@
+import StationAnchorDisplay from "../Application/Admin/Station/StationAnchorDisplay";
 export const urlList: any = {
   '/assets': [{ type: 'text', label: 'Assets' }],
   '/admin/usergroups': [
@@ -28,18 +29,24 @@ export const urlList: any = {
     { type: 'text', label: 'Admin' },
     { routeTo: '/admin/TestDemo', type: 'text', label: 'Global Filter Components' }
   ],
-  '/admin/stations': [
-    { type: 'text', label: 'Admin' },
-    { routeTo: '/admin/stations', type: 'text', label: 'Manage Stations' }
+  "/admin/station": [
+    { type: "text", label: "Admin", },
+    { routeTo: "/admin/station", type: "text", label: "Manage Station", }
   ],
-  '/admin/stations/:id': [
-    { type: 'text', label: 'Admin' },
-    { routeTo: '/admin/station', type: 'link', label: 'Manage Station' },
-    { type: 'text', label: 'Station_Name' }
+  "/admin/stations/:id": [
+    { type: "text", label: "Admin", },
+    { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+    { type: "text", label: "Station_Name", }
   ],
-  '/admin/stations/create': [
-    { type: 'text', label: 'Admin' },
-    { routeTo: '/admin/station', type: 'link', label: 'Manage Station' },
-    { type: 'text', label: 'Create Station' }
+  "/admin/stations/create": [
+    { type: "text", label: "Admin", },
+    { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+    { type: "text", label: "Create Station", }
   ],
+  "/admin/stations":
+  [
+    { type: "text", label: "Admin", },
+    { routeTo: "/admin/station", type: "link", label: "Manage Station", },
+    { type: "text", label: "", }
+  ]
 };
