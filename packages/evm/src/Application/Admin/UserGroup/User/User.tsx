@@ -39,7 +39,8 @@ type User = {
     email: string,
     status: string,
     lastLogin: string,
-    groups: string[]
+    groups: string[],
+    showToastMsg? : (obj : any) => void
 }
 
 type DateTimeProps = {
@@ -345,6 +346,22 @@ const User: React.FC = () => {
             headCells[colIdx].headerArray = v;
         };
 
+        const multiselectProps = {
+            marginLeft : "4px",
+            paddingRight : "7px",
+            marginRight : "7px",
+            paddingLeft : "7px",
+            
+          }
+          const parentStye = {
+            width : "281px",
+            margin : "0px 0px 0px 4px"
+          }
+
+        const listwidth = {
+            width : "279px",
+            marginTop:"-4px"
+        }
         return (
             <MultSelectiDropDown
                 headCells={headCells}
@@ -355,6 +372,9 @@ const User: React.FC = () => {
                 onMultiSelectChange={onSelection}
                 onSetSearchData={onSetSearchData}
                 onSetHeaderArray={onSetHeaderArray}
+                checkedStyle={multiselectProps}
+                parentStye={parentStye}
+                widthNoOption={listwidth}
             />
         );
     };

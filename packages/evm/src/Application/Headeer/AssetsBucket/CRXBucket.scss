@@ -237,11 +237,28 @@
 
   .crx-getac-dropdown {
     div[class*="MuiInputBase-adornedEnd-"] {
-      width: 85px;
+      width: 142px;
     }
     div[class*="MuiAutocomplete-endAdornment-"] {
       button[class*="MuiAutocomplete-popupIndicator-"] {
         width: 107px !important;
+      }
+    }
+    &.Mui-focused {
+      div[class*="MuiInputBase-adornedEnd-"] {
+        width: 102px;
+        background: #D1D2D4;
+        border:1px solid #888787;
+        top: 27px;
+      }
+      div[class*=MuiAutocomplete-endAdornment-] {
+      button[class*=MuiAutocomplete-popupIndicator-] {
+        width: 0px !important;
+        position: absolute;
+        top: -28px;
+        right: 10.2px;
+        text-align: right;
+       }
       }
     }
   }

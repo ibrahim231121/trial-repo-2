@@ -18,7 +18,7 @@ interface Props {
   onClose: any;
   setCloseWithConfirm: any;
   id?: any;
-  showToastMsg(obj: any): any
+  showToastMsg : (obj: any) => void
 }
 
 type NameAndValue = {
