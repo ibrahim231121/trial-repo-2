@@ -79,7 +79,6 @@ const Group = () => {
 
   const [getContainerMappingRes, ContainerMappingRes] = useGetFetch<any>(CONTAINERMAPPING_INFO_GET_URL + "?groupId=" + id, { 'Content-Type': 'application/json', 'TenantId': '1' });
 
-
   React.useEffect(() => {
     //this work is done for edit, if id available then retrive data from url
     if (!isNaN(+id)) {
@@ -182,6 +181,22 @@ const Group = () => {
       history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)
   }
 
+  const disableAddPermission = () => {
+    dataPermissions.map((obj) => {
+        if(obj.fieldType > 0 && (obj.mappingId > 0 || obj.mappingId < 0 ) && obj.permission > 0 ){
+        setIsSaveButtonDisabled(false);
+        }
+        else{
+          setIsSaveButtonDisabled(true);
+        }
+    })
+}
+
+useEffect(() => {
+    disableAddPermission();
+    
+}, [dataPermissions])
+
   const showSave = () => {
     let groupInfo_temp: GroupInfoModel = {
       name: (res === undefined ? "" : res.name),
@@ -197,7 +212,7 @@ const Group = () => {
       setIsSaveButtonDisabled(false);
     }
     else if (JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)) {
-      setIsSaveButtonDisabled(false);
+      setIsSaveButtonDisabled(true);
     }
     else {
       setIsSaveButtonDisabled(true);

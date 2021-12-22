@@ -177,7 +177,6 @@ const MultiSelectBoxAutocomplete = ({
 }: multiSelectProps) => {
   const classes = useSelectBoxStyle();
   const [styelHeight, setAutoHeight] = React.useState<string>('31px')
-  const [selectOpt, setSelectOpt] = React.useState<string>("")
 
   React.useEffect(() => {
 
@@ -187,13 +186,6 @@ const MultiSelectBoxAutocomplete = ({
 
   const opupOpenCret = <i className="fas fa-caret-down"></i>
 
-  onChange = (e) => {
-    if(e.target.value === 0) {
-      setSelectOpt(" crxDataPermissionArrowHide ")
-    }else {
-      setSelectOpt("")
-    }
-  }
   return (
     <>
       <Autocomplete
@@ -209,7 +201,7 @@ const MultiSelectBoxAutocomplete = ({
         closeText=""
         openText=""
         style={{ height: styelHeight }}
-        className={"crxMultiAutocomplete " + className + " " + classes.root + selectOpt }
+        className={"crxMultiAutocomplete " + className + " " + classes.root  }
         classes={{
           paper: classes.paper,
           popper: classes.popper,
