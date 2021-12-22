@@ -14,6 +14,7 @@ import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
 import { urlList, urlNames } from "./utils/urlList"
 import User from "./Application/Admin/UserGroup/User/User";
+import TestViewsForDemo from '../../evm/src/TestForComponents/index'
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -43,6 +44,7 @@ const Routes = () => {
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+              <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>
