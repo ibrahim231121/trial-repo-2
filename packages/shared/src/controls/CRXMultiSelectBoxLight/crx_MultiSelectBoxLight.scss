@@ -1,0 +1,80 @@
+.crx_MultiSelectBoxLight {
+    min-height: 30px;
+    .MuiFormControl-root {
+        max-height: inherit;
+        min-height: 30px;
+        margin: 0px;
+        border: 0px;
+        .MuiInputBase-root {
+            padding: 5px 0 0;
+            // height: 24px;
+            min-height: 30px;
+            max-height: inherit;
+            border: 0px;
+            background-color:transparent;
+            border-radius: 0px;
+            &::before {
+                border-bottom: 0px !important;
+            }
+            &::after {
+                border-bottom: 0px !important;
+            }
+            .MuiAutocomplete-input {
+                padding: 0px;
+            }
+        }
+       
+    }
+
+    .selectChip {
+        &:hover {
+            color: #333;
+            i {
+                color: #333;
+            }
+        }
+    }
+
+    .MuiAutocomplete-tag {
+        position: relative;
+        .MuiChip-deleteIcon {
+            opacity: 0;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &::after {
+            position: absolute;
+            content: "\f00d";
+            font-family: "Font Awesome 5 Pro";
+            color: #D1D2D4;
+            font-size: 14px;
+            right:7px;
+            top: 0;
+            &:hover {
+                color: #333;
+            }
+        }
+    }
+
+    &.inputError{
+        outline: 2px solid #aa1d1d !important;
+        border:1px solid transparent;
+    }
+    .MuiInputBase-adornedEnd {min-height: 29px;}
+}
+
+.checkIcon {
+    color: #F5F5F5;
+    font-size:15px;
+    margin-right: 0;
+}
+
+@media screen and(max-width : 1366)  {
+    .makeStyles-paper-350 {
+        width: 481px !important;
+        margin-top: 0px !important;
+        max-height: 164px !important;
+        margin-left: -8px !important;
+    }
+}

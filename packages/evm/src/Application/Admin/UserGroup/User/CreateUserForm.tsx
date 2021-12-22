@@ -2,15 +2,16 @@ import { CRXCheckBox } from "@cb/shared";
 import { CRXButton } from "@cb/shared";
 import { TextField, CRXConfirmDialog, CRXRadio, CRXToaster } from "@cb/shared";
 import { url } from "inspector";
-import React, { SyntheticEvent, useEffect, useRef } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from "../../../../utils/Api/url";
-import { EditableSelect } from "@cb/shared";
+import { EditableSelect, CRXMultiSelectBoxLight } from "@cb/shared";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { DateFormat } from "../../../../utils/globalDataTableFunctions"
 import { CRXAlert } from "@cb/shared";
 import moment from "moment";
 import { CRXInputDatePicker } from "@cb/shared";
 import "./createUserForm.scss";
+import constants from "../../../Assets/utils/constants";
 
 let USER_DATA = {};
 interface Props {
@@ -212,6 +213,8 @@ const CreateUserForm: React.FC<Props> = ({
           <div className="crx-requird-check">
             <CRXCheckBox
               checked={isPasswordResetRequired}
+              lightMode={true}
+              className="crxCheckBoxCreate "
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setIsPasswordResetRequired(e.target.checked)
               }
@@ -251,6 +254,8 @@ const CreateUserForm: React.FC<Props> = ({
         <div className="crx-requird-check">
           <CRXCheckBox
             checked={isPasswordResetRequired}
+            lightMode={true}
+            className="crxCheckBoxCreate "
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setIsPasswordResetRequired(e.target.checked)
             }
@@ -296,7 +301,20 @@ const CreateUserForm: React.FC<Props> = ({
       return a.groupName.localeCompare(b.groupName);
     });
     setUserGroupsList(groupNames);
+    sendOptionList(groupNames)
   };
+
+  const [optionList, setOptionList] = useState<any>([]);
+  const sendOptionList = (data : any[]) => {
+    const dateOfArry : any = [];
+    data?.map((item, index) => {
+      dateOfArry.push ({
+        id : item.groupId,
+        label : item.groupName
+      })
+    })
+    return setOptionList(dateOfArry);
+  }
 
   React.useEffect(() => {
     setCloseWithConfirm(false);
@@ -337,129 +355,6 @@ const CreateUserForm: React.FC<Props> = ({
     }
 
   }, [formpayload]);
-
-  // const onAdd = async () => {
-  //   if (formpayload.userGroups.length === 0) {
-  //     setError(true);
-  //   }
-  //   const url = `http://10.227.141.128:8088/Users`;
-
-  //   const name = {
-  //     first: formpayload.firstName,
-  //     last: formpayload.lastName,
-  //     middle: formpayload.middleInitial,
-  //   };
-
-  //   let contacts = []
-  //   if (contacts.length === 0) {
-  //     contacts.push({contactType:1, number:formpayload.phoneNumber})
-  //   }
-
-  //   const account = {
-  //     isAdministrator: 1,
-  //     status: 1,
-  //     userName: formpayload.userName,
-  //     password: onSelectPasswordType()
-  //   };
-
-  //   const payload = {
-  //     email: formpayload.email,
-  //     name,
-  //     account,
-  //     contacts,
-  //   };
-
-  //   //console.log("payload",payload)
-
-  //   await fetch(url, {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json", "TenantId": "1" },
-  //     body: JSON.stringify(payload),
-  //   })
-  //   .then(function(res) {
-  //     console.log("response-1",res)
-  //     if(res.ok) 
-  //       setReponseError("Successfully created")
-  //     else
-  //       return res.text();
-  //   })
-  //   .then(resp => {
-  //     if(resp !== undefined) {
-  //       let error = JSON.parse(resp)
-  //       console.log("response-2",error)
-  //       if(error.errors.Email.length > 0) {
-  //         setFormPayloadErr({
-  //           ...formpayloadErr,
-  //           emailErr: error.errors.Email[0],
-  //         })
-  //       }
-  //       if(error.errors.Number.length > 0) {
-  //         setFormPayloadErr({
-  //           ...formpayloadErr,
-  //           phoneNumberErr: error.errors.Number[0],
-  //         })
-  //       }
-  //     }
-  //   })
-  //   .catch(function(error) {
-  //     console.log("error",error);
-  //     return error;
-  //   }); 
-
-  // }
-
-  // const onSelectPasswordType = () => {
-  //   if(radioValue === "genTemp")
-  //     return generatePassword
-  //   else if(radioValue === "manual")
-  //     return password
-  //   else 
-  //     return ""
-  // }
-
-  // const onEdit = async () => {
-  //   if (formpayload.userGroups.length === 0) {
-  //     setError(true);
-  //   }
-
-  //   const name = {
-  //     first: formpayload.firstName,
-  //     last: formpayload.lastName,
-  //     middle: formpayload.middleInitial,
-  //   };
-
-  //   let contacts = userPayload.contacts.map((x: any) => {
-  //     if (x.contactType === 1) {
-  //       x.number = formpayload.phoneNumber;
-  //     }
-  //     return x;
-  //   });
-  //   const account = { ...userPayload.account, userName: formpayload.userName };
-  //   if (contacts.length === 0) {
-  //     contacts.push({ contactType: 1, number: formpayload.phoneNumber });
-  //   }
-
-  //   const account: account = {
-  //     isAdministrator: 1,
-  //     status: 1,
-  //     userName: formpayload.userName,
-  //     password: onSelectPasswordType(),
-  //     isPasswordResetRequired,
-  //     lastLogin: moment().toDate(),
-  //     passwordDetail: null,
-  //   };
-
-  //   const payload = {
-  //     email: formpayload.email,
-  //     name,
-  //     account,
-  //     contacts,
-  //     assignedGroupIds: userGroupsListIDs,
-  //     timeZone: "America/Chicago",
-  //   };
-
-  //     return payload
-  // }
 
   const setAddPayload = () => {
     let userGroupsListIDs = userGroupsList
@@ -775,7 +670,8 @@ const CreateUserForm: React.FC<Props> = ({
     return (
       <>
         {userPayload && (
-          <div>
+          <div className="crxCreateEditFormActivationLink">
+          <div className="crxActivationLink">
             <CRXButton
               className="secondary"
               onClick={linkClick}
@@ -784,6 +680,7 @@ const CreateUserForm: React.FC<Props> = ({
               Resend Activation Link
             </CRXButton>
             <label>(Link will be sent after saving this form.)</label>
+          </div>
           </div>
         )}
       </>
@@ -847,7 +744,8 @@ const CreateUserForm: React.FC<Props> = ({
     }
   };
 
-  return (
+  
+return (
     <div className="">
       <div className="modalEditCrx">
         <CRXToaster ref={toasterRef} />
@@ -855,6 +753,7 @@ const CreateUserForm: React.FC<Props> = ({
           message={responseError}
           alertType="inline"
           type="error"
+          className="crxAlertUserEditForm"
           open={alert}
           setShowSucess={() => null}
         />
@@ -955,41 +854,41 @@ const CreateUserForm: React.FC<Props> = ({
 
           {
             <div className="crxEditFilter">
-              <EditableSelect
+             
+              <CRXMultiSelectBoxLight
+                className='categortAutocomplete CrxUserEditForm'
                 label="User Group"
+                multiple={true}
+                CheckBox={true}
                 required={true}
                 error={!!formpayloadErr.userGroupErr}
                 errorMsg={formpayloadErr.userGroupErr}
-                multiple={true}
-                CheckBox={true}
-                className="CrxUserEditForm"
+                options={optionList}
+                value={formpayload.userGroups}
+                autoComplete={false}
+                isSearchable={true}
+                onBlur={checkUserGroup}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   setFormPayload({ ...formpayload, userGroups: value });
                 }}
-                onInputChange={(e: any) => { }}
-                options={userGroupsList?.map((o: any) => o.groupName)}
-                id="userGroupList"
-                placeHolder="User Groups Name"
-                value={formpayload.userGroups}
-                onBlur={checkUserGroup}
-
               />
-
             </div>
 
-          }
+        }
+        
+        <div className="dataPickerCustom crxCreateEditDate">
+          <label>Deactivation Date</label>
+          <CRXInputDatePicker
+            value={current_date}
+            type="datetime-local"
+            className="users-input"
+            onChange={(e: any) =>
+              setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
+            minDate={minStartDate()}
+            maxDate=""
+          />
+        </div>
 
-          <div className="dataPickerCustom">
-            <label>Deactivation Date</label>
-            <CRXInputDatePicker
-              value={current_date}
-              type="datetime-local"
-              onChange={(e: any) =>
-                setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
-              minDate={minStartDate()}
-              maxDate=""
-            />
-          </div>
 
 
 

@@ -113,6 +113,7 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
 
         title="Edit User"
         modelOpen={open}
+        subTitleText="Indicates required field"
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}
       >

@@ -44,3 +44,4 @@ export { default as CRXMultiSelectBoxAutocomplete} from './controls/CRXMultiSele
 export { default as CRXRadio} from './controls/CRXRadio/CRXRadio'
 export { default as CRXGlobalTooltip} from './controls/CRXGlobalTooltip/CRXGlobalTooltip'
 export { default as CRXToaster } from './CRXMsgToaster/CRXMsgToaster'
+export { default as CRXMultiSelectBoxLight } from './controls/CRXMultiSelectBoxLight/CRXMultiSelectBoxLight'

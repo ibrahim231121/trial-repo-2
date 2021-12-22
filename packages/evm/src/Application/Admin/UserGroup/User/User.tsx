@@ -469,6 +469,7 @@ const User: React.FC = () => {
                 maxWidth="xl"
                 title="Create User"
                 modelOpen={open}
+                subTitleText="Indicates required field"
                 onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
             >
