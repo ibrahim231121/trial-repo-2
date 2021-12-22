@@ -107,6 +107,13 @@ export const useStyles = makeStyles((theme: Theme) =>
 
       overflowX: "auto",
     },
+    multiTableStikcyHeader: {
+      top: 0,
+      left: 0,
+      zIndex: 2,
+      position: "sticky",
+      backgroundColor: "#333333 !important",
+    },
     headerStickness: {
       top: 0,
       left: 0,
@@ -201,6 +208,8 @@ export type DataTableProps = {
   showTotalSelectedText?: boolean;
   showCustomizeIcon?: boolean;
   showHeaderCheckAll?: boolean;
+  lightMode?: boolean
+  initialRows?: any[];
 };
 
 export type OrderData = {
@@ -237,6 +246,8 @@ export type DataTableContainerProps = {
   showHeaderCheckAll?: boolean;
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
+  lightMode? : boolean
+  initialRows?: any[];
 };
 
 export type DataTableBodyProps = {
@@ -253,6 +264,7 @@ export type DataTableBodyProps = {
   dragVisibility?: boolean;
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
+  lightMode? : boolean
 };
 
 export type SearchHeaderProps = {
@@ -272,6 +284,7 @@ export type SearchHeaderProps = {
   showHeaderCheckAll?: boolean;
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
+  initialRows?: any[];
 };
 
 export type DataTableHeaderProps = {

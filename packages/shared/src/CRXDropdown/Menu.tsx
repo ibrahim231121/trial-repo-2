@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Menu, Button, MenuItem, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import "./DropDown.scss"
 const DropdownStyle = makeStyles({
@@ -20,6 +19,10 @@ const DropdownStyle = makeStyles({
             boxShadow: "none",
         },
     },
+    paper : {
+        maxHeight : "300px",
+        width:"238px"
+    }
 })
 
 type RefType = {
@@ -28,7 +31,7 @@ type RefType = {
     router? : object
 }
 
-type horizontalPro = 'left' | 'right' | 'center';
+// type horizontalPro = 'left' | 'right' | 'center';
 type propsTypes = {
     wrapper? : string,
     name : string,
@@ -40,12 +43,11 @@ type propsTypes = {
     iconButton? : boolean,
     iconHtml? : React.ReactNode,
     MenuList : RefType[],
-    horizontal? : horizontalPro,
     onClick:any //needs to be corrected
 }
 
 
-const Menus = ({id, iconHtml,onClick, iconButton, horizontal = "right", className, disableRipple, wrapper, name, btnClass, MenuList} : propsTypes) => {
+const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, name, btnClass, MenuList} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
@@ -66,7 +68,7 @@ const Menus = ({id, iconHtml,onClick, iconButton, horizontal = "right", classNam
     const buttonChild = iconButton ? iconHtml : name;
 
     const ListOfMenu = MenuList.map((item:any, index:number) => {
-        return <MenuItem key={index} onClick={onClick}>{item.label}</MenuItem>
+        return <MenuItem onClick={item.onClick} key={index}>{item.label}</MenuItem>
     });
     return (
         <div className={"GetacMenu " + wrapper}>
@@ -78,8 +80,8 @@ const Menus = ({id, iconHtml,onClick, iconButton, horizontal = "right", classNam
                 onClick={handleOpenMenu}
                 disableRipple={disableRipple}
             >
-                {buttonChild}
-                {iconButton ? " " : <Icon className="CRXDRPIcon"><ArrowDropDownIcon /></Icon>}
+                <div className="menuLabel">{buttonChild}</div>
+                {iconButton ? " " : <Icon className="CRXDRPIcon"><i className="fas fa-caret-down"></i></Icon>}
             </Button>
             <Menu
                 anchorEl={open}
@@ -88,17 +90,19 @@ const Menus = ({id, iconHtml,onClick, iconButton, horizontal = "right", classNam
                 getContentAnchorEl={null}
                 keepMounted
                 open={Boolean(open)}
+                onClick={handleCloseMenu}
                 onClose={handleCloseMenu}
                 classes = {{
-                    paper : className 
+                    paper : customClass.paper + " " +  className
                 }}
+                
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: horizontal,
+                    horizontal: 'center',
                   }}
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: horizontal,
+                    horizontal: 'center',
                   }}
             
             >

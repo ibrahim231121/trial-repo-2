@@ -4,7 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import {makeStyles, createStyles} from '@material-ui/core/styles'
 import "./EditableSelect.scss";
 import { Typography } from "@material-ui/core";
-
+import ClearSharpIcon from "@material-ui/icons/ClearSharp";
 interface selectBoxProps {
   multiple?: boolean;
   options: any[];
@@ -93,6 +93,11 @@ const CRXAutocomplete = ({
 
   const data = options;
   // const errors = error ? "errors" : " "; 
+  const errorMsgIcon = (
+    <i className="fas fa-exclamation-circle">
+      <span className="crxErrorMsg"> {errorMsg}</span>
+    </i>
+  );
   const classes = optionStyle()
   const handleOnOpen = () => {
   }
@@ -109,6 +114,8 @@ const CRXAutocomplete = ({
       return <span>{label} </span>;
     }
   };
+  const opupOpenCret = <i className="fas fa-caret-down"></i>
+  
   return (
     <>
       <span >
@@ -121,6 +128,10 @@ const CRXAutocomplete = ({
       className={"getac-simple-select " + className + " " + classes.root}
       id={id}
       freeSolo={freeSolo}
+      popupIcon={opupOpenCret}
+       ChipProps={{
+          deleteIcon: <ClearSharpIcon fontSize="large" fontWeight="bold" />,
+        }}
       options={data}
       autoSelect={true}
       value={value}
@@ -145,6 +156,7 @@ const CRXAutocomplete = ({
           error={error}
           {...params}
           variant="outlined"
+          
           InputLabelProps={ { required: required }} 
         />
 
@@ -157,7 +169,7 @@ const CRXAutocomplete = ({
               display="block"
               gutterBottom
             >
-              {errorMsg}
+               {errorMsgIcon}
             </Typography>
           )}
         </span>

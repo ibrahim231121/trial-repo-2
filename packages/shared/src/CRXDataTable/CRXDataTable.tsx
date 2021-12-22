@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const CRXDataTable: React.FC<DataTableProps> = ({
   id,
   dataRows,
+  initialRows,
   headCells,
   orderParam,
   orderByParam,
@@ -62,7 +63,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showActionSearchHeaderCell,
   showCountText,
   showTotalSelectedText,
-  showCustomizeIcon
+  showCustomizeIcon,
+  lightMode
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -319,6 +321,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       orderData={orderData}
                       selectedItems={selectedItems}
                       container={container}
+                      initialRows={initialRows}
                       actionComponent={actionComponent}
                       className={className}
                       searchHeader={searchHeader}
@@ -337,7 +340,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       showActionCol={showActionCol}
                       showActionSearchHeaderCell={showActionSearchHeaderCell}
                       showHeaderCheckAll={false}
-                      
+                      lightMode={lightMode}
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}
                     />

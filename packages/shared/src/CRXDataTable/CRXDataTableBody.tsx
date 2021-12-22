@@ -22,6 +22,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   dragVisibility,
   showCheckBoxesCol,
   showActionCol,
+  lightMode
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -97,7 +98,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               checked={isItemSelected}
                               inputProps={labelId}
                               selectedRow={isItemSelected}
-                              lightMode={true}
+                              lightMode={lightMode}
                             />
                           </TableCell>
                         ) : null}

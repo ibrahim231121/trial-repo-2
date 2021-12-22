@@ -1,27 +1,38 @@
 import React, { useEffect } from "react";
-import { CRXDataTableMultiLevel } from "@cb/shared";
+import { CRXDataTableMultiLevel, CRXMenu } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { HeadCellProps } from "../../../../utils/globalDataTableFunctions";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
-import { APPLICATION_PERMISSION_URL } from '../../../../utils/Api/url'
+import { APPLICATION_PERMISSION_URL, GROUP_USER_LIST, GROUP_GET_BY_ID_URL, GROUP_GET_URL } from '../../../../utils/Api/url'
 import { idText } from "typescript";
-import { ApplicationPermission } from "../Group"
-
+import { ApplicationPermission, GroupIdName } from "../Group"
+import "./application.scss"
 
 type Props = {
   subModulesIds: Number[];
   applicationPermissions: ApplicationPermission[];
   onSetAppPermissions: any; 
+  groupIdName: GroupIdName;
 }
 
-const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, applicationPermissions}) => {
+type NameAndValue = {
+  value: string;
+  label: string;
+  onClick : (e : any) => void
+};
+
+const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, applicationPermissions, groupIdName}) => {
   const { t } = useTranslation<string>();
 
   const finalLevel: number = 2
 
   const [applicationPermissionsActual, setApplicationPermissionsActual] = React.useState<ApplicationPermission[]>([]);
+  const [userGroupsList, setUserGroupsList] = React.useState<NameAndValue[]>();
+  const [selectedUserGroup, setSelectedUserGroup] = React.useState<GroupIdName>(groupIdName);
 
   const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(APPLICATION_PERMISSION_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  const [getResponseGroups, responseGroups] = useGetFetch<any>(GROUP_GET_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  const [getResponseSelectedGroup, responseSelectedGroup] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + selectedUserGroup?.id, { 'Content-Type': 'application/json', 'TenantId': '1' });
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // {
@@ -35,8 +46,8 @@ const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, appli
       label: `${t("Module Names")}`,
       id: "2",
       align: "right",
-      minWidth: "150",
-      maxWidth: "250",
+      minWidth: "300",
+      maxWidth: "100%",
     },
     // {
     //   label: `${t("")}`,
@@ -50,62 +61,103 @@ const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, appli
       label: `${t("Basic level")}`,
       id: "4",
       align: "center",
-      minWidth: "200",
-      maxWidth: "200",
+      minWidth: "270",
+      maxWidth: "100%",
     },
     {
       label: `${t("Advanced level")}`,
       id: "5",
       align: "center",
-      minWidth: "200",
-      maxWidth: "200",
+      minWidth: "270",
+      maxWidth: "100%",
     },
     {
       label: `${t("Restricted level")}`,
       id: "6",
       align: "center",
-      minWidth: "200",
-      maxWidth: "200",
+      minWidth: "270",
+      maxWidth: "100%",
     }
   ]);
 
   React.useEffect(() => {
       getResponseAppPermission();
+      getResponseGroups();
   }, [])
 
-  const getPermissions = (AppPermissions: any) => {
-    let appPermission = AppPermissions.map((response: any) => {
-      let x: ApplicationPermission = {
-        id: response.id,
-        name: response.name,
-        level: 1,
-        selected: false,
-        children: ((response.subModules && response.subModules.length > 0) ?
-          response.subModules.map((subModule: any) => {
-            let y: ApplicationPermission = {
-              id: subModule.id,
-              name: subModule.name,
-              level: 2,
-              selected: subModulesIds.indexOf(subModule.id) > -1 ? true : false,
-              levelType: subModule.subModuleGroupName
-            }
-            return y
-          })
-          : null
-        )
-      }
-      return x
-    })
-    return appPermission
+  const getPermissions = (AppPermissions: any, subModulesIdes: Number[]) => {
+    if(AppPermissions !== undefined){
+      let appPermission = AppPermissions.map((response: any) => {
+        let x: ApplicationPermission = {
+          id: response.id,
+          name: response.name,
+          level: 1,
+          selected: false,
+          children: ((response.subModules && response.subModules.length > 0) ?
+            response.subModules.map((subModule: any) => {
+              let y: ApplicationPermission = {
+                id: subModule.id,
+                name: subModule.name,
+                level: 2,
+                selected: subModulesIdes.indexOf(subModule.id) > -1 ? true : false,
+                levelType: subModule.subModuleGroupName
+              }
+              return y
+            })
+            : null
+          )
+        }
+        return x
+      })
+      return appPermission
+    }
   }
+
+  const selectGroup = (e : any, id:string, name:string) => {
+    setSelectedUserGroup({id,name})
+  }
+
+  useEffect(() => {
+    if (selectedUserGroup !== undefined) {
+      getResponseSelectedGroup();
+    }
+  },[selectedUserGroup])
+
+  React.useEffect(() => {
+    if (responseSelectedGroup !== undefined && responseSelectedGroup.groupSubModules !== undefined) {
+        let lstSubModuleIds: number[] = [];
+        responseSelectedGroup.groupSubModules.map((x: any) => lstSubModuleIds.push(x.subModuleId));
+        let changed: boolean = false;
+        if (JSON.stringify(getPermissions(resAppPermission,lstSubModuleIds)) !== JSON.stringify(applicationPermissionsActual))
+          changed = true
+        onSetAppPermissions(getPermissions(resAppPermission,lstSubModuleIds),changed)
+    }
+  }, [responseSelectedGroup]);
+
+  React.useEffect(() => {
+    if (responseGroups !== undefined) {
+      var groupNames = responseGroups.map((x: any) => {
+        let j: NameAndValue = {
+          value: x.id,
+          label: x.name,
+          onClick : (e) => selectGroup(e, x.id, x.name)
+        };
+        return j;
+      });
+      groupNames = groupNames.sort(function (a: any, b: any) {
+        return a.label.localeCompare(b.label);
+      });
+      setUserGroupsList(groupNames);
+    }
+  }, [responseGroups]);
 
   React.useEffect(() => {
     // only for 2 levels
     if (resAppPermission !== undefined) {
       //setApplicationPermissions(getPermissions(resAppPermission));
       if(applicationPermissions.length === 0)
-        onSetAppPermissions(getPermissions(resAppPermission),onChangeAppPermissions())
-      setApplicationPermissionsActual(getPermissions(resAppPermission));
+        onSetAppPermissions(getPermissions(resAppPermission,subModulesIds),onChangeAppPermissions())
+      setApplicationPermissionsActual(getPermissions(resAppPermission,subModulesIds));
     }
   }, [resAppPermission]);
 
@@ -159,18 +211,33 @@ const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, appli
   }
 
   return (
-
-    applicationPermissions && (
+    <div className="applicationPermission-content">
+    <div className="application-permission-menu">
+        <label>Apply application permissions from:</label>
+        <CRXMenu
+            id={selectedUserGroup?.id}
+            name={selectedUserGroup?.name}
+            className="DarkTheme"
+            btnClass="customButton"
+            wrapper="application-permission-dropdown"
+            MenuList = {userGroupsList !== undefined ? 
+              userGroupsList.filter(item => item.value !== selectedUserGroup.id) 
+              : []}
+        />
+    
+    </div>
+    {applicationPermissions && (
       <CRXDataTableMultiLevel
         headCells={headCells}
         rows={applicationPermissions}
-        className="ManageAssetDataTable"
+        className="application-Permission-DataTable"
         finalLevel={finalLevel}
         onSetRow={onSetRow}
         onSetCheckAllLevel={onSetCheckAllLevel}
         onUnCheckAllParent={onUnCheckAllParent}
       />
-    )
+    )}
+    </div>
   )
 }
 

@@ -1,82 +1,108 @@
-export const urlList: any = {
-    "/assets": [
-        { type: "text", label: "Assets", }
-    ],
-    "/admin/usergroups": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
-    ],
-    "/admin/usergroups/group/:id": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        { type: "text", label: "Group", }
-    ],
-    "/admin/usergroups/group/create": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        //{ routeTo: "/admin/usergroups/group", type: "link", label: "Group", },
-        { type: "text", label: "Create User Group", }
-    ],
-    "/admin/users": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/admin/users", type: "text", label: "Manage Users", }
-    ],
-    "/unitsanddevices": [
-        { type: "text", label: "Manage Units & devices", }
-    ],
-    "/admin/unitconfiguration/unitconfigurationtemplate": [
-        { type: "text", label: "Admin" },
-        { routeTo: "/admin/unitconfiguration", type: "link", label: "Unit Configuration" },
-        { type: "text", label: "Manage Unit Configuration Templates", },
-    ],
-    "/admin/unitconfiguration/unitconfigurationtemplate/createtemplate": [
-        { type: "text", label: "Admin" },
-        { routeTo: "/admin/unitconfiguration", type: "link", label: "Unit Configuration" },
-        { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Unit Configuration Templates" },
-        { type: "text", label: "Create Template", }
-    ],
-    "/admin/unitconfiguration": [
-        { type: "text", label: "Admin", },
-        { type: "text", label: "Manage Unit Configuration", },
-    ],
-    "/unitsanddevices/detail/:id": [
-        { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-        { type: "text", label: "Unit Detail: <id>"},
-    ],
-    "/assets/detail/:id": [
-        { routeTo: "/assets", type: "link", label: "Assets", },
-        { type: "text", label: "Asset Detail: <id>" },
-    ],
-    "/admin/unitsdevicestemplate/createtemplate": [
-        { type: "link", label: "Admin", },
-        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-        { type: "text", label: "Create Template: <template type>", }
-    ],
-    "/admin/unitsdevicestemplate/clonetemplate": [
-        { type: "link", label: "Admin", },
-        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-        { type: "text", label: "<Template: CLONE - <Template given name by user>", }
-    ],
-    "/admin/unitsdevicestemplate/template": [
-        { type: "link", label: "Admin", },
-        { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-        { type: "text", label: "Template, <template type>: <template name>", }
-    ],
-    "/admin/usergroups/group": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        { type: "text", label: "Group", }
-    ],
- 
-    "/admin/unitanddevices/createtemplate/BC04": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/unitanddevices", type: "link", label: "unit and devices templates", },
-        { type: "text", label: "Create Template : BC04", }
-    ],
-    "/admin/unitanddevices/createtemplate/BC03": [
-        { type: "text", label: "Admin", },
-        { routeTo: "/unitanddevices", type: "link", label: "unit and devices templates", },
-        { type: "text", label: "Create Template : BC03", }
-    ],
+// export const urlList: any = {
+    
+//     "/assets": [
+//         { type: "text", label: "Assets", }
+//     ],
 
-};
+//     "/admin/usergroups": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
+//     ],
+//     "/admin/usergroups/group/:id": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+//         { type: "text", label: "Group", }
+//     ],
+//     "/admin/usergroups/group/create": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+//         //{ routeTo: "/admin/usergroups/group", type: "link", label: "Group", },
+//         { type: "text", label: "Create User Group", }
+//     ],
+//     "/admin/users": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/users", type: "text", label: "Manage Users", }
+//     ],
+//     "/admin/usergroups/group": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+//         { type: "text", label: "Group", }
+//     ],
+//     "/admin/TestDemo": [
+//         { type: "text", label: "Admin", },
+//         { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
+//     ],
+
+// };
+
+export const urlNames: any = {
+    assets: "assets",
+    adminUserGroups: "adminUserGroups",
+    adminUserGroup: "adminUserGroup",
+    adminUserGroupId: "adminUserGroupId",
+    userGroupCreate: "userGroupCreate",
+    adminUsers: "adminUsers",
+    adminTestDemo: "adminTestDemo",
+}
+
+export const urlList: any = [
+    {
+        name: urlNames.assets,
+        url: "/assets",
+        details: [
+            { type: "text", label: "Assets", }
+        ],
+    },
+    {
+        name: urlNames.adminUserGroups,
+        url: "/admin/usergroups",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
+        ],
+    },
+    {
+        name: urlNames.adminUserGroup,
+        url: "/admin/usergroups/group",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Group", }
+        ],
+    },
+    {
+        name: urlNames.adminUserGroupId,
+        url: "/admin/usergroups/group/:id",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Group", }
+        ],
+    },
+    {
+        name: urlNames.userGroupCreate,
+        url: "/admin/usergroups/group/create",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Create User Group", }
+        ],
+    },
+    {
+        name: urlNames.adminUsers,
+        url: "/admin/users",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/users", type: "text", label: "Manage Users", }
+        ],
+    },
+    {
+        name: urlNames.adminTestDemo,
+        url: "/admin/TestDemo",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
+        ],
+    }
+
+];

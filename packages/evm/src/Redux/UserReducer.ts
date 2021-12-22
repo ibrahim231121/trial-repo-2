@@ -34,7 +34,10 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
         };
         const resp = await fetch(USER_INFO_UPDATE_URL + `?userId=` + args.userId, requestOptions);
         if (resp.ok) {
-            args.dispatch(getUsersInfoAsync());
+            args.dispatchNewCommand(true);
+        }
+        else {
+            args.dispatchNewCommand(false);
         }
     }
 );

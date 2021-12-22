@@ -1,5 +1,5 @@
 import React from 'react';
-import {DialogTitle, DialogActions, Button, Divider} from '@material-ui/core';
+import { DialogTitle, DialogActions, Button, Divider } from '@material-ui/core';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import './modal.scss';
 
@@ -8,24 +8,24 @@ import { makeStyles } from "@material-ui/core/styles";
 import CRXConfirmDialog from '../components/CRXConfirmDialog/CRXConfirmDialog'
 
 type maxWith = 'lg' | 'md' | 'sm' | 'xl' | 'xs';
-type mouseEvents = React.MouseEvent<HTMLElement>; 
+type mouseEvents = React.MouseEvent<HTMLElement>;
 
 export interface crxDialogProps {
   modelOpen: boolean;
   onClose: (e: mouseEvents) => void;
-  title : string,
+  title: string,
   children: React.ReactNode,
-  onSave : (e: mouseEvents) => void,
-  className? : string,
-  maxWidth : maxWith,
+  onSave: (e: mouseEvents) => void,
+  className?: string,
+  maxWidth: maxWith,
   saveButtonTxt: string,
   cancelButtonTxt: string,
-  secondaryButton? : boolean,
-  primaryButton? : boolean,
-  closeWithConfirm? : boolean,
-  confirmContent:any,
-  id? : string,
-  subTitleText? : string,
+  secondaryButton?: boolean,
+  primaryButton?: boolean,
+  closeWithConfirm?: boolean,
+  confirmContent: any,
+  id?: string,
+  subTitleText?: string,
 }
 
 
@@ -43,68 +43,69 @@ const CRXModalDialog = (props: crxDialogProps) => {
 
   const classes = widgetStyle();
 
-  const { 
+  const {
     id,
-    onClose, 
-    modelOpen, 
-    title, 
-    children, 
-    onSave, 
-    className, 
+    onClose,
+    modelOpen,
+    title,
+    children,
+    onSave,
+    className,
     maxWidth = "xl",
     secondaryButton = false,
     primaryButton = false,
-    cancelButtonTxt, 
-    saveButtonTxt = "Primery Button" ,closeWithConfirm, subTitleText} = props;
+    cancelButtonTxt,
+    saveButtonTxt = "Primery Button", closeWithConfirm, subTitleText } = props;
 
   const [maxWidthProps, setmaxWidthProps] = React.useState<DialogProps['maxWidth']>('sm');
 
   React.useEffect(() => {
     setmaxWidthProps(maxWidth);
-    console.log(maxWidthProps," both ", maxWidth)
-  },[maxWidthProps])
+    console.log(maxWidthProps, " both ", maxWidth)
+  }, [maxWidthProps])
   return (
-    <Dialog 
-      scroll="paper" 
-      id={id} 
-      className={"crx-model" + " " + className} 
-      aria-labelledby="simple-dialog-title" 
-      open={modelOpen} 
+    <Dialog
+      scroll="paper"
+      id={id}
+      className={"crx-model" + " " + className}
+      aria-labelledby="simple-dialog-title"
+      open={modelOpen}
       maxWidth={maxWidthProps}
-      >
-         <div className="CRXPopupCrossButton">
-            <Button
-              className={classes.CRXArrowStyle + " CRXCloseButton"}
-              onClick={(e:any)=>closeWithConfirm ? setIsOpen(true):onClose(e)}
-              disableRipple={true}>
-              <i className="icon icon-cross2 closeModalIcon"></i>
-            </Button>
-          </div>
-        <DialogTitle id="simple-dialog-title" className="modelTitle">{title }</DialogTitle>
-        {<div className="CrxIndicates"><sup>*</sup>{subTitleText ? subTitleText : "Indicates required field"}</div>}
-        <div className="CRXContent CRXContent_user">
-          { children }
+    >
+      <div className="CRXPopupCrossButton">
+        <Button
+          className={classes.CRXArrowStyle + " CRXCloseButton"}
+          onClick={(e: any) => closeWithConfirm ? setIsOpen(true) : onClose(e)}
+          disableRipple={true}>
+          <i className="icon icon-cross2 closeModalIcon"></i>
+        </Button>
+      </div>
+      <DialogTitle id="simple-dialog-title" className="modelTitle">{title}</DialogTitle>
+      {(subTitleText !== null && subTitleText != undefined) ?
+        <div className="CrxIndicates"><sup>*</sup>{subTitleText ? subTitleText : "Indicates required field"}</div> : ""}
+      <div className="CRXContent CRXContent_user">
+        {children}
         <CRXConfirmDialog
-        setIsOpen={setIsOpen}
-        onConfirm={onClose}
-        isOpen={isOpen}
-        primary="Yes"
-        secondary="No"
-     />
-        </div>
-        {primaryButton || secondaryButton && <>
-          <Divider className="CRXDivider" />
-        
+          setIsOpen={setIsOpen}
+          onConfirm={onClose}
+          isOpen={isOpen}
+          primary="Yes"
+          secondary="No"
+        />
+      </div>
+      {primaryButton || secondaryButton && <>
+        <Divider className="CRXDivider" />
+
         <DialogActions className="CRXFooter">
-        
-           {primaryButton && <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e : mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
-        }    {
-              secondaryButton &&
-              <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e : mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
-              
-            }
+
+          {primaryButton && <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e: mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
+          }    {
+            secondaryButton &&
+            <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e: mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
+
+          }
         </DialogActions>
-        </>}
+      </>}
     </Dialog>
   );
 }

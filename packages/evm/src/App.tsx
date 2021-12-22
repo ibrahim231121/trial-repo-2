@@ -18,6 +18,8 @@ import { CRXDropDown  } from "@cb/shared";
 import {CRXSelectBox} from "@cb/shared";
 import "./App.scss";
 
+import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
+
 function App() {
  
   const value: string = useSelector((state: RootState) => state.cultureReducer.value);
@@ -35,7 +37,7 @@ function App() {
   const dispatch = useDispatch()
   const [open, setOpen] = useState(true);
   const classes = CRXPanelStyle();
-
+  
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
@@ -252,30 +254,36 @@ function App() {
     }
   }
   
+  const icons = {
+    success : <i className="fas fa-check-circle successIcon"></i>,
+    attention : <i className="fas fa-info-circle infoIcon"></i>,
+    warning : <i className="fas fa-exclamation-triangle warningIcon"></i>,
+    error : <i className="fas fa-exclamation-circle errorIcon"></i>
+  }
+  
   return (
     <div dir={rtl}>
-   
-       {/* <CRXDropDown 
-            id="languageSelector"
-            options={options}
-            value={value}
-            onChange={handleChange} 
-            > 
-            <i className="far fa-globe language_world"></i>
-            <i className="fas fa-sort-down language_arrow"></i>
-            </CRXDropDown> */}
-        <div className="language_selector_app">
-          <CRXSelectBox 
-          options={options} 
-          id="simpleSelectBox" 
-          onChange={handleChange} 
-          value={value}
-          icon={true}
-           />
-          <i className="fal fa-globe world_language_icon"></i>
-        </div>
-
-      
+       <SnackbarProvider
+       maxSnack={100}
+       anchorOrigin={{
+           vertical: 'top',
+           horizontal: 'right',
+       }}
+       iconVariant={{
+           success: icons.success,
+           error: icons.error,
+           warning: icons.warning,
+           info: icons.attention, 
+       }}
+       className="toasterMsg"
+       classes={{
+           variantSuccess: "success",
+           variantError:"error",
+           variantWarning: "warning",
+           variantInfo: "info",
+           containerRoot: "crx-ToasterContainer"
+       }}
+       >
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
         {/* <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
@@ -295,6 +303,7 @@ function App() {
         <Footer />
       </footer> */}
       </DragDropContext>
+      </SnackbarProvider>
     </div>
   );
 }

@@ -9,32 +9,40 @@ import {
 import { ValueString } from "../../utils/globalDataTableFunctions"
 
 interface noOptionprops {
-  width : string,
-  marginLeft : string,
-  overFlow : string,
-  textOverflow : string,
-  whiteSpace : string,
-  marginRight : string,
-  paddingLeft : string,
-  paddingRight: string,
-  marginTop : string
+  width? : string,
+  marginLeft? : string,
+  overFlow? : string,
+  textOverflow? : string,
+  whiteSpace? : string,
+  marginRight? : string,
+  paddingLeft? : string,
+  paddingRight?: string,
+  marginTop? : string
 }
 interface paddingLeftprops {
   marginLeft : string,
   paddingRight : string,
   marginRight : string,
-  paddingLeft : string 
+  paddingLeft : string,
 }
+
+interface parentStyleProps {
+  width? : string,
+  padding? : string,
+  margin? : string,
+}
+
 type Props = {
   headCells: any[],
   colIdx: number,
   reformattedRows: any[],
   isSearchable: boolean,
+  parentStye? : parentStyleProps,
   onMultiSelectChange: (value: ValueString[], colIdx: number) => void
   onSetSearchData: () => void
   onSetHeaderArray: (e: any) => void,
     widthNoOption?:noOptionprops,
-    paddLeft?: paddingLeftprops,
+    checkedStyle?: paddingLeftprops,
 }
 
 
@@ -43,11 +51,12 @@ const MultSelectiDropDown: React.FC<Props> = ({
   colIdx,
   reformattedRows,
   isSearchable,
+  parentStye,
   onMultiSelectChange,
   onSetSearchData,
   onSetHeaderArray,
     widthNoOption,
-    paddLeft
+    checkedStyle
     
 }
 ) => {
@@ -102,7 +111,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
   }
 
   function GetClassName() {
-    return openState ? "" : "hide";
+    return openState? "" : "hide";
   }
 
   function GetButtonClass() {
@@ -133,6 +142,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
     setButtonState(false);
     setFilterValue([]);
     onSetHeaderArray([])
+    setFilterClick(false);
   }
 
   useEffect(() => {
@@ -145,13 +155,17 @@ const MultSelectiDropDown: React.FC<Props> = ({
     }
   }, [filterValue]);
 
+  const setOpenStateFunc = (e : any) => {
+    setOpenState(true);
+    setFilterClick(true)
+  }
     const noOptionCss = widthNoOption
-    const paddLeftCss = paddLeft
-
+    const paddLeftCss = checkedStyle
+  
     return (
       <div className="">
-        <CRXRows container spacing={2}>
-          <CRXColumn item xs={6}>
+        {/* <CRXRows container spacing={2}>
+          <CRXColumn item xs={6}> */}
             <CRXPaper
               variant="outlined"
               elevation={1}
@@ -164,7 +178,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
               <div className={GetButtonClass() + ' crx-icon-filter'}>
                 <button
                   className="fas fa-filter"
-                  onClick={(e) => setOpenState((state) => !state)}
+                  onClick={(e) => setOpenStateFunc(e)}
                 ></button>
                 <button
                   className="icon-cross2 croseIcon"
@@ -181,7 +195,8 @@ const MultSelectiDropDown: React.FC<Props> = ({
                   return onOpenEffect(e);
                 }}
                 noOptions={noOptionCss}
-                paddLeft={paddLeftCss}
+                checkedStyle={paddLeftCss}
+                parentStye={parentStye}
                 // name={"AssetType"}
                 multiple={true}
                 CheckBox={true}
@@ -199,8 +214,8 @@ const MultSelectiDropDown: React.FC<Props> = ({
                 }}
               />
             </CRXPaper>
-          </CRXColumn>
-        </CRXRows>
+          {/* </CRXColumn>
+        </CRXRows> */}
       </div>
     );
   };

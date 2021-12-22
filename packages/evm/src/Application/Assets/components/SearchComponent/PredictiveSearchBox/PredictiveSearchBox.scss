@@ -3,9 +3,7 @@
   margin: 0px 0 0 16px;
 }
 .predictiveSearch {
-  .getac-simple-select {
-    border: 1px solid #888787 !important;
-  }
+
   .dateTimeLabel {
     padding-left: 16px;
   }
@@ -15,8 +13,7 @@
 
       .select {
         select {
-          border: none;
-          height: 28px;
+          height: 30px;
         }
       }
     }
@@ -91,11 +88,10 @@
 .wrapper{
     .select {
       box-shadow: none;
-      border: 1px solid #d1d2d4;
       border-radius: 0px;
       margin-top: 0;
       select{
-        height: 28px;
+        height: 30px;
         font-size: 14px;
       }
       .icon {

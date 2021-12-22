@@ -252,7 +252,7 @@ const MasterMain: React.FC<Props> = ({
 
     const assetListerNoOptions = {
       width : "287px",
-      marginLeft : "-12px",
+      marginLeft : "-1px",
       whiteSpace : "nowrap",
       overFlow : "hidden",
       textOverflow : "ellipsis",
@@ -260,16 +260,15 @@ const MasterMain: React.FC<Props> = ({
       paddingLeft : "7px",
       paddingRight : "7px",
       fontSize : "14px",
-      top : "7px",
+      top : "-5px",
       marginTop : "4px"
     }
 
     const PaddLeftNoOptions = {
-      marginLeft : "7px",
+      marginLeft : "4px",
       paddingRight : "7px",
       marginRight : "7px",
-      paddingLeft : "7px"
-
+      paddingLeft : "7px",
     }
 
     return (
@@ -282,7 +281,7 @@ const MasterMain: React.FC<Props> = ({
         onSetSearchData={onSetSearchData}
         onSetHeaderArray={onSetHeaderArray}
         widthNoOption={assetListerNoOptions}
-        paddLeft={PaddLeftNoOptions}
+        checkedStyle={PaddLeftNoOptions}
       />
     );
   };

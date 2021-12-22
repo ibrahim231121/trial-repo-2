@@ -1,18 +1,15 @@
 import React from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import TableHead from '@material-ui/core/TableHead';
 import TableRow from "@material-ui/core/TableRow";
 import IconButton from '@material-ui/core/IconButton';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
-import { ThemeProvider } from "@material-ui/core/styles";
 import {
   useStyles,
   MultiLevelProps,
-  theme,
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 
@@ -78,23 +75,24 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
 
   return (
     <>
-      <ThemeProvider theme={theme}>
+      
         <TableContainer
-          className={classes.container + " AssetsDataGrid " + className}
+          className={className}
           component={Paper}
         >
           <Table
-            className={"CRXDataTableCustom " + classes.table}
+            className={"CRXMultiDataTableCustom " + classes.table}
             aria-label="simple table"
             size="small"
             stickyHeader
           >
-
+          <TableHead> 
+          <TableRow>
           {orderColumn.map((colIdx, i) => (
-            <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
+            <TableCell className={classes.multiTableStikcyHeader + " CRXMultiDataTableLabelCell"} key={i} 
                 //style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                 align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
-            <div className={classes.headerCellDiv + " crxTableHeaderSize"}
+            <div className={classes.headerCellDiv + " crxMultiTableHeader"}
             style={
                 {
                 minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
@@ -102,7 +100,7 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
                 }
             } 
             >
-            <div className={classes.headerStickness}
+            <div className="multiTableHeaderCell"
                 key={headCells[colIdx].id}>
                 <label> 
                     {headCells[colIdx].label} 
@@ -122,6 +120,8 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
                 
             </TableCell>  
         ))}
+        </TableRow>
+        </TableHead>
           <TableBody>
             {rows.map((row: any, index: number) => {
                 return (
@@ -139,7 +139,7 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-    </ThemeProvider>
+    
     </>
   );
 };
@@ -155,23 +155,25 @@ const MultiLevelRows: React.FC<any> = ({row, index, headCells, collapsible, onSe
 
   return (
     <div key={index} style={{display:`${collapsible === true ? "none" : "contents"}`}}> 
-      <TableRow >
-        <TableCell className="DataTableBodyCell" style={{verticalAlign:"top", display:"none"}}>
+      <TableRow>
+        <TableCell className="multiDataTableBodyCell" style={{verticalAlign:"top", display:"none"}}>
           {row.level}
         </TableCell>
 
-        <TableCell className="DataTableBodyCell"
+        <TableCell className="multiDataTableBodyCell"
           style={{textAlign:"left"}}>
-          <div style={{display:"flex",paddingLeft:`${((row.level-1)*20).toString()}`+"px"}}>
+          <div className="App-permission-parent">
             <IconButton
               aria-label="expand row"
               size="small"
+              disableRipple
+              className="multiTableC-Caret"
               onClick={() => setOpen(!open)}
             >
-              {open ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
+              {open ? <i className="fas fa-caret-right"></i> : <i className="fas fa-caret-down"></i>}
             </IconButton>
             <label style={{width:"100%"}}>{row.name}</label>
-            <div style={{width:"70%", textAlign:"right"}}>
+            <div className="appPermissionLevel-checkbox">
               <span>
                 <CRXCheckBox
                   onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange(e)}
@@ -184,7 +186,7 @@ const MultiLevelRows: React.FC<any> = ({row, index, headCells, collapsible, onSe
           </div>
         </TableCell>
         {Array.from(Array(headCells.length-1), () => {
-            return <TableCell className="DataTableBodyCell"></TableCell>
+            return <TableCell className="multiDataTableBodyCell"></TableCell>
           })
         }
       </TableRow>
@@ -223,31 +225,31 @@ const LastLevelRow: React.FC<any> = ({row, collapsible, child, onSetRow}) => {
   return (
     <div style={{display:`${collapsible === true ? "none" : "contents"}`}}> 
       <TableRow >
-        <TableCell className="DataTableBodyCell" style={{verticalAlign:"top", display:"none"}}>
+        <TableCell className="multiDataTableBodyCell" style={{verticalAlign:"top", display:"none"}}>
           {row.level}
         </TableCell>
         {Array.from(Array(row.level-1), () => {
-            return <TableCell className="DataTableBodyCell"></TableCell>
+            return <TableCell className="multiDataTableBodyCell"></TableCell>
           })
         }
         {
           (child && child.length > 0) ? 
           <>
-            <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
+            <TableCell className="multiDataTableBodyCell" style={{verticalAlign:"top"}}>
                 {child.filter((x:any) => x.levelType === "Basic").map((item:any) => {                   
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
                 )}
             </TableCell>
 
-            <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
+            <TableCell className="multiDataTableBodyCell" style={{verticalAlign:"top"}}>
                 {child.filter((x:any) => x.levelType === "Advance").map((item:any) => {
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
                 )}
             </TableCell>
 
-            <TableCell className="DataTableBodyCell" style={{verticalAlign:"top"}}>
+            <TableCell className="multiDataTableBodyCell" style={{verticalAlign:"top"}}>
                 {child.filter((x:any) => x.levelType === "Restrictive").map((item:any) => {
                     return <AlllevelTypes row={item} onSetRow={(check:boolean, row:any) => onSetRow(check, row)}></AlllevelTypes>
                   }
@@ -269,7 +271,7 @@ const AlllevelTypes: React.FC<any> = ({row, onSetRow}) => {
   }
 
   return (
-      <div style={{textAlign:"left", borderTop:"1px solid #ccc"}}>
+      <div className="multiDataTableCheckBox">
         <CRXCheckBox
           onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleChange(e)}
           checked={row.selected }

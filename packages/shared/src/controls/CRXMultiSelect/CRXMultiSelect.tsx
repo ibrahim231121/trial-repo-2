@@ -20,11 +20,17 @@ interface noOptionprops {
   lineHeight: string;
   marginTop : string;
 }
-interface paddingLeftprops {
+interface checkedStyleProps {
   marginLeft: string;
   marginRight: string;
   paddingRight: string;
   paddingLeft: string;
+}
+
+interface parentStyleProps {
+  width? : string,
+  padding? : string,
+  margin? : string,
 }
 
 interface selectBoxProps {
@@ -44,13 +50,15 @@ interface selectBoxProps {
   onOpen?: (e: any) => void;
   name: string;
   noOptions?: noOptionprops;
-  paddLeft?: paddingLeftprops;
+  checkedStyle?: checkedStyleProps;
+  parentStye? : parentStyleProps
 }
 interface renderCheck {
   selected?: boolean;
   value?: string;
   year?: number;
 }
+
 
 export default function CRXMultiSelect(props: selectBoxProps) {
   const {
@@ -67,14 +75,16 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     onClose,
     onOpen,
     noOptions,
-    paddLeft,
+    checkedStyle,
+    parentStye
   } = props;
   const useStyles = makeStyles({
     root: {
-      marginLeft: paddLeft && paddLeft.marginLeft,
-      paddingRight: paddLeft && paddLeft.paddingRight,
-      paddingLeft: paddLeft && paddLeft.paddingLeft,
-      marginRight: paddLeft && paddLeft.marginRight,
+      marginLeft: checkedStyle && checkedStyle.marginLeft,
+      paddingRight: checkedStyle && checkedStyle.paddingRight,
+      paddingLeft: checkedStyle && checkedStyle.paddingLeft,
+      marginRight: checkedStyle && checkedStyle.marginRight,
+      
       "&:hover": {
         backgroundColor: "transparent !important",
         boxShadow: "none !important",
@@ -87,12 +97,13 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       width: noOptions && noOptions.width,
       marginLeft: noOptions && noOptions.marginLeft,
       border: "0 !important",
-      left: "0",
+      left: "1px",
       marginTop: noOptions && noOptions.marginTop,
       paddingBottom: "0",
       position: "absolute",
-      maxHeight: "201px",
-      minHeight: "35.5px",
+      maxHeight:"332px",
+      minHeight:"200px",
+      overflowY: "auto",
       borderTop: "1px solid #888787 !important",
       top: noOptions && noOptions.top,
     },
@@ -128,6 +139,38 @@ export default function CRXMultiSelect(props: selectBoxProps) {
         height: "33px",
       },
     },
+
+    parent : {
+      width : parentStye && parentStye.width,
+      margin : parentStye && parentStye.margin,
+      padding : parentStye && parentStye.padding
+    },
+
+    tag: {
+      backgroundColor: "#fff",
+      border: "1px solid #BEBEBE",
+      borderRadius: "1px",
+      color: "#333",
+      padding: "0px",
+      height: "20px",
+      position: "relative",
+      marginRight: "2px",
+      marginLeft: "3px",
+      marginTop:"2.5px",
+      marginBottom:"2.5px",
+      top: "0px",
+      "&:hover": {
+        backgroundColor: "#F3F4F5",
+        border: "1px solid #888787",
+        color: "#333333",
+        "&:after": {
+          color: "#333333",
+        },
+      },
+      "&:span": {
+        padding: "0px",
+      },
+    },
   });
   const styles = useStyles();
   const classes = useStyles();
@@ -147,7 +190,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
             checkedIcon={
               <CheckBoxIcon fontSize="small" style={{ color: "#fff" }} />
             }
-            style={{ marginRight: 0, paddingRight: 7 }}
+            style={{ marginRight: 0, paddingRight: 8 }}
             classes={{ root: classes.root }}
             checked={selected}
           />
@@ -165,27 +208,31 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     }
   }, []);
 
+  const opupOpenCret = <i className="fas fa-caret-down multiCaretIcon"></i>
   return (
-    <div className="Autocomplete_multi">
+    <div className={"Autocomplete_multi " + styles.parent}>
       <Autocomplete
         onClose={onClose}
         onOpen={onOpen}
-        // open={true}
+        //open={true}
         disableCloseOnSelect
+        disableClearable
         ChipProps={{
           deleteIcon: <ClearSharpIcon fontSize="large" fontWeight="bold" />,
         }}
         multiple={multiple}
         autoComplete={autoComplete}
-        className={"getac-simple-select crx-getac-dropdown " + className}
+        className={"getac-filter-select crx-getac-dropdown " + className}
         id={id}
         options={options}
+        popupIcon={opupOpenCret}
         autoSelect={autoSelect}
         value={value}
         classes={{
           option: styles.option,
           listbox: styles.listbox,
-          noOptions: styles.noOptions
+          noOptions: styles.noOptions,
+          tag:styles.tag
         }}
         getOptionLabel={(option: renderCheck) =>
           option.value ? option.value : " "
@@ -214,7 +261,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
                     : ""
                 }`}
                 {...params}
-                placeholder="search and select..."
+                //placeholder="search and select..."
                 inputRef={(input) => {
                   inputRef = input;
                 }}

@@ -26,6 +26,7 @@
 
 }
 .managePermissionTable {
+   margin-top: 74px;
    margin-left: 65px !important;
    .dataTableColumnShoHide  {
       margin-top: -63px !important;
@@ -114,7 +115,240 @@
       height: 34px;
    }
 }
-.modal_user_crx {
+
+
+.crxManageUsers {
+   margin-top: 118px;
+   margin-left: 65px;
+
+   .manageUserBtn {
+      height: 30px;
+      width: 108px;
+      padding: 0 0;
+      margin-top: 16px;
+      &:hover {
+         border: 1px solid #6E6E6E;
+      }
+   }
+   .CRXCheckBox {
+      margin-left: 2px !important;
+   }
+
+   .AssetsDataGrid  {
+      margin-top: -38px;
+   }
+
+   .dataTableColumnShoHide {
+      margin-top: -62px;
+      &:nth-child(2) {
+         .dataIconButton {
+            margin-bottom: -1px;
+         }
+      }
+   }
+   thead {
+      tr {
+         height: 34px !important;
+      }
+      &:nth-child(1) {
+         th {
+            height: 34px !important;
+            &:nth-child(4){
+               width: 174px !important;
+               min-width: 174px !important;
+            }
+            &:nth-child(5){
+               width: 202px !important;
+               min-width: 156px !important;
+            }
+            &:nth-child(6){
+               width: 202px !important;
+               min-width: 156px !important;
+            }
+            &:nth-child(7){
+               width: 333px !important;
+               min-width: 263px !important;
+            }
+            &:nth-child(8){
+               width: 223px !important;
+               min-width: 112px !important;
+            }
+            &:nth-child(9){
+               width: 261px !important;
+               min-width: 161px !important;
+            }
+            &:nth-child(10) {
+               width: 244px !important;
+               min-width: 244px !important;
+               @media(max-width: 1380px) {
+                  width: 314px !important;
+                  min-width: 314px !important;
+               }
+            }
+         }
+      }
+      &:nth-child(2){
+         .dateRangeContainer {
+            .wrapper {
+                 background-color: #d1d2d4;
+                 .select {
+                     background-color: #d1d2d4;
+                     width: 100%;
+                   
+                     select {
+                        background-color: #d1d2d4;
+                        &:hover {
+                           border: 1px solid #d1d2d4;
+                        }
+                     }
+                     .iconContent{
+                        top: -14px;
+                     }
+                 }
+            }
+         }
+         .MuiTableRow-head {
+            th {
+               .CBX-input {
+                  margin: -2px 0;
+               }
+            }
+         }
+         tr {
+            th {
+               & > span {
+                  display: block !important;
+               }
+               &:nth-child(7 ) {
+                
+                  .MuiInput-root {
+                     min-width: 235px !important;
+                     @media(max-width: 1380px) {
+                        width: 235px !important;
+                     }
+                  } 
+                }
+               &:nth-child(9) {
+           
+                  .wrapper {
+                     margin: 0px -4px 0 5px !important;
+
+                  }
+                  .MuiGrid-root  {
+                     max-width: calc(100% - 11px);
+                  }
+               }
+               &:nth-child(10) {
+                  .MuiGrid-spacing-xs-2 {
+                     padding-left: 3px;
+                 } 
+               }
+            }
+         }
+      }
+   }
+
+   tbody {
+      tr {
+         height: 50px;
+         
+         &:hover {
+            td{
+               &:nth-child(2) {
+                  background-color: #333 !important;
+                  .rc-menu-button {
+                     color: #d1d2d4 !important;
+                  }
+               }
+            }
+         }
+         td {
+            vertical-align: middle !important;
+            &:first-child {
+               background:transparent !important;
+               &:hover {
+                  border: 0 solid transparent !important;
+                  border-right: 1px solid #ccc !important;
+                  border-bottom: 1px solid #ccc !important;
+               }
+            }
+            &:nth-child(4) , &:nth-child(7) {
+               div{
+                  color: #C34400;
+                  font-size: 14px;
+                  font-family: Arial, Helvetica, sans-serif;
+               }
+            } 
+            &:nth-child(9) {
+               line-height: 23px !important;
+               text-align: left;
+               padding-left: 14px !important;
+            }
+         }
+       }
+       
+   }
+
+   .crxTableHeaderSize {
+      margin-left: auto;
+      margin-right: auto;
+   }
+
+   .rc-menu-button {
+      font-size: 21px;
+      margin-top: 12px;
+   }
+   .dataTableSimpleText  {
+   display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 7px;
+   }
+   .DataTableBodyCell {
+      text-indent: -1px !important;
+      line-height: 23px !important;
+   }
+   .rc-menu {
+      width: 242px;
+   }
+   .crx-menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+   }
+   .rc-menu__arrow--dir-right {
+      display: none;
+   }
+   .col-three {
+      position: initial;
+   }
+   .rc-menu{
+      left: 45px !important;
+   }
+   table {
+      tr {
+         td {
+            ul {
+               &:first-child {
+                  left: 0px !important;
+                  margin-left: 55px;
+                  @media(max-width: 1380px) {
+                     margin-left: 43px;
+                  }
+               }
+            }
+         } 
+       }
+   }
+   .MuiTableCell-sizeSmall {
+      padding: 0px 7px !important;
+   } 
+}
+.CRXAppHeader {
+   nav {
+      margin-left: 1px;
+   }
+}.modal_user_crx {
    margin-top: -20px;
    overflow-y: scroll;
    height: 500px;
@@ -137,3 +371,4 @@
       margin: 0 14px 0 0;
    }
 }
+

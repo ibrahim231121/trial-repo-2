@@ -1,6 +1,6 @@
 
-import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import React, { useEffect, useRef, useState } from "react";
+import { CRXDataTable, CRXColumn, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
 import { DateTimeComponent } from "../../../../components/DateTimeComponent";
@@ -30,7 +30,6 @@ import multitextDisplay from "../../../../components/DateDisplayComponent/MultiT
 import MultSelectiDropDown from "../../../../components/SearchComponents/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
 import CreateUserForm from "./CreateUserForm";
-import { CRXAlert } from '@cb/shared';
 
 type User = {
     id: string;
@@ -40,7 +39,8 @@ type User = {
     email: string,
     status: string,
     lastLogin: string,
-    groups: string[]
+    groups: string[],
+    showToastMsg? : (obj : any) => void
 }
 
 type DateTimeProps = {
@@ -76,6 +76,7 @@ const User: React.FC = () => {
     const [open, setOpen] = React.useState(false);
     const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
     const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
+
 
     const setData = () => {
         let userRows: User[] = [];
@@ -345,6 +346,22 @@ const User: React.FC = () => {
             headCells[colIdx].headerArray = v;
         };
 
+        const multiselectProps = {
+            marginLeft : "4px",
+            paddingRight : "7px",
+            marginRight : "7px",
+            paddingLeft : "7px",
+            
+          }
+          const parentStye = {
+            width : "281px",
+            margin : "0px 0px 0px 4px"
+          }
+
+        const listwidth = {
+            width : "279px",
+            marginTop:"-4px"
+        }
         return (
             <MultSelectiDropDown
                 headCells={headCells}
@@ -355,6 +372,9 @@ const User: React.FC = () => {
                 onMultiSelectChange={onSelection}
                 onSetSearchData={onSetSearchData}
                 onSetHeaderArray={onSetHeaderArray}
+                checkedStyle={multiselectProps}
+                parentStye={parentStye}
+                widthNoOption={listwidth}
             />
         );
     };
@@ -441,34 +461,42 @@ const User: React.FC = () => {
         setHeadCells(headCellsArray);
     };
 
+    const toasterRef = useRef<typeof CRXToaster>(null)
+
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const showToastMsg = (obj: any) => {
+        toasterRef.current.showToaster({
+            message: obj.message, variant: obj.variant, duration: obj.duration, clearButtton: true
+        });
+    }
+
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-        setOpen(false); 
+        setOpen(false);
         dispatch(getUsersInfoAsync());
     };
-    
 
     return (
-        <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-            <CRXButton id={"createUser"} onClick={handleClickOpen}>
-                Create User
-            </CRXButton>  
+        <div className="crxManageUsers">
+			<CRXToaster ref={toasterRef}/>
+            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
+            </CRXButton>
             <CRXModalDialog
                 className="createUser CrxCreateUser"
-                style={{minWidth:"680px"}}
-                maxWidth="xl" 
-                title="Create User" 
-                modelOpen={open} 
-                onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
-                closeWithConfirm={closeWithConfirm}
+                style={{ minWidth: "680px" }}
+                maxWidth="xl"
+                title="Create User"
+                modelOpen={open}
                 subTitleText="Indicates required field"
+                onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                closeWithConfirm={closeWithConfirm}
             >
-                <CreateUserForm 
-                    setCloseWithConfirm={setCloseWithConfirm}  
-                    onClose={(e : React.MouseEvent<HTMLElement>) => handleClose(e)}
+                <CreateUserForm
+                    setCloseWithConfirm={setCloseWithConfirm}
+                    onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                    showToastMsg={(obj: any) => showToastMsg(obj)}
                 />
             </CRXModalDialog>
 
@@ -477,7 +505,7 @@ const User: React.FC = () => {
             {rows && (
                 <CRXDataTable
                     id="userDataTable"
-                    actionComponent={<UserActionMenu row={selectedActionRow} selectedItems={selectedItems} />}
+                    actionComponent={<UserActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />}
                     getRowOnActionClick={(val: User) =>
                         setSelectedActionRow(val)
                     }
@@ -489,7 +517,7 @@ const User: React.FC = () => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable crxTableHeight bucketDataTable"
+                    className="ManageAssetDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: User[]) => setSelectedItems(v)}
                     onResizeRow={resizeRow}

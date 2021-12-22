@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "start": "(set PORT=3000 || export PORT=3000) && lerna run start --parallel",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "build:qa": "lerna run build:qa",
+    "build:prod": "lerna run build:prod"
   },
   "devDependencies": {
     "lerna": "^3.22.1"
