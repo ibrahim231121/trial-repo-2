@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { CRXTabs, CrxTabPanel, CRXButton, CRXAlert } from "@cb/shared";
+import React, { useEffect, useState, useRef } from "react";
+import { CRXTabs, CrxTabPanel, CRXButton, CRXAlert, CRXToaster } from "@cb/shared";
 import User from '../Group/components/User';
 import "../Group/group.scss";
 import { useHistory, useParams } from "react-router";
@@ -58,6 +58,8 @@ const Group = () => {
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState<boolean>(true);
   const [groupIdName, setGroupIdName] = React.useState<GroupIdName>({ id: "", name: "" });
 
+  const groupMsgRef = useRef<typeof CRXToaster>(null)
+
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
   }
@@ -69,7 +71,7 @@ const Group = () => {
   ];
 
   const message = [
-    { messageType: "success", message: "User group saved successfully" },
+    { messageType: "success", message: "User group saved successfully." },
     { messageType: "error", message: "We're sorry. The group information, users, and application permissions were unable to be saved. Please retry or contact your System Administrator." },
     { messageType: "error", message: "We're sorry. The data permissions were unable to be saved. Please retry or contact your System Administrator." }
   ];
@@ -262,6 +264,12 @@ useEffect(() => {
     }
     let groupId = 0;
     let status = 0;
+
+    const showToastMsg = () => {
+      groupMsgRef.current.showToaster({
+          message: message[0].message, variant: "success", duration: 7000, clearButtton:true
+      });
+  }
     fetch(groupURL, {
       method: method,
       headers: {
@@ -324,10 +332,11 @@ useEffect(() => {
               console.log(err.message);
             })
 
-            setShowSuccess(true);
-            setAlertType("toast")
-            setMessages(message[0].message)
-            setError(message[0].messageType)
+            //setShowSuccess(true);
+            //setAlertType("toast")
+            //setMessages(message[0].message)
+            //setError(message[0].messageType);
+            showToastMsg()
         }
 
         else if (status === 500 || status === 400) {
@@ -346,6 +355,7 @@ useEffect(() => {
       })
   }
 
+  
   return (
     <div className= "App crxTabsPermission" style={{  }}>
       <>
@@ -357,6 +367,8 @@ useEffect(() => {
           alertType={alertType}
           setShowSucess={setShowSuccess}
         />
+        <CRXToaster ref={groupMsgRef}/>
+
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
 
         <CrxTabPanel value={value} index={0}  >

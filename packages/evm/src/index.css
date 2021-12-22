@@ -231,3 +231,8 @@ code {
 .columnse {
   padding:  0 15px;
 }
+
+.crx-ToasterContainer {
+  margin-top: 48px;
+  margin-right: 8px;
+}

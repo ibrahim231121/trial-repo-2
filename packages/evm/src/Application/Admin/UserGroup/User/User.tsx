@@ -469,7 +469,7 @@ const User: React.FC = () => {
 
     const showToastMsg = (obj: any) => {
         toasterRef.current.showToaster({
-            message: obj.message, variant: obj.variant, duration: obj.duration
+            message: obj.message, variant: obj.variant, duration: obj.duration, clearButtton: true
         });
     }
 
@@ -480,7 +480,7 @@ const User: React.FC = () => {
 
     return (
         <div className="crxManageUsers">
-			<CRXToaster ref={toasterRef} />
+			<CRXToaster ref={toasterRef}/>
             <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
             </CRXButton>
             <CRXModalDialog

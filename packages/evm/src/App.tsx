@@ -243,6 +243,7 @@ function App() {
            variantError:"error",
            variantWarning: "warning",
            variantInfo: "info",
+           containerRoot: "crx-ToasterContainer"
        }}
        >
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
