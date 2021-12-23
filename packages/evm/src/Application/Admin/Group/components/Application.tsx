@@ -155,7 +155,7 @@ const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, appli
     // only for 2 levels
     if (resAppPermission !== undefined) {
       //setApplicationPermissions(getPermissions(resAppPermission));
-      if(applicationPermissions.length === 0)
+      if(applicationPermissions === undefined)
         onSetAppPermissions(getPermissions(resAppPermission,subModulesIds),onChangeAppPermissions())
       setApplicationPermissionsActual(getPermissions(resAppPermission,subModulesIds));
     }
