@@ -95,6 +95,7 @@ const CreateUserForm: React.FC<Props> = ({
   const [disableLink, setDisableLink] = React.useState(false);
   const toasterRef = useRef<typeof CRXToaster>(null)
 
+ const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
 
 
   React.useEffect(() => {
@@ -144,7 +145,8 @@ const CreateUserForm: React.FC<Props> = ({
         userGroups: userGroupNames,
 
       });
-
+      setActivationLinkLabel('Resend Activation Link');
+      setRadioValue("");
     }
   }, [userPayload]);
 
@@ -268,7 +270,8 @@ const CreateUserForm: React.FC<Props> = ({
 
   const content = [
     {
-      label: "Send Activation Link",
+      label: ActivationLinkLabel,
+      // label: "Send Activation Link",
       value: "sendAct",
       Comp: () => sendActivationLink(),
     },
