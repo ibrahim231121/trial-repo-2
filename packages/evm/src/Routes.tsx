@@ -12,7 +12,7 @@ import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
-import { urlList, urlNames } from "./utils/urlList"
+import { urlList, urlNames } from "./utils/urlList";
 import User from "./Application/Admin/UserGroup/User/User";
 import Station from "./Application/Admin/Station/Station";
 import StationDetail from "./Application/Admin/Station/StationDetail";
