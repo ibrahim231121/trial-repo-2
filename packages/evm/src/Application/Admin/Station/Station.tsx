@@ -29,9 +29,9 @@ import MultSelectiDropDown from "../../../components/SearchComponents/MultSelect
 import { CRXModalDialog } from "@cb/shared";
 import { userInfo } from "os";
 import { getStationsInfoAsync } from "../../../Redux/StationReducer";
-import StationAnchorDisplay from "./StationAnchorDisplay";
 import StationActionMenu from "./StationActionMenu";
-import AnchorDisplay from "../../../components/DateDisplayComponent/AnchorDisplay";
+import AnchorDisplay from "../../../utils/AnchorDisplay";
+import { urlList , urlNames} from "../../../utils/urlList";
 
 type Station = {
     id: string;
@@ -218,7 +218,7 @@ const Station: React.FC = () => {
             id: "name",
             align: "left",
             // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
-            dataComponent: (e: string) => AnchorDisplay(e, "anchorStyle"),
+            dataComponent: (e: string) => AnchorDisplay(e, "anchorStyle",  urlList.filter((item:any) => item.name === urlNames.adminStationId)[0].url),
             sort: true,
             searchFilter: true,
             searchComponent: searchText,

@@ -114,22 +114,13 @@ export const urlList: any = [
       { routeTo: '/admin/stations', type: 'text', label: 'Manage Stations' }
     ]
   },
-  // {
-  //   name: urlNames.adminStationId,
-  //   url: '/admin/stations/:id',
-  //   details: [
-  //     { type: 'text', label: 'Admin' },
-  //     { routeTo: '/admin/station', type: 'link', label: 'Manage Station' },
-  //     { type: 'text', label: 'Station_Name' }
-  //   ]
-  // },
-  // {
-  //   name: urlNames.adminStationCreate,
-  //   url: '/admin/stations/create',
-  //   details: [
-  //     { type: 'text', label: 'Admin' },
-  //     { routeTo: '/admin/station', type: 'link', label: 'Manage Station' },
-  //     { type: 'text', label: 'Create Station' }
-  //   ]
-  // }
+  {
+    name: urlNames.adminStationId,
+    url: '/admin/stations/:id',
+    details: [
+      { type: 'text', label: 'Admin' },
+      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+      { type: 'text', label: 'Station_Name' }
+    ]
+  }
 ];
