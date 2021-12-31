@@ -80,55 +80,44 @@ const Breadcrumb: React.FC<any> = (props) => {
     };
   });
 
-  const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
-  const [isRender, setIsRender] = useState(false);
-  const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(getStationsInfoAsync());
-    StationBreadcrumb();
-  }, [isRender]);
+  // const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
+  // const [isRender, setIsRender] = useState(false);
+  // const dispatch = useDispatch();
+  // React.useEffect(() => {
+  //   dispatch(getStationsInfoAsync());
+  //   // StationBreadcrumb();
+  // }, [isRender]);
 
-  useEffect(() => {
-    if (isRender == false) {
-      setIsRender(true);
-    }
-  }, []);
-  const StationBreadcrumb = () => {
-    let station = props.location.pathname.lastIndexOf('/');
-    let stationId: any = props.location.pathname.substring(station + 1, props.location.pathname.length);
-    let stationText = stations.find((x: any) => x?.id === stationId);
-    return stationText != undefined ? stationText.name : '';
-  };
+  // useEffect(() => {
+  //   if (isRender == false) {
+  //     setIsRender(true);
+  //   }
+  // }, []);
+  
+  // const StationBreadcrumb = () => {
+  //   let station = props.location.pathname.lastIndexOf('/');
+  //   let stationId: any = props.location.pathname.substring(station + 1, props.location.pathname.length);
+  //   let stationText = stations.find((x: any) => x?.id === stationId);
+  //   return stationText != undefined ? stationText.name : '';
+  // };
 
-  const breadCrumbPathRedux: any = {
-    '/assets': [
-      { routeTo: '/assets', type: 'CBXLink', label: 'Assets' },
-      { type: 'text', label: breadCrumbValueRedux }
-    ]
-  };
-
-  const StationbreadCrumbTitle: any = {
-    '/admin/stations': [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/station', type: 'link', label: 'Manage Station' },
-      { type: 'text', label: StationBreadcrumb() }
-    ]
-  };
-
-  const classes = CRXPanelStyle();
+   const classes = CRXPanelStyle();
   const getTitle = () => {
-    const stationPath = StationbreadCrumbTitle[urlPath];
+    // const stationPath = StationbreadCrumbTitle[urlPath];
     const paths = urlList.filter((item: any) => item.url === urlPath)[0].details;
     if (paths) {
-      if (stationPath != undefined) {
-        paths[paths.length - 1].label = StationBreadcrumb();
-        const pathName = paths[paths.length - 1].label;
+      // if (stationPath != undefined) {
+      //   paths[paths.length - 1].label = StationBreadcrumb();
+      //   const pathName = paths[paths.length - 1].label;
+      //   return pathName;
+      // } else {
+      //   const pathName = paths[paths.length - 1].label;
+      //   return pathName;
+      // }
+      const pathName = paths[paths.length - 1].label;
         return pathName;
-      } else {
-        const pathName = paths[paths.length - 1].label;
-        return pathName;
-      }
-    } else return '';
+    } 
+    else return '';
   };
 
   const updatePathDetails = (pathDetails: any, Pathurl: string) => {

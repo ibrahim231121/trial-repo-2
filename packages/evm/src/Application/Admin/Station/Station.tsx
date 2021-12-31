@@ -31,6 +31,7 @@ import { userInfo } from "os";
 import { getStationsInfoAsync } from "../../../Redux/StationReducer";
 import StationAnchorDisplay from "./StationAnchorDisplay";
 import StationActionMenu from "./StationActionMenu";
+import AnchorDisplay from "../../../components/DateDisplayComponent/AnchorDisplay";
 
 type Station = {
     id: string;
@@ -216,7 +217,8 @@ const Station: React.FC = () => {
             label: `${t("Station")}`,
             id: "name",
             align: "left",
-            dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
+            // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
+            dataComponent: (e: string) => AnchorDisplay(e, "anchorStyle"),
             sort: true,
             searchFilter: true,
             searchComponent: searchText,

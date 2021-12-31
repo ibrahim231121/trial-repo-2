@@ -46,7 +46,7 @@ const Routes = () => {
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationId)[0].url} exact={true} component={StationDetail} />
+              {/* <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationId)[0].url} exact={true} component={StationDetail} /> */}
               <Route path="/token/:token" exact={true} component={Token} />
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>
