@@ -39,7 +39,8 @@ type User = {
     email: string,
     status: string,
     lastLogin: string,
-    groups: string[]
+    groups: string[],
+    showToastMsg? : (obj : any) => void
 }
 
 type DateTimeProps = {
@@ -345,6 +346,22 @@ const User: React.FC = () => {
             headCells[colIdx].headerArray = v;
         };
 
+        const multiselectProps = {
+            marginLeft : "4px",
+            paddingRight : "7px",
+            marginRight : "7px",
+            paddingLeft : "7px",
+            
+          }
+          const parentStye = {
+            width : "281px",
+            margin : "0px 0px 0px 4px"
+          }
+
+        const listwidth = {
+            width : "279px",
+            marginTop:"-4px"
+        }
         return (
             <MultSelectiDropDown
                 headCells={headCells}
@@ -355,6 +372,9 @@ const User: React.FC = () => {
                 onMultiSelectChange={onSelection}
                 onSetSearchData={onSetSearchData}
                 onSetHeaderArray={onSetHeaderArray}
+                checkedStyle={multiselectProps}
+                parentStye={parentStye}
+                widthNoOption={listwidth}
             />
         );
     };
@@ -449,7 +469,7 @@ const User: React.FC = () => {
 
     const showToastMsg = (obj: any) => {
         toasterRef.current.showToaster({
-            message: obj.message, variant: obj.variant, duration: obj.duration
+            message: obj.message, variant: obj.variant, duration: obj.duration, clearButtton: true
         });
     }
 
@@ -460,7 +480,7 @@ const User: React.FC = () => {
 
     return (
         <div className="crxManageUsers">
-			<CRXToaster ref={toasterRef} />
+			<CRXToaster ref={toasterRef}/>
             <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
             </CRXButton>
             <CRXModalDialog
@@ -469,6 +489,7 @@ const User: React.FC = () => {
                 maxWidth="xl"
                 title="Create User"
                 modelOpen={open}
+                subTitleText="Indicates required field"
                 onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
             >

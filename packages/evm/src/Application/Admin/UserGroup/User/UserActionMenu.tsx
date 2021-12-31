@@ -8,7 +8,7 @@ import "@szhsin/react-menu/dist/index.css";
 import CreateUserForm from "./CreateUserForm";
 import { CRXModalDialog } from "@cb/shared";
 
-import { CRXConfirmDialog } from "@cb/shared";
+import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
 import {
   updateUsersInfoAsync,
   getUsersInfoAsync,
@@ -31,6 +31,8 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
   const [primary, setPrimary] = React.useState<string>("");
   const [secondary, setSecondary] = React.useState<string>("");
   const [modalType, setModalType] = React.useState<string>("");
+  const [responseError, setResponseError] = React.useState<string>("");
+  const [showAlert, setShowAlert] = React.useState<boolean>(false);
 
   const unlockUser = () => {
     setTitle("Unlock user account");
@@ -46,21 +48,37 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
     setIsOpen(true);
     setModalType("deactivate");
   };
-  const dispatchNewCommand = (e: any) => {
+  const dispatchNewCommand = (isSuccess: boolean, errorMsg: string) => {
     switch (modalType) {
       case 'unlock': {
-        showToastMsg({ message: "You have unlocked the user account.", variant: "success", duration: 7000 });
+        if (isSuccess) {
+          showToastMsg({ message: "You have unlocked the user account.", variant: "success", duration: 7000 });
+          dispatch(getUsersInfoAsync());
+          setIsOpen(false);
+        }
+        else {
+          setShowAlert(true);
+          setResponseError("We're sorry. The account was unable to be unlocked. Please retry or contact your System Administrator.");
+        }
         break;
       }
       case 'deactivate': {
-        showToastMsg({ message: "You have deactivated the user account.", variant: "success", duration: 7000 });
+        if (isSuccess) {
+          showToastMsg({ message: "You have deactivated the user account.", variant: "success", duration: 7000 });
+          dispatch(getUsersInfoAsync());
+          setIsOpen(false);
+        }
+        else {
+          setShowAlert(true);
+          setResponseError("We're sorry. The account was unable to be deactivated. Please retry or contact your System Administrator.");
+        }
         break;
       }
       default: {
         break;
       }
     }
-    dispatch(e);
+    // dispatch(e);
   }
 
   const onConfirm = () => {
@@ -95,6 +113,7 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
 
         title="Edit User"
         modelOpen={open}
+        subTitleText="Indicates required field"
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}
       >
@@ -117,18 +136,27 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
         secondary={secondary}
       >
         {
-          <div className="crxUplockContent">
-            <p>
-              You are attempting to <b>{modalType}</b> the following user
-              account:
-            </p>
-            <p>
-              {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
-            </p>
-            <p>
-              Please confirm if you would like to {modalType} this user account.
-            </p>
-          </div>
+          <>
+            {showAlert && <CRXAlert className="UserActionAlert"
+              message={responseError}
+              alertType="inline"
+              type="error"
+              open={showAlert}
+              setShowSucess={() => null}
+            />}
+            <div className="crxUplockContent">
+              <p>
+                You are attempting to <b>{modalType}</b> the following user
+                account:
+              </p>
+              <p>
+                {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
+              </p>
+              <p>
+                Please confirm if you would like to {modalType} this user account.
+              </p>
+            </div>
+          </>
         }
       </CRXConfirmDialog>
       <Menu

@@ -32,7 +32,13 @@
       }
     }
     .MuiDialogContent-root {
-  
+      color: #333333;
+      height: calc(100% - 97px);
+      overflow-y: auto;
+      font-size: 14px;
+      overflow-x: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 7px 53px 5px 27px;
       .crxUplockContent {
         p {
           &:last-child {
@@ -65,44 +71,44 @@
       button {
         font-size: 14px;
         border-radius: 0;
-        // height: 30px;
+        height: 30px;
         text-transform: revert;
         font-family: Arial, Helvetica, sans-serif;
       }
-      //.primaryBtn {
-        // background: #333333;
-        // color: #d1d2d4;
-        // min-width: 187px;
-        // padding: 0 11.5px;
-        // margin-right: 32px;
-        // &:hover {
-        //   background: #6e6e6e;
-        //   color: #f5f5f5;
-        // }
-        // &:focus {
-        //   background: #231f20;
-        //   color: #f5f5f5;
-        // }
-      //}
-      // .secondaryBtn {
-      //   border: 1px solid #878787;
-      //   background: #ffffff;
-      //   color: #333333;
-      //   box-shadow: none;
-      //   min-width: 141px;
-      //   padding: 0 11.5px;
-      //   margin: 0;
-      //   &:hover {
-      //     border: 1px solid #333333;
-      //     background: #f5f5f5;
-      //     color: #333333;
-      //   }
-      //   &:focus {
-      //     background: #231f20;
-      //     color: #f5f5f5;
-      //     border: 1px solid transparent;
-      //   }
-      // }
+      .primaryBtn {
+        background: #333333;
+        color: #d1d2d4;
+        min-width: 187px;
+        padding: 0 11.5px;
+        margin-right: 32px;
+        &:hover {
+          background: #6e6e6e;
+          color: #f5f5f5;
+        }
+        &:focus {
+          background: #231f20;
+          color: #f5f5f5;
+        }
+      }
+      .secondaryBtn {
+        border: 1px solid #878787;
+        background: #ffffff;
+        color: #333333;
+        box-shadow: none;
+        min-width: 141px;
+        padding: 0 11.5px;
+        margin: 0;
+        &:hover {
+          border: 1px solid #333333;
+          background: #f5f5f5;
+          color: #333333;
+        }
+        &:focus {
+          background: #231f20;
+          color: #f5f5f5;
+          border: 1px solid transparent;
+        }
+      }
     }
     .CRXDivider {
       background-color: #d1d2d4;
@@ -110,6 +116,13 @@
   }
 }
 .CrxCreateUser {
+  .CRXContent {
+    overflow-x: hidden;
+  }
+  .crxAlertUserEditForm {
+    margin-bottom: 20px;
+    display: none;
+  }
   .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
     max-width: 685px;
   }
@@ -136,8 +149,8 @@
       label.requiredLable {
         .inputLabelReq {
           line-height: 24px;
-          margin-left: 7px;
-          font-size: 20px;
+          margin-left: 5px;
+          font-size: 18px;
           color: #333333;
         }
       }
@@ -149,14 +162,37 @@
       .users-input {
         width: 380px;
       }
+
       .errorStateContent {
-        font-size: 12px;
+        font-size: 14px;
         color: #aa1d1d;
+        margin: 7px 0 0;
+        line-height: 16px;
+        padding: 0;
+        .crxErrorMsg {
+          color: #aa1d1d !important;
+          font-size: 14px !important;
+        }
+      }
+    }
+    .crxCreateEditDate {
+      margin-bottom: 33px;
+      margin-top: 33px;
+      label {
+        width: 168.66px;
+      }
+      input {
+        padding-right: 8px;
+        text-indent: 8px;
+      }
+      .users-input {
+        width: 380px;
+        padding: 0;
       }
     }
     .crxEditFilter {
       > span {
-        display: flex;
+        display: inline-flex;
         h6 {
           .requiredLable {
             font-size: 14px;
@@ -170,57 +206,203 @@
             }
           }
         }
-        .CrxUserEditForm {
-          width: 380px;
-          margin: 0 0 33px;
-          .selectBoxTextField {
-            .MuiInputBase-adornedEnd {
-              padding-left: 7px !important;
-              .MuiAutocomplete-tag {
-                border: 1px solid #bebebe;
-                height: 20px;
-                color: #333333;
-                border-radius: 1px;
-                background-color: #fff;
+      }
+      .CrxUserEditForm {
+        width: 380px;
+        display: inline-flex;
+        input {
+          display: inline-block;
+          height: auto;
+          min-width: auto;
+          margin-left: 5px;
+          margin-top: -5px;
+          font-size:14px;
+        }
+        &.inputError {
+          margin-bottom: 24px;
+        }
+        .MuiAutocomplete-tag {
+          .MuiChip-label {
+            padding-left: 9px;
+            padding-right: 2px;
+          }
+        }
+      }
+      .crxDropdownValidationError {
+        font-size: 14px;
+        color: #aa1d1d;
+        margin: 7px 0 0;
+        line-height: 16px;
+        padding: 0;
+      }
+      p {
+        &.Mui-error {
+          margin: 0 -7px;
+        }
+      }
+    }
+    // .CrxUserEditForm {
+    //   width: 380px;
+    //   margin: 0;
+    //   .selectBoxTextField {
+    //     .MuiInputBase-adornedEnd {
+    //       padding-left: 7px !important;
+    //       padding-right: 50px !important;
+    //       min-height: 30px;
+    //       .MuiAutocomplete-tag {
+    //         border: 1px solid #bebebe;
+    //         height: 20px;
+    //         color: #333333;
+    //         border-radius: 1px;
+    //         background-color: #fff;
+    //         font-size: 14px;
+    //         align-items: flex-start;
+    //         margin: 5px;
+    //         .MuiChip-label {
+    //           padding-left: 8px;
+    //           padding-right: 0;
+    //         }
+    //         svg {
+    //           width: 14px;
+    //           height: 14px;
+    //           margin-left: 5px;
+    //           color: #d1d2d4;
+    //           margin-right: 5px;
+    //           font-size: 14px;
+    //           stroke: #d1d2d4;
+    //           stroke-width: 2px;
+    //           display: flex;
+    //           align-self: center;
+    //         }
+    //       }
+    //       .MuiAutocomplete-endAdornment {
+    //         right: 12px;
+
+    //         button {
+    //           display: inline-block;
+    //           width: 14px;
+    //           height: 30px;
+    //           position: relative;
+    //           background: transparent;
+    //         }
+    //         .MuiAutocomplete-clearIndicatorDirty {
+    //           svg {
+    //             color: #d1d2d4;
+    //             font-size: 14px;
+    //             stroke: #d1d2d4;
+    //             margin-right: 0px;
+    //             margin-right: 10px;
+    //             stroke-width: 2px;
+    //           }
+    //           &:hover {
+    //             background-color: transparent;
+    //           }
+    //           .MuiTouchRipple-root {
+    //             display: none;
+    //           }
+    //         }
+    //         .MuiAutocomplete-popupIndicator.MuiAutocomplete-popupIndicatorOpen {
+    //           margin: 0 !important;
+    //         }
+    //         .MuiAutocomplete-popupIndicator {
+    //           font-size: 21px;
+    //           padding: 0;
+    //           margin: 0;
+    //           vertical-align: middle;
+    //           i {
+    //             color: #333333;
+    //           }
+    //           svg {
+    //             display: none;
+    //           }
+    //           &:hover {
+    //             background-color: transparent;
+    //           }
+    //           .MuiTouchRipple-root {
+    //             display: none;
+    //           }
+    //         }
+    //       }
+    //       input {
+    //         outline: none;
+    //         border: none !important;
+    //         &:hover {
+    //           outline: none;
+    //           border: none !important;
+    //         }
+    //         &:focus {
+    //           outline: none;
+    //           border: none !important;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   .error {
+    //     &:focus {
+    //       outline: 2px solid #aa1d1d;
+    //     }
+    //   }
+    // }
+
+    .crxRadioBtn {
+      padding-top: 27px;
+      padding-bottom: 29px;
+      label {
+        margin-right: 42px;
+      }
+      .user-radio-group {
+        width: 371px;
+        fieldset {
+          width: 100%;
+          .crxCreateEditFormActivationLink {
+            margin-bottom: 31px;
+            .crxActivationLink {
+              position: absolute;
+              right: -2px;
+              width: 142px;
+              top: 2px;
+              button {
+                background: transparent !important;
+                border: none;
+                color: #c34400 !important;
+                width: auto;
+                display: flex;
+                padding: 0;
+                min-height: auto;
+                height: 17px;
                 font-size: 14px;
-                align-items: flex-start;
-                margin:4px; 
-                .MuiChip-label {
-                  padding-left:8px;
-                  padding-right:0;
+                span {
+                  letter-spacing: 0;
                 }
-                svg {
-                  width: 13px;
-                  height: 17px;
-                  margin-left: 5px;
-                  color: #d1d2d4;
-                  margin-right: 5px;
-                  font-size: 14px;
-                  stroke: #d1d2d4;
-                  stroke-width: 2px;
+                &:hover {
+                  border: none !important;
                 }
               }
-              input {
-                outline: none;
+              label {
+                color: #74767c;
+                width: 150px;
+                display: inline-flex;
+                font-style: italic;
               }
             }
           }
         }
       }
-    }
-    .crxRadioBtn {
-      padding-top: 27px;
-      padding-bottom: 29px;
-      label {
-        margin-right: 44px;
-      }
+
       .crxEditRadioBtn {
         label {
           margin-bottom: 30px;
           .MuiButtonBase-root {
             padding: 0 13px 0 0;
+            &:hover {
+              background-color: transparent;
+            }
+          }
+          &:last-child {
+            margin-bottom: 33px;
           }
         }
+
         .crx-Generate-pass {
           padding: 0 0 0 34px;
           display: block;
@@ -249,7 +431,7 @@
             font-size: 14px;
             color: #d74b00;
             padding-top: 4px;
-            padding-bottom: 25px;
+            padding-bottom: 22px;
             font-family: Arial, Helvetica, sans-serif;
             &:hover {
               background: none;
@@ -272,18 +454,31 @@
             margin-bottom: 27px;
             font-size: 14px;
           }
+          .crxSelectedDark {
+            color: #333333;
+          }
+          // .crxCheckBoxCreate  {
+          //   .MuiIconButton-label {
+          //     span[class*="makeStyles-icon-"] {
+          //       &:hover {
+          //         color:#333333 !important;
+          //       }
+          //     }
+          //   }
+          // }
         }
       }
       .crx-manually-generate-pass {
         padding: 0 0 0 35px;
         > span {
-          margin: 2px 0 39px;
-          display: block !important;
+          margin: 2px 0 35px;
+          display: flex !important;
         }
         h6 {
           font-size: 14px;
           display: inline-block;
-          width: auto;
+          max-width: 132px;
+          min-width: 132px;
           margin-right: 30px;
           .requiredLable {
             margin-bottom: 0;
@@ -299,8 +494,9 @@
         .crx-requird-check {
           float: right;
           display: inline-flex;
+          margin-top: -2px;
           label {
-            margin: -2px 0 28px;
+            margin: -2px 0 33px;
           }
           .CRXCheckBox {
             padding-top: 0;
@@ -311,6 +507,16 @@
         .crx-gente-field {
           width: 173px;
           float: right;
+        }
+        .errorStateContent {
+          width: 173px;
+          float: right;
+          text-align: left;
+          font-size: 14px;
+          color: #aa1d1d;
+          margin: 7px 0 -2px;
+          line-height: 16px;
+          padding: 0;
         }
       }
     }
@@ -406,5 +612,9 @@
   .CrxIndicates {
     margin-top: 38px;
     padding-bottom: 0;
+    font-style: italic;
   }
+}
+.UserActionAlert{
+  min-height: 40px !important;
 }

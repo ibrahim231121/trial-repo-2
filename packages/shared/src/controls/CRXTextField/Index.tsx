@@ -34,10 +34,16 @@ const CRXInput = ({
   required,
   id,
   type,
-  label,...others
+  label,
+  ...others
 }: InputProps) => {
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
+  const errorMsgIcon = (
+    <i className="fas fa-exclamation-circle">
+      <span className="crxErrorMsg"> {errorMsg}</span>
+    </i>
+  );
 
   // const errMsgContent = () => {
   //   if (error === true) {
@@ -60,8 +66,13 @@ const CRXInput = ({
     if (required) {
       return (
         <label className="requiredLable">
-          <span className="inputLabel">{label}{" "}</span>
-          <span className="inputLabelReq" style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
+          <span className="inputLabel">{label} </span>
+          <span
+            className="inputLabelReq"
+            style={{ color: `${error ? "#aa1d1d" : "#000"}` }}
+          >
+            *
+          </span>
         </label>
       );
     } else {
@@ -99,7 +110,7 @@ const CRXInput = ({
               display="block"
               gutterBottom
             >
-              {errorMsg}
+              {errorMsgIcon}
             </Typography>
           )}
         </span>

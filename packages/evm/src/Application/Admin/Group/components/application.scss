@@ -106,24 +106,26 @@
 .applicationPermission-content {
     position: relative;
     margin: 0 81px;
-    &::before {
-        position: fixed;
-        background-color: #fff;
-        top: 211px;
-        left: 168px;
-        content: " ";
-        width: 85%;
-        height: 110px;
-        z-index: 99;
-        display: block;
-        margin: 0 auto;
-        z-index: 1;
+    .application-Permission-DataTable {
+        // &::before {
+        //     position: fixed;
+        //     background-color: #fff;
+        //     top: 211px;
+        //     left: 168px;
+        //     content: " ";
+        //     width: 85%;
+        //     height: 110px;
+        //     z-index: 99;
+        //     display: block;
+        //     margin: 0 auto;
+        //     z-index: 1;
+        // }
     }
     .application-permission-menu {
         position: sticky;
         top: 0;
         text-align: right;
-        z-index: 2;
+        z-index: 3;
         .application-permission-dropdown {
             width: 238px;
             border: 1px solid #D1D2D4;
@@ -192,10 +194,35 @@
         }
     }
     .applicationPermission-content{
-        &::before {
-            top: 211px;
-            width: 1024px;
-            left: 192px;
+        .application-Permission-DataTable {
+            &::before {
+                top: 211px;
+                width: 1024px;
+                left: 192px;
+            }
         }
+    }
+    .hiddenArea {
+        top: 212px;
+        &.isErrorHide {
+            top: 271px;
+        }
+    }
+}
+
+.hiddenArea {
+    position: fixed;
+    background-color: #fff;
+    top: 212px;
+    left: 154px;
+    // content: " ";
+    width: 85%;
+    height: 110px;
+    z-index: 99;
+    display: block;
+    margin: 0 auto;
+    z-index: 1;
+    &.isErrorHide {
+        top: 271px;
     }
 }

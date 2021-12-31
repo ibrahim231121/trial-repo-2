@@ -194,7 +194,7 @@ const CRXAssetsBucketPanel = () => {
     };
     const noOptionStyled = {
       width : "107px",
-      marginLeft : "-11px",
+      marginLeft : "0px",
       whiteSpace : "nowrap",
       overFlow : "hidden",
       textOverflow : "ellipsis",
@@ -224,7 +224,7 @@ const CRXAssetsBucketPanel = () => {
         onSetSearchData={onSetSearchData}
         onSetHeaderArray={onSetHeaderArray}
         widthNoOption={noOptionStyled}
-        paddLeft={paddLeft}
+        checkedStyle={paddLeft}
       />
     );
   };

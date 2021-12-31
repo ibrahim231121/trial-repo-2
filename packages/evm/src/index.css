@@ -200,7 +200,7 @@ code {
   text-indent: 0;
 }
 .crx-main-container {
-  min-height: 96.8vh !important;
+  min-height: 94.8vh !important;
 }
 
 .divOuter .onDraggingThumb {
@@ -230,4 +230,9 @@ code {
 
 .columnse {
   padding:  0 15px;
+}
+
+.crx-ToasterContainer {
+  margin-top: 48px;
+  margin-right: 8px;
 }
