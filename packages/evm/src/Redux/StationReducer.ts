@@ -9,13 +9,10 @@ export const getStationsInfoAsync: any = createAsyncThunk(
             headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
         };
         const resp = await fetch(STATION_INFO_GET_URL, requestOptions);
-        console.log("res",resp)
         if (resp.ok) {
             const response = await resp.json();
-            // console.log(response);
             return response;
         }
-        
     }
 );
 
