@@ -39,11 +39,11 @@ const Routes = () => {
             <Switch>
 
               {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <Route path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/token/:token" exact={true} component={Token} />
               <Route path="*" component={ErrorPage} />

@@ -50,6 +50,7 @@ const Group = () => {
   const [subModulesIds, setSubModulesIds] = React.useState<Number[]>([]);
   const [showGroupScroll, setShowGroupScroll] = React.useState(false);
   const [messagesadd, setMessagesadd] = useState<string>("crxScrollGroupTop");
+  const [showMessageCls, setShowMessageCls] = useState<string>("");
   const [deletedDataPermissions, setDeletedDataPermissions] = React.useState<
     number[]
   >([]);
@@ -393,11 +394,6 @@ useEffect(() => {
                 container.status === 404
               ) {
                 setShowSuccess(true);
-                
-                setTimeout(() => {
-                  setShowSuccess(false);
-                 
-                }, 70000);
                 setAlertType("inline");
                 setMessages(message[2].message);
                 setError(message[2].messageType);
@@ -422,9 +418,11 @@ useEffect(() => {
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
 
           setShowSuccess(true);
+          setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow")
          
           setMessages(error);
+          setAlertType("inline");
           setError("error");
         }
         
