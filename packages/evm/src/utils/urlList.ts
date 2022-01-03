@@ -61,15 +61,15 @@ export const urlList: any = [
             { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
         ],
     },
-    {
-        name: urlNames.adminUserGroup,
-        url: "/admin/usergroups/group",
-        details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Group", }
-        ],
-    },
+    // {
+    //     name: urlNames.adminUserGroup,
+    //     url: "/admin/usergroups/group",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+    //         { type: "text", label: "Group", }
+    //     ],
+    // },
     {
         name: urlNames.adminUserGroupId,
         url: "/admin/usergroups/group/:id",

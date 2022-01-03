@@ -38,7 +38,7 @@ const TestModalPage = () => {
     };
     
     const saveServerData = (v : React.MouseEvent<HTMLElement>) => {
-        console.log("Open and close my popup", v);
+
         setOpen(false);
     }
     return (

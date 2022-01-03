@@ -1,11 +1,13 @@
 
 .crx-model {
   .MuiDialog-scrollPaper {
+    align-items: flex-start;
     .MuiDialog-paperScrollPaper {
       overflow: hidden !important;
-      height: calc(100% - 192px) !important;
-      height: calc(100% - 262px) !important;
-      top: 29px;
+      // height: calc(100% - 192px) !important;
+      // height: calc(100% - 262px) !important;
+      top: 126px;
+      padding-top: 20px;
     }
   }
   .MuiBackdrop-root {
@@ -15,7 +17,7 @@
   .MuiDialog-paper {
     padding: 16px 0 0 0;
     border-radius: 0;
-    min-width: 600px;
+    max-width: 600px;
     box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
     -webkit-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
     -moz-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
@@ -25,40 +27,60 @@
 
   .modelTitle {
     padding: 0 25px 0 25px;
-
+    position: relative;
+    z-index: 999999;
     h2 {
-      font-size: 1.125em;
+      font-size:18px;
       color: #333333;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+      line-height: 20px;
     }
+    // &::after {
+    //   background: #ffffff;
+    //   position: absolute;
+    //   height: 85px;
+    //   content: " ";
+    //   z-index: 9999;
+    //   width: 100%;
+    // }
   }
 
-  .CrxIndicates {
+  .indicatestext{
+    color: #333;
     font-size: 14px;
-    display: flex;
-    margin-top: 39px;
+    font-style: italic;
+    padding-bottom: 28px;
+    padding-top: 40px;
     padding-left: 25px;
-    padding-bottom: 3px;
-    // padding: 0 25px 0 25px;
-    sup {
-      line-height: 17px;
-      margin-right: 10px;
-      font-size: 17px;
-      font-weight: bold;
+    z-index: 99999;
+    b {
+      font-size: 20px;
     }
   }
 
   .CRXContent {
-    padding: 35px 25px 45px;
+    padding: 0px 26px 43px;
     font-size: 0.875em;
     color: #333333;
     height: calc(100% - 97px);
     overflow-y: auto;
+    overflow-x: hidden;
+    .overlayClx {
+      background: #ffffff;
+      position: absolute;
+      height: 85px;
+      content: " ";
+      z-index: 10;
+      width: 100%;
+      top: 40px;
+      left: 0;
+    }
   }
-  
   .CRXFooter {
     padding: 0 25px;
     justify-content: flex-start;
-    height: 72px;
+    height: 74px;
 
     .modalPrimeryBtn {
       background-color: #333;
@@ -122,13 +144,19 @@
 
   .CRXPopupCrossButton {
     position: absolute;
-    top: 2px;
-    right: 4px;
-    width: auto;
+    top: 6px;
+    right: 6px;
+    width: 46px;
 
     i {
       font-size: 16px;
       color: #d1d2d4;
+      &:hover {
+        color: #333;
+      }
+      &:focus {
+        color: #333;
+      }
     }
   }
 
@@ -137,6 +165,16 @@
     bottom: 115px;
     color: #333;
     font-size: 14px;
+  }
+  .modalContentText {
+    font-size: 14px !important;
+    color: #333;
+    padding: 28px 0px;
+  }
+  .modalBottomText {
+    font-size: 14px;
+    color: #333;
+    padding-top: 5px;
   }
 }
 .CRXSecList {
@@ -156,9 +194,9 @@
   .crx-model {
     .MuiDialog-scrollPaper {
       .MuiDialog-paperScrollPaper {
-        overflow: hidden !important;
-        height: calc(100% - 262px) !important;
-        top: 29px;
+        //overflow: hidden !important;
+        // height: calc(100% - 262px) !important;
+        // top: 29px;
       }
     }
   }
@@ -171,10 +209,10 @@
   .crx-model {
     .MuiDialog-scrollPaper {
       .MuiDialog-paperScrollPaper {
-        overflow: hidden !important;
-        height: calc(100% - 64px) !important;
-        height: calc(100% - 262px) !important;
-        top: 29px;
+        //overflow: hidden !important;
+        // height: calc(100% - 64px) !important;
+        // height: calc(100% - 262px) !important;
+        // top: 29px;
       }
     }
   }
@@ -188,13 +226,13 @@
     .MuiDialog-scrollPaper {
       .MuiDialog-paperScrollPaper {
         overflow: hidden !important;
-        height: calc(100% - 64px) !important;
-        height: calc(100% - 262px) !important;
-        top: 29px;
+        // height: calc(100% - 64px) !important;
+        // height: calc(100% - 262px) !important;
+        // top: 29px;
       }
     }
     .CRXContent {
-      height: calc(100% - 101px);
+      // height: calc(100% - 101px);
     }
   }
   .CRXSecList {

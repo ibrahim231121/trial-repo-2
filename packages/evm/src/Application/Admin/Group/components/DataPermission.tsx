@@ -174,7 +174,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 var stations = response
                     .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
                     .map((x: StationResponse) => {
-                        let StationR: Station = { value: parseInt(x.id), label: x.name }
+                        let StationR: Station = { value: (x.id), label: x.name }
                         return StationR;
                     })
                 stations.push({ value: -2, label: 'All' })

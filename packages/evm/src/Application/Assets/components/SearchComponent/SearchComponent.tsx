@@ -138,8 +138,6 @@ const SearchComponent = (props: any) => {
 
   const Search = () => {
    
-    console.log("set Date time asset");
-    console.log(dateTimeDropDown);
 
     const NormalSearch =() =>{
 
@@ -257,8 +255,7 @@ const SearchComponent = (props: any) => {
 
             var  approachingMaxDateValue = dateOptions.approachingDeletion.find(x=> x.value === "next 30 days");
             if(approachingMaxDateValue){
-              console.log("max date");
-              console.log(approachingMaxDateValue);
+
               setCompactDateRange({
                   showCompact:true,
                   minDate:approachingMaxDateValue.startDate(),

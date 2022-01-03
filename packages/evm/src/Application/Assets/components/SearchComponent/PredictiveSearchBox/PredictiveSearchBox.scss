@@ -223,8 +223,18 @@
     top: 7px;
     color: #76787e;
   }
-
+  
   #combo-box-demo {
     text-indent: 38px;
+  }
+  .getac-simple-select{
+    .selectBoxTextField {
+      input {
+        outline: 1px solid transparent;
+        &:focus {
+          outline: 3px solid #888787 !important;
+        } 
+      }
+    }
   }
 }

@@ -29,7 +29,7 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo }) => {
       <label className="indicates-label"><b>*</b> Indicates required field</label>
       <div className="crx-group-info">
         <div className="groupInfoInputs">
-          <TextField required={true} label="Group Name" value={name} className="userError" onChange={onChangeName} />
+          <TextField required={true} label="Group Name" value={name} className="userError" onChange={onChangeName} errorMsg={"Group name is required"}/>
         </div>
         <div className="groupInfoInputs">
           <TextField label="Description" multiline variant="outlined" rows={4} value={description} onChange={onChangeDescription} />

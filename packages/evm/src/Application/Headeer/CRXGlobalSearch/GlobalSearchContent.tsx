@@ -5,8 +5,7 @@ const GlobalSearch = () => {
     const [searchValue, setValue] = useState<any>();
 
     const changeHandler = (event : React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event);
-        console.log(event.target.value);
+
         setValue(event.target.value);
     }
     return (

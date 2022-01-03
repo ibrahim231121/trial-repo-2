@@ -57,8 +57,6 @@ type Props = {
 
    if(showCompact && ( minDate && minDate !== "") && ( maxDate &&  maxDate !== "") ){
 
-    console.log("Min Date = " , minDate);
-    console.log("Min Date = " , maxDate);
     
     minStartDate = minDate.split("+")[0];
     maxEndDate = maxDate.split("+")[0];     

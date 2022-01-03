@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Menu,
   MenuItem,
   MenuButton,
   SubMenu,
   MenuDivider,
-} from "@szhsin/react-menu";
-import "@szhsin/react-menu/dist/index.css";
-import './index.scss'
+} from '@szhsin/react-menu';
+import '@szhsin/react-menu/dist/index.css';
+import './index.scss';
+
+import { useDispatch, useSelector } from 'react-redux';
+import FormContainer from '../Category/FormContainer';
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
-import { useDispatch, useSelector } from "react-redux";
+
 import { RootState } from "../../../../Redux/rootReducer";
 
 type Props = {
-  selectedItems?: any; 
-  row?: any; 
+  selectedItems?: any;
+  row?: any;
 };
 
 interface AssetBucket {
@@ -25,7 +28,7 @@ interface AssetBucket {
   categories: string[];
 }
 
-const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
   const dispatch = useDispatch()
   let addToAssetBucketDisabled: boolean = false
@@ -44,6 +47,25 @@ const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
       dispatch(addAssetToBucketActionCreator(selectedItems))
     }
   }
+
+  const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    /**
+     * ! This rerenders if row is updated, it means user clicked the menu from parent component.
+     * ! So we need to reset the form index, so that it starts from start.
+     */
+    if (row?.categories?.length > 0) {
+      setIsCategoryEmpty(false);
+    } else {
+      setIsCategoryEmpty(true);
+    }
+  }, [row]);
+
+  const [openForm, setOpenForm] = React.useState(false);
+  const handleChange = () => {
+    setOpenForm(true);
+  };
+
 
   const MultiCompareAssetBucketData = (assetBucketData: AssetBucket[], selectedItems: any[]) => {
     let assetBucketIds = assetBucketData.map((x: AssetBucket) => x.id);
@@ -71,145 +93,160 @@ const ActionMenu: React.FC<Props> = ({ selectedItems,row }) => {
       addToAssetBucketDisabled = true
   }
 
+
   return (
-    <Menu
-      align="start"
-      viewScroll="initial"
-      direction="right"
-      position="auto"
-      className="menuCss"
-      arrow
-      menuButton={
-        <MenuButton>
-          <i className="far fa-ellipsis-v"></i>
-        </MenuButton>
-      }
-    >
+    <>
+      <FormContainer
+        setOpenForm={() => setOpenForm(false)}
+        openForm={openForm}
+        rowData={row}
+        isCategoryEmpty={isCategoryEmpty}
+        setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
+      />
 
-      <MenuItem >
-        <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
-          <div className="crx-menu-icon"></div>
-          <div className={addToAssetBucketDisabled === false ? "crx-menu-list" : "crx-menu-list disabledItem"}>
-            Add to asset bucket
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
-            <i className="far fa-clipboard-list fa-md"></i>
-          </div>
-          <div className="crx-menu-list">
-            Categorize
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
+      <Menu
+        align="start"
+        viewScroll="initial"
+        direction="right"
+        position="auto"
+        className="menuCss"
+        arrow
+        menuButton={
+          <MenuButton>
+            <i className="far fa-ellipsis-v"></i>
+          </MenuButton>
+        }
+      >
+      
 
+        <MenuItem>
+          <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
+            <div className="crx-menu-icon"></div>
+            <div className={addToAssetBucketDisabled === false ? "crx-menu-list" : "crx-menu-list disabledItem"}>
+              Add to asset bucket
+            </div>
           </div>
-          <div className="crx-menu-list">
-            Set as primary asset
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
-            <i className="far fa-user-tag fa-md"></i>
-          </div>
-          <div className="crx-menu-list">
-            Assign user
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content groupingMenu">
-          <div className="crx-menu-icon">
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
 
+            </div>
+            <div className="crx-menu-list">
+              Set as primary asset
+            </div>
           </div>
-          <div className="crx-menu-list">
-            Modify Retention
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-user-tag fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Assign user
+            </div>
           </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
-            <i className="far fa-envelope fa-md"></i>
-          </div>
-          <div className="crx-menu-list">
-            Email
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content groupingMenu">
-          <div className="crx-menu-icon">
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
 
+            </div>
+            <div className="crx-menu-list">
+              Modify Retention
+            </div>
           </div>
-          <div className="crx-menu-list">
-            <SubMenu label="Export">
-              <MenuItem>File</MenuItem>
-              <MenuItem>Metadata</MenuItem>
-              <MenuItem>Evidence overlaid video</MenuItem>
-              <MenuItem>Metadata overlaid video</MenuItem>
-            </SubMenu>
+        </MenuItem>
+        <MenuItem>
+          <div className='crx-meu-content' onClick={handleChange}>
+            <div className='crx-menu-icon'>
+              <i className='far fa-clipboard-list fa-md'></i>
+            </div>
+            {isCategoryEmpty === false ? (
+              <div className='crx-menu-list'>Edit Category and Form</div>
+            ) : (
+              <div className='crx-menu-list'>Categorize</div>
+            )}
           </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
-            <i className="far fa-link fa-md"></i>
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-envelope fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Email
+            </div>
           </div>
-          <div className="crx-menu-list">
-            Link asset
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem disabled>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
 
+            </div>
+            <div className="crx-menu-list">
+              <SubMenu label="Export">
+                <MenuItem>File</MenuItem>
+                <MenuItem>Metadata</MenuItem>
+                <MenuItem>Evidence overlaid video</MenuItem>
+                <MenuItem>Metadata overlaid video</MenuItem>
+              </SubMenu>
+            </div>
           </div>
-          <div className="crx-menu-list disabledItem">
-            Link to this group
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-link fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Link asset
+            </div>
           </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content">
-          <div className="crx-menu-icon">
-            <i className="far fa-external-link-square fa-md"></i>
-          </div>
-          <div className="crx-menu-list">
-            Move asset
-          </div>
-        </div>
-      </MenuItem>
-      <MenuItem disabled>
-        <div className="crx-meu-content groupingMenu">
-          <div className="crx-menu-icon">
+        </MenuItem>
+        <MenuItem disabled>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
 
+            </div>
+            <div className="crx-menu-list disabledItem">
+              Link to this group
+            </div>
           </div>
-          <div className="crx-menu-list disabledItem">
-            Move to this group
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content">
+            <div className="crx-menu-icon">
+              <i className="far fa-external-link-square fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Move asset
+            </div>
           </div>
-        </div>
-      </MenuItem>
-      <MenuItem>
-        <div className="crx-meu-content crx-spac">
-          <div className="crx-menu-icon">
-            <i className="far fa-user-lock fa-md"></i>
+        </MenuItem>
+        <MenuItem disabled>
+          <div className="crx-meu-content groupingMenu">
+            <div className="crx-menu-icon">
+
+            </div>
+            <div className="crx-menu-list disabledItem">
+              Move to this group
+            </div>
           </div>
-          <div className="crx-menu-list">
-            Restrict access
+        </MenuItem>
+        <MenuItem>
+          <div className="crx-meu-content crx-spac">
+            <div className="crx-menu-icon">
+              <i className="far fa-user-lock fa-md"></i>
+            </div>
+            <div className="crx-menu-list">
+              Restrict access
+            </div>
           </div>
-        </div>
-      </MenuItem>
-    </Menu>
+        </MenuItem>
+      </Menu>
+    </>
   );
-};
+});
+
 export default ActionMenu;

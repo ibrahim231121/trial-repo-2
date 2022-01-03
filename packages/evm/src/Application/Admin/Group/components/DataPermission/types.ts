@@ -14,7 +14,7 @@ export type Station = {
 }
 
 export type StationResponse = {
-    id:string,
+    id:number,
     name:string
 }
 
