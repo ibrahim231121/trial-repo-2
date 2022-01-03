@@ -204,6 +204,13 @@
     }
   }
 }
+.errorGroupInfo {
+  &.errorMessageShow {
+    .userError {
+      outline: 1px solid #d1d2d4;
+    }
+  }
+}
 .errorMessageShow  .userError   {
   outline: 2px solid #aa1d1d;
 }

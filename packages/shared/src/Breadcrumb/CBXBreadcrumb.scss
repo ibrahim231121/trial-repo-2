@@ -3,18 +3,21 @@
   line-height: 28px !important;
 
   li {
+    color: #333333;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
     a {
-      color: #C34400;
+      color: #c34400;
       font-size: 12px;
       text-decoration: none;
 
       &:hover {
-        color: #C34400;
+        color: #c34400;
         text-decoration: underline;
         cursor: pointer;
       }
       &:focus {
-        color: #C34400;
+        color: #c34400;
         text-decoration: underline;
         cursor: pointer;
       }
@@ -39,16 +42,16 @@
 
   .breadCrumbItem {
     font-size: 12px;
-    color: #C34400;
+    color: #c34400;
     font-family: Arial, Helvetica, sans-serif !important;
 
     &:hover {
-      color: #C34400;
+      color: #c34400;
       text-decoration: underline;
       cursor: pointer;
     }
     &:focus {
-      color: #C34400;
+      color: #c34400;
       text-decoration: underline;
       cursor: pointer;
     }

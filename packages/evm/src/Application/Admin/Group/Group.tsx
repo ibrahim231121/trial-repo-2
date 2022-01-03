@@ -72,7 +72,6 @@ const Group = () => {
   const [alertType, setAlertType] = useState<string>("inline");
   const [error, setError] = useState<string>("");
 
-  const [showMessageCls, setShowMessageCls] = useState<string>("");
   const [showMessageError, setShowMessageError] = useState<string>("");
 
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
@@ -414,11 +413,10 @@ useEffect(() => {
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
           setShowSuccess(true);
-          setShowMessageCls("showMessageGroup");
-          setTimeout(() => {
-            setShowSuccess(false);
+          // setTimeout(() => {
+          //   setShowSuccess(false);
             
-          }, 70000);
+          // }, 70000);
           setMessages(message[1].message);
           setError(message[1].messageType);
         } else if (status === 409 || status === 404) {
@@ -427,18 +425,20 @@ useEffect(() => {
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
 
           setShowSuccess(true);
-          setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow")
-          setTimeout(() => {
-            setShowSuccess(false);
-            setShowMessageError("")
-          }, 70000);
+          // setTimeout(() => {
+          //   setShowSuccess(false);
+          //   setShowMessageError("")
+          // }, 70000);
           setMessages(error);
           setError("error");
         }
+        
       });
   };
-  const alertMsgDiv = showSuccess ? " " : "hideMessageGroup"
+
+  const alertMsgDiv = showSuccess ? "" : "hideMessageGroup"
+
   
   return (
     <div className="App crxTabsPermission" style={{}}>
@@ -456,7 +456,8 @@ useEffect(() => {
 
         <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
         <CrxTabPanel value={value}   index={0}>
-        <div className={showMessageError}>
+        {/* <div className={showMessageError}> */}
+        <div className={`${showMessageError} ${alertType == "inline" ? "" : "errorGroupInfo"}`}>
           <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} />
           </div>
         </CrxTabPanel>
