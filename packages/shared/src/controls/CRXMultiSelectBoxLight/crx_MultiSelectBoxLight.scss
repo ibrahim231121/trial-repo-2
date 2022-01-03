@@ -21,6 +21,11 @@
             }
             .MuiAutocomplete-input {
                 padding: 0px;
+                font-size: 14px;
+                position: relative;
+                min-width: 0px;
+                top: -2px;
+                padding-left: 10px;
             }
         }
        
@@ -39,6 +44,8 @@
         position: relative;
         .MuiChip-deleteIcon {
             opacity: 0;
+            position: relative;
+            z-index: 5;
             &:hover {
                 cursor: pointer;
             }
@@ -62,12 +69,28 @@
         border:1px solid transparent;
     }
     .MuiInputBase-adornedEnd {min-height: 29px;}
+
+    .MuiFormControl-root {
+        .MuiInputBase-root {
+            .MuiAutocomplete-tag {
+                .MuiChip-label {
+                    padding-left: 5px;
+                    padding-right: 8px;
+                }
+            }
+        }
+    }
 }
 
-.checkIcon {
+.checkIconSingle {
     color: #F5F5F5;
     font-size:15px;
-    margin-right: 0;
+    margin-right: 12px;
+    padding-left: 10px;
+}
+
+.singleLabel {
+    padding-left: 15px;
 }
 
 @media screen and(max-width : 1366)  {

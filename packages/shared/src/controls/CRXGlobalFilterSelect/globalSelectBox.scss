@@ -3,9 +3,13 @@
 .crx-global-Select{
     width: 325px;
     // min-height: 30px;
-    &.darkTheme {
+    &.dark {
         
         background-color: #d1d2d4;
+    }
+    &.light {
+        
+        background-color: #fff;
     }
     .MuiFormControl-root{
         border-width: 0px !important;

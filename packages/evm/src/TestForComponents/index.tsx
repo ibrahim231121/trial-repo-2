@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { CRXGlobalSelectFilter, CRXGlobalTooltip } from '@cb/shared'
+import { CRXGlobalSelectFilter, CRXGlobalTooltip, CRXMultiSelectBoxLight } from '@cb/shared'
 
 interface renderCheck {
-  value?: string,
+  label?: string,
   id?: string,
 
 }
@@ -10,20 +10,21 @@ interface renderCheck {
 const TestViewsForDemo = () => {
 
   const searchAbleOpt = [
-    { value: 'The Shawshank Redemption', id: 1994 },
-    { value: 'The Godfather', id: 1972 },
-    { value: 'The Godfather: Part II', id: 1974 },
-    { value: 'The Dark Knight', id: 2008 },
-    { value: '12 Angry Men', id: 1957 },
-    { value: "Schindler's List", id: 1993 },
-    { value: 'Pulp Fiction', id: 1994 },
-    { value: 'The Good, the Bad and the Ugly', id: 1966 },
-    { value: 'Fight Club', id: 1999 },
-    { value: 'Naked weppan', id: 2000 },
-    { value: 'Avengers', id: 2001 },
+    { label: 'The Shawshank Redemption', id: 1994 },
+    { label: 'The Godfather', id: 1972 },
+    { label: 'The Godfather: Part II', id: 1974 },
+    { label: 'The Dark Knight', id: 2008 },
+    { label: '12 Angry Men', id: 1957 },
+    { label: "Schindler's List", id: 1993 },
+    { label: 'Pulp Fiction', id: 1994 },
+    { label: 'The Good, the Bad and the Ugly', id: 1966 },
+    { label: 'Fight Club', id: 1999 },
+    { label: 'Naked weppan', id: 2000 },
+    { label: 'Avengers', id: 2001 },
   ];
 
   const [autoValue, setAutoValue] = React.useState<renderCheck[]>();
+  const [singleSelect, setSingleSelect] = React.useState<renderCheck[]>();
   const [open, setOprnState] = useState<boolean>()
   const hanlerChange = (e: any, val: renderCheck[]) => {
 
@@ -39,8 +40,8 @@ const TestViewsForDemo = () => {
     setOprnState(true)
   }
 
-  const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheck[]) => {
-    setAutoValue([]);
+  const onChangeSelectSingle = (e: React.SyntheticEvent, val: renderCheck[]) => {
+    setSingleSelect(val)
   }
 
   // React.useEffect(() => {
@@ -53,17 +54,17 @@ const TestViewsForDemo = () => {
 
 
       <div className="inlineDiv">
-        <div className="columnse">
+        {/* <div className="columnse">
           <CRXGlobalSelectFilter
             id="SelectWithoutCheckBox"
             multiple={false}
             onChange={(e: any, val: renderCheck[]) => hanlerChange(e, val)}
             options={searchAbleOpt}
             CheckBox={false}
-            getOptionLabel={(option: renderCheck) => option.value ? option.value : " "}
-            getOptionSelected={(option: renderCheck, value: renderCheck) => option.value === value.value}
+            getOptionLabel={(option: renderCheck) => option.label ? option.label : " "}
+            getOptionSelected={(option: renderCheck, label: renderCheck) => option.label === label.label}
           />
-        </div>
+        </div> */}
         {/* <div className="columnse">
       <CRXGlobalSelectFilter 
         id="multiSelect"
@@ -76,7 +77,7 @@ const TestViewsForDemo = () => {
         getOptionSelected={(option : renderCheck, value : renderCheck) => option.value === value.value}
         /> 
         </div> */}
-        <div className="columnse">
+        {/* <div className="columnse">
           <CRXGlobalSelectFilter
             id="multiSelect"
             multiple={true}
@@ -85,14 +86,40 @@ const TestViewsForDemo = () => {
             options={searchAbleOpt}
             CheckBox={true}
             checkSign={false}
+            theme="light"
             open={open}
             clearSelectedItems={(e: React.SyntheticEvent, options: renderCheck[]) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheck) => option.value ? option.value : " "}
-            getOptionSelected={(option: renderCheck, value: renderCheck) => option.value === value.value}
+            getOptionLabel={(option: renderCheck) => option.label ? option.label : " "}
+            getOptionSelected={(option: renderCheck, label: renderCheck) => option.label === label.label}
             onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+          />
+        </div> */}
+       
+        <div className="columnse">
+          <CRXMultiSelectBoxLight
+            id="multiSelect"
+            multiple={false}
+            value={singleSelect}
+            onChange={(e: React.SyntheticEvent, option: renderCheck[]) => { return onChangeSelectSingle(e, option) }}
+            options={searchAbleOpt}
+            CheckBox={true}
+            checkSign={false}
+            required={true}
           />
         </div>
         <div className="columnse">
+          <CRXMultiSelectBoxLight
+            id="multiSelect"
+            multiple={true}
+            value={autoValue}
+            onChange={(e: React.SyntheticEvent, option: renderCheck[]) => { return hanlerChangeCom(e, option) }}
+            options={searchAbleOpt}
+            CheckBox={true}
+            checkSign={false}
+            required={true}
+          />
+        </div>
+        {/* <div className="columnse">
           <h3>Tooltip Popup</h3>
           <div  style={{ border: "1px solid black", width: "325px", margin: "2px, 2px, 2px,200px", background: "#d1d2d4", padding: "2px"  }}>
             <label style={{ margin: "0 100px  0 50px" }}>TOP</label>
@@ -142,10 +169,10 @@ const TestViewsForDemo = () => {
             <label style={{ margin: "0 100px  0 50px" }}>LEFT END</label>
             <CRXGlobalTooltip iconName="fas fa-info-circle" title="Select from pre-selection" placement="left-end" arrow={true} />
           </div>
-        </div>
+        </div> */}
 
         
-        <div className="columnse">
+        {/* <div className="columnse">
         <h3>Tooltip </h3>
           <div  style={{ border: "1px solid black", width: "325px", margin: "2px, 2px, 2px,200px", background: "#d1d2d4", padding: "2px"  }}>
             <label style={{ margin: "0 100px  0 50px" }}>TOP</label>
@@ -195,7 +222,7 @@ const TestViewsForDemo = () => {
             <label style={{ margin: "0 100px  0 50px" }}>LEFT END</label>
             <CRXGlobalTooltip iconName="fas fa-info-circle" title="Select from pre-selection" placement="left-end" arrow={false} />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
