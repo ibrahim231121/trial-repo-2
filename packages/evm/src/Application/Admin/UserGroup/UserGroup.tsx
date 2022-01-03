@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGroupAsync, getGroupUserCountAsync } from "../../../Redux/GroupReducer";
 import { RootState } from "../../../Redux/rootReducer";
 import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
-import anchorDisplay from "../../../components/DateDisplayComponent/AnchorDisplay";
+import anchorDisplay from "../../../utils/AnchorDisplay";
 import { useHistory } from "react-router-dom";
 import './index.scss'
 import { urlList, urlNames } from "../../../utils/urlList"
@@ -160,7 +160,7 @@ const UserGroup: React.FC = () => {
       label: `${t("Group Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => anchorDisplay(e, "anchorStyle"),
+      dataComponent: (e: string) => anchorDisplay(e, "anchorStyle", urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
