@@ -414,11 +414,6 @@ useEffect(() => {
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
           setShowSuccess(true);
-          setShowMessageCls("showMessageGroup");
-          // setTimeout(() => {
-          //   setShowSuccess(false);
-            
-          // }, 70000);
           setMessages(message[1].message);
           setError(message[1].messageType);
         } else if (status === 409 || status === 404) {
@@ -428,10 +423,7 @@ useEffect(() => {
 
           setShowSuccess(true);
           setShowMessageError("errorMessageShow")
-          // setTimeout(() => {
-          //   setShowSuccess(false);
-          //   setShowMessageError("")
-          // }, 70000);
+         
           setMessages(error);
           setError("error");
         }
@@ -443,7 +435,6 @@ useEffect(() => {
     if (!showGroupScroll && window.pageYOffset > 15) {
       setShowGroupScroll(true);
       setMessagesadd('crxScrollGroup')
-      
 
     } else if (!showGroupScroll && window.pageYOffset <= 15) {
       setShowGroupScroll(false);
