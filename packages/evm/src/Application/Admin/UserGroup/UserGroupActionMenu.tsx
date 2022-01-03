@@ -9,6 +9,7 @@ import {
 import "@szhsin/react-menu/dist/index.css";
 //import './index.scss'
 import { useDispatch } from "react-redux";
+import { VoidExpression } from "typescript";
 
 type Props = {
     selectedItems?: any;
@@ -18,6 +19,9 @@ type Props = {
 const UserGroupActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
 
     return (
+        <div className="toolBar">
+            
+        
         <Menu
             align="start"
             viewScroll="initial"
@@ -32,6 +36,7 @@ const UserGroupActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             }
         >
         </Menu>
+        </div>
     );
 };
 export default UserGroupActionMenu;

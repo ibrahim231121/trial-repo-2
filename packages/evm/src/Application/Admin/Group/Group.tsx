@@ -48,7 +48,8 @@ const Group = () => {
   });
   const [userIds, setUserIds] = React.useState<Number[]>([]);
   const [subModulesIds, setSubModulesIds] = React.useState<Number[]>([]);
-
+  const [showGroupScroll, setShowGroupScroll] = React.useState(false);
+  const [messagesadd, setMessagesadd] = useState<string>("crxScrollGroupTop");
   const [deletedDataPermissions, setDeletedDataPermissions] = React.useState<
     number[]
   >([]);
@@ -413,6 +414,7 @@ useEffect(() => {
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
           setShowSuccess(true);
+          setShowMessageCls("showMessageGroup");
           // setTimeout(() => {
           //   setShowSuccess(false);
             
@@ -437,8 +439,29 @@ useEffect(() => {
       });
   };
 
-  const alertMsgDiv = showSuccess ? "" : "hideMessageGroup"
+  const checkGroupScrollTop = () => {
+    if (!showGroupScroll && window.pageYOffset > 15) {
+      setShowGroupScroll(true);
+      setMessagesadd('crxScrollGroup')
+      
 
+    } else if (!showGroupScroll && window.pageYOffset <= 15) {
+      setShowGroupScroll(false);
+      setMessagesadd("crxScrollGroupTop")
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", checkGroupScrollTop);
+    return () => window.removeEventListener("scroll", checkGroupScrollTop);
+  }, []);
+
+  const scrollGroupTop = () => {
+    window.scrollTo({ top: 0 });
+  };
+
+
+  const alertMsgDiv = showSuccess ? " " : "hideMessageGroup"
   
   return (
     <div className="App crxTabsPermission" style={{}}>
@@ -464,11 +487,17 @@ useEffect(() => {
        
 
         <CrxTabPanel value={value} index={1}>
+          <div className={`${showSuccess ? "crxGroupTab1 isErrorHide" : "crxGroupTab1"} ${messagesadd}`}>
           <User ids={userIds} onChangeUserIds={onChangeUserIds}></User>
+          </div>
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={2}>
-          <div className={showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"}></div>
+          <div 
+          onClick={scrollGroupTop}
+          className={`${showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"} ${messagesadd}`}
+        
+          ></div>
           <Application
             subModulesIds={subModulesIds}
             applicationPermissions={applicationPermissions}
@@ -478,6 +507,7 @@ useEffect(() => {
         </CrxTabPanel>
 
         <CrxTabPanel value={value} index={3}>
+          <div className="crxGroupTab3">
           <DataPermission
             dataPermissionsInfo={dataPermissions}
             onChangeDataPermission={onChangeDataPermission}
@@ -488,6 +518,7 @@ useEffect(() => {
               setDeletedDataPermissions(deletedPermissions);
             }}
           ></DataPermission>
+          </div>
         </CrxTabPanel>
    
       <div className="tab-bottom-buttons">

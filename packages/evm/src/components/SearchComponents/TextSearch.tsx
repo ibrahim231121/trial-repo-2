@@ -5,12 +5,14 @@ import { ValueString } from "../../utils/globalDataTableFunctions"
 type Props = {
   headCells: any[];
   colIdx: number;
+  className?: string;
   onChange: (e: ValueString[]) => void;
 };
 
 const SearchText: React.FC<Props> = ({
   headCells,
   colIdx,
+  className,
   onChange,
 }) => {
   
@@ -27,6 +29,7 @@ const SearchText: React.FC<Props> = ({
         ? headCells[colIdx].headerArray[0].value 
         : headCells[colIdx].headerArray = [{value: ""}]
       }
+      className={className}
       id={"CRX_" + colIdx.toString()}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e)}
     />

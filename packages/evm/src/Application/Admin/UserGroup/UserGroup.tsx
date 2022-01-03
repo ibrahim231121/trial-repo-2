@@ -114,7 +114,7 @@ const UserGroup: React.FC = () => {
     };
 
     return (
-      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} className="userGroupSearchBox" />
     );
   };
 
@@ -174,9 +174,9 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: (e : any ) => simpleFilter(e),
+      searchComponent: searchText, //(e : any ) => simpleFilter(e),
       minWidth: "100",
-      maxWidth: "100",
+      maxWidth: "200",
     },
     {
       label: `${t("Total Users Assigned")}`,
@@ -241,7 +241,7 @@ const UserGroup: React.FC = () => {
             orderByParam={orderBy}
             searchHeader={true}
             columnVisibilityBar={true}
-            className="ManageAssetDataTable crxTableHeight bucketDataTable crxTableDataUi"
+            className="ManageAssetDataTable crxTableHeight crxTableDataUi"
             onClearAll={clearAll}
             getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
             onResizeRow={resizeRow}

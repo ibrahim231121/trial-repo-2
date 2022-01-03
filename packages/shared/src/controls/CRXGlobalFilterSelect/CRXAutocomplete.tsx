@@ -50,11 +50,12 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       maxHeight: "332px",
       minHeight: "165px",
       overflowY: "auto",
-      width: "326px",
+      width: "101.5%",
       position: "relative",
       backgroundColor: "#404041",
       top: "3px",
       left: "-8px",
+
       "& > ul": {
         padding: "0px",
         maxHeight: "100vh",

@@ -62,7 +62,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         let dbDataPermission: PermissionData[] = [];
         dataPermissionsInfo.map((x: any | undefined) => {
             var cat = categories.find((y: any) => parseInt(y.value) == x.mappingId);
-            console.log("dbDataPermission", cat);
+            
             if (x.fieldType == 2) {
                 if (cat != undefined) {
                     dbDataPermission.push({

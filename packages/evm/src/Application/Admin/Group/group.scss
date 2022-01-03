@@ -11,14 +11,14 @@
     margin-top: -2px;
     position: relative;
     &::before {
-      width: 1543px;
+      width: 1606px;
       height: 9px;
       background: #fff;
       position: fixed;
       content: " ";
-      z-index: 3;
+      z-index: 2;
       margin-top: -25px;
-      margin-left: 74px;
+      margin-left: 69px;
     }
     &::after {
       // width: 1152px;
@@ -32,6 +32,13 @@
       // bottom: 115px;
     }
   }
+  div[aria-labelledby="crx-tab-3"] {
+    &::before { 
+      background:transparent;
+    }
+  }
+
+
 
   .MuiTab-root {
     padding: 0 25px;

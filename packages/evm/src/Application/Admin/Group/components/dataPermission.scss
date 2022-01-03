@@ -1,7 +1,7 @@
 .crx-datapermission-tab {
   padding-top: 22px;
   .dataPermissionContent {
-    margin:0 86px;
+    margin: 0 86px;
   }
   .crxPermissionPageScroll {
     padding: 0;
@@ -170,7 +170,7 @@
           width: 100%;
           height: 30px !important;
           margin: 0 auto;
-          i.Mui-disabled{
+          i.Mui-disabled {
             background-color: #e5e5e5;
           }
           .Mui-disabled {
@@ -215,7 +215,7 @@
           background-color: #ffffff;
           outline: 3px solid transparent;
           color: #333333;
-          .crxArrowDownSelect  {
+          .crxArrowDownSelect {
             background-color: #fff;
             padding-left: 5px !important;
           }
@@ -325,24 +325,31 @@
   }
 }
 
-  .userDataTableParent {
-    margin: 0px 81px;
-    position: relative;
-    top: -20px;
-    font-family: Arial, Helvetica, sans-serif;
-    .crxClearfilter {
-      position: sticky !important;
-      top: -19px;
-      background: #fff;
-      z-index: 99;
-      padding-bottom: 4.2px;
-    }
+.userDataTableParent {
+  margin: 0px 81px;
+  position: relative;
+  top: -20px;
+  font-family: Arial, Helvetica, sans-serif;
+  .crxClearfilter {
+    position: sticky !important;
+    top: -19px;
+    background: #fff;
+    z-index: 99;
+    padding-bottom: 4.2px;
+  }
   .usersGroupDataTable {
     overflow-x: initial !important;
     margin-top: 0px;
-    table { 
-      tbody { 
-        tr{
+    table {
+      tbody {
+        tr {
+          td {
+            &:last-child {
+              border-right: none;
+            }
+          }
+        }
+        tr {
           &:nth-child(even) {
             td {
               &:first-child {
@@ -370,35 +377,33 @@
             padding-top: 7px;
             padding-bottom: 7px;
             &:last-child {
-            .dataTableSimpleText {
-              white-space: nowrap;
-              overflow: hidden;
-              width: 318px;
-              text-overflow: ellipsis;
+              .dataTableSimpleText {
+                white-space: nowrap;
+                overflow: hidden;
+                width: 318px;
+                text-overflow: ellipsis;
+              }
             }
-          }
-          .CRXCheckBox {
-            position: relative;
-            left: 10px;
+            .CRXCheckBox {
+              position: relative;
+              left: 10px;
               span {
                 input {
-                &:hover {
-                  & ~ span {
-                    color: #f5f5f5 !important;
+                  &:hover {
+                    & ~ span {
+                      color: #f5f5f5 !important;
+                    }
                   }
                 }
               }
             }
           }
-      
-         }
-          &.Mui-selected{
+          &.Mui-selected {
             background-color: #231f20 !important;
-            td[scope=row] {
+            td[scope="row"] {
               background-color: #231f20 !important;
-              
             }
-          } 
+          }
         }
       }
       tbody {
@@ -406,27 +411,39 @@
           td:nth-child(3) {
             background: inherit;
           }
-        } 
+        }
       }
       thead {
         tr {
-            th {
-                &.CRXDataTableLabelCell {
-                    top: 45px !important;
-                }
-                &.TableSearchAbleHead {
-                    top: 80px !important;
-                }
+          th {
+            &.CRXDataTableLabelCell {
+              top: 45px !important;
             }
+            &.TableSearchAbleHead {
+              top: 80px !important;
+            }
+            &:last-child {
+              border-right: none;
+              .crxTableHeaderSize {max-width: 100% !important;}
+            }
+            span {
+              span {
+                width: 100%;
+              }
+            }
+            .crx-global-Select {
+              width: 100%;
+            }
+          }
         }
-    }
+      }
     }
   }
 
   .dataTablePages {
     position: fixed;
-    bottom: 112px;
-    width: 1550px;
+    bottom: 15vh;
+    width: 1573px;
     background: #fff;
     /* left: 0; */
     z-index: 999;
@@ -434,50 +451,80 @@
   }
 }
 
-
 @media only screen and (max-width: 1366px) {
   .userDataTableParent {
-      .dataTablePages {
-          position: fixed;
-          bottom: 111px !important;
-          width: 1019px !important;
-          background: #fff;
-          /* left: 0; */
-          z-index: 999;
-          border-top: 1px solid #ccc;
-          .MuiIconButton-root {
-            padding: 0px !important;
-            span {
-              .MuiSvgIcon-root {
-                  width: 23px !important;
-              }
-            }
+    .dataTablePages {
+      position: fixed;
+      bottom: 21.6vh !important;
+      width: 1019px !important;
+      background: #fff;
+      /* left: 0; */
+      z-index: 999;
+      // border-top: 1px solid #ccc;
+      .MuiIconButton-root {
+        padding: 0px !important;
+        span {
+          .MuiSvgIcon-root {
+            width: 23px !important;
           }
-      
-      }
-      .crxClearfilter {
-        padding-left: 0px !important;
-        padding-right: 0px !important;
-      }
-      .dataTableColumnShoHide {
-        .dataIconButton {
-          padding-right: 4px;
         }
       }
-  } 
+    }
+    .crxClearfilter {
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+      min-height: 70px;
+      top: -25px;
+    }
+    .dataTableColumnShoHide {
+      .dataIconButton {
+        padding-right: 4px;
+      }
+    }
+  }
+
+ 
 }
 
-@media only screen and (max-width: 1620px) {
+@media (max-width: 1600px) and (max-height : 900px) 
+{
   .userDataTableParent {
-      .dataTablePages {
-          position: fixed;
-          bottom: 114px;
-          width: 1190px;
-          background: #fff;
-          /* left: 0; */
-          z-index: 999;
-          border-top: 1px solid #ccc;
-      
+    .dataTablePages {
+      position: fixed;
+      bottom: 19vh;
+      width: 1189px;
+      background: #fff;
+      /* left: 0; */
+      z-index: 999;
+      // border-top: 1px solid #ccc;
+    }
+  }
+  .crxGroupTab1 {
+    &.crxScrollGroupTop {
+      .userDataTableParent {
+        .crxClearfilter {
+          top: -25px;
+          min-height: 70px;
+        }
+        // .dataTablePages {
+        //   bottom: 114px;
+        // }
       }
-  } 
+     
+    }
+    &.crxScrollGroup {
+      .userDataTableParent {
+        .crxClearfilter {
+          top: -25px;
+          min-height: 70px;
+        }
+      }
+     
+    }
+  }
+  .hiddenArea {
+    &.crxScrollGroup {
+      top: 216px;
+    }
+  }
 }
