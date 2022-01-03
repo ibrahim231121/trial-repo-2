@@ -193,7 +193,7 @@ const CRXMultiSelectBoxLight = ({
       return (
         <span className="requiredLable">
           {label}{" "}
-          <span style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
+          <span style={{ color: `${error ? "#aa1d1d" : "#000"}`, paddingLeft:"8px", fontWeight:"bold" }}>*</span>
         </span>
       );
     } else {

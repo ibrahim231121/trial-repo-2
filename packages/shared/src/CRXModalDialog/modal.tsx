@@ -26,6 +26,7 @@ export interface crxDialogProps {
   confirmContent: any,
   id?: string,
   subTitleText?: string,
+  showSticky? : boolean
 }
 
 
@@ -55,6 +56,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
     secondaryButton = false,
     primaryButton = false,
     cancelButtonTxt,
+    showSticky = false,
     saveButtonTxt = "Primery Button", closeWithConfirm, subTitleText } = props;
 
   const [maxWidthProps, setmaxWidthProps] = React.useState<DialogProps['maxWidth']>('sm');
@@ -83,6 +85,11 @@ const CRXModalDialog = (props: crxDialogProps) => {
       <DialogTitle id="simple-dialog-title" className="modelTitle">{title}</DialogTitle>
       {(subTitleText !== null && subTitleText != undefined) ?
         <div className="CrxIndicates"><sup>*</sup>{subTitleText ? subTitleText : "Indicates required field"}</div> : ""}
+
+      {
+        (showSticky && showSticky == true) ? 
+        <div className="optionalSticky"></div> : ""
+      }
       <div className="CRXContent CRXContent_user">
         {children}
         <CRXConfirmDialog

@@ -1,4 +1,8 @@
 .crx-unblock-modal {
+  .crx-message-alert {
+    margin-top: 17px;
+    margin-bottom: 35px;
+  }
   .MuiDialog-container {
     align-items: flex-start;
   }
@@ -10,27 +14,6 @@
     overflow-x: hidden;
     top: 126px;
 
-    .CRXPopupCrossButton {
-      position: absolute;
-      top: 7px;
-      right: 7px;
-      width: 46px;
-      button {
-        &:hover {
-          background-color: transparent;
-        }
-        .MuiButton-label {
-          justify-content: center;
-          .closeModalIconUnblock {
-            font-size: 16px;
-            color: #d1d2d4;
-            &:hover {
-              color: #333333;
-            }
-          }
-        }
-      }
-    }
     .MuiDialogContent-root {
       color: #333333;
       height: calc(100% - 97px);
@@ -123,7 +106,6 @@
   }
   .crxAlertUserEditForm {
     margin-bottom: 20px;
-    display: none;
   }
   .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
     max-width: 685px;
@@ -181,7 +163,7 @@
       margin-bottom: 33px;
       margin-top: 33px;
       label {
-        width: 168.66px;
+        width: 169px;
       }
       input {
         padding-right: 8px;
@@ -190,6 +172,7 @@
       .users-input {
         width: 380px;
         padding: 0;
+        // left: -51px;
       }
     }
     .crxEditFilter {
@@ -610,13 +593,66 @@
   }
   .modalEditCrx {
     padding-right: 11px;
+    padding-top: 2px;
   }
   .CrxIndicates {
-    margin-top: 38px;
-    padding-bottom: 0;
+    margin-top: 2px;
+    padding-bottom: 33px;
+    padding-left: 0px;
     font-style: italic;
+    position: sticky;
+    top: 2px;
+    background: #fff;
+    z-index: 1;
   }
 }
 .UserActionAlert{
   min-height: 40px !important;
+}
+
+.optionalSticky {
+  position: absolute;
+  background: #fff;
+  width: 96%;
+  height: 102px;
+  z-index: 1;
+  content: " ";
+  top: 41px;
+}
+
+.CRXContent_user {
+  .crx-message-alert {
+    top: 4px;
+    z-index: 9999999;
+    position: sticky;
+  }
+}
+
+
+.CRXPopupCrossButton {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 46px;
+  button {
+    &:hover {
+      background-color: transparent;
+    }
+    .MuiButton-label {
+      justify-content: center;
+      .closeModalIconUnblock {
+        font-size: 16px;
+        color: #d1d2d4;
+        &:hover {
+          color: #333333;
+        }
+      }
+    }
+  }
+}
+
+.isExtEmail {
+  input {
+      outline: 2px solid #aa1d1d;
+  }
 }

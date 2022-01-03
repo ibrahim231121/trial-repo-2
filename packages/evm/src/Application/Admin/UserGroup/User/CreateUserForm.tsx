@@ -91,12 +91,12 @@ const CreateUserForm: React.FC<Props> = ({
   const [alert, setAlert] = React.useState<boolean>(false);
 
   const [isPasswordResetRequired, setIsPasswordResetRequired] = React.useState<boolean>(false);
-
+  const alertRef = useRef(null);
   const [disableLink, setDisableLink] = React.useState(false);
   const toasterRef = useRef<typeof CRXToaster>(null)
-
+  const [isExtUsers, setIsExtUsers] = useState<string>('')
+  const [isExtEmail, setIsExtEmail] = useState<string>('')
  const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
-
 
   React.useEffect(() => {
     if (id)
@@ -435,6 +435,7 @@ const CreateUserForm: React.FC<Props> = ({
               error.errors.Email !== undefined &&
               error.errors.Email.length > 0
             ) {
+              
               setAlert(true);
               setResponseError(error.errors.Email[0]);
             }
@@ -461,6 +462,19 @@ const CreateUserForm: React.FC<Props> = ({
           } else {
             setAlert(true);
             setResponseError(error);
+            const errorString = error;
+            if(errorString.includes("email") === true) {
+              setIsExtEmail("isExtEmail");
+            } else {
+              setIsExtEmail("");
+            }
+
+            if(errorString.includes("username") === true) {
+              setIsExtUsers("isExtUserName");
+            } else {
+              setIsExtUsers("");
+            }
+            
           }
         }
       })
@@ -575,6 +589,19 @@ const CreateUserForm: React.FC<Props> = ({
           } else {
             setAlert(true);
             setResponseError(error);
+            const errorString = error;
+            if(errorString.includes("email") === true) {
+              setIsExtEmail("isExtEmail");
+            } else {
+              setIsExtEmail("");
+            }
+
+            if(errorString.includes("username") === true) {
+              setIsExtUsers("isExtUserName");
+            } else {
+              setIsExtUsers("");
+            }
+            
           }
         }
       })
@@ -747,12 +774,33 @@ const CreateUserForm: React.FC<Props> = ({
     }
   };
 
+useEffect(() => {
+  const alertClx:any = document.getElementsByClassName("crxAlertUserEditForm");
+  const crxIndicate : any = document.getElementsByClassName("CrxIndicates");
+  const modalEditCrx : any = document.getElementsByClassName("modalEditCrx");
+  const optionalSticky : any = document.getElementsByClassName("optionalSticky");
+  const altRef = alertRef.current;
   
+  if(alert === false && altRef === null && optionalSticky.length > 0) {
+    
+    alertClx[0].style.display = "none";
+    crxIndicate[0].style.top = "2px";
+    modalEditCrx[0].style.paddingTop = "2px";
+    optionalSticky[0].style.height = "79px"
+  }else {
+    alertClx[0].style.display = "flex";
+    crxIndicate[0].style.top = "83px";
+    modalEditCrx[0].style.paddingTop = "29px";
+    if(optionalSticky.length > 0) {
+        optionalSticky[0].style.height = "119px"
+      }
+  }
+},[alert])
 return (
     <div className="">
-      <div className="modalEditCrx">
-        <CRXToaster ref={toasterRef} />
+      <CRXToaster ref={toasterRef} />
         <CRXAlert
+          ref={alertRef}
           message={responseError}
           alertType="inline"
           type="error"
@@ -760,6 +808,9 @@ return (
           open={alert}
           setShowSucess={() => null}
         />
+        <div className="CrxIndicates"><sup>*</sup> Indicates required field</div>
+      <div className="modalEditCrx">
+        
         <div className="CrxEditForm">
           <TextField
             error={!!formpayloadErr.userNameErr}
@@ -767,7 +818,7 @@ return (
             required={true}
             value={formpayload.userName}
             label="Username"
-            className="users-input"
+            className={"users-input " + isExtUsers}
             onChange={(e: any) =>
               setFormPayload({ ...formpayload, userName: e.target.value })
             }
@@ -836,7 +887,7 @@ return (
             required={true}
             value={formpayload.email}
             label="Email"
-            className="users-input"
+            className={"users-input " + isExtEmail}
             onChange={(e: any) =>
               setFormPayload({ ...formpayload, email: e.target.value })
             }

@@ -488,8 +488,8 @@ const User: React.FC = () => {
                 style={{ minWidth: "680px" }}
                 maxWidth="xl"
                 title="Create User"
+                showSticky={true}
                 modelOpen={open}
-                subTitleText="Indicates required field"
                 onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
                 closeWithConfirm={closeWithConfirm}
             >
