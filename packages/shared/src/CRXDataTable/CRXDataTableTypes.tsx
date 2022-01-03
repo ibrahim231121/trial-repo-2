@@ -155,8 +155,9 @@ export interface HeadCellProps {
   align: string;
   sort?: boolean;
   visible?: boolean;
-  minWidth: string;
+  minWidth?: string;
   maxWidth?: string;
+  width?: string;
   dataComponent?: any;
   searchFilter?: boolean;
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)

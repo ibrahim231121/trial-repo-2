@@ -55,8 +55,8 @@ const CRXGlobalSelectFilter = ({
 
   const data = options;
   const classes = theme == 'light' ? lightTheme() : darkTheme();
-  const changeStyle = multiple ? "filteredStyle" : " ";
-  const opupOpenCret = checkSign || CheckBox ? <i className="fas fa-caret-down"></i> : " ";
+  const changeStyle:any = multiple ? "filteredStyle" : " ";
+  const opupOpenCret = checkSign || CheckBox ? <i className={"fas fa-caret-down " + classes.popupIndicator}></i> : " ";
   const [opens, setOpen] = useState<boolean>(open);
   const [valState, setValState] = useState<any[]>();
   
@@ -93,7 +93,7 @@ const CRXGlobalSelectFilter = ({
 
   React.useEffect(() => {
     setValState(value);
-    console.log("value", value);
+    
   }, [value]);
 
   const clearAllSelectedItems = () => {

@@ -26,8 +26,9 @@ export interface HeadCellProps {
   align: string;
   sort?: boolean;
   visible?: boolean;
-  minWidth: string;
+  minWidth?: string;
   maxWidth?: string;
+  width?:string;
   dataComponent?: any;
   searchFilter?: boolean;
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
@@ -51,7 +52,7 @@ export const onResizeRow = (
   headCells: HeadCellProps[]
 ) => {
   const { colIdx, deltaX } = e;
-  let value = headCells[colIdx].minWidth;
+  let value:any = headCells[colIdx].minWidth;
 
   let x = parseInt(value) + deltaX;
   //headCells[colIdx].minWidth = x.toString()

@@ -38,7 +38,7 @@ type infoProps = {
     onChangeUserIds: any
 }
 interface renderCheckMultiselect {
-    value?: string,
+    label?: string,
     id?: string,
 
 }
@@ -155,9 +155,9 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
 
         groupNames = groupNames.filter(findUniqueValue);
-        let groups: any = [{ value: "No Groups"}];
-        groupNames.map((x: string) => { groups.push({ value: x}) })
-
+        let groups: any = [{ label: "No Groups"}];
+        groupNames.map((x: string) => { groups.push({ label: x}) })
+        
         const settingValues = (headCell: HeadCellProps) => {
             let val: any = []
             if(headCell.headerArray !== undefined) 
@@ -179,9 +179,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     CheckBox={true}
                     checkSign={false}
                     open={open}
+                    theme="dark"
                     clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-                    getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
-                    getOptionSelected={(option: renderCheckMultiselect, value: renderCheckMultiselect) => option.value === value.value}
+                    getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+                    getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
                     onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
                     noOptionsText="No Group"
                 />
@@ -194,7 +195,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
         let value: any[] = val.map((x) => {
             let item = {
-                value: x.value
+                value: x.label
             }
             return item
         })
@@ -210,7 +211,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         console.log("onOpen")
         //setOpen(true)
     }
-
+    //console.log("HeadCellProps" , HeadCellProps[])
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
             label: `${t("ID")}`,
@@ -233,8 +234,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100%",
-            maxWidth: "260",
+            width: "260px",
+            maxWidth: "360px",
             visible: true,
         },
         {
@@ -245,8 +246,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100%",
-            maxWidth: "195",
+            minWidth: "225px",
+            maxWidth: "325px",
             visible: true,
         },
         {
@@ -257,8 +258,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "100%",
-            maxWidth: "195",
+            minWidth: "225px",
+            maxWidth: "450px",
             visible: true,
         },
         {
@@ -269,8 +270,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:User[]) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-            minWidth: "100%",
-            maxWidth: "318",
+            minWidth: "318px",
+            maxWidth: "120px",
             visible: true,
         },
     ]);
