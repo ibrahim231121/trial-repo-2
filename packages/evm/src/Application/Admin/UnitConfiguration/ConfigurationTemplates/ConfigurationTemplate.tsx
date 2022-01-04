@@ -246,6 +246,11 @@ const ConfigurationTemplates: React.FC = () => {
             <div className="crx-menu-list">BC03</div> 
             </Link>     
         </MenuItem>
+        <MenuItem >
+        <Link to="/admin/unitanddevices/createtemplate/BC03Lte"> 
+            <div className="crx-menu-list">BC03 Lte</div> 
+            </Link>     
+        </MenuItem>
       </Menu >
 
 

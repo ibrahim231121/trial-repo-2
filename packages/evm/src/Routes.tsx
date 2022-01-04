@@ -37,7 +37,9 @@ import { timerActionCreator } from "../src/Redux/timerslice";
 import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
 import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
+import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
 import Cookies from "universal-cookie";
+import TestViewsForDemo from '../../evm/src/TestForComponents/index';
 const cookies = new Cookies();
 
 interface CounterState {
@@ -53,7 +55,7 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
   cookies.set('access_token', accessToken, options)
 }
 
-import TestViewsForDemo from '../../evm/src/TestForComponents/index'
+
 const Routes = () => {
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(true);
@@ -124,9 +126,26 @@ const Routes = () => {
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitAndDevicesDetial} />
+              
+              <Route path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplateCreate)[0].url} exact={true} component={CreateUnitConfigurationTemplate} />
+            
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreate)[0].url} exact={true} component={CreateTemplate} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateClone)[0].url} exact={true} component={CloneTemplate} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplate)[0].url} exact={true} component={DevicesTemplate} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
+           
+        
+              
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/token/:token" exact={true} component={Token} />
-              <PrivateRoute  path="/test/CreateTemplate" component={CreateComponent} />
+              {/* <PrivateRoute  path="/test/CreateTemplate" component={CreateComponent} />
               <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
               <PrivateRoute path={Object.entries(urlList)[8][0].toString()} exact={true} component={UnitConfiguration} />
               <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
@@ -138,7 +157,7 @@ const Routes = () => {
               <PrivateRoute path={Object.entries(urlList)[13][0].toString()} exact={true} component={DevicesTemplate} />
               <PrivateRoute path={Object.entries(urlList)[15][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
               <PrivateRoute path={Object.entries(urlList)[16][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
-              <PrivateRoute path="*" component={ErrorPage} />
+              <PrivateRoute path="*" component={ErrorPage} /> */}
               
             </Switch>
           </main>

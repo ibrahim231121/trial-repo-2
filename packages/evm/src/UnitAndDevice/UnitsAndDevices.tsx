@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +23,7 @@ import {
   Order,
   onTextCompare,
   onMultiToMultiCompare,
+  onMultipleCompare,
   onDateCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
@@ -35,6 +36,7 @@ import TextSearch from "../components/SearchComponents/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { logOutUser } from "../Login/API/auth";
 import { CBXLink } from "@cb/shared";
+import { Console } from "node:console";
 
 type Unit = {
   id: number;
@@ -45,7 +47,11 @@ type Unit = {
   lastCheckedIn: string,
   status: string
 }
+interface renderCheckMultiselect {
+  value?: string,
+  id?: string,
 
+}
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
   colIdx: number;
@@ -83,8 +89,10 @@ const UnitAndDevices: React.FC = () => {
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<Unit[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
+  const [open, setOpen] = React.useState<boolean>(false)
 
   const setData = () => {
+ 
     let unitRows: Unit[] = [];
         if (units && units.length > 0) {
           unitRows = units.map((unit: any, i:number) => {
@@ -124,6 +132,7 @@ const UnitAndDevices: React.FC = () => {
     };
 
     const onSelection = (v: ValueString[], colIdx: number) => {
+   
       if (v.length > 0) {
         for (var i = 0; i < v.length; i++) {
           let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
@@ -133,6 +142,7 @@ const UnitAndDevices: React.FC = () => {
             )
           );
           setSearchData((prevArr) => [...prevArr, searchDataValue]);
+         
         }
       } else {
         setSearchData((prevArr) =>
@@ -229,6 +239,80 @@ const UnitAndDevices: React.FC = () => {
       );
 
   };
+  function findUniqueValue(value: any, index: any, self: any) {
+    return self.indexOf(value) === index;
+}
+  const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
+
+    if(colIdx === 6) {
+        console.log(initialRows);
+    let statuslist: any = [];
+
+    if(initialRows != undefined){
+    if(initialRows.length > 0) {
+        initialRows.map((x: Unit) => {
+          statuslist.push(x.status);
+        });
+    }
+  }
+    statuslist = statuslist.filter(findUniqueValue);
+    let status: any = [{ value: "No Status"}];
+    statuslist.map((x: string) => { status.push({ value: x}) })
+
+    const settingValues = (headCell: HeadCellProps) => {
+  
+        let val: any = []
+        if(headCell.headerArray !== undefined) 
+            val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
+        else 
+            val = []
+        return val
+    }
+
+    return (
+        <div>
+            
+            <CRXGlobalSelectFilter
+                id="multiSelect"
+                multiple={true}
+                value={settingValues(headCells[colIdx])}
+                onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+                options={status}
+                CheckBox={true}
+                checkSign={false}
+                open={open}
+                clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+                getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
+                getOptionSelected={(option: renderCheckMultiselect, value: renderCheckMultiselect) => option.value === value.value}
+                onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+                noOptionsText="No Status"
+            />
+        </div>
+    )
+    }
+
+}
+
+const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+
+  let value: any[] = val.map((x) => {
+      let item = {
+          value: x.value
+      }
+      return item
+  })
+  onSelection(value, colIdx)
+  headCells[colIdx].headerArray = value;
+}
+const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultiselect[]) => {
+  setSearchData([]);
+  let headCellReset = onClearAll(headCells);
+  setHeadCells(headCellReset);
+}
+const openHandler = (_: React.SyntheticEvent) => {
+  console.log("onOpen")
+  //setOpen(true)
+}
 
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -249,7 +333,7 @@ const UnitAndDevices: React.FC = () => {
       label: `${t("UnitId")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplay(e, "linkColor"),
+      dataComponent: (e: string) =>  textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -309,12 +393,17 @@ const UnitAndDevices: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "100",
+    //  searchComponent: searchText,
+      
+     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+         
+     minWidth: "100",
       maxWidth: "100",
     }
   ]);
 
+  
 
   const searchAndNonSearchMultiDropDown = (
     rowsParam: Unit[],
@@ -400,12 +489,22 @@ useEffect(() => {
 
 const dataArrayBuilder = () => {
     if (reformattedRows !== undefined) {
+    
         let dataRows: Unit[] = reformattedRows;
         searchData.forEach((el: SearchObject) => {
-          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "status" || el.columnName === "assignedTo" )
+          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" )
                 dataRows = onTextCompare(dataRows, headCells, el);
             if (el.columnName === "lastCheckedIn")
                 dataRows = onDateCompare(dataRows, headCells, el);
+                if (el.columnName === "status") {
+                  dataRows = onMultipleCompare(dataRows, headCells, el);
+                  if(el.value.includes("No Status")) {
+                      reformattedRows.filter(i => i.status.length === 0).map((x:Unit) => {
+                          dataRows.push(x)
+                      })
+                      
+                  }
+              }
 
         }
         );
@@ -419,6 +518,9 @@ const resizeRow = (e: { colIdx: number; deltaX: number }) => {
 };
 
 const clearAll = () => {
+  const clearButton:any = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]
+  clearButton && clearButton.click()
+  setOpen(false)
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -449,7 +551,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           showCountText={false}
           columnVisibilityBar={true}
 
-
+          initialRows={reformattedRows}
           dragVisibility={true}
           showCheckBoxesCol={true}
           showActionCol={true}

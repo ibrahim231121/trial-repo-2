@@ -6,11 +6,10 @@ export const getUnitInfoAsync: any = createAsyncThunk(
     async () => {
         const requestOptions = {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '13' },
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
         };
         const resp = await fetch(UNIT_INFO_GET_URL, requestOptions);
         if (resp.ok) {
-            debugger;
             const response = await resp.json();
             return response;
         }
