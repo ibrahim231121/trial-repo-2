@@ -469,7 +469,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
           //---required Props
-          className="ManageAssetDataTable crxTableHeight bucketDataTable"
+          className="ManageAssetDataTable crxTableHeight"
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
