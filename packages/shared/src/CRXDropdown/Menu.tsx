@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Menu, Button, MenuItem, Icon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
+import {Link} from "react-router-dom";
 import "./DropDown.scss"
 const DropdownStyle = makeStyles({
     button : {
@@ -68,7 +68,7 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, nam
     const buttonChild = iconButton ? iconHtml : name;
 
     const ListOfMenu = MenuList.map((item:any, index:number) => {
-        return <MenuItem onClick={item.onClick} key={index}>{item.label}</MenuItem>
+        return <Link to={item.router}><MenuItem key={index}  onClick={onClick}>{item.label}</MenuItem></Link>
     });
     return (
         <div className={"GetacMenu " + wrapper}>
