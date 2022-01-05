@@ -71,23 +71,24 @@ export const urlList: any = [
     //     ],
     // },
     {
-        name: urlNames.adminUserGroupId,
-        url: "/admin/usergroups/group/:id",
-        details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Group", }
-        ],
-    },
-    {
         name: urlNames.userGroupCreate,
-        url: "/admin/usergroups/group/create",
+        url: "/admin/usergroups/group",
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
             { type: "text", label: "Create User Group", }
         ],
     },
+    {
+        name: urlNames.adminUserGroupId,
+        url: "/admin/usergroups/group/:id(\\d+)",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Group", }
+        ],
+    },
+
     {
         name: urlNames.adminUsers,
         url: "/admin/users",

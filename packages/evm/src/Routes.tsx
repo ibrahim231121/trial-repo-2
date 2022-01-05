@@ -15,6 +15,8 @@ import HomeRoute from "./Routes/HomeRoute";
 import { urlList, urlNames } from "./utils/urlList"
 import User from "./Application/Admin/User";
 import TestViewsForDemo from '../../evm/src/TestForComponents/index'
+import Restricted from "./ApplicationPermission/Restricted";
+
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
@@ -23,10 +25,14 @@ const Routes = () => {
     setOpen(!open);
   };
 
+
+
   return (
     <div>
       <HomeRoute path="/" exact={true} component={Login} />
-      <Route path={'/(.+)'} render={() => (
+      <Route 
+       path={'/(.+)'} 
+      render={() => (
         <>
           <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
@@ -37,15 +43,17 @@ const Routes = () => {
             })}
           >
             <Switch>
-
-              {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+{/* 
+              <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
+              <PrivateRoute moduleId={2} path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
+              <PrivateRoute moduleId={56} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
+              <PrivateRoute moduleId={53} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+              <PrivateRoute moduleId={52} path={urlList.filter((item:any) =>  item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+              <PrivateRoute moduleId={65} path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/token/:token" exact={true} component={Token} />
+
+              <Route path="/notfound" component={ErrorPage} /> 
               <Route path="*" component={ErrorPage} />
             </Switch>
           </main>

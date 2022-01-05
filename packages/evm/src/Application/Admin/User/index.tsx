@@ -33,6 +33,7 @@ import CreateUserForm from "./CreateUserForm";
 import {addNotificationMessages }  from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes"
 import moment from "moment";
+import Restricted from '../../../ApplicationPermission/Restricted'
 
 type User = {
     id: string;
@@ -494,8 +495,10 @@ const User: React.FC = () => {
     return (
         <div className="crxManageUsers">
 			<CRXToaster ref={toasterRef}/>
-            <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
+            <Restricted moduleId={70}>
+                <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
             </CRXButton>
+            </Restricted>
             <CRXModalDialog
                 className="createUser CrxCreateUser"
                 style={{ minWidth: "680px" }}

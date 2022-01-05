@@ -98,7 +98,7 @@ const Breadcrumb: React.FC<any> = (props) => {
   }
 
   const updatePathDetails = (pathDetails: any, Pathurl: string) => {
-
+    console.log("path detail");
     let details = pathDetails.map((item:any) => {
       if(item === pathDetails[pathDetails.length-1]) {
         return {
