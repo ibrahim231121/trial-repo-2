@@ -5,7 +5,7 @@ import Routes from "./Routes";
 import {CRXPanelStyle} from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
-import { AssetThumbnail } from "../src/Application/Assets/components/DataGrid/AssetThumbnail"
+import { AssetThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbnail"
 
 import {useTranslation} from 'react-i18next'; 
 import "../../evm/src/utils/Localizer/i18n"

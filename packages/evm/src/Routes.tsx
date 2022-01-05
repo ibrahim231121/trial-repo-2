@@ -2,18 +2,18 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
-import AppHeader from './Application/Headeer/Header'
-import Footer from './Application/Headeer/Footer'
-import MannageAsset from "./Application/Assets/pages/MannageAsset";
-import UserGroup from "./Application/Admin/UserGroup/UserGroup";
-import Group from "./Application/Admin/Group/Group";
-import ErrorPage from "./components/ErrorPage/ErrorPage";
+import AppHeader from './Application/Header'
+import Footer from './Application/Footer'
+import MannageAsset from "./Application/Assets/AssetLister";
+import UserGroup from "./Application/Admin/UserGroup";
+import Group from "./Application/Admin/UserGroup/Group";
+import ErrorPage from "./GlobalComponents/ErrorPage";
 import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
 import { urlList, urlNames } from "./utils/urlList"
-import User from "./Application/Admin/UserGroup/User/User";
+import User from "./Application/Admin/User";
 import TestViewsForDemo from '../../evm/src/TestForComponents/index'
 const Routes = () => {
   const [open, setOpen] = React.useState(true);
