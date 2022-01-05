@@ -119,46 +119,29 @@ const Routes = () => {
             })}
           >
             <Switch>
-
-              {/* <Route path="/" exact={true} component={() => <>Home componentss</>} /> */}
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitAndDevicesDetial} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitAndDevicesDetial} />
               
-              <Route path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplateCreate)[0].url} exact={true} component={CreateUnitConfigurationTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplateCreate)[0].url} exact={true} component={CreateUnitConfigurationTemplate} />
             
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreate)[0].url} exact={true} component={CreateTemplate} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateClone)[0].url} exact={true} component={CloneTemplate} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplate)[0].url} exact={true} component={DevicesTemplate} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
-           
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreate)[0].url} exact={true} component={CreateTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateClone)[0].url} exact={true} component={CloneTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplate)[0].url} exact={true} component={DevicesTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
+              <PrivateRoute path="*" component={ErrorPage} />
         
               
-              <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-              <Route path="/token/:token" exact={true} component={Token} />
-              {/* <PrivateRoute  path="/test/CreateTemplate" component={CreateComponent} />
-              <PrivateRoute path={Object.entries(urlList)[5][0].toString()} exact={true} component={UnitAndDevices} />
-              <PrivateRoute path={Object.entries(urlList)[8][0].toString()} exact={true} component={UnitConfiguration} />
-              <PrivateRoute path={Object.entries(urlList)[6][0].toString()} exact={true} component={UnitConfigurationTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[7][0].toString()} exact={true} component={CreateUnitConfigurationTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[9][0].toString() }  exact={true} component={UnitAndDevicesDetial} />
-              <PrivateRoute  path={Object.entries(urlList)[10][0].toString()} exact={true} component={AssetDetailsTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[11][0].toString()} exact={true} component={CreateTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[12][0].toString()} exact={true} component={CloneTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[13][0].toString()} exact={true} component={DevicesTemplate} />
-              <PrivateRoute path={Object.entries(urlList)[15][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
-              <PrivateRoute path={Object.entries(urlList)[16][0].toString()} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
-              <PrivateRoute path="*" component={ErrorPage} /> */}
-              
+              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />              
             </Switch>
           </main>
           <footer>

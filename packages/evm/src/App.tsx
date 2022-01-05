@@ -284,6 +284,16 @@ function App() {
            containerRoot: "crx-ToasterContainer"
        }}
        >
+        <div className="language_selector_app">
+          <CRXSelectBox 
+          options={options} 
+          id="simpleSelectBox" 
+          onChange={handleChange} 
+          value={value}
+          icon={true}
+           />
+          <i className="fal fa-globe world_language_icon"></i>
+        </div>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
         {/* <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
