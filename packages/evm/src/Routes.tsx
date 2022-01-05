@@ -120,7 +120,6 @@ const Routes = () => {
             })}
           >
             <Switch>
-              <PrivateRoute path="*" component={ErrorPage} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
@@ -139,7 +138,8 @@ const Routes = () => {
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />              
+              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
+              <PrivateRoute path="*" component={ErrorPage} />  
             </Switch>
           </main>
           <footer>
