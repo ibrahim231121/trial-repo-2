@@ -14,5 +14,8 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "dependencies": {
+    "usehooks-ts": "^2.1.1"
   }
 }
