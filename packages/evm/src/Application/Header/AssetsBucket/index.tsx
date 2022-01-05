@@ -95,7 +95,7 @@ const CRXAssetsBucketPanel = () => {
   }, [])
 
   useEffect(() => {
-    if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined) {
+    if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined && isDuplicateFound !== false) {
       setAttention({
         msg: "An Asset you are attempting to add to the Asset Bucket has already been added",
       });
@@ -107,8 +107,12 @@ const CRXAssetsBucketPanel = () => {
   useEffect(() => {
     setRows(assetBucketData);
     let local_assetBucket = localStorage.getItem("assetBucket");
-    if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0) {
-      //Do nothing
+    if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
+      setSucess({
+        msg: "You have added the selected assets to the asset bucket.",
+      });
+      setShowMessageClx("bucketMessageShow")
+      setShowSucess(true);
     }
     else if (assetBucketData.length > prevCount) {
       setSucess({
@@ -351,14 +355,14 @@ const CRXAssetsBucketPanel = () => {
   
   return (
     <CRXDrawer
-    className="CRXBucketPanel crxBucketPanelStyle"
-    anchor="right"
-    button={ToggleButton}
-    btnStyle="bucketIconButton"
-    isOpen={isOpen}
-    toggleState={toggleState}
-    variant="persistent"
-  >
+      className="CRXBucketPanel crxBucketPanelStyle"
+      anchor="right"
+      button={ToggleButton}
+      btnStyle="bucketIconButton"
+      isOpen={isOpen}
+      toggleState={toggleState}
+      variant="persistent"
+    >
     <Droppable droppableId="assetBucketEmptyDroppable">
     {(provided: any) => (
       <CRXRootRef provided={provided}>
