@@ -471,7 +471,6 @@ useEffect(() => {
   
   return (
     <div className="App crxTabsPermission" style={{}}>
-      {console.log(showSuccess)} 
     
         <CRXAlert
           className={"CrxAlertNotificationGroup " +  " " + alertMsgDiv }
@@ -509,6 +508,7 @@ useEffect(() => {
             applicationPermissions={applicationPermissions}
             onSetAppPermissions={getAppPermissions}
             groupIdName={groupIdName}
+            isAppPermissionsChange={isAppPermissionsChange}
           ></Application>
         </CrxTabPanel>
 

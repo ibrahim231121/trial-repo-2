@@ -59,6 +59,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const [open, setOpen] = React.useState<boolean>(false)
 
     React.useEffect(() => {
+        
         dispatch(getUsersInfoAsync());
 
         let headCellsArray = onSetHeadCellVisibility(headCells);
@@ -102,7 +103,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
     }, [selectedItems]);
 
-    React.useEffect(() => {
+    React.useEffect(() => { 
         setData()
     }, [users]);
 
@@ -115,24 +116,6 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         const onChange = (valuesObject: ValueString[]) => {
             headCells[colIdx].headerArray = valuesObject;
             onSelection(valuesObject, colIdx);
-        };
-
-        const onSelection = (v: ValueString[], colIdx: number) => {
-            if (v.length > 0) {
-                for (var i = 0; i < v.length; i++) {
-                    let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-                    setSearchData((prevArr) =>
-                        prevArr.filter(
-                            (e) => e.columnName !== headCells[colIdx].id.toString()
-                        )
-                    );
-                    setSearchData((prevArr) => [...prevArr, searchDataValue]);
-                }
-            } else {
-                setSearchData((prevArr) =>
-                    prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-                );
-            }
         };
 
         return (
@@ -295,8 +278,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     useEffect(() => {
-        
-        dataArrayBuilder();
+        if(searchData.length > 0)
+            dataArrayBuilder();
     }, [searchData]);
 
     const dataArrayBuilder = () => {
@@ -340,6 +323,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
         setHeadCells(headCellsArray);
     };
+
     return (
         <div className="userDataTableParent">
             {rows && (
