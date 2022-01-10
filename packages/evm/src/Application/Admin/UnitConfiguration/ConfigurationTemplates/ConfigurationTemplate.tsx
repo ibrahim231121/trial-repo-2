@@ -62,7 +62,7 @@ const ConfigurationTemplates: React.FC = () => {
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<ConfigTemplate[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<ConfigTemplate[]>();
-
+    const [selectedActionRow, setSelectedActionRow] = React.useState<ConfigTemplate>();
     const setData = () => {
 
       let configTemplateRows: ConfigTemplate[] = [];
@@ -258,7 +258,11 @@ const ConfigurationTemplates: React.FC = () => {
             rows && (
             <CRXDataTable
               id="unitConfifTemplateDataTable"
-              actionComponent={<ConfigTemplateActionMenu />}
+              actionComponent={<ConfigTemplateActionMenu
+                row={selectedActionRow}
+               />}
+
+               getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
               showToolbar={true}
            
               dataRows={rows}

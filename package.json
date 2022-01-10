@@ -16,6 +16,7 @@
     ]
   },
   "dependencies": {
+    "formik": "^2.2.9",
     "usehooks-ts": "^2.1.1"
   }
 }
