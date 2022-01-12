@@ -30,6 +30,20 @@
             outline: 0px;
             box-shadow: 0px;
           }
+          .dateRangeContainer {
+            .select {
+              select {
+                background: #d1d2d4;
+              }
+              .iconContent {
+                height: 29px;
+                top: 0px !important;
+                right: 0;
+                background: #d1d2d4;
+                width: 40px;
+              }
+            }
+          }
         }
       }
     }
@@ -54,14 +68,14 @@
           vertical-align: middle;
         }
         &:nth-child(even) {
-          background-color: #F2F2F2;
+          background-color: #f2f2f2;
         }
 
         &:nth-child(even) td:nth-child(3) {
-          background: #F2F2F2;
+          background: #f2f2f2;
         }
         &:nth-child(even) td:nth-child(2) {
-          background: #F2F2F2;
+          background: #f2f2f2;
         }
 
         td {
@@ -149,6 +163,10 @@
       text-indent: 0;
       position: relative;
       top: -3px;
+      &:hover,
+      &:focus {
+        box-shadow: none;
+      }
     }
   }
 }
@@ -197,7 +215,7 @@
       background-color: transparent;
       color: #d1d2d4;
       &:hover {
-        background-color:transparent;
+        background-color: transparent;
       }
     }
   }
@@ -272,15 +290,15 @@
       font-size: 14px;
     }
     &:hover {
-      background-color: #6E6E6E !important;
+      background-color: #6e6e6e !important;
       span {
-        color: #F5F5F5;
+        color: #f5f5f5;
       }
     }
     &:focus {
-      background-color:#231F20 !important;
+      background-color: #231f20 !important;
       span {
-        color: #F5F5F5;
+        color: #f5f5f5;
       }
     }
   }
@@ -288,6 +306,21 @@
     .MuiFormControlLabel-label {
       font-size: 14px;
       color: #333333;
+    }
+    .checkBoxDarkTheme {
+      input {
+        color: #333333;
+        &:hover {
+          & ~ {
+            span {
+              color: #333333 !important;
+            }
+          }
+        }
+      }
+      .crxSelectedDark {
+        color: #333333;
+      }
     }
   }
 }
@@ -581,7 +614,7 @@ tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child){
+tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
   &:hover {
     background-color: #404041 !important;
 
@@ -599,7 +632,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
   background-color: #231f20 !important;
   color: #d1d2d4;
 }
@@ -698,7 +731,7 @@ tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
   border-radius: 0;
   &:hover {
     border: 1px solid #333333;
-    background: #F5F5F5 !important;
+    background: #f5f5f5 !important;
   }
 }
 
@@ -816,10 +849,11 @@ tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
             color: #333;
           }
           .MuiIconButton-label {
-            span.crxSelectedDark  {
+            span.crxSelectedDark {
               font-size: 18px;
+              color: #333333 !important;
               &:hover {
-                color: transparent !important;
+                color: #333333 !important;
               }
             }
             span {
@@ -828,9 +862,13 @@ tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
                 color: #333333;
               }
             }
-            input{
+            input {
               &:hover {
-                color: #333333;
+                & ~ {
+                  span {
+                    color: #333333 !important;
+                  }
+                }
               }
             }
           }
@@ -868,4 +906,6 @@ tr.Mui-selected:nth-child(even) td[scope=row]:not(:first-child) {
     height: 338px;
   }
 }
-.crxClearfilter {place-content: flex-end;}
+.crxClearfilter {
+  place-content: flex-end;
+}

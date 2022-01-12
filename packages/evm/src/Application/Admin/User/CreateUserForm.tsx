@@ -844,16 +844,16 @@ useEffect(() => {
   const optionalSticky : any = document.getElementsByClassName("optionalSticky");
   const altRef = alertRef.current;
   
-  if(alert === false && altRef === null && optionalSticky.length > 0) {
+  if(alert === false && altRef === null  && optionalSticky.length > 0) {
     
     alertClx[0].style.display = "none";
-    crxIndicate[0].style.top = "2px";
-    modalEditCrx[0].style.paddingTop = "2px";
+    crxIndicate[0].style.top = "42px";
+    modalEditCrx[0].style.paddingTop = "42px";
     optionalSticky[0].style.height = "79px"
   }else {
-    alertClx[0].style.display = "flex";
+    alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
     crxIndicate[0].style.top = "83px";
-    modalEditCrx[0].style.paddingTop = "29px";
+    modalEditCrx[0].style.paddingTop = "2px";
     if(optionalSticky.length > 0) {
         optionalSticky[0].style.height = "119px"
       }
@@ -861,10 +861,12 @@ useEffect(() => {
 },[alert])
 return (
     <div className="">
+      {console.log("User Name :", !!formpayloadErr.userNameErr)}
       <CRXToaster ref={toasterRef} />
         <CRXAlert
           ref={alertRef}
           message={responseError}
+          className="crxAlertUserEditForm"
           alertType={alertType}
           type={errorType}
           open={alert}
@@ -884,14 +886,14 @@ return (
             onChange={(e: any) =>
               setFormPayload({ ...formpayload, userName: e.target.value })
             }
-            onBlur={(e: any) =>
+            onBlur={(e: any) => {
               !formpayload.userName
                 ? setFormPayloadErr({
                   ...formpayloadErr,
                   userNameErr: "Username is required",
                 })
                 : setFormPayloadErr({ ...formpayloadErr, userNameErr: "" })
-            }
+            }}
           />
           <TextField
             error={!!formpayloadErr.firstNameErr}

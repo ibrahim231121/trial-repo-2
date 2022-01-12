@@ -93,7 +93,6 @@
           }
         }
       }
-     
     }
     .CRXDivider {
       background-color: #d1d2d4;
@@ -106,9 +105,11 @@
   }
   .crxAlertUserEditForm {
     margin-bottom: 20px;
+  
   }
   .MuiDialog-scrollPaper .MuiDialog-paperScrollPaper {
     max-width: 685px;
+    min-width: 630px;
   }
   .modelTitle {
     h2 {
@@ -130,6 +131,7 @@
     }
     > span {
       margin: 0 0 34px;
+      display: flex;
       label.requiredLable {
         .inputLabelReq {
           line-height: 24px;
@@ -176,6 +178,7 @@
       }
     }
     .crxEditFilter {
+      display: flex;
       > span {
         display: inline-flex;
         h6 {
@@ -201,7 +204,7 @@
           min-width: auto;
           margin-left: 5px;
           margin-top: -5px;
-          font-size:14px;
+          font-size: 14px;
         }
         &.inputError {
           margin-bottom: 24px;
@@ -333,7 +336,7 @@
       padding-top: 27px;
       padding-bottom: 29px;
       label {
-        margin-right: 50px;
+        margin-right: 45px;
       }
       .user-radio-group {
         width: 371px;
@@ -348,7 +351,7 @@
               top: 2px;
               button {
                 background: transparent !important;
-                border: none;
+                border: none !important;
                 color: #c34400 !important;
                 width: auto;
                 display: flex;
@@ -604,9 +607,15 @@
     top: 2px;
     background: #fff;
     z-index: 1;
+    sup {
+      line-height: 17px;
+      margin-right: 10px;
+      font-size: 17px;
+      font-weight: 700;
+    }
   }
 }
-.UserActionAlert{
+.UserActionAlert {
   min-height: 40px !important;
 }
 
@@ -614,10 +623,10 @@
   position: absolute;
   background: #fff;
   width: 96%;
-  height: 102px;
+  height: 96px;
   z-index: 1;
   content: " ";
-  top: 41px;
+  top: 40px;
 }
 
 .CRXContent_user {
@@ -627,7 +636,6 @@
     position: sticky;
   }
 }
-
 
 .CRXPopupCrossButton {
   position: absolute;
@@ -653,6 +661,6 @@
 
 .isExtEmail {
   input {
-      outline: 2px solid #aa1d1d;
+    outline: 2px solid #aa1d1d;
   }
 }

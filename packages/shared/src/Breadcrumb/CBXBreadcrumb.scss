@@ -15,11 +15,13 @@
         color: #c34400;
         text-decoration: underline;
         cursor: pointer;
+        box-shadow: none !important;
       }
       &:focus {
         color: #c34400;
         text-decoration: underline;
         cursor: pointer;
+        box-shadow: none !important;
       }
     }
   }
@@ -49,11 +51,13 @@
       color: #c34400;
       text-decoration: underline;
       cursor: pointer;
+      box-shadow: none !important;
     }
     &:focus {
       color: #c34400;
       text-decoration: underline;
       cursor: pointer;
+      box-shadow: none !important;
     }
   }
 

@@ -22,6 +22,7 @@ interface InputProps {
   placeholder?: string;
   defaultValue?: any;
   regex: RegExp;
+  error? : boolean
 }
 
 const CRXInput = ({
@@ -36,11 +37,12 @@ const CRXInput = ({
   required = false,
   id,
   type,
+  error,
   label,
   regex,
   ...others
 }: InputProps) => {
-  const [error, setError] = React.useState<boolean>(false);
+  const [_, setError] = React.useState<boolean>(false);
   const [_errorMsg, setErrorMsg] = React.useState<string>('');
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
@@ -73,6 +75,7 @@ const CRXInput = ({
   };
 
   const checkError = (val: string) => {
+    
     let requiredValidationComplete = requiredValidator(val);
     if (requiredValidationComplete) {
       regexValidator(val);
@@ -81,6 +84,7 @@ const CRXInput = ({
   };
 
   const requiredValidator = (val: string) => {
+    
     if (required) {
       if (val.length === 0) {
         const errorMessage = errorMsg ? typeof (errorMsg) === 'object' ? errorMsg.required : errorMsg
