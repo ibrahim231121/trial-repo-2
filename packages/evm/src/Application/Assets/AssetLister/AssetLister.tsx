@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
 import AdvanceOptions from './AdvanceOptions';
@@ -20,7 +20,6 @@ dateOptionsTypes,
 } from '../../../utils/constant';
 import usePostFetch from '../../../utils/Api/usePostFetch';
 import { EVIDENCE_GET_URL } from '../../../utils/Api/url'
-
 
 const AssetSearchType = {
   basicSearch: "BasicSearch",
@@ -66,6 +65,7 @@ const SearchComponent = (props: any) => {
 
   const iconRotate = showAdvance ? ' ' : 'rotate90';
   const [postDataForSearch, responseForSearch] = usePostFetch<any>(EVIDENCE_GET_URL);
+
   
   const QUERRY: any = {
     bool: {
@@ -367,11 +367,12 @@ const SearchComponent = (props: any) => {
         <div className='predictiveSearch'>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
-              <label className='searchLabel'>Search Assets</label>
-              <PredictiveSearchBox
-                onSet={(e) => onChangePredictiveSearch(e)}
-                value={predictiveText}
-              />
+
+                <label className='searchLabel'>Search Assets</label>
+                <PredictiveSearchBox
+                  onSet={(e) => onChangePredictiveSearch(e)}
+                  value={predictiveText}
+                />
             </CRXColumn>
             <CRXColumn item xs={6}>
               <label className='dateTimeLabel'>Date and Time</label>

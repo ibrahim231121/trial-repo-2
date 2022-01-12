@@ -10,6 +10,7 @@ import anchorDisplay from "../../../GlobalComponents/Display/AnchorDisplay";
 import { useHistory } from "react-router-dom";
 import './index.scss'
 import { urlList, urlNames } from "../../../utils/urlList"
+import Restricted from '../../../ApplicationPermission/Restricted'
 
 import {
   SearchObject,
@@ -226,9 +227,11 @@ const UserGroup: React.FC = () => {
 
   return (
     <div className="managePermissionTable">
-      <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
-        Create Group
-      </CRXButton>
+      <Restricted moduleId={52}>
+        <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
+          Create Group
+        </CRXButton>
+      </Restricted>
       {
         rows && (
           <CRXDataTable

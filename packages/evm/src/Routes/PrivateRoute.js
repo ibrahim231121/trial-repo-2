@@ -1,27 +1,47 @@
+import { useContext, ReactDOM } from 'react'
 import {
   Route,
   Redirect,
 } from "react-router-dom";
-
-import { isAuthenticated } from "../Login/API/auth";
+import ApplicationPermissionContext from '../ApplicationPermission/ApplicationPermissionContext'
+import { isAuthenticated, getToken } from "../Login/API/auth";
 
 const PrivateRoute = ({ component:Component, ...rest }) => {
    
+  const {
+    getModuleIds
+  } = useContext(ApplicationPermissionContext);
+  const {moduleId} = rest
 return (
       <Route
         {...rest}
-        render={ props =>
-          isAuthenticated() ? (
-            <Component {...props} />
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/",
-                state: { from: props.location }
-              }}
-            />
-          )
-        }
+        exact={true}
+        render={(props) =>{
+          var component = <Component {...props} />;
+          var redirectToLoginComponent =  <Redirect
+                                              to={{
+                                                pathname: "/",
+                                                state: { from: props.location }
+                                              }}
+                                          />
+
+          var redirectToNotFoundComponent =  <Redirect
+                                                to={{
+                                                  pathname: "/notfound",
+                                                  state: { from: props.location }
+                                                }}
+                                            />
+          if (isAuthenticated()){
+            if( getModuleIds().includes(moduleId)){
+              return component;
+            }else{
+              return redirectToNotFoundComponent;
+            }  
+          }
+          else{
+              return redirectToLoginComponent;
+          }
+        }}
       />
 )
   }

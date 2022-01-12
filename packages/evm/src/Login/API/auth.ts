@@ -53,6 +53,10 @@ export const isAuthenticated = () => {
     }
 }
 
+export const getToken = () => {
+    return cookies.get('access_token') 
+}
+
 
 export const LogOutUser = (historyCB:any) => {
 

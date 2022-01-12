@@ -15,12 +15,20 @@ import { getCategoryAsync } from "./Redux/categoryReducer";
 
 import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
 
+import ApplicationPermissionProvider from   './ApplicationPermission/ApplicationPermissionProvider';
+import {Permission} from "./ApplicationPermission/types"; 
+import { getToken } from "./Login/API/auth";
+import jwt_decode  from 'jwt-decode'
+import {TokenType} from './types'
+
+
 function App() {
   let culture: string = "en";
   const [resources, setResources] = React.useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch()
+  const [moduleIds, setModuleIds] = React.useState<number[]>([]);
   
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
@@ -44,6 +52,46 @@ function App() {
       setRTL("ltr");
     }
   }, [culture, resources]);
+
+  useEffect(()=>{
+
+    console.log("APP.TSX component did mount")
+    console.log("token");
+    var token = getToken();
+    if(token){
+
+            var moduleIds = getModuleIds();
+            if(moduleIds){
+              console.log(moduleIds);
+              setModuleIds(moduleIds);
+            }
+        
+    }
+
+  },[])
+
+  const getModuleIds = () => {
+
+    var token = getToken();
+    if(token){
+      if(moduleIds.length <= 0){
+          var accessTokenDecode : TokenType =  jwt_decode(token);
+          if(accessTokenDecode !== null &&  accessTokenDecode.AssignedModules && accessTokenDecode.AssignedModules !== ""){
+              var moduleIdsAssigned = accessTokenDecode.AssignedModules
+                                    .split(',')
+                                    .map(x=> parseInt(x));
+            return moduleIdsAssigned;
+          }else{
+            return [];
+          }
+      }
+      if(moduleIds.length > 0){
+        return moduleIds;
+      }
+    }else{
+      return []
+    }
+  }
 
   const onDragStart = (e: any) => {
     
@@ -224,35 +272,51 @@ function App() {
     warning : <i className="fas fa-exclamation-triangle warningIcon"></i>,
     error : <i className="fas fa-exclamation-circle errorIcon"></i>
   }
-  
+
   return (
-    <div dir={rtl}>
-       <SnackbarProvider
-       maxSnack={100}
-       anchorOrigin={{
-           vertical: 'top',
-           horizontal: 'right',
-       }}
-       iconVariant={{
-           success: icons.success,
-           error: icons.error,
-           warning: icons.warning,
-           info: icons.attention, 
-       }}
-       className="toasterMsg"
-       classes={{
-           variantSuccess: "success",
-           variantError:"error",
-           variantWarning: "warning",
-           variantInfo: "info",
-           containerRoot: "crx-ToasterContainer"
-       }}
-       >
-      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
-       <Routes />
-      </DragDropContext>
-      </SnackbarProvider>
-    </div>
+    <ApplicationPermissionProvider  setModuleIds={
+                                          (moduleIds:number[]) =>{
+                                            console.log("setting moduleIds finally");
+                                            console.log(moduleIds);
+                                            setModuleIds(moduleIds)}
+                                          }  
+                                    moduleIds={moduleIds}  
+                                    getModuleIds={()=>{ 
+                                          var moduleIds =  getModuleIds()
+                                          if(moduleIds){
+                                            return moduleIds
+                                          }else{
+                                            return []
+                                          }
+                                    }}
+                                    >
+        <div dir={rtl}>
+          <SnackbarProvider
+          maxSnack={100}
+          anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+          }}
+          iconVariant={{
+              success: icons.success,
+              error: icons.error,
+              warning: icons.warning,
+              info: icons.attention, 
+          }}
+          className="toasterMsg"
+          classes={{
+              variantSuccess: "success",
+              variantError:"error",
+              variantWarning: "warning",
+              variantInfo: "info",
+          }}
+          >
+          <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
+          <Routes />
+          </DragDropContext>
+          </SnackbarProvider>
+        </div>
+    </ApplicationPermissionProvider>
   );
 }
 
