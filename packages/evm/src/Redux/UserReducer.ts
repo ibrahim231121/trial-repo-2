@@ -1056,26 +1056,26 @@ const Users = [
 ];
 
 
-// export const getUsersInfoAsync: any = createAsyncThunk(
-//     'getUsersInfo',
-//     async () => {
-//         const requestOptions = {
-//             method: 'GET',
-//             headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-//         };
-//         const resp = await fetch(USER_INFO_GET_URL, requestOptions);
-//         if (resp.ok) {
-//             const response = await resp.json();
-//             return response;
-//         }
-//     }
-// );
 export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
     async () => {
-            return Users;
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+        };
+        const resp = await fetch(USER_INFO_GET_URL, requestOptions);
+        if (resp.ok) {
+            const response = await resp.json();
+            return response;
+        }
     }
 );
+// export const getUsersInfoAsync: any = createAsyncThunk(
+//     'getUsersInfo',
+//     async () => {
+//             return Users;
+//     }
+// );
 export const updateUsersInfoAsync: any = createAsyncThunk(
     'updateUsersInfo',
     async (args: any) => {
