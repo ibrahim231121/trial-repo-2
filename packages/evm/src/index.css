@@ -235,6 +235,12 @@ body {
   color: #f5f5f5;
 }
 
+.croseIcon {
+  font-size: 16px;
+  position: relative;
+  top: 3px;
+}
+
 .accrodialTest {
   margin-top: 30px;
 }

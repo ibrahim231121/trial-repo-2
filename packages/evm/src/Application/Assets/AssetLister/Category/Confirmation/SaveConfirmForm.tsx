@@ -8,6 +8,7 @@ import moment from 'moment';
 
 type SaveConfirmFormProps = {
   removedOption: any;
+   setremoveClassName: any;
   rowData: any;
   differenceOfDays: string;
   removalType: number;
@@ -34,6 +35,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   React.useEffect(() => {
     props.setModalTitle('Please confirm');
     props.setIndicateTxt(false);
+    props.setremoveClassName('crx-remove-category-form crxPleaseConfirmForm');
   }, []);
 
   React.useEffect(() => {

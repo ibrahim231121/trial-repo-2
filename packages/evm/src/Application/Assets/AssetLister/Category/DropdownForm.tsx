@@ -7,6 +7,7 @@ import './categoryForm.scss';
 
 type DropdownFormProps = {
   filterValue: any[];
+  setremoveClassName: any;
   activeForm: number;
   rowData: any;
   isCategoryEmpty: boolean;
@@ -27,6 +28,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   React.useEffect(() => {
     const modalTitleProps = props.isCategoryEmpty ? 'Choose category' : 'Edit category';
     props.setModalTitle(modalTitleProps);
+    props.setremoveClassName('crxEditCategoryDropdown');
   });
 
   React.useEffect(() => {
@@ -97,14 +99,16 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
 
   return (
     <>
+    <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div>
       <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
         {() => (
           <Form>
+            {/* <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div> */}
             <div className='categoryDescription'>From the field below, select one or more relevant category.</div>
             <div className='categoryTitle'>
               Category <b>*</b>
             </div>
-            <div>
+            <div className='crxDrpDownCatergory'>
               <MultiSelectBoxCategory
                 className='categortAutocomplete'
                 multiple={true}

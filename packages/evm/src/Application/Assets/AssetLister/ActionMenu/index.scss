@@ -12,52 +12,18 @@
       border-top-color: rgba(64, 64, 65, 0.1);
     }
 
-    .rc-menu__item {
-      padding: 0px 0px !important;
-      .crx-meu-content {
-        display: flex;
-        flex: 1;
-        flex-direction: row;
-        color: #d1d2d4;
-        font-size: 14px;
-        height: 33px;
-        line-height: 33px;
-        .crx-menu-icon {
-          width: 38px;
-          flex-direction: column;
-          border-right: 1px solid #69696a;
-          text-align: left;
-          vertical-align: middle;
-          padding-left: 2px;
-        }
-
-        .crx-menu-list {
-          flex-direction: column;
-          text-indent: 15px;
-          font-weight: normal;
-          font-family: Arial, Helvetica, sans-serif;
-          width: 203px;
-          text-align: left;
-          letter-spacing: 0.5px;
-          &.disabledItem {
-            color: #69696a;
-          }
-          .rc-menu__submenu {
-            .rc-menu {
-              .rc-menu__item {
-                color: #d1d2d4;
-                &:hover {
-                  background: #231f20 !important;
-                  color: #f5f5f5;
-                }
-                &:focus {
-                  background: #231f20 !important;
-                  color: #f5f5f5;
-                }
-              }
-            }
-          }
-        }
+    .rc-menu__item--hover {
+      background: #231f20;
+      color: #f5f5f5;
+    }
+    .rc-menu__item--active {
+      background: #6e6e6e;
+      color: #d1d2d4;
+    }
+    .rc-menu__item--disabled {
+      background: transparent !important;
+      color: #69696a;
+    }
 
     .rc-menu__item--open {
       background: #6e6e6e;
@@ -155,105 +121,18 @@
       }
     }
   }
-  &:hover {
-    background: #231f20 !important;
-    color: #f5f5f5;
-  }
-  &:focus {
-    background: #231f20 !important;
-    color: #f5f5f5;
-  }
 }
-.CRXCatergorizeModel {
-  .MuiDialog-paper {
-    min-width: 600px;
-  }
-  .getac-simple-select {
-    height: auto;
-    padding: 0;
-    .MuiChip-root {
-      position: relative;
-      background: none;
-      height: 20px !important;
-      border: 1px solid #bebebe;
-      margin-top: 2.5px;
-      font-family: Arial;
-      margin-right: 17px;
-      border-radius: 1px;
-      margin-left: 0;
-      height: 100%;
 
-      .MuiChip-label {
-        text-transform: uppercase;
-        font-size: 14px;
-        color: #767676;
-      }
-    }
-    .selectBoxTextField {
-      input {
-        border: none;
-
-        &:focus {
-          outline: none;
-        }
-
-        &:hover {
-          outline: none;
+.TableSearchAbleHead {
+  .rc-menu-container {
+    .rc-menu {
+      .rc-menu__item {
+        .crx-meu-content {
+          .crx-menu-icon {
+            text-align: center;
+          }
         }
       }
     }
-
-    &:hover {
-      .uiAutocomplete-endAdornment {
-        border-left: 2px solid #888787;
-      }
-    }
-    .MuiAutocomplete-endAdornment {
-      top: 0;
-      right: 0 !important;
-      height: 100%;
-      .MuiAutocomplete-clearIndicator {
-        display: none;
-      }
-    }
-  }
-  .MuiInputBase-fullWidth {
-    padding-right: 25px !important;
-    padding-left: 10px !important;
-  }
-  .CRXPopupCrossButton {
-    right: 0;
-    top: 0;
-  }
-  .CRXContent {
-    padding: 30px 25px 45px;
-    height: auto;
-    i {
-      margin-bottom: 21px;
-      display: inline-block;
-    }
-    .CRXCategory {
-      margin-top: 18px;
-      margin-bottom: 12px;
-    }
-  }
-  .MuiChip-deleteIcon {
-    width: 14px;
-    height: 14px;
-  }
-
-  .CRXFooter {
-    .MuiButton-root {
-      width: 80px;
-      height: 30px;
-      font-size: 14px;
-    }
-  }
-  .MuiDialog-scrollPaper {
-    .MuiDialog-paperScrollPaper {
-      height: auto !important;
-    }
   }
 }
-  
-}}

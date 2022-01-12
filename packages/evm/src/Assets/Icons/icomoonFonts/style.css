@@ -322,7 +322,7 @@
   content: "\e927";
 }
 .icon-calendar:before {
-  content: "\e928";
+  content: "\e928" !important;
 }
 .icon-date:before {
   content: "\e928";
@@ -424,10 +424,10 @@
   content: "\e94a";
 }
 .icon-drawer:before {
-  content: "\e95c";
+  content: "\e95c" !important;
 }
 .icon-drawer2:before {
-  content: "\e95d";
+  content: "\e95d" !important;
 }
 .icon-spinner41:before {
   content: "\e97e";

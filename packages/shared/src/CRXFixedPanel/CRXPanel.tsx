@@ -28,7 +28,7 @@ const CRXFixedPanel = ({className, open, onClick,  children, anchor, variant = "
       onClick={onClick}
       disableRipple={true}
       >
-      <span className="icon-menu"></span>
+      <span className="icon icon-menu3"></span>
       </IconButton>
       
       </div>

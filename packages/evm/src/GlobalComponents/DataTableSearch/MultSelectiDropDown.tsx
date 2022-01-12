@@ -181,7 +181,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
                   onClick={(e) => setOpenStateFunc(e)}
                 ></button>
                 <button
-                  className="icon-cross2 croseIcon"
+                  className="icon icon-cross2 croseIcon"
                   onClick={(e) => ClearFilter()}
                 ></button>
               </div>
