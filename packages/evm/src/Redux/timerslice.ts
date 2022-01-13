@@ -7,7 +7,7 @@ interface CounterState {
   }
 
 const initialState: CounterState = {
-    value: 2053 ,
+    value: 3480 ,
   }
 
 const timerSlice = createSlice({

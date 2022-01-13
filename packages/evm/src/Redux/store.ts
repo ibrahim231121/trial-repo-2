@@ -17,4 +17,4 @@ const persistor = persistStore(store);
 //exporting Actions
 
 export {persistor, store}
-export default configureStore({reducer})
+//export default configureStore({reducer})

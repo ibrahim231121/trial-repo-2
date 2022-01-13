@@ -8,7 +8,7 @@ import { timerActionCreator } from "./../../Redux/timerslice";
 export default function Logout (){
     const dispatch = useDispatch()
     useEffect(() => {
-    dispatch(timerActionCreator(2053)) },)
+    dispatch(timerActionCreator(3480)) },)
 
     const history = useHistory();
     const buttonClick = () => {
