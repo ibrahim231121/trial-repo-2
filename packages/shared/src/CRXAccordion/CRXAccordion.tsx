@@ -45,23 +45,7 @@ const AccordionSummaryStyle = makeStyles({
                 minHeight:"48px",
                 height : "48px",
                 padding: "0px 22px",
-                // borderBottom:"2px solid #D74B00",
-                // backgroundColor: "#fff",
-                // color : "#333",
             },
-        // '&.Mui-expanded' : {
-        //     minHeight:"50px",
-        //     height : "50px",
-        //     padding: "0px 25px"
-        // },
-        // '&:hover' : {
-        //     backgroundColor: "#6E6E6E",
-        //     color : "#F5F5F5",
-        // },
-        // '&:focus' : {
-        //     backgroundColor: "#231F20",
-        //     color : "#F5F5F5",
-        // }
     },
 
     expandIcon : {
