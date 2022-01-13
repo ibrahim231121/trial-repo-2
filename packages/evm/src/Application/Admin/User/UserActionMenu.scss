@@ -136,7 +136,8 @@
         .inputLabelReq {
           line-height: 24px;
           margin-left: 5px;
-          font-size: 18px;
+          font-size: 20px;
+          font-weight: bold;
           color: #333333;
         }
       }
@@ -609,9 +610,9 @@
     z-index: 1;
     sup {
       line-height: 17px;
-      margin-right: 10px;
-      font-size: 17px;
-      font-weight: 700;
+      margin-right: 5px;
+      font-size: 20px;
+      font-weight: bold;
     }
   }
 }

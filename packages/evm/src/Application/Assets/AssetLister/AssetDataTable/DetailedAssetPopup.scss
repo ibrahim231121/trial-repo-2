@@ -108,6 +108,18 @@
               }
                 td {
                   .checkBoxDarkTheme{
+                    .fal {
+                      position: relative;
+                      &::after {
+                        content: '\f0c8';
+                        color: #fff;
+                        left: 0;
+                        position: absolute;
+                        font-family: "Font Awesome 5 Duotone";
+                        font-weight: 900;
+                        right: 0;
+                      }
+                    }
                     .crxSelectedDark  {
                       color:#333333 !important;
                     }
