@@ -213,26 +213,31 @@ const Application: React.FC<Props> = ({subModulesIds, onSetAppPermissions, appli
     
     if(!check) {
       applicationPermissions.map((item: any) => {
-        item.children.map((x: any) => {
-          if (x === row) {
-            item.selected = false
-            return true
-          }
-        })
+        if(item.children !== null && item.children.length > 0) {
+          item.children.map((x: any) => {
+            if (x === row) {
+              item.selected = false
+              return true
+            }
+          })
+        }
       })
     }
     else {
       applicationPermissions.map((item: any) => {
         let count: number = 0
         let isSelectSameRow: boolean = false
-        item.children.map((x: any) => {
-          // if (x === row) 
-          //   isSelectSameRow = true
-          if(x.selected === true)
-            count = count + 1
-        })
-        if(count === item.children.length)
-          item.selected = true
+        if(item.children !== null && item.children.length > 0) {
+          item.children.map((x: any) => {
+            // if (x === row) 
+            //   isSelectSameRow = true
+            if(x.selected === true)
+              count = count + 1
+          })
+          if(count === item.children.length)
+            item.selected = true
+        }
+        
       })
     }
   }

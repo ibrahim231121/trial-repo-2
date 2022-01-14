@@ -166,8 +166,8 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
     }
     
     const removeParent = () => {
-        if(activeItem != null)
-            setActiveItem(null)
+        // if(activeItem != null)
+        //     setActiveItem(null)
     }
 
     useEffect(() => {
