@@ -19,6 +19,7 @@ type FormContainerProps = {
 
 const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [openModal, setOpenModal] = React.useState(false);
+  const [showsSticky, setshowSSticky] = React.useState(false);
   const [activeForm, setActiveForm] = React.useState<number>(0);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
@@ -103,6 +104,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setFilterValue={(v: any) => setFilterValue(v)}
             rowData={props.rowData}
             isCategoryEmpty={props.isCategoryEmpty}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
             setRemovedOption={(o: any) => setRemovedOption(o)}
@@ -123,8 +125,10 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             closeModal={(v: any) => setOpenModal(v)}
             setFilterValue={(v: any) => setFilterValue(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
+            setshowSSticky={(a: any) => setshowSSticky(a)}
           />
         );
       case 2:
@@ -136,6 +140,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setFilterValue={(v: any) => setFilterValue(v)}
             isCategoryEmpty={props.isCategoryEmpty}
             removedOption={removedOption}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             setRemovedOption={(v: any) => setRemovedOption(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             previousActive={prevActiveForm !== undefined ? prevActiveForm : 0}
@@ -161,6 +166,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setRemovalType={(e: number) => setRemovalType(e)}
             setRemoveMessage={(e: string) => setRemoveMessage(e)}
             setRetentionId={(e: number) => setRetentionId(e)}
+            setIndicateTxt={(e: any) => setIndicateTxt(e)}
           />
         );
       case 4:
@@ -173,6 +179,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
             rowData={props.rowData}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             differenceOfDays={differenceOfDays}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
@@ -206,6 +213,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
         onClose={handleClose}
         defaultButton={false}
         indicatesText={indicateTxt}
+        showSticky={showsSticky}
       >
         {handleActiveForm(activeForm)}
       </CRXModalDialog>

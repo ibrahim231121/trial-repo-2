@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 type CancelConfirmFormProps = {
   isCategoryEmpty: boolean;
+  setremoveClassName: any;
   removedOption: any;
   previousActive: number;
   setActiveForm: (param: any) => void;
@@ -26,6 +27,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
   React.useEffect(() => {
     props.setModalTitle('Please confirm');
     props.setIndicateTxt(false);
+    props.setremoveClassName('crxCancelConfirmForm');
   });
 
   const cancelBtn = () => {
@@ -85,7 +87,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
               you've made will not be saved. You will not be able to undo this action.{' '}
             </div>
           </div>
-          <div className='modalBottomText'>
+          <div className='modalBottomText modalBottomTextClose'>
             Are you sure you would like to <strong>close</strong> the modal dialog?
           </div>
           <div className='cancelForm'>

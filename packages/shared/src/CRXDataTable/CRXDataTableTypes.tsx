@@ -331,5 +331,5 @@ export type MultiLevelProps = {
   finalLevel: number;
   onSetRow: (check:boolean, row:any) => void;
   onSetCheckAllLevel: (e: boolean, type: string) => void;
-  onUnCheckAllParent: (e: boolean, row:any) => void;
+  onCheckUnCheckChildren: (e: boolean, row:any) => void;
 }

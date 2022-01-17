@@ -24,6 +24,7 @@ type RemoveCategoryFormProps = {
   setRemovalType: (param: number) => void;
   setRemoveMessage: (param: string) => void;
   setRetentionId: (param: number) => void;
+  setIndicateTxt: (param: boolean) => void;
 };
 
 interface FormValues {}
@@ -42,6 +43,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   React.useEffect(() => {
     props.setModalTitle('Removing the category requires a reason');
     props.setremoveClassName('crx-remove-category-form');
+    props.setIndicateTxt(false);
   }, []);
 
   React.useEffect(() => {
@@ -166,6 +168,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
         })}>
         {({ handleChange, isValid, dirty }) => (
           <Form>
+            <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div>
             <CRXHeading className='categoryDescription removeCategoryDescription' variant='h6'>
               Please enter the reason for removing the category.
             </CRXHeading>

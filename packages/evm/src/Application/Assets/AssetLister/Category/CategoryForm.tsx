@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRef ,  } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { CRXButton } from '@cb/shared';
 import { AddToEditFormStateCreator } from '../../../../Redux/CategoryFormSlice';
@@ -10,6 +11,7 @@ import moment from 'moment';
 
 type CategoryFormProps = {
   filterValue: any[];
+  setremoveClassName: any;
   activeForm: number;
   rowData: any;
   isCategoryEmpty: boolean;
@@ -20,12 +22,14 @@ type CategoryFormProps = {
   setModalTitle: (param: string) => void;
   setIsformUpdated: (param: boolean) => void;
   setIndicateTxt: (param: boolean) => void;
+  setshowSSticky: (param: boolean) => void;
 };
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const dispatch = useDispatch();
   const [filteredFormArray, setFilteredFormArray] = React.useState<any[]>([]);
   const [success, setSuccess] = React.useState<boolean>(false);
+  const [alert, setAlert] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [saveBtn, setSaveBtn] = React.useState(true);
   const [formFields, setFormFields] = React.useState<any>([]);
@@ -35,10 +39,13 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
+  const alertRef = useRef(null);
 
   React.useEffect(() => {
     props.setModalTitle('Category form');
     props.setIndicateTxt(false);
+    props.setshowSSticky(true)
+    props.setremoveClassName('crxEditCategoryForm');
     // Untill save button get enabled, form will be in non updated.
     if (saveBtn) props.setIsformUpdated(false);
   }, []);
@@ -332,7 +339,17 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         console.error(err);
       });
   };
-
+  React.useEffect(() => {
+    const optionalSticky : any = document.getElementsByClassName("optionalSticky")
+    
+    if(optionalSticky.length > 0) {
+      optionalSticky[0].style.height = "79px"
+    }else {
+      if(optionalSticky.length > 0) {
+          optionalSticky[0].style.height = "119px"
+        }
+    }
+  },[alert])
   return (
     <>
       {success && <CRXAlert message='Success: You have saved the asset categorization' alertType='toast' open={true} />}

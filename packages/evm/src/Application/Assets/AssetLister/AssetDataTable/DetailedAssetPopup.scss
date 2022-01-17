@@ -43,8 +43,8 @@
           padding-right: 0px !important;
           min-width: auto !important;
           position: relative;
-          top: 7px;
-          right: -3px;
+          top: -2px;
+          right: 5px;
           .detailPopupCloseIcon {
             color: #D1D2D4;
             font-size: 16px;
@@ -68,6 +68,7 @@
             color: #333;
             margin-bottom: 0px;
             padding-bottom: 0px;
+            margin-top: 16px;
           }
         }
       }
@@ -106,6 +107,32 @@
                 }
               }
                 td {
+                  .checkBoxDarkTheme{
+                    .fal {
+                      position: relative;
+                      &::after {
+                        content: '\f0c8';
+                        color: #fff;
+                        left: 0;
+                        position: absolute;
+                        font-family: "Font Awesome 5 Duotone";
+                        font-weight: 900;
+                        right: 0;
+                      }
+                    }
+                    .crxSelectedDark  {
+                      color:#333333 !important;
+                    }
+                    input{
+                      &:hover{
+                        & ~{
+                          span {
+                            color:#333333 !important;
+                          }
+                        }
+                      }
+                    }
+                  }
                   .CRXPopupTableAssetName {
                     color: #D74B00;
                     font: normal normal normal 14px/16px Arial;
