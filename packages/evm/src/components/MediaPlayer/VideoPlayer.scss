@@ -1,3 +1,6 @@
+html {
+    overflow-y: hidden;
+}
 #video-player{
     margin-top: 142px;
     margin-left: 120px;
@@ -56,8 +59,108 @@
     {
         padding: 0px 14px;
     }
-  
+
+    .playerViewFlex {
+        display: flex;
+        justify-content: space-between;
+        .playerViewRight {
+            display: flex;
+            align-items: flex-end;
+        }
+        .MenuListGrid {
+            margin-bottom: -4px;
+            margin-right: -24px;
+        }
+        #volume-controls {
+            top: 29px;
+        }
+        .playerView{
+            div{
+                text-align: center;
+                margin-left: 40px;
+                background: #333333 !important;
+                padding: 7px 12px;
+                margin-bottom: -3px;
+                i {
+                    color: white;
+                }            
+            }
+        }
+    
+        .MenuListGrid {
+            .rc-menu-button {
+                background: #333333 !important;
+                color: white;
+                border: none;
+                font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+                font-weight: 500;
+                line-height: 1.75;
+                padding: 7px 7px;
+            }
+            .rc-menu__item {
+                color: white;
+                padding: 9px 8px !important;
+            }
+            .rc-menu-container {
+                top: 0;
+            }
+        }
+    }
+
+    .timeLineBar {
+        margin-top: 15px;
+        .MuiLinearProgress-root {
+            margin-bottom: 15px;
+        }
+        .linearbarThird  {
+            div {
+                background-color:olive;
+            }
+        }
+        .linearbarfourth {
+            div {
+                background-color:coral;
+            } 
+        }
+    }
+    .showControllerBar {
+        display: block;
+    }
+    .hideControllerBar{
+        display: none;
+    }
+
+    .trueshow {
+        display: block !important;
+    }
+   
+
 }
+
+.mainFullView {
+    #controls {
+        position: absolute;
+        width: 100%;
+        padding-left: 58px;
+        padding-right: 27px;    
+    }
+    #timelines {
+        position: absolute;
+        bottom: 146px;
+        width: 100%;
+        padding-left: 50px;
+        padding-right: 59px;
+    }
+    #counter {
+        color: white;
+    }
+    .volume-icon {
+        span {
+            color: white;
+        }
+    }
+}
+
 
 @media(max-width:1890px) {
     #video-player  {

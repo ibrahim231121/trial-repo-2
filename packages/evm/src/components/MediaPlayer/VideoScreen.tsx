@@ -15,7 +15,7 @@ const VideoScreen = ({ viewNumber, videoData }: VideoScreenProp) => {
     if (camIndex < videoData.length) {
       return (
         <div className="videoContainer">
-          <video id={videoData[camIndex].id} width="100%" height="100%" controls={true} preload="auto" >
+          <video id={videoData[camIndex].id} width="100%" height="100%"  preload="auto" >
             <source src={videoData[camIndex].src} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
