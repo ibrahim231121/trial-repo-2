@@ -360,7 +360,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
       setCloseWithConfirm(false);
-    } else if (userName && firstName && lastName && email && middleInitial && phoneNumber) {
+    } else if (userName && firstName && lastName && email  ) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -531,6 +531,7 @@ const CreateUserForm: React.FC<Props> = ({
     else return "hello123456789";
   };
 
+  
   const setEditPayload = () => {
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
@@ -812,7 +813,7 @@ const CreateUserForm: React.FC<Props> = ({
 
   const checkMiddleInitial = () => {
     if (!formpayload.middleInitial) {
-      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial is required" });
+      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "" });
     }
     else if (formpayload.middleInitial.length < 3) {
       setFormPayloadErr({ ...formpayloadErr, middleInitialErr: "Middle Initial should be greater than 3 " })
@@ -846,7 +847,7 @@ useEffect(() => {
   
   if(alert === false && altRef === null  && optionalSticky.length > 0) {
     
-    alertClx[0].style.display = "none";
+    // alertClx[0].style.display = "none";
     crxIndicate[0].style.top = "42px";
     modalEditCrx[0].style.paddingTop = "42px";
     optionalSticky[0].style.height = "79px"
@@ -918,7 +919,6 @@ return (
             error={!!formpayloadErr.middleInitialErr}
             errorMsg={formpayloadErr.middleInitialErr}
             value={formpayload.middleInitial}
-            required={true}
             label="Middle Initial"
             className="users-input"
             onChange={(e: any) =>
@@ -961,7 +961,6 @@ return (
             error={!!formpayloadErr.phoneNumberErr}
             errorMsg={formpayloadErr.phoneNumberErr}
             value={formpayload.phoneNumber}
-            required={true}
             label="Phone Number"
             className="users-input"
             onChange={(e: any) =>
