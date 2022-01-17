@@ -1,16 +1,21 @@
 import { CRXNestedMenu } from "@cb/shared";
 import { RemoveSharp } from "@material-ui/icons";
-import { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import { MODULES } from '../../../utils/Api/url'
 import Restricted from "../../../ApplicationPermission/Restricted";
+import useGetFetch from "../../../utils/Api/useGetFetch";
+import { urlList, urlNames } from "./../../../utils/urlList"
 import "./index.scss";
+
 
 const CRXLefNavigation = () => {
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
   };
+  
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
 
   const items = [
@@ -23,25 +28,9 @@ const CRXLefNavigation = () => {
       moduleId:1,
       label: "Assets",
       icon: "icon icon-file-video NaveIcon",
-      url: "/assets",
+      url: urlList.filter((item:any) => item.name === urlNames.assets)[0].url,
       disabled: false,
-      items: [
-        {
-          label: "Assets",
-          command: () => {
-            navigateToPage("/assets");
-          },
-        },
-        {
-          label: "Right",
-        },
-        {
-          label: "Center",
-        },
-        {
-          label: "Justify",
-        },
-      ],
+      items: [],
     },
     {
       moduleId:0,
@@ -170,15 +159,22 @@ const CRXLefNavigation = () => {
       items: [
         {
           label: "Manage User Groups & Permissions",
+          command: () => {
+            navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+          },
         },
         {
           label: "Manage Users",
+          command: () => {
+            navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url);
+          },
         },
       ],
     },
   ];
 
-var AssetPermission = items.filter((x:any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0); // x.moduleId === 0 is a temporary logic should be remove once all permission assigned.
+  var AssetPermission = items.filter((x:any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0); 
+  // x.moduleId === 0 is a temporary logic should be remove once all permission assigned.
 
 
   return <CRXNestedMenu className="CRXLeftMenu" model={AssetPermission} />;

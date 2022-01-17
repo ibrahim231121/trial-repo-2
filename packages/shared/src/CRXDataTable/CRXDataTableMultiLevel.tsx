@@ -88,17 +88,17 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
         countAdvanceChecks = setCheckAlltoParent(row, "Advance", countAdvanceChecks)
         countRestrictChecks = setCheckAlltoParent(row, "Restrictive", countRestrictChecks)
       })
-      if(countBasicChecks.totalCount ===  countBasicChecks.checkedCount)
+      if(countBasicChecks.totalCount ===  countBasicChecks.checkedCount && countBasicChecks.totalCount > 0)
         setCheckAllBasicLevel(true)
       else
         setCheckAllBasicLevel(false)
 
-      if(countAdvanceChecks.totalCount ===  countAdvanceChecks.checkedCount)
+      if(countAdvanceChecks.totalCount ===  countAdvanceChecks.checkedCount && countAdvanceChecks.totalCount > 0)
         setCheckAllAdvanceLevel(true)
       else
         setCheckAllAdvanceLevel(false)
 
-      if(countRestrictChecks.totalCount ===  countRestrictChecks.checkedCount)
+      if(countRestrictChecks.totalCount ===  countRestrictChecks.checkedCount && countRestrictChecks.totalCount > 0)
         setCheckAllRestrictLevel(true)
       else
         setCheckAllRestrictLevel(false)

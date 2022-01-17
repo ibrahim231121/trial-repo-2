@@ -5,22 +5,26 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
+
 type AccordiaonProps = {
     disabled? : boolean,
     id : string,
     title : string,
     children : ReactNode,
-    className : string,
+    className? : string,
     defaultExpanded? : boolean,
-    ariaControls : string
+    ariaControls : string,
+    name: string,
+    expanded : any,
+    isExpanedChange : React.Dispatch<React.SetStateAction<string | boolean>>
 }
 
-const CrxAccordion = ({disabled, id, title, children, className, ariaControls} : AccordiaonProps) => {
+const CrxAccordion = ({disabled, isExpanedChange, expanded, id, name, title, children, defaultExpanded, className, ariaControls} : AccordiaonProps) => {
     
 const AccordionStyle = makeStyles({
   root: {
       backgroundColor: "#fff",
-      border:"1px solid #D1D2D4",
+      border:"0px solid #D1D2D4",
       borderRadius : "0px !important",
       boxShadow : "none",
   },
@@ -28,45 +32,35 @@ const AccordionStyle = makeStyles({
 
 const AccordionSummaryStyle = makeStyles({
     root: {
-        backgroundColor: "#333333",
-        color : "#D1D2D4",
-        fontSize: "14px",
+        backgroundColor: "#fff",
+        color : "#333",
+        fontSize: "18px",
         minHeight:"50px",
         height : "50px",
         borderRadius : "0px",
         fontFamily: "Arial, Helvetica, sans-serif",
-        padding: "0px 25px",
-        borderBottom:"2px solid #D1D2D4",
+        padding: "0px 22px",
+        borderBottom:"1px solid #E3E4E5",
         '&.Mui-expanded' : {
                 minHeight:"48px",
                 height : "48px",
-                padding: "0px 25px",
-                borderBottom:"2px solid #D74B00",
-                backgroundColor: "#fff",
-                color : "#333",
+                padding: "0px 22px",
             },
-        // '&.Mui-expanded' : {
-        //     minHeight:"50px",
-        //     height : "50px",
-        //     padding: "0px 25px"
-        // },
-        '&:hover' : {
-            backgroundColor: "#6E6E6E",
-            color : "#F5F5F5",
-        },
-        '&:focus' : {
-            backgroundColor: "#231F20",
-            color : "#F5F5F5",
-        }
     },
 
     expandIcon : {
-        color : "#D1D2D4",
-        fontSize: "22px",
+        color : "#333",
+        fontSize: "18px",
         background: "transparent",
         border:"0px solid #fff",
+        order: -1,
+        paddingRIght : "30px",
         '&.Mui-expanded' : {
-            color:"#333"
+            color:"#333",
+            transform:"rotate(90deg)"
+        },
+        '&:focus' : {
+            background: "transparent",
         }
     }
 });
@@ -74,39 +68,40 @@ const AccordionSummaryStyle = makeStyles({
 const AccordionDetailsStyle = makeStyles ({
     root : {
         borderRadius: "0px",
-        padding : "25px"
+        padding : "47px 25px",
+        
     }
 })
 
+const AccordionTitleStyle = makeStyles({
+    root : {
+        paddingLeft : "32px",
+        textTransform : "uppercase"
+    }
+})
     const accordionStyle = AccordionStyle() ;
     const SummaryStyle = AccordionSummaryStyle();
     const DetailsStyle = AccordionDetailsStyle();
-    const expandIcon = <i className="fas fa-caret-down"></i>;
+    const titleStyle = AccordionTitleStyle();
+    const expandIcon = <i className="fas fa-chevron-right"></i>;
     
-    // const [expanded, setExpanded] = React.useState<string | false>(false);
-    // const [defaultExpandedState, setDefaultExpandedState] = React.useState<boolean>(!disabled);
+    const handleChange = (panel: string) => (_: React.ChangeEvent<{}>, isExpanded: boolean) => {
+       
+        isExpanedChange(isExpanded ? panel : false);
 
-    // React.useEffect(() => {
-    // disabled === true?
-    //     setDefaultExpandedState(false)
-    //     : setDefaultExpandedState(true) 
-    // },[])
-
-    // //console.log("titles" , titles)
-    // const handleChange = (panel: string) => (_: React.ChangeEvent<{}>, isExpanded: boolean) => {
-    //     setExpanded(isExpanded ? panel : false);
-
-    //   };
-      
+    };
     
     return (
         <div>
+        
         <Accordion 
             disabled={disabled} 
-            className={className} 
-            defaultExpanded={!disabled}
-            classes={accordionStyle}>
-            {/* expanded={expanded === id} onChange={handleChange(id)}> */}
+            className={className + " " + name } 
+            defaultExpanded={defaultExpanded}
+            classes={accordionStyle}
+            expanded={expanded} 
+            onChange={handleChange(name)}
+        >
 
             <AccordionSummary
                 expandIcon={expandIcon}
@@ -114,7 +109,7 @@ const AccordionDetailsStyle = makeStyles ({
                 id={id}
                 classes={SummaryStyle}>
 
-                <Typography>{title}</Typography>
+                <Typography classes={titleStyle}>{title}</Typography>
 
             </AccordionSummary>
             <AccordionDetails classes={DetailsStyle}>
