@@ -6,7 +6,34 @@ import Chip from "@material-ui/core/Chip";
 
 import "./multiSelectBoxCategory.scss";
 
-const useSelectBoxStyle = makeStyles((theme: Theme) =>
+
+interface multiSelectProps {
+  multiple?: boolean;
+  options: any[];
+  onChange: (e: any, v: any) => void;
+  id: string;
+  defaultValue?: any[];
+  className?: string;
+  value: any;
+  autoComplete?: boolean;
+  tagIsCancelable?: boolean;
+  visibility?: boolean;
+}
+
+const MultiSelectBoxCategory = ({
+  id,
+  multiple,
+  options,
+  onChange,
+  defaultValue,
+  className,
+  value,
+  autoComplete = false,
+  tagIsCancelable = false,
+  visibility,
+}: multiSelectProps) => {
+
+  const useSelectBoxStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: "#fff",
@@ -115,6 +142,11 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       marginRight: "14px",
       marginLeft: "5px",
       top: "-1px",
+      "& .MuiChip-deleteIcon": {
+        
+        display: !visibility && "none"
+      },
+      
       "&:hover": {
         backgroundColor: "#F3F4F5",
         border: "1px solid #888787",
@@ -126,35 +158,14 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       "&:span": {
         padding: "0px",
       },
+      "&:after" : {
+        display : !visibility && "none"
+      },
     },
   })
 );
 
-interface multiSelectProps {
-  multiple?: boolean;
-  options: any[];
-  onChange: (e: any, v: any) => void;
-  id: string;
-  defaultValue?: any[];
-  className?: string;
-  value: any;
-  autoComplete?: boolean;
-  tagIsCancelable?: boolean;
-  visibility?: boolean;
-}
 
-const MultiSelectBoxCategory = ({
-  id,
-  multiple,
-  options,
-  onChange,
-  defaultValue,
-  className,
-  value,
-  autoComplete = false,
-  tagIsCancelable = false,
-  visibility,
-}: multiSelectProps) => {
   const classes = useSelectBoxStyle();
   const [styelHeight, setAutoHeight] = React.useState<string>("31px");
 
@@ -171,7 +182,6 @@ const MultiSelectBoxCategory = ({
         filterSelectedOptions={false}
         disableClearable
         disableCloseOnSelect={true}
-        // freeSolo
         closeText=""
         openText=""
         style={{ height: styelHeight }}
@@ -182,7 +192,7 @@ const MultiSelectBoxCategory = ({
           option: classes.option,
           popupIndicator: classes.popupIndicator,
           popupIndicatorOpen: classes.popupIndicatorOpen,
-          tag: classes.tag,
+          tag : classes.tag,
           focused: classes.focused,
         }}
         multiple={multiple}
@@ -208,22 +218,7 @@ const MultiSelectBoxCategory = ({
         renderInput={(params: any) => (
           <TextField {...params} variant="filled" />
         )}
-        
-        renderTags={(value, getTagProps) =>
-          
-          value.map((option, index) => (
-            // <>{console.log("option",option)} </>
-            <Chip
-            className="MuiAutocomplete-tag  MuiChip-deleteIcon"
-            style={{ visibility: visibility == true ? "visible" : "hidden"}}
-              variant="outlined"
-              label={option.label} 
-              onDelete={() => {console.log("clicked delete")}} 
-              size="small"
-              {...getTagProps({ index })}
-            />
-          ))
-        }
+
       />
     </>
   );

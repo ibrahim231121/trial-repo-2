@@ -39,18 +39,19 @@
             &:hover {
                 cursor: pointer;
             }
-        }
-        &::after {
-            position: absolute;
-            content: "\f00d";
-            font-family: "Font Awesome 5 Pro";
-            color: #D1D2D4;
-            font-size: 14px;
-            right:7px;
-            &:hover {
-                color: #333;
+            &::after {
+                position: absolute;
+                content: "\f00d";
+                font-family: "Font Awesome 5 Pro";
+                color: #D1D2D4;
+                font-size: 14px;
+                right:7px;
+                &:hover {
+                    color: #333;
+                }
             }
         }
+       
     }
     
 }
