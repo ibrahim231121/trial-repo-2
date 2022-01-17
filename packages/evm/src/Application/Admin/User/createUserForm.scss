@@ -100,3 +100,43 @@
           display: none !important;
         }
     }
+
+    .ManageUsersDataTable {
+       table {
+         thead {
+           tr {
+             th {
+               &.TableSearchAbleHead {
+                 &:first-child {
+                   left : 0px !important;
+                 }
+                 &:nth-child(2) {
+                  left : 58px !important;
+                }
+               }
+               &.CRXDataTableLabelCell {
+                  &:first-child {
+                    left : 0px !important;
+                  }
+                  &:nth-child(2) {
+                  left : 58px !important;
+                }
+               }
+             }
+           }
+         }
+         tbody {
+           tr {
+             td {
+               &.col-two {
+                left : 0px
+               }
+               &.col-three {
+                 left: 60px;
+                 position: sticky;
+               }
+             }
+           }
+         }
+       }
+    }

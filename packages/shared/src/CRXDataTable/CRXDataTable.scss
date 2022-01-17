@@ -4,7 +4,7 @@
   box-shadow: none !important;
   border-radius: 0px !important;
   overflow-y: visible;
-  min-height: 550px;
+  // min-height: 550px;
 
   table {
     tr {
@@ -76,6 +76,23 @@
         }
         &:nth-child(even) td:nth-child(2) {
           background: #f2f2f2;
+          .fal {
+            position: relative;
+            &::after {
+              content: "";
+              color: #fff;
+              left: 0;
+              position: absolute;
+              font-family: "Font Awesome 5 Duotone";
+              font-weight: 900;
+              right: 0;
+            }
+            &.crxCheckForDarBg {
+              &::after {
+                color: transparent;
+              }
+            }
+          }
         }
 
         td {
@@ -560,6 +577,7 @@
   position: sticky !important;
   padding-left: 7px !important;
   z-index: 1;
+  left: 59px;
 }
 
 .col-three {
@@ -567,6 +585,7 @@
   max-width: 80px;
   padding-left: 2px !important;
   z-index: 2;
+  left: 117px;
 }
 
 tr:nth-child(even) td[scope="row"] {
@@ -589,6 +608,9 @@ td.CellCheckBox {
       span {
         span {
           color: #d1d2d4;
+          &::after {
+            color:transparent !important;
+          }
         }
       }
     }

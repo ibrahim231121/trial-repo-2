@@ -244,7 +244,7 @@ const UserGroup: React.FC = () => {
             orderByParam={orderBy}
             searchHeader={true}
             columnVisibilityBar={true}
-            className="ManageAssetDataTable crxTableHeight crxTableDataUi"
+            className="crxTableHeight crxTableDataUi manageUserGroupsDataTable"
             onClearAll={clearAll}
             getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
             onResizeRow={resizeRow}

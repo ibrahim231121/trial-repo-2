@@ -103,9 +103,17 @@ export const useStyles = makeStyles((theme: Theme) =>
       width: 1,
     },
     container: {
-      // maxHeight: 800,
-
+      height: 494,
       overflowX: "auto",
+      '@media only screen and (max-width: 1920px)': {
+        height : "650px"
+      },
+      '@media only screen and (max-width: 1600px)': {
+        height : "435px"
+      },
+      '@media only screen and (max-width: 1366px)': {
+        height : "340px"
+      }
     },
     multiTableStikcyHeader: {
       top: 0,

@@ -29,11 +29,11 @@
    margin-top: 74px;
    margin-left: 65px !important;
    .dataTableColumnShoHide  {
-      margin-top: -63px !important;
+      margin-top: -83px !important;
    }
    .managePermissionBtn {
       position: sticky;
-      top: 158px;
+      top:154px;
       z-index: 6;
    }
    .crxClearfilter {
@@ -60,7 +60,7 @@
       thead {
          &:not(:first-child) {
             th { 
-               padding: 0 8px !important;
+               padding: 13px 13px 12px !important;
             }
          }
          &:first-child {
@@ -169,6 +169,8 @@
       width: 108px;
       padding: 0 0;
       margin-top: 16px;
+      position: sticky;
+      top: 144px;
       &:hover {
          border: 1px solid #6E6E6E;
       }
@@ -182,7 +184,7 @@
    }
 
    .dataTableColumnShoHide {
-      margin-top: -62px;
+      margin-top: -83px;
       &:nth-child(2) {
          .dataIconButton {
             margin-bottom: -1px;
@@ -415,3 +417,48 @@
    }
 }
 
+.manageUserGroupsDataTable {
+   table {
+      thead {
+        tr {
+          th {
+            &.TableSearchAbleHead {
+              &:first-child {
+                left : 0px !important;
+              }
+              &:nth-child(2) {
+               left : 58px !important;
+             }
+            }
+            &.CRXDataTableLabelCell {
+               &:first-child {
+                 left : 0px !important;
+               }
+               &:nth-child(2) {
+               left : 58px !important;
+             }
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            &.col-two {
+             left : 0px
+            }
+            &.col-three {
+              left: 60px;
+              position: sticky;
+            }
+          }
+        }
+      }
+    }
+}
+
+@media only screen and (max-width: 1600px) {
+   .manageUserGroupsDataTable {
+      height: 650px !important;
+   }
+}

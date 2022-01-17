@@ -31,7 +31,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   return (
 
     <Toolbar
-      className={clsx("crxClearfilter " + classes.root)}>
+      className={clsx("crxClearfilter stickyPos " + classes.root)}>
 
       {
         (showCountText || showCountText === undefined) ?

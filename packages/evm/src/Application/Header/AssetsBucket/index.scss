@@ -368,6 +368,25 @@
     }
     tbody tr:nth-child(even) td:first-child {
       background: #f2f2f2;
+      .fal {
+        position: relative;
+        &::after {
+          content: "";
+          color: #fff;
+          left: 0;
+          position: absolute;
+          font-family: "Font Awesome 5 Duotone";
+          font-weight: 900;
+          right: 0;
+          top: 0px;
+        }
+        &.crxCheckForDarBg {
+          &::after {
+            color: transparent;
+          }
+        }
+      }
+
     }
     tbody tr:nth-child(even) td:nth-child(2) {
       background: #f2f2f2;
