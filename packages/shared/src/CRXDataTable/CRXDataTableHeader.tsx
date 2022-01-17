@@ -32,15 +32,16 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '58px', minWidth: "58px", 
-                left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
-                position: "sticky", zIndex: 4}}>
+                left: "60px",//`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+                position: "sticky", zIndex: 4 }}>
             </TableCell>  
         : null
         }
         {(showActionCol === true || showActionCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '80px', minWidth: '80px', 
-                        left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        // left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        left : "118px",
                         position: "sticky", 
                         zIndex: 4}}>
                 {t('Actions')}

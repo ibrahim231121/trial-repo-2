@@ -533,7 +533,7 @@ const User: React.FC = () => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable"
+                    className="ManageUsersDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: User[]) => setSelectedItems(v)}
                     onResizeRow={resizeRow}
