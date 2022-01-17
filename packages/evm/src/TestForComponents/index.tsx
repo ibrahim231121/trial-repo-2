@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CRXGlobalSelectFilter, CRXGlobalTooltip, CRXMultiSelectBoxLight, CrxAccordion } from '@cb/shared'
+import { CRXGlobalSelectFilter, CRXMultiSelectBoxLight, CrxAccordion } from '@cb/shared'
 
 interface renderCheck {
   label?: string,
@@ -48,6 +48,9 @@ const TestViewsForDemo = () => {
   //   console.log("useEffect", autoValue);
   // },[autoValue])
   const icons = <i className="fas fa-info"></i>
+
+  const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
+
   return (
     <div className="App" style={{ marginTop: "120px", marginLeft: "90px" }}>
 
@@ -98,6 +101,10 @@ const TestViewsForDemo = () => {
         id="accorIdx1" 
         className="crx-accordion"
         ariaControls="Content1"
+        name="panel1"
+        isExpanedChange={isExpaned}
+        expanded={expanded === "panel1"} 
+        
         >
         <div  style={{ border: "1px solid #ddd", width: "100%", margin: "0", background: "#f9f9f9", padding: "25px"  }}>
           <h3>What is Lorem Ipsum? </h3>
@@ -110,6 +117,10 @@ const TestViewsForDemo = () => {
         id="accorIdx2" 
         className="crx-accordion" 
         ariaControls="Content2"
+        name="panel2"
+        isExpanedChange={isExpaned}
+        expanded={expanded === "panel2"} 
+        
         >
         
           <div  style={{ border: "1px solid #ddd", width: "100%", margin: "0", background: "#f9f9f9", padding: "25px"  }}>
@@ -124,6 +135,10 @@ const TestViewsForDemo = () => {
         className="crx-accordion" 
         disabled={true}
         ariaControls="Content3"
+        name="panel3"
+        isExpanedChange={isExpaned}
+        expanded={expanded === "panel3"} 
+        
         >
         <h3>What is Lorem Ipsum? </h3>
           <div  style={{ border: "1px solid #ddd", width: "100%", margin: "0", background: "#f9f9f9", padding: "25px"  }}>
@@ -131,6 +146,8 @@ const TestViewsForDemo = () => {
           </div>
         </CrxAccordion>
       </div>
+
+      {/* <ControlledAccordions /> */}
     </div>
   );
 }
