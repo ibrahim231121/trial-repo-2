@@ -26,7 +26,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
       {props.categoryObject.form.map((formObj: any, key: number) => (
         <div className='categoryFormAdded' key={key}>
           <CRXHeading variant='h4' className='categoryFormTitle'>
-            Category Forms*{' '}
+            Category Forms{' '}
             {formObj.record !== undefined
               ? formObj.record.record.find((x: any) => x.key === 'Name').value
               : formObj.name}

@@ -123,7 +123,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
               disableRipple={true}
               onClick={onClose}
             >
-              <div className="icon-cross2 detailPopupCloseIcon"></div>
+              <div className="icon icon-cross2 detailPopupCloseIcon"></div>
             </CRXButton>
           </div>
           <div className="CRXPopupHeader">
