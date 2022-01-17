@@ -192,8 +192,6 @@ const Group = () => {
 
   React.useEffect(() => {
     // only for 2 levels
-    console.log("resAppPermission",resAppPermission)
-    console.log("subModulesIds",subModulesIds)
     if (resAppPermission !== undefined) {
       if(applicationPermissions === undefined || applicationPermissions.length === 0)
         setApplicationPermissions(getPermissions(resAppPermission,subModulesIds))
@@ -208,8 +206,6 @@ const Group = () => {
 
 
   useEffect(() => {
-    console.log("applicationPermissions", applicationPermissions)
-    console.log("applicationPermissionsActual", applicationPermissionsActual)
     if(applicationPermissions !== undefined && applicationPermissionsActual !== undefined) {
     if (JSON.stringify(applicationPermissions) !== JSON.stringify(applicationPermissionsActual))
       setIsAppPermissionsChange(true)
@@ -218,10 +214,6 @@ const Group = () => {
     }
     
   },[applicationPermissions])
-
-  useEffect(() => {
-    console.log("isAppPermissionsChange", isAppPermissionsChange)
-  },[isAppPermissionsChange])
 
   React.useEffect(() => {
     if (res !== undefined) {
@@ -272,7 +264,6 @@ const Group = () => {
     dataPermissionModel: DataPermissionModel[]
   ) => {
     setDataPermissions(dataPermissionModel);
-    console.log("test", dataPermissions);
   };
 
   const redirectPage = () => {
@@ -453,7 +444,6 @@ useEffect(() => {
           if (status === 204) {
             groupId = parseInt(id);
           }
-          console.log("Group Id");
           let permissionsToAdd = dataPermissions.map((x) => {
             return {
               id: x.containerMappingId,
@@ -486,11 +476,11 @@ useEffect(() => {
                 container.status === 409 ||
                 container.status === 404
               ) {
-                console.log("A1")
+
                 setShowSuccess(true);
                 setIsAppPermissionsChange(false)
                 functionInitialized();
-                console.log("A2")
+
                 setAlertType("inline");
                 setMessages(message[2].message);
                 setError(message[2].messageType);
@@ -500,31 +490,31 @@ useEffect(() => {
               console.log("An error occured in permission");
               console.log(err.message);
             });
-          console.log("B1")
+
           setShowSuccess(true);
           setIsAppPermissionsChange(false)
           functionInitialized();
-          console.log("B2")
+
           setAlertType("toast");
           setMessages(message[0].message);
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
-          console.log("C1")
+
           setShowSuccess(true);
           setIsAppPermissionsChange(false)
           functionInitialized();
-          console.log("C2")
+
           setMessages(message[1].message);
           setError(message[1].messageType);
         } else if (status === 409 || status === 404) {
           let error = JSON.parse(grpResponse);
 
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
-          console.log("D1")
+
           setShowSuccess(true);
           setIsAppPermissionsChange(false)
           functionInitialized();
-          console.log("D2")
+
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow")
          
@@ -624,7 +614,6 @@ useEffect(() => {
             onDeletePermission={(id: number) => {
               var deletedPermissions = deletedDataPermissions;
               deletedPermissions.push(id);
-              console.log("Deleted Permission");
               setDeletedDataPermissions(deletedPermissions);
             }}
           ></DataPermission>
