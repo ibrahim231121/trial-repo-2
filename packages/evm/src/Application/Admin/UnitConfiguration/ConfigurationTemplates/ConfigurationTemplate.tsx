@@ -29,13 +29,21 @@ import {
     onSaveHeadCellData
   } from "../../../../utils/globalDataTableFunctions";
   import { CRXMenu } from "@cb/shared";
-
+  import { CBXLink } from "@cb/shared";
 type ConfigTemplate = {
     id: number;
     name: string;
     type: string;
     indicator: string
   }
+
+  const assetNameTemplate = (id: string) => {
+    return (
+      <>
+        <Link className={"linkColor"} children = {id} key={id}  to={{pathname:'/admin/unitanddevices/createtemplate/BC04',state:{id:id, isedit:true, type:"BC04"}}}/>
+      </>
+    );
+  };
 
 const ConfigurationTemplates: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -139,7 +147,7 @@ const ConfigurationTemplates: React.FC = () => {
         label: `${t("Name")}`,
         id: "name",
         align: "left",
-        dataComponent: (e: string) => anchorDisplay(e, "anchorStyle"),
+        dataComponent: assetNameTemplate,
         sort: true,
         searchFilter: true,
         searchComponent: searchText,
@@ -225,6 +233,7 @@ const ConfigurationTemplates: React.FC = () => {
                 horizontal="left"
             /> */}
          <Menu
+          style={{backgroundColor:'#FFFFFF'}}
         align="start"
         viewScroll="initial"
         direction="bottom"
@@ -237,18 +246,18 @@ const ConfigurationTemplates: React.FC = () => {
         }
       >
         <MenuItem >
-          <Link to="/admin/unitanddevices/createtemplate/BC04"> 
-            <div className="crx-menu-list">BC04</div>
-         </Link> 
+        <Link to={{pathname:'/admin/unitanddevices/createtemplate/BC04',state:{id:0 , isedit:false, type:"BCO4"}}}>
+          <div style={{backgroundColor:'#FFFFFF'}}>BC04</div>
+        </Link>
         </MenuItem>
         <MenuItem >
-        <Link to="/admin/unitanddevices/createtemplate/BC03"> 
-            <div className="crx-menu-list">BC03</div> 
+        <Link to={{pathname:'/admin/unitanddevices/createtemplate/BC03',state:{id:1 , isedit:false, type:"BCO3"}}}> 
+            <div    style={{backgroundColor:'#FFFFFF'}}>BC03</div> 
             </Link>     
         </MenuItem>
         <MenuItem >
         <Link to="/admin/unitanddevices/createtemplate/BC03Lte"> 
-            <div className="crx-menu-list">BC03 Lte</div> 
+            <div  style={{backgroundColor:'#FFFFFF'}}>BC03 Lte</div> 
             </Link>     
         </MenuItem>
       </Menu >

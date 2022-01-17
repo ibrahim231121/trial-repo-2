@@ -21,7 +21,7 @@ export const getConfigurationInfoAsync: any = createAsyncThunk(
 export const deletetemplate: any = createAsyncThunk(
     'Delete',
     async (args: any) => {
-      
+
         const requestOptions = {
             method: 'Delete',
             headers: {

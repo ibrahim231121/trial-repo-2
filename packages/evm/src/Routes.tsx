@@ -39,6 +39,7 @@ import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
 import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
 import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
+import EditUnitConfigurationTemplate from './UnitAndDevice/DeviceTemplate/EditTemplate'
 import Cookies from "universal-cookie";
 import TestViewsForDemo from '../../evm/src/TestForComponents/index';
 const cookies = new Cookies();
@@ -50,7 +51,7 @@ interface CounterState {
 
 const updatetokens = (refreshToken : string, accessToken: string)=>
 {
-  localStorage.setItem("refreshToken", refreshToken) 
+  localStorage.setItem("refreshToken", refreshToken)      
   const condition = localStorage.getItem('remember me')   
   if (condition == "True")
   {
@@ -61,14 +62,14 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
   var newdateInTimeStamp = difference + currentDate
   var newdateReadable = new Date(newdateInTimeStamp)
   const options:CounterState = { path:'/',expires:newdateReadable };
-  cookies.set('access_token', accessToken, options)     
-  }
+  cookies.set('access_token', accessToken, options)
+}
   else
   {
     const options = {path:'/'}
     cookies.set('access_token',accessToken,options);
   }
-  
+
 }
 
 
@@ -148,12 +149,13 @@ const Routes = () => {
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreate)[0].url} exact={true} component={CreateTemplate} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateClone)[0].url} exact={true} component={CloneTemplate} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplate)[0].url} exact={true} component={DevicesTemplate} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC04} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-              <PrivateRoute path="*" component={ErrorPage} />  
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true} component={EditUnitConfigurationTemplate} />
+              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />              
+              <PrivateRoute path="*" component={ErrorPage} />
             </Switch>
           </main>
           <footer>
