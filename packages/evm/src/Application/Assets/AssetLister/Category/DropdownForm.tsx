@@ -23,6 +23,7 @@ type DropdownFormProps = {
 
 const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const [buttonState, setButtonState] = React.useState<boolean>(false);
+  const [isCancelable,setIsCancelable] = React. useState<boolean>(false);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
 
   React.useEffect(() => {
@@ -113,6 +114,8 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
                 className='categortAutocomplete'
                 multiple={true}
                 CheckBox={true}
+                tagIsCancelable={isCancelable}
+                visibility = {false}
                 options={filterCategory(categoryOptions)}
                 value={props.filterValue}
                 autoComplete={false}
