@@ -57,7 +57,6 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
     if (arr.length > 0) {
       for (const element of arr) {
         sortedArray.push({
-          moduleId : 1,
           id: element.id,
           label: element.name
         });
