@@ -8,6 +8,7 @@ import DataPermission from "./GroupTabs/DataPermission";
 import GroupInfo from "./GroupTabs/GroupInfo";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import {
+  APPLICATION_PERMISSION_URL,
   GROUP_GET_BY_ID_URL,
   CONTAINERMAPPING_INFO_GET_URL,
   SAVE_USER_GROUP_URL,
@@ -66,6 +67,7 @@ const Group = () => {
   const [applicationPermissions, setApplicationPermissions] = React.useState<
     ApplicationPermission[]
   >([]);
+  const [applicationPermissionsActual, setApplicationPermissionsActual] = React.useState<ApplicationPermission[]>([]);
 
   const [dataPermissions, setDataPermissions] = React.useState<
     DataPermissionModel[]
@@ -125,17 +127,102 @@ const Group = () => {
     { "Content-Type": "application/json", TenantId: "1" }
   );
 
+  const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(APPLICATION_PERMISSION_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
+
   React.useEffect(() => {
+    
     //this work is done for edit, if id available then retrive data from url
+    functionInitialized()
+  }, []);
+
+  const functionInitialized = () => {
     if (!isNaN(+id)) {
       getResponse();
       getContainerMappingRes();
+      
     }
-  }, []);
+    getResponseAppPermission();
+  }
+
+  const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
+    let count: number = 0
+    if(response.subModules && response.subModules.length > 0)  {
+      response.subModules.map((subModule: any) => {
+        let value = subModulesIdes.indexOf(subModule.id) > -1 ? true : false
+        if(value === true)
+          count = count + 1
+      })
+      if(count === response.subModules.length)
+        return true
+      else
+        return false
+    }
+    else 
+      return false
+  }
+
+  const getPermissions = (AppPermissions: any, subModulesIdes: Number[]) => {
+    if(AppPermissions !== undefined){
+      let appPermission = AppPermissions.map((response: any) => {
+        
+        let x: ApplicationPermission = {
+          id: response.id,
+          name: response.name,
+          level: 1,
+          selected:  moduleAllCheck(response, subModulesIdes),
+          children: ((response.subModules && response.subModules.length > 0) ?
+            response.subModules.map((subModule: any) => {
+              let y: ApplicationPermission = {
+                id: subModule.id,
+                name: subModule.name,
+                level: 2,
+                selected: subModulesIdes.indexOf(subModule.id) > -1 ? true : false,
+                levelType: subModule.subModuleGroupName
+              }
+              return y
+            })
+            : null
+          )
+        }
+        return x
+      })
+      return appPermission
+    }
+  }
+
+  React.useEffect(() => {
+    // only for 2 levels
+    console.log("resAppPermission",resAppPermission)
+    console.log("subModulesIds",subModulesIds)
+    if (resAppPermission !== undefined) {
+      if(applicationPermissions === undefined || applicationPermissions.length === 0)
+        setApplicationPermissions(getPermissions(resAppPermission,subModulesIds))
+      setApplicationPermissionsActual(getPermissions(resAppPermission,subModulesIds));
+      
+    }
+  }, [resAppPermission]);
 
   React.useEffect(() => {
     showSave();
   }, [groupInfo, userIds, dataPermissions, isAppPermissionsChange]);
+
+
+  useEffect(() => {
+    console.log("applicationPermissions", applicationPermissions)
+    console.log("applicationPermissionsActual", applicationPermissionsActual)
+    if(applicationPermissions !== undefined && applicationPermissionsActual !== undefined) {
+    if (JSON.stringify(applicationPermissions) !== JSON.stringify(applicationPermissionsActual))
+      setIsAppPermissionsChange(true)
+    else
+      setIsAppPermissionsChange(false)
+    }
+    
+  },[applicationPermissions])
+
+  useEffect(() => {
+    console.log("isAppPermissionsChange", isAppPermissionsChange)
+  },[isAppPermissionsChange])
+
   React.useEffect(() => {
     if (res !== undefined) {
       setGroupInfo({ name: res.name, description: res.description });
@@ -180,6 +267,7 @@ const Group = () => {
   const onChangeUserIds = (userIds: number[]) => {
     setUserIds(userIds);
   };
+
   const onChangeDataPermission = (
     dataPermissionModel: DataPermissionModel[]
   ) => {
@@ -398,7 +486,11 @@ useEffect(() => {
                 container.status === 409 ||
                 container.status === 404
               ) {
+                console.log("A1")
                 setShowSuccess(true);
+                setIsAppPermissionsChange(false)
+                functionInitialized();
+                console.log("A2")
                 setAlertType("inline");
                 setMessages(message[2].message);
                 setError(message[2].messageType);
@@ -408,21 +500,31 @@ useEffect(() => {
               console.log("An error occured in permission");
               console.log(err.message);
             });
-
+          console.log("B1")
           setShowSuccess(true);
+          setIsAppPermissionsChange(false)
+          functionInitialized();
+          console.log("B2")
           setAlertType("toast");
           setMessages(message[0].message);
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
+          console.log("C1")
           setShowSuccess(true);
+          setIsAppPermissionsChange(false)
+          functionInitialized();
+          console.log("C2")
           setMessages(message[1].message);
           setError(message[1].messageType);
         } else if (status === 409 || status === 404) {
           let error = JSON.parse(grpResponse);
 
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
-
+          console.log("D1")
           setShowSuccess(true);
+          setIsAppPermissionsChange(false)
+          functionInitialized();
+          console.log("D2")
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow")
          
@@ -468,6 +570,8 @@ useEffect(() => {
       dispatch(addNotificationMessages(notificationMessage));
     }
   },[messages])
+
+  
   
   return (
     <div className="App crxTabsPermission" style={{}}>
@@ -504,7 +608,7 @@ useEffect(() => {
         
           ></div>
           <Application
-            subModulesIds={subModulesIds}
+            resAppPermission={resAppPermission}
             applicationPermissions={applicationPermissions}
             onSetAppPermissions={getAppPermissions}
             groupIdName={groupIdName}
