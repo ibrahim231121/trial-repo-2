@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Formik, Form } from 'formik';
 import { MultiSelectBoxCategory } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import './categoryForm.scss';
+import ApplicationPermissionContext from '../../../../ApplicationPermission/ApplicationPermissionContext';
+import { Visibility } from '@material-ui/icons';
 
 type DropdownFormProps = {
   filterValue: any[];
@@ -23,9 +25,12 @@ type DropdownFormProps = {
 
 const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const [buttonState, setButtonState] = React.useState<boolean>(false);
-  const [isCancelable,setIsCancelable] = React. useState<boolean>(false);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const {
+    getModuleIds
+  } = useContext(ApplicationPermissionContext);
 
+  const isCancelable = getModuleIds().includes(4) ? true : false
   React.useEffect(() => {
     const modalTitleProps = props.isCategoryEmpty ? 'Choose category' : 'Edit category';
     props.setModalTitle(modalTitleProps);
@@ -52,6 +57,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
     if (arr.length > 0) {
       for (const element of arr) {
         sortedArray.push({
+          moduleId : 1,
           id: element.id,
           label: element.name
         });
@@ -114,8 +120,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
                 className='categortAutocomplete'
                 multiple={true}
                 CheckBox={true}
-                tagIsCancelable={isCancelable}
-                visibility = {false}
+                visibility = {isCancelable}
                 options={filterCategory(categoryOptions)}
                 value={props.filterValue}
                 autoComplete={false}
