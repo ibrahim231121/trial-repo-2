@@ -7,7 +7,7 @@ import {
     MenuDivider,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
-//import './index.scss'
+import './index.scss'
 import { useDispatch } from "react-redux";
 
 type Props = {
@@ -23,8 +23,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             viewScroll="initial"
             direction="right"
             position="auto"
-            className="menuCss"
-            arrow
+            className="menuCss unitDeviceMenuCss"
             menuButton={ <MenuButton><i className="far fa-ellipsis-v"></i></MenuButton> }
         >
         <MenuItem>
@@ -33,7 +32,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 <i className="fas fa-pen"></i>
                 </div>
                 <div className="crx-menu-list">
-                    Edit
+                    {`Edit <Configuration>`}
                 </div>
             </div>
         </MenuItem>

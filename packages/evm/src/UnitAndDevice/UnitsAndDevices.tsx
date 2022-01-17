@@ -571,7 +571,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
           //---required Props
-          className="ManageAssetDataTable crxTableHeight"
+          className="ManageAssetDataTable crxTableHeight unitDeviceTableConfig"
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
