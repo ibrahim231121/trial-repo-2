@@ -8,13 +8,16 @@ import { createStore } from 'redux';
 const persistConfig = {
   key: 'timerReducers',
   storage: storage,
-  whitelist: ['timerReducers','cultureReducer'] // which reducer you want to store as a local storage
+  whitelist: ['timerReducers','cultureReducer'] // which reducer want to store
 };
 
-const pReducer = persistReducer(persistConfig,reducer);
-const store = createStore(pReducer);
-const persistor = persistStore(store);
-//exporting Actions
+const persistedReducer = persistReducer(persistConfig, reducer);
+const store = configureStore({
+  reducer: persistedReducer,
+  // devTools: process.env.NODE_ENV !== 'production',
+  // middleware: [thunk]
+});
 
-export {persistor, store}
-export default configureStore({reducer})
+
+export default store;
+

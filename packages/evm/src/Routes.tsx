@@ -83,24 +83,24 @@ const Routes = () => {
   const timers = () => dispatch(timerActionCreator(timer - 1));
   const refreshToken = localStorage.getItem('refreshToken')
 
-  useEffect(() => {
-    if (isAuthenticated()){
+//   useEffect(() => {
+//     if (isAuthenticated()){
 
-     if (timer == 0){
-      fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
-           .then(response  => response.json())
-            .then(response =>                      
-                 updatetokens(response.refreshToken, response.accessToken)
-                 );
-      dispatch(timerActionCreator(3480)) //time in sec
-     }
+//      if (timer == 0){
+//       fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
+//            .then(response  => response.json())
+//             .then(response =>                      
+//                  updatetokens(response.refreshToken, response.accessToken)
+//                  );
+//       dispatch(timerActionCreator(3480)) //time in sec
+//      }
     
-      var id = setInterval(timers, 1000);      
-      return () => clearInterval(id);
-    }
-  },
+//       var id = setInterval(timers, 1000);      
+//       return () => clearInterval(id);
+//     }
+//   },
   
-);
+// );
 
 
   const handleDrawerToggle = () => {
