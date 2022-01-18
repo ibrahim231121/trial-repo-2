@@ -2,8 +2,8 @@
 import React, { useEffect, useRef } from "react";
 import { CRXDataTable, CRXColumn, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import textDisplay from "../../../components/DateDisplayComponent/TextDisplay";
-import { DateTimeComponent } from "../../../components/DateTimeComponent";
+import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
+import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import {
@@ -19,19 +19,19 @@ import {
     onClearAll,
     onSaveHeadCellData,
     onSetHeadCellVisibility
-} from "../../../utils/globalDataTableFunctions";
+} from "../../../GlobalFunctions/globalDataTableFunctions";
 
-import TextSearch from "../../../components/SearchComponents/TextSearch";
+import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { dateOptionsTypes } from './../../../../src/utils/constant';
 
-import MultSelectiDropDown from "../../../components/SearchComponents/MultSelectiDropDown";
+import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
 import { userInfo } from "os";
 import { getStationsInfoAsync } from "../../../Redux/StationReducer";
 import StationActionMenu from "./StationActionMenu";
 import AnchorDisplay from "../../../utils/AnchorDisplay";
-import { urlList , urlNames} from "../../../utils/urlList";
+import { urlList, urlNames } from "../../../utils/urlList";
 
 type Station = {
     id: string;
@@ -218,7 +218,7 @@ const Station: React.FC = () => {
             id: "name",
             align: "left",
             // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
-            dataComponent: (e: string) => AnchorDisplay(e, "anchorStyle",  urlList.filter((item:any) => item.name === urlNames.adminStationId)[0].url),
+            dataComponent: (e: string) => AnchorDisplay(e, "anchorStyle", urlList.filter((item: any) => item.name === urlNames.adminStationId)[0].url),
             sort: true,
             searchFilter: true,
             searchComponent: searchText,

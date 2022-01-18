@@ -12,8 +12,7 @@
   },
   "workspaces": {
     "packages": [
-      "packages/shared/*",
-      "packages/evm"
+      "packages/*"
     ]
   },
   "dependencies": {
