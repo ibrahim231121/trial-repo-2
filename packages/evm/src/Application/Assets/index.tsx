@@ -1,1 +1,1 @@
-export { default as MannageAsset } from "./pages/MannageAsset";
+export { default as MannageAsset } from "./AssetLister";

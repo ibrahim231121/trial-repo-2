@@ -50,63 +50,66 @@ export const urlNames: any = {
 };
 
 export const urlList: any = [
-  {
-    name: urlNames.assets,
-    url: '/assets',
-    details: [{ type: 'text', label: 'Assets' }]
-  },
-  {
-    name: urlNames.adminUserGroups,
-    url: '/admin/usergroups',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/usergroups', type: 'text', label: 'Manage User Groups & Permissions' }
-    ]
-  },
-  {
-    name: urlNames.adminUserGroup,
-    url: '/admin/usergroups/group',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/usergroups', type: 'link', label: 'Manage User Groups & Permissions' },
-      { type: 'text', label: 'Group' }
-    ]
-  },
-  {
-    name: urlNames.adminUserGroupId,
-    url: '/admin/usergroups/group/:id',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/usergroups', type: 'link', label: 'Manage User Groups & Permissions' },
-      { type: 'text', label: 'Group' }
-    ]
-  },
-  {
-    name: urlNames.userGroupCreate,
-    url: '/admin/usergroups/group/create',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/usergroups', type: 'link', label: 'Manage User Groups & Permissions' },
-      { type: 'text', label: 'Create User Group' }
-    ]
-  },
-  {
-    name: urlNames.adminUsers,
-    url: '/admin/users',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/users', type: 'text', label: 'Manage Users' }
-    ]
-  },
-  {
-    name: urlNames.adminTestDemo,
-    url: '/admin/TestDemo',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/TestDemo', type: 'text', label: 'Global Filter Components' }
-    ]
-  },
-  {
+    {
+        name: urlNames.assets,
+        url: "/assets",
+        details: [
+            { type: "text", label: "Assets", }
+        ],
+    },
+    {
+        name: urlNames.adminUserGroups,
+        url: "/admin/usergroups",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
+        ],
+    },
+    // {
+    //     name: urlNames.adminUserGroup,
+    //     url: "/admin/usergroups/group",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+    //         { type: "text", label: "Group", }
+    //     ],
+    // },
+    {
+        name: urlNames.userGroupCreate,
+        url: "/admin/usergroups/group",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Create User Group", }
+        ],
+    },
+    {
+        name: urlNames.adminUserGroupId,
+        url: "/admin/usergroups/group/:id(\\d+)",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+            { type: "text", label: "Group", }
+        ],
+    },
+
+    {
+        name: urlNames.adminUsers,
+        url: "/admin/users",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/users", type: "text", label: "Manage Users", }
+        ],
+    },
+    {
+        name: urlNames.adminTestDemo,
+        url: "/admin/TestDemo",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
+        ],
+    },
+{
     name: urlNames.adminStation,
     url: '/admin/stations',
     details: [
@@ -123,4 +126,5 @@ export const urlList: any = [
       { type: 'text', label: 'Station_Name' }
     ]
   }
+
 ];

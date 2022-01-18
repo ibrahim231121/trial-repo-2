@@ -21,7 +21,7 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
   finalLevel,
   onSetCheckAllLevel,
   onSetRow,
-  onUnCheckAllParent
+  onCheckUnCheckChildren
 }) => {
 
   const orderColumn = new Array(headCells.length).fill(null).map((_, i) => i)
@@ -58,11 +58,16 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
         setCheckAllAdvanceLevel(check)
       else if(row.levelType === "Restrictive") 
         setCheckAllRestrictLevel(check)
-      onUnCheckAllParent(check, row)
+      onCheckUnCheckChildren(check, row)
     }
+    else if(row.levelType !== undefined && check === true) {
+      onCheckUnCheckChildren(check, row)
+    }
+    checkAlltoTypes()
   }
 
   const getCheckAllValues = (colIdx:number) => {
+    
     let value: boolean = false;
     if(colIdx === finalLevel-1)
       value = checkAllBasicLevel
@@ -71,6 +76,52 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
     else if(colIdx === finalLevel+1)
       value = checkAllRestrictLevel
     return value
+  }
+
+  const checkAlltoTypes = () => {
+    let countBasicChecks: any = {totalCount:0, checkedCount:0}
+    let countAdvanceChecks: any = {totalCount:0, checkedCount:0}
+    let countRestrictChecks: any = {totalCount:0, checkedCount:0}
+    if(rows !== undefined && rows.length > 0) {
+      rows.map((row: any) => { 
+        countBasicChecks = setCheckAlltoParent(row, "Basic", countBasicChecks)
+        countAdvanceChecks = setCheckAlltoParent(row, "Advance", countAdvanceChecks)
+        countRestrictChecks = setCheckAlltoParent(row, "Restrictive", countRestrictChecks)
+      })
+      if(countBasicChecks.totalCount ===  countBasicChecks.checkedCount && countBasicChecks.totalCount > 0)
+        setCheckAllBasicLevel(true)
+      else
+        setCheckAllBasicLevel(false)
+
+      if(countAdvanceChecks.totalCount ===  countAdvanceChecks.checkedCount && countAdvanceChecks.totalCount > 0)
+        setCheckAllAdvanceLevel(true)
+      else
+        setCheckAllAdvanceLevel(false)
+
+      if(countRestrictChecks.totalCount ===  countRestrictChecks.checkedCount && countRestrictChecks.totalCount > 0)
+        setCheckAllRestrictLevel(true)
+      else
+        setCheckAllRestrictLevel(false)
+    }
+  }
+
+  React.useEffect(() => {
+    checkAlltoTypes()
+  },[rows])
+
+  // This is for Vertical Check All
+  const setCheckAlltoParent = (row: any, type: string, countValues: any) => {
+
+    if(type !== undefined && row.levelType === type)
+      countValues.totalCount = countValues.totalCount + 1
+    if(type !== undefined && row.levelType === type && row.selected === true)
+      countValues.checkedCount = countValues.checkedCount + 1
+    if (row.children && row.children.length > 0) {
+      row.children.map((item: any) => {
+        return setCheckAlltoParent(item, type, countValues)
+      });
+    }
+    return countValues
   }
 
   return (

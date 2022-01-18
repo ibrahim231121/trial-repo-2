@@ -34,7 +34,10 @@
     "react-scroll": "^1.8.2",
     "typescript": "^4.1.2",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "@types/yup": "^0.29.13",
+    "formik": "^2.2.9",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "SET PORT=3000 && yarn run start:dev",

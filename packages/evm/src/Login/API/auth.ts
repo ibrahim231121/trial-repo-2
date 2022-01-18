@@ -1,6 +1,7 @@
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import { codeChallengeRemove } from '../../utils/settings';
+import { useHistory } from "react-router";
 
 interface IDecoded {
     RememberMe: string;
@@ -52,9 +53,17 @@ export const isAuthenticated = () => {
     }
 }
 
+export const getToken = () => {
+    return cookies.get('access_token') 
+}
 
-export const logOutUser = () => {
 
+export const LogOutUser = (historyCB:any) => {
+
+    var history;
+    if(historyCB){
+        history = historyCB();
+    }
     sessionStorage.removeItem('code_challenge_string');
     var opt;
     const options = { path: '/' };
@@ -64,7 +73,8 @@ export const logOutUser = () => {
     opt = localStorage.removeItem('assetBucket')
     // window.location.reload(false);
     // next()
-    window.location.href = "/";
+    history.push("/");
+
 
 
 }

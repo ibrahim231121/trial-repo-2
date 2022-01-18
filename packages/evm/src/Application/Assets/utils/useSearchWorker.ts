@@ -5,7 +5,6 @@ export default class Singleton {
     private static instance: Worker;
 
     private constructor() {
-        console.log("constructor called!");
     }
 
     public static getInstance() {

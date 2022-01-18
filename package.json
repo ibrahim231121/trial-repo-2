@@ -15,5 +15,8 @@
       "packages/shared/*",
       "packages/evm"
     ]
+  },
+  "dependencies": {
+    "jwt-decode": "^3.1.2"
   }
 }

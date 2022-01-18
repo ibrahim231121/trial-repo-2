@@ -1,0 +1,263 @@
+.application-Permission-DataTable {
+  box-shadow: none !important;
+  border: 1px solid #ccc;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: 0px !important;
+  margin-top: 61px;
+  margin-bottom: 43px;
+  overflow-x: initial !important;
+  table {
+    thead {
+      tr {
+        th {
+          height: 100px;
+          padding: 0px;
+          border-right: 1px solid #ccc;
+          position: sticky;
+          top: 86px;
+          &.CRXMultiDataTableLabelCell {
+            .crxMultiTableHeader {
+              text-align: center;
+              .multiTableHeaderCell {
+                width: 100%;
+                position: relative;
+                top: 3px;
+                label {
+                  font-family: Arial, Helvetica, sans-serif;
+                  font-size: 14px;
+                  color: #d1d2d4;
+                  display: block;
+                }
+                .CRXCheckBox {
+                  padding-top: 6px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          &.multiDataTableBodyCell {
+            padding: 5px 0px;
+            border-left: 1px solid #cccccc;
+            border-bottom: 1px solid #cccccc;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #333333;
+            &:nth-child(2) {
+              border-left: 0px solid #cccccc;
+            }
+            .multiDataTableCheckBox {
+              padding-left: 15px;
+              &:nth-child(1) {
+                border-bottom: 1px solid #cccccc;
+              }
+              .crxCheckForDarBg {
+                color: #333 !important;
+              }
+              .MuiIconButton-label {
+                padding-right: 4px;
+              }
+            }
+            .App-permission-parent {
+              display: flex;
+              place-items: center;
+              .multiTableC-Caret {
+                padding: 0px 13px 0 16px;
+                background: transparent;
+                font-size: 14px;
+                color: #333;
+                span {
+                  i {
+                    font-size: 18px;
+                  }
+                }
+                &:hover {
+                  background: transparent;
+                }
+                &:focus {
+                  background: transparent;
+                }
+              }
+              .appPermissionLevel-checkbox {
+                padding-right: 15px;
+              }
+            }
+          }
+        }
+      }
+      div {
+        &:last-child {
+          tr {
+            td {
+              // border-bottom: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.applicationPermission-content {
+  position: relative;
+  margin: 0 81px;
+  .application-Permission-DataTable {
+    // &::before {
+    //     position: fixed;
+    //     background-color: #fff;
+    //     top: 211px;
+    //     left: 168px;
+    //     content: " ";
+    //     width: 85%;
+    //     height: 110px;
+    //     z-index: 99;
+    //     display: block;
+    //     margin: 0 auto;
+    //     z-index: 1;
+    // }
+  }
+  .application-permission-menu {
+    position: sticky;
+    top: 0;
+    text-align: right;
+    z-index: 3;
+    .application-permission-dropdown {
+      width: 238px;
+      border: 1px solid #d1d2d4;
+      outline: 3px solid transparent;
+      height: 30px;
+      position: absolute;
+      right: 0;
+      top: 27px;
+      &:hover {
+        border: 1px solid #888787;
+      }
+      .customButton {
+        width: inherit;
+        height: 29px;
+        border: 3px solid transparent;
+        border-radius: 0px;
+        &:focus {
+          border: 3px solid #888787;
+        }
+        .MuiButton-label {
+          color: #333;
+          font-weight: normal;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          position: relative;
+          .menuLabel {
+            width: 238px;
+            text-align: left;
+            text-indent: 14px;
+            height: 30px;
+            line-height: 36px;
+          }
+          .CRXDRPIcon {
+            right: 9px;
+            top: 4px;
+            font-size: 18px;
+            position: absolute;
+          }
+        }
+      }
+    }
+    label {
+      font-size: 14px;
+      color: #74767c;
+      font-family: Arial, Helvetica, sans-serif;
+      padding-right: 17px;
+      position: relative;
+      top: -5px;
+    }
+  }
+}
+
+@media only screen and (max-width: 1366px) {
+  .application-Permission-DataTable {
+    table {
+      &.MuiTable-stickyHeader {
+        table-layout: fixed;
+        thead {
+          tr {
+            th {
+            }
+          }
+        }
+      }
+    }
+  }
+  .applicationPermission-content {
+    .application-Permission-DataTable {
+      &::before {
+        top: 211px;
+        width: 1024px;
+        left: 192px;
+      }
+    }
+  }
+}
+
+.hiddenArea {
+  position: sticky;
+  top:-18px;
+  // left: 154px;
+  // // content: " ";
+  // width: 85%;
+ 
+  z-index: 99;
+  display: block;
+  margin: 0 auto;
+  z-index: 1;
+  &.isErrorHide {
+    top: -19px;
+  }
+  &.crxScrollGroup {
+    top: 183px;
+    &.isErrorHide {
+      top: -25px;
+    }
+  }
+  &::before {
+    position: absolute;
+    content: " ";
+    height: 111px;
+    width: 100%;
+    background-color: #fff;
+    top: 0px;
+    left: 0px;
+  }
+}
+.crxGroupTab1 {
+  &.crxScrollGroupTop {
+    .userDataTableParent{
+    // .dataTablePages {
+    //   bottom: 112px;
+    // }
+  }
+    &.isErrorHide {
+      .userDataTableParent {
+        // .dataTablePages {
+        //   bottom: 56px;
+        // }
+      }
+    }
+  }
+  &.crxScrollGroup {
+    &.isErrorHide {
+      .userDataTableParent {
+        // .dataTablePages {
+        //   bottom: 108px;
+        // }
+        .crxClearfilter {
+          top: -25px;
+          min-height: 70px;
+        }
+      }
+    }
+  }
+}

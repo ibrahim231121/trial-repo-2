@@ -5,11 +5,42 @@
     url('fonts/icomoon.ttf?287wpc') format('truetype'),
     url('fonts/icomoon.woff?287wpc') format('woff'),
     url('fonts/icomoon.svg?287wpc#icomoon') format('svg');
+    
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
+@font-face {
+  font-family: 'IcoMoon-Ultimate';
+  src: url('./fonts/Font/IcoMoon-Ultimate.ttf') format('truetype');
+  src: url('./fonts/Font/IcoMoon-Ultimate.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
+.icon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'IcoMoon-Ultimate' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  
+  /* Enable Ligatures ================ */
+  letter-spacing: 0;
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  -ms-font-feature-settings: "liga" 1;
+  -o-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
@@ -95,7 +126,9 @@
 .icon-radio-checked:before {
   content: "\ea54";
 }
-
+.radio-unchecked:before {
+  content: "\ee73";
+}
 .icon-cross:before {
   content: "\e901";
 }
@@ -289,7 +322,7 @@
   content: "\e927";
 }
 .icon-calendar:before {
-  content: "\e928";
+  content: "\e928" !important;
 }
 .icon-date:before {
   content: "\e928";
@@ -391,10 +424,10 @@
   content: "\e94a";
 }
 .icon-drawer:before {
-  content: "\e95c";
+  content: "\e95c" !important;
 }
 .icon-drawer2:before {
-  content: "\e95d";
+  content: "\e95d" !important;
 }
 .icon-spinner41:before {
   content: "\e97e";

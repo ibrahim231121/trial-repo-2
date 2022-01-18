@@ -1,0 +1,72 @@
+.crxMultiAutocomplete {
+    .MuiFormControl-root {
+        max-height: inherit;
+        margin: 0px;
+        border: 0px;
+        .MuiInputBase-root {
+            padding: 0;
+            // height: 24px;
+            max-height: inherit;
+            border: 0px;
+            background-color:transparent;
+            border-radius: 0px;
+            &::before {
+                border-bottom: 0px !important;
+            }
+            &::after {
+                border-bottom: 0px !important;
+            }
+            .MuiAutocomplete-input {
+                // height: 30px;
+                padding: 0px;
+            }
+        }
+    }
+
+    .selectChip {
+        &:hover {
+            color: #333;
+            i {
+                color: #333;
+            }
+        }
+    }
+
+    .MuiAutocomplete-tag {
+        position: relative;
+        .MuiChip-deleteIcon {
+            opacity: 0;
+            &:hover {
+                cursor: pointer;
+            }
+            &::after {
+                position: absolute;
+                content: "\f00d";
+                font-family: "Font Awesome 5 Pro";
+                color: #D1D2D4;
+                font-size: 14px;
+                right:7px;
+                &:hover {
+                    color: #333;
+                }
+            }
+        }
+       
+    }
+    
+}
+
+.checkIcon {
+    color: #F5F5F5;
+    font-size:15px;
+    margin-right: 6px;
+}
+
+@media screen and(max-width : 1366)  {
+    .makeStyles-paper-350 {
+        width: 481px !important;
+        margin-top: 0px !important;
+        max-height: 164px !important;
+        margin-left: -8px !important;
+    }
+}

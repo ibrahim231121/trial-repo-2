@@ -13,8 +13,9 @@ type propsType = {
     baseZIndex? : number,
     autoZIndex? : boolean,
     appendTo? : HTMLElement | null,
+    disabled? : boolean
 }
-const CRXNestedMenu = ({popup = false, model, style, className, appendTo} : propsType) => {
+const CRXNestedMenu = ({popup = false, model, style, className, disabled , appendTo} : propsType) => {
     const menuRef:React.RefObject<any> = React.createRef();
     const [visible, setVisible] = useState<boolean>();
 
@@ -50,7 +51,7 @@ const CRXNestedMenu = ({popup = false, model, style, className, appendTo} : prop
             <CSSTransition nodeRef={menuRef} classNames="p-connected-overlay" in={visible} timeout={{ enter: 120, exit: 100 }}
                 unmountOnExit onEnter={onEnter} onEntered={onEntered} onExit={onExit} onExited={onExited}>
                 <div ref={menuRef} id={id} className={classDYNames + " " + className} style={style} onClick={onPanelClick}>
-                    <CRXMenuSub props model={model} root popup={popup} />
+                    <CRXMenuSub props model={model} root popup={popup} disabled ={disabled}/>
                 </div>
             </CSSTransition>
         );

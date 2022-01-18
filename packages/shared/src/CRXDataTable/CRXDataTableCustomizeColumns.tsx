@@ -202,7 +202,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
                   <div className="popupFreezTitle">
                     <div style={{ position: 'absolute', top: "-10px", right: "0px" }}>
                       <IconButton aria-label="clear" disableRipple={true} className="closePopup" onClick={() => setCustomize(false)} >
-                        <span className="icon-cross2 croseIcon"></span>
+                        <span className=" croseIcon   icon icon-cross2"></span>
                       </IconButton>
                     </div>
 

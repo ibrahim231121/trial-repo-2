@@ -36,7 +36,8 @@ const CRXButton = ({
   variant,
   className,
   disabled,
-  onClick,primary,
+  onClick,
+  primary,
   ...props
 }: buttonProps) => {
   const disabledClass = className==="tertiary" && disabled && "tertiaryDisabled"
