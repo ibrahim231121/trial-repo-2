@@ -1,11 +1,26 @@
 .errorStyle {
   color: "red";
 }
-
+.CRXDialogForm {
+  .attentionAlert {
+    margin-bottom: 79px;
+  }
+  .indicateLessPadding {
+    display: none;
+  }
+  .optionalSticky {
+    display: none;
+  }
+  .CRXContent {
+    .dailogFormHeading {
+      margin-top: 24px !important;
+    }
+  }
+}
 .crxEditCategoryForm {
   .CRXContent {
     .onErrorcaseClx {
-      top:60px;
+      top: 60px;
     }
   }
 }
@@ -31,7 +46,7 @@
     b {
       font-size: 20px;
       color: #333333;
-      margin-left: 5px
+      margin-left: 5px;
     }
   }
   .crxDrpDownCatergory {
@@ -42,6 +57,7 @@
     bottom: 0;
     display: flex;
     padding: 0px;
+    height: 74px;
     align-items: center;
     width: 100%;
     border-top: 1px solid #d1d2d4;
@@ -401,7 +417,6 @@
 }
 
 .nextForm {
-  bottom: 22px !important;
   .CRXButton {
     &.nextButton {
       background: #333 !important;
@@ -682,4 +697,3 @@
 .modalBottomTextClose {
   padding-bottom: 77px;
 }
-

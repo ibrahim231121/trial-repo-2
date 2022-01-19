@@ -9,6 +9,7 @@ import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../
 type EditConfirmFormProps = {
   rowData?: any;
   filterValue: any[];
+  setremoveClassName: any;
   setOpenForm: () => void;
   closeModal: (param: boolean) => void;
   setIsformUpdated: (param: boolean) => void;
@@ -34,6 +35,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
 
   React.useEffect(() => {
     props.setModalTitle('Editing the category form requires a reason');
+    props.setremoveClassName('crx-remove-category-form');
   }, []);
 
   React.useEffect(() => {

@@ -4,7 +4,10 @@
   padding-right: 2px;
   .CrxMsgErrorGroup {
     display: inline-flex;
-    span {margin: 0 4px;text-transform: uppercase !important;}
+    span {
+      margin: 0 4px;
+      text-transform: uppercase !important;
+    }
   }
   div[role="tabpanel"] {
     border-top: 1px solid #878787;
@@ -33,12 +36,10 @@
     }
   }
   div[aria-labelledby="crx-tab-3"] {
-    &::before { 
-      background:transparent;
+    &::before {
+      background: transparent;
     }
   }
-
-
 
   .MuiTab-root {
     padding: 0 25px;
@@ -111,9 +112,9 @@
     }
   }
   .CrxAlertNotificationGroup {
-      padding-right: 2px;
-       margin: -10px 0 27px;
-      display: inline-flex;
+    padding-right: 2px;
+    margin: -10px 0 27px;
+    display: inline-flex;
   }
   .showMessageGroup {
     display: inline-flex;
@@ -122,9 +123,7 @@
   .hideMessageGroup {
     margin: 0;
     display: none;
- 
   }
- 
 }
 
 .crx-group-info-form {
@@ -166,6 +165,19 @@
     }
     .groupInfoInputs {
       padding-bottom: 30px;
+
+      > span {
+        display: flex;
+        h6 {
+          label {
+            &.requiredLable {
+              .inputLabel {
+                margin-right: 8px;
+              }
+            }
+          }
+        }
+      }
     }
     .inputLabelNoReq {
       color: #333333;
@@ -180,6 +192,7 @@
     color: #333;
     b {
       font-size: 20px;
+      margin-right: 8px;
     }
   }
 }
@@ -218,7 +231,7 @@
     }
   }
 }
-.errorMessageShow  .userError   {
+.errorMessageShow .userError {
   outline: 2px solid #aa1d1d;
 }
 @media only screen and (max-width: 1366px) {

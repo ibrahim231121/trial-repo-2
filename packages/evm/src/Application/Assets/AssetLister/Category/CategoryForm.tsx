@@ -46,6 +46,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     props.setIndicateTxt(false);
     props.setshowSSticky(true)
     props.setremoveClassName('crxEditCategoryForm');
+
     // Untill save button get enabled, form will be in non updated.
     if (saveBtn) props.setIsformUpdated(false);
   }, []);
@@ -350,6 +351,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         }
     }
   },[alert])
+
   return (
     <>
       {success && <CRXAlert message='Success: You have saved the asset categorization' alertType='toast' open={true} />}
@@ -404,6 +406,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             formCollection={filteredFormArray}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: boolean) => props.closeModal(v)}
+            setremoveClassName={(v: any) => props.setremoveClassName(v)}
             setModalTitle={(i: string) => props.setModalTitle(i)}
             setFilterValue={(v: any) => props.setFilterValue(v)}
             setIndicateTxt={(e: any) => props.setIndicateTxt(e)}

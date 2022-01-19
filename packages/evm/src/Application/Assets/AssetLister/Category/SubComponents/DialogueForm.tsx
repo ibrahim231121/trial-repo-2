@@ -7,6 +7,7 @@ import moment from 'moment';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 
 type DialogueFormProps = {
+  setremoveClassName:any;
   formCollection: any;
   rowData: any;
   initialValues: any;
@@ -26,6 +27,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   React.useEffect(() => {
     props.setIndicateTxt(false);
+    props.setremoveClassName('CRXDialogForm');
   }, []);
 
   const backBtn = () => {

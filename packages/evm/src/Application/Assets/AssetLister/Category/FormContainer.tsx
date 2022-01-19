@@ -197,6 +197,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             rowData={props.rowData}
             filterValue={filterValue}
             setModalTitle={(i: any) => setModalTitle(i)}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
           />
         );
