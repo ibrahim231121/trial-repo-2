@@ -246,11 +246,12 @@ export const urlList: any = [
 
     {
         name : urlNames.unitConfigEditTemplate,
-        url: "/edittemplate/:id",
+        url: "/admin/unitanddevices/edittemplate/BC04",
         details: [
-            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-            { type: "text", label: "Edit Tempalte: <id>"},
-       ],
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "unit and devices templates", },
+            { type: "text", label: "Edit template : BC04", }
+        ],
     },
     
 

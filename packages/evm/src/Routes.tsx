@@ -153,7 +153,7 @@ const Routes = () => {
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true} component={EditUnitConfigurationTemplate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
               <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />              
               <PrivateRoute path="*" component={ErrorPage} />
             </Switch>

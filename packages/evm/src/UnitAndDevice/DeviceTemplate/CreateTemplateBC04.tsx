@@ -1,23 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory, useParams } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { Link } from "react-router-dom";
 import "./createTemplate.scss";
 import FormSchema from "../unitSchemaBC04.json";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
+import * as Yup from "yup";
 
+
+var re = /[\/]/;
 const CreateTemplate = (props:any) => {
   
   const [value, setValue] = React.useState(0);
-
+  const [Initial_Values_obj_RequiredField,setInitial_Values_obj_RequiredField ] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
-
   const [open, setOpen] = React.useState(false);
-
   const [primary] = React.useState<string>("Yes, close");
   const [secondary] = React.useState<string>("No, do not close");
   const history = useHistory();
@@ -26,8 +27,9 @@ const CreateTemplate = (props:any) => {
   const [dataOfDevice, setDeviceData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase,setEditCase] = React.useState<boolean>(false);
+
   
-  console.log("history state",historyState)
+  
   React.useEffect(() => {
     if(historyState.isedit)
       loadData();
@@ -36,18 +38,21 @@ const CreateTemplate = (props:any) => {
 }, []);
 
   React.useEffect(() => {
+  
+    let Initial_Values_RequiredField: Array<any> = [];
     let Initial_Values: Array<any> = [];
-
+     
     if(historyState.isedit)
     {
         //console.log("Edit case!");
     }
-
     // ****************
     // for loop for unittemplate
     // ****************
     // ****************
     // ****************
+
+    ///////// TAB 1 ///////////////////
     let editT1: Array<any> = [];
     for(let e0 of dataOfUnit)
     {
@@ -59,7 +64,11 @@ const CreateTemplate = (props:any) => {
         val = e0.value.toLowerCase() === "true" ? true : false;
       else
         val = e0.value;
-      editT1.push({key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, value: val })
+
+      editT1.push({
+        key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, 
+        value: val
+      })
     }
 
     let tab1;
@@ -75,6 +84,7 @@ const CreateTemplate = (props:any) => {
             value: field.value,
           });
       }
+
       //console.log("initial values", Initial_Values);
       let key_value_pair = Initial_Values.reduce(
         (formObj, item) => ((formObj[item.key] = item.value), formObj),
@@ -85,11 +95,31 @@ const CreateTemplate = (props:any) => {
       setInitial_Values_obj(key_value_pair);
     }
 
+    for (const field of FormSchema.bodyWorn3.unittemplate)
+    {
+      if (field.hasOwnProperty("requiredField")) {
+        Initial_Values_RequiredField.push({
+          key: field.key,
+        });
+      }
+
+      let key_value_pairs = Initial_Values_RequiredField.reduce(
+        (formObj, item) => ((formObj[item.key] = item.value), formObj),
+        {}
+      );
+      //console.log("key value pair reduce", key_value_pair);
+      setInitial_Values_obj_RequiredField(key_value_pairs);
+    }
+
+        ///////// TAB 1 END ///////////////////
+
     // ****************
     // for loop for device
     // ****************
     // ****************
     // ****************
+
+///////// TAB 2 ///////////////////
 
     let editT2: Array<any> = [];
     for(let e0 of dataOfDevice)
@@ -120,13 +150,33 @@ const CreateTemplate = (props:any) => {
             value:field.value
           });
       }
+
+
       let key_value_pair = Initial_Values.reduce(
         (formObj, item) => ((formObj[item.key] = item.value), formObj),
         {}
       );
       setInitial_Values_obj(key_value_pair);
-
     }
+
+    for (const field of FormSchema.bodyWorn3.device)
+    {
+      if (field.hasOwnProperty("requiredField")) {
+        Initial_Values_RequiredField.push({
+          key: field.key,
+        });
+      }
+
+      let key_value_pairs = Initial_Values_RequiredField.reduce(
+        (formObj, item) => ((formObj[item.key] = item.value), formObj),
+        {}
+      );
+
+      //console.log("key value pair reduce", key_value_pair);
+      setInitial_Values_obj_RequiredField(key_value_pairs);
+    }
+
+///////// TAB 2 END ///////////////////
   },[dataFetched]);
 
    const loadData = async () => {
@@ -136,7 +186,7 @@ const CreateTemplate = (props:any) => {
     };
 
     const unitDataResponse = await fetch(
-      `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.id}`,
+      `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.name}`,
       requestOptions
     );
     // console.log("category reponse = ", unitDataResponse);
@@ -179,7 +229,7 @@ const CreateTemplate = (props:any) => {
     //  let value1 = values
     //  let value2= valuess
 
-    var re = /[\/]/;
+   
     let Initial_Values: Array<any> = [];
 
     Object.entries(values).map(([key, value]) => {
@@ -198,31 +248,31 @@ const CreateTemplate = (props:any) => {
     let templateName = Initial_Values.filter((o: any) => {
       return o.key == "templateName";
     });
-    let defaultTemplate = Initial_Values.filter((o: any) => {
-      return o.key == "defaultTemplate";
-    });
+
+
+    // let defaultTemplate = Initial_Values.filter((o: any) => {
+    //   return o.key == "defaultTemplate";
+    // });
 
     var templateNames = templateName[0].value;
-    var defaultTemplates = defaultTemplate[0].value;
+    //var defaultTemplates = defaultTemplate[0].value;
 
-    debugger
     var fields = Initial_Values.filter(function (returnableObjects) {
       return (
-        returnableObjects.key !== "defaultTemplate" &&
-        returnableObjects.key !== "templateName"
+        returnableObjects.key !== "defaultTemplate" 
+        // && returnableObjects.key !== "templateName"
       );
     });
    
 
     const body = {
       name: templateNames,
-      isDefault: defaultTemplates,
+      isDefault: true, //added because of removal of defaultTemplate
       fields: fields,
       valueType: 1,
       typeOfDevice: { id: 1 },
       // sequence:
     };
-
     if (editCase == false)
     {
 
@@ -239,7 +289,9 @@ const CreateTemplate = (props:any) => {
         .then((response: any) => {
           if (response.ok) {
             //console.log("great");
-            alert("happeded");
+            alert("happened form is being saved");
+          
+            window.location.reload()
             resetForm();
           } else {
             throw new Error(response.statusText);
@@ -252,9 +304,46 @@ const CreateTemplate = (props:any) => {
     }
 
     else {
-      alert ('this is edit case')
+     
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          TenantId: "1",
+        },
+        body: JSON.stringify(body),
+      };
+      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/KeyValue`;
+      fetch(url, requestOptions)
+        .then((response: any) => {
+          if (response.ok) {
+            setDataFetched(false);
+            //console.log("great");
+            alert("happened form is being Edited");
+            //setTest(true)
+            loadData();
+            // setTest(true)
+            resetForm();
+            } else {
+            throw new Error(response.statusText);
+          }
+        })
+        .catch((err: any) => {
+          // setError(true);
+          console.error(err);
+        });
     }
   };
+
+  const initialValuesArrayRequiredField = [];
+  for (const i in Initial_Values_obj_RequiredField) {
+    initialValuesArrayRequiredField.push(i);
+  }
+
+  const formSchema = initialValuesArrayRequiredField.reduce(
+    (obj, item: any) => ({ ...obj, [item]: Yup.string().required("Required") }),
+    {}
+  );
 
   console.log("Initial_Values_obj", Initial_Values_obj)
   return (
@@ -319,6 +408,9 @@ const CreateTemplate = (props:any) => {
             enableReinitialize={true}
             initialValues={Initial_Values_obj}
             onSubmit={(values, { setSubmitting, resetForm, setStatus }) => {}}
+            validationSchema={Yup.object({
+              ...formSchema,
+            })}
           >
             {({
               values,
@@ -365,6 +457,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
 
@@ -394,6 +494,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
                         case "select":
@@ -445,6 +553,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
 
@@ -473,6 +589,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
                         case "number":
@@ -509,6 +633,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
                       }
@@ -547,6 +679,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
 
@@ -583,6 +723,14 @@ const CreateTemplate = (props:any) => {
                                 <p>{formObj.hintvalue}</p>
                                 
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
 
@@ -633,6 +781,14 @@ const CreateTemplate = (props:any) => {
                                   placement="right"
                                 />
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
 
@@ -676,6 +832,14 @@ const CreateTemplate = (props:any) => {
                                 <p>{formObj.hintvalue}</p>
                                 
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
                         case "number":
@@ -695,6 +859,8 @@ const CreateTemplate = (props:any) => {
                                 name={formObj.key}
                                 id={formObj.id}
                                 type={formObj.type}
+                                min={formObj.min}
+                                max={formObj.max}
                               />
                               <label>
                                 {formObj.seconds === true
@@ -717,6 +883,14 @@ const CreateTemplate = (props:any) => {
                                   
                                 </div>
                               ) : null}
+                               <ErrorMessage
+                                name={formObj.key}
+                                render={(msg) => (
+                                  <div style={{ color: "red" }}>
+                                    {formObj.key.split(re)[1] + " is " + msg}
+                                  </div>
+                                )}
+                              />
                             </div>
                           );
                       }

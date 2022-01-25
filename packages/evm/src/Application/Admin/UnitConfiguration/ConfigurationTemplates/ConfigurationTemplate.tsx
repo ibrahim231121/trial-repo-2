@@ -28,8 +28,8 @@ import {
     onSetHeadCellVisibility,
     onSaveHeadCellData
   } from "../../../../utils/globalDataTableFunctions";
-  import { CRXMenu } from "@cb/shared";
-  import { CBXLink } from "@cb/shared";
+
+
 type ConfigTemplate = {
     id: number;
     name: string;
@@ -37,10 +37,10 @@ type ConfigTemplate = {
     indicator: string
   }
 
-  const assetNameTemplate = (id: string) => {
+  const configTemplate = (name: string, id: number) => {
     return (
       <>
-        <Link className={"linkColor"} children = {id} key={id}  to={{pathname:'/admin/unitanddevices/createtemplate/BC04',state:{id:id, isedit:true, type:"BC04"}}}/>
+      <Link className={"linkColor"} children = {name} key={id}  to={{pathname:'/admin/unitanddevices/edittemplate/BC04',state:{id: id, name: name, isedit: true, type:"BC04"}}}/>
       </>
     );
   };
@@ -147,12 +147,13 @@ const ConfigurationTemplates: React.FC = () => {
         label: `${t("Name")}`,
         id: "name",
         align: "left",
-        dataComponent: assetNameTemplate,
+        dataComponent: configTemplate,
         sort: true,
         searchFilter: true,
         searchComponent: searchText,
         minWidth: "100",
         maxWidth: "100",
+        detailedDataComponentId: "id",
       },
       {
         label: `${t("Type")}`,

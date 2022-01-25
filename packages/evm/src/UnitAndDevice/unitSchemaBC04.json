@@ -9,7 +9,8 @@
       "type": "text",
       "label": "Template Name",
       "value": "",
-      "required": true
+      "required": true,
+      "requiredField":"true"
     },
     {
       "id": "3",
@@ -31,19 +32,13 @@
     },
     {
       "id": "4",
-      "key": "unittemplate/defaultTemplate/CheckBox",
-      "type": "checkbox",
-      "label": "Default Template",
-      "value": false
-    },
-    {
-      "id": "4",
       "required": true,
       "key": "unittemplate/configUpdateInterval/NumberBox",
       "type": "number",
       "label": "Config Update Interval",
-      "value": "",
-      "seconds": false
+      "value": 6,
+      "seconds": false,
+      "requiredField":"true"
     }
   ],
   "device": [
@@ -255,7 +250,8 @@
       "label": "Recording Beep Interval",
       "value": "10",
       "seconds": true,
-      "required": true
+      "required": true,
+      "requiredField":"true"
     },
     {
       "id": "4",
@@ -385,9 +381,12 @@
       "hintvalue":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "hintvalue1":"How often <Body Worn Type> sends heartbeats",
       "label": "GPS Heartbeat",
-      "value": 0,
+      "value": 60,
       "seconds": true,
-      "required": true
+      "required": true,
+      "requiredField":"true",
+      "min":30,
+      "max":3600
     },
     {
       "id": "64",
@@ -399,7 +398,10 @@
       "hintvalue":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "hintvalue1":"Interval between heartbeats when recording",
       "seconds": true,
-      "required": true
+      "required": true,
+      "requiredField":"true",
+      "min":30,
+      "max":3600
     }
   ]
 }
