@@ -55,6 +55,7 @@ export const urlNames: any = {
     unitDeviceTemplateCreateBCO3 : "unitDeviceTemplateCreateBCO3",
     unitDeviceTemplateCreateBCO4 : "unitDeviceTemplateCreateBCO4",
     unitDeviceTemplateCreateBCO3Lte : "unitDeviceTemplateCreateBCO3Lte",
+    createUnit : "createUnit"
     testVideoPlayer: "videoplayer",
     unitConfigEditTemplate:"unitConfigEditTemplate"
 
@@ -126,6 +127,15 @@ export const urlList: any = [
         { type: "text", label: "Manage Units & devices", }
     ],
     },
+    {
+        name: urlNames.createUnit,
+        url: "/unitsAndDevices/create",
+        details: [
+            { type: "text", label: "Units And Devices", },
+            { routeTo: "/unitsAndDevices", type: "link", label: "Manage Unit and Devices", },
+        { type: "text", label: "Create Unit", }
+    ],
+    },
     // {
     //     name: urlNames.unitsAndDevices,
     //     url: "/unitsAndDevices",
@@ -133,12 +143,23 @@ export const urlList: any = [
     //         { type: "text", label: "Manage Units & devices", }
     //     ],
     // },
+
     {
         name : urlNames.unitsAndDevicesDetail,
+        url: "/unitsanddevices/detail",
+        details: [
+            { type: "text", label: "Units And Devices", },
+             { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
+             { type: "text", label: "Unit Detail"},
+        ],
+    },
+    {
+        name : urlNames.unitsAndDevicesDetailId,
         url: "/unitsanddevices/detail/:id",
         details: [
+            { type: "text", label: "Units And Devices", },
              { routeTo: "/unitsanddevices/detail/:id", type: "link", label: "Units & devices", },
-             { type: "text", label: "Unit Detail: <id>"},
+             { type: "text", label: "Unit Detail"},
         ],
     },
     {

@@ -20,6 +20,7 @@ import SessionRoute from './Routes/SessionRoute';
 import {logOutUserSessionExpired} from './Logout/API/auth'
 import Session from './SessionExpired/index'
 import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
+import UnitCreate from './UnitAndDevice/UnitCreate'
 import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfiguration";
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
@@ -153,9 +154,12 @@ const Routes = () => {
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
-              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />              
-              <PrivateRoute path="*" component={ErrorPage} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url} exact={true} component={UnitCreate} />
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetailId)[0].url} exact={true} component={UnitCreate} />
+                <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
+            
+              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
+              <PrivateRoute path="*" component={ErrorPage} />  
             </Switch>
           </main>
           <footer>

@@ -9,6 +9,8 @@ import { dateOptionsTypes } from '../utils/constant';
 import { RootState } from "../Redux/rootReducer";
 import textDisplay from "../components/DateDisplayComponent/TextDisplay";
 import anchorDisplay from "../components/DateDisplayComponent/AnchorDisplay";
+
+import anchorDisplayUnit from "../components/DateDisplayComponent/AnchorDisplayUnit";
 import { useHistory } from "react-router-dom";
 import './index.scss'
 import { getUnitInfoAsync } from "../Redux/UnitReducer";
@@ -37,11 +39,13 @@ import { CRXButton } from "@cb/shared";
 import { logOutUser } from "../Login/API/auth";
 import { CBXLink } from "@cb/shared";
 import { Console } from "node:console";
-
+import { urlList, urlNames } from "../utils/urlList"
 type Unit = {
   id: number;
   unitId: string,
   description: string,
+  serialNumber: string,
+  version: string,
   station: string,
   assignedTo: string[],
   lastCheckedIn: string,
@@ -67,7 +71,7 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
- // let history = useHistory();
+  let history = useHistory();
 
   React.useEffect(() => {
     dispatch(getUnitInfoAsync()); // getunitInfo 
@@ -94,13 +98,16 @@ const UnitAndDevices: React.FC = () => {
   const setData = () => {
  
     let unitRows: Unit[] = [];
+    
         if (units && units.length > 0) {
           unitRows = units.map((unit: any, i:number) => {
                 return {
                     id: unit.recId,
-                    unitId: unit.unitId,
+                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId,
                     description: unit.description,
                     station: unit.station,
+                    serialNumber: unit.serialNumber,
+                    version: unit.version,
                     assignedTo: unit.assignedTo,
                   //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
                   //     return x.trim();
@@ -244,7 +251,7 @@ const UnitAndDevices: React.FC = () => {
 }
   const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
 
-    if(colIdx === 6) {
+    if(colIdx === 8) {
         console.log(initialRows);
     let statuslist: any = [];
 
@@ -333,7 +340,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("UnitId")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) =>  textDisplay(e, ""),
+      dataComponent: (e: string) => anchorDisplayUnit(e, "anchorStyle"),// textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -344,6 +351,28 @@ const openHandler = (_: React.SyntheticEvent) => {
     {
       label: `${t("Description")}`,
       id: "description",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "100",
+      maxWidth: "100",
+    },
+    {
+      label: `${t("Serial Number")}`,
+      id: "serialNumber",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "140",
+      maxWidth: "140",
+    },
+    {
+      label: `${t("Version")}`,
+      id: "version",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
@@ -492,7 +521,7 @@ const dataArrayBuilder = () => {
     
         let dataRows: Unit[] = reformattedRows;
         searchData.forEach((el: SearchObject) => {
-          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" )
+          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber" || el.columnName === "version")
                 dataRows = onTextCompare(dataRows, headCells, el);
             if (el.columnName === "lastCheckedIn")
                 dataRows = onDateCompare(dataRows, headCells, el);
@@ -536,7 +565,9 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
  
   
     <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-        
+         <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url) }}>
+        Create Unit
+      </CRXButton>
       {
         
         rows && (
@@ -552,7 +583,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           columnVisibilityBar={true}
 
           initialRows={reformattedRows}
-          dragVisibility={true}
+          dragVisibility={false}
           showCheckBoxesCol={true}
           showActionCol={true}
 
@@ -567,7 +598,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
 
 
           allowDragableToList={true}
-
+          showTotalSelectedText={false}
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
           //---required Props
