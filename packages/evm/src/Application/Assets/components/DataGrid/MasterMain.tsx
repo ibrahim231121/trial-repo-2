@@ -94,7 +94,7 @@ const thumbTemplate = (assetType: string) => {
 const assetNameTemplate = (assetName: string, assets: Asset[]) => {
   return (
     <>
-      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/detail/"+assetName} />
+      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/detail/"} />
       <DetailedAssetPopup asset={assets} />
     </>
   );

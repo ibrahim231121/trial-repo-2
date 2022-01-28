@@ -143,10 +143,10 @@ export const urlList: any = [
     },
     {
         name : urlNames.assetsDetail,
-        url: "/assets/detail/:id",
+        url: "/assets/detail",
         details: [
             { routeTo: "/assets", type: "link", label: "Assets", },
-            { type: "text", label: "Asset Detail: <id>" },
+            { type: "text", label: "Asset Detail" },
         ],
     },
     {
