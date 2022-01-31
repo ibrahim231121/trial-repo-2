@@ -847,7 +847,7 @@ useEffect(() => {
   
   if(alert === false && altRef === null  && optionalSticky.length > 0) {
     
-    // alertClx[0].style.display = "none";
+    alertClx[0].style.display = "none";
     crxIndicate[0].style.top = "42px";
     modalEditCrx[0].style.paddingTop = "42px";
     optionalSticky[0].style.height = "79px"

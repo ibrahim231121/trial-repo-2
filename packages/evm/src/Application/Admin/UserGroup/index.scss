@@ -322,6 +322,17 @@
                   color: #C34400;
                   font-size: 14px;
                   font-family: Arial, Helvetica, sans-serif;
+                  &::selection {
+                     color: #c34400;
+                     background-color: transparent;
+                  }
+                  &:hover {
+                     text-decoration: underline;
+                     &::selection {
+                        color: #ff6e20;
+                        background-color: transparent;
+                     }
+                  }
                }
             } 
             &:nth-child(9) {
