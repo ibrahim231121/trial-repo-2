@@ -272,33 +272,32 @@ const ConfigurationTemplates: React.FC = () => {
                 row={selectedActionRow}
                />}
 
-               getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-              showToolbar={true}
-           
+              getRowOnActionClick={(val: any) => setSelectedActionRow(val)}        
               dataRows={rows}
               headCells={headCells}
-           
               orderParam={order}
               orderByParam={orderBy}
-              searchHeader={true}
-           
+              
+              showToolbar={true}
+              showCountText={false}
               columnVisibilityBar={true}
-              allowDragableToList={true}
+              dragVisibility={false}
+              showCheckBoxesCol={false}
+              showActionCol={true}
+              searchHeader={true}
+              allowDragableToList={false}
+              showTotalSelectedText={false}
+              showActionSearchHeaderCell={true}
+              showCustomizeIcon={true}
+
              
-              className="ManageAssetDataTable crxTableHeight bucketDataTable"
+              className="crxTableHeight crxTableDataUi configTemplate"
               onClearAll={clearAll}
               getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
               onResizeRow={resizeRow}
               onHeadCellChange={onSetHeadCells}
               setSelectedItems={setSelectedItems}
               selectedItems={selectedItems}
-            
-              showActionSearchHeaderCell={true}
-              showCountText={false}
-              showCustomizeIcon={true} 
-              dragVisibility={false}
-              showCheckBoxesCol={true}
-              showActionCol={true}
               />
             )
           }

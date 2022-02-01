@@ -565,7 +565,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
  
   
     <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-         <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url) }}>
+      <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url) }}>
         Create Unit
       </CRXButton>
       {
@@ -581,28 +581,22 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           showToolbar={true}
           showCountText={false}
           columnVisibilityBar={true}
-
-          initialRows={reformattedRows}
           dragVisibility={false}
-          showCheckBoxesCol={true}
+          showCheckBoxesCol={false}
           showActionCol={true}
-
-
-          headCells={headCells}
-          dataRows={rows}
-
-
-          orderParam={order}
-          orderByParam={orderBy}
           searchHeader={true}
-
-
-          allowDragableToList={true}
+          allowDragableToList={false}
           showTotalSelectedText={false}
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
+
+          initialRows={reformattedRows}
+          headCells={headCells}
+          dataRows={rows}
+          orderParam={order}
+          orderByParam={orderBy}
           //---required Props
-          className="ManageAssetDataTable crxTableHeight unitDeviceTableConfig"
+          className="crxTableHeight crxTableDataUi unitDeviceTableConfig"
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}

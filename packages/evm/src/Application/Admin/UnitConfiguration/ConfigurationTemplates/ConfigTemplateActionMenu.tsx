@@ -67,7 +67,6 @@ const Deleteconfirm = () => {
         </MenuButton>
       }
     >
-
       <MenuItem >
         <div className="crx-meu-content groupingMenu crx-spac" onClick={Deleteconfirm} >
           <div className="crx-menu-icon"></div>
