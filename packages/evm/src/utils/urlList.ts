@@ -55,7 +55,7 @@ export const urlNames: any = {
     unitDeviceTemplateCreateBCO3 : "unitDeviceTemplateCreateBCO3",
     unitDeviceTemplateCreateBCO4 : "unitDeviceTemplateCreateBCO4",
     unitDeviceTemplateCreateBCO3Lte : "unitDeviceTemplateCreateBCO3Lte",
-    createUnit : "createUnit"
+    createUnit : "createUnit",
     testVideoPlayer: "videoplayer",
     unitConfigEditTemplate:"unitConfigEditTemplate"
 
