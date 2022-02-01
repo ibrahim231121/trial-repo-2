@@ -73,3 +73,6 @@ export const logOutUser = () => {
       
     
 } 
+export const getToken = () => {
+    return cookies.get('access_token') 
+}

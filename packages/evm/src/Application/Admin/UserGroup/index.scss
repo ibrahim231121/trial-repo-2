@@ -29,16 +29,38 @@
    margin-top: 74px;
    margin-left: 65px !important;
    .dataTableColumnShoHide  {
-      margin-top: -63px !important;
+      margin-top: -83px !important;
+   }
+   .managePermissionBtn {
+      position: sticky;
+      top:154px;
+      z-index: 6;
+   }
+   .crxClearfilter {
+      position: sticky;
+      top: 180px;
+      z-index: 6;
    }
 }
 .crxTableDataUi {
    margin-top: -38px;
+   overflow-x: initial !important;
+   position: relative;
+   &::before {
+      position: fixed;
+      background: #ffffff;
+      width: 100%;
+      height: 88px;
+      content: " ";
+      top: 118px;
+      z-index: 5;
+      left: 0;
+   }
    table {
       thead {
          &:not(:first-child) {
             th { 
-               padding: 0 8px !important;
+               padding: 13px 13px 12px !important;
             }
          }
          &:first-child {
@@ -54,6 +76,24 @@
                }
             }
          }
+
+         th {
+            &.TableSearchAbleHead  {
+               top:240px;
+               span {
+                  display: block !important;
+                  span {
+                     .userGroupSearchBox {
+                        padding-left: 4px;
+                        padding-right: 4px;
+                     }
+                  }
+               }
+            }
+            &.CRXDataTableLabelCell {
+               top: 205px;
+            }
+         }
       }
       tbody {
          tr {
@@ -62,6 +102,9 @@
             }
             &:nth-child(even) {
                background-color:#F2F2F2;
+               td:nth-child(3) {
+                  background: inherit;
+               }
             }
             .col-three {
              background-color: transparent !important;
@@ -126,6 +169,8 @@
       width: 108px;
       padding: 0 0;
       margin-top: 16px;
+      position: sticky;
+      top: 144px;
       &:hover {
          border: 1px solid #6E6E6E;
       }
@@ -139,7 +184,7 @@
    }
 
    .dataTableColumnShoHide {
-      margin-top: -62px;
+      margin-top: -83px;
       &:nth-child(2) {
          .dataIconButton {
             margin-bottom: -1px;
@@ -277,6 +322,17 @@
                   color: #C34400;
                   font-size: 14px;
                   font-family: Arial, Helvetica, sans-serif;
+                  &::selection {
+                     color: #c34400;
+                     background-color: transparent;
+                  }
+                  &:hover {
+                     text-decoration: underline;
+                     &::selection {
+                        color: #ff6e20;
+                        background-color: transparent;
+                     }
+                  }
                }
             } 
             &:nth-child(9) {
@@ -372,3 +428,48 @@
    }
 }
 
+.manageUserGroupsDataTable {
+   table {
+      thead {
+        tr {
+          th {
+            &.TableSearchAbleHead {
+              &:first-child {
+                left : 0px !important;
+              }
+              &:nth-child(2) {
+               left : 58px !important;
+             }
+            }
+            &.CRXDataTableLabelCell {
+               &:first-child {
+                 left : 0px !important;
+               }
+               &:nth-child(2) {
+               left : 58px !important;
+             }
+            }
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            &.col-two {
+             left : 0px
+            }
+            &.col-three {
+              left: 60px;
+              position: sticky;
+            }
+          }
+        }
+      }
+    }
+}
+
+@media only screen and (max-width: 1600px) {
+   .manageUserGroupsDataTable {
+      height: 650px !important;
+   }
+}

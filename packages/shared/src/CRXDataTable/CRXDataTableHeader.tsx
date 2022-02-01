@@ -32,15 +32,16 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '58px', minWidth: "58px", 
-                left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
-                position: "sticky", zIndex: 4}}>
+                left: "60px",//`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+                position: "sticky", zIndex: 4 }}>
             </TableCell>  
         : null
         }
         {(showActionCol === true || showActionCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '80px', minWidth: '80px', 
-                        left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        // left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        left : "118px",
                         position: "sticky", 
                         zIndex: 4}}>
                 {t('Actions')}
@@ -50,17 +51,14 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         {orderColumn.map((colIdx, i) => (
             //index needs to be CURRENT
             //key needs to be STATIC
+            
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell"} key={i} 
                 style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                 align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
             <div className={classes.headerCellDiv + " crxTableHeaderSize"}
-            style={
-                {
-                minWidth:`${(headCells[colIdx].minWidth === undefined) ? "" : headCells[colIdx].minWidth}`+"px",
-                maxWidth:`${(headCells[colIdx].maxWidth === undefined) ? "" : headCells[colIdx].maxWidth}`+"px"
-                }
-            } 
+            style={{minWidth : headCells[colIdx].minWidth, width : headCells[colIdx].width, maxWidth : headCells[colIdx].maxWidth}}
             >
+            
             <div className={classes.headerStickness}
                 key={headCells[colIdx].id}>
                 <label> 

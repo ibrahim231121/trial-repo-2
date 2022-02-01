@@ -1,17 +1,11 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif,
+    "Segoe UI";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   width: 100%;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
 }
 
 .rdrCalendarWrapper {
@@ -127,7 +121,7 @@ code {
 }
 
 .AssetsDataGrid table tbody tr td:first-child {
-    position: sticky;
+  position: sticky;
 }
 
 .AssetsDataGrid table tbody tr td:first-child::before {
@@ -223,16 +217,72 @@ code {
   height: 100vh;
 }
 
-
 .inlineDiv {
   display: flex;
 }
 
 .columnse {
-  padding:  0 15px;
+  padding: 0 15px;
 }
 
 .crx-ToasterContainer {
   margin-top: 48px;
   margin-right: 8px;
+}
+
+.croseIcon {
+  font-size: 16px;
+  position: relative;
+  top: 3px;
+}
+
+.accrodialTest {
+  margin-top: 30px;
+}
+
+.stickyPos {
+  position: sticky !important;
+  top: 135px;
+  /* background: #fff; */
+  padding-top: 3.5px;
+  z-index: 9999;
+  padding-bottom: 0px !important;
+  height: 51px;
+}
+
+::selection {
+  background-color: #6d6e71;
+  color: #f5f5f5;
+}
+.linkColor::selection,.anchorStyle::selection {
+  color: #c34400;
+  background-color: transparent;
+}
+a::selection {
+  color: #c34400;
+  background-color: transparent;
+}
+ 
+.CRXDataTableCustom .Mui-selected ::selection,
+.CRXDataTableCustom tr th ::selection,
+.CRXDataTableCustom tr:hover ::selection,
+.CRXMultiDataTableCustom tr th ::selection,
+.crx-datapermission-tab .dataPermissionColumn::selection {
+  background-color: #d1d2d4;
+  color: #333333;
+}
+.CRXDataTableCustom .Mui-selected .linkColor::selection,
+.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom .Mui-selected .anchorStyle::selection,
+.CRXDataTableCustom tr:hover .anchorStyle::selection {
+  color: #ff6e20;
+  background-color: transparent;
+}
+
+
+.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom tr:hover .anchorStyle::selection {
+  color: #ff6e20;
+  text-decoration: underline;
+  background-color: transparent;
 }

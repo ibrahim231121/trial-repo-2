@@ -26,8 +26,9 @@ interface propsT {
     onLeafClick? : (e : any) => void,
     onKeyDown? : (e : any) => void,
     parentActive? :boolean,
+    disabled? :boolean
 }
-const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
+const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
 
     const [activeItem, setActiveItem] = useState<any>(null);
     let MeuRef : React.RefObject<any> = createRef();
@@ -116,7 +117,7 @@ const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
         return null;
     }
 
-    const renderMenuitem = (item : itemsProps, index : number) => {
+    const renderMenuitem = (item : itemsProps, index : number ) => {
         const active = activeItem === item;
         const className : any = classNames('p-menuitem', {'p-menuitem-active': active}, item.className);
         const linkClassName : any = classNames('p-menuitem-link', {'p-disabled': item.disabled});
@@ -137,7 +138,8 @@ const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
         );
 
         return (
-            <li ref={ref} key={item.label + '_' + index} className={className} style={item.style} onMouseEnter={(event) => onItemMouseEnter(event, item)} role="none">
+            !disabled &&
+            <li ref={ref} key={item.label + '_' + index} className={className}  style={item.style} onMouseEnter={(event) => onItemMouseEnter(event, item)} role="none">
                 {content}
                {submenu}
             </li>
@@ -164,8 +166,8 @@ const CRXMenuSub = ({model, root, popup, parentActive} : propsT) => {
     }
     
     const removeParent = () => {
-        if(activeItem != null)
-            setActiveItem(null)
+        // if(activeItem != null)
+        //     setActiveItem(null)
     }
 
     useEffect(() => {

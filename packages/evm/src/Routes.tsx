@@ -2,25 +2,25 @@ import React,{useEffect} from "react";
 import { Switch, Route } from "react-router-dom";
 import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
-import AppHeader from './Application/Headeer/Header'
-import Footer from './Application/Headeer/Footer'
-import MannageAsset from "./Application/Assets/pages/MannageAsset";
-import UserGroup from "./Application/Admin/UserGroup/UserGroup";
-import User from "./Application/Admin/UserGroup/User/User";
-import Group from "./Application/Admin/Group/Group";
-import ErrorPage from "./components/ErrorPage/ErrorPage";
+import AppHeader from './Application/Header'
+import Footer from './Application/Footer'
+import MannageAsset from "./Application/Assets/AssetLister";
+import UserGroup from "./Application/Admin/UserGroup";
+import Group from "./Application/Admin/UserGroup/Group";
+import ErrorPage from "./GlobalComponents/ErrorPage";
 import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
 import { urlList, urlNames } from "./utils/urlList"
+import User from "./Application/Admin/User";
+import TestViewsForDemo from '../../evm/src/TestForComponents/index'
 import IdleTimer from 'react-idle-timer'
 import Logout from "./Logout/index";
 import SessionRoute from './Routes/SessionRoute';
 import {logOutUserSessionExpired} from './Logout/API/auth'
 import Session from './SessionExpired/index'
 import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
-import UnitCreate from './UnitAndDevice/UnitCreate'
 import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfiguration";
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
@@ -42,7 +42,8 @@ import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/Cre
 import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
 import EditUnitConfigurationTemplate from './UnitAndDevice/DeviceTemplate/EditTemplate'
 import Cookies from "universal-cookie";
-import TestViewsForDemo from '../../evm/src/TestForComponents/index';
+import Restricted from "./ApplicationPermission/Restricted";
+
 const cookies = new Cookies();
 
 interface CounterState {
@@ -72,7 +73,6 @@ const updatetokens = (refreshToken : string, accessToken: string)=>
   }
 
 }
-
 
 const Routes = () => {
   const dispatch = useDispatch()
@@ -136,11 +136,11 @@ const Routes = () => {
             })}
           >
             <Switch>
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+              <PrivateRoute moduleId={1} path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) =>  item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitAndDevicesDetial} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
@@ -154,12 +154,10 @@ const Routes = () => {
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url} exact={true} component={UnitCreate} />
-              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetailId)[0].url} exact={true} component={UnitCreate} />
-                <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
-            
-              <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-              <PrivateRoute path="*" component={ErrorPage} />  
+              <PrivateRoute path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
+              <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
+              <Route path="/notfound" component={ErrorPage} /> 
+              <Route path="*" component={ErrorPage} />
             </Switch>
           </main>
           <footer>

@@ -16,7 +16,7 @@ const nestedStyle = makeStyles({
 })
 
 const handleItemClick = (e) => {
-    console.log(e)
+   
 }
 
 export const Nested = (props) => {

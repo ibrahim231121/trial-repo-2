@@ -103,9 +103,17 @@ export const useStyles = makeStyles((theme: Theme) =>
       width: 1,
     },
     container: {
-      // maxHeight: 800,
-
+      height: 494,
       overflowX: "auto",
+      '@media only screen and (max-width: 1920px)': {
+        height : "650px"
+      },
+      '@media only screen and (max-width: 1600px)': {
+        height : "435px"
+      },
+      '@media only screen and (max-width: 1366px)': {
+        height : "340px"
+      }
     },
     multiTableStikcyHeader: {
       top: 0,
@@ -155,8 +163,9 @@ export interface HeadCellProps {
   align: string;
   sort?: boolean;
   visible?: boolean;
-  minWidth: string;
+  minWidth?: string;
   maxWidth?: string;
+  width?: string;
   dataComponent?: any;
   searchFilter?: boolean;
   searchComponent?: any; // (Dropdown / Multiselect / Input / Custom Component)
@@ -330,5 +339,5 @@ export type MultiLevelProps = {
   finalLevel: number;
   onSetRow: (check:boolean, row:any) => void;
   onSetCheckAllLevel: (e: boolean, type: string) => void;
-  onUnCheckAllParent: (e: boolean, row:any) => void;
+  onCheckUnCheckChildren: (e: boolean, row:any) => void;
 }

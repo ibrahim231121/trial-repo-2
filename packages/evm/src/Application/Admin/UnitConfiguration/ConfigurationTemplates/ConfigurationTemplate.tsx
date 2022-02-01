@@ -4,14 +4,14 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getGroupAsync, getGroupUserCountAsync } from "../../../../Redux/GroupReducer";
-import textDisplay from "../../../../components/DateDisplayComponent/TextDisplay";
-import anchorDisplay from "../../../../components/DateDisplayComponent/AnchorDisplay";
+import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
+import anchorDisplay from "../../../../GlobalComponents/Display//AnchorDisplay";
 import { RootState } from "../../../../Redux/rootReducer";
 import './ConfigurationTemplate.scss'
 import { CRXButton } from "@cb/shared";
 import {  Menu, MenuButton , MenuItem } from "@szhsin/react-menu";
 import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";
-import TextSearch from "../../../../components/SearchComponents/TextSearch";
+import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { getConfigurationInfoAsync } from "../../../../Redux/TemplateConfiguration";
 import { Link } from "react-router-dom";
 import {
@@ -27,7 +27,7 @@ import {
     onClearAll,
     onSetHeadCellVisibility,
     onSaveHeadCellData
-  } from "../../../../utils/globalDataTableFunctions";
+  } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 
 type ConfigTemplate = {

@@ -2,8 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit'
 import pathNameReducer from './breadCrumbReducer';
 import assetBucketSlice from './AssetActionReducer';
 import groupSlice from './GroupReducer';
+import categorySlice from './categoryReducer';
+import CategoryFormSlice from './CategoryFormSlice';
 import unitSlice from './UnitReducer';
 import userSlice from './UserReducer';
+import notificationMessages from './notificationPanelMessages'
 import timerSlice from './timerslice';
 import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
@@ -12,8 +15,11 @@ export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
   groupReducer: groupSlice.reducer, 
-  timerReducers: timerSlice.reducer,
+  assetCategory:categorySlice.reducer,
+  CategoryFormFields:CategoryFormSlice.reducer,
   userReducer: userSlice.reducer,
+  notificationReducer: notificationMessages.reducer,
+  timerReducers: timerSlice.reducer,
 
  templateSlice: templateSlice.reducer,
   cultureReducer: cultureSlice.reducer,

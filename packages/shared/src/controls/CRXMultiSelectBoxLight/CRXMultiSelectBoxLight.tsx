@@ -11,7 +11,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
     root: {
       backgroundColor : "#fff",
       outline: "none",
-
+      width:"384px",
       border:"1px solid #D1D2D4",
       paddingLeft:"5px",
       '&:hover' : {
@@ -29,7 +29,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       outline: "3px solid #888787",
       border:"1px solid transparent",
       transition:"all 0.25s ease-in-out",
-      '&:over' : {
+      '&:hover' : {
         outline: "3px solid #888787",
         border:"1px solid transparent",
         transition:"all 0.25s ease-in-out",
@@ -53,10 +53,9 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         marginTop:"0px",
         marginLeft:"-7px",
         maxHeight:"332px",
-        width:"384px",
+        width:"388px",
         minHeight:"165px",
         overflowY: "auto",
- 
         position:"relative",
         backgroundColor:"#fff",
         top:"2px",
@@ -76,7 +75,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         color: "#333",
         fontSize: "14px",
         alignItems: 'flex-start',
-        padding: "0px 12px",
+        padding: "0px 2px",
         placeItems: "center",
         '&[aria-selected="true"]': {
             backgroundColor : "#6E6E6E",
@@ -109,7 +108,6 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         }
       },
 
-     
       popupIndicatorOpen : {
         transform: "rotate(0deg)"
       },
@@ -120,11 +118,12 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         color:"#333",
         padding:"0px",
         height:"20px",
+        lineHeight:"20px",
         position: "relative",
-        marginRight:"1px",
-        marginLeft:"5px",
+        marginRight:"16px",
+        marginLeft:"2px",
         marginTop:"0",
-        marginBottom:"5px",
+        marginBottom:"6px",
         top: "0",
         '&:hover' : {
           backgroundColor:'#F3F4F5',
@@ -134,11 +133,24 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
             color : "#333333"
           }
         },
-        '&:span' : {
+        '&.MuiChip-label' : {
           padding : "0px"
         },
+        
+      },
+      closeIcon : {
+        position: "relative",
+        fontSize: "16px",
+        left: "4px",
+        top: "2px"
+      }, 
+
+      clearIndicator : {
+        visibility: "visible",
+        '&:hover' : {
+          background: "none"
+        }
       }
-      
   }),
 );
 
@@ -176,24 +188,38 @@ const CRXMultiSelectBoxLight = ({
     required,
     errorMsg,
 } : multiSelectProps) => {
+
   const classes = useSelectBoxStyle(); 
-  const [styelHeight, setAutoHeight] = React.useState<string>('31px')
+  const [styelHeight, setAutoHeight] = React.useState<string>('31px');
+  const [isClear, setIsClearIcon] = React.useState<any>(true);
+  const [controled, setControled] = React.useState<any>(<i className="fas fa-caret-down"></i>);
+  const closeIcon : any = <i className={"fas fa-times" + " " + classes.closeIcon}></i> 
+  const errorMessage = (error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errorMsg}</span> </div>)
+  const errClx =  error && error? " inputError" : " ";
 
   React.useEffect(() => {
 
-    value.length > 2 ? setAutoHeight("auto") : setAutoHeight("31px");
+    value && value.length > 1 ? setAutoHeight("auto") : setAutoHeight("31px");
+
+    if(multiple == false && value != undefined) {
+      
+      setControled('')
+      setIsClearIcon(false);
+      
+    }else {
+      setControled(<i className="fas fa-caret-down"></i>)
+      setIsClearIcon(true);
+    }
 
   }, [value, styelHeight])
   
-  const opupOpenCret = <i className="fas fa-caret-down"></i>
-  const errorMessage = (error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errorMsg}</span> </div>)
-  const errClx =  error && error? " inputError" : " "; 
+ 
   const reformatedLabel = () => {
     if (required) {
       return (
         <span className="requiredLable">
           {label}{" "}
-          <span style={{ color: `${error ? "#aa1d1d" : "#000"}` }}>*</span>
+          <span style={{ color: `${error ? "#aa1d1d" : "#000"}`, paddingLeft:"8px", fontWeight:"bold" }}>*</span>
         </span>
       );
     } else {
@@ -201,6 +227,18 @@ const CRXMultiSelectBoxLight = ({
     }
   };
 
+  const optionLabel = (option : any, selected : boolean) => {
+    if(multiple && multiple == true) {
+     return (<> <i
+        className="far fa-check checkIconSingle"
+        style={{ visibility: selected && multiple ? 'visible' : 'hidden' }}
+      ></i>
+      {option.label}
+    </>)
+    }else {
+     return <span className="singleLabel">{option.label}</span>
+    }
+  }
   return (
     <>
     {label &&
@@ -214,22 +252,15 @@ const CRXMultiSelectBoxLight = ({
         defaultValue={defaultValue}
         autoComplete={autoComplete}
         filterSelectedOptions={false}
-        disableClearable
+        disableClearable={isClear}
         disableCloseOnSelect={true}
         // freeSolo
+        //open={true}
         closeText=""
         openText=""
         style={{height : styelHeight}}
         className={"crx_MultiSelectBoxLight " + className + " " + errClx + " " + classes.root}
-        classes={{
-            paper: classes.paper,
-            popper: classes.popper,
-            option: classes.option,
-            popupIndicator : classes.popupIndicator,
-            popupIndicatorOpen: classes.popupIndicatorOpen,
-            tag:classes.tag,
-            focused: classes.focused
-          }}
+        classes={classes}
         multiple={multiple}
         id={id}
         value={value}
@@ -237,16 +268,10 @@ const CRXMultiSelectBoxLight = ({
         options={options}
         getOptionLabel={option => option.label ?? option}
         getOptionSelected={(option : any, value : any) => option.label == value.label}
-        popupIcon={opupOpenCret}
-          renderOption={(option : any, {selected}) => (
-              <React.Fragment>
-                {console.log("selected", selected)}
-                <i
-                  className="far fa-check checkIcon"
-                  style={{ visibility: selected ? 'visible' : 'hidden' }}
-                />
-                {option.label}
-              </React.Fragment>
+        popupIcon={controled}
+        closeIcon={closeIcon}
+        renderOption={(option : any, {selected}) => (
+              optionLabel(option, selected)
           )}
           
           renderInput={(params : any) => (

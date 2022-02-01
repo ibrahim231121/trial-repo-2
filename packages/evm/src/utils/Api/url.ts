@@ -9,6 +9,7 @@ const BASE_URL_AUTHENTICATION_SERVICE = process.env.REACT_APP_AUTHENTICATION_SER
 const BASE_URL_USER_SERVICE = process.env.REACT_APP_USER_SERVICE_URL;
 export const BASE_URL_UNIT_SERVICE = process.env.REACT_APP_UNIT_SERVICE_URL
 const BASE_URL_SETUP_SERVICE = process.env.REACT_APP_SETUP_SERVICE_URL
+const REACT_APP_EVIDENCE_SERVICE_URL = process.env.REACT_APP_EVIDENCE_SERVICE_URL
 
 export const EVIDENCE_PREDITIVE_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/predictive`
 
@@ -33,6 +34,10 @@ export const Unit_GET_BY_ID_URL = `${BASE_URL_UNIT_SERVICE}`
 
 export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=100`
 
+export const EVIDENCE_SERVICE_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}`;
+
+export const SETUP_CONFIGURATION_SERVICE_URL = `${BASE_URL_SETUP_SERVICE}`;
+
 export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
 
 export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`
@@ -46,6 +51,8 @@ export const USER_INFO_UPDATE_URL = `${BASE_URL_USER_SERVICE}/Users`
 
 export const STATION_INFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations`
 
+export const STATION_INFO_DATA_PERMISSION_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationsInfo`
+
 export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=100&Page=1`
 
 export const CONTAINERMAPPING_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/GetAllByGroup`
@@ -58,4 +65,5 @@ export const SAVE_CONTAINER_MAPPINGS_URL = `${BASE_URL_SETUP_SERVICE}/Categories
 
 export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/UpsertBulk`
 
+export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 export const TEMPLATE_CONFIGURATION_DELETE_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/`

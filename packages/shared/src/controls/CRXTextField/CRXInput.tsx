@@ -2,6 +2,11 @@ import React from "react";
 import { Typography, TextField } from "@material-ui/core";
 import "./Input.scss";
 
+
+interface errorMessageType {
+  required: string;
+  validation: string;
+};
 //Props type
 interface InputProps {
   value: any;
@@ -12,31 +17,33 @@ interface InputProps {
   name: string;
   label?: string | undefined;
   disabled?: boolean;
-  error?: boolean;
   required?: boolean;
-  errorMsg?: string;
+  errorMsg?: errorMessageType | string;
   placeholder?: string;
   defaultValue?: any;
-  onBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  regex: RegExp;
+  error? : boolean
 }
 
 const CRXInput = ({
   value,
-  onBlur,
   defaultValue,
   placeholder,
   name,
   onChange,
   className,
   errorMsg,
-  error,
   disabled,
-  required,
+  required = false,
   id,
   type,
+  error,
   label,
+  regex,
   ...others
 }: InputProps) => {
+  const [_, setError] = React.useState<boolean>(false);
+  const [_errorMsg, setErrorMsg] = React.useState<string>('');
   const disableds = disabled ? "disabled" : " "; //Class will be apply on disaled
   const errors = error ? "errors" : " "; //Class will be apply on Error
   const errorMsgIcon = (
@@ -44,23 +51,6 @@ const CRXInput = ({
       <span className="crxErrorMsg"> {errorMsg}</span>
     </i>
   );
-
-  // const errMsgContent = () => {
-  //   if (error === true) {
-  //     return (
-  //       <Typography
-  //         className="errorStateContent"
-  //         variant="caption"
-  //         display="block"
-  //         gutterBottom
-  //       >
-  //         {errorMsg}
-  //       </Typography>
-  //     );
-  //   } else {
-  //     return;
-  //   }
-  // };
 
   const reformatedLabel = () => {
     if (required) {
@@ -80,21 +70,72 @@ const CRXInput = ({
     }
   };
 
+  const validateRegex = (value: string) => {
+    return regex.test(String(value).toLowerCase());
+  };
+
+  const checkError = (val: string) => {
+    
+    let requiredValidationComplete = requiredValidator(val);
+    if (requiredValidationComplete) {
+      regexValidator(val);
+      return;
+    }
+  };
+
+  const requiredValidator = (val: string) => {
+    
+    if (required) {
+      if (val.length === 0) {
+        const errorMessage = errorMsg ? typeof (errorMsg) === 'object' ? errorMsg.required : errorMsg
+          : "Required field";
+        setErrorMsg(errorMessage);
+        setError(true);
+        return false;
+      }
+      setError(false);
+      regexValidator(val);
+    }
+    return true;
+  }
+  const regexValidator = (val: string) => {
+    if (regex) {
+      const isFieldValid = validateRegex(val);
+      if (!val) {
+        setError(false);
+        return true;
+      }
+      if (!isFieldValid) {
+        const errorMessage = errorMsg ? typeof (errorMsg) === 'object' ? errorMsg.validation : errorMsg : "Field not validated";
+        setErrorMsg(errorMessage);
+        setError(true);
+        return false;
+      }
+      setError(false);
+      return true;
+    }
+    return true;
+  }
+
   return (
     <>
-      <span style={{ display: "flex" }}>
+      <span>
         <Typography variant="subtitle1" className="label">
           {reformatedLabel()}
         </Typography>
         <span>
           <TextField
-            onBlur={onBlur}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              checkError(e.target.value);
+            }}
             value={value}
             defaultValue={defaultValue}
             name={name}
             disabled={disabled}
-            error={error}
-            onChange={onChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              onChange(e);
+              checkError(e.target.value);
+            }}
             className={
               "CBX-input " + disableds + " " + errors + " " + className
             }

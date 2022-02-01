@@ -1,6 +1,5 @@
 import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
-import GroupInfo from "../Group/GroupInfo";
 import { useHistory } from "react-router";
 import {  Menu, MenuButton , MenuItem } from "@szhsin/react-menu";
 import {Link} from "react-router-dom";

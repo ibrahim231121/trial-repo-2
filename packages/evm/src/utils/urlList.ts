@@ -77,33 +77,34 @@ export const urlList: any = [
         { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
     ],
     },
+    // {
+    //     name: urlNames.adminUserGroup,
+    //     url: "/admin/usergroups/group",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+    //         { type: "text", label: "Group", }
+    //     ],
+    // },
     {
-        name: urlNames.adminUserGroup,
+        name: urlNames.userGroupCreate,
         url: "/admin/usergroups/group",
         details: [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        { type: "text", label: "Group", }
+            { type: "text", label: "Create User Group", }
     ],
     },
     {
         name: urlNames.adminUserGroupId,
-        url: "/admin/usergroups/group/:id",
+        url: "/admin/usergroups/group/:id(\\d+)",
         details: [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
             { type: "text", label: "Group", }
         ],
     },
-    {
-        name: urlNames.userGroupCreate,
-        url: "/admin/usergroups/group/create",
-        details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-        { type: "text", label: "Create User Group", }
-    ],
-    },
+
     {
         name: urlNames.adminUsers,
         url: "/admin/users",

@@ -3,20 +3,20 @@ import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
-import { DateTimeComponent } from "../components/DateTimeComponent";
+import {DateTimeComponent } from '../GlobalComponents/DateTime';
 import { getGroupAsync, getGroupUserCountAsync } from "../Redux/GroupReducer";
 import { dateOptionsTypes } from '../utils/constant';
 import { RootState } from "../Redux/rootReducer";
-import textDisplay from "../components/DateDisplayComponent/TextDisplay";
-import anchorDisplay from "../components/DateDisplayComponent/AnchorDisplay";
+import textDisplay from "../GlobalComponents/Display/TextDisplay";
+import anchorDisplay from "../GlobalComponents/Display/AnchorDisplay";
 
-import anchorDisplayUnit from "../components/DateDisplayComponent/AnchorDisplayUnit";
+import anchorDisplayUnit from "../GlobalComponents/Display/AnchorDisplayUnit";
 import { useHistory } from "react-router-dom";
 import './index.scss'
 import { getUnitInfoAsync } from "../Redux/UnitReducer";
-import dateDisplayFormat from "../components/DateDisplayComponent/DateDisplayFormat";
-import multitextDisplay from "../components/DateDisplayComponent/MultiTextDisplay";
-import MultSelectiDropDown from "../components/SearchComponents/MultSelectiDropDown";
+import dateDisplayFormat from "../GlobalFunctions/DateFormat";
+import multitextDisplay from "../GlobalComponents/Display/MultiTextDisplay";
+import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import {
   SearchObject,
   ValueString,
@@ -32,9 +32,9 @@ import {
   onClearAll,
   onSaveHeadCellData,
   onSetHeadCellVisibility
-} from "../utils/globalDataTableFunctions";
+} from "../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
-import TextSearch from "../components/SearchComponents/TextSearch";
+import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { logOutUser } from "../Login/API/auth";
 import { CBXLink } from "@cb/shared";
