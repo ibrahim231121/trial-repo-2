@@ -103,7 +103,7 @@ const UnitAndDevices: React.FC = () => {
           unitRows = units.map((unit: any, i:number) => {
                 return {
                     id: unit.recId,
-                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId,
+                    unitId: unit.unitId + "_" + unit.recId,
                     description: unit.description,
                     station: unit.station,
                     serialNumber: unit.serialNumber,
@@ -340,7 +340,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("UnitId")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplayUnit(e, "anchorStyle"),// textDisplay(e, ""),
+      dataComponent: (e: string) => anchorDisplay(e, "anchorStyle", urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,

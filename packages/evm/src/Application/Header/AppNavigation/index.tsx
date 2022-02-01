@@ -25,7 +25,7 @@ const CRXLefNavigation = () => {
       icon: "fas fa-chart-pie NaveIcon",
     },
     {
-      moduleId:1,
+      moduleId:0,
       label: "Assets",
       icon: "icon icon-file-video NaveIcon",
       url: urlList.filter((item:any) => item.name === urlNames.assets)[0].url,
@@ -106,6 +106,14 @@ const CRXLefNavigation = () => {
         },
       ],
     },
+    {
+      moduleId:0,
+      label: 'Units & Devices',
+      icon: 'fas fa-laptop-code NaveIcon',
+      command: () => {
+        navigateToPage(urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url);
+      },
+   },
 
     {
       moduleId:0,
@@ -168,7 +176,18 @@ const CRXLefNavigation = () => {
           command: () => {
             navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url);
           },
+          
         },
+        {
+          label: 'Unit Configuration',
+          command: () => { navigateToPage("/admin/unitconfiguration") },
+          items:[
+             {
+                label: 'Unit Configuration Templates',
+                command: () => { navigateToPage("/admin/unitconfiguration/unitconfigurationtemplate") },
+             }
+          ]
+       }
       ],
     },
   ];

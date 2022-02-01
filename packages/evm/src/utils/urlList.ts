@@ -1,40 +1,3 @@
-// export const urlList: any = {
-    
-//     "/assets": [
-//         { type: "text", label: "Assets", }
-//     ],
-
-//     "/admin/usergroups": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
-//     ],
-//     "/admin/usergroups/group/:id": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-//         { type: "text", label: "Group", }
-//     ],
-//     "/admin/usergroups/group/create": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-//         //{ routeTo: "/admin/usergroups/group", type: "link", label: "Group", },
-//         { type: "text", label: "Create User Group", }
-//     ],
-//     "/admin/users": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/users", type: "text", label: "Manage Users", }
-//     ],
-//     "/admin/usergroups/group": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-//         { type: "text", label: "Group", }
-//     ],
-//     "/admin/TestDemo": [
-//         { type: "text", label: "Admin", },
-//         { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
-//     ],
-
-// };
-
 export const urlNames: any = {
     assets: "assets",
     adminUserGroups: "adminUserGroups",
@@ -70,6 +33,14 @@ export const urlList: any = [
     ],
     },
     {
+        name : urlNames.assetsDetail,
+        url: "/assets/:id",
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+            { type: "text", label: "Asset Detail" },
+        ],
+    },
+    {
         name: urlNames.adminUserGroups,
         url: "/admin/usergroups",
         details: [
@@ -77,22 +48,13 @@ export const urlList: any = [
         { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
     ],
     },
-    // {
-    //     name: urlNames.adminUserGroup,
-    //     url: "/admin/usergroups/group",
-    //     details: [
-    //         { type: "text", label: "Admin", },
-    //         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-    //         { type: "text", label: "Group", }
-    //     ],
-    // },
     {
         name: urlNames.userGroupCreate,
         url: "/admin/usergroups/group",
         details: [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Create User Group", }
+        { type: "text", label: "Create User Group", }
     ],
     },
     {
@@ -101,7 +63,7 @@ export const urlList: any = [
         details: [
         { type: "text", label: "Admin", },
         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Group", }
+        { type: "text", label: "Group", }
         ],
     },
 
@@ -121,56 +83,23 @@ export const urlList: any = [
             { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
         ],
     },
+
     {
         name: urlNames.unitsAndDevices,
-        url: "/unitsAndDevices",
+        url: "/unitsanddevices",
         details: [
         { type: "text", label: "Manage Units & devices", }
     ],
     },
     {
-        name: urlNames.createUnit,
-        url: "/unitsAndDevices/create",
-        details: [
-            { type: "text", label: "Units And Devices", },
-            { routeTo: "/unitsAndDevices", type: "link", label: "Manage Unit and Devices", },
-        { type: "text", label: "Create Unit", }
-    ],
-    },
-    // {
-    //     name: urlNames.unitsAndDevices,
-    //     url: "/unitsAndDevices",
-    //     details: [
-    //         { type: "text", label: "Manage Units & devices", }
-    //     ],
-    // },
-
-    {
         name : urlNames.unitsAndDevicesDetail,
-        url: "/unitsanddevices/detail",
+        url: "/unitsanddevices/:id",
         details: [
-            { type: "text", label: "Units And Devices", },
-             { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-             { type: "text", label: "Unit Detail"},
+            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
+            { type: "text", label: "Unit Detail"},
         ],
     },
-    {
-        name : urlNames.unitsAndDevicesDetailId,
-        url: "/unitsanddevices/detail/:id",
-        details: [
-            { type: "text", label: "Units And Devices", },
-             { routeTo: "/unitsanddevices/detail/:id", type: "link", label: "Units & devices", },
-             { type: "text", label: "Unit Detail"},
-        ],
-    },
-    {
-        name : urlNames.assetsDetail,
-        url: "/assets/detail",
-        details: [
-            { routeTo: "/assets", type: "link", label: "Assets", },
-            { type: "text", label: "Asset Detail" },
-        ],
-    },
+
     {
         name : urlNames.adminUnitConfiguration,
         url: "/admin/unitconfiguration",
