@@ -213,6 +213,15 @@ export const urlList: any = [
              { type: "text", label: "Unit Detail"},
         ],
     },
+    {
+        name : urlNames.unitsAndDevicesDetail,
+        url: "/unitsanddevices/detail",
+        details: [
+            { type: "text", label: "Units And Devices", },
+             { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
+             { type: "text", label: "Unit Detail"},
+        ],
+    },
     
 
 ];
