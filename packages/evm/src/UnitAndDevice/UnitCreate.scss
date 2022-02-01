@@ -1,0 +1,114 @@
+.anchorStyle {
+  text-decoration: none;
+}
+.unitDeviceDetail {
+  margin-left: 68px;
+  margin-top: 143px;
+}
+.uddDashboard {
+  .MainBoard {
+    background-color: #333333;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 38px 0 45px;
+    position: relative;
+  }
+  .LeftBoard {
+    display: flex;
+  }
+  .RightBoard {
+    display: flex;
+  }
+  .pannelBoard {
+    text-align: center;
+    margin: 4px 6px 1px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 157px;
+    h2 {
+      color: #f2f2f2;
+      font-size: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+    }
+    p {
+      color: #f2f2f2;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+    }
+    span {
+      display: block;
+      height: 25px;
+      width: 25px;
+      margin: -4px 0 1px 0;
+    }
+    .pdDeviceIcon {
+      i {
+        color: #f2f2f2;
+        font-size: 25px;
+      }
+    }
+    .pdStatus {
+      i {
+        color: #02a200;
+        font-size: 25px;
+      }
+    }
+    .pdUpload {
+      i {
+        color: #f2f2f2;
+        font-size: 20px;
+        margin-top: 2px;
+        &:after {
+          color: #f2f2f2;
+          opacity: 1;
+        }
+      }
+    }
+    .pdDotted {
+      i {
+        color: #ff6e20;
+        font-size: 20px;
+        margin-top: 2px;
+      }
+    }
+  }
+  .pannelBoardHide {
+    display: none;
+  }
+  .arrowResponsiveShow {
+    display: block;
+    color: #d1d2d4;
+    z-index: 8;
+    right: 17px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .pannelBoardShow {
+    display: block;
+  }
+  .arrowResponsiveHide {
+    display: none;
+  }
+
+  .MainBoardFlow {
+    overflow-x: scroll;
+  }
+  .RightBoard {
+    .pannelBoard {
+      width: 112px;
+    }
+  }
+}
+
+// media query
+@media screen and (min-width: 1500px) {
+  .MainBoardFlow {
+    overflow-x: hidden !important;
+  }
+}
