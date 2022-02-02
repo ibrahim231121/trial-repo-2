@@ -7,7 +7,7 @@ import {
   DataTableHeaderProps
 } from "./CRXDataTableTypes";
 import {useTranslation} from 'react-i18next'; 
-import { fixedColumnAlignment } from "./FixedColumnAlignment"
+//import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility,showCheckBoxesCol,showActionCol}) => {
 
