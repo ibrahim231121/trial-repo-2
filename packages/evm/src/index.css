@@ -1,7 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif,
-    "Segoe UI";
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI" !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

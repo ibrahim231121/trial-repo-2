@@ -16,7 +16,8 @@ type containerProps = {
 
 const containerStyle = makeStyles({
     root : {
-        padding: "15px 0px"
+        padding: "15px 0px",
+        fontFamily : "-apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, Segoe UI"
     },
 })
 

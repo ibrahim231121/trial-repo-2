@@ -401,6 +401,25 @@
   .autocompleteSpacer + .Autocomplete_multi {
     top: -42px !important;
   }
+
+  table {
+    thead {
+      tr{
+        th {
+          left: 0px !important;
+        }
+      }
+    }
+
+    tbody {
+      tr{
+        td {
+          left: 0px !important;
+        }
+      }
+    }
+
+  }
 }
 .divMainBucket {
   .dataTablePages {

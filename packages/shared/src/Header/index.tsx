@@ -1,6 +1,6 @@
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import './CRXAppBar.scss'
 
 type Position =  'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'
@@ -14,7 +14,7 @@ interface CRXAppBarProps {
     color : Colors
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: "#333333",
@@ -24,7 +24,19 @@ const theme = createMuiTheme({
             main: "#f4f4f4",
         },
         
+        
     },
+    typography: {
+        subtitle1: {
+          fontSize: 14,
+        },
+        body1: {
+          fontWeight: "normal",
+        },
+        button: {
+            fontFamily: '-apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI"',
+        },
+      },
 });
 
 const CRXAppBar = ({children, id, className, position = "relative", color} : CRXAppBarProps) => {
