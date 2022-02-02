@@ -25,7 +25,7 @@ import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfigu
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
 import UnitAndDevicesDetial from './UnitAndDevice/Detail/Detail'
-import AssetDetailsTemplate from "./Application/Assets/pages/AssetDetailsTemplate";
+import AssetDetailsTemplate from "./Application/Assets/Detail/AssetDetailsTemplate";
 import VideoPlayer from "./components/MediaPlayer/VideoPlayerBase";
 import { isAuthenticated } from "./Login/API/auth";
 import { useDispatch, useSelector } from "react-redux";
