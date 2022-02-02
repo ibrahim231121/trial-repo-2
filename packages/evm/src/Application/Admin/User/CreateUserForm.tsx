@@ -2,7 +2,7 @@ import { CRXCheckBox } from "@cb/shared";
 import { CRXButton } from "@cb/shared";
 import { TextField, CRXConfirmDialog, CRXRadio, CRXToaster } from "@cb/shared";
 import { url } from "inspector";
-import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useContext, useEffect, useRef, useState } from "react";
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from "../../../utils/Api/url";
 import { EditableSelect, CRXMultiSelectBoxLight } from "@cb/shared";
 import useGetFetch from "../../../utils/Api/useGetFetch";
@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import {addNotificationMessages }  from "../../../Redux/notificationPanelMessages";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes"
+import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 
 let USER_DATA = {};
 interface Props {
@@ -103,6 +104,7 @@ const CreateUserForm: React.FC<Props> = ({
  const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
  const [alertType, setAlertType] = useState<string>("inline");
   const [errorType, setErrorType] = useState<string>("error");
+  const {getModuleIds} = useContext(ApplicationPermissionContext);
 
 
   const dispatch = useDispatch()
@@ -279,22 +281,28 @@ const CreateUserForm: React.FC<Props> = ({
 
   const content = [
     {
+      moduleIds: 11,
       label: ActivationLinkLabel,
       // label: "Send Activation Link",
       value: "sendAct",
       Comp: () => sendActivationLink(),
     },
     {
+      moduleIds: 0,
       label: "Generate Temporary Password",
       value: "genTemp",
       Comp: () => generateTempPassComp(),
     },
     {
+      moduleIds: 0,
       label: "Manually Set Password",
       value: "manual",
       Comp: () => manuallyGeneratePass(),
     },
   ];
+
+  //Permission applied when user doesnot have permission of Activate and Deactivate Users
+  const activationLinkPermission = content.filter((x:any) => getModuleIds().includes(x.moduleIds) || x.moduleIds === 0);
 
   const fetchGroups = async () => {
     const res = await fetch(GROUP_USER_LIST, {
@@ -1015,7 +1023,7 @@ return (
               <CRXRadio
                 className="crxEditRadioBtn"
                 disableRipple={true}
-                content={content}
+                content={activationLinkPermission}
                 value={radioValue}
                 setValue={setRadioValue}
               />

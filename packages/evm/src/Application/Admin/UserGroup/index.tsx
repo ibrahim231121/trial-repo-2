@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CRXDataTable, CRXSelectBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../../../utils/Api/useGetFetch';
@@ -28,6 +28,7 @@ import UserGroupActionMenu from "./UserGroupActionMenu";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { CRXModalDialog } from "@cb/shared";
+import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 
 type GroupUser = {
   id: number;
@@ -57,6 +58,9 @@ const UserGroup: React.FC = () => {
   const [selectedItems, setSelectedItems] = React.useState<GroupUser[]>([]);
 
   const [reformattedRows, setReformattedRows] = React.useState<GroupUser[]>();
+  const {
+    getModuleIds
+  } = useContext(ApplicationPermissionContext);
 
 
   const setData = () => {
@@ -143,6 +147,18 @@ const UserGroup: React.FC = () => {
      
     )
   }
+
+  const AnchorDisplay = (e: string) => {
+    if(getModuleIds().includes(7)) {
+    return anchorDisplay(e, "", urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url)
+    }
+    else{
+    let lastid = e.lastIndexOf("_");
+    let text =  e.substring(0,lastid)
+    return textDisplay(text,"")
+    }
+  }
+  
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -161,7 +177,7 @@ const UserGroup: React.FC = () => {
       label: `${t("Group Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => anchorDisplay(e, "anchorStyle", urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url),
+      dataComponent: (e: string) => AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -227,7 +243,7 @@ const UserGroup: React.FC = () => {
 
   return (
     <div className="managePermissionTable">
-      <Restricted moduleId={0}>
+      <Restricted moduleId={6}>
         <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
           Create Group
         </CRXButton>
