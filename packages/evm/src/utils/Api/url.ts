@@ -51,3 +51,6 @@ export const SAVE_CONTAINER_MAPPINGS_URL = `${BASE_URL_SETUP_SERVICE}/Categories
 export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/UpsertBulk`
 
 export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`
+
+export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
+export const STATION = `${BASE_URL_UNIT_SERVICE}/Stations`;

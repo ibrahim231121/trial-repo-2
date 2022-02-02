@@ -45,8 +45,8 @@ export const urlNames: any = {
   adminUsers: 'adminUsers',
   adminTestDemo: 'adminTestDemo',
   adminStation: 'adminStation',
-  adminStationId: 'adminStationId',
-  adminStationCreate: 'adminStationCreate'
+  adminStationCreate: 'adminStationCreate',
+  adminStationEdit : 'adminStationEdit'
 };
 
 export const urlList: any = [
@@ -118,13 +118,21 @@ export const urlList: any = [
     ]
   },
   {
-    name: urlNames.adminStationId,
-    url: '/admin/stations/:id',
+    name: urlNames.adminStationCreate,
+    url: '/admin/stations/station',
+    details: [
+      { type: 'text', label: 'Admin' },
+      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+      { type: 'text', label: 'Create Station' }
+    ]
+  },
+  {
+    name: urlNames.adminStationEdit,
+    url: '/admin/stations/station/:id',
     details: [
       { type: 'text', label: 'Admin' },
       { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
       { type: 'text', label: 'Station_Name' }
     ]
   }
-
 ];

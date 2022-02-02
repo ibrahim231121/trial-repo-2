@@ -1,0 +1,12 @@
+.stationForm {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction:column;
+
+    .colstation {
+        width: 45%;
+        padding: 0px 15px;
+    }
+}

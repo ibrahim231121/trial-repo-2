@@ -13,10 +13,10 @@ export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
   groupReducer: groupSlice.reducer,
+  userReducer: userSlice.reducer,
+  stationReducer:  stationsSlice.reducer,
   assetCategory:categorySlice.reducer,
   CategoryFormFields:CategoryFormSlice.reducer,
-  userReducer: userSlice.reducer,
-  notificationReducer: notificationMessages.reducer,
-  stationReducer:  stationsSlice.reducer
+  notificationReducer: notificationMessages.reducer
 })
 export type RootState = ReturnType<typeof reducer>

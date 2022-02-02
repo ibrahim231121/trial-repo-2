@@ -487,8 +487,8 @@ useEffect(() => {
               }
             })
             .catch((err: Error) => {
-              console.log("An error occured in permission");
-              console.log(err.message);
+              
+              
             });
 
           setShowSuccess(true);

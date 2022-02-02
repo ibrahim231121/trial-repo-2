@@ -191,10 +191,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         setHeadCells(headCellReset);
     }
     const openHandler = (_: React.SyntheticEvent) => {
-        console.log("onOpen")
+        
         //setOpen(true)
     }
-    //console.log("HeadCellProps" , HeadCellProps[])
+    //
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
             label: `${t("ID")}`,

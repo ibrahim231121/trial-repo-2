@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI";
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, 'Segoe UI';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -73,7 +73,7 @@ body {
   height: 89px;
 }
 
-.divInner div[id^="innerDrag"] {
+.divInner div[id^='innerDrag'] {
   width: 56px;
   border: 3px solid #ccc;
   border-right: 0px;
@@ -84,7 +84,7 @@ body {
   height: 87px;
 }
 
-.divInner div[id^="innerImg"] {
+.divInner div[id^='innerImg'] {
   width: 144px;
   border-right: 1px solid #ccc;
   float: left;
@@ -94,7 +94,7 @@ body {
   text-align: center;
 }
 
-.divInner div[id^="innerAssetId"] {
+.divInner div[id^='innerAssetId'] {
   float: left;
   width: 130px;
   height: 88.5px;
@@ -120,7 +120,7 @@ body {
 }
 
 .AssetsDataGrid table tbody tr td:first-child {
-    position: sticky;
+  position: sticky;
 }
 
 .AssetsDataGrid table tbody tr td:first-child::before {
@@ -129,7 +129,7 @@ body {
   position: absolute;
   width: 100%;
   height: 88px;
-  content: " ";
+  content: ' ';
   top: 0px;
   left: 0px;
 }
@@ -216,13 +216,12 @@ body {
   height: 100vh;
 }
 
-
 .inlineDiv {
   display: flex;
 }
 
 .columnse {
-  padding:  0 15px;
+  padding: 0 15px;
 }
 
 .crx-ToasterContainer {
@@ -245,12 +244,19 @@ body {
   margin-top: 30px;
 }
 
-.stickyPos  {
-    position: sticky !important;
-    top: 135px;
-    /* background: #fff; */
-    padding-top: 3.5px;
-    z-index: 9999;
-    padding-bottom: 0px !important;
-    height: 51px;
+.stickyPos {
+  position: sticky !important;
+  top: 135px;
+  /* background: #fff; */
+  padding-top: 3.5px;
+  z-index: 9999;
+  padding-bottom: 0px !important;
+  height: 51px;
+}
+.ManageStation {
+  margin-top: 180px;
+  padding: 0 156px;
+}
+.LocationMap {
+  width: 100%;
 }

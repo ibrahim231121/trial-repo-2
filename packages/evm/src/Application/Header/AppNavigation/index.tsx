@@ -169,6 +169,11 @@ const CRXLefNavigation = () => {
             navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url);
           },
         },
+        {
+          label: 'Manage Station',
+          //command: () => { navigateToPage("/admin/stations") },
+          url: "/admin/stations",
+       }
       ],
     },
   ];

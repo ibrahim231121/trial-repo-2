@@ -28,12 +28,12 @@ const TestViewsForDemo = () => {
   const [open, setOprnState] = useState<boolean>()
   const hanlerChange = (e: any, val: renderCheck[]) => {
 
-    console.log(val, e);
+    
   }
 
   const hanlerChangeCom = (e: React.SyntheticEvent, val: renderCheck[]) => {
-    console.log("On change Value", e);
-    console.log(val);
+    
+    
     setAutoValue(val)
   }
   const openHandler = (_: React.SyntheticEvent) => {
@@ -45,7 +45,7 @@ const TestViewsForDemo = () => {
   }
 
   // React.useEffect(() => {
-  //   console.log("useEffect", autoValue);
+  //   
   // },[autoValue])
   const icons = <i className="fas fa-info"></i>
 

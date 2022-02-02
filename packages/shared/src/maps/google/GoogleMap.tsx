@@ -6,33 +6,38 @@ import './Map.scss'
 interface IMapConfig {
     apiKey: string,
     zoomLevel: number,
-    mapCenter: mapCenter,
     mapTypeControl?: boolean;
+    initialMarker?: IlatLong
     getMarkerLatLong: (location: number[]) => void
 }
-interface mapCenter {
+interface IlatLong {
     lat: number,
     long: number
 }
 
-const GoogleMap: React.FC<IMapConfig> = ({ apiKey, zoomLevel, mapCenter, mapTypeControl, getMarkerLatLong }) => {
+const GoogleMap: React.FC<IMapConfig> = ({ apiKey, zoomLevel, mapTypeControl, initialMarker, getMarkerLatLong }) => {
 
     const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
     useEffect(() => {
-        const googleMapScript = LoadGoogleMapApi(apiKey);
-        googleMapScript.addEventListener('load', function () {
+        if (window.google == undefined) {
+
+            const googleMapScript = LoadGoogleMapApi(apiKey);
+            googleMapScript.addEventListener('load', function () {
+                setGoogleScriptLoaded(true)
+            })
+        } else {
             setGoogleScriptLoaded(true)
-        })
+        }
     }, [])
 
     return (
         <>{
             googleScriptLoaded &&
             <Map
-                mapType={google.maps.MapTypeId.HYBRID}
+                mapType={google.maps.MapTypeId.ROADMAP}
                 mapTypeControl={mapTypeControl}
                 zoomLevel={zoomLevel}
-                mapCenter={new google.maps.LatLng(mapCenter.lat, mapCenter.long)}
+                initialMarker={initialMarker}
                 getMarkerLatLong={getMarkerLatLong}
             />
         }

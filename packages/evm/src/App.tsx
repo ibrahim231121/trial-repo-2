@@ -55,14 +55,13 @@ function App() {
 
   useEffect(()=>{
 
-    console.log("APP.TSX component did mount")
-    console.log("token");
+
     var token = getToken();
     if(token){
 
             var moduleIds = getModuleIds();
             if(moduleIds){
-              console.log(moduleIds);
+             
               setModuleIds(moduleIds);
             }
         
@@ -276,8 +275,7 @@ function App() {
   return (
     <ApplicationPermissionProvider  setModuleIds={
                                           (moduleIds:number[]) =>{
-                                            console.log("setting moduleIds finally");
-                                            console.log(moduleIds);
+                                            
                                             setModuleIds(moduleIds)}
                                           }  
                                     moduleIds={moduleIds}  
