@@ -81,11 +81,11 @@ export const urlList: any = [
     },
     {
         name: urlNames.adminUserGroupId,
-        url: "/admin/usergroups/group/:id(\\d+)",
+        url: "/admin/usergroups/group/:id",
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Group", }
+            { routeTo: "/admin/usergroups", type: "text", label: "Group", }
         ],
     },
 

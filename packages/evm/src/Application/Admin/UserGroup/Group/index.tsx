@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { CRXTabs, CrxTabPanel, CRXButton, CRXAlert, CRXToaster } from "@cb/shared";
+import {
+  CRXTabs,
+  CrxTabPanel,
+  CRXButton,
+  CRXAlert,
+  CRXToaster,
+} from "@cb/shared";
 import User from "./GroupTabs/User";
 import "./index.scss";
 import { useHistory, useParams } from "react-router";
@@ -15,12 +21,14 @@ import {
   UPSERT_CONTAINER_MAPPING_URL,
 } from "../../../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
-import { urlList, urlNames } from "../../../../utils/urlList"
+import { urlList, urlNames } from "../../../../utils/urlList";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { addNotificationMessages }  from "../../../../Redux/notificationPanelMessages";
+import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
-import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes"
+import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
+import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 export type GroupInfoModel = {
   name: string;
@@ -47,7 +55,7 @@ export type ApplicationPermission = {
 const Group = () => {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [groupInfo, setGroupInfo] = React.useState<GroupInfoModel>({
     name: "",
     description: "",
@@ -67,7 +75,8 @@ const Group = () => {
   const [applicationPermissions, setApplicationPermissions] = React.useState<
     ApplicationPermission[]
   >([]);
-  const [applicationPermissionsActual, setApplicationPermissionsActual] = React.useState<ApplicationPermission[]>([]);
+  const [applicationPermissionsActual, setApplicationPermissionsActual] =
+    React.useState<ApplicationPermission[]>([]);
 
   const [dataPermissions, setDataPermissions] = React.useState<
     DataPermissionModel[]
@@ -90,7 +99,7 @@ const Group = () => {
     name: "",
   });
 
-  const groupMsgRef = useRef<typeof CRXToaster>(null)
+  const groupMsgRef = useRef<typeof CRXToaster>(null);
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -117,9 +126,10 @@ const Group = () => {
   ];
 
   const { id } = useParams<{ id: string }>();
-  const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + id, {
-    "Content-Type": "application/json",
-    TenantId: "1",
+  const [ids, setIds] = useState<string>(id);
+
+  const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + ids, {
+    "Content-Type": "application/json", TenantId: "1",
   });
 
   const [getContainerMappingRes, ContainerMappingRes] = useGetFetch<any>(
@@ -127,76 +137,84 @@ const Group = () => {
     { "Content-Type": "application/json", TenantId: "1" }
   );
 
-  const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(APPLICATION_PERMISSION_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
+    APPLICATION_PERMISSION_URL,
+    { "Content-Type": "application/json", TenantId: "1" }
+  );
 
   React.useEffect(() => {
-    
-    //this work is done for edit, if id available then retrive data from url
-    functionInitialized()
+    functionInitialized();
+    window.addEventListener("scroll", checkGroupScrollTop);
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+      window.removeEventListener("scroll", checkGroupScrollTop);
+    };
   }, []);
 
   const functionInitialized = () => {
+    //this work is done for edit, if id available then retrive data from url
     if (!isNaN(+id)) {
       getResponse();
       getContainerMappingRes();
-      
     }
     getResponseAppPermission();
-  }
+    dispatch(getUsersInfoAsync());
+  };
 
   const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
-    let count: number = 0
-    if(response.subModules && response.subModules.length > 0)  {
+    let count: number = 0;
+    if (response.subModules && response.subModules.length > 0) {
       response.subModules.map((subModule: any) => {
-        let value = subModulesIdes.indexOf(subModule.id) > -1 ? true : false
-        if(value === true)
-          count = count + 1
-      })
-      if(count === response.subModules.length)
-        return true
-      else
-        return false
-    }
-    else 
-      return false
-  }
+        let value = subModulesIdes.indexOf(subModule.id) > -1 ? true : false;
+        if (value === true) count = count + 1;
+      });
+      if (count === response.subModules.length) return true;
+      else return false;
+    } else return false;
+  };
 
   const getPermissions = (AppPermissions: any, subModulesIdes: Number[]) => {
-    if(AppPermissions !== undefined){
+    if (AppPermissions !== undefined) {
       let appPermission = AppPermissions.map((response: any) => {
-        
         let x: ApplicationPermission = {
           id: response.id,
           name: response.name,
           level: 1,
-          selected:  moduleAllCheck(response, subModulesIdes),
-          children: ((response.subModules && response.subModules.length > 0) ?
-            response.subModules.map((subModule: any) => {
-              let y: ApplicationPermission = {
-                id: subModule.id,
-                name: subModule.name,
-                level: 2,
-                selected: subModulesIdes.indexOf(subModule.id) > -1 ? true : false,
-                levelType: subModule.subModuleGroupName
-              }
-              return y
-            })
-            : null
-          )
-        }
-        return x
-      })
-      return appPermission
+          selected: moduleAllCheck(response, subModulesIdes),
+          children:
+            response.subModules && response.subModules.length > 0
+              ? response.subModules.map((subModule: any) => {
+                  let y: ApplicationPermission = {
+                    id: subModule.id,
+                    name: subModule.name,
+                    level: 2,
+                    selected:
+                      subModulesIdes.indexOf(subModule.id) > -1 ? true : false,
+                    levelType: subModule.subModuleGroupName,
+                  };
+                  return y;
+                })
+              : null,
+        };
+        return x;
+      });
+      return appPermission;
     }
-  }
+  };
 
   React.useEffect(() => {
     // only for 2 levels
     if (resAppPermission !== undefined) {
-      if(applicationPermissions === undefined || applicationPermissions.length === 0)
-        setApplicationPermissions(getPermissions(resAppPermission,subModulesIds))
-      setApplicationPermissionsActual(getPermissions(resAppPermission,subModulesIds));
-      
+      if (
+        applicationPermissions === undefined ||
+        applicationPermissions.length === 0
+      )
+        setApplicationPermissions(
+          getPermissions(resAppPermission, subModulesIds)
+        );
+      setApplicationPermissionsActual(
+        getPermissions(resAppPermission, subModulesIds)
+      );
     }
   }, [resAppPermission]);
 
@@ -204,19 +222,24 @@ const Group = () => {
     showSave();
   }, [groupInfo, userIds, dataPermissions, isAppPermissionsChange]);
 
-
   useEffect(() => {
-    if(applicationPermissions !== undefined && applicationPermissionsActual !== undefined) {
-    if (JSON.stringify(applicationPermissions) !== JSON.stringify(applicationPermissionsActual))
-      setIsAppPermissionsChange(true)
-    else
-      setIsAppPermissionsChange(false)
+    if (
+      applicationPermissions !== undefined &&
+      applicationPermissionsActual !== undefined
+    ) {
+      if (
+        JSON.stringify(applicationPermissions) !==
+        JSON.stringify(applicationPermissionsActual)
+      )
+        setIsAppPermissionsChange(true);
+      else setIsAppPermissionsChange(false);
     }
-    
-  },[applicationPermissions])
+  }, [applicationPermissions]);
 
   React.useEffect(() => {
     if (res !== undefined) {
+      dispatch(enterPathActionCreator({ val: res.name }));
+
       setGroupInfo({ name: res.name, description: res.description });
       setGroupIdName({ id: res.id, name: res.name });
 
@@ -318,39 +341,26 @@ const Group = () => {
     ) {
       setIsOpen(true);
       setValue(tabs[3].index);
-    }
-    else
-      history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)
-  }
-
-  const disableAddPermission = () => {
-    dataPermissions.map((obj) => {
-        if(obj.fieldType > 0 && (obj.mappingId > 0 || obj.mappingId < 0 ) && obj.permission > 0 ){
-        setIsSaveButtonDisabled(false);
-        }
-        else{
-          setIsSaveButtonDisabled(true);
-        }
-    })
-}
-
-useEffect(() => {
-    disableAddPermission();
-    
-}, [dataPermissions])
+    } else
+      history.push(
+        urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0]
+          .url
+      );
+  };
 
   const showSave = () => {
     let groupInfo_temp: GroupInfoModel = {
       name: res === undefined ? "" : res.name,
       description: res === undefined ? "" : res.description,
     };
+    
     if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp)) {
       setIsSaveButtonDisabled(false);
     } else if (
-      JSON.stringify(userIds.length === 0 ? "" : userIds) !==
+      JSON.stringify(userIds.length === 0 ? [] : userIds) !==
       JSON.stringify(
         res === undefined || res.members === undefined
-          ? ""
+          ? []
           : res.members.users.map((x: any) => x.id)
       )
     ) {
@@ -360,17 +370,18 @@ useEffect(() => {
     } else if (
       JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)
     ) {
-      setIsSaveButtonDisabled(true);
+      setIsSaveButtonDisabled(false);
     } else {
       setIsSaveButtonDisabled(true);
     }
   };
 
   const closeDialog = () => {
-
-    setIsOpen(false)
-    history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)
-  }
+    setIsOpen(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url
+    );
+  };
 
   const getAppPermissions = (
     appPermission: any,
@@ -419,9 +430,12 @@ useEffect(() => {
 
     const showToastMsg = () => {
       groupMsgRef.current.showToaster({
-          message: message[0].message, variant: "success", duration: 7000, clearButtton:true
+        message: message[0].message,
+        variant: "success",
+        duration: 7000,
+        clearButtton: true,
       });
-  }
+    };
     fetch(groupURL, {
       method: method,
       headers: {
@@ -469,17 +483,14 @@ useEffect(() => {
           })
             .then((container) => {
               if (container.status === 201 || container.status === 204) {
-                // history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+                // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
               } else if (
                 container.status === 500 ||
                 container.status === 400 ||
                 container.status === 409 ||
                 container.status === 404
               ) {
-
-                setShowSuccess(true);
-                setIsAppPermissionsChange(false)
-                functionInitialized();
+                effectAfterSave(groupId.toString())
 
                 setAlertType("inline");
                 setMessages(message[2].message);
@@ -491,18 +502,14 @@ useEffect(() => {
               console.log(err.message);
             });
 
-          setShowSuccess(true);
-          setIsAppPermissionsChange(false)
-          functionInitialized();
+          effectAfterSave(groupId.toString())
 
           setAlertType("toast");
           setMessages(message[0].message);
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
 
-          setShowSuccess(true);
-          setIsAppPermissionsChange(false)
-          functionInitialized();
+          effectAfterSave(groupId.toString())
 
           setMessages(message[1].message);
           setError(message[1].messageType);
@@ -511,103 +518,122 @@ useEffect(() => {
 
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
 
-          setShowSuccess(true);
-          setIsAppPermissionsChange(false)
-          functionInitialized();
+          effectAfterSave(groupId.toString())
 
           setShowMessageCls("showMessageGroup");
-          setShowMessageError("errorMessageShow")
-         
+          setShowMessageError("errorMessageShow");
+
           setMessages(error);
           setAlertType("inline");
           setError("error");
         }
-        
       });
+  };
+
+  useEffect(() => {
+    if (ids !== undefined) getResponse()
+  }, [ids]);
+
+  const effectAfterSave = (groupId: string) => {
+    setShowSuccess(true);
+    functionInitialized();
+    redirectingToId(groupId);
+    setIsAppPermissionsChange(false);
+    setIsSaveButtonDisabled(true);
+  }
+
+  const redirectingToId = (groupId: string) => {
+    let urlPathName = urlList.filter(
+      (item: any) => item.name === urlNames.adminUserGroupId
+    )[0].url;
+    setIds(groupId);
+    history.push(
+      urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + groupId
+    );
   };
 
   const checkGroupScrollTop = () => {
     if (!showGroupScroll && window.pageYOffset > 15) {
       setShowGroupScroll(true);
-      setMessagesadd('crxScrollGroup')
-
+      setMessagesadd("crxScrollGroup");
     } else if (!showGroupScroll && window.pageYOffset <= 15) {
       setShowGroupScroll(false);
-      setMessagesadd("crxScrollGroupTop")
+      setMessagesadd("crxScrollGroupTop");
     }
   };
-
-  useEffect(() => {
-    window.addEventListener("scroll", checkGroupScrollTop);
-    return () => window.removeEventListener("scroll", checkGroupScrollTop);
-  }, []);
 
   const scrollGroupTop = () => {
     window.scrollTo({ top: 0 });
   };
 
-
-  const alertMsgDiv = showSuccess ? " " : "hideMessageGroup"
+  const alertMsgDiv = showSuccess ? " " : "hideMessageGroup";
 
   useEffect(() => {
-    if(messages !== undefined && messages !== "") {
+    if (messages !== undefined && messages !== "") {
       let notificationMessage: NotificationMessage = {
-          title: "Group", 
-          message: messages, 
-          type: error,
-          date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
-      }
+        title: "Group",
+        message: messages,
+        type: error,
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
       dispatch(addNotificationMessages(notificationMessage));
     }
-  },[messages])
+  }, [messages]);
 
-  
-  
   return (
     <div className="App crxTabsPermission" style={{}}>
-    
-        <CRXAlert
-          className={"CrxAlertNotificationGroup " +  " " + alertMsgDiv }
-          message={messages}
-          type={error}
-          open={showSuccess}
-          alertType={alertType}
-          setShowSucess={setShowSuccess}
-        />
-        <CRXToaster ref={groupMsgRef}/>
+      <CRXAlert
+        className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
+        message={messages}
+        type={error}
+        open={showSuccess}
+        alertType={alertType}
+        setShowSucess={setShowSuccess}
+      />
+      <CRXToaster ref={groupMsgRef} />
 
-        <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
-        <CrxTabPanel value={value}   index={0}>
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+      <CrxTabPanel value={value} index={0}>
         {/* <div className={showMessageError}> */}
-        <div className={`${showMessageError} ${alertType == "inline" ? "" : "errorGroupInfo"}`}>
+        <div
+          className={`${showMessageError} ${
+            alertType == "inline" ? "" : "errorGroupInfo"
+          }`}
+        >
           <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} />
-          </div>
-        </CrxTabPanel>
-       
+        </div>
+      </CrxTabPanel>
 
-        <CrxTabPanel value={value} index={1}>
-          <div className={`${showSuccess ? "crxGroupTab1 isErrorHide" : "crxGroupTab1"} ${messagesadd}`}>
+      <CrxTabPanel value={value} index={1}>
+        <div
+          className={`${
+            showSuccess ? "crxGroupTab1 isErrorHide" : "crxGroupTab1"
+          } ${messagesadd}`}
+        >
           <User ids={userIds} onChangeUserIds={onChangeUserIds}></User>
-          </div>
-        </CrxTabPanel>
+        </div>
+      </CrxTabPanel>
 
-        <CrxTabPanel value={value} index={2}>
-          <div 
+      <CrxTabPanel value={value} index={2}>
+        <div
           onClick={scrollGroupTop}
-          className={`${showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"} ${messagesadd}`}
-        
-          ></div>
-          <Application
-            resAppPermission={resAppPermission}
-            applicationPermissions={applicationPermissions}
-            onSetAppPermissions={getAppPermissions}
-            groupIdName={groupIdName}
-            isAppPermissionsChange={isAppPermissionsChange}
-          ></Application>
-        </CrxTabPanel>
+          className={`${
+            showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"
+          } ${messagesadd}`}
+        ></div>
+        <Application
+          resAppPermission={resAppPermission}
+          applicationPermissions={applicationPermissions}
+          onSetAppPermissions={getAppPermissions}
+          groupIdName={groupIdName}
+          isAppPermissionsChange={isAppPermissionsChange}
+        ></Application>
+      </CrxTabPanel>
 
-        <CrxTabPanel value={value} index={3}>
-          <div className="crxGroupTab3">
+      <CrxTabPanel value={value} index={3}>
+        <div className="crxGroupTab3">
           <DataPermission
             dataPermissionsInfo={dataPermissions}
             onChangeDataPermission={onChangeDataPermission}
@@ -617,13 +643,33 @@ useEffect(() => {
               setDeletedDataPermissions(deletedPermissions);
             }}
           ></DataPermission>
-          </div>
-        </CrxTabPanel>
-   
+        </div>
+      </CrxTabPanel>
+
       <div className="tab-bottom-buttons">
         <div className="save-cancel-button-box">
-          <CRXButton  variant="contained" className="groupInfoTabButtons"  onClick={onSave} disabled={isSaveButtonDisabled}>Save</CRXButton>
-                    <CRXButton className="groupInfoTabButtons secondary" color="secondary" variant="outlined" onClick={() => history.push(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url)}>Cancel</CRXButton>
+          <CRXButton
+            variant="contained"
+            className="groupInfoTabButtons"
+            onClick={onSave}
+            disabled={isSaveButtonDisabled}
+          >
+            Save
+          </CRXButton>
+          <CRXButton
+            className="groupInfoTabButtons secondary"
+            color="secondary"
+            variant="outlined"
+            onClick={() =>
+              history.push(
+                urlList.filter(
+                  (item: any) => item.name === urlNames.adminUserGroups
+                )[0].url
+              )
+            }
+          >
+            Cancel
+          </CRXButton>
         </div>
         <CRXButton
           onClick={() => redirectPage()}
