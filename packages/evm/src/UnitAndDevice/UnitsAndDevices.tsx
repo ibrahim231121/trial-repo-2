@@ -49,7 +49,8 @@ type Unit = {
   station: string,
   assignedTo: string[],
   lastCheckedIn: string,
-  status: string
+  status: string,
+  stationId: number
 }
 interface renderCheckMultiselect {
   value?: string,
@@ -113,7 +114,8 @@ const UnitAndDevices: React.FC = () => {
                   //     return x.trim();
                   // }) : [],
                     lastCheckedIn: unit.lastCheckedIn,
-                    status: unit.status
+                    status: unit.status,
+                    stationId: unit.stationRecId
                 }
             })
         }
@@ -345,7 +347,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "100",
-      maxWidth: "100",
+      maxWidth: "100"
     }, 
    
     {

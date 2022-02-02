@@ -1,10 +1,12 @@
 import { urlList, urlNames } from "../../utils/urlList"
-const textDisplay = (text: string, classes: string | undefined) => {
+import { Link } from "react-router-dom";
 
-  let idIndex = text.indexOf("_");
-  let unitId = text.substring(idIndex + 1, text.length);
- 
-  return <a href={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url + "/" + unitId} className={classes} >{text.substring(0, idIndex)}</a>
+const textUnitDisplay = (text: string, classes: any) => {
+  let unitName = text.split('_')[0];
+  let unitId = text.split('_')[1];
+  let stationId = text.split('_')[2];
+
+  return <Link className={classes} children = {unitName} key={unitId}  to={{pathname:urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url + "/" + unitId, state:{unitId: unitId, stationId: stationId}}}/>
 };
 
-export default textDisplay;
+export default textUnitDisplay;

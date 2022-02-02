@@ -2,17 +2,17 @@ import React, { useEffect, useState, useRef , useLayoutEffect } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton, CRXAlert, CRXToaster } from "@cb/shared";
 import { useHistory, useParams } from "react-router";
 import UnitConfigurationInfo from "./UnitConfigurationInfo";
-import useGetFetch from "../utils/Api/useGetFetch";
+import useGetFetch from "../../utils/Api/useGetFetch";
 import {
   Unit_GET_BY_ID_URL,
   CONTAINERMAPPING_INFO_GET_URL,
   EDIT_UNIT_URL,
   UPSERT_CONTAINER_MAPPING_URL,
-} from "../utils/Api/url";
+} from "../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
-import { urlList, urlNames } from "../utils/urlList"
+import { urlList, urlNames } from "../../utils/urlList"
 import { debug } from "node:console";
-import "./UnitCreate.scss";
+import "./UnitDetail.scss";
 
 export type GroupInfoModel = {
   name: string;
@@ -37,7 +37,7 @@ export type ApplicationPermission = {
   levelType?: string;
   children?: ApplicationPermission[];
 };
-const UnitCreate = () => {
+const UnitCreate = (props:any) => {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
 
@@ -110,8 +110,12 @@ const UnitCreate = () => {
 
   const { id } = useParams<{ id: string }>();// change rs
   let index_num = id.lastIndexOf("_")
-  let stationID = id.substring(index_num + 1, id.length);
-  let unitID = id.substring(0, index_num);
+
+
+  const historyState = props.location.state;
+  let stationID = historyState.unitId;
+  let unitID = historyState.stationId;
+
   console.log(Unit_GET_BY_ID_URL + "/Stations/" + stationID+"/Units/"+ unitID);
   const [getResponse, res] = useGetFetch<any>(Unit_GET_BY_ID_URL + "/Stations/" + stationID+"/Units/"+ unitID+"/GetPrimaryDeviceInfo", {
     "Content-Type": "application/json",

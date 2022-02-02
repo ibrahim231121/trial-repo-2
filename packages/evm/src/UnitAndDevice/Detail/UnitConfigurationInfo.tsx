@@ -1,7 +1,7 @@
 import { TextField, CRXSelectBox } from "@cb/shared";
 import { FormatAlignCenter } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { GroupInfoModel } from './UnitCreate'
+import { GroupInfoModel } from './UnitDetail'
 
 const listItem = [
     {
