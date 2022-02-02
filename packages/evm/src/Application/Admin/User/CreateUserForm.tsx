@@ -13,7 +13,7 @@ import { CRXInputDatePicker } from "@cb/shared";
 import "./createUserForm.scss";
 import constants from "../../Assets/utils/constants";
 import { useDispatch } from "react-redux";
-import {addNotificationMessages }  from "../../../Redux/notificationPanelMessages";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes"
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
@@ -23,7 +23,7 @@ interface Props {
   onClose: any;
   setCloseWithConfirm: any;
   id?: any;
-  showToastMsg : (obj: any) => void
+  showToastMsg: (obj: any) => void
 }
 
 type NameAndValue = {
@@ -101,8 +101,8 @@ const CreateUserForm: React.FC<Props> = ({
   const toasterRef = useRef<typeof CRXToaster>(null)
   const [isExtUsers, setIsExtUsers] = useState<string>('')
   const [isExtEmail, setIsExtEmail] = useState<string>('')
- const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
- const [alertType, setAlertType] = useState<string>("inline");
+  const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
+  const [alertType, setAlertType] = useState<string>("inline");
   const [errorType, setErrorType] = useState<string>("error");
   const {getModuleIds} = useContext(ApplicationPermissionContext);
 
@@ -326,12 +326,12 @@ const CreateUserForm: React.FC<Props> = ({
   };
 
   const [optionList, setOptionList] = useState<any>([]);
-  const sendOptionList = (data : any[]) => {
-    const dateOfArry : any = [];
+  const sendOptionList = (data: any[]) => {
+    const dateOfArry: any = [];
     data?.map((item, index) => {
-      dateOfArry.push ({
-        id : item.groupId,
-        label : item.groupName
+      dateOfArry.push({
+        id: item.groupId,
+        label: item.groupName
       })
     })
     return setOptionList(dateOfArry);
@@ -369,7 +369,7 @@ const CreateUserForm: React.FC<Props> = ({
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
       setCloseWithConfirm(false);
-    } else if (userName && firstName && lastName && email  ) {
+    } else if (userName && firstName && lastName && email) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -378,16 +378,16 @@ const CreateUserForm: React.FC<Props> = ({
   }, [formpayload]);
 
   useEffect(() => {
-    if(responseError !== undefined && responseError !== "") {
+    if (responseError !== undefined && responseError !== "") {
       let notificationMessage: NotificationMessage = {
-          title: "User", 
-          message: responseError, 
-          type: errorType,
-          date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
+        title: "User",
+        message: responseError,
+        type: errorType,
+        date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
       }
       dispatch(addNotificationMessages(notificationMessage));
     }
-  },[responseError])
+  }, [responseError])
 
   const onSelectEditPasswordType = () => {
     if (radioValue === "genTemp") return generatePassword;
@@ -413,6 +413,7 @@ const CreateUserForm: React.FC<Props> = ({
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
     }
 
+
     const account: account = {
       isAdministrator: 1,
       status: 1,
@@ -422,6 +423,13 @@ const CreateUserForm: React.FC<Props> = ({
       lastLogin: moment().toDate(),
       passwordDetail: null,
     };
+
+     /*
+     * * setting status to pending if user enable change password on next login checkbox 
+     */
+      if (isPasswordResetRequired) {
+        account.status = 3;
+      }
 
     const payload = {
       email: formpayload.email,
@@ -492,7 +500,7 @@ const CreateUserForm: React.FC<Props> = ({
               error.errors.Email !== undefined &&
               error.errors.Email.length > 0
             ) {
-              
+
               setAlert(true);
               setResponseError(error.errors.Email[0]);
             }
@@ -520,18 +528,18 @@ const CreateUserForm: React.FC<Props> = ({
             setAlert(true);
             setResponseError(error);
             const errorString = error;
-            if(errorString.includes("email") === true) {
+            if (errorString.includes("email") === true) {
               setIsExtEmail("isExtEmail");
             } else {
               setIsExtEmail("");
             }
 
-            if(errorString.includes("username") === true) {
+            if (errorString.includes("username") === true) {
               setIsExtUsers("isExtUserName");
             } else {
               setIsExtUsers("");
             }
-            
+
           }
         }
       })
@@ -546,7 +554,7 @@ const CreateUserForm: React.FC<Props> = ({
     else return "hello123456789";
   };
 
-  
+
   const setEditPayload = () => {
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
@@ -567,6 +575,12 @@ const CreateUserForm: React.FC<Props> = ({
       return x;
     });
 
+    /*
+     * * setting status to pending if user check Resend Activation Link radio button or enable change password on next login checkbox 
+    */
+    if (disableLink || isPasswordResetRequired) {
+      userPayload.account.status = 3;
+    }
     const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
     if (contacts.length === 0) {
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
@@ -669,18 +683,18 @@ const CreateUserForm: React.FC<Props> = ({
             setAlert(true);
             setResponseError(error);
             const errorString = error;
-            if(errorString.includes("email") === true) {
+            if (errorString.includes("email") === true) {
               setIsExtEmail("isExtEmail");
             } else {
               setIsExtEmail("");
             }
 
-            if(errorString.includes("username") === true) {
+            if (errorString.includes("username") === true) {
               setIsExtUsers("isExtUserName");
             } else {
               setIsExtUsers("");
             }
-            
+
           }
         }
       })
@@ -780,16 +794,16 @@ const CreateUserForm: React.FC<Props> = ({
       <>
         {userPayload && (
           <div className="crxCreateEditFormActivationLink">
-          <div className="crxActivationLink">
-            <CRXButton
-              className="secondary"
-              onClick={linkClick}
-              disabled={disableLink}
-            >
-              Resend Activation Link
-            </CRXButton>
-            <label>(Link will be sent after saving this form.)</label>
-          </div>
+            <div className="crxActivationLink">
+              <CRXButton
+                className="secondary"
+                onClick={linkClick}
+                disabled={disableLink}
+              >
+                Resend Activation Link
+              </CRXButton>
+              <label>(Link will be sent after saving this form.)</label>
+            </div>
           </div>
         )}
       </>
@@ -873,24 +887,25 @@ useEffect(() => {
     if(optionalSticky.length > 0) {
         optionalSticky[0].style.height = "119px"
       }
-  }
-},[alert])
-return (
+    }
+  }, [alert]);
+
+  return (
     <div className="">
       {console.log("User Name :", !!formpayloadErr.userNameErr)}
       <CRXToaster ref={toasterRef} />
-        <CRXAlert
-          ref={alertRef}
-          message={responseError}
-          className="crxAlertUserEditForm"
-          alertType={alertType}
-          type={errorType}
-          open={alert}
-          setShowSucess={() => null}
-        />
-        <div className="CrxIndicates"><sup>*</sup> Indicates required field</div>
+      <CRXAlert
+        ref={alertRef}
+        message={responseError}
+        className="crxAlertUserEditForm"
+        alertType={alertType}
+        type={errorType}
+        open={alert}
+        setShowSucess={() => null}
+      />
+      <div className="CrxIndicates"><sup>*</sup> Indicates required field</div>
       <div className="modalEditCrx">
-        
+
         <div className="CrxEditForm">
           <TextField
             error={!!formpayloadErr.userNameErr}
@@ -986,7 +1001,7 @@ return (
 
           {
             <div className="crxEditFilter">
-             
+
               <CRXMultiSelectBoxLight
                 className='categortAutocomplete CrxUserEditForm'
                 label="User Group"
@@ -1006,20 +1021,20 @@ return (
               />
             </div>
 
-        }
-        
-        <div className="dataPickerCustom crxCreateEditDate">
-          <label>Deactivation Date</label>
-          <CRXInputDatePicker
-            value={current_date}
-            type="datetime-local"
-            className="users-input"
-            onChange={(e: any) =>
-              setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
-            minDate={minStartDate()}
-            maxDate=""
-          />
-        </div>
+          }
+
+          <div className="dataPickerCustom crxCreateEditDate">
+            <label>Deactivation Date</label>
+            <CRXInputDatePicker
+              value={current_date}
+              type="datetime-local"
+              className="users-input"
+              onChange={(e: any) =>
+                setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
+              minDate={minStartDate()}
+              maxDate=""
+            />
+          </div>
 
 
 
