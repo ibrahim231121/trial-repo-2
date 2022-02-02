@@ -121,7 +121,7 @@ const CreateUserForm: React.FC<Props> = ({
       const {
         email,
         name: { first: firstName, last: lastName, middle: middleInitial },
-        account: { userName },
+        account: { userName,password },
         contacts,
         userGroups,
         deactivation_Date
@@ -136,6 +136,7 @@ const CreateUserForm: React.FC<Props> = ({
 
       USER_DATA = {
         userName,
+        password,
         firstName,
         middleInitial,
         lastName,
@@ -388,6 +389,12 @@ const CreateUserForm: React.FC<Props> = ({
     }
   },[responseError])
 
+  const onSelectEditPasswordType = () => {
+    if (radioValue === "genTemp") return generatePassword;
+    else if (radioValue === "manual") return password;
+    else return "";
+  };
+
   const setAddPayload = () => {
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
@@ -560,7 +567,7 @@ const CreateUserForm: React.FC<Props> = ({
       return x;
     });
 
-    const account = { ...userPayload.account, userName: formpayload.userName };
+    const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
     if (contacts.length === 0) {
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
     }
