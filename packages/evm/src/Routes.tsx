@@ -23,7 +23,6 @@ import Session from './SessionExpired/index'
 import UnitAndDevices from './UnitAndDevice/UnitsAndDevices'
 import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfiguration";
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
-// import CreateUnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/CreateConfigurationTemplate";
 import AssetDetailsTemplate from "./Application/Assets/Detail/AssetDetailsTemplate";
 import VideoPlayer from "./components/MediaPlayer/VideoPlayerBase";
 import { isAuthenticated } from "./Login/API/auth";
@@ -34,7 +33,6 @@ import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
 import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
 import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
-// import EditUnitConfigurationTemplate from './UnitAndDevice/DeviceTemplate/EditTemplate'
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
 import Cookies from "universal-cookie";
 import Restricted from "./ApplicationPermission/Restricted";
@@ -132,25 +130,19 @@ const Routes = () => {
           >
             <Switch>
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
-              
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />           
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) =>  item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
-
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
-
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
-              
-              {/* <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplateCreate)[0].url} exact={true} component={CreateUnitConfigurationTemplate} /> */}
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />     
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
-              {/* <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url} exact={true} component={UnitCreate} /> */}
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/notfound" component={ErrorPage} /> 

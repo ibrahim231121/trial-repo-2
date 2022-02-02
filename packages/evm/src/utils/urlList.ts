@@ -87,6 +87,14 @@ export const urlList: any = [
     ],
     },
     {
+        name : urlNames.unitsAndDevicesDetail,
+        url: "/unitsanddevices/:id",
+        details: [
+            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
+            { type: "text", label: "Unit Detail"},
+        ],
+    },   
+    {
         name : urlNames.adminUnitConfiguration,
         url: "/admin/unitconfiguration",
         details: [
@@ -103,46 +111,6 @@ export const urlList: any = [
         { type: "text", label: "Manage Unit Configuration Templates", },
     ],
     },
-    // {
-    //     name : urlNames.adminUnitConfigurationTemplateCreate,
-    //     url: "/admin/unitconfiguration/unitconfigurationtemplate/createtemplate",
-    //     details: [
-    //     { type: "text", label: "Admin" },
-    //     { routeTo: "/admin/unitconfiguration", type: "link", label: "Unit Configuration" },
-    //     { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Unit Configuration Templates" },
-    //     { type: "text", label: "Create Template", }
-    // ],
-    // },
-
-    // {
-    //     name : urlNames.unitDeviceTemplateCreate,
-    //     url: "/admin/unitsdevicestemplate/createtemplate",
-    //     details: [
-    //     { type: "link", label: "Admin", },
-    //     { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-    //     { type: "text", label: "Create Template: <template type>", }
-    // ],
-    // },
-
-    // {
-    //     name : urlNames.unitDeviceTemplateClone,
-    //     url: "/admin/unitsdevicestemplate/clonetemplate",
-    //     details: [
-    //     { type: "link", label: "Admin", },
-    //     { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-    //     { type: "text", label: "<Template: CLONE - <Template given name by user>", }
-    // ],
-    // },
-
-    // {
-    //     name : urlNames.unitDeviceTemplate,
-    //     url: "/admin/unitsdevicestemplate/template",
-    //     details: [
-    //     { type: "link", label: "Admin", },
-    //     { routeTo: "/admin/unitsdevicestemplate", type: "link", label: "Units & Devices Template", },
-    //     { type: "text", label: "Template, <template type>: <template name>", }
-    // ],
-    // },
     {
         name : urlNames.unitDeviceTemplateCreateBCO4,
         url: "/admin/unitanddevices/createtemplate/BC04",
@@ -190,32 +158,6 @@ export const urlList: any = [
             { type: "text", label: "Edit template : BC04", }
         ],
     },
-    // {
-    //     name: urlNames.createUnit,
-    //     url: "/unitsanddevices/create",
-    //     details: [
-    //         { type: "text", label: "Units And Devices", },
-    //         { routeTo: "/unitsAndDevices", type: "link", label: "Manage Unit and Devices", },
-    //     { type: "text", label: "Create Unit", }
-    // ],
-    // },
-    {
-        name : urlNames.unitsAndDevicesDetail,
-        url: "/unitsanddevices/:id",
-        details: [
-            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-            { type: "text", label: "Unit Detail"},
-        ],
-    },
-    // {
-    //     name : urlNames.unitsAndDevicesDetail,
-    //     url: "/unitsanddevices/detail",
-    //     details: [
-    //         { type: "text", label: "Units And Devices", },
-    //          { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-    //          { type: "text", label: "Unit Detail"},
-    //     ],
-    // },
-    
+
 
 ];
