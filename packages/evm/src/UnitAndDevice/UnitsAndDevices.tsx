@@ -38,8 +38,9 @@ import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import { logOutUser } from "../Login/API/auth";
 import { CBXLink } from "@cb/shared";
-import { Console } from "node:console";
 import { urlList, urlNames } from "../utils/urlList"
+import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
+
 type Unit = {
   id: number;
   unitId: string,
@@ -126,6 +127,7 @@ const UnitAndDevices: React.FC = () => {
 
   React.useEffect(() => {
     setData();
+    dispatch(enterPathActionCreator({ val: ""}));
   }, [units]);
 
 

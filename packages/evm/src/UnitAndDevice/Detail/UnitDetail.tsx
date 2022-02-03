@@ -11,8 +11,9 @@ import {
 } from "../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList"
-import { debug } from "node:console";
 import "./UnitDetail.scss";
+import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
+import { useDispatch } from "react-redux";
 
 export type GroupInfoModel = {
   name: string;
@@ -40,6 +41,7 @@ export type ApplicationPermission = {
 const UnitCreate = (props:any) => {
   const [value, setValue] = React.useState(0);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const [groupInfo, setGroupInfo] = React.useState<GroupInfoModel>({
     name: "",
@@ -145,6 +147,7 @@ const UnitCreate = (props:any) => {
       debugger
       setGroupInfo({ name: res.name, description: res.description, groupName: res.triggerGroup });
       setGroupIdName({ id: res.id, name: res.name });
+      dispatch(enterPathActionCreator({ val: res.name }));
 
       // if (res.members !== undefined && res.members.users !== undefined) {
       //   let lstUserIds: number[] = [];

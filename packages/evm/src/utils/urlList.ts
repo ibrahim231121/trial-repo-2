@@ -90,8 +90,7 @@ export const urlList: any = [
         name : urlNames.unitsAndDevicesDetail,
         url: "/unitsanddevices/:id",
         details: [
-            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", },
-            { type: "text", label: "Unit Detail"},
+            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", }
         ],
     },   
     {
