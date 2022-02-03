@@ -14,7 +14,6 @@ type BreadCrumbItem = {
 }
 
 const Breadcrumb: React.FC<any> = (props) => {
-  console.log("In BreadCrumb",props)
 
   const [urlPath, setUrlPath] = React.useState("")
   const { location: { pathname }, } = props;
@@ -22,24 +21,13 @@ const Breadcrumb: React.FC<any> = (props) => {
   const [otherLabels, setOtherLabels] = React.useState<string>("")
 
   const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
-  // const breadCrumbPathRedux: any = {
-  //   name: urlNames.assets,
-  //   url: "/assets",
-  //   details: [
-  //     { routeTo: "/assets", type: "CBXLink", label: "Assets", },
-  //     { type: "text", label: breadCrumbValueRedux, }
-  //   ],
-  // }
 
   React.useEffect(() => {
     setOtherLabels("")
-    console.log("In BreadCrumb 2")
   },[])
 
   React.useEffect(() => {
-    if (breadCrumbValueRedux) {
       setOtherLabels(breadCrumbValueRedux)
-    }
   },[breadCrumbValueRedux])
 
   React.useEffect(() => {
@@ -50,11 +38,9 @@ const Breadcrumb: React.FC<any> = (props) => {
       
       //if id comes at the end so remove it, because urllist dont have dynamic route
       lastQueryParam = pathname.substring(0, props.location.pathname.lastIndexOf('/')) + "/:id"
-      console.log("Hello1",lastQueryParam)
       setUrlPath(lastQueryParam)
     }
     else {
-      console.log("Hello2",pathname)
       setUrlPath(pathname)
     }
 
@@ -98,11 +84,10 @@ const Breadcrumb: React.FC<any> = (props) => {
   }
 
   const updatePathDetails = (pathDetails: any, Pathurl: string) => {
-    console.log("path detail");
     let details = pathDetails.map((item:any) => {
       if(item === pathDetails[pathDetails.length-1]) {
         return {
-          routeTo: Pathurl,
+          routeTo: (item.routeTo === undefined) ? Pathurl : item.routeTo,
           type: "CBXLink",
           label: item.label
         }
@@ -160,8 +145,6 @@ const Breadcrumb: React.FC<any> = (props) => {
         })
       }
     >
-      {console.log("urlPath",urlPath)}
-      {console.log("urlList.filter",urlList.filter((item:any) => item.url === urlPath)[0])}
       {urlList.filter((item:any) => item.url === urlPath)[0] &&
         <>
           <CRXBreadcrumb maxItems={width <= 650 ? 3 : 100}>

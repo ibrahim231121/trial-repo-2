@@ -41,11 +41,14 @@
       top: 180px;
       z-index: 6;
    }
+   .manageUserGroupsDataTable {
+      
+   }
 }
 .crxTableDataUi {
    margin-top: -38px;
-   overflow-x: initial !important;
-   position: relative;
+   // overflow-x: initial !important;
+   // position: relative;
    &::before {
       position: fixed;
       background: #ffffff;
@@ -355,14 +358,18 @@
       margin-top: 12px;
    }
    .dataTableSimpleText  {
-   display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-left: 7px;
+      display: -webkit-box;
+      align-items: center;
+      justify-content: flex-start;
+      margin-left: 7px;
+      line-height: 21px;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 14px;
    }
    .DataTableBodyCell {
       text-indent: -1px !important;
-      line-height: 23px !important;
    }
    .rc-menu {
       width: 242px;
@@ -459,7 +466,7 @@
              left : 0px
             }
             &.col-three {
-              left: 60px;
+              left: 0px;
               position: sticky;
             }
           }
@@ -470,6 +477,6 @@
 
 @media only screen and (max-width: 1600px) {
    .manageUserGroupsDataTable {
-      height: 650px !important;
+      // height: 650px !important;
    }
 }

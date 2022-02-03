@@ -109,7 +109,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         height : "650px"
       },
       '@media only screen and (max-width: 1600px)': {
-        height : "435px"
+        height : "449px"
       },
       '@media only screen and (max-width: 1366px)': {
         height : "340px"
@@ -123,7 +123,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
     },
     headerStickness: {
-      top: 0,
+      top: "0px !important",
       left: 0,
       zIndex: 2,
       position: "sticky",
@@ -132,7 +132,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: "nowrap",
     },
     searchHeaderStickness: {
-      top: 35,
+      top: "35px !important",
       left: 0,
       zIndex: 2,
       position: "sticky",

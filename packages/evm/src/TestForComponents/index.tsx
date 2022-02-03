@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CRXGlobalSelectFilter, CRXMultiSelectBoxLight, CrxAccordion } from '@cb/shared'
+import { CRXGlobalSelectFilter, CRXMultiSelectBoxLight, CrxAccordion, TextField } from '@cb/shared'
 
 interface renderCheck {
   label?: string,
@@ -57,7 +57,7 @@ const TestViewsForDemo = () => {
 
 
       <div className="inlineDiv">
-       
+{/*        
        <div className="columnse">
           <CRXMultiSelectBoxLight
             id="multiSelect"
@@ -81,7 +81,7 @@ const TestViewsForDemo = () => {
             checkSign={false}
             required={true}
           />
-        </div>
+        </div> */}
         
       
         
@@ -106,10 +106,10 @@ const TestViewsForDemo = () => {
         expanded={expanded === "panel1"} 
         
         >
-        <div  style={{ border: "1px solid #ddd", width: "100%", margin: "0", background: "#f9f9f9", padding: "25px"  }}>
-          <h3>What is Lorem Ipsum? </h3>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </div>
+        <div className=''  style={{display:"flex", placeItems:"center", placeContent:"center", border: "0px solid #ddd", width: "100%", margin: "0", padding: "0px 25px 33px 25px"  }}>
+        <label style={{paddingRight : "15px", fontSize: "14px"}}>Field Label </label>
+        <TextField className="crx-generate-btn" value="Loram ispm" />
+        </div>
         </CrxAccordion>
 
         <CrxAccordion 

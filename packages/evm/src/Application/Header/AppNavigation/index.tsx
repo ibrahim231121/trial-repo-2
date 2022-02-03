@@ -38,25 +38,31 @@ const CRXLefNavigation = () => {
       icon: "fas fa-briefcase NaveIcon",
       items: [
         {
+          moduleIds:0,
           label: "New",
         },
         {
+          moduleIds:0,
           label: "Delete",
         },
         {
+          moduleIds:0,
           label: "Search",
 
           items: [
             {
+              moduleIds:0,
               label: "Filter",
 
               items: [
                 {
+                  moduleIds:0,
                   label: "Print",
                 },
               ],
             },
             {
+              moduleIds:0,
               label: "List",
             },
           ],
@@ -70,22 +76,27 @@ const CRXLefNavigation = () => {
       classes: "liveVideoTab",
       items: [
         {
+          moduleIds:0,
           label: "Edit",
 
           items: [
             {
+              moduleIds:0,
               label: "Save",
             },
             {
+              moduleIds:0,
               label: "Delete",
             },
           ],
         },
         {
+          moduleIds:0,
           label: "Archieve",
 
           items: [
             {
+              moduleIds:0,
               label: "Remove",
             },
           ],
@@ -99,9 +110,11 @@ const CRXLefNavigation = () => {
       classes: "mapsTab",
       items: [
         {
+          moduleIds:0,
           label: "Analytics Map",
         },
         {
+          moduleIds:0,
           label: "AVL Map",
         },
       ],
@@ -122,24 +135,31 @@ const CRXLefNavigation = () => {
       classes: "aplrTab",
       items: [
         {
+          moduleIds:0,
           label: "Plate Captures",
         },
         {
+          moduleIds:0,
           label: "Live ALPR",
         },
         {
+          moduleIds:0,
           label: "Live ALPR",
         },
         {
+          moduleIds:0,
           label: "Manage Hot List",
         },
         {
+          moduleIds:0,
           separator: true,
         },
         {
+          moduleIds:0,
           label: "Manage Hot List Data Source",
         },
         {
+          moduleIds:0,
           label: "Manage License Plates",
         },
       ],
@@ -152,9 +172,11 @@ const CRXLefNavigation = () => {
       classes: "reportingTab",
       items: [
         {
+          moduleIds:0,
           label: "Analytics Map",
         },
         {
+          moduleIds:0,
           label: "AVL Map",
         },
       ],
@@ -166,12 +188,14 @@ const CRXLefNavigation = () => {
       icon: "fas fa-sitemap NaveIcon",
       items: [
         {
+          moduleIds:5,
           label: "Manage User Groups & Permissions",
           command: () => {
             navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
           },
         },
         {
+          moduleIds:8,
           label: "Manage Users",
           command: () => {
             navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url);
@@ -193,10 +217,15 @@ const CRXLefNavigation = () => {
   ];
 
   var AssetPermission = items.filter((x:any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0); 
-  // x.moduleId === 0 is a temporary logic should be remove once all permission assigned.
+  // x.moduleId === 0 is a temporary logic should be remove once all permission assigned.4
+
+  var SubModulePermission =  AssetPermission.map((item : any) => {
+    return {...item, items: item.items?.filter((item : any) => 
+       getModuleIds().includes(item?.moduleIds) || item.moduleIds === 0)}
+  })
 
 
-  return <CRXNestedMenu className="CRXLeftMenu" model={AssetPermission} />;
+  return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
 };
 
 export default CRXLefNavigation;
