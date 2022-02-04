@@ -1,7 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif,
-    "Segoe UI";
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI" !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -230,6 +229,8 @@ body {
   margin-right: 8px;
 }
 
+
+
 .croseIcon {
   font-size: 16px;
   position: relative;
@@ -240,49 +241,32 @@ body {
   margin-top: 30px;
 }
 
-.stickyPos {
-  position: sticky !important;
-  top: 135px;
-  /* background: #fff; */
-  padding-top: 3.5px;
-  z-index: 9999;
-  padding-bottom: 0px !important;
-  height: 51px;
+.stickyPos  {
+    position: sticky !important;
+    top: 135px;
+    /* background: #fff; */
+    padding-top: 3.5px;
+    z-index: 9999;
+    padding-bottom: 0px !important;
+    height: 51px;
+}
+
+.selectionBg {
+  background: #333;
+  color: #d1d2d4;
 }
 
 ::selection {
-  background-color: #6d6e71;
+  background-color: #6D6E71;
   color: #f5f5f5;
 }
-.linkColor::selection,.anchorStyle::selection {
-  color: #c34400;
-  background-color: transparent;
-}
-a::selection {
-  color: #c34400;
-  background-color: transparent;
-}
- 
-.CRXDataTableCustom .Mui-selected ::selection,
-.CRXDataTableCustom tr th ::selection,
-.CRXDataTableCustom tr:hover ::selection,
-.CRXMultiDataTableCustom tr th ::selection,
-.crx-datapermission-tab .dataPermissionColumn::selection {
-  background-color: #d1d2d4;
-  color: #333333;
-}
-.CRXDataTableCustom .Mui-selected .linkColor::selection,
-.CRXDataTableCustom tr:hover .linkColor::selection, 
-.CRXDataTableCustom .Mui-selected .anchorStyle::selection,
-.CRXDataTableCustom tr:hover .anchorStyle::selection {
-  color: #ff6e20;
-  background-color: transparent;
+
+.selectionBg::selection {
+  background: #d1d2d4;
+  color:#333
 }
 
-
-.CRXDataTableCustom tr:hover .linkColor::selection, 
-.CRXDataTableCustom tr:hover .anchorStyle::selection {
-  color: #ff6e20;
-  text-decoration: underline;
-  background-color: transparent;
+.CRXDataTableCustom tr td .dataTableSimpleText::selection {
+  background: #d1d2d4;
+  color:#333
 }

@@ -15,10 +15,10 @@ interface TabPanelProps {
         paddingBottom : "0px",
         overflowY:"auto",
         '@media only screen and (max-width: 1920px)': {
-          height : "615px"
+          height : "644px"
         },
         '@media only screen and (max-width: 1600px)': {
-          height : "400px"
+          height : "432px"
         },
         '@media only screen and (max-width: 1366px)': {
           height : "305px"

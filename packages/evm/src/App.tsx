@@ -12,6 +12,12 @@ import "../../evm/src/utils/Localizer/i18n"
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
 import { getCategoryAsync } from "./Redux/categoryReducer";
+import { useSelector } from "react-redux";
+import { cultureActionCreator } from "./Redux/languageSlice";
+import { RootState } from "./Redux/rootReducer";
+import { CRXDropDown  } from "@cb/shared";
+import {CRXSelectBox} from "@cb/shared";
+import "./App.scss";
 
 import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
 
@@ -23,12 +29,31 @@ import {TokenType} from './types'
 
 
 function App() {
-  let culture: string = "en";
-  const [resources, setResources] = React.useState<any>("");
+ 
+  const value: string = useSelector((state: RootState) => state.cultureReducer.value);
+  const options=[
+    { value: "en", displayText: "English" },
+    { value: "fr", displayText: "French (CA)" },
+    { value: "pl", displayText: "Polish" },
+    { value: "uk", displayText: "English (UK)" },
+    { value: "isr", displayText: "Hebrew" },
+  ]
+  let culture:string = useSelector((state: RootState) => state.cultureReducer.value);
+  const [resources, setResources] = useState<any>("");
   const { i18n } = useTranslation<string>();
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch()
   const [moduleIds, setModuleIds] = React.useState<number[]>([]);
+  const [open, setOpen] = useState(true);
+  const classes = CRXPanelStyle();
+  
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
+  const handleChange = (event:any) => {
+    dispatch(cultureActionCreator(event.target.value)) 
+  }
+  dispatch(cultureActionCreator(value))
   
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
@@ -51,6 +76,19 @@ function App() {
       i18n.changeLanguage("fr");
       setRTL("ltr");
     }
+    else if (i18n.language === "isr") {
+      i18n.changeLanguage("isr");
+      setRTL("ltr");
+    }
+    else if (i18n.language === "pl") {
+      i18n.changeLanguage("pl");
+      setRTL("ltr");
+    }
+    else if (i18n.language === "uk") {
+      i18n.changeLanguage("uk");
+      setRTL("ltr");
+    }
+    
   }, [culture, resources]);
 
   useEffect(()=>{
@@ -265,14 +303,14 @@ function App() {
       }
     }
   }
-
+  
   const icons = {
     success : <i className="fas fa-check-circle successIcon"></i>,
     attention : <i className="fas fa-info-circle infoIcon"></i>,
     warning : <i className="fas fa-exclamation-triangle warningIcon"></i>,
     error : <i className="fas fa-exclamation-circle errorIcon"></i>
   }
-
+  
   return (
     <ApplicationPermissionProvider  setModuleIds={
                                           (moduleIds:number[]) =>{
@@ -290,32 +328,58 @@ function App() {
                                           }
                                     }}
                                     >
-        <div dir={rtl}>
-          <SnackbarProvider
-          maxSnack={100}
-          anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-          }}
-          iconVariant={{
-              success: icons.success,
-              error: icons.error,
-              warning: icons.warning,
-              info: icons.attention, 
-          }}
-          className="toasterMsg"
-          classes={{
-              variantSuccess: "success",
-              variantError:"error",
-              variantWarning: "warning",
-              variantInfo: "info",
-          }}
-          >
-          <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
-          <Routes />
-          </DragDropContext>
-          </SnackbarProvider>
+    <div dir={rtl}>
+       <SnackbarProvider
+       maxSnack={100}
+       anchorOrigin={{
+           vertical: 'top',
+           horizontal: 'right',
+       }}
+       iconVariant={{
+           success: icons.success,
+           error: icons.error,
+           warning: icons.warning,
+           info: icons.attention, 
+       }}
+       className="toasterMsg"
+       classes={{
+           variantSuccess: "success",
+           variantError:"error",
+           variantWarning: "warning",
+           variantInfo: "info",
+       }}
+       >
+        <div className="language_selector_app">
+          <CRXSelectBox 
+          options={options} 
+          id="simpleSelectBox" 
+          onChange={handleChange} 
+          value={value}
+          icon={true}
+           />
+          <i className="fal fa-globe world_language_icon"></i>
         </div>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart} onDragUpdate={onDragUpdate}>
+        {/* <CRXAppBar position="fixed">
+            <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
+        </CRXAppBar>
+        
+        <main 
+          className={clsx(classes.content, 'crx-main-container', {
+            [classes.contentShift]: open,
+          })}
+          > */}
+           
+          <Routes />
+            
+        {/* </main>
+      
+      <footer>
+        <Footer />
+      </footer> */}
+      </DragDropContext>
+      </SnackbarProvider>
+    </div>
     </ApplicationPermissionProvider>
   );
 }

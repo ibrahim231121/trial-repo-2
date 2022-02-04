@@ -19,9 +19,22 @@ const useStyles = makeStyles((theme) => ({
   selectDropdown: {
     color: "#333333",
     backgroundColor: "#fff",
-    boxShadow: "0px 3px 6px #00000029",
+    
+    width : "46px",
+    paddingTop: "0px",
+    borderRadius: "0px",
+    textAlign: "center",
+    "& .MuiMenu-list" : {
+      paddingTop : "0px",
+      paddingBottom : "0px",
+      boxShadow: "0px 3px 6px #00000029",
+    }
   },
   menuItem: {
+    padding : "1px 0px",
+    fontSize : "14px",
+    justifyContent: "center",
+    color:"#333333",
     "&:hover": {
       backgroundColor: "#D1D2D4",
     },
@@ -35,8 +48,22 @@ const useStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(0),
     paddingRight: theme.spacing(0),
-    paddingBottom: theme.spacing(2.9),
+    paddingBottom: theme.spacing(0),
   },
+
+  gridStyle : {
+    paddingBottom : "0px"
+  },
+
+  pagination : {
+    height:"36px",
+    overflow : "hidden",
+    '& .MuiToolbar-regular' : {
+      height:"36px",
+      minHeight: "36px",
+    }
+  },
+ 
 }));
 const CRXDataTable: React.FC<DataTableProps> = ({
   id,
@@ -68,7 +95,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [open, setOpen] = React.useState<boolean>(false);
   const [orderData, setOrderData] = React.useState<OrderData>({
     order: orderParam,
@@ -286,13 +313,13 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       }
     });
   }
-
+  
   return (
     <>
       {Object.values(containers).map((container: any) => {
         return (
           <React.Fragment key={container.id}>
-            <Grid item>
+            <Grid className={classes.gridStyle} item>
               {container.id === id ? (
                 <ThemeProvider theme={theme}>
                   <div className={classes.root}>
@@ -352,7 +379,11 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                             classes: { paper: classes.selectDropdown }
                           },
                         }}
-                        classes={{ menuItem: classes.menuItem }}
+                        
+                        classes={{ 
+                          menuItem: classes.menuItem, 
+                          root : classes.pagination,
+                        }}
                         rowsPerPageOptions={[10, 20, 25]}
                         component="div"
                         count={container.rows.length}

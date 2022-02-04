@@ -269,7 +269,9 @@ const SearchComponent = (props: any) => {
 
 
   React.useEffect(() => {
-    dispatch(enterPathActionCreator({ val: '' }));
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    } 
   }, []);
 
   React.useEffect(() => {

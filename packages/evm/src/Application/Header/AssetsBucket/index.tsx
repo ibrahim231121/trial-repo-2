@@ -86,6 +86,7 @@ const CRXAssetsBucketPanel = () => {
 
   const prevCount = usePrevious(assetBucketData.length);
   const prevIsDuplicate = usePrevious(isDuplicateFound);
+  const [files, setFiles] = React.useState<any>(null);
 
   const dispatch = useDispatch()
 
@@ -352,6 +353,32 @@ const CRXAssetsBucketPanel = () => {
       dispatch(addNotificationMessages(notificationMessage));
     }
   },[attention])
+
+  const handleOnUpload = (e:any) => {
+    setFiles(e.target.files);
+  };
+
+  useEffect(() => {
+    console.log("Files ",files);
+  },[files])
+
+  //const onUpload = async (e: any) => {
+    //e.preventDefault();
+
+    //let res = await uploadFile(file);
+    //console.log(res.data);
+  //};
+
+  //const uploadFile = async (file:any) => {
+    // const formData = new FormData();
+    // formData.append("avatar", file);
+
+    // return await axios.post(UPLOAD_ENDPOINT, formData, {
+    //   headers: {
+    //     "content-type": "multipart/form-data"
+    //   }
+    // });
+  //};
   
   return (
     <CRXDrawer
@@ -412,7 +439,19 @@ const CRXAssetsBucketPanel = () => {
                       <div className="textArea">
                         Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
                         <br />
-                        <span className="textFileBrowser">file browser</span>
+                        <div>
+                          <input
+                            style={{display:"none"}}
+                            id="upload-Button-file"
+                            multiple
+                            type="file"
+                            onChange={handleOnUpload}
+                          />
+                          <label htmlFor="upload-Button-file">
+                            <a className="textFileBrowser">file browser</a>
+                          </label>
+                        </div>
+                        
                       </div>
                     </div>
                 {rows.length > 0 ? (

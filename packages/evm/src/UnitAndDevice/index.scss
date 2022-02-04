@@ -1,0 +1,29 @@
+.anchorStyle{
+   text-decoration: none
+}
+.unitDeviceMenuCss {
+   .crx-menu-icon {
+      border-right: 1px solid #4C4C4D !important;
+      i {
+         font-size: 14px;
+      }
+   }
+   li {
+      &:nth-child(2) {
+         .crx-menu-list {
+            border-bottom: 1px solid #69696A !important;
+ 
+         }
+      }
+   }
+
+}
+.unitDeviceTableConfig {
+   .col-three {
+      position: unset !important;
+   }
+   .unitDeviceMenuCss {
+      margin-left: -34px;
+      margin-top: -53px;
+   }
+}

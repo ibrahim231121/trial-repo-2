@@ -39,12 +39,12 @@ const AccordionSummaryStyle = makeStyles({
         height : "50px",
         borderRadius : "0px",
         fontFamily: "Arial, Helvetica, sans-serif",
-        padding: "0px 22px",
+        padding: "0px 24px",
         borderBottom:"1px solid #E3E4E5",
         '&.Mui-expanded' : {
                 minHeight:"48px",
                 height : "48px",
-                padding: "0px 22px",
+                padding: "0px 24px",
             },
     },
 
@@ -57,7 +57,17 @@ const AccordionSummaryStyle = makeStyles({
         paddingRIght : "30px",
         '&.Mui-expanded' : {
             color:"#333",
-            transform:"rotate(90deg)"
+            transform:"rotate(90deg)",
+            background: "transparent",
+            '& .MuiTouchRipple-root' : {
+                boxShadow:"none",
+                background : "transparent",
+                display : "none",
+                '&:before' : {
+                    boxShadow:"none",
+                    background : "transparent",
+                }
+            }
         },
         '&:focus' : {
             background: "transparent",
@@ -75,7 +85,7 @@ const AccordionDetailsStyle = makeStyles ({
 
 const AccordionTitleStyle = makeStyles({
     root : {
-        paddingLeft : "32px",
+        paddingLeft : "36px",
         textTransform : "uppercase"
     }
 })
@@ -106,6 +116,7 @@ const AccordionTitleStyle = makeStyles({
             <AccordionSummary
                 expandIcon={expandIcon}
                 aria-controls={ariaControls}
+                
                 id={id}
                 classes={SummaryStyle}>
 

@@ -1,6 +1,5 @@
 import CryptoJS from "crypto-js";
 import { AUTHENTICATION_CODEVERIFIER_URL, AUTHENTICATION_LOGIN_URL } from '../../../evm/src/utils/Api/url'
-
 const code_challenge_Method = "SHA256";
 
 export function codeChallengeRemove() {
