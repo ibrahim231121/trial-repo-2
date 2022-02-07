@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {  withStyles } from '@material-ui/core/styles';
+import {  withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import  "./CrxTab.scss";
@@ -13,11 +13,12 @@ const CrxTabsParent = withStyles({
     },
   })(Tabs);
 
-  const CrxTab = withStyles((theme) => ({
+  const CrxTab = withStyles((theme: Theme) =>
+  createStyles({
     root: {
       textTransform: 'none',
       minWidth: 120,
-      fontWeight: theme.typography.fontWeightRegular,
+      FontWeight: theme.typography.fontWeightRegular,
       marginRight: theme.spacing(0),
       border: "1px solid #333",
       borderBottom:"0px",
@@ -42,8 +43,9 @@ const CrxTabsParent = withStyles({
         color: '#333',
       },
     },
-    selected: {},
-}))((props : CRXTabProps) => <Tab disableRipple {...props} />);
+    
+  }),
+)((props: CRXTabProps) => <Tab disableRipple {...props} />)
 
 interface CRXTabProps {
     label: string;

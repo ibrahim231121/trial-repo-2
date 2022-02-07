@@ -8,7 +8,7 @@ import {
   theme,
   CheckAllPageWise
 } from "./CRXDataTableTypes";
-import TablePagination from "@material-ui/core/TablePagination";
+import TablePagination from '@material-ui/core/TablePagination';
 import DataTableToolbar from "./CRXDataTableToolbar";
 import { ThemeProvider } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -371,7 +371,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}
                     />
-                    {(dataRows.length > 9) ?
+                    {(rowsPerPage  >= 25) ?
                       <TablePagination
                         className="dataTablePages"  
                         SelectProps={{
@@ -389,11 +389,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         count={container.rows.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
-                        onChangePage={handleChangePage}
+                        onPageChange={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                       />
                     : null
                     }
+                   
                   </div>
                 </ThemeProvider>
               ) : null}

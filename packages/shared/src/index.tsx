@@ -47,3 +47,4 @@ export { default as CRXGlobalTooltip} from './controls/CRXGlobalTooltip/CRXGloba
 export { default as CRXToaster } from './CRXMsgToaster/CRXMsgToaster'
 export { default as CRXMultiSelectBoxLight } from './controls/CRXMultiSelectBoxLight/CRXMultiSelectBoxLight'
 export {default as CrxAccordion } from './CRXAccordion/CRXAccordion'
+export { default as CRXProgressBar } from './controls/CRXProgressBar/CRXProgressBar'

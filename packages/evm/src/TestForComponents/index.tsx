@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { CRXGlobalSelectFilter, CRXMultiSelectBoxLight, CrxAccordion, TextField } from '@cb/shared'
+import { CRXGlobalSelectFilter, 
+  CRXMultiSelectBoxLight, 
+  CrxAccordion, 
+  TextField,
+  CRXProgressBar} from '@cb/shared'
 
 interface renderCheck {
   label?: string,
@@ -95,7 +99,7 @@ const TestViewsForDemo = () => {
         </div> */}
       </div>
 
-      <div className="accrodialTest">
+      {/* <div className="accrodialTest">
         <CrxAccordion 
         title="Accordion one" 
         id="accorIdx1" 
@@ -145,9 +149,36 @@ const TestViewsForDemo = () => {
           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
           </div>
         </CrxAccordion>
-      </div>
+      </div> */}
 
       {/* <ControlledAccordions /> */}
+
+      <div className="progressBar">
+        
+          <CRXProgressBar
+          id="solid"
+            loadingText="Loading files..."
+            value={10}
+            error={false}
+            maxDataSize= {false}
+            loadingCompleted="4 minutes remaining..."
+          />
+        
+      </div>
+
+      <div className="progressBar">
+        <div style={{width : "250px"}}>
+        <CRXProgressBar
+        id="raw"
+          loadingText="Asset Uploading"
+          value={2}
+          error={true}
+          maxDataSize= {true}
+          loadingCompleted="5.0Mb"
+        />
+      </div>
+    </div>
+
     </div>
   );
 }
