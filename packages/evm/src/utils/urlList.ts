@@ -83,7 +83,7 @@ export const urlList: any = [
         name: urlNames.unitsAndDevices,
         url: "/unitsanddevices",
         details: [
-        { type: "text", label: "Manage Units & devices", }
+        { type: "text", label: "Units & devices", }
     ],
     },
     {

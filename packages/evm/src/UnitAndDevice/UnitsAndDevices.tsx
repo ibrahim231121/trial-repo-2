@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter } from "@cb/shared";
+import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from '../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,9 @@ import './index.scss'
 import { getUnitInfoAsync } from "../Redux/UnitReducer";
 import dateDisplayFormat from "../GlobalFunctions/DateFormat";
 import multitextDisplay from "../GlobalComponents/Display/MultiTextDisplay";
+import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
+import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
+import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
 import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import {
   SearchObject,
@@ -54,7 +57,7 @@ type Unit = {
   stationId: number
 }
 interface renderCheckMultiselect {
-  value?: string,
+  label?: string,
   id?: string,
 
 }
@@ -95,6 +98,7 @@ const UnitAndDevices: React.FC = () => {
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<Unit[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
+
   const [open, setOpen] = React.useState<boolean>(false)
 
   const setData = () => {
@@ -103,6 +107,7 @@ const UnitAndDevices: React.FC = () => {
     
         if (units && units.length > 0) {
           unitRows = units.map((unit: any, i:number) => {
+            // <a href={`unitsanddevices/detail/${unit.recId +"_"+ unit.stationRecId}`}>{unit.station}</a>,
                 return {
                     id: unit.recId,
                     unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId,
@@ -253,13 +258,66 @@ const UnitAndDevices: React.FC = () => {
   function findUniqueValue(value: any, index: any, self: any) {
     return self.indexOf(value) === index;
 }
+
+const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
+ 
+  if(colIdx === 4) {
+
+  let versionlist: any = [];
+    if(initialRows !== undefined){
+  if(initialRows.length > 0) {
+      initialRows.map((x: Unit) => {
+        versionlist.push(x.version );
+      });
+  }
+}
+  versionlist = versionlist.filter(findUniqueValue);
+  let version: any = [{ label: "No Version"}];
+  versionlist.map((x: string) => { version.push({ label: x}) })
+
+  const settingValues = (headCell: HeadCellProps) => {
+
+      let val: any = []
+      if(headCell.headerArray !== undefined) 
+          val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
+      else 
+          val = []
+      return val
+  }
+
+  return (
+      <div>
+
+          <CRXGlobalSelectFilter
+              id="multiSelect"
+              multiple={true}
+              value={settingValues(headCells[colIdx])}
+              onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+              options={version}
+              CheckBox={true}
+              checkSign={false}
+              open={open}
+              theme="dark"
+              clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+              getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+              getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
+              onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+              noOptionsText="No Version"
+          />                  
+      </div>
+  )
+  }
+
+}
+
+
   const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
 
-    if(colIdx === 8) {
+    if(colIdx === 9) {
         console.log(initialRows);
     let statuslist: any = [];
 
-    if(initialRows != undefined){
+    if(initialRows !== undefined){
     if(initialRows.length > 0) {
         initialRows.map((x: Unit) => {
           statuslist.push(x.status);
@@ -267,9 +325,8 @@ const UnitAndDevices: React.FC = () => {
     }
   }
     statuslist = statuslist.filter(findUniqueValue);
-    let status: any = [{ value: "No Status"}];
-    statuslist.map((x: string) => { status.push({ value: x}) })
-
+    let status: any = [{ label: "No Status"}];
+    statuslist.map((x: string) => { status.push({ label: x}) })
     const settingValues = (headCell: HeadCellProps) => {
   
         let val: any = []
@@ -279,7 +336,9 @@ const UnitAndDevices: React.FC = () => {
             val = []
         return val
     }
-
+ 
+  
+  
     return (
         <div>
             
@@ -291,10 +350,12 @@ const UnitAndDevices: React.FC = () => {
                 options={status}
                 CheckBox={true}
                 checkSign={false}
+                statusIcon={true}
                 open={open}
+                theme="dark"
                 clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-                getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
-                getOptionSelected={(option: renderCheckMultiselect, value: renderCheckMultiselect) => option.value === value.value}
+                getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+                getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
                 onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
                 noOptionsText="No Status"
             />
@@ -304,11 +365,12 @@ const UnitAndDevices: React.FC = () => {
 
 }
 
+
 const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
 
   let value: any[] = val.map((x) => {
       let item = {
-          value: x.value
+          value: x.label
       }
       return item
   })
@@ -324,6 +386,7 @@ const openHandler = (_: React.SyntheticEvent) => {
   console.log("onOpen")
   //setOpen(true)
 }
+
 
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -351,10 +414,9 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "100",
       maxWidth: "100"
     }, 
-   
     {
-      label: `${t("Description")}`,
-      id: "description",
+      label: `template`,
+      id: "templateId",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
@@ -362,7 +424,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchComponent: searchText,
       minWidth: "100",
       maxWidth: "100",
-    },
+    }, 
     {
       label: `${t("Serial Number")}`,
       id: "serialNumber",
@@ -377,6 +439,19 @@ const openHandler = (_: React.SyntheticEvent) => {
     {
       label: `${t("Version")}`,
       id: "version",
+      align: "center",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
+        
+       minWidth: "20",
+       maxWidth: "20",
+    },
+    {
+      label: `${t("Description")}`,
+      id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
@@ -389,7 +464,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("Station")}`,
       id: "station",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplayStation(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -400,14 +475,14 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("Assigned To")}`,
       id: "assignedTo",
       align: "left",
-      dataComponent: (e: string[]) => multitextDisplay(e, ""),
+      dataComponent: (e: string[]) => multitextDisplayAssigned(e, ""),
       sort: true,
       searchFilter: true,
     //  searchComponent: searchText,
        searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
            
-      minWidth: "100",
-      maxWidth: "100",
+      minWidth: "20",
+      maxWidth: "20",
     },
     {
       label: `${t("Last Checked In")}`,
@@ -423,7 +498,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("Status")}`,
       id: "status",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplayStatus(e, ""),
       sort: true,
       searchFilter: true,
     //  searchComponent: searchText,
@@ -525,7 +600,7 @@ const dataArrayBuilder = () => {
     
         let dataRows: Unit[] = reformattedRows;
         searchData.forEach((el: SearchObject) => {
-          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber" || el.columnName === "version")
+          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber")
                 dataRows = onTextCompare(dataRows, headCells, el);
             if (el.columnName === "lastCheckedIn")
                 dataRows = onDateCompare(dataRows, headCells, el);
@@ -538,6 +613,17 @@ const dataArrayBuilder = () => {
                       
                   }
               }
+              if (el.columnName === "version") {
+                dataRows = onMultipleCompare(dataRows, headCells, el);
+                if(el.value.includes("No Version")) {
+                    reformattedRows.filter(i => i.version.length === 0).map((x:Unit) => {
+                        dataRows.push(x)
+                    })
+                    
+                }
+            }
+
+
 
         }
         );
@@ -568,10 +654,8 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
   return (
  
   
-    <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-      <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.createUnit)[0].url) }}>
-        Create Unit
-      </CRXButton>
+    <div className="unitDeviceMain">
+      <p className="unitsStatusCounter">{rows.length} Units</p>
       {
         
         rows && (
@@ -581,24 +665,30 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }
-
+          
           showToolbar={true}
           showCountText={false}
           columnVisibilityBar={true}
+
+          initialRows={reformattedRows}
           dragVisibility={false}
-          showCheckBoxesCol={false}
+          showCheckBoxesCol={true}
           showActionCol={true}
+
+
+          headCells={headCells}
+          dataRows={rows}
+
+
+          orderParam={order}
+          orderByParam={orderBy}
           searchHeader={true}
-          allowDragableToList={false}
+
+
+          allowDragableToList={true}
           showTotalSelectedText={false}
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
-
-          initialRows={reformattedRows}
-          headCells={headCells}
-          dataRows={rows}
-          orderParam={order}
-          orderByParam={orderBy}
           //---required Props
           className="crxTableHeight crxTableDataUi unitDeviceTableConfig"
           onClearAll={clearAll}
