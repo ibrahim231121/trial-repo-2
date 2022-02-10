@@ -115,8 +115,8 @@ const UnitCreate = (props:any) => {
 
 
   const historyState = props.location.state;
-  let stationID = historyState.unitId;
-  let unitID = historyState.stationId;
+  let stationID = historyState.stationId;
+  let unitID = historyState.unitId;
 
   console.log(Unit_GET_BY_ID_URL + "/Stations/" + stationID+"/Units/"+ unitID);
   const [getResponse, res] = useGetFetch<any>(Unit_GET_BY_ID_URL + "/Stations/" + stationID+"/Units/"+ unitID+"/GetPrimaryDeviceInfo", {
