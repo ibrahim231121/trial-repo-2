@@ -1,7 +1,7 @@
 import { TextField, CRXSelectBox } from "@cb/shared";
 import { FormatAlignCenter } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { GroupInfoModel } from './UnitDetail'
+import { UnitInfoModel } from './UnitDetail'
 
 const listItem = [
     {
@@ -19,7 +19,7 @@ const listItem = [
 ]
 
 type infoProps = {
-  info: GroupInfoModel,
+  info: UnitInfoModel,
   onChangeGroupInfo: any
 }
 const UnitConfigurationInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo }) => {

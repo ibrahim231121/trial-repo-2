@@ -49,6 +49,7 @@ type Unit = {
   unitId: string,
   description: string,
   serialNumber: string,
+  template: string,
   version: string,
   station: string,
   assignedTo: string[],
@@ -114,6 +115,7 @@ const UnitAndDevices: React.FC = () => {
                     description: unit.description,
                     station: unit.station,
                     serialNumber: unit.serialNumber,
+                    template: unit.template,
                     version: unit.version,
                     assignedTo: unit.assignedTo,
                   //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
@@ -363,6 +365,58 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
     )
     }
 
+
+    if(colIdx === 2) {
+      console.log(initialRows);
+  let templatelist: any = [];
+
+  if(initialRows !== undefined){
+  if(initialRows.length > 0) {
+      initialRows.map((x: Unit) => {
+        templatelist.push(x.template);
+      });
+  }
+}
+  templatelist = templatelist.filter(findUniqueValue);
+  let template: any = [{ label: "No Template"}];
+  templatelist.map((x: string) => { template.push({ label: x}) })
+  const settingValues = (headCell: HeadCellProps) => {
+
+      let val: any = []
+      if(headCell.headerArray !== undefined) 
+          val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
+      else 
+          val = []
+      return val
+  }
+
+
+
+  return (
+      <div>
+          
+          <CRXGlobalSelectFilter
+              id="multiSelect"
+              multiple={true}
+              value={settingValues(headCells[colIdx])}
+              onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+              options={template}
+              CheckBox={true}
+              checkSign={false}
+              statusIcon={false}
+              open={open}
+              theme="dark"
+              clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+              getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+              getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
+              onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+              noOptionsText="No Template"
+          />
+      </div>
+  )
+  }
+
+
 }
 
 
@@ -415,13 +469,16 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "100"
     }, 
     {
-      label: `template`,
-      id: "templateId",
+      label: `Template`,
+      id: "template",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+     // searchComponent: searchText,
+      
+     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+         multiSelectCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "100",
       maxWidth: "100",
     }, 
@@ -622,6 +679,16 @@ const dataArrayBuilder = () => {
                     
                 }
             }
+
+            if (el.columnName === "template") {
+              dataRows = onMultipleCompare(dataRows, headCells, el);
+              if(el.value.includes("No Template")) {
+                  reformattedRows.filter(i => i.template.length === 0).map((x:Unit) => {
+                      dataRows.push(x)
+                  })
+                  
+              }
+          }
 
 
 
