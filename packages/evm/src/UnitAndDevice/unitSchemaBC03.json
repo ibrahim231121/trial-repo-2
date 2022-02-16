@@ -1,5 +1,5 @@
 {
-  "unittemplate": [
+  "Unit Template": [
     {
       "id": "1",
       "key": "unittemplate/templateName/TextBox",
@@ -43,7 +43,7 @@
       "seconds": false
     }
   ],
-  "device": [
+  "Devices": [
     {
       "labelGroupRecording": "Recording",
       "id": "3",

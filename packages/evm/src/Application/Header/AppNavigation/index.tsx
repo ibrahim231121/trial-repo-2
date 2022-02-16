@@ -204,15 +204,8 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds:0,
-          label: 'Unit Configuration',
-          command: () => { navigateToPage("/admin/unitconfiguration") },
-          items:[
-             {
-                moduleIds:0,
-                label: 'Unit Configuration Templates',
-                command: () => { navigateToPage("/admin/unitconfiguration/unitconfigurationtemplate") },
-             }
-          ]
+          label: 'Manage Units & Devices Templates',
+          command: () => { navigateToPage("/admin/configurationtemplate") },
        }
       ],
     },

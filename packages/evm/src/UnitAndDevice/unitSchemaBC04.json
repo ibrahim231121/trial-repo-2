@@ -1,5 +1,5 @@
 {
-  "unittemplate": [
+  "Unit Template": [
     {
       "id": "1",
       "key": "unittemplate/templateName/TextBox",
@@ -38,7 +38,7 @@
       "requiredField": "true"
     }
   ],
-  "device": [
+  "Device": [
     {
       "labelGroupRecording": "Recording",
       "id": "3",

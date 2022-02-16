@@ -252,7 +252,7 @@ const ConfigurationTemplates: React.FC = () => {
       >
 
         <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "BCO3", deviceTypeCategory: '1000001' } }}>
+          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "BCO3", deviceTypeCategory: '1' } }}>
             <div style={{ backgroundColor: '#FFFFFF' }}>BC03</div>
           </Link>
         </MenuItem>
@@ -262,12 +262,12 @@ const ConfigurationTemplates: React.FC = () => {
           </Link>
         </MenuItem>
         <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "In-Car", deviceTypeCategory: '1000003' } }}>
+          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "In-Car", deviceTypeCategory: '3' } }}>
             <div style={{ backgroundColor: '#FFFFFF' }}>In-Car</div>
           </Link>
         </MenuItem>
         <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 0, isedit: false, type: "BCO4", deviceTypeCategory: '1000002' } }}>
+          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 0, isedit: false, type: "BCO4", deviceTypeCategory: '2' } }}>
             <div style={{ backgroundColor: '#FFFFFF' }}>BC04</div>
           </Link>
         </MenuItem>

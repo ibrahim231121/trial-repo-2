@@ -34,15 +34,15 @@ const CreateTemplate = (props: any) => {
   console.log(historyState.deviceTypeCategory)
   let FormSchema: any = null;
   let templateName: string = "";
-  if (historyState.deviceTypeCategory == "1000001") {
+  if (historyState.deviceTypeCategory == "1") {
     FormSchema = BC03;
     templateName = "BC03"
   }
-  else if (historyState.deviceTypeCategory == "1000002") {
+  else if (historyState.deviceTypeCategory == "2") {
     FormSchema = BC04;
     templateName = "BC04"
   }
-  else if (historyState.deviceTypeCategory == "1000003") {
+  else if (historyState.deviceTypeCategory == "3") {
     FormSchema = VRX;
     templateName = "In-Car"
   }

@@ -3,3 +3,9 @@
        position: unset !important;
     }
 }
+.rc-menu-container
+{
+    ul{
+        z-index: 10000;
+    }
+}

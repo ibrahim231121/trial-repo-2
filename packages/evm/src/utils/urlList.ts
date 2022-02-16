@@ -11,9 +11,9 @@ export const urlNames: any = {
     assetsDetail: "assetsDetail",
     adminUnitConfiguration: "adminUnitConfiguration",
     adminUnitConfigurationTemplate: "adminUnitConfigurationTemplate",
-    unitDeviceTemplateCreateBCO3: "unitDeviceTemplateCreateBCO3",
+    // unitDeviceTemplateCreateBCO3: "unitDeviceTemplateCreateBCO3",
     unitDeviceTemplateCreateBCO4: "unitDeviceTemplateCreateBCO4",
-    unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
+    // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
     testVideoPlayer: "videoplayer",
     unitConfigEditTemplate: "unitConfigEditTemplate"
 
@@ -103,42 +103,41 @@ export const urlList: any = [
     },
     {
         name: urlNames.adminUnitConfigurationTemplate,
-        url: "/admin/unitconfiguration/unitconfigurationtemplate",
+        url: "/admin/configurationtemplate",
         details: [
             { type: "text", label: "Admin" },
-            { routeTo: "/admin/unitconfiguration", type: "link", label: "Unit Configuration" },
-            { type: "text", label: "Manage Unit Configuration Templates", },
+            { type: "text", label: "Manage Units & Devices Templates", },
         ],
     },
     {
-        name: urlNames.unitDeviceTemplateCreateBCO4,
+        name: urlNames.unitDeviceTemplateCreateBCO4, //inuse
         url: "/admin/unitanddevices/createtemplate/template",
         details: [
             { type: "text", label: "Admin", },
-            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "unit and devices templates", },
+            { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Templates", },
             { type: "text", label: "Create Template : BC04", }
         ],
     },
 
-    {
-        name: urlNames.unitDeviceTemplateCreateBCO3,
-        url: "/admin/unitanddevices/createtemplate/BC03",
-        details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "unit and devices templates", },
-            { type: "text", label: "Create Template : BC03", }
-        ],
-    },
+    // {
+    //     name: urlNames.unitDeviceTemplateCreateBCO3,
+    //     url: "/admin/unitanddevices/createtemplate/BC03",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
+    //         { type: "text", label: "Create Template : BC03", }
+    //     ],
+    // },
 
-    {
-        name: urlNames.unitDeviceTemplateCreateBCO3Lte,
-        url: "/admin/unitanddevices/createtemplate/BC03Lte",
-        details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "unit and devices templates", },
-            { type: "text", label: "Create Template : BC03 Lte", }
-        ],
-    },
+    // {
+    //     name: urlNames.unitDeviceTemplateCreateBCO3Lte,
+    //     url: "/admin/unitanddevices/createtemplate/BC03Lte",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
+    //         { type: "text", label: "Create Template : BC03 Lte", }
+    //     ],
+    // },
 
     {
         name: urlNames.testVideoPlayer,
@@ -153,7 +152,7 @@ export const urlList: any = [
         url: "/admin/unitanddevices/edittemplate/BC04",
         details: [
             { type: "text", label: "Admin", },
-            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "unit and devices templates", },
+            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
             { type: "text", label: "Edit template : BC04", }
         ],
     },
