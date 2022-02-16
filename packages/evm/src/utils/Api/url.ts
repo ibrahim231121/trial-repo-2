@@ -30,7 +30,8 @@ export const GROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups?Page=1&Size=500`
 
 export const GROUP_GET_BY_ID_URL = `${BASE_URL_USER_SERVICE}/groups`
 
-export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=500`
+// export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=500`
+export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/userscount?Page=1&Size=500`
 export const Unit_GET_BY_ID_URL = `${BASE_URL_UNIT_SERVICE}`
 
 export const EVIDENCE_SERVICE_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}`;
