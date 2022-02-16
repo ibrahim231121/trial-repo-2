@@ -35,7 +35,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const [formFields, setFormFields] = React.useState<any>([]);
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
   const selectedRow = props.rowData;
-  const evidenceId = selectedRow.assetId;
+  const evidenceId = selectedRow.id;
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
@@ -52,7 +52,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    const EvidenceID = selectedRow.assetId;
+    debugger;
+    const EvidenceID = selectedRow.id;
     const allCategories = props.filterValue;
     const categoriesFormArr: any[] = [];
     // Check how many categories are added recently,
