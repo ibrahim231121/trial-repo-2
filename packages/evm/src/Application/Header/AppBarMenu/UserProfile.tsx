@@ -1,23 +1,30 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
-import { LogOutUser } from '../../../Login/API/auth';
+import { logOutUser } from "../../../Logout/API/auth";
 import { useHistory } from "react-router";
 
-let history :any;
-const listOFMenu = [
-    {
-        label : 'User Profile',
-        router : "userProfile"
-    },
-    {
-        label : 'Logout',
-        router : "Logout",
-        onClick :  ()=>LogOutUser(()=> history)
-    },
-];
 
 const CRXUserProfile = () => {
-    history = useHistory();
+    const history = useHistory();
+    const listOFMenu = [
+        {
+            label : 'User Profile',
+            router : "userProfile",
+           
+        },
+        {
+            label : 'Logout',
+            router : "Logout",
+            onClick:()=>logOut
+        },
+    ];
+
+function logOut(){
+    logOutUser(()=>{
+        history.push('/logout')
+      })
+}
+
     return (
         <div className="department">
              <CRXMenu
@@ -26,6 +33,7 @@ const CRXUserProfile = () => {
             className="DarkTheme"
             btnClass="customButton"
             MenuList = {listOFMenu}
+            onClick={logOut} //CRXMenu needs to be corrected
             />
         </div>
     )

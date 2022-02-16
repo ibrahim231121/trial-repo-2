@@ -1,6 +1,6 @@
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, createTheme } from '@material-ui/core/styles';
 import './CRXAppBar.scss'
 
 type Position =  'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'

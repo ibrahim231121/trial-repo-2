@@ -4,16 +4,25 @@ import assetBucketSlice from './AssetActionReducer';
 import groupSlice from './GroupReducer';
 import categorySlice from './categoryReducer';
 import CategoryFormSlice from './CategoryFormSlice';
+import unitSlice from './UnitReducer';
 import userSlice from './UserReducer';
 import notificationMessages from './notificationPanelMessages'
+import timerSlice from './timerslice';
+import templateSlice from './TemplateConfiguration';
+import cultureSlice from './languageSlice';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
-  groupReducer: groupSlice.reducer,
+  groupReducer: groupSlice.reducer, 
   assetCategory:categorySlice.reducer,
   CategoryFormFields:CategoryFormSlice.reducer,
   userReducer: userSlice.reducer,
   notificationReducer: notificationMessages.reducer,
+  timerReducers: timerSlice.reducer,
+
+ templateSlice: templateSlice.reducer,
+  cultureReducer: cultureSlice.reducer,
+  unitReducer: unitSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

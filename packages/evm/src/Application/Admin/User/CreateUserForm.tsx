@@ -22,8 +22,8 @@ import {
   EditableSelect,
   CRXMultiSelectBoxLight
 } from '@cb/shared';
-import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import Cookies from 'universal-cookie';
+import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 
 let USER_DATA = {};
 interface Props {
