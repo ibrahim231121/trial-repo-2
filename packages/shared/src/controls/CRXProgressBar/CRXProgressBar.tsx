@@ -20,7 +20,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     //Design block
     const progressStyle = makeStyles({
         root : {
-            height : "14px"
+            height : "18px"
         },
         colorPrimary : {
             background: "#f5f5f5",
@@ -28,7 +28,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
         },
         barColorPrimary : {
             background:  "#003A5D" ,
-            backgroundImage : (_) => maxDataSize && maxDataSize ? `url(${progressImage})` : "",
+            backgroundImage : `url(${progressImage})`,
             backgroundRepeatY : "no-repeat",
             backgroundPositionY : "1.1px"
         },
@@ -41,10 +41,11 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     const styled = progressStyle()
     const [progress, setProgress] = useState<number>(0);
     const [rotate , setRotate] = useState<string>("")
-    const [propgresicon, setProgressIcon] = useState<string>("fas fa-sync")
+    const [propgresicon, setProgressIcon] = useState<string>("fas fa-sync-alt")
     const [errState , setError] = useState<boolean>();
     const [limit, setLimit] = useState<number>(100)
     const [errorClx, setErorrClx] = useState<string>("");
+    const [loadingDescription, setDescription] = useState<string>(loadingText)
     const [percentageText, setPercentageText] = useState<string>("")
     const errConditionValue:any = errState && errState ? limit : progress
     
@@ -78,7 +79,8 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     useEffect(() => {
         
         if(progress == 40 ) {
-            setError(false);
+            setError(true);
+            setDescription("Asset Uploading Incomplete")
         }
         
         if(progress == 100 ) {
@@ -93,7 +95,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
             setErorrClx("progressErorr")
             setPercentageText("Error")
             setRotate("");
-            setProgressIcon("far fa-exclamation-circle")
+            setProgressIcon("fas fa-exclamation-circle")
         }else {
             let progressValue = Math.round(progress) + "%";
             setPercentageText(progressValue)
@@ -106,11 +108,12 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     }, [progress]);
 
     console.log(error)
+    const clx = maxDataSize == true? "loadingAssets" : 'loadingText '
     return (
         <div className="crx-progress-br">
           
-            <div className='loadingText'>
-                {loadingText}
+            <div className={clx}>
+                {loadingDescription}
             </div>
             <div className='loader'>
             <LinearProgress

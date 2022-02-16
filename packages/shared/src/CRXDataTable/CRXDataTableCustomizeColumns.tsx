@@ -168,6 +168,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
 
   const customizeColumnOpen = () => {
     setCustomize((prevOpen) => !prevOpen)
+    filterWindow(null)
   }
 
   useEffect(() => {

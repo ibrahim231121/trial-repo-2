@@ -9,6 +9,8 @@ import { DataTableClearFilterProps } from "./CRXDataTableTypes"
 
 const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, filterClose, onClearAll}) => {
 
+const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, onClearAll, filterOuter}) => {
+
   const {t} = useTranslation<string>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined | null>(null)
 
@@ -20,6 +22,11 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
   useEffect(()=>{
       setAnchorEl(filterClose);
   },[filterClose])
+  useEffect(() => {
+    setAnchorEl(filterOuter)
+    console.log(filterOuter)
+  },[filterOuter])
+  
   return (
     <div className="dataTableColumnShoHide">
         { columnVisibilityBar === true ? (
@@ -33,6 +40,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
             >
                 <i className="fas fa-filter"></i>
             </IconButton>
+            {/* <ClickAwayListener onClickAway={() => setAnchorEl(filterOuter)}> */}
             <Menu
                 id="dataTableShowHideOpt"
                 anchorEl={anchorEl}
@@ -40,7 +48,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 getContentAnchorEl={null}
                 keepMounted
                 open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
+                onClose={() => setAnchorEl(anchorEl)}
                 anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
@@ -50,6 +58,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 horizontal: 'left',
                 }}
             >
+            
             <div style={{position:'absolute', top:"-20px", right:"0px"}}>
                 
             </div>
@@ -83,7 +92,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
             </Grid>
             </div>
             </Menu>
-            
+            {/* </ClickAwayListener> */}
             </>
         ) : null
         }

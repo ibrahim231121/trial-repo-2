@@ -2,16 +2,57 @@ import * as React from 'react';
 import {  withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Button from '@material-ui/core/Button';
 import  "./CrxTab.scss";
 
 const CrxTabsParent = withStyles({
-    root: {
-      borderBottom: '1px solid #333',
+  root: {
+    borderBottom: '1px solid #333',
+  },
+  indicator: {
+    backgroundColor: '#C34400',
+  },
+  scrollButtons : {
+    background:"#333333",
+    color:"#D1D2D4",
+    borderRadius:"0px",
+    minWidth: "39px",
+    height: "34px",
+    fontSize: "14px",
+    '&.MuiIconButton-root.Mui-disabled' : {
+      background:"#231F20",
+      color:"#D1D2D4",
     },
-    indicator: {
-      backgroundColor: '#C34400',
+    '&:hover' : {
+      background:"#231F20",
+      color:"#D1D2D4",
     },
-  })(Tabs);
+    '&:focus' : {
+      background:"#231F20",
+      color:"#D1D2D4",
+    }
+  }
+})(Tabs);
+
+// const CrxTab = withStyles(
+// {
+//   root: {
+//     textTransform: 'none',
+//     minWidth: 120,
+//     FontWeight: theme.typography.fontWeightRegular,
+//     marginRight: theme.spacing(0),
+//     border: "1px solid #333",
+//     borderBottom:"0px",
+//     borderRight: "0px",
+//     background:"#eee",
+//     color:"#333",
+//     position:"sticky",
+//     top: "186px",
+//     opacity: 1,
+//     '&:last-child' : {
+//       borderRight: "1px solid #333",
+//     },
+//   }(Tabs);
 
   const CrxTab = withStyles((theme: Theme) =>
   createStyles({
@@ -28,24 +69,17 @@ const CrxTabsParent = withStyles({
       position:"sticky",
       top: "186px",
       opacity: 1,
-      '&:last-child' : {
-        borderRight: "1px solid #333",
-      },
-      '&:hover': {
-        color: '#000',
-        opacity: 1,
-      },
-      '&$selected': {
-        color: '#333',
-        fontWeight: theme.typography.fontWeightMedium,
-      },
-      '&:focus': {
-        color: '#333',
-      },
     },
-    
-  }),
-)((props: CRXTabProps) => <Tab disableRipple {...props} />)
+    '&selected': {
+      color: '#333',
+      FontWeight: theme.typography.fontWeightMedium,
+    },
+    '&:focus': {
+      color: '#333',
+    },
+  },  
+),
+)((props: CRXTabProps) => <Tab disableRipple disableFocusRipple {...props} />)
 
 interface CRXTabProps {
     label: string;
@@ -70,15 +104,57 @@ const CRXTabs = ({value, onChange, tabitems, selectionFollowsFocus = true} : Sty
     })
 
   return (
+    <>
+        
         <CrxTabsParent 
             selectionFollowsFocus={selectionFollowsFocus}
             value={value}
             onChange={onChange}
             aria-label="ant example"
+            variant="scrollable"
+            scrollButtons="auto"
             className="crxMainTab"
+            ScrollButtonComponent = {(props) => {
+             
+              if (
+                props.direction === "left" &&
+                props.disabled == false
+            ) {
+                return (
+                    <Button  disableRipple {...props}>
+                        <i
+                            style={{
+                                marginLeft: "0px"
+                            }}
+                            color="#fff"
+                            className='fas fa-chevron-left'
+                        ></i>
+                    </Button>
+                );
+            } else if (
+                props.direction === "right" && 
+                props.disabled == false
+            ) {
+                return (
+                    <Button disableRipple {...props}>
+                          <i
+                            style={{
+                                marginLeft: "0px"
+                            }}
+                            color="#fff"
+                            className='fas fa-chevron-right'
+                        ></i>
+                    </Button>
+                );
+            } else {
+                return null;
+            }
+
+            }}
         >
           {tabItemsRender}
         </CrxTabsParent>
+        </>
   );
 }
 

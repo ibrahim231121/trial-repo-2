@@ -26,8 +26,12 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   showTotalSelectedText
 }) => {
   const classes = useToolbarStyles();
-
-  const { t } = useTranslation<string>();
+  const [filterPopup, setFilterPopup] = useState<any>()
+  const { t } = useTranslation<string>();4
+  useEffect(() => {
+    console.log("Filter", filterPopup)
+    //setFilterPopup(null)
+  },[filterPopup])
   const [showCustomize,setShowCustomize] = useState<any>();
 
   return (
@@ -60,6 +64,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           orderingColumn={orderingColumn}
           onReorder={(e: number[]) => onReOrder(e)}
           onChange={onChange}
+          filterWindow={setFilterPopup}
           onHeadCellChange={onHeadCellChange}
           showCustomizeIcon={showCustomizeIcon}
         />
