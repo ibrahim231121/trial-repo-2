@@ -31,8 +31,8 @@ import { RootState } from "./Redux/rootReducer";
 import { timerActionCreator } from "../src/Redux/timerslice";
 import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
-import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
-import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
+//import CreateUnitAndDevicesTemplateBC03 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03'
+//import CreateUnitAndDevicesTemplateBC03lte from './UnitAndDevice/DeviceTemplate/CreateTemplateBC03LTE'
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
 import Cookies from "universal-cookie";
 import Restricted from "./ApplicationPermission/Restricted";
