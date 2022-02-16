@@ -699,6 +699,11 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
         border-color: #d1d2d4;
         background-color: #333;
       }
+        .fal {
+          &::after {
+            color: transparent;
+          }
+        }
     }
 
     td.DataTableBodyCell {

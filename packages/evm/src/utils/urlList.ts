@@ -134,5 +134,14 @@ export const urlList: any = [
       { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
       { type: 'text', label: 'Station_Name' }
     ]
+  },
+  {
+    name: urlNames.adminStationEdit,
+    url: '/admin/stations/station/:id',
+    details: [
+      { type: 'text', label: 'Admin' },
+      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+      { type: 'text', label: 'Edit Station' }
+    ]
   }
 ];

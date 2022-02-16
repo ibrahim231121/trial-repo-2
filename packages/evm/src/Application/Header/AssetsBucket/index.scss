@@ -179,7 +179,7 @@
     background: #333;
     width: 16px;
     right: 1px;
-    height: 90px;
+    height: 92px;
     position: absolute;
   }
   &::after {
@@ -285,6 +285,32 @@
             border-right: 1px solid #ccc !important;
             border-bottom: 1px solid #ccc !important;
           }
+        } 
+          &.col-two {
+            left: 0px;
+            position: static !important;
+          }
+          &.col-three {
+            left: 60px;
+            position: static;
+          }
+      }
+      th {
+        &.CRXDataTableLabelCell {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
+        }
+        &.TableSearchAbleHead {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
         }
       }
       th:nth-child(4) {
@@ -293,6 +319,7 @@
       th:nth-child(5) {
         padding: 0px 15px !important;
       }
+ 
     }
   }
   &::-webkit-scrollbar {
@@ -401,6 +428,7 @@
   .autocompleteSpacer + .Autocomplete_multi {
     top: -42px !important;
   }
+
 }
 .divMainBucket {
   .dataTablePages {

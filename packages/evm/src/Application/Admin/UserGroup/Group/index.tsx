@@ -564,7 +564,7 @@ useEffect(() => {
   
   
   return (
-    <div className="App crxTabsPermission" style={{}}>
+    <div className="App crxTabsPermission switchLeftComponents" style={{}}>
     
         <CRXAlert
           className={"CrxAlertNotificationGroup " +  " " + alertMsgDiv }

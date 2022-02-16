@@ -493,7 +493,7 @@ const User: React.FC = () => {
     };
 
     return (
-        <div className="crxManageUsers">
+        <div className="crxManageUsers switchLeftComponents">
 			<CRXToaster ref={toasterRef}/>
             <Restricted moduleId={0}>
                 <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User

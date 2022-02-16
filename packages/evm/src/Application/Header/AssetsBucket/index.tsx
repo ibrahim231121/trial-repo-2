@@ -418,7 +418,7 @@ const CRXAssetsBucketPanel = () => {
                 {rows.length > 0 ? (
                   <>
                     <div className="bucketViewLink">
-                      View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
+                      View on Assets Bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
                     </div>
                     <CRXDataTable
                       tableId="assetBucket"

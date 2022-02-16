@@ -32,6 +32,7 @@ import StationActionMenu from './StationActionMenu';
 import AnchorDisplay from '../../../utils/AnchorDisplay';
 import { urlList, urlNames } from '../../../utils/urlList';
 import { useHistory } from 'react-router-dom';
+import './station.scss';
 
 type Station = {
   id: string;
@@ -198,8 +199,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
+      minWidth: '200',
+      maxWidth: '200'
     },
     {
       label: `${t('Address')}`,
@@ -380,7 +381,7 @@ const Station: React.FC = () => {
   };
 
   return (
-    <div className='crxManageUsers'>
+    <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
       <CRXToaster ref={toasterRef} />
       <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
         Create Station
@@ -413,7 +414,7 @@ const Station: React.FC = () => {
           searchHeader={true}
           columnVisibilityBar={true}
           allowDragableToList={false}
-          className='ManageAssetDataTable'
+          className='ManageAssetDataTable crxStationDataTable'
           onClearAll={clearAll}
           getSelectedItems={(v: Station[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
@@ -421,7 +422,7 @@ const Station: React.FC = () => {
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
           dragVisibility={false}
-          showCheckBoxesCol={true}
+          showCheckBoxesCol={false}
           showActionCol={true}
           showActionSearchHeaderCell={false}
           showCountText={false}

@@ -226,7 +226,7 @@ const UserGroup: React.FC = () => {
   };
 
   return (
-    <div className="managePermissionTable">
+    <div className="managePermissionTable switchLeftComponents">
       <Restricted moduleId={0}>
         <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
           Create Group
