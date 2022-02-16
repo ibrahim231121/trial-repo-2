@@ -9,8 +9,6 @@ import { DataTableClearFilterProps } from "./CRXDataTableTypes"
 
 const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, filterClose, onClearAll}) => {
 
-const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, onClearAll, filterOuter}) => {
-
   const {t} = useTranslation<string>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined | null>(null)
 
@@ -22,10 +20,6 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
   useEffect(()=>{
       setAnchorEl(filterClose);
   },[filterClose])
-  useEffect(() => {
-    setAnchorEl(filterOuter)
-    console.log(filterOuter)
-  },[filterOuter])
   
   return (
     <div className="dataTableColumnShoHide">

@@ -316,7 +316,6 @@ export type DataTableClearFilterProps = {
 
 export type DataTableCustomizeColumnsProps = {
   id: string;
-  filterWindow:any;
   headCells: HeadCellProps[];
   orderingColumn: number[];
   onReorder: (e: number[]) => void;
