@@ -23,6 +23,7 @@ import {
   CRXMultiSelectBoxLight
 } from '@cb/shared';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import Cookies from 'universal-cookie';
 
 let USER_DATA = {};
 interface Props {
@@ -45,7 +46,7 @@ interface userStateProps {
   email: string;
   phoneNumber: string;
   userGroups: string[];
-  deactivation_Date: string;
+  deactivationDate: string;
 }
 
 type account = {
@@ -70,7 +71,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     email: '',
     phoneNumber: '',
     userGroups: [],
-    deactivation_Date: ''
+    deactivationDate: ''
   });
 
   const [formpayloadErr, setFormPayloadErr] = React.useState({
@@ -121,7 +122,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
         account: { userName,password },
         contacts,
         userGroups,
-        deactivation_Date
+        deactivationDate
       } = userPayload;
 
       const phoneNumber =
@@ -140,7 +141,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
         email,
         phoneNumber: '',
         userGroups: [],
-        deactivation_Date: ''
+        deactivationDate: ''
       };
       setFormPayload({
         ...formpayload,
@@ -150,7 +151,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
         middleInitial,
         lastName,
         phoneNumber,
-        deactivation_Date,
+        deactivationDate,
         userGroups: userGroupNames
       });
       setActivationLinkLabel('Resend Activation Link');
@@ -158,9 +159,11 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     }
   }, [userPayload]);
 
+  const cookies = new Cookies();
+
   var current_date;
-  if (formpayload.deactivation_Date != null) {
-    current_date = formpayload.deactivation_Date.split('Z')[0];
+  if (formpayload.deactivationDate != null) {
+    current_date = formpayload.deactivationDate.split('Z')[0];
   }
 
   const minStartDate = () => {
@@ -297,7 +300,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   const fetchGroups = async () => {
     const res = await fetch(GROUP_USER_LIST, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` }
     });
     var response = await res.json();
     var groupNames = response.map((x: any) => {
@@ -332,12 +335,12 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   }, []);
 
   React.useEffect(() => {
-    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivation_Date, phoneNumber } =
+    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, phoneNumber } =
       formpayload;
     if (userGroups.length > 0) {
       setError(false);
     }
-    if (userName || firstName || lastName || email || userGroups.length || deactivation_Date) {
+    if (userName || firstName || lastName || email || userGroups.length || deactivationDate) {
       setCloseWithConfirm(true);
     }
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
@@ -406,14 +409,13 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
 
     const payload = {
       email: formpayload.email,
-      deactivation_Date: formpayload.deactivation_Date,
+      deactivationDate: formpayload.deactivationDate,
       name,
       account,
       contacts,
       assignedGroupIds: userGroupsListIDs,
       timeZone: 'America/Chicago'
     };
-
     return payload;
   };
 
@@ -426,7 +428,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     const payload = setAddPayload();
     await fetch(USER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
+      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
       body: JSON.stringify(payload)
     })
       .then(function (res) {
@@ -543,7 +545,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     const payload = {
       ...userPayload,
       email: formpayload.email,
-      deactivation_Date: formpayload.deactivation_Date,
+      deactivationDate: formpayload.deactivationDate,
       name,
       account,
       contacts,
@@ -566,7 +568,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
 
     await fetch(urlEdit, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
+      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
       body: JSON.stringify(payload)
     })
       .then(function (res) {
@@ -843,9 +845,8 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   }
 
   const checkMiddleInitial = () => {
-    const isMiddleNameValid = validateFirstLastAndMiddleName(formpayload.middleInitial, 'Middle Name');
-    if (isMiddleNameValid.error) {
-      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: isMiddleNameValid.errorMessage });
+    if (!formpayload.middleInitial) {
+      setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
     } else {
       setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
     }
@@ -996,7 +997,7 @@ useEffect(() => {
               value={current_date}
               type='datetime-local'
               className='users-input'
-              onChange={(e: any) => setFormPayload({ ...formpayload, deactivation_Date: e.target.value })}
+              onChange={(e: any) => setFormPayload({ ...formpayload, deactivationDate: e.target.value })}
               minDate={minStartDate()}
               maxDate=''
             />

@@ -309,11 +309,13 @@ export type DataTableHeaderProps = {
 
 export type DataTableClearFilterProps = {
   columnVisibilityBar: boolean | undefined;
+  filterClose : any;
   onClearAll: () => void;
 };
 
 export type DataTableCustomizeColumnsProps = {
   id: string;
+  filterWindow:any;
   headCells: HeadCellProps[];
   orderingColumn: number[];
   onReorder: (e: number[]) => void;

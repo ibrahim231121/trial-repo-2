@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +28,8 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   const classes = useToolbarStyles();
 
   const { t } = useTranslation<string>();
+  const [showCustomize,setShowCustomize] = useState<any>();
+
   return (
 
     <Toolbar
@@ -48,10 +50,12 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
 
       <DataTableClearFilter
         columnVisibilityBar={columnVisibilityBar}
+        filterClose={showCustomize}
         onClearAll={() => onClearAll()} />
-      {(showCustomizeIcon || showCountText === undefined) &&
+       {(showCustomizeIcon || showCountText === undefined) &&
         <DataTableCustomizeColumns
           id={id}
+          filterWindow = {setShowCustomize}
           headCells={headCells}
           orderingColumn={orderingColumn}
           onReorder={(e: number[]) => onReOrder(e)}

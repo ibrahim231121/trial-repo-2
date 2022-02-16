@@ -14,6 +14,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
+import { ContactsOutlined } from '@material-ui/icons';
 
 const checkboxStyle = makeStyles({
   root: {
@@ -57,7 +58,7 @@ const checkboxStyle = makeStyles({
   },
 });
 
-const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ id, headCells, orderingColumn, onReorder, onChange, onHeadCellChange }) => {
+const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ id, headCells, orderingColumn, filterWindow,onReorder, onChange, onHeadCellChange }) => {
 
   const { t } = useTranslation<string>();
   const chkStyle = checkboxStyle();
@@ -168,6 +169,16 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
   const customizeColumnOpen = () => {
     setCustomize((prevOpen) => !prevOpen)
   }
+
+  useEffect(() => {
+    if(customizeColumn == true){
+      filterWindow(null);
+    }
+    else {
+      filterWindow(undefined);
+    }
+  },[customizeColumn])
+
   return (
 
     <div className="dataTableColumnShoHide">

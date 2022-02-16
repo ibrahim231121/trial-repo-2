@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Menu from '@material-ui/core/Menu';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import {useTranslation} from 'react-i18next'; 
 import { DataTableClearFilterProps } from "./CRXDataTableTypes"
 
-const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, onClearAll}) => {
+const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibilityBar, filterClose, onClearAll}) => {
 
   const {t} = useTranslation<string>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined | null>(null)
@@ -16,7 +16,10 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
     setAnchorEl(null);
     onClearAll()
   }
-
+  
+  useEffect(()=>{
+      setAnchorEl(filterClose);
+  },[filterClose])
   return (
     <div className="dataTableColumnShoHide">
         { columnVisibilityBar === true ? (
