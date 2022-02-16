@@ -1,8 +1,5 @@
 {
-  "bodyWorn3":
-     {
-       "unittemplate": [
-   
+  "Unit Template": [
     {
       "id": "1",
       "key": "unittemplate/templateName/TextBox",
@@ -46,10 +43,9 @@
       "seconds": false
     }
   ],
-  "device": [
-   
+  "Devices": [
     {
-      "labelGroupRecording":"Recording",
+      "labelGroupRecording": "Recording",
       "id": "3",
       "key": "device/videoResolution/Select",
       "type": "select",
@@ -117,7 +113,7 @@
       "type": "select",
       "label": "Video Cut Size",
       "value": "",
-      "disabled":false,
+      "disabled": false,
       "options": [
         {
           "value": "1 hour",
@@ -146,9 +142,8 @@
       "type": "select",
       "label": "Video Pre-Buffer",
       "value": "20 sec",
-      "hinttext":true,
-      "hintvalue":"Live Stream will be disabled if Enable Video Pre-Buffer is selected",
-     
+      "hinttext": true,
+      "hintvalue": "Live Stream will be disabled if Enable Video Pre-Buffer is selected",
       "options": [
         {
           "value": "10 sec",
@@ -248,8 +243,8 @@
       "key": "device/enableRecordingBeep/CheckBox",
       "type": "checkbox",
       "label": "Enable Recording Beep",
-      "hinttext":true,
-      "hintvalue":"seconds",
+      "hinttext": true,
+      "hintvalue": "seconds",
       "value": "true"
     },
     {
@@ -270,7 +265,7 @@
       "seconds": true
     },
     {
-      "labelDeviceControls":"Device Controls",
+      "labelDeviceControls": "Device Controls",
       "id": "4",
       "key": "device/enableCategorization/CheckBox",
       "type": "checkbox",
@@ -317,7 +312,7 @@
       ]
     },
     {
-      "labelMute":"Mute",
+      "labelMute": "Mute",
       "id": "1",
       "key": "device/mute/Radio",
       "type": "radio",
@@ -339,8 +334,8 @@
       "type": "radio",
       "label": "Always Muted",
       "value": "alwaysMuted",
-      "hinttext":true,
-      "hintvalue":"'Always Muted' will also disable 'Disable Audio Only Recording' checkbox",
+      "hinttext": true,
+      "hintvalue": "'Always Muted' will also disable 'Disable Audio Only Recording' checkbox",
       "selected": false
     },
     {
@@ -361,10 +356,10 @@
       "id": "7",
       "key": "device/disableWifiAndBluetooth/CheckBox",
       "type": "checkbox",
-      "hinttext":true,
-      "hintvalue":"If selected will disable 'Enable GPS' checkbox section",
+      "hinttext": true,
+      "hintvalue": "If selected will disable 'Enable GPS' checkbox section",
       "label": "Disable Wifi And Bluetooth",
-      "labelLocation":"Location",
+      "labelLocation": "Location",
       "value": false
     },
     {
@@ -385,9 +380,9 @@
       "id": "34",
       "key": "device/gpsHeartbeat/NumberBox",
       "type": "number",
-      "hinttext":true,
-       "hintvalue":"seconds",
-       "hintvalue1":"Minimum allowed is 30 and maximum allowed is 3600",
+      "hinttext": true,
+      "hintvalue": "seconds",
+      "hintvalue1": "Minimum allowed is 30 and maximum allowed is 3600",
       "label": "GPS Heartbeat",
       "value": "",
       "seconds": true,
@@ -399,12 +394,11 @@
       "type": "number",
       "label": "GPS Heartbeat While Recording",
       "value": "60",
-      "hinttext":true,
-      "hintvalue":"seconds",
-      "hintvalue1":"Minimum allowed is 30 and maximum allowed is 3600",
+      "hinttext": true,
+      "hintvalue": "seconds",
+      "hintvalue1": "Minimum allowed is 30 and maximum allowed is 3600",
       "seconds": true,
       "required": true
     }
   ]
-}
 }

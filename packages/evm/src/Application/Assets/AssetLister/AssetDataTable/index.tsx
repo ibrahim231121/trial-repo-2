@@ -65,7 +65,7 @@ type Evidence = {
 
 type EvidenceReformated = {
   id: number;
-  asset: Asset[];
+  evidence: Evidence;
   assetId: string;
   assetName: string;
   assetType: string;
@@ -91,10 +91,12 @@ const thumbTemplate = (assetType: string) => {
   return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
 };
 
-const assetNameTemplate = (assetName: string, assets: Asset[]) => {
+const assetNameTemplate = (assetName: string, evidence: Evidence) => {
+  let masterAsset= evidence.masterAsset;
+  let assets = evidence.asset;
   return (
     <>
-      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/"+assets[0].assetId} />
+      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/"+masterAsset.assetId} />
       <DetailedAssetPopup asset={assets} />
     </>
   );
@@ -122,7 +124,7 @@ const MasterMain: React.FC<Props> = ({
       recordedBy: row.masterAsset.recordedBy,
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
-      asset: row.asset.filter((x: Asset) => x.assetId !== row.masterAssetId),
+      evidence: row
     };
 
     reformattedRows.push(evidence);
@@ -316,7 +318,7 @@ const MasterMain: React.FC<Props> = ({
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "180",
-      detailedDataComponentId: "asset",
+      detailedDataComponentId: "evidence",
     },
     {
       label: `${t("AssetType")}`,

@@ -1,0 +1,33 @@
+{
+  "Template Information": [
+    {
+      "id": "1",
+      "key": "unittemplate/templateName/TextBox",
+      "type": "text",
+      "label": "Template Name",
+      "value": "",
+      "required": true,
+      "requiredField": "true"
+    },
+    {
+      "id": "2",
+      "required": true,
+      "key": "unittemplate/station/Select",
+      "type": "select",
+      "label": "Station",
+      "value": "station 1",
+      "options": [
+        {
+          "value": "station 1",
+          "label": "station 1"
+        },
+        {
+          "value": "station 2",
+          "label": "station 2"
+        }
+      ]
+    }
+  ],
+  "Unit Settings": [],
+  "Devices": []
+}

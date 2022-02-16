@@ -8,8 +8,8 @@ import FormSchema from "../unitSchemaBC04.json";
 import { Formik, Form, Field } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
-const CreateTemplate = (props:any) => {
-  
+const CreateTemplate = (props: any) => {
+
   const [value, setValue] = React.useState(0);
 
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
@@ -23,23 +23,22 @@ const CreateTemplate = (props:any) => {
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataOfDevice, setDeviceData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
-  const [editCase,setEditCase] = React.useState<boolean>(false);
-  console.log("history state",historyState)
+  const [editCase, setEditCase] = React.useState<boolean>(false);
+  console.log("history state", historyState)
   React.useEffect(() => {
-    if(historyState.isedit)
+    if (historyState.isedit)
       loadData();
     else
       setDataFetched(true);
-}, []);
+  }, []);
 
   React.useEffect(() => {
     let Initial_Values: Array<any> = [];
 
-    if(historyState.isedit)
-    {
-        console.log("Edit case!");
-        console.log("dataOfUnit", dataOfUnit);
-        console.log("dataOfDevice", dataOfDevice);
+    if (historyState.isedit) {
+      console.log("Edit case!");
+      console.log("dataOfUnit", dataOfUnit);
+      console.log("dataOfDevice", dataOfDevice);
     }
 
     // ****************
@@ -48,25 +47,24 @@ const CreateTemplate = (props:any) => {
     // ****************
     // ****************
     let editT1: Array<any> = [];
-    for(let e0 of dataOfUnit)
-    {
+    for (let e0 of dataOfUnit) {
       //configGroup/key/fieldType
-      editT1.push({key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, value: e0.value })
+      editT1.push({ key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType, value: e0.value })
     }
 
     let tab1;
-    if(historyState.isedit)
+    if (historyState.isedit)
       tab1 = editT1;
     else
-      tab1 = FormSchema.bodyWorn3.unittemplate;
+      tab1 = FormSchema.unittemplate;
 
     for (const field of tab1) {
       if (field.hasOwnProperty("key")) {
         //if (!field.hasOwnProperty("selected")) {
-          Initial_Values.push({
-            key: field.key, // thats the name of state
-            value: field.value,
-          });
+        Initial_Values.push({
+          key: field.key, // thats the name of state
+          value: field.value,
+        });
         //}
       }
       //console.log("initial values", Initial_Values);
@@ -86,31 +84,30 @@ const CreateTemplate = (props:any) => {
     // ****************
 
     let editT2: Array<any> = [];
-    for(let e0 of dataOfDevice)
-    {
+    for (let e0 of dataOfDevice) {
       //configGroup/key/fieldType
-      editT2.push({key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, value: e0.value })
+      editT2.push({ key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType, value: e0.value })
     }
-    
+
 
     let tab2;
-    if(historyState.isedit)
+    if (historyState.isedit)
       tab2 = editT2;
     else
-      tab2 = FormSchema.bodyWorn3.device;
+      tab2 = FormSchema.device;
 
     for (const field of tab2) {
       if (field.hasOwnProperty("key")) {
         //if (!field.hasOwnProperty("selected")) {
-          Initial_Values.push({
-            key: field.key, // thats the name of state
-            value:
+        Initial_Values.push({
+          key: field.key, // thats the name of state
+          value:
             field.value === "true"
               ? true
               : field.value === "false"
-              ? false
-              : field.value,
-          });
+                ? false
+                : field.value,
+        });
         // } else if (field.selected == true) {
         //   Initial_Values.push({
         //     key: field.key, // thats the name of state
@@ -125,9 +122,9 @@ const CreateTemplate = (props:any) => {
       setInitial_Values_obj(key_value_pair);
 
     }
-  },[dataFetched]);
+  }, [dataFetched]);
 
-   const loadData = async () => {
+  const loadData = async () => {
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json", TenantId: "1" },
@@ -181,7 +178,7 @@ const CreateTemplate = (props:any) => {
     let Initial_Values: Array<any> = [];
 
     Object.entries(values).map(([key, value]) => {
-     
+
       Initial_Values.push({
         key: key.split(re)[1],
         value: value,
@@ -211,7 +208,7 @@ const CreateTemplate = (props:any) => {
         returnableObjects.key !== "templateName"
       );
     });
-   
+
 
     const body = {
       name: templateNames,
@@ -222,8 +219,7 @@ const CreateTemplate = (props:any) => {
       // sequence:
     };
 
-    if (editCase == false)
-    {
+    if (editCase == false) {
 
       const requestOptions = {
         method: "POST",
@@ -251,7 +247,7 @@ const CreateTemplate = (props:any) => {
     }
 
     else {
-      alert ('this is edit case')
+      alert('this is edit case')
     }
   };
 
@@ -317,7 +313,7 @@ const CreateTemplate = (props:any) => {
           <Formik
             enableReinitialize={true}
             initialValues={Initial_Values_obj}
-            onSubmit={(values, { setSubmitting, resetForm, setStatus }) => {}}
+            onSubmit={(values, { setSubmitting, resetForm, setStatus }) => { }}
           >
             {({
               values,
@@ -332,7 +328,7 @@ const CreateTemplate = (props:any) => {
             }) => (
               <Form>
                 <CrxTabPanel value={value} index={0}>
-                  {FormSchema.bodyWorn3.unittemplate.map(
+                  {FormSchema.unittemplate.map(
                     (formObj: any, key: number) => {
                       <div>
                         <p>{formObj.labelGroupRecording}</p>
@@ -413,17 +409,17 @@ const CreateTemplate = (props:any) => {
                                 name={formObj.key}
                                 id={formObj.id}
                                 component={formObj.type}
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //  disabled={values.defaultTemplate == true ? true : false}
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //  disabled={values.defaultTemplate == true ? true : false}
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
+                              //my logic of hide
                               >
                                 {formObj.options.map(
                                   (opt: any, key: string) => (
@@ -491,10 +487,10 @@ const CreateTemplate = (props:any) => {
                                 name={formObj.key}
                                 id={formObj.id}
                                 type={formObj.type}
-                                /////////////////
-                                //my disable code
-                                /////////////////
-                                //  disabled={values.defaultTemplate == true ? true : false}
+                              /////////////////
+                              //my disable code
+                              /////////////////
+                              //  disabled={values.defaultTemplate == true ? true : false}
                               />
                               <label>
                                 {formObj.seconds === true
@@ -517,7 +513,7 @@ const CreateTemplate = (props:any) => {
 
                 <CrxTabPanel value={value} index={1}>
                   <label>* indicates required fields</label>
-                  {FormSchema.bodyWorn3.device.map(
+                  {FormSchema.device.map(
                     (formObj: any, key: number) => {
                       <label>{formObj.recording}</label>;
                       switch (formObj.type) {
@@ -580,7 +576,7 @@ const CreateTemplate = (props:any) => {
                               />
                               {formObj.hinttext == true ? (
                                 <p>{formObj.hintvalue}</p>
-                                
+
                               ) : null}
                             </div>
                           );
@@ -673,7 +669,7 @@ const CreateTemplate = (props:any) => {
                               />
                               {formObj.hinttext == true ? (
                                 <p>{formObj.hintvalue}</p>
-                                
+
                               ) : null}
                             </div>
                           );
@@ -712,8 +708,8 @@ const CreateTemplate = (props:any) => {
                                     title={formObj.hintvalue1}
                                     placement="left"
                                   />
-                                  <p style={{fontSize:'1'}}>{formObj.hintvalue}</p>
-                                  
+                                  <p style={{ fontSize: '1' }}>{formObj.hintvalue}</p>
+
                                 </div>
                               ) : null}
                             </div>
