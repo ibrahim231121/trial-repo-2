@@ -4,19 +4,23 @@ import { useHistory, useParams } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { Link } from "react-router-dom";
 import "./createTemplate.scss";
-import FormSchema from "../unitSchemaBC04.json";
+import BC04 from "../unitSchemaBC04.json";
+import BC03 from '../unitSchemaBC03.json';
+import VRX from '../unitSchemaVRX.json';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
 import * as Yup from "yup";
+import { CRXTitle } from "@cb/shared";
+import { urlList } from "../../utils/urlList";
 
 
 var re = /[\/]/;
-const CreateTemplate = (props:any) => {
-  
+const CreateTemplate = (props: any) => {
+
   const [value, setValue] = React.useState(0);
-  const [Initial_Values_obj_RequiredField,setInitial_Values_obj_RequiredField ] = React.useState<any>({});
+  const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
   const [primary] = React.useState<string>("Yes, close");
@@ -24,27 +28,47 @@ const CreateTemplate = (props:any) => {
   const history = useHistory();
   const historyState = props.location.state;
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
-  const [dataOfDevice, setDeviceData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
-  const [editCase,setEditCase] = React.useState<boolean>(false);
+  const [editCase, setEditCase] = React.useState<boolean>(false);
 
-  
-  
+  console.log(historyState.deviceTypeCategory)
+  let FormSchema: any = null;
+  let templateName: string = "";
+  if (historyState.deviceTypeCategory == "1000001") {
+    FormSchema = BC03;
+    templateName = "BC03"
+  }
+  else if (historyState.deviceTypeCategory == "1000002") {
+    FormSchema = BC04;
+    templateName = "BC04"
+  }
+  else if (historyState.deviceTypeCategory == "1000003") {
+    FormSchema = VRX;
+    templateName = "In-Car"
+  }
+
+  let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
+
+  Object.keys(FormSchema).forEach((x, y) => {
+    const data = x as keyof typeof FormSchema
+    tabs.push({ label: data, index: y })
+  })
+
   React.useEffect(() => {
-    if(historyState.isedit)
+
+    if (historyState.isedit)
       loadData();
     else
       setDataFetched(true);
-}, []);
+  }, []);
 
   React.useEffect(() => {
-  
+
     let Initial_Values_RequiredField: Array<any> = [];
     let Initial_Values: Array<any> = [];
-     
-    if(historyState.isedit)
-    {
-        //console.log("Edit case!");
+
+    if (historyState.isedit) {
+
     }
     // ****************
     // for loop for unittemplate
@@ -52,66 +76,71 @@ const CreateTemplate = (props:any) => {
     // ****************
     // ****************
 
-    ///////// TAB 1 ///////////////////
-    let editT1: Array<any> = [];
-    for(let e0 of dataOfUnit)
-    {
-      //configGroup/key/fieldType
-      let val;
-      if(e0.fieldType == "NumberBox")
-        val = parseInt(e0.value);
-      else if(e0.fieldType == "CheckBox")
-        val = e0.value.toLowerCase() === "true" ? true : false;
+
+    //#region Tab 1
+
+    for (var x of tabs) {
+
+      var Property = x.label as keyof typeof FormSchema
+      let editT1: Array<any> = [];
+      for (let e0 of dataOfUnit) {
+        //configGroup/key/fieldType
+        let val;
+        if (e0.fieldType == "NumberBox")
+          val = parseInt(e0.value);
+        else if (e0.fieldType == "CheckBox")
+          val = e0.value.toLowerCase() === "true" ? true : false;
+        else
+          val = e0.value;
+
+        editT1.push({
+          key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
+          value: val
+        })
+      }
+
+      let tab1;
+      if (historyState.isedit)
+        tab1 = editT1;
       else
-        val = e0.value;
+        tab1 = FormSchema[Property];
 
-      editT1.push({
-        key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, 
-        value: val
-      })
-    }
-
-    let tab1;
-    if(historyState.isedit)
-      tab1 = editT1;
-    else
-      tab1 = FormSchema.bodyWorn3.unittemplate;
-
-    for (const field of tab1) {
-      if (field.hasOwnProperty("key")) {
+      for (const field of tab1) {
+        if (field.hasOwnProperty("key")) {
           Initial_Values.push({
-            key: field.key, 
+            key: field.key,
             value: field.value,
           });
+        }
+
+
+        let key_value_pair = Initial_Values.reduce(
+          (formObj, item) => ((formObj[item.key] = item.value), formObj),
+          {}
+        );
+
+
+        setInitial_Values_obj(key_value_pair);
       }
 
-      //console.log("initial values", Initial_Values);
-      let key_value_pair = Initial_Values.reduce(
-        (formObj, item) => ((formObj[item.key] = item.value), formObj),
-        {}
-      );
+      for (const field of FormSchema[Property]) {
+        if (field.hasOwnProperty("requiredField")) {
+          Initial_Values_RequiredField.push({
+            key: field.key,
+          });
+        }
 
-      //console.log("key value pair reduce", key_value_pair);
-      setInitial_Values_obj(key_value_pair);
-    }
+        let key_value_pairs = Initial_Values_RequiredField.reduce(
+          (formObj, item) => ((formObj[item.key] = item.value), formObj),
+          {}
+        );
 
-    for (const field of FormSchema.bodyWorn3.unittemplate)
-    {
-      if (field.hasOwnProperty("requiredField")) {
-        Initial_Values_RequiredField.push({
-          key: field.key,
-        });
+        setInitial_Values_obj_RequiredField(key_value_pairs);
       }
-
-      let key_value_pairs = Initial_Values_RequiredField.reduce(
-        (formObj, item) => ((formObj[item.key] = item.value), formObj),
-        {}
-      );
-      //console.log("key value pair reduce", key_value_pair);
-      setInitial_Values_obj_RequiredField(key_value_pairs);
     }
 
-        ///////// TAB 1 END ///////////////////
+
+    //#endregion
 
     // ****************
     // for loop for device
@@ -119,67 +148,10 @@ const CreateTemplate = (props:any) => {
     // ****************
     // ****************
 
-///////// TAB 2 ///////////////////
 
-    let editT2: Array<any> = [];
-    for(let e0 of dataOfDevice)
-    {
-      //configGroup/key/fieldType
-      let val;
-      if(e0.fieldType == "NumberBox")
-        val = parseInt(e0.value);
-      else if(e0.fieldType == "CheckBox")
-        val = e0.value.toLowerCase() === "true" ? true : false;
-      else
-        val = e0.value;
+  }, [dataFetched]);
 
-      editT2.push({key: e0.configGroup + "/"+ e0.key+ "/"+ e0.fieldType, value: val })
-    }
-    
-
-    let tab2;
-    if(historyState.isedit)
-      tab2 = editT2;
-    else
-      tab2 = FormSchema.bodyWorn3.device;
-
-    for (const field of tab2) {
-      if (field.hasOwnProperty("key")) {
-          Initial_Values.push({
-            key: field.key, 
-            value:field.value
-          });
-      }
-
-
-      let key_value_pair = Initial_Values.reduce(
-        (formObj, item) => ((formObj[item.key] = item.value), formObj),
-        {}
-      );
-      setInitial_Values_obj(key_value_pair);
-    }
-
-    for (const field of FormSchema.bodyWorn3.device)
-    {
-      if (field.hasOwnProperty("requiredField")) {
-        Initial_Values_RequiredField.push({
-          key: field.key,
-        });
-      }
-
-      let key_value_pairs = Initial_Values_RequiredField.reduce(
-        (formObj, item) => ((formObj[item.key] = item.value), formObj),
-        {}
-      );
-
-      //console.log("key value pair reduce", key_value_pair);
-      setInitial_Values_obj_RequiredField(key_value_pairs);
-    }
-
-///////// TAB 2 END ///////////////////
-  },[dataFetched]);
-
-   const loadData = async () => {
+  const loadData = async () => {
     const requestOptions = {
       method: "GET",
       headers: { "Content-Type": "application/json", TenantId: "1" },
@@ -189,12 +161,11 @@ const CreateTemplate = (props:any) => {
       `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.name}`,
       requestOptions
     );
-    // console.log("category reponse = ", unitDataResponse);
+
     if (unitDataResponse.ok) {
       const response = await unitDataResponse.json();
 
-      setUnitData(response.unittemplate);
-      setDeviceData(response.device);
+      setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
       setDataFetched(true);
       setEditCase(true)
     }
@@ -204,11 +175,7 @@ const CreateTemplate = (props:any) => {
     setValue(newValue);
   }
 
-  const tabs = [
-    { label: "UNIT TEMPLATE ", index: 0 },
-    { label: "DEVICE", index: 1 },
-    { label: "SENSORS AND TRIGGERS", index: 2 },
-  ];
+
 
   const handleChangeCloseButton = (values: boolean) => {
     if (values == false) {
@@ -229,7 +196,7 @@ const CreateTemplate = (props:any) => {
     //  let value1 = values
     //  let value2= valuess
 
-   
+
     let Initial_Values: Array<any> = [];
 
     Object.entries(values).map(([key, value]) => {
@@ -259,22 +226,21 @@ const CreateTemplate = (props:any) => {
 
     var fields = Initial_Values.filter(function (returnableObjects) {
       return (
-        returnableObjects.key !== "defaultTemplate" 
+        returnableObjects.key !== "defaultTemplate"
         // && returnableObjects.key !== "templateName"
       );
     });
-   
+
 
     const body = {
       name: templateNames,
       isDefault: true, //added because of removal of defaultTemplate
       fields: fields,
-      valueType: 1,
-      typeOfDevice: { id: 1 },
+      valueType: "1",
+      typeOfDevice: { id: historyState.deviceTypeCategory },
       // sequence:
     };
-    if (editCase == false)
-    {
+    if (editCase == false) {
 
       const requestOptions = {
         method: "POST",
@@ -288,9 +254,9 @@ const CreateTemplate = (props:any) => {
       fetch(url, requestOptions)
         .then((response: any) => {
           if (response.ok) {
-            //console.log("great");
+
             alert("happened form is being saved");
-          
+
             window.location.reload()
             resetForm();
           } else {
@@ -304,7 +270,7 @@ const CreateTemplate = (props:any) => {
     }
 
     else {
-     
+      console.log(body)
       const requestOptions = {
         method: "PUT",
         headers: {
@@ -318,13 +284,13 @@ const CreateTemplate = (props:any) => {
         .then((response: any) => {
           if (response.ok) {
             setDataFetched(false);
-            //console.log("great");
+
             alert("happened form is being Edited");
             //setTest(true)
             loadData();
             // setTest(true)
             resetForm();
-            } else {
+          } else {
             throw new Error(response.statusText);
           }
         })
@@ -340,12 +306,12 @@ const CreateTemplate = (props:any) => {
     initialValuesArrayRequiredField.push(i);
   }
 
-  const formSchema = initialValuesArrayRequiredField.reduce(
+  const formSchema = initialValuesArrayRequiredField.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item]: Yup.string().required("Required") }),
     {}
   );
 
-  console.log("Initial_Values_obj", Initial_Values_obj)
+
   return (
     <div className="CrxCreateTemplate">
       <CRXConfirmDialog
@@ -407,7 +373,7 @@ const CreateTemplate = (props:any) => {
           <Formik
             enableReinitialize={true}
             initialValues={Initial_Values_obj}
-            onSubmit={(values, { setSubmitting, resetForm, setStatus }) => {}}
+            onSubmit={(values, { setSubmitting, resetForm, setStatus }) => { }}
             validationSchema={Yup.object({
               ...formSchema,
             })}
@@ -424,484 +390,225 @@ const CreateTemplate = (props:any) => {
               touched,
             }) => (
               <Form>
-                <CrxTabPanel value={value} index={0}>
-                  {FormSchema.bodyWorn3.unittemplate.map(
-                    (formObj: any, key: number) => {
-                      <div>
-                        <p>{formObj.labelGroupRecording}</p>
-                      </div>;
+                {
+                  <>
+                    {tabs.map(x => {
+                      return <CrxTabPanel value={value} index={x.index}>
+                        {FormSchema[x.label].map(
+                          (formObj: any, key: number) => {
+                            <div>
+                              <p>{formObj.labelGroupRecording}</p>
+                            </div>;
 
-                      switch (formObj.type) {
-                        case "text":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                              />
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
+                            switch (formObj.type) {
+                              case "text":
+                                return (
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      type={formObj.type}
+                                    />
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
                                   </div>
-                                )}
-                              />
-                            </div>
-                          );
+                                );
 
-                        case "radio":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                id={formObj.id}
-                                type={formObj.type}
-                                name={formObj.key}
-                                value={formObj.value}
-                              />
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
+                              case "radio":
+                                return (
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+                                    <Field
+                                      id={formObj.id}
+                                      type={formObj.type}
+                                      name={formObj.key}
+                                      value={formObj.value}
+                                    />
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
                                   </div>
-                                )}
-                              />
-                            </div>
-                          );
-                        case "select":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
+                                );
+                              case "select":
+                                return (
+                                  (formObj.depends == null || values[formObj.depends]) &&
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
 
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                component={formObj.type}
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //  disabled={values.defaultTemplate == true ? true : false}
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                                //my logic of hide
-                              >
-                                {formObj.options.map(
-                                  (opt: any, key: string) => (
-                                    <option
-                                      style={{ width: "50%" }}
-                                      value={opt.value}
-                                      key={key}
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      component={formObj.type}
                                     >
-                                      {opt.label}{" "}
-                                    </option>
-                                  )
-                                )}
-                              </Field>
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
+                                      {formObj.options.map(
+                                        (opt: any, key: string) => (
+                                          <option
+                                            style={{ width: "50%" }}
+                                            value={opt.value}
+                                            key={key}
+                                          >
+                                            {opt.label}{" "}
+                                          </option>
+                                        )
+                                      )}
+                                    </Field>
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
                                   </div>
-                                )}
-                              />
-                            </div>
-                          );
+                                );
 
-                        case "checkbox":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                              />
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
+                              case "checkbox":
+                                return (
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      type={formObj.type}
+                                    />
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
                                   </div>
-                                )}
-                              />
-                            </div>
-                          );
-                        case "number":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                                /////////////////
-                                //my disable code
-                                /////////////////
-                                //  disabled={values.defaultTemplate == true ? true : false}
-                              />
-                              <label>
-                                {formObj.seconds === true
-                                  ? "seconds"
-                                  : "minutes"}
-                              </label>
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
+                                );
+                              case "number":
+                                return (
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      type={formObj.type}
+                                    /////////////////
+                                    //my disable code
+                                    /////////////////
+                                    //  disabled={values.defaultTemplate == true ? true : false}
+                                    />
+                                    <label>
+                                      {formObj.seconds === true
+                                        ? "seconds"
+                                        : "minutes"}
+                                    </label>
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
                                   </div>
-                                )}
-                              />
-                            </div>
-                          );
-                      }
-                    }
-                  )}
-                </CrxTabPanel>
-
-                <CrxTabPanel value={value} index={1}>
-                  <label>* indicates required fields</label>
-                  {FormSchema.bodyWorn3.device.map(
-                    (formObj: any, key: number) => {
-                      <label>{formObj.recording}</label>;
-                      switch (formObj.type) {
-                        case "text":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                              />
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          );
-
-                        case "radio":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label
-                                style={{
-                                  display: "block",
-                                  marginBottom: "10px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {formObj.labelMute}
-                              </label>
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-
-                              <Field
-                                id={formObj.id}
-                                type={formObj.type}
-                                name={formObj.key}
-                                value={formObj.value}
-                              />
-                              {formObj.hinttext == true ? (
-                                <p>{formObj.hintvalue}</p>
-                                
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          );
-
-                        case "select":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <h3
-                                style={{
-                                  display: "block",
-                                  marginBottom: "10px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {formObj.labelGroupRecording}
-                              </h3>
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                component={formObj.type}
-                              >
-                                {formObj.options.map(
-                                  (opt: any, key: string) => (
-                                    <option
-                                      style={{ width: "50%" }}
-                                      value={opt.value}
-                                      key={key}
-                                    >
-                                      {opt.label}{" "}
-                                    </option>
-                                  )
-                                )}
-                              </Field>
-                              {formObj.hinttext == true ? (
-                                <CRXTooltip
-                                  iconName="fas fa-info-circle"
-                                  title={formObj.hintvalue}
-                                  placement="right"
-                                />
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          );
-
-                        case "checkbox":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <h3
-                                style={{
-                                  display: "block",
-                                  marginBottom: "10px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {formObj.labelDeviceControls}
-                              </h3>
-                              <h3
-                                style={{
-                                  display: "block",
-                                  marginBottom: "10px",
-                                  marginTop: "10px",
-                                }}
-                              >
-                                {formObj.labelLocation}
-                              </h3>
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                              />
-                              {formObj.hinttext == true ? (
-                                <p>{formObj.hintvalue}</p>
-                                
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          );
-                        case "number":
-                          return (
-                            <div
-                              style={{
-                                display: "block",
-                                marginBottom: "10px",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <label>{formObj.label}</label>
-                              <label>
-                                {formObj.required === true ? "*" : null}
-                              </label>
-                              <Field
-                                name={formObj.key}
-                                id={formObj.id}
-                                type={formObj.type}
-                                min={formObj.min}
-                                max={formObj.max}
-                              />
-                              <label>
-                                {formObj.seconds === true
-                                  ? "seconds"
-                                  : "minutes"}
-                              </label>
-                              {formObj.hinttext == true ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <CRXTooltip
-                                    iconName="fas fa-info-circle"
-                                    title={formObj.hintvalue1}
-                                    placement="left"
-                                  />
-                                  <p style={{fontSize:'1'}}>{formObj.hintvalue}</p>
-                                  
-                                </div>
-                              ) : null}
-                               <ErrorMessage
-                                name={formObj.key}
-                                render={(msg) => (
-                                  <div style={{ color: "red" }}>
-                                    {formObj.key.split(re)[1] + " is " + msg}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          );
-                      }
-                    }
-                  )}
-                </CrxTabPanel>
-
-                <CrxTabPanel value={value} index={2}>
-                  {/* <SensorsAndTriggers  formVal={formVal} /> */}
-                </CrxTabPanel>
-
+                                );
+                            }
+                          }
+                        )}
+                      </CrxTabPanel>
+                    })}
+                  </>
+                }
                 <div className="tctButton">
                   <div className="tctLeft">
                     <CRXButton
@@ -926,7 +633,7 @@ const CreateTemplate = (props:any) => {
           </Formik>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

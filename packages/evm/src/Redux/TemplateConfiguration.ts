@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { TEMPLATE_CONFIGURATION_GET_URL } from '../utils/Api/url'
-import {TEMPLATE_CONFIGURATION_DELETE_URL} from '../utils/Api/url'
+import { TEMPLATE_CONFIGURATION_DELETE_URL } from '../utils/Api/url'
 
 
 export const getConfigurationInfoAsync: any = createAsyncThunk(
@@ -30,11 +30,11 @@ export const deletetemplate: any = createAsyncThunk(
         };
         console.log("i am called inside api")
         console.log(TEMPLATE_CONFIGURATION_DELETE_URL)
-        const resp = await fetch(TEMPLATE_CONFIGURATION_DELETE_URL+args.id, requestOptions);
+        const resp = await fetch(TEMPLATE_CONFIGURATION_DELETE_URL + args.id, requestOptions);
         console.log(resp)
         if (resp.ok) {
             window.location.reload();
-           //return true;
+            //return true;
             // args.dispatch(getUsersInfoAsync());
         }
     }

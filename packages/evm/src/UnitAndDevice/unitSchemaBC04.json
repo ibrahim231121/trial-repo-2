@@ -1,8 +1,5 @@
 {
-  "bodyWorn3":
-     {
-       "unittemplate": [
-   
+  "unittemplate": [
     {
       "id": "1",
       "key": "unittemplate/templateName/TextBox",
@@ -10,7 +7,7 @@
       "label": "Template Name",
       "value": "",
       "required": true,
-      "requiredField":"true"
+      "requiredField": "true"
     },
     {
       "id": "3",
@@ -38,18 +35,17 @@
       "label": "Config Update Interval",
       "value": 6,
       "seconds": false,
-      "requiredField":"true"
+      "requiredField": "true"
     }
   ],
   "device": [
-   
     {
-      "labelGroupRecording":"Recording",
+      "labelGroupRecording": "Recording",
       "id": "3",
       "key": "device/videoResolution/Select",
       "type": "select",
       "label": "Video Resolution",
-      "value": "",
+      "value": "3480 * 2160 p 30",
       "options": [
         {
           "value": "3480 * 2160 p 30",
@@ -90,7 +86,7 @@
       "key": "device/bitRate/Select",
       "type": "select",
       "label": "Bit Rate",
-      "value": "",
+      "value": "High",
       "options": [
         {
           "value": "High",
@@ -111,8 +107,8 @@
       "key": "device/videoCutSize/Select",
       "type": "select",
       "label": "Video Cut Size",
-      "value": "",
-      "disabled":false,
+      "value": "1 hour",
+      "disabled": false,
       "options": [
         {
           "value": "1 hour",
@@ -133,7 +129,7 @@
       "key": "device/enablePreBufferCheckbox/CheckBox",
       "type": "checkbox",
       "label": "Enable Pre Buffer Checkbox",
-      "value": "false"
+      "value": false
     },
     {
       "id": "3",
@@ -141,7 +137,6 @@
       "type": "select",
       "label": "Video Pre-Buffer",
       "value": "20 sec",
-     
       "options": [
         {
           "value": "10 sec",
@@ -195,21 +190,22 @@
           "value": "600 sec",
           "label": "600 sec"
         }
-      ]
+      ],
+      "depends": "device/enablePreBufferCheckbox/CheckBox"
     },
     {
       "id": "4",
       "key": "device/muteVideoPreBuffer/CheckBox",
       "type": "checkbox",
       "label": "Mute Video Pre Buffer",
-      "value": "true"
+      "value": true
     },
     {
       "id": "4",
       "key": "device/enableVideoOverlay/CheckBox",
       "type": "checkbox",
       "label": "Enable Video Overlay",
-      "value": "true"
+      "value": true
     },
     {
       "id": "3",
@@ -241,17 +237,17 @@
       "key": "device/enableRecordingBeep/CheckBox",
       "type": "checkbox",
       "label": "Enable Recording Beep",
-      "value": "true"
+      "value": true
     },
     {
       "id": "4",
       "key": "device/recordingBeepInterval/NumberBox",
       "type": "number",
       "label": "Recording Beep Interval",
-      "value": "10",
+      "value": 10,
       "seconds": true,
       "required": true,
-      "requiredField":"true"
+      "requiredField": "true"
     },
     {
       "id": "4",
@@ -262,7 +258,7 @@
       "seconds": true
     },
     {
-      "labelDeviceControls":"Device Controls",
+      "labelDeviceControls": "Device Controls",
       "id": "4",
       "key": "device/enableCategorization/CheckBox",
       "type": "checkbox",
@@ -306,10 +302,11 @@
           "value": "Category 4",
           "label": "Category 4"
         }
-      ]
+      ],
+      "depends": "device/enableCategorization/CheckBox"
     },
     {
-      "labelMute":"Mute",
+      "labelMute": "Mute",
       "id": "1",
       "key": "device/mute/Radio",
       "type": "radio",
@@ -331,8 +328,8 @@
       "type": "radio",
       "label": "Always Muted",
       "value": "alwaysMuted",
-      "hinttext":true,
-      "hintvalue":"('Always Muted' will also disable 'Disable Audio Only Recording' checkbox)",
+      "hinttext": true,
+      "hintvalue": "('Always Muted' will also disable 'Disable Audio Only Recording' checkbox)",
       "selected": false
     },
     {
@@ -353,10 +350,10 @@
       "id": "7",
       "key": "device/disableWifiAndBluetooth/CheckBox",
       "type": "checkbox",
-      "hinttext":true,
-      "hintvalue":"(If selected will disable 'Enable GPS' checkbox section)",
+      "hinttext": true,
+      "hintvalue": "(If selected will disable 'Enable GPS' checkbox section)",
       "label": "Disable Wifi And Bluetooth",
-      "labelLocation":"Location",
+      "labelLocation": "Location",
       "value": false
     },
     {
@@ -364,7 +361,7 @@
       "key": "device/enableGPS/CheckBox",
       "type": "checkbox",
       "label": "Enable GPS",
-      "value": "false"
+      "value": false
     },
     {
       "id": "84",
@@ -377,16 +374,16 @@
       "id": "34",
       "key": "device/gpsHeartbeat/NumberBox",
       "type": "number",
-      "hinttext":true,
-      "hintvalue":"(Minimum allowed is 30 and maximum allowed is 3600)",
-      "hintvalue1":"How often <Body Worn Type> sends heartbeats",
+      "hinttext": true,
+      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue1": "How often <Body Worn Type> sends heartbeats",
       "label": "GPS Heartbeat",
       "value": 60,
       "seconds": true,
       "required": true,
-      "requiredField":"true",
-      "min":30,
-      "max":3600
+      "requiredField": "true",
+      "min": 30,
+      "max": 3600
     },
     {
       "id": "64",
@@ -394,15 +391,14 @@
       "type": "number",
       "label": "GPS Heartbeat While Recording",
       "value": 60,
-      "hinttext":true,
-      "hintvalue":"(Minimum allowed is 30 and maximum allowed is 3600)",
-      "hintvalue1":"Interval between heartbeats when recording",
+      "hinttext": true,
+      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue1": "Interval between heartbeats when recording",
       "seconds": true,
       "required": true,
-      "requiredField":"true",
-      "min":30,
-      "max":3600
+      "requiredField": "true",
+      "min": 30,
+      "max": 3600
     }
   ]
-}
 }
