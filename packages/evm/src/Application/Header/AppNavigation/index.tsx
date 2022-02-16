@@ -218,7 +218,7 @@ const CRXLefNavigation = () => {
     return {...item, items: item.items?.filter((item : any) => 
        getModuleIds().includes(item?.moduleIds) || item.moduleIds === 0)}
   })
-console.log("SubModulePermission", SubModulePermission)
+
 
   return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
 };

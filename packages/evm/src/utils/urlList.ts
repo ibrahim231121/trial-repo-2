@@ -24,7 +24,15 @@ export const urlList: any = [
         name: urlNames.assets,
         url: "/assets",
         details: [
-            { type: "text", label: "Assets", }
+        { type: "text", label: "Assets", }
+    ],
+    },
+    {
+        name : urlNames.assetsDetail,
+        url: "/assets/:id",
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+            { type: "text", label: "Asset Detail" },
         ],
     },
     {
@@ -39,18 +47,18 @@ export const urlList: any = [
         name: urlNames.adminUserGroups,
         url: "/admin/usergroups",
         details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
-        ],
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
+    ],
     },
     {
         name: urlNames.userGroupCreate,
         url: "/admin/usergroups/group",
         details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Create User Group", }
-        ],
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
+        { type: "text", label: "Create User Group", }
+    ],
     },
     {
         name: urlNames.adminUserGroupId,
@@ -66,9 +74,9 @@ export const urlList: any = [
         name: urlNames.adminUsers,
         url: "/admin/users",
         details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/users", type: "text", label: "Manage Users", }
-        ],
+        { type: "text", label: "Admin", },
+        { routeTo: "/admin/users", type: "text", label: "Manage Users", }
+    ],
     },
     {
         name: urlNames.adminTestDemo,
