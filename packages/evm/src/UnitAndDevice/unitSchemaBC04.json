@@ -191,7 +191,8 @@
           "label": "600 sec"
         }
       ],
-      "depends": "device/enablePreBufferCheckbox/CheckBox"
+      "depends": "device/enablePreBufferCheckbox/CheckBox",
+      "valueDepends":[true]
     },
     {
       "id": "4",
@@ -230,7 +231,9 @@
           "value": "User , Unit , Date and Time",
           "label": "User , Unit , Date and Time"
         }
-      ]
+      ],
+      "depends": "device/enableVideoOverlay/CheckBox",
+      "valueDepends":[true]
     },
     {
       "id": "4",
@@ -247,7 +250,9 @@
       "value": 10,
       "seconds": true,
       "required": true,
-      "requiredField": "true"
+      "requiredField": "true",
+      "depends": "device/enableRecordingBeep/CheckBox",
+      "valueDepends":[true]
     },
     {
       "id": "4",
@@ -303,7 +308,8 @@
           "label": "Category 4"
         }
       ],
-      "depends": "device/enableCategorization/CheckBox"
+      "depends": "device/enableCategorization/CheckBox",
+      "valueDepends":[true]
     },
     {
       "labelMute": "Mute",
@@ -337,7 +343,10 @@
       "key": "device/disableAudioOnlyRecording/CheckBox",
       "type": "checkbox",
       "label": "Disable Audio Only Recording",
-      "value": false
+      "value": false,
+      "depends": "device/mute/Radio",
+      "valueDepends":["disabled" , "enabled"]
+
     },
     {
       "id": "4",

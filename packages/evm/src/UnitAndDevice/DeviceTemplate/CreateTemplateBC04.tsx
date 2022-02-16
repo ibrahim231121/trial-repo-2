@@ -403,6 +403,7 @@ const CreateTemplate = (props: any) => {
                             switch (formObj.type) {
                               case "text":
                                 return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
                                     style={{
                                       display: "block",
@@ -437,8 +438,9 @@ const CreateTemplate = (props: any) => {
                                   </div>
                                 );
 
-                              case "radio":
+                              case "radio":  
                                 return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
                                     style={{
                                       display: "block",
@@ -474,8 +476,9 @@ const CreateTemplate = (props: any) => {
                                   </div>
                                 );
                               case "select":
+                              
                                 return (
-                                  (formObj.depends == null || values[formObj.depends]) &&
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
                                     style={{
                                       display: "block",
@@ -525,6 +528,7 @@ const CreateTemplate = (props: any) => {
 
                               case "checkbox":
                                 return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
                                     style={{
                                       display: "block",
@@ -560,6 +564,7 @@ const CreateTemplate = (props: any) => {
                                 );
                               case "number":
                                 return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
                                     style={{
                                       display: "block",

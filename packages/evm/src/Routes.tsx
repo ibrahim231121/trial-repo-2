@@ -126,24 +126,24 @@ const Routes = () => {
               })}
             >
               <Switch>
-                <Route path={urlList.filter((item: any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url} exact={true} component={UserGroup} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={(routeProps: any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true} component={(routeProps: any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
-                <Route path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps: any) => <UnitCreate {...routeProps} />} />
-                <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-                <Route path="/notfound" component={ErrorPage} />
-                <Route path="*" component={ErrorPage} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url} exact={true} component={UserGroup} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true} component={(routeProps: any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO3)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO3Lte)[0].url} exact={true} component={CreateUnitAndDevicesTemplateBC03lte} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true} component={(routeProps: any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
+                <PrivateRoute path={urlList.filter((item: any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps: any) => <UnitCreate {...routeProps} />} />
+                <PrivateRoute path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
+                <PrivateRoute path="/notfound" component={ErrorPage} />
+                <PrivateRoute path="*" component={ErrorPage} />
               </Switch>
             </main>
             <footer>
