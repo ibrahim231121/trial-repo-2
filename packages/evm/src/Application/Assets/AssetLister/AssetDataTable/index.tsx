@@ -339,7 +339,8 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "200",
+      minWidth: "210",
+      maxWidth: "210",
     },
     {
       label: `${t("Categories")}`,
@@ -389,7 +390,7 @@ const MasterMain: React.FC<Props> = ({
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      minWidth: "120",
+      minWidth: "220",
       searchFilter: true,
       searchComponent: searchDate,
     },

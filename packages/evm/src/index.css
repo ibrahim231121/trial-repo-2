@@ -34,7 +34,7 @@ body {
 }
 
 .linkColor {
-  color: #c34400;
+  color: #c34400 !important;
   cursor: pointer;
 }
 
@@ -246,7 +246,7 @@ body {
     top: 135px;
     /* background: #fff; */
     padding-top: 3.5px;
-    z-index: 9999;
+    /* z-index: 9999; */
     padding-bottom: 0px !important;
     height: 51px;
 }

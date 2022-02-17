@@ -48,6 +48,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
             </TableCell> 
         : null
         }
+        
         {orderColumn.map((colIdx, i) => (
             //index needs to be CURRENT
             //key needs to be STATIC
@@ -56,7 +57,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
                 style={{display:`${(headCells[colIdx].visible === undefined || headCells[colIdx].visible === true) ? "" : "none"}`}}
                 align={(headCells[colIdx].align === "right") ? 'right' : (headCells[colIdx].align === "left") ? 'left' : 'center'}>
             <div className={classes.headerCellDiv + " crxTableHeaderSize"}
-            style={{minWidth : headCells[colIdx].minWidth, width : headCells[colIdx].width, maxWidth : headCells[colIdx].maxWidth}}
+            style={{minWidth : headCells[colIdx].minWidth + "px", maxWidth : headCells[colIdx].maxWidth}}
             >
             
             <div className={classes.headerStickness}

@@ -335,9 +335,9 @@ html {
 }
 
 .MuiAutocomplete-listbox {
-  left: -1px !important;
-  width: 288px !important;
-  top: 0;
+  // left: -1px !important;
+  // width: 288px !important;
+  // top: 0;
 }
 #multiSelect-popup {
   width: 324px !important;
@@ -375,8 +375,8 @@ html {
   }
 }
 
-@media only screen and (min-width: 400px) {
-  div[class*='makeStyles-container-'] {
-    height: auto !important;
-  }
-}
+// @media only screen and (min-width: 400px) {
+//   div[class*='makeStyles-container-'] {
+//     height: auto !important;
+//   }
+// }
