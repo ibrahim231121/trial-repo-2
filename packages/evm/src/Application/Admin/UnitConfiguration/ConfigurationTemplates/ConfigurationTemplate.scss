@@ -7,6 +7,7 @@ iframe {
   padding-bottom: 0px !important;
 }
 .CrxConfigTemplate {
+
   .configTemplate {
     tr {
       &:nth-child(odd) {
@@ -229,4 +230,7 @@ iframe {
       }
     }
   }
+}
+.rc-menu-button {
+  margin-top: 40px;
 }
