@@ -64,7 +64,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           orderingColumn={orderingColumn}
           onReorder={(e: number[]) => onReOrder(e)}
           onChange={onChange}
-          filterWindow={setFilterPopup}
+          //filterWindow={setFilterPopup}
           onHeadCellChange={onHeadCellChange}
           showCustomizeIcon={showCustomizeIcon}
         />

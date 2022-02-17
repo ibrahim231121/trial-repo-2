@@ -311,7 +311,6 @@ export type DataTableClearFilterProps = {
   columnVisibilityBar: boolean | undefined;
   filterClose : any;
   onClearAll: () => void;
-  filterOuter: any
 };
 
 export type DataTableCustomizeColumnsProps = {
