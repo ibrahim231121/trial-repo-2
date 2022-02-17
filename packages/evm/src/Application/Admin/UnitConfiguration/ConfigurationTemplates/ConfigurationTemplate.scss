@@ -1,11 +1,232 @@
-.configTemplate {
-    .col-three {
-       position: unset !important;
-    }
+iframe {
+  display: none;
 }
-.rc-menu-container
-{
-    ul{
-        z-index: 10000;
+
+.MuiList-padding {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+.CrxConfigTemplate {
+  .configTemplate {
+    tr {
+      &:nth-child(odd) {
+        .col-three {
+          background-color: #ffffff !important;
+        }
+        &:hover {
+          .col-three {
+            background-color: #333333 !important;
+          }
+        }
+      }
+      &:nth-child(even) {
+        .col-three {
+          background-color: #f2f2f2 !important;
+        }
+        &:hover {
+          .col-three {
+            background-color: #333333 !important;
+          }
+        }
+      }
+      .col-three {
+        position: sticky !important;
+        left: 0;
+        right: 0;
+        button {
+          position: relative;
+        }
+        ul {
+          &:first-child {
+            left: 87px !important;
+          }
+        }
+      }
     }
+
+    .crx-global-Select {
+      width: auto !important;
+    }
+    thead {
+      &:nth-child(1) {
+        tr {
+          th {
+            &:nth-child(3) {
+              min-width: 426px !important;
+              width: 426px !important;
+            }
+            &:nth-child(4) {
+              min-width: 390px !important;
+              width: 390px !important;
+            }
+            &:nth-child(5) {
+              min-width: 390px !important;
+              width: 390px !important;
+            }
+            &:nth-child(6) {
+              min-width: 390px !important;
+              width: 390px !important;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        tr {
+          th {
+            &:nth-child(3) {
+              input {
+                background-color: #d1d2d4 !important;
+              }
+            }
+            &:nth-child(6) {
+              input {
+                background-color: #d1d2d4 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          &:nth-child(3) {
+            a {
+              color: #d74b00 !important;
+            }
+            &:hover {
+              a {
+                text-decoration: none !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .dataTableColumnShoHide {
+    &:nth-child(1) {
+      margin-top: -21px;
+    }
+    &:nth-child(2) {
+      display: none;
+    }
+  }
+  .rc-menu--open {
+    top: -89px !important;
+  }
+  .rc-menu__arrow {
+    top: 67px !important;
+  }
+
+  margin-left: 68px;
+  margin-top: 167px;
+  .crxClearfilter {
+    transform: translateY(-37px);
+  }
+
+  .AssetsDataGrid {
+    overflow-x: hidden !important;
+    margin-top: -32px;
+  }
+  .GetacMenu {
+    position: relative;
+    button {
+      position: absolute;
+      top: -26px;
+      background: #333333 !important;
+      z-index: 90000000;
+      color: #d1d2d4;
+      height: 30px;
+      width: 134px;
+      border-radius: 0;
+      text-align: center;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      font-size: 14px !important;
+      font-family: Arial, Helvetica, sans-serif;
+      &:hover {
+        background-color: #6e6e6e !important;
+        color: #f5f5f5 !important;
+      }
+      &:active {
+        background-color: #231f20 !important;
+        color: #f5f5f5 !important;
+        box-shadow: none;
+      }
+      .CRXDRPIcon {
+        display: none;
+      }
+    }
+  }
+  table {
+    thead {
+      &:nth-child(1) {
+        tr {
+          th {
+            position: sticky !important;
+            &:nth-child(1) {
+              left: 0 !important;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        tr {
+          th {
+            &:nth-child(1) {
+              left: 0 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  .stickyPos {
+    z-index: 9 !important;
+  }
+}
+
+.MuiAutocomplete-paper {
+  width: 384px !important;
+  #multiSelect-popup {
+    width: 382px !important;
+    li {
+      width: 384px !important;
+    }
+  }
+}
+
+.MenuConfigurationButton {
+  width: 134px !important;
+  left: 92px !important;
+  background: #ffffff !important;
+  border-radius: 0 !important;
+  border: 1px solid #bebebe !important;
+  li {
+    color: #333333;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    &:hover {
+      background: #f5f5f5 !important;
+      color: #333333 !important;
+    }
+    &:active {
+      background: #6e6e6e !important;
+      color: #f5f5f5 !important;
+    }
+  }
+}
+
+@media (max-width: 1850px) {
+  .CrxConfigTemplate {
+    .AssetsDataGrid {
+      overflow-x: auto !important;
+      &::-webkit-scrollbar {
+        width: 10px !important;
+      }
+    }
+  }
 }
