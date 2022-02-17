@@ -119,7 +119,7 @@ const CRXInput = ({
 
   return (
     <>
-      <span>
+      <span className="gridFilterTextBox">
         <Typography variant="subtitle1" className="label">
           {reformatedLabel()}
         </Typography>

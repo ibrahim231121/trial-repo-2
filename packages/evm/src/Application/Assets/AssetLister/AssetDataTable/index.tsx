@@ -222,7 +222,7 @@ const MasterMain: React.FC<Props> = ({
     }
     
     return (
-      <CRXColumn item xs={11}>
+      
         <DateTimeComponent
           showCompact={showDateCompact}
           reset={reset}
@@ -232,7 +232,7 @@ const MasterMain: React.FC<Props> = ({
           }}
           dateOptionType={dateOptionType}
         />
-      </CRXColumn>
+      
     );
   };
 
