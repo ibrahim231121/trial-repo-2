@@ -52,7 +52,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   }, [props.removalType]);
 
   const cancelBtn = () => {
-    debugger;
+    //debugger;
     const newValue = categoryOptions
       .filter((o: any) => {
         return o.id === props.removedOption.id;

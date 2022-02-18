@@ -52,7 +52,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    debugger;
+    //debugger;
     const EvidenceID = selectedRow.id;
     const allCategories = props.filterValue;
     const categoriesFormArr: any[] = [];
