@@ -1,574 +1,593 @@
 {
-    "unittemplate": [
-      
-      {
-      
-        "id": "1",
-        "key": "templateName",
-        "type": "text",
-        "label": "Template Name",
-        "value": "",
-        "required": true
-      },
-      {
-        "id": "3",
-        "required": true,
-        "key": "station",
-        "type": "select",
-        "label": "Station",
-        "value": "station 1",
-        "options": [
-          {
-            "value": "station 1",
-            "label": "station 1"
-          },
-          {
-            "value": "station 2",
-            "label": "station 2"
-          }
-        ]
-      },
-      {
-        "id": "4",
-        "key": "defaultTemplate",
-        "type": "checkbox",
-        "label": "Default Template",
-        "value": false
-      },
-      {
-        "id": "4",
-        "required": true,
-        "key": "configUpdateInterval",
-        "type": "number",
-        "label": "Config Update Interval",
-        "value": "",
-        "seconds": false
-      }
-    ],
-    "device": [
-     
-      {
-        "labelGroupRecording":"Recording",
-        "id": "3",
-        "key": "videoResolution",
-        "type": "select",
-        "label": "Video Resolution",
-        "value": "1920 * 1080 p 120",
-        "options": [
-          {
-            "value": "3480 * 2160 p 30",
-            "label": "3480 * 2160 p 30"
-          },
-          {
-            "value": "2688 * 1521 p 30",
-            "label": "2688 * 1521 p 30"
-          },
-          {
-            "value": "1920 * 1080 p 120",
-            "label": "1920 * 1080 p 120"
-          },
-          {
-            "value": "1920 * 1080 p 60",
-            "label": "1920 * 1080 p 60"
-          },
-          {
-            "value": "1920 * 1080 p 30",
-            "label": "1920 * 1080 p 30"
-          },
-          {
-            "value": "1280 * 720 p 120",
-            "label": "1280 * 720 p 120"
-          },
-          {
-            "value": "1280 * 720 p 60",
-            "label": "1280 * 720 p 60"
-          },
-          {
-            "value": "1280 * 720 p 30",
-            "label": "1280 * 720 p 30"
-          }
-        ]
-      },
-      {
-        "id": "3",
-        "key": "bitRate",
-        "type": "select",
-        "label": "Bit Rate",
-        "value": "High",
-        "options": [
-          {
-            "value": "High",
-            "label": "High"
-          },
-          {
-            "value": "Low",
-            "label": "Low"
-          },
-          {
-            "value": "Medium",
-            "label": "Medium"
-          }
-        ]
-      },
-      {
-        "id": "3",
-        "key": "bitRate",
-        "type": "select",
-        "label": "Video Cut Size",
-        "value": "10 sec",
-        "options": [
-          {
-            "value": "1 hour",
-            "label": "1 hour"
-          },
-          {
-            "value": "2 hour",
-            "label": "2 hour"
-          },
-          {
-            "value": "3 hour",
-            "label": "3 hour"
-          }
-        ]
-      },
-      {
-        "id": "4",
-        "key": "enablePreBufferCheckbox",
-        "type": "checkbox",
-        "label": "Enable Pre Buffer Checkbox",
-        "value": "false"
-      },
-      {
-        "id": "3",
-        "key": "videoPreBuffer",
-        "type": "select",
-        "label": "Video Pre-Buffer",
-        "value": "20 sec",
-        "options": [
-          {
-            "value": "10 sec",
-            "label": "10 sec"
-          },
-          {
-            "value": "20 sec",
-            "label": "20 sec"
-          },
-          {
-            "value": "30 sec",
-            "label": "30 sec"
-          },
-          {
-            "value": "60 sec",
-            "label": "60 sec"
-          },
-          {
-            "value": "120 sec",
-            "label": "120 sec"
-          },
-          {
-            "value": "180 sec",
-            "label": "180 sec"
-          },
-          {
-            "value": "240 sec",
-            "label": "240 sec"
-          },
-          {
-            "value": "300 sec",
-            "label": "300 sec"
-          },
-          {
-            "value": "360 sec",
-            "label": "360 sec"
-          },
-          {
-            "value": "420 sec",
-            "label": "420 sec"
-          },
-          {
-            "value": "480 sec",
-            "label": "480 sec"
-          },
-          {
-            "value": "540 sec",
-            "label": "540 sec"
-          },
-          {
-            "value": "600 sec",
-            "label": "600 sec"
-          }
-        ]
-      },
-      {
-        "id": "4",
-        "key": "muteVideoPreBuffer",
-        "type": "checkbox",
-        "label": "Mute Video Pre Buffer",
-        "value": "true"
-      },
-      {
-        "id": "4",
-        "key": "enableVideoOverlay",
-        "type": "checkbox",
-        "label": "Enable Video Overlay",
-        "value": "true"
-      },
-      {
-        "id": "3",
-        "key": "videoOverlay",
-        "type": "select",
-        "label": "Video Overlay",
-        "value": "Unit , Date and Time",
-        "options": [
-          {
-            "value": "Date and Time",
-            "label": "Date and Time"
-          },
-          {
-            "value": "Date ,Time and User",
-            "label": "Date ,Time and User"
-          },
-          {
-            "value": "Unit , Date and Time",
-            "label": "Unit , Date and Time"
-          },
-          {
-            "value": "User , Unit , Date and Time",
-            "label": "User , Unit , Date and Time"
-          }
-        ]
-      },
-      {
-        "id": "4",
-        "key": "enableRecordingBeep",
-        "type": "checkbox",
-        "label": "Enable Recording Beep",
-        "value": "true"
-      },
-      {
-        "id": "4",
-        "key": "recordingBeepInterval",
-        "type": "number",
-        "label": "Recording Beep Interval",
-        "value": "10",
-        "seconds": true,
-        "required": true
-      },
-      {
-        "id": "4",
-        "key": "viberation",
-        "type": "checkbox",
-        "label": "Viberation",
-        "value": true,
-        "seconds": true
-      },
-      {
-        "labelDeviceControls":"Device Controls",
-        "id": "4",
-        "key": "enableCategorization",
-        "type": "checkbox",
-        "label": "Enable Categorization",
-        "value": true,
-        "seconds": true
-      },
-      {
-        "id": "3",
-        "key": "categories",
-        "type": "select",
-        "label": "Categories",
-        "required": true,
-        "value": "",
-        "options": [
-          {
-            "value": "",
-            "label": ""
-          },
-          {
-            "value": "Add All",
-            "label": "Add All"
-          },
-          {
-            "value": "Category 1",
-            "label": "Category 1"
-          },
-          {
-            "value": "Category 2",
-            "label": "Category 2"
-          },
-          {
-            "value": "Category 2",
-            "label": "Category 2"
-          },
-          {
-            "value": "Category 3",
-            "label": "Category 3"
-          },
-          {
-            "value": "Category 4",
-            "label": "Category 4"
-          }
-        ]
-      },
-      {
-        "labelMute":"Mute",
-        "id": "1",
-        "key": "mute",
-        "type": "radio",
-        "label": "Enabled",
-        "value": "enabled",
-        "selected": false
-      },
-      {
-        "id": "2",
-        "key": "mute",
-        "type": "radio",
-        "label": "Disabled",
-        "value": "disabled",
-        "selected": true
-      },
-      {
-        "id": "2",
-        "key": "mute",
-        "type": "radio",
-        "label": "Always Muted",
-        "value": "alwaysMuted",
-        "selected": false
-      },
-      {
-        "id": "4",
-        "key": "disableAudioOnlyRecording",
-        "type": "checkbox",
-        "label": "Disable Audio Only Recording",
-        "value": false
-      },
-      {
-        "id": "4",
-        "key": "bookmark",
-        "type": "checkbox",
-        "label": "Bookmark",
-        "value": false
-      },
-      {
-        "labelLocation":"Location",
-        "id": "4",
-        "key": "disableWifiAndBluetooth",
-        "type": "checkbox",
-        "label": "Disable Wifi And Bluetooth",
-        "value": false
-      },
-      {
-        "id": "4",
-        "key": "enableGPS",
-        "type": "checkbox",
-        "label": "Enable GPS",
-        "value": "false"
-      },
-      {
-        "id": "4",
-        "key": "'GPSHeartbeatonlywhilerecording",
-        "type": "checkbox",
-        "label": "GPS Heartbeat only while recording",
-        "value": false
-      },
-      {
-        "id": "4",
-        "key": "GPSHeartbeat",
-        "type": "number",
-        "label": "GPS Heartbeat",
-        "value": "",
-        "seconds": true,
-        "required": true
-      },
-      {
-        "id": "4",
-        "key": "GPSHeartbeatWhileRecording",
-        "type": "number",
-        "label": "GPS Heartbeat While Recording",
-        "value": "60",
-        "seconds": true,
-        "required": true
-      }
-    ],
-    "lteSetting":
-    [
+  "Unit Template": [
+    {
+      "id": "1",
+      "key": "unittemplate/templateName/TextBox",
+      "type": "text",
+      "label": "Template Name",
+      "value": "",
+      "required": true,
+      "requiredField": "true"
+    },
+    {
+      "id": "3",
+      "required": true,
+      "key": "unittemplate/station/Select",
+      "type": "select",
+      "label": "Station",
+      "value": "station 1",
+      "options": [
         {
-        "id": "1",
-        "key": "enableLte",
-        "type": "checkbox",
-        "label": "Enable LTE",
-        "value": false
+          "value": "station 1",
+          "label": "station 1"
         },
         {
-        "id": "2",
-        "key": "privateApn",
-        "type": "checkbox",
-        "label": "Private APN",
-        "value": false
+          "value": "station 2",
+          "label": "station 2"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "required": true,
+      "key": "unittemplate/configUpdateInterval/NumberBox",
+      "type": "number",
+      "label": "Config Update Interval",
+      "value": 6,
+      "seconds": false,
+      "requiredField": "true"
+    }
+  ],
+  "Device": [
+    {
+      "labelGroupRecording": "Recording",
+      "id": "3",
+      "key": "device/videoResolution/Select",
+      "type": "select",
+      "label": "Video Resolution",
+      "value": "3480 * 2160 p 30",
+      "options": [
+        {
+          "value": "3480 * 2160 p 30",
+          "label": "3480 * 2160 p 30"
         },
-        { 
-        "id": "3",
-        "key": "apnName",
-        "type": "text",
-        "label": "APN Name",
-        "value": ""
-       },
-       { 
-        "id": "4",
-        "key": "apn",
-        "type": "text",
-        "label": "APN",
-        "value": ""
-       },
-       { 
-        "id": "5",
-        "key": "proxy",
-        "type": "text",
-        "label": "Proxy",
-        "value": ""
-       },
-       { 
-         "id": "6",
-         "key": "port",
-         "type": "text",
-         "label": "Port",
-         "value": ""
+        {
+          "value": "2688 * 1521 p 30",
+          "label": "2688 * 1521 p 30"
         },
-        { 
-            "id": "7",
-            "key": "username",
-            "type": "text",
-            "label": "User Name",
-            "value": ""
+        {
+          "value": "1920 * 1080 p 120",
+          "label": "1920 * 1080 p 120"
         },
-        { 
-            "id": "8",
-            "key": "password",
-            "type": "text",
-            "label": "Password",
-            "value": ""
-           },
-           { 
-            "id": "9",
-            "key": "server",
-            "type": "text",
-            "label": "Server",
-            "value": ""
-           },
-           { 
-            "id": "10",
-            "key": "mmsc",
-            "type": "text",
-            "label": "MMSC",
-            "value": ""
-           },
-           { 
-            "id": "11",
-            "key": "mmscproxy",
-            "type": "text",
-            "label": "MMSC Proxy",
-            "value": ""
-           },
-           { 
-            "id": "12",
-            "key": "mmscport",
-            "type": "text",
-            "label": "MMSC Port",
-            "value": ""
-           },
-           { 
-            "id": "13",
-            "key": "mcc",
-            "type": "text",
-            "label": "MCC",
-            "value": "0"
-           },
-           { 
-            "id": "14",
-            "key": "mnc",
-            "type": "text",
-            "label": "MNC",
-            "value": "0"
-           },
-           {
-            "id": "15",
-            "key": "authenticationType",
-            "type": "select",
-            "label": "Authentication Type",
-            "value": "None", 
-            "options": [
-              {
-                "value": "None",
-                "label": "None"
-              },
-              {
-                "value": "PAP",
-                "label": "PAP"
-              },
-              {
-                "value": "CHAP",
-                "label": "CHAP"
-              },
-              {
-                "value": "PAP or CHAP",
-                "label": "PAP or CHAP"
-              }
-            ]
-          },
-          {
-            "id": "16",
-            "key": "apnType",
-            "type": "select",
-            "label": "APN Type",
-            "value": "Default", 
-            "options": [
-              {
-                "value": "Default",
-                "label": "Default"
-              },
-              {
-                "value": "SUPL",
-                "label": "SUPL"
-              },
-              {
-                "value": "MMS",
-                "label": "MMS"
-              }
-            ]
-          },
-          {
-            "id": "17",
-            "key": "apnProtocol",
-            "type": "select",
-            "label": "APN Protocol",
-            "value": "IP", 
-            "options": [
-              {
-                "value": "IP",
-                "label": "IP"
-              },
-              {
-                "value": "IPv4/IPv6",
-                "label": "IPv4/IPv6"
-              }
-            ]
-          },
-          {
-            "id": "18",
-            "key": "apnRoamingProtocol",
-            "type": "select",
-            "label": "APN Roaming Protocol",
-            "value": "IP", 
-            "options": [
-              {
-                "value": "IP",
-                "label": "IP"
-              },
-              {
-                "value": "IPv4/IPv6",
-                "label": "IPv4/IPv6"
-              }
-            ]
-          }
-    ]
- 
-  }
+        {
+          "value": "1920 * 1080 p 60",
+          "label": "1920 * 1080 p 60"
+        },
+        {
+          "value": "1920 * 1080 p 30",
+          "label": "1920 * 1080 p 30"
+        },
+        {
+          "value": "1280 * 720 p 120",
+          "label": "1280 * 720 p 120"
+        },
+        {
+          "value": "1280 * 720 p 60",
+          "label": "1280 * 720 p 60"
+        },
+        {
+          "value": "1280 * 720 p 30",
+          "label": "1280 * 720 p 30"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/bitRate/Select",
+      "type": "select",
+      "label": "Bit Rate",
+      "value": "High",
+      "options": [
+        {
+          "value": "High",
+          "label": "High"
+        },
+        {
+          "value": "Low",
+          "label": "Low"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/videoCutSize/Select",
+      "type": "select",
+      "label": "Video Cut Size",
+      "value": "1 hour",
+      "disabled": false,
+      "options": [
+        {
+          "value": "1 hour",
+          "label": "1 hour"
+        },
+        {
+          "value": "2 hour",
+          "label": "2 hour"
+        },
+        {
+          "value": "3 hour",
+          "label": "3 hour"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/enablePreBufferCheckbox/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Pre Buffer Checkbox",
+      "value": false
+    },
+    {
+      "id": "3",
+      "key": "device/videoPreBuffer/Select",
+      "type": "select",
+      "label": "Video Pre-Buffer",
+      "value": "20 sec",
+      "options": [
+        {
+          "value": "10 sec",
+          "label": "10 sec"
+        },
+        {
+          "value": "20 sec",
+          "label": "20 sec"
+        },
+        {
+          "value": "30 sec",
+          "label": "30 sec"
+        },
+        {
+          "value": "60 sec",
+          "label": "60 sec"
+        },
+        {
+          "value": "120 sec",
+          "label": "120 sec"
+        },
+        {
+          "value": "180 sec",
+          "label": "180 sec"
+        },
+        {
+          "value": "240 sec",
+          "label": "240 sec"
+        },
+        {
+          "value": "300 sec",
+          "label": "300 sec"
+        },
+        {
+          "value": "360 sec",
+          "label": "360 sec"
+        },
+        {
+          "value": "420 sec",
+          "label": "420 sec"
+        },
+        {
+          "value": "480 sec",
+          "label": "480 sec"
+        },
+        {
+          "value": "540 sec",
+          "label": "540 sec"
+        },
+        {
+          "value": "600 sec",
+          "label": "600 sec"
+        }
+      ],
+      "depends": "device/enablePreBufferCheckbox/CheckBox",
+      "valueDepends":[true]
+    },
+    {
+      "id": "4",
+      "key": "device/muteVideoPreBuffer/CheckBox",
+      "type": "checkbox",
+      "label": "Mute Video Pre Buffer",
+      "value": true
+    },
+    {
+      "id": "4",
+      "key": "device/enableVideoOverlay/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Video Overlay",
+      "value": true
+    },
+    {
+      "id": "3",
+      "key": "device/videoOverlay/Select",
+      "type": "select",
+      "label": "Video Overlay",
+      "value": "Unit , Date and Time",
+      "options": [
+        {
+          "value": "Date and Time",
+          "label": "Date and Time"
+        },
+        {
+          "value": "Date ,Time and User",
+          "label": "Date ,Time and User"
+        },
+        {
+          "value": "Unit , Date and Time",
+          "label": "Unit , Date and Time"
+        },
+        {
+          "value": "User , Unit , Date and Time",
+          "label": "User , Unit , Date and Time"
+        }
+      ],
+      "depends": "device/enableVideoOverlay/CheckBox",
+      "valueDepends":[true]
+    },
+    {
+      "id": "4",
+      "key": "device/enableRecordingBeep/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Recording Beep",
+      "value": true
+    },
+    {
+      "id": "4",
+      "key": "device/recordingBeepInterval/NumberBox",
+      "type": "number",
+      "label": "Recording Beep Interval",
+      "value": 10,
+      "seconds": true,
+      "required": true,
+      "requiredField": "true",
+      "depends": "device/enableRecordingBeep/CheckBox",
+      "valueDepends":[true]
+    },
+    {
+      "id": "4",
+      "key": "device/viberation/CheckBox",
+      "type": "checkbox",
+      "label": "Viberation",
+      "value": true,
+      "seconds": true
+    },
+    {
+      "labelDeviceControls": "Device Controls",
+      "id": "4",
+      "key": "device/enableCategorization/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Categorization",
+      "value": true,
+      "seconds": true
+    },
+    {
+      "id": "3",
+      "key": "device/categories/Select",
+      "type": "select",
+      "label": "Categories",
+      "required": true,
+      "value": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Add All",
+          "label": "Add All"
+        },
+        {
+          "value": "Category 1",
+          "label": "Category 1"
+        },
+        {
+          "value": "Category 2",
+          "label": "Category 2"
+        },
+        {
+          "value": "Category 2",
+          "label": "Category 2"
+        },
+        {
+          "value": "Category 3",
+          "label": "Category 3"
+        },
+        {
+          "value": "Category 4",
+          "label": "Category 4"
+        }
+      ],
+      "depends": "device/enableCategorization/CheckBox",
+      "valueDepends":[true]
+    },
+    {
+      "labelMute": "Mute",
+      "id": "1",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Enabled",
+      "value": "enabled",
+      "selected": false
+    },
+    {
+      "id": "2",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Disabled",
+      "value": "disabled",
+      "selected": true
+    },
+    {
+      "id": "2",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Always Muted",
+      "value": "alwaysMuted",
+      "hinttext": true,
+      "hintvalue": "('Always Muted' will also disable 'Disable Audio Only Recording' checkbox)",
+      "selected": false
+    },
+    {
+      "id": "4",
+      "key": "device/disableAudioOnlyRecording/CheckBox",
+      "type": "checkbox",
+      "label": "Disable Audio Only Recording",
+      "value": false,
+      "depends": "device/mute/Radio",
+      "valueDepends":["disabled" , "enabled"]
+
+    },
+    {
+      "id": "4",
+      "key": "device/bookmark/CheckBox",
+      "type": "checkbox",
+      "label": "Bookmark",
+      "value": false
+    },
+    {
+      "id": "7",
+      "key": "device/disableWifiAndBluetooth/CheckBox",
+      "type": "checkbox",
+      "hinttext": true,
+      "hintvalue": "(If selected will disable 'Enable GPS' checkbox section)",
+      "label": "Disable Wifi And Bluetooth",
+      "labelLocation": "Location",
+      "value": false
+    },
+    {
+      "id": "89",
+      "key": "device/enableGPS/CheckBox",
+      "type": "checkbox",
+      "label": "Enable GPS",
+      "value": false
+    },
+    {
+      "id": "84",
+      "key": "device/gpsHeartbeatonlywhilerecording/CheckBox",
+      "type": "checkbox",
+      "label": "GPS Heartbeat only while recording",
+      "value": false
+    },
+    {
+      "id": "34",
+      "key": "device/gpsHeartbeat/NumberBox",
+      "type": "number",
+      "hinttext": true,
+      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue1": "How often <Body Worn Type> sends heartbeats",
+      "label": "GPS Heartbeat",
+      "value": 60,
+      "seconds": true,
+      "required": true,
+      "requiredField": "true",
+      "min": 30,
+      "max": 3600
+    },
+    {
+      "id": "64",
+      "key": "device/gpsHeartbeatWhileRecording/NumberBox",
+      "type": "number",
+      "label": "GPS Heartbeat While Recording",
+      "value": 60,
+      "hinttext": true,
+      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue1": "Interval between heartbeats when recording",
+      "seconds": true,
+      "required": true,
+      "requiredField": "true",
+      "min": 30,
+      "max": 3600
+    }
+  ],
+  "LTE Settings": [
+    {
+      "id": "1",
+      "key": "enableLte",
+      "type": "checkbox",
+      "label": "Enable LTE",
+      "value": false
+      },
+      {
+      "id": "2",
+      "key": "privateApn",
+      "type": "checkbox",
+      "label": "Private APN",
+      "value": false
+      },
+      { 
+      "id": "3",
+      "key": "apnName",
+      "type": "text",
+      "label": "APN Name",
+      "value": ""
+     },
+     { 
+      "id": "4",
+      "key": "apn",
+      "type": "text",
+      "label": "APN",
+      "value": ""
+     },
+     { 
+      "id": "5",
+      "key": "proxy",
+      "type": "text",
+      "label": "Proxy",
+      "value": ""
+     },
+     { 
+       "id": "6",
+       "key": "port",
+       "type": "text",
+       "label": "Port",
+       "value": ""
+      },
+      { 
+          "id": "7",
+          "key": "username",
+          "type": "text",
+          "label": "User Name",
+          "value": ""
+      },
+      { 
+          "id": "8",
+          "key": "password",
+          "type": "text",
+          "label": "Password",
+          "value": ""
+         },
+         { 
+          "id": "9",
+          "key": "server",
+          "type": "text",
+          "label": "Server",
+          "value": ""
+         },
+         { 
+          "id": "10",
+          "key": "mmsc",
+          "type": "text",
+          "label": "MMSC",
+          "value": ""
+         },
+         { 
+          "id": "11",
+          "key": "mmscproxy",
+          "type": "text",
+          "label": "MMSC Proxy",
+          "value": ""
+         },
+         { 
+          "id": "12",
+          "key": "mmscport",
+          "type": "text",
+          "label": "MMSC Port",
+          "value": ""
+         },
+         { 
+          "id": "13",
+          "key": "mcc",
+          "type": "text",
+          "label": "MCC",
+          "value": "0"
+         },
+         { 
+          "id": "14",
+          "key": "mnc",
+          "type": "text",
+          "label": "MNC",
+          "value": "0"
+         },
+         {
+          "id": "15",
+          "key": "authenticationType",
+          "type": "select",
+          "label": "Authentication Type",
+          "value": "None", 
+          "options": [
+            {
+              "value": "None",
+              "label": "None"
+            },
+            {
+              "value": "PAP",
+              "label": "PAP"
+            },
+            {
+              "value": "CHAP",
+              "label": "CHAP"
+            },
+            {
+              "value": "PAP or CHAP",
+              "label": "PAP or CHAP"
+            }
+          ]
+        },
+        {
+          "id": "16",
+          "key": "apnType",
+          "type": "select",
+          "label": "APN Type",
+          "value": "Default", 
+          "options": [
+            {
+              "value": "Default",
+              "label": "Default"
+            },
+            {
+              "value": "SUPL",
+              "label": "SUPL"
+            },
+            {
+              "value": "MMS",
+              "label": "MMS"
+            }
+          ]
+        },
+        {
+          "id": "17",
+          "key": "apnProtocol",
+          "type": "select",
+          "label": "APN Protocol",
+          "value": "IP", 
+          "options": [
+            {
+              "value": "IP",
+              "label": "IP"
+            },
+            {
+              "value": "IPv4/IPv6",
+              "label": "IPv4/IPv6"
+            }
+          ]
+        },
+        {
+          "id": "18",
+          "key": "apnRoamingProtocol",
+          "type": "select",
+          "label": "APN Roaming Protocol",
+          "value": "IP", 
+          "options": [
+            {
+              "value": "IP",
+              "label": "IP"
+            },
+            {
+              "value": "IPv4/IPv6",
+              "label": "IPv4/IPv6"
+            }
+          ]
+        }
+  ]
+}
