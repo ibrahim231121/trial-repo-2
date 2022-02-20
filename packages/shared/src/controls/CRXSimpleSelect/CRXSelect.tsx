@@ -111,7 +111,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
             horizontal: "center",
           },
           classes: {
-            paper: popover + " paperStyle"
+            paper: popover
           },
           getContentAnchorEl: null,
         }}

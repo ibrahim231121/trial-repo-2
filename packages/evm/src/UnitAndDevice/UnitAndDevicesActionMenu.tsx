@@ -24,6 +24,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             direction="right"
             position="auto"
             className="menuCss unitDeviceMenuCss"
+            arrow
             menuButton={ <MenuButton><i className="far fa-ellipsis-v"></i></MenuButton> }
         >
         <MenuItem>

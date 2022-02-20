@@ -414,7 +414,7 @@ const CRXAssetsBucketPanel = () => {
                     <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
                   </CRXColumn>
                 </CRXRows>
-    <CRXRows container spacing={0} className={showMessageClx}>
+    <CRXRows container spacing={0} className={showSucess ? " " : "bucketMessageHide"}>
       <CRXColumn item xs={12} className="topColumn">
       <CRXAlert
                           className="crx-alert-notification"

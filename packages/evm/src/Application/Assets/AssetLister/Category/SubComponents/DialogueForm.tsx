@@ -40,7 +40,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   };
 
   const submitForm = (values: any[]) => {
-    const evidenceId = props.rowData.assetId;
+    const evidenceId = props.rowData.id;
     const Assign_Category_Arr: any[] = [];
     const Assign_Category_URL = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
     for (const v of values) {

@@ -1,0 +1,61 @@
+.crx-progress-br {
+    .loader {
+        position: relative;
+        .progressPercentage {
+            position: absolute;
+            font-size: 11px;
+            color: #fff;
+            top: 0px;
+            line-height: 18px
+        }
+        .loadingIcon {
+            position: absolute;
+            right: 0px;
+            top: -25px;
+            font-size: 14px;
+            color:#333;
+            &.assetsLoadingBarIcon {
+              top: -1px;
+              right: -23px;
+            }
+        }
+        .fileUploadStatus {
+            font-size: 14px;
+            color: #333;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+    }
+    .progressErorr  {
+      .MuiLinearProgress-barColorPrimary {
+        background-color: #AA1D1D !important;
+        background-image: none;
+      }
+    }
+    .loadingText {
+      font-size: 14px;
+      color: #333;
+      font-weight: normal;
+      margin-bottom:4px;
+    }
+
+    .loadingAssets {
+      font-size: 10px;
+      color: #333;
+      font-weight: bold;
+      margin-bottom:4px;
+    }
+}
+
+.rotate {
+    animation: rotation 2s infinite linear;
+  }
+  
+@keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }

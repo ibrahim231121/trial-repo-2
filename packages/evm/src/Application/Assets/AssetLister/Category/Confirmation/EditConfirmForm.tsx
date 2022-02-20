@@ -27,7 +27,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const selectedRow = props.rowData;
-  const evidenceId = selectedRow.assetId;
+  const evidenceId = selectedRow.id;
   const initialValues: FormValues = {
     reason: ''
   };

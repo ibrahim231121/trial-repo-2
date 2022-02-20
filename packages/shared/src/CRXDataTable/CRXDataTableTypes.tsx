@@ -309,6 +309,7 @@ export type DataTableHeaderProps = {
 
 export type DataTableClearFilterProps = {
   columnVisibilityBar: boolean | undefined;
+  filterClose : any;
   onClearAll: () => void;
 };
 
@@ -320,6 +321,7 @@ export type DataTableCustomizeColumnsProps = {
   onChange: () => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
   showCustomizeIcon?: boolean;
+  filterWindow: any 
 };
 
 export type OrderValue = {

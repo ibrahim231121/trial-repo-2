@@ -29,6 +29,7 @@ import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
+import { getToken } from "../../../../Login/API/auth";
 
 export type GroupInfoModel = {
   name: string;
@@ -129,17 +130,17 @@ const Group = () => {
   const [ids, setIds] = useState<string>(id);
 
   const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + ids, {
-    "Content-Type": "application/json", TenantId: "1",
+    "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}`
   });
 
   const [getContainerMappingRes, ContainerMappingRes] = useGetFetch<any>(
     CONTAINERMAPPING_INFO_GET_URL + "?groupId=" + id,
-    { "Content-Type": "application/json", TenantId: "1" }
+    { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` }
   );
 
   const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
     APPLICATION_PERMISSION_URL,
-    { "Content-Type": "application/json", TenantId: "1" }
+    { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${getToken()}` }
   );
 
   React.useEffect(() => {
@@ -441,6 +442,8 @@ const Group = () => {
       headers: {
         TenantId: "1",
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${getToken()}`
+        
       },
       body: JSON.stringify(userGroup),
     })
@@ -478,6 +481,7 @@ const Group = () => {
             headers: {
               TenantId: "1",
               "Content-Type": "application/json",
+              'Authorization': `Bearer ${getToken()}`
             },
             body: JSON.stringify(dataPermissionObj),
           })

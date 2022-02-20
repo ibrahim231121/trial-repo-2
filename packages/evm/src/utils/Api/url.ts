@@ -30,7 +30,8 @@ export const GROUP_GET_URL = `${BASE_URL_USER_SERVICE}/groups?Page=1&Size=500`
 
 export const GROUP_GET_BY_ID_URL = `${BASE_URL_USER_SERVICE}/groups`
 
-export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=500`
+// export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/0/users/count?Page=1&Size=500`
+export const GROUP_USER_COUNT_GET_URL = `${BASE_URL_USER_SERVICE}/groups/userscount?Page=1&Size=500`
 export const Unit_GET_BY_ID_URL = `${BASE_URL_UNIT_SERVICE}`
 
 export const EVIDENCE_SERVICE_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}`;
@@ -66,3 +67,6 @@ export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/Container
 
 export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 export const TEMPLATE_CONFIGURATION_DELETE_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/`
+export const DEVICETYPE_GET_URL = `${BASE_URL_UNIT_SERVICE}/DeviceTypes?Page=1&Size=100`
+
+export const STATIONINFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationInfo?Page=1&Size=100`

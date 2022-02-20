@@ -68,9 +68,9 @@ const UserGroup: React.FC = () => {
     let groupRows: GroupUser[] = []
     if (groups && groups.length > 0) {
       groupRows = groups.map((group: any) => {
-        const index = groupUsersCount.findIndex((c: any) => group.id == c.group)
+        const index = groupUsersCount && groupUsersCount.findIndex((c: any) => group.id == c.group)
         if (index !== -1) {
-          let count = groupUsersCount[index].userCount
+          let count = groupUsersCount && groupUsersCount[index].userCount
           count = count ? count : 0
           return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: count }
         }

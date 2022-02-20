@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import Cookies from 'universal-cookie';
 import { USER_INFO_GET_URL, USER_INFO_UPDATE_URL } from '../utils/Api/url'
 
-
+const cookies = new Cookies();
 const Users = [
     {
         "recId": "45",
@@ -1061,7 +1062,7 @@ export const getUsersInfoAsync: any = createAsyncThunk(
     async () => {
         const requestOptions = {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
         };
         const resp = await fetch(USER_INFO_GET_URL, requestOptions);
         if (resp.ok) {
@@ -1089,7 +1090,7 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
         const requestOptions = {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json', 'TenantId': '1'
+                'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
             },
             body: JSON.stringify(body)
         };

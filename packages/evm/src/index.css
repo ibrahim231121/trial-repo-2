@@ -34,7 +34,7 @@ body {
 }
 
 .linkColor {
-  color: #c34400;
+  color: #c34400 !important;
   cursor: pointer;
 }
 
@@ -246,7 +246,7 @@ body {
     top: 135px;
     /* background: #fff; */
     padding-top: 3.5px;
-    z-index: 9999;
+    /* z-index: 9999; */
     padding-bottom: 0px !important;
     height: 51px;
 }
@@ -269,4 +269,11 @@ body {
 .CRXDataTableCustom tr td .dataTableSimpleText::selection {
   background: #d1d2d4;
   color:#333
+}
+
+
+
+/*After demo sajid will remove it*/
+.progressBar {
+  padding-top: 10px;
 }

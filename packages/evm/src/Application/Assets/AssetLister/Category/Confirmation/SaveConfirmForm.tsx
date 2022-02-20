@@ -52,7 +52,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   }, [props.removalType]);
 
   const cancelBtn = () => {
-    debugger;
+    //debugger;
     const newValue = categoryOptions
       .filter((o: any) => {
         return o.id === props.removedOption.id;
@@ -77,7 +77,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
 
   const deleteFetchReq = () => {
     const message = props.removeMessage;
-    const evidenceId = props.rowData.assetId;
+    const evidenceId = props.rowData.id;
     const categoryId = props.removedOption.id;
     const retentionId = props.retentionId;
 

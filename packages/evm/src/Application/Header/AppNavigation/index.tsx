@@ -25,7 +25,7 @@ const CRXLefNavigation = () => {
       icon: "fas fa-chart-pie NaveIcon",
     },
     {
-      moduleId:0,
+      moduleId:1,
       label: "Assets",
       icon: "icon icon-file-video NaveIcon",
       url: urlList.filter((item:any) => item.name === urlNames.assets)[0].url,
@@ -128,42 +128,42 @@ const CRXLefNavigation = () => {
       },
    },
 
-    {
-      moduleId:0,
-      label: "ALPR",
-      icon: "fas fa-address-card NaveIcon",
-      classes: "aplrTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Plate Captures",
-        },
-        {
-          moduleIds:0,
-          label: "Live ALPR",
-        },
-        {
-          moduleIds:0,
-          label: "Live ALPR",
-        },
-        {
-          moduleIds:0,
-          label: "Manage Hot List",
-        },
-        {
-          moduleIds:0,
-          separator: true,
-        },
-        {
-          moduleIds:0,
-          label: "Manage Hot List Data Source",
-        },
-        {
-          moduleIds:0,
-          label: "Manage License Plates",
-        },
-      ],
-    },
+    // {
+    //   moduleId:0,
+    //   label: "ALPR",
+    //   icon: "fas fa-address-card NaveIcon",
+    //   classes: "aplrTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Plate Captures",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Live ALPR",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Live ALPR",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Manage Hot List",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       separator: true,
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Manage Hot List Data Source",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Manage License Plates",
+    //     },
+    //   ],
+    // },
 
     {
       moduleId:0,
@@ -203,14 +203,9 @@ const CRXLefNavigation = () => {
           
         },
         {
-          label: 'Unit Configuration',
-          command: () => { navigateToPage("/admin/unitconfiguration") },
-          items:[
-             {
-                label: 'Unit Configuration Templates',
-                command: () => { navigateToPage("/admin/unitconfiguration/unitconfigurationtemplate") },
-             }
-          ]
+          moduleIds:0,
+          label: 'Manage Units & Devices Templates',
+          command: () => { navigateToPage("/admin/configurationtemplate") },
        }
       ],
     },

@@ -10,10 +10,12 @@ import "@szhsin/react-menu/dist/index.css";
 import { useDispatch } from "react-redux";
 import  Dialogbox  from "./Dialogbox";
 import { deletetemplate } from "../../../../Redux/TemplateConfiguration";
+import "./ConfigTemplateActionMenu.scss";
 type Props = {
 
   row?: any;
 };
+
 
 const ConfigTemplateActionMenu: React.FC<Props> = ({row}) => {
     const dispatch = useDispatch()
@@ -51,9 +53,12 @@ const Deleteconfirm = () => {
   setnondefault(false);
 
 }
-
+  if(row) {
+    var unitId = row.name; 
+  }
   return (
     <>
+
     <Menu
       align="start"
       viewScroll="initial"
@@ -66,53 +71,60 @@ const Deleteconfirm = () => {
           <i className="far fa-ellipsis-v"></i>
         </MenuButton>
       }
+    
     >
-      <MenuItem >
-        <div className="crx-meu-content groupingMenu crx-spac" onClick={Deleteconfirm} >
-          <div className="crx-menu-icon"></div>
+    <MenuItem >
+        <div className="crx-meu-content   crx-spac"  >
+          <div className="crx-menu-icon">
+          <i className="far fa-pencil"></i>
+          </div>
           <div className="crx-menu-list">
-           Delete Config Template
+            Edit template
+          </div>
+        </div>
+      </MenuItem>
+      <MenuItem >
+        <div className="crx-meu-content groupingMenu crx-spac"  >
+          <div className="crx-menu-icon">
+          <i className="far fa-copy"></i>
+          </div>
+          <div className="crx-menu-list">
+            Clone template
+          </div>
+        </div>
+      </MenuItem>
+      <MenuItem >
+        <div className="crx-meu-content  crx-spac" onClick={Deleteconfirm} >
+          <div className="crx-menu-icon">
+            <i className="far fa-trash-alt"></i>
+          </div>
+          <div className="crx-menu-list">
+           Delete template
           </div>
         </div>
       </MenuItem>
     </Menu>
-    <Dialogbox
-        className="crx-unblock-modal"
-        title={"ERROR"}
-        setIsOpen={setModal}
-        onConfirm={toggleModal}
-        isOpen={modal}
-        myVar={false}
-       // primary={primary}
-        secondary={"Confirm"}
-      >
-        {
-          <div className="crxUplockContent">
-            <p>
-             Deleting Default Template is unathorized
-            </p>
-          </div>
-        }
-      </Dialogbox>
       <Dialogbox
-        className="crx-unblock-modal"
+        className="crx-unblock-modal crxConfigModal"
         title={""}
         setIsOpen={setnondefault}
         onConfirm={Onconfirm}
         isOpen={nondefault}
         myVar={true}
-        primary={"Cancel"}
-        secondary={"Confirm"}
+        secondary={"Yes, delete"}
+        primary={"No, do not delete"}
       >
         {
-          <div className="crxUplockContent">
-            <p>
-             Are you sure you want to Delete ?
+          <div className="crxUplockContent configuserParaMain">
+            <p className="configuserPara1">
+            You are attempting to <span className="boldPara">delete</span> this <span className="boldPara">{unitId}</span> template. You will not be abe to undo this action.
             </p>
+            <p className="configuserPara2">Are you sure you would like to delete template?</p>
           </div>
         }
-      </Dialogbox>
+      </Dialogbox> 
     </>
+ 
   );
 };
 export default ConfigTemplateActionMenu;
