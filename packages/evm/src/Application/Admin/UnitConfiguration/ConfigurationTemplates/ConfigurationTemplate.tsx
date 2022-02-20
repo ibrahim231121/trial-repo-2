@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { CRXDataTable } from "@cb/shared";
+import { CRXDataTable, CRXMenu } from "@cb/shared";
 import { useTranslation } from "react-i18next";
+import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getGroupAsync, getGroupUserCountAsync } from "../../../../Redux/GroupReducer";
@@ -8,11 +9,14 @@ import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import anchorDisplay from "../../../../GlobalComponents/Display//AnchorDisplay";
 import { RootState } from "../../../../Redux/rootReducer";
 import './ConfigurationTemplate.scss'
+import {
+  DEVICETYPE_GET_URL
+} from "../../../../utils/Api/url";
 import { CRXButton } from "@cb/shared";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
-import { getConfigurationInfoAsync } from "../../../../Redux/TemplateConfiguration";
+import { getConfigurationInfoAsync, getDeviceTypeInfoAsync } from "../../../../Redux/TemplateConfiguration";
 import { Link } from "react-router-dom";
 import {
   SearchObject,
@@ -40,7 +44,21 @@ type ConfigTemplate = {
 
 }
 
+type DeviceType = {
+  id: string,
+  name: string,
+  description: string,
+  category: string,
+  history: {
+    createdOn: string,
+    updateOn: string | null
+    rowVersion: string
+  }
+}
+
+
 const configTemplate = (name: string, device: any) => {
+  console.log(device);
   return (
     <>
       <Link className={"linkColor"} children={name} key={device.recId} to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: device.recId, name: name, isedit: true, type: "BC04", deviceTypeCategory: device.deviceTypeCategory } }} />
@@ -56,6 +74,7 @@ const ConfigurationTemplates: React.FC = () => {
 
   React.useEffect(() => {
     dispatch(getConfigurationInfoAsync());
+    dispatch(getDeviceTypeInfoAsync());
 
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
@@ -66,7 +85,9 @@ const ConfigurationTemplates: React.FC = () => {
 
 
   const UnitConfigurationTemplates: any = useSelector((state: RootState) => state.templateSlice.templateInfo);
-  //const configTemplatCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
+  const DeviceTypes: any = useSelector((state: RootState) => state.templateSlice.deviceType);
+
+  const [createTemplateDropdown, setCreateTemplateDropdown] = React.useState<DeviceType[]>([]);
   const [rows, setRows] = React.useState<ConfigTemplate[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -75,7 +96,6 @@ const ConfigurationTemplates: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<ConfigTemplate[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<ConfigTemplate>();
   const setData = () => {
-
     let configTemplateRows: ConfigTemplate[] = [];
     if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
       configTemplateRows = UnitConfigurationTemplates.map((template: any, i: number) => {
@@ -93,6 +113,15 @@ const ConfigurationTemplates: React.FC = () => {
     setReformattedRows(configTemplateRows);
 
   }
+  const setTemplateDropdown = () => {
+    if (DeviceTypes && DeviceTypes.length > 0) {
+      setCreateTemplateDropdown(DeviceTypes)
+    }
+
+  }
+  React.useEffect(() => {
+    setTemplateDropdown();
+  }, [DeviceTypes]);
 
   React.useEffect(() => {
     setData();
@@ -218,25 +247,8 @@ const ConfigurationTemplates: React.FC = () => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
-
-  //   const list = [
-  //     {label: "BC03" , router: "BC03"},
-  //     {label: "BC04" , router: "/assets"},
-  //     {label: "In-Car" , router: "In-Car"},
-  //     {label: "Master Dock" , router: "Master Dock"}
-  // ]
   return (
     <div style={{ marginLeft: "6%", marginTop: "10%" }}>
-
-      {/* <CRXMenu 
-                id="menuCreateTemplate"
-                name="Create Template"
-                btnClass="CreateElementButton"
-                className="CreateElementMenu"
-                MenuList = {list}
-                disableRipple={true}
-                horizontal="left"
-            /> */}
       <Menu
         style={{ backgroundColor: '#FFFFFF' }}
         align="start"
@@ -250,30 +262,16 @@ const ConfigurationTemplates: React.FC = () => {
           </MenuButton>
         }
       >
-
-        <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "BCO3", deviceTypeCategory: '1' } }}>
-            <div style={{ backgroundColor: '#FFFFFF' }}>BC03</div>
-          </Link>
-        </MenuItem>
-        <MenuItem >
-          <Link to="/admin/unitanddevices/createtemplate/BC03Lte">
-            <div style={{ backgroundColor: '#FFFFFF' }}>BC03 Lte</div>
-          </Link>
-        </MenuItem>
-        <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 1, isedit: false, type: "In-Car", deviceTypeCategory: '3' } }}>
-            <div style={{ backgroundColor: '#FFFFFF' }}>In-Car</div>
-          </Link>
-        </MenuItem>
-        <MenuItem >
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: 0, isedit: false, type: "BCO4", deviceTypeCategory: '2' } }}>
-            <div style={{ backgroundColor: '#FFFFFF' }}>BC04</div>
-          </Link>
-        </MenuItem>
+        {createTemplateDropdown.map((x, y) => {
+          return (
+            <MenuItem >
+              <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: y, isedit: false, type: x.name, deviceTypeCategory: x.category } }}>
+                <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
+              </Link>
+            </MenuItem>
+          )
+        })}
       </Menu >
-
-
       {
         rows && (
           <CRXDataTable
@@ -281,13 +279,11 @@ const ConfigurationTemplates: React.FC = () => {
             actionComponent={<ConfigTemplateActionMenu
               row={selectedActionRow}
             />}
-
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
             orderParam={order}
             orderByParam={orderBy}
-
             showToolbar={true}
             showCountText={false}
             columnVisibilityBar={true}
@@ -299,8 +295,6 @@ const ConfigurationTemplates: React.FC = () => {
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
             showCustomizeIcon={true}
-
-
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}

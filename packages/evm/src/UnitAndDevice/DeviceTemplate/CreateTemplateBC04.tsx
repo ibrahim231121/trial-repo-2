@@ -7,6 +7,7 @@ import "./createTemplate.scss";
 import BC04 from "../unitSchemaBC04.json";
 import BC03 from '../unitSchemaBC03.json';
 import VRX from '../unitSchemaVRX.json';
+import BC03LTE from "../unitSchemaBCO3Lte.json";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
@@ -30,22 +31,27 @@ const CreateTemplate = (props: any) => {
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
+  
 
-  console.log(historyState.deviceTypeCategory)
+  console.log("history", historyState)
   let FormSchema: any = null;
   let templateName: string = "";
-  if (historyState.deviceTypeCategory == "1") {
+
+  if (historyState.deviceTypeCategory == "BC03") {
     FormSchema = BC03;
-    templateName = "BC03"
   }
-  else if (historyState.deviceTypeCategory == "2") {
+  else if (historyState.deviceTypeCategory == "BC04") {
     FormSchema = BC04;
-    templateName = "BC04"
   }
-  else if (historyState.deviceTypeCategory == "3") {
+  else if (historyState.deviceTypeCategory == "Incar") {
     FormSchema = VRX;
-    templateName = "In-Car"
   }
+  else if(historyState.deviceTypeCategory == "BC03LTE")
+  {
+    FormSchema = BC03LTE;
+  }
+
+  templateName = historyState.deviceTypeCategory;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
 

@@ -67,3 +67,6 @@ export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/Container
 
 export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 export const TEMPLATE_CONFIGURATION_DELETE_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/`
+export const DEVICETYPE_GET_URL = `${BASE_URL_UNIT_SERVICE}/DeviceTypes?Page=1&Size=100`
+
+export const STATIONINFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationInfo?Page=1&Size=100`
