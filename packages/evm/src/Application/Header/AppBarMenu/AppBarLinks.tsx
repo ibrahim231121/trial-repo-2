@@ -5,7 +5,10 @@ import AppsIcon from '@material-ui/icons/Apps';
 const listOFMenu = [
     {
         label : 'REAL TIME Command',
-        router : "RealTimeCommand"
+        router : "RealTimeCommand",
+        onClick: () => {
+            window.location.href = "http://localhost:8081";
+        }
     },
     {
         label : 'Getac Enterprise',
