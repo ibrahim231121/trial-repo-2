@@ -38,7 +38,29 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
       localStorage.setItem("AssetContainer", JSON.stringify(selectedItems));
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
   };
+  
+  React.useEffect(()=> {
 
+    const trAtiveValue =  document.querySelector(".rc-menu--open")?.closest(".MuiTableRow-root.MuiTableRow-hover");
+
+    let dataui = document.querySelectorAll(".MuiTableRow-root");
+
+    let trAtiveArray = Array.from(dataui);
+
+    trAtiveArray.map((e)=>{
+
+       if(e.classList.contains("SelectedActionMenu")) {
+
+         e.classList.remove("SelectedActionMenu")
+
+       } else {
+
+        trAtiveValue?.classList.add("SelectedActionMenu");
+       }
+
+     })
+
+  })
   return (
     <>
       <Droppable droppableId={container.id} key={container.id} isDropDisabled={true}>

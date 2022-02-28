@@ -36,6 +36,7 @@ body {
 .linkColor {
   color: #c34400 !important;
   cursor: pointer;
+  box-shadow: none !important;
 }
 
 .linkColor:hover {
@@ -246,7 +247,7 @@ body {
     top: 135px;
     /* background: #fff; */
     padding-top: 3.5px;
-    /* z-index: 9999; */
+    z-index: 999;
     padding-bottom: 0px !important;
     height: 51px;
 }
@@ -261,14 +262,43 @@ body {
   color: #f5f5f5;
 }
 
+.linkColor::selection,.anchorStyle::selection {
+  color: #c34400;
+  background-color: transparent;
+}
+a::selection {
+  color: #c34400;
+  background-color: transparent;
+}
+
 .selectionBg::selection {
   background: #d1d2d4;
   color:#333
 }
 
-.CRXDataTableCustom tr td .dataTableSimpleText::selection {
-  background: #d1d2d4;
-  color:#333
+
+.CRXDataTableCustom .Mui-selected ::selection,
+.CRXDataTableCustom tr th ::selection,
+.CRXDataTableCustom tr:hover ::selection,
+.CRXMultiDataTableCustom tr th ::selection,
+.crx-datapermission-tab .dataPermissionColumn::selection {
+  background-color: #d1d2d4;
+  color: #333333;
+}
+.CRXDataTableCustom .Mui-selected .linkColor::selection,
+.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom .Mui-selected .anchorStyle::selection,
+.CRXDataTableCustom tr:hover .anchorStyle::selection {
+  color: #ff6e20;
+  background-color: transparent;
+}
+
+
+.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom tr:hover .anchorStyle::selection {
+  color: #ff6e20;
+  text-decoration: underline;
+  background-color: transparent;
 }
 
 

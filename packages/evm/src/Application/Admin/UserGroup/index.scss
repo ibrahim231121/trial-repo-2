@@ -327,6 +327,16 @@
                   }
                }
             }
+               .CRXCheckBox {
+                 span {
+                   span {
+                     color: #d1d2d4;
+                     &::after {
+                       color:transparent !important;
+                     }
+                   }
+                 }
+               }
          }
          td {
             vertical-align: middle !important;
@@ -361,9 +371,51 @@
                text-align: left;
                padding-left: 14px !important;
             }
+            
          }
+         &:nth-child(even) {
+            td {
+               &:first-child {
+                  .fal {
+                     position: relative;
+                     &::after {
+                       content: "";
+                       color: #fff;
+                       left: 0;
+                       position: absolute;
+                       font-family: "Font Awesome 5 Duotone";
+                       font-weight: 900;
+                       right: 0;
+                     }
+                     &.crxCheckForDarBg {
+                       &::after {
+                         color: transparent;
+                       }
+                     }
+                   }
+               }
+            }
+            
+         }
+     
        }
        
+       .SelectedActionMenu {
+         td:nth-child(2) {
+           background-color: #333 !important;
+           color: #d1d2d4 !important;
+           position: static;
+           .rc-menu-container {
+             .rc-menu {
+               left:50px !important;
+               margin-left: 0;
+             }
+           }
+         }
+         .rc-menu-button {
+           color: #d1d2d4;
+         }
+       }
    }
 
    .crxTableHeaderSize {

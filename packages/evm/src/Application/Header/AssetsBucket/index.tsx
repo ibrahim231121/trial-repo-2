@@ -202,8 +202,8 @@ const CRXAssetsBucketPanel = () => {
       headCells[colIdx].headerArray = v;
     };
     const noOptionStyled = {
-      width : "107px",
-      marginLeft : "0px",
+      width : "116px",
+      marginLeft : "-1px",
       whiteSpace : "nowrap",
       overFlow : "hidden",
       textOverflow : "ellipsis",
@@ -212,7 +212,7 @@ const CRXAssetsBucketPanel = () => {
       paddingRight : "10px !important",
       fontSize : "13px",
       lineHeight : "15px",
-      top : "5px",
+      top : "0px",
       marginTop : "0"
     }
     const paddLeft = {
@@ -379,7 +379,28 @@ const CRXAssetsBucketPanel = () => {
     //   }
     // });
   //};
-  
+  React.useEffect(()=> {
+
+    const trAtiveValue =  document.querySelector(".rc-menu--open")?.closest("tr[class*='MuiTableRow-hover-']");
+
+    let dataui = document.querySelectorAll("tr[class*='MuiTableRow-root-']");
+
+    let trAtiveArray = Array.from(dataui);
+
+    trAtiveArray.map((e)=>{
+
+       if(e.classList.contains("SelectedActionMenu")) {
+
+         e.classList.remove("SelectedActionMenu")
+
+       } else {
+
+        trAtiveValue?.classList.add("SelectedActionMenu");
+       }
+
+     })
+
+  })
   return (
     <CRXDrawer
       className="CRXBucketPanel crxBucketPanelStyle"
