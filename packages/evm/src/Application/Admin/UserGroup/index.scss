@@ -41,9 +41,6 @@
       top: 180px;
       z-index: 6;
    }
-   .manageUserGroupsDataTable {
-      
-   }
 }
 .crxTableDataUi {
    margin-top: -38px;
@@ -85,10 +82,11 @@
                top:240px;
                span {
                   display: block !important;
+                  padding: 0;
                   span {
                      .userGroupSearchBox {
-                        padding-left: 4px;
-                        padding-right: 4px;
+                        padding-left: 0;
+                        padding-right: 0;
                      }
                   }
                }
@@ -100,6 +98,7 @@
       }
       tbody {
          tr {
+            height: 50px;
             &:nth-child(odd) {
                background-color: #FFFFFF;
             }
@@ -117,6 +116,13 @@
                   color: #d1d2d4;
                }
             }
+            &:hover {
+               td{
+                  &:nth-child(3) {
+                     color: #C34400 !important;
+                  }
+               }
+            }
          }
       }
    }
@@ -128,19 +134,30 @@
       padding: 0 18px !important;
    }
    td {
+      padding: 0px 9px 0px 9px !important;
+      vertical-align: middle !important;
       &:not(:first-child) {
          text-align: left !important;
-         padding: 6px 9px 6px 10px !important;
+         padding: 7px 9px !important;
       }
+      line-height: 20px !important;
       &:first-child {
          padding-right: 8px !important;
+        
+         .toolBar {
+            margin-top:5px;
+         }
          &:hover {
             border:0 solid transparent !important;
             border-right: 1px solid #ccc !important;
             border-bottom: 1px solid #ccc !important;
          }
+         &::before {
+            height: 100% !important;
+         }
       }
       &:nth-child(3) {
+         color:#C34400 !important;
             a {
                color:#C34400 !important;
                font-family: Arial, Helvetica, sans-serif;
@@ -155,6 +172,7 @@
    }
       .rc-menu-button  {
          font-size: 18px;
+         margin: 0;
       }
    }
    .MuiTableHead-root {
