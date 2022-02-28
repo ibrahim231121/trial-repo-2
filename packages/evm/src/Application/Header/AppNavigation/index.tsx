@@ -69,56 +69,56 @@ const CRXLefNavigation = () => {
         },
       ],
     },
-    {
-      moduleId:0,
-      label: "Live Video",
-      icon: "fas fa-video NaveIcon",
-      classes: "liveVideoTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Edit",
+    // {
+    //   moduleId:0,
+    //   label: "Live Video",
+    //   icon: "fas fa-video NaveIcon",
+    //   classes: "liveVideoTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Edit",
 
-          items: [
-            {
-              moduleIds:0,
-              label: "Save",
-            },
-            {
-              moduleIds:0,
-              label: "Delete",
-            },
-          ],
-        },
-        {
-          moduleIds:0,
-          label: "Archieve",
+    //       items: [
+    //         {
+    //           moduleIds:0,
+    //           label: "Save",
+    //         },
+    //         {
+    //           moduleIds:0,
+    //           label: "Delete",
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "Archieve",
 
-          items: [
-            {
-              moduleIds:0,
-              label: "Remove",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      moduleId:0,
-      label: "Maps",
-      icon: "icon icon-compass5 NaveIcon",
-      classes: "mapsTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Analytics Map",
-        },
-        {
-          moduleIds:0,
-          label: "AVL Map",
-        },
-      ],
-    },
+    //       items: [
+    //         {
+    //           moduleIds:0,
+    //           label: "Remove",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
+    // {
+    //   moduleId:0,
+    //   label: "Maps",
+    //   icon: "icon icon-compass5 NaveIcon",
+    //   classes: "mapsTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Analytics Map",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "AVL Map",
+    //     },
+    //   ],
+    // },
     {
       moduleId:0,
       label: 'Units & Devices',
@@ -128,59 +128,59 @@ const CRXLefNavigation = () => {
       },
    },
 
-    // {
-    //   moduleId:0,
-    //   label: "ALPR",
-    //   icon: "fas fa-address-card NaveIcon",
-    //   classes: "aplrTab",
-    //   items: [
-    //     {
-    //       moduleIds:0,
-    //       label: "Plate Captures",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Live ALPR",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Live ALPR",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Manage Hot List",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       separator: true,
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Manage Hot List Data Source",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Manage License Plates",
-    //     },
-    //   ],
-    // },
-
     {
       moduleId:0,
-      label: "Reports",
-      icon: "icon icon-file-text NaveIcon",
-      classes: "reportingTab",
+      label: "ALPR",
+      icon: "fas fa-address-card NaveIcon",
+      classes: "aplrTab",
       items: [
         {
           moduleIds:0,
-          label: "Analytics Map",
+          label: "Plate Captures",
         },
         {
           moduleIds:0,
-          label: "AVL Map",
+          label: "Live ALPR",
+        },
+        {
+          moduleIds:0,
+          label: "Live ALPR",
+        },
+        {
+          moduleIds:0,
+          label: "Manage Hot List",
+        },
+        {
+          moduleIds:0,
+          separator: true,
+        },
+        {
+          moduleIds:0,
+          label: "Manage Hot List Data Source",
+        },
+        {
+          moduleIds:0,
+          label: "Manage License Plates",
         },
       ],
     },
+
+    // {
+    //   moduleId:0,
+    //   label: "Reports",
+    //   icon: "icon icon-file-text NaveIcon",
+    //   classes: "reportingTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Analytics Map",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "AVL Map",
+    //     },
+    //   ],
+    // },
 
     {
       moduleId:0,

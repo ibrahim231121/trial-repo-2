@@ -14,7 +14,6 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
-import { ContactsOutlined } from '@material-ui/icons';
 
 const checkboxStyle = makeStyles({
   root: {
