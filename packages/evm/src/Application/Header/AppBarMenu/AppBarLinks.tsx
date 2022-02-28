@@ -5,10 +5,7 @@ import AppsIcon from '@material-ui/icons/Apps';
 const listOFMenu = [
     {
         label : 'REAL TIME Command',
-        router : "RealTimeCommand",
-        onClick: () => {
-            window.location.href = "http://localhost:8081";
-        }
+        router : "",
     },
     {
         label : 'Getac Enterprise',
@@ -28,6 +25,7 @@ const CRXAppDropdown = () => {
             wrapper="applicationsMenu"
             MenuList={listOFMenu}
             horizontal="left"
+            onClick={() => {window.location.href = "http://localhost:8081" }}
         />
         </div>
     )
