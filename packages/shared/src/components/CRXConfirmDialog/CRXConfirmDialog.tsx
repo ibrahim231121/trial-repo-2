@@ -73,7 +73,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
           variant="contained"
           onClick={() => {
             onConfirm();
-            //setIsOpen(false);
+            setIsOpen(false);
           }}
         >
           {primary || "primary"}

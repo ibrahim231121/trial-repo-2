@@ -645,6 +645,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
 
   const onSubmit = async (e: any) => {
     setResponseError('');
+    checkUserGroup()
     setAlert(false);
     if (id) await onEdit();
     else {

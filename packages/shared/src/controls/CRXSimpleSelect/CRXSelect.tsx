@@ -87,9 +87,10 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
     });
 
     return (
+      <>
       <Select
         ref={ref}
-        id="fagg"
+        id={id}
         native={false}
         IconComponent={props => (
           <i {...props} className={`crxArrowDownSelect fas fa-caret-down ${props.className}`}>
@@ -97,10 +98,11 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
           </i>)}
         className={"CRXSimpleSelect " + className}
         value={value}
+        //renderValue={(value : any) => <div>{value}</div>}
         displayEmpty={true}
         defaultValue={defaultOptionText}
         onChange={onChange}
-        input={<InputBase id={id} />}
+        input={<InputBase id={"input" + id} />}
         MenuProps={{
           anchorOrigin: {
             vertical: "bottom",
@@ -128,6 +130,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         )}
         {option}
       </Select>
+      </>
     );
   }
 );

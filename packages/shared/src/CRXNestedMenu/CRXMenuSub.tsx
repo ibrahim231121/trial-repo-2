@@ -165,17 +165,20 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
         return null;
     }
     
-    const removeParent = () => {
-        // if(activeItem != null)
-        //     setActiveItem(null)
+    const removeParent = (event : any) => {
+        event.preventDefault()
+
+        if(activeItem != null && event.path[3].className != 'p-submenu-list')
+            setActiveItem(null)
     }
 
     useEffect(() => {
+        
         if(activeItem != null) {
-            document.addEventListener('mousedown', removeParent);
+            window.addEventListener('mouseup', removeParent);
         }
         return () => {
-            document.removeEventListener('mousedown', removeParent);
+            window.removeEventListener('mouseup', removeParent);
         }
     }, [activeItem])
 
@@ -184,7 +187,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
     return (
         <>
         <ul ref={MeuRef} className={className} role={root ? 'menubar' : 'menu'} aria-orientation="horizontal">
-                {submenu}
+            {submenu}
         </ul>
         </>
     )
