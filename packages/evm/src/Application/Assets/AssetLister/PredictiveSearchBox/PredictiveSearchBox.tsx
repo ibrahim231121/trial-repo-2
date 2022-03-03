@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import usePostFetch from "../../../../utils/Api/usePostFetch";
 import { EVIDENCE_PREDITIVE_URL } from '../../../../utils/Api/url'
+import { getToken } from "../../../../Login/API/auth";
+
 interface Props {
   onSet: (e: any) => void;
   value: string;
@@ -91,7 +93,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
 
     /* Applying usePostFetch Hook*/
     methodFromHook(getQuery(searchVal), {
-      "Group-Ids": "1,2,3,4,5,6,7,8,9",
+      'Authorization': `Bearer ${getToken()}`,
       "Content-Type": "application/json",
     });
   };

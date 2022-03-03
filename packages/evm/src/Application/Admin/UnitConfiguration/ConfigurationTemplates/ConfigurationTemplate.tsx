@@ -18,6 +18,7 @@ import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { getConfigurationInfoAsync, getDeviceTypeInfoAsync } from "../../../../Redux/TemplateConfiguration";
 import { Link } from "react-router-dom";
+import { urlList, urlNames } from "../../../../utils/urlList"
 import {
   SearchObject,
   ValueString,

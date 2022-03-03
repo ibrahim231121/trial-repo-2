@@ -65,7 +65,7 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { routeTo: "/admin/usergroups", type: "text", label: "Group", }
+            //{ routeTo: "/admin/usergroups", type: "text", label: "Group", }
         ],
     },
 
@@ -122,7 +122,7 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Templates", },
-            { type: "text", label: "Create Template : BC04", }
+            //{ type: "text", label: "Create Template : BC04", }
         ],
     },
 

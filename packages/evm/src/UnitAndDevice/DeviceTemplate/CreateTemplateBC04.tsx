@@ -12,6 +12,7 @@ import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
+import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
 import { CRXTitle } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
@@ -19,11 +20,9 @@ import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
 
-
-
-var re = /[\/]/;
+const re = /[\/]/;
 const CreateTemplate = (props: any) => {
-
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const [_FormSchema, setFormSchema] = React.useState({});
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
@@ -42,8 +41,7 @@ const CreateTemplate = (props: any) => {
   const formikProps = useFormikContext()
   let FormSchema: any = null;
   let templateName: string = "";
-  const dispatch = useDispatch();
-  console.log(historyState)
+
   if (historyState.deviceType == "BC03") {
     FormSchema = BC03;
   }
@@ -80,12 +78,19 @@ const CreateTemplate = (props: any) => {
     }
 
     dispatch(getStationsAsync());
+    if (historyState.isedit){
 
-
-    if (historyState.isedit)
+      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name}));
       loadData();
-    else
+    }
+    else{
       setDataFetched(true);
+      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType}));
+    }
+
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    } 
   }, []);
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {

@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
-import AdvanceOptions from './AdvanceOptions';
+import AdvanceOption from './AdvanceOption';
 import MasterMain from './AssetDataTable';
 import './AssetLister.scss';
 import SelectedAsset from './SelectedAsset';
@@ -19,6 +19,7 @@ dateOptionsTypes,
 } from '../../../utils/constant';
 import usePostFetch from '../../../utils/Api/usePostFetch';
 import { EVIDENCE_GET_URL } from '../../../utils/Api/url'
+import { getToken } from "../../../Login/API/auth";
 
 const AssetSearchType = {
   basicSearch: "BasicSearch",
@@ -110,8 +111,8 @@ const SearchComponent = (props: any) => {
 
     /* Applying usePostFetch Hook*/
     postDataForSearch(querry || QUERRY, {
-      'Group-Ids': '1,2,3,4,5',
-      'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getToken()}`,
+        'Content-Type': 'application/json',
     });
 
     if (searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch) {
@@ -416,7 +417,7 @@ const SearchComponent = (props: any) => {
               </CRXButton>
 
               {showAdvance && (
-                <AdvanceOptions
+                <AdvanceOption
                   getOptions={(e) => getAllOptions(e)}
                   hideOptions={() => setShowAdvance(false)}
                   dateOptionType={dateOptionType}

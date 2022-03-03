@@ -577,7 +577,7 @@
   position: sticky !important;
   padding-left: 7px !important;
   z-index: 1;
-  left: 59px;
+  //left: 59px;
 }
 
 .col-three {
@@ -585,7 +585,7 @@
   max-width: 80px;
   padding-left: 2px !important;
   z-index: 2;
-  left: 117px;
+  //left: 117px;
 }
 
 tr:nth-child(even) td[scope="row"] {
@@ -609,7 +609,7 @@ td.CellCheckBox {
         span {
           color: #d1d2d4;
           &::after {
-            color:transparent !important;
+            color: transparent !important;
           }
         }
       }
@@ -698,6 +698,11 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
       .CRXCheckBox span span {
         border-color: #d1d2d4;
         background-color: #333;
+        &.fal {
+          &::after {
+            color: transparent !important;
+          }
+        }
       }
     }
 
@@ -715,6 +720,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
     background: none;
     border: none;
     font-size: 23px;
+    margin: 0;
   }
 
   th {
@@ -930,4 +936,41 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
 }
 .crxClearfilter {
   place-content: flex-end;
+}
+.CRXDataTableCustom {
+  tbody {
+    .SelectedActionMenu {
+      td:nth-child(3),
+      td:nth-child(4),
+      td:nth-child(5),
+      td:nth-child(6),
+      td:nth-child(7),
+      td:nth-child(8),
+      td:nth-child(9),
+      td:nth-child(10),
+      td:nth-child(11),
+      td:nth-child(12),
+      td:nth-child(13),
+      td:nth-child(14) {
+        background-color: #333 !important;
+        color: #d1d2d4 !important;
+        .assetThumb {
+          .assetsThumbGetac {
+            border: 1px solid #d1d2d4;
+          }
+        }
+      }
+      .rc-menu-button {
+        color: #d1d2d4;
+      }
+      td:nth-child(3) {
+        position: static;
+        .rc-menu-container {
+          .rc-menu {
+            left:55px !important;
+          }
+        }
+      }
+    }
+  }
 }

@@ -116,6 +116,8 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       width: noOptions && noOptions.width,
       position: "absolute",
       fontSize: "14px",
+      top:"0px",
+      left:"1px",
     },
     option: {
       height: "33px",
