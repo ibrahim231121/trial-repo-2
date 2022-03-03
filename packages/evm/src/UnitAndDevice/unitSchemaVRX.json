@@ -15,19 +15,140 @@
       "key": "unittemplate/station/Select",
       "type": "select",
       "label": "Station",
-      "value": "station 1",
+      "options": []
+    }
+  ],
+  "Unit Settings": [
+    {
+      "id": "3",
+      "key": "unitSettings/mode/Select",
+      "type": "select",
+      "label": "Mode",
+      "value": "PC",
       "options": [
         {
-          "value": "station 1",
-          "label": "station 1"
+          "value": "PC",
+          "label": "PC"
         },
         {
-          "value": "station 2",
-          "label": "station 2"
+          "value": "DVR",
+          "label": "DVR"
+        },
+        {
+          "value": "CAD",
+          "label": "CAD"
         }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "unitSettings/loginMethod/Select",
+      "type": "select",
+      "label": "Login Method",
+      "value": "Getac Auth",
+      "options": [
+        {
+          "value": "Getac Auth",
+          "label": "Getac Auth"
+        },
+        {
+          "value": "Active Directory",
+          "label": "Active Directory"
+        },
+        {
+          "value": "CAD",
+          "label": "CAD"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "key": "unitSettings/enableCategories/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Categorization",
+      "value": true
+    },
+    {
+      "id": "6",
+      "key": "unitSettings/categories/Multiselect",
+      "type": "multiselect",
+      "label": "Categories",
+      "value": "",
+      "depends": "unitSettings/enableCategories/CheckBox",
+      "valueDepends": [
+        true
+      ],
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "add all",
+          "label": "add all"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "key": "unitSettings/configUpdateInterval/NumberBox",
+      "type": "number",
+      "label": "Config Update Interval",
+      "value": 10,
+      "seconds": true,
+      "required": true
+    },
+    {
+      "id": "8",
+      "required": true,
+      "key": "unitSettings/mediaRetentionPolicy/Select",
+      "type": "select",
+      "label": "Media Retention Policy",
+      "value": "",
+      "options": [
+        {
+          "value": "",
+          "label": "none"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "key": "unitSettings/maximumVideoLength/NumberBox",
+      "type": "number",
+      "label": "Maximum Video Length",
+      "value": 60,
+      "seconds": false,
+      "required": true,
+      "requiredField": "true"
+    },
+    {
+      "id": "10",
+      "key": "unitSettings/gpsFrequency/NumberBox",
+      "type": "number",
+      "label": "GPS Frequency",
+      "value": 15,
+      "seconds": true,
+      "required": true
+    },
+    {
+      "id": "11",
+      "key": "unitSettings/rebootEveryDay/CheckBox",
+      "type": "checkbox",
+      "label": "Reboot Every Day",
+      "value": false
+    },
+    {
+      "id": "12",
+      "key": "unitSettings/rebootTime/Timepicker",
+      "type": "time",
+      "label": "Reboot Time",
+      "value": "",
+      "depends": "unitSettings/rebootEveryDay/CheckBox",
+      "valueDepends": [
+        true
       ]
     }
   ],
-  "Unit Settings": [],
   "Devices": []
 }

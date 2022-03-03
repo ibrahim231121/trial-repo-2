@@ -1,6 +1,6 @@
 import React from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { Link } from "react-router-dom";
 import "./createTemplate.scss";
@@ -8,19 +8,24 @@ import BC04 from "../unitSchemaBC04.json";
 import BC03 from '../unitSchemaBC03.json';
 import VRX from '../unitSchemaVRX.json';
 import BC03LTE from "../unitSchemaBCO3Lte.json";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
 import * as Yup from "yup";
 import { CRXTitle } from "@cb/shared";
-import { urlList } from "../../utils/urlList";
+import { urlList, urlNames } from "../../utils/urlList";
+import { RootState } from "../../Redux/rootReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
+
 
 
 var re = /[\/]/;
 const CreateTemplate = (props: any) => {
 
   const [value, setValue] = React.useState(0);
+  const [_FormSchema, setFormSchema] = React.useState({});
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
@@ -31,27 +36,34 @@ const CreateTemplate = (props: any) => {
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
-  
-
-  console.log("history", historyState)
+  const retention: any = useSelector((state: RootState) => state.unitTemplateSlice.retentionPolicy);
+  const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
+  const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
+  const formikProps = useFormikContext()
   let FormSchema: any = null;
   let templateName: string = "";
-
-  if (historyState.deviceTypeCategory == "BC03") {
+  const dispatch = useDispatch();
+  console.log(historyState)
+  if (historyState.deviceType == "BC03") {
     FormSchema = BC03;
   }
-  else if (historyState.deviceTypeCategory == "BC04") {
+  else if (historyState.deviceType == "BC04") {
     FormSchema = BC04;
   }
-  else if (historyState.deviceTypeCategory == "Incar") {
+  else if (historyState.deviceType == "Incar") {
     FormSchema = VRX;
+
   }
-  else if(historyState.deviceTypeCategory == "BC03LTE")
-  {
+  else if (historyState.deviceType == "BC03LTE") {
     FormSchema = BC03LTE;
   }
-
-  templateName = historyState.deviceTypeCategory;
+  else {
+    window.location.replace("/notfound")
+  }
+  React.useEffect(() => {
+    setFormSchema(FormSchema);
+  }, [FormSchema])
+  templateName = historyState.deviceType;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
 
@@ -60,13 +72,93 @@ const CreateTemplate = (props: any) => {
     tabs.push({ label: data, index: y })
   })
 
+
   React.useEffect(() => {
+    if (historyState.deviceType == "Incar") {
+      dispatch(getRetentionPolicyInfoAsync());
+      dispatch(getCategoriesAsync());
+    }
+
+    dispatch(getStationsAsync());
+
 
     if (historyState.isedit)
       loadData();
     else
       setDataFetched(true);
   }, []);
+  React.useEffect(() => {
+    if (historyState.deviceType == "Incar") {
+      setRetentionDropdown();
+    }
+  }, [retention]);
+  React.useEffect(() => {
+    if (historyState.deviceType == "Incar") {
+      setCategoriesDropdown();
+    }
+  }, [categories]);
+
+
+  React.useEffect(() => {
+    setStationDropDown();
+  }, [stations]);
+
+
+  const setRetentionDropdown = () => {
+    var retentionOptions: any = [];
+    if (retention && retention.length > 0) {
+      retention.map((x: any, y: number) => {
+        retentionOptions.push({ value: x.id, label: x.name })
+
+      })
+      FormSchema["Unit Settings"].map((x: any, y: number) => {
+        if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+      })
+      setFormSchema(FormSchema);
+    }
+  }
+  const setCategoriesDropdown = () => {
+    var categoriesOptions: any = [];
+    if (categories && categories.length > 0) {
+      categories.map((x: any, y: number) => {
+        categoriesOptions.push({ value: x.id, label: x.name })
+      })
+      //  categories.sort((a: any, b: any) => a.label.localeCompare(b.label));
+      FormSchema["Unit Settings"].map((x: any, y: number) => {
+        if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 2) {
+          x.options.push(...categoriesOptions)
+        }
+      })
+      setFormSchema(FormSchema);
+    }
+  }
+
+  const setStationDropDown = () => {
+    var stationOptions: any = [];
+    if (stations && stations.length > 0) {
+      stations.map((x: any, y: number) => {
+        stationOptions.push({ value: x.id, label: x.name })
+      })
+      if (historyState.deviceType == "Incar") {
+        FormSchema["Template Information"].map((x: any, y: number) => {
+          if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
+            x.options.push(...stationOptions)
+          }
+        })
+      }
+      else {
+        FormSchema["Unit Template"].map((x: any, y: number) => {
+          if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
+            x.options.push(...stationOptions)
+          }
+        })
+      }
+      setFormSchema(FormSchema);
+    }
+  }
+
 
   React.useEffect(() => {
 
@@ -112,7 +204,13 @@ const CreateTemplate = (props: any) => {
         tab1 = FormSchema[Property];
 
       for (const field of tab1) {
-        if (field.hasOwnProperty("key")) {
+        if (field.key == "unitSettings/categories/Multiselect") {
+          Initial_Values.push({
+            key: field.key,
+            value: field.value.split(','),
+          });
+        }
+        else if (field.hasOwnProperty("key")) {
           Initial_Values.push({
             key: field.key,
             value: field.value,
@@ -124,7 +222,6 @@ const CreateTemplate = (props: any) => {
           (formObj, item) => ((formObj[item.key] = item.value), formObj),
           {}
         );
-
 
         setInitial_Values_obj(key_value_pair);
       }
@@ -170,7 +267,6 @@ const CreateTemplate = (props: any) => {
 
     if (unitDataResponse.ok) {
       const response = await unitDataResponse.json();
-
       setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
       setDataFetched(true);
       setEditCase(true)
@@ -187,12 +283,12 @@ const CreateTemplate = (props: any) => {
     if (values == false) {
       setOpen(true);
     } else {
-      history.push("/admin/unitconfiguration/unitconfigurationtemplate");
+      history.push(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url);
     }
   };
   const onConfirmm = () => {
     setOpen(false);
-    history.push("/admin/unitconfiguration/unitconfigurationtemplate");
+    history.push(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url);
   };
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
@@ -201,8 +297,6 @@ const CreateTemplate = (props: any) => {
   const handleSave = (values: any, resetForm: any) => {
     //  let value1 = values
     //  let value2= valuess
-
-
     let Initial_Values: Array<any> = [];
 
     Object.entries(values).map(([key, value]) => {
@@ -231,19 +325,27 @@ const CreateTemplate = (props: any) => {
     //var defaultTemplates = defaultTemplate[0].value;
 
     var fields = Initial_Values.filter(function (returnableObjects) {
+
+      var x = returnableObjects;
+      Object.keys(x).forEach((a) => {
+        if (a == "value" && Array.isArray(x[a])) {
+          x[a] = x[a].toString()
+        }
+      })
       return (
-        returnableObjects.key !== "defaultTemplate"
+        x.key !== "defaultTemplate"
         // && returnableObjects.key !== "templateName"
       );
     });
 
-
+    var stationId = Initial_Values.find(x => x.key == "station").value;
     const body = {
       name: templateNames,
       isDefault: true, //added because of removal of defaultTemplate
       fields: fields,
       valueType: "1",
-      typeOfDevice: { id: historyState.deviceTypeCategory },
+      stationId: stationId,
+      typeOfDevice: { id: historyState.deviceId },
       // sequence:
     };
     if (editCase == false) {
@@ -276,7 +378,6 @@ const CreateTemplate = (props: any) => {
     }
 
     else {
-      console.log(body)
       const requestOptions = {
         method: "PUT",
         headers: {
@@ -317,6 +418,13 @@ const CreateTemplate = (props: any) => {
     {}
   );
 
+
+  let customEvent = (event: any, y: any, z: any) => {
+    if (event.target[z.inputType] === z.if) {
+      y(z.field, z.value)
+    }
+
+  }
 
   return (
     <div className="CrxCreateTemplate">
@@ -394,6 +502,7 @@ const CreateTemplate = (props: any) => {
               isValid,
               resetForm,
               touched,
+              setFieldValue,
             }) => (
               <Form>
                 {
@@ -443,8 +552,48 @@ const CreateTemplate = (props: any) => {
                                     />
                                   </div>
                                 );
-
-                              case "radio":  
+                              case "time":
+                                return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}>{formObj.labelMute}</label>
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      type={"time"}
+                                    />
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
+                                  </div>
+                                );
+                              case "radio":
                                 return (
                                   (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
@@ -482,7 +631,6 @@ const CreateTemplate = (props: any) => {
                                   </div>
                                 );
                               case "select":
-                              
                                 return (
                                   (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
                                   <div
@@ -501,6 +649,58 @@ const CreateTemplate = (props: any) => {
                                       name={formObj.key}
                                       id={formObj.id}
                                       component={formObj.type}
+                                    >
+                                      {formObj.options.map(
+                                        (opt: any, key: string) => (
+                                          <option
+                                            style={{ width: "50%" }}
+                                            value={opt.value}
+                                            key={key}
+                                            selected={true}
+                                          >
+                                            {opt.label}{" "}
+                                          </option>
+                                        )
+                                      )}
+                                    </Field>
+                                    {formObj.hinttext == true ? (
+                                      <CRXTooltip
+                                        iconName="fas fa-info-circle"
+                                        title={formObj.hintvalue}
+                                        placement="right"
+                                      />
+                                    ) : null}
+                                    <ErrorMessage
+                                      name={formObj.key}
+                                      render={(msg) => (
+                                        <div style={{ color: "red" }}>
+                                          {formObj.key.split(re)[1] + " is " + msg}
+                                        </div>
+                                      )}
+                                    />
+                                  </div>
+                                );
+                              case "multiselect":
+
+                                return (
+                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
+                                  <div
+                                    style={{
+                                      display: "block",
+                                      marginBottom: "10px",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <label>{formObj.label}</label>
+                                    <label>
+                                      {formObj.required === true ? "*" : null}
+                                    </label>
+
+                                    <Field
+                                      name={formObj.key}
+                                      id={formObj.id}
+                                      component={"select"}
+                                      multiple={true}
                                     >
                                       {formObj.options.map(
                                         (opt: any, key: string) => (
@@ -531,7 +731,6 @@ const CreateTemplate = (props: any) => {
                                     />
                                   </div>
                                 );
-
                               case "checkbox":
                                 return (
                                   (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
@@ -550,6 +749,15 @@ const CreateTemplate = (props: any) => {
                                       name={formObj.key}
                                       id={formObj.id}
                                       type={formObj.type}
+                                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        handleChange(event);
+                                        if (formObj.dependant != null) {
+
+                                          customEvent(event, setFieldValue, formObj.dependant);
+                                        }
+
+                                      }}
+                                      validateOnChange
                                     />
                                     {formObj.hinttext == true ? (
                                       <CRXTooltip
@@ -586,10 +794,6 @@ const CreateTemplate = (props: any) => {
                                       name={formObj.key}
                                       id={formObj.id}
                                       type={formObj.type}
-                                    /////////////////
-                                    //my disable code
-                                    /////////////////
-                                    //  disabled={values.defaultTemplate == true ? true : false}
                                     />
                                     <label>
                                       {formObj.seconds === true
@@ -623,7 +827,7 @@ const CreateTemplate = (props: any) => {
                 <div className="tctButton">
                   <div className="tctLeft">
                     <CRXButton
-                      disabled={!dirty}
+                      disabled={!isValid || !dirty}
                       type="submit"
                       onClick={() => handleSave(values, resetForm)}
                     >
@@ -646,6 +850,9 @@ const CreateTemplate = (props: any) => {
       </div>
     </div >
   );
+
+
+
 };
 
 export default CreateTemplate;

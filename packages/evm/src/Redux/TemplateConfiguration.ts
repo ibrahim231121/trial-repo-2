@@ -47,10 +47,7 @@ export const deletetemplate: any = createAsyncThunk(
                 'Content-Type': 'application/json', 'TenantId': '1'
             },
         };
-        console.log("i am called inside api")
-        console.log(TEMPLATE_CONFIGURATION_DELETE_URL)
         const resp = await fetch(TEMPLATE_CONFIGURATION_DELETE_URL + args.id, requestOptions);
-        console.log(resp)
         if (resp.ok) {
             window.location.reload();
             //return true;

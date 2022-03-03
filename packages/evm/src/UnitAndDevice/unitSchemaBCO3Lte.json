@@ -15,17 +15,7 @@
       "key": "unittemplate/station/Select",
       "type": "select",
       "label": "Station",
-      "value": "station 1",
-      "options": [
-        {
-          "value": "station 1",
-          "label": "station 1"
-        },
-        {
-          "value": "station 2",
-          "label": "station 2"
-        }
-      ]
+      "options": []
     },
     {
       "id": "4",
@@ -363,14 +353,20 @@
       "hintvalue": "(If selected will disable 'Enable GPS' checkbox section)",
       "label": "Disable Wifi And Bluetooth",
       "labelLocation": "Location",
-      "value": false
+      "value": false,
+      "dependant": {
+        "if": true,
+        "field": "device/enableGPS/CheckBox",
+        "value": false,
+        "inputType" : "checked"
+      }
     },
     {
       "id": "89",
       "key": "device/enableGPS/CheckBox",
       "type": "checkbox",
       "label": "Enable GPS",
-      "value": false
+      "value": true
     },
     {
       "id": "84",
@@ -413,105 +409,105 @@
   "LTE Settings": [
     {
       "id": "1",
-      "key": "enableLte",
+      "key": "LTESettings/enableLte/CheckBox",
       "type": "checkbox",
       "label": "Enable LTE",
       "value": false
       },
       {
       "id": "2",
-      "key": "privateApn",
+      "key": "LTESettings/privateApn/CheckBox",
       "type": "checkbox",
       "label": "Private APN",
       "value": false
       },
       { 
       "id": "3",
-      "key": "apnName",
+      "key": "LTESettings/apnName/TextBox",
       "type": "text",
       "label": "APN Name",
       "value": ""
      },
      { 
       "id": "4",
-      "key": "apn",
+      "key": "LTESettings/apn/TextBox",
       "type": "text",
       "label": "APN",
       "value": ""
      },
      { 
       "id": "5",
-      "key": "proxy",
+      "key": "LTESettings/proxy/TextBox",
       "type": "text",
       "label": "Proxy",
       "value": ""
      },
      { 
        "id": "6",
-       "key": "port",
+       "key": "LTESettings/port/TextBox",
        "type": "text",
        "label": "Port",
        "value": ""
       },
       { 
           "id": "7",
-          "key": "username",
+          "key": "LTESettings/username/TextBox",
           "type": "text",
           "label": "User Name",
           "value": ""
       },
       { 
           "id": "8",
-          "key": "password",
+          "key": "LTESettings/password/TextBox",
           "type": "text",
           "label": "Password",
           "value": ""
          },
          { 
           "id": "9",
-          "key": "server",
+          "key": "LTESettings/server/TextBox",
           "type": "text",
           "label": "Server",
           "value": ""
          },
          { 
           "id": "10",
-          "key": "mmsc",
+          "key": "LTESettings/mmsc/TextBox",
           "type": "text",
           "label": "MMSC",
           "value": ""
          },
          { 
           "id": "11",
-          "key": "mmscproxy",
+          "key": "LTESettings/mmscproxy/TextBox",
           "type": "text",
           "label": "MMSC Proxy",
           "value": ""
          },
          { 
           "id": "12",
-          "key": "mmscport",
+          "key": "LTESettings/mmscport/TextBox",
           "type": "text",
           "label": "MMSC Port",
           "value": ""
          },
          { 
           "id": "13",
-          "key": "mcc",
+          "key": "LTESettings/mcc/TextBox",
           "type": "text",
           "label": "MCC",
           "value": "0"
          },
          { 
           "id": "14",
-          "key": "mnc",
+          "key": "LTESettings/mnc/TextBox",
           "type": "text",
           "label": "MNC",
           "value": "0"
          },
          {
           "id": "15",
-          "key": "authenticationType",
+          "key": "LTESettings/authenticationType/Select",
           "type": "select",
           "label": "Authentication Type",
           "value": "None", 
@@ -536,7 +532,7 @@
         },
         {
           "id": "16",
-          "key": "apnType",
+          "key": "LTESettings/apnType/Select",
           "type": "select",
           "label": "APN Type",
           "value": "Default", 
@@ -557,7 +553,7 @@
         },
         {
           "id": "17",
-          "key": "apnProtocol",
+          "key": "LTESettings/apnProtocol/Select",
           "type": "select",
           "label": "APN Protocol",
           "value": "IP", 
@@ -574,7 +570,7 @@
         },
         {
           "id": "18",
-          "key": "apnRoamingProtocol",
+          "key": "LTESettings/apnRoamingProtocol/Select",
           "type": "select",
           "label": "APN Roaming Protocol",
           "value": "IP", 

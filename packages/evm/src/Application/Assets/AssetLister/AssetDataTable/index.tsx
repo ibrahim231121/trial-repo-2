@@ -29,6 +29,7 @@ import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisp
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { CBXLink } from "@cb/shared";
+import { Link } from "react-router-dom";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -96,8 +97,8 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
   let assets = evidence.asset;
   return (
     <>
-      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/"+masterAsset.assetId} />
-      <DetailedAssetPopup asset={assets} />
+    <Link to={{ pathname: '/assetdetail', state: { evidenceId: evidence.id, assetId: masterAsset.assetId, assetName: assetName} }}><div>{assetName}</div></Link>
+    <DetailedAssetPopup asset={assets} />
     </>
   );
 };

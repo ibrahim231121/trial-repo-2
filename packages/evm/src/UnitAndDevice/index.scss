@@ -19,17 +19,38 @@ html {
     }
   }
 }
+iframe {
+  display: none;
+}
+.unitDeviceMainPage {
+  .MuiAutocomplete-paper {
+    width: 224px !important;
+  }
+  .centerPosition {
+    width: 200px;
+    min-width: 200px;
+  }
+  .MuiAutocomplete-listbox {
+    width: 188px !important;
+    min-width: 188px !important;
+  }
+}
 .unitDeviceTableConfig {
   .col-three {
     position: unset !important;
   }
   .unitDeviceMenuCss {
     margin-left: -34px;
-    margin-top: -53px;
+    margin-top: -50px;
   }
 }
 .unitDeviceMain {
   margin-left: 63px;
+  .gridFilterGlobal {
+    .crx-global-Select {
+      width: 224px;
+    }
+  }
   .rc-menu__arrow {
     top: 61px !important;
   }
@@ -53,9 +74,6 @@ html {
     &::before {
       display: none;
     }
-    .rc-menu-button {
-      font-size: 23px !important;
-    }
   }
 
   & > .MuiGrid-item {
@@ -64,9 +82,9 @@ html {
       position: fixed;
       content: '';
       background: white;
-      height: 55px;
+      height: 75px;
       width: 100%;
-      top: 140px;
+      top: 120px;
       z-index: 123;
       left: 0;
     }
@@ -88,11 +106,6 @@ html {
     position: uns;
   }
   .col-three {
-    &:hover {
-      .rc-menu-button {
-        background-color: transparent !important;
-      }
-    }
     ul {
       &:first-child {
         left: 105px !important;
@@ -109,6 +122,7 @@ html {
         tr {
           th {
             top: 106px !important;
+            text-transform: capitalize;
             &:nth-child(1) {
               //UnitId
               left: 0px !important;
@@ -194,9 +208,20 @@ html {
         &:nth-child(odd) {
           td[scope='row'] {
             background: white !important;
-            // &:hover {
-            //   background: #333 !important;
-            // }
+            &:hover {
+              background: #333 !important;
+            }
+            //   position: relative;
+            //   &::before {
+            //     background-color: white !important;
+            //     position: absolute;
+            //     content: '';
+            //     width: 100%;
+            //     height: 100%;
+            //     top: 0;
+            //     left: 0;
+            //     z-index: -1;
+            //   }
           }
         }
 
@@ -204,9 +229,20 @@ html {
           td[scope='row'] {
             background: #f2f2f2 !important;
             z-index: 0;
-            // &:hover {
-            //   background: #333 !important;
-            // }
+            &:hover {
+              background: #333 !important;
+            }
+            //   position: relative;
+            //   &::before {
+            //     background-color: #f2f2f2 !important;
+            //     position: absolute;
+            //     content: '';
+            //     width: 100%;
+            //     height: 100%;
+            //     top: 0;
+            //     left: 0;
+            //     z-index: -1;
+            //   }
           }
         }
         td {
@@ -224,8 +260,9 @@ html {
             text-align: center !important;
             left: 58px !important;
             position: sticky !important;
-            &:hover {
-              background-color: #333333 !important;
+            button {
+              font-size: 23px !important;
+              margin-top: 5px;
             }
             // &::before {
             //   position: absolute;
@@ -255,12 +292,12 @@ html {
           .rc-menu-button {
             color: #333;
           }
-          // td[scope='row'] {
-          //   background-color: #333 !important;
-          //   .rc-menu-button {
-          //     color: #d1d2d4 !important;
-          //   }
-          // }
+          td[scope='row'] {
+            background-color: #333 !important;
+            .rc-menu-button {
+              color: #d1d2d4 !important;
+            }
+          }
         }
       }
 
@@ -321,12 +358,45 @@ html {
       background-color: #d1d2d4 !important;
     }
   }
+  .SelectedActionMenu {
+    td {
+      &:nth-child(2) {
+        position: relative;
+        &::before {
+          position: absolute;
+          z-index: 1;
+          content: '';
+          background-color: #333333;
+          top: 0;
+          left: 0;
+        }
+      }
+      &:nth-child(5),
+      &:nth-child(6),
+      &:nth-child(7),
+      &:nth-child(8),
+      &:nth-child(10),
+      &:nth-child(11),
+      &:nth-child(12) {
+        color: #d1d2d4 !important;
+
+        div {
+          color: #d1d2d4 !important;
+        }
+      }
+
+      button {
+        position: relative;
+        z-index: 3;
+      }
+    }
+  }
 }
 
 .MuiAutocomplete-listbox {
-  // left: -1px !important;
-  // width: 288px !important;
-  // top: 0;
+  left: -1px !important;
+  width: 288px !important;
+  top: 0;
 }
 #multiSelect-popup {
   width: 324px !important;
@@ -335,8 +405,8 @@ html {
     height: 18px;
     width: 18px;
     border-radius: 50px;
-    margin-left: auto;
-    margin-right: -2px;
+    position: absolute;
+    right: 17px;
   }
   .No {
     background-color: #fd8138;
@@ -364,8 +434,8 @@ html {
   }
 }
 
-// @media only screen and (min-width: 400px) {
-//   div[class*='makeStyles-container-'] {
-//     height: auto !important;
-//   }
-// }
+@media only screen and (min-width: 400px) {
+  div[class*='makeStyles-container-'] {
+    height: auto !important;
+  }
+}

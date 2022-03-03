@@ -214,7 +214,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       <Autocomplete
         onClose={onClose}
         onOpen={onOpen}
-        //open={true}
+        // open={true}
         disableCloseOnSelect
         disableClearable
         ChipProps={{

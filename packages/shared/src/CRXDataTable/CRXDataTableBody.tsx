@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -6,7 +6,8 @@ import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-import { fixedColumnAlignment } from "./FixedColumnAlignment"
+import { fixedColumnAlignment } from "./FixedColumnAlignment";
+
 
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
@@ -39,6 +40,39 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
   };
 
+  
+
+  React.useEffect(()=> {
+    const trAtiveValue =  document.querySelector(".rc-menu--open")?.closest(".MuiTableRow-root.MuiTableRow-hover");
+    let dataui = document.querySelectorAll(".MuiTableRow-root");
+    let trAtiveArray = Array.from(dataui);
+    trAtiveArray.map((e)=>{
+       if(e.classList.contains("SelectedActionMenu") &&  !trAtiveValue ) {
+         e.classList.remove("SelectedActionMenu")
+       } else {
+        trAtiveValue?.classList.add("SelectedActionMenu");
+       }
+     })
+  })
+
+  const node = useRef();
+  const handleClickOutside = () => {
+    console.log(" out side click")
+    let dataui = document.querySelectorAll(".MuiTableRow-root");
+    let trAtiveArray = Array.from(dataui);
+    trAtiveArray.map((e: any)=>{
+      if(e.classList.contains("SelectedActionMenu")) {
+        e.classList.remove("SelectedActionMenu")
+      }
+    })
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
   return (
     <>
       <Droppable droppableId={container.id} key={container.id} isDropDisabled={true}>
@@ -114,8 +148,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                           }}
                           className="DataTableBodyCell col-three"
                           scope="row"
+                          ref={node}
                         >
-                          <span onClick={() => getRowOnActionClick(row)}>
+                          <span  onClick={() => getRowOnActionClick(row)}>
                             {actionComponent}
                           </span>
                         </TableCell>

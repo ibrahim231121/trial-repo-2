@@ -29,20 +29,19 @@ export const urlList: any = [
     },
     {
         name : urlNames.assetsDetail,
-        url: "/assets/:id",
+        url: "/assetdetail",
         details: [
             { routeTo: "/assets", type: "link", label: "Assets", },
-            { type: "text", label: "Asset Detail" },
         ],
     },
-    {
-        name: urlNames.assetsDetail,
-        url: "/assets/:id",
-        details: [
-            { routeTo: "/assets", type: "link", label: "Assets", },
-            { type: "text", label: "Asset Detail" },
-        ],
-    },
+    // {
+    //     name: urlNames.assetsDetail,
+    //     url: "/assets/:id",
+    //     details: [
+    //         { routeTo: "/assets", type: "link", label: "Assets", },
+    //         { type: "text", label: "Asset Detail" },
+    //     ],
+    // },
     {
         name: urlNames.adminUserGroups,
         url: "/admin/usergroups",
@@ -91,14 +90,14 @@ export const urlList: any = [
         name: urlNames.unitsAndDevices,
         url: "/unitsanddevices",
         details: [
-            { type: "text", label: "Units & devices", }
-        ],
+        { type: "text", label: "Units & Devices", }
+    ],
     },
     {
         name: urlNames.unitsAndDevicesDetail,
         url: "/unitsanddevices/:id",
         details: [
-            { routeTo: "/unitsanddevices", type: "link", label: "Units & devices", }
+            { routeTo: "/unitsanddevices", type: "link", label: " Units & Devices", }
         ],
     },
     {
@@ -114,7 +113,7 @@ export const urlList: any = [
         url: "/admin/configurationtemplate",
         details: [
             { type: "text", label: "Admin" },
-            { type: "text", label: "Manage Units & Devices Templates", },
+            { type: "Link", label: "Manage Units & Devices Templates", },
         ],
     },
     {

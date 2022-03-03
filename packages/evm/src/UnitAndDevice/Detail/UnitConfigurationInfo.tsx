@@ -2,69 +2,71 @@ import { TextField, CRXSelectBox } from "@cb/shared";
 import { FormatAlignCenter } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { UnitInfoModel } from './UnitDetail'
+import useGetFetch from "../../utils/Api/useGetFetch";
+import {
+  BASE_URL_UNIT_SERVICE
+} from "../../utils/Api/url";
 
-const listItem = [
-    {
-        value:1,
-        displayText: "Template 1"
-    },
-    {
-        value:2,
-        displayText: "Template 2"
-    },
-    {
-        value:3,
-        displayText: "Template 3"
-    }
-]
 
 type infoProps = {
   info: UnitInfoModel,
   onChangeGroupInfo: any
 }
+
 const UnitConfigurationInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo }) => {
   const [name, setName] = React.useState(info.name);
   const [description, setDescription] = React.useState(info.description);
   const [groupName, setGroupName] = React.useState(info.groupName);
+  const [configTemplate, setconfigTemplate] = React.useState(info.configTemp);
+
+  const [configList, setconfigList] = React.useState(info.configTemplateList);
+  console.log(configList);
+
   const onChangeName = (e: any) => {
-    onChangeGroupInfo(e.target.value, description, groupName);
+    onChangeGroupInfo(e.target.value, description, groupName, configTemplate, configList);
     setName(e.target.value);
   }
   const onChangeDescription = (e: any) => {
-    onChangeGroupInfo(name, e.target.value);
+    onChangeGroupInfo(name, e.target.value, groupName, configTemplate, configList);
     setDescription(e.target.value);
   }
   const onChangeGroupName = (e: any) => {
-    onChangeGroupInfo(name,description, e.target.value);
+    onChangeGroupInfo(name, description, e.target.value, configTemplate, configList);
     setGroupName(e.target.value);
   }
   useEffect(() => {
     setName(info.name);
     setDescription(info.description);
     setGroupName(info.groupName);
+    setconfigTemplate(info.configTemp);
+    setconfigList(info.configTemplateList);
+
   }, [info])
 
-  const [fieldName,setFieldName] = useState({
+  const [fieldName, setFieldName] = useState({
     template: '',
-    station:''
+    station: ''
 
-});
+  });
   const onChange = (e: any) => {
-    const { name, value } = e.target;
-    setFieldName({ ...fieldName, [name]: value });
-}
+    onChangeGroupInfo(name, description, groupName, e.target.value, configList);
+    setconfigTemplate(e.target.value);
+    // const { name, value } = e.target;
+    // setFieldName({ ...fieldName, [name]: value });
+  }
   return (
     <div className="crx-group-info-form CBX-input">
       <div className="crx-group-info">
-      <div className="stationLabel">
-                    <label>Unit Configuration Template</label>
-                    <CRXSelectBox 
-                    name="station"
-                    defaultOptionText="None"
-                    options={listItem}
-                    onChange={onChange}
-                    />
-                </div>
+        <div className="configurationTemplateLabel">
+          <label>Configuration Template</label>
+          <CRXSelectBox
+            name="configurationTemplate"
+            value={info.configTemp == "" ? 0 : info.configTemp}
+            icon={true}
+            options={configList}
+            onChange={onChange}
+          />
+        </div>
         <div className="groupInfoInputs">
           <TextField required={true} label="Unit Id" value={name} className="userError" onChange={onChangeName} />
         </div>
