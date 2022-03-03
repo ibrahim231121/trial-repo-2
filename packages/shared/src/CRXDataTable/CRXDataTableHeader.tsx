@@ -7,7 +7,7 @@ import {
   DataTableHeaderProps
 } from "./CRXDataTableTypes";
 import {useTranslation} from 'react-i18next'; 
-//import { fixedColumnAlignment } from "./FixedColumnAlignment"
+import { fixedColumnAlignment } from "./FixedColumnAlignment"
 
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells, orderData, onHandleRequestSort, onResizeRow, dragVisibility,showCheckBoxesCol,showActionCol}) => {
 
@@ -32,7 +32,8 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '58px', minWidth: "58px", 
-                left: "60px",//`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+                //left: "60px",
+                left:`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
                 position: "sticky", zIndex: 4 }}>
             </TableCell>  
         : null
@@ -40,10 +41,11 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({orderColumn, headCells
         {(showActionCol === true || showActionCol === undefined) ? 
             <TableCell className={classes.headerStickness + " CRXDataTableLabelCell crxTableHeaderSize"} 
                 style={{width: '80px', minWidth: '80px', 
-                        // left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
-                        left : "118px",
+                        left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+                        //left : "118px",
                         position: "sticky", 
-                        zIndex: 4}}>
+                        zIndex: 4}
+                        }>
                 {t('Actions')}
             </TableCell> 
         : null

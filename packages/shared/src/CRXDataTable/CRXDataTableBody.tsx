@@ -113,9 +113,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`
                             }}
                             className="DataTableBodyCell CellCheckBox col-two"
-                            scope="row"
-                          >
-                            <CRXCheckBox
+                            scope="row" 
+                          >  
+                            <CRXCheckBox     
                               onChange={() => handleChange(row)}
                               checked={isItemSelected}
                               inputProps={labelId}

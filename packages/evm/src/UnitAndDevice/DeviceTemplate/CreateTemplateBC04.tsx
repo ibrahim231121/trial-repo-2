@@ -12,14 +12,16 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
+import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
 import { CRXTitle } from "@cb/shared";
 import { urlList } from "../../utils/urlList";
+import { useDispatch } from 'react-redux';
 
 
 var re = /[\/]/;
 const CreateTemplate = (props: any) => {
-
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
@@ -37,21 +39,21 @@ const CreateTemplate = (props: any) => {
   let FormSchema: any = null;
   let templateName: string = "";
 
-  if (historyState.deviceTypeCategory == "BC03") {
+  if (historyState.deviceType == "BC03") {
     FormSchema = BC03;
   }
-  else if (historyState.deviceTypeCategory == "BC04") {
+  else if (historyState.deviceType == "BC04") {
     FormSchema = BC04;
   }
-  else if (historyState.deviceTypeCategory == "Incar") {
+  else if (historyState.deviceType == "Incar") {
     FormSchema = VRX;
   }
-  else if(historyState.deviceTypeCategory == "BC03LTE")
+  else if(historyState.deviceType == "BC03LTE")
   {
     FormSchema = BC03LTE;
   }
 
-  templateName = historyState.deviceTypeCategory;
+  templateName = historyState.deviceType;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
 
@@ -61,11 +63,21 @@ const CreateTemplate = (props: any) => {
   })
 
   React.useEffect(() => {
+ 
 
-    if (historyState.isedit)
+    if (historyState.isedit){
+
+      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name}));
       loadData();
-    else
+    }
+    else{
       setDataFetched(true);
+      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType}));
+    }
+
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    } 
   }, []);
 
   React.useEffect(() => {
@@ -243,7 +255,7 @@ const CreateTemplate = (props: any) => {
       isDefault: true, //added because of removal of defaultTemplate
       fields: fields,
       valueType: "1",
-      typeOfDevice: { id: historyState.deviceTypeCategory },
+      typeOfDevice: { id: historyState.deviceId },
       // sequence:
     };
     if (editCase == false) {
