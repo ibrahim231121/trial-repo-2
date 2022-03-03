@@ -15,17 +15,7 @@
       "key": "unittemplate/station/Select",
       "type": "select",
       "label": "Station",
-      "value": "station 1",
-      "options": [
-        {
-          "value": "station 1",
-          "label": "station 1"
-        },
-        {
-          "value": "station 2",
-          "label": "station 2"
-        }
-      ]
+      "options": []
     },
     {
       "id": "4",
@@ -363,14 +353,20 @@
       "hintvalue": "(If selected will disable 'Enable GPS' checkbox section)",
       "label": "Disable Wifi And Bluetooth",
       "labelLocation": "Location",
-      "value": false
+      "value": false,
+      "dependant": {
+        "if": true,
+        "field": "device/enableGPS/CheckBox",
+        "value": false,
+        "inputType" : "checked"
+      }
     },
     {
       "id": "89",
       "key": "device/enableGPS/CheckBox",
       "type": "checkbox",
       "label": "Enable GPS",
-      "value": false
+      "value": true
     },
     {
       "id": "84",

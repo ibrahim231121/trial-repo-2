@@ -34,6 +34,8 @@ import {
   onSaveHeadCellData
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { CRXGlobalSelectFilter } from "@cb/shared";
+import { PausePresentation } from "@material-ui/icons";
+import { classicNameResolver } from "typescript";
 
 
 type ConfigTemplate = {
@@ -52,7 +54,7 @@ type DeviceType = {
   name: string,
   description: string,
   category: string,
-  deviceTypeCategory:string,
+  deviceTypeCategory: string,
   history: {
     createdOn: string,
     updateOn: string | null
@@ -81,10 +83,9 @@ interface renderCheckMultiselect {
 
 
 const configTemplate = (name: string, device: any) => {
-  console.log(device);
   return (
     <>
-      <Link className={"linkColor"} children={name} key={device.recId} to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: device.recId, name: name, isedit: true, deviceType:device.type , deviceId: device.deviceTypeCategory  } }} />
+      <Link className={"linkColor"} children={name} key={device.recId} to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: device.recId, name: name, isedit: true, deviceId: device.deviceTypeCategory, deviceType: device.type } }} />
     </>
   );
 };
@@ -119,7 +120,7 @@ const ConfigurationTemplates: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<ConfigTemplate[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false)
-  
+
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
     if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
@@ -229,8 +230,8 @@ const ConfigurationTemplates: React.FC = () => {
       );
     }
   };
-   // ------------------SATION DROP DOWN START
-   const multiSelectVersionCheckbox = (rowParam: ConfigTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: ConfigTemplate[]) => {
+  // ------------------SATION DROP DOWN START
+  const multiSelectVersionCheckbox = (rowParam: ConfigTemplate[], headCells: HeadCellProps[], colIdx: number, initialRows: ConfigTemplate[]) => {
 
     if (colIdx === 2) {
 
@@ -394,13 +395,13 @@ const ConfigurationTemplates: React.FC = () => {
 
   }
 
-const IndicatorDisplay = (text: string, classes: string | undefined ) => {
-  return (<div>Default</div>)
-}
+  const IndicatorDisplay = (text: string, classes: string | undefined) => {
+    return (<div>Default</div>)
+  }
 
-const StationDisplay = (text: string, classes: string | undefined ) => {
-  return (<div>Station 1</div>)
-}
+  const StationDisplay = (text: string, classes: string | undefined) => {
+    return (<div>Station 1</div>)
+  }
 
 
   // ------------------INDICATOR DROP DOWN END
@@ -508,32 +509,35 @@ const StationDisplay = (text: string, classes: string | undefined ) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
+  useEffect(() => {
+    document.querySelector(".footerDRP")?.closest(".MuiMenu-paper")?.classList.add("MuiMenu_Modal_Ui");
+  })
   return (
     <div className="CrxConfigTemplate">
       <div className="menu_List_Button">
         <Menu
-        style={{ backgroundColor: '#FFFFFF' }}
-        align="start"
-        viewScroll="initial"
-        direction="bottom"
-        position="auto"
-        arrow
-        menuButton={
-          <MenuButton>
-            Create Template
-          </MenuButton>
-        }
-      >
-        {createTemplateDropdown.map((x, y) => {
-          return ( 
-            <MenuItem >
-              <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: y, isedit: false, type: x.name, deviceId: x.id,deviceType:x.category } }}>
-                <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
-              </Link>
-            </MenuItem>
-          )
-        })}
-      </Menu >
+          style={{ backgroundColor: '#FFFFFF' }}
+          align="start"
+          viewScroll="initial"
+          direction="bottom"
+          position="auto"
+          arrow
+          menuButton={
+            <MenuButton>
+              Create Template
+            </MenuButton>
+          }
+        >
+          {createTemplateDropdown.map((x, y) => {
+            return (
+              <MenuItem >
+                <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
+                  <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
+                </Link>
+              </MenuItem>
+            )
+          })}
+        </Menu >
       </div>
 
       {

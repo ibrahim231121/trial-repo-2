@@ -20,6 +20,8 @@ import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
 import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
+import { makeStyles } from "@material-ui/core/styles";
+
 import {
   SearchObject,
   ValueString,
@@ -43,6 +45,7 @@ import { logOutUser } from "../Login/API/auth";
 import { CBXLink } from "@cb/shared";
 import { urlList, urlNames } from "../utils/urlList"
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
+import { classicNameResolver } from "typescript";
 
 type Unit = {
   id: number;
@@ -55,7 +58,8 @@ type Unit = {
   assignedTo: string[],
   lastCheckedIn: string,
   status: string,
-  stationId: number
+  stationId: number,
+  
 }
 interface renderCheckMultiselect {
   label?: string,
@@ -74,6 +78,7 @@ type DateTimeObject = {
 };
 
 
+
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -89,6 +94,7 @@ const UnitAndDevices: React.FC = () => {
   }, []);
 
   
+
 
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
  // const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
@@ -137,7 +143,12 @@ const UnitAndDevices: React.FC = () => {
     dispatch(enterPathActionCreator({ val: ""}));
   }, [units]);
 
-
+  useEffect(()=>{
+     let classUDMain = document.querySelector(".unitDeviceMain");
+     if(classUDMain) {
+       document.querySelector("body")?.classList.add("unitDeviceMainPage");
+     }
+  })
   const searchText = (
     rowsParam: Unit[],
     headCells: HeadCellProps[],
@@ -261,8 +272,24 @@ const UnitAndDevices: React.FC = () => {
     return self.indexOf(value) === index;
 }
 
+const useStyles = makeStyles({
+  paper: {
+    backgroundColor: "blue !important",
+    paddingBottom: 16,
+    paddingRight: 16,
+    marginTop: 16,
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: 500
+  },
+
+});
+
+const classes = useStyles();
+
 const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
  
+
   if(colIdx === 4) {
 
   let versionlist: any = [];
@@ -299,12 +326,19 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               CheckBox={true}
               checkSign={false}
               open={open}
+              // className={"arsalan" + classes.tabb }
+              classes={{
+                paper: classes.paper
+
+              }
+              }
               theme="dark"
               clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
               getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
               getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
               onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
               noOptionsText="No Version"
+     
           />                  
       </div>
   )
@@ -317,6 +351,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
 
     if(colIdx === 9) {
         console.log(initialRows);
+
     let statuslist: any = [];
 
     if(initialRows !== undefined){
@@ -436,7 +471,7 @@ const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultis
   let headCellReset = onClearAll(headCells);
   setHeadCells(headCellReset);
 }
-const openHandler = (_: React.SyntheticEvent) => {
+const openHandler = (_: React.SyntheticEvent ) => {
   console.log("onOpen")
   //setOpen(true)
 }
@@ -596,6 +631,7 @@ const openHandler = (_: React.SyntheticEvent) => {
             onMultiSelectChange={onSelection}
             onSetSearchData={onSetSearchData}
             onSetHeaderArray={onSetHeaderArray}
+          
         />
     );
 };
@@ -736,7 +772,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           showToolbar={true}
           showCountText={false}
           columnVisibilityBar={true}
-
+          showHeaderCheckAll={true}
           initialRows={reformattedRows}
           dragVisibility={false}
           showCheckBoxesCol={true}

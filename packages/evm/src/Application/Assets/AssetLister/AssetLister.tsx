@@ -10,7 +10,6 @@ import constants from '../utils/constants';
 import {DateTimeComponent, DateTimeObject } from '../../../GlobalComponents/DateTime';
 import { useDispatch } from 'react-redux';
 import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
-import { scroller } from 'react-scroll';
 import moment from 'moment';
 import {
 dateOptionsTypes,
@@ -119,14 +118,7 @@ const SearchComponent = (props: any) => {
     if (searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch) {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);
-    } else if (searchType === constants.SearchType.AdvanceSearch) {
-      scroller.scrollTo('advanceSearchContet', {
-        duration: 100,
-        delay: 100,
-        smooth: true,
-        offset: -130,
-      });
-    }
+    } 
 
     dispatch(enterPathActionCreator({ val: 'Search Results' }));
 
@@ -415,12 +407,7 @@ const SearchComponent = (props: any) => {
             <div className='advanceSearchContet'>
               <CRXButton
                 onClick={() => {
-                  scroller.scrollTo('advanceSearchContet', {
-                    duration: 100,
-                    delay: 100,
-                    smooth: true,
-                    offset: -70,
-                  });
+              
                   setShowAdvance(!showAdvance);
                 }}
                 className='PreSearchButton'

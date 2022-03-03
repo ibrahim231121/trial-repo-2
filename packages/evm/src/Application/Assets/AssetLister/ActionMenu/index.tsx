@@ -21,7 +21,7 @@ type Props = {
   row?: any;
 };
 
-interface AssetBucket {
+export interface AssetBucket {
   id: number;
   assetId: number;
   assetName: string;
