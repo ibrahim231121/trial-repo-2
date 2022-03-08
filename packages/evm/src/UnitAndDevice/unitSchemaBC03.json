@@ -6,8 +6,12 @@
       "type": "text",
       "label": "Template Name",
       "value": "",
-      "required": true,
-      "requiredField": "true"
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
     },
     {
       "id": "3",
@@ -19,13 +23,17 @@
     },
     {
       "id": "4",
-      "required": true,
       "key": "unittemplate/configUpdateInterval/NumberBox",
       "type": "number",
       "label": "Config Update Interval",
       "value": 6,
       "seconds": false,
-      "requiredField": "true"
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
     }
   ],
   "Device": [
@@ -181,8 +189,14 @@
           "label": "600 sec"
         }
       ],
-      "depends": "device/enablePreBufferCheckbox/CheckBox",
-      "valueDepends":[true]
+      "depends": [
+        {
+          "key": "device/enablePreBufferCheckbox/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
     },
     {
       "id": "4",
@@ -222,8 +236,14 @@
           "label": "User , Unit , Date and Time"
         }
       ],
-      "depends": "device/enableVideoOverlay/CheckBox",
-      "valueDepends":[true]
+      "depends": [
+        {
+          "key": "device/enableVideoOverlay/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
     },
     {
       "id": "4",
@@ -239,10 +259,20 @@
       "label": "Recording Beep Interval",
       "value": 10,
       "seconds": true,
-      "required": true,
-      "requiredField": "true",
-      "depends": "device/enableRecordingBeep/CheckBox",
-      "valueDepends":[true]
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ],
+      "depends": [
+        {
+          "key": "device/enableRecordingBeep/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
     },
     {
       "id": "4",
@@ -266,7 +296,6 @@
       "key": "device/categories/Select",
       "type": "select",
       "label": "Categories",
-      "required": true,
       "value": "",
       "options": [
         {
@@ -298,8 +327,20 @@
           "label": "Category 4"
         }
       ],
-      "depends": "device/enableCategorization/CheckBox",
-      "valueDepends":[true]
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ],
+      "depends": [
+        {
+          "key": "device/enableCategorization/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
     },
     {
       "labelMute": "Mute",
@@ -334,8 +375,12 @@
       "type": "checkbox",
       "label": "Disable Audio Only Recording",
       "value": false,
-      "depends": "device/mute/Radio",
-      "valueDepends":["disabled" , "enabled"]
+      "depends": [
+        {
+          "key": "device/enableRecordingBeep/CheckBox",
+          "value": ["disabled" , "enabled"]
+        }
+      ]
 
     },
     {
@@ -385,10 +430,22 @@
       "label": "GPS Heartbeat",
       "value": 60,
       "seconds": true,
-      "required": true,
-      "requiredField": "true",
-      "min": 30,
-      "max": 3600
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        },
+        {
+          "key": "min",
+          "value": 30,
+          "msg": "Too Low"
+        },
+        {
+          "key": "max",
+          "value": 3600,
+          "msg": "Too High"
+        }
+      ]
     },
     {
       "id": "64",
@@ -400,10 +457,22 @@
       "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
       "hintvalue1": "Interval between heartbeats when recording",
       "seconds": true,
-      "required": true,
-      "requiredField": "true",
-      "min": 30,
-      "max": 3600
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        },
+        {
+          "key": "min",
+          "value": 30,
+          "msg": "Too Low"
+        },
+        {
+          "key": "max",
+          "value": 3600,
+          "msg": "Too High"
+        }
+      ]
     }
   ]
 }
