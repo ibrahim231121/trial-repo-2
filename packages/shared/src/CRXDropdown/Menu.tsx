@@ -68,7 +68,7 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, nam
     const buttonChild = iconButton ? iconHtml : name;
 
     const ListOfMenu = MenuList.map((item:any, index:number) => {
-        return <Link to={item.router}><MenuItem key={index}  onClick={onClick}>{item.label}</MenuItem></Link>
+        return <Link to={item.router}><MenuItem key={index}  onClick={item.onClick}>{item.label}</MenuItem></Link>
     });
     return (
         <div className={"GetacMenu " + wrapper}>

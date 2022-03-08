@@ -6,6 +6,7 @@ const listOFMenu = [
     {
         label : 'REAL TIME Command',
         router : "",
+        onClick: () => {window.location.href = process.env.REACT_APP_COMMAND_URL as string }
     },
     {
         label : 'Getac Enterprise',
@@ -25,7 +26,6 @@ const CRXAppDropdown = () => {
             wrapper="applicationsMenu"
             MenuList={listOFMenu}
             horizontal="left"
-            onClick={() => {window.location.href = "http://localhost:8081" }}
         />
         </div>
     )
