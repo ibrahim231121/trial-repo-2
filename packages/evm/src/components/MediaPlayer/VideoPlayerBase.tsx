@@ -33,7 +33,7 @@ const VideoPlayerBase = (props: any) => {
     "PitureInPicture": 4
   };
   
-  const [test,setTest] = useState<boolean>(false)
+  const [buffering,setBuffering] = useState<boolean>(false)
 
   const [maxminendpoint, setmaxminendpoint] = useState<string[]>([]);
   const [finalduration, setfinalduration] = useState<string>();
@@ -258,27 +258,33 @@ const VideoPlayerBase = (props: any) => {
     videoElement = document.querySelector("#Video-1");
 
     videoElement?.addEventListener("canplay", function () {
-      setTest(true)
+      setBuffering(true)
     }, true);
 
     videoElement?.addEventListener("waiting", function () {
-     setTest(false)
+     setBuffering(false)
     }, true);
     setVideoHandle(videoElement);
-  },[test]);
+  });
 
 
   useInterval(
     () => {
       // Your custom logic here
-     
-    if (isPlaying === true){
+    if (buffering === true){
 
-      if (timer < videoElement.duration) {
-        var timerValue = timer + 1;
-        setTimer(timerValue);
-        setControlBar(timerValue);
+      if (isPlaying === true){
+  
+        if (timer < videoElement.duration) {
+          var timerValue = timer + 1;
+          setTimer(timerValue);
+          setControlBar(timerValue);
+        }
       }
+    }
+
+    else if (buffering === false){
+      videoHandle.stop()
     }
       else {
         reset();
