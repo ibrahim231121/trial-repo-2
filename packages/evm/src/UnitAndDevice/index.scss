@@ -30,9 +30,10 @@ iframe {
     width: 200px;
     min-width: 200px;
   }
+
   .MuiAutocomplete-listbox {
-    width: 188px !important;
-    min-width: 188px !important;
+    width: 200px !important;
+    min-width: 200px !important;
   }
 }
 .unitDeviceTableConfig {
@@ -108,7 +109,7 @@ iframe {
   .col-three {
     ul {
       &:first-child {
-        left: 105px !important;
+        left: 109px !important;
       }
     }
   }
@@ -116,7 +117,8 @@ iframe {
     margin-top: 106px;
     thead {
       .select {
-        width: 108% !important;
+        width: 118% !important;
+        margin-left: -6px;
       }
       &:nth-child(1) {
         tr {
@@ -133,7 +135,7 @@ iframe {
             }
             &:nth-child(4) {
               //UnitId
-              min-width: 150px;
+              min-width: 170px;
             }
             &:nth-child(5) {
               //template
@@ -149,7 +151,7 @@ iframe {
             }
             &:nth-child(8) {
               //Description
-              min-width: 268px;
+              min-width: 304px;
             }
             &:nth-child(9) {
               //Station
@@ -192,6 +194,10 @@ iframe {
               .multiCaretIcon {
                 margin-top: -2px;
                 display: block;
+              }
+              .CRXPaper {
+                padding-left: 0px;
+                padding-right: 0px;
               }
             }
             &:nth-child(12) {
@@ -366,11 +372,17 @@ iframe {
           position: absolute;
           z-index: 1;
           content: '';
-          background-color: #333333;
+          background-color: #231f20;
           top: 0;
           left: 0;
         }
+        &:hover {
+          .rc-menu-button {
+            background-color: #231f20 !important;
+          }
+        }
       }
+
       &:nth-child(5),
       &:nth-child(6),
       &:nth-child(7),

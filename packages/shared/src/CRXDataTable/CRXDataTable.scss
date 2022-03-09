@@ -79,11 +79,11 @@
           .fal {
             position: relative;
             &::after {
-              content: "";
+              content: '';
               color: #fff;
               left: 0;
               position: absolute;
-              font-family: "Font Awesome 5 Duotone";
+              font-family: 'Font Awesome 5 Duotone';
               font-weight: 900;
               right: 0;
             }
@@ -197,7 +197,7 @@
     background-color: #fff;
     box-shadow: 0px 3px 6px #00000029;
   }
-  div[class*="MuiTablePagination-actions-"] {
+  div[class*='MuiTablePagination-actions-'] {
     button {
       width: 36px;
       height: 36px;
@@ -211,18 +211,18 @@
       }
       &:first-child {
         &:before {
-          font-family: "Font Awesome 5 Pro";
+          font-family: 'Font Awesome 5 Pro';
           font-weight: 900;
-          content: "\f104";
+          content: '\f104';
           font-size: 18px !important;
           padding-right: 2px;
         }
       }
       &:last-child {
         &:before {
-          font-family: "Font Awesome 5 Pro";
+          font-family: 'Font Awesome 5 Pro';
           font-weight: 900;
-          content: "\f105";
+          content: '\f105';
           font-size: 18px !important;
           padding-left: 2px;
         }
@@ -236,7 +236,7 @@
       }
     }
   }
-  div[class*="MuiTablePagination-input-"] {
+  div[class*='MuiTablePagination-input-'] {
     svg {
       fill: #333333;
     }
@@ -440,7 +440,7 @@
       position: absolute;
       top: 0px;
       right: -3px;
-      content: "";
+      content: '';
       z-index: 99;
     }
     &::after {
@@ -451,7 +451,7 @@
       position: absolute;
       top: 34px;
       right: -3px;
-      content: "";
+      content: '';
     }
   }
   &:focus {
@@ -463,7 +463,7 @@
       position: absolute;
       top: 0px;
       right: -3px;
-      content: "";
+      content: '';
       z-index: 99;
     }
     &::after {
@@ -474,7 +474,7 @@
       position: absolute;
       top: 34px;
       right: -3px;
-      content: "";
+      content: '';
     }
   }
 }
@@ -516,7 +516,7 @@
   width: 480px;
   left: -6px;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: -11px;
     left: 0px;
@@ -588,10 +588,10 @@
   //left: 117px;
 }
 
-tr:nth-child(even) td[scope="row"] {
+tr:nth-child(even) td[scope='row'] {
   background-color: #fff;
 }
-tr:nth-child(odd) td[scope="row"] {
+tr:nth-child(odd) td[scope='row'] {
   background-color: #fff;
 }
 
@@ -626,7 +626,7 @@ td.CellCheckBox {
   }
 }
 
-tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
+tr.Mui-selected:nth-child(odd) td[scope='row']:not(:first-child) {
   background-color: #231f20;
   color: #d1d2d4;
   .MuiButton-root {
@@ -636,7 +636,7 @@ tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
   &:hover {
     background-color: #404041 !important;
 
@@ -645,7 +645,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
     }
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"] {
+tr.Mui-selected:nth-child(even) td[scope='row'] {
   // background-color: #231f20 !important;
   .MuiButton-root {
     color: #d1d2d4 !important;
@@ -654,7 +654,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
   background-color: #231f20 !important;
   color: #d1d2d4;
 }
@@ -915,9 +915,9 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
             position: absolute;
             right: 13px;
             top: 10px;
-            font-family: "Font Awesome 5 Pro";
+            font-family: 'Font Awesome 5 Pro';
             font-weight: 900;
-            content: "\f58e";
+            content: '\f58e';
           }
         }
       }
@@ -952,7 +952,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
       td:nth-child(12),
       td:nth-child(13),
       td:nth-child(14) {
-        background-color: #333 !important;
+        background-color: #231f20 !important;
         color: #d1d2d4 !important;
         .assetThumb {
           .assetsThumbGetac {
@@ -967,7 +967,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
         position: static;
         .rc-menu-container {
           .rc-menu {
-            left:55px !important;
+            left: 55px !important;
           }
         }
       }

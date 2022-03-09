@@ -25,6 +25,7 @@ import UnitConfiguration from "./Application/Admin/UnitConfiguration/UnitConfigu
 import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/ConfigurationTemplates/ConfigurationTemplate";
 import AssetDetailsTemplate from "./Application/Assets/Detail/AssetDetailsTemplate";
 import VideoPlayer from "./components/MediaPlayer/VideoPlayerBase";
+import Evidence from "./components/Evidence/ConfigEvidence";
 import { isAuthenticated } from "./Login/API/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./Redux/rootReducer";
@@ -138,11 +139,12 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />     
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitConfigEditTemplate)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />}  />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/notfound" component={ErrorPage} /> 
               <Route path="*" component={ErrorPage} />
+
             </Switch>
           </main>
           <footer>

@@ -10,6 +10,7 @@ import notificationMessages from './notificationPanelMessages'
 import timerSlice from './timerslice';
 import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
+import templateSlice1 from './AssetConfiguration';
 import unitTemplateSlice from './templateDynamicForm';
 //combine Reducers
 export const reducer = combineReducers({
@@ -24,6 +25,7 @@ export const reducer = combineReducers({
 
   templateSlice: templateSlice.reducer,
   unitTemplateSlice: unitTemplateSlice.reducer,
+ templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
   unitReducer: unitSlice.reducer
 })
