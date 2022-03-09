@@ -19,7 +19,7 @@ import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
-import { CreateTempelateCase } from "./CreateTempelateCase";
+import  {CreateTempelateCase}  from "./CreateTemplateCase";
 
 
 

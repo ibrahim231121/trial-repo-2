@@ -493,7 +493,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
       maxWidth: "100",
     },
     {
-      label: `${t("UnitId")}`,
+      label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
       dataComponent: (e: string) => anchorDisplayUnit(e, "anchorStyle"),// textDisplay(e, ""),
@@ -608,7 +608,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
   const searchAndNonSearchMultiDropDown = (
     rowsParam: Unit[],
     headCells: HeadCellProps[],
-    colIdx: number,
+    colIdx: number,  
     isSearchable: boolean,
 ) => {
     const onSetSearchData = () => {
