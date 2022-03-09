@@ -205,8 +205,13 @@ const CRXLefNavigation = () => {
         {
           moduleIds:0,
           label: 'Manage Units & Devices Templates',
-          command: () => { navigateToPage("/admin/configurationtemplate") },
-       }
+          command: () => {navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url)},
+       },
+       {
+        moduleIds:0,
+        label: 'Evidence(Dev)',
+        command: () => {navigateToPage(urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url)},
+     }
       ],
     },
   ];

@@ -62,13 +62,13 @@ const VolumeControl = (props:VolumecontrolProp) => {
     else
     {
       if(volume >= 1 && volume <= 33){
-        return "icon-volume-low";
+        return "icon-volume-low1";
       }
       else if(volume >= 34 && volume <= 66){
-        return "icon-volume-medium";
+        return "icon-volume-medium1";
       }
       else{
-        return "icon-volume-high";
+        return "icon-volume-high1";
       }
     }
 
