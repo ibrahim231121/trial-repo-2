@@ -389,7 +389,7 @@
     },
     {
       "id": "1",
-      "key": "device/Diagnostics logging interval/TextBox",
+      "key": "device/Diagnosticslogginginterval/TextBox",
       "type": "number",
       "label": "Diagnostics logging interval",
       "value": "",
@@ -402,6 +402,34 @@
           "key": "max",
           "value": 10000,
           "msg": "Two High"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "key": "device/MicrophoneChargeTime/TextBox",
+      "type": "number",
+      "label": "Microphone Charge Time",
+      "value": "200",
+      "hidefromUI": true,
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "key": "device/USBPortChargeTime/TextBox",
+      "type": "number",
+      "label": "USB Port Charge Time",
+      "value": "15",
+      "hidefromUI": true,
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
         }
       ]
     },

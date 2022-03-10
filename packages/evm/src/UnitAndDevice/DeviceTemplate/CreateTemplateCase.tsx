@@ -370,7 +370,7 @@ export const CreateTempelateCase = (props: any) => {
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <div
           style={{
-            display: "block",
+            display: formObj.hidefromUI == true ? "none" : "block",
             marginBottom: "10px",
             marginTop: "10px",
           }}
