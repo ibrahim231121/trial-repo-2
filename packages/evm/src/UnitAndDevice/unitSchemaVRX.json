@@ -160,27 +160,6 @@
           ]
         }
       ]
-    },
-    {
-      "id": "4",
-      "key": "unitSettings/loginMethod/Select",
-      "type": "select",
-      "label": "Login Method",
-      "value": "Getac Auth",
-      "options": [
-        {
-          "value": "Getac Auth",
-          "label": "Getac Auth"
-        },
-        {
-          "value": "Active Directory",
-          "label": "Active Directory"
-        },
-        {
-          "value": "CAD",
-          "label": "CAD"
-        }
-      ]
     }
   ],
   "device": [
@@ -446,7 +425,7 @@
             "key": "device/deviceType_1_Camera/Select",
             "type": "select",
             "label": "Device Type",
-            "value": "",
+            "value": "IP Camera",
             "options": [
               {
                 "value": "IP Camera",
@@ -459,6 +438,23 @@
               {
                 "value": "Discovered devices",
                 "label": "Discovered devices"
+              }
+            ],
+            "optionAppendOnChange":[
+              {
+                "value": "IP Camera",
+                "selectKey": "device/videoProfile_rowId_Camera/Select",
+                "options": ["1920 x 1080 p30", "1280 x 720 p30"]
+              },
+              {
+                "value": "Video FC(1-8)",
+                "selectKey": "device/videoProfile_rowId_Camera/Select",
+                "options": ["all"]
+              },
+              {
+                "value": "Discovered devices",
+                "selectKey": "device/videoProfile_rowId_Camera/Select",
+                "options": ["all"]
               }
             ]
           },
@@ -481,12 +477,36 @@
             "value": "",
             "options": [
               {
-                "value": "1920x1080 30fps",
-                "label": "1920x1080 30fps"
+                "value": "3840 x 2160 p30",
+                "label": "3840 x 2160 p30"
               },
               {
-                "value": "1280x720 30fps",
-                "label": "1280x720 30fps"
+                "value": "2688 x 1512 p30",
+                "label": "2688 x 1512 p30"
+              },
+              {
+                "value": "1920 x 1080 p120",
+                "label": "1920 x 1080 p120"
+              },
+              {
+                "value": "1920 x 1080 p60",
+                "label": "1920 x 1080 p60"
+              },
+              {
+                "value": "1920 x 1080 p30",
+                "label": "1920 x 1080 p30"
+              },
+              {
+                "value": "1280 x 720 p120",
+                "label": "1280 x 720 p120"
+              },
+              {
+                "value": "1280 x 720 p60",
+                "label": "1280 x 720 p60"
+              },
+              {
+                "value": "1280 x 720 p30",
+                "label": "1280 x 720 p30"
               }
             ]
           },
@@ -535,7 +555,7 @@
             ]
           },
           {
-            "labelGroupRecording": "Black Box Recording",
+            "radioLabelGroup": "Black Box Recording",
             "key": "device/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Off",
