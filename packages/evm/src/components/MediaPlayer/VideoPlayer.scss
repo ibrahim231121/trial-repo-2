@@ -194,6 +194,12 @@ html {
     }
   }
 }
+.TTview{
+    display: flex;
+    justify-content: space-between;  
+  
+      
+}
 
 @media (max-width: 1890px) {
   #video-player {

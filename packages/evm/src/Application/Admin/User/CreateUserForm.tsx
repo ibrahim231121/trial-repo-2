@@ -374,10 +374,11 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   const setAddPayload = () => {
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
-        return formpayload.userGroups.some((e: any) => e === item.groupName);
+        return formpayload.userGroups.some((e: any) => e.id === item.groupId);
+
       })
       .map((i: any) => i.groupId);
-
+      
     const name = {
       first: formpayload.firstName,
       last: formpayload.lastName,

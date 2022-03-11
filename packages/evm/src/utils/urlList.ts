@@ -15,7 +15,7 @@ export const urlNames: any = {
     unitDeviceTemplateCreateBCO4: "unitDeviceTemplateCreateBCO4",
     // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
     testVideoPlayer: "videoplayer",
-    unitConfigEditTemplate: "unitConfigEditTemplate"
+    testEvidence: "Evidence"
 
 }
 
@@ -153,16 +153,13 @@ export const urlList: any = [
             { type: "text", label: "Dev video player", }
         ],
     },
-
     {
-        name: urlNames.unitConfigEditTemplate,
-        url: "/admin/unitanddevices/edittemplate/BC04",
+        name : urlNames.testEvidence,
+        url: "/Evidence",
         details: [
-            { type: "text", label: "Admin", },
-            { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
-            { type: "text", label: "Edit template : BC04", }
+            { type: "text", label: "Evidence List", }
         ],
-    },
+    }
 
 
 ];

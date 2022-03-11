@@ -2,11 +2,40 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from "yup";
 import { CRXTooltip } from '@cb/shared';
+import { Select, MenuItem } from '@material-ui/core';
+import { CRXButton, CRXConfirmDialog } from '@cb/shared';
+
 
 var re = /[\/]/;
 
+const CustomizedSelectForFormik = (props: any) => {
+  const { children, form, field } = props;
+  const { name, value } = field;
+  const { setFieldValue, errors } = form;
+  return (
+    <>
+      <Select
+        name={name}
+        value={value}
+        onChange={e => {
+          setFieldValue(name, e.target.value);
+        }}
+      >
+        {children}
+      </Select>
+      <ErrorMessage
+        name={name}
+        render={(msg) => (
+          <div style={{ color: "red" }}>
+            {name.split(re)[1].split('_')[0] + " is " + msg}
+          </div>
+        )}
+      />
+    </>
+  );
+};
 
-const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any, setCameraFeildArrayCounter: any, formSchema: any, setformSchema: any, applyValidation: any, Initial_Values_obj_RequiredField: any, values : any, setValues : any) => {
+const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any, setCameraFeildArrayCounter: any, formSchema: any, setformSchema: any, applyValidation: any, Initial_Values_obj_RequiredField: any, values: any, setValues: any) => {
   var rowId = parseInt(cameraFeildArrayCounter) + 1;
   setCameraFeildArrayCounter(rowId);
 
@@ -30,13 +59,11 @@ const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any
     {}
   );
   setformSchema(formSchemaTemp);
-
-  debugger;
   var valuesKV = arr.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item.key]: item.value }),
     {}
   );
-  setValues({...values, ...valuesKV});
+  setValues({ ...values, ...valuesKV });
 
   arrayHelpers.push(arr);
 };
@@ -47,7 +74,7 @@ const onChange = (e: any, formObj: any, setformSchema: any, applyValidation: any
   if (formObj.validationChangeFeilds !== undefined) {
     let arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
     formObj.validationChangeFeilds.filter((x: any) => x.value == e.target.value)?.map((x: any) => {
-
+      
       var splittedKey = x.key.split('_');
       var parentSplittedKey = formObj.key.split('_');
       var newKey = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
@@ -70,6 +97,36 @@ const onChange = (e: any, formObj: any, setformSchema: any, applyValidation: any
   }
 }
 
+const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, handleChange: any, FormSchema: any, index : any) => {
+  if (formObj.optionAppendOnChange !== undefined) {
+    values[formObj.key] = e;
+    var parentSplittedKey = formObj.key.split('_');
+    formObj.optionAppendOnChange?.filter((x: any) => x.value == e)?.map((x: any) => {
+      var splittedKey = x.selectKey.split('_');
+      if (splittedKey.length > 0) {
+        var key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+        var select = values["device/Camera/FieldArray"]
+          ?.feilds[index]
+          .find((feild: any) => feild.key == key);
+
+        if (x.options.includes("all")) {
+          select.options.filter((y: any) => y.hidden == true).map((y: any) => {
+            y.hidden = false;
+          })
+        }
+        else if (x.options.length > 0) {
+          select.options.map((y: any) => {
+            if (!x.options.includes(y.value)) {
+              y.hidden = true;
+            }
+          })
+        }
+      }
+    });
+    setValues(values);
+  }
+}
+
 
 
 
@@ -87,18 +144,25 @@ let customEvent = (event: any, y: any, z: any) => {
 
 export const CreateTempelateCase = (props: any) => {
 
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField } = props;
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField, FormSchema } = props;
 
   const handleRowIdDependency = (key: string) => {
-    key = key.replace("rowId", index)
+    var parentSplittedKey = formObj.key.split('_');
+    key = key.replace("rowId", parentSplittedKey[1])
     var value = values[key]
     return value;
   }
 
-  // React.useEffect(() => {
-  //   
-  //   // setStationDropDown();
-  // }, [values["device/blackBoxRecording_1_Camera/Radio"]]);
+  const [open, setOpen] = React.useState(false);
+  const [removeIndex, setRemoveIndex] = React.useState(0);
+
+
+
+  React.useEffect(() => {
+    if (formObj.optionAppendOnChange !== undefined) {
+      optionAppendOnChange(formObj.value, formObj, values, setValues, handleChange, FormSchema, index);
+    }
+  }, []);
 
 
 
@@ -191,6 +255,8 @@ export const CreateTempelateCase = (props: any) => {
             marginTop: "10px",
           }}
         >
+          <p>{formObj.radioLabelGroup}</p>
+
           <label>{formObj.label}</label>
           <label>
             {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
@@ -237,10 +303,18 @@ export const CreateTempelateCase = (props: any) => {
           <Field
             name={formObj.key}
             id={formObj.id}
-            component={formObj.type}
+            // component={CustomizedSelectForFormik}
+            component={"select"}
+            onChange={(e: any) => formObj.optionAppendOnChange !== undefined ? optionAppendOnChange(e.target.value, formObj, values, setValues, handleChange, FormSchema, index) : handleChange(e)}
+
           >
-            {formObj.options.map(
+            {formObj.options.filter((x: any) => x.hidden != true).map(
               (opt: any, key: string) => (
+                // <MenuItem style={{ width: "50%" }}
+                //   value={opt.value}
+                //   key={key}
+                // >{opt.label}{" "}</MenuItem>
+
                 <option
                   style={{ width: "50%" }}
                   value={opt.value}
@@ -370,7 +444,7 @@ export const CreateTempelateCase = (props: any) => {
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <div
           style={{
-            display: "block",
+            display: formObj.hidefromUI == true ? "none" : "block",
             marginBottom: "10px",
             marginTop: "10px",
           }}
@@ -422,12 +496,16 @@ export const CreateTempelateCase = (props: any) => {
                     feildArray.map((feild: any, key: any) => (
 
                       key == 0 ?
-                        <><h1>Camera {(index + 1)}</h1> <button type="button" onClick={() => arrayHelpers.remove(index)}>-</button>
+                        <>
+                          <h1>Camera {(index + 1)}</h1>
+                         <i className="fas fa-minus-circle" onClick={() => { setOpen(true); setRemoveIndex(index) }}></i>
+
+
                           <div key={formObj.key + "_DIV" + key}>
-                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index + 1} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} />
                           </div></> :
                         <div key={formObj.key + "_DIV" + key}>
-                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index + 1} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} />
 
                         </div>
                     ))
@@ -436,11 +514,33 @@ export const CreateTempelateCase = (props: any) => {
 
                   ))
                 ) : (<></>)}
-              <button type="button" onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField, values, setValues)}>
-                Add a feild
-              </button>
+
+              <CRXButton  onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField, values, setValues)}>
+                + Add camera
+              </CRXButton>
 
 
+              <CRXConfirmDialog
+                setIsOpen={(e: React.MouseEvent<HTMLElement>) => { setOpen(false); }}
+                onConfirm={() => { setOpen(false); arrayHelpers.remove(removeIndex) }}
+                title="Please Confirm"
+                isOpen={open}
+                modelOpen={open}
+                primary="remove"
+                secondary="cancel"
+              >
+                {
+                  <div className="crxUplockContent">
+                    You are attempting to <strong>remove</strong>
+                    <strong>Camera</strong>. If you remove this camera, any changes
+                    you've made will not be saved. You will not be able to undo this
+                    action.
+                    <p>
+                      Are you sure you would like to <strong>remove</strong> this camera?
+                    </p>
+                  </div>
+                }
+              </CRXConfirmDialog>
             </div>
 
           )}

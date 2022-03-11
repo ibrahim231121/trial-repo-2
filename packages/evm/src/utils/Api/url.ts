@@ -74,3 +74,4 @@ export const STATIONINFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStat
 export const DATA_RETENTION_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataRetention`
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const STATIONS_GET_ALL = `${BASE_URL_UNIT_SERVICE}/Stations`
+export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`

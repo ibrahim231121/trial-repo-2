@@ -19,7 +19,7 @@ import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
-import  {CreateTempelateCase}  from "./CreateTemplateCase";
+import { CreateTempelateCase } from "./CreateTemplateCase";
 
 
 
@@ -105,14 +105,7 @@ const CreateTemplate = (props: any) => {
   })
 
 
-  React.useEffect(() => {
-    if (historyState.deviceType == "Incar") {
-      dispatch(getRetentionPolicyInfoAsync());
-      dispatch(getCategoriesAsync());
-    }
-    dispatch(getStationsAsync());
-  });
-
+ 
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {
       dispatch(getRetentionPolicyInfoAsync());
@@ -706,7 +699,7 @@ const CreateTemplate = (props: any) => {
                               <p>{formObj.labelGroupRecording}</p>
                             </div>;
 
-                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} formSchema={formSchema} setformSchema={setformSchema} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}  /></div>) : (<></>));
+                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} formSchema={formSchema} setformSchema={setformSchema} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} /></div>) : (<></>));
 
                           }
                         )}
