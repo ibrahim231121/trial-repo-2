@@ -49,11 +49,12 @@ iframe {
   margin-left: 63px;
   .gridFilterGlobal {
     .crx-global-Select {
-      width: 224px;
+      width: 224px !important;
     }
   }
   .rc-menu__arrow {
     top: 61px !important;
+    display: none;
   }
   p.statusUnit {
     position: relative;
@@ -155,7 +156,7 @@ iframe {
             }
             &:nth-child(9) {
               //Station
-              min-width: 179px;
+              min-width: 215px;
             }
             &:nth-child(10) {
               //Assigned To
@@ -187,6 +188,13 @@ iframe {
             &:nth-child(2) {
               //UnitId
               left: 58px !important;
+            }
+            &:nth-child(7) {
+              //UnitId
+              .crx-global-Select {
+                min-width: 127px !important;
+                width: 127px !important;
+              }
             }
           }
           th {

@@ -313,7 +313,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
           val = []
       return val
   }
-
   return (
       <div>
 
@@ -326,7 +325,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               CheckBox={true}
               checkSign={false}
               open={open}
-              // className={"arsalan" + classes.tabb }
               classes={{
                 paper: classes.paper
 
@@ -625,6 +623,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
         <MultSelectiDropDown
             headCells={headCells}
             colIdx={colIdx}
+         
             reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
             // reformattedRows={reformattedRows}
             isSearchable={isSearchable}
