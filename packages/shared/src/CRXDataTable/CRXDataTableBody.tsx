@@ -194,12 +194,13 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               display: `${
                                 headCells[colIdx].visible === undefined ||
                                 headCells[colIdx].visible === true
-                                  ? ""
+                                  ? undefined
                                   : "none"
                               }`,
                               whiteSpace:
-                                headCells[colIdx].id === "recordingStarted" &&
-                                "nowrap",
+                                headCells[colIdx].id === "recordingStarted"
+                                  ? "nowrap"
+                                  : "normal",
                             }}
                           >
                             {headCells[colIdx].detailedDataComponentId !==
