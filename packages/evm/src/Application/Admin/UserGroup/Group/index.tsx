@@ -473,6 +473,7 @@ const Group = () => {
             };
           });
           let dataPermissionObj = {
+            groupId : id,
             containerMappings: permissionsToAdd,
             deletedContainerMappingIds: deletedDataPermissions,
           };
@@ -494,7 +495,7 @@ const Group = () => {
                 container.status === 409 ||
                 container.status === 404
               ) {
-                effectAfterSave(groupId.toString())
+                effectAfterSave(groupId.toString(),container.status)
 
                 setAlertType("inline");
                 setMessages(message[2].message);
@@ -506,14 +507,16 @@ const Group = () => {
               console.log(err.message);
             });
 
-          effectAfterSave(groupId.toString())
+          effectAfterSave(groupId.toString(),status)
 
           setAlertType("toast");
           setMessages(message[0].message);
           setError(message[0].messageType);
         } else if (status === 500 || status === 400) {
-
-          effectAfterSave(groupId.toString())
+          setShowSuccess(true);
+          functionInitialized();
+          setIsAppPermissionsChange(false);
+          setIsSaveButtonDisabled(true);
 
           setMessages(message[1].message);
           setError(message[1].messageType);
@@ -522,7 +525,7 @@ const Group = () => {
 
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
 
-          effectAfterSave(groupId.toString())
+          effectAfterSave(groupId.toString(),status)
 
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow");
@@ -538,10 +541,12 @@ const Group = () => {
     if (ids !== undefined) getResponse()
   }, [ids]);
 
-  const effectAfterSave = (groupId: string) => {
+  const effectAfterSave = (groupId: string,status: number) => {
     setShowSuccess(true);
     functionInitialized();
-    redirectingToId(groupId);
+    if(status != 409  ){
+      redirectingToId(groupId);
+    }
     setIsAppPermissionsChange(false);
     setIsSaveButtonDisabled(true);
   }
