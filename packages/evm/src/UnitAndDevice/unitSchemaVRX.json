@@ -162,7 +162,7 @@
       ]
     }
   ],
-  "device": [
+  "Primary Device": [
     {
       "id": "3",
       "key": "device/Device/Select",
@@ -411,9 +411,11 @@
           "msg": "Required"
         }
       ]
-    },
+    }
+  ],
+  "CameraSetup":[
     {
-      "key": "device/Camera/FieldArray",
+      "key": "CameraSetup/Camera/FieldArray",
       "type": "fieldarray",
       "label": "FieldArray",
       "value":"",
@@ -422,7 +424,7 @@
         [
           {
             "labelGroupRecording": "Camera 1",
-            "key": "device/deviceType_1_Camera/Select",
+            "key": "CameraSetup/deviceType_1_Camera/Select",
             "type": "select",
             "label": "Device Type",
             "value": "IP Camera",
@@ -443,23 +445,23 @@
             "optionAppendOnChange":[
               {
                 "value": "IP Camera",
-                "selectKey": "device/videoProfile_rowId_Camera/Select",
-                "options": ["1920 x 1080 p30", "1280 x 720 p30"]
+                "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
+                "options": ["1920 x 1080 30fps", "1280 x 720 30fps"]
               },
               {
                 "value": "Video FC(1-8)",
-                "selectKey": "device/videoProfile_rowId_Camera/Select",
+                "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
                 "options": ["all"]
               },
               {
                 "value": "Discovered devices",
-                "selectKey": "device/videoProfile_rowId_Camera/Select",
+                "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
                 "options": ["all"]
               }
             ]
           },
           {
-            "key": "device/deviceName_1_Camera/TextBox",
+            "key": "CameraSetup/deviceName_1_Camera/TextBox",
             "value": "",
             "type": "text",
             "label": "Device Name",
@@ -471,47 +473,47 @@
             ]
           },
           {
-            "key": "device/videoProfile_1_Camera/Select",
+            "key": "CameraSetup/videoProfile_1_Camera/Select",
             "type": "select",
             "label": "Video Profile",
             "value": "",
             "options": [
               {
-                "value": "3840 x 2160 p30",
-                "label": "3840 x 2160 p30"
+                "value": "3840 x 2160 30fps",
+                "label": "3840 x 2160 30fps"
               },
               {
-                "value": "2688 x 1512 p30",
-                "label": "2688 x 1512 p30"
+                "value": "2688 x 1512 30fps",
+                "label": "2688 x 1512 30fps"
               },
               {
-                "value": "1920 x 1080 p120",
-                "label": "1920 x 1080 p120"
+                "value": "1920 x 1080 120fps",
+                "label": "1920 x 1080 120fps"
               },
               {
-                "value": "1920 x 1080 p60",
-                "label": "1920 x 1080 p60"
+                "value": "1920 x 1080 60fps",
+                "label": "1920 x 1080 60fps"
               },
               {
-                "value": "1920 x 1080 p30",
-                "label": "1920 x 1080 p30"
+                "value": "1920 x 1080 30fps",
+                "label": "1920 x 1080 30fps"
               },
               {
-                "value": "1280 x 720 p120",
-                "label": "1280 x 720 p120"
+                "value": "1280 x 720 120fps",
+                "label": "1280 x 720 120fps"
               },
               {
-                "value": "1280 x 720 p60",
-                "label": "1280 x 720 p60"
+                "value": "1280 x 720 60fps",
+                "label": "1280 x 720 60fps"
               },
               {
-                "value": "1280 x 720 p30",
-                "label": "1280 x 720 p30"
+                "value": "1280 x 720 30fps",
+                "label": "1280 x 720 30fps"
               }
             ]
           },
           {
-            "key": "device/preRecordingDuration_1_Camera/NumberBox",
+            "key": "CameraSetup/preRecordingDuration_1_Camera/NumberBox",
             "type": "number",
             "label": "Pre-Recording Duration",
             "value": 5,
@@ -533,7 +535,7 @@
             ]
           },
           {
-            "key": "device/postRecordingDuration_1_Camera/NumberBox",
+            "key": "CameraSetup/postRecordingDuration_1_Camera/NumberBox",
             "type": "number",
             "label": "Post-Recording Duration",
             "value": 1,
@@ -556,14 +558,14 @@
           },
           {
             "radioLabelGroup": "Black Box Recording",
-            "key": "device/blackBoxRecording_1_Camera/Radio",
+            "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Off",
             "value": "Off",
             "selected": true,
             "validationChangeFeilds": [
               {
-                "key": "device/blackboxDirectory_rowId_Camera/TextBox",
+                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
                 "value": "Off",
                 "todo" : "remove"
               }
@@ -571,7 +573,7 @@
           },
           {
             "labelGroupRecording": "Black Box Recording",
-            "key": "device/blackBoxRecording_1_Camera/Radio",
+            "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Continous",
             "value": "Continous",
@@ -580,7 +582,7 @@
             "selected": false,
             "validationChangeFeilds": [
               {
-                "key": "device/blackboxDirectory_rowId_Camera/TextBox",
+                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
                 "type": "text",
                 "value": "Continous",
                 "todo" : "add",
@@ -595,21 +597,21 @@
           },
           {
             "labelGroupRecording": "Black Box Recording",
-            "key": "device/blackBoxRecording_1_Camera/Radio",
+            "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Only when recording in-car video to in-car disk",
             "value": "Only when recording in-car video to in-car disk",
             "selected": false,
             "validationChangeFeilds": [
               {
-                "key": "device/blackboxDirectory_rowId_Camera/TextBox",
+                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
                 "value": "Only when recording in-car video to in-car disk",
                 "todo" : "remove"
               }
             ]
           },
           {
-            "key": "device/blackboxDirectory_1_Camera/TextBox",
+            "key": "CameraSetup/blackboxDirectory_1_Camera/TextBox",
             "value": "",
             "type": "text",
             "label": "Blackbox Directory",
@@ -621,31 +623,31 @@
             ],
             "depends": [
               {
-                "key": "device/blackBoxRecording_rowId_Camera/Radio",
+                "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",
                 "value": ["Continous"]
               }
             ]
           },
           {
-            "key": "device/micOffWhenNotRecording_1_Camera/CheckBox",
+            "key": "CameraSetup/micOffWhenNotRecording_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Mic Off When Not Recording",
             "value": false
           },
           {
-            "key": "device/overlayMetadataOnVideo_1_Camera/CheckBox",
+            "key": "CameraSetup/overlayMetadataOnVideo_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Overlay Metadata On Video",
             "value": false
           },
           {
-            "key": "device/captureWithMasterButton_1_Camera/CheckBox",
+            "key": "CameraSetup/captureWithMasterButton_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Capture With Master Button",
             "value": false
           },
           {
-            "key": "device/cameraMode_1_Camera/Select",
+            "key": "CameraSetup/cameraMode_1_Camera/Select",
             "type": "select",
             "label": "Camera Mode",
             "value": "",
@@ -669,7 +671,7 @@
             ]
           },
           {
-            "key": "device/audioDeviceType_1_Camera/Select",
+            "key": "CameraSetup/audioDeviceType_1_Camera/Select",
             "type": "select",
             "label": "Audio Device Type",
             "value": "",

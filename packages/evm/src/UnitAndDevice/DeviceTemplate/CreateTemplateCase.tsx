@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from "yup";
 import { CRXTooltip } from '@cb/shared';
@@ -12,7 +12,18 @@ var re = /[\/]/;
 const CustomizedSelectForFormik = (props: any) => {
   const { children, form, field } = props;
   const { name, value } = field;
-  const { setFieldValue, errors } = form;
+  const { setFieldValue } = form;
+
+  // React.useEffect(() => {
+  //   if(children?.length > 0)
+  //   {
+  //     console.log(children);
+  //     if(name == "unittemplate/station/Select"){
+  //       setFieldValue(name, "24");
+  //       debugger;
+  //     }
+  //   }
+  // }, [children])
   return (
     <>
       <Select
@@ -24,19 +35,13 @@ const CustomizedSelectForFormik = (props: any) => {
       >
         {children}
       </Select>
-      <ErrorMessage
-        name={name}
-        render={(msg) => (
-          <div style={{ color: "red" }}>
-            {name.split(re)[1].split('_')[0] + " is " + msg}
-          </div>
-        )}
-      />
     </>
   );
 };
 
-const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any, setCameraFeildArrayCounter: any, formSchema: any, setformSchema: any, applyValidation: any, Initial_Values_obj_RequiredField: any, values: any, setValues: any) => {
+const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any, setCameraFeildArrayCounter: any, applyValidation: any, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField: any, values: any, setValues: any, isValid:any, setformSchema:any) => {
+
+  
   var rowId = parseInt(cameraFeildArrayCounter) + 1;
   setCameraFeildArrayCounter(rowId);
 
@@ -54,12 +59,12 @@ const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any
     arr.push({ ...x, key: key });
   });
 
-  var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj);
-  var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
-    (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+  let key_value_pairs = arrayOfObj.reduce(
+    (formObj:any, item:any) => ((formObj[item.key] = { type: item.value.type, validation: item.value.validation }), formObj),
     {}
   );
-  setformSchema(formSchemaTemp);
+  setInitial_Values_obj_RequiredField(key_value_pairs);
+
   var valuesKV = arr.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item.key]: item.value }),
     {}
@@ -67,10 +72,32 @@ const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any
   setValues({ ...values, ...valuesKV });
 
   arrayHelpers.push(arr);
+
+
+  var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
+  var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
+    (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+    {}
+  );
+  setformSchema(formSchemaTemp);
+  
 };
 
 
-const onChange = (e: any, formObj: any, setformSchema: any, applyValidation: any, Initial_Values_obj_RequiredField: any, handleChange: any) => {
+const removeObject = (removeIndex:number, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField:any, values: any, applyValidation: any, setformSchema: any) => {
+  var rowToDelete = values["CameraSetup/Camera/FieldArray"]?.feilds[removeIndex];
+  const arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
+  var arrayOfObjUpdated = arrayOfObj.filter((x:any) => !(rowToDelete.some((y:any) => y.key == x.key)));
+
+  let key_value_pairs = arrayOfObjUpdated.reduce(
+    (formObj:any, item:any) => ((formObj[item.key] = { type: item.value.type, validation: item.value.validation }), formObj),
+    {}
+  );
+  setInitial_Values_obj_RequiredField(key_value_pairs);
+};
+
+
+const onChange = (e: any, formObj: any, applyValidation: any, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField : any, handleChange: any) => {
   handleChange(e);
   if (formObj.validationChangeFeilds !== undefined) {
     let arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
@@ -89,12 +116,11 @@ const onChange = (e: any, formObj: any, setformSchema: any, applyValidation: any
       }
     })
 
-    var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj);
-    var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
-      (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+    let key_value_pairs = arrayOfObj.reduce(
+      (formObj:any, item:any) => ((formObj[item.key] = { type: item.value.type, validation: item.value.validation }), formObj),
       {}
     );
-    setformSchema(formSchemaTemp);
+    setInitial_Values_obj_RequiredField(key_value_pairs);
   }
 }
 
@@ -106,7 +132,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
       var splittedKey = x.selectKey.split('_');
       if (splittedKey.length > 0) {
         var key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
-        var select = values["device/Camera/FieldArray"]
+        var select = values["CameraSetup/Camera/FieldArray"]
           ?.feilds[index]
           .find((feild: any) => feild.key == key);
 
@@ -133,6 +159,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
 
 
 
+
 let customEvent = (event: any, y: any, z: any) => {
   if (event.target[z.inputType] === z.if) {
     y(z.field, z.value)
@@ -145,7 +172,7 @@ let customEvent = (event: any, y: any, z: any) => {
 
 export const CreateTempelateCase = (props: any) => {
 
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField, FormSchema, touched, errors } = props;
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors} = props;
 
   const handleRowIdDependency = (key: string) => {
     var parentSplittedKey = formObj.key.split('_');
@@ -165,7 +192,7 @@ export const CreateTempelateCase = (props: any) => {
     }
   }, []);
 
-
+ 
 
 
   switch (formObj.type) {
@@ -179,7 +206,7 @@ export const CreateTempelateCase = (props: any) => {
           <div>
           <label className="labelRadioo">{formObj.label}
           <label>
-            {formObj.required === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
+            {formObj.validation?.some((x: any) => x.key == 'required')=== true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
           </label>
           </label>
           <div className="UiLabelTextboxRight">
@@ -276,13 +303,13 @@ export const CreateTempelateCase = (props: any) => {
             type={formObj.type}
             name={formObj.key}
             value={formObj.value}
-            onChange={(e: any) => onChange(e, formObj, setformSchema, applyValidation, Initial_Values_obj_RequiredField, handleChange)}
+            onChange={(e: any) => onChange(e, formObj, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, handleChange)}
           />
           <span className="checkmarkRadio"></span>
           </label>
           <label className={formObj.label+"Text"}>{formObj.label}
                                                 <label>
-                                                {formObj.required === true ? "*" : null}
+                                                {formObj.validation?.some((x: any) => x.key == 'required')=== true ? "*" : null}
                                                 </label>
                                            <p className="labelMutedText"> {formObj.labelMutedText} </p>
 
@@ -323,7 +350,7 @@ export const CreateTempelateCase = (props: any) => {
           <div>
         <label>{formObj.label}    
         <label>
-          {formObj.required === true ? "*" : null}
+        {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
         </label></label>
         <div className="UicustomMulti">
           <Field
@@ -336,7 +363,7 @@ export const CreateTempelateCase = (props: any) => {
           >
             {formObj.options.filter((x: any) => x.hidden != true).map(
               (opt: any, key: string) => (
-                // <MenuItem style={{ width: "50%" }}
+                // <MenuItem
                 //   value={opt.value}
                 //   key={key}
                 // >{opt.label}{" "}</MenuItem>
@@ -441,7 +468,7 @@ export const CreateTempelateCase = (props: any) => {
           <div className="UiCheckboxLeft">
                 <label className={formObj.label ? "labelAdded" : "labelNotAdded"}>{formObj.label}
                 <label>
-                {formObj.required === true ? "*" : null}
+                {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                 </label>
                 </label>
             </div>
@@ -491,6 +518,7 @@ export const CreateTempelateCase = (props: any) => {
       );
     case "number":
       return (
+
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <div className={formObj.class}>
         <div className={touched[formObj.key] == true && errors[formObj.key]? " NumberFieldError" : "NumberField"}>
@@ -504,7 +532,7 @@ export const CreateTempelateCase = (props: any) => {
            <div className="UiNumberSelectorLeft ">
            <label>{formObj.label}
                                         <label>
-                                        {formObj.required === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "starikRed" :  "starikBlack" }>*</span> : null}
+                                        {formObj.validation?.some((x: any) => x.key == 'required')=== true  ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "starikRed" :  "starikBlack" }>*</span> : null}
                                         </label>
                                         </label>
             </div>
@@ -566,10 +594,10 @@ export const CreateTempelateCase = (props: any) => {
 
 
                           <div key={formObj.key + "_DIV" + key}>
-                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />
                           </div></> :
                         <div key={formObj.key + "_DIV" + key}>
-                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} formSchema={formSchema} applyValidation={applyValidation} setformSchema={setformSchema} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />
 
                         </div>
                     ))
@@ -579,14 +607,14 @@ export const CreateTempelateCase = (props: any) => {
                   ))
                 ) : (<></>)}
 
-              <CRXButton  onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, formSchema, setformSchema, applyValidation, Initial_Values_obj_RequiredField, values, setValues)}>
+              <CRXButton  onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
                 + Add camera
               </CRXButton>
 
 
               <CRXConfirmDialog
                 setIsOpen={(e: React.MouseEvent<HTMLElement>) => { setOpen(false); }}
-                onConfirm={() => { setOpen(false); arrayHelpers.remove(removeIndex) }}
+                onConfirm={() => { setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema ); arrayHelpers.remove(removeIndex); }}
                 title="Please Confirm"
                 isOpen={open}
                 modelOpen={open}

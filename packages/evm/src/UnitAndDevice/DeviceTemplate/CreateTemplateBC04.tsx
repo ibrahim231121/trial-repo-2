@@ -36,6 +36,9 @@ const applyValidation = (arrayOfObj: any) => {
     else if (x.value.type == "text") {
       validationstring = Yup.string();
     }
+    else if (x.value.type == "select") {
+      validationstring = Yup.string();
+    }
     if (validationstring) {
       x.value.validation.map((y: any) => {
         if (y.key == "required") {
@@ -102,10 +105,19 @@ const CreateTemplate = (props: any) => {
   templateName = historyState.deviceType;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
+  let tabs1: { label: keyof typeof FormSchema, index: number }[] = [];
 
   Object.keys(FormSchema).forEach((x, y) => {
     const data = x as keyof typeof FormSchema
     tabs.push({ label: data, index: y })
+  })
+  Object.keys(FormSchema).forEach((x, y) => {
+    let data = x as keyof typeof FormSchema
+    if(data == "CameraSetup")
+    {
+      data = "Camera Setup";
+    }
+    tabs1.push({ label: data, index: y })
   })
 
 
@@ -162,7 +174,7 @@ const CreateTemplate = (props: any) => {
           x.options.push(...retentionOptions)
         }
       })
-      FormSchema["device"].map((x: any, y: number) => {
+      FormSchema["Primary Device"].map((x: any, y: number) => {
         if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
           x.options.push(...retentionOptions)
         }
@@ -673,7 +685,7 @@ const CreateTemplate = (props: any) => {
         </MenuItem>
       </Menu>
       <div className="tabCreateTemplate">
-        <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+        <CRXTabs value={value} onChange={handleChange} tabitems={tabs1} />
         <div className="tctContent">
           <Formik
             enableReinitialize={true}
@@ -705,9 +717,11 @@ const CreateTemplate = (props: any) => {
                             </div>
                         {FormSchema[x.label].map(
                           (formObj: any, key: number) => {
-                           
-                              
-                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} formSchema={formSchema} setformSchema={setformSchema} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} touched={touched} errors={errors} /></div>) : (<></>));
+                            <div>
+                              <p>{formObj.labelGroupRecording}</p>
+                            </div>;
+
+                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} /></div>) : (<></>));
 
                           }
                         )}

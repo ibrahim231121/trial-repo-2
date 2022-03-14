@@ -437,7 +437,6 @@
       "hintvalue1": "How often <Body Worn Type> sends heartbeats",
       "label": "GPS Heartbeat",
       "value": 60,
-      "required": true,
       "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "seconds": true,
       "validation": [
@@ -465,7 +464,6 @@
       "value": 60,
       "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "hinttext": true,
-      "required":true,
       "hintvalue": "Interval between heartbeats when recording",
       "hintvalue1": "Interval between heartbeats when recording",
       "seconds": true,
