@@ -6,12 +6,9 @@ import { CRXButton } from "@cb/shared";
 import Slider from "@material-ui/core/Slider";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
-import { on } from "events";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import Box from '@material-ui/core/Box';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import moment, { duration } from 'moment';
+import moment from 'moment';
 
 
 var videoElement :any
@@ -21,6 +18,20 @@ type Timeline = {
   recording_end_point_ratio: number;
   recordingratio:number;
   
+}
+
+type videoPlayer = {
+  speedFinderDown?:string
+  speedFinderUp?:string,
+  secondUp?:boolean,
+  thirdUp?:boolean,
+  secondDown?:boolean,
+  thirdDown?:boolean,
+  disabledDown?:boolean,
+  disabledUp?:boolean,
+  speed?:any,
+  resumeBar?:boolean,
+
 }
 
 const VideoPlayerBase = (props: any) => {
@@ -47,7 +58,6 @@ const VideoPlayerBase = (props: any) => {
 
   const [timer, setTimer] = useState<number>(0);
 
-  const [speed, setSpeed] = useState<number>(1000);
 
   const [isPlaying, setPlaying] = useState<boolean>(false)
 
@@ -55,37 +65,27 @@ const VideoPlayerBase = (props: any) => {
 
   const [ViewScreen,setViewScreen] = useState(true);
 
-  const [progress, setProgress] = useState(0);
-
-  const [progresstwo, setProgresstwo] = useState(0);
-
-  const [progressthree, setProgressthree] = useState(0);
-  
-  const [progressfour, setProgressfour] = useState(0);
-
   const [controllerBar,setControllerBar] = useState(true);
 
   const [styleScreen, setStyleScreen] = useState(false);
 
-  const [secondUp, setSecondUp] = useState(false);
-
-  const [thirdUp , setThirdUp] = useState(false);
-
-  const [disabledUp,setDisabledUp] = useState(false);
-  
-  const [secondDown, setSecondDown] = useState(false);
-
-  const [thirdDown , setThirdDown] = useState(false);
-
-  const [disabledDown,setDisabledDown] = useState(false);
-
-  const [resumeBar,setResumeBar] = useState(false);
   
   const [loading, setLoading] = useState(false);
-  const [speedFinderUp, setSpeedFinderUp] = useState("");
 
-  const [speedFinderDown, setSpeedFinderDown] = useState("");
-
+  const [state, setState] = useState<videoPlayer>({
+    speedFinderDown:"",
+    speedFinderUp:"",
+    secondUp:false,
+    thirdUp:false,
+    secondDown:false,
+    thirdDown:false,
+    disabledDown:false,
+    disabledUp:false,
+    speed:1000,
+    resumeBar:false,
+   
+   
+  });
 
   const data = props.history.location.state?.data
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
@@ -101,11 +101,11 @@ const VideoPlayerBase = (props: any) => {
      
   const VideoData = [
     { id: "Video-1", src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", duration: 596 },
-    // { id:"3", src: "https://www.w3schools.com/tags/movie.mp4"},
-    // { id:"2", src: "http://media.w3.org/2010/05/bunny/movie.mp4" },
-    // { id:"4", src: "https://www.w3schools.com/tags/movie.mp4"} ,
-    // { id:"5", src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
-    // { id:"6", src: "http://media.w3.org/2010/05/bunny/movie.mp4" }
+    { id:"3", src: "https://www.w3schools.com/tags/movie.mp4"},
+    { id:"2", src: "http://media.w3.org/2010/05/bunny/movie.mp4" },
+    { id:"4", src: "https://www.w3schools.com/tags/movie.mp4"} ,
+     { id:"5", src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
+     { id:"6", src: "http://media.w3.org/2010/05/bunny/movie.mp4" }
   ];
   async function Durationfinder(data:any) {
     let maxminarray: string[] = [];
@@ -223,22 +223,27 @@ const VideoPlayerBase = (props: any) => {
     if(!isPlaying){
         videoHandle.currentTime = timer;
         videoHandle.play(); 
-        setDisabledUp(true);
-        setDisabledDown(true);
-        setThirdDown(false);
-        setSecondDown(false);
-        setThirdUp(false);
-        setSecondUp(false);
+        setState({
+          thirdUp:false,
+          secondUp:false,
+          secondDown:false,
+          thirdDown:false,
+          disabledDown:true,
+          disabledUp:true
+        })
     }
     else
       videoHandle.pause();
       videoHandle.playbackRate = 1;
-      setSpeed(1000);
-      setDisabledUp(false);
-      setDisabledDown(false);
-      setSpeedFinderUp("");
-      setSpeedFinderDown("");
-      setResumeBar(false);
+      setState({
+        speedFinderUp:"",
+        speedFinderDown:"",
+        disabledDown:false,
+        disabledUp:false,
+        speed:1000,
+        resumeBar:false
+        
+      })
  };
   const handleReverse = () => {
     setPlaying(false);
@@ -291,7 +296,7 @@ const VideoPlayerBase = (props: any) => {
       }
     },
     // Speed in milliseconds or null to stop it
-    isPlaying ? speed : null,
+    isPlaying ? state.speed : null,
   );
 
   const setVolumeHandle = (volume: number) => {
@@ -346,94 +351,114 @@ const VideoPlayerBase = (props: any) => {
 
 
   let disabled = isPlaying === false ? true : false; 
-  let fullDown = disabledDown === true ? true : false;
-  let fullUp = disabledUp === true ? true : false;
-  let resumeChecker =  resumeBar === true ? false : true;
+  let fullDown = state.disabledDown === true ? true : false;
+  let fullUp = state.disabledUp === true ? true : false;
+  let resumeChecker =  state.resumeBar === true ? false : true;
  
   const speedUp = () => {
     videoHandle.playbackRate = 2;
-    setSpeed(500);
-    setSecondUp(true);
-    setThirdDown(false);
-    setSecondDown(false);
-    setSpeedFinderUp("x1");
-    setSpeedFinderDown("");
+    setState({
+      speedFinderDown:(""),
+      speedFinderUp:("x1"),
+      secondUp:true,
+      thirdDown:false,
+      secondDown:false,
+      speed:500
+    })
     fullDown = false;
       if(secondUp === true) {
         videoHandle.playbackRate = 3;
-        setSpeed(333.33);
-        setThirdUp(true);
-        setThirdDown(false);
-        setSecondDown(false);
-        setSpeedFinderUp("x2");
-        setSpeedFinderDown("");
+        setState({
+          speedFinderDown:(""),
+          speedFinderUp:("x2"),
+          thirdUp:true,
+          thirdDown:false,
+          secondDown:false,
+          speed:333.33
+        })
       } 
       if(thirdUp === true) {
         videoHandle.playbackRate = 4;
-        setSpeed(250);
-        setDisabledUp(true);
-        setThirdDown(false);
-        setSecondDown(false);
-        setSpeedFinderUp("x3");
-        setSpeedFinderDown("");
+        setState({
+          speedFinderDown:(""),
+          speedFinderUp:("x3"),
+          thirdDown:false,
+          secondDown:false,
+          disabledUp:true,
+          speed:250,
+          resumeBar:true
+        })
       }
-        setResumeBar(true);
+       
       if(disabledDown === true) {
-        setDisabledDown(false);
-        setThirdDown(false);
-        setSecondDown(false);
+        setState({
+          thirdDown:false,
+          secondDown:false,
+          disabledDown:false
+        })
     
       }
   }
 
   const speedDown = () => {
     videoHandle.playbackRate = 0.8;
-    setSpeed(1250);
-    setSecondDown(true);
-    setThirdUp(false);
-    setSecondUp(false);
-    setSpeedFinderUp("");
-    setSpeedFinderDown("x1");
+    setState({
+      speedFinderDown:("x1"),
+      speedFinderUp:(""),
+      thirdUp:false,
+      secondUp:false,
+      secondDown:true,
+      speed:1250
+    })
       if(secondDown === true) {
         videoHandle.playbackRate = 0.6;
-        setSpeed(1500);
-        setThirdDown(true);
-        setThirdUp(false);
-        setSecondUp(false);
-        setSpeedFinderUp("");
-        setSpeedFinderDown("x2");
+        setState({
+          speedFinderDown:("x2"),
+          speedFinderUp:(""),
+          thirdUp:false,
+          secondUp:false,
+          thirdDown:true,
+          speed:1500
+        })
       } 
       if(thirdDown === true) {
         videoHandle.playbackRate = 0.4;
-        setSpeed(1700);
-        setDisabledDown(true);
-        setThirdUp(false);
-        setSecondUp(false);
-        setSpeedFinderUp("");
-        setSpeedFinderDown("x3");
+        setState({
+          speedFinderDown:("x3"),
+          speedFinderUp:(""),
+          thirdUp:false,
+          secondUp:false,
+          disabledDown:true,
+          speed:1700,
+          resumeBar:true
+        })
       }
-        setResumeBar(true);
-      if(disabledUp === true) {
-        setDisabledUp(false);
-        setThirdUp(false);
-        setSecondUp(false);
+      if(state.disabledUp === true) {
+        setState({
+          thirdUp:false,
+          secondUp:false,
+          disabledUp:false
+        })
       }
   }
 
   const resumeButton = () => {
     videoHandle.playbackRate = 1;
-    setSpeed(1000);
-    setSecondDown(false);
-    setThirdDown(false);
-    setDisabledDown(false);
-    setSecondUp(false);
-    setThirdUp(false);
-    setDisabledUp(false);
-    setResumeBar(false);
-    setSpeedFinderUp("");
-    setSpeedFinderDown("");
+    setState({
+      speedFinderDown:(""),
+      speedFinderUp:(""),
+      secondUp:false,
+      thirdUp:false,
+      secondDown:false,
+      thirdDown:false,
+      disabledDown:false,
+      disabledUp:false,
+      speed:1000,
+      resumeBar:false
+    })
   }
 
+  const {  speedFinderDown,speedFinderUp,secondUp,thirdUp ,secondDown,thirdDown , disabledDown} = state
   return (
     <div id="video-player" >
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
