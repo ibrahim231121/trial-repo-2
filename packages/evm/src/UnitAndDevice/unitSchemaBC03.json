@@ -23,11 +23,15 @@
     },
     {
       "id": "4",
+      "class":"ConfigUpdateClass",
       "key": "unittemplate/configUpdateInterval/NumberBox",
       "type": "number",
       "label": "Config Update Interval",
       "value": 6,
       "seconds": false,
+      "requiredField": "true",
+      "hinttext" : true,
+      "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
       "validation": [
         {
           "key": "required",
@@ -125,15 +129,16 @@
     {
       "id": "4",
       "key": "device/enablePreBufferCheckbox/CheckBox",
+      "class": "VideoPreBuffer",
       "type": "checkbox",
-      "label": "Enable Pre Buffer Checkbox",
+      "label": "Video Pre-Buffer",
+      "checkBoxText": "Enable Video Pre-Buffer",
       "value": false
     },
     {
       "id": "3",
       "key": "device/videoPreBuffer/Select",
       "type": "select",
-      "label": "Video Pre-Buffer",
       "value": "20 sec",
       "options": [
         {
@@ -202,21 +207,21 @@
       "id": "4",
       "key": "device/muteVideoPreBuffer/CheckBox",
       "type": "checkbox",
-      "label": "Mute Video Pre Buffer",
+      "checkBoxText": "Mute Audio Pre-Buffer",
       "value": true
     },
     {
       "id": "4",
       "key": "device/enableVideoOverlay/CheckBox",
       "type": "checkbox",
-      "label": "Enable Video Overlay",
+      "label": "Video Overlay",
+      "checkBoxText": "Enable Video Overlay",
       "value": true
     },
     {
       "id": "3",
       "key": "device/videoOverlay/Select",
       "type": "select",
-      "label": "Video Overlay",
       "value": "Unit , Date and Time",
       "options": [
         {
@@ -249,22 +254,18 @@
       "id": "4",
       "key": "device/enableRecordingBeep/CheckBox",
       "type": "checkbox",
-      "label": "Enable Recording Beep",
-      "value": true
+      "label": "Recording Beep Interval",
+      "checkBoxText": "Enable Recording Beep",
+      "value": true,
+      "required": true
     },
     {
       "id": "4",
       "key": "device/recordingBeepInterval/NumberBox",
       "type": "number",
-      "label": "Recording Beep Interval",
       "value": 10,
       "seconds": true,
-      "validation": [
-        {
-          "key": "required",
-          "msg": "Required"
-        }
-      ],
+      "requiredField": "true",
       "depends": [
         {
           "key": "device/enableRecordingBeep/CheckBox",
@@ -278,18 +279,24 @@
       "id": "4",
       "key": "device/viberation/CheckBox",
       "type": "checkbox",
-      "label": "Viberation",
+      "label": "Vibration",
+      "checkBoxText": "Recording Vibration",
       "value": true,
       "seconds": true
     },
     {
       "labelDeviceControls": "Device Controls",
       "id": "4",
+      "labelGroupRecording": "Device Controls",
       "key": "device/enableCategorization/CheckBox",
       "type": "checkbox",
-      "label": "Enable Categorization",
+      "label": "Categories",
+      "checkBoxText": "Enable Categorization",
       "value": true,
-      "seconds": true
+      "required":true,
+      "seconds": true,
+      "hinttext" : true,
+      "hintvalue": "Allows to specify categories for selection after recording"
     },
     {
       "id": "3",
@@ -345,6 +352,7 @@
     {
       "labelMute": "Mute",
       "id": "1",
+      "class":"muteRadioDevice",
       "key": "device/mute/Radio",
       "type": "radio",
       "label": "Enabled",
@@ -357,46 +365,48 @@
       "type": "radio",
       "label": "Disabled",
       "value": "disabled",
-      "selected": true
+      "selected": false
     },
     {
       "id": "2",
       "key": "device/mute/Radio",
       "type": "radio",
       "label": "Always Muted",
+      "labelMutedText": "(“Always Muted” will disable “Disable Audio Only Recording” checkbox)",
       "value": "alwaysMuted",
-      "hinttext": true,
-      "hintvalue": "('Always Muted' will also disable 'Disable Audio Only Recording' checkbox)",
       "selected": false
     },
     {
       "id": "4",
       "key": "device/disableAudioOnlyRecording/CheckBox",
       "type": "checkbox",
-      "label": "Disable Audio Only Recording",
+      "checkBoxText":"Disable Audio Only Recording",
       "value": false,
       "depends": [
         {
-          "key": "device/enableRecordingBeep/CheckBox",
-          "value": ["disabled" , "enabled"]
+          "key": "device/mute/Radio",
+          "value": [
+            "disabled",
+            "enabled"
+          ]
         }
       ]
-
     },
     {
       "id": "4",
       "key": "device/bookmark/CheckBox",
       "type": "checkbox",
       "label": "Bookmark",
+      "checkBoxText": "Disable Mark",
       "value": false
     },
     {
       "id": "7",
       "key": "device/disableWifiAndBluetooth/CheckBox",
       "type": "checkbox",
-      "hinttext": true,
-      "hintvalue": "(If selected will disable 'Enable GPS' checkbox section)",
-      "label": "Disable Wifi And Bluetooth",
+      "labelGroupRecording": "Location",
+      "checkBoxText":"Disable Wi-Fi and Bluetooth",
+      "checkHelperText":"(If selected will disable �Enable GPS� checkbox section)",
       "labelLocation": "Location",
       "value": false,
       "dependant": {
@@ -408,27 +418,24 @@
     },
     {
       "id": "89",
+      "class":"EnableGpsClass",
       "key": "device/enableGPS/CheckBox",
       "type": "checkbox",
       "label": "Enable GPS",
-      "value": true
+      "value": true,
+      "checkBoxText":"Enable GPS"
     },
-    {
-      "id": "84",
-      "key": "device/gpsHeartbeatonlywhilerecording/CheckBox",
-      "type": "checkbox",
-      "label": "GPS Heartbeat only while recording",
-      "value": false
-    },
+
     {
       "id": "34",
       "key": "device/gpsHeartbeat/NumberBox",
       "type": "number",
       "hinttext": true,
-      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue": "How often BC04 sends heartbeats",
       "hintvalue1": "How often <Body Worn Type> sends heartbeats",
       "label": "GPS Heartbeat",
       "value": 60,
+      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "seconds": true,
       "validation": [
         {
@@ -453,8 +460,9 @@
       "type": "number",
       "label": "GPS Heartbeat While Recording",
       "value": 60,
+      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "hinttext": true,
-      "hintvalue": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintvalue": "Interval between heartbeats when recording",
       "hintvalue1": "Interval between heartbeats when recording",
       "seconds": true,
       "validation": [

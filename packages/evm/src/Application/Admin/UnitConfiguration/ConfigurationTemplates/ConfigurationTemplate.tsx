@@ -577,4 +577,5 @@ const ConfigurationTemplates: React.FC = () => {
   )
 }
 
+
 export default ConfigurationTemplates

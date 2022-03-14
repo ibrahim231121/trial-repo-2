@@ -8,6 +8,7 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import { fixedColumnAlignment } from "./FixedColumnAlignment";
 
+
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
   rowsPerPage,

@@ -454,8 +454,19 @@ iframe {
   }
 }
 
-@media only screen and (min-width: 400px) {
-  div[class*='makeStyles-container-'] {
-    height: auto !important;
+// @media only screen and (min-width: 400px) {
+//   div[class*='makeStyles-container-'] {
+//     height: auto !important;
+//   }
+// }
+
+@media (min-width: 1800px) {
+  .unitDeviceMain {
+    & > .MuiGrid-item {
+      &::before {
+        top: 125px;
+        height: 69px;
+      }
+    }
   }
 }

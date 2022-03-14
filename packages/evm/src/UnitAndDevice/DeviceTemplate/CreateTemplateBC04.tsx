@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable eqeqeq */
+import React, { useEffect, useLayoutEffect } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
@@ -73,6 +74,9 @@ const CreateTemplate = (props: any) => {
   const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
   const formikProps = useFormikContext()
+  const [errCkher, seterrChker] = React.useState<string>("");
+
+  console.log("history", historyState)
   let FormSchema: any = null;
   let templateName: string = "";
   const dispatch = useDispatch();
@@ -614,7 +618,7 @@ const CreateTemplate = (props: any) => {
   }
 
   return (
-    <div className="CrxCreateTemplate">
+    <div className="CrxCreateTemplate CrxCreateTemplateUi ">
       <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
@@ -640,7 +644,7 @@ const CreateTemplate = (props: any) => {
       <Menu
         align="start"
         viewScroll="initial"
-        direction="bottom"
+        direction="left"
         position="auto"
         arrow
         menuButton={
@@ -653,7 +657,7 @@ const CreateTemplate = (props: any) => {
           <Link to="/admin/unitsdevicestemplate/clonetemplate">
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
-                <i className="fas fa-pen"></i>
+                <i className="far fa-copy"></i>
               </div>
               <div className="crx-menu-list">Clone template</div>
             </div>
@@ -662,7 +666,7 @@ const CreateTemplate = (props: any) => {
         <MenuItem>
           <div className="crx-meu-content groupingMenu crx-spac">
             <div className="crx-menu-icon">
-              <i className="fas fa-pen"></i>
+              <i className="far fa-trash-alt"></i>
             </div>
             <div className="crx-menu-list">Delete template</div>
           </div>
@@ -687,19 +691,23 @@ const CreateTemplate = (props: any) => {
               resetForm,
               touched,
               setFieldValue,
+              errors
             }) => (
               <Form>
                 {
                   <>
+                
                     {tabs.map(x => {
                       return <CrxTabPanel value={value} index={x.index}>
+                          <p className="DeviceIndicator"><span>*</span> Indicates required field</p>
+                          <div>
+                              
+                            </div>
                         {FormSchema[x.label].map(
                           (formObj: any, key: number) => {
-                            <div>
-                              <p>{formObj.labelGroupRecording}</p>
-                            </div>;
-
-                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} formSchema={formSchema} setformSchema={setformSchema} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} /></div>) : (<></>));
+                           
+                              
+                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} formSchema={formSchema} setformSchema={setformSchema} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} touched={touched} errors={errors} /></div>) : (<></>));
 
                           }
                         )}
@@ -710,6 +718,7 @@ const CreateTemplate = (props: any) => {
                 <div className="tctButton">
                   <div className="tctLeft">
                     <CRXButton
+                      className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
                       disabled={!isValid || !dirty}
                       type="submit"
                       onClick={() => handleSave(values, resetForm)}
