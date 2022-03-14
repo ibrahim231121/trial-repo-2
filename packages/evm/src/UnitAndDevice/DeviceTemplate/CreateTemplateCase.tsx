@@ -219,7 +219,7 @@ export const CreateTempelateCase = (props: any) => {
                 name={formObj.key}
                 render={(msg) => (
                 <div className="UiLabelTextboxError">
-               <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+               <i className="fas fa-exclamation-circle"></i>  {formObj.label + " is " + msg}
                 </div>
                 )}
                 />
@@ -275,7 +275,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div style={{ color: "red" }}>
-                {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                {formObj.label + " is " + msg}
               </div>
             )}
           />
@@ -326,7 +326,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div style={{ color: "red" }}>
-                {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                {formObj.label + " is " + msg}
               </div>
             )}
           />
@@ -394,7 +394,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div style={{ color: "red" }}>
-                {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                {formObj.label + " is " + msg}
               </div>
             )}
           />
@@ -448,7 +448,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div style={{ color: "red" }}>
-                {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                {formObj.label + " is " + msg}
               </div>
             )}
           />
@@ -504,7 +504,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div style={{ color: "red" }}>
-                {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                {formObj.label + " is " + msg}
               </div>
             )}
           />
@@ -559,7 +559,7 @@ export const CreateTempelateCase = (props: any) => {
             name={formObj.key}
             render={(msg) => (
               <div className={formObj.checkHelperText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
-                <i className="fas fa-exclamation-circle"></i> {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                <i className="fas fa-exclamation-circle"></i> {formObj.label + " is " + msg}
                 
               </div>
             )}

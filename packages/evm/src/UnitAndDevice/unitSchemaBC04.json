@@ -10,7 +10,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -37,7 +37,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     }
@@ -339,7 +339,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ],
       "depends": [
@@ -442,7 +442,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         },
         {
           "key": "min",
@@ -470,7 +470,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         },
         {
           "key": "min",
