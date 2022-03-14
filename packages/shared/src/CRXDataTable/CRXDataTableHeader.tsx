@@ -18,11 +18,28 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 }) => {
   const classes = useStyles();
   const { t } = useTranslation<string>();
+  const [clientWidth, setClientWidth] = useState<any>([]);
+
   const [resizeWidth, setResizeWidth] = useState<any>();
+
+  React.useEffect(() => {
+    const divWidth = document.getElementsByClassName("getWidth");
+
+    setClientWidth(divWidth);
+  }, []);
+
+  // React.useEffect(() => {
+  //   console.log("orderColumn", orderColumn);
+  // });
+
+  // console.log("clientWidth", clientWidth);
+  // console.log("resizeWidth.colIdx", resizeWidth?.colIdx);
 
   let finalWidth =
     resizeWidth &&
-    resizeWidth.deltaX + Number(headCells[resizeWidth.colIdx].minWidth) + "px";
+    resizeWidth.deltaX + clientWidth[resizeWidth.colIdx + 3].clientWidth + "px";
+
+  // console.log("finalWidth", finalWidth);
 
   const resizeRow = (e: { colIdx: number; deltaX: number }) => {
     setResizeWidth(e);
@@ -93,8 +110,11 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         //key needs to be STATIC
 
         <TableCell
-          className={classes.headerStickness + " CRXDataTableLabelCell"}
-          key={i}
+          className={
+            classes.headerStickness + " CRXDataTableLabelCell getWidth"
+          }
+          key={headCells[colIdx].id}
+          id={headCells[colIdx].id}
           style={{
             display: `${
               headCells[colIdx].visible === undefined ||
@@ -102,8 +122,18 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 ? ""
                 : "none"
             }`,
+            // minWidth:
+            //   resizeWidth &&
+            //   colIdx === resizeWidth?.colIdx &&
+            //   resizeWidth.deltaX +
+            //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
+            //     249
+            //     ? resizeWidth.deltaX +
+            //       clientWidth[resizeWidth.colIdx + 3].clientWidth
+            //     : "250px",
+
             userSelect: "none",
-            minWidth: "220px",
+            minWidth: "250px",
           }}
           align={
             headCells[colIdx].align === "right"
@@ -176,15 +206,34 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                     deltaX: deltaX.x / 2,
                   });
                 }}
-                onStop={() =>
-                  (headCells[resizeWidth.colIdx].minWidth =
-                    resizeWidth.deltaX +
-                      Number(headCells[resizeWidth.colIdx].minWidth) >
-                    219
-                      ? resizeWidth.deltaX +
-                        Number(headCells[resizeWidth.colIdx].minWidth)
-                      : Number(headCells[resizeWidth.colIdx].minWidth))
-                }
+                onStop={() => {
+                  const memo: any = {};
+                  for (i = 0; i < clientWidth.length; i++) {
+                    if (clientWidth[colIdx + 3] in memo)
+                      return clientWidth[colIdx + 3].id;
+                    if (clientWidth[colIdx + 3].id == headCells[colIdx].id) {
+                      memo[clientWidth[colIdx + 3]] =
+                        clientWidth[colIdx + 3].id;
+
+                      headCells[colIdx].minWidth =
+                        resizeWidth.deltaX +
+                        clientWidth[colIdx + 3].clientWidth;
+                    }
+                  }
+
+                  // clientWidth.map((item, index, arr) => {
+                  //   console.log(item[index].id);
+                  // });
+
+                  // console.log("Stoped");
+                  // headCells[resizeWidth.colIdx + 3].minWidth =
+                  //   resizeWidth.deltaX +
+                  //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
+                  //   249
+                  //     ? resizeWidth.deltaX +
+                  //       clientWidth[resizeWidth.colIdx + 3].clientWidth
+                  //     : headCells[resizeWidth.colIdx + 3].minWidth;
+                }}
                 position={{ x: 0, y: 0 }}
               >
                 <span className="DragHandleIcon"></span>

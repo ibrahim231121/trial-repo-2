@@ -4,6 +4,7 @@
   box-shadow: none !important;
   border-radius: 0px !important;
   overflow-y: visible;
+
   // min-height: 550px;
 
   table {
@@ -21,11 +22,12 @@
         th.CRXDataTableLabelCell {
           border-bottom: 0px;
           border-right: 1px solid #ccc;
-          z-index: 2;
+          // z-index: 2;
         }
         th.TableSearchAbleHead {
           border-top: 1px solid #ccc;
           border-right: 1px solid #ccc;
+          z-index: 0;
           &:focus {
             outline: 0px;
             box-shadow: 0px;
@@ -79,11 +81,11 @@
           .fal {
             position: relative;
             &::after {
-              content: '';
+              content: "";
               color: #fff;
               left: 0;
               position: absolute;
-              font-family: 'Font Awesome 5 Duotone';
+              font-family: "Font Awesome 5 Duotone";
               font-weight: 900;
               right: 0;
             }
@@ -197,7 +199,7 @@
     background-color: #fff;
     box-shadow: 0px 3px 6px #00000029;
   }
-  div[class*='MuiTablePagination-actions-'] {
+  div[class*="MuiTablePagination-actions-"] {
     button {
       width: 36px;
       height: 36px;
@@ -211,18 +213,18 @@
       }
       &:first-child {
         &:before {
-          font-family: 'Font Awesome 5 Pro';
+          font-family: "Font Awesome 5 Pro";
           font-weight: 900;
-          content: '\f104';
+          content: "\f104";
           font-size: 18px !important;
           padding-right: 2px;
         }
       }
       &:last-child {
         &:before {
-          font-family: 'Font Awesome 5 Pro';
+          font-family: "Font Awesome 5 Pro";
           font-weight: 900;
-          content: '\f105';
+          content: "\f105";
           font-size: 18px !important;
           padding-left: 2px;
         }
@@ -236,7 +238,7 @@
       }
     }
   }
-  div[class*='MuiTablePagination-input-'] {
+  div[class*="MuiTablePagination-input-"] {
     svg {
       fill: #333333;
     }
@@ -433,49 +435,49 @@
   top: 0;
   &:hover {
     background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: '';
-      z-index: 99;
-    }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: '';
-    }
+    // &::before {
+    //   height: 35px;
+    //   width: 5px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 0px;
+    //   right: -3px;
+    //   content: "";
+    //   z-index: 99;
+    // }
+    // &::after {
+    //   height: 8px;
+    //   width: 8px;
+    //   border-radius: 100px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 34px;
+    //   right: -3px;
+    //   content: "";
+    // }
   }
   &:focus {
     background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: '';
-      z-index: 99;
-    }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: '';
-    }
+    // &::before {
+    //   height: 35px;
+    //   width: 5px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 0px;
+    //   right: -3px;
+    //   content: "";
+    //   z-index: 99;
+    // }
+    // &::after {
+    //   height: 8px;
+    //   width: 8px;
+    //   border-radius: 100px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 34px;
+    //   right: -3px;
+    //   content: "";
+    // }
   }
 }
 
@@ -516,7 +518,7 @@
   width: 480px;
   left: -6px;
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     top: -11px;
     left: 0px;
@@ -588,10 +590,10 @@
   //left: 117px;
 }
 
-tr:nth-child(even) td[scope='row'] {
+tr:nth-child(even) td[scope="row"] {
   background-color: #fff;
 }
-tr:nth-child(odd) td[scope='row'] {
+tr:nth-child(odd) td[scope="row"] {
   background-color: #fff;
 }
 
@@ -626,7 +628,7 @@ td.CellCheckBox {
   }
 }
 
-tr.Mui-selected:nth-child(odd) td[scope='row']:not(:first-child) {
+tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
   background-color: #231f20;
   color: #d1d2d4;
   .MuiButton-root {
@@ -636,7 +638,7 @@ tr.Mui-selected:nth-child(odd) td[scope='row']:not(:first-child) {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
   &:hover {
     background-color: #404041 !important;
 
@@ -645,7 +647,7 @@ tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
     }
   }
 }
-tr.Mui-selected:nth-child(even) td[scope='row'] {
+tr.Mui-selected:nth-child(even) td[scope="row"] {
   // background-color: #231f20 !important;
   .MuiButton-root {
     color: #d1d2d4 !important;
@@ -654,7 +656,7 @@ tr.Mui-selected:nth-child(even) td[scope='row'] {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
   background-color: #231f20 !important;
   color: #d1d2d4;
 }
@@ -915,9 +917,9 @@ tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
             position: absolute;
             right: 13px;
             top: 10px;
-            font-family: 'Font Awesome 5 Pro';
+            font-family: "Font Awesome 5 Pro";
             font-weight: 900;
-            content: '\f58e';
+            content: "\f58e";
           }
         }
       }

@@ -310,14 +310,14 @@ const MasterMain: React.FC<Props> = ({
       searchComponent: () => null,
       keyCol: true,
       visible: false,
-      minWidth: "220",
+      minWidth: "250",
     },
     // {
     //   label: `${t("AssetThumbnail")}`,
     //   id: "assetType",
     //   align: "left",
     //   dataComponent: thumbTemplate,
-    //   minWidth: "220",
+    //   minWidth: "250",
     //   maxWidth: "144",
     // },
     {
@@ -328,7 +328,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "220",
+      minWidth: "250",
       detailedDataComponentId: "evidence",
     },
     {
@@ -343,7 +343,7 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "220",
+      minWidth: "250",
       visible: false,
     },
     {
@@ -354,7 +354,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "220",
+      minWidth: "250",
       maxWidth: "210",
     },
     {
@@ -369,7 +369,7 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "220",
+      minWidth: "250",
     },
     {
       label: `${t("Device")}`,
@@ -383,7 +383,7 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "220",
+      minWidth: "250",
       visible: false,
     },
     {
@@ -398,7 +398,7 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "220",
+      minWidth: "250",
       visible: false,
     },
     {
@@ -413,7 +413,7 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "220",
+      minWidth: "250",
     },
     {
       label: `${t("Captured")}`,
@@ -422,7 +422,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: dateDisplayFormat,
 
       sort: true,
-      minWidth: "220",
+      minWidth: "250",
       searchFilter: true,
       searchComponent: searchDate,
     },
@@ -432,7 +432,7 @@ const MasterMain: React.FC<Props> = ({
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
-      minWidth: "220",
+      minWidth: "250",
       searchFilter: true,
       searchComponent: (
         rowData: EvidenceReformated[],
