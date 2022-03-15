@@ -8,16 +8,19 @@ import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
-import moment from 'moment';
+import Box from '@material-ui/core/Box';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import VideoPlayerSnapshot from "./VideoPlayerSnapshot";
+import moment, { duration } from 'moment';
 
 
-var videoElement :any
+var videoElement: any
 
 type Timeline = {
   recording_Start_point_ratio: number;
   recording_end_point_ratio: number;
-  recordingratio:number;
-  
+  recordingratio: number;
+
 }
 
 type videoPlayer = {
@@ -52,7 +55,7 @@ const VideoPlayerBase = (props: any) => {
   const [timelinedetail, settimelinedetail] = React.useState<Timeline[]>([]);
 
 
-  const [viewNumber,setViewNumber] = useState(0);
+  const [viewNumber, setViewNumber] = useState(0);
 
   const [controlBar, setControlBar] = useState(0);
 
@@ -61,9 +64,15 @@ const VideoPlayerBase = (props: any) => {
 
   const [isPlaying, setPlaying] = useState<boolean>(false)
 
-  const [videoHandle, setVideoHandle] = useState<any>(null); 
+  const [videoHandle, setVideoHandle] = useState<any>(null);
 
-  const [ViewScreen,setViewScreen] = useState(true);
+  const [ViewScreen, setViewScreen] = useState(true);
+
+
+  const [snapshotSrc, setSnapshotSrc] = React.useState<string>();
+
+  const [openForm, setOpenForm] = React.useState(false);
+
 
   const [controllerBar,setControllerBar] = useState(true);
 
@@ -92,13 +101,13 @@ const VideoPlayerBase = (props: any) => {
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
   React.useEffect(() => {
-      Durationfinder(data);
-      setLoading(true)
+    Durationfinder(data);
+    setLoading(true)
 
-      },data);
+  }, data);
 
-    
-     
+
+
   const VideoData = [
     { id: "Video-1", src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", duration: 596 },
     { id:"3", src: "https://www.w3schools.com/tags/movie.mp4"},
@@ -107,99 +116,91 @@ const VideoPlayerBase = (props: any) => {
      { id:"5", src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
      { id:"6", src: "http://media.w3.org/2010/05/bunny/movie.mp4" }
   ];
-  async function Durationfinder(data:any) {
+  async function Durationfinder(data: any) {
     let maxminarray: string[] = [];
-    var maximum_endpoint=timeextractor(data[0].recording.ended)
-    var minimum_startpont=timeextractor(data[0].recording.started)
-    for(let x=1;x<data.length;x++)
-    {
-        var T_max_endpoint=timeextractor(data[x].recording.ended)
-        var T_min_startpont=timeextractor(data[x].recording.started)
-        maximum_endpoint=timeoperation(maximum_endpoint,T_max_endpoint,"getmax")
-        minimum_startpont=timeoperation(T_min_startpont,minimum_startpont,"getmin")
+    var maximum_endpoint = timeextractor(data[0].recording.ended)
+    var minimum_startpont = timeextractor(data[0].recording.started)
+    for (let x = 1; x < data.length; x++) {
+      var T_max_endpoint = timeextractor(data[x].recording.ended)
+      var T_min_startpont = timeextractor(data[x].recording.started)
+      maximum_endpoint = timeoperation(maximum_endpoint, T_max_endpoint, "getmax")
+      minimum_startpont = timeoperation(T_min_startpont, minimum_startpont, "getmin")
     }
-    var duration=moment.utc(moment(maximum_endpoint,"HH:mm:ss").diff(moment(minimum_startpont,"HH:mm:ss"))).format("HH:mm:ss" );
-    var durationinformat=moment(duration,"HH:mm:ss").format("mm:ss")
-   await setfinalduration(durationinformat.toString())
-    var finalduration=convert_to_Second(duration)
+    var duration = moment.utc(moment(maximum_endpoint, "HH:mm:ss").diff(moment(minimum_startpont, "HH:mm:ss"))).format("HH:mm:ss");
+    var durationinformat = moment(duration, "HH:mm:ss").format("mm:ss")
+    await setfinalduration(durationinformat.toString())
+    var finalduration = convert_to_Second(duration)
     await settimelineduration(finalduration)
     //first entity is max second is min
     maxminarray.push(maximum_endpoint);
     maxminarray.push(minimum_startpont);
     setmaxminendpoint(maxminarray);
-    await TimelineData_generator(data,minimum_startpont,finalduration);
-  
+    await TimelineData_generator(data, minimum_startpont, finalduration);
+
   }
-  const convert_to_Second =(time:any)=>{
-    
+  const convert_to_Second = (time: any) => {
+
     const answer_array = time.split(':')
-    var second=parseInt(answer_array[0])*60*60+parseInt(answer_array[1])*60+parseInt(answer_array[2]);
+    var second = parseInt(answer_array[0]) * 60 * 60 + parseInt(answer_array[1]) * 60 + parseInt(answer_array[2]);
     return second
-  
+
   }
-  const timeoperation =(time:any,time2:any,operation:string)=>{
-    if(operation=="getmax")
-    {
-      var value=moment(time, "HH:mm:ss").isAfter(moment(time2, "HH:mm:ss"))
-      if(value)
-      {
+  const timeoperation = (time: any, time2: any, operation: string) => {
+    if (operation == "getmax") {
+      var value = moment(time, "HH:mm:ss").isAfter(moment(time2, "HH:mm:ss"))
+      if (value) {
         return time
       }
-      else if(moment(time, "HH:mm:ss").isSame(moment(time2, "HH:mm:ss")))
-      {
+      else if (moment(time, "HH:mm:ss").isSame(moment(time2, "HH:mm:ss"))) {
         return time
       }
-      else{
+      else {
         return time2
       }
     }
-    if(operation=="getmin")
-    {
-      var value=moment(time, "HH:mm:ss").isBefore(moment(time2, "HH:mm:ss"))
-      if(value)
-      {
+    if (operation == "getmin") {
+      var value = moment(time, "HH:mm:ss").isBefore(moment(time2, "HH:mm:ss"))
+      if (value) {
         return time
       }
-      else if(moment(time, "HH:mm:ss").isSame(moment(time2, "HH:mm:ss")))
-      {
+      else if (moment(time, "HH:mm:ss").isSame(moment(time2, "HH:mm:ss"))) {
         return time
       }
-      else{
+      else {
         return time2
       }
-  
+
     }
   }
-  const timeextractor = (data:any)=>{
+  const timeextractor = (data: any) => {
     const answer_array = data.split('T');
-    const answer_array2= answer_array[1].split('.')
+    const answer_array2 = answer_array[1].split('.')
     return answer_array2[0];
   }
-  
-  
-  
-  async function TimelineData_generator(data:any,minstartpoint:string,duration:number){
-  let rowdetail: Timeline[] = [];
-  for(let x=0;x<data.length;x++)
-  {
-  let recording_start_time=moment(timeextractor(data[x].recording.started),"HH:mm:ss").format('HH:mm:ss');
-  let recording_start_point=convert_to_Second(moment.utc(moment(recording_start_time,"HH:mm:ss").diff(moment(minstartpoint,"HH:mm:ss"))).format("HH:mm:ss" ));
-  let recording_Start_point_ratio=Math.ceil((recording_start_point/duration)*100)
-  let recording_end_time=moment(timeextractor(data[x].recording.ended),"HH:mm:ss").format('HH:mm:ss');
-  let recording_end_point=convert_to_Second(moment.utc(moment(recording_end_time,"HH:mm:ss").diff(moment(minstartpoint,"HH:mm:ss"))).format("HH:mm:ss" ));
-  let recording_end_point_ratio=100-Math.ceil((recording_end_point/duration)*100)
-  let recordingratio=96-recording_end_point_ratio-recording_Start_point_ratio
-  let myData: Timeline={recording_Start_point_ratio:recording_Start_point_ratio,recording_end_point_ratio:recording_end_point_ratio,recordingratio:recordingratio}
-  
-  console.log("Mydata")
-  console.log(myData)
 
-  rowdetail.push(myData);
+
+
+  async function TimelineData_generator(data: any, minstartpoint: string, duration: number) {
+    let rowdetail: Timeline[] = [];
+    for (let x = 0; x < data.length; x++) {
+      let recording_start_time = moment(timeextractor(data[x].recording.started), "HH:mm:ss").format('HH:mm:ss');
+      let recording_start_point = convert_to_Second(moment.utc(moment(recording_start_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
+      let recording_Start_point_ratio = Math.ceil((recording_start_point / duration) * 100)
+      let recording_end_time = moment(timeextractor(data[x].recording.ended), "HH:mm:ss").format('HH:mm:ss');
+      let recording_end_point = convert_to_Second(moment.utc(moment(recording_end_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
+      let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / duration) * 100)
+      let recordingratio = 96 - recording_end_point_ratio - recording_Start_point_ratio
+      let myData: Timeline = { recording_Start_point_ratio: recording_Start_point_ratio, recording_end_point_ratio: recording_end_point_ratio, recordingratio: recordingratio }
+
+      console.log("Mydata")
+      console.log(myData)
+
+      rowdetail.push(myData);
+    }
+
+    await settimelinedetail(rowdetail)
   }
-  
-  await settimelinedetail(rowdetail)
-  }
-  
+
 
 
   const handleControlBarChange = (event: any, newValue: any) => {
@@ -218,7 +219,7 @@ const VideoPlayerBase = (props: any) => {
     return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
   };
 
-  const handlePlayPause = ()=>{
+  const handlePlayPause = () => {
     setPlaying(!isPlaying);
     if(!isPlaying){
         videoHandle.currentTime = timer;
@@ -257,7 +258,21 @@ const VideoPlayerBase = (props: any) => {
     videoHandle.currentTime = Math.round(videoHandle.currentTime + 1)
     handleControlBarChange(null, videoHandle.currentTime)
   };
-
+  const handlesnapshort = () => {
+    setPlaying(false);
+    videoHandle.pause();
+    var w = videoHandle.videoWidth * 0.25;
+    var h = videoHandle.videoHeight * 0.25;
+    var canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    var ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(videoHandle, 0, 0, w, h);
+    }
+    setSnapshotSrc(canvas.toDataURL());
+    setOpenForm(true);
+  };
 
   useEffect(() => {
     videoElement = document.querySelector("#Video-1");
@@ -267,7 +282,7 @@ const VideoPlayerBase = (props: any) => {
     }, true);
 
     videoElement?.addEventListener("waiting", function () {
-     setBuffering(false)
+      setBuffering(false)
     }, true);
     setVideoHandle(videoElement);
   });
@@ -467,13 +482,13 @@ const VideoPlayerBase = (props: any) => {
         </div>
         <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
           {/* TIME LINES BAR HERE */}
-          {loading?(
-        <Timelines timelinedetail={timelinedetail} duration={timelineduration} />
-           ):(<div></div>) }
-          
+          {loading ? (
+            <Timelines timelinedetail={timelinedetail} duration={timelineduration} />
+          ) : (<div></div>)}
+
         </div>
         <div id="controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-        <div>
+          <div>
             <div className="main-control-bar">
               <Slider
                 value={typeof controlBar === 'number' ? controlBar : 0}
@@ -486,11 +501,11 @@ const VideoPlayerBase = (props: any) => {
             </div>
             <div className="TTview">
               <div>
-              <p id="counter">{formatDuration(controlBar)}</p>
-            </div>
-            <div>
-              <p id="counter">{finalduration}</p>
-            </div>
+                <p id="counter">{formatDuration(controlBar)}</p>
+              </div>
+              <div>
+                <p id="counter">{finalduration}</p>
+              </div>
             </div>
           </div>
           <div className="playerViewFlex">
@@ -505,42 +520,45 @@ const VideoPlayerBase = (props: any) => {
                 <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn" >
                   <i className="fas fa-forward"></i>
                 </CRXButton>
+                <CRXButton color="primary" onClick={handlesnapshort} variant="contained" className="videoPlayerBtn">
+                  <i className="fas fa-camera"></i>
+                </CRXButton>
 
               </div>
             </div>
             <div className="playerViewRight">
-            <div className="playBackMode"> 
-                          <button  onClick={speedDown} disabled={disabled || fullDown } ><i className="fas fa-undo-alt"><span>{speedFinderDown}</span></i></button>
-                          <button onClick={resumeButton} disabled={true && resumeChecker    }><i className="fas fa-minus"></i></button>
-                          <button onClick={speedUp} disabled={disabled || fullUp  } ><i className="fas fa-redo-alt"><span>{speedFinderUp}</span></i></button>
+              <div className="playBackMode">
+                <button onClick={speedDown} disabled={disabled || fullDown} ><i className="fas fa-undo-alt"><span>{speedFinderDown}</span></i></button>
+                <button onClick={resumeButton} disabled={true && resumeChecker}><i className="fas fa-minus"></i></button>
+                <button onClick={speedUp} disabled={disabled || fullUp} ><i className="fas fa-redo-alt"><span>{speedFinderUp}</span></i></button>
               </div>
-            <div className="MenuListGrid">
-                                <Menu
-                                        align="start"
-                                        viewScroll="initial"
-                                        direction="top"
-                                        
-                                        className="ViewScreenMenu"
-                                        menuButton={
-                                        <MenuButton>
-                                        Select Screen View
-                                        </MenuButton>
-                                        }
-                                    >
-                                        <MenuItem onClick={screenClick.bind(this, screenViews.Single)}  >
-                                            Single View
-                                        </MenuItem>
-                                        <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
-                                            Side by Side
-                                        </MenuItem>
-                                        <MenuItem onClick={screenClick.bind(this, screenViews.PicturesOnSide)}  >
-                                        Pictures On Side View
-                                        </MenuItem>
-                                        <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
-                                        Grid
-                                        </MenuItem>
-                                </Menu >
-                            </div> 
+              <div className="MenuListGrid">
+                <Menu
+                  align="start"
+                  viewScroll="initial"
+                  direction="top"
+
+                  className="ViewScreenMenu"
+                  menuButton={
+                    <MenuButton>
+                      Select Screen View
+                    </MenuButton>
+                  }
+                >
+                  <MenuItem onClick={screenClick.bind(this, screenViews.Single)}  >
+                    Single View
+                  </MenuItem>
+                  <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
+                    Side by Side
+                  </MenuItem>
+                  <MenuItem onClick={screenClick.bind(this, screenViews.PicturesOnSide)}  >
+                    Pictures On Side View
+                  </MenuItem>
+                  <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
+                    Grid
+                  </MenuItem>
+                </Menu >
+              </div>
               <div className="playerView">
                 {ViewScreen ? <div onClick={viewScreenEnter} ><i className="fas fa-expand"></i></div> : <div onClick={viewScreenExit}><i className="fas fa-compress-wide"></i></div>}
               </div>
@@ -549,11 +567,14 @@ const VideoPlayerBase = (props: any) => {
               </div>
             </div>
           </div>
-
-      
-
         </div>
       </FullScreen>
+      {openForm && <VideoPlayerSnapshot
+        setOpenForm={setOpenForm}
+        openForm={openForm}
+        data={VideoData}
+        snapshot={snapshotSrc}
+      />}
     </div>
   );
 }

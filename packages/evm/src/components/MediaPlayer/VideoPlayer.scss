@@ -208,3 +208,20 @@ html {
     }
   }
 }
+
+.gridFilterTextBox{
+  display: inline-flex !important;
+  margin-bottom: 15px;
+}
+.gridFilterTextBox input{
+  margin-left: 20px !important;
+  width: 300px !important;
+}
+.custom-class{
+  display: inline-flex !important;
+  padding-left: 6px;
+}
+.custom-class img{
+  margin-left: 48px !important;
+  margin-bottom: 15px;
+}

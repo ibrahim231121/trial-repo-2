@@ -513,9 +513,9 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   };
 
   const setEditPayload = () => {
-    let userGroupsListIDs = userGroupsList
+    let userGroupsListIDs : any = userGroupsList
       ?.filter((item: any) => {
-        return formpayload.userGroups.some((e: any) => e === item.groupName);
+        return formpayload.userGroups.find((e: any) => e === item.groupName || e.label === item.groupName);
       })
       .map((i: any) => i.groupId);
 
