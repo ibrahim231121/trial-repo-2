@@ -120,7 +120,6 @@ const ConfigurationTemplates: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<ConfigTemplate[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false)
-
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
     if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
