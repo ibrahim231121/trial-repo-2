@@ -9,7 +9,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -248,7 +248,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -262,7 +262,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -276,7 +276,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -343,7 +343,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         },
         {
           "key": "max",
@@ -375,7 +375,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         },
         {
           "key": "max",
@@ -394,7 +394,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     },
@@ -408,7 +408,7 @@
       "validation": [
         {
           "key": "required",
-          "msg": "Required"
+          "msg": "required"
         }
       ]
     }
@@ -468,7 +468,7 @@
             "validation": [
               {
                 "key": "required",
-                "msg": "Required"
+                "msg": "required"
               }
             ]
           },
@@ -520,7 +520,7 @@
             "validation": [
               {
                 "key": "required",
-                "msg": "Required"
+                "msg": "required"
               },
               {
                 "key": "max",
@@ -542,7 +542,7 @@
             "validation": [
               {
                 "key": "required",
-                "msg": "Required"
+                "msg": "required"
               },
               {
                 "key": "max",
@@ -589,7 +589,7 @@
                 "validation": [
                   {
                     "key": "required",
-                    "msg": "Required"
+                    "msg": "required"
                   }
                 ]
               }
@@ -618,7 +618,7 @@
             "validation": [
               {
                 "key": "required",
-                "msg": "Required"
+                "msg": "required"
               }
             ],
             "depends": [
