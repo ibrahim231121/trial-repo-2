@@ -4,6 +4,7 @@
   "private": true,
   "config-overrides-path": "config-overrides.js",
   "dependencies": {
+    "@azure/storage-blob": "^12.8.0",
     "@cb/shared": "0.0.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",

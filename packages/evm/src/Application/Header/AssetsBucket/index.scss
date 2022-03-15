@@ -600,3 +600,34 @@ body {
 .bucketDataTable.crxMessageShow {
   max-height: calc(73vh - 110px);
 }
+.crxAccordionBucket {
+.MuiAccordionDetails-root {
+  display: block;
+  padding-top: 30px;
+  .crxProgressbarBucket {width: 100%;text-align: left;
+    padding:  20px 0;
+  &:first-child {
+    padding: 0;
+  }
+  }
+
+}
+}
+
+.btn-center{
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 10px;
+}
+.crx-alert-notification.file-upload {
+  place-items: initial;
+  padding: 10px 15px;
+  max-height: 100%;
+}
+
+.file-upload-hide{
+  display: none !important;
+}
+.file-upload-show{
+  display: block !important;
+}
