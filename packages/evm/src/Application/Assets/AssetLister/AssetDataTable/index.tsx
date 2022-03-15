@@ -48,7 +48,7 @@ type MasterAsset = {
   assetName: string;
   assetType: string;
   unit: string;
-  recordedBy: string[];
+  owners: string[];
   recordingStarted: string;
   status: string;
 };
@@ -122,6 +122,8 @@ const MasterMain: React.FC<Props> = ({
 }) => {
   let reformattedRows: EvidenceReformated[] = [];
 
+  console.log("rowsData ", rowsData)
+
   rowsData.map((row: Evidence, i: number) => {
     let evidence: EvidenceReformated = {
       id: row.id,
@@ -133,7 +135,7 @@ const MasterMain: React.FC<Props> = ({
       categories: row.categories,
       devices: row.devices,
       station: row.station,
-      recordedBy: row.masterAsset.recordedBy,
+      recordedBy: row.masterAsset.owners === null ? []: row.masterAsset.owners,
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
       evidence: row,
@@ -373,7 +375,7 @@ const MasterMain: React.FC<Props> = ({
     },
     {
       label: `${t("Device")}`,
-      id: "devices",
+      id: "unit",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
