@@ -82,7 +82,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
 
     reformattedRows.map((row: any, _: any) => {
       let x = headCells[colIdx].id;
-      row[x].forEach((element: any) => {
+      row[x]?.forEach((element: any) => {
         let moreOption: any = {};
         moreOption["value"] = element;
         moreOptions.push(moreOption);

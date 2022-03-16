@@ -133,7 +133,8 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             //     : "250px",
 
             userSelect: "none",
-            minWidth: "250px",
+            minWidth: headCells[colIdx].minWidth + "px",
+            
           }}
           align={
             headCells[colIdx].align === "right"
@@ -143,6 +144,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               : "center"
           }
         >
+          {console.log("header", headCells[colIdx].minWidth)}
           <div
             className={classes.headerCellDiv + " crxTableHeaderSize"}
             id={headCells[colIdx].id}
@@ -151,8 +153,8 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               width:
                 colIdx === resizeWidth?.colIdx
                   ? finalWidth
-                  : headCells[colIdx].minWidth,
-              //maxWidth: headCells[colIdx].maxWidth,
+                  : headCells[colIdx].minWidth + "px",
+                  
             }}
           >
             <div className={classes.headerStickness} key={headCells[colIdx].id}>
