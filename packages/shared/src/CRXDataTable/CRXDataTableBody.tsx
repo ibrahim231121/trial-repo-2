@@ -195,7 +195,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               display: `${
                                 headCells[colIdx].visible === undefined ||
                                 headCells[colIdx].visible === true
-                                  ? undefined
+                                  ? ""
                                   : "none"
                               }`,
                               whiteSpace:

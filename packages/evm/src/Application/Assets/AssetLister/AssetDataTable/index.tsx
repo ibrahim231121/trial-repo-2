@@ -314,14 +314,14 @@ const MasterMain: React.FC<Props> = ({
       visible: false,
       minWidth: "250",
     },
-    // {
-    //   label: `${t("AssetThumbnail")}`,
-    //   id: "assetType",
-    //   align: "left",
-    //   dataComponent: thumbTemplate,
-    //   minWidth: "250",
-    //   maxWidth: "144",
-    // },
+    {
+      label: `${t("AssetThumbnail")}`,
+      id: "assetType",
+      align: "left",
+      dataComponent: thumbTemplate,
+      minWidth: "250",
+      maxWidth: "144",
+    },
     {
       label: `${t("AssetID")}`,
       id: "assetName",
