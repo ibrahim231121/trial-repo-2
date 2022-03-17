@@ -69,7 +69,7 @@ const CreateTemplate = (props: any) => {
   const [primary] = React.useState<string>("Yes, close");
   const [secondary] = React.useState<string>("No, do not close");
   const history = useHistory();
-  const historyState = props.location.state;
+  let historyState = props.location.state;
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
@@ -113,15 +113,14 @@ const CreateTemplate = (props: any) => {
   })
   Object.keys(FormSchema).forEach((x, y) => {
     let data = x as keyof typeof FormSchema
-    if(data == "CameraSetup")
-    {
+    if (data == "CameraSetup") {
       data = "Camera Setup";
     }
     tabs1.push({ label: data, index: y })
   })
 
 
- 
+
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {
       dispatch(getRetentionPolicyInfoAsync());
@@ -129,19 +128,19 @@ const CreateTemplate = (props: any) => {
     }
 
     dispatch(getStationsAsync());
-    if (historyState.isedit){
+    if (historyState.isedit) {
 
-      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name}));
+      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
       loadData();
     }
-    else{
+    else {
       setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType}));
+      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType }));
     }
 
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
-    } 
+    }
   }, []);
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {
@@ -258,10 +257,6 @@ const CreateTemplate = (props: any) => {
 
         var keySplitted = e0.key.split('_');
         if (keySplitted.length > 1) {
-          if (keySplitted[1] > cameraFeildArrayCounterValue) {
-            cameraFeildArrayCounterValue = keySplitted[1];
-            counter++
-          }
           var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
           var findingKey = e0.configGroup + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.fieldType;
           var parentKey = e0.configGroup + "/" + keySplitted[2] + "/" + "FieldArray";
@@ -272,15 +267,34 @@ const CreateTemplate = (props: any) => {
           [0]
             .find((y: any) => y.key.replace('1', '') == findingKey && (y.type == "radio" ? y.value == val : true));
 
+          var valueToPush = { ...feildObj, key: key, value: val };
+          var valueIsExist = editT1.find((x: any) => x.key == parentKey);
 
-          if (feildObj.validationChangeFeilds) {
+          if (keySplitted[1] > cameraFeildArrayCounterValue) {
+            cameraFeildArrayCounterValue = keySplitted[1];
+            if (valueIsExist !== undefined) {
+              counter++
+            }
+          }
 
-            if (feildObj.todo == "add") {
-              feildObj.validationChangeFeilds.filter((x: any) => x.value == feildObj.value)?.map((x: any) => {
+
+
+
+
+          if ((feildObj.validationChangeFeilds) || (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends"))) {
+            if (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends")) {
+              Initial_Values_RequiredField.push({
+                key: key,
+                type: feildObj.type,
+                validation: feildObj.validation
+              });
+            }
+            if (feildObj.validationChangeFeilds) {
+              feildObj.validationChangeFeilds.filter((x: any) => x.value == feildObj.value && x.todo == "add")?.map((x: any) => {
+
                 if (x.validation) {
                   var splittedKey = x.key.split('_');
-                  var parentSplittedKey = feildObj.key.split('_');
-                  var newKey = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+                  var newKey = splittedKey[0] + "_" + keySplitted[1] + "_" + splittedKey[2];
                   Initial_Values_RequiredField.push({
                     key: newKey,
                     type: x.type,
@@ -300,8 +314,6 @@ const CreateTemplate = (props: any) => {
           }
 
 
-          var valueToPush = { ...feildObj, key: key, value: val };
-          var valueIsExist = editT1.find((x: any) => x.key == parentKey);
           if (valueIsExist !== undefined) {
             var feildLength = valueIsExist.value.feilds.length;
             if (feildLength < counter) {
@@ -360,13 +372,22 @@ const CreateTemplate = (props: any) => {
         })
       }
       for (const field of tab1) {
+        var addItem: boolean = true;
+        var radios = tab1.filter((y: any) => y.key == field.key && y.type == "radio");
+        if (radios?.length > 0) {
+          var radio = radios?.find((y: any) => y.value == field.value && y.selected == true);
+          if (radio == undefined) {
+            addItem = false;
+          }
+        }
+
         if (field.key == "unitSettings/categories/Multiselect") {
           Initial_Values.push({
             key: field.key,
             value: field.value.split(','),
           });
         }
-        else if (field.hasOwnProperty("key")) {
+        else if (field.hasOwnProperty("key") && addItem) {
           Initial_Values.push({
             key: field.key,
             value: field.value,
@@ -395,18 +416,20 @@ const CreateTemplate = (props: any) => {
             });
           }
           else if (field.type == "fieldarray") {
-            field.feilds.map((x: any) =>
-              x.map((y: any) => {
-                if (y.validation && y.depends == undefined) {
-                  Initial_Values_RequiredField.push({
-                    key: y.key,
-                    type: y.type,
-                    validation: y.validation
-                  })
+            if (!historyState.isedit) {
+              field.feilds.map((x: any) =>
+                x.map((y: any) => {
+                  if (y.validation && y.depends == undefined) {
+                    Initial_Values_RequiredField.push({
+                      key: y.key,
+                      type: y.type,
+                      validation: y.validation
+                    })
+                  }
                 }
-              }
+                )
               )
-            )
+            }
           }
         }
         // if (field.validationChangeFeilds) {
@@ -511,6 +534,21 @@ const CreateTemplate = (props: any) => {
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
         }
         if (valueToSave) {
+          if(split[2] == "Multiselect" && valueRaw == "add all")
+          {
+            valueRaw = "";
+            FormSchema["Unit Settings"].find((y:any) => y.key == key).options.map((x:any) => 
+            {
+              if(x.value != "" && x.value != "add all")
+              {
+                valueRaw = valueRaw + x.value + ",";
+              }
+            })
+            if(valueRaw[valueRaw.length - 1] == ',')
+            {
+              valueRaw = valueRaw.substring(0, valueRaw.length - 1);
+            }
+          }
           Initial_Values.push({
             key: split[1],
             value: valueRaw,
@@ -576,9 +614,16 @@ const CreateTemplate = (props: any) => {
           if (response.ok) {
 
             alert("happened form is being saved");
+            response.json().then((res: number) => {
+              if (res > 0) {
+                historyState.id = res;
+                historyState.isedit = true;
+                historyState.name = templateNames;
+                dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
+                setEditCase(true);
+              }
+            });
 
-            window.location.reload()
-            resetForm();
           } else {
             throw new Error(response.statusText);
           }
@@ -708,13 +753,13 @@ const CreateTemplate = (props: any) => {
               <Form>
                 {
                   <>
-                
+
                     {tabs.map(x => {
                       return <CrxTabPanel value={value} index={x.index}>
-                          <p className="DeviceIndicator"><span>*</span> Indicates required field</p>
-                          <div>
-                              
-                            </div>
+                        <p className="DeviceIndicator"><span>*</span> Indicates required field</p>
+                        <div>
+
+                        </div>
                         {FormSchema[x.label].map(
                           (formObj: any, key: number) => {
                             <div>

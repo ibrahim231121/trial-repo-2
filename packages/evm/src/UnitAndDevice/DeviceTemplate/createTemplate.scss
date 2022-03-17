@@ -40,11 +40,6 @@
     .MuiTab-wrapper {
       text-transform: uppercase;
     }
-    form {
-      > div {
-        padding-bottom: 39px;
-      }
-    }
     .MuiTabs-root {
       position: absolute;
       top: -33px;
@@ -73,7 +68,6 @@
       margin-left: auto;
       margin-right: auto;
       position: relative;
-    
       div {
         &:nth-child(1) {
           display: flex;
@@ -520,6 +514,9 @@
         }
       }
     }
+    .HeartbeatRecordingBco4 {
+      margin-bottom: 32px;
+    }
   }
 
   .UiNumberSelectorMinute {
@@ -650,4 +647,77 @@
 }
 .textBoxRed {
   color: #aa1d1d;
+}
+
+// incar template
+.IncarTemplatePage {
+  .CrxCreateTemplate {
+    .MuiTab-root {
+      &:nth-child(1) {
+        padding: 0;
+      }
+    }
+
+    .CategoriesIncar {
+      margin-top: 28px;
+    }
+    .UpdateIntervalIncar {
+      margin-top: 34px;
+      .NumberFieldError {
+        margin-bottom: 48px;
+      }
+    }
+    .RetentionPolicyIncar {
+      margin-top: 30px;
+    }
+    .MaximumVideoLengthIncar {
+      margin-top: 30px;
+    }
+    .GPSFrequencyIncar {
+      margin-top: 30px;
+    }
+    .RebootIncar {
+      margin-top: 27px;
+    }
+    .DynamicFormTimeUi {
+      width: 677px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: space-between;
+
+      .DFTUILabel {
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .DFTUIRight {
+        margin-right: 291px;
+        input {
+          width: 140px;
+          height: 30px;
+          border: 1px solid #d1d2d4;
+          background-color: white;
+          padding-left: 12px;
+          padding-right: 12px;
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+      }
+      .DFTUIRequired {
+        color: #333333;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        margin-left: 6px;
+      }
+    }
+    .DynamicFormTimeUiDepend {
+      margin-top: -32px;
+    }
+    .timeUnitIncar {
+      margin-bottom: 101px;
+    }
+  }
 }

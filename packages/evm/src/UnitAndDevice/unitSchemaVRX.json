@@ -69,14 +69,17 @@
       "id": "5",
       "key": "unitSettings/enableCategories/CheckBox",
       "type": "checkbox",
-      "label": "Enable Categorization",
-      "value": true
+      "label": "Categories",
+      "value": true,
+      "hinttext": true,
+      "hintvalue": "Allows to specify categories for selection after recording",
+      "checkBoxText":"Enable Categorization",
+      "class":"CategoriesIncar"
     },
     {
       "id": "6",
       "key": "unitSettings/categories/Multiselect",
       "type": "multiselect",
-      "label": "Categories",
       "value": "",
       "depends": [
         {
@@ -102,9 +105,21 @@
       "key": "unitSettings/configUpdateInterval/NumberBox",
       "type": "number",
       "label": "Config Update Interval",
+      "requiredField":"true",
       "value": 10,
-      "seconds": true,
-      "required": true
+      "seconds": false,
+      "hinttext": true,
+      "hintvalue": "Allows to synchronize unit configuration at the specific interval",
+      "required": true,
+      "class":"UpdateIntervalIncar",
+      "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
+
     },
     {
       "id": "8",
@@ -113,6 +128,7 @@
       "type": "select",
       "label": "Media Retention Policy",
       "value": "",
+      "class":"RetentionPolicyIncar ",
       "options": [
         {
           "value": "",
@@ -126,9 +142,19 @@
       "type": "number",
       "label": "Maximum Video Length",
       "value": 60,
+      "class":"MaximumVideoLengthIncar",
       "seconds": false,
       "required": true,
-      "requiredField": "true"
+      "checkHelperText":"(Minimum allowed is 5 and maximum allowed is 120)",
+      "requiredField": "true",
+      "hinttext": true,
+      "hintvalue": "Allows to specify maximum video chunk to record for continuous video",
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
     },
     {
       "id": "10",
@@ -137,21 +163,34 @@
       "label": "GPS Frequency",
       "value": 15,
       "seconds": true,
-      "required": true
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 3600)",
+      "required": true,
+      "class":"GPSFrequencyIncar",
+      "validation": [
+        {
+          "key": "required",
+          "msg": "Required"
+        }
+      ]
     },
     {
       "id": "11",
       "key": "unitSettings/rebootEveryDay/CheckBox",
       "type": "checkbox",
-      "label": "Reboot Every Day",
-      "value": false
+      "label": "Reboot",
+      "checkBoxText":"Reboot Every Day",
+      "class":"RebootIncar",
+      "value": true,
+      "hinttext":true,
+      "hintvalue":"Allows to specify time to reboot the unit"
     },
     {
       "id": "12",
       "key": "unitSettings/rebootTime/Timepicker",
       "type": "time",
-      "label": "Reboot Time",
+      "class":"timeUnitIncar",
       "value": "",
+      "required":true,
       "depends": [
         {
           "key": "unitSettings/rebootEveryDay/CheckBox",
@@ -189,8 +228,8 @@
     },
     {
       "id": "1",
-      "key": "device/PortName/TextBox",
-      "type": "text",
+      "key": "device/PortName/NumberBox",
+      "type": "number",
       "label": "Port Name",
       "value": "",
       "depends": [

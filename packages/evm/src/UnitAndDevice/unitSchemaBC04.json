@@ -359,7 +359,7 @@
       "type": "radio",
       "label": "Enabled",
       "value": "enabled",
-      "selected": false
+      "selected": true
     },
     {
       "id": "2",
@@ -462,6 +462,7 @@
       "type": "number",
       "label": "GPS Heartbeat While Recording",
       "value": 60,
+      "class":"HeartbeatRecordingBco4",
       "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
       "hinttext": true,
       "hintvalue": "Interval between heartbeats when recording",

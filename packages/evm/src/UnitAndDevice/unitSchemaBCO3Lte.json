@@ -357,7 +357,7 @@
       "type": "radio",
       "label": "Enabled",
       "value": "enabled",
-      "selected": false
+      "selected": true
     },
     {
       "id": "2",
