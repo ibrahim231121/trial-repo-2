@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Menu,
-  MenuItem,
-  MenuButton,
-} from "@szhsin/react-menu";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import CreateUserForm from "./CreateUserForm";
 import { CRXModalDialog } from "@cb/shared";
@@ -17,17 +13,22 @@ import { useDispatch } from "react-redux";
 import "./UserActionMenu.scss";
 
 import moment from "moment";
-import {addNotificationMessages }  from "../../../Redux/notificationPanelMessages";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
-import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes"
+import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
+import Restricted from "../../../ApplicationPermission/Restricted";
 
 type Props = {
   selectedItems?: any;
   row?: any;
-  showToastMsg(obj: any): any
+  showToastMsg(obj: any): any;
 };
 
-const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
+const UserActionMenu: React.FC<Props> = ({
+  selectedItems,
+  row,
+  showToastMsg,
+}) => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
 
@@ -56,27 +57,37 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
   };
   const dispatchNewCommand = (isSuccess: boolean, errorMsg: string) => {
     switch (modalType) {
-      case 'unlock': {
+      case "unlock": {
         if (isSuccess) {
-          showToastMsg({ message: "You have unlocked the user account.", variant: "success", duration: 7000 });
+          showToastMsg({
+            message: "You have unlocked the user account.",
+            variant: "success",
+            duration: 7000,
+          });
           dispatch(getUsersInfoAsync());
           setIsOpen(false);
-        }
-        else {
+        } else {
           setShowAlert(true);
-          setResponseError("We're sorry. The account was unable to be unlocked. Please retry or contact your System Administrator.");
+          setResponseError(
+            "We're sorry. The account was unable to be unlocked. Please retry or contact your System Administrator."
+          );
         }
         break;
       }
-      case 'deactivate': {
+      case "deactivate": {
         if (isSuccess) {
-          showToastMsg({ message: "You have deactivated the user account.", variant: "success", duration: 7000 });
+          showToastMsg({
+            message: "You have deactivated the user account.",
+            variant: "success",
+            duration: 7000,
+          });
           dispatch(getUsersInfoAsync());
           setIsOpen(false);
-        }
-        else {
+        } else {
           setShowAlert(true);
-          setResponseError("We're sorry. The account was unable to be deactivated. Please retry or contact your System Administrator.");
+          setResponseError(
+            "We're sorry. The account was unable to be deactivated. Please retry or contact your System Administrator."
+          );
         }
         break;
       }
@@ -85,50 +96,65 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
       }
     }
     // dispatch(e);
-  }
+  };
 
   const onConfirm = () => {
     switch (modalType) {
-      case 'unlock': {
-        dispatch(updateUsersInfoAsync({ dispatchNewCommand, userId: row?.id, columnToUpdate: '/account/status', valueToUpdate: 'Active' }));
+      case "unlock": {
+        dispatch(
+          updateUsersInfoAsync({
+            dispatchNewCommand,
+            userId: row?.id,
+            columnToUpdate: "/account/status",
+            valueToUpdate: "Active",
+          })
+        );
         break;
       }
-      case 'deactivate': {
-        dispatch(updateUsersInfoAsync({ dispatchNewCommand, userId: row?.id, columnToUpdate: '/account/status', valueToUpdate: 'Deactivated' }));
+      case "deactivate": {
+        dispatch(
+          updateUsersInfoAsync({
+            dispatchNewCommand,
+            userId: row?.id,
+            columnToUpdate: "/account/status",
+            valueToUpdate: "Deactivated",
+          })
+        );
         break;
       }
       default: {
         break;
       }
     }
-  }
+  };
 
   const openCreateUserForm = () => {
     setOpen(true);
   };
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync());
+    // dispatch(getUsersInfoAsync());
   };
 
   React.useEffect(() => {
-    if(responseError !== undefined && responseError !== "") {
+    if (responseError !== undefined && responseError !== "") {
       let notificationMessage: NotificationMessage = {
-          title: "Assets Action Menu", 
-          message: responseError, 
-          type: "error",
-          date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
-      }
+        title: "Assets Action Menu",
+        message: responseError,
+        type: "error",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
       dispatch(addNotificationMessages(notificationMessage));
     }
-  },[responseError])
-
+  }, [responseError]);
+  console.log("row Status", row?.status);
   return (
     <>
       <CRXModalDialog
         className="CrxCreateUser"
         style={{ minWidth: "550px" }}
-
         title="Edit User"
         modelOpen={open}
         showSticky={true}
@@ -155,13 +181,16 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
       >
         {
           <>
-            {showAlert && <CRXAlert className="UserActionAlert"
-              message={responseError}
-              alertType="inline"
-              type="error"
-              open={showAlert}
-              setShowSucess={() => null}
-            />}
+            {showAlert && (
+              <CRXAlert
+                className="UserActionAlert"
+                message={responseError}
+                alertType="inline"
+                type="error"
+                open={showAlert}
+                setShowSucess={() => null}
+              />
+            )}
             <div className="crxUplockContent">
               <p>
                 You are attempting to <b>{modalType}</b> the following user
@@ -171,7 +200,8 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
                 {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
               </p>
               <p>
-                Please confirm if you would like to {modalType} this user account.
+                Please confirm if you would like to {modalType} this user
+                account.
               </p>
             </div>
           </>
@@ -191,31 +221,37 @@ const UserActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) =
         }
       >
         <MenuItem onClick={openCreateUserForm}>
-          <div className="crx-meu-content groupingMenu crx-spac">
-            <div className="crx-menu-icon">
-              <i className="fas fa-pen"></i>
+          <Restricted moduleId={10}>
+            <div className="crx-meu-content groupingMenu crx-spac">
+              <div className="crx-menu-icon">
+                <i className="fas fa-pen"></i>
+              </div>
+              <div className="crx-menu-list">Edit user</div>
             </div>
-            <div className="crx-menu-list">Edit user</div>
-          </div>
+          </Restricted>
         </MenuItem>
         {row?.status.toLocaleLowerCase() == "accountlocked" ? (
           <MenuItem>
-            <div className="crx-meu-content" onClick={unlockUser}>
-              <div className="crx-menu-icon">
-                <i className="fas fa-lock"></i>
+            <Restricted moduleId={12}>
+              <div className="crx-meu-content" onClick={unlockUser}>
+                <div className="crx-menu-icon">
+                  <i className="fas fa-lock"></i>
+                </div>
+                <div className="crx-menu-list">Unlock account</div>
               </div>
-              <div className="crx-menu-list">Unlock account</div>
-            </div>
+            </Restricted>
           </MenuItem>
         ) : (
           <div></div>
         )}
         {row?.status.toLocaleLowerCase() != "deactivated" ? (
           <MenuItem>
-            <div className="crx-meu-content" onClick={deactivateUser}>
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">Deactivate account</div>
-            </div>
+            <Restricted moduleId={11}>
+              <div className="crx-meu-content" onClick={deactivateUser}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">Deactivate account</div>
+              </div>
+            </Restricted>
           </MenuItem>
         ) : (
           <div></div>

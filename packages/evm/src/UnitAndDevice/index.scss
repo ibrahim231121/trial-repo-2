@@ -1,0 +1,472 @@
+html {
+  overflow-x: hidden;
+}
+.anchorStyle {
+  text-decoration: none;
+}
+.unitDeviceMenuCss {
+  .crx-menu-icon {
+    border-right: 1px solid #4c4c4d !important;
+    i {
+      font-size: 14px;
+    }
+  }
+  li {
+    &:nth-child(2) {
+      .crx-menu-list {
+        border-bottom: 1px solid #69696a !important;
+      }
+    }
+  }
+}
+iframe {
+  display: none;
+}
+.unitDeviceMainPage {
+  .MuiAutocomplete-paper {
+    width: 224px !important;
+  }
+  .centerPosition {
+    width: 200px;
+    min-width: 200px;
+  }
+
+  .MuiAutocomplete-listbox {
+    width: 200px !important;
+    min-width: 200px !important;
+  }
+}
+.unitDeviceTableConfig {
+  .col-three {
+    position: unset !important;
+  }
+  .unitDeviceMenuCss {
+    margin-left: -34px;
+    margin-top: -50px;
+  }
+}
+.unitDeviceMain {
+  margin-left: 63px;
+  .gridFilterGlobal {
+    .crx-global-Select {
+      width: 224px !important;
+    }
+  }
+  .rc-menu__arrow {
+    top: 61px !important;
+    display: none;
+  }
+  p.statusUnit {
+    position: relative;
+    &::before {
+      position: absolute;
+      content: '';
+      height: 20px;
+      width: 20px;
+      background: #d1d2d4;
+      border-radius: 39px;
+      right: 11px;
+      top: 13px;
+    }
+  }
+
+  .crxTableDataUi {
+    transform: translateY(-10px);
+    position: relative;
+    &::before {
+      display: none;
+    }
+  }
+
+  & > .MuiGrid-item {
+    position: relative;
+    &::before {
+      position: fixed;
+      content: '';
+      background: white;
+      height: 75px;
+      width: 100%;
+      top: 120px;
+      z-index: 123;
+      left: 0;
+    }
+  }
+  .crxClearfilter {
+    z-index: 1000;
+  }
+  div[class*='makeStyles-container-'] {
+    height: 729px !important;
+    overflow-x: auto !important;
+  }
+  .dataTableColumnShoHide {
+    margin-top: -21px;
+    &:nth-child(2) {
+      margin-top: -20px;
+    }
+  }
+  .rc-menu {
+    position: uns;
+  }
+  .col-three {
+    ul {
+      &:first-child {
+        left: 109px !important;
+      }
+    }
+  }
+  table {
+    margin-top: 106px;
+    thead {
+      .select {
+        width: 118% !important;
+        margin-left: -6px;
+      }
+      &:nth-child(1) {
+        tr {
+          th {
+            top: 106px !important;
+            text-transform: capitalize;
+            &:nth-child(1) {
+              //UnitId
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              //UnitId
+              left: 58px !important;
+            }
+            &:nth-child(4) {
+              //UnitId
+              min-width: 170px;
+            }
+            &:nth-child(5) {
+              //template
+              min-width: 201px;
+            }
+            &:nth-child(6) {
+              //Serial Number
+              min-width: 176px;
+            }
+            &:nth-child(7) {
+              //Version
+              min-width: 127px;
+            }
+            &:nth-child(8) {
+              //Description
+              min-width: 304px;
+            }
+            &:nth-child(9) {
+              //Station
+              min-width: 215px;
+            }
+            &:nth-child(10) {
+              //Assigned To
+              min-width: 190px;
+            }
+            &:nth-child(11) {
+              //Last Checked In
+              min-width: 200px;
+            }
+            &:nth-child(12) {
+              //Status
+              min-width: 200px;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        tr {
+          th {
+            top: 141px !important;
+            padding: 0px 13px 1px !important;
+            input {
+              background-color: #d1d2d4;
+            }
+            &:nth-child(1) {
+              //UnitId
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              //UnitId
+              left: 58px !important;
+            }
+            &:nth-child(7) {
+              //UnitId
+              .crx-global-Select {
+                min-width: 127px !important;
+                width: 127px !important;
+              }
+            }
+          }
+          th {
+            &:nth-child(10) {
+              .multiCaretIcon {
+                margin-top: -2px;
+                display: block;
+              }
+              .CRXPaper {
+                padding-left: 0px;
+                padding-right: 0px;
+              }
+            }
+            &:nth-child(12) {
+              .filteredStyle {
+                background-color: #d1d2d4;
+              }
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          td[scope='row'] {
+            background: white !important;
+            &:hover {
+              background: #333 !important;
+            }
+            //   position: relative;
+            //   &::before {
+            //     background-color: white !important;
+            //     position: absolute;
+            //     content: '';
+            //     width: 100%;
+            //     height: 100%;
+            //     top: 0;
+            //     left: 0;
+            //     z-index: -1;
+            //   }
+          }
+        }
+
+        &:nth-child(even) {
+          td[scope='row'] {
+            background: #f2f2f2 !important;
+            z-index: 0;
+            &:hover {
+              background: #333 !important;
+            }
+            //   position: relative;
+            //   &::before {
+            //     background-color: #f2f2f2 !important;
+            //     position: absolute;
+            //     content: '';
+            //     width: 100%;
+            //     height: 100%;
+            //     top: 0;
+            //     left: 0;
+            //     z-index: -1;
+            //   }
+          }
+        }
+        td {
+          .crx-menu-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          }
+          &:nth-child(1) {
+            background-color: transparent !important;
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            text-align: center !important;
+            left: 58px !important;
+            position: sticky !important;
+            button {
+              font-size: 23px !important;
+              margin-top: 5px;
+            }
+            // &::before {
+            //   position: absolute;
+            //   content: '';
+            //   left: 0;
+            //   top: 0;
+            //   background-color: #ff1410;
+            //   width: 100%;
+            //   height: 100%;
+            // }
+          }
+
+          &:nth-child(4),
+          &:nth-child(9) {
+            a {
+              color: #d74b00;
+              &:hover {
+                text-decoration: none;
+                box-shadow: none;
+                color: #d74b00;
+              }
+            }
+          }
+        }
+        &:hover {
+          background-color: #333 !important;
+          .rc-menu-button {
+            color: #333;
+          }
+          td[scope='row'] {
+            background-color: #333 !important;
+            .rc-menu-button {
+              color: #d1d2d4 !important;
+            }
+          }
+        }
+      }
+
+      .Mui-selected:nth-child(odd) td[scope='row'] {
+        background-color: #231f20 !important;
+      }
+      .Mui-selected:nth-child(even) td[scope='row'] {
+        background-color: #231f20 !important;
+      }
+    }
+  }
+
+  .DataTableBodyCell {
+    vertical-align: middle !important;
+    text-indent: 0 !important;
+    line-height: 20px !important;
+    padding-left: 13px !important;
+    padding-right: 16px !important;
+  }
+  .unitsStatusCounter {
+    position: sticky;
+    top: 150px;
+    z-index: 300;
+    color: #333333;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .textDisplayStatus {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .statusDot {
+      background: rosybrown;
+      height: 18px;
+      width: 18px;
+      border-radius: 100px;
+    }
+    .Unregistered {
+      background-color: red;
+    }
+    .Suspended {
+      background-color: blue !important;
+    }
+
+    .Online {
+      background-color: #2d6fcc !important;
+    }
+
+    .Active {
+      background-color: #02a200 !important;
+    }
+
+    .Recording {
+      background-color: #ff1410 !important;
+    }
+
+    .Offline {
+      background-color: #d1d2d4 !important;
+    }
+  }
+  .SelectedActionMenu {
+    td {
+      &:nth-child(2) {
+        position: relative;
+        &::before {
+          position: absolute;
+          z-index: 1;
+          content: '';
+          background-color: #231f20;
+          top: 0;
+          left: 0;
+        }
+        &:hover {
+          .rc-menu-button {
+            background-color: #231f20 !important;
+          }
+        }
+      }
+
+      &:nth-child(5),
+      &:nth-child(6),
+      &:nth-child(7),
+      &:nth-child(8),
+      &:nth-child(10),
+      &:nth-child(11),
+      &:nth-child(12) {
+        color: #d1d2d4 !important;
+
+        div {
+          color: #d1d2d4 !important;
+        }
+      }
+
+      button {
+        position: relative;
+        z-index: 3;
+      }
+    }
+  }
+}
+
+.MuiAutocomplete-listbox {
+  left: -1px !important;
+  width: 288px !important;
+  top: 0;
+}
+#multiSelect-popup {
+  width: 324px !important;
+  .statusIcon {
+    background-color: #d1d2d4;
+    height: 18px;
+    width: 18px;
+    border-radius: 50px;
+    position: absolute;
+    right: 17px;
+  }
+  .No {
+    background-color: #fd8138;
+  }
+  .Offline {
+    background-color: #d1d2d4;
+  }
+  .Recording {
+    background-color: #ff1410;
+  }
+  .Active {
+    background-color: #02a200;
+  }
+  .Online {
+    background-color: #2d6fcc;
+  }
+  .Inactive {
+    background-color: #d1d2d4;
+  }
+  .Unregistered {
+    background-color: #ffd000;
+  }
+  .Suspended {
+    background-color: blue !important;
+  }
+}
+
+// @media only screen and (min-width: 400px) {
+//   div[class*='makeStyles-container-'] {
+//     height: auto !important;
+//   }
+// }
+
+@media (min-width: 1800px) {
+  .unitDeviceMain {
+    & > .MuiGrid-item {
+      &::before {
+        top: 125px;
+        height: 69px;
+      }
+    }
+  }
+}

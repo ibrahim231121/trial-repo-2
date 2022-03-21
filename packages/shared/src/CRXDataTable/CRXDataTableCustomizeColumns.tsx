@@ -57,7 +57,7 @@ const checkboxStyle = makeStyles({
   },
 });
 
-const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ id, headCells, orderingColumn, onReorder, onChange, onHeadCellChange }) => {
+const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ id, headCells, orderingColumn, filterWindow,onReorder, onChange, onHeadCellChange }) => {
 
   const { t } = useTranslation<string>();
   const chkStyle = checkboxStyle();
@@ -167,7 +167,18 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
 
   const customizeColumnOpen = () => {
     setCustomize((prevOpen) => !prevOpen)
+    filterWindow(null)
   }
+
+  useEffect(() => {
+    if(customizeColumn == true){
+      filterWindow(null);
+    }
+    else {
+      filterWindow(undefined);
+    }
+  },[customizeColumn])
+
   return (
 
     <div className="dataTableColumnShoHide">

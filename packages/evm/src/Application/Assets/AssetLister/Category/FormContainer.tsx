@@ -43,7 +43,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
     if (props.openForm == true) {
       setOpenModal(true);
       if (props.rowData) {
-        const filtered = categoryOptions.filter((o: any) => {
+        const filtered = categoryOptions && categoryOptions.filter((o: any) => {
           return props.rowData?.categories.some((e: any) => e === o.name);
         });
         setFilterValue(filterCategory(filtered));
@@ -197,6 +197,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             rowData={props.rowData}
             filterValue={filterValue}
             setModalTitle={(i: any) => setModalTitle(i)}
+            setremoveClassName={(v: any) => setremoveClassName(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
           />
         );

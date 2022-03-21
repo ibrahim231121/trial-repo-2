@@ -22,14 +22,6 @@ const Breadcrumb: React.FC<any> = (props) => {
   const [otherLabels, setOtherLabels] = React.useState<string>("")
 
   const breadCrumbValueRedux = useSelector((state: any) => state.pathName);
-  // const breadCrumbPathRedux: any = {
-  //   name: urlNames.assets,
-  //   url: "/assets",
-  //   details: [
-  //     { routeTo: "/assets", type: "CBXLink", label: "Assets", },
-  //     { type: "text", label: breadCrumbValueRedux, }
-  //   ],
-  // }
 
   React.useEffect(() => {
     setOtherLabels("")
@@ -37,9 +29,7 @@ const Breadcrumb: React.FC<any> = (props) => {
   },[])
 
   React.useEffect(() => {
-    if (breadCrumbValueRedux) {
       setOtherLabels(breadCrumbValueRedux)
-    }
   },[breadCrumbValueRedux])
 
   React.useEffect(() => {
@@ -90,7 +80,7 @@ const Breadcrumb: React.FC<any> = (props) => {
   const getTitle = () => {
     const paths = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (paths) {
-      const pathName = paths[paths.length - 1].label
+      const pathName = (otherLabels ?  otherLabels : paths[paths.length - 1].label)
       return pathName
     }
     else
@@ -102,7 +92,7 @@ const Breadcrumb: React.FC<any> = (props) => {
     let details = pathDetails.map((item:any) => {
       if(item === pathDetails[pathDetails.length-1]) {
         return {
-          routeTo: Pathurl,
+          routeTo: (item.routeTo === undefined) ? Pathurl : item.routeTo,
           type: "CBXLink",
           label: item.label
         }

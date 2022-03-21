@@ -1,0 +1,89 @@
+.language_selector_app {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    right: 0;
+    height: 41px;
+    background: #0F0D0E99;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: center;
+    &:focus-within {
+        outline: 1px solid white !important;
+      }
+    .CRXSimpleSelect  {
+        background-color: transparent;
+        border: none;
+        &:hover {
+                border: none;
+                transition: none;
+        }
+        .MuiSelect-select {
+            color: #FFFFFF;
+            font-size: 14px;
+            line-height: 16px;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        .MuiSelect-icon {
+            color: #FFFFFF;
+            right: 23px;
+            top: 2px;
+        }
+        .MuiPopover-paper  {
+            top: 33px !important;
+            left: 1081px !important; 
+            width: 139px !important;
+        }
+        .MuiSelect-select {
+            padding-right: 30px;
+            width: 53px;
+        } 
+    }
+    .world_language_icon {
+        color: #ffffff;
+        font-size: 20px;
+        padding-left: 33px;
+        padding-right: 3px;
+    }
+   
+    .MuiSelect-iconOpen {
+        .paperStyle  {
+            background: antiquewhite;
+        }
+    }
+}
+
+
+ .paperStyle {
+    background-color:#404041 !important;
+    min-width: 158px;
+    width: 115px !important;
+    margin-left: 18px !important;
+    margin-top: 12px!important;
+    margin-left: -27px !important;
+
+    border: none;
+    li {
+        height: 33px !important;
+        color: #D1D2D4;
+        font-size: 14px;
+        line-height: 16px;
+        font-family: Arial, Helvetica, sans-serif;
+        &:hover {
+            color: #F5F5F5 !important;
+            background-color: #231F20 !important;
+        }
+        &:focus , &:visited , &:active {
+            background-color: #6E6E6E !important;
+            color: #D1D2D4 !important;
+        }
+        &:first-child {
+            display: none;
+        }
+    }
+}
+
+iframe {
+    display: none;
+}

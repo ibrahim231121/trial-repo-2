@@ -7,6 +7,7 @@ import "./globalSelectBox.scss";
 
 interface selectBoxProps {
   multiple?: boolean;
+  statusIcon?: boolean;
   options: any[];
   value?: any[];
   CheckBox?: boolean;
@@ -36,6 +37,7 @@ interface renderCheck {
 
 const CRXGlobalSelectFilter = ({
   multiple = false,
+  statusIcon = false,
   clearSelectedItems,
   value,
   checkSign = false,
@@ -74,6 +76,7 @@ const CRXGlobalSelectFilter = ({
             checked={selected}
           />
           {option.label ? option.label : " "}
+          {statusIcon ? <p className={`statusIcon ${option.label}`} ></p> : '' }
         </>
       );
     } else if (checkSign == true) {

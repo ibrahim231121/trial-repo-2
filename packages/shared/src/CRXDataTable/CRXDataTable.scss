@@ -4,6 +4,7 @@
   box-shadow: none !important;
   border-radius: 0px !important;
   overflow-y: visible;
+
   // min-height: 550px;
 
   table {
@@ -21,11 +22,12 @@
         th.CRXDataTableLabelCell {
           border-bottom: 0px;
           border-right: 1px solid #ccc;
-          z-index: 2;
+          // z-index: 2;
         }
         th.TableSearchAbleHead {
           border-top: 1px solid #ccc;
           border-right: 1px solid #ccc;
+          z-index: 0;
           &:focus {
             outline: 0px;
             box-shadow: 0px;
@@ -54,7 +56,7 @@
         }
         td.DataTableBodyCell {
           border-right: 1px solid #ccc;
-          padding: 0px 9px 2px 16px;
+          padding: 0px 9px 2px 9px;
           font-size: 14px;
           color: #333;
           vertical-align: top;
@@ -426,56 +428,56 @@
   cursor: col-resize;
   color: #337e05;
   height: 100vh;
-  width: 2px;
+  width: 5px;
   background: transparent;
   position: absolute;
   right: 0;
   top: 0;
   &:hover {
     background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: "";
-      z-index: 99;
-    }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: "";
-    }
+    // &::before {
+    //   height: 35px;
+    //   width: 5px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 0px;
+    //   right: -3px;
+    //   content: "";
+    //   z-index: 99;
+    // }
+    // &::after {
+    //   height: 8px;
+    //   width: 8px;
+    //   border-radius: 100px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 34px;
+    //   right: -3px;
+    //   content: "";
+    // }
   }
   &:focus {
     background: #33ff00;
-    &::before {
-      height: 35px;
-      width: 5px;
-      background: #33ff00;
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      content: "";
-      z-index: 99;
-    }
-    &::after {
-      height: 8px;
-      width: 8px;
-      border-radius: 100px;
-      background: #33ff00;
-      position: absolute;
-      top: 34px;
-      right: -3px;
-      content: "";
-    }
+    // &::before {
+    //   height: 35px;
+    //   width: 5px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 0px;
+    //   right: -3px;
+    //   content: "";
+    //   z-index: 99;
+    // }
+    // &::after {
+    //   height: 8px;
+    //   width: 8px;
+    //   border-radius: 100px;
+    //   background: #33ff00;
+    //   position: absolute;
+    //   top: 34px;
+    //   right: -3px;
+    //   content: "";
+    // }
   }
 }
 
@@ -577,7 +579,7 @@
   position: sticky !important;
   padding-left: 7px !important;
   z-index: 1;
-  left: 59px;
+  //left: 59px;
 }
 
 .col-three {
@@ -585,7 +587,7 @@
   max-width: 80px;
   padding-left: 2px !important;
   z-index: 2;
-  left: 117px;
+  //left: 117px;
 }
 
 tr:nth-child(even) td[scope="row"] {
@@ -609,7 +611,7 @@ td.CellCheckBox {
         span {
           color: #d1d2d4;
           &::after {
-            color:transparent !important;
+            color: transparent !important;
           }
         }
       }
@@ -698,6 +700,11 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
       .CRXCheckBox span span {
         border-color: #d1d2d4;
         background-color: #333;
+        &.fal {
+          &::after {
+            color: transparent !important;
+          }
+        }
       }
         .fal {
           &::after {
@@ -720,6 +727,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
     background: none;
     border: none;
     font-size: 23px;
+    margin: 0;
   }
 
   th {
@@ -935,4 +943,41 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
 }
 .crxClearfilter {
   place-content: flex-end;
+}
+.CRXDataTableCustom {
+  tbody {
+    .SelectedActionMenu {
+      td:nth-child(3),
+      td:nth-child(4),
+      td:nth-child(5),
+      td:nth-child(6),
+      td:nth-child(7),
+      td:nth-child(8),
+      td:nth-child(9),
+      td:nth-child(10),
+      td:nth-child(11),
+      td:nth-child(12),
+      td:nth-child(13),
+      td:nth-child(14) {
+        background-color: #231f20 !important;
+        color: #d1d2d4 !important;
+        .assetThumb {
+          .assetsThumbGetac {
+            border: 1px solid #d1d2d4;
+          }
+        }
+      }
+      .rc-menu-button {
+        color: #d1d2d4;
+      }
+      td:nth-child(3) {
+        position: static;
+        .rc-menu-container {
+          .rc-menu {
+            left: 55px !important;
+          }
+        }
+      }
+    }
+  }
 }

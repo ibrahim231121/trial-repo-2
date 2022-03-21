@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   CRXDrawer,
   CRXRows,
@@ -8,6 +8,9 @@ import {
   CRXBadge,
   CRXTooltip,
   CRXRootRef,
+  CRXProgressBar,
+  CRXToaster,
+  CrxAccordion
 } from "@cb/shared";
 import BucketActionMenu from "../../Assets/AssetLister/ActionMenu/BucketActionMenu";
 import "./index.scss";
@@ -33,9 +36,16 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import { assetRow } from "../../Assets/AssetLister/ActionMenu/types";
 import { updateDuplicateFound, loadFromLocalStorage } from "../../../Redux/AssetActionReducer";
 import moment from "moment";
-import {addNotificationMessages }  from "../../../Redux/notificationPanelMessages";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../CRXNotifications/notificationsTypes"
+
+//--for asset upload
+import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload"
+declare const window: any;
+window.onRecvData = new CustomEvent("onUploadStatusUpdate");
+window.onRecvError = new CustomEvent("onUploadError");
+//for asset upload--
 
 interface AssetBucket {
   id: number;
@@ -74,7 +84,7 @@ const CRXAssetsBucketPanel = () => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [scrollHide, setScroll] = React.useState("");
-  const [sucess, setSucess] = React.useState<{  msg: string }>({
+  const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
   });
   const [attention, setAttention] = React.useState<{ msg: string }>({
@@ -83,9 +93,13 @@ const CRXAssetsBucketPanel = () => {
   const [showSucess, setShowSucess] = React.useState<boolean>(false);
   const [showMessageClx, setShowMessageClx] = React.useState<string>("bucketMessageHide");
   const [showAttention, setShowAttention] = React.useState<boolean>(false);
+  const [showUploadAttention, setShowUploadAttention] = React.useState<boolean>(false);
+
 
   const prevCount = usePrevious(assetBucketData.length);
   const prevIsDuplicate = usePrevious(isDuplicateFound);
+  const [fileCount, setFileCount] = React.useState<any>(0);
+  const fileCountRef = React.useRef(fileCount);
 
   const dispatch = useDispatch()
 
@@ -157,7 +171,7 @@ const CRXAssetsBucketPanel = () => {
       clearTimeout(timer);
     };
   }, [assetBucketData.length]);
-  
+
   const bucketIconByState = assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2"
   const ToggleButton = (
     <CRXBadge itemCount={assetBucketData.length} color="primary">
@@ -201,25 +215,25 @@ const CRXAssetsBucketPanel = () => {
       headCells[colIdx].headerArray = v;
     };
     const noOptionStyled = {
-      width : "107px",
-      marginLeft : "0px",
-      whiteSpace : "nowrap",
-      overFlow : "hidden",
-      textOverflow : "ellipsis",
-      marginRight : "0",
-      paddingLeft : "5px !important",
-      paddingRight : "10px !important",
-      fontSize : "13px",
-      lineHeight : "15px",
-      top : "5px",
-      marginTop : "0"
+      width: "116px",
+      marginLeft: "-1px",
+      whiteSpace: "nowrap",
+      overFlow: "hidden",
+      textOverflow: "ellipsis",
+      marginRight: "0",
+      paddingLeft: "5px !important",
+      paddingRight: "10px !important",
+      fontSize: "13px",
+      lineHeight: "15px",
+      top: "0px",
+      marginTop: "0"
     }
     const paddLeft = {
-      marginLeft : "2px",
+      marginLeft: "2px",
       paddingRight: "3px !important",
-      marginRight : "2px",
+      marginRight: "2px",
       paddingLeft: "2px",
-      
+
 
     }
     return (
@@ -316,146 +330,361 @@ const CRXAssetsBucketPanel = () => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
-  
+
   React.useEffect(() => {
     const windowSize = window.screen.height;
-    if(windowSize < 1080 && rows.length < 3) {
+    if (windowSize < 1080 && rows.length < 3) {
       setScroll("hideScroll");
-      
-    }else if(windowSize >= 1080 && rows.length < 4) {
+
+    } else if (windowSize >= 1080 && rows.length < 4) {
       setScroll("hideScroll");
-    }else {
+    } else {
       setScroll("");
     }
-  },[rows, sucess])
+  }, [rows, sucess])
 
   useEffect(() => {
-    if(sucess.msg !== undefined && sucess.msg !== "") {
+    if (sucess.msg !== undefined && sucess.msg !== "") {
       let notificationMessage: NotificationMessage = {
-          title: "Asset Bucket", 
-          message: sucess.msg, 
-          type: "success",
-          date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
+        title: "Asset Bucket",
+        message: sucess.msg,
+        type: "success",
+        date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
       }
       dispatch(addNotificationMessages(notificationMessage));
     }
-  },[sucess])
+  }, [sucess])
 
   useEffect(() => {
-    if(attention.msg !== undefined && attention.msg !== "") {
+    if (attention.msg !== undefined && attention.msg !== "") {
       let notificationMessage: NotificationMessage = {
-          title: "Asset Bucket", 
-          message: attention.msg, 
-          type: "info",
-          date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
+        title: "Asset Bucket",
+        message: attention.msg,
+        type: "info",
+        date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
       }
       dispatch(addNotificationMessages(notificationMessage));
     }
-  },[attention])
-  
+  }, [attention])
+
+  //--for asset upload
+  const handleOnUpload = async (e: any) => {
+    setFileCount(e.target.files.length);
+    fileCountRef.current = e.target.files.length;
+    AddFilesToFileService(e.target.files);
+  }
+
+  interface UploadInfo {
+    uploadValue: number,
+    uploadText: string,
+    uploadFileSize: string,
+    error: boolean,
+    removed?: boolean
+  }
+  interface FileUploadInfo {
+    uploadInfo: UploadInfo,
+    fileName: string
+  }
+
+  const [uploadInfo, setUploadInfo] = useState<FileUploadInfo[]>([]);
+  const [totalFilePer, setTotalFilePer] = React.useState<any>(0);
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const [expanded, isExpaned] = React.useState<string | boolean>();
+
+  const uploadStatusUpdate = (data: any) => {
+    let _uploadInfo: FileUploadInfo;
+    setUploadInfo(prevState => {
+      if (prevState.length > 0) {
+        const newUploadInfo = [...prevState];
+        const rec = newUploadInfo.find(x => x.fileName == data.data.fileName);
+
+        if (rec != undefined || rec != null) {
+
+          if (data.data.error != undefined || data.data.error != null) {
+            rec.uploadInfo.error = true;
+            return [...newUploadInfo]
+          }
+          if (data.data.removed != undefined || data.data.removed != null) {
+            rec.uploadInfo.removed = true;
+            return [...newUploadInfo]
+          }
+          rec.fileName = data.data.fileName;
+          rec.uploadInfo = {
+            uploadValue: data.data.percent,
+            uploadText: data.data.fileName,
+            uploadFileSize: data.data.loadedBytes + " of " + data.data.fileSize,
+            error: false
+          };
+
+          return [...newUploadInfo]
+        }
+        else {
+          _uploadInfo = getUploadInfo(data);
+          return [...prevState, _uploadInfo]
+        }
+      }
+      else {
+        _uploadInfo = getUploadInfo(data);
+        return [...prevState, _uploadInfo]
+      }
+    });
+
+  }
+  useEffect(() => {
+    var totalPercentage = 0;
+    uploadInfo.map((x) => {
+      totalPercentage = totalPercentage + x.uploadInfo.uploadValue;
+    });
+    if (totalPercentage != 0) {
+      setTotalFilePer(Math.round(totalPercentage / fileCountRef.current));
+    }
+  }, [uploadInfo])
+
+  useEffect(() => {
+    if (totalFilePer === 100) {
+      setShowUploadAttention(true);
+    }
+
+  }, [totalFilePer])
+
+  const getUploadInfo = (data: any) => {
+    return {
+      fileName: data.data.fileName,
+      uploadInfo: {
+        uploadValue: data.data.percent,
+        uploadText: data.data.fileName,
+        uploadFileSize: data.data.loadedBytes + " of " + data.data.fileSize,
+        error: false
+      }
+    };
+  }
+  const uploadError = (data: any) => {
+    toasterRef.current.showToaster({
+      message: data.data.message, variant: data.data.variant, duration: data.data.duration, clearButtton: data.data.clearButtton
+    });
+  }
+
+  // return await axios.post(UPLOAD_ENDPOINT, formData, {
+  //   headers: {
+  //     "content-type": "multipart/form-data"
+  //   }
+  // });
+  //};
+  React.useEffect(() => {
+
+    const trAtiveValue = document.querySelector(".rc-menu--open")?.closest("tr[class*='MuiTableRow-hover-']");
+
+    let dataui = document.querySelectorAll("tr[class*='MuiTableRow-root-']");
+
+    let trAtiveArray = Array.from(dataui);
+
+    trAtiveArray.map((e) => {
+
+      if (e.classList.contains("SelectedActionMenu")) {
+
+        e.classList.remove("SelectedActionMenu")
+
+      } else {
+
+        trAtiveValue?.classList.add("SelectedActionMenu");
+      }
+
+    })
+
+  })
+  useEffect(() => {
+    window.addEventListener("onUploadStatusUpdate", uploadStatusUpdate)
+    window.addEventListener("onUploadError", uploadError)
+    // return () => window.removeEventListener("onUploadStatusUpdate", MyData);
+  }, [])
+
+  const uploadProgressStatus = () => {
+
+    const prog = uploadInfo.map((item: FileUploadInfo, i: number) => {
+      if (item.uploadInfo.removed != true) {
+        return <div className="crxProgressbarBucket">
+          <CRXProgressBar
+            id="raw"
+            loadingText={item.uploadInfo.uploadText}
+            value={item.uploadInfo.uploadValue}
+            error={item.uploadInfo.error}
+
+            maxDataSize={true}
+            loadingCompleted={item.uploadInfo.uploadFileSize}//"5.0Mb"
+          />
+        </div>
+      }
+    })
+    return prog
+  }
+
+  //for asset upload--
+
   return (
-    <CRXDrawer
-      className="CRXBucketPanel crxBucketPanelStyle"
-      anchor="right"
-      button={ToggleButton}
-      btnStyle="bucketIconButton"
-      isOpen={isOpen}
-      toggleState={toggleState}
-      variant="persistent"
-    >
-    <Droppable droppableId="assetBucketEmptyDroppable">
-    {(provided: any) => (
-      <CRXRootRef provided={provided}>
-        <>
-          <Draggable
-            draggableId="assetBucketEmptyDraggable"
-            index={0}
-            isDragDisabled={true}
-          >
-            {(provided: any) => (
-              <div id="divMainBucket"
-                className="divMainBucket"
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >        
-                <CRXRows container spacing={0}>
-                  <CRXColumn item xs={11} className="bucketPanelTitle">
-                    <label>Your Asset Bucket</label>
-                  </CRXColumn>
-                  <CRXColumn item xs={1} className="topColumn">
-                    <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
-                  </CRXColumn>
-                </CRXRows>
-    <CRXRows container spacing={0} className={showMessageClx}>
-      <CRXColumn item xs={12} className="topColumn">
-      <CRXAlert
-                          className="crx-alert-notification"
-                          message={attention.msg}
-                          type="info"
-                          open={showAttention}
-                          setShowSucess={setShowAttention}
-                        />
+    <>
+      <CRXToaster ref={toasterRef} />
+      <CRXDrawer
+        className="CRXBucketPanel crxBucketPanelStyle"
+        anchor="right"
+        button={ToggleButton}
+        btnStyle="bucketIconButton"
+        isOpen={isOpen}
+        toggleState={toggleState}
+        variant="persistent"
+      >
+        <Droppable droppableId="assetBucketEmptyDroppable">
+          {(provided: any) => (
+            <CRXRootRef provided={provided}>
+              <>
+                <Draggable
+                  draggableId="assetBucketEmptyDraggable"
+                  index={0}
+                  isDragDisabled={true}
+                >
+                  {(provided: any) => (
+                    <div id="divMainBucket"
+                      className="divMainBucket"
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <CRXRows container spacing={0}>
+                        <CRXColumn item xs={11} className="bucketPanelTitle">
+                          <label>Your Asset Bucket</label>
+                        </CRXColumn>
+                        <CRXColumn item xs={1} className="topColumn">
+                          <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
+                        </CRXColumn>
+                      </CRXRows>
+                      <CRXRows container spacing={0} className={showMessageClx} >
+                        <CRXColumn item xs={12} className="topColumn">
+                          <CRXAlert
+                            className="crx-alert-notification"
+
+                            message={attention.msg}
+                            type="info"
+                            open={showAttention}
+                            setShowSucess={setShowAttention}
+                          />
+                          <CRXAlert
+                            className="crx-alert-notification"
+                            message={sucess.msg}
+                            type="success"
+                            open={showSucess}
+                            setShowSucess={setShowSucess}
+                          />
+
+                        </CRXColumn>
+                      </CRXRows>
+                      <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
                         <CRXAlert
-                          className="crx-alert-notification"
-                          message={sucess.msg}
-                          type="success"
-                          open={showSucess}
-                          setShowSucess={setShowSucess}
+                          className={"crx-alert-notification file-upload"}
+                          message={"sucess.msg"}
+                          type="info"
+                          open={showUploadAttention}
+                          setShowSucess={setShowUploadAttention}
+                          alertType="inline"
+                          persist={true}
+                          children={<div className="check">Please add metadata to finish saving your uploaded Files
+                            <div className="btn-center">
+                              <button className="CRXButton">Add Metadata</button></div>
+
+                          </div>
+                          }
                         />
-                      </CRXColumn>
-                    </CRXRows>
-                    <div className="uploadContent">
-                      <div className="iconArea">
-                        <i className="fas fa-layer-plus"></i>
+                      </CRXRows>
+                      <div className="uploadContent">
+                        <div className="iconArea">
+                          <i className="fas fa-layer-plus"></i>
+                        </div>
+                        <div className="textArea">
+                          Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
+                          <br />
+                          <div>
+                            <input
+                              style={{ display: "none" }}
+                              id="upload-Button-file"
+                              multiple
+                              type="file"
+                              onChange={handleOnUpload}
+                            />
+                            <label htmlFor="upload-Button-file">
+                              <a className="textFileBrowser">file browser</a>
+                            </label>
+                          </div>
+
+                        </div>
+
                       </div>
-                      <div className="textArea">
-                        Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
-                        <br />
-                        <span className="textFileBrowser">file browser</span>
-                      </div>
+                      {/* {fileCount > 0 && <>
+                        <div style={{ textAlign: "left" }}>Uploading:</div>
+                        <div className="crxProgressbarBucket" style={{ textAlign: "left" }}>
+                          <CRXProgressBar
+                            id="raw"
+                            loadingText={fileCount + " asset(s)"}
+                            value={totalFilePer}
+                            error={false}
+                            maxDataSize={true}
+                          // loadingCompleted={"uploadFileSize"}//"5.0Mb"
+                          />
+                        </div>
+                      </>} */}
+                      {uploadInfo.length > 0 && <CrxAccordion
+                        title="Upload Details"
+                        id="accorIdx2"
+                        className="crx-accordion crxAccordionBucket"
+                        ariaControls="Content2"
+                        name="panel1"
+                        isExpanedChange={isExpaned}
+                        expanded={expanded === "panel1"}
+                      >
+                        {uploadProgressStatus()}
+
+                      </CrxAccordion>}
+
+
+                      {rows.length > 0 ? (
+                        <>
+                          <div className="bucketViewLink">
+                            View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
+                          </div>
+                          <CRXDataTable
+                            tableId="assetBucket"
+                            actionComponent={<BucketActionMenu
+                              row={selectedActionRow}
+                              setSelectedItems={setSelectedItems}
+                              selectedItems={selectedItems} />
+                            }
+                            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+                            showToolbar={false}
+                            dataRows={rows}
+                            headCells={headCells}
+                            orderParam={order}
+                            orderByParam={orderBy}
+                            searchHeader={true}
+                            columnVisibilityBar={true}
+                            className={`ManageAssetDataTable crxTableHeight bucketDataTable ${scrollHide}  ${showMessageClx == "bucketMessageHide" ? '' : 'crxMessageShow'}`}
+                            getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
+                            onResizeRow={resizeRow}
+                            setSelectedItems={setSelectedItems}
+                            selectedItems={selectedItems}
+                            dragVisibility={false}
+                          />
+                        </>
+                      ) : (
+                        <div className="bucketContent">Your Asset Bucket is empty.</div>
+                      )
+                      }
                     </div>
-                {rows.length > 0 ? (
-                  <>
-                    <div className="bucketViewLink">
-                      View on Assets Bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
-                    </div>
-                    <CRXDataTable
-                      tableId="assetBucket"
-                      actionComponent={<BucketActionMenu
-                                          row={selectedActionRow}
-                                          setSelectedItems={setSelectedItems}
-                                          selectedItems={selectedItems} />
-                                      }
-                      getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-                      showToolbar={false}
-                      dataRows={rows}
-                      headCells={headCells}
-                      orderParam={order}
-                      orderByParam={orderBy}
-                      searchHeader={true}
-                      columnVisibilityBar={true}
-                      className={`ManageAssetDataTable crxTableHeight bucketDataTable ${scrollHide}  ${ showMessageClx == "bucketMessageHide" ? '' : 'crxMessageShow' }`}
-                      getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
-                      onResizeRow={resizeRow}
-                      setSelectedItems={setSelectedItems}
-                      selectedItems={selectedItems}
-                      dragVisibility={false}
-                    />
-                  </>
-                ) : (
-                  <div className="bucketContent">Your Asset Bucket is empty.</div>
-                )
-              }
-              </div>
-            )}
-          </Draggable>
-          {provided.placeholder}
-        </>
-      </CRXRootRef>      
-      )}
-    </Droppable>
-  </CRXDrawer>  
+                  )}
+                </Draggable>
+                {provided.placeholder}
+              </>
+            </CRXRootRef>
+          )}
+        </Droppable>
+      </CRXDrawer>
+    </>
   );
 };
 

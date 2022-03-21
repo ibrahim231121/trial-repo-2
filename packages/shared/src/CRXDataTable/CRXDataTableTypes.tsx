@@ -11,20 +11,21 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
       paddingBottom: theme.spacing(2.9),
+      zIndex: 0,
     },
     highlight:
       theme.palette.type === "light"
         ? {
-          color: theme.palette.secondary.main,
-        }
+            color: theme.palette.secondary.main,
+          }
         : {
-          color: theme.palette.text.primary,
-        },
+            color: theme.palette.text.primary,
+          },
     title: {
       flex: "1 1 100%",
       lineHeight: "0",
-      fontSize:"14px",
-      color:"#333"
+      fontSize: "14px",
+      color: "#333",
     },
     alignment: {
       textAlign: "left",
@@ -79,9 +80,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
 
-    title : {
-      fontSize:"14px",
-      color:"#333"
+    title: {
+      fontSize: "14px",
+      color: "#333",
     },
     paper: {
       width: "100%",
@@ -89,7 +90,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     table: {
       //width: 188,
-      
     },
     visuallyHidden: {
       border: 0,
@@ -105,15 +105,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     container: {
       height: 494,
       overflowX: "auto",
-      '@media only screen and (max-width: 1920px)': {
-        height : "650px"
+      "@media only screen and (max-width: 1920px)": {
+        height: "650px",
       },
-      '@media only screen and (max-width: 1600px)': {
-        height : "435px"
+      "@media only screen and (max-width: 1600px)": {
+        height: "449px",
       },
-      '@media only screen and (max-width: 1366px)': {
-        height : "340px"
-      }
+      "@media only screen and (max-width: 1366px)": {
+        height: "340px",
+      },
     },
     multiTableStikcyHeader: {
       top: 0,
@@ -123,7 +123,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
     },
     headerStickness: {
-      top: 0,
+      top: "0px !important",
       left: 0,
       zIndex: 2,
       position: "sticky",
@@ -132,7 +132,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       whiteSpace: "nowrap",
     },
     searchHeaderStickness: {
-      top: 35,
+      top: "35px !important",
       left: 0,
       zIndex: 2,
       position: "sticky",
@@ -153,7 +153,7 @@ export type Order = "asc" | "desc";
 
 export type ValueString = {
   value: string;
-}
+};
 
 export interface HeadCellProps {
   //disablePadding: boolean;
@@ -188,7 +188,7 @@ export interface DataTableToolbarProps {
   onHeadCellChange: (e: HeadCellProps[]) => void;
   showCountText?: boolean;
   showCustomizeIcon?: boolean;
-  showTotalSelectedText?: boolean
+  showTotalSelectedText?: boolean;
 }
 
 export type DataTableProps = {
@@ -217,7 +217,7 @@ export type DataTableProps = {
   showTotalSelectedText?: boolean;
   showCustomizeIcon?: boolean;
   showHeaderCheckAll?: boolean;
-  lightMode?: boolean
+  lightMode?: boolean;
   initialRows?: any[];
 };
 
@@ -255,7 +255,7 @@ export type DataTableContainerProps = {
   showHeaderCheckAll?: boolean;
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
-  lightMode? : boolean
+  lightMode?: boolean;
   initialRows?: any[];
 };
 
@@ -273,7 +273,7 @@ export type DataTableBodyProps = {
   dragVisibility?: boolean;
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
-  lightMode? : boolean
+  lightMode?: boolean;
 };
 
 export type SearchHeaderProps = {
@@ -309,6 +309,7 @@ export type DataTableHeaderProps = {
 
 export type DataTableClearFilterProps = {
   columnVisibilityBar: boolean | undefined;
+  filterClose: any;
   onClearAll: () => void;
 };
 
@@ -320,24 +321,25 @@ export type DataTableCustomizeColumnsProps = {
   onChange: () => void;
   onHeadCellChange: (e: HeadCellProps[]) => void;
   showCustomizeIcon?: boolean;
+  filterWindow: any;
 };
 
 export type OrderValue = {
   order: number;
   value: boolean | undefined;
-}
+};
 
 export type CheckAllPageWise = {
   page: number;
   isChecked: boolean;
-}
+};
 
 export type MultiLevelProps = {
   rows: any[];
   headCells: HeadCellProps[];
   className?: string;
   finalLevel: number;
-  onSetRow: (check:boolean, row:any) => void;
+  onSetRow: (check: boolean, row: any) => void;
   onSetCheckAllLevel: (e: boolean, type: string) => void;
-  onCheckUnCheckChildren: (e: boolean, row:any) => void;
-}
+  onCheckUnCheckChildren: (e: boolean, row: any) => void;
+};

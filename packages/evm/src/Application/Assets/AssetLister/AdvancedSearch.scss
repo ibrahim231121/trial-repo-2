@@ -4,12 +4,7 @@
   padding: 23px 27px;
   margin: 4px auto 0;
   .Mui-focused {
-    outline: 3px solid #888787;
-    transition: all 0.25s ease-in-out;
-    border: none !important;
-  }
-  .Mui-focused {
-    border: 3px solid #888787 !important;
+    // border: 3px solid #888787 !important;
     transition: all 0.25s ease-in-out;
   }
 
@@ -30,10 +25,18 @@
       border: 1px solid #888787;
       transition: all 0.25s ease-in-out;
     }
+    &:focus {
+      .MuiSelect-icon {
+        right: 0;
+      }
+    }
 
     .MuiSelect-icon {
       color: #333333;
+      padding-right: 10px;
+      right: 0;
     }
+
   }
 
   .adVInputBox {
@@ -48,7 +51,7 @@
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: 1px solid #d1d2d4 ;
+    border: 1px solid #d1d2d4;
     &:hover {
       border: 1px solid #888787;
       transition: all 0.25s ease-in-out;

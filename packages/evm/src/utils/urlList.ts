@@ -37,16 +37,26 @@
 // };
 
 export const urlNames: any = {
-  assets: 'assets',
-  adminUserGroups: 'adminUserGroups',
-  adminUserGroup: 'adminUserGroup',
-  adminUserGroupId: 'adminUserGroupId',
-  userGroupCreate: 'userGroupCreate',
-  adminUsers: 'adminUsers',
-  adminTestDemo: 'adminTestDemo',
-  adminStation: 'adminStation',
-  adminStationCreate: 'adminStationCreate',
-  adminStationEdit : 'adminStationEdit'
+    assets: "assets",
+    adminUserGroups: "adminUserGroups",
+    adminUserGroup: "adminUserGroup",
+    adminUserGroupId: "adminUserGroupId",
+    userGroupCreate: "userGroupCreate",
+    adminUsers: "adminUsers",
+    adminTestDemo: "adminTestDemo",
+    unitsAndDevices: "unitsAndDevices",
+    unitsAndDevicesDetail: "unitsAndDevicesDetail",
+    assetsDetail: "assetsDetail",
+    adminUnitConfiguration: "adminUnitConfiguration",
+    adminUnitConfigurationTemplate: "adminUnitConfigurationTemplate",
+    // unitDeviceTemplateCreateBCO3: "unitDeviceTemplateCreateBCO3",
+    unitDeviceTemplateCreateBCO4: "unitDeviceTemplateCreateBCO4",
+    // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
+    testVideoPlayer: "videoplayer",
+    testEvidence: "Evidence",
+    adminStation: 'adminStation',
+    adminStationCreate: 'adminStationCreate',
+    adminStationEdit: 'adminStationEdit'
 };
 
 export const urlList: any = [
@@ -58,6 +68,21 @@ export const urlList: any = [
         ],
     },
     {
+        name: urlNames.assetsDetail,
+        url: "/assetdetail",
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+        ],
+    },
+    // {
+    //     name: urlNames.assetsDetail,
+    //     url: "/assets/:id",
+    //     details: [
+    //         { routeTo: "/assets", type: "link", label: "Assets", },
+    //         { type: "text", label: "Asset Detail" },
+    //     ],
+    // },
+    {
         name: urlNames.adminUserGroups,
         url: "/admin/usergroups",
         details: [
@@ -65,15 +90,6 @@ export const urlList: any = [
             { routeTo: "/admin/usergroups", type: "text", label: "Manage User Groups & Permissions", }
         ],
     },
-    // {
-    //     name: urlNames.adminUserGroup,
-    //     url: "/admin/usergroups/group",
-    //     details: [
-    //         { type: "text", label: "Admin", },
-    //         { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-    //         { type: "text", label: "Group", }
-    //     ],
-    // },
     {
         name: urlNames.userGroupCreate,
         url: "/admin/usergroups/group",
@@ -85,11 +101,11 @@ export const urlList: any = [
     },
     {
         name: urlNames.adminUserGroupId,
-        url: "/admin/usergroups/group/:id(\\d+)",
+        url: "/admin/usergroups/group/:id",
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
-            { type: "text", label: "Group", }
+            //{ routeTo: "/admin/usergroups", type: "text", label: "Group", }
         ],
     },
 
@@ -109,39 +125,117 @@ export const urlList: any = [
             { routeTo: "/admin/TestDemo", type: "text", label: "Global Filter Components", }
         ],
     },
-{
-    name: urlNames.adminStation,
-    url: '/admin/stations',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/stations', type: 'text', label: 'Manage Stations' }
-    ]
-  },
-  {
-    name: urlNames.adminStationCreate,
-    url: '/admin/stations/station',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
-      { type: 'text', label: 'Create Station' }
-    ]
-  },
-  {
-    name: urlNames.adminStationEdit,
-    url: '/admin/stations/station/:id',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
-      { type: 'text', label: 'Station_Name' }
-    ]
-  },
-  {
-    name: urlNames.adminStationEdit,
-    url: '/admin/stations/station/:id',
-    details: [
-      { type: 'text', label: 'Admin' },
-      { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
-      { type: 'text', label: 'Edit Station' }
-    ]
-  }
+    {
+        name: urlNames.adminStation,
+        url: '/admin/stations',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/stations', type: 'text', label: 'Manage Stations' }
+        ]
+    },
+    {
+        name: urlNames.adminStationCreate,
+        url: '/admin/stations/station',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+            { type: 'text', label: 'Create Station' }
+        ]
+    },
+    {
+        name: urlNames.adminStationEdit,
+        url: '/admin/stations/station/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+            { type: 'text', label: 'Station_Name' }
+        ]
+    },
+    {
+        name: urlNames.adminStationEdit,
+        url: '/admin/stations/station/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+            { type: 'text', label: 'Edit Station' }
+        ]
+    }
+    ,
+
+    {
+        name: urlNames.unitsAndDevices,
+        url: "/unitsanddevices",
+        details: [
+            { type: "text", label: "Units & Devices", }
+        ],
+    },
+    {
+        name: urlNames.unitsAndDevicesDetail,
+        url: "/unitsanddevices/:id",
+        details: [
+            { routeTo: "/unitsanddevices", type: "link", label: " Units & Devices", }
+        ],
+    },
+    {
+        name: urlNames.adminUnitConfiguration,
+        url: "/admin/unitconfiguration",
+        details: [
+            { type: "text", label: "Admin", },
+            { type: "text", label: "Manage Unit Configuration", },
+        ],
+    },
+    {
+        name: urlNames.adminUnitConfigurationTemplate,
+        url: "/admin/configurationtemplate",
+        details: [
+            { type: "text", label: "Admin" },
+            { type: "Link", label: "Manage Units & Devices Templates", },
+        ],
+    },
+    {
+        name: urlNames.unitDeviceTemplateCreateBCO4, //inuse
+        url: "/admin/unitanddevices/createtemplate/template",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Templates", },
+            //{ type: "text", label: "Create Template : BC04", }
+        ],
+    },
+
+    // {
+    //     name: urlNames.unitDeviceTemplateCreateBCO3,
+    //     url: "/admin/unitanddevices/createtemplate/BC03",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
+    //         { type: "text", label: "Create Template : BC03", }
+    //     ],
+    // },
+
+    // {
+    //     name: urlNames.unitDeviceTemplateCreateBCO3Lte,
+    //     url: "/admin/unitanddevices/createtemplate/BC03Lte",
+    //     details: [
+    //         { type: "text", label: "Admin", },
+    //         { routeTo: "/admin/unitconfiguration/unitconfigurationtemplate", type: "link", label: "Units & devices templates", },
+    //         { type: "text", label: "Create Template : BC03 Lte", }
+    //     ],
+    // },
+
+    {
+        name: urlNames.testVideoPlayer,
+        url: "/videoplayer",
+        details: [
+            { type: "text", label: "Dev video player", }
+        ],
+    },
+    {
+        name: urlNames.testEvidence,
+        url: "/Evidence",
+        details: [
+            { type: "text", label: "Evidence List", }
+        ],
+    }
+
+
 ];

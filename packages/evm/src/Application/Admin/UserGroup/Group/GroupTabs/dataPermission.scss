@@ -461,12 +461,16 @@
 
   .dataTablePages {
     position: fixed;
-    bottom: 15vh;
+    bottom: 12vh;
     width: 1573px;
     background: #fff;
     /* left: 0; */
     z-index: 999;
     border-top: 1px solid #ccc;
+  }
+
+  .usersGroupDataTable {
+    height: 100% !important;
   }
 }
 
@@ -510,8 +514,8 @@
   .userDataTableParent {
     .dataTablePages {
       position: fixed;
-      bottom: 19vh;
-      width: 1189px;
+      bottom: 10vh;
+      width: 1174px;
       background: #fff;
       /* left: 0; */
       z-index: 999;

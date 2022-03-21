@@ -119,7 +119,7 @@ const CRXInput = ({
 
   return (
     <>
-      <span>
+      <span className="gridFilterTextBox">
         <Typography variant="subtitle1" className="label">
           {reformatedLabel()}
         </Typography>
@@ -128,6 +128,7 @@ const CRXInput = ({
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
               checkError(e.target.value);
             }}
+            
             value={value}
             defaultValue={defaultValue}
             name={name}

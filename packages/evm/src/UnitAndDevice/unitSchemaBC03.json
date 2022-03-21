@@ -1,0 +1,486 @@
+{
+  "Unit Template": [
+    {
+      "id": "1",
+      "key": "unittemplate/templateName/TextBox",
+      "type": "text",
+      "label": "Template Name",
+      "value": "",
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "required": true,
+      "key": "unittemplate/station/Select",
+      "type": "select",
+      "label": "Station",
+      "options": []
+    },
+    {
+      "id": "4",
+      "class":"ConfigUpdateClass",
+      "key": "unittemplate/configUpdateInterval/NumberBox",
+      "type": "number",
+      "label": "Config Update Interval",
+      "value": 6,
+      "seconds": false,
+      "requiredField": "true",
+      "hinttext" : true,
+      "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required"
+        }
+      ]
+    }
+  ],
+  "Device": [
+    {
+      "labelGroupRecording": "Recording",
+      "id": "3",
+      "key": "device/videoResolution/Select",
+      "type": "select",
+      "label": "Video Resolution",
+      "value": "3480 * 2160 p 30",
+      "options": [
+        {
+          "value": "3480 * 2160 p 30",
+          "label": "3480 * 2160 p 30"
+        },
+        {
+          "value": "2688 * 1521 p 30",
+          "label": "2688 * 1521 p 30"
+        },
+        {
+          "value": "1920 * 1080 p 120",
+          "label": "1920 * 1080 p 120"
+        },
+        {
+          "value": "1920 * 1080 p 60",
+          "label": "1920 * 1080 p 60"
+        },
+        {
+          "value": "1920 * 1080 p 30",
+          "label": "1920 * 1080 p 30"
+        },
+        {
+          "value": "1280 * 720 p 120",
+          "label": "1280 * 720 p 120"
+        },
+        {
+          "value": "1280 * 720 p 60",
+          "label": "1280 * 720 p 60"
+        },
+        {
+          "value": "1280 * 720 p 30",
+          "label": "1280 * 720 p 30"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/bitRate/Select",
+      "type": "select",
+      "label": "Bit Rate",
+      "value": "High",
+      "options": [
+        {
+          "value": "High",
+          "label": "High"
+        },
+        {
+          "value": "Low",
+          "label": "Low"
+        },
+        {
+          "value": "Medium",
+          "label": "Medium"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/videoCutSize/Select",
+      "type": "select",
+      "label": "Video Cut Size",
+      "value": "1 hour",
+      "disabled": false,
+      "options": [
+        {
+          "value": "1 hour",
+          "label": "1 hour"
+        },
+        {
+          "value": "2 hour",
+          "label": "2 hour"
+        },
+        {
+          "value": "3 hour",
+          "label": "3 hour"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/enablePreBufferCheckbox/CheckBox",
+      "class": "VideoPreBuffer",
+      "type": "checkbox",
+      "label": "Video Pre-Buffer",
+      "checkBoxText": "Enable Video Pre-Buffer",
+      "value": false
+    },
+    {
+      "id": "3",
+      "key": "device/videoPreBuffer/Select",
+      "type": "select",
+      "value": "20 sec",
+      "options": [
+        {
+          "value": "10 sec",
+          "label": "10 sec"
+        },
+        {
+          "value": "20 sec",
+          "label": "20 sec"
+        },
+        {
+          "value": "30 sec",
+          "label": "30 sec"
+        },
+        {
+          "value": "60 sec",
+          "label": "60 sec"
+        },
+        {
+          "value": "120 sec",
+          "label": "120 sec"
+        },
+        {
+          "value": "180 sec",
+          "label": "180 sec"
+        },
+        {
+          "value": "240 sec",
+          "label": "240 sec"
+        },
+        {
+          "value": "300 sec",
+          "label": "300 sec"
+        },
+        {
+          "value": "360 sec",
+          "label": "360 sec"
+        },
+        {
+          "value": "420 sec",
+          "label": "420 sec"
+        },
+        {
+          "value": "480 sec",
+          "label": "480 sec"
+        },
+        {
+          "value": "540 sec",
+          "label": "540 sec"
+        },
+        {
+          "value": "600 sec",
+          "label": "600 sec"
+        }
+      ],
+      "depends": [
+        {
+          "key": "device/enablePreBufferCheckbox/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/muteVideoPreBuffer/CheckBox",
+      "type": "checkbox",
+      "checkBoxText": "Mute Audio Pre-Buffer",
+      "value": true
+    },
+    {
+      "id": "4",
+      "key": "device/enableVideoOverlay/CheckBox",
+      "type": "checkbox",
+      "label": "Video Overlay",
+      "checkBoxText": "Enable Video Overlay",
+      "value": true
+    },
+    {
+      "id": "3",
+      "key": "device/videoOverlay/Select",
+      "type": "select",
+      "value": "Unit , Date and Time",
+      "options": [
+        {
+          "value": "Date and Time",
+          "label": "Date and Time"
+        },
+        {
+          "value": "Date ,Time and User",
+          "label": "Date ,Time and User"
+        },
+        {
+          "value": "Unit , Date and Time",
+          "label": "Unit , Date and Time"
+        },
+        {
+          "value": "User , Unit , Date and Time",
+          "label": "User , Unit , Date and Time"
+        }
+      ],
+      "depends": [
+        {
+          "key": "device/enableVideoOverlay/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/enableRecordingBeep/CheckBox",
+      "type": "checkbox",
+      "label": "Recording Beep Interval",
+      "checkBoxText": "Enable Recording Beep",
+      "value": true,
+      "required": true
+    },
+    {
+      "id": "4",
+      "key": "device/recordingBeepInterval/NumberBox",
+      "type": "number",
+      "value": 10,
+      "seconds": true,
+      "requiredField": "true",
+      "depends": [
+        {
+          "key": "device/enableRecordingBeep/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/viberation/CheckBox",
+      "type": "checkbox",
+      "label": "Vibration",
+      "checkBoxText": "Recording Vibration",
+      "value": true,
+      "seconds": true
+    },
+    {
+      "labelDeviceControls": "Device Controls",
+      "id": "4",
+      "labelGroupRecording": "Device Controls",
+      "key": "device/enableCategorization/CheckBox",
+      "type": "checkbox",
+      "label": "Categories",
+      "checkBoxText": "Enable Categorization",
+      "value": true,
+      "required":true,
+      "seconds": true,
+      "hinttext" : true,
+      "hintvalue": "Allows to specify categories for selection after recording"
+    },
+    {
+      "id": "3",
+      "key": "device/categories/Select",
+      "type": "select",
+      "label": "Categories",
+      "value": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Add All",
+          "label": "Add All"
+        },
+        {
+          "value": "Category 1",
+          "label": "Category 1"
+        },
+        {
+          "value": "Category 2",
+          "label": "Category 2"
+        },
+        {
+          "value": "Category 2",
+          "label": "Category 2"
+        },
+        {
+          "value": "Category 3",
+          "label": "Category 3"
+        },
+        {
+          "value": "Category 4",
+          "label": "Category 4"
+        }
+      ],
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required"
+        }
+      ],
+      "depends": [
+        {
+          "key": "device/enableCategorization/CheckBox",
+          "value": [
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "labelMute": "Mute",
+      "id": "1",
+      "class":"muteRadioDevice",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Enabled",
+      "value": "enabled",
+      "selected": true
+    },
+    {
+      "id": "2",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Disabled",
+      "value": "disabled",
+      "selected": false
+    },
+    {
+      "id": "2",
+      "key": "device/mute/Radio",
+      "type": "radio",
+      "label": "Always Muted",
+      "labelMutedText": "(“Always Muted” will disable “Disable Audio Only Recording” checkbox)",
+      "value": "alwaysMuted",
+      "selected": false
+    },
+    {
+      "id": "4",
+      "key": "device/disableAudioOnlyRecording/CheckBox",
+      "type": "checkbox",
+      "checkBoxText":"Disable Audio Only Recording",
+      "value": false,
+      "depends": [
+        {
+          "key": "device/mute/Radio",
+          "value": [
+            "disabled",
+            "enabled"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "key": "device/bookmark/CheckBox",
+      "type": "checkbox",
+      "label": "Bookmark",
+      "checkBoxText": "Disable Mark",
+      "value": false
+    },
+    {
+      "id": "7",
+      "key": "device/disableWifiAndBluetooth/CheckBox",
+      "type": "checkbox",
+      "labelGroupRecording": "Location",
+      "checkBoxText":"Disable Wi-Fi and Bluetooth",
+      "checkHelperText":"(If selected will disable �Enable GPS� checkbox section)",
+      "labelLocation": "Location",
+      "value": false,
+      "dependant": {
+        "if": true,
+        "field": "device/enableGPS/CheckBox",
+        "value": false,
+        "inputType" : "checked"
+      }
+    },
+    {
+      "id": "89",
+      "class":"EnableGpsClass",
+      "key": "device/enableGPS/CheckBox",
+      "type": "checkbox",
+      "label": "Enable GPS",
+      "value": true,
+      "checkBoxText":"Enable GPS"
+    },
+
+    {
+      "id": "34",
+      "key": "device/gpsHeartbeat/NumberBox",
+      "type": "number",
+      "hinttext": true,
+      "hintvalue": "How often BC04 sends heartbeats",
+      "hintvalue1": "How often <Body Worn Type> sends heartbeats",
+      "label": "GPS Heartbeat",
+      "value": 60,
+      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
+      "seconds": true,
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required"
+        },
+        {
+          "key": "min",
+          "value": 30,
+          "msg": "Too Low"
+        },
+        {
+          "key": "max",
+          "value": 3600,
+          "msg": "Too High"
+        }
+      ]
+    },
+    {
+      "id": "64",
+      "key": "device/gpsHeartbeatWhileRecording/NumberBox",
+      "type": "number",
+      "label": "GPS Heartbeat While Recording",
+      "value": 60,
+      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hinttext": true,
+      "hintvalue": "Interval between heartbeats when recording",
+      "hintvalue1": "Interval between heartbeats when recording",
+      "seconds": true,
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required"
+        },
+        {
+          "key": "min",
+          "value": 30,
+          "msg": "Too Low"
+        },
+        {
+          "key": "max",
+          "value": 3600,
+          "msg": "Too High"
+        }
+      ]
+    }
+  ]
+}

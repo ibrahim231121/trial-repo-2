@@ -1,0 +1,282 @@
+.anchorStyle {
+  text-decoration: none;
+}
+.CRXPageTitle {
+  margin-top: -13px;
+}
+.unitDeviceDetail {
+  margin-left: 68px;
+  margin-top: 143px;
+}
+iframe {
+  display: none;
+}
+.uddDashboard {
+  .MainBoard {
+    background-color: #333333;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 38px 0 45px;
+    position: relative;
+    top: -13px;
+  }
+  .LeftBoard {
+    display: flex;
+  }
+  .LeftBoardMove {
+    margin-left: -128px;
+  }
+  .RightBoard {
+    display: flex;
+  }
+  .deviceImage {
+    height: 35px;
+    object-fit: cover;
+    margin: -9px 0 -5px 0;
+  }
+  .pannelBoard {
+    text-align: center;
+    margin: 4px 6px 1px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    width: 157px;
+    h2 {
+      color: #f2f2f2;
+      font-size: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+    }
+    p {
+      color: #f2f2f2;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: normal;
+    }
+    span {
+      display: block;
+      height: 25px;
+      width: 25px;
+      margin: -4px 0 1px 0;
+    }
+    .pdDeviceIcon {
+      i {
+        color: #f2f2f2;
+        font-size: 25px;
+      }
+    }
+    .pdStatus {
+      i {
+        color: #02a200;
+        font-size: 25px;
+      }
+    }
+    .Unregistered {
+      i {
+        color: red !important;
+      }
+    }
+    .Suspended {
+      i {
+        color: blue !important;
+      }
+    }
+
+    .Online {
+      i {
+        color: #2d6fcc !important;
+      }
+    }
+
+    .Active {
+      i {
+        color: #02a200 !important;
+      }
+    }
+
+    .Recording {
+      i {
+        color: #ff1410 !important;
+      }
+    }
+
+    .Offline {
+      i {
+        color: #d1d2d4;
+      }
+    }
+    .pdUpload {
+      i {
+        color: #f2f2f2;
+        font-size: 20px;
+        margin-top: 2px;
+        &:after {
+          color: #f2f2f2;
+          opacity: 1;
+        }
+      }
+    }
+    .pdDotted {
+      i {
+        color: #ff6e20;
+        font-size: 23px;
+        margin-top: 2px;
+      }
+    }
+  }
+  .pannelBoardHide {
+    display: none;
+  }
+  .arrowResponsiveShow {
+    display: block;
+    color: #d1d2d4;
+    z-index: 8;
+    right: 17px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .arrowResponsiveLeftHide {
+    display: none;
+  }
+  .arrowResponsiveLeftShow {
+    display: block;
+    color: #d1d2d4;
+    z-index: 8;
+    left: 17px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .arrowResponsiveLeftHide {
+    display: none;
+  }
+  .arrowResponsiveLeft {
+    display: block;
+    color: #d1d2d4;
+    z-index: 8;
+    left: 17px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .pannelBoardShow {
+    display: block;
+  }
+  .arrowResponsiveHide {
+    display: none;
+  }
+  .RightBoard {
+    .pannelBoard {
+      width: 112px;
+    }
+  }
+}
+
+.UnitDetailMain {
+  .CrxUnitDetailId {
+    margin-top: 82px !important;
+    .unitDeviceDetail {
+      margin-top: 0 !important;
+      margin-left: 0 !important;
+    }
+  }
+  .save-cancel-button-box {
+    .CRXButton {
+      &:nth-child(1) {
+        color: #f5f5f5 !important;
+      }
+    }
+    .Mui-disabled {
+      &:nth-child(1) {
+        color: #979797 !important;
+      }
+    }
+  }
+  .unitDetailAction {
+    margin-right: 3px;
+    position: sticky;
+    z-index: 99999999;
+    top: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .menuUnitDetail {
+      button {
+        background: transparent;
+        border: none;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      i {
+        font-size: 23px;
+        color: #333333;
+      }
+    }
+  }
+  .menuUnitDetail {
+    margin-right: 26px;
+  }
+  .menuCss {
+    left: -85.328px !important;
+    top: 4px !important;
+    width: 168px !important;
+  }
+  .rc-menu__arrow {
+    left: 102.328px !important;
+  }
+  .unitExit {
+    transform: translateY(-3px);
+    p {
+      color: #d74b00;
+      font-size: 14px;
+      font-family: auto;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .crx-menu-list {
+    width: 130px !important;
+  }
+  .unitDeviceDetail {
+    margin-bottom: 20px;
+  }
+  .crx-menu-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i {
+      font-size: 14px !important;
+    }
+  }
+}
+.UnitDetailMainDetail {
+  .rc-menu__arrow {
+    display: none;
+  }
+  .menuCss {
+    margin-top: -14px;
+    margin-left: 3px;
+  }
+}
+
+// media query
+@media screen and (min-width: 1500px) {
+  .MainBoardFlow {
+    overflow-x: hidden !important;
+  }
+}
+
+@media (max-width: 1200px) {
+  .uddDashboard {
+    .MainBoard {
+      justify-content: space-evenly;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 export { default as CRXAppBar } from "./Header";
 export { default as CRXButton } from "./controls/CRXButton/CRXButton";
-export { default as TextField } from "./controls/CRXTextField";
+export { default as TextField } from "./controls/CRXTextField/CRXInput";
 export { default as EditableSelect } from "./controls/CRXEditableSelect/CRXEditableSelect";
 export { default as CRXContainer } from "./CRXContainer/CRXContainer";
 export { default as CRXSelectBox } from "./controls/CRXSimpleSelect/CRXSelect";
@@ -47,6 +47,8 @@ export { default as CRXGlobalTooltip} from './controls/CRXGlobalTooltip/CRXGloba
 export { default as CRXToaster } from './CRXMsgToaster/CRXMsgToaster'
 export { default as CRXMultiSelectBoxLight } from './controls/CRXMultiSelectBoxLight/CRXMultiSelectBoxLight'
 export {default as CrxAccordion } from './CRXAccordion/CRXAccordion'
+export { default as CRXProgressBar } from './controls/CRXProgressBar/CRXProgressBar'
+
 export { default as GoogleMap } from './maps/google/GoogleMap'
 export { default as BingMap } from './maps/bing/BingMap'
 

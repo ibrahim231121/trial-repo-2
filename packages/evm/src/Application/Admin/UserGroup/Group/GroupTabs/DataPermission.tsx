@@ -140,7 +140,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         };
 
         const categoryResponse = await fetch(CATEGORY_INFO_GET_URL, requestOptions);
-        
         if (categoryResponse.ok) {
             const response = await categoryResponse.json();
             if (response && response.length > 0) {

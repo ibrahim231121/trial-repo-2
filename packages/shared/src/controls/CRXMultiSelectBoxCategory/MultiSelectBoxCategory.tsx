@@ -2,7 +2,6 @@ import * as React from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-import Chip from "@material-ui/core/Chip";
 
 import "./multiSelectBoxCategory.scss";
 
@@ -16,7 +15,6 @@ interface multiSelectProps {
   className?: string;
   value: any;
   autoComplete?: boolean;
-  tagIsCancelable?: boolean;
   visibility?: boolean;
 }
 
@@ -29,7 +27,6 @@ const MultiSelectBoxCategory = ({
   className,
   value,
   autoComplete = false,
-  tagIsCancelable = false,
   visibility,
 }: multiSelectProps) => {
 

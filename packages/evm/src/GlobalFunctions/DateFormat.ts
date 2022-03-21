@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 
 const dateDisplayFormat = (dateTime: string) => {
+
   const stillUtc = moment.utc(dateTime).toDate();
   if (dateTime === null)
     return 'Error retrieving login data';

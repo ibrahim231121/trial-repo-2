@@ -1,11 +1,23 @@
-.errorStyle {
-  color: "red";
+.CRXDialogForm {
+  .attentionAlert {
+    margin-bottom: 79px;
+  }
+  .indicateLessPadding {
+    display: none;
+  }
+  .optionalSticky {
+    display: none;
+  }
+  .CRXContent {
+    .dailogFormHeading {
+      margin-top: 24px !important;
+    }
+  }
 }
-
 .crxEditCategoryForm {
   .CRXContent {
     .onErrorcaseClx {
-      top:60px;
+      top: 60px;
     }
   }
 }
@@ -31,7 +43,7 @@
     b {
       font-size: 20px;
       color: #333333;
-      margin-left: 5px
+      margin-left: 5px;
     }
   }
   .crxDrpDownCatergory {
@@ -42,6 +54,7 @@
     bottom: 0;
     display: flex;
     padding: 0px;
+    height: 74px;
     align-items: center;
     width: 100%;
     border-top: 1px solid #d1d2d4;
@@ -96,6 +109,7 @@
 
   .categoryFormLabel {
     padding-bottom: 12px;
+    text-transform: capitalize;
     display: inline-block;
     color: #333333;
     font-size: 14px;
@@ -187,14 +201,46 @@
       }
     }
   }
-  .categoryFormAdded {
-    padding-bottom: 41px;
+
+.categoryFormAdded {
+  padding-bottom: 42px;
     &:nth-last-child(2) {
       padding-bottom: 79px;
     }
     form {
-      .categoryInnerField:nth-child(2) {
-        padding-top: 25px;
+      
+      .categoryInnerField {
+        &:nth-child(2) {
+          padding-top: 23px;
+        }
+        .formStaric {
+          font-size: 20px;
+          margin-left: 8px;
+        }
+        .errorStaric {
+          color: #aa1d1d;
+          font-size: 20px;
+          margin-left: 8px;
+        }
+        .CBX-input {
+          .errorStyle{
+            color: #aa1d1d;
+            margin-top: 5px;
+            height : 18px;
+            font-size:14px;
+            i {
+              margin-right: 5px;
+            }
+            span {
+              
+                text-transform: capitalize;
+              
+            }
+          }
+          .errorBrdr {
+            outline: 1px solid #aa1d1d;
+          }
+        }
       }
     }
   }
@@ -213,10 +259,7 @@
     margin-top: -2px !important;
   }
 
-  .formStaric {
-    font-size: 20px;
-    margin-left: 8px;
-  }
+ 
 
   .errorMessageCategory {
     margin-top: 46px;
@@ -224,6 +267,7 @@
     position: sticky;
     top: 46px;
     z-index: 9999;
+    padding:5px 11px;
   }
 
   .crx-message-alert {
@@ -401,7 +445,6 @@
 }
 
 .nextForm {
-  bottom: 22px !important;
   .CRXButton {
     &.nextButton {
       background: #333 !important;
@@ -682,4 +725,3 @@
 .modalBottomTextClose {
   padding-bottom: 77px;
 }
-

@@ -1,12 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import Cookies from 'universal-cookie';
 import { GROUP_GET_URL, GROUP_USER_COUNT_GET_URL } from '../utils/Api/url'
+
+const cookies = new Cookies();
 
 export const getGroupAsync: any = createAsyncThunk(
     'getGroups',
     async () => {
         const requestOptions = {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}`},
         };
         const resp = await fetch(GROUP_GET_URL, requestOptions);
         if (resp.ok) {
@@ -20,7 +23,7 @@ export const getGroupUserCountAsync: any = createAsyncThunk(
     async () => {
         const requestOptions = {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1' , 'Authorization': `Bearer ${cookies.get('access_token')}`},
         };
         const resp = await fetch(GROUP_USER_COUNT_GET_URL, requestOptions);
         if (resp.ok) {

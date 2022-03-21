@@ -75,13 +75,14 @@ const MultSelectiDropDown: React.FC<Props> = ({
   if (
     headCells[colIdx].id.toString() === "categories" ||
     headCells[colIdx].id.toString() === "recordedBy" ||
-    headCells[colIdx].id.toString() === "groups"
+    headCells[colIdx].id.toString() === "groups" ||
+    headCells[colIdx].id.toString() === "assignedTo" 
   ) {
     let moreOptions: any = [];
 
     reformattedRows.map((row: any, _: any) => {
       let x = headCells[colIdx].id;
-      row[x].forEach((element: any) => {
+      row[x]?.forEach((element: any) => {
         let moreOption: any = {};
         moreOption["value"] = element;
         moreOptions.push(moreOption);
@@ -92,7 +93,6 @@ const MultSelectiDropDown: React.FC<Props> = ({
   //------------------
 
   let unique: any = options.map((x: any) => x);
-
   if (options.length > 0) {
     unique = [];
     unique[0] = options[0];

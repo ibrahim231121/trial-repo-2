@@ -7,6 +7,7 @@ import moment from 'moment';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 
 type DialogueFormProps = {
+  setremoveClassName:any;
   formCollection: any;
   rowData: any;
   initialValues: any;
@@ -26,6 +27,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   React.useEffect(() => {
     props.setIndicateTxt(false);
+    props.setremoveClassName('CRXDialogForm');
   }, []);
 
   const backBtn = () => {
@@ -38,7 +40,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   };
 
   const submitForm = (values: any[]) => {
-    const evidenceId = props.rowData.assetId;
+    const evidenceId = props.rowData.id;
     const Assign_Category_Arr: any[] = [];
     const Assign_Category_URL = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
     for (const v of values) {

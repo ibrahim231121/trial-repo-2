@@ -217,15 +217,15 @@ yarn .ManageAssetDataTable {
 
 .centerPosition {
   text-align: center;
-  width: 300px;
+  min-width: 250px;
+  // width: 300px;
   background-color: #333 !important;
 }
-
 
 .divMainBucket {
   table {
     tr {
-      td{
+      td {
         &:first-child {
           background-color: #fff;
           &:hover {
@@ -233,11 +233,11 @@ yarn .ManageAssetDataTable {
           }
         }
       }
-      .CellCheckBox{
+      .CellCheckBox {
         &:hover ~ td {
           background-color: #333 !important;
           color: #d1d2d4;
-          .rc-menu-button{
+          .rc-menu-button {
             color: #d1d2d4 !important;
           }
         }
@@ -246,8 +246,7 @@ yarn .ManageAssetDataTable {
   }
 }
 
-.noOptionForAssets
-{
+.noOptionForAssets {
   color: "#D1D2D4";
   background-color: "#404041" !important;
   height: "33px";
@@ -256,4 +255,8 @@ yarn .ManageAssetDataTable {
   width: "287px" !important;
   position: "absolute";
   font-size: "14px";
+}
+
+.dateRangeContainer {
+  padding: 0 6px 0 2px;
 }
