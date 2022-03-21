@@ -204,7 +204,6 @@ const MultiSelectBoxCategory = ({
         popupIcon={opupOpenCret}
         renderOption={(option: any, { selected }) => (
           <React.Fragment>
-            {
             <i
               className="far fa-check checkIcon"
               style={{ visibility: selected ? "visible" : "hidden" }}

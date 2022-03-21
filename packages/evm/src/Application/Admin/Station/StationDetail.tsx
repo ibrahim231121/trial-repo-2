@@ -249,6 +249,12 @@ const StationDetail: React.FC = () => {
           setError(true);
           setErrorResponseMessage(error.errors.Password[0]);
         }
+        if (
+			error.errors['Address.State'] !== undefined
+        ) {
+          setErrorResponseMessage(error.errors['Address.State'][0]);
+		  setError(true);
+        }
       } else if (!isNaN(+error)) {
       } else if (error) {
         setError(true);
