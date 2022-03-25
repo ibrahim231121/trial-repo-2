@@ -1,20 +1,23 @@
 import React, { useRef, useEffect } from 'react'
 
-const Buffering = (props: JSX.IntrinsicAttributes & React.ClassAttributes<HTMLCanvasElement> & React.CanvasHTMLAttributes<HTMLCanvasElement>)  => {
+const Buffering = (props:any)  => {
+
+  const {width, id} = props;
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const draw = (ctx: { fillStyle: string; beginPath: () => void; arc: (arg0: number, arg1: number, arg2: number, arg3: number, arg4: number) => void; fill: () => void }) => {
     ctx.beginPath()
   }
   
+  
   useEffect(() => {
-    var video = document.getElementById('Video-1') as HTMLVideoElement
+    var video = document.getElementById(id) as HTMLVideoElement
     const canvas:any = canvasRef.current
     const context = canvas.getContext('2d')
     context.fillStyle = 'green';
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = 'grey';
     context.strokeStyle = 'green';
-    var inc = canvas.width / video.duration;
+    var inc = canvas.width / width;
 
    
       for (var i = 0; i < video.buffered.length; i++) {
