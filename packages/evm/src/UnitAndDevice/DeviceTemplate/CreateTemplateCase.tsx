@@ -41,6 +41,7 @@ const CustomizedSelectForFormik = (props: any) => {
 };
 
 
+
 const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any, setCameraFeildArrayCounter: any, applyValidation: any, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField: any, values: any, setValues: any, isValid: any, setformSchema: any) => {
 
 
@@ -171,7 +172,6 @@ let customEvent = (event: any, y: any, z: any) => {
 
 
 
-
 export const CreateTempelateCase = (props: any) => {
 
   let LocationPath: any = useLocation();
@@ -196,7 +196,12 @@ export const CreateTempelateCase = (props: any) => {
   const [open, setOpen] = React.useState(false);
   const [removeIndex, setRemoveIndex] = React.useState(0);
 
-
+ const IncarModalOpen = () => {
+    document.querySelector("body")?.classList.add("incarMOdalOpen");
+ }
+ const IncarModalClose = () => {
+  document.querySelector("body")?.classList.remove("incarMOdalOpen");
+}
 
   React.useEffect(() => {
     if (formObj.optionAppendOnChange !== undefined) {
@@ -212,43 +217,45 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording}>{formObj.labelGroupRecording}</h1></span></span>}
-          <div className={touched[formObj.key] == true && errors[formObj.key] ? " textFieldError" : "textField"} >
-            <div className="UiLabelTextbox " >
-              <div>
-                <label className="labelRadioo">{formObj.label}
-                  <label>
-                    {formObj.validation?.some((x: any) => x.key == 'required') === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={`formMainHeading   ${formObj.labelGroupRecording} `}>{formObj.labelGroupRecording}</h1></span></span>}
+          <span className={formObj.class}> 
+            <div className={touched[formObj.key] == true && errors[formObj.key] ? " textFieldError" : "textField"} >
+              <div className="UiLabelTextbox " >
+                <div>
+                  <label className="labelRadioo">{formObj.label}
+                    <label>
+                      {formObj.validation?.some((x: any) => x.key == 'required') === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
+                    </label>
                   </label>
-                </label>
-                <div className="UiLabelTextboxRight">
-                  <Field
-                    name={formObj.key}
-                    id={formObj.id}
-                    type={formObj.type}
-                  />
-                  <ErrorMessage
-                    name={formObj.key}
-                    render={(msg) => (
-                      <div className="UiLabelTextboxError">
-                        <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
-                      </div>
-                    )}
-                  />
+                  <div className="UiLabelTextboxRight">
+                    <Field
+                      name={formObj.key}
+                      id={formObj.id}
+                      type={formObj.type}
+                    />
+                    <ErrorMessage
+                      name={formObj.key}
+                      render={(msg) => (
+                        <div className="UiLabelTextboxError">
+                          <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                        </div>
+                      )}
+                    />
+                  </div>
+
+
+                  {formObj.hinttext == true ? (
+                    <CRXTooltip
+                      className="CRXTooltip_form"
+                      iconName="fas fa-info-circle"
+                      title={formObj.hintvalue}
+                      placement="right"
+                    />
+                  ) : null}
                 </div>
-
-
-                {formObj.hinttext == true ? (
-                  <CRXTooltip
-                    className="CRXTooltip_form"
-                    iconName="fas fa-info-circle"
-                    title={formObj.hintvalue}
-                    placement="right"
-                  />
-                ) : null}
               </div>
             </div>
-          </div>
+          </span>
           <div className="UiColumnSpacer"></div>
         </>
       );
@@ -298,7 +305,7 @@ export const CreateTempelateCase = (props: any) => {
           {
             (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
             <>
-              {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording} >{formObj.labelGroupRecording}</h1>}
+              {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording+`HeadingSpacer`} >{formObj.labelGroupRecording}</h1>}
               <div className={formObj.class}>
                 <div className="UiRadioMain">
                   <div className="UiRadioLabel">
@@ -354,13 +361,13 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording}>{formObj.labelGroupRecording}</h1></span></span>}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording+`HeadingSpacer`}>{formObj.labelGroupRecording}</h1></span></span>}
           <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
             >
               <div>
-                <label>{formObj.label}
+                <label className='UiStationSelectLabel'>{formObj.label}
                   <label>
                     {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                   </label></label>
@@ -392,14 +399,16 @@ export const CreateTempelateCase = (props: any) => {
                     )}
                   </Field>
                   <i className="fas fa-sort-down"></i>
+                  <span className='UicustomMultiHint'>
+                      {formObj.hinttext == true ? (
+                      <CRXTooltip
+                        iconName="fas fa-info-circle"
+                        title={formObj.hintvalue}
+                        placement="right"
+                      />
+                    ) : null}
+                  </span>
                 </div>
-                {formObj.hinttext == true ? (
-                  <CRXTooltip
-                    iconName="fas fa-info-circle"
-                    title={formObj.hintvalue}
-                    placement="right"
-                  />
-                ) : null}
               </div>
               <div>
                 <ErrorMessage
@@ -421,50 +430,50 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <div
-          style={{
-            display: "block",
-            marginBottom: "10px",
-            marginTop: "10px",
-          }}
+        className={ formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
         >
-          <label>{formObj.label}</label>
-          <label>
-            {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
-          </label>
+          <div className='multiSelectUiLeft'>
+            <label className='multiSelectUiLabel'>{formObj.label}</label>
+            <label className='multiSelectUiStar'>
+              {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
+            </label>
+          </div>
 
+          <div className='multiSelectUiRight'>
           <Field
-            name={formObj.key}
-            id={formObj.id}
-            component={"select"}
-            multiple={true}
-          >
-            {formObj.options.map(
-              (opt: any, key: string) => (
-                <option
-                  style={{ width: "50%" }}
-                  value={opt.value}
-                  key={key}
-                >
-                  {opt.label}{" "}
-                </option>
-              )
-            )}
-          </Field>
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-              iconName="fas fa-info-circle"
-              title={formObj.hintvalue}
-              placement="right"
+              name={formObj.key}
+              id={formObj.id}
+              component={"select"}
+              multiple={true}
+            >
+              {formObj.options.map(
+                (opt: any, key: string) => (
+                  <option
+                    style={{ width: "50%" }}
+                    value={opt.value}
+                    key={key}
+                  >
+                    {opt.label}{" "}
+                  </option>
+                )
+              )}
+            </Field>
+            {formObj.hinttext == true ? (
+              <CRXTooltip
+                iconName="fas fa-info-circle"
+                title={formObj.hintvalue}
+                placement="right"
+              />
+            ) : null}
+            <ErrorMessage
+              name={formObj.key}
+              render={(msg) => (
+                <div style={{ color: "red" }}>
+                  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                </div>
+              )}
             />
-          ) : null}
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div style={{ color: "red" }}>
-                {formObj.label + " is " + msg}
-              </div>
-            )}
-          />
+          </div>
         </div>
       );
     case "checkbox":
@@ -472,7 +481,7 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording}>{formObj.labelGroupRecording}</h1></span></span>}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording+`HeadingSpacer`}>{formObj.labelGroupRecording}</h1></span></span>}
           <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'UiCheckbox UiCheckboxDepend ' : 'UiCheckbox'}
@@ -540,7 +549,7 @@ export const CreateTempelateCase = (props: any) => {
                 className={`${formObj.seconds === false ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
 
               >
-                {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording}>{formObj.labelGroupRecording}</h1>}
+                {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording+`HeadingSpacer`}>{formObj.labelGroupRecording}</h1>}
                 <div className={formObj.checkHelperText ? 'UiNumberSelectorMain checkHelperTextMain ' : 'UiNumberSelectorMain'}>
                   <div className="UiNumberSelectorLeft ">
                     <label>{formObj.label}
@@ -550,33 +559,35 @@ export const CreateTempelateCase = (props: any) => {
                     </label>
                   </div>
                   <div className={` ${formObj.hinttext === true ? 'UiNumberSelectorRight ' : "UiNumberSelectorRight UiNumberSelectorNoHint"}`}>
-                    <Field
-                      name={formObj.key}
-                      id={formObj.id}
-                      type={formObj.type}
-                    />
-                    <label className="timeShow">
-                      {formObj.seconds === true
-                        ? "seconds"
-                        : "minutes"}
-                    </label>
-                    <p className="checkSelectorText">{formObj.checkHelperText}</p>
-                    {formObj.hinttext == true ? (
-                      <CRXTooltip
-                        iconName="fas fa-info-circle"
-                        title={formObj.hintvalue}
-                        placement="right"
-                      />
-                    ) : null}
-                    <ErrorMessage
-                      name={formObj.key}
-                      render={(msg) => (
-                        <div className={formObj.checkHelperText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
-                          <i className="fas fa-exclamation-circle"></i> {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                    <span className={formObj.volts ? "voltsDepended" : ""} >
+                          <Field
+                            name={formObj.key}
+                            id={formObj.id}
+                            type={formObj.type}
+                          />
+                          <label className="timeShow">
+                            {formObj.seconds === true
+                              ? "seconds"
+                              : formObj.volts ? "volts" : "minutes"}
+                          </label>
+                          <p className="checkSelectorText">{formObj.checkHelperText}</p>
+                          {formObj.hinttext == true ? (
+                            <CRXTooltip
+                              iconName="fas fa-info-circle"
+                              title={formObj.hintvalue}
+                              placement="right"
+                            />
+                          ) : null}
+                          <ErrorMessage
+                            name={formObj.key}
+                            render={(msg) => (
+                              <div className={formObj.checkHelperText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
+                                <i className="fas fa-exclamation-circle numberIconCircle"></i> {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
 
-                        </div>
-                      )}
-                    />
+                              </div>
+                            )}
+                          />
+                    </span>
                   </div>
                 </div>
                 <div className="UiColumnSpacer"></div>
@@ -602,10 +613,10 @@ export const CreateTempelateCase = (props: any) => {
 
                       key == 0 ?
                         <>
-                          <h1>Camera {(index + 1)}</h1>
-                          <i className="fas fa-minus-circle" onClick={() => { setOpen(true); setRemoveIndex(index) }}></i>
-
-
+                          <div className='cameraSetup'>
+                            <h1>Camera {(index + 1)}</h1>
+                            <i className="fas fa-minus-circle" onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}></i>
+                          </div>
                           <div key={formObj.key + "_DIV" + key}>
                             <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />
                           </div></> :
@@ -619,33 +630,39 @@ export const CreateTempelateCase = (props: any) => {
 
                   ))
                 ) : (<></>)}
+                <div className='AddCameraLineIncar'></div>
+               <div className='AddCameraIncar'>
+                  <CRXButton onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
+                  <i className="fa fa-plus"></i>  Add camera
+                  </CRXButton>
+                </div> 
+             
 
-              <CRXButton onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
-                + Add camera
-              </CRXButton>
-
-
-              <CRXConfirmDialog
-                setIsOpen={(e: React.MouseEvent<HTMLElement>) => { setOpen(false); }}
-                onConfirm={() => { setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema); arrayHelpers.remove(removeIndex); }}
-                title="Please Confirm"
-                isOpen={open}
-                modelOpen={open}
-                primary="remove"
-                secondary="cancel"
-              >
-                {
-                  <div className="crxUplockContent">
-                    You are attempting to <strong>remove</strong>
-                    <strong>Camera</strong>. If you remove this camera, any changes
-                    you've made will not be saved. You will not be able to undo this
-                    action.
-                    <p>
-                      Are you sure you would like to <strong>remove</strong> this camera?
-                    </p>
-                  </div>
-                }
-              </CRXConfirmDialog>
+             
+                <CRXConfirmDialog
+                  setIsOpen={(e: React.MouseEvent<HTMLElement>) => { IncarModalClose(); setOpen(false); }}
+                  onConfirm={() => { IncarModalClose(); setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema); arrayHelpers.remove(removeIndex); }}
+                  title="Please Confirm"
+                  isOpen={open}
+                  className="IncarDeviceModalUiMain"
+                  modelOpen={open}
+                  primary="Remove camera"
+                  secondary="Cancel"
+                >
+                  {
+                    <div className="crxUplockContent">
+                      <p className='modalPara1'>
+                        You are attempting to <strong>remove</strong> <strong>Camera {removeIndex + 1}</strong>. If you remove this camera, any changes
+                        you've made will not be saved. You will not be able to undo this
+                        action.
+                      </p>
+                      <p className='modalPara2'>
+                        Are you sure you would like to <strong>remove</strong> this camera?
+                      </p>
+                    </div>
+                  }
+                </CRXConfirmDialog>
+     
             </div>
 
           )}
