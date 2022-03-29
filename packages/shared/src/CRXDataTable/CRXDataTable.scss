@@ -14,6 +14,26 @@
       }
       th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
         padding-left: 15px !important;
+        .CRXCheckBox {
+          input {
+            &:hover ~ span {
+              color: #f5f5f5 !important;
+            }
+          }
+        }
+        .Mui-checked {
+          .MuiIconButton-label {
+            span {
+              font-size: 18px;
+              color: #f5f5f5 !important;
+            }
+          }
+          input {
+            &:hover ~ span {
+              color: #f5f5f5 !important;
+            }
+          }
+        }
       }
     }
 
@@ -81,11 +101,11 @@
           .fal {
             position: relative;
             &::after {
-              content: "";
+              content: '';
               color: #fff;
               left: 0;
               position: absolute;
-              font-family: "Font Awesome 5 Duotone";
+              font-family: 'Font Awesome 5 Duotone';
               font-weight: 900;
               right: 0;
             }
@@ -199,7 +219,7 @@
     background-color: #fff;
     box-shadow: 0px 3px 6px #00000029;
   }
-  div[class*="MuiTablePagination-actions-"] {
+  div[class*='MuiTablePagination-actions-'] {
     button {
       width: 36px;
       height: 36px;
@@ -213,18 +233,18 @@
       }
       &:first-child {
         &:before {
-          font-family: "Font Awesome 5 Pro";
+          font-family: 'Font Awesome 5 Pro';
           font-weight: 900;
-          content: "\f104";
+          content: '\f104';
           font-size: 18px !important;
           padding-right: 2px;
         }
       }
       &:last-child {
         &:before {
-          font-family: "Font Awesome 5 Pro";
+          font-family: 'Font Awesome 5 Pro';
           font-weight: 900;
-          content: "\f105";
+          content: '\f105';
           font-size: 18px !important;
           padding-left: 2px;
         }
@@ -238,7 +258,7 @@
       }
     }
   }
-  div[class*="MuiTablePagination-input-"] {
+  div[class*='MuiTablePagination-input-'] {
     svg {
       fill: #333333;
     }
@@ -518,7 +538,7 @@
   width: 480px;
   left: -6px;
   &:after {
-    content: "";
+    content: '';
     position: absolute;
     top: -11px;
     left: 0px;
@@ -590,10 +610,10 @@
   //left: 117px;
 }
 
-tr:nth-child(even) td[scope="row"] {
+tr:nth-child(even) td[scope='row'] {
   background-color: #fff;
 }
-tr:nth-child(odd) td[scope="row"] {
+tr:nth-child(odd) td[scope='row'] {
   background-color: #fff;
 }
 
@@ -628,8 +648,8 @@ td.CellCheckBox {
   }
 }
 
-tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
-  background-color: #231f20;
+tr.Mui-selected:nth-child(odd) td[scope='row']:not(:first-child) {
+  background-color: #231f20 !important;
   color: #d1d2d4;
   .MuiButton-root {
     color: #d1d2d4 !important;
@@ -638,7 +658,7 @@ tr.Mui-selected:nth-child(odd) td[scope="row"]:not(:first-child) {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
   &:hover {
     background-color: #404041 !important;
 
@@ -647,7 +667,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
     }
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"] {
+tr.Mui-selected:nth-child(even) td[scope='row'] {
   // background-color: #231f20 !important;
   .MuiButton-root {
     color: #d1d2d4 !important;
@@ -656,7 +676,7 @@ tr.Mui-selected:nth-child(even) td[scope="row"] {
     background-color: #333 !important;
   }
 }
-tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
+tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
   background-color: #231f20 !important;
   color: #d1d2d4;
 }
@@ -917,9 +937,9 @@ tr.Mui-selected:nth-child(even) td[scope="row"]:not(:first-child) {
             position: absolute;
             right: 13px;
             top: 10px;
-            font-family: "Font Awesome 5 Pro";
+            font-family: 'Font Awesome 5 Pro';
             font-weight: 900;
-            content: "\f58e";
+            content: '\f58e';
           }
         }
       }
