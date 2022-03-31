@@ -151,6 +151,8 @@
       }
       .UicustomMulti {
         position: relative;
+        width: 427px;
+        border: 1px solid #d1d2d4;
         i {
           position: absolute;
           right: 4px;
@@ -957,5 +959,11 @@
         }
       }
     }
+  }
+}
+.multiSelectUiRight {
+  .MuiSelect-select {
+    width: 400px;
+    border: 1px solid #d1d2d4;
   }
 }

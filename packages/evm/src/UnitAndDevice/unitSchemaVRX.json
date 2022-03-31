@@ -80,7 +80,7 @@
       "id": "6",
       "key": "unitSettings/categories/Multiselect",
       "type": "multiselect",
-      "value": "",
+      "value": [""],
       "depends": [
         {
           "key": "unitSettings/enableCategories/CheckBox",
