@@ -180,6 +180,7 @@ const CRXAssetsBucketPanel = () => {
         title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
         iconName={"fas " + bucketIconByState}
         placement="left"
+        arrow={true}
       ></CRXTooltip>
     </CRXBadge>
   );

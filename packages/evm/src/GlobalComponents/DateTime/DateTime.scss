@@ -52,6 +52,9 @@
       margin-right: 15px;
       width: 247px;
     }
+    i {
+      top: 6px;
+    }
   }
 }
   .calenderInput {
@@ -65,4 +68,9 @@
     min-width: 246px !important;
     margin-left: 1px;
     margin-top: 5px;
+  }
+  .crxTooltipdate {
+    &.crxTooltipAll {
+      padding: 8px 16px;
+    }
   }

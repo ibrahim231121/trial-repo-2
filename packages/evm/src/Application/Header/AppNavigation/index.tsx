@@ -1,4 +1,4 @@
-import { CRXNestedMenu } from "@cb/shared";
+import { CRXNestedMenu, CRXTooltip } from "@cb/shared";
 import { RemoveSharp } from "@material-ui/icons";
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";

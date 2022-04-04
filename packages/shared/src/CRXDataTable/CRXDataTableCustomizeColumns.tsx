@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
+import CRXTooltip  from "../controls/CRXTooltip/CRXTooltip";
 import SortableList from "./CRXDataTableSortableContainer";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
@@ -182,7 +182,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
   return (
 
     <div className="dataTableColumnShoHide">
-      <Tooltip title="Customize Columns" placement="top-start">
+      
         <IconButton
           ref={anchorRef}
           aria-controls={customizeColumn ? 'menu-list-grow' : undefined}
@@ -191,9 +191,9 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({ i
           onClick={customizeColumnOpen}
           disableRipple={true}
         >
-          <i className="fas fa-columns"></i>
+          <CRXTooltip iconName='fas fa-columns' title="Customize Columns" arrow={false} placement="top-start"></CRXTooltip>
+          {/* <i className="fas fa-columns"></i> */}
         </IconButton>
-      </Tooltip>
       <Popper
         id="CustomizeColumns"
         className="columnReOrderOpup"

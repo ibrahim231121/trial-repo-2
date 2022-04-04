@@ -1,8 +1,9 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import CRXPanelStyle  from "./CRXPanelStyle"
-import './CRXPanel.scss'
+import CRXPanelStyle  from "./CRXPanelStyle";
+import CRXTooltip  from "../controls/CRXTooltip/CRXTooltip";
+import './CRXPanel.scss';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 type Variant = 'permanent' | 'persistent' | 'temporary';
@@ -17,6 +18,10 @@ interface propsType {
   className? : string
 }
 
+
+
+
+
 const CRXFixedPanel = ({className, open, onClick,  children, anchor, variant = "temporary"} : propsType) => {
   const classes = CRXPanelStyle();
   return (
@@ -28,7 +33,8 @@ const CRXFixedPanel = ({className, open, onClick,  children, anchor, variant = "
       onClick={onClick}
       disableRipple={true}
       >
-      <span className="icon icon-menu3"></span>
+         {/* <span className="icon icon-menu3"></span> */}
+      <CRXTooltip iconName='icon icon-menu3' arrow={false} className="crxTooltipMenuIcon" placement="bottom-start" title="menu" />
       </IconButton>
       
       </div>
