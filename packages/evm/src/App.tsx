@@ -89,16 +89,18 @@ function App() {
     }
   }, [culture, resources]);
 
-  useEffect(() => {
-    console.log("APP.TSX component did mount");
-    console.log("token");
+  useEffect(()=>{
+
+
     var token = getToken();
-    if (token) {
-      var moduleIds = getModuleIds();
-      if (moduleIds) {
-        console.log(moduleIds);
-        setModuleIds(moduleIds);
-      }
+    if(token){
+
+            var moduleIds = getModuleIds();
+            if(moduleIds){
+             
+              setModuleIds(moduleIds);
+            }
+        
     }
   }, []);
 
@@ -313,24 +315,23 @@ function App() {
   };
 
   return (
-    <ApplicationPermissionProvider
-      setModuleIds={(moduleIds: number[]) => {
-        console.log("setting moduleIds finally");
-        console.log(moduleIds);
-        setModuleIds(moduleIds);
-      }}
-      moduleIds={moduleIds}
-      getModuleIds={() => {
-        var moduleIds = getModuleIds();
-        if (moduleIds) {
-          return moduleIds;
-        } else {
-          return [];
-        }
-      }}
-    >
-      <div dir={rtl}>
-        <SnackbarProvider
+    <ApplicationPermissionProvider  setModuleIds={
+                                          (moduleIds:number[]) =>{
+                                            
+                                            setModuleIds(moduleIds)}
+                                          }  
+                                    moduleIds={moduleIds}  
+                                    getModuleIds={()=>{ 
+                                          var moduleIds =  getModuleIds()
+                                          if(moduleIds){
+                                            return moduleIds
+                                          }else{
+                                            return []
+                                          }
+                                    }}
+                                    >
+        <div dir={rtl}>
+          <SnackbarProvider
           maxSnack={100}
           anchorOrigin={{
             vertical: "top",

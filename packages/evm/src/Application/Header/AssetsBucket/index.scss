@@ -429,6 +429,32 @@
             border-right: 1px solid #ccc !important;
             border-bottom: 1px solid #ccc !important;
           }
+        } 
+          &.col-two {
+            left: 0px;
+            position: static !important;
+          }
+          &.col-three {
+            left: 60px;
+            position: static;
+          }
+      }
+      th {
+        &.CRXDataTableLabelCell {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
+        }
+        &.TableSearchAbleHead {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
         }
       }
       th:nth-child(4) {
@@ -440,6 +466,7 @@
           right: 4px;
         }
       }
+ 
     }
   }
   &::-webkit-scrollbar {

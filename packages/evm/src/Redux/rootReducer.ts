@@ -12,6 +12,8 @@ import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
 import templateSlice1 from './AssetConfiguration';
 import unitTemplateSlice from './templateDynamicForm';
+import stationsSlice from './StationReducer';
+
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -20,12 +22,12 @@ export const reducer = combineReducers({
   assetCategory: categorySlice.reducer,
   CategoryFormFields: CategoryFormSlice.reducer,
   userReducer: userSlice.reducer,
+  stationReducer: stationsSlice.reducer,
   notificationReducer: notificationMessages.reducer,
   timerReducers: timerSlice.reducer,
-
   templateSlice: templateSlice.reducer,
   unitTemplateSlice: unitTemplateSlice.reducer,
- templateSlice1: templateSlice1.reducer,
+  templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
   unitReducer: unitSlice.reducer
 })

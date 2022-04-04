@@ -628,34 +628,29 @@ const openHandler = (_: React.SyntheticEvent) => {
     dispatch(getUsersInfoAsync());
   };
 
-  return (
-    <div className="crxManageUsers searchComponents">
-      <CRXToaster ref={toasterRef} />
-      <Restricted moduleId={9}>
-        <CRXButton
-          id={"createUser"}
-          className="primary manageUserBtn"
-          onClick={handleClickOpen}
-        >
-          Create User
-        </CRXButton>
-      </Restricted>
-      <CRXModalDialog
-        className="createUser CrxCreateUser"
-        style={{ minWidth: "680px" }}
-        maxWidth="xl"
-        title="Create User"
-        showSticky={true}
-        modelOpen={open}
-        onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-        closeWithConfirm={closeWithConfirm}
-      >
-        <CreateUserForm
-          setCloseWithConfirm={setCloseWithConfirm}
-          onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
-        />
-      </CRXModalDialog>
+    return (
+        <div className="crxManageUsers switchLeftComponents">
+			<CRXToaster ref={toasterRef}/>
+            <Restricted moduleId={0}>
+                <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
+            </CRXButton>
+            </Restricted>
+            <CRXModalDialog
+                className="createUser CrxCreateUser"
+                style={{ minWidth: "680px" }}
+                maxWidth="xl"
+                title="Create User"
+                showSticky={true}
+                modelOpen={open}
+                onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                closeWithConfirm={closeWithConfirm}
+            >
+                <CreateUserForm
+                    setCloseWithConfirm={setCloseWithConfirm}
+                    onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                    showToastMsg={(obj: any) => showToastMsg(obj)}
+                />
+            </CRXModalDialog>
 
       {rows && (
         <CRXDataTable

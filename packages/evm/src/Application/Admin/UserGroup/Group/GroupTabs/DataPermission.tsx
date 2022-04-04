@@ -40,6 +40,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
    const disableAddPermission = () => {
        dataPermissions.map((obj) => {
+           
            if((obj.permissionValue.value > 0 || obj.permissionValue.value < 0)  && obj.permissionLevel.value > 0){
             setisDisable(false);
            }
@@ -149,6 +150,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     })
                 categories.push({ value: -2, label: 'All' })
                 categories.push({ value: -1, label: 'Uncategorized' })
+                
+                
                 setCategories(categories);
                 LoadCategoryPermissionsByDb(categories);
             }
@@ -165,6 +168,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if (stationResponse.ok) {
             const response: StationResponse[] = await stationResponse.json();
             if (response && response.length > 0) {
+                
+                
                 var stations = response
                     .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
                     .map((x: StationResponse) => {
@@ -173,6 +178,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     })
                 stations.push({ value: -2, label: 'All' })
                 stations.push({ value: -1, label: 'No Station' })
+                
+                
                 setStations(stations);
                 LoadStationPermissionsByDb(stations);
             }
@@ -203,6 +210,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     const onPermissionTypeChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
         permissions[i].type.value = parseInt(e.target.value);
+        
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
     }
@@ -210,12 +218,14 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     const onPermissionLevelChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
         permissions[i].permissionLevel.value = parseInt(e.target.value);
+        
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
     }
 
     const onPermissionValueChange = (e: React.ChangeEvent<HTMLInputElement>, v: any, i: number) => {
 
+        
         let permissions = [...dataPermissions]
         if (v !== null) {
             if (v && v.value) {
@@ -225,6 +235,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         }
         else
             permissions[i].permissionValue = { value: 0, label: "" };
+        
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
     }
@@ -239,6 +250,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
         let permission = permissions[i];
 
+        
+        
         if (permission && permission.id && permission.id > 0) {
             onDeletePermission(permission.id);
         }
@@ -247,6 +260,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if (permissions.length <= 0) {
             permissions.push(defaultPermission)
         }
+        
         setDataPermissions([...permissions]);
         setDataPermissionInfo(permissions);
     }
@@ -301,6 +315,9 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 options={filterPermissionValuesBasedonType(permission.type.value)}
                                                 multiple={false}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>, v: any) => {
+                                                    
+                                                    
+                                                    
                                                     onPermissionValueChange(e, v, i)
                                                 }}
                                                 value={permission.permissionValue}

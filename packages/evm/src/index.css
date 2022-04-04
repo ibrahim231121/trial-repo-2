@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI" !important;
+  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, 'Segoe UI';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -74,7 +74,7 @@ body {
   height: 89px;
 }
 
-.divInner div[id^="innerDrag"] {
+.divInner div[id^='innerDrag'] {
   width: 56px;
   border: 3px solid #ccc;
   border-right: 0px;
@@ -85,7 +85,7 @@ body {
   height: 87px;
 }
 
-.divInner div[id^="innerImg"] {
+.divInner div[id^='innerImg'] {
   width: 144px;
   border-right: 1px solid #ccc;
   float: left;
@@ -95,7 +95,7 @@ body {
   text-align: center;
 }
 
-.divInner div[id^="innerAssetId"] {
+.divInner div[id^='innerAssetId'] {
   float: left;
   width: 130px;
   height: 88.5px;
@@ -130,7 +130,7 @@ body {
   position: absolute;
   width: 100%;
   height: 88px;
-  content: " ";
+  content: ' ';
   top: 0px;
   left: 0px;
 }
@@ -306,4 +306,12 @@ a::selection {
 /*After demo sajid will remove it*/
 .progressBar {
   padding-top: 10px;
+}
+
+.ManageStation {
+  margin-top: 36px;
+}
+
+.LocationMap {
+  width: 100%;
 }

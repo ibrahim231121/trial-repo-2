@@ -22,6 +22,7 @@ type Props = {
   secondary?: string
   className?: string
   text?: string;
+  primaryDisabled?: boolean
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -31,7 +32,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
   className,
   setIsOpen,
   isOpen,
-  children, primary, secondary,
+  children, primary, secondary, primaryDisabled,
   text
 }) => {
   return (
@@ -69,6 +70,7 @@ const CRXConfirmDialog: React.FC<Props> = ({
       <DialogActions className="crxConfirmFooterModal">
         <CRXButton
           id="yes"
+          disabled={primaryDisabled}
           className="primary"
           variant="contained"
           onClick={() => {

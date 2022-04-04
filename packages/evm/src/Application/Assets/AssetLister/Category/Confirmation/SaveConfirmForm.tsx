@@ -8,7 +8,7 @@ import moment from 'moment';
 
 type SaveConfirmFormProps = {
   removedOption: any;
-   setremoveClassName: any;
+  setremoveClassName: any;
   rowData: any;
   differenceOfDays: string;
   removalType: number;
@@ -23,7 +23,7 @@ type SaveConfirmFormProps = {
   setIndicateTxt: (param: boolean) => void;
 };
 
-interface FormValues {}
+interface FormValues { }
 
 const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -52,7 +52,6 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   }, [props.removalType]);
 
   const cancelBtn = () => {
-    //debugger;
     const newValue = categoryOptions
       .filter((o: any) => {
         return o.id === props.removedOption.id;

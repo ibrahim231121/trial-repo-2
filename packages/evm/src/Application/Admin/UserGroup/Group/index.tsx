@@ -503,8 +503,8 @@ const Group = () => {
               }
             })
             .catch((err: Error) => {
-              console.log("An error occured in permission");
-              console.log(err.message);
+              
+              
             });
 
           effectAfterSave(groupId.toString(),status)
@@ -592,7 +592,7 @@ const Group = () => {
   }, [messages]);
 
   return (
-    <div className="App crxTabsPermission" style={{}}>
+    <div className="App crxTabsPermission switchLeftComponents" style={{}}>
       <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}

@@ -1,0 +1,354 @@
+.stationForm {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .colstation {
+    width: 45%;
+    padding: 0px 15px;
+  }
+}
+.crxStationDataTable {
+  table {
+    thead {
+      &:nth-child(2) {
+        tr {
+          th {
+            &:nth-child(7) {
+              .MuiInput-root {
+                min-width: 70px !important;
+              }
+            }
+          }
+        }
+      }
+
+      &:not(:first-child) {
+        th {
+          padding: 15px 17px !important;
+        }
+      }
+      tr {
+        th {
+          &.TableSearchAbleHead {
+            &:first-child {
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              left: 58px !important;
+            }
+          }
+          &.CRXDataTableLabelCell {
+            &:first-child {
+              left: 0px !important;
+            }
+            &:nth-child(2) {
+              left: 58px !important;
+            }
+
+            &:nth-child(3) {
+              width: 200px !important;
+              min-width: 200px !important;
+            }
+            &:nth-child(4) {
+              width: 350px !important;
+              min-width: 350px !important;
+            }
+            &:nth-child(7) {
+              width: 110px !important;
+              min-width: 110px !important;
+            }
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        &:hover {
+          &:nth-child(even) {
+            td {
+              &:first-child {
+                .fal {
+                  &::after {
+                    color: #d1d2d4 !important;
+                  }
+                }
+              }
+              &:nth-child(3) {
+                background: none;
+              }
+            }
+          }
+          .rc-menu-button {
+            i {
+              color: #fff;
+            }
+          }
+        }
+        &:nth-child(even) {
+          td {
+            &:first-child {
+              .fal {
+                position: relative;
+                &.crxCheckForDarBg {
+                  &::after {
+                    color: transparent;
+                  }
+                }
+                &::after {
+                  content: "?";
+                  color: #fff;
+                  left: 0;
+                  position: absolute;
+                  font-family: "Font Awesome 5 Duotone";
+                  font-weight: 900;
+                  right: 0;
+                  top: 0;
+                }
+              }
+            }
+          }
+        }
+        td {
+          &.col-two {
+            left: 0px;
+            position: static !important;
+          }
+          &.col-three {
+            left: 60px;
+            position: static;
+            .rc-menu-button {
+              margin-top: 5px;
+            }
+            .rc-menu-container {
+              .crx-spac {
+                .crx-menu-list {
+                  border-bottom: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.crxStationDetail {
+  margin: 0 200px;
+  .stationDetailCol {
+    padding: 0 0 34px;
+    width: 100%;
+    display: inline-block;
+
+    input {
+      border: none;
+      min-width: 63%;
+      color: rgba(0, 0, 0, 0.87);
+    }
+
+    label {
+      width: 140px;
+      display: inline-block;
+      color: #333333;
+
+      vertical-align: top;
+      line-height: 30px;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+
+      span {
+        line-height: 17px;
+        margin-left: 10px;
+        font-size: 20px;
+        color: #333333;
+        font-weight: bold;
+      }
+    }
+    .CBX-input {
+      display: inline-block;
+      .CrxStationError {
+        min-width: 63%;
+        display: inline-block;
+        .errorStationStyle {
+          color: #aa1d1d;
+          font-size: 14px;
+          margin-top: 2px;
+          i {
+            margin-right: 4px;
+            font-size: 12px;
+          }
+        }
+        input {
+          width: 100%;
+        }
+      }
+    }
+    &.errorBrdr {
+      padding: 0 0 30px;
+      input {
+        outline: 2px solid #aa1d1d;
+        &:hover {
+          outline: 2px solid #aa1d1d;
+        }
+        &:focus {
+          border: 1px solid #888787;
+          outline: 2px solid #aa1d1d;
+        }
+      }
+      label {
+        span {
+          color: #aa1d1d;
+        }
+      }
+    }
+  }
+  .crxLocationBtn {
+    &.crxStationDetailBtn {
+      border: none;
+      position: static;
+    }
+  }
+  .colstation {
+    display: inline-block;
+    width: 100%;
+    .crx_MultiSelectBoxLight {
+      width: 63%;
+      display: inline-block;
+    }
+  }
+}
+.crxStationDetailBtn {
+  padding: 23px 0;
+  position: fixed;
+  background: #fff;
+  bottom: 40px;
+  border-top: 1px solid #d1d2d4;
+  width: calc(100% - 116px);
+  .groupInfoTabButtons {
+    min-width: 80px !important;
+    height: 30px;
+    margin-right: 31px;
+    font-weight: normal;
+  }
+}
+.CRXStationModal {
+  .MuiPaper-root .MuiDialogContent-root {
+    padding: 27px 27px 45px;
+  }
+  .MuiPaper-root {
+    min-width: 46% !important;
+  }
+  .crxConfirmFooterModal {
+    button {
+      &.primary {
+        padding: 0 16px !important;
+      }
+    }
+    button {
+      min-width: 80px !important;
+    }
+  }
+}
+.ManageStation {
+  .MuiCollapse-wrapperInner {
+    [aria-labelledby="accorIdx1"] {
+      .MuiAccordionDetails-root {
+        padding: 47px 25px 75px;
+      }
+    }
+  }
+}
+
+.crx-d-h {
+  visibility: hidden;
+  opacity: 0;
+}
+.crxStationDataUser {
+  .manageUserBtn {
+    width: 144px;
+    font-weight: normal;
+  }
+}
+@media screen and (max-width: 768px) {
+  .crx-d-h {
+    display: none !important;
+  }
+  .crxStationDetail {
+    .stationDetailCol {
+      input {
+        width: 100%;
+      }
+      .CBX-input {
+        .CrxStationError {
+          min-width: 100%;
+        }
+      }
+      label {
+        width: 100%;
+      }
+    }
+    .colstation {
+      .crx_MultiSelectBoxLight {
+        width: 100%;
+      }
+    }
+  }
+  .crxStationDetailBtn {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .crxLocationBtn {
+    position: static;
+  }
+}
+@media screen and (max-width: 1600px) {
+  .crxStationDetailBtn {
+    bottom: 19px;
+  }
+  .crxStationDetail {
+    margin: 0 110px;
+  }
+  .stationDetailOne {
+    .stationColumnSet {
+      &:last-child {
+        .crxStationDetail {
+          margin: 0 193px !important;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .crx-d-h {
+    visibility: hidden;
+    opacity: 0;
+  }
+  .crxStationDetail {
+    margin: 0 110px;
+  }
+  .stationDetailOne {
+    .stationColumnSet {
+      &:last-child {
+        .crxStationDetail {
+          margin: 0 178px !important;
+        }
+      }
+    }
+  }
+}
+
+.stationDetailOne {
+  display: flex;
+  .stationColumnSet {
+    width: 40%;
+    &:last-child {
+      .crxStationDetail {
+        margin: 0 233px;
+      }
+    }
+  }
+}

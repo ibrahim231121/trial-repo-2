@@ -726,6 +726,11 @@ tr.Mui-selected:nth-child(even) td[scope='row']:not(:first-child) {
           }
         }
       }
+        .fal {
+          &::after {
+            color: transparent;
+          }
+        }
     }
 
     td.DataTableBodyCell {

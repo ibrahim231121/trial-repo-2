@@ -12,8 +12,10 @@ import Login from './Login/index';
 import Token from './Login/Components/Token';
 import PrivateRoute from "./Routes/PrivateRoute";
 import HomeRoute from "./Routes/HomeRoute";
-import { urlList, urlNames } from "./utils/urlList"
+import { urlList, urlNames } from "./utils/urlList";
 import User from "./Application/Admin/User/";
+import Station from "./Application/Admin/Station/Station";
+import StationDetail from "./Application/Admin/Station/StationDetail";
 import TestViewsForDemo from '../../evm/src/TestForComponents/index'
 import IdleTimer from 'react-idle-timer'
 import Logout from "./Logout/index";
@@ -142,6 +144,11 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />
+              <Route path="/token/:token" exact={true} component={Token} />
+
               <Route path="/notfound" component={ErrorPage} /> 
               <Route path="*" component={ErrorPage} />
 
