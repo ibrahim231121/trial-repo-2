@@ -23,6 +23,8 @@ type assetdata = {
   assetduration: number;
   assetbuffering:any;
   recording:any;
+  bookmarks:[],
+  id:number,
 }
 
 
@@ -42,9 +44,10 @@ const EvidenceActionMenu: React.FC<Props> = ({row}) => {
 const Getassets = () => {
   if(row)
   {
-  const data=extract(row)
+  const data=extract(row);
+  const Evidenceid : number=row.id;
  // const detail=Durationfinder(data)
-  history.push('/videoplayer',{ data: data})
+  history.push('/videoplayer',{ data: data , EvidenceId: Evidenceid})
   }
 };
  function extract(row : any){
@@ -55,15 +58,18 @@ const Getassets = () => {
   const buffering=row.asset.master.buffering;
   const file=extractfile(row.asset.master.files);
   const recording=row.asset.master.recording;
-  let myData: assetdata={files:file,assetduration:masterduration,assetbuffering:buffering,recording:recording}
+  const bookmarks=row.asset.master.bookMarks??[];
+  const id=row.asset.master.id;
+  let myData: assetdata={id:id,files:file,assetduration:masterduration,assetbuffering:buffering,recording:recording,bookmarks:bookmarks}
   rowdetail.push(myData);
   rowdetail1=row.asset.children.map((template: any, i:number) => {
     return {
-        assetduration: template.duration,
+        id: template.id,
         files: extractfile(template.files),
+        assetduration: template.duration,
         assetbuffering: template.buffering,
         recording:template.recording,
-    
+        bookmarks:template.bookMarks??[],
     }
 })
 for(let x=0;x<rowdetail1.length;x++)

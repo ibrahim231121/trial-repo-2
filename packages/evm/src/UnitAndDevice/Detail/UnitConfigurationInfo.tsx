@@ -58,7 +58,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo })
     <div className="crx-group-info-form CBX-input">
       <div className="crx-group-info">
         <div className="configurationTemplateLabel">
-          <label>Configuration Template</label>
+          <label>Unit Configuration Template</label>
           <CRXSelectBox
             name="configurationTemplate"
             value={info.configTemp == "" ? 0 : info.configTemp}
@@ -68,13 +68,13 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo })
           />
         </div>
         <div className="groupInfoInputs">
-          <TextField required={true} label="Unit Id" value={name} className="userError" onChange={onChangeName} />
+          <TextField required={true} label="Unit ID" value={name} className="userError" onChange={onChangeName} />
         </div>
         <div className="groupInfoInputs">
           <TextField label="Description" multiline variant="outlined" rows={1} value={description} onChange={onChangeDescription} />
         </div>
         <div className="groupInfoInputs">
-          <TextField label="Group Name" multiline variant="outlined" rows={2} value={groupName} onChange={onChangeGroupName} />
+          <TextField label="Group Name" variant="outlined" rows={2} value={groupName} onChange={onChangeGroupName} />
         </div>
       </div>
     </div>

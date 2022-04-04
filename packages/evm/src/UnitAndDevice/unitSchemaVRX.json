@@ -48,7 +48,7 @@
       "id": "4",
       "key": "unitSettings/loginMethod/Select",
       "type": "select",
-      "label": "Login Method",
+      "label": "Getac Login Mode",
       "value": "Getac Auth",
       "options": [
         {
@@ -80,7 +80,7 @@
       "id": "6",
       "key": "unitSettings/categories/Multiselect",
       "type": "multiselect",
-      "value": "",
+      "value": [""],
       "depends": [
         {
           "key": "unitSettings/enableCategories/CheckBox",
@@ -109,7 +109,7 @@
       "value": 10,
       "seconds": false,
       "hinttext": true,
-      "hintvalue": "Allows to synchronize unit configuration at the specific interval",
+      "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
       "required": true,
       "class":"UpdateIntervalIncar",
       "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
@@ -221,10 +221,13 @@
     },
     {
       "id": "4",
+      "labelGroupRecording": "GPS",
       "key": "device/USBGPS/CheckBox",
       "type": "checkbox",
       "label": "USB GPS",
-      "value": false
+      "checkBoxText":"Enable USB GPS",
+      "class":"USBGPSIncar",
+      "value": true
     },
     {
       "id": "1",
@@ -232,6 +235,10 @@
       "type": "number",
       "label": "Port Name",
       "value": "",
+      "hintvalue":"Serial or UDP for GPS",
+      "hinttext":true,
+      "seconds":true,
+      "class":"PortNameIncar",
       "depends": [
         {
           "key": "device/USBGPS/CheckBox",
@@ -247,6 +254,11 @@
       "type": "number",
       "label": "Serial Baud Rate",
       "value": "",
+      "class":"SerialBaudRateIncar",
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
+      "hinttext":true,
+      "hintvalue":"Baud rate for serial port or UDP port for network GPS device",
+      "seconds":true,
       "depends": [
         {
           "key": "device/USBGPS/CheckBox",
@@ -266,8 +278,11 @@
     {
       "id": "4",
       "key": "device/HardwareMonitoringWhenOffline/CheckBox",
+      "labelGroupRecording":"Hardware Interface",
       "type": "checkbox",
       "label": "Hardware Monitoring When Offline",
+      "checkBoxText":"Enable Hardware Monitoring When Offline",
+      "class":"HardwareMonitoringIncar",
       "value": true
     },
     {
@@ -275,6 +290,8 @@
       "key": "device/RecordingStopWhenLightsOn/CheckBox",
       "type": "checkbox",
       "label": "Recording Stop When Lights On",
+      "class":"RecordingStopIncar",
+      "checkBoxText":"Enable Recording Stop When Lights On",
       "value": true
     },
     {
@@ -283,7 +300,12 @@
       "type": "number",
       "label": "Shutdown After Ignition Off",
       "value": 15,
+      "class":"ShutdownIgnitionIncar",
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
       "seconds": false,
+      "required":true,
+      "hinttext":true,
+      "hintvalue":"Shutdown the unit after specified number of minutes if the ignition turned off",
       "validation": [
         {
           "key": "required",
@@ -298,6 +320,9 @@
       "label": "Shutdown After Ignition Off When Uploading",
       "value": 30,
       "seconds": false,
+      "hinttext":true,
+      "hintvalue":"Shutdown the unit after specified number of minutes when unit is uploading if the ignition turned off",
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
       "validation": [
         {
           "key": "required",
@@ -312,6 +337,9 @@
       "label": "Shutdown On Vehicle Battery Voltage",
       "value": 11,
       "volts": true,
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
+      "hinttext":true,
+      "hintvalue":"Shutdown the unit if the battery voltage is sensed at the specific number",
       "validation": [
         {
           "key": "required",
@@ -338,6 +366,10 @@
       "key": "device/BeepDuringRecording/CheckBox",
       "type": "checkbox",
       "label": "Beep During Recording",
+      "class": "BeepDuringIncar",
+      "checkBoxText":"Enable Beep",
+      "hinttext":true,
+      "hintvalue":"Allows to specify interval for the beep during recording",
       "value": false
     },
     {
@@ -377,8 +409,12 @@
       "key": "device/SensorRecordingStartDelay/NumberBox",
       "type": "number",
       "label": "Sensor Recording Start Delay",
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 60)",
       "value": 8,
-      "seconds": false,
+      "class":"SensorRecordingIncar",
+      "hinttext":true,
+      "hintvalue":"Allows to specify delay for recording to start on hardware event",
+      "seconds": true,
       "validation": [
         {
           "key": "required",
@@ -395,22 +431,32 @@
       "id": "4",
       "key": "device/EnableLogoutfromUnit/CheckBox",
       "type": "checkbox",
-      "label": "Enable Logout from Unit",
-      "value": false
+      "label": "Logout",
+      "class":"LogoutIncar",
+      "checkBoxText":"Force Logout On Shutdown",
+      "value": false,
+      "hinttext":true,
+      "hintvalue":"Logout users on closing/shutdown application"
     },
     {
       "id": "4",
       "key": "device/ForceLogoutonShutdown/CheckBox",
       "type": "checkbox",
-      "label": "Force Logout on Shutdown",
-      "value": false
+      "class":"LogoutTwoIncar",
+      "checkBoxText":"Enable Logout From Unit",
+      "value": false,
+      "hinttext":true,
+      "hintvalue":"Enable logout from the unit. At least one user has to be logged in to the system if disabled"
     },
     {
       "id": "1",
       "key": "device/Diagnosticslogginginterval/TextBox",
       "type": "number",
-      "label": "Diagnostics logging interval",
+      "label": "Diagnostics Logging Interval",
+      "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
       "value": "",
+      "hinttext":true,
+      "hintvalue":"Allows to specify logging interval for diagnostic logs",
       "validation": [
         {
           "key": "required",
@@ -443,6 +489,7 @@
       "type": "number",
       "label": "USB Port Charge Time",
       "value": "15",
+      "class":"USBPortChargeIncar",
       "hidefromUI": true,
       "validation": [
         {
@@ -462,11 +509,11 @@
       "feilds": [
         [
           {
-            "labelGroupRecording": "Camera 1",
             "key": "CameraSetup/deviceType_1_Camera/Select",
             "type": "select",
             "label": "Device Type",
             "value": "IP Camera",
+            "class": "DeviceTypeIncar",
             "options": [
               {
                 "value": "IP Camera",
@@ -556,6 +603,12 @@
             "type": "number",
             "label": "Pre-Recording Duration",
             "value": 5,
+            "class":"PreRecordingDurationIncar",
+            "checkHelperText":"(Minimum allowed is 1 and maximum allowed is 1000)",
+            "hinttext":true,
+            "hintvalue":"Allows to specify the time period for the camera to capture before Start Recording button is pressed",
+            "seconds": true,
+            
             "validation": [
               {
                 "key": "required",
@@ -578,6 +631,10 @@
             "type": "number",
             "label": "Post-Recording Duration",
             "value": 1,
+            "class":"PostRecordingDurationIncar",
+            "checkHelperText":"(Minimum allowed is 1 and maximum allowed is 1000)",
+            "hinttext":true,
+            "hintvalue":"Allows to specify the time period for the camera to capture after Stop Recording button is pressed",
             "validation": [
               {
                 "key": "required",
@@ -596,11 +653,12 @@
             ]
           },
           {
-            "radioLabelGroup": "Black Box Recording",
+            "labelMute":"Blackbox Recording",
             "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Off",
             "value": "Off",
+            "class": "BlackboxRecordingIncar",
             "selected": true,
             "validationChangeFeilds": [
               {
@@ -611,7 +669,7 @@
             ]
           },
           {
-            "labelGroupRecording": "Black Box Recording",
+
             "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Continous",
@@ -635,7 +693,7 @@
             ]
           },
           {
-            "labelGroupRecording": "Black Box Recording",
+            
             "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
             "type": "radio",
             "label": "Only when recording in-car video to in-car disk",
@@ -654,6 +712,7 @@
             "value": "",
             "type": "text",
             "label": "Blackbox Directory",
+            "class":"BlackboxDirectoryIncar",
             "validation": [
               {
                 "key": "required",
@@ -671,24 +730,33 @@
             "key": "CameraSetup/micOffWhenNotRecording_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Mic Off When Not Recording",
+            "checkBoxText":"Mic Off When Not Recording",
+            "class":"MicOffIncar",
             "value": false
           },
           {
             "key": "CameraSetup/overlayMetadataOnVideo_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Overlay Metadata On Video",
+            "checkBoxText":"Overlay Metadata On Video",
+            "hinttext":true,
+            "hintvalue":"Includes GPS/Date and time overlays in the video stream",
             "value": false
           },
           {
             "key": "CameraSetup/captureWithMasterButton_1_Camera/CheckBox",
             "type": "checkbox",
             "label": "Capture With Master Button",
+            "class":"CaptureMasterButtonIncar",
+            "checkBoxText":"Start/Stop Capture With Master Button",
             "value": false
           },
           {
             "key": "CameraSetup/cameraMode_1_Camera/Select",
             "type": "select",
             "label": "Camera Mode",
+            "hinttext":true,
+            "hintvalue":"Allows to select Camera Mode for the screen on startup",
             "value": "",
             "options": [
               {
@@ -713,6 +781,8 @@
             "key": "CameraSetup/audioDeviceType_1_Camera/Select",
             "type": "select",
             "label": "Audio Device Type",
+            "hinttext":true,
+            "hintvalue":"Allows to select one or several Audio devices for the primary device",
             "value": "",
             "options": [
               {

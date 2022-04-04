@@ -252,6 +252,8 @@ const CreateTemplate = (props: any) => {
           val = parseInt(e0.value);
         else if (e0.fieldType == "CheckBox")
           val = e0.value.toLowerCase() === "true" ? true : false;
+        else if (e0.fieldType == "Multiselect")
+          val = e0.value.split(',')
         else
           val = e0.value;
 
@@ -384,7 +386,7 @@ const CreateTemplate = (props: any) => {
         if (field.key == "unitSettings/categories/Multiselect") {
           Initial_Values.push({
             key: field.key,
-            value: field.value.split(','),
+            value: field.value,
           });
         }
         else if (field.hasOwnProperty("key") && addItem) {
@@ -534,8 +536,10 @@ const CreateTemplate = (props: any) => {
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
         }
         if (valueToSave) {
-          if(split[2] == "Multiselect" && valueRaw == "add all")
+          if(split[2] == "Multiselect")
           {
+            if(valueRaw.includes("add all"))
+            {
             valueRaw = "";
             FormSchema["Unit Settings"].find((y:any) => y.key == key).options.map((x:any) => 
             {
@@ -548,6 +552,7 @@ const CreateTemplate = (props: any) => {
             {
               valueRaw = valueRaw.substring(0, valueRaw.length - 1);
             }
+          }
           }
           Initial_Values.push({
             key: split[1],
@@ -616,11 +621,13 @@ const CreateTemplate = (props: any) => {
             alert("happened form is being saved");
             response.json().then((res: number) => {
               if (res > 0) {
-                historyState.id = res;
-                historyState.isedit = true;
-                historyState.name = templateNames;
-                dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
-                setEditCase(true);
+                // historyState.id = res;
+                // historyState.isedit = true;
+                // historyState.name = templateNames;
+                // dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
+                // setEditCase(true);
+                history.push('/admin/unitanddevices/createtemplate/template',{ id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+                history.go(0)
               }
             });
 

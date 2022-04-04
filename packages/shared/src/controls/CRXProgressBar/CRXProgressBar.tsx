@@ -39,18 +39,18 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     })
 
     const styled = progressStyle()
-    const [progress, setProgress] = useState<number>(0);
+    //const [progress, setProgress] = useState<number>(0);
     const [rotate, setRotate] = useState<string>("")
     const [propgresicon, setProgressIcon] = useState<string>("fas fa-sync-alt")
-    const [errState, setError] = useState<boolean>();
-    const [limit, setLimit] = useState<number>(100)
+    //const [errState, setError] = useState<boolean>();
+    //const [limit, setLimit] = useState<number>(100)
     const [errorClx, setErorrClx] = useState<string>("");
     const [percentageText, setPercentageText] = useState<any>(0)
-    const errConditionValue: any = errState && errState ? limit : progress
+    //const errConditionValue: any = errState && errState ? limit : progress
 
     useEffect(() => {
-        console.log(error)
-        setError(error);
+        
+        //setError(error);
         if (error == true) {
 
             // setLimit(40);
@@ -60,12 +60,11 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
             setRotate("");
             setProgressIcon("far fa-exclamation-circle")
         } else {
-            let progressValue = Math.round(progress) + "%";
+            //let progressValue = Math.round(progress) + "%";
             //setPercentageText(progress)
         }
     }, [error])
-    let animate: any;
-
+    
     //This block use for initial bind the component or error case hanldler
     useEffect(() => {
 
@@ -138,7 +137,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
                     classes={{
                         root: styled.root,
                         colorPrimary: styled.colorPrimary,
-                        barColorPrimary: progress && progress == 100 ? styled.barColorSecondary : styled.barColorPrimary
+                        barColorPrimary: value && value == 100 ? styled.barColorSecondary : styled.barColorPrimary
                     }}
                 />
                 <div className='fileUploadStatus'>

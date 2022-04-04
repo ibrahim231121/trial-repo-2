@@ -555,7 +555,7 @@ const ConfigurationTemplates: React.FC = () => {
             showCountText={false}
             columnVisibilityBar={true}
             dragVisibility={false}
-            showCheckBoxesCol={false}
+            showCheckBoxesCol={true}
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}

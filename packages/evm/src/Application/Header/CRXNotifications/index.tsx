@@ -5,6 +5,7 @@ import {
   CRXButton,
   CRXBadge,
   CRXIcon,
+  CRXTooltip
 } from "@cb/shared";
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import './index.scss';
@@ -47,9 +48,10 @@ const CRXNotficationPanel = () => {
   const ToggleDot = (
     <>
       <CRXIcon className='bucketIcon'>  
-        <i className='fas fa-bell' ></i>
+        <CRXTooltip iconName="fas fa-bell" arrow={false} title="notifications" placement="bottom" className="crxTooltipNotificationIcon"/>
       </CRXIcon>
       {isRead && <CRXIcon className='bucketIcon' >
+      
         <i className="fas fa-circle" style={{fontSize:"5px", paddingRight:"10px"}}></i>
       </CRXIcon>
       }
