@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CRXDataTable, CRXColumn, CRXToaster } from "@cb/shared";
+import { CRXDataTable, CRXColumn, CRXToaster, CRXGlobalSelectFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
@@ -19,6 +19,7 @@ import {
   onClearAll,
   onSaveHeadCellData,
   onSetHeadCellVisibility,
+  onMultipleCompare,
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
@@ -56,6 +57,12 @@ type DateTimeObject = {
   value: string;
   displayText: string;
 };
+
+interface renderCheckMultiselect {
+  label?: string,
+  id?: string,
+
+}
 
 const User: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -111,6 +118,7 @@ const User: React.FC = () => {
     setData();
   }, [users]);
 
+  
   const searchText = (
     rowsParam: User[],
     headCells: HeadCellProps[],
@@ -231,6 +239,104 @@ const User: React.FC = () => {
       </CRXColumn>
     );
   };
+  function findUniqueValue(value: any, index: any, self: any) {
+    
+    return self.indexOf(value) === index;
+}
+  const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:User[]) => {
+
+    if(colIdx === 5) {
+      
+        console.log("initialRows",initialRows)
+        let statuslist: any = [];
+
+        if (initialRows !== undefined) {
+          if (initialRows.length > 0) {
+            initialRows.map((x: User) => {
+              statuslist.push(x.status);
+            });
+          }
+        }
+       
+        statuslist = statuslist.filter(findUniqueValue);
+        let status: any = [{ label: "No Status" }];
+        statuslist.map((x: string) => {
+          status.push({ label: x });
+        });
+        const settingValues = (headCell: HeadCellProps) => {
+          let val: any = [];
+          if (headCell.headerArray !== undefined)
+            val = headCell.headerArray
+              .filter((v) => v.value !== "")
+              .map((x) => x.value);
+          else val = [];
+          return val;
+        };
+
+    return (
+        <div>
+            <CRXGlobalSelectFilter
+            id="multiSelect"
+            multiple={true}
+            value={settingValues(headCells[colIdx])}
+            onChange={(
+              e: React.SyntheticEvent,
+              option: renderCheckMultiselect[]
+            ) => {
+              return changeMultiselect(e, option, colIdx);
+            }}
+            options={status}
+            CheckBox={true}
+            checkSign={false}
+            open={open}
+            theme="dark"
+            clearSelectedItems={(
+              e: React.SyntheticEvent,
+              options: renderCheckMultiselect[]
+            ) => deleteSelectedItems(e, options)}
+            getOptionLabel={(option: renderCheckMultiselect) =>
+              option.label ? option.label : " "
+            }
+            getOptionSelected={(
+              option: renderCheckMultiselect,
+              label: renderCheckMultiselect
+            ) => option.label === label.label}
+            onOpen={(e: React.SyntheticEvent) => {
+              return openHandler(e);
+            }}
+            noOptionsText="No Status"
+          />
+        </div>
+    )
+    }
+
+}
+const changeMultiselect = (
+  e: React.SyntheticEvent,
+  val: renderCheckMultiselect[],
+  colIdx: number
+) => {
+  let value: any[] = val.map((x) => {
+    let item = {
+      value: x.label,
+    };
+    return item;
+  });
+  onSelection(value, colIdx);
+  headCells[colIdx].headerArray = value;
+};
+const deleteSelectedItems = (
+  e: React.SyntheticEvent,
+  options: renderCheckMultiselect[]
+) => {
+  setSearchData([]);
+  let headCellReset = onClearAll(headCells);
+  setHeadCells(headCellReset);
+};
+const openHandler = (_: React.SyntheticEvent) => {
+  console.log("onOpen");
+  //setOpen(true)
+};
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -301,7 +407,7 @@ const User: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: User[]) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       minWidth: "112",
       maxWidth: "100",
       visible: true,
@@ -345,6 +451,7 @@ const User: React.FC = () => {
     },
   ]);
   const searchAndNonSearchMultiDropDown = (
+    
     rowsParam: User[],
     headCells: HeadCellProps[],
     colIdx: number,
@@ -355,7 +462,6 @@ const User: React.FC = () => {
         prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
       );
     };
-
     const onSetHeaderArray = (v: ValueString[]) => {
       headCells[colIdx].headerArray = v;
     };
@@ -453,12 +559,22 @@ const User: React.FC = () => {
           el.columnName === "firstName" ||
           el.columnName === "lastName" ||
           el.columnName === "email" ||
-          el.columnName === "groups" ||
-          el.columnName === "status"
+          el.columnName === "groups" 
         )
           dataRows = onTextCompare(dataRows, headCells, el);
         if (el.columnName === "lastLogin")
           dataRows = onDateCompare(dataRows, headCells, el);
+
+        if (el.columnName === "status") {
+            dataRows = onMultipleCompare(dataRows, headCells, el);
+            if (el.value.includes("No Status")) {
+              reformattedRows
+                .filter((i) => i.status.length === 0)
+                .map((x: User) => {
+                  dataRows.push(x);
+                });
+            }
+          }
       });
       setRows(dataRows);
     }
@@ -565,6 +681,7 @@ const User: React.FC = () => {
           getSelectedItems={(v: User[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
           onHeadCellChange={onSetHeadCells}
+          initialRows={reformattedRows}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
           dragVisibility={false}
