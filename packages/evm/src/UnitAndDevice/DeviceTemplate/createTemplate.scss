@@ -3,7 +3,7 @@
   margin-left: 67px;
   position: relative;
 
-  div[role="tabpanel"] {
+  div[role='tabpanel'] {
     border-top: 1px solid #333;
     margin-top: -2px;
   }
@@ -69,7 +69,6 @@
       margin-left: auto;
       margin-right: auto;
       position: relative;
-
       div {
         &:nth-child(1) {
           display: flex;
@@ -216,7 +215,7 @@
       margin-left: auto;
       margin-right: auto;
       position: relative;
-      input[type="number"] {
+      input[type='number'] {
         -moz-appearance: textfield;
       }
       input::-webkit-outer-spin-button,
@@ -443,7 +442,7 @@
           background-color: transparent;
           border-radius: 3px;
           &:after {
-            content: "";
+            content: '';
             position: absolute;
             display: none;
           }
@@ -490,6 +489,8 @@
           color: #333333;
           margin-top: 4px;
         }
+      }
+      .UiRadioLabel {
       }
       .containerRadio {
         display: block;
@@ -541,7 +542,7 @@
         border: 2px solid #d1d2d4;
         border-radius: 50%;
         &:after {
-          content: "";
+          content: '';
           position: absolute;
           display: none;
         }

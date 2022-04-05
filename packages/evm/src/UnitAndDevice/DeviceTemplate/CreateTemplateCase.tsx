@@ -262,18 +262,19 @@ export const CreateTempelateCase = (props: any) => {
                   </div>
 
 
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-            className="CRXTooltip_form crxTooltipDevice"
-            iconName="fas fa-info-circle"
-            title={formObj.hintvalue}
-            placement="right"
-          />
-          ) : null}
-          </div>
-        </div>
-        </div>
-        <div className="UiColumnSpacer"></div>
+                  {formObj.hinttext == true ? (
+                    <CRXTooltip
+                      className="CRXTooltip_form"
+                      iconName="fas fa-info-circle"
+                      title={formObj.hintvalue}
+                      placement="right"
+                    />
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </span>
+          <div className="UiColumnSpacer"></div>
         </>
       );
     case "time":
@@ -350,19 +351,24 @@ export const CreateTempelateCase = (props: any) => {
 
                       </label>
 
-                                            {formObj.hinttext == true ? (
-                                              <CRXTooltip
-                                                iconName="fas fa-info-circle"
-                                                title={formObj.hintvalue}
-                                                placement="right"
-                                                className="crxTooltipDevice"
-                                              />
-                                            ) : null}
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div style={{ color: "red" }}>
-                {formObj.label + " is " + msg}
+                      {formObj.hinttext == true ? (
+                        <CRXTooltip
+                          iconName="fas fa-info-circle"
+                          title={formObj.hintvalue}
+                          placement="right"
+                        />
+                      ) : null}
+                      <ErrorMessage
+                        name={formObj.key}
+                        render={(msg) => (
+                          <div style={{ color: "red" }}>
+                            {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                          </div>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="UiColumnRadioSpacer"></div>
             </>
@@ -399,34 +405,28 @@ export const CreateTempelateCase = (props: any) => {
                           key={key}
                         >{opt.label}{" "}</MenuItem>
 
-                <option
-                  style={{ width: "50%" }}
-                  value={opt.value}
-                  key={key}
-                  selected={true}
-                >
-                  {opt.label}{" "}
-                </option>
-              )
-            )}
-          </Field>
-          <i className="fas fa-sort-down"></i>
-          </div>
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-              iconName="fas fa-info-circle"
-              title={formObj.hintvalue}
-              placement="right"
-              className="crxTooltipDevice"
-            />
-          ) : null}
-          </div>
-          <div>
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div style={{ color: "red" }}>
-                {formObj.label + " is " + msg}
+                        // <option
+                        //   style={{ width: "50%" }}
+                        //   value={opt.value}
+                        //   key={key}
+                        //   selected={true}
+                        // >
+                        //   {opt.label}{" "}
+                        // </option>
+                      )
+                    )}
+                  </Field>
+                 
+                  <span className='UicustomMultiHint'>
+                    {formObj.hinttext == true ? (
+                      <CRXTooltip
+                        iconName="fas fa-info-circle"
+                        title={formObj.hintvalue}
+                        placement="right"
+                      />
+                    ) : null}
+                  </span>
+                </div>
               </div>
               <div>
                 <ErrorMessage
@@ -457,40 +457,38 @@ export const CreateTempelateCase = (props: any) => {
             </label>
           </div>
 
-          <Field
-            name={formObj.key}
-            id={formObj.id}
-            component={"select"}
-            multiple={true}
-          >
-            {formObj.options.map(
-              (opt: any, key: string) => (
-                <option
-                  style={{ width: "50%" }}
-                  value={opt.value}
-                  key={key}
-                >
-                  {opt.label}{" "}
-                </option>
-              )
-            )}
-          </Field>
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-              iconName="fas fa-info-circle"
-              title={formObj.hintvalue}
-              placement="right"
-              className="crxTooltipDevice"
-            />
-          ) : null}
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div style={{ color: "red" }}>
-                {formObj.label + " is " + msg}
-              </div>
-            )}
-          />
+          <div className='multiSelectUiRight'>
+            <Field
+              name={formObj.key}
+              id={formObj.id}
+              as={CustomizedMultiSelectForFormik}
+            // multiple={true}
+            >
+              {formObj.options.map(
+                (opt: any, key: string) => (
+
+                  <MenuItem key={opt.label} value={opt.value}>
+                    {/* <Checkbox checked={name.indexOf(opt.value) > -1} /> */}
+                    <ListItemText primary={opt.label} />
+                  </MenuItem>
+
+                  // <option
+                  //   style={{ width: "50%" }}
+                  //   value={opt.value}
+                  //   key={key}
+                  // >
+                  //   {opt.label}{" "}
+                  // </option>
+                )
+              )}
+            </Field>
+            {formObj.hinttext == true ? (
+              <CRXTooltip
+                iconName="fas fa-info-circle"
+                title={formObj.hintvalue}
+                placement="right"
+              />) : (<></>)}
+          </div>
         </div>
       );
     case "checkbox":
@@ -525,26 +523,30 @@ export const CreateTempelateCase = (props: any) => {
                             customEvent(event, setFieldValue, formObj.dependant);
                           }
 
-            }}
-            validateOnChange
-          />
-              <span className="checkmark" ></span>
-    <p className="checkHelperText">{formObj.checkHelperText}</p>
-          </label>
-          <div>{formObj.checkBoxText ? <p>{formObj.checkBoxText}</p> : ''}</div>
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-              iconName="fas fa-info-circle"
-              title={formObj.hintvalue}
-              placement="right"
-              className="crxTooltipDevice"
-            />
-          ) : null}
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div style={{ color: "red" }}>
-                {formObj.label + " is " + msg}
+                        }}
+                        validateOnChange
+                      />
+                      <span className="checkmark" ></span>
+                      <p className="checkHelperText">{formObj.checkHelperText}</p>
+                    </label>
+                    <div>{formObj.checkBoxText ? <p>{formObj.checkBoxText}</p> : ''}</div>
+                    {formObj.hinttext == true ? (
+                      <CRXTooltip
+                        iconName="fas fa-info-circle"
+                        title={formObj.hintvalue}
+                        placement="right"
+                      />
+                    ) : null}
+                    <ErrorMessage
+                      name={formObj.key}
+                      render={(msg) => (
+                        <div style={{ color: "red" }}>
+                          {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                        </div>
+                      )}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <div className={'UiColumnSpacerCheckBox'}></div>
@@ -606,35 +608,6 @@ export const CreateTempelateCase = (props: any) => {
                 <div className="UiColumnSpacer"></div>
               </div>
             </div>
-            <div className={` ${formObj.hinttext === true ? 'UiNumberSelectorRight ' : "UiNumberSelectorRight UiNumberSelectorNoHint" }`}>
-          <Field
-            name={formObj.key}
-            id={formObj.id}
-            type={formObj.type}
-          />
-          <label className="timeShow">
-            {formObj.seconds === true
-              ? "seconds"
-              : "minutes"}
-          </label>
-          <p className="checkSelectorText">{formObj.checkHelperText}</p>
-          {formObj.hinttext == true ? (
-            <CRXTooltip
-              iconName="fas fa-info-circle"
-              title={formObj.hintvalue}
-              placement="right"
-              className="crxTooltipDevice"
-            />
-          ) : null}
-          <ErrorMessage
-            name={formObj.key}
-            render={(msg) => (
-              <div className={formObj.checkHelperText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
-                <i className="fas fa-exclamation-circle"></i> {formObj.label + " is " + msg}
-                
-              </div>
-            )}
-          />
           </div>
         </div>
       );
