@@ -33,7 +33,7 @@ return (
                                             />
           if (isAuthenticated()){
             if( getModuleIds().includes(moduleId) || moduleId === 0 ){ // moduleId === 0 this is temporary logic and will be removed once all the permission included into application.
-              return component;
+               return component;
             }else{
               return redirectToNotFoundComponent;
             }  

@@ -2,9 +2,6 @@ iframe {
   display: none;
 }
 
-.CRXPageTitle {
-  margin-top: -13px;
-}
 .checkIcon {
   display: none;
 }
@@ -83,7 +80,7 @@ iframe {
         .col-three {
           background-color: #ffffff !important;
           ::selection {
-            // background-color: red !important;
+            background-color: red !important;
           }
         }
         &:hover {
@@ -147,18 +144,6 @@ iframe {
       &:nth-child(2) {
         tr {
           th {
-            &:nth-child(1) {
-              position: relative;
-              &::before {
-                position: absolute;
-                font-family: 'Font Awesome 5 Pro';
-                content: '\f142';
-                font-size: 23px;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-              }
-            }
             &:nth-child(3) {
               input {
                 background-color: #d1d2d4 !important;
@@ -347,13 +332,6 @@ iframe {
       content: '';
       width: 100%;
       height: 100%;
-    }
-  }
-  td {
-    &:nth-child(4),
-    &:nth-child(5),
-    &:nth-child(6) {
-      color: #d1d2d4 !important;
     }
   }
 }

@@ -10,6 +10,7 @@ const BASE_URL_USER_SERVICE = process.env.REACT_APP_USER_SERVICE_URL;
 export const BASE_URL_UNIT_SERVICE = process.env.REACT_APP_UNIT_SERVICE_URL
 const BASE_URL_SETUP_SERVICE = process.env.REACT_APP_SETUP_SERVICE_URL
 const REACT_APP_EVIDENCE_SERVICE_URL = process.env.REACT_APP_EVIDENCE_SERVICE_URL
+const REACT_APP_FILE_SERVICE_URL = process.env.REACT_APP_FILE_SERVICE_URL
 
 export const EVIDENCE_PREDITIVE_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/predictive`
 
@@ -69,8 +70,12 @@ export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/Container
 export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 export const TEMPLATE_CONFIGURATION_DELETE_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/`
 export const DEVICETYPE_GET_URL = `${BASE_URL_UNIT_SERVICE}/DeviceTypes?Page=1&Size=100`
-
 export const STATIONINFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationInfo?Page=1&Size=100`
 export const DATA_RETENTION_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataRetention`
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const STATIONS_GET_ALL = `${BASE_URL_UNIT_SERVICE}/Stations`
+export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
+export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
+
+export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
+export const STATION = `${BASE_URL_UNIT_SERVICE}/Stations`;

@@ -38,6 +38,8 @@ interface Props {
   className: string;
   open: boolean;
   setShowSucess: any;
+  persist?: boolean;
+  children?: HTMLElement
 }
 const CRXAlert: React.FC<Props> = ({
   message,
@@ -45,7 +47,7 @@ const CRXAlert: React.FC<Props> = ({
   alertType = "inline",
   showCloseButton = true,
   className,
-  open, setShowSucess
+  open, setShowSucess, persist, children
 }) => {
   const classes = useStyles();
   const [openState, setOpenState] = React.useState(open);
@@ -81,7 +83,7 @@ const CRXAlert: React.FC<Props> = ({
       if (type === "success") {
         setOpenState(false);
       }
-      else if (type === "info") {
+      else if (type === "info" && persist === null) {
         setOpenState(false);
       }
     }, 7000);
@@ -98,7 +100,9 @@ const CRXAlert: React.FC<Props> = ({
   };
 
   return (
+
     <div className={classes.root + " crx-message-alert"}>
+
       {alertType === "inline" ? (
         <>
           <Fade in={openState}>
@@ -122,7 +126,7 @@ const CRXAlert: React.FC<Props> = ({
             >
               <span>
                 <span>{messageType[type]}: </span>
-                {message}
+                {children ?? message}
               </span>
             </Alert>
           </Fade>

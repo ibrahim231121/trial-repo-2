@@ -128,6 +128,7 @@ const CRXInput = ({
             onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
               checkError(e.target.value);
             }}
+            
             value={value}
             defaultValue={defaultValue}
             name={name}

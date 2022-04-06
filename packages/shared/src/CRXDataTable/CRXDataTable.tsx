@@ -91,7 +91,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showCountText,
   showTotalSelectedText,
   showCustomizeIcon,
-  lightMode
+  lightMode,
+  showHeaderCheckAll
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -366,7 +367,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       showCheckBoxesCol={showCheckBoxesCol}
                       showActionCol={showActionCol}
                       showActionSearchHeaderCell={showActionSearchHeaderCell}
-                      showHeaderCheckAll={false}
+                      showHeaderCheckAll={showHeaderCheckAll}
                       lightMode={lightMode}
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}

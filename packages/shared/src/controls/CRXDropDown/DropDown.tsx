@@ -49,7 +49,7 @@ export default DropDown;
 
 // <DropDown
 // value={selectOption}
-// onChange={(e) => console.log(e.target.value)}
+// onChange={(e) => 
 // options={[
 //   { value: "jaffar", displayText: "jaffar" },
 //   { value: "raza", displayText: "raza" },

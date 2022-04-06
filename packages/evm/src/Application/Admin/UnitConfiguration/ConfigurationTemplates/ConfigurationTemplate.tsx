@@ -120,7 +120,6 @@ const ConfigurationTemplates: React.FC = () => {
   const [reformattedRows, setReformattedRows] = React.useState<ConfigTemplate[]>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false)
-
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
     if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
@@ -556,7 +555,7 @@ const ConfigurationTemplates: React.FC = () => {
             showCountText={false}
             columnVisibilityBar={true}
             dragVisibility={false}
-            showCheckBoxesCol={false}
+            showCheckBoxesCol={true}
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}
@@ -576,5 +575,6 @@ const ConfigurationTemplates: React.FC = () => {
     </div>
   )
 }
+
 
 export default ConfigurationTemplates

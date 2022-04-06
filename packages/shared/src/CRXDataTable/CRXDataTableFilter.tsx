@@ -3,6 +3,7 @@ import Menu from '@material-ui/core/Menu';
 import CRXButton from '../controls/CRXButton/CRXButton'
 import CRXTypography from '../CRXTypography/Typography'
 import IconButton from '@material-ui/core/IconButton';
+import CRXTooltip  from "../controls/CRXTooltip/CRXTooltip";
 import Grid from '@material-ui/core/Grid';
 import {useTranslation} from 'react-i18next'; 
 import { DataTableClearFilterProps } from "./CRXDataTableTypes"
@@ -32,7 +33,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAnchorEl(e.currentTarget)}
                 disableRipple={true}
             >
-                <i className="fas fa-filter"></i>
+                <CRXTooltip iconName="fas fa-filter" className='crxTooltipIcon' placement="top-start" arrow={false} title="filter"></CRXTooltip>
             </IconButton>
             {/* <ClickAwayListener onClickAway={() => setAnchorEl(filterOuter)}> */}
             <Menu

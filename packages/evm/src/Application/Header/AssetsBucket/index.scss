@@ -136,8 +136,21 @@
 .bucketIcon {
   color: #d1d2d4;
   font-size: 18px !important;
+  &.crxTooltipAll {
+    font-size: 14px !important;
+    top: 3px;
+  }
 }
-
+.crxSearchTooltip {
+  &.crxTooltipAll {
+    margin-left: -20px;
+  }
+}
+.crxTooltipNotificationIcon {
+  &.crxTooltipAll {
+    margin-left: -27px;
+  }
+}
 .bucketIconButton {
   padding: 4px 0px 4px 13px !important;
   line-height: 0px !important;
@@ -416,6 +429,32 @@
             border-right: 1px solid #ccc !important;
             border-bottom: 1px solid #ccc !important;
           }
+        } 
+          &.col-two {
+            left: 0px;
+            position: static !important;
+          }
+          &.col-three {
+            left: 60px;
+            position: static;
+          }
+      }
+      th {
+        &.CRXDataTableLabelCell {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
+        }
+        &.TableSearchAbleHead {
+          &:first-child {
+            left: 0px !important;
+          }
+          &:nth-child(2) {
+            left: 58px !important;
+          }
         }
       }
       th:nth-child(4) {
@@ -427,6 +466,7 @@
           right: 4px;
         }
       }
+ 
     }
   }
   &::-webkit-scrollbar {
@@ -599,4 +639,35 @@ body {
 }
 .bucketDataTable.crxMessageShow {
   max-height: calc(73vh - 110px);
+}
+.crxAccordionBucket {
+.MuiAccordionDetails-root {
+  display: block;
+  padding-top: 30px;
+  .crxProgressbarBucket {width: 100%;text-align: left;
+    padding:  20px 0;
+  &:first-child {
+    padding: 0;
+  }
+  }
+
+}
+}
+
+.btn-center{
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 10px;
+}
+.crx-alert-notification.file-upload {
+  place-items: initial;
+  padding: 10px 15px;
+  max-height: 100%;
+}
+
+.file-upload-hide{
+  display: none !important;
+}
+.file-upload-show{
+  display: block !important;
 }

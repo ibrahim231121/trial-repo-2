@@ -57,9 +57,9 @@ const CRXCheckBox: React.FC<Props> = ({
     if(selectedRow == true && checkBoxSelected == "crxSelectedDark" && checked == true) {
       setCheckBoxIconClass("fal fa-check-square crxCheckForDarBg");
     } else if(selectedRow == true && checkBoxSelected == "crxSelectedLight" && checked == true) {
-        setCheckBoxIconClass("fas fa-check-square");
+        setCheckBoxIconClass("fal fa-check-square");
     }else {
-      setCheckBoxIconClass("fas fa-check-square")
+      setCheckBoxIconClass("fal fa-check-square")
     }
   },[checked]);
   return (

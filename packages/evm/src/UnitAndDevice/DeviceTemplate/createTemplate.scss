@@ -1,99 +1,969 @@
-.CrxCreateTemplate {    
-    margin-top: 129px;
-    margin-left: 67px;
+.CrxCreateTemplate {
+  margin-top: 161px;
+  margin-left: 67px;
+  position: relative;
+
+  div[role='tabpanel'] {
+    border-top: 1px solid #333;
+    margin-top: -2px;
+  }
+
+  .MuiTab-root {
+    padding: 0 25px;
+    &:nth-child(1) {
+      width: 226px;
+      min-width: 226px;
+    }
+    &:nth-child(2) {
+      width: 226px;
+      min-width: 226px;
+    }
+  }
+  .MuiTab-textColorInherit {
+    width: auto;
+  }
+
+  .rc-menu-button {
+    float: right;
+    background-color: transparent;
+    font-size: 23px;
+    position: absolute;
+    color: #333333;
+    right: 0;
+    top: -82px;
+    border: none;
+    z-index: 60000;
+    height: 34px;
+    width: 36px;
+  }
+  .tabCreateTemplate {
     position: relative;
-
-    div[role="tabpanel"]{
-        border-top: 1px solid #333;
-        margin-top: -2px;
-    } 
-
-    .MuiTab-root  {
-            padding: 0 25px;
+    .MuiTab-wrapper {
+      text-transform: uppercase;
+    }
+    .MuiTabs-root {
+      position: absolute;
+      top: -33px;
+    }
+    .DeviceIndicator {
+      color: #333333;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-style: italic;
+      line-height: 20px;
+      font-weight: 400;
+      margin-left: 75px;
+      margin-top: 18px;
+      margin-bottom: 44px;
+      span {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        display: inline-block;
+        margin-right: 4px;
+      }
+    }
+    .UiLabelTextbox {
+      width: 749px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      div {
         &:nth-child(1) {
-            padding: 0 30px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         }
-        &:nth-child(2) {
-            padding: 0 60px;
-        }
-    }
-    .MuiTab-textColorInherit { 
-        width: auto;
-    }
-
-
-    @media(max-width:1200px) {
-        .MuiTab-root {
-            &:nth-child(1) {
-                padding: 0 20px !important;
-            }
-            &:nth-child(2) {
-                padding: 0 25px !important;
-            }
-            &:nth-child(3) {
-                padding: 0 50px !important;
-            }
-        }
-    }
-
-    @media(max-width:1090px) {
-        .MuiTab-root {
-            &:nth-child(1) {
-                padding: 0 34px !important;
-            }
-            &:nth-child(2) {
-                padding: 0 43px !important;
-            }
-            &:nth-child(3) {
-                padding: 0 17px !important;
-            }
-            &:nth-child(4) {
-                padding: 0 26px !important;
-            }
-        }
-    }
-    .rc-menu-button {
-        float: right;
-        background-color: transparent;
-        font-size: 18px;
-        position: absolute;
-        right: 0;
-        top: -40px;
-        border: 1px solid;
-        z-index: 60000;
-        height: 34px;
-        width: 36px;
-        border-radius: 26px;
-    }
-    .tabCreateTemplate {
+      }
+      label {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        line-height: 16.8px;
+        font-size: 14px;
         position: relative;
-        .MuiTabs-root {
+        width: 180px;
+        display: inline-block;
+        margin-left: -3px;
+        label {
+          color: #333333;
+          font-size: 20px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 700;
+          position: absolute;
+          top: -6px;
+          margin-left: 6px;
+        }
+      }
+      input {
+        height: 30px;
+        width: 430px;
+        border-radius: 0px;
+        border: 1px solid #d1d2d4;
+        background-color: #ffffff;
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+        &[value] {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          padding-left: 12px;
+        }
+      }
+      .UiLabelTextboxRight {
+        position: relative;
+        margin-right: 1px;
+        .UiLabelTextboxError {
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #aa1d1d;
+          position: absolute;
+          top: 33px;
+          left: 0px;
+          i {
+            color: #aa1d1d;
+            font-size: 14px;
+            margin-right: 1px;
+          }
+        }
+      }
+    }
+    .UiStationSelect {
+      // width: 675px;
+      width: 746px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      .UiStationSelectLabel {
+        margin-left: -5px !important;
+      }
+      div {
+        &:nth-child(1) {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+      .UicustomMulti {
+        position: relative;
+        width: 427px;
+        border: 1px solid #d1d2d4;
+        i {
+          position: absolute;
+          right: 4px;
+          font-size: 21px;
+          width: 16px;
+          background: white;
+          top: 3px;
+        }
+        .UicustomMultiHint {
+          position: relative;
+          i {
             position: absolute;
-            top: 0;
+            font-size: 14px;
+            color: #333333;
+            right: -32px;
+          }
         }
-        .tctContent {
-            div[class*="makeStyles-root"] {
-                padding-top: 50px;
+      }
+
+      label {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        line-height: 16.8px;
+        font-size: 14px;
+        position: relative;
+        width: 180px;
+        display: inline-block;
+        margin-left: -1px;
+        label {
+          color: #333333;
+          font-size: 20px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 700;
+          position: absolute;
+          top: -6px;
+          margin-left: 6px;
+        }
+      }
+      select {
+        height: 30px;
+        margin-right: -1px;
+        width: 430px;
+        border: 1px solid #d1d2d4;
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        padding-left: 12px;
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+      }
+    }
+    .UiNumberSelector {
+      // width: 682px;
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      input[type='number'] {
+        -moz-appearance: textfield;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      label {
+        &:nth-child(1) {
+          color: #333333;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 400;
+          line-height: 16.8px;
+          font-size: 14px;
+          position: relative;
+          display: inline-block;
+          label {
+            color: #333333;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            position: absolute;
+            top: -6px;
+            margin-left: 6px;
+            width: 20px;
+          }
+        }
+      }
+      input {
+        height: 30px;
+        width: 140px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0;
+        &[value] {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          padding-left: 12px;
+        }
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+      }
+      .timeShow {
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 17px;
+        margin-right: 12px;
+      }
+      i {
+        font-size: 14px;
+        color: #333333;
+        position: absolute;
+        top: 8px;
+      }
+      .numberIconCircle {
+        position: relative !important;
+        top: 1px !important;
+      }
+      .checkSelectorText {
+        position: absolute;
+        top: 15px;
+        width: 500px;
+        left: 1px;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #74767c;
+        font-style: italic;
+      }
+    }
+    .UiColumnSpacer {
+      height: 34px;
+    }
+    .UiColumnSpacerCheckBox {
+      height: 54px;
+    }
+    .UiStationSelectDepended {
+      margin-top: -32px;
+      margin-bottom: -4px;
+    }
+    .checkHelperTextMain {
+      margin-bottom: 17px;
+    }
+
+    .UiNumberSelectorMain {
+      display: flex;
+      justify-content: space-between;
+      .UiNumberSelectorRight {
+        margin-right: 198px;
+        // margin-right: 201px;
+        position: relative;
+        .UiNumberSelectorError {
+          position: absolute;
+          width: 400px;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #aa1d1d;
+          top: 33px;
+          i {
+            color: #aa1d1d;
+            font-size: 14px;
+            margin-right: 1px;
+          }
+        }
+      }
+      // .UiNumberSelectorNoHint {
+      //   // left: -14px;
+      //   left: -11px;
+      // }
+    }
+    .UiCheckbox {
+      // width: 678px;
+      width: 756px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .UiCheckboxDepend {
+      margin-top: -21px;
+      // margin-bottom: 22px;
+    }
+    .UiCheckboxMain {
+      display: flex;
+      justify-content: space-between;
+      .UiCheckboxLeft {
+        .labelAdded {
+          position: relative;
+          label {
+            color: #333333;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            position: absolute;
+            top: -6px;
+            margin-left: 6px;
+          }
+        }
+        label {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+      }
+      .UiCheckboxRight {
+        position: relative;
+        width: 400px;
+        .UiCheckboxRightPosition {
+          // position: absolute;
+        }
+        div {
+          display: inline-block;
+          p {
+            margin-top: 0;
+            margin-bottom: 0;
+            color: #333333;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+        }
+
+        .containerCheck {
+          display: block;
+          position: relative;
+          cursor: pointer;
+          font-size: 22px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          right: 34px;
+          top: 2px;
+          input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+            &:checked {
+              ~ {
+                .checkmark {
+                  background-color: #333333;
+                  border: 1px solid #333333;
+                  &:after {
+                    display: block;
+                  }
+                }
+              }
             }
+          }
+
+          .checkmark {
+            &:after {
+              left: 5px;
+              top: 1px;
+              width: 3px;
+              height: 8px;
+              border: solid white;
+              border-radius: 1px;
+              border-width: 0 2px 2px 0;
+              transform: rotate(45deg);
+            }
+          }
+          .checkHelperText {
+            position: absolute;
+            top: 18px;
+            left: 3px;
+            width: 470px;
+            color: #74767c;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: italic;
+          }
         }
+        .checkmark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 17px;
+          width: 16px;
+          border: 1px solid #d1d2d4;
+          background-color: transparent;
+          border-radius: 3px;
+          &:after {
+            content: '';
+            position: absolute;
+            display: none;
+          }
+        }
+        i {
+          font-size: 14px;
+          color: #333333;
+          margin-left: 14px;
+        }
+      }
     }
-    .rc-menu__arrow {
-        display: none;
+    .UiColumnRadioSpacer {
+      margin-top: -16px;
     }
-    .rc-menu {
-        left: 1562px !important;
-        top: -18px !important;
-        z-index: 60000 !important;
-        
-    }
-    .tctButton {
+    .UiRadioMain {
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 28px;
+      .Enabled {
+        position: relative;
         display: flex;
-        justify-content: space-between;
-        margin-top: 35px;
-        .tctLeft {
-            button {
-                margin-right: 30px;
-            }
+        width: 432px;
+        justify-content: flex-start;
+        .MutedText {
+          position: relative;
+          margin-bottom: 58px;
+          .labelMutedText {
+            position: absolute;
+            width: 900px;
+            top: 9px;
+            color: #74767c;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: italic;
+            left: -36px;
+          }
         }
+        i {
+          margin-left: 12px;
+          font-size: 14px;
+          color: #333333;
+          margin-top: 4px;
+        }
+      }
+      .UiRadioLabel {
+      }
+      .containerRadio {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        margin-left: -2px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        input {
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+
+          &:checked {
+            ~ {
+              .checkmarkRadio {
+                border: 2px solid #333333;
+                &:after {
+                  display: block;
+                }
+              }
+            }
+          }
+        }
+
+        .checkmarkRadio {
+          &:after {
+            top: 3px;
+            left: 3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333333;
+          }
+        }
+      }
+      .checkmarkRadio {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        // background-color: #eee;
+        border: 2px solid #d1d2d4;
+        border-radius: 50%;
+        &:after {
+          content: '';
+          position: absolute;
+          display: none;
+        }
+      }
     }
+    .HeartbeatRecordingBco4 {
+      margin-bottom: 32px;
+    }
+  }
+  .UiNumberSelectorMinute {
+    .UiNumberSelectorRight {
+      margin-right: 215px !important;
+      position: relative;
+    }
+  }
+
+  .UiNumberSelectorRight {
+    margin-right: 212px !important;
+    position: relative;
+  }
+
+  .rc-menu__arrow {
+    display: none;
+  }
+  .rc-menu {
+    top: -110px !important;
+    z-index: 60000 !important;
+    width: 167px !important;
+    .crx-menu-list {
+      width: 129px !important;
+    }
+    li {
+      a {
+        &:hover {
+          box-shadow: none !important;
+        }
+      }
+    }
+    .crx-menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .tctButton {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 35px;
+    .tctLeft {
+      button {
+        margin-right: 30px;
+      }
+      .tctSaveEnable {
+        background-color: #231f20 !important;
+        border: 1px solid #231f20;
+        color: #f5f5f5;
+        &:hover {
+          background-color: #6e6e6e !important;
+          border: 1px solid #6e6e6e;
+        }
+        &:active {
+          background-color: #231f20 !important;
+          border: 1px solid #231f20;
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+    button {
+      width: 80px;
+      height: 30px;
+      border: 1px solid #878787;
+      color: #333333;
+      &:hover {
+        background-color: #f5f5f5 !important;
+        border: 1px solid #333333;
+        color: #333333;
+      }
+      &:active {
+        background-color: #231f20 !important;
+        color: #f5f5f5 !important;
+      }
+    }
+  }
+  .multiSelectUi {
+    width: 756px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between;
+    .multiSelectUiLabel {
+      color: #333333;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .multiSelectUiStar {
+      color: #333333;
+      font-size: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    select {
+      width: 430px;
+      height: 30px;
+      border: 1px solid #d1d2d4;
+      margin-right: 4px;
+    }
+  }
+  .multiSelectUiDepend {
+    margin-top: -32px;
+  }
+}
+.MainHeadingDevices {
+  .Controls {
+    margin-top: 9px;
+    margin-bottom: 30px;
+  }
+  .Location {
+    margin-top: 8px;
+    margin-bottom: 35px;
+  }
+}
+.UiNumberSelectorDepend {
+  margin-top: -30px;
+  margin-bottom: 10px;
+}
+.checkHelperTextPresent {
+  top: 47px !important;
+}
+.formMainHeading {
+  color: #333333;
+  font-size: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  margin-top: -7px;
+  margin-left: 160px;
+  margin-bottom: 50px;
+}
+.ConfigUpdateClass {
+  margin-top: 28px;
+}
+.NumberFieldError {
+  margin-bottom: 19px;
+  input {
+    border: 2px solid #aa1d1d !important;
+  }
+}
+.textFieldError {
+  margin-bottom: 21px;
+  input {
+    border: 2px solid #aa1d1d !important;
+  }
+}
+
+.VideoPreBuffer {
+  margin-top: 27px;
+}
+.muteRadioDevice {
+  margin-top: -25px;
+}
+.EnableGpsClass {
+  margin-top: -16px;
+  margin-bottom: 4px;
+}
+.starikRed {
+  color: #aa1d1d;
+}
+.textBoxRed {
+  color: #aa1d1d;
+}
+
+// incar template
+.IncarTemplatePage {
+  .CrxCreateTemplate {
+    .MuiTab-root {
+      &:nth-child(1),
+      &:nth-child(2),
+      &:nth-child(3),
+      &:nth-child(4) {
+        padding: 0;
+        width: 226px;
+        height: 34px;
+      }
+    }
+
+    .CategoriesIncar {
+      margin-top: 28px;
+    }
+    .UpdateIntervalIncar {
+      margin-top: 60px;
+      .NumberFieldError {
+        margin-bottom: 48px;
+      }
+    }
+    .RetentionPolicyIncar {
+      margin-top: 30px;
+    }
+    .MaximumVideoLengthIncar {
+      margin-top: 30px;
+    }
+    .GPSFrequencyIncar {
+      margin-top: 30px;
+    }
+    .RebootIncar {
+      margin-top: 27px;
+    }
+    .DynamicFormTimeUi {
+      // width: 677px;
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: space-between;
+
+      .DFTUILabel {
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .DFTUIRight {
+        margin-right: 291px;
+        input {
+          width: 140px;
+          height: 30px;
+          border: 1px solid #d1d2d4;
+          background-color: white;
+          padding-left: 12px;
+          padding-right: 12px;
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          &:focus {
+            border: 3px solid #888787;
+            outline: none;
+          }
+        }
+      }
+      .DFTUIRequired {
+        color: #333333;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        margin-left: 6px;
+      }
+    }
+    .DynamicFormTimeUiDepend {
+      margin-top: -32px;
+    }
+    .timeUnitIncar {
+      margin-bottom: 101px;
+    }
+  }
+  .USBGPSIncar {
+    margin-top: -12px;
+  }
+  .PortNameIncar {
+    margin-top: 16px;
+    .timeShow {
+      opacity: 0;
+    }
+
+    i {
+      right: 53px;
+    }
+  }
+  .SerialBaudRateIncar {
+    .timeShow {
+      opacity: 0;
+    }
+
+    i {
+      right: 53px;
+    }
+  }
+
+  .SerialBaudRateIncar {
+    margin-top: 30px;
+    margin-bottom: 45px;
+  }
+  .HardwareMonitoringIncar {
+    margin-top: -15px;
+  }
+  .ShutdownIgnitionIncar {
+    margin-top: 5px;
+  }
+  .voltsDepended {
+    margin-right: 23px;
+  }
+  .BeepDuringIncar {
+    margin-top: 26px;
+  }
+  .SensorRecordingIncar {
+    margin-top: 4px;
+  }
+  .LogoutIncar {
+    margin-top: 27px;
+  }
+  .LogoutTwoIncar {
+    margin-top: -29px;
+  }
+  .USBPortChargeIncar {
+    margin-bottom: 45px;
+  }
+  .cameraSetup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 26px;
+    margin-left: 73px;
+    h1 {
+      color: #333333;
+      font-size: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+    }
+    i {
+      color: #333333;
+    }
+  }
+  .GPSHeadingSpacer {
+    margin-left: 73px !important;
+  }
+  .InterfaceHeadingSpacer {
+    margin-left: 73px !important;
+  }
+  .DeviceTypeIncar {
+    margin-top: 26px;
+  }
+  .PreRecordingDurationIncar {
+    margin-top: 29px;
+  }
+  .BlackboxDirectoryIncar {
+    margin-top: 40px !important;
+    display: inherit;
+  }
+  .MicOffIncar {
+    margin-top: 56px;
+  }
+  .AddCameraIncar {
+    button {
+      height: 30px;
+      width: 134px;
+      color: #333333;
+      border: 1px solid #878787;
+      background-color: white;
+      margin-bottom: 90px;
+      margin-top: 25px;
+      span {
+        font-size: 14px;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+        i {
+          margin-right: 11px;
+          font-size: 11px;
+          color: #333333;
+        }
+      }
+      &:hover {
+        background-color: #f5f5f5 !important;
+        color: #333333 !important;
+      }
+      &:active {
+        background-color: #231f20 !important;
+        border: 1px solid #231f20 !important;
+        color: #f5f5f5 !important;
+        i {
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+  }
+  .AddCameraLineIncar {
+    background-color: #e3e4e5;
+    height: 1px;
+    margin-top: 45px;
+  }
+}
+// incar modal
+.incarMOdalOpen {
+  .MuiDialog-paperScrollPaper {
+    overflow-x: hidden;
+    h6 {
+      color: #333333;
+      font-size: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .modalPara1 {
+      margin-top: 11px;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
+    }
+    .modalPara2 {
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
+      margin-top: 31px !important;
+      margin-bottom: 39px;
+    }
+    .crxConfirmFooterModal {
+      padding: 23px 25px;
+      margin-right: auto;
+      .MuiButton-containedPrimary {
+        margin-right: 25px;
+        color: #d1d2d4 !important;
+        background-color: #333333 !important;
+        &:hover {
+          background-color: #6e6e6e !important;
+          color: #f5f5f5 !important;
+        }
+        &:active {
+          background-color: #231f20 !important;
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+  }
+}
+.multiSelectUiRight {
+  .MuiSelect-select {
+    width: 400px;
+    border: 1px solid #d1d2d4;
+  }
 }

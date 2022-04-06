@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable eqeqeq */
+import React, { useEffect, useLayoutEffect } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
@@ -19,19 +20,56 @@ import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
+import { CreateTempelateCase } from "./CreateTemplateCase";
 
-const re = /[\/]/;
+
+
+var re = /[\/]/;
+
+const applyValidation = (arrayOfObj: any) => {
+  var initialValuesArrayRequiredField: any = [];
+  arrayOfObj.map((x: any) => {                           // Validations Object
+    var validationstring: any;
+    if (x.value.type == "number") {
+      validationstring = Yup.number();
+    }
+    else if (x.value.type == "text") {
+      validationstring = Yup.string();
+    }
+    else if (x.value.type == "select") {
+      validationstring = Yup.string();
+    }
+    if (validationstring) {
+      x.value.validation.map((y: any) => {
+        if (y.key == "required") {
+          validationstring = validationstring.required(y.msg);
+        }
+        if (y.key == "min") {
+          validationstring = validationstring.min(y.value, y.msg);
+        }
+        if (y.key == "max") {
+          validationstring = validationstring.max(y.value, y.msg);
+        }
+      })
+    }
+    initialValuesArrayRequiredField.push({ key: x.key, value: validationstring });
+  })
+
+  return initialValuesArrayRequiredField;
+}
+
 const CreateTemplate = (props: any) => {
-  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const [_FormSchema, setFormSchema] = React.useState({});
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
+  const [cameraFeildArrayCounter, setCameraFeildArrayCounter] = React.useState<number>(1);
+  const [formSchema, setformSchema] = React.useState<any>({});
   const [primary] = React.useState<string>("Yes, close");
   const [secondary] = React.useState<string>("No, do not close");
   const history = useHistory();
-  const historyState = props.location.state;
+  let historyState = props.location.state;
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
@@ -39,9 +77,12 @@ const CreateTemplate = (props: any) => {
   const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
   const formikProps = useFormikContext()
+  const [errCkher, seterrChker] = React.useState<string>("");
+
+  console.log("history", historyState)
   let FormSchema: any = null;
   let templateName: string = "";
-
+  const dispatch = useDispatch();
   if (historyState.deviceType == "BC03") {
     FormSchema = BC03;
   }
@@ -64,11 +105,20 @@ const CreateTemplate = (props: any) => {
   templateName = historyState.deviceType;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
+  let tabs1: { label: keyof typeof FormSchema, index: number }[] = [];
 
   Object.keys(FormSchema).forEach((x, y) => {
     const data = x as keyof typeof FormSchema
     tabs.push({ label: data, index: y })
   })
+  Object.keys(FormSchema).forEach((x, y) => {
+    let data = x as keyof typeof FormSchema
+    if (data == "CameraSetup") {
+      data = "Camera Setup";
+    }
+    tabs1.push({ label: data, index: y })
+  })
+
 
 
   React.useEffect(() => {
@@ -78,19 +128,19 @@ const CreateTemplate = (props: any) => {
     }
 
     dispatch(getStationsAsync());
-    if (historyState.isedit){
+    if (historyState.isedit) {
 
-      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name}));
+      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
       loadData();
     }
-    else{
+    else {
       setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType}));
+      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType }));
     }
 
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
-    } 
+    }
   }, []);
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {
@@ -109,6 +159,8 @@ const CreateTemplate = (props: any) => {
   }, [stations]);
 
 
+
+
   const setRetentionDropdown = () => {
     var retentionOptions: any = [];
     if (retention && retention.length > 0) {
@@ -118,6 +170,11 @@ const CreateTemplate = (props: any) => {
       })
       FormSchema["Unit Settings"].map((x: any, y: number) => {
         if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+      })
+      FormSchema["Primary Device"].map((x: any, y: number) => {
+        if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
           x.options.push(...retentionOptions)
         }
       })
@@ -186,78 +243,241 @@ const CreateTemplate = (props: any) => {
 
       var Property = x.label as keyof typeof FormSchema
       let editT1: Array<any> = [];
+      let cameraFeildArrayCounterValue: number = 1;
+      var counter = 1;
       for (let e0 of dataOfUnit) {
         //configGroup/key/fieldType
-        let val;
+        let val: any;
         if (e0.fieldType == "NumberBox")
           val = parseInt(e0.value);
         else if (e0.fieldType == "CheckBox")
           val = e0.value.toLowerCase() === "true" ? true : false;
+        else if (e0.fieldType == "Multiselect")
+          val = e0.value.split(',')
         else
           val = e0.value;
 
+        var keySplitted = e0.key.split('_');
+        if (keySplitted.length > 1) {
+          var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
+          var findingKey = e0.configGroup + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.fieldType;
+          var parentKey = e0.configGroup + "/" + keySplitted[2] + "/" + "FieldArray";
+
+          var feildObj = FormSchema[e0.configGroup]
+            .find((x: any) => x.key == parentKey)
+          ["feilds"]
+          [0]
+            .find((y: any) => y.key.replace('1', '') == findingKey && (y.type == "radio" ? y.value == val : true));
+
+          var valueToPush = { ...feildObj, key: key, value: val };
+          var valueIsExist = editT1.find((x: any) => x.key == parentKey);
+
+          if (keySplitted[1] > cameraFeildArrayCounterValue) {
+            cameraFeildArrayCounterValue = keySplitted[1];
+            if (valueIsExist !== undefined) {
+              counter++
+            }
+          }
+
+
+
+
+
+          if ((feildObj.validationChangeFeilds) || (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends"))) {
+            if (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends")) {
+              Initial_Values_RequiredField.push({
+                key: key,
+                type: feildObj.type,
+                validation: feildObj.validation
+              });
+            }
+            if (feildObj.validationChangeFeilds) {
+              feildObj.validationChangeFeilds.filter((x: any) => x.value == feildObj.value && x.todo == "add")?.map((x: any) => {
+
+                if (x.validation) {
+                  var splittedKey = x.key.split('_');
+                  var newKey = splittedKey[0] + "_" + keySplitted[1] + "_" + splittedKey[2];
+                  Initial_Values_RequiredField.push({
+                    key: newKey,
+                    type: x.type,
+                    validation: x.validation
+                  })
+                }
+              })
+
+              let key_value_pairs = Initial_Values_RequiredField.reduce(
+                (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
+                {}
+              );
+
+              setInitial_Values_obj_RequiredField(key_value_pairs);
+            }
+
+          }
+
+
+          if (valueIsExist !== undefined) {
+            var feildLength = valueIsExist.value.feilds.length;
+            if (feildLength < counter) {
+              valueIsExist.value.feilds.push([valueToPush]);
+            }
+            else {
+              if (feildObj.type == "radio") {
+                var feildObjArr = FormSchema[e0.configGroup]
+                  .find((x: any) => x.key == parentKey)
+                ["feilds"]
+                [0]
+                  .filter((y: any) => y.key.replace('1', '') == findingKey);
+
+                feildObjArr.map((a: any) => {
+                  var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
+                  arrayToPushIn.push({ ...a, key: key, value: a.value });
+                })
+
+              }
+              else {
+                var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
+                arrayToPushIn.push(valueToPush);
+              }
+            }
+          }
+          else {
+            editT1.push({
+              key: parentKey,
+              value: { value: "", feilds: [[valueToPush]] }
+            })
+          }
+        }
         editT1.push({
           key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
           value: val
         })
       }
-
-      let tab1;
-      if (historyState.isedit)
+      let tab1: any;
+      if (historyState.isedit) {
         tab1 = editT1;
-      else
+      }
+      else {
         tab1 = FormSchema[Property];
+        FormSchema[Property].map((x: any) => {
+          if (x.type == "fieldarray") {
+            x.feilds.map((y: any) => {
+              y.map((z: any) => {
+                tab1.push({
+                  key: z.key,
+                  value: z.value,
+                })
+              })
 
+            })
+          }
+        })
+      }
       for (const field of tab1) {
-        if (field.key == "unitSettings/categories/Multiselect") {
-          Initial_Values.push({
-            key: field.key,
-            value: field.value.split(','),
-          });
+        var addItem: boolean = true;
+        var radios = tab1.filter((y: any) => y.key == field.key && y.type == "radio");
+        if (radios?.length > 0) {
+          var radio = radios?.find((y: any) => y.value == field.value && y.selected == true);
+          if (radio == undefined) {
+            addItem = false;
+          }
         }
-        else if (field.hasOwnProperty("key")) {
+
+        if (field.key == "unitSettings/categories/Multiselect") {
           Initial_Values.push({
             key: field.key,
             value: field.value,
           });
         }
+        else if (field.hasOwnProperty("key") && addItem) {
+          Initial_Values.push({
+            key: field.key,
+            value: field.value,
+            feilds: field.value?.feilds !== undefined ? field.value?.feilds : field.feilds,
+          });
+        }
 
 
         let key_value_pair = Initial_Values.reduce(
-          (formObj, item) => ((formObj[item.key] = item.value), formObj),
+          (formObj, item) => ((formObj[item.key] = item.feilds !== undefined ? { value: item.value, feilds: item.feilds } : item.value), formObj),
           {}
         );
 
         setInitial_Values_obj(key_value_pair);
       }
 
+
       for (const field of FormSchema[Property]) {
-        if (field.hasOwnProperty("requiredField")) {
-          Initial_Values_RequiredField.push({
-            key: field.key,
-          });
+
+        if (field.hasOwnProperty("validation") || field.type == "fieldarray" && field.depends == undefined) {
+          if (field.hasOwnProperty("validation")) {
+            Initial_Values_RequiredField.push({
+              key: field.key,
+              type: field.type,
+              validation: field.validation
+            });
+          }
+          else if (field.type == "fieldarray") {
+            if (!historyState.isedit) {
+              field.feilds.map((x: any) =>
+                x.map((y: any) => {
+                  if (y.validation && y.depends == undefined) {
+                    Initial_Values_RequiredField.push({
+                      key: y.key,
+                      type: y.type,
+                      validation: y.validation
+                    })
+                  }
+                }
+                )
+              )
+            }
+          }
         }
-
-        let key_value_pairs = Initial_Values_RequiredField.reduce(
-          (formObj, item) => ((formObj[item.key] = item.value), formObj),
-          {}
-        );
-
-        setInitial_Values_obj_RequiredField(key_value_pairs);
+        // if (field.validationChangeFeilds) {
+        //   if (field.todo == "add") {
+        //     field.validationChangeFeilds.filter((x: any) => x.value == field.value)?.map((x: any) => {
+        //       if (x.validation) {
+        //         var splittedKey = x.key.split('_');
+        //         var parentSplittedKey = field.key.split('_');
+        //         var newKey = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+        //         Initial_Values_RequiredField.push({
+        //           key: newKey,
+        //           type: x.type,
+        //           validation: x.validation
+        //         })
+        //       }
+        //     })
+        //     let key_value_pairs = Initial_Values_RequiredField.reduce(
+        //       (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
+        //       {}
+        //     );
+        //     setInitial_Values_obj_RequiredField(key_value_pairs);
+        //   }
+        // }
       }
+      let key_value_pairs = Initial_Values_RequiredField.reduce(
+        (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
+        {}
+      );
+      setInitial_Values_obj_RequiredField(key_value_pairs);
+      setCameraFeildArrayCounter(cameraFeildArrayCounterValue);
     }
 
-
-    //#endregion
-
-    // ****************
-    // for loop for device
-    // ****************
-    // ****************
-    // ****************
-
-
   }, [dataFetched]);
+
+  React.useEffect(() => {
+    const arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
+
+
+    var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
+    var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
+      (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+      {}
+    );
+    setformSchema(formSchemaTemp);
+  }, [Initial_Values_obj_RequiredField])
+
 
   const loadData = async () => {
     const requestOptions = {
@@ -284,6 +504,7 @@ const CreateTemplate = (props: any) => {
 
 
 
+
   const handleChangeCloseButton = (values: boolean) => {
     if (values == false) {
       setOpen(true);
@@ -305,13 +526,43 @@ const CreateTemplate = (props: any) => {
     let Initial_Values: Array<any> = [];
 
     Object.entries(values).map(([key, value]) => {
-      Initial_Values.push({
-        key: key.split(re)[1],
-        value: value,
-        group: key.split(re)[0],
-        valueType: key.split(re)[2],
-        sequence: 1,
-      });
+      var valueRaw: any = value;
+      var split = key.split(re);
+      if (!(valueRaw?.feilds !== undefined)) {
+        var valueToSave = true;
+        var keySubSplit = split[1].split('_');
+        if (keySubSplit.length > 1) {
+          var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
+          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+        }
+        if (valueToSave) {
+          if(split[2] == "Multiselect")
+          {
+            if(valueRaw.includes("add all"))
+            {
+            valueRaw = "";
+            FormSchema["Unit Settings"].find((y:any) => y.key == key).options.map((x:any) => 
+            {
+              if(x.value != "" && x.value != "add all")
+              {
+                valueRaw = valueRaw + x.value + ",";
+              }
+            })
+            if(valueRaw[valueRaw.length - 1] == ',')
+            {
+              valueRaw = valueRaw.substring(0, valueRaw.length - 1);
+            }
+          }
+          }
+          Initial_Values.push({
+            key: split[1],
+            value: valueRaw,
+            group: split[0],
+            valueType: split[2],
+            sequence: 1,
+          });
+        }
+      }
 
       // Pretty straightforward - use key for the key and value for the value.
       // Just to clarify: unlike object destructuring, the parameter names don't matter here.
@@ -330,7 +581,6 @@ const CreateTemplate = (props: any) => {
     //var defaultTemplates = defaultTemplate[0].value;
 
     var fields = Initial_Values.filter(function (returnableObjects) {
-
       var x = returnableObjects;
       Object.keys(x).forEach((a) => {
         if (a == "value" && Array.isArray(x[a])) {
@@ -369,9 +619,18 @@ const CreateTemplate = (props: any) => {
           if (response.ok) {
 
             alert("happened form is being saved");
+            response.json().then((res: number) => {
+              if (res > 0) {
+                // historyState.id = res;
+                // historyState.isedit = true;
+                // historyState.name = templateNames;
+                // dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
+                // setEditCase(true);
+                history.push('/admin/unitanddevices/createtemplate/template',{ id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+                history.go(0)
+              }
+            });
 
-            window.location.reload()
-            resetForm();
           } else {
             throw new Error(response.statusText);
           }
@@ -413,15 +672,6 @@ const CreateTemplate = (props: any) => {
     }
   };
 
-  const initialValuesArrayRequiredField = [];
-  for (const i in Initial_Values_obj_RequiredField) {
-    initialValuesArrayRequiredField.push(i);
-  }
-
-  const formSchema = initialValuesArrayRequiredField.reduce(                  // Validations Object
-    (obj, item: any) => ({ ...obj, [item]: Yup.string().required("Required") }),
-    {}
-  );
 
 
   let customEvent = (event: any, y: any, z: any) => {
@@ -432,7 +682,7 @@ const CreateTemplate = (props: any) => {
   }
 
   return (
-    <div className="CrxCreateTemplate">
+    <div className="CrxCreateTemplate CrxCreateTemplateUi ">
       <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
@@ -458,7 +708,7 @@ const CreateTemplate = (props: any) => {
       <Menu
         align="start"
         viewScroll="initial"
-        direction="bottom"
+        direction="left"
         position="auto"
         arrow
         menuButton={
@@ -471,7 +721,7 @@ const CreateTemplate = (props: any) => {
           <Link to="/admin/unitsdevicestemplate/clonetemplate">
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
-                <i className="fas fa-pen"></i>
+                <i className="far fa-copy"></i>
               </div>
               <div className="crx-menu-list">Clone template</div>
             </div>
@@ -480,23 +730,20 @@ const CreateTemplate = (props: any) => {
         <MenuItem>
           <div className="crx-meu-content groupingMenu crx-spac">
             <div className="crx-menu-icon">
-              <i className="fas fa-pen"></i>
+              <i className="far fa-trash-alt"></i>
             </div>
             <div className="crx-menu-list">Delete template</div>
           </div>
         </MenuItem>
       </Menu>
       <div className="tabCreateTemplate">
-        <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+        <CRXTabs value={value} onChange={handleChange} tabitems={tabs1} />
         <div className="tctContent">
           <Formik
             enableReinitialize={true}
             initialValues={Initial_Values_obj}
             onSubmit={(values, { setSubmitting, resetForm, setStatus }) => { }}
-            validationSchema={Yup.object({
-              ...formSchema,
-            })}
-          >
+            validationSchema={Yup.object().shape(formSchema)}>
             {({
               values,
               handleChange,
@@ -508,321 +755,26 @@ const CreateTemplate = (props: any) => {
               resetForm,
               touched,
               setFieldValue,
+              errors
             }) => (
               <Form>
                 {
                   <>
+
                     {tabs.map(x => {
                       return <CrxTabPanel value={value} index={x.index}>
+                        <p className="DeviceIndicator"><span>*</span> Indicates required field</p>
+                        <div>
+
+                        </div>
                         {FormSchema[x.label].map(
                           (formObj: any, key: number) => {
                             <div>
                               <p>{formObj.labelGroupRecording}</p>
                             </div>;
 
-                            switch (formObj.type) {
-                              case "text":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      type={formObj.type}
-                                    />
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "time":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}>{formObj.labelMute}</label>
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      type={"time"}
-                                    />
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "radio":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-                                    <Field
-                                      id={formObj.id}
-                                      type={formObj.type}
-                                      name={formObj.key}
-                                      value={formObj.value}
-                                    />
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "select":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
+                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} /></div>) : (<></>));
 
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      component={formObj.type}
-                                    >
-                                      {formObj.options.map(
-                                        (opt: any, key: string) => (
-                                          <option
-                                            style={{ width: "50%" }}
-                                            value={opt.value}
-                                            key={key}
-                                            selected={true}
-                                          >
-                                            {opt.label}{" "}
-                                          </option>
-                                        )
-                                      )}
-                                    </Field>
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "multiselect":
-
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      component={"select"}
-                                      multiple={true}
-                                    >
-                                      {formObj.options.map(
-                                        (opt: any, key: string) => (
-                                          <option
-                                            style={{ width: "50%" }}
-                                            value={opt.value}
-                                            key={key}
-                                          >
-                                            {opt.label}{" "}
-                                          </option>
-                                        )
-                                      )}
-                                    </Field>
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "checkbox":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      type={formObj.type}
-                                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                        handleChange(event);
-                                        if (formObj.dependant != null) {
-
-                                          customEvent(event, setFieldValue, formObj.dependant);
-                                        }
-
-                                      }}
-                                      validateOnChange
-                                    />
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                              case "number":
-                                return (
-                                  (formObj.depends == null || formObj.valueDepends.includes(values[formObj.depends])) &&
-                                  <div
-                                    style={{
-                                      display: "block",
-                                      marginBottom: "10px",
-                                      marginTop: "10px",
-                                    }}
-                                  >
-                                    <label>{formObj.label}</label>
-                                    <label>
-                                      {formObj.required === true ? "*" : null}
-                                    </label>
-                                    <Field
-                                      name={formObj.key}
-                                      id={formObj.id}
-                                      type={formObj.type}
-                                    />
-                                    <label>
-                                      {formObj.seconds === true
-                                        ? "seconds"
-                                        : "minutes"}
-                                    </label>
-                                    {formObj.hinttext == true ? (
-                                      <CRXTooltip
-                                        iconName="fas fa-info-circle"
-                                        title={formObj.hintvalue}
-                                        placement="right"
-                                      />
-                                    ) : null}
-                                    <ErrorMessage
-                                      name={formObj.key}
-                                      render={(msg) => (
-                                        <div style={{ color: "red" }}>
-                                          {formObj.key.split(re)[1] + " is " + msg}
-                                        </div>
-                                      )}
-                                    />
-                                  </div>
-                                );
-                            }
                           }
                         )}
                       </CrxTabPanel>
@@ -832,6 +784,7 @@ const CreateTemplate = (props: any) => {
                 <div className="tctButton">
                   <div className="tctLeft">
                     <CRXButton
+                      className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
                       disabled={!isValid || !dirty}
                       type="submit"
                       onClick={() => handleSave(values, resetForm)}

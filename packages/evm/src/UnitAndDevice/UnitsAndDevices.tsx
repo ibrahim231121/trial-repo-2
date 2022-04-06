@@ -313,7 +313,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
           val = []
       return val
   }
-
   return (
       <div>
 
@@ -326,7 +325,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               CheckBox={true}
               checkSign={false}
               open={open}
-              // className={"arsalan" + classes.tabb }
               classes={{
                 paper: classes.paper
 
@@ -493,7 +491,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
       maxWidth: "100",
     },
     {
-      label: `${t("UnitId")}`,
+      label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
       dataComponent: (e: string) => anchorDisplayUnit(e, "anchorStyle"),// textDisplay(e, ""),
@@ -608,7 +606,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
   const searchAndNonSearchMultiDropDown = (
     rowsParam: Unit[],
     headCells: HeadCellProps[],
-    colIdx: number,
+    colIdx: number,  
     isSearchable: boolean,
 ) => {
     const onSetSearchData = () => {
@@ -625,6 +623,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
         <MultSelectiDropDown
             headCells={headCells}
             colIdx={colIdx}
+         
             reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
             // reformattedRows={reformattedRows}
             isSearchable={isSearchable}

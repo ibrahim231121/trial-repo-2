@@ -1,5 +1,5 @@
 import React from 'react'
-import { CRXItem, CRXMenu } from "@cb/shared";
+import { CRXItem, CRXMenu,CRXTooltip } from "@cb/shared";
 import AppsIcon from '@material-ui/icons/Apps';
 
 const listOFMenu = [
@@ -16,6 +16,7 @@ const CRXAppDropdown = () => {
     const icon = <AppsIcon />;
     return (
         <div className="aplication">
+           <CRXTooltip className="crxTooltipAppBar" arrow={false} placement="bottom-end" iconName="fa fa-times" title="getec applications"/>
         <CRXMenu
             id="applications"
             iconButton={true}
