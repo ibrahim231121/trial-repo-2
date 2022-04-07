@@ -136,7 +136,6 @@ const CRXGlobalSelectFilter = ({
         open={opens}
         closeIcon={<i className="icon-cross"></i>}
         onClose={() => setOpen(false)}
-        onMouseDown={() => 
         value={valState}
         options={data}
         popupIcon={opupOpenCret}
