@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LoadGoogleMapApi } from './utils/GoogleMapsUtils'
-import Map from './map'
+import Map from './Map'
 import './Map.scss'
 
 interface IMapConfig {
