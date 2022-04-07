@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LoadBingMapApi } from './utils/BingMapsUtils'
 import Map from './Map'
-import './Map.scss'
 
 interface IMapConfig {
     apiKey: string,
