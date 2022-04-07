@@ -87,3 +87,22 @@
 iframe {
     display: none;
 }
+
+.map-container{
+    display: flex;
+    justify-content: center;
+    &__map{
+        height: 50vh;
+        width:100%
+    }
+}
+.mapContainer, #map123{
+    height: 100vh;
+    width:80%;
+    justify-content: center;
+}
+
+.customNavBar {
+    position:absolute;
+    top: 20px;
+}
