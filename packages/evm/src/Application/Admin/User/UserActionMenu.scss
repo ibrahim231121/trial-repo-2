@@ -1,4 +1,5 @@
 .crx-unblock-modal {
+  &.userConfirmationModal {
   .crx-message-alert {
     margin-top: 17px;
     margin-bottom: 35px;
@@ -7,20 +8,20 @@
     align-items: flex-start;
   }
   .MuiPaper-root {
-    border: 1px solid #707070;
+    border: 1px solid var(--color-707070);
     border-radius: 0;
     min-height: 291px;
-    min-width: 445px;
+    min-width: 445px !important;
     overflow-x: hidden;
     top: 126px;
 
     .MuiDialogContent-root {
-      color: #333333;
+      color: var(--color-333333);
       height: calc(100% - 97px);
       overflow-y: auto;
       font-size: 14px;
       overflow-x: hidden;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: var(--base-font-family);
       padding: 7px 53px 5px 27px;
       .crxUplockContent {
         p {
@@ -35,9 +36,9 @@
       padding: 15px 26px;
       h6 {
         font-size: 18px;
-        color: #333333;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: normal;
+        color: var(--color-333333);
+        font-family: var(--base-font-family);
+        font-weight: var(--Font-style-normal );
       }
     }
 
@@ -48,57 +49,59 @@
       padding: 14px 27px;
       height: 74px;
       button.Mui-disabled {
-        background: #e5e5e5;
-        color: #979797;
+        background: var(--color-e5e5e5);
+        color: var(--color-979797);
       }
       button {
         font-size: 14px;
         border-radius: 0;
         height: 30px;
         text-transform: revert;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: var(--base-font-family);
         &.primary {
-          background: #333333;
-          color: #d1d2d4;
+          background: var(--color-333333);
+          color: var(--color-d1d2d4);
           min-width: 187px;
           padding: 0 11.5px;
           margin-right: 32px;
           box-shadow: none;
           &:hover {
-            background: #6e6e6e;
-            color: #f5f5f5;
+            background: var(--color-6e6e6e);
+            color: var(--color-f5f5f5);
           }
           &:focus {
-            background: #231f20;
-            color: #f5f5f5;
+            background: var(--color-231f20);
+            color: var(--color-f5f5f5);
           }
         }
         &.secondary {
-          border: 1px solid #878787;
-          background: #ffffff;
-          color: #333333;
+          border: 1px solid var(--color-878787);
+          background: var(--color-White);
+          color: var(--color-333333);
           box-shadow: none;
           min-width: 141px;
           padding: 0 11.5px;
           margin: 0;
           &:hover {
-            border: 1px solid #333333;
-            background: #f5f5f5;
-            color: #333333;
+            border: 1px solid var(--color-333333);
+            background: var(--color-f5f5f5);
+            color: var(--color-333333);
           }
           &:focus {
-            background: #231f20;
-            color: #f5f5f5;
-            border: 1px solid transparent;
+            background: var(--color-231f20);
+            color: var(--color-f5f5f5);
+            border: 1px solid var(--color-transparent);
           }
         }
       }
     }
     .CRXDivider {
-      background-color: #d1d2d4;
+      background-color: var(--color-d1d2d4);
     }
   }
 }
+}
+
 .CrxCreateUser {
   .CRXContent {
     overflow-x: hidden;
@@ -114,14 +117,14 @@
   .modelTitle {
     h2 {
       font-size: 16px;
-      color: #333333;
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: normal;
+      color: var(--color-333333);
+      font-family: var(--base-font-family);
+      font-weight: var(--Font-style-normal );
     }
   }
   .CrxEditForm {
     //padding: 40px 52px 47px 26px;
-    color: #333333;
+    color: var(--color-333333);
     // height: calc(100% - 97px);
     // overflow-y: auto;
     // overflow-x: hidden;
@@ -137,14 +140,26 @@
           line-height: 24px;
           margin-left: 5px;
           font-size: 20px;
-          font-weight: bold;
-          color: #333333;
+          font-weight: var(--Font-style-bold);
+          color: var(--color-333333);
         }
       }
       span {
         font-size: 14px;
-        color: #333333;
-        font-family: "Helvetica", "Arial", sans-serif;
+        color: var(--color-333333);
+        font-family: var(--base-font-family);
+        .errors {
+          .MuiInput-underline {
+            input {
+              outline: 2px solid var(--color-aa1d1d);
+              border: 1px solid var(--color-transparent);
+              height: 28px;
+              &:focus,&:hover {
+                border: 1px solid var(--color-d1d2d4);
+              }
+            }
+          }
+        }
       }
       .users-input {
         width: 380px;
@@ -152,12 +167,12 @@
 
       .errorStateContent {
         font-size: 14px;
-        color: #aa1d1d;
+        color: var(--color-aa1d1d);
         margin: 7px 0 0;
         line-height: 16px;
         padding: 0;
         .crxErrorMsg {
-          color: #aa1d1d !important;
+          color: var(--color-aa1d1d) !important;
           font-size: 14px !important;
         }
       }
@@ -185,13 +200,13 @@
         h6 {
           .requiredLable {
             font-size: 14px;
-            color: #333333;
-            font-family: "Helvetica", "Arial", sans-serif;
+            color: var(--color-333333);
+            font-family: var(--base-font-family);
             span {
               font-size: 20px;
               line-height: 24px;
               margin-left: 2px;
-              color: #333333;
+              color: var(--color-333333);
             }
           }
         }
@@ -219,7 +234,7 @@
       }
       .crxDropdownValidationError {
         font-size: 14px;
-        color: #aa1d1d;
+        color: var(--color-aa1d1d);
         margin: 7px 0 0;
         line-height: 16px;
         padding: 0;
@@ -241,9 +256,9 @@
     //       .MuiAutocomplete-tag {
     //         border: 1px solid #bebebe;
     //         height: 20px;
-    //         color: #333333;
+    //         color: var(--color-333333);
     //         border-radius: 1px;
-    //         background-color: #fff;
+    //         background-color: var(--color-White);
     //         font-size: 14px;
     //         align-items: flex-start;
     //         margin: 5px;
@@ -255,10 +270,10 @@
     //           width: 14px;
     //           height: 14px;
     //           margin-left: 5px;
-    //           color: #d1d2d4;
+    //           color: var(--color-d1d2d4);
     //           margin-right: 5px;
     //           font-size: 14px;
-    //           stroke: #d1d2d4;
+    //           stroke: var(--color-d1d2d4);
     //           stroke-width: 2px;
     //           display: flex;
     //           align-self: center;
@@ -272,19 +287,19 @@
     //           width: 14px;
     //           height: 30px;
     //           position: relative;
-    //           background: transparent;
+    //           background: var(--color-transparent);
     //         }
     //         .MuiAutocomplete-clearIndicatorDirty {
     //           svg {
-    //             color: #d1d2d4;
+    //             color: var(--color-d1d2d4);
     //             font-size: 14px;
-    //             stroke: #d1d2d4;
+    //             stroke: var(--color-d1d2d4);
     //             margin-right: 0px;
     //             margin-right: 10px;
     //             stroke-width: 2px;
     //           }
     //           &:hover {
-    //             background-color: transparent;
+    //             background-color: var(--color-transparent);
     //           }
     //           .MuiTouchRipple-root {
     //             display: none;
@@ -299,13 +314,13 @@
     //           margin: 0;
     //           vertical-align: middle;
     //           i {
-    //             color: #333333;
+    //             color: var(--color-333333);
     //           }
     //           svg {
     //             display: none;
     //           }
     //           &:hover {
-    //             background-color: transparent;
+    //             background-color: var(--color-transparent);
     //           }
     //           .MuiTouchRipple-root {
     //             display: none;
@@ -328,7 +343,7 @@
     //   }
     //   .error {
     //     &:focus {
-    //       outline: 2px solid #aa1d1d;
+    //       outline: 2px solid var(--color-aa1d1d);
     //     }
     //   }
     // }
@@ -351,9 +366,9 @@
               width: 142px;
               top: 2px;
               button {
-                background: transparent !important;
+                background: var(--color-transparent) !important;
                 border: none !important;
-                color: #c34400 !important;
+                color: var(--color-c34400) !important;
                 width: auto;
                 display: flex;
                 padding: 0;
@@ -368,7 +383,7 @@
                 }
               }
               label {
-                color: #74767c;
+                color: var(--color-74767c);
                 width: 150px;
                 display: inline-flex;
                 font-style: italic;
@@ -384,7 +399,7 @@
           .MuiButtonBase-root {
             padding: 0 13px 0 0;
             &:hover {
-              background-color: transparent;
+              background-color: var(--color-transparent);
             }
           }
           &:last-child {
@@ -412,16 +427,16 @@
           }
           .copyButton {
             background: none;
-            color: #979797;
+            color: var(--color-979797);
             border: none;
             padding: 0;
             justify-content: flex-end;
             text-align: right;
             font-size: 14px;
-            color: #d74b00;
+            color: var(--color-d74b00);
             padding-top: 4px;
             padding-bottom: 22px;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--base-font-family);
             &:hover {
               background: none;
               border: none;
@@ -444,13 +459,13 @@
             font-size: 14px;
           }
           .crxSelectedDark {
-            color: #333333;
+            color: var(--color-333333);
           }
           // .crxCheckBoxCreate  {
           //   .MuiIconButton-label {
           //     span[class*="makeStyles-icon-"] {
           //       &:hover {
-          //         color:#333333 !important;
+          //         color:var(--color-333333) !important;
           //       }
           //     }
           //   }
@@ -476,7 +491,7 @@
               line-height: 24px;
               margin-left: 7px;
               font-size: 20px;
-              color: #333333;
+              color: var(--color-333333);
             }
           }
         }
@@ -502,7 +517,7 @@
           float: right;
           text-align: left;
           font-size: 14px;
-          color: #aa1d1d;
+          color: var(--color-aa1d1d);
           margin: 7px 0 -2px;
           line-height: 16px;
           padding: 0;
@@ -520,52 +535,52 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    border-top: 1px solid #d1d2d4;
+    border-top: 1px solid var(--color-d1d2d4);
     width: 100%;
-    background: #fff;
+    background: var(--color-White);
     button {
       font-size: 14px;
       border-radius: 0;
       height: 30px;
       text-transform: revert;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: var(--base-font-family);
       width: 80px;
     }
     button.Mui-disabled {
-      color: #979797;
-      background: #e5e5e5;
+      color: var(--color-979797 );
+      background: var(--color-e5e5e5);
       border: none;
     }
 
     .primary {
-      background: #333333;
-      color: #d1d2d4;
+      background: var(--color-333333);
+      color: var(--color-d1d2d4);
       margin-right: 32px;
       &:hover {
-        background: #6e6e6e;
-        color: #f5f5f5;
-        border: 1px solid transparent;
+        background: var(--color-6e6e6e);
+        color: var(--color-f5f5f5);
+        border: 1px solid var(--color-transparent);
       }
       &:focus {
-        background: #231f20;
-        color: #f5f5f5;
+        background: var(--color-231f20);
+        color: var(--color-f5f5f5);
       }
     }
     .secondary {
-      border: 1px solid #878787;
-      background: #ffffff;
-      color: #333333;
+      border: 1px solid var(--color-878787);
+      background: var(--color-White);
+      color: var(--color-333333);
       box-shadow: none;
       margin: 0;
       &:hover {
-        border: 1px solid #878787;
-        background: #ffffff !important;
-        color: #333333;
+        border: 1px solid var(--color-878787);
+        background: var(--color-White) !important;
+        color: var(--color-333333);
       }
       &:focus {
-        background: #ffffff !important;
-        color: #333333 !important;
-        border: 1px solid #878787;
+        background: var(--color-White) !important;
+        color: var(--color-333333) !important;
+        border: 1px solid var(--color-878787);
       }
     }
   }
@@ -574,7 +589,7 @@
     margin: 0;
     width: 100%;
     height: 1px;
-    background: #d1d2d4;
+    background: var(--color-d1d2d4);
   }
 
   .CRXPopupCrossButton {
@@ -583,14 +598,14 @@
     right: 7px;
     button {
       &:hover {
-        background: transparent;
+        background: var(--color-transparent);
       }
       i {
         &:hover {
-          color: #333333;
+          color: var(--color-333333);
         }
         &:focus {
-          color: #333333;
+          color: var(--color-333333);
         }
       }
     }
@@ -606,13 +621,13 @@
     font-style: italic;
     position: sticky;
     top: 2px;
-    background: #fff;
+    background: var(--color-White);
     z-index: 1;
     sup {
       line-height: 17px;
       margin-right: 5px;
       font-size: 20px;
-      font-weight: bold;
+      font-weight: var(--Font-style-bold);
     }
   }
 }
@@ -622,7 +637,7 @@
 
 .optionalSticky {
   position: absolute;
-  background: #fff;
+  background: var(--color-White);
   width: 96%;
   height: 96px;
   z-index: 1;
@@ -645,15 +660,15 @@
   width: 46px;
   button {
     &:hover {
-      background-color: transparent;
+      background-color: var(--color-transparent);
     }
     .MuiButton-label {
       justify-content: center;
       .closeModalIconUnblock {
         font-size: 16px;
-        color: #d1d2d4;
+        color: var(--color-d1d2d4);
         &:hover {
-          color: #333333;
+          color: var(--color-333333);
         }
       }
     }
@@ -662,6 +677,6 @@
 
 .isExtEmail {
   input {
-    outline: 2px solid #aa1d1d;
+    outline: 2px solid var(--color-aa1d1d);
   }
 }

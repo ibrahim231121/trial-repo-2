@@ -29,7 +29,7 @@ function logOut(){
         <div className="department">
              <CRXMenu
             id="userProfile"
-            name="UserName"  //Get Current User name and add here
+            name="Username"  //Get Current User name and add here
             className="DarkTheme"
             btnClass="customButton"
             MenuList = {listOFMenu}

@@ -156,7 +156,6 @@ function App() {
       divOuter.className = "divOuter";
       divOuter.id = "divOuter";
       divOuter.style.display = "block";
-
       let left: number = 0;
       let top: number = 0;
 
@@ -238,9 +237,7 @@ function App() {
       }
 
       draggableItem.appendChild(divOuter);
-      // draggableItem.style.display = "flex";
-      // draggableItem.style.marginLeft = "5px";
-      // debugger;
+
     }
   };
 

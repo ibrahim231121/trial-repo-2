@@ -439,7 +439,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("Groups")}`,
       id: "groups",
       align: "left",
-      dataComponent: (e: string[]) => multitextDisplay(e, ""),
+      dataComponent: (e: string[]) => multitextDisplay(e, "elipcestext"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -656,11 +656,24 @@ const openHandler = (_: React.SyntheticEvent) => {
         <CRXDataTable
           id="userDataTable"
           actionComponent={
+            
             <UserActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
               showToastMsg={(obj: any) => showToastMsg(obj)}
             />
+           
+          }
+          toolBarButton={
+              <Restricted moduleId={9}>
+              <CRXButton
+                id={"createUser"}
+                className="primary manageUserBtn"
+                onClick={handleClickOpen}
+              >
+                Create User
+              </CRXButton>
+            </Restricted>
           }
           getRowOnActionClick={(val: User) => setSelectedActionRow(val)}
           showToolbar={true}
@@ -686,6 +699,8 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}
+          offsetY={206}
+          headerOffSetY={0}
         />
       )}
     </div>

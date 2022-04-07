@@ -3,23 +3,23 @@
   line-height: 28px !important;
 
   li {
-    color: #333333;
+    color: var(--color-333333);
     font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:var(--base-font-family);
     a {
-      color: #c34400;
+      color: var(--color-c34400);
       font-size: 12px;
-      text-decoration: none;
+      text-decoration: var(--Text-decoration-none);
 
       &:hover {
-        color: #c34400;
-        text-decoration: underline;
+        color: var(--color-c34400);
+        text-decoration: var(--Text-decoration-underline);
         cursor: pointer;
         box-shadow: none !important;
       }
       &:focus {
-        color: #c34400;
-        text-decoration: underline;
+        color: var(--color-c34400);
+        text-decoration: var(--Text-decoration-underline);
         cursor: pointer;
         box-shadow: none !important;
       }
@@ -28,15 +28,15 @@
 
   span {
     .breadCrumbItem {
-      color: #333333;
+      color: var(--color-333333);
       &:hover {
-        color: #333333;
-        text-decoration: none;
+        color: var(--color-333333);
+        text-decoration: var(--Text-decoration-none);
         cursor: default;
       }
       &:focus {
-        color: #333333;
-        text-decoration: none;
+        color: var(--color-333333);
+        text-decoration: var(--Text-decoration-none);
         cursor: default;
       }
     }
@@ -44,18 +44,18 @@
 
   .breadCrumbItem {
     font-size: 12px;
-    color: #c34400;
-    font-family: Arial, Helvetica, sans-serif !important;
+    color: var(--color-c34400);
+    font-family:var(--base-font-family) !important;
 
     &:hover {
-      color: #c34400;
-      text-decoration: underline;
+      color: var(--color-c34400);
+      text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
       box-shadow: none !important;
     }
     &:focus {
-      color: #c34400;
-      text-decoration: underline;
+      color: var(--color-c34400);
+      text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
       box-shadow: none !important;
     }
@@ -65,6 +65,6 @@
     position: relative;
     top: 1px;
     font-size: 12px;
-    color: #333333;
+    color: var(--color-333333);
   }
 }

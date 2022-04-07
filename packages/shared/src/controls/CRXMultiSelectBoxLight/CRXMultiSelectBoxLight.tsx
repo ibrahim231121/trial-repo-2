@@ -11,12 +11,12 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
     root: {
       backgroundColor: "#fff",
       outline: "none",
-      width: "384px",
-      border: "1px solid #D1D2D4",
-      paddingLeft: "5px",
-      '&:hover': {
-        border: "1px solid #888787",
-        transition: "all 0.25s ease-in-out",
+      width:"384px",
+      border:"1px solid #d1d2d4",
+      paddingLeft:"5px",
+      '&:hover' : {
+        border:"1px solid #888787",
+        transition:"all 0.25s ease-in-out",
         outline: "none",
       },
 
@@ -35,15 +35,15 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         transition: "all 0.25s ease-in-out",
       }
     },
-    icon: {
-      color: "#D1D2D4",
-      fontSize: "14px",
-      fontWeight: "normal",
-      paddingRight: "7px",
-      marginTop: "1px",
-      '&:hover': {
-        color: "#333333"
-      }
+    icon : {
+        color : "#d1d2d4",
+        fontSize:"14px",
+        fontWeight : "normal",
+        paddingRight:"7px",
+        marginTop: "1px",
+        '&:hover' : {
+          color : "#333333"
+        }
     },
 
     paper: {

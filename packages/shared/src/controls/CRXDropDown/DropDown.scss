@@ -1,7 +1,7 @@
 .wrapper {
   max-width: 450px;
   .select {
-    background: #fff;
+    background: var(--color-White);
     width: 100%;
     border-radius: 0px;
     position: relative;
@@ -14,19 +14,19 @@
       border-radius: 0;
       padding:0;
       font-size: 14px;
-      color:#333333;
+      color:var(--color-333333);
       -webkit-appearance: none;
       -moz-appearance: none;
       text-indent: 10px;
-      font-family: Arial;
-      border: 1px solid #d1d2d4;
+      font-family:var(--Arial-font-family);
+      border: 1px solid var(--color-d1d2d4);
       &:focus {
-        outline: 3px solid #888787;
+        outline: 3px solid var(--color-888787);
         transition: all 0.25s ease-in-out;
         border-radius: 0;
       }
       &:hover {
-        outline: 1px solid #888787;
+        outline: 1px solid var(--color-888787);
         transition: all 0.25s ease-in-out;
         border-radius: 0;
       }
@@ -39,7 +39,7 @@
       text-align: center;
       line-height: 55px;
       font-size: 20px;
-      color: #221e1e;
+      color: var(--color-221e1e);
       cursor: pointer;
       background: none;
       border: none;

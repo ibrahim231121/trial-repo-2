@@ -26,7 +26,8 @@ const CRXStation = () => {
              <CRXMenu
                 id="CRXStation"
                 name="All Stations"
-                className="DarkTheme"
+                className="DarkTheme stationPaper"
+                
                 btnClass="customButton"
                 MenuList = {listOFMenu}
             />

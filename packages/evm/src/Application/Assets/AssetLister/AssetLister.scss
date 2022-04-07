@@ -26,7 +26,7 @@
 }
 
 .advanceSearchContent .icon > button {
-  background: transparent;
+  background: var(--color-transparent);
   border: 0px;
 }
 
@@ -34,8 +34,7 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
-  .MuiGrid-container
-  {
+  .MuiGrid-container {
     width: 65%;
   }
 }
@@ -69,7 +68,7 @@
     transition: 1s padding ease-out;
   }
 }
-//Its a fix for build issue not releted to work 
+//Its a fix for build issue not releted to work
 .jss9 {
   &.jss10 {
     .searchComponents {
@@ -80,26 +79,25 @@
 }
 
 .advanceSearchChildren {
-  
   .topColumn {
-    padding-right: 16px;  
+    padding-right: 16px;
   }
 
   .searchLabel {
     font-size: 14px;
-    color:#333333;
-    padding:0px 0 0 0px;
-    margin:0px;
-    padding-bottom:11px;
+    color: var(--color-333333);
+    padding: 0px 0 0 0px;
+    margin: 0px;
+    padding-bottom: 11px;
     display: block;
-    font-family: Arial;
+    font-family: var(--Arial-font-family);
   }
 }
 
 .pageTitle {
   font-size: 26px;
-  font-weight: bold;
-  color: #333;
+  font-weight: var(--Font-style-bold);
+  color: var(--color-333333);
 }
 
 .toasterParent {

@@ -3,8 +3,8 @@
 /*Drop Down*/
 .getac-filter-select {
     // border: 1px solid rgb(206, 206, 206);
-    background: #D1D2D4;
-    border: 1px solid #888787;
+    background: var(--color-d1d2d4);
+    border: 1px solid var(--color-888787);
     height: 30px;
     position: relative;
     .selectBoxTextField {
@@ -13,7 +13,7 @@
           padding-right: 0px !important;
           input {
              text-indent: 12px;
-             background: #D1D2D4;
+             background: var(--color-d1d2d4);
              padding: 0 !important;
              // height: 28px;
           }
@@ -29,19 +29,19 @@
     }
     &.Mui-focused {
        &::before {
-          height: 24px;
+          height: 26px;
           position: absolute;
-          border: 2px solid #fff;
+          border: 2px solid var(--color-White);
           left: 0px;
           top: 0px;
           content: "";
-          width: 98%;
+          width: 99%;
        }
        .selectBoxTextField {
           .MuiInputBase-root {
              position: absolute;
              top: 31px;
-             background: #404041;
+             background: var(--color-404041);
              padding: 13.5px 12px 13.5px 18px !important;
              input {
                 position: relative;
@@ -50,8 +50,8 @@
              &::before {
                 position: absolute;
                 top: 10px;
-                background: #D1D2D4;
-                border:1px solid #888787;
+                background: var(--color-d1d2d4);
+                border:1px solid var(--color-888787);
                 content: "";
                 width:calc(100% - 20px);
                 left: 10px;
@@ -59,11 +59,11 @@
  
              }
              .MuiAutocomplete-endAdornment {
-                top: -26px !important;
+                top: -27px !important;
                 padding-right: 12px;
                 button {
                    &:hover {
-                      background: transparent !important;
+                      background: var(--color-transparent) !important;
                    }
                 }
              }
@@ -75,13 +75,13 @@
           .MuiInputBase-root {
              position: absolute;
              top: 31px;
-             background: #404041;
+             background: var(--color-404041);
              padding: 13.5px 12px 13.5px 18px !important;
              &::before {
                 position: absolute;
                 top: 10px;
-                background: #D1D2D4;
-                border:1px solid #888787;
+                background: var(--color-d1d2d4);
+                border:1px solid var(--color-888787);
                 content: "";
                 width:calc(100% - 20px);
                 left: 10px;
@@ -93,7 +93,7 @@
                 padding-right: 12px;
                 button {
                    &:hover {
-                      background: transparent !important;
+                      background: var(--color-transparent) !important;
                    }
                 }
              }
@@ -102,7 +102,7 @@
     }
     .multiCaretIcon {
        font-size: 18px;
-       color: #333;
+       color: var(--color-333333);
     }
     
    .MuiChip-root { 
@@ -110,10 +110,10 @@
           width: 13px;
           height: 17px;
           margin-left: 7px;
-          color: #d1d2d4;
+          color: var(--color-d1d2d4);
           margin-right: 7px;
           font-size: 14px;
-          stroke: #d1d2d4;
+          stroke: var(--color-d1d2d4);
           stroke-width: 2px;
     }
    }

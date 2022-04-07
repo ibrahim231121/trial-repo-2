@@ -51,7 +51,7 @@ const CRXNestedMenu = ({popup = false, model, style, className, disabled , appen
             <CSSTransition nodeRef={menuRef} classNames="p-connected-overlay" in={visible} timeout={{ enter: 120, exit: 100 }}
                 unmountOnExit onEnter={onEnter} onEntered={onEntered} onExit={onExit} onExited={onExited}>
                 <div ref={menuRef} id={id} className={classDYNames + " " + className} style={style} onClick={onPanelClick}>
-                    <CRXMenuSub props model={model} root popup={popup} disabled ={disabled}/>
+                    <CRXMenuSub props model={model} root popup={popup} disabled ={disabled} activeClass={className}/>
                 </div>
             </CSSTransition>
         );

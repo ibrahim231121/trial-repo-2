@@ -454,6 +454,19 @@
         }
       }
     }
+    .rc-menu-button {
+        float: right;
+        background-color: var(--color-transparent);
+        font-size: 18px;
+        position: absolute;
+        right: 0;
+        top: -40px;
+        border: 1px solid;
+        z-index: 60000;
+        height: 34px;
+        width: 36px;
+        border-radius: 26px;
+}
     .UiColumnRadioSpacer {
       margin-top: -16px;
     }

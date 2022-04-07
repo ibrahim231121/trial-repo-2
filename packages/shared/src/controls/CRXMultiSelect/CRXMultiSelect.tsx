@@ -84,7 +84,6 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       paddingRight: checkedStyle && checkedStyle.paddingRight,
       paddingLeft: checkedStyle && checkedStyle.paddingLeft,
       marginRight: checkedStyle && checkedStyle.marginRight,
-      
       "&:hover": {
         backgroundColor: "transparent !important",
         boxShadow: "none !important",
@@ -100,7 +99,6 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       left: "1px",
       marginTop: noOptions && noOptions.marginTop,
       paddingBottom: "0",
-      position: "absolute",
       maxHeight:"332px",
       minHeight:"200px",
       overflowY: "auto",
@@ -108,7 +106,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       top: noOptions && noOptions.top,
     },
     noOptions: {
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       backgroundColor: "#404041",
       height: "33px",
       lineHeight: "5px",
@@ -121,7 +119,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
     },
     option: {
       height: "33px",
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       fontSize: noOptions && noOptions.fontSize,
       border: "0 !important",
       alignItems: "center",
@@ -131,17 +129,16 @@ export default function CRXMultiSelect(props: selectBoxProps) {
       '&[data-focus="true"]': {
         backgroundColor: "#6E6E6E",
         borderColor: "0",
-        color: "#D1D2D4",
+        color: "#d1d2d4",
         height: "33px",
       },
       '&[aria-selected="true"]': {
         backgroundColor: "#231F20",
         borderColor: "transparent",
-        color: "#D1D2D4",
+        color: "#d1d2d4",
         height: "33px",
       },
     },
-
     parent : {
       width : parentStye && parentStye.width,
       margin : parentStye && parentStye.margin,
@@ -235,6 +232,7 @@ export default function CRXMultiSelect(props: selectBoxProps) {
           listbox: styles.listbox,
           noOptions: styles.noOptions,
           tag:styles.tag
+         
         }}
         getOptionLabel={(option: renderCheck) =>
           option.value ? option.value : " "

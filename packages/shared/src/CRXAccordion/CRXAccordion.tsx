@@ -24,7 +24,7 @@ const CrxAccordion = ({disabled, isExpanedChange, expanded, id, name, title, chi
 const AccordionStyle = makeStyles({
   root: {
       backgroundColor: "#fff",
-      border:"0px solid #D1D2D4",
+      border:"0px solid #d1d2d4",
       borderRadius : "0px !important",
       boxShadow : "none",
   },

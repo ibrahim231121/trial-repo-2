@@ -1,11 +1,9 @@
 .primaryBtn {
-    background: rgb(27, 27, 27);
-  color: white;
-  }
+  background: var(--color-black-4);
+  color: var(--color-White);
+}
 
-  .secondaryBtn {
-    background-color: #fff;
-    align-items: center;
-    
-   
-  }
+.secondaryBtn {
+  background-color: var(--color-White);
+  align-items: center;
+}

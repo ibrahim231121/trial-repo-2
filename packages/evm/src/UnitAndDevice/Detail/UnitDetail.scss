@@ -11,7 +11,7 @@ iframe {
 }
 .uddDashboard {
   .MainBoard {
-    background-color: #333333;
+    background-color: var(--color-333333);
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -42,16 +42,16 @@ iframe {
     justify-content: flex-end;
     width: 157px;
     h2 {
-      color: #f2f2f2;
+      color: var(--color-f2f2f2);
       font-size: 20px;
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: normal;
+      font-family:var(--base-font-family);
+      font-weight: var(--Font-style-normal);
     }
     p {
-      color: #f2f2f2;
+      color: var(--color-f2f2f2);
       font-size: 14px;
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: normal;
+      font-family:var(--base-font-family);
+      font-weight: var(--Font-style-normal);
     }
     span {
       display: block;
@@ -61,13 +61,13 @@ iframe {
     }
     .pdDeviceIcon {
       i {
-        color: #f2f2f2;
+        color: var(--color-f2f2f2);
         font-size: 25px;
       }
     }
     .pdStatus {
       i {
-        color: #02a200;
+        color: var(--color-02a200);
         font-size: 25px;
       }
     }
@@ -107,18 +107,18 @@ iframe {
     }
     .pdUpload {
       i {
-        color: #f2f2f2;
+        color: var(--color-f2f2f2);
         font-size: 20px;
         margin-top: 2px;
         &:after {
-          color: #f2f2f2;
+          color: var(--color-f2f2f2);
           opacity: 1;
         }
       }
     }
     .pdDotted {
       i {
-        color: #ff6e20;
+        color: var(--color-ff6e20);
         font-size: 23px;
         margin-top: 2px;
       }
@@ -129,7 +129,7 @@ iframe {
   }
   .arrowResponsiveShow {
     display: block;
-    color: #d1d2d4;
+    color: var(--color-d1d2d4);
     z-index: 8;
     right: 17px;
     position: absolute;

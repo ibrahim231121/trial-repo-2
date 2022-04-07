@@ -16,6 +16,7 @@ import "./CRXDataTable.scss";
 import DataTableContainer from "./CRXDataTableContainer";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
+  
   selectDropdown: {
     color: "#333333",
     backgroundColor: "#fff",
@@ -36,13 +37,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     color:"#333333",
     "&:hover": {
-      backgroundColor: "#D1D2D4",
+      backgroundColor: "#d1d2d4",
     },
     "&.Mui-selected": {
-      backgroundColor: "#D1D2D4",
+      backgroundColor: "#d1d2d4",
     },
     "&.Mui-selected:hover": {
-      backgroundColor: "#D1D2D4",
+      backgroundColor: "#d1d2d4",
     },
   },
   root: {
@@ -56,15 +57,17 @@ const useStyles = makeStyles((theme) => ({
   },
 
   pagination : {
-    height:"36px",
+    height:"45px",
     overflow : "hidden",
+    position : "relative",
     '& .MuiToolbar-regular' : {
-      height:"36px",
-      minHeight: "36px",
+      height:"45px",
+      minHeight: "45px",
     }
   },
  
 }));
+
 const CRXDataTable: React.FC<DataTableProps> = ({
   id,
   dataRows,
@@ -92,6 +95,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   showTotalSelectedText,
   showCustomizeIcon,
   lightMode,
+  toolBarButton,
+  offsetY,
+  headerOffSetY,
   showHeaderCheckAll
 }) => {
   const classes = useStyles();
@@ -339,6 +345,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         showCountText={showCountText}
                         showCustomizeIcon={showCustomizeIcon}
                         showTotalSelectedText={showTotalSelectedText}
+                        toolBarButton={toolBarButton}
                       />
                     )}
 
@@ -371,13 +378,16 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       lightMode={lightMode}
                       onSetCheckAll={handleSelectAllClick}
                       checkAllPageWise={checkAllPageWise}
+                      offsetY={offsetY}
+                      headerOffSetY={headerOffSetY}
                     />
                     {(rowsPerPage  >= 25) ?
                       <TablePagination
-                        className="dataTablePages"  
+                        className="dataTablePages"
+                        //classes = {clxFooter.root}  
                         SelectProps={{
                           MenuProps: {
-                            classes: { paper: classes.selectDropdown }
+                            classes: {paper: classes.selectDropdown }
                           },
                         }}
                         

@@ -10,19 +10,19 @@
   
         i {
           font-size: 12px;
-          color: #999999;
+          color: var(--color-999999);
           &:hover {
-            color: #646464;
+            color: var(--color-646464);
           }
           &:focus {
-            color: #646464;
+            color: var(--color-646464);
           }
         }
         &:hover {
-            background-color: transparent !important;
+            background-color: var(--color-transparent) !important;
           }
           &:focus {
-            background-color: transparent !important;
+            background-color: var(--color-transparent) !important;
           }
       }
     }
@@ -44,56 +44,56 @@
     }
     .MuiAlert-standardInfo {
       .MuiAlert-icon {
-        color: #2259aa;
+        color: var(--color-2259aa);
       }
       span {
         span {
-          color: #2259aa;
-          font-weight: bold;
+          color: var(--color-2259aa);
+          font-weight: var(--Font-style-bold);
           text-transform: capitalize;
         }
       }
     }
     .MuiAlert-standardSuccess {
       .MuiAlert-icon {
-        color: #317427;
+        color: var(--color-317427);
       }
       span {
         span {
-          color: #317427;
-          font-weight: bold;
+          color: var(--color-317427);
+          font-weight: var(--Font-style-bold);
           text-transform: capitalize;
         }
       }
     }
     .MuiAlert-standardWarning {
       .MuiAlert-icon {
-        color: #8b5c2e;
+        color: var(--color-8b5c2e);
       }
       span {
         span {
-          color: #8b5c2e;
-          font-weight: bold;
+          color: var(--color-8b5c2e);
+          font-weight: var(--Font-style-bold);
           text-transform: capitalize;
         }
       }
     }
     .MuiAlert-standardError {
       .MuiAlert-icon {
-        color: #aa1d1d;
+        color: var(--color-aa1d1d);
         display: block;
       }
       span {
         span {
-          color: #aa1d1d;
-          font-weight: bold;
+          color: var(--color-aa1d1d);
+          font-weight: var(--Font-style-bold);
           text-transform: capitalize;
         
         }
         a {
-          text-decoration: underline;
-          font-weight: bold;
-          color:#666666;
+          text-decoration: var(--Text-decoration-underline);
+          font-weight: var(--Font-style-bold);
+          color:var(--color-666666);
         }
         ul {
           padding:5px 15px;

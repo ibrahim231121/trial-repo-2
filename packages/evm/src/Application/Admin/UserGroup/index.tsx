@@ -274,6 +274,8 @@ const UserGroup: React.FC = () => {
             showCheckBoxesCol={false}
             showActionCol={true}
             showTotalSelectedText={false}
+            offsetY={206}
+   
           />
         )
       }

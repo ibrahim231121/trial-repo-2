@@ -94,6 +94,11 @@ const SearchComponent = (props: any) => {
     setSearchData(responseForSearch);
   }, [responseForSearch]);
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 186, behavior: "smooth" });
+  }, [searchData]);
+
+  
 
   // fetchData
   const fetchData = (querry: any, searchType: any) => {
@@ -156,6 +161,7 @@ const SearchComponent = (props: any) => {
       }
 
       fetchData(QUERRY, constants.SearchType.SimpleSearch);
+      console.log("scroll")
       setAdvanceSearch(false);
       setShowAssetDateCompact(true);
     };

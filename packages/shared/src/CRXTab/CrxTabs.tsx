@@ -14,22 +14,22 @@ const CrxTabsParent = withStyles({
   },
   scrollButtons : {
     background:"#333333",
-    color:"#D1D2D4",
+    color:"#d1d2d4",
     borderRadius:"0px",
     minWidth: "39px",
     height: "34px",
     fontSize: "14px",
     '&.MuiIconButton-root.Mui-disabled' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     },
     '&:hover' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     },
     '&:focus' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     }
   }
 })(Tabs);

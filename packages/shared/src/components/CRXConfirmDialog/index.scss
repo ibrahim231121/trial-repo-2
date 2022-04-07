@@ -1,9 +1,37 @@
 .primaryBtn {
-    background: rgb(27, 27, 27);
-  color: white;
+    background: var(--color-black-4);
+    color: var(--color-White);
   }
 
   .secondaryBtn {
-    background-color: #fff;
+    background-color: var(--color-White);
    
   }
+
+  .userConfirmationModal {
+    .userModalContent {
+      .cancelConfrimtextContent {
+        margin-top: 11px;
+        margin-bottom: 33px;
+      }
+      .modalConfirmtextUser{
+        margin-bottom: 41px;
+      }
+    }
+    .crxConfirmFooterModal  {
+      .primary {
+        min-width: 100px !important;
+      }
+      .secondary {
+        min-width: 100px !important;
+      }
+    }
+    .MuiDialog-scrollPaper {
+      .MuiDialog-paperScrollPaper {
+        max-height: calc(100% - 263px);
+        min-width: 550px !important;
+      }
+    }
+  }
+
+

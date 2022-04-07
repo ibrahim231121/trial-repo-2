@@ -25,10 +25,11 @@ interface propsT {
     props? : any,
     onLeafClick? : (e : any) => void,
     onKeyDown? : (e : any) => void,
+    activeClass? : string,
     parentActive? :boolean,
     disabled? :boolean
 }
-const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
+const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : propsT) => {
 
     const [activeItem, setActiveItem] = useState<any>(null);
     let MeuRef : React.RefObject<any> = createRef();
@@ -128,7 +129,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
         const submenuIcon = item.items && <span className={submenuIconClassName}></span>;
         const submenu = renderSubmenu(item);
         let content = (
-            <a href={item.url || '#'} className={linkClassName + " " + item.classes} target={item.target} role="menuitem" aria-haspopup={item.items != null}
+            <a href={item.url || '#'} className={linkClassName + " " + activeClass} target={item.target} role="menuitem" aria-haspopup={item.items != null}
                 onClick={(event) => onItemClick(event, item)} >
                 {icon}
                 {label}
