@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -42,18 +42,18 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   //NOTE : Sticky Header code block please dont do the any changes on this block 
   const classes = useStyles();
   const [stickeyStickyScroll, setStickeyStickyScroll] = React.useState(0)
-  const [getScroll, setScrollVal] = useState<number>(0);
-  const [sliderThumbs, setScrollWidth] = useState<number>()
-  const [sliderValue, setSliderVal] = useState<number>(0)
+  //const [getScroll, setScrollVal] = useState<number>(0);
+  //const [sliderThumbs, setScrollWidth] = useState<number>()
+  //const [sliderValue, setSliderVal] = useState<number>(0)
 
   const scrolled50Ref:any = React.useRef();
   
   useEffect(() => {
     const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
-    setScrollVal(tableScrollValue.clientWidth);
-    const scrollClientWidth:number = tableScrollValue.scrollWidth - tableScrollValue.clientWidth;
+    //setScrollVal(tableScrollValue.clientWidth);
+    //const scrollClientWidth:number = tableScrollValue.scrollWidth - tableScrollValue.clientWidth;
     
-    setScrollWidth(scrollClientWidth)
+    //setScrollWidth(scrollClientWidth)
 
     const scrollFun = () => {
       const tbl : any = document.getElementsByClassName('tableHeaderVisibility')[0];
@@ -101,19 +101,19 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
 
 const tableHeader = useRef(null);
   
-const tableScrollChnage = (e : any) => {
-  setStickeyStickyScroll(e.target.value);
-  setSliderVal((e.target.value));
-  console.log("Slider value : ", e.target.value)
-  const stickyTableHeader = document.getElementsByClassName("stickyTableHeader")[0];
-  const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
+//const tableScrollChnage = (e : any) => {
+  // setStickeyStickyScroll(e.target.value);
+  // setSliderVal((e.target.value));
+  // console.log("Slider value : ", e.target.value)
+  // const stickyTableHeader = document.getElementsByClassName("stickyTableHeader")[0];
+  // const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
 
-  if(stickyTableHeader) {
-      stickyTableHeader.scrollLeft = e.target.value + 10;
-      tableScrollValue.scrollLeft = e.target.value + 10;
-  }
+  // if(stickyTableHeader) {
+  //     stickyTableHeader.scrollLeft = e.target.value + 10;
+  //     tableScrollValue.scrollLeft = e.target.value + 10;
+  // }
 
-} 
+//} 
 
 useEffect(()=> {
   const stickyTableHeader = document.getElementsByClassName("stickyTableHeader")[0];
