@@ -19,6 +19,8 @@ import { CRXDropDown } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
 import "./App.scss";
 
+import { setupSignalRConnection } from "./utils/hub_config";
+
 import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
 
 import ApplicationPermissionProvider from "./ApplicationPermission/ApplicationPermissionProvider";
@@ -91,10 +93,12 @@ function App() {
 
   useEffect(()=>{
 
-
+   //setupSignalRConnection("https://localhost:54321/command");
+    
     var token = getToken();
     if(token){
-
+          //  setupSignalRConnection("https://localhost:54321/command");
+            setupSignalRConnection("https://localhost:54321/command");
             var moduleIds = getModuleIds();
             if(moduleIds){
              
