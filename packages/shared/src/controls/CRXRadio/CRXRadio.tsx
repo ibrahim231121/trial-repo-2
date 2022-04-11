@@ -17,7 +17,7 @@ type Props = {
 const useStyles = makeStyles({
   icon: {
     fontSize: "18px",
-    color:"#D1D2D4",
+    color:"#d1d2d4",
     '&:hover' : {
       background:"transparent"
     }

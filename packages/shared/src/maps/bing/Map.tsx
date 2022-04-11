@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Microsoft } from './BingMap';
 
 interface IMapProps {
@@ -7,7 +7,7 @@ interface IMapProps {
 }
 
 const Map: React.FC<IMapProps> = ({ mapOptions, getMarkerLatLong }) => {
-    const [map, setMap] = useState<any>();
+    //const [map, setMap] = useState<any>();
     const mapRef = React.createRef<HTMLDivElement>();
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const Map: React.FC<IMapProps> = ({ mapOptions, getMarkerLatLong }) => {
 
     const initMap = () => {
         const map = new Microsoft.Maps.Map(mapRef.current, mapOptions);
-        setMap(map);
+       // setMap(map);
 
         //click event add to map
         Microsoft.Maps.Events.addHandler(map, 'click', (e: any) => getLatlng(e, map));

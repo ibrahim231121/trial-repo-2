@@ -1,11 +1,11 @@
 .CRXSimpleSelect {
-  border: 1px solid rgb(206, 206, 206);
+  border: 1px solid var(--color-White-4);
   transition: all 0.25s ease-in-out;
   padding: 0px 10px;
   min-width: 100px;
   min-height: 30px;
   font-size: 14px !important;
-  color: #333;
+  color: var(--color-333333);
   .crxArrowDownSelect {
     right: 12px;
     top: 0;
@@ -14,8 +14,7 @@
     align-items: center;
     &::before {
       font-size: 21px !important;
-      font-style: normal;
-      color: #333333;
+      color: var(--color-333333);
     }
   }
   .MuiInputBase-input {
@@ -26,20 +25,20 @@
     min-width: 250px;
     width: 100%;
     font-size: 14px;
-    color: #444;
+    color: var(--color-444);
   }
 
   .MuiSelect-select {
     &:focus {
-      background: transparent;
+      background: var(--color-transparent);
     }
   }
   &:hover {
-    border: 1px solid #888787;
+    border: 1px solid var(--color-888787);
     transition: all 0.25s ease-in-out;
   }
   &:focus {
-    border: 3px solid #888787;
+    border: 3px solid var(--color-888787);
     transition: all 0.25s ease-in-out;
   }
   .MuiFormControl-root {
@@ -64,11 +63,11 @@
   .selectBoxTextField {
     input {
       font-size: 14px;
-      color: #74767c;
+      color: var(--color-74767c);
     }
   }
   .MuiChip-root {
-    background-color: #d7efff;
+    background-color: var(--color-d7efff);
     border-radius: 4px;
   }
 
@@ -82,7 +81,7 @@
   }
 }
 .error {
-  border: 2px solid #aa1d1d;
+  border: 2px solid var(--color-aa1d1d);
 }
 
 .MuiInput-underline {
@@ -100,7 +99,7 @@
 
 .paperStyle {
   border-radius: 0px !important;
-  border: 1px solid #bebebe;
+  border: 1px solid var(--color-bebebe);
   min-width: "200px";
   margin-left: 0px !important;
   margin-top: 8px !important;

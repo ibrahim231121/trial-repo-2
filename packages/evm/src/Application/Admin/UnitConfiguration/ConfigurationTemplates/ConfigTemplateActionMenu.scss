@@ -1,9 +1,9 @@
 .crxConfigModal {
   .configuserParaMain {
     .configuserPara1 {
-      color: #333333;
+      color: var(--color-333333);
       font-size: 14px;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:var(--base-font-family);
       line-height: 16px;
       margin-top: 7px;
     }
@@ -31,11 +31,11 @@
   }
   .crossModal {
     i {
-      color: #d1d2d4;
+      color: var(--color-d1d2d4);
       font-size: 16px;
       top: -9px;
       &:hover {
-        color: #333333;
+        color: var(--color-333333);
       }
     }
     &:hover {

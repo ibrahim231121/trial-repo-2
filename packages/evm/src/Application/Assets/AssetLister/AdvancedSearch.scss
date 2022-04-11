@@ -1,10 +1,15 @@
 .advanceSerachContainer {
   width: 580px;
-  background: #f2f2f2;
+  background: var(--color-f2f2f2);
   padding: 23px 27px;
   margin: 4px auto 0;
   .Mui-focused {
-    // border: 3px solid #888787 !important;
+    outline: 3px solid var(--color-888787);
+    transition: all 0.25s ease-in-out;
+    border: none !important;
+  }
+  .Mui-focused {
+    // border: 3px solid var(--color-888787) !important;
     transition: all 0.25s ease-in-out;
   }
 
@@ -13,16 +18,16 @@
     height: 30px;
     border-radius: 0px;
     padding: 0;
-    color: #74767c;
+    color: var(--color-74767c);
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: 1px solid #d1d2d4;
-    font-family: "Helvetica", "Arial", sans-serif !important;
-    background-color: #fff;
+    border: 1px solid var(--color-d1d2d4);
+    font-family:var(--base-font-family);
+    background-color: var(--color-White);
     text-align: left;
     &:hover {
-      border: 1px solid #888787;
+      border: 1px solid var(--color-888787);
       transition: all 0.25s ease-in-out;
     }
     &:focus {
@@ -32,7 +37,7 @@
     }
 
     .MuiSelect-icon {
-      color: #333333;
+      color: var(--color-333333);
       padding-right: 10px;
       right: 0;
     }
@@ -42,22 +47,22 @@
   .adVInputBox {
     width: 90%;
     margin: 0 15px;
-    color: #74767c;
+    color: var(--color-74767c);
     height: 30px;
     outline: none;
     border-radius: 0px;
-    border: 1px solid #d1d2d4;
+    border: 1px solid var(--color-d1d2d4);
     padding: 0;
     font-size: 14px;
     text-indent: 12px;
     box-sizing: border-box;
-    border: 1px solid #d1d2d4;
+    border: 1px solid var(--color-d1d2d4) ;
     &:hover {
-      border: 1px solid #888787;
+      border: 1px solid var(--color-888787);
       transition: all 0.25s ease-in-out;
     }
     &:focus {
-      border: 3px solid #888787;
+      border: 3px solid var(--color-888787);
       transition: all 0.25s ease-in-out;
     }
   }
@@ -69,10 +74,10 @@
     .removeBtn {
       padding: 0;
       line-height: 0;
-      background: transparent;
+      background: var(--color-transparent);
       font-size: 14px;
       border: 0px;
-      color: #333;
+      color: var(--color-333333);
       border-radius: 100px;
       vertical-align: middle;
       position: relative;
@@ -84,7 +89,7 @@
         top: 0px;
       }
       .MuiSvgIcon-root {
-        fill: #fff;
+        fill: var(--color-White);
         position: relative;
         top: -5px;
         font-size: 1em;
@@ -96,8 +101,8 @@
   }
 
   .AddRemove-Search-Criteria-btn {
-    background: #fff;
-    border: 1px solid #878787;
+    background: var(--color-White);
+    border: 1px solid var(--color-878787);
     border-radius: 0px;
     height: 30px;
     padding: 0 0 0 13px;
@@ -109,15 +114,15 @@
     i {
       font-size: 14px;
       width: 11px;
-      color: #333333;
-      font-weight: normal;
+      color: var(--color-333333);
+      font-weight: var(--Font-style-normal);
     }
 
     span.btn-text {
       padding-left: 14px;
       padding-top: 0;
       font-size: 14px;
-      color: #333333;
+      color: var(--color-333333);
     }
 
     &:focus {
@@ -147,11 +152,11 @@
 
   .PreSearchButton {
     font-size: 14px;
-    background: transparent;
+    background: var(--color-transparent);
     min-width: 100px;
     border: 0px;
     margin-top: 32px;
-    color: #d74b00;
+    color: var(--color-d74b00);
 
     i {
       font-size: 16px;
@@ -164,13 +169,13 @@
       top: 0px;
     }
     &:hover {
-      background: transparent;
-      color: #333;
+      background: var(--color-transparent);
+      color: var(--color-333333);
       border: 0px;
     }
     &:focus {
-      background: transparent;
-      color: #333;
+      background: var(--color-transparent);
+      color: var(--color-333333);
       border: 0px;
     }
   }
@@ -191,20 +196,20 @@
       justify-content: flex-end;
       position: absolute;
       right: 24px;
-      background: transparent;
+      background: var(--color-transparent);
       border: 0px;
       height: 40px;
       &:hover {
         cursor: pointer;
       }
       span {
-        color: #c34400;
-        font: normal normal normal 14px/16px Arial;
+        color: var(--color-c34400);
+        font: var(--Arial-font-family) normal normal normal 14px/16px;
       }
     }
     .AddRemove-Search-Criteria-btn {
       .MuiSvgIcon-fontSizeSmall {
-        color: #333333;
+        color: var(--color-333333);
         font-size: 14px;
       }
     }

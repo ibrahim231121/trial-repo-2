@@ -1,8 +1,9 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, 'Segoe UI';
+  /* font-family: -apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI" !important; */
+  /*   
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; */
   overflow-x: hidden;
   width: 100%;
 }
@@ -11,8 +12,8 @@ body {
   position: absolute;
   right: -9px;
   top: 32px;
-  background: #fff;
-  border: 1px solid #ccc;
+  background: var(--color-White);
+  border: 1px solid var(--color-ccc);
 }
 
 .dataTabAssets {
@@ -29,18 +30,23 @@ body {
 }
 
 .CRXActiveBreadcrumb {
-  background: #fff;
+  background: var(--color-White);
   margin-top: -3px;
 }
 
 .linkColor {
-  color: #c34400 !important;
+  color: var(--color-c34400) !important;
   cursor: pointer;
   box-shadow: none !important;
 }
 
 .linkColor:hover {
   text-decoration: underline;
+  color: var(--color-ff6e20) !important;
+}
+
+.linkColor > div {
+  line-height: 14px;
 }
 
 .testClass {
@@ -68,18 +74,18 @@ body {
 }
 
 .divInner {
-  background: transparent;
-  border: 1px solid #ccc;
+  background: var(--color-transparent);
+  border: 1px solid var(--color-ccc);
   width: 332px;
   height: 89px;
 }
 
 .divInner div[id^='innerDrag'] {
   width: 56px;
-  border: 3px solid #ccc;
+  border: 3px solid var(--color-ccc);
   border-right: 0px;
   float: left;
-  background: #333333;
+  background: var(--color-333333);
   height: 100%;
   text-indent: 0;
   height: 87px;
@@ -87,10 +93,10 @@ body {
 
 .divInner div[id^='innerImg'] {
   width: 144px;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--color-ccc);
   float: left;
   height: 88.5px;
-  background: rgba(242, 242, 242, 0.9) 0% 0% no-repeat padding-box;
+  background: var(--color-White-3) 0% 0% no-repeat padding-box;
   text-indent: 0;
   text-align: center;
 }
@@ -105,12 +111,12 @@ body {
   line-height: 21px;
   text-indent: 0px;
   font-size: 14px;
-  background: rgba(242, 242, 242, 0.9) 0% 0% no-repeat padding-box;
+  background: var(--color-White-3) 0% 0% no-repeat padding-box;
 }
 
 #draggingStartBorder {
   position: absolute;
-  border: 3px solid #ddd;
+  border: 3px solid var(--color-ddd);
   border-right: 0px;
   left: 0px;
   width: 60px;
@@ -121,11 +127,11 @@ body {
 }
 
 .AssetsDataGrid table tbody tr td:first-child {
-  position: sticky;
+  z-index: 40;
 }
 
 .AssetsDataGrid table tbody tr td:first-child::before {
-  border: 2px solid transparent;
+  border: 2px solid var(--color-transparent);
   border-right: 0px;
   position: absolute;
   width: 100%;
@@ -136,13 +142,13 @@ body {
 }
 
 .AssetsDataGrid table tbody tr td:first-child:hover::before {
-  border: 2px solid transparent;
+  border: 2px solid var(--color-transparent);
   border-right: 0px;
 }
 
 #draggingStartBorder .iconStartdrag {
   font-size: 18px;
-  color: #d1d2d4;
+  color: var(--color-d1d2d4);
   text-align: center;
   position: relative;
 }
@@ -152,19 +158,19 @@ body {
   top: -5px;
   left: 325px;
   z-index: 999 !important;
-  background-color: black;
+  background-color: var(--color-Black);
 }
 
 .icondrag {
   font-size: 18px;
-  color: #d1d2d4;
+  color: var(--color-d1d2d4);
   text-align: center;
   position: relative;
   top: 24px;
 }
 
 .divImg i {
-  color: #333;
+  color: var(--color-333333);
   font-size: 55px;
   position: relative;
 }
@@ -187,8 +193,8 @@ body {
   width: 20px;
   height: 13px;
   border-radius: 5px;
-  border: 1px solid #8a8888;
-  background-color: #333333;
+  border: 1px solid var(--color-8a8888);
+  background-color: var(--color-333333);
   line-height: 1;
   text-align: center;
   text-indent: 0;
@@ -230,8 +236,6 @@ body {
   margin-right: 8px;
 }
 
-
-
 .croseIcon {
   font-size: 16px;
   position: relative;
@@ -242,27 +246,38 @@ body {
   margin-top: 30px;
 }
 
-.stickyPos  {
-    position: sticky !important;
-    top: 135px;
-    /* background: #fff; */
-    padding-top: 3.5px;
-    z-index: 999;
-    padding-bottom: 0px !important;
-    height: 51px;
+.stickyPos {
+  position: sticky !important;
+  top: 136px;
+  background: var(--color-White);
+  padding-top: 5px;
+  padding-bottom: 0px !important;
+  height: 53px;
+  width: 100%;
+  left: 7px;
+}
+
+.stickyTableHeader {
+  overflow-x: 'hidden';
+  position: 'sticky';
+  top: '186px';
+  z-index: '999';
+  transition: all 5s ease-in-out !important;
+  visibility: collapse;
 }
 
 .selectionBg {
-  background: #333;
-  color: #d1d2d4;
+  background: var(--color-333333);
+  color: var(--color-d1d2d4);
 }
 
 ::selection {
-  background-color: #6D6E71;
-  color: #f5f5f5;
+  background-color: var(--color-6D6E71);
+  color: var(--color-f5f5f5);
 }
 
-.linkColor::selection,.anchorStyle::selection {
+.linkColor::selection,
+.anchorStyle::selection {
   color: #c34400;
   background-color: transparent;
 }
@@ -272,10 +287,9 @@ a::selection {
 }
 
 .selectionBg::selection {
-  background: #d1d2d4;
-  color:#333
+  background: var(--color-d1d2d4);
+  color: var(--color-333333);
 }
-
 
 .CRXDataTableCustom .Mui-selected ::selection,
 .CRXDataTableCustom tr th ::selection,
@@ -286,27 +300,47 @@ a::selection {
   color: #333333;
 }
 .CRXDataTableCustom .Mui-selected .linkColor::selection,
-.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom tr:hover .linkColor::selection,
 .CRXDataTableCustom .Mui-selected .anchorStyle::selection,
 .CRXDataTableCustom tr:hover .anchorStyle::selection {
   color: #ff6e20;
   background-color: transparent;
 }
 
-
-.CRXDataTableCustom tr:hover .linkColor::selection, 
+.CRXDataTableCustom tr:hover .linkColor::selection,
 .CRXDataTableCustom tr:hover .anchorStyle::selection {
   color: #ff6e20;
   text-decoration: underline;
   background-color: transparent;
 }
 
-
-
 /*After demo sajid will remove it*/
 .progressBar {
   padding-top: 10px;
 }
+
+.stickyTable {
+  position: sticky;
+  top: 186px;
+}
+
+/* footer {
+  position: relative;
+  bottom: 0px;
+  text-indent: 10px;
+  width: 100%;
+  z-index: 999;
+  background: #fff;
+  padding-bottom: 25px;
+} */
+
+.dragableCellCustomize {
+  position: absolute;
+  left: 2px;
+  top: 21px;
+  display: none;
+}
+
 
 .ManageStation {
   margin-top: 36px;

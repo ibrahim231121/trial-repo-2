@@ -4,7 +4,7 @@
         .progressPercentage {
             position: absolute;
             font-size: 11px;
-            color: #fff;
+            color: var(--color-White);
             top: 0px;
             line-height: 18px
         }
@@ -13,7 +13,7 @@
             right: 0px;
             top: -25px;
             font-size: 14px;
-            color:#333;
+            color:var(--color-333333);
             &.assetsLoadingBarIcon {
               top: -1px;
               right: -23px;
@@ -21,28 +21,28 @@
         }
         .fileUploadStatus {
             font-size: 14px;
-            color: #333;
-            font-weight: normal;
+            color: var(--color-333333);
+            font-weight: var(--Font-style-normal);
             margin-top: 5px;
         }
     }
     .progressErorr  {
       .MuiLinearProgress-barColorPrimary {
-        background-color: #AA1D1D !important;
+        background-color: var(--color-AA1D1D) !important;
         background-image: none;
       }
     }
     .loadingText {
       font-size: 14px;
-      color: #333;
-      font-weight: normal;
+      color: var(--color-333333);
+      font-weight: var(--Font-style-normal);
       margin-bottom:4px;
     }
 
     .loadingAssets {
       font-size: 10px;
-      color: #333;
-      font-weight: bold;
+      color: var(--color-333333);
+      font-weight: var(--Font-style-bold);
       margin-bottom:4px;
     }
 }

@@ -22,7 +22,7 @@
 }
 
 .wrapper .search-input {
-  background: #fff;
+  background: var(--color-White);
   width: 100%;
   border-radius: 5px;
   position: relative;
@@ -38,7 +38,7 @@
   font-size: 14px;
   text-indent: 12px;
   box-sizing: border-box;
-  border: #797979 solid 1px;
+  border: var(--color-797979) solid 1px;
 }
 
 .search-input.active input {
@@ -49,7 +49,7 @@
   padding: 0;
   max-height: 280px;
   overflow-y: auto;
-  border: 1px solid #cccccc;
+  border: 1px solid var(--color-cccccc);
 }
 
 .search-input.active .autocom-box {
@@ -75,7 +75,7 @@
   text-align: center;
   line-height: 55px;
   font-size: 20px;
-  color: #644bff;
+  color: var(--color-644bff);
   cursor: pointer;
   background: none;
   border: none;
@@ -113,8 +113,8 @@
     height: 30px;
     padding: 0;
     &:hover {
-      background: #231f20;
-      color: #f5f5f5;
+      background: var(--color-231f20);
+      color: var(--color-f5f5f5);
     }
   }
 }
@@ -131,12 +131,12 @@
 
     &:nth-child(1) {
       order: 2;
-      background-color: #f2f2f2;
+      // background-color: var(--color-f2f2f2);
 
       .iconBtnLabel {
         width: 100px;
         margin-right: auto;
-    margin-left: auto;
+        margin-left: auto;
       }
     }
     &:nth-child(2) {
@@ -149,23 +149,23 @@
     .listButton {
       width: 61px;
       height: 61px;
-      border: 2px solid #8a8888;
+      border: 2px solid var(--color-8a8888);
       border-radius: 100%;
       margin: 0 auto;
       text-align: center;
       position: relative;
       line-height: 46px;
-      background: #2a2a2a;
+      background: var(--color-2a2a2a);
       .listParentBtn {
         padding: 3px 0px;
-        color: #fff;
+        color: var(--color-White);
         border: 0px;
         height: 100%;
         &:hover {
-          background: transparent;
+          background: var(--color-transparent);
         }
         &:focus {
-          background: transparent;
+          background: var(--color-transparent);
         }
       }
       .listIcon {
@@ -173,7 +173,7 @@
         background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAApCAMAAABjq9sOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA1VBMVEXR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tT////Na/PbAAAARXRSTlMAGl2268NnnM1WT8D1pu5q3phGIWCwyjx1pb2QVDB45/nVq2+Tz3tjQk72n0hm8NhXljlybMmZtDbth0uE1PKSfi4rlUk9Q418AAAAAWJLR0RGF7r57QAAAAd0SU1FB+UJCBEyDLvbuxIAAAFFSURBVDjLldJtW4IwFAbgTTN7MXszlsjAQBMly8pKLbHS/f+/1M7xQiYbcPV8EbebbYcdQgitVA8yqR1SsgutC0PqqagIUSjokSgWFP4cnyg53RcAGsqRCDnbXwNAkxjBVhQBFIVAnJeBC2oAl2qxJnBVBq5bNxYmDyRhjRJAmv8G7LZt2x0nD3DXw3N3bWYEvL0rzXNMwFWKv2M6YF2Y8YNeH357OriH8UFIyNCXDyOuAWijCIdDoA8agApCXJjDJmMNPCavEf4kHyfGLZ5xCwZbvGjgFYanUrAafAn9kPieeHv/8HLK5FO1TUaO/iVnHVXMHf2yWNDf3oSfCO26h+NFtAgmIa41Z/kNw1AMCjoKxacKaFZ8Re6MpkBkAYambS+WVUOWciKWYCUK8i1X+rHy561fPNE6Nk/H66S/Ny1jNjD3B8+Hp16RqMjoAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTA5LTA4VDE0OjUwOjEyKzAzOjAw04WZWwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wOS0wOFQxNDo1MDoxMiswMzowMKLYIecAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAAElFTkSuQmCC)
           no-repeat center;
         width: 25px;
-        fill: #d1d2d4;
+        fill: var(--color-d1d2d4);
         margin-left: -6px;
         height: 32px;
         background-size: 100% 100%;
@@ -181,10 +181,10 @@
 
       .count-badge {
         position: absolute;
-        background: #333333;
-        border: 1px solid #8a8888;
+        background: var(--color-333333);
+        border: 1px solid var(--color-8a8888);
         height: 14px;
-        font-family: arial;
+        font-family:var(--Arial-font-family);
         line-height: 12px;
         width: 28px;
         font-size: 12px;
@@ -195,21 +195,21 @@
         justify-content: center;
         top: 48px;
         text-align: center;
-        color: #fff;
+        color: var(--color-White);
       }
     }
 
     .iconBtnLabel {
       text-align: center;
       font-size: 14px;
-      color: #333;
+      color: var(--color-333333);
       margin-top: 10px;
       padding: 0px 0px;
-      font-family: arial;
+      font-family:var(--Arial-font-family);
       line-height: 16px;
     }
     &:hover {
-      background: #f2f2f2;
+      background: var(--color-f2f2f2);
       cursor: pointer;
     }
   }
@@ -221,7 +221,7 @@
     position: absolute;
     left: 11px;
     top: 7px;
-    color: #76787e;
+    color: var(--color-76787e);
   }
   
   #combo-box-demo {
@@ -230,9 +230,9 @@
   .getac-simple-select{
     .selectBoxTextField {
       input {
-        outline: 1px solid transparent;
+        outline: 1px solid var(--color-transparent);
         &:focus {
-          outline: 3px solid #888787 !important;
+          outline: 3px solid var(--color-888787) !important;
         } 
       }
     }

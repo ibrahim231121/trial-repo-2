@@ -11,18 +11,18 @@
     }
   }
   .MuiBackdrop-root {
-    background-color: #000 !important;
+    background-color: var(--color-Black) !important;
     opacity:0.8 !important;
   }
   .MuiDialog-paper {
     padding: 16px 0 0 0;
     border-radius: 0;
     max-width: 600px;
-    box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
-    -webkit-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
-    -moz-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
-    -o-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
-    -ms-box-shadow: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+    box-shadow: var(--Box-shadow-2);
+    -webkit-box-shadow: var(--Box-shadow-2);
+    -moz-box-shadow: var(--Box-shadow-2);
+    -o-box-shadow: var(--Box-shadow-2);
+    -ms-box-shadow: var(--Box-shadow-2);
   }
 
   .modelTitle {
@@ -31,13 +31,13 @@
     z-index: 999999;
     h2 {
       font-size:18px;
-      color: #333333;
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: normal;
+      color: var(--color-333333);
+      font-family:var(--base-font-family);
+      font-weight: var(--Font-style-normal);
       line-height: 20px;
     }
     // &::after {
-    //   background: #ffffff;
+    //   background: var(--color-White);
     //   position: absolute;
     //   height: 85px;
     //   content: " ";
@@ -47,7 +47,7 @@
   }
 
   .indicatestext{
-    color: #333;
+    color: var(--color-333333);
     font-size: 14px;
     font-style: italic;
     padding-bottom: 28px;
@@ -63,12 +63,12 @@
   .CRXContent {
     padding: 0px 26px 43px;
     font-size: 0.875em;
-    color: #333333;
+    color: var(--color-333333);
     height: calc(100% - 97px);
     overflow-y: auto;
     overflow-x: hidden;
     .overlayClx {
-      background: #ffffff;
+      background: var(--color-White);
       position: absolute;
       height: 85px;
       content: " ";
@@ -84,55 +84,55 @@
     height: 74px;
 
     .modalPrimeryBtn {
-      background-color: #333;
+      background-color: var(--color-333333);
       border-radius: 0;
-      border:1px solid transparent;
+      border:1px solid var(--color-transparent);
       padding: 2px 15px;
       text-transform: none !important;
 
       .MuiButton-label {
         font-size: 14px;
-        color: #d1d2d4;
+        color: var(--color-d1d2d4);
         font-weight: 100;
       }
       &:hover {
-        background-color: #6e6e6e;
+        background-color: var(--color-6e6e6e);
         .MuiButton-label {
-          color: #f5f5f5;
+          color: var(--color-f5f5f5);
         }
       }
       &:focus {
-        background-color: #231f20;
+        background-color: var(--color-231f20);
         .MuiButton-label {
-          color: #f5f5f5;
+          color: var(--color-f5f5f5);
         }
       }
     }
 
     .modalSecrndoryBtn {
-      background-color: #fff;
+      background-color: var(--color-White);
       border-radius: 0;
-      border:1px solid #878787;
+      border:1px solid var(--color-878787);
       padding: 2px 15px;
       margin-left: 31px;
       text-transform: none !important;
 
       .MuiButton-label {
         font-size: 14px;
-        color: #333333;
+        color: var(--color-333333);
         font-weight: 100;
       }
       &:hover {
-        background-color: #f5f5f5;
-        border:1px solid #333333;
+        background-color: var(--color-f5f5f5);
+        border:1px solid var(--color-333333);
         .MuiButton-label {
-          color: #333333;
+          color: var(--color-333333);
         }
       }
       &:focus {
-        background-color: #231f20;
+        background-color: var(--color-231f20);
         .MuiButton-label {
-          color: #f5f5f5;
+          color: var(--color-f5f5f5);
         }
       }
     }
@@ -140,7 +140,7 @@
    
   }
   .CRXDivider {
-    border-color: #d1d2d4;
+    border-color: var(--color-d1d2d4);
   }
 
   .CRXPopupCrossButton {
@@ -151,12 +151,12 @@
 
     i {
       font-size: 16px;
-      color: #d1d2d4;
+      color: var(--color-d1d2d4);
       &:hover {
-        color: #333;
+        color: var(--color-333333);
       }
       &:focus {
-        color: #333;
+        color: var(--color-333333);
       }
     }
   }
@@ -164,17 +164,17 @@
   .dailogBottonText {
     position: absolute;
     bottom: 115px;
-    color: #333;
+    color: var(--color-333333);
     font-size: 14px;
   }
   .modalContentText {
     font-size: 14px !important;
-    color: #333;
+    color: var(--color-333333);
     padding: 28px 0px;
   }
   .modalBottomText {
     font-size: 14px;
-    color: #333;
+    color: var(--color-333333);
     padding-top: 5px;
   }
 }
@@ -182,7 +182,7 @@
   margin-top: 15px !important;
   max-height: 491px !important;
   li {
-    border-bottom: 1px solid #d1d2d4;
+    border-bottom: 1px solid var(--color-d1d2d4);
     position: static;
     :last-child {
     border-bottom:none !important
@@ -246,7 +246,7 @@
 //   position: relative;
 //     &::before {
 //     position: absolute;
-//     background: #fff;
+//     background: var(--color-White);
 //     width: 100%;
 //     height: 100px;
 //     z-index: 2;

@@ -12,7 +12,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
     root: {
       backgroundColor: "#fff",
       border: "3px solid transparent",
-      outline: "1px solid #D1D2D4",
+      outline: "1px solid #d1d2d4",
       paddingLeft: "5px",
       '&:hover': {
         outline: "1px solid #888787",
@@ -32,7 +32,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
       }
     },
     icon : {
-        color : "#D1D2D4",
+        color : "#d1d2d4",
         fontSize:"14px",
         fontWeight : "normal",
         paddingRight:"0",
@@ -69,7 +69,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         color: "#333",
         fontSize: "14px",
         alignItems: 'flex-start',
-        padding: "0px 0",
+        padding: "0px 16px",
         placeItems: "center",
         '&[data-focus="true"]': {
           backgroundColor: "#6E6E6E",
@@ -80,7 +80,7 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
         // '&[aria-selected="true"]': {
         //   backgroundColor: "red",
         //   borderColor: "transparent",
-        //   color: "#D1D2D4",
+        //   color: "#d1d2d4",
         //   height: "33px",
         // },
         

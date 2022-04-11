@@ -5,11 +5,11 @@
     // min-height: 30px;
     &.dark {
         
-        background-color: #d1d2d4;
+        background-color: var(--color-d1d2d4);
     }
     &.light {
         
-        background-color: #fff;
+        background-color: var(--color-White);
     }
     .MuiFormControl-root{
         border-width: 0px !important;
@@ -36,7 +36,7 @@
     .selectBoxTextField{
         input{
             font-size: 14px;
-            color:#333;
+            color:var(--color-333333);
             padding: 0px;
             height: 26px;
             position: relative;
@@ -44,9 +44,9 @@
         }
     }
     .MuiChip-root{
-        background-color: #fff;
+        background-color: var(--color-White);
         border-radius: 1px;
-        border: 1pt solid #888787
+        border: 1pt solid var(--color-888787)
     }
 
     .MuiAutocomplete-tag {
@@ -61,11 +61,11 @@
             position: absolute;
             content: "\f00d";
             font-family: "Font Awesome 5 Pro";
-            color: #D1D2D4;
+            color: var(--color-d1d2d4);
             font-size: 14px;
             right:7px;
             &:hover {
-                color: #333;
+                color: var(--color-333333);
             }
         }
     }
@@ -73,7 +73,7 @@
 }
 .afterSelectedValue {
     position: absolute;
-    background: #404041;
+    background: var(--color-404041);
     display: flex;
     width: 100%;
     z-index: 1;
@@ -81,23 +81,23 @@
     place-content: center;
     place-items: center;
     button {
-        background: transparent;
+        background: var(--color-transparent);
         border:0px;
         outline: 0px;
-        color: #D1D2D4;
+        color: var(--color-d1d2d4);
         width: 40px;
         &:hover {
-            background: transparent;
+            background: var(--color-transparent);
         }
         &:focus {
-            background: transparent;
+            background: var(--color-transparent);
             outline: none;
         }
     }
 }
 }
 .error{
-    border:2px solid #aa1d1d
+    border:2px solid var(--color-aa1d1d)
 }
 
 .MuiInput-underline{
@@ -129,11 +129,11 @@
 }
 
 .selectBoxIcon, .selectBoxIconCecked {
-    color: #d1d2d4 !important;
+    color: var(--color-d1d2d4) !important;
     font-size: 18px;
-    font-weight: normal;
+    font-weight: var(--Font-style-normal);
 }
 
 .selectBoxIcon:hover, .selectBoxIconCecked:hover {
-    background: transparent !important;
+    background: var(--color-transparent) !important;
 }

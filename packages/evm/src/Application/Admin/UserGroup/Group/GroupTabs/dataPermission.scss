@@ -12,26 +12,26 @@
     overflow-y: overlay;
     &::-webkit-scrollbar {
       width: 0px;
-      background: transparent;
+      background: var(--color-transparent);
     }
   }
   .crxPermissionBtnUSers {
     padding: 0 0 0 0;
     margin: 0 86px;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--color-333333);
   }
   .dataPermissionColumn {
-    background: #333333;
-    color: #d1d2d4;
+    background: var(--color-333333);
+    color: var(--color-d1d2d4);
     text-align: center;
     place-items: center;
     justify-content: center;
     height: 50px;
     font-size: 14px;
-    font-family: Arial;
+    font-family: var(--base-font-family);
     &:nth-child(2) {
-      border-left: 1px solid #cccccc;
-      border-right: 1px solid #cccccc;
+      border-left: 1px solid var(--color-ccc);
+      border-right: 1px solid var(--color-ccc);
     }
   }
 
@@ -41,19 +41,19 @@
     }
   }
   .PreSearchButton {
-    background-color: #333333;
-    color: #d1d2d4 !important;
+    background-color: var(--color-333333);
+    color: var(--color-d1d2d4) !important;
     font-size: 14px;
     margin-top: 27px;
     height: 30px;
     box-shadow: none !important;
     &:hover {
-      background-color: #6e6e6e;
-      color: #f5f5f5 !important;
+      background-color: var(--color-6e6e6e);
+      color: var(--color-f5f5f5) !important;
     }
     &:focus {
-      background-color: #231f20 !important;
-      color: #f5f5f5 !important;
+      background-color: var(--color-231f20) !important;
+      color: var(--color-f5f5f5) !important;
     }
   }
   .crx-datapermission-col {
@@ -69,10 +69,10 @@
         }
       }
       &:nth-of-type(even) {
-        background: #f2f2f2;
+        background: var(--color-f2f2f2);
       }
       &:nth-of-type(odd) {
-        background: #fff;
+        background: var(--color-White);
       }
       .permissionCol {
         padding: 0 33px;
@@ -81,20 +81,20 @@
 
           .adVSelectBox {
             width: 100%;
-            color: #333333;
+            color: var(--color-333333);
             border: none;
-            outline: transparent;
+            outline: var(--color-transparent);
             padding-left: 0;
             .MuiFilledInput-adornedEnd.Mui-focused {
-              outline: 3px solid #888787;
-              border: transparent;
+              outline: 3px solid var(--color-888787);
+              border: var(--color-transparent);
               &:hover {
                 border: none;
               }
             }
             .MuiFilledInput-adornedEnd.Mui-disabled {
               border: none;
-              color: #979797;
+              color: var(--color-979797);
               &:hover {
                 border: none;
               }
@@ -102,36 +102,40 @@
             .MuiFilledInput-adornedEnd {
               height: 30px;
               padding-left: 11px;
-              border: 1px solid #d1d2d4;
-              color: #333333;
+              border: 1px solid var(--color-d1d2d4);
+              color: var(--color-333333);
               font-size: 14px;
               padding-left: 17px;
               padding-right: 0;
-              outline: 3px solid transparent;
+              outline: 3px solid var(--color-transparent);
+
               input {
-                color: #333333;
+                color: var(--color-333333);
 
                 &::-webkit-input-placeholder {
                   /* Edge */
-                  color: #74767c;
+                  color: var(--color-74767c);
+                  opacity: 1;
                 }
 
                 &:-ms-input-placeholder {
                   /* Internet Explorer 10-11 */
-                  color: #74767c;
+                  color: var(--color-74767c);
+                  opacity: 1;
                 }
 
                 &::placeholder {
-                  color: #74767c;
+                  color: var(--color-74767c);
+                  opacity: 1;
                 }
               }
               &:hover {
-                border: 1px solid #888787;
+                border: 1px solid var(--color-888787);
               }
               .MuiAutocomplete-popupIndicator {
                 font-size: 21px !important;
                 &:hover {
-                  background-color: transparent;
+                  background-color: var(--color-transparent);
                 }
                 .MuiTouchRipple-root {
                   display: none;
@@ -145,11 +149,11 @@
                   display: none;
                 }
                 .MuiIconButton-label {
-                  color: #333333;
+                  color: var(--color-333333);
                   &::before {
                     content: "\f00d";
                     font-family: "Font Awesome 5 Pro";
-                    font-weight: normal;
+                    font-weight: var(--Font-style-normal);
                     font-size: 14px;
                   }
                   svg {
@@ -157,7 +161,7 @@
                   }
                 }
                 &:hover {
-                  background-color: transparent;
+                  background-color: var(--color-transparent);
                 }
               }
               .MuiAutocomplete-endAdornment {
@@ -171,11 +175,11 @@
           height: 30px !important;
           margin: 0 auto;
           i.Mui-disabled {
-            background-color: #e5e5e5;
+            background-color: var(--color-e5e5e5);
           }
           .Mui-disabled {
-            background-color: #e5e5e5;
-            color: #979797 !important;
+            background-color: var(--color-e5e5e5);
+            color: var(--color-979797) !important;
             font-size: 14px;
             &:hover {
               border: none;
@@ -184,39 +188,63 @@
               border: none;
             }
             &::before {
-              color: #979797 !important;
+              color: var(--color-979797) !important;
             }
             .MuiIconButton-label {
-              color: #979797;
+              color: var(--color-979797);
+            }
+
+            &:-ms-input-placeholder {
+              color: var(--color-979797) !important;
+            }
+
+            &::-webkit-input-placeholder {
+              color: var(--color-979797) !important;
+            }
+
+            &::placeholder {
+              color: var(--color-979797) !important;
             }
           }
         }
-        .adVSelectBox.Mui-disabled {
-          background-color: #e5e5e5;
-          color: #979797;
-          border: none;
-          &:hover {
+        .adVSelectBox {
+          &.Mui-disabled {
+            background-color: var(--color-e5e5e5);
+            color: var(--color-979797);
             border: none;
-          }
-          &:focus {
-            border: none;
+            &:hover {
+              border: none;
+            }
+            &:focus {
+              border: none;
+            }
           }
         }
-        .createUserSelectBox.Mui-focused {
-          outline: 3px solid #888787;
-          border: transparent;
-          &:hover {
-            border: none;
+        .createUserSelectBox {
+          &.Mui-focused {
+            outline: 3px solid var(--color-888787);
+            border: var(--color-transparent);
+
+            &:hover {
+              border: none;
+            }
+          }
+          &.createUserSelectBoxLast {
+            &.Mui-focused {
+              .MuiSelect-select {
+                color: var(--color-333333);
+              }
+            }
           }
         }
         .createUserSelectBox {
           padding: 0 18px;
-          border: 1px solid #d1d2d4;
-          background-color: #ffffff;
-          outline: 3px solid transparent;
-          color: #333333;
+          border: 1px solid var(--color-d1d2d4);
+          background-color: var(--color-White);
+          outline: 3px solid var(--color-transparent);
+          color: var(--color-333333);
           .crxArrowDownSelect {
-            background-color: #fff;
+            background-color: var(--color-White);
             padding-left: 5px !important;
           }
           .crxArrowDownSelect.MuiSelect-iconOpen {
@@ -226,27 +254,27 @@
             margin: 2px 0;
           }
           .MuiSelect-select {
-            color: #333333;
+            color: var(--color-74767c);
             text-overflow: initial;
           }
           input {
             &::-webkit-input-value {
               /* Edge */
-              color: #74767c;
+              color: var(--color-74767c);
             }
 
             &:-ms-input-value {
               /* Internet Explorer 10-11 */
-              color: #74767c;
+              color: var(--color-74767c);
             }
 
             &::value {
-              color: #74767c;
+              color: var(--color-74767c);
             }
           }
 
           &:hover {
-            border: 1px solid #888787;
+            border: 1px solid var(--color-888787);
           }
         }
         .Mui-focused.crxDataPermissionArrowHide {
@@ -283,16 +311,21 @@
   }
 }
 .crxSelectPermissionGroup {
-  border: 1px solid #bebebe;
-  box-shadow: 0px 0px 5px #00000033 !important;
-  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 1px solid var(--color-bebebe);
+  box-shadow: 0px 0px 5px var(--color-00000033) !important;
+  background: var(--color-White) 0% 0% no-repeat padding-box;
   margin-top: 9px !important;
   margin-left: 0 !important;
   .MuiMenu-list {
     padding: 0;
     li {
+      &:first-child {
+        display: none;
+      }
+    }
+    li {
       height: 33px;
-      font-family: Arial;
+      font-family: var(--base-font-family);
     }
   }
 }
@@ -300,10 +333,10 @@
 .removeBtn {
   padding: 0;
   line-height: 0;
-  background: transparent;
+  background: var(--color-transparent);
   font-size: 18px;
   border: 0px;
-  color: #333;
+  color: var(--color-333333);
   border-radius: 100px;
   vertical-align: middle;
   position: relative;
@@ -315,7 +348,7 @@
     top: 0px;
   }
   .MuiSvgIcon-root {
-    fill: #fff;
+    fill: var(--color-White);
     position: relative;
     top: -5px;
     font-size: 1em;
@@ -329,11 +362,11 @@
   margin: 0px 81px;
   position: relative;
   top: -20px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--base-font-family);
   .crxClearfilter {
     position: sticky !important;
     top: -19px;
-    background: #fff;
+    background: var(--color-White);
     z-index: 99;
     padding-bottom: 4.2px;
   }
@@ -353,12 +386,12 @@
           &:nth-child(even) {
             td {
               &:first-child {
-                background: #f2f2f2;
+                background: var(--color-f2f2f2);
                 .fal {
                   position: relative;
                   &::after {
                     content: "";
-                    color: #fff;
+                    color: var(--color-White);
                     left: 0;
                     position: absolute;
                     font-family: "Font Awesome 5 Duotone";
@@ -368,7 +401,7 @@
                   }
                   &.crxCheckForDarBg {
                     &::after {
-                      color: transparent;
+                      color: var(--color-transparent);
                     }
                   }
                 }
@@ -377,31 +410,24 @@
           }
           td {
             &:first-child {
-              background: #fff;
+              background: var(--color-White);
               &:hover {
                 border: 0px;
-                border-right: 1px solid #ccc;
-                border-bottom: 1px solid #ccc;
+                border-right: 1px solid var(--color-ccc);
+                border-bottom: 1px solid var(--color-ccc);
               }
             }
           }
           &.DataTableBodyCell {
             text-indent: 0px;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--base-font-family);
             font-size: 14px;
             line-height: 18px;
             text-align: left;
             vertical-align: middle;
             padding-top: 7px;
             padding-bottom: 7px;
-            &:last-child {
-              .dataTableSimpleText {
-                white-space: nowrap;
-                overflow: hidden;
-                width: 318px;
-                text-overflow: ellipsis;
-              }
-            }
+           
             .CRXCheckBox {
               position: relative;
               left: 10px;
@@ -409,7 +435,7 @@
                 input {
                   &:hover {
                     & ~ span {
-                      color: #f5f5f5 !important;
+                      color: var(--color-f5f5f5) !important;
                     }
                   }
                 }
@@ -417,9 +443,9 @@
             }
           }
           &.Mui-selected {
-            background-color: #231f20 !important;
+            background-color: var(--color-231f20) !important;
             td[scope="row"] {
-              background-color: #231f20 !important;
+              background-color: var(--color-231f20) !important;
             }
           }
         }
@@ -439,11 +465,13 @@
             }
             &.TableSearchAbleHead {
               top: 80px !important;
-              padding:12px 14px 12px;
+              padding: 12px 14px 12px;
             }
             &:last-child {
               border-right: none;
-              .crxTableHeaderSize {max-width: 100% !important;}
+              .crxTableHeaderSize {
+                max-width: 100% !important;
+              }
             }
             span {
               span {
@@ -463,10 +491,10 @@
     position: fixed;
     bottom: 12vh;
     width: 1573px;
-    background: #fff;
+    background: var(--color-White);
     /* left: 0; */
     z-index: 999;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--color-ccc);
   }
 
   .usersGroupDataTable {
@@ -480,10 +508,10 @@
       position: fixed;
       bottom: 21.6vh !important;
       width: 1019px !important;
-      background: #fff;
+      background: var(--color-White);
       /* left: 0; */
       z-index: 999;
-      // border-top: 1px solid #ccc;
+      // border-top: 1px solid var(--color-ccc);
       .MuiIconButton-root {
         padding: 0px !important;
         span {
@@ -505,21 +533,18 @@
       }
     }
   }
-
- 
 }
 
-@media (max-width: 1600px) and (max-height : 900px) 
-{
+@media (max-width: 1600px) and (max-height: 900px) {
   .userDataTableParent {
     .dataTablePages {
       position: fixed;
       bottom: 10vh;
       width: 1174px;
-      background: #fff;
+      background: var(--color-White);
       /* left: 0; */
       z-index: 999;
-      // border-top: 1px solid #ccc;
+      // border-top: 1px solid var(--color-ccc);
     }
   }
   .crxGroupTab1 {
@@ -533,7 +558,6 @@
         //   bottom: 114px;
         // }
       }
-     
     }
     &.crxScrollGroup {
       .userDataTableParent {
@@ -542,7 +566,6 @@
           min-height: 70px;
         }
       }
-     
     }
   }
   .hiddenArea {

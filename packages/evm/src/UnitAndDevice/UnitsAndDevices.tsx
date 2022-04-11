@@ -21,6 +21,8 @@ import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
 import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { makeStyles } from "@material-ui/core/styles";
+import Popper from '@material-ui/core/Popper';
+
 
 import {
   SearchObject,
@@ -143,12 +145,6 @@ const UnitAndDevices: React.FC = () => {
     dispatch(enterPathActionCreator({ val: ""}));
   }, [units]);
 
-  useEffect(()=>{
-     let classUDMain = document.querySelector(".unitDeviceMain");
-     if(classUDMain) {
-       document.querySelector("body")?.classList.add("unitDeviceMainPage");
-     }
-  })
   const searchText = (
     rowsParam: Unit[],
     headCells: HeadCellProps[],
@@ -322,6 +318,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               value={settingValues(headCells[colIdx])}
               onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
               options={version}
+              className="unitVersionMultiSelect"
               CheckBox={true}
               checkSign={false}
               open={open}
@@ -371,7 +368,9 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
             val = []
         return val
     }
- 
+    const PopperStatus = function (props: any) {
+      return (<Popper {...props}  className="PopperStatus" placement="left-start"/>)
+    }
   
   
     return (
@@ -383,7 +382,9 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
                 value={settingValues(headCells[colIdx])}
                 onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
                 options={status}
+                PopperComponent={PopperStatus}
                 CheckBox={true}
+                className="unitStatusMultiSelect"
                 checkSign={false}
                 statusIcon={true}
                 open={open}
@@ -435,6 +436,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
               options={template}
               CheckBox={true}
+              className="unitTemplateMultiSelect"
               checkSign={false}
               statusIcon={false}
               open={open}
@@ -470,7 +472,7 @@ const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultis
   setHeadCells(headCellReset);
 }
 const openHandler = (_: React.SyntheticEvent ) => {
-  console.log("onOpen")
+  
   //setOpen(true)
 }
 
@@ -494,12 +496,12 @@ const openHandler = (_: React.SyntheticEvent ) => {
       label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplayUnit(e, "anchorStyle"),// textDisplay(e, ""),
+      dataComponent: (e: string) => anchorDisplayUnit(e, "linkColor"),// textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100"
+      minWidth: "120",
+      
     }, 
     {
       label: `Template`,
@@ -513,7 +515,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
          multiSelectCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "100",
-      maxWidth: "100",
+      
     }, 
     {
       label: `${t("Serial Number")}`,
@@ -523,8 +525,8 @@ const openHandler = (_: React.SyntheticEvent ) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "140",
-      maxWidth: "140",
+      minWidth: "180",
+      maxWidth: "180",
     },
     {
       label: `${t("Version")}`,
@@ -536,8 +538,8 @@ const openHandler = (_: React.SyntheticEvent ) => {
       searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
       multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
         
-       minWidth: "20",
-       maxWidth: "20",
+       minWidth: "80",
+       maxWidth: "100",
     },
     {
       label: `${t("Description")}`,
@@ -547,19 +549,19 @@ const openHandler = (_: React.SyntheticEvent ) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100",
+      minWidth: "290",
+      maxWidth: "290",
     },
     {
       label: `${t("Station")}`,
       id: "station",
       align: "left",
-      dataComponent: (e: string) => textDisplayStation(e, ""),
+      dataComponent: (e: string) => textDisplayStation(e, "linkColor"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100",
+      minWidth: "185",
+      maxWidth: "185",
     },
     {
       label: `${t("Assigned To")}`,
@@ -582,7 +584,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchDate,
-      minWidth: "140"
+      minWidth: "190"
     },
     {
       label: `${t("Status")}`,
@@ -756,8 +758,8 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
   return (
  
   
-    <div className="unitDeviceMain">
-      <p className="unitsStatusCounter">{rows.length} Units</p>
+    <div className="unitDeviceMain searchComponents unitDeviceMainUii ">
+      {/* <p className="unitsStatusCounter">{rows.length} Units</p> */}
       {
         
         rows && (
@@ -769,36 +771,31 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           }
           
           showToolbar={true}
-          showCountText={false}
+          showCountText={true}
           columnVisibilityBar={true}
           showHeaderCheckAll={true}
           initialRows={reformattedRows}
           dragVisibility={false}
           showCheckBoxesCol={true}
           showActionCol={true}
-
-
           headCells={headCells}
           dataRows={rows}
-
-
           orderParam={order}
           orderByParam={orderBy}
           searchHeader={true}
-
-
           allowDragableToList={true}
           showTotalSelectedText={false}
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
           //---required Props
-          className="crxTableHeight crxTableDataUi unitDeviceTableConfig"
+          className=""
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
           onResizeRow={resizeRow}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
+          offsetY={190}
           />
           )
         }
