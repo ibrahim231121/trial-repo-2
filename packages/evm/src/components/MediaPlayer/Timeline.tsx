@@ -14,21 +14,20 @@ interface Timelineprops {
   bookmark: any
   setbookmark: any
   setbookmarkAssetId: any
+  setControlBar: any
+  setTimer: any
+  handleControlBarChange: any
+  secondsToHms: any
+  visibleThumbnail: any
+  setVisibleThumbnail: any
+  singleTimeline: any
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId }: Timelineprops,) => {
-  const targetRef = useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    setTimeout(() => {
-      console.log(timelinedetail)
-    }, 600);
-
-
-  }, timelinedetail);
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId, setControlBar, setTimer, handleControlBarChange, secondsToHms, visibleThumbnail, setVisibleThumbnail, singleTimeline }: Timelineprops,) => {
+  const targetRef = useRef<any>();
   const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
   const [bookmarklocation, setbookmarklocation] = useState<number>();
-
 
   const mouseOut = () => {
     setopenThumbnail(false);
@@ -37,9 +36,45 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   const mouseOver = (y: any, x: any) => {
     setbookmark(y);
     setbookmarklocation(getbookmarklocation(y.position, x.startdiff));
-
     setopenThumbnail(true);
   }
+
+
+  const displayThumbail = (event: any, index: number) => {
+    setVisibleThumbnail([...visibleThumbnail, index]);
+    var x = timelinedetail[index]
+    var timeLineHover: any = document.querySelector("#timeLine-hover" + index);
+    var timelineWidth = timeLineHover?.scrollWidth;
+    var offset = timeLineHover.getBoundingClientRect().left;
+    var pos = (event.pageX - offset) / timelineWidth;
+    var ttt = Math.round(pos * x.video_duration_in_second);
+    var Thumbnail: any = document.querySelector("#Thumbnail" + index);
+    var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + index);
+    if (Thumbnail) {
+      Thumbnail.currentTime = ttt;
+      Thumbnail.style.left = (event.pageX - offset) + "px";
+      ThumbnailTime.innerHTML = secondsToHms(ttt)
+      ThumbnailTime.style.left = (event.pageX - offset) + "px";
+    }
+  }
+  const removeThumbnail = (index: number) => {
+    var visibleThumbnailAfterRemove = visibleThumbnail.filter((x: any) => x !== index);
+    setVisibleThumbnail(visibleThumbnailAfterRemove);
+  }
+
+  const setController = (event: any, index: number) => {
+    var x = timelinedetail[index]
+    var timeLineHover: any = document.querySelector("#timeLine-hover" + index);
+    var timeLineHoverBefore: any = document.querySelector("#timeLine-hover-before" + index)?.scrollWidth;
+    var timelineWidth = timeLineHover?.scrollWidth;
+    var offset = timeLineHover.getBoundingClientRect().left;
+    var pos = (event.pageX - offset + timeLineHoverBefore) / timelineWidth;
+    var ttt = Math.round(pos * x.video_duration_in_second);
+    setControlBar(ttt);
+    setTimer(ttt);
+    handleControlBarChange(null, ttt);
+  }
+
 
   const onClickBookmark = (y: any) => {
     setopenThumbnail(false);
@@ -67,23 +102,40 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
         <div style={{ marginTop: 10 }}>
           <div className="beforeline">
             <div className="line" style={{ position: "relative" }}>
+              {<video width="300" height="150" id={"Thumbnail" + index} style={{ visibility: visibleThumbnail.includes(index) ? "visible" : "hidden", position: "absolute" }}>
+                <source src={x.src} type="video/mp4" />
 
+              </video>}
+              <p id={"Thumbnail-Time" + index} style={{ visibility: visibleThumbnail.includes(index) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>
               <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
                 {x.bookmarks && x.bookmarks.map((y: any, index: any) =>
-                  <i className="fa fa-bookmark" aria-hidden="true"
-                    style={{ position: "relative", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
-                    onMouseOut={() => mouseOut()} onMouseOver={() => mouseOver(y, x)} onClick={() => onClickBookmark(y)}>
+                  <div>
 
-                  </i>
+                    <i className="fa fa-bookmark" aria-hidden="true"
+                      style={{ position: "relative", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
+                      onMouseOut={() => mouseOut()} onMouseOver={() => mouseOver(y, x)} onClick={() => onClickBookmark(y)}>
+
+                    </i>
+                  </div>
                 )}
               </div>
 
-              <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%' }}></div>
-              {/* <div style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '100%', display: 'table-cell' }}></div> */}
-              <div className="canvas-width" style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '12px', display: 'flex' }} ref={targetRef}>
-              {<Buffering width={x.video_duration_in_second} id={x.id} />}
+              {singleTimeline == false && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%' }} id={"timeLine-hover-before" + index}></div>}
+              {singleTimeline == false && <div className="canvas-width" draggable="true"
+                style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '12px', display: 'flex' }}
+                id={"timeLine-hover" + index}
+                onClick={(e: any) => setController(e, index)}
+                onDrag={(e: any) => setController(e, index)}
+                onDragEnd={(e: any) => setController(e, index)}
+                onMouseOver={(e: any) => displayThumbail(e, index)}
+                onMouseMove={(e: any) => displayThumbail(e, index)}
+                onMouseOut={() => removeThumbnail(index)}>
+                {<Buffering width={x.video_duration_in_second} id={x.id} />}
               </div>
-              <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%' }}></div>
+              }
+              {singleTimeline == false &&
+                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%' }} id={"timeLine-hover-after" + index}></div>
+              }
             </div>
           </div>
         </div>

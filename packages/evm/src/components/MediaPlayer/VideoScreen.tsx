@@ -19,6 +19,8 @@ const VideoScreen = ({ viewNumber, videoData }: VideoScreenProp) => {
             <source src={videoData[camIndex].src} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
+
+          
         </div>
       );
     } else {
