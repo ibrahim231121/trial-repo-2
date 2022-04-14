@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Menu,
   MenuItem,
@@ -8,11 +8,11 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
-
+import { CRXModalDialog } from '@cb/shared';
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
-
+import AssignUser from '../AssignUser/AssignUser';
 import { RootState } from "../../../../Redux/rootReducer";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 
@@ -67,6 +67,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
     setOpenForm(true);
   };
 
+  const [openAssignUser, setOpenAssignUser] = React.useState(false);
+  const [filterValue, setFilterValue] = React.useState<any>([]);
+  const handleOpenAssignUserChange = () => {
+    setOpenAssignUser(true);
+  };
+
   const MultiCompareAssetBucketData = (
     assetBucketData: AssetBucket[],
     selectedItems: any[]
@@ -99,6 +105,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
         isCategoryEmpty={isCategoryEmpty}
         setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
       />
+
+      <CRXModalDialog
+        maxWidth='lg'
+        title={"Assign User"}
+        className={'CRXModal'}
+        modelOpen={openAssignUser}
+        onClose={() => setOpenAssignUser(false)}
+        defaultButton={false}
+        indicatesText={true}
+        
+      >
+        <AssignUser
+            filterValue={filterValue}
+            setFilterValue={(v: any) => setFilterValue(v)}
+            rowData={row}
+            setRemovedOption={(e: any) => {}}
+            setOnClose={() => setOpenAssignUser(false)}
+          />
+      </CRXModalDialog>
 
       <Menu
         align="start"
@@ -144,7 +169,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
+            <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
               <div className="crx-menu-icon">
                 <i className="far fa-user-tag fa-md"></i>
               </div>
