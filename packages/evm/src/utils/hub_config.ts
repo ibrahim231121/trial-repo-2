@@ -69,8 +69,7 @@ export const setupSignalRConnection = (connectionHub: any) =>{
   // and generate a new socket connection if needed
   console.log("token",getToken());
   const connection = new  HubConnectionBuilder()       
-    .withUrl(connectionHub+ `?token=${getToken()}`, {skipNegotiation: true,
-      transport: HttpTransportType.WebSockets}) 
+    .withUrl(connectionHub+ `?token=${getToken()}`) 
      .withAutomaticReconnect()
     .configureLogging(LogLevel.Information)
     .build();
