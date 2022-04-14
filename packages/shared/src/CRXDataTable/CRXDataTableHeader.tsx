@@ -22,6 +22,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 
   React.useEffect(() => {
     const divWidth = document.getElementsByClassName("getWidth");
+    console.log("divWidth", divWidth);
 
     setClientWidth(divWidth);
   }, []);
@@ -37,9 +38,12 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
     resizeWidth &&
     resizeWidth.deltaX + clientWidth[resizeWidth.colIdx + 3].clientWidth + "px";
 
+  console.log("finalWidth", finalWidth);
+
   // console.log("finalWidth", finalWidth);
 
   const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+    console.log("colIdx", e.colIdx);
     setResizeWidth(e);
   };
 
@@ -85,7 +89,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         <TableCell
           className={
             classes.headerStickness +
-            " CRXDataTableLabelCell crxTableHeaderSize"
+            " CRXDataTableLabelCell crxTableHeaderSize "
           }
           style={{
             width: "80px",
@@ -109,9 +113,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         //key needs to be STATIC
 
         <TableCell
-          className={
-            classes.headerStickness + " CRXDataTableLabelCell getWidth"
-          }
+          className={classes.headerStickness + " CRXDataTableLabelCell"}
           key={headCells[colIdx].id}
           id={headCells[colIdx].id}
           style={{
@@ -126,14 +128,13 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             //   colIdx === resizeWidth?.colIdx &&
             //   resizeWidth.deltaX +
             //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
-            //     249
+            //     349
             //     ? resizeWidth.deltaX +
             //       clientWidth[resizeWidth.colIdx + 3].clientWidth
-            //     : "250px",
+            //     : "350px",
 
             userSelect: "none",
             minWidth: headCells[colIdx].minWidth + "px",
-            
             
           }}
           align={
@@ -146,15 +147,14 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         >
           
           <div
-            className={classes.headerCellDiv + " crxTableHeaderSize"}
+            className={classes.headerCellDiv + " crxTableHeaderSize getWidth"}
             id={headCells[colIdx].id}
             style={{
               minWidth: "100%",
               width:
                 colIdx === resizeWidth?.colIdx
                   ? finalWidth
-                  : headCells[colIdx].minWidth + "px",
-                  
+                  : headCells[colIdx].width + "px",
             }}
           >
             <div className={classes.headerStickness} key={headCells[colIdx].id}>
@@ -203,7 +203,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 defaultClassNameDragging="DragHandleActive"
                 onDrag={(_, deltaX) => {
                   resizeRow({
-                    //Using deltax.x because of consistant value in x direction (drag) divide by 2 because of react dragable doc says.
+                    //Using deltax.x because of consistant value in x direction (drag) divide by 3 because of react dragable doc says.
                     colIdx,
                     deltaX: deltaX.x / 2,
                   });
@@ -217,9 +217,13 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                       memo[clientWidth[colIdx + 3]] =
                         clientWidth[colIdx + 3].id;
 
-                      headCells[colIdx].minWidth =
+                      headCells[colIdx].width =
                         resizeWidth.deltaX +
-                        clientWidth[colIdx + 3].clientWidth;
+                          clientWidth[colIdx + 3].clientWidth >
+                        (headCells[colIdx]?.minWidth || 125)
+                          ? resizeWidth.deltaX +
+                            clientWidth[colIdx + 3].clientWidth
+                          : headCells[colIdx].minWidth;
                     }
                   }
 
@@ -231,7 +235,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                   // headCells[resizeWidth.colIdx + 3].minWidth =
                   //   resizeWidth.deltaX +
                   //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
-                  //   249
+                  //   349
                   //     ? resizeWidth.deltaX +
                   //       clientWidth[resizeWidth.colIdx + 3].clientWidth
                   //     : headCells[resizeWidth.colIdx + 3].minWidth;

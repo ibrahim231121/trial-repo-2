@@ -134,7 +134,7 @@ const MasterMain: React.FC<Props> = ({
       categories: row.categories,
       devices: row.devices,
       station: row.station,
-      recordedBy: row.masterAsset.owners === null ? []: row.masterAsset.owners,
+      recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
       evidence: row,
@@ -311,15 +311,17 @@ const MasterMain: React.FC<Props> = ({
       searchComponent: () => null,
       keyCol: true,
       visible: false,
+      width: "",
       minWidth: "250",
     },
     {
       label: `${t("AssetThumbnail")}`,
-      id: "assetType",
+      id: "assetId",
       align: "left",
       dataComponent: thumbTemplate,
       minWidth: "130",
       maxWidth: "150",
+	  width: ""
     },
     {
       label: `${t("AssetID")}`,
@@ -330,6 +332,7 @@ const MasterMain: React.FC<Props> = ({
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
+      width: "",
       detailedDataComponentId: "evidence",
     },
     {
@@ -345,6 +348,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "250",
+      width: "",
       visible: false,
     },
     {
@@ -356,6 +360,7 @@ const MasterMain: React.FC<Props> = ({
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "338",
+      width: "",
       maxWidth: "210",
     },
     {
@@ -371,6 +376,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "220",
+      width: "",
     },
     {
       label: `${t("Device")}`,
@@ -385,6 +391,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
       minWidth: "250",
+      width: "",
       visible: false,
     },
     {
@@ -400,6 +407,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
       minWidth: "250",
+      width: "",
       visible: false,
     },
     {
@@ -415,6 +423,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "210",
+      width: "",
     },
     {
       label: `${t("Captured")}`,
@@ -423,6 +432,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: dateDisplayFormat,
       sort: true,
       minWidth: "230",
+	  width: "",
       searchFilter: true,
       searchComponent: searchDate,
     },
@@ -433,6 +443,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       minWidth: "230",
+      width: "",
       searchFilter: true,
       searchComponent: (
         rowData: EvidenceReformated[],
