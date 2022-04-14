@@ -3,12 +3,13 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { darkTheme, lightTheme } from "./CRXTheme"
+
 import "./globalSelectBox.scss";
 
 interface selectBoxProps {
   multiple?: boolean;
   statusIcon?: boolean;
-  options: any[];
+  options: any[]; 
   value?: any[];
   CheckBox?: boolean;
   id?: string;
@@ -26,7 +27,8 @@ interface selectBoxProps {
   filterOptions?: any;
   clearSelectedItems?: (e: React.SyntheticEvent) => void;
   noOptionsText?: string;
-  theme?: string
+  theme?: string;
+  PopperComponent?: any
 }
 
 interface renderCheck {
@@ -52,7 +54,8 @@ const CRXGlobalSelectFilter = ({
   className,
   noOptionsText,
   open,
-  theme
+  theme,
+  PopperComponent
 }: selectBoxProps) => {
 
   const data = options;
@@ -124,6 +127,7 @@ const CRXGlobalSelectFilter = ({
       <Autocomplete
         multiple={multiple}
         autoComplete={autoComplete}
+        PopperComponent={PopperComponent}
         className={
           "crx-global-Select" + ' ' + theme + " " +
           className +
@@ -136,7 +140,6 @@ const CRXGlobalSelectFilter = ({
         open={opens}
         closeIcon={<i className="icon-cross"></i>}
         onClose={() => setOpen(false)}
-        onMouseDown={() => 
         value={valState}
         options={data}
         popupIcon={opupOpenCret}

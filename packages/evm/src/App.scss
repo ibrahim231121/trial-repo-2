@@ -1,32 +1,35 @@
+@use './Assets/css/library' as lib;
+
+
 .language_selector_app {
     position: absolute;
     top: 0;
     z-index: 1;
     right: 0;
     height: 41px;
-    background: #0F0D0E99;
+    background: var(--color-0F0D0E99);
     display: flex;
     align-items: center;
     flex-direction: row-reverse;
     justify-content: center;
     &:focus-within {
-        outline: 1px solid white !important;
+        outline: 1px solid var(--color-White) !important;
       }
     .CRXSimpleSelect  {
-        background-color: transparent;
+        background-color: var(--color-transparent);
         border: none;
         &:hover {
                 border: none;
                 transition: none;
         }
         .MuiSelect-select {
-            color: #FFFFFF;
+            color: var(--color-White);
             font-size: 14px;
             line-height: 16px;
-            font-family:Arial, Helvetica, sans-serif;
+            font-family:var(--base-font-family);
         }
         .MuiSelect-icon {
-            color: #FFFFFF;
+            color: var(--color-White);
             right: 23px;
             top: 2px;
         }
@@ -41,7 +44,7 @@
         } 
     }
     .world_language_icon {
-        color: #ffffff;
+        color: var(--color-White);
         font-size: 20px;
         padding-left: 33px;
         padding-right: 3px;
@@ -49,14 +52,14 @@
    
     .MuiSelect-iconOpen {
         .paperStyle  {
-            background: antiquewhite;
+            background: var(--color-antiquewhite);
         }
     }
 }
 
 
  .paperStyle {
-    background-color:#404041 !important;
+    background-color:var(--color-404041) !important;
     min-width: 158px;
     width: 115px !important;
     margin-left: 18px !important;
@@ -66,17 +69,17 @@
     border: none;
     li {
         height: 33px !important;
-        color: #D1D2D4;
+        color: var(--color-d1d2d4);
         font-size: 14px;
         line-height: 16px;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: var(--base-font-family);
         &:hover {
-            color: #F5F5F5 !important;
-            background-color: #231F20 !important;
+            color: var(--color-f5f5f5) !important;
+            background-color: var(--color-231f20) !important;
         }
         &:focus , &:visited , &:active {
-            background-color: #6E6E6E !important;
-            color: #D1D2D4 !important;
+            background-color: var(--color-6e6e6e) !important;
+            color: var(--color-d1d2d4) !important;
         }
         &:first-child {
             display: none;
@@ -86,4 +89,23 @@
 
 iframe {
     display: none;
+}
+
+.map-container{
+    display: flex;
+    justify-content: center;
+    &__map{
+        height: 50vh;
+        width:100%
+    }
+}
+.mapContainer, #map123{
+    height: 100vh;
+    width:80%;
+    justify-content: center;
+}
+
+.customNavBar {
+    position:absolute;
+    top: 20px;
 }

@@ -11,7 +11,7 @@
             min-height: 30px;
             max-height: inherit;
             border: 0px;
-            background-color:transparent;
+            background-color:var(--color-transparent);
             border-radius: 0px;
             &::before {
                 border-bottom: 0px !important;
@@ -33,9 +33,9 @@
 
     .selectChip {
         &:hover {
-            color: #333;
+            color: var(--color-333333);
             i {
-                color: #333;
+                color: var(--color-333333);
             }
         }
     }
@@ -54,19 +54,19 @@
             position: absolute;
             content: "\f00d";
             font-family: "Font Awesome 5 Pro";
-            color: #D1D2D4;
+            color: var(--color-d1d2d4);
             font-size: 14px;
             right:7px;
             top: 0;
             &:hover {
-                color: #333;
+                color: var(--color-333333);
             }
         }
     }
 
     &.inputError{
-        outline: 2px solid #aa1d1d !important;
-        border:1px solid transparent;
+        outline: 2px solid var(--color-aa1d1d) !important;
+        border:1px solid var(--color-transparent);
     }
     .MuiInputBase-adornedEnd {min-height: 29px;}
 
@@ -83,7 +83,7 @@
 }
 
 .checkIconSingle {
-    color: #F5F5F5;
+    color: var(--color-F5F5F5);
     font-size:15px;
     margin-right: 12px;
     padding-left: 10px;

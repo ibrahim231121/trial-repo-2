@@ -19,9 +19,9 @@ import { CRXToaster } from "@cb/shared";
 var videoElements: any[] = [];
 
 type Timeline = {
-  recording_start_point:number;
+  recording_start_point: number;
   recording_Start_point_ratio: number;
-  recording_end_point:number;
+  recording_end_point: number;
   recording_end_point_ratio: number;
   recordingratio: number;
   bookmarks: any;
@@ -40,17 +40,17 @@ type MaxMinEndpoint = {
 const videoSpeed = [
   {
     "mode": -3,
-    "playBackRate":0.4,
+    "playBackRate": 0.4,
     "speed": 1700,
   },
   {
     "mode": -2,
-    "playBackRate":0.6,
+    "playBackRate": 0.6,
     "speed": 1500,
   },
   {
     "mode": -1,
-    "playBackRate":0.8,
+    "playBackRate": 0.8,
     "speed": 1250,
   },
   {
@@ -60,17 +60,17 @@ const videoSpeed = [
   },
   {
     "mode": 1,
-    "playBackRate":2,
+    "playBackRate": 2,
     "speed": 500,
   },
   {
     "mode": 2,
-    "playBackRate":3,
+    "playBackRate": 3,
     "speed": 333.33,
   },
   {
     "mode": 3,
-    "playBackRate":4,
+    "playBackRate": 4,
     "speed": 250,
   }
 ]
@@ -85,8 +85,9 @@ const VideoPlayerBase = (props: any) => {
     "PitureInPicture": 4
   };
 
-  const [buffering, setBuffering] = useState<boolean>(false)
+  const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
   const [totalDuration, setTotalDuration] = useState<number>(1);
+  const [visibleThumbnail, setVisibleThumbnail] = useState<number[]>([]);
 
   const [maxminendpoint, setmaxminendpoint] = useState<MaxMinEndpoint>();
   const [bookmarktime, setbookmarktime] = useState<number>();
@@ -96,6 +97,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [viewNumber, setViewNumber] = useState(0);
+  const [singleTimeline, setSingleTimeline] = useState<boolean>(false);
 
   const [controlBar, setControlBar] = useState(0);
 
@@ -136,6 +138,9 @@ const VideoPlayerBase = (props: any) => {
   //video size max upto net duration
   React.useEffect(() => {
     if (data.length > 0) {
+      if (data.length == 1) {
+        setSingleTimeline(true);
+      }
       Durationfinder(data);
       setLoading(true)
     }
@@ -217,33 +222,35 @@ const VideoPlayerBase = (props: any) => {
 
   async function TimelineData_generator(data: any, minstartpoint: string, duration: number) {
     let rowdetail: Timeline[] = [];
+    let bufferingArr: any[] = [];
     for (let x = 0; x < data.length; x++) {
       let recording_start_time = moment(timeextractor(data[x].recording.started), "HH:mm:ss").format('HH:mm:ss');
       let recording_start_point = convert_to_Second(moment.utc(moment(recording_start_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
       let recording_Start_point_ratio = Math.ceil((recording_start_point / duration) * 100)
       let recording_end_time = moment(timeextractor(data[x].recording.ended), "HH:mm:ss").format('HH:mm:ss');
       let recording_end_point = convert_to_Second(moment.utc(moment(recording_end_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
-      let video_duration_in_second = moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss"))/1000;//convert_to_Second(moment(moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss"))).format('HH:mm:ss'));
+      let video_duration_in_second = moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss")) / 1000;//convert_to_Second(moment(moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss"))).format('HH:mm:ss'));
       let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / duration) * 100)
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
       let startdiff = moment(timeextractor(data[x].recording.started), "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"));
 
       let myData: Timeline =
       {
-        recording_start_point:recording_start_point,
+        recording_start_point: recording_start_point,
         recording_Start_point_ratio: recording_Start_point_ratio,
-        recording_end_point:recording_end_point,
+        recording_end_point: recording_end_point,
         recording_end_point_ratio: recording_end_point_ratio,
         recordingratio: recordingratio,
         bookmarks: data[x].bookmarks,
         startdiff: startdiff,
-        video_duration_in_second:video_duration_in_second,
+        video_duration_in_second: video_duration_in_second,
         src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         id: "Video-" + x,
       }
+      bufferingArr.push({ id: myData.id, buffering: false })
       rowdetail.push(myData);
     }
-
+    await setBufferingArray(bufferingArr)
     await settimelinedetail(rowdetail)
   }
 
@@ -252,7 +259,7 @@ const VideoPlayerBase = (props: any) => {
   const handleControlBarChange = (event: any, newValue: any) => {
     setTimer(newValue);
     setControlBar(newValue);
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       hanldeVideoStartStop(newValue, videoHandle, false);
     })
   };
@@ -270,12 +277,12 @@ const VideoPlayerBase = (props: any) => {
   const handlePlayPause = () => {
     setPlaying(!isPlaying);
     if (!isPlaying) {
-      videoHandlers.map((videoHandle: any) => {
+      videoHandlers.forEach((videoHandle: any) => {
         hanldeVideoStartStop(timer, videoHandle, true);
       });
     }
     else {
-      videoHandlers.map((videoHandle: any) => {
+      videoHandlers.forEach((videoHandle: any) => {
         videoHandle.pause();
         videoHandle.playbackRate = 1;
       });
@@ -283,7 +290,7 @@ const VideoPlayerBase = (props: any) => {
   };
   const handleReverse = () => {
     setPlaying(false);
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
       hanldeVideoStartStop(Math.round(videoHandle.currentTime - 1), videoHandle, false);
     });
@@ -291,60 +298,65 @@ const VideoPlayerBase = (props: any) => {
   };
   const handleforward = () => {
     setPlaying(false);
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
       hanldeVideoStartStop(Math.round(videoHandle.currentTime + 1), videoHandle, false);
     });
     handleControlBarChange(null, timer + 1)
   };
-    const handlebookmark = () => {
-      videoHandlers.map((videoHandle: any) => {
-        videoHandle.pause();
+  const handlebookmark = () => {
+    videoHandlers.forEach((videoHandle: any) => {
+      videoHandle.pause();
+    });
+    const playerCurrentTime = Math.round(timer * 1000);
+    var startdiff = moment(timeextractor(data[0].recording.started), "HH:mm:ss").diff(moment(maxminendpoint?.Min_Start_point, "HH:mm:ss"));
+    var enddiff = moment(timeextractor(data[0].recording.ended), "HH:mm:ss").diff(moment(maxminendpoint?.Min_Start_point, "HH:mm:ss"));
+    if (playerCurrentTime >= startdiff && playerCurrentTime <= enddiff) {
+      const BKMTime = playerCurrentTime - startdiff;
+      let isOccur = onAddCheckDuplicate(BKMTime); // prevent to add bookmark on same position
+      if (!isOccur) {
+        setbookmarktime(BKMTime);
+        setPlaying(false);
+        setopenBookmarkForm(true);
+      }
+    }
+    else {
+      bookmarkMsgRef.current.showToaster({
+        message: "Please seek to appropriate time of master camera to bookmark", variant: "Error", duration: 5000, clearButtton: true
       });
-      const playerCurrentTime = Math.round(timer*1000);
-      var startdiff = moment(timeextractor(data[0].recording.started), "HH:mm:ss").diff(moment(maxminendpoint?.Min_Start_point, "HH:mm:ss"));
-      var enddiff = moment(timeextractor(data[0].recording.ended), "HH:mm:ss").diff(moment(maxminendpoint?.Min_Start_point, "HH:mm:ss"));
-      if(playerCurrentTime>=startdiff && playerCurrentTime<=enddiff){
-        const BKMTime = playerCurrentTime-startdiff;
-        let isOccur = onAddCheckDuplicate(BKMTime); // prevent to add bookmark on same position
-        if(!isOccur)
-        {
-          setbookmarktime(BKMTime);
-          setPlaying(false);
-          setopenBookmarkForm(true);
-        }
-      }
-      else{
-        bookmarkMsgRef.current.showToaster({message: "Please seek to appropriate time of master camera to bookmark", variant: "Error", duration: 5000, clearButtton: true
-        });
-      }
-    };
+    }
+  };
 
   const onAddCheckDuplicate = (BKMTime: number) => {
-    const minBKMTime = BKMTime -1000;
-    const mixBKMTime = BKMTime +1000;
+    const minBKMTime = BKMTime - 1000;
+    const mixBKMTime = BKMTime + 1000;
     let error = false;
-    data[0].bookmarks?.map((y:any)=>
-    {
-      if(minBKMTime<=y.position && mixBKMTime>=y.position){
+    data[0].bookmarks?.forEach((y: any) => {
+      if (minBKMTime <= y.position && mixBKMTime >= y.position) {
         error = true;
-        bookmarkMsgRef.current.showToaster({message: "Unable To Add Duplicate Bookmark", variant: "Error", duration: 5000, clearButtton: true
-      });}
+        bookmarkMsgRef.current.showToaster({
+          message: "Unable To Add Duplicate Bookmark", variant: "Error", duration: 5000, clearButtton: true
+        });
+      }
     })
     return error;
   }
 
   useEffect(() => {
-    timelinedetail.map((x: any) => {
+    timelinedetail.forEach((x: any) => {
       var videoElement = document.querySelector("#" + x.id);
       videoElements.push(videoElement);
 
       videoElement?.addEventListener("canplay", function () {
-        setBuffering(true)
+        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        bufferingArrayObj.buffering = true;
+        setBufferingArray(bufferingArray);
       }, true);
 
       videoElement?.addEventListener("waiting", function () {
-        setBuffering(false)
+        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        bufferingArrayObj.buffering = false;
+        setBufferingArray(bufferingArray);
       }, true);
     })
     setVideoHandlers(videoElements);
@@ -356,7 +368,7 @@ const VideoPlayerBase = (props: any) => {
     var endPointDifference = (video.recording_end_point) - timer;
     videoHandle.currentTime = difference > 0 && endPointDifference > 0 ? difference : 0;
     if (applyAction) {
-      if (videoHandle.currentTime > 0) {
+      if (videoHandle.currentTime > 0 && bufferingArray.every((y: any) => y.buffering == true)) {
         videoHandle.play();
       }
       else {
@@ -367,33 +379,28 @@ const VideoPlayerBase = (props: any) => {
 
   useInterval(
     () => {
-      if (buffering === true) {
+      if (bufferingArray.every((y: any) => y.buffering == true)) {
         if (isPlaying === true) {
           if (timer < timelineduration) {
             var timerValue = timer + 1;
             setTimer(timerValue);
             setControlBar(timerValue);
-
-            videoHandlers.map((videoHandle: any) => {
+            videoHandlers.forEach((videoHandle: any) => {
               hanldeVideoStartStop(timerValue, videoHandle, true);
             });
           }
-          else
-          {
+          else {
             setPlaying(false);
-            videoHandlers.map((videoHandle: any) => {
+            videoHandlers.forEach((videoHandle: any) => {
               videoHandle.stop();
             });
           }
         }
       }
-      else if (buffering === false) {
-        videoHandlers.map((videoHandle: any) => {
+      else {
+        videoHandlers.forEach((videoHandle: any) => {
           videoHandle.stop()
         });
-      }
-      else {
-        reset();
       }
     },
     // Speed in milliseconds or null to stop it
@@ -401,13 +408,13 @@ const VideoPlayerBase = (props: any) => {
   );
 
   const setVolumeHandle = (volume: number) => {
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       videoHandle.volume = (volume / 100);
     });
   }
 
   const setMuteHandle = (isMuted: boolean) => {
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       videoHandle.muted = isMuted;
     });
   }
@@ -415,7 +422,7 @@ const VideoPlayerBase = (props: any) => {
     setPlaying(false);
     setTimer(0);
     setControlBar(0);
-    videoHandlers.map((videoHandle: any) => {
+    videoHandlers.forEach((videoHandle: any) => {
       hanldeVideoStartStop(0, videoHandle, true);
     });
   }
@@ -456,18 +463,60 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
-  const modeSet = (Mode:number) => {
-    var modeObj = videoSpeed.find((x:any) => x.mode == Mode);
-    if(modeObj)
-    {
+  const modeSet = (Mode: number) => {
+    var modeObj = videoSpeed.find((x: any) => x.mode == Mode);
+    if (modeObj) {
       setMode(Mode);
-      videoHandlers.map((videoHandle: any) => {
+      videoHandlers.forEach((videoHandle: any) => {
         videoHandle.playbackRate = modeObj?.playBackRate;
       });
       setSpeed(modeObj.speed);
     }
   }
 
+  const displaySeekBarThumbail = (event: any) => {
+    debugger;
+    var Indexes: number[] = [];
+    timelinedetail.forEach((x: any, index: number) => {
+      Indexes.push(index)
+
+      var timeLineHover: any = singleTimeline ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + index);
+      var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+
+      var offset = timeLineHover.getBoundingClientRect().left;
+      var pos = (event.pageX - offset) / timelineWidth;
+      var ttt = Math.round(pos * x.video_duration_in_second);
+      var Thumbnail: any = document.querySelector("#Thumbnail" + index);
+      var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + index);
+
+      var SliderControlBar: any = document.querySelector("#SliderControlBar");
+      var SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
+
+      if (Thumbnail) {
+        Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
+        Thumbnail.style.left = (event.pageX - SliderControlBarOffset) + (index * 300) + "px";
+        ThumbnailTime.innerHTML = secondsToHms(ttt)
+        ThumbnailTime.style.left = (event.pageX - SliderControlBarOffset) + (index * 300) + 125 + "px";
+        ThumbnailTime.style.top = (120) + "px";
+      }
+    });
+
+    setVisibleThumbnail(Indexes);
+  }
+  const removeSeekBarThumbail = () => {
+    setVisibleThumbnail([]);
+  }
+  function secondsToHms(d: number) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + " : " : "";
+    var mDisplay = m >= 0 ? ('00' + m).slice(-2) + " : " : "";
+    var sDisplay = s >= 0 ? ('00' + s).slice(-2) : "";
+    return hDisplay + mDisplay + sDisplay;
+  }
 
   return (
     <div id="video-player" >
@@ -486,16 +535,29 @@ const VideoPlayerBase = (props: any) => {
               bookmark={bookmark}
               setbookmark={setbookmark}
               setbookmarkAssetId={setbookmarkAssetId}
+              setControlBar={setControlBar}
+              setTimer={setTimer}
+              handleControlBarChange={handleControlBarChange}
+              secondsToHms={secondsToHms}
+              visibleThumbnail={visibleThumbnail}
+              setVisibleThumbnail={setVisibleThumbnail}
+              singleTimeline={singleTimeline}
             />
           ) : (<></>)}
 
+        </div>
+        <div>
         </div>
         <div id="controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
           <div>
             <div className="main-control-bar">
               <Slider
+                id="SliderControlBar"
                 value={typeof controlBar === 'number' ? controlBar : 0}
                 onChange={handleControlBarChange}
+                onMouseOver={(e: any) => displaySeekBarThumbail(e)}
+                onMouseMove={(e: any) => displaySeekBarThumbail(e)}
+                onMouseOut={() => removeSeekBarThumbail()}
                 aria-labelledby="input-slider"
                 step={1}
                 min={0}
@@ -533,7 +595,7 @@ const VideoPlayerBase = (props: any) => {
               <div className="playBackMode">
                 <button onClick={() => modeSet(mode - 1)} ><i className="fas fa-undo-alt"><span>{mode < 0 ? mode + "X" : ""}</span></i></button>
                 <button onClick={() => modeSet(0)}><i className="fas fa-minus"></i></button>
-                <button onClick={() => modeSet(mode + 1)} ><i className="fas fa-redo-alt"><span>{mode > 0 ? mode + "X" : "" }</span></i></button>
+                <button onClick={() => modeSet(mode + 1)} ><i className="fas fa-redo-alt"><span>{mode > 0 ? mode + "X" : ""}</span></i></button>
               </div>
               <div className="MenuListGrid">
                 <Menu

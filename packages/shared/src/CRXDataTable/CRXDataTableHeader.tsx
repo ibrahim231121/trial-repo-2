@@ -4,15 +4,13 @@ import IconButton from "@material-ui/core/IconButton";
 import Draggable from "react-draggable";
 import { useStyles, DataTableHeaderProps } from "./CRXDataTableTypes";
 import { useTranslation } from "react-i18next";
-import { fixedColumnAlignment } from "./FixedColumnAlignment";
-
+//import { fixedColumnAlignment } from './FixedColumnAlignment'
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   orderColumn,
   headCells,
   orderData,
   onHandleRequestSort,
   //   onResizeRow,
-  dragVisibility,
   showCheckBoxesCol,
   showActionCol,
 }) => {
@@ -47,7 +45,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 
   return (
     <>
-      {dragVisibility === true || dragVisibility === undefined ? (
+      {/* {dragVisibility === true || dragVisibility === undefined ? (
         <TableCell
           className={
             classes.headerStickness +
@@ -56,12 +54,12 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
           style={{
             width: "60px",
             minWidth: "60px",
-            left: 0,
+            left: "-2px",
             position: "sticky",
             zIndex: 4,
           }}
         ></TableCell>
-      ) : null}
+      ) : null} */}
       {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
         <TableCell
           className={
@@ -69,16 +67,17 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             " CRXDataTableLabelCell crxTableHeaderSize"
           }
           style={{
-            width: "58px",
-            minWidth: "58px",
-            //left: "60px",
-            left: `${fixedColumnAlignment(
-              dragVisibility,
-              showCheckBoxesCol,
-              1
-            )}`,
+            width: "60px",
+            minWidth: "60px",
+            left: "0px",
+            // left: `${fixedColumnAlignment(
+            //   dragVisibility,
+            //   showCheckBoxesCol,
+            //   1
+            // )}`,
+            //left : dragVisibility && "58px",
             position: "sticky",
-            zIndex: 4,
+            zIndex: 30,
           }}
         ></TableCell>
       ) : null}
@@ -91,12 +90,12 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
           style={{
             width: "80px",
             minWidth: "80px",
-            left: `${fixedColumnAlignment(
-              dragVisibility,
-              showCheckBoxesCol,
-              2
-            )}`,
-            //left : "118px",
+            // left: `${fixedColumnAlignment(
+            //   dragVisibility,
+            //   showCheckBoxesCol,
+            //   4
+            // )}`,
+            left : "58px",
             position: "sticky",
             zIndex: 4,
           }}
@@ -135,6 +134,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             userSelect: "none",
             minWidth: headCells[colIdx].minWidth + "px",
             
+            
           }}
           align={
             headCells[colIdx].align === "right"
@@ -144,7 +144,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               : "center"
           }
         >
-          {console.log("header", headCells[colIdx].minWidth)}
+          
           <div
             className={classes.headerCellDiv + " crxTableHeaderSize"}
             id={headCells[colIdx].id}

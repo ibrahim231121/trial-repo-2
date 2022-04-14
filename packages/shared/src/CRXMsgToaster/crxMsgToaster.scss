@@ -1,7 +1,7 @@
 .toasterMsg {
     padding: 0px !important;
-    border: 1px solid #646464;
-    background: rgba(250, 250, 250, 0.9) !important;
+    border: 1px solid var(--color-646464);
+    background: var(--color-White-1) !important;
     height: 35px;
     padding-left: 13px !important;
     #notistack-snackbar {
@@ -9,7 +9,7 @@
     }
     .toasterContent {
         font-size: 12px;
-        color:#666666;
+        color:var(--color-666666);
         span {
             padding: 0px 2px 0px 8px;
             &:first-letter {
@@ -17,55 +17,55 @@
             }
         }
         .warning-stater {
-            color: #8b5c2e;
-            font-weight: bold;
+            color: var(--color-8b5c2e);
+            font-weight: var(--Font-style-bold);
         }
         .success-stater {
-            color: #317427;
-            font-weight: bold;
+            color: var(--color-317427);
+            font-weight: var(--Font-style-bold);
         }
         .error-stater {
-            color: #aa1d1d;
-            font-weight: bold;
+            color: var(--color-aa1d1d);
+            font-weight: var(--Font-style-bold);
         }
         .info-stater {
-            color: #2259aa;
-            font-weight: bold;
+            color: var(--color-2259aa);
+            font-weight: var(--Font-style-bold);
         }
     }
     &.success{ 
         .successIcon {
-            color: #317427;
+            color: var(--color-317427);
             font-size: 18px;
         }
     }
     &.error { 
         .errorIcon {
-            color: #aa1d1d;
+            color: var(--color-aa1d1d);
             font-size: 18px;
         }
     }
     &.warning { 
         .warningIcon {
-            color: #8b5c2e;
+            color: var(--color-8b5c2e);
             font-size: 18px;
         }
     }
     &.info{ 
         .infoIcon {
-            color: #2259aa;
+            color: var(--color-2259aa);
             font-size: 18px;
         }
     }
     .closeToaster {
-        background: transparent;
+        background: var(--color-transparent);
         color: #999999;
         border: 0px;
         padding-right: 15px;
         font-size: 12px;
         cursor: pointer;
         &:hover {
-            color: #646464;
+            color: var(--color-646464);
         }
       }
 }

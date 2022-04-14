@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LoadGoogleMapApi } from './utils/GoogleMapsUtils'
-import Map from './map'
-import './Map.scss'
+import Map from './Map'
 
 interface IMapConfig {
     apiKey: string,

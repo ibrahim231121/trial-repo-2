@@ -6,8 +6,7 @@ import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-import { fixedColumnAlignment } from "./FixedColumnAlignment";
-
+//import { fixedColumnAlignment } from './FixedColumnAlignment'
 
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
@@ -98,11 +97,27 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         tabIndex={-1}
                         selected={isItemSelected}
                       >
-                        {dragVisibility === true ||
-                        dragVisibility === undefined ? (
+                       
+                        {showCheckBoxesCol === true ||
+                        showCheckBoxesCol === undefined ? (
                           <TableCell
-                            className="DataTableBodyCell col-one"
+                            style={{
+                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
+                              // left: `${fixedColumnAlignment(
+                              //   dragVisibility,
+                              //   showCheckBoxesCol,
+                              //   1
+                              // )}`,
+                              left : "0px"
+                            }}
+                            className="DataTableBodyCell CellCheckBox col-two"
                             scope="row"
+                          >
+                             {dragVisibility === true ||
+                        dragVisibility === undefined ? (
+                          <div
+                            className="dragableCellCustomize"
+                            
                           >
                             <Draggable
                               draggableId={row[keyId].toString() + container.id}
@@ -131,22 +146,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                 </div>
                               )}
                             </Draggable>
-                          </TableCell>
+                          </div>
                         ) : null}
-                        {showCheckBoxesCol === true ||
-                        showCheckBoxesCol === undefined ? (
-                          <TableCell
-                            style={{
-                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
-                              left: `${fixedColumnAlignment(
-                                dragVisibility,
-                                showCheckBoxesCol,
-                                1
-                              )}`,
-                            }}
-                            className="DataTableBodyCell CellCheckBox col-two"
-                            scope="row"
-                          >
                             <CRXCheckBox
                               onChange={() => handleChange(row)}
                               checked={isItemSelected}
@@ -165,11 +166,12 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               //   :
                               //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px"
                               // }`,
-                              left: `${fixedColumnAlignment(
-                                dragVisibility,
-                                showCheckBoxesCol,
-                                2
-                              )}`,
+                              // left: `${fixedColumnAlignment(
+                              //   dragVisibility,
+                              //   showCheckBoxesCol,
+                              //   2
+                              // )}`,
+                              left : "60px"
                             }}
                             className="DataTableBodyCell col-three"
                             scope="row"

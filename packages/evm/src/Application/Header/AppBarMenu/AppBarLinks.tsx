@@ -4,7 +4,7 @@ import AppsIcon from '@material-ui/icons/Apps';
 
 const listOFMenu = [
     {
-        label : 'REAL TIME Command',
+        label : 'Getac Command',
         router : "RealTimeCommand"
     },
     {

@@ -1,0 +1,192 @@
+@font-face {
+  font-family: "ArialRegular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Arial Regular"), url("./ARIAL.woff") format("woff");
+}
+
+:root {
+  //Application Font and style
+  --base-font-family: Arial, Helvetica, sans-serif, "Segoe UI";
+  --Arial-font-family: "ArialRegular";
+  --Font-style-normal: normal;
+  --Font-style-bold: bold;
+  --Text-decoration-none: none;
+  --Text-decoration-underline: underline;
+
+  //Application colors
+  --color-Black: #000;
+  --color-White: #fff;
+  --color-ccc: #cccccc;
+  --color-d1d2d4: #d1d2d4;
+  --color-c8c8c8: #c8c8c8;
+  --color-f1f1f1: #f1f1f1;
+  --color-d74b00: #d74b00;
+  --color-231f20: #231f20;
+  --color-e5e5e5: #e5e5e5;
+  --color-979797: #979797;
+  --color-707070: #707070;
+  --color-333333: #333333;
+  --color-e74c3c: #e74c3c;
+  --color-666666: #666666;
+  --color-878787: #878787;
+  --color-282828: #282828;
+  --color-f2f2f2: #f2f2f2;
+  --color-c34400: #c34400;
+  --color-74767c: #74767c;
+  --color-6D6E71: #6d6e71;
+  --color-8a8888: #8a8888;
+  --color-6e6e6e: #6e6e6e;
+  --color-e7e7e7: #e7e7e7;
+  --color-f5f5f5: #f5f5f5;
+  --color-b7b8b9: #b7b8b9;
+  --color-404041: #404041;
+  --color-888787: #888787;
+  --color-aa1d1d: #aa1d1d;
+  --color-1d1c1c: #1d1c1c;
+  --color-151515: #151515;
+  --color-555555: #555555;
+  --color-b2b3b5: #b2b3b5;
+  --color-bebebe: #bebebe;
+  --color-ff6e20: #ff6e20;
+  --color-69696a: #69696a;
+  --color-4C4C4D: #4c4c4d;
+  --color-fafafa: #fafafa;
+  --color-646464: #646464;
+  --color-2259aa: #2259aa;
+  --color-644bff: #644bff;
+  --color-999999: #999999;
+  --color-797979: #797979;
+  --color-2a2a2a: #2a2a2a;
+  --color-76787e: #76787e;
+  --color-e6e6e6: #e6e6e6;
+  --color-585858: #585858;
+  --color-449fdb: #449fdb;
+  --color-dedede: #dedede;
+  --color-02a200: #02a200;
+  --color-2d6fcc: #2d6fcc;
+  --color-ff1410: #ff1410;
+  --color-fd8138: #fd8138;
+  --color-ffd000: #ffd000;
+  --color-ffd000: #ffd000;
+  --color-317427: #317427;
+  --color-8b5c2e: #8b5c2e;
+  --color-337e05: #337e05;
+  --color-33ff00: #33ff00;
+  --color-b3b4b6: #b3b4b6;
+  --color-f44336: #f44336;
+  --color-6c757d: #6c757d;
+  --color-a6d5fa: #a6d5fa;
+  --color-2196F3: #2196f3;
+  --color-495057: #495057;
+  --color-E3F2FD: #e3f2fd;
+  --color-e9ecef: #e9ecef;
+  --color-ced4da: #ced4da;
+  --color-dee2e6: #dee2e6;
+  --color-f8f9fa: #f8f9fa;
+  --color-0b7ad1: #0b7ad1;
+  --color-323232: #323232;
+  --color-191919: #191919;
+  --color-b6bfc8: #b6bfc8;
+  --color-0d89ec: #0d89ec;
+  --color-607D8B: #607d8b;
+  --color-56717d: #56717d;
+  --color-beccd2: #beccd2;
+  --color-4d646f: #4d646f;
+  --color-0288D1: #0288d1;
+  --color-027abc: #027abc;
+  --color-89d4fe: #89d4fe;
+  --color-026da7: #026da7;
+  --color-689F38: #689f38;
+  --color-5e8f32: #5e8f32;
+  --color-c2e0a8: #c2e0a8;
+  --color-537f2d: #537f2d;
+  --color-212529: #212529;
+  --color-FBC02D: #fbc02d;
+  --color-fab710: #fab710;
+  --color-fde6ab: #fde6ab;
+  --color-e8a704: #e8a704;
+  --color-9C27B0: #9c27b0;
+  --color-8c239e: #8c239e;
+  --color-df9eea: #df9eea;
+  --color-7d1f8d: #7d1f8d;
+  --color-58585a: #58585a;
+  --color-4c4c4d : #4c4c4d;
+  --color-444: #444;
+  --color-cecece: #cecece;
+  --color-d7efff: #d7efff;
+  --color-0F0D0E99: #0f0d0e99;
+  --color-00000029: #00000029;
+  --color-00000033: #00000033;
+  --color-olive: olive;
+  --color-coral: coral;
+  --color-rosybrown: rosybrown;
+  --color-red: red;
+  --color-blue: blue;
+  --color-rosybrown: rosybrown;
+  --color-antiquewhite: antiquewhite;
+  --color-transparent: transparent;
+  --color-White-1: rgba(250, 250, 250, 0.9);
+  --color-White-2: rgb(209, 210, 212);
+  --color-White-3: rgba(242, 242, 242, 0.9);
+  --color-White-4: rgb(206, 206, 206);
+
+  --color-black-1: rgba(15, 13, 14, 0.6);
+  --color-black-2: rgba(15, 13, 14, 0.8);
+  --color-black-3: rgba(0, 0, 0, 0);
+  --color-black-4: rgb(27, 27, 27);
+  --color-black-5: rgba(64, 64, 65, 0.1);
+  --color-black-6: rgba(0, 0, 0, 0.2);
+  --color-black-7: rgba(255, 255, 255, 0);
+  --color-black-8: rgba(0, 0, 0, 0.25);
+  --color-black-9: rgba(0, 0, 0, 0.8);
+  --color-black-10: rgba(0, 0, 0, 0.17);
+  --color-black-11: rgba(0, 0, 0, 0.7);
+  --color-black-12: rgb(15 13 14 / 80%);
+  --color-black-13: rgb(15 13 14 / 60%);
+  --color-black-14: rgba(0, 0, 0, 0.4);
+  --color-black-15: rgba(33, 150, 243, 0.04);
+  --color-black-16: rgba(33, 150, 243, 0.16);
+  --color-black-17: rgba(96, 125, 139, 0.04);
+  --color-black-18: rgba(96, 125, 139, 0.16);
+  --color-black-19: rgba(2, 136, 209, 0.04);
+  --color-black-20: rgba(2, 136, 209, 0.16);
+  --color-black-21: rgba(104, 159, 56, 0.04);
+  --color-black-22: rgba(104, 159, 56, 0.16);
+  --color-black-23: rgba(251, 192, 45, 0.04);
+  --color-black-24: rgba(251, 192, 45, 0.16);
+  --color-orange: rgb(215 75 0);
+  --color-slategrey: slategrey;
+
+  //Application Backgound shadow
+  --Box-shadow: 0px 0px 5px #00000080;
+
+  --color-slategrey: slategrey;
+
+  --Box-shadow: 0px 0px 5px #00000040;
+  --Box-shadow-1:  rgba(0, 0, 0, 0.2);
+  --Box-shadow-2: 5px 5px 5px -7px rgb(0 0 0 / 20%);
+  --Box-shadow-3: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li,
+a,
+span,
+strong,
+div,
+button {
+  font-family: var(--base-font-family);
+}
+
+a,
+a:-webkit-any-link {
+  text-decoration: var(--Text-decoration-none);
+}

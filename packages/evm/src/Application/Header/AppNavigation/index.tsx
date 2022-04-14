@@ -30,44 +30,44 @@ const CRXLefNavigation = () => {
       icon: "icon icon-file-video NaveIcon",
       url: urlList.filter((item: any) => item.name === urlNames.assets)[0].url,
       disabled: false,
-      items: [],
+      
     },
     {
       moduleId: 0,
       label: "Cases",
       icon: "fas fa-briefcase NaveIcon",
-      items: [
-        {
-          moduleIds: 0,
-          label: "New",
-        },
-        {
-          moduleIds: 0,
-          label: "Delete",
-        },
-        {
-          moduleIds: 0,
-          label: "Search",
+      // items: [
+      //   {
+      //     moduleIds:0,
+      //     label: "New",
+      //   },
+      //   {
+      //     moduleIds:0,
+      //     label: "Delete",
+      //   },
+      //   {
+      //     moduleIds:0,
+      //     label: "Search",
 
-          items: [
-            {
-              moduleIds: 0,
-              label: "Filter",
+      //     items: [
+      //       {
+      //         moduleIds:0,
+      //         label: "Filter",
 
-              items: [
-                {
-                  moduleIds: 0,
-                  label: "Print",
-                },
-              ],
-            },
-            {
-              moduleIds: 0,
-              label: "List",
-            },
-          ],
-        },
-      ],
+      //         items: [
+      //           {
+      //             moduleIds:0,
+      //             label: "Print",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         moduleIds:0,
+      //         label: "List",
+      //       },
+      //     ],
+      //   },
+      // ],
     },
     // {
     //   moduleId:0,
@@ -123,6 +123,7 @@ const CRXLefNavigation = () => {
       moduleId: 0,
       label: 'Units & Devices',
       icon: 'fas fa-laptop-code NaveIcon',
+     
       command: () => {
         navigateToPage(urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url);
       },
@@ -204,7 +205,7 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 0,
-          label: 'Manage Units & Devices Templates',
+          label: 'Manage Device & Unit Templates',
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) },
         },
         {

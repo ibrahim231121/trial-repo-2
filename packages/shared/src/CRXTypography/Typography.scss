@@ -1,11 +1,11 @@
 .crxTypoThemeB {
   &::selection {
-    background-color: #d1d2d4;
-    color: #333333;
+    background-color: var(--color-d1d2d4);
+    color: var(--color-333333);
   }
   a {
     &::selection {
-      color: #ff6e20;
+      color: var(--color-ff6e20);
     }
   }
 }

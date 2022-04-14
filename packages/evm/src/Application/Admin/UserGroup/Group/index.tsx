@@ -263,10 +263,9 @@ const Group = () => {
   React.useEffect(() => {
     if (ContainerMappingRes !== undefined) {
       let newDataPerModel: DataPermissionModel[] = [];
-
       ContainerMappingRes.map((x: any) => {
         newDataPerModel.push({
-          containerMappingId: x.id,
+          containerMappingId: parseInt(x.id),
           fieldType: x.fieldType,
           mappingId: x.mappingId,
           permission: x.groupMapping.permission,
@@ -473,7 +472,7 @@ const Group = () => {
             };
           });
           let dataPermissionObj = {
-            groupId : id,
+             groupId : id,
             containerMappings: permissionsToAdd,
             deletedContainerMappingIds: deletedDataPermissions,
           };

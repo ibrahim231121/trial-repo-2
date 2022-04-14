@@ -23,7 +23,8 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   showCountText,
   showCustomizeIcon,
   numSelected,
-  showTotalSelectedText
+  showTotalSelectedText,
+  toolBarButton
 }) => {
   const classes = useToolbarStyles();
   const { t } = useTranslation<string>();4
@@ -32,9 +33,11 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
 
   return (
 
-    <Toolbar
-      className={clsx("crxClearfilter stickyPos " + classes.root)}>
-
+    <Toolbar className={clsx("crxClearfilter stickyPos " + classes.root)}>
+      
+      <div className='toolbar-button'>
+        {toolBarButton}
+      </div>
       {
         (showCountText || showCountText === undefined) ?
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">

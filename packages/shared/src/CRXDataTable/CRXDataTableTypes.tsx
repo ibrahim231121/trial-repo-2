@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   createStyles,
   makeStyles,
@@ -11,7 +12,6 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
       paddingBottom: theme.spacing(2.9),
-      zIndex: 0,
     },
     highlight:
       theme.palette.type === "light"
@@ -103,17 +103,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       width: 1,
     },
     container: {
-      height: 494,
+      width: "99.8%",
+      height: "auto",
       overflowX: "auto",
-      "@media only screen and (max-width: 1920px)": {
-        height: "650px",
-      },
-      "@media only screen and (max-width: 1600px)": {
-        height: "449px",
-      },
-      "@media only screen and (max-width: 1366px)": {
-        height: "340px",
-      },
+      overflowY : "hidden",
+      //scrollBehavior: "smooth"
     },
     multiTableStikcyHeader: {
       top: 0,
@@ -123,7 +117,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
     },
     headerStickness: {
-      top: "0px !important",
+      top: "0px",
       left: 0,
       zIndex: 2,
       position: "sticky",
@@ -189,6 +183,7 @@ export interface DataTableToolbarProps {
   showCountText?: boolean;
   showCustomizeIcon?: boolean;
   showTotalSelectedText?: boolean;
+  toolBarButton? : React.ReactNode
 }
 
 export type DataTableProps = {
@@ -219,6 +214,9 @@ export type DataTableProps = {
   showHeaderCheckAll?: boolean;
   lightMode?: boolean;
   initialRows?: any[];
+  toolBarButton? : React.ReactNode,
+  offsetY? : number,
+  headerOffSetY? : number
 };
 
 export type OrderData = {
@@ -257,6 +255,39 @@ export type DataTableContainerProps = {
   checkAllPageWise: CheckAllPageWise[];
   lightMode?: boolean;
   initialRows?: any[];
+  offsetY? : number,
+  headerOffSetY? : number
+  
+};
+
+export type DataTableStickyHeadersProps = {
+  
+  id: string;
+  orderColumn: number[];
+  headCells: HeadCellProps[];
+  orderData: OrderData;
+  selectedItems: string[];
+  container: any;
+  actionComponent: React.ReactNode;
+  searchHeader: boolean | undefined;
+  page: number;
+  onHandleRequestSort: (e: any) => void;
+  onMoveReorder: (e: any) => void;
+  onReorderEnd: (e: any, _: any) => void;
+  onResizeRow: (e: any) => void;
+  getRowOnActionClick: (data: any) => void;
+  dragVisibility?: boolean;
+  showCheckBoxesCol?: boolean;
+  showActionCol?: boolean;
+  showActionSearchHeaderCell?: boolean;
+  showCountText?: boolean;
+  showCustomizeIcon?: boolean;
+  showHeaderCheckAll?: boolean;
+  onSetCheckAll: (e: boolean) => void;
+  checkAllPageWise: CheckAllPageWise[];
+  lightMode?: boolean;
+  initialRows?: any[];
+
 };
 
 export type DataTableBodyProps = {
