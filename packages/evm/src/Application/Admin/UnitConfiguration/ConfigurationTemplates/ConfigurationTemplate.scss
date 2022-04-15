@@ -10,10 +10,29 @@ iframe {
   padding-bottom: 0px !important;
 }
 .CrxConfigTemplate {
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+ .dataTableColumnShoHide {
+  .dataIconButton {
+    font-size: 14px;
+    margin-top: 21px;
+  }
+ }
+ .CRXDataTableCustom  {
+  margin-top: 0px;
+  &.visibleTable  {
+    margin-top: 0;
+  }
+ }
+ .table_Inner_Action {
+  text-align: center;
+  padding: 0;
+  margin-left: -3px;
+ }
   .menu_List_Button {
     .rc-menu-button {
-      position: absolute;
-      z-index: 99;
+      // position: absolute;
+      z-index: 99999;
       // position: relative;
       // z-index: 50000;
       background: #333333;
@@ -26,7 +45,7 @@ iframe {
       font-family: Arial, Helvetica, sans-serif;
       transition: 0.2s all;
       // top: -40px;
-      top: 140px;
+      // top: 152px;
       &:hover {
         background-color: #6e6e6e;
         color: #f5f5f5 !important;
@@ -39,7 +58,7 @@ iframe {
       }
     }
     .rc-menu {
-      top: -41px !important;
+      top: 0 !important;
       min-width: 137px !important;
       width: 137px !important;
       background-color: #ffffff !important;
@@ -78,6 +97,7 @@ iframe {
   }
 
   .configTemplate {
+    margin-top: 0px;
     tr {
       &:nth-child(odd) {
         .col-three {
@@ -114,7 +134,7 @@ iframe {
         }
         ul {
           &:first-child {
-            left: calc(100px - -5px) !important;
+            left: 78px !important;
           }
         }
       }
@@ -208,11 +228,6 @@ iframe {
     transform: translateY(-20px);
   }
 
-  .AssetsDataGrid {
-    overflow-x: hidden !important;
-    // margin-top: -77px;
-    margin-top: -10px;
-  }
   .GetacMenu {
     position: relative;
     button {
@@ -283,7 +298,8 @@ iframe {
     }
   }
   .stickyPos {
-    z-index: 9 ;
+    z-index: 1000 ;
+    top: 150px;
   }
   .table_Inner_Action {
     .rc-menu {
@@ -292,15 +308,6 @@ iframe {
   }
 }
 
-// .MuiAutocomplete-paper {
-//   width: 355px !important;
-//   #multiSelect-popup {
-//     width: 355px !important;
-//     li {
-//       width: 355px !important;
-//     }
-//   }
-// }
 
 .MenuConfigurationButton {
   width: 134px !important;
@@ -330,7 +337,7 @@ iframe {
 .SelectedActionMenu {
   background-color: #333333 !important;
   .col-three {
-    position: relative;
+    // position: relative;
     button {
       color: #d1d2d4 !important;
     }
@@ -346,10 +353,14 @@ iframe {
 @media (max-width: 1850px) {
   .CrxConfigTemplate {
     .AssetsDataGrid {
-      overflow-x: auto !important;
       &::-webkit-scrollbar {
         width: 10px !important;
       }
     }
   }
+}
+
+
+.stickyTableHeader {
+  visibility: collapse;
 }

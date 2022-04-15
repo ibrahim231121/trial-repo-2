@@ -48,7 +48,8 @@ export { default as CRXToaster } from './CRXMsgToaster/CRXMsgToaster'
 export { default as CRXMultiSelectBoxLight } from './controls/CRXMultiSelectBoxLight/CRXMultiSelectBoxLight'
 export {default as CrxAccordion } from './CRXAccordion/CRXAccordion'
 export { default as CRXProgressBar } from './controls/CRXProgressBar/CRXProgressBar'
-
+export { default as CircleLoader } from "./controls/CircularLoaderIndicator/"
 export { default as GoogleMap } from './maps/google/GoogleMap'
 export { default as BingMap } from './maps/bing/BingMap'
+export { default as SVGImage } from './controls/SVGImages/SVGImg'
 

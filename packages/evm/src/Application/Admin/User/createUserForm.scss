@@ -110,7 +110,7 @@
     height: 30px;
     width: 108px;
     padding: 0 0;
-    margin-top: -14px;
+    margin-top: -22px;
     position: sticky;
     top: 144px;
     &:hover {
@@ -136,136 +136,34 @@
     }
   }
 
-  // thead {
-  //    tr {
-  //       height: 34px !important;
-  //    }
-  //    &:nth-child(1) {
-  //       th {
-  //          height: 34px !important;
-  //          &:nth-child(4){
-  //             width: 174px !important;
-  //             min-width: 174px !important;
-  //          }
-  //          &:nth-child(5){
-  //             width: 202px !important;
-  //             min-width: 156px !important;
-  //          }
-  //          &:nth-child(6){
-  //             width: 202px !important;
-  //             min-width: 156px !important;
-  //          }
-  //          &:nth-child(7){
-  //             width: 333px !important;
-  //             min-width: 263px !important;
-  //          }
-  //          &:nth-child(8){
-  //             width: 223px !important;
-  //             min-width: 112px !important;
-  //          }
-  //          &:nth-child(9){
-  //             width: 261px !important;
-  //             min-width: 161px !important;
-  //          }
-  //          &:nth-child(10) {
-  //             width: 244px !important;
-  //             min-width: 244px !important;
-  //             @media(max-width: 1380px) {
-  //                width: 314px !important;
-  //                min-width: 314px !important;
-  //             }
-  //          }
-  //       }
-  //    }
-  //    &:nth-child(2){
-  //       .dateRangeContainer {
-  //          .wrapper {
-  //               background-color: #d1d2d4;
-  //               .select {
-  //                   background-color: #d1d2d4;
-  //                   width: 100%;
-
-  //                   select {
-  //                      background-color: #d1d2d4;
-  //                      &:hover {
-  //                         border: 1px solid #d1d2d4;
-  //                      }
-  //                   }
-  //                   .iconContent{
-  //                      top: -14px;
-  //                   }
-  //               }
-  //          }
-  //       }
-  //       .MuiTableRow-head {
-  //          th {
-  //             .CBX-input {
-  //                margin: -2px 0;
-  //             }
-  //          }
-  //       }
-  //       tr {
-  //          th {
-  //             & > span {
-  //                display: block !important;
-  //             }
-  //             &:nth-child(7 ) {
-
-  //                .MuiInput-root {
-  //                   min-width: 235px !important;
-  //                   @media(max-width: 1380px) {
-  //                      width: 235px !important;
-  //                   }
-  //                }
-  //              }
-  //             &:nth-child(9) {
-
-  //                .wrapper {
-  //                   margin: 0px -4px 0 5px !important;
-
-  //                }
-  //                .MuiGrid-root  {
-  //                   max-width: calc(100% - 11px);
-  //                }
-  //             }
-  //             &:nth-child(10) {
-  //                .MuiGrid-spacing-xs-2 {
-  //                   padding-left: 3px;
-  //               }
-  //             }
-  //          }
-  //       }
-  //    }
-  // }
-
   tbody {
     tr {
       height: 50px;
 
-      &:hover {
-        td {
-          &:nth-child(2) {
-            background-color: #333 !important;
-            .rc-menu-button {
-              color: #d1d2d4 !important;
-            }
-          }
-        }
-        .CRXCheckBox {
-          span {
-            span {
-              color: #d1d2d4;
-              &::after {
-                color: transparent !important;
-              }
-            }
-          }
-        }
-      }
+     // &:hover {
+        // td {
+        //   &:nth-child(2) {
+        //     background-color: #333 !important;
+        //     .rc-menu-button {
+        //       color: #d1d2d4 !important;
+        //     }
+        //   }
+        // }
+        // .CRXCheckBox {
+        //   span {
+        //     span {
+        //       color: #d1d2d4;
+        //       &::after {
+        //         color: transparent !important;
+        //       }
+        //     }
+        //   }
+        // }
+   //   }
       td {
         vertical-align: middle !important;
         &:first-child {
-          background: transparent !important;
+          
           &:hover {
             border: 0 solid transparent !important;
             border-right: 1px solid #ccc !important;
@@ -295,6 +193,27 @@
           line-height: 23px !important;
           text-align: left;
           padding-left: 14px !important;
+        }
+      }
+      &:hover {
+        td {
+          .fal {
+            position: relative;
+            &::after {
+              content: "";
+              color: #fff;
+              left: 0;
+              position: absolute;
+              font-family: "Font Awesome 5 Duotone";
+              font-weight: 900;
+              right: 0;
+            }
+            &.crxCheckForDarBg {
+              &::after {
+                color: transparent;
+              }
+            }
+          }
         }
       }
       &:nth-child(even) {
@@ -418,7 +337,7 @@
         td {
           &.col-two {
            left : 0px !important;
-           background: var(--color-transparent);
+           
            .fal {
             position: relative;
             &::after {
@@ -447,18 +366,18 @@
             position: sticky;
           }
         }
-        &:hover {
-          .CRXCheckBox {
-            span {
-              span {
-                color: #d1d2d4;
-                &::after {
-                  color: transparent !important;
-                }
-              }
-            }
-          }
-        }
+        // &:hover {
+        //   .CRXCheckBox {
+        //     span {
+        //       span {
+        //         color: #d1d2d4;
+        //         &::after {
+        //           color: transparent !important;
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
       .SelectedActionMenu {
        background-color: transparent !important;

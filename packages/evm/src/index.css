@@ -255,6 +255,7 @@ body {
   height: 53px;
   width: 100%;
   left: 7px;
+  z-index: 99;
 }
 
 .stickyTableHeader {

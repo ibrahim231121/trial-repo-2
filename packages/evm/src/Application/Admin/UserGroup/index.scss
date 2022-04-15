@@ -2,7 +2,7 @@
   text-decoration: none;
 }
 .managePermissionBtn {
-  margin-top: 60px !important;
+  margin-top: 14px !important;
   color: var(--color-d1d2d4) !important;
   background-color: var(--color-333333) !important;
   height: 30px !important;
@@ -26,40 +26,35 @@
   }
 }
 
-.managePermissionTable {
-  margin-top: 65px;
-  margin-left: 65px !important;
-  
+.managePermissionTable {  
   .managePermissionBtn {
     position: sticky;
-    top: 149px;
-    z-index: 9999;
+    top: 151px;
+    z-index: 99999;
   }
   .crxClearfilter {
     position: sticky;
-    top: 138px;
-    margin-top: -79px;
+    // top: 144px;
+    // margin-top: -78px;
     // z-index: 6;
   }
   .stickyPos {
-    background: var(--color-transparent);
+    z-index: 9999;
     .dataIconButton {
            font-size: 14px;
          }
   }
 }
 .crxTableDataUi {
-  margin-top: -26px;
-  visibility: visible;
-  // overflow-x: initial !important;
-  // position: relative;
+   margin-top: 0px;
+ 
   &::before {
     position: fixed;
     background: var(--color-White);
     width: 100%;
     height: 88px;
     content: " ";
-    top: 118px;
+    top: 116px;
     z-index: 5;
     left: 0;
   }
@@ -215,14 +210,9 @@
     margin-left: 2px !important;
   }
 
-  .ManageUsersDataTable  {
-    margin-top: -47px;
-    visibility: visible;
-  }
-
+  
   .dataTableColumnShoHide {
-    // margin-top: -83px;
- 
+
     .dataIconButton{
       font-size: 14px;
     }
@@ -622,6 +612,13 @@ thead {
               }
               &:nth-child(2) {
                 left: 58px !important;
+              }
+            }
+            &:hover  {
+              td {
+                &:first-child {
+                  background-color: var(--color-333333);
+                }
               }
             }
           }

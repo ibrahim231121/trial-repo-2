@@ -123,6 +123,25 @@
         &:nth-child(even) td:nth-child(3) {
           background: var(--color-f2f2f2);
         }
+        &:nth-child(even) td:nth-child(1) {
+          .fal {
+            position: relative;
+            &::after {
+              content: '';
+              color: var(--color-White);
+              left: 0;
+              position: absolute;
+              font-family: 'Font Awesome 5 Duotone';
+              font-weight: 900;
+              right: 0;
+            }
+            &.crxCheckForDarBg {
+              &::after {
+                color: var(--color-transparent);
+              }
+            }
+          }
+        }
         &:nth-child(even) td:nth-child(2) {
           background: var(--color-f2f2f2);
           .fal {
@@ -147,9 +166,13 @@
         td {
           &:first-child {
             background-color: var(--color-White);
+            vertical-align: middle;
+           padding: 0 0 0 0;
           }
           &:nth-child(2) {
             background-color: var(--color-White);
+            vertical-align: middle;
+             padding: 0 0 0 0;
           }
           &:nth-child(3) {
             vertical-align: middle;

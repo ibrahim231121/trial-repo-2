@@ -638,10 +638,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     return (
         <div className="crxManageUsers switchLeftComponents">
 			<CRXToaster ref={toasterRef}/>
-            <Restricted moduleId={0}>
-                <CRXButton id={"createUser"} className="primary manageUserBtn"  onClick={handleClickOpen}>                Create User
-            </CRXButton>
-            </Restricted>
+           
             <CRXModalDialog
                 className="createUser CrxCreateUser"
                 style={{ minWidth: "680px" }}
@@ -706,8 +703,7 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}
-          offsetY={206}
-          headerOffSetY={0}
+          offsetY={205}
         />
       )}
     </div>

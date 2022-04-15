@@ -29,8 +29,9 @@ const CRXUseStyles = makeStyles(() => ({
 const CRXIconStyle = makeStyles(() => ({
   iconCls: {
     position: "relative",
-    top: "1px",
+    top: "0px",
     height: "17px",
+    
   },
 }));
 

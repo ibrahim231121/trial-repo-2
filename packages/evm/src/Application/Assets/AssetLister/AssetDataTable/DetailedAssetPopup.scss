@@ -122,6 +122,12 @@
                   }
                   .crxSelectedDark {
                     color: var(--color-333333) !important;
+                    &.fal {
+                      position: relative;
+                      &::after {
+                        color: var(--color-transparent);
+                      }
+                    }
                   }
                   input {
                     &:hover {

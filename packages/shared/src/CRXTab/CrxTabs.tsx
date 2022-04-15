@@ -34,26 +34,6 @@ const CrxTabsParent = withStyles({
   }
 })(Tabs);
 
-// const CrxTab = withStyles(
-// {
-//   root: {
-//     textTransform: 'none',
-//     minWidth: 120,
-//     FontWeight: theme.typography.fontWeightRegular,
-//     marginRight: theme.spacing(0),
-//     border: "1px solid #333",
-//     borderBottom:"0px",
-//     borderRight: "0px",
-//     background:"#eee",
-//     color:"#333",
-//     position:"sticky",
-//     top: "186px",
-//     opacity: 1,
-//     '&:last-child' : {
-//       borderRight: "1px solid #333",
-//     },
-//   }(Tabs);
-
   const CrxTab = withStyles((theme: Theme) =>
   createStyles({
     root: {

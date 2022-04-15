@@ -361,18 +361,19 @@
 .userDataTableParent {
   margin: 0px 81px;
   position: relative;
-  top: -20px;
+  top: -25px;
   font-family: var(--base-font-family);
   .crxClearfilter {
     position: sticky !important;
-    top: -19px;
-    background: var(--color-White);
+    top: -25px;
+    
     z-index: 99;
     padding-bottom: 4.2px;
+    height: 70px;
   }
   .usersGroupDataTable {
-    overflow-x: initial !important;
-    margin-top: 0px;
+    overflow-x: hidden !important;
+    margin-top: -50px;
     table {
       tbody {
         tr {
@@ -427,7 +428,7 @@
             vertical-align: middle;
             padding-top: 7px;
             padding-bottom: 7px;
-           
+
             .CRXCheckBox {
               position: relative;
               left: 10px;
@@ -461,10 +462,10 @@
         tr {
           th {
             &.CRXDataTableLabelCell {
-              top: 45px !important;
+              // top: 45px !important;
             }
             &.TableSearchAbleHead {
-              top: 80px !important;
+              // top: 80px !important;
               padding: 12px 14px 12px;
             }
             &:last-child {
@@ -491,14 +492,19 @@
     position: fixed;
     bottom: 12vh;
     width: 1573px;
-    background: var(--color-White);
-    /* left: 0; */
     z-index: 999;
-    border-top: 1px solid var(--color-ccc);
+    
   }
 
   .usersGroupDataTable {
     height: 100% !important;
+
+    visibility: visible;
+  }
+  .dataTableColumnShoHide {
+    button {
+      font-size: 14px;
+    }
   }
 }
 
@@ -508,7 +514,7 @@
       position: fixed;
       bottom: 21.6vh !important;
       width: 1019px !important;
-      background: var(--color-White);
+      
       /* left: 0; */
       z-index: 999;
       // border-top: 1px solid var(--color-ccc);
@@ -541,7 +547,7 @@
       position: fixed;
       bottom: 10vh;
       width: 1174px;
-      background: var(--color-White);
+      
       /* left: 0; */
       z-index: 999;
       // border-top: 1px solid var(--color-ccc);

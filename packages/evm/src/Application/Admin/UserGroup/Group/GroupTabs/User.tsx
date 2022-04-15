@@ -325,7 +325,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     return (
-        <div className="userDataTableParent">
+        <div className="userDataTableParent ">
             {rows && (
                 <CRXDataTable 
                     id="group-userDataTable"
@@ -355,6 +355,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     showCustomizeIcon={false}
                     showTotalSelectedText={true}
                     lightMode={false}
+                    offsetY={45}
                 />
             )
             }

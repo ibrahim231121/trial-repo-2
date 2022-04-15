@@ -603,41 +603,8 @@ const ConfigurationTemplates: React.FC = () => {
       ?.classList.add("MuiMenu_Modal_Ui");
   });
   return (
-    <div className="CrxConfigTemplate">
-      <div className="menu_List_Button">
-        <Menu
-          style={{ backgroundColor: "#FFFFFF" }}
-          align="start"
-          viewScroll="initial"
-          direction="bottom"
-          position="auto"
-          arrow
-          menuButton={<MenuButton>Create Template</MenuButton>}
-        >
-          {createTemplateDropdown.map((x, y) => {
-            return (
-              <MenuItem>
-                <Link
-                  to={{
-                    pathname: "/admin/unitanddevices/createtemplate/template",
-                    state: {
-                      id: y,
-                      isedit: false,
-                      type: x.name,
-                      deviceId: x.id,
-                      deviceType: x.category,
-                    },
-                  }}
-                >
-                  <div style={{ backgroundColor: "#FFFFFF" }}>
-                    Create {x.name}
-                  </div>
-                </Link>
-              </MenuItem>
-            );
-          })}
-        </Menu>
-      </div>
+    <div className="CrxConfigTemplate switchLeftComponents">
+     
 
       {
         rows && (
@@ -646,6 +613,35 @@ const ConfigurationTemplates: React.FC = () => {
             actionComponent={<ConfigTemplateActionMenu
               row={selectedActionRow}
             />}
+            toolBarButton={
+             
+          <div className="menu_List_Button">
+                <Menu
+                  style={{ backgroundColor: '#FFFFFF' }}
+                  align="start"
+                  viewScroll="initial"
+                  direction="bottom"
+                  position="auto"
+                  arrow
+                  menuButton={
+                    <MenuButton>
+                      Create Template
+                    </MenuButton>
+                  }
+                >
+                  {createTemplateDropdown.map((x, y) => {
+                    return (
+                      <MenuItem >
+                        <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
+                          <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
+                        </Link>
+                      </MenuItem>
+                    )
+                  })}
+                </Menu >
+              </div>
+         
+          }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
@@ -669,6 +665,7 @@ const ConfigurationTemplates: React.FC = () => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
+            offsetY={192}
           />
         )
       }

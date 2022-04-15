@@ -6,7 +6,6 @@ import { CRXPanelStyle } from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
 import { AssetThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbnail";
-
 import { useTranslation } from "react-i18next";
 import "../../evm/src/utils/Localizer/i18n";
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
@@ -384,6 +383,7 @@ function App() {
       <footer>
         <Footer />
       </footer> */}
+         
           </DragDropContext>
         </SnackbarProvider>
       </div>
