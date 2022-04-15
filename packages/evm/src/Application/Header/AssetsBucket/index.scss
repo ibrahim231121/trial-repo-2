@@ -148,7 +148,7 @@
 }
 .crxTooltipNotificationIcon {
   &.crxTooltipAll {
-    margin-left: -63px;
+    margin-left: -42px;
   }
 }
 .bucketIconButton {
@@ -472,6 +472,7 @@
       }
       th:nth-child(5) {
         padding: 0px 16px 0 16px !important;
+        min-width: 80px !important;
         .gridSortResize {
           right: 4px;
         }

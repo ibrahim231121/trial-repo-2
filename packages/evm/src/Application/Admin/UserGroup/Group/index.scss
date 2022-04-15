@@ -147,7 +147,8 @@
 
     input,
     textarea {
-      width: 50vh;
+      width: 50vh !important;
+      margin-left: 0 !important;
     }
     .MuiOutlinedInput-multiline {
       padding: 0;
@@ -165,7 +166,8 @@
       padding-bottom: 30px;
 
       > span {
-        display: flex;
+        display: flex !important;
+        margin-bottom: 0;
         h6 {
           label {
             &.requiredLable {

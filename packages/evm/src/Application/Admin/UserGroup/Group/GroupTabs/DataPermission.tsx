@@ -28,6 +28,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     let [categories, setCategories] = useState<PermissionValue[]>([]);
     let [stations, setStations] = useState<PermissionValue[]>([]);
     let [isdisable, setisDisable] = useState<Boolean>(true);
+    let [crxDatapermissionClass, setCrxDatapermissionClass] = useState<string>("");
 
     var flag = true;
 
@@ -213,6 +214,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
+        setCrxDatapermissionClass("crxDatapermissionClass");
     }
 
     const onPermissionLevelChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
@@ -221,6 +223,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
+        setCrxDatapermissionClass("crxDatapermissionClass");
     }
 
     const onPermissionValueChange = (e: React.ChangeEvent<HTMLInputElement>, v: any, i: number) => {
@@ -298,7 +301,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                     <CRXRows container="container" spacing={0}>
                                         <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
                                             <CRXSelectBox
-                                                className="adVSelectBox createUserSelectBox"
+                                                className={`adVSelectBox createUserSelectBox ${permission.type.value ? crxDatapermissionClass : ""}`}
                                                 id={i}
                                                 value={permission.type.value > 0 ? permission.type.value : defaultPermissionType}
                                                 onChange={(e: any) => onPermissionTypeChange(e, i)}
@@ -326,7 +329,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                         </CRXColumn>
                                         <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
                                             <CRXSelectBox
-                                                className="adVSelectBox createUserSelectBox createUserSelectBoxLast"
+                                                className={`adVSelectBox createUserSelectBox createUserSelectBoxLast ${permission.permissionLevel.value > 1 ? crxDatapermissionClass : ""}`}
                                                 id={i}
                                                 disabled={permission.type.value > 0 ? false : true}
                                                 value={permission.permissionLevel.value > 0 ? permission.permissionLevel.value : defaultPermissionLevel}
