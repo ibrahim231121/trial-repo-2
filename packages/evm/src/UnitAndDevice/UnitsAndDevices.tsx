@@ -1,21 +1,16 @@
 import React, { useEffect } from "react";
 import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import useGetFetch from '../utils/Api/useGetFetch';
 import { useDispatch, useSelector } from "react-redux";
 import {DateTimeComponent } from '../GlobalComponents/DateTime';
-import { getGroupAsync, getGroupUserCountAsync } from "../Redux/GroupReducer";
 import { dateOptionsTypes } from '../utils/constant';
 import { RootState } from "../Redux/rootReducer";
 import textDisplay from "../GlobalComponents/Display/TextDisplay";
-import anchorDisplay from "../GlobalComponents/Display/AnchorDisplay";
 
 import anchorDisplayUnit from "../GlobalComponents/Display/AnchorDisplayUnit";
-import { useHistory } from "react-router-dom";
 import './index.scss'
 import { getUnitInfoAsync } from "../Redux/UnitReducer";
 import dateDisplayFormat from "../GlobalFunctions/DateFormat";
-import multitextDisplay from "../GlobalComponents/Display/MultiTextDisplay";
 import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
@@ -31,7 +26,6 @@ import {
   onResizeRow,
   Order,
   onTextCompare,
-  onMultiToMultiCompare,
   onMultipleCompare,
   onDateCompare,
   onSetSingleHeadCellVisibility,
@@ -42,12 +36,9 @@ import {
 } from "../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
 import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
-import { CRXButton } from "@cb/shared";
-import { logOutUser } from "../Login/API/auth";
-import { CBXLink } from "@cb/shared";
-import { urlList, urlNames } from "../utils/urlList"
+
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
-import { classicNameResolver } from "typescript";
+
 
 type Unit = {
   id: number;
@@ -84,7 +75,7 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  let history = useHistory();
+
 
   React.useEffect(() => {
     dispatch(getUnitInfoAsync()); // getunitInfo 
@@ -92,14 +83,13 @@ const UnitAndDevices: React.FC = () => {
    let headCellsArray = onSetHeadCellVisibility(headCells);
    setHeadCells(headCellsArray);
    onSaveHeadCellData(headCells, "Units & Devices");  // will check this
-
+   document.getElementById("UDAssigned")?.parentElement?.classList.add("UDAssignedClass");
   }, []);
 
   
 
 
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
- // const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
   const [rows, setRows] = React.useState<Unit[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -286,7 +276,7 @@ const classes = useStyles();
 const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
  
 
-  if(colIdx === 4) {
+  if(colIdx === 6) {
 
   let versionlist: any = [];
     if(initialRows !== undefined){
@@ -344,7 +334,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
 
   const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
 
-    if(colIdx === 9) {
+    if(colIdx === 2) {
         console.log(initialRows);
 
     let statuslist: any = [];
@@ -368,9 +358,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
             val = []
         return val
     }
-    const PopperStatus = function (props: any) {
-      return (<Popper {...props}  className="PopperStatus" placement="left-start"/>)
-    }
+
   
   
     return (
@@ -382,7 +370,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
                 value={settingValues(headCells[colIdx])}
                 onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
                 options={status}
-                PopperComponent={PopperStatus}
                 CheckBox={true}
                 className="unitStatusMultiSelect"
                 checkSign={false}
@@ -400,7 +387,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
     }
 
 
-    if(colIdx === 2) {
+    if(colIdx === 9) {
       console.log(initialRows);
   let templatelist: any = [];
 
@@ -424,7 +411,9 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
       return val
   }
 
-
+  const PopperTemplate = function (props: any) {
+    return (<Popper {...props}  className="PopperTemplate" placement="left-start"/>)
+  }
 
   return (
       <div>
@@ -436,6 +425,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
               options={template}
               CheckBox={true}
+              PopperComponent={PopperTemplate}
               className="unitTemplateMultiSelect"
               checkSign={false}
               statusIcon={false}
@@ -492,6 +482,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
       minWidth: "80",
       maxWidth: "100",
     },
+
     {
       label: `${t("Unit ID")}`,
       id: "unitId",
@@ -504,42 +495,19 @@ const openHandler = (_: React.SyntheticEvent ) => {
       
     }, 
     {
-      label: `Template`,
-      id: "template",
+      label: `${t("Status")}`,
+      id: "status",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string) => textDisplayStatus(e, ""),
       sort: true,
       searchFilter: true,
-     // searchComponent: searchText,
+    //  searchComponent: searchText,
       
      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-         multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "100",
-      
-    }, 
-    {
-      label: `${t("Serial Number")}`,
-      id: "serialNumber",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "180",
-      maxWidth: "180",
-    },
-    {
-      label: `${t("Version")}`,
-      id: "version",
-      align: "center",
-      dataComponent: (e: string) => textDisplay(e, ""),
-      sort: true,
-      searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
-        
-       minWidth: "80",
-       maxWidth: "100",
+      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+         
+     minWidth: "100",
+      maxWidth: "100",
     },
     {
       label: `${t("Description")}`,
@@ -549,19 +517,8 @@ const openHandler = (_: React.SyntheticEvent ) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "290",
-      maxWidth: "290",
-    },
-    {
-      label: `${t("Station")}`,
-      id: "station",
-      align: "left",
-      dataComponent: (e: string) => textDisplayStation(e, "linkColor"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "185",
-      maxWidth: "185",
+      minWidth: "265",
+      maxWidth: "265",
     },
     {
       label: `${t("Assigned To")}`,
@@ -577,6 +534,41 @@ const openHandler = (_: React.SyntheticEvent ) => {
       maxWidth: "20",
     },
     {
+      label: `${t("Serial Number")}`,
+      id: "serialNumber",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "160",
+      maxWidth: "160",
+    },
+    {
+      label: `${t("Version")}`,
+      id: "version",
+      align: "center",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
+        
+       minWidth: "80",
+       maxWidth: "100",
+    },
+    {
+      label: `${t("Station")}`,
+      id: "station",
+      align: "left",
+      dataComponent: (e: string) => textDisplayStation(e, "linkColor"),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "185",
+      maxWidth: "185",
+    },
+    {
       label: `${t("Last Checked In")}`,
       id: "lastCheckedIn",
       align: "center",
@@ -587,23 +579,20 @@ const openHandler = (_: React.SyntheticEvent ) => {
       minWidth: "190"
     },
     {
-      label: `${t("Status")}`,
-      id: "status",
+      label: `Template`,
+      id: "template",
       align: "left",
-      dataComponent: (e: string) => textDisplayStatus(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-    //  searchComponent: searchText,
+     // searchComponent: searchText,
       
      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-         
-     minWidth: "100",
-      maxWidth: "100",
-    }
+         multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+      minWidth: "100",
+      
+    }, 
   ]);
-
-  
 
   const searchAndNonSearchMultiDropDown = (
     rowsParam: Unit[],
@@ -616,16 +605,15 @@ const openHandler = (_: React.SyntheticEvent ) => {
             prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
         );
     };
-
     const onSetHeaderArray = (v: ValueString[]) => {
         headCells[colIdx].headerArray = v;
     };
-
-    return (
+  
+   return (
         <MultSelectiDropDown
             headCells={headCells}
             colIdx={colIdx}
-         
+            listIdSet="UDAssigned"
             reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
             // reformattedRows={reformattedRows}
             isSearchable={isSearchable}
@@ -754,6 +742,11 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
     setHeadCells(headCellsArray);
 };
 
+useEffect(()=>{
+  var headAssigned = document.getElementById("UDAssigned");
+  headAssigned?.parentElement?.classList.add("UDAssignedClass");
+ })
+
 
   return (
  
@@ -769,7 +762,6 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }
-          
           showToolbar={true}
           showCountText={true}
           columnVisibilityBar={true}
