@@ -336,10 +336,10 @@ const MasterMain: React.FC<Props> = ({
       detailedDataComponentId: "evidence",
     },
     {
-      label: `${t("AssetType")}`,
-      id: "assetType",
+      label: `${t("Categories")}`,
+      id: "categories",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: string[]) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -364,10 +364,20 @@ const MasterMain: React.FC<Props> = ({
       maxWidth: "210",
     },
     {
-      label: `${t("Categories")}`,
-      id: "categories",
+      label: `${t("Captured")}`,
+      id: "recordingStarted",
+      align: "center",
+      dataComponent: dateDisplayFormat,
+      sort: true,
+      minWidth: "230",
+      searchFilter: true,
+      searchComponent: searchDate,
+    },
+    {
+      label: `${t("AssetType")}`,
+      id: "assetType",
       align: "left",
-      dataComponent: (e: string[]) => multitextDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -375,7 +385,8 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "220",
+      minWidth: "250",
+      visible: false,
       width: "",
     },
     {
@@ -424,17 +435,6 @@ const MasterMain: React.FC<Props> = ({
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "210",
       width: "",
-    },
-    {
-      label: `${t("Captured")}`,
-      id: "recordingStarted",
-      align: "center",
-      dataComponent: dateDisplayFormat,
-      sort: true,
-      minWidth: "230",
-	  width: "",
-      searchFilter: true,
-      searchComponent: searchDate,
     },
     {
       label: `${t("FileStatus")}`,
