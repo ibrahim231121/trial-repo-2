@@ -613,9 +613,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
         <MultSelectiDropDown
             headCells={headCells}
             colIdx={colIdx}
-            listIdSet="UDAssigned"
             reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
-            // reformattedRows={reformattedRows}
             isSearchable={isSearchable}
             onMultiSelectChange={onSelection}
             onSetSearchData={onSetSearchData}
