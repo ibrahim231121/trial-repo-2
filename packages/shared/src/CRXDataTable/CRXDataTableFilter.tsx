@@ -33,7 +33,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                 onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setAnchorEl(e.currentTarget)}
                 disableRipple={true}
             >
-                <CRXTooltip iconName="fas fa-filter" className='crxTooltipIcon' placement="top-start" arrow={false} title="filter"></CRXTooltip>
+                <CRXTooltip iconName="fas fa-filter" className='crxTooltipFilter' placement="top-start" arrow={false} title="filter"></CRXTooltip>
             </IconButton>
             {/* <ClickAwayListener onClickAway={() => setAnchorEl(filterOuter)}> */}
             <Menu
