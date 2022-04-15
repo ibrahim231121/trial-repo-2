@@ -214,6 +214,7 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.testEvidence)[0].url) },
         },
         {
+          moduleIds: 0,
           label: 'Manage Station',
           //command: () => { navigateToPage("/admin/stations") },
           url: "/admin/stations",

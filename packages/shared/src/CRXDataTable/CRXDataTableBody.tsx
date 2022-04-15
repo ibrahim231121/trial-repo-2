@@ -56,7 +56,6 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
 
   const node = useRef();
   const handleClickOutside = () => {
-    console.log(" out side click");
     let dataui = document.querySelectorAll(".MuiTableRow-root");
     let trAtiveArray = Array.from(dataui);
     trAtiveArray.map((e: any) => {

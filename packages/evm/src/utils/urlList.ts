@@ -148,7 +148,7 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
-            { type: 'text', label: 'Station_Name' }
+            // { type: 'text', label: 'Station_Name' }
         ]
     },
     {

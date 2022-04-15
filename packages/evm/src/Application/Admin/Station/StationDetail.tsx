@@ -19,6 +19,7 @@ import {
   CRXConfirmDialog,
 } from "@cb/shared";
 import "./station.scss";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 
 interface AutoCompleteOptionType {
   label?: string;
@@ -126,9 +127,16 @@ const StationDetail: React.FC = () => {
             },
           };
           setStationPayload(_station);
+          dispatch(enterPathActionCreator({ val: _station.Name }));
         });
     }
   }, [isAddCase]);
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
+  }, []);
 
   const filterOptionsSource = (arr: Array<any>): Array<any> => {
     const countryOptionsArray: any = [];
@@ -153,7 +161,7 @@ const StationDetail: React.FC = () => {
     setFieldValue: any,
     reason: any
   ) => {
-    setFieldValue("Country", val, false);
+    setFieldValue("Country", val, true);
     setReset(!reset);
     setCountryAutoCompleteValue(val);
     setStateAutoCompleteValue([]);
@@ -177,7 +185,7 @@ const StationDetail: React.FC = () => {
     value: AutoCompleteOptionType[],
     setFieldValue: any
   ) => {
-    setFieldValue("State", value, false);
+    setFieldValue("State", value, true);
     setStateAutoCompleteValue(value);
   };
 
@@ -250,10 +258,10 @@ const StationDetail: React.FC = () => {
           setErrorResponseMessage(error.errors.Password[0]);
         }
         if (
-			error.errors['Address.State'] !== undefined
+          error.errors['Address.State'] !== undefined
         ) {
           setErrorResponseMessage(error.errors['Address.State'][0]);
-		  setError(true);
+          setError(true);
         }
       } else if (!isNaN(+error)) {
       } else if (error) {
@@ -337,19 +345,29 @@ const StationDetail: React.FC = () => {
     setDisableSaveButton(true);
   };
 
-  const SignupSchema = Yup.object().shape({
+  const stationValidationSchema = Yup.object().shape({
     Name: Yup.string().required("Station Name is required"),
+    Country: Yup.object().shape({
+      id: Yup.string().nullable()
+        .required()
+    }),
+    State: Yup.object().shape({
+      id: Yup.string().nullable()
+        .required()
+    })
   });
   return (
     <>
+    
       <Formik
         enableReinitialize={true}
         initialValues={stationPayload}
-        validationSchema={SignupSchema}
+        validationSchema={stationValidationSchema}
         onSubmit={onSubmit}
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
+          {console.log('errors', errors.State)}
             <Form>
               <div className="ManageStation  switchLeftComponents">
                 {success && (
@@ -387,10 +405,9 @@ const StationDetail: React.FC = () => {
                         <CRXColumn
                           className={
                             "stationDetailCol " +
-                            ` ${
-                              errors.Name && touched.Name == true
-                                ? displayStationErrors
-                                : ""
+                            ` ${errors.Name && touched.Name == true
+                              ? displayStationErrors
+                              : ""
                             }`
                           }
                           container="container"
@@ -406,7 +423,7 @@ const StationDetail: React.FC = () => {
                             <div className="CrxStationError">
                               <Field id="name" name="Name" />
                               {errors.Name !== undefined &&
-                              touched.Name === true ? (
+                                touched.Name === true ? (
                                 <div className="errorStationStyle">
                                   <i className="fas fa-exclamation-circle"></i>
                                   {errors.Name}
@@ -500,7 +517,15 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
+                            {errors.Country !== undefined ? (
+                              <div className="errorStationStyle">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {" Country is required"}
+                                {setDisplayStationCategoryForm("errorBrdr")}
+                              </div>
+                            ) : null}
                           </div>
+
                         </CRXColumn>
                         <CRXColumn
                           className="stationDetailCol"
@@ -537,6 +562,13 @@ const StationDetail: React.FC = () => {
                                 option.label || []
                               }
                             />
+                            {errors.State !== undefined ? (
+                              <div className="errorStationStyle">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {" State or Province is required"}
+                                {setDisplayStationCategoryForm("errorBrdr")}
+                              </div>
+                            ) : null}
                           </div>
                         </CRXColumn>
                         <CRXColumn
@@ -647,13 +679,13 @@ const StationDetail: React.FC = () => {
                     initialMarker={
                       !isAddCase
                         ? {
-                            lat: values.Location.latitude,
-                            long: values.Location.longitude,
-                          }
+                          lat: values.Location.latitude,
+                          long: values.Location.longitude,
+                        }
                         : values.Location.latitude == 0 &&
                           values.Location.longitude == 0
-                        ? undefined
-                        : {
+                          ? undefined
+                          : {
                             lat: values.Location.latitude,
                             long: values.Location.longitude,
                           }
