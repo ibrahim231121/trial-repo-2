@@ -154,7 +154,9 @@ const VideoPlayerBase = (props: any) => {
 
 
 
-  async function Durationfinder(data: any) {
+  async function Durationfinder(Data: any) {
+    var data = JSON.parse(JSON.stringify(Data));
+    data = data.filter((x:any)=> x.typeOfAsset !== "Image");
     var maximum_endpoint = timeextractor(data[0].recording.ended)
     var minimum_startpont = timeextractor(data[0].recording.started)
     for (let x = 1; x < data.length; x++) {

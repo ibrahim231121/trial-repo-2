@@ -112,7 +112,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                   <div>
 
                     <i className="fa fa-bookmark" aria-hidden="true"
-                      style={{ position: "relative", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
+                      style={{ position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
                       onMouseOut={() => mouseOut()} onMouseOver={() => mouseOver(y, x)} onClick={() => onClickBookmark(y)}>
 
                     </i>

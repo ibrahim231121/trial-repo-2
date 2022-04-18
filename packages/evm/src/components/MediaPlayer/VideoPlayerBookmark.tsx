@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { CRXModalDialog } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
 import { CRXAlert } from '@cb/shared';
@@ -29,15 +30,6 @@ type VideoPlayerSnapshotProps = {
     bookmarkAssetId?: number;
     bookmarkMsgRef: any;
 };
-function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
-        dt = Math.floor(dt / 16);
-        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-    return uuid;
-}
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
     const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,Data,setData,bookmarkAssetId,bookmarkMsgRef} = props;
@@ -51,6 +43,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     const alertRef = useRef(null);
     const [onSave, setOnSave] = useState(true);
     const [isSnapshotRequired, setIsSnapshotRequired] = React.useState(false);
+    const [descriptionErr, setdescriptionErr] = React.useState("");
     const [isSuccess, setIsSuccess] = React.useState({
         success: false,
         SuccessType: "",
@@ -133,13 +126,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             if (ctx) {
                 ctx.drawImage(videoHandle, 0, 0, w, h);
             }
-            if(!editBookmarkForm){
-            setOnSave(false);}
             setFormPayload({ ...formpayload, imageString: canvas.toDataURL() })
         }
         else {
-            if(!editBookmarkForm){
-            setOnSave(true);}
             setFormPayload({ ...formpayload, imageString: "" });
         }
     }, [isSnapshotRequired]);
@@ -160,8 +149,6 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         }
         if(isSnapshotRequired){
             await AddSnapshot();
-            setOpenModal(false);
-            setopenBookmarkForm(false);
         }
     };
 
@@ -179,6 +166,87 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             headers: { 'Content-Type': 'application/json', TenantId: '1' },
             body: JSON.stringify(body)
         })
+            .then(function (response) {
+                if (response.ok) return response.json();
+                else if (response.status == 500) {
+                    setAlert(true);
+                    setResponseError(
+                        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+                    );
+                } else return response.text();
+            })
+            .then((response) => {
+                if (response !== undefined) {
+                    let err = JSON.parse(response);
+                    if (err.errors !== undefined) {
+                    }
+                    else if (!isNaN(+err)) {
+                        setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
+                        setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
+                        bookmarkMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                    } else {
+                            setAlert(true);
+                            setResponseError(err);
+                    }
+                }
+            })
+            .catch(function (error) {
+                return error;
+            });
+    }
+
+    const AddSnapshot = async () => {
+        const formdata = formpayload;
+        var guid = uuidv4();
+        const AssetFilebody = {
+            name: "Snapshot_FILE_" + guid,
+            type: "Image",
+            extension: "jpeg",
+            url: "www.hdc.com:8080",
+            size: 1280,
+            sequence: 0,
+            duration: 0,
+            checksum: {
+                checksum: "bc527343c7ffc103111f3a694b004e2f",
+                algorithm: "SHA-256",
+                status: true
+            },
+            recording: {
+                started: new Date(),
+                ended: new Date()
+            }
+        };
+        const Assetbody = {
+            name: "Snapshot_" + guid,
+            typeOfAsset: "Image",
+            state: "Normal",
+            status: "Queued",
+            unitId: AssetData.unitId,
+            duration: 0,
+            recordedByCSV: null,
+            bookMarks: [],
+            files: [AssetFilebody],
+            owners: [1],
+            lock: { roles: [] },
+            recording: {
+                started: new Date(),
+                ended: new Date()
+            },
+            isRestrictedView: false,
+            buffering: {
+                pre: 0,
+                post: 0
+              },
+            audioDevice: null,
+            camera: null,
+            isOverlaid: false
+        };
+        
+        await fetch(EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', TenantId: '1' },
+            body: JSON.stringify(Assetbody)
+        })
             .then(function (res) {
                 if (res.ok) return res.json();
                 else if (res.status == 500) {
@@ -194,112 +262,18 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     if (error.errors !== undefined) {
                     }
                     else if (!isNaN(+error)) {
-                        setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: resp, madeBy: body.madeBy, position: body.position });
-                        setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-                        bookmarkMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                        bookmarkMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                        setOpenModal(false);
+                        setopenBookmarkForm(false);
                     } else {
-                            setAlert(true);
-                            setResponseError(error);
+                        setAlert(true);
+                        setResponseError(error);
                     }
                 }
             })
             .catch(function (error) {
                 return error;
             });
-    }
-
-    const AddSnapshot = async () => {
-        bookmarkMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-        // const formdata = formpayload;
-        // var guid = create_UUID();
-        // const request = {
-        //     "name": "Image_" + guid + "_" + formdata.description,
-        //     "typeOfAsset": "Image",
-        //     "state": "Normal",
-        //     "status": "Uploading",
-        //     "unitId": 9,
-        //     "duration": 14,
-        //     "recordedByCSV": "98p",
-        //     "bookMarks": [
-        //         {
-        //             "bookmarkTime": "2022-02-04T09:33:34.650Z",
-        //             "position": 10,
-        //             "description": "Bookmark 2",
-        //             "madeBy": "Trigger"
-        //         }
-        //     ],
-        //     "files": [
-        //         {
-        //             "name": "FILE_Image_" + guid + "_" + formdata.description,
-        //             "type": "Image",
-        //             "extension": "jpeg",
-        //             "url": formdata.imageString,
-        //             "size": 1280,
-        //             "sequence": 6,
-        //             "duration": 3600,
-        //             "checksum": {
-        //                 "checksum": "bc527343c7ffc103111f3a694b004e2f",
-        //                 "algorithm": "SHA-256",
-        //                 "status": true
-        //             },
-        //             "recording": {
-        //                 "started": "2021-10-19T15:30:19Z",
-        //                 "ended": "2021-10-19T21:30:19Z"
-        //             }
-        //         }
-        //     ],
-        //     "owners": [
-        //         10
-        //     ],
-        //     "lock": {
-        //         "roles": []
-        //     },
-        //     "recording": {
-        //         "started": "2021-10-19T15:30:19Z",
-        //         "ended": "2021-10-19T15:30:19Z"
-        //     },
-        //     "isRestrictedView": false,
-        //     "buffering": {
-        //         "pre": 5,
-        //         "post": 5
-        //     },
-        //     "audioDevice": null,
-        //     "camera": null,
-        //     "isOverlaid": true
-
-        // };
-        // await fetch(EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets", {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json', TenantId: '1' },
-        //     body: JSON.stringify(request)
-        // })
-        //     .then(function (res) {
-        //         if (res.ok) return res.json();
-        //         else if (res.status == 500) {
-        //             setAlert(true);
-        //             setResponseError(
-        //                 "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-        //             );
-        //         } else return res.text();
-        //     })
-        //     .then((resp) => {
-        //         if (resp !== undefined) {
-        //             let error = JSON.parse(resp);
-        //             if (error.errors !== undefined) {
-        //             }
-        //             else if (!isNaN(+error)) {
-        //                 setOpenModal(false);
-        //                 setopenBookmarkForm(false);
-        //                 bookmarkMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-        //             } else {
-        //                 setAlert(true);
-        //                 setResponseError(error);
-        //             }
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         return error;
-        //     });
     }
 
     const onUpdate = async () => {
@@ -396,6 +370,16 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         setIsSnapshotRequired(e);
     }
 
+    const checkDescription = () => {
+        if (!formpayload.description) {
+            setdescriptionErr('Description is required');
+        }
+        else {
+            setdescriptionErr('');
+        }
+    }
+    
+
 
     return (
         <div className='videoPlayerSnapshot'>
@@ -441,10 +425,14 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     <div className='modalEditCrx'>
                         <div className='CrxEditForm'>
                             <TextField
+                                error={!!descriptionErr}
+                                errorMsg={descriptionErr}
                                 value={formpayload.description}
                                 label='Description'
                                 className='description-input'
+                                required={true}
                                 onChange={(e: any) => setFormPayload({ ...formpayload, description: e.target.value })}
+                                onBlur={checkDescription}
                             />
                             <div className='crx-requird-check'>
                                 <CRXCheckBox
