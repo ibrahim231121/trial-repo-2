@@ -35,6 +35,7 @@ export type UnitInfoModel = {
   groupName: string;
   configTemp : any;
   configTemplateList : any;
+
 };
 const UnitCreate = (props: any) => {
   const [value, setValue] = React.useState(0);
@@ -127,6 +128,7 @@ const UnitCreate = (props: any) => {
 
   const onChangeGroupInfo = (name: string, decription: string, groupName: string, configTemp: any, configTemplateList:any) => { 
     setUnitInfo({ name: name, description: decription, groupName: groupName, configTemp: configTemp ,configTemplateList: configTemplateList});
+    
   };
 
   const redirectPage = () => {
@@ -145,16 +147,23 @@ const UnitCreate = (props: any) => {
     else
       history.push(urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url)
   }
+React.useEffect(()=>{
+  if (unitInfo.name?.length == 0)
+  setIsSaveButtonDisabled(true)
 
+  if (unitInfo.name?.length == 2)
+  setIsSaveButtonDisabled(true)
+})
   const showSave = () => {
     let unitInfo_temp: UnitInfoModel = {
-      name: res === undefined ? "" : res.name,
+      name: res === undefined ? "" : res.name ,
       description: res === undefined ? "" : res.description,
       groupName: res === undefined ? "" : res.triggerGroup,
       configTemp : res === undefined ? "": res.configTemplateId,
       configTemplateList: res === undefined ? [] : unitInfo.configTemplateList
     
     };
+ 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
       setIsSaveButtonDisabled(false);
     }

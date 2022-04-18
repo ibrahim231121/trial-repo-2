@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect,useState,useRef } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
@@ -11,7 +11,7 @@ import VRX from '../unitSchemaVRX.json';
 import BC03LTE from "../unitSchemaBCO3Lte.json";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
-import { CRXConfirmDialog, CRXTooltip } from "@cb/shared";
+import { CRXConfirmDialog, CRXTooltip ,CRXToaster,CRXAlert} from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
 import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
@@ -78,8 +78,13 @@ const CreateTemplate = (props: any) => {
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
   const formikProps = useFormikContext()
   const [errCkher, seterrChker] = React.useState<string>("");
-
-  console.log("history", historyState)
+  const targetRef = React.useRef<typeof CRXToaster>(null);
+  const alertRef = useRef(null);
+  const [alertType] = useState<string>('inline');
+  const [errorType] = useState<string>('error');
+  const [responseError] = React.useState<string>('');
+  const [alert] = React.useState<boolean>(false);
+ 
   let FormSchema: any = null;
   let templateName: string = "";
   const dispatch = useDispatch();
@@ -618,7 +623,6 @@ const CreateTemplate = (props: any) => {
         .then((response: any) => {
           if (response.ok) {
 
-            alert("happened form is being saved");
             response.json().then((res: number) => {
               if (res > 0) {
                 // historyState.id = res;
@@ -626,12 +630,18 @@ const CreateTemplate = (props: any) => {
                 // historyState.name = templateNames;
                 // dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
                 // setEditCase(true);
-                history.push('/admin/unitanddevices/createtemplate/template',{ id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+                history.push('/admin/unitanddevices/createtemplate/template',{ id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })  
                 history.go(0)
+                resetForm()
               }
             });
+            targetRef.current.showToaster({message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
 
-          } else {
+          } 
+          else if (response.status == 409) {
+            targetRef.current.showToaster({message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true});
+          }
+          else {
             throw new Error(response.statusText);
           }
         })
@@ -655,11 +665,8 @@ const CreateTemplate = (props: any) => {
         .then((response: any) => {
           if (response.ok) {
             setDataFetched(false);
-
-            alert("happened form is being Edited");
-            //setTest(true)
+            targetRef.current.showToaster({message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
             loadData();
-            // setTest(true)
             resetForm();
           } else {
             throw new Error(response.statusText);
@@ -683,6 +690,16 @@ const CreateTemplate = (props: any) => {
 
   return (
     <div className="CrxCreateTemplate CrxCreateTemplateUi ">
+        <CRXToaster ref={targetRef} />
+        <CRXAlert
+        ref={alertRef}
+        message={responseError}
+        className='crxAlertUserEditForm'
+        alertType={alertType}
+        type={errorType}
+        open={alert}
+        setShowSucess={() => null}
+      />
       <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
