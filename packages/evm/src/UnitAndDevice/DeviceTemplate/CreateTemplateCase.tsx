@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
-import * as Yup from "yup";
+import React from 'react';
+import { Field, FieldArray, ErrorMessage } from 'formik';
 import { CRXTooltip } from '@cb/shared';
 import { Select, MenuItem, ListItemText } from '@material-ui/core';
 import { CRXButton, CRXConfirmDialog } from '@cb/shared';
-import { Label } from '@material-ui/icons';
 import { useLocation } from "react-router-dom";
 
 
 var re = /[\/]/;
 
 const CustomizedSelectForFormik = (props: any) => {
+
   const { children, form, field } = props;
   const { name, value } = field;
   const { setFieldValue } = form;
@@ -19,6 +18,7 @@ const CustomizedSelectForFormik = (props: any) => {
     <>
       <Select
         {...field}
+        value={value ?? ""}
         onChange={e => {
           setFieldValue(name, e.target.value);
         }}
@@ -29,8 +29,11 @@ const CustomizedSelectForFormik = (props: any) => {
   );
 };
 
+
+
+
 const CustomizedMultiSelectForFormik = (props: any) => {
-  debugger;
+
   const { children, name, options } = props;
 
   return (
@@ -404,19 +407,10 @@ export const CreateTempelateCase = (props: any) => {
                           value={opt.value}
                           key={key}
                         >{opt.label}{" "}</MenuItem>
-
-                        // <option
-                        //   style={{ width: "50%" }}
-                        //   value={opt.value}
-                        //   key={key}
-                        //   selected={true}
-                        // >
-                        //   {opt.label}{" "}
-                        // </option>
                       )
                     )}
                   </Field>
-                 
+
                   <span className='UicustomMultiHint'>
                     {formObj.hinttext == true ? (
                       <CRXTooltip
@@ -492,7 +486,7 @@ export const CreateTempelateCase = (props: any) => {
         </div>
       );
     case "checkbox":
-      console.log(formObj)
+
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>

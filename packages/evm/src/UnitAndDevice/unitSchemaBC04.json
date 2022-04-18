@@ -6,7 +6,7 @@
       "type": "text",
       "label": "Template Name",
       "value": "",
-      "required":true,
+      "required": true,
       "validation": [
         {
           "key": "required",
@@ -24,15 +24,15 @@
     },
     {
       "id": "4",
-      "class":"ConfigUpdateClass",
+      "class": "ConfigUpdateClass",
       "key": "unittemplate/configUpdateInterval/NumberBox",
       "type": "number",
       "label": "Config Update Interval",
       "value": 6,
-      "required":true,
+      "required": true,
       "seconds": false,
       "requiredField": "true",
-      "hinttext" : true,
+      "hinttext": true,
       "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
       "validation": [
         {
@@ -295,9 +295,9 @@
       "label": "Categories",
       "checkBoxText": "Enable Categorization",
       "value": true,
-      "required":true,
+      "required": true,
       "seconds": true,
-      "hinttext" : true,
+      "hinttext": true,
       "hintvalue": "Allows to specify categories for selection after recording"
     },
     {
@@ -354,7 +354,7 @@
     {
       "labelMute": "Mute",
       "id": "1",
-      "class":"muteRadioDevice",
+      "class": "muteRadioDevice",
       "key": "device/mute/Radio",
       "type": "radio",
       "label": "Enabled",
@@ -382,7 +382,7 @@
       "id": "4",
       "key": "device/disableAudioOnlyRecording/CheckBox",
       "type": "checkbox",
-      "checkBoxText":"Disable Audio Only Recording",
+      "checkBoxText": "Disable Audio Only Recording",
       "value": false,
       "depends": [
         {
@@ -407,27 +407,32 @@
       "key": "device/disableWifiAndBluetooth/CheckBox",
       "type": "checkbox",
       "labelGroupRecording": "Location",
-      "checkBoxText":"Disable Wi-Fi and Bluetooth",
-      "checkHelperText":"(If selected will disable �Enable GPS� checkbox section)",
+      "checkBoxText": "Disable Wi-Fi and Bluetooth",
+      "checkHelperText": "(If selected will disable �Enable GPS� checkbox section)",
       "labelLocation": "Location",
       "value": false,
       "dependant": {
         "if": true,
         "field": "device/enableGPS/CheckBox",
         "value": false,
-        "inputType" : "checked"
+        "inputType": "checked"
       }
     },
     {
       "id": "89",
-      "class":"EnableGpsClass",
+      "class": "EnableGpsClass",
       "key": "device/enableGPS/CheckBox",
       "type": "checkbox",
       "label": "Enable GPS",
       "value": true,
-      "checkBoxText":"Enable GPS"
+      "checkBoxText": "Enable GPS",
+      "dependant": {
+        "if": true,
+        "field": "device/disableWifiAndBluetooth/CheckBox",
+        "value": false,
+        "inputType": "checked"
+      }
     },
-
     {
       "id": "34",
       "key": "device/gpsHeartbeat/NumberBox",
@@ -437,7 +442,7 @@
       "hintvalue1": "How often <Body Worn Type> sends heartbeats",
       "label": "GPS Heartbeat",
       "value": 60,
-      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
+      "checkHelperText": "(Minimum allowed is 30 and maximum allowed is 3600)",
       "seconds": true,
       "validation": [
         {
@@ -462,8 +467,8 @@
       "type": "number",
       "label": "GPS Heartbeat While Recording",
       "value": 60,
-      "class":"HeartbeatRecordingBco4",
-      "checkHelperText":"(Minimum allowed is 30 and maximum allowed is 3600)",
+      "class": "HeartbeatRecordingBco4",
+      "checkHelperText": "(Minimum allowed is 30 and maximum allowed is 3600)",
       "hinttext": true,
       "hintvalue": "Interval between heartbeats when recording",
       "hintvalue1": "Interval between heartbeats when recording",
