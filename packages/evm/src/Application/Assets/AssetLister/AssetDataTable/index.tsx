@@ -29,6 +29,7 @@ import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisp
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { CBXLink } from "@cb/shared";
+import { Link } from "react-router-dom";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -47,7 +48,7 @@ type MasterAsset = {
   assetName: string;
   assetType: string;
   unit: string;
-  recordedBy: string[];
+  owners: string[];
   recordingStarted: string;
   status: string;
 };
@@ -92,11 +93,23 @@ const thumbTemplate = (assetType: string) => {
 };
 
 const assetNameTemplate = (assetName: string, evidence: Evidence) => {
-  let masterAsset= evidence.masterAsset;
+  let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
   return (
     <>
-      <CBXLink key={assetName} children = {assetName}  className={"linkColor"}  id={assetName} href={"/assets/"+masterAsset.assetId} />
+      <Link
+      className="linkColor"
+        to={{
+          pathname: "/assetdetail",
+          state: {
+            evidenceId: evidence.id,
+            assetId: masterAsset.assetId,
+            assetName: assetName,
+          },
+        }}
+      >
+        <div>{assetName}</div>
+      </Link>
       <DetailedAssetPopup asset={assets} />
     </>
   );
@@ -121,10 +134,10 @@ const MasterMain: React.FC<Props> = ({
       categories: row.categories,
       devices: row.devices,
       station: row.station,
-      recordedBy: row.masterAsset.recordedBy,
+      recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
-      evidence: row
+      evidence: row,
     };
 
     reformattedRows.push(evidence);
@@ -136,7 +149,8 @@ const MasterMain: React.FC<Props> = ({
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
-  const [selectedActionRow, setSelectedActionRow] = React.useState<EvidenceReformated>();
+  const [selectedActionRow, setSelectedActionRow] =
+    React.useState<EvidenceReformated>();
 
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
@@ -203,7 +217,7 @@ const MasterMain: React.FC<Props> = ({
     } else {
       dateTimeObject = {
         dateTimeObj: {
-          ...headCells[colIdx].headerObject
+          ...headCells[colIdx].headerObject,
         },
         colIdx: 0,
       };
@@ -212,7 +226,7 @@ const MasterMain: React.FC<Props> = ({
     function onSelection(dateTime: DateTimeObject) {
       dateTimeObject = {
         dateTimeObj: {
-          ...dateTime
+          ...dateTime,
         },
         colIdx: colIdx,
       };
@@ -220,19 +234,17 @@ const MasterMain: React.FC<Props> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-    
+
     return (
-      
-        <DateTimeComponent
-          showCompact={showDateCompact}
-          reset={reset}
-          dateTimeDetail={dateTimeObject.dateTimeObj}
-          getDateTimeDropDown={(dateTime: DateTimeObject) => {
-            onSelection(dateTime);
-          }}
-          dateOptionType={dateOptionType}
-        />
-      
+      <DateTimeComponent
+        showCompact={showDateCompact}
+        reset={reset}
+        dateTimeDetail={dateTimeObject.dateTimeObj}
+        getDateTimeDropDown={(dateTime: DateTimeObject) => {
+          onSelection(dateTime);
+        }}
+        dateOptionType={dateOptionType}
+      />
     );
   };
 
@@ -240,7 +252,7 @@ const MasterMain: React.FC<Props> = ({
     rowsParam: EvidenceReformated[],
     headCells: HeadCellProps[],
     colIdx: number,
-    isSearchable: boolean,
+    isSearchable: boolean
   ) => {
     const onSetSearchData = () => {
       setSearchData((prevArr) =>
@@ -253,25 +265,25 @@ const MasterMain: React.FC<Props> = ({
     };
 
     const assetListerNoOptions = {
-      width : "287px",
-      marginLeft : "-1px",
-      whiteSpace : "nowrap",
-      overFlow : "hidden",
-      textOverflow : "ellipsis",
-      marginRight : "auto",
-      paddingLeft : "7px",
-      paddingRight : "7px",
-      fontSize : "14px",
-      top : "-5px",
-      marginTop : "4px"
-    }
+      width: "100%",
+      marginLeft: "-1px",
+      whiteSpace: "nowrap",
+      overFlow: "hidden",
+      textOverflow: "ellipsis",
+      marginRight: "auto",
+      paddingLeft: "7px",
+      paddingRight: "7px",
+      fontSize: "14px",
+      top: "-5px",
+      marginTop: "4px"
+    };
 
     const PaddLeftNoOptions = {
-      marginLeft : "4px",
-      paddingRight : "7px",
-      marginRight : "7px",
-      paddingLeft : "7px",
-    }
+      marginLeft: "4px",
+      paddingRight: "7px",
+      marginRight: "7px",
+      paddingLeft: "7px",
+    };
 
     return (
       <MultSelectiDropDown
@@ -299,15 +311,17 @@ const MasterMain: React.FC<Props> = ({
       searchComponent: () => null,
       keyCol: true,
       visible: false,
-      minWidth: "120",
+      width: "",
+      minWidth: "250",
     },
     {
       label: `${t("AssetThumbnail")}`,
-      id: "assetType",
+      id: "assetId",
       align: "left",
       dataComponent: thumbTemplate,
-      minWidth: "122",
-      maxWidth: "144",
+      minWidth: "130",
+      maxWidth: "150",
+	  width: ""
     },
     {
       label: `${t("AssetID")}`,
@@ -317,30 +331,9 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "180",
-      detailedDataComponentId: "evidence",
-    },
-    {
-      label: `${t("AssetType")}`,
-      id: "assetType",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
-      sort: true,
-      searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "200",
-      visible: false,
-    },
-    {
-      label: `${t("Description")}`,
-      id: "description",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "210",
-      maxWidth: "210",
+      width: "",
+      detailedDataComponentId: "evidence",
     },
     {
       label: `${t("Categories")}`,
@@ -349,18 +342,67 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "150",
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+      minWidth: "250",
+      width: "",
+      visible: false,
     },
     {
-      label: `${t("Device")}`,
-      id: "devices",
+      label: `${t("Description")}`,
+      id: "description",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "338",
+      width: "",
+      maxWidth: "210",
+    },
+    {
+      label: `${t("Captured")}`,
+      id: "recordingStarted",
+      align: "center",
+      dataComponent: dateDisplayFormat,
+      sort: true,
+      minWidth: "230",
+      searchFilter: true,
+      searchComponent: searchDate,
+    },
+    {
+      label: `${t("AssetType")}`,
+      id: "assetType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "100",
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+      minWidth: "250",
+      visible: false,
+      width: "",
+    },
+    {
+      label: `${t("Device")}`,
+      id: "unit",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+      minWidth: "250",
+      width: "",
       visible: false,
     },
     {
@@ -370,8 +412,13 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "120",
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+      minWidth: "250",
+      width: "",
       visible: false,
     },
     {
@@ -381,18 +428,13 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string[]) => multitextDisplay(e, "linkColor"),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "135",
-    },
-    {
-      label: `${t("Captured")}`,
-      id: "recordingStarted",
-      align: "center",
-      dataComponent: dateDisplayFormat,
-      sort: true,
-      minWidth: "220",
-      searchFilter: true,
-      searchComponent: searchDate,
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+      minWidth: "210",
+      width: "",
     },
     {
       label: `${t("FileStatus")}`,
@@ -400,9 +442,14 @@ const MasterMain: React.FC<Props> = ({
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
-      minWidth: "110",
+      minWidth: "230",
+      width: "",
       searchFilter: true,
-      searchComponent: (rowData: EvidenceReformated[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+      searchComponent: (
+        rowData: EvidenceReformated[],
+        columns: HeadCellProps[],
+        colIdx: number
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
     },
   ]);
 
@@ -528,6 +575,7 @@ const MasterMain: React.FC<Props> = ({
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
+          offsetY={179}
         />
       )}
     </>

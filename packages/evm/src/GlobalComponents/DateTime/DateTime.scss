@@ -1,11 +1,11 @@
 .dateTimeLabel {
     font-size: 14px;
-    color:#333333;
+    color:var(--color-333333);
     padding:0px 0 0 14px;
     margin:0px;
-    padding-bottom:15px;
+    padding-bottom:11px;
     display: block;
-    font-family: Arial;
+    font-family:var(--Arial-font-family);
   }
 
   
@@ -30,7 +30,7 @@
     .paperFooter {
       position: absolute;
       bottom: 0px;
-      border-top:1px solid #dedede;
+      border-top:1px solid var(--color-dedede);
       padding: 15px 25px;
       width: 100%;
     }
@@ -52,11 +52,19 @@
       margin-right: 15px;
       width: 247px;
     }
+    i {
+      top: 6px;
+    }
   }
 }
   .calenderInput {
     .MuiOutlinedInput-notchedOutline {
       border-radius: 0px;
+    }
+  }
+  i{
+    &.dateTimeTooltip {
+      top:8px;
     }
   }
 
@@ -65,4 +73,9 @@
     min-width: 246px !important;
     margin-left: 1px;
     margin-top: 5px;
+  }
+  .crxTooltipdate {
+    &.crxTooltipAll {
+      padding: 8px 16px;
+    }
   }

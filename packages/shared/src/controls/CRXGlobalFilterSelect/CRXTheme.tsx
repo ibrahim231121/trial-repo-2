@@ -28,7 +28,7 @@ export const darkTheme = makeStyles((theme: Theme) =>
       },
     },
     icon: {
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       fontSize: "14px",
       fontWeight: "normal",
       paddingRight: "7px",
@@ -78,14 +78,14 @@ export const darkTheme = makeStyles((theme: Theme) =>
     option: {
       height: "33px",
       fontFamily: "Arial, Helvetica, sans-serif",
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       fontSize: "14px",
       alignItems: "flex-start",
       padding: "0px 15px",
       placeItems: "center",
       '&[aria-selected="true"]': {
         backgroundColor: "#231F20",
-        color: "#D1D2D4",
+        color: "#d1d2d4",
         "&:hover": {
           backgroundColor: "#6E6E6E",
           color: "#F5F5F5",
@@ -97,7 +97,7 @@ export const darkTheme = makeStyles((theme: Theme) =>
       // },
       "&:hover": {
         backgroundColor: "#231F20",
-        color: "#D1D2D4",
+        color: "#d1d2d4",
       },
       "&:focus": {
         backgroundColor: "#6E6E6E",
@@ -171,7 +171,7 @@ export const lightTheme = makeStyles((theme: Theme) =>
       },
     },
     icon: {
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       fontSize: "14px",
       fontWeight: "normal",
       paddingRight: "7px",

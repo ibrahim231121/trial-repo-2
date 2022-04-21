@@ -2,24 +2,25 @@
   padding-left: 80px;
   font-size: 12px;
   position: sticky;
-  color: #666666;
+  color: var(--color-666666);
   height: 30px;
   display: flex;
   align-items: center;
   width: 100%;
-  bottom: 0;
-  background: #fff;
-  font-family: Arial;
+  bottom: 10px;
+  padding-bottom:35px;
+  // background: var(--color-White);
+  font-family:var(--Arial-font-family);
   z-index: 2;
 
   i {
     position: absolute;
     right: 16px;
     font-size: 24px;
-    color: rgb(209, 210, 212);
+    color: var(--color-White-2);
 
     &:hover {
-        color:#333333;
+        color:var(--color-333333);
         cursor: pointer;
     }
   }

@@ -19,9 +19,9 @@ export const AssetThumbnailIcon = (data: string) : string => {
         case "CSVDoc":
         return "fas fa-file-csv tumbFontIcon"
         case "Audio":
-        return "tumbPlayIcon icon-play3"
+        return "tumbPlayIcon icon icon-play4"
         case "Video" :
-        return "tumbPlayIcon icon-play3"
+        return "tumbPlayIcon icon icon-play4"
         default:
         return "fas fa-file tumbFontIcon"
       }

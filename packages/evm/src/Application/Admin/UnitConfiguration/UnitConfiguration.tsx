@@ -2,7 +2,7 @@ import React from 'react'
 
 const UnitConfiguration= () => {
     return (
-        <div style={{margin:'225px'}}>
+        <div className="manageUnitHeading">
             Manage Unit Configuration
         </div>
     )

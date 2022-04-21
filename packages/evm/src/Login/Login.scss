@@ -9,7 +9,7 @@
     height: 100vh;
 
     .main_box {
-      background:rgba(15,13,14,0.6) !important;
+      background: var(--color-black-1) !important;
       position: absolute;
       width:100%;
       height:455px;
@@ -18,7 +18,7 @@
       padding: 0 0;
       align-items: center;
       .box_paper {
-        background:rgba(15,13,14, 0.8) !important;
+        background:var(--color-black-2) !important;
         width:770px;
         margin-left: auto;
         margin-right: auto;
@@ -41,55 +41,55 @@
           .box_paper_h2{
             margin-top:18px;
             margin-left:96px;
-            color:#D1D2D4;
+            color: var(--color-d1d2d4);
             line-height: 26px;
-            font-weight: normal;
-            font-family: Arial, Helvetica, sans-serif;
+            font-weight: var(--Font-style-normal);
+            font-family: var(--base-font-family);
             font-size:22px;
             margin-bottom: 0;
           }
           .box_paper_h3{
             margin-top:39px;
             margin-left:96px;
-            color:#D1D2D4;
+            color:var(--color-d1d2d4);
             font-size:14px;
             line-height: 16px;
             margin-bottom: 0;
-            font-weight: normal;
-            font-family: Arial, Helvetica, sans-serif;
+            font-weight: var(--Font-style-normal);
+            font-family: var(--base-font-family);
           }
           .box_paper_span {
             margin-top:44px;
             margin-left:96px;
             margin-right:96px;
-            color: #D1D2D4;
+            color: var(--color-d1d2d4);
             font-size:12px;
             line-height:16px;
             margin-bottom: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--base-font-family);
           }
     
           .button_login {
-            background: #E7E7E7 0% 0% no-repeat padding-box !important; 
+            background: var(--color-e7e7e7) 0% 0% no-repeat padding-box !important; 
             height: 30px;
             width: 80px;
             margin-left: 96px !important;
             margin-top: 20px !important;
             &:focus-within {
-              outline: 1px solid white;
+              outline: 1px solid var(--color-White);
             }
             span {
-              color: #333333;
-              font-family: Arial, Helvetica, sans-serif;
-              font-weight: normal;
+              color: var(--color-333333);
+              font-family: var(--base-font-family);
+              font-weight: var(--Font-style-normal);
               font-size: 14px;
               line-height: 20px;
             }
             &:hover {
-              border: 1px solid #D74B00 !important;
+              border: 1px solid var(--color-D74B00) !important;
             }
             &:active {
-              border: 2px solid #D74B00 !important;
+              border: 2px solid var(--color-D74B00) !important;
             }
           }
         }

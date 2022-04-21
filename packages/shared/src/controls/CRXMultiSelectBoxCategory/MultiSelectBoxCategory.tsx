@@ -35,7 +35,7 @@ const MultiSelectBoxCategory = ({
     root: {
       backgroundColor: "#fff",
       border: "3px solid transparent",
-      outline: "1px solid #D1D2D4",
+      outline: "1px solid #d1d2d4",
       paddingLeft: "5px",
       "&:hover": {
         outline: "1px solid #888787",
@@ -55,7 +55,7 @@ const MultiSelectBoxCategory = ({
       },
     },
     icon: {
-      color: "#D1D2D4",
+      color: "#d1d2d4",
       fontSize: "14px",
       fontWeight: "normal",
       paddingRight: "7px",
@@ -204,7 +204,6 @@ const MultiSelectBoxCategory = ({
         popupIcon={opupOpenCret}
         renderOption={(option: any, { selected }) => (
           <React.Fragment>
-            {console.log("selected", selected)}
             <i
               className="far fa-check checkIcon"
               style={{ visibility: selected ? "visible" : "hidden" }}

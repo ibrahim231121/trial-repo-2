@@ -25,10 +25,11 @@ interface propsT {
     props? : any,
     onLeafClick? : (e : any) => void,
     onKeyDown? : (e : any) => void,
+    activeClass? : string,
     parentActive? :boolean,
     disabled? :boolean
 }
-const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
+const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : propsT) => {
 
     const [activeItem, setActiveItem] = useState<any>(null);
     let MeuRef : React.RefObject<any> = createRef();
@@ -128,7 +129,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
         const submenuIcon = item.items && <span className={submenuIconClassName}></span>;
         const submenu = renderSubmenu(item);
         let content = (
-            <a href={item.url || '#'} className={linkClassName + " " + item.classes} target={item.target} role="menuitem" aria-haspopup={item.items != null}
+            <a href={item.url || '#'} className={linkClassName + " " + activeClass} target={item.target} role="menuitem" aria-haspopup={item.items != null}
                 onClick={(event) => onItemClick(event, item)} >
                 {icon}
                 {label}
@@ -165,17 +166,20 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
         return null;
     }
     
-    const removeParent = () => {
-        // if(activeItem != null)
-        //     setActiveItem(null)
+    const removeParent = (event : any) => {
+        event.preventDefault()
+
+        if(activeItem != null && event.path[3].className != 'p-submenu-list')
+            setActiveItem(null)
     }
 
     useEffect(() => {
+        
         if(activeItem != null) {
-            document.addEventListener('mousedown', removeParent);
+            window.addEventListener('mouseup', removeParent);
         }
         return () => {
-            document.removeEventListener('mousedown', removeParent);
+            window.removeEventListener('mouseup', removeParent);
         }
     }, [activeItem])
 
@@ -184,7 +188,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled} : propsT) => {
     return (
         <>
         <ul ref={MeuRef} className={className} role={root ? 'menubar' : 'menu'} aria-orientation="horizontal">
-                {submenu}
+            {submenu}
         </ul>
         </>
     )

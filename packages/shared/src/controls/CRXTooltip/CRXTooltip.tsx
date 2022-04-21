@@ -1,90 +1,96 @@
-import React from 'react';
-import {  makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Tooltip from "@material-ui/core/Tooltip";
 
 type tooltipProps = {
-    placement? : string,
-    title : string,
-    className? : string,
-    iconName?: string,
-    content? : HTMLCollection
-}
+  placement?: string;
+  title: string;
+  className?: string;
+  iconName?: string;
+  content?: HTMLCollection;
+  arrow?: boolean;
+};
 const CRXUseStyles = makeStyles(() => ({
-    arrow: {
-      color: '#333',
-    },
-    
-    arrowTopEnd: {
-        color: '#333333',
-        left : "215px !important",
-        bottom : "0em !important"
-      },
-
-    tooltip: {
-      backgroundColor: "#333333",
-      color:"#d1d2d4",
-      fontFamily:'Arial',
-      fontSize: "14px",
-      padding:"8px 16px",
-      boxShadow:"20% 0 5px #000000",
-      borderRadius : "0px",
-      maxWidth:"250px",
-    },
-
-    tooltipTopEnd: {
-        backgroundColor: "#333333",
-        color:"#d1d2d4",
-        fontFamily:'Arial',
-        fontSize: "14px",
-        padding:"8px 16px",
-        boxShadow:"20% 0 5px #000000",
-        borderRadius : "0px",
-        maxWidth:"250px",
-        top : "10px"
-      },
-
+  arrow: {
+    color: "#333",
+  },
+  tooltip: {
+    backgroundColor: "#333333",
+    color: "#d1d2d4",
+    fontFamily: "Arial",
+    fontSize: "14px",
+    padding: "12px 16px",
+    boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.20)",
+    borderRadius: "0px",
+    maxWidth: "250px",
+  }
 }));
 
 const CRXIconStyle = makeStyles(() => ({
-    iconCls : {
-        position:"relative",
-        top:"1px",
-        height:"17px"
-    }
-}))
-function CRXCustomizedTooltip(props : any) {
-    const classes = CRXUseStyles();
-  
-    return <Tooltip arrow classes={{
-        arrow : props.placement == "top-end" ? classes.arrowTopEnd : classes.arrow,
-        tooltip : props.placement == "top-end" ? classes.tooltipTopEnd : classes.tooltip
-    }} {...props} />;
+  iconCls: {
+    position: "relative",
+    top: "0px",
+    height: "17px",
+    
+  },
+}));
+
+function CRXCustomizedTooltip(props: any) {
+  const classes = CRXUseStyles();
+
+  return (
+    <Tooltip
+      arrow
+      classes={{
+        className: classes.tooltip,
+        arrow:
+          props.placement.length && classes.arrow + " crxArrowTooltip",
+       
+        tooltip:
+          props.placement.length && classes.tooltip + " " + props.className + " crxTooltipAll",
+      }}
+      {...props}
+    />
+  );
 }
-  
-const CRXTooltip = ({placement, title, className,iconName, content} : tooltipProps) => {
-   
-    const clsxs = CRXIconStyle();
-   
-    const tooltipData = () => {
-        if(content == undefined) {
-            return <i className={iconName + " " + clsxs.iconCls}></i>;
-        } else {
-            return <div className="tooltipContent">{content}</div>
-        }
+
+const CRXTooltip = ({
+  placement,
+  title,
+  className,
+  iconName,
+  content,
+  arrow = true,
+}: tooltipProps) => {
+  const clsxs = CRXIconStyle();
+
+  const [tooltipIsOpen, setTooltipIsOpen] = React.useState(false);
+  const tooltipData = () => {
+    if (content == undefined) {
+      return <i className={iconName + " crxTooltip " + clsxs.iconCls}></i>;
+    } else {
+      return <div className="tooltipContent">{content}</div>;
     }
-    return (
-        <>
-        <CRXCustomizedTooltip
-            placement={placement}
-            title={title}
-            className={className}
-            
-            >
-            {tooltipData()}
-            
-        </CRXCustomizedTooltip>
-        </>
-    )
-}
+  };
+
+  const addTooltipTitle: string = title;
+
+  return (
+    <>
+      <CRXCustomizedTooltip
+        arrow={arrow}
+        placement={placement}
+        title={addTooltipTitle}
+        className={className}
+        onClick={() => setTooltipIsOpen(true)}
+        open={tooltipIsOpen}
+        onOpen={() => setTooltipIsOpen(true)}
+        onClose={() => setTooltipIsOpen(false)}
+      >
+        {tooltipData()}
+      </CRXCustomizedTooltip>
+    </>
+  );
+};
 
 export default CRXTooltip;

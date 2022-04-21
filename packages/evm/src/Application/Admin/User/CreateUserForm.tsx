@@ -374,10 +374,11 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   const setAddPayload = () => {
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
-        return formpayload.userGroups.some((e: any) => e === item.groupName);
+        return formpayload.userGroups.some((e: any) => e.id === item.groupId);
+
       })
       .map((i: any) => i.groupId);
-
+      
     const name = {
       first: formpayload.firstName,
       last: formpayload.lastName,
@@ -512,9 +513,9 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   };
 
   const setEditPayload = () => {
-    let userGroupsListIDs = userGroupsList
+    let userGroupsListIDs : any = userGroupsList
       ?.filter((item: any) => {
-        return formpayload.userGroups.some((e: any) => e === item.groupName);
+        return formpayload.userGroups.find((e: any) => e === item.groupName || e.label === item.groupName);
       })
       .map((i: any) => i.groupId);
 
@@ -645,6 +646,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
 
   const onSubmit = async (e: any) => {
     setResponseError('');
+    checkUserGroup()
     setAlert(false);
     if (id) await onEdit();
     else {

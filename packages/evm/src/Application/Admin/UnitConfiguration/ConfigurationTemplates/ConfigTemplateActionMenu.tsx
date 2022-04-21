@@ -57,7 +57,7 @@ const Deleteconfirm = () => {
     var unitId = row.name; 
   }
   return (
-    <>
+    <div className="table_Inner_Action">
 
     <Menu
       align="start"
@@ -123,7 +123,7 @@ const Deleteconfirm = () => {
           </div>
         }
       </Dialogbox> 
-    </>
+    </div>
  
   );
 };

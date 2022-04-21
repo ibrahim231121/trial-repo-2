@@ -1,4 +1,4 @@
-import { CRXNestedMenu } from "@cb/shared";
+import { CRXNestedMenu, CRXTooltip } from "@cb/shared";
 import { RemoveSharp } from "@material-ui/icons";
 import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -15,208 +15,222 @@ const CRXLefNavigation = () => {
   const navigateToPage = (path: string) => {
     history.push(path);
   };
-  
+
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
 
   const items = [
     {
-      moduleId:0,
+      moduleId: 0,
       label: "Home",
       icon: "fas fa-chart-pie NaveIcon",
     },
     {
-      moduleId:1,
+      moduleId: 1,
       label: "Assets",
       icon: "icon icon-file-video NaveIcon",
-      url: urlList.filter((item:any) => item.name === urlNames.assets)[0].url,
+      url: urlList.filter((item: any) => item.name === urlNames.assets)[0].url,
       disabled: false,
-      items: [],
+      
     },
     {
-      moduleId:0,
+      moduleId: 0,
       label: "Cases",
       icon: "fas fa-briefcase NaveIcon",
-      items: [
-        {
-          moduleIds:0,
-          label: "New",
-        },
-        {
-          moduleIds:0,
-          label: "Delete",
-        },
-        {
-          moduleIds:0,
-          label: "Search",
+      // items: [
+      //   {
+      //     moduleIds:0,
+      //     label: "New",
+      //   },
+      //   {
+      //     moduleIds:0,
+      //     label: "Delete",
+      //   },
+      //   {
+      //     moduleIds:0,
+      //     label: "Search",
 
-          items: [
-            {
-              moduleIds:0,
-              label: "Filter",
+      //     items: [
+      //       {
+      //         moduleIds:0,
+      //         label: "Filter",
 
-              items: [
-                {
-                  moduleIds:0,
-                  label: "Print",
-                },
-              ],
-            },
-            {
-              moduleIds:0,
-              label: "List",
-            },
-          ],
-        },
-      ],
+      //         items: [
+      //           {
+      //             moduleIds:0,
+      //             label: "Print",
+      //           },
+      //         ],
+      //       },
+      //       {
+      //         moduleIds:0,
+      //         label: "List",
+      //       },
+      //     ],
+      //   },
+      // ],
     },
-    {
-      moduleId:0,
-      label: "Live Video",
-      icon: "fas fa-video NaveIcon",
-      classes: "liveVideoTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Edit",
-
-          items: [
-            {
-              moduleIds:0,
-              label: "Save",
-            },
-            {
-              moduleIds:0,
-              label: "Delete",
-            },
-          ],
-        },
-        {
-          moduleIds:0,
-          label: "Archieve",
-
-          items: [
-            {
-              moduleIds:0,
-              label: "Remove",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      moduleId:0,
-      label: "Maps",
-      icon: "icon icon-compass5 NaveIcon",
-      classes: "mapsTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Analytics Map",
-        },
-        {
-          moduleIds:0,
-          label: "AVL Map",
-        },
-      ],
-    },
-    {
-      moduleId:0,
-      label: 'Units & Devices',
-      icon: 'fas fa-laptop-code NaveIcon',
-      command: () => {
-        navigateToPage(urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url);
-      },
-   },
-
     // {
     //   moduleId:0,
-    //   label: "ALPR",
-    //   icon: "fas fa-address-card NaveIcon",
-    //   classes: "aplrTab",
+    //   label: "Live Video",
+    //   icon: "fas fa-video NaveIcon",
+    //   classes: "liveVideoTab",
     //   items: [
     //     {
     //       moduleIds:0,
-    //       label: "Plate Captures",
+    //       label: "Edit",
+
+    //       items: [
+    //         {
+    //           moduleIds:0,
+    //           label: "Save",
+    //         },
+    //         {
+    //           moduleIds:0,
+    //           label: "Delete",
+    //         },
+    //       ],
     //     },
     //     {
     //       moduleIds:0,
-    //       label: "Live ALPR",
+    //       label: "Archieve",
+
+    //       items: [
+    //         {
+    //           moduleIds:0,
+    //           label: "Remove",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
+    // {
+    //   moduleId:0,
+    //   label: "Maps",
+    //   icon: "icon icon-compass5 NaveIcon",
+    //   classes: "mapsTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Analytics Map",
     //     },
     //     {
     //       moduleIds:0,
-    //       label: "Live ALPR",
+    //       label: "AVL Map",
+    //     },
+    //   ],
+    // },
+    {
+      moduleId: 0,
+      label: 'Units & Devices',
+      icon: 'fas fa-laptop-code NaveIcon',
+     
+      command: () => {
+        navigateToPage(urlList.filter((item: any) => item.name === urlNames.unitsAndDevices)[0].url);
+      },
+    },
+
+    {
+      moduleId: 0,
+      label: "ALPR",
+      icon: "fas fa-address-card NaveIcon",
+      classes: "aplrTab",
+      items: [
+        {
+          moduleIds: 0,
+          label: "Plate Captures",
+        },
+        {
+          moduleIds: 0,
+          label: "Live ALPR",
+        },
+        {
+          moduleIds: 0,
+          label: "Live ALPR",
+        },
+        {
+          moduleIds: 0,
+          label: "Manage Hot List",
+        },
+        {
+          moduleIds: 0,
+          separator: true,
+        },
+        {
+          moduleIds: 0,
+          label: "Manage Hot List Data Source",
+        },
+        {
+          moduleIds: 0,
+          label: "Manage License Plates",
+        },
+      ],
+    },
+
+    // {
+    //   moduleId:0,
+    //   label: "Reports",
+    //   icon: "icon icon-file-text NaveIcon",
+    //   classes: "reportingTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Analytics Map",
     //     },
     //     {
     //       moduleIds:0,
-    //       label: "Manage Hot List",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       separator: true,
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Manage Hot List Data Source",
-    //     },
-    //     {
-    //       moduleIds:0,
-    //       label: "Manage License Plates",
+    //       label: "AVL Map",
     //     },
     //   ],
     // },
 
     {
-      moduleId:0,
-      label: "Reports",
-      icon: "icon icon-file-text NaveIcon",
-      classes: "reportingTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Analytics Map",
-        },
-        {
-          moduleIds:0,
-          label: "AVL Map",
-        },
-      ],
-    },
-
-    {
-      moduleId:0,
+      moduleId: 0,
       label: "Admin",
       icon: "fas fa-sitemap NaveIcon",
       items: [
         {
-          moduleIds:5,
+          moduleIds: 5,
           label: "Manage User Groups & Permissions",
           command: () => {
-            navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+            navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url);
           },
         },
         {
-          moduleIds:8,
+          moduleIds: 8,
           label: "Manage Users",
           command: () => {
-            navigateToPage(urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url);
+            navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url);
           },
-          
+
         },
         {
-          moduleIds:0,
-          label: 'Manage Units & Devices Templates',
-          command: () => { navigateToPage("/admin/configurationtemplate") },
-       }
+          moduleIds: 0,
+          label: 'Manage Device & Unit Templates',
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) },
+        },
+        {
+          moduleIds: 0,
+          label: 'Evidence(Dev)',
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.testEvidence)[0].url) },
+        },
+        {
+          moduleIds: 0,
+          label: 'Manage Station',
+          //command: () => { navigateToPage("/admin/stations") },
+          url: "/admin/stations",
+        }
       ],
     },
   ];
 
-  var AssetPermission = items.filter((x:any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0); 
+  var AssetPermission = items.filter((x: any) => getModuleIds().includes(x.moduleId) || x.moduleId === 0);
   // x.moduleId === 0 is a temporary logic should be remove once all permission assigned.4
 
-  var SubModulePermission =  AssetPermission.map((item : any) => {
-    return {...item, items: item.items?.filter((item : any) => 
-       getModuleIds().includes(item?.moduleIds) || item.moduleIds === 0)}
+  var SubModulePermission = AssetPermission.map((item: any) => {
+    return {
+      ...item, items: item.items?.filter((item: any) =>
+        getModuleIds().includes(item?.moduleIds) || item.moduleIds === 0)
+    }
   })
 
 

@@ -14,45 +14,25 @@ const CrxTabsParent = withStyles({
   },
   scrollButtons : {
     background:"#333333",
-    color:"#D1D2D4",
+    color:"#d1d2d4",
     borderRadius:"0px",
     minWidth: "39px",
     height: "34px",
     fontSize: "14px",
     '&.MuiIconButton-root.Mui-disabled' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     },
     '&:hover' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     },
     '&:focus' : {
       background:"#231F20",
-      color:"#D1D2D4",
+      color:"#d1d2d4",
     }
   }
 })(Tabs);
-
-// const CrxTab = withStyles(
-// {
-//   root: {
-//     textTransform: 'none',
-//     minWidth: 120,
-//     FontWeight: theme.typography.fontWeightRegular,
-//     marginRight: theme.spacing(0),
-//     border: "1px solid #333",
-//     borderBottom:"0px",
-//     borderRight: "0px",
-//     background:"#eee",
-//     color:"#333",
-//     position:"sticky",
-//     top: "186px",
-//     opacity: 1,
-//     '&:last-child' : {
-//       borderRight: "1px solid #333",
-//     },
-//   }(Tabs);
 
   const CrxTab = withStyles((theme: Theme) =>
   createStyles({

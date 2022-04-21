@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
   icon: {
     fontSize: "18px",
-    color: "#D1D2D4",
+    color: "#d1d2d4",
     "input:hover ~ &": {
       color:"#333333"
     },
@@ -57,9 +57,9 @@ const CRXCheckBox: React.FC<Props> = ({
     if(selectedRow == true && checkBoxSelected == "crxSelectedDark" && checked == true) {
       setCheckBoxIconClass("fal fa-check-square crxCheckForDarBg");
     } else if(selectedRow == true && checkBoxSelected == "crxSelectedLight" && checked == true) {
-        setCheckBoxIconClass("fas fa-check-square");
+        setCheckBoxIconClass("fal fa-check-square");
     }else {
-      setCheckBoxIconClass("fas fa-check-square")
+      setCheckBoxIconClass("fal fa-check-square")
     }
   },[checked]);
   return (

@@ -44,16 +44,16 @@ export default function Token(props:any) {
         authenticate(response.accessToken,response.idToken,response.refreshToken
           , () => {
             var accessTokenDecode :TokenType =  jwt_decode(response.accessToken);
-            // console.log("Decoded TOken");
-            // console.log(accessTokenDecode);
-            // console.log(moduleIds);
-            // console.log(setModuleIds);
+            // 
+            // 
+            // 
+            // 
             if(accessTokenDecode !== null &&  accessTokenDecode.AssignedModules && accessTokenDecode.AssignedModules !== ""){
                 var moduleIdsAssigned = accessTokenDecode.AssignedModules
                                                 .split(',')
                                                 .map(x=> parseInt(x));
-                console.log("Setting modules Ids from Token.tsx");
-                console.log(moduleIdsAssigned);
+                
+                
                 setModuleIds(moduleIdsAssigned);
             }
             history.push("/assets");

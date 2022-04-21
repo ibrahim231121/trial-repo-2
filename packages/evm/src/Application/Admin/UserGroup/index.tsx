@@ -242,17 +242,20 @@ const UserGroup: React.FC = () => {
   };
 
   return (
-    <div className="managePermissionTable">
-      <Restricted moduleId={6}>
-        <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
-          Create Group
-        </CRXButton>
-      </Restricted>
+    <div className="managePermissionTable switchLeftComponents">
+     
       {
         rows && (
           <CRXDataTable
             id="userGroupDataTable"
             actionComponent={<UserGroupActionMenu />}
+            toolBarButton = {
+              <Restricted moduleId={6}>
+                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
+                  Create Group
+                </CRXButton>
+              </Restricted>
+            }
             showToolbar={true}
             dataRows={rows}
             headCells={headCells}
@@ -274,6 +277,8 @@ const UserGroup: React.FC = () => {
             showCheckBoxesCol={false}
             showActionCol={true}
             showTotalSelectedText={false}
+            offsetY={198}
+   
           />
         )
       }

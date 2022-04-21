@@ -11,7 +11,7 @@ interface buttonProps {
   variant?: "contained" | "outlined" | "text";
   className?: string;
   disabled?: boolean;
-  primary?:boolean
+  primary?: boolean
 }
 const theme = createMuiTheme({
   palette: {
@@ -40,11 +40,11 @@ const CRXButton = ({
   primary,
   ...props
 }: buttonProps) => {
-  const disabledClass = className==="tertiary" && disabled && "tertiaryDisabled"
+  const disabledClass = className === "tertiary" && disabled && "tertiaryDisabled"
   return (
     <ThemeProvider theme={theme}>
       <Button
-        style={{background:'transparent'}}
+        style={{ background: 'transparent' }}
         id={id}
         color={color || "primary"}
         variant={variant || "outlined"}

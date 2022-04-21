@@ -191,10 +191,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         setHeadCells(headCellReset);
     }
     const openHandler = (_: React.SyntheticEvent) => {
-        console.log("onOpen")
+        
         //setOpen(true)
     }
-    //console.log("HeadCellProps" , HeadCellProps[])
+    //
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
             label: `${t("ID")}`,
@@ -325,7 +325,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     return (
-        <div className="userDataTableParent">
+        <div className="userDataTableParent ">
             {rows && (
                 <CRXDataTable 
                     id="group-userDataTable"
@@ -355,6 +355,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     showCustomizeIcon={false}
                     showTotalSelectedText={true}
                     lightMode={false}
+                    offsetY={45}
                 />
             )
             }

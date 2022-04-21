@@ -1,6 +1,4 @@
-html {
-  overflow-y: scroll;
-}
+
 #video-player {
   margin-top: 142px;
   margin-left: 120px;
@@ -9,15 +7,15 @@ html {
   box-shadow: 0 0 11px 1px;
   padding: 10px 10px;
   position: relative;
-  border: 2px solid #333333;
+  border: 2px solid var(--color-333333);
   video {
-    outline: 2px solid #d74b00;
+    outline: 2px solid var(--color-d74b00);
     // margin-top: 68px;
     margin-top: 16px;
     margin-bottom: 6px;
   }
   .videoPlayerBtn {
-    color: white !important;
+    color: var(--color-White) !important;
     margin: 0 5px !important;
   }
   #controls {
@@ -48,7 +46,7 @@ html {
     margin-top: -126px;
   }
   #video-player-screens {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--color-black-11);
   }
   .PlayPause-container {
     margin-top: 8px;
@@ -75,27 +73,27 @@ html {
       div {
         text-align: center;
         margin-left: 40px;
-        background: #333333 !important;
+        background: var(--color-333333) !important;
         padding: 7px 12px;
         margin-bottom: -3px;
         i {
-          color: white;
+          color: var(--color-White);
         }
       }
     }
 
     .MenuListGrid {
       .rc-menu-button {
-        background: #333333 !important;
-        color: white;
+        background: var(--color-333333) !important;
+        color: var(--color-White);
         border: none;
-        font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+        font-family:var(--base-font-family);
         font-weight: 500;
         line-height: 1.75;
         padding: 7px 7px;
       }
       .rc-menu__item {
-        color: white;
+        color: var(--color-White);
         padding: 9px 8px !important;
       }
       .rc-menu-container {
@@ -111,12 +109,12 @@ html {
     }
     .linearbarThird {
       div {
-        background-color: olive;
+        background-color: var(--color-olive);
       }
     }
     .linearbarfourth {
       div {
-        background-color: coral;
+        background-color: var(--color-coral);
       }
     }
   }
@@ -147,11 +145,11 @@ html {
     padding-right: 59px;
   }
   #counter {
-    color: white;
+    color: var(--color-White);
   }
   .volume-icon {
     span {
-      color: white;
+      color: var(--color-White);
     }
   }
 }
@@ -161,13 +159,13 @@ html {
   margin-bottom: -6px;
   button {
     margin: 0 4px;
-    background: transparent;
+    background: var(--color-transparent);
     border: none;
     &:disabled {
       opacity: 0.4;
     }
     i {
-      color: #333333;
+      color: var(--color-333333);
       font-size: 37px;
       position: relative;
       &:hover {
@@ -194,6 +192,12 @@ html {
     }
   }
 }
+.TTview{
+    display: flex;
+    justify-content: space-between;  
+  
+      
+}
 
 @media (max-width: 1890px) {
   #video-player {
@@ -201,4 +205,21 @@ html {
       margin-top: -157px;
     }
   }
+}
+
+.gridFilterTextBox{
+  // display: inline-flex !important;
+  // margin-bottom: 15px;
+}
+// .gridFilterTextBox input{
+//   margin-left: 20px !important;
+//   width: 300px !important;
+// }
+.custom-class{
+  display: inline-flex !important;
+  padding-left: 6px;
+}
+.custom-class img{
+  margin-left: 48px !important;
+  margin-bottom: 15px;
 }

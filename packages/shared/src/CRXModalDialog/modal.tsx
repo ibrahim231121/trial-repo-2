@@ -63,7 +63,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
 
   React.useEffect(() => {
     setmaxWidthProps(maxWidth);
-    console.log(maxWidthProps, " both ", maxWidth)
+    
   }, [maxWidthProps])
   return (
     <Dialog

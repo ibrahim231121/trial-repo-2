@@ -8,7 +8,7 @@ import {
   CheckAllPageWise
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-//import { fixedColumnAlignment } from "./FixedColumnAlignment"
+//import { fixedColumnAlignment } from './FixedColumnAlignment'
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   page,
@@ -19,7 +19,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   container,
   actionComponent,
   getRowOnActionClick,
-  dragVisibility,
+  
   showCheckBoxesCol,
   showActionCol,
   showActionSearchHeaderCell,
@@ -52,23 +52,25 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   return (
     <TableHead>
       <TableRow>
-        {(dragVisibility === true || dragVisibility === undefined) ? 
+        {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell
             className={
               classes.searchHeaderStickness +
               " TableSearchAbleHead tableSearchHead"
             }
-            style={{left: 0, position: "sticky", zIndex: 4 }}
+            style={{left: "-2px", position: "sticky", zIndex: 4 }}
           ></TableCell>
           : null
-        }
+        } */}
         {(showCheckBoxesCol === true || showCheckBoxesCol === undefined) ? 
           <TableCell
             padding="checkbox"
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-            style={{left: "60px", //`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
+            style={{
+            left: "0px", 
+            //left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`, 
                     position: "sticky", 
-                    zIndex: 4 }}
+                    zIndex: 30 }}
           >
             {(showHeaderCheckAll || showHeaderCheckAll === undefined) ? 
               <CRXCheckBox
@@ -85,7 +87,9 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         {(showActionCol || showActionCol === undefined) ? 
           <TableCell
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
-            style={{left: "118px",//`${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+            style={{
+              left: "58px",
+            //left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
                     position: "sticky", 
                     zIndex: 4 }}
           >

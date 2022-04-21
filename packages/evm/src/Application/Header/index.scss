@@ -1,9 +1,10 @@
 .CRXLeftPanel {
   .MuiDrawer-paper {
     top: 57px !important;
-    background: #282828;
+    background: var(--color-282828);
     overflow: visible;
     width: 63px;
+    box-shadow: var(--Box-shadow);
   }
 }
 
@@ -15,12 +16,6 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  li:last-child {
-    .p-submenu-list {
-      top: auto;
-      bottom: -3%;
-    }
-  }
 }
 
 .p-tieredmenu .p-submenu-list {
@@ -51,58 +46,58 @@
   margin-left: auto;
 }
 
-.p-tieredmenu .p-menuitem-active > .p-submenu-list {
-  display: block;
-  left: 100%;
-  top: 0;
-}
+// .p-tieredmenu .p-menuitem-active > .p-submenu-list {
+//   display: block;
+//   left: 100%;
+//   top: 0;
+// }
 
 .CRXLogoMenu {
-    display: flex;
-    height:57px;
-    .appLogo {
-        display: inline-block;
-        width: 216px;
-        position: relative;
-        top: 11px;
-        height: 32px;
-    }   
-    .toggleIcon {
-        color:#d1d2d4;
-        height: auto !important;
-    }
-
-    .AppName {
-        font-size: 16px;
-        font-weight: bold;
-        padding-left: 30px;
-        line-height: 54px;
-        position: relative;
-        &:before {
-            position: absolute;
-            height: 32px;
-            width: 1px;
-            left: 16px;
-            top: 10.5px;
-            background: #e6e6e6;
-            content: " ";
-        }
-    }
+  display: flex;
+  height: 57px;
+  .appLogo {
+    display: inline-block;
+    width: 216px;
+    position: relative;
+    top: 11px;
+    height: 32px;
+  }
+  .toggleIcon {
+    color: var(--color-d1d2d4);
+    height: auto !important;
   }
 
-  .panelButton {
-    padding-left: 25px;
-    padding-top: 7px;
-    padding-right: 30px;
-    .MuiIconButton-root {
-      padding: 7px 0px;
-
-      .icon-menu {
-        font-size: 26px;
-        color: #d1d2d4;
-      }
+  .AppName {
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 30px;
+    line-height: 54px;
+    position: relative;
+    &:before {
+      position: absolute;
+      height: 32px;
+      width: 1px;
+      left: 16px;
+      top: 10.5px;
+      background: var(--color-e6e6e6);
+      content: ' ';
     }
   }
+}
+
+.panelButton {
+  padding-left: 25px;
+  padding-top: 7px;
+  padding-right: 30px;
+  .MuiIconButton-root {
+    padding: 7px 0px;
+
+    .icon-menu {
+      font-size: 26px;
+      color: var(--color-d1d2d4);
+    }
+  }
+}
 
 .MasterHeadRight {
   text-align: right;
@@ -120,9 +115,9 @@
       &:after {
         width: 2px;
         height: 14px;
-        background: #585858;
+        background: var(--color-585858);
         position: absolute;
-        content: " ";
+        content: ' ';
         top: 7px;
         right: 0px;
       }
@@ -146,24 +141,24 @@
   padding-left: 41px;
   padding-top: 8px;
   .li {
-    color: #C34400;
+    color: var(--color-C34400);
     text-decoration: none;
     font-size: 12px;
   }
 
   .active {
-    color: #C34400;
+    color: var(--color-C34400);
     font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:var(--base-font-family);
 
     &:hover {
-      color: #C34400;
-      text-decoration: underline;
+      color: var(--color-C34400);
+      text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
     }
     &:focus {
-      color: #C34400;
-      text-decoration: underline;
+      color: var(--color-C34400);
+      text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
     }
   }
@@ -175,35 +170,40 @@
     display: inline-block;
     margin-right: 4px;
     margin-left: 8px;
-    color: #333333;
+    color: var(--color-333333);
   }
 }
 
 .applicationsMenu {
   margin-top: 14px;
-  margin-right: 7px;
+  margin-right: 9px;
   .MuiSvgIcon-root {
     font-size: 24px;
-    color: #d1d2d4;
+    color: var(--color-d1d2d4);
   }
   .CRXDropDownBtn {
     min-width: 30px;
   }
+  .applicationIcon {
+    font-size:16px;
+  }
 }
 
 .applicationMenu {
-  margin-top: 12px;
+  margin-top: -4px;
+  margin-left: 70px;
 }
 
 .titlePage {
   position: relative;
+  top: -11px;
   h2 {
     padding: 2px 0 0 0;
     margin: 0px;
-    color: #333333;
+    color: var(--color-333333);
     font-size: 24px;
     font-weight: 500;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:var(--base-font-family);
     margin-top: 5px;
   }
   .bottomLine {
@@ -212,8 +212,8 @@
     top: 41px;
     bottom: 0px;
     width: 100%;
-    background-color: #d1d2d4;
+    background-color: var(--color-d1d2d4);
     height: 1px;
-    box-shadow: rgba(0, 0, 0, 0.17) 0px 0px 15px 0px;
+    box-shadow: var(--color-black-10) 0px 0px 15px 0px;
   }
 }

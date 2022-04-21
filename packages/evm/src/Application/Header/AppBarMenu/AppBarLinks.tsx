@@ -1,10 +1,10 @@
 import React from 'react'
-import { CRXItem, CRXMenu } from "@cb/shared";
+import { CRXItem, CRXMenu,CRXTooltip,SVGImage } from "@cb/shared";
 import AppsIcon from '@material-ui/icons/Apps';
 
 const listOFMenu = [
     {
-        label : 'REAL TIME Command',
+        label : 'Getac Command',
         router : "",
         onClick: () => {window.location.href = process.env.REACT_APP_COMMAND_URL as string }
     },
@@ -14,7 +14,7 @@ const listOFMenu = [
     }
 ];
 const CRXAppDropdown = () => {
-    const icon = <AppsIcon />;
+    const icon = <CRXTooltip className="crxTooltipAppBar applicationIcon" arrow={false} placement="bottom-end" iconName="icon icon-grid" title="getec applications"/>;
     return (
         <div className="aplication">
         <CRXMenu

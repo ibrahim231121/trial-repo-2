@@ -22,6 +22,7 @@ type Props = {
   secondary?: string
   className?: string
   text?: string;
+  primaryDisabled?: boolean
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -31,14 +32,14 @@ const CRXConfirmDialog: React.FC<Props> = ({
   className,
   setIsOpen,
   isOpen,
-  children, primary, secondary,
+  children, primary, secondary, primaryDisabled,
   text
 }) => {
   return (
-    <Dialog open={isOpen} className={"crx-confirm-modal " + className}>
+    <Dialog open={isOpen} className={"crx-confirm-modal userConfirmationModal crx-unblock-modal " + className}>
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6">{title || 'Please confirm'}</Typography>
+          <Typography className="userConfirmTitle" variant="h6">{title || 'Please confirm'}</Typography>
 
         </div>
       </DialogTitle>
@@ -54,13 +55,13 @@ const CRXConfirmDialog: React.FC<Props> = ({
         {children ? (
           children
         ) : (
-          <Typography variant="subtitle2">{content ? content : <span>
-            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog")}.
+          <Typography className="userModalContent" variant="subtitle2">{content ? content : <span>
+            <div className="cancelConfrimtextContent">
+            You are attempting to <strong>close</strong> the {(text !== undefined && text !== "" ? text : "modal dialog")}.
             If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog")}, any changes you've made will not be saved.
-            You will not be able to undo this action.
-            <br />
-            <br />
-            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog")}?
+            You will not be able to undo this action.</div>
+
+            <div className="modalConfirmtextUser">Are you sure you would like to <strong>close</strong> the {(text !== undefined && text !== "" ? "form" : "modal dialog")}?</div>
           </span>
           }</Typography>
         )}
@@ -69,11 +70,12 @@ const CRXConfirmDialog: React.FC<Props> = ({
       <DialogActions className="crxConfirmFooterModal">
         <CRXButton
           id="yes"
+          disabled={primaryDisabled}
           className="primary"
           variant="contained"
           onClick={() => {
             onConfirm();
-            //setIsOpen(false);
+            setIsOpen(false);
           }}
         >
           {primary || "primary"}

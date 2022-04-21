@@ -1,40 +1,40 @@
-
 .CRXPopupOuterDiv {
-  text-align: right;
-  top:13px;
-  right: 5px;
-  position: relative;
+    display: flex;
+    justify-content: flex-end;
+    height: max-content;
+    align-items: flex-end;
+    height: 47px;
   span {
-    font-size: 14pt;
+    font-size: 16px;
     .getac-clone-icon {
       position: relative;
       &::before {
-      font-size: 16pt;
-      font-family: "Font Awesome 5 Brands";
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      content: "\f24d";
+        font-size: 16pt;
+        font-family: "Font Awesome 5 Brands";
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        content: "\f24d";
       }
     }
   }
 }
 
-.CRXPopoverCss{
+.CRXPopoverCss {
   .CRXPopOverArrow {
-      margin-left: -15px;
-      margin-top: -22px;
+    margin-left: -15px;
+    margin-top: -22px;
     .CRXPopupInnerDiv {
       text-align: center;
       width: 525px;
-      background-color: #f2f2f2;
-      border: 1px solid #707070;
-      height: 484px;
-      box-shadow:  0px 0px 5px 0px rgba(0,0,0,0.2);
-      padding:0 14px;
+      background-color: var(--color-f2f2f2);
+      border: 1px solid var(--color-707070);
+      max-height: 484px;
+      box-shadow: 0px 0px 5px 0px var(--color-black-6);
+      padding: 0 14px;
       .CRXPopupCrossButton {
         text-align: right;
-        
+
         padding-left: 0px;
         height: 20px;
 
@@ -46,13 +46,13 @@
           top: -2px;
           right: 5px;
           .detailPopupCloseIcon {
-            color: #D1D2D4;
+            color: var(--color-d1d2d4);
             font-size: 16px;
             width: 16px;
             height: 16px;
-        
+
             &:hover {
-              color: #333333;
+              color: var(--color-333333);
             }
           }
         }
@@ -64,8 +64,8 @@
             text-align: left;
             width: 500px;
             padding-left: 10px;
-            font: normal normal normal 18px/20px Arial;
-            color: #333;
+            font: var(--App-font-family) normal normal normal 18px/20px;
+            color: var(--color-333333);
             margin-bottom: 0px;
             padding-bottom: 0px;
             margin-top: 16px;
@@ -78,26 +78,25 @@
         width: 509px;
         padding-left: 0px;
         overflow-y: auto;
-        height: 420px;
+        max-height: 420px;
 
         table {
           tbody {
             tr {
               &.CRXPopupTableRow {
-              position: sticky;
-              top: 0px;
-              background-color: #f2f2f2;
-              z-index: 1;
-              height: 50px;
-              vertical-align: "sub";
+                position: sticky;
+                top: 0px;
+                background-color: var(--color-f2f2f2);
+                z-index: 1;
+                height: 44px;
 
                 .CRXPopupTableCellOne {
                   width: 40px;
                 }
                 .CRXPopupTableCellTwo {
                   width: 140px;
-                  font: normal normal normal 14px/20px Arial;
-                  color: #333333;
+                  font: var(--App-font-family) normal normal normal 14px/20px;
+                  color: var(--color-333333);
                 }
                 .CRXPopupTableCellThree {
                   width: 240px;
@@ -105,64 +104,71 @@
                 .CRXPopupTableCellFour {
                   // width: 70px;
                 }
-                
               }
-                td {
-                  .checkBoxDarkTheme{
-                    .fal {
+              td {
+                .checkBoxDarkTheme {
+                  .fal {
+                    position: relative;
+                    &::after {
+                      content: "\f0c8";
+                      color: var(--color-White);
+                      left: 0;
+                      position: absolute;
+                      font-family: "Font Awesome 5 Duotone";
+                      font-weight: 900;
+                      right: 0;
+                      top: 0;
+                    }
+                  }
+                  .crxSelectedDark {
+                    color: var(--color-333333) !important;
+                    &.fal {
                       position: relative;
                       &::after {
-                        content: '\f0c8';
-                        color: #fff;
-                        left: 0;
-                        position: absolute;
-                        font-family: "Font Awesome 5 Duotone";
-                        font-weight: 900;
-                        right: 0;
-                        top: 0;
+                        color: var(--color-transparent);
                       }
                     }
-                    .crxSelectedDark  {
-                      color:#333333 !important;
-                    }
-                    input{
-                      &:hover{
-                        & ~{
-                          span {
-                            color:#333333 !important;
-                          }
+                  }
+                  input {
+                    &:hover {
+                      & ~ {
+                        span {
+                          color: var(--color-333333) !important;
                         }
                       }
                     }
                   }
-                  .CRXPopupTableAssetName {
-                    color: #D74B00;
-                    font: normal normal normal 14px/16px Arial;
-                    width: 229px;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    padding-bottom: 0px;
-                    padding-left: 9px;
-                    padding-top: 7px;
+                }
+                .CRXPopupTableAssetName {
+                  color: var(--color-d74b00);
+                  font: var(--App-font-family);
+                  font-size: 14px;
+                  width: 229px;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  padding-bottom: 0px;
+                  padding-left: 9px;
+                  padding-top: 7px;
+                }
+                .CRXPopupDetailFontSize {
+                  color: var(--color-333333);
+                  font: var(--App-font-family);
+                  width: 59%;
+                  display: block;
+                  font-size: 14px;
+                  padding: 0;
+                  line-height: 18px;
+                  padding-left: 9px;
+                }
+                &.CRXPopupActionIcon {
+                  text-align: center;
+                  padding-left: 28px;
+                  .actionIcon {
+                    font-size: 23px;
+                    color: var(--color-333333);
                   }
-                  .CRXPopupDetailFontSize {
-                    color: #333333;
-                    font: normal normal normal 14px/16px Arial;
-                    width: 59%;
-                    display: block;
-                    padding: 0;
-                    line-height: 18px;
-                    padding-left: 9px;
-                  }
-                  &.CRXPopupActionIcon {
-                    text-align: center;
-                    padding-left: 28px;
-                    .actionIcon {
-                      font-size: 23px;
-                      color: #333;
-                    }
-                  }
+                }
               }
 
               &.CRXPopupSpacingBetweenRows {
@@ -172,10 +178,9 @@
               .CRXPopupTableImage {
                 width: 110px;
                 height: 61px;
-                margin-top:18px;
+                margin-top: 18px;
                 margin-bottom: 10px;
               }
-
             }
           }
         }
@@ -184,7 +189,7 @@
 
     /*Popup Arrow style*/
     &:before {
-      border: solid transparent;
+      border: solid var(--color-transparent);
       content: " ";
       display: block;
       height: 0;
@@ -192,48 +197,47 @@
       pointer-events: none;
       width: 0;
       top: 99.8%;
-      border-color: rgba(255, 255, 255, 0);
-      border-top-color: #707070;
+      border-color: var(--color-black-7);
+      border-top-color: var(--color-707070);
       left: 30px;
       margin-left: -12px;
       border-width: 10px;
     }
     &:after {
-      border: solid transparent;
+      border: solid var(--color-transparent);
       content: " ";
       display: block;
       height: 0;
       position: absolute;
       pointer-events: none;
       width: 0;
-      top: 99.8%;
-      border-color: rgba(255, 255, 255, 0);
-      border-top-color: #f5f5f5;
+      top: 99.7%;
+      border-color: var(--color-black-7);
+      border-top-color: var(--color-f5f5f5);
       left: 30px;
       margin-left: -10px;
       border-width: 8px;
     }
     /*End here*/
   }
-
-}/*Popup Parent class close point*/
+} /*Popup Parent class close point*/
 
 .CRXPopoverTooltip {
-  background-color: #333333;
+  background-color: var(--color-333333);
 }
 
 .CRXPopoverStyle {
   .CRXPopOverArrow {
     padding: 11px;
     border-radius: 0;
-    background: #333333;
-    color: #d1d2d4;
+    background: var(--color-333333);
+    color: var(--color-d1d2d4);
     font-size: 15px;
     max-width: 236px;
     word-break: break-all;
 
     &:after {
-      border-top-color: #333333;
+      border-top-color: var(--color-333333);
     }
 
     &:before {
@@ -244,65 +248,65 @@
 
 /*Custom Scroll bar css*/
 
-.CRXPopupTableDiv{
-
+.CRXPopupTableDiv {
   &::-webkit-scrollbar {
-      width: 15px;
-      position: relative;
-    }
-    
-    &::-webkit-scrollbar-track {
-      border-radius: 0px;
-      margin-left: 0px;
-      border-right: 0px;
-      margin-left: 0px;
-      margin-top: 0px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      border-radius: 0px;
-      background: #C8C8C8 0% 0% no-repeat  content-box;
-      outline: 0px solid slategrey;
-      border: 2px solid rgba(0, 0, 0, 0);
-      background-clip: content-box;
-    }
-    
-    &::-webkit-scrollbar-track-piece {
-      background-color: #f1f1f1;
-      border: 1px solid #D1D2D4;
-      border-bottom: 0px;
-      border-top: 0px;
-      margin-left: 0px;
+    width: 15px;
+    position: relative;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0px;
+    margin-left: 0px;
+    border-right: 0px;
+    margin-left: 0px;
+    margin-top: 0px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background: var(--color-C8C8C8) 0% 0% no-repeat content-box;
+    outline: 0px solid var(--color-slategrey);
+    border: 2px solid var(--color-black-3);
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: var(--color-f1f1f1);
+    border: 1px solid var(--color-d1d2d4);
+    border-bottom: 0px;
+    border-top: 0px;
+    margin-left: 0px;
   }
 
   &::-webkit-scrollbar-button:vertical:decrement {
-      width: 25px;
-      height: 85px;
-      border: 0px solid #D1D2D4;
-      border-bottom: 0px;
-      background:url('../../../../Assets/Images/scrollBarVerTop.jpg') no-repeat center center ;
-      background-size: contain;
-      background-position:0px 71px;
-      background-clip: border-box;
-      position: relative;
-      right: 0px;
-      top: 0px;
-      margin-left: 0px;
-      
+    width: 25px;
+    height: 85px;
+    border: 0px solid var(--color-d1d2d4);
+    border-bottom: 0px;
+    background: url("../../../../Assets/Images/scrollBarVerTop.jpg") no-repeat
+      center center;
+    background-size: contain;
+    background-position: 0px 71px;
+    background-clip: border-box;
+    position: relative;
+    right: 0px;
+    top: 0px;
+    margin-left: 0px;
   }
 
   &::-webkit-scrollbar-button:vertical:increment {
-      width: 25px;
-      height: 15px;
-      border: 1px solid #D1D2D4;
-      border-top: 0px;
-      background:url('../../../../Assets/Images/scrollVerBottom.png') no-repeat center center #f1f1f1; 
-      background-size: contain;
-      position: relative;
-      right: 0px;
+    width: 25px;
+    height: 15px;
+    border: 1px solid var(--color-d1d2d4);
+    border-top: 0px;
+    background: url("../../../../Assets/Images/scrollVerBottom.png") no-repeat
+      center center var(--color-f1f1f1);
+    background-size: contain;
+    position: relative;
+    right: 0px;
   }
 
   &::-webkit-scrollbar:vertical {
-      display: block;
+    display: block;
   }
 }

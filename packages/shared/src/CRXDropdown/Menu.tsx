@@ -21,7 +21,9 @@ const DropdownStyle = makeStyles({
     },
     paper : {
         maxHeight : "300px",
-        width:"238px"
+        width:"auto",
+        minWidth : "180px",
+        boxShadow: "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)"
     }
 })
 
@@ -47,7 +49,7 @@ type propsTypes = {
 }
 
 
-const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, name, btnClass, MenuList, onClick} : propsTypes) => {
+const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapper, name, btnClass, MenuList, onClick} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
@@ -98,11 +100,11 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple, wrapper, nam
                 
                 anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'center',
+                    horizontal: 'right',
                   }}
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'center',
+                    horizontal: 'right',
                   }}
             
             >

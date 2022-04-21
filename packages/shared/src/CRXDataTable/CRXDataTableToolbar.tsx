@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -23,22 +23,21 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   showCountText,
   showCustomizeIcon,
   numSelected,
-  showTotalSelectedText
+  showTotalSelectedText,
+  toolBarButton
 }) => {
   const classes = useToolbarStyles();
-  const [filterPopup, setFilterPopup] = useState<any>()
   const { t } = useTranslation<string>();4
-  useEffect(() => {
-    console.log("Filter", filterPopup)
-    //setFilterPopup(null)
-  },[filterPopup])
+
   const [showCustomize,setShowCustomize] = useState<any>();
 
   return (
 
-    <Toolbar
-      className={clsx("crxClearfilter stickyPos " + classes.root)}>
-
+    <Toolbar className={clsx("crxClearfilter stickyPos " + classes.root)}>
+      
+      <div className='toolbar-button'>
+        {toolBarButton}
+      </div>
       {
         (showCountText || showCountText === undefined) ?
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
@@ -64,7 +63,6 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
           orderingColumn={orderingColumn}
           onReorder={(e: number[]) => onReOrder(e)}
           onChange={onChange}
-          //filterWindow={setFilterPopup}
           onHeadCellChange={onHeadCellChange}
           showCustomizeIcon={showCustomizeIcon}
         />

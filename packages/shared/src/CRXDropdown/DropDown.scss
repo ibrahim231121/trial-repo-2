@@ -1,36 +1,32 @@
-
-$Gray28 : #282828;
-$Gray33 : #333;
-$Nero   : #d1d2d4;
-$White  : #fff;
-$Black  : #000;
-$Gray41 : #404041;
-$Gray51 : #515151;
 .MuiPaper-root.DarkTheme{
-    background-color: $Gray41;
+    background-color: var(--color-404041);
     border-radius: 0px !important;
     ul{
-        min-width: 200px;
+        min-width: 150px;
         li{
-            color: $Nero !important;
+            color: var(--color-d1d2d4) !important;
             font-size: 13px;
             min-height: 33px;
             &:hover {
-                background-color:$Gray28;
-                color: #fff !important
+                background-color:var(--color-282828);
+                color: var(--color-White) !important
             }
             &:focus {
-                background-color:#282828;
-                color: #fff !important
+                background-color:var(--color-282828);
+                color: var(--color-White) !important
                 }
         }
+    }
+    &.applicationMenu {
+        // left:85px !important;
+        // top: 45px !important;
     }
 }
 
 .GetacMenu{
     .active {
-        background-Color : $Gray28;
-        color: $White,
+        background-Color : var(--color-282828);
+        color: var(--color-White),
     }
 }
 

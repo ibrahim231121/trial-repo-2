@@ -1,0 +1,44 @@
+.crx-cricle-loader
+{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background: rgba(51,51,51, 0.9);
+    top: 0px;
+    z-index: 9999;
+    display: flex;
+    flex-wrap: wrap;
+    place-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .loaderLoadingText{
+        color: var(--color-d1d2d4);
+        font-size: 22px;
+        padding-bottom: 20px;
+        position: relative;
+
+        #loadingText{
+            width: 250px;
+        }
+        #wait {
+            width: 120px;
+            position: absolute;
+        }
+    }
+
+    .loadingSpiner {
+        font-size: 60px;
+        color: var(--color-636363);
+        opacity: 0.8;
+        transform: rotate(360deg);
+        animation:spin 3s linear infinite;
+    }
+
+   
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

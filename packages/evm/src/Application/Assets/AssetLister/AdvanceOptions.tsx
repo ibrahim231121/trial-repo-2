@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./AdvancedSearch.scss";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
-import {advancedSearchOptions } from "../utils/constants";
+import { advancedSearchOptions } from "../utils/constants";
 import { dateOptions, basicDateDefaultValue } from "../../../utils/constant";
-import {DateTimeComponent } from "../../../GlobalComponents/DateTime";
+import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 
 interface IOptions {
   value: string;
@@ -20,18 +20,23 @@ interface OptionsProps {
 interface Props {
   getOptions: (options: any) => void;
   hideOptions: () => void;
-  dateOptionType: string
-  dateTimeDetail : DateTimeObject
+  dateOptionType: string;
+  dateTimeDetail: DateTimeObject;
 }
 
 type DateTimeObject = {
-  startDate:string;
-  endDate:string;
-  value:string;
-  displayText:string;
-}
+  startDate: string;
+  endDate: string;
+  value: string;
+  displayText: string;
+};
 
-const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions, dateOptionType, dateTimeDetail }) => {
+const AdvancedSearch: React.FC<Props> = ({
+  getOptions,
+  hideOptions,
+  dateOptionType,
+  dateTimeDetail,
+}) => {
   const selectRef = useRef<any>(null);
   const refs: any = [useRef(), useRef(), useRef()];
   const [selectsLength, setSelectsLength] = useState(1);
@@ -41,41 +46,54 @@ const AdvancedSearch: React.FC<Props> = ({ getOptions, hideOptions, dateOptionTy
   const [currentSelect, setCurrentSelect] = useState<string | null>(null);
   const arrowIcon = <i className="fas fa-caret-down"></i>;
   const [options, setOptions] = useState<IOptions[]>(advancedSearchOptions);
-  const [startDate, setStartDate] = React.useState("");	
+  const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
-  const [dateOptionsState, setDateOptionsState] = React.useState(dateOptions.basicoptions);
+  const [dateOptionsState, setDateOptionsState] = React.useState(
+    dateOptions.basicoptions
+  );
   const [defaultDateValue, setDefaultDateValue] = React.useState("");
-  const [selectedDateOptionValue, setSelectedDateOptionValue] = React.useState("");
-  
+  const [selectedDateOptionValue, setSelectedDateOptionValue] =
+    React.useState("");
+
   const [resetDateOptions, setResetDateOptions] = useState(false);
-  const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>(dateTimeDetail);;
-const initialState= advancedSearchOptions
+  const [dateTimeDropDown, setDateTimeDropDown] =
+    React.useState<DateTimeObject>(dateTimeDetail);
+  const initialState = advancedSearchOptions;
   React.useEffect(() => {
-   //cleanUp after unmounting
+    //cleanUp after unmounting
     return () => {
-      options.forEach(x=>{
-        x.usedBy= null
-        x.isUsed= false
-        x.inputValue= ""
-      }) 
+      options.forEach((x) => {
+        x.usedBy = null;
+        x.isUsed = false;
+        x.inputValue = "";
+      });
     };
   }, []);
 
   const Select = () => {
     var select: any = [];
     let newOptions = options;
+    console.log("testing", selectRef);
     let selectedOpt;
     for (let i = 0; i < selectsLength; i++) {
       newOptions = options.filter(
         (opt: IOptions) => opt.usedBy == i || !opt.isUsed
       );
+      console.log("newOpt0",newOptions)
       selectedOpt = newOptions.find((opt: any) => opt.usedBy == i);
+      // console.log("select", select);
+      // console.log("newopt", newOptions);
+      // console.log("currentSelect", selectRef);
+
+      // console.log("i", i.toString());
+      console.log("selectedOpt", selectedOpt);
       select.push(
         <div className="advRow" key={i}>
           <CRXRows container spacing={2}>
             <CRXColumn item xs={6}>
               <span ref={selectRef} id={i.toString()}>
                 <CRXSelectBox
+                
                   className="adVSelectBox"
                   id={i.toString()}
                   value={selectedOpt ? selectedOpt.value : "Please Select"}
@@ -112,9 +130,15 @@ const initialState= advancedSearchOptions
     return select;
   };
 
+  console.log("select", selectsLength);
+
   const onSelectInputChange = (e: any) => {
     const { value, id } = e.target;
+
+    console.log("value", value);
+    console.log("id", id);
     setCurrentSelect(value);
+    console.log("currentInput", currentInput);
     if (currentInput && value) {
       setShowSearchCriteria(true);
       setDisableButton(false);
@@ -123,12 +147,13 @@ const initialState= advancedSearchOptions
       setShowSearchCriteria(false);
     }
     options.forEach((opt: IOptions) => {
-      if (selectsLength-1 == opt.usedBy) {
+      if (selectsLength - 1 == opt.usedBy) {
         opt.usedBy = null;
         opt.isUsed = false;
         opt.inputValue = "";
       }
     });
+    console.log("options",options)
     let found: IOptions | undefined = options.find(
       (opt: any) => value == opt.value
     );
@@ -136,12 +161,15 @@ const initialState= advancedSearchOptions
       found.usedBy = selectsLength - 1;
       found.isUsed = true;
       setOptions([...options]);
+      console.log("options", options);
     }
   };
 
   const onInputChange = (e: any) => {
     const { value, id } = e.target;
     setCurrentInput(value);
+    console.log("input", value);
+    console.log("curent", currentInput);
     let found = options.find((opt: any) => id == opt.usedBy);
     if (found) {
       found.inputValue = value;
@@ -167,16 +195,18 @@ const initialState= advancedSearchOptions
     setCurrentSelect(null);
     setShowSearchCriteria(false);
     let found = options.find((opt: any) => currentSelect === opt.value);
-
+    console.log("advancefound", found);
     if (found) {
-      found.usedBy = Number(selectsLength-1);
+      found.usedBy = Number(selectsLength - 1);
       found.isUsed = true;
       setOptions([...options]);
+      console.log("setopt", ...options);
     }
 
     if (selectsLength <= 2) {
       setSelectsLength((state: any) => state + 1);
     }
+    console.log("length", selectsLength);
     if (selectsLength === 3) {
       setDisableButton(false);
       setShowSearchCriteria(false);
@@ -217,6 +247,8 @@ const initialState= advancedSearchOptions
     for (let i = 0; i < selectsLength; i++) {
       const { value } = refs[i].current;
 
+      console.log("val",value)
+
       let findOpt = options.find((opt: any) => i == opt.usedBy);
       let index = options.findIndex((opt: any) => i == opt.usedBy);
       if (findOpt) {
@@ -252,41 +284,43 @@ const initialState= advancedSearchOptions
         }
       }
     }
-    getOptions({options,dateTimeDropDown});
+    console.log("opty: ", { options });
+    getOptions({ options, dateTimeDropDown });
   };
-  
+
   React.useEffect(() => {
-    setResetDateOptions(false)
-  }, [resetDateOptions])
+    setResetDateOptions(false);
+  }, [resetDateOptions]);
 
   const reset = () => {
-    setSelectsLength(1)
-    setDisableButton(true)
-    options.forEach(x=>{
-      x.usedBy= null
-      x.isUsed= false
-      x.inputValue= ""
-    })     
-     setOptions([...options]);
-     setResetDateOptions(true)
+    setSelectsLength(1);
+    setDisableButton(true);
+    options.forEach((x) => {
+      x.usedBy = null;
+      x.isUsed = false;
+      x.inputValue = "";
+    });
+    setOptions([...options]);
+    setResetDateOptions(true);
   };
   const SearchBox = () => {};
   return (
-  
     <div className="advanceSerachContainer">
-       <CRXRows container spacing={2}>	
-          <CRXColumn item xs={3}>
-            <label className="dateTimeLabel">Date and Time</label>
-         	</CRXColumn>
-          <CRXColumn item xs={9}>	           
-           <DateTimeComponent	
+      <CRXRows container spacing={2}>
+        <CRXColumn item xs={3}>
+          <label className="dateTimeLabel">Date and Time</label>
+        </CRXColumn>
+        <CRXColumn item xs={9}>
+          <DateTimeComponent
             dateTimeDetail={dateTimeDropDown}
-                 reset={resetDateOptions}
-                 getDateTimeDropDown = {(dateTime:any)=> setDateTimeDropDown(dateTime)}
-                 dateOptionType={dateOptionType}
-              />	
-             </CRXColumn> 	
-        </CRXRows>
+            reset={resetDateOptions}
+            getDateTimeDropDown={(dateTime: any) =>
+              setDateTimeDropDown(dateTime)
+            }
+            dateOptionType={dateOptionType}
+          />
+        </CRXColumn>
+      </CRXRows>
       {Select()}
       <div className="advancedSearchBottom">
         <button

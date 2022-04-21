@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -6,7 +6,7 @@ import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-import { fixedColumnAlignment } from "./FixedColumnAlignment"
+//import { fixedColumnAlignment } from './FixedColumnAlignment'
 
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
@@ -22,7 +22,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   dragVisibility,
   showCheckBoxesCol,
   showActionCol,
-  lightMode
+  lightMode,
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -39,9 +39,45 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
   };
 
+  React.useEffect(() => {
+    const trAtiveValue = document
+      .querySelector(".rc-menu--open")
+      ?.closest(".MuiTableRow-root.MuiTableRow-hover");
+    let dataui = document.querySelectorAll(".MuiTableRow-root");
+    let trAtiveArray = Array.from(dataui);
+    trAtiveArray.map((e) => {
+      if (e.classList.contains("SelectedActionMenu") && !trAtiveValue) {
+        e.classList.remove("SelectedActionMenu");
+      } else {
+        trAtiveValue?.classList.add("SelectedActionMenu");
+      }
+    });
+  });
+
+  const node = useRef();
+  const handleClickOutside = () => {
+    let dataui = document.querySelectorAll(".MuiTableRow-root");
+    let trAtiveArray = Array.from(dataui);
+    trAtiveArray.map((e: any) => {
+      if (e.classList.contains("SelectedActionMenu")) {
+        e.classList.remove("SelectedActionMenu");
+      }
+    });
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
   return (
     <>
-      <Droppable droppableId={container.id} key={container.id} isDropDisabled={true}>
+      <Droppable
+        droppableId={container.id}
+        key={container.id}
+        isDropDisabled={true}
+      >
         {(provided: any) => (
           <RootRef rootRef={provided.innerRef}>
             <TableBody>
@@ -60,8 +96,28 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         tabIndex={-1}
                         selected={isItemSelected}
                       >
-                        {dragVisibility === true || dragVisibility === undefined ? (
-                          <TableCell className="DataTableBodyCell col-one" scope="row">
+                       
+                        {showCheckBoxesCol === true ||
+                        showCheckBoxesCol === undefined ? (
+                          <TableCell
+                            style={{
+                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
+                              // left: `${fixedColumnAlignment(
+                              //   dragVisibility,
+                              //   showCheckBoxesCol,
+                              //   1
+                              // )}`,
+                              left : "0px"
+                            }}
+                            className="DataTableBodyCell CellCheckBox col-two"
+                            scope="row"
+                          >
+                             {dragVisibility === true ||
+                        dragVisibility === undefined ? (
+                          <div
+                            className="dragableCellCustomize"
+                            
+                          >
                             <Draggable
                               draggableId={row[keyId].toString() + container.id}
                               key={container.id}
@@ -69,30 +125,28 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             >
                               {(provided: any) => (
                                 <div
-                                  id={"draggableItem" + index.toString() + container.id}
+                                  id={
+                                    "draggableItem" +
+                                    index.toString() +
+                                    container.id
+                                  }
                                   className="draggableCellIcon"
                                   key={row[keyId]}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                 >
-                                  <a className="grid-grip-icon" onMouseDown={() => onMouseEvent(row)}>
-                                      <i className="fas fa-grip-vertical"></i>
+                                  <a
+                                    className="grid-grip-icon"
+                                    onMouseDown={() => onMouseEvent(row)}
+                                  >
+                                    <i className="fas fa-grip-vertical"></i>
                                   </a>
                                 </div>
                               )}
                             </Draggable>
-                          </TableCell>
+                          </div>
                         ) : null}
-                        {showCheckBoxesCol === true || showCheckBoxesCol === undefined ? (
-                          <TableCell
-                            style={{
-                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
-                              left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,1)}`
-                            }}
-                            className="DataTableBodyCell CellCheckBox col-two"
-                            scope="row"
-                          >
                             <CRXCheckBox
                               onChange={() => handleChange(row)}
                               checked={isItemSelected}
@@ -102,23 +156,30 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             />
                           </TableCell>
                         ) : null}
-                        {showActionCol === true || showActionCol === undefined ? (
-                        <TableCell
-                          style={{
-                            // left: `${dragVisibility === false ? 
-                            //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px" 
-                            //   : 
-                            //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px" 
-                            // }`,
-                            left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`
-                          }}
-                          className="DataTableBodyCell col-three"
-                          scope="row"
-                        >
-                          <span onClick={() => getRowOnActionClick(row)}>
-                            {actionComponent}
-                          </span>
-                        </TableCell>
+                        {showActionCol === true ||
+                        showActionCol === undefined ? (
+                          <TableCell
+                            style={{
+                              // left: `${dragVisibility === false ?
+                              //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px"
+                              //   :
+                              //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px"
+                              // }`,
+                              // left: `${fixedColumnAlignment(
+                              //   dragVisibility,
+                              //   showCheckBoxesCol,
+                              //   2
+                              // )}`,
+                              left : "60px"
+                            }}
+                            className="DataTableBodyCell col-three"
+                            scope="row"
+                            ref={node}
+                          >
+                            <span onClick={() => getRowOnActionClick(row)}>
+                              {actionComponent}
+                            </span>
+                          </TableCell>
                         ) : null}
                         {orderColumn.map((colIdx, i) => (
                           <TableCell
@@ -138,15 +199,21 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                   ? ""
                                   : "none"
                               }`,
+                              whiteSpace:
+                                headCells[colIdx].id === "recordingStarted"
+                                  ? "nowrap"
+                                  : "normal",
                             }}
                           >
-                            {headCells[colIdx].detailedDataComponentId !== undefined
+                            {headCells[colIdx].detailedDataComponentId !==
+                            undefined
                               ? headCells[colIdx].dataComponent(
                                   row[headCells[colIdx].id],
                                   row[
-                                    headCells[colIdx].detailedDataComponentId !==
-                                    undefined
-                                      ? headCells[colIdx].detailedDataComponentId
+                                    headCells[colIdx]
+                                      .detailedDataComponentId !== undefined
+                                      ? headCells[colIdx]
+                                          .detailedDataComponentId
                                       : headCells[colIdx].id
                                   ]
                                 )

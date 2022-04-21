@@ -8,8 +8,8 @@
     }
 
     .buttonStyle {
-        background-color: transparent !important;
-        color: #333;
+        background-color: var(--color-transparent) !important;
+        color: var(--color-333333);
         padding: 0;
     }
 }

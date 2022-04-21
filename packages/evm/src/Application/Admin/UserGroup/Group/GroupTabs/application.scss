@@ -1,7 +1,7 @@
 .application-Permission-DataTable {
   box-shadow: none !important;
-  border: 1px solid #ccc;
-  font-family: Arial, Helvetica, sans-serif;
+  border: 1px solid var(--color-ccc);
+  font-family: var(--App-font-family);
   border-radius: 0px !important;
   margin-top: 61px;
   margin-bottom: 43px;
@@ -12,7 +12,7 @@
         th {
           height: 100px;
           padding: 0px;
-          border-right: 1px solid #ccc;
+          border-right: 1px solid var(--color-ccc);
           position: sticky;
           top: 86px;
           &.CRXMultiDataTableLabelCell {
@@ -23,9 +23,9 @@
                 position: relative;
                 top: 3px;
                 label {
-                  font-family: Arial, Helvetica, sans-serif;
+                  font-family: var(--App-font-family);
                   font-size: 14px;
-                  color: #d1d2d4;
+                  color: var(--color-d1d2d4);
                   display: block;
                 }
                 .CRXCheckBox {
@@ -42,21 +42,21 @@
         td {
           &.multiDataTableBodyCell {
             padding: 5px 0px;
-            border-left: 1px solid #cccccc;
-            border-bottom: 1px solid #cccccc;
-            font-family: Arial, Helvetica, sans-serif;
+            border-left: 1px solid var(--color-ccc);
+            border-bottom: 1px solid var(--color-ccc);
+            font-family: var(--App-font-family);
             font-size: 14px;
-            color: #333333;
+            color: var(--color-333333);
             &:nth-child(2) {
-              border-left: 0px solid #cccccc;
+              border-left: 0px solid var(--color-ccc);
             }
             .multiDataTableCheckBox {
               padding-left: 15px;
               &:nth-child(1) {
-                border-bottom: 1px solid #cccccc;
+                border-bottom: 1px solid var(--color-ccc);
               }
               .crxCheckForDarBg {
-                color: #333 !important;
+                color: var(--color-333333) !important;
               }
               .MuiIconButton-label {
                 padding-right: 4px;
@@ -67,19 +67,19 @@
               place-items: center;
               .multiTableC-Caret {
                 padding: 0px 13px 0 16px;
-                background: transparent;
+                background: var(--color-transparent);
                 font-size: 14px;
-                color: #333;
+                color: var(--color-333333);
                 span {
                   i {
                     font-size: 18px;
                   }
                 }
                 &:hover {
-                  background: transparent;
+                  background: var(--color-transparent);
                 }
                 &:focus {
-                  background: transparent;
+                  background: var(--color-transparent);
                 }
               }
               .appPermissionLevel-checkbox {
@@ -108,7 +108,7 @@
   .application-Permission-DataTable {
     // &::before {
     //     position: fixed;
-    //     background-color: #fff;
+    //     background-color: var(--color-White);
     //     top: 211px;
     //     left: 168px;
     //     content: " ";
@@ -127,28 +127,28 @@
     z-index: 3;
     .application-permission-dropdown {
       width: 238px;
-      border: 1px solid #d1d2d4;
-      outline: 3px solid transparent;
+      border: 1px solid var(--color-d1d2d4);
+      outline: 3px solid var(--color-transparent);
       height: 30px;
       position: absolute;
       right: 0;
       top: 27px;
       &:hover {
-        border: 1px solid #888787;
+        border: 1px solid var(--color-888787);
       }
       .customButton {
         width: inherit;
         height: 29px;
-        border: 3px solid transparent;
+        border: 3px solid var(--color-transparent);
         border-radius: 0px;
         &:focus {
-          border: 3px solid #888787;
+          border: 3px solid var(--color-888787);
         }
         .MuiButton-label {
-          color: #333;
-          font-weight: normal;
+          color: var(--color-333333);
+          font-weight: var(--Font-style-normal);
           font-size: 14px;
-          font-family: Arial, Helvetica, sans-serif;
+          font-family: var(--App-font-family);
           position: relative;
           .menuLabel {
             width: 238px;
@@ -168,8 +168,8 @@
     }
     label {
       font-size: 14px;
-      color: #74767c;
-      font-family: Arial, Helvetica, sans-serif;
+      color: var(--color-74767c);
+      font-family: var(--App-font-family);
       padding-right: 17px;
       position: relative;
       top: -5px;
@@ -204,11 +204,11 @@
 
 .hiddenArea {
   position: sticky;
-  top:-18px;
+  top: -18px;
   // left: 154px;
   // // content: " ";
   // width: 85%;
- 
+
   z-index: 99;
   display: block;
   margin: 0 auto;
@@ -227,18 +227,18 @@
     content: " ";
     height: 111px;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--color-White);
     top: 0px;
     left: 0px;
   }
 }
 .crxGroupTab1 {
   &.crxScrollGroupTop {
-    .userDataTableParent{
-    // .dataTablePages {
-    //   bottom: 112px;
-    // }
-  }
+    .userDataTableParent {
+      // .dataTablePages {
+      //   bottom: 112px;
+      // }
+    }
     &.isErrorHide {
       .userDataTableParent {
         // .dataTablePages {

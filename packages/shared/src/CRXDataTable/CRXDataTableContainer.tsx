@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -6,11 +6,8 @@ import {
   useStyles,
   DataTableContainerProps,
 } from "./CRXDataTableTypes";
-import DragableHead from "./CRXDragableHead";
-import SearchHeader from "./CRXDataTableSearchHeader";
 import DataTableBody from "./CRXDataTableBody";
-import DataTableHeader from "./CRXDataTableHeader";
-
+import CRXDataTableStickyHeaders from './CRXDataTableStickyHeaders'
 const DataTableContainer: React.FC<DataTableContainerProps> = ({
   id,
   keyId,
@@ -35,21 +32,79 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   showCheckBoxesCol,
   showActionCol,
   showActionSearchHeaderCell,
-  showHeaderCheckAll,
   onSetCheckAll,
   checkAllPageWise,
   initialRows,
+  offsetY
 }) => {
 
+  //NOTE : Sticky Header code block please dont do the any changes on this block 
   const classes = useStyles();
+  const [stickeyStickyScroll, setStickeyStickyScroll] = React.useState(0)
 
+  const scrolled50Ref:any = React.useRef();
+  
+  useEffect(() => {
+    const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
+    
+    const scrollFun = () => {
+      const tbl : any = document.getElementsByClassName('tableHeaderVisibility')[0];
+      const tbl2 : any = document.getElementsByClassName("visibleTable")[0];
+      if (offsetY && window.pageYOffset > 40) {
+        if (!scrolled50Ref.current) {
+          
+          scrolled50Ref.current = true;
+          tbl.children[0].style.visibility = "collapse";
+          tbl.children[1].style.visibility = "collapse";
+
+          tbl2.children[0].style.visibility = "visible";
+          tbl2.children[1].style.visibility = "visible";
+         
+        }
+
+      } else {
+
+        scrolled50Ref.current = false;
+        tbl.children[0].style.visibility = "visible";
+        tbl.children[1].style.visibility = "visible";
+
+        tbl2.children[0].style.visibility = "collapse";
+        tbl2.children[1].style.visibility = "collapse";
+       
+      }
+      
+      setStickeyStickyScroll(tableScrollValue.scrollLeft);
+      
+    };
+
+      window.addEventListener("scroll", scrollFun);
+      tableScrollValue.addEventListener("scroll", scrollFun);
+
+    return () => {
+
+      window.removeEventListener("scroll", scrollFun);
+      tableScrollValue.removeEventListener("scroll", scrollFun);
+
+    };
+
+  }, []);
+
+const tableHeader = useRef(null);
+
+useEffect(()=> {
+  const stickyTableHeader = document.getElementsByClassName("stickyTableHeader")[0];
+  stickyTableHeader.scrollLeft = stickeyStickyScroll;
+},[stickeyStickyScroll])
   return (
-    <TableContainer
-      className={classes.container + " AssetsDataGrid " + className}
+    <>
+   <TableContainer
+      ref={tableHeader}
+      className={classes.container + " AssetsDataGrid stickyTableHeader  " + className}
+      style={{overflowX : "hidden", position: "sticky", top : offsetY + "px", zIndex : "999", transition: "all 1s ease-in-out !important"}}
       component={Paper}
     >
-      <Table
-        className={"CRXDataTableCustom " + classes.table}
+    <Table
+        className={"CRXDataTableCustom visibleTable " + classes.table}
         style={{
           width: `${allColHide === undefined || allColHide ? "188px" : "100%"}`,
         }}
@@ -57,47 +112,76 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
         size="small"
         stickyHeader
       >
-        <DragableHead
-          lockAxis="x"
-          hideSortableGhost={false}
-          helperClass="helperClass"
-          axis="x"
-          onSortEnd={(e: any, _: any) => onReorderEnd(e,_)}
-          onSortStart={(e:any) => onMoveReorder(e)}
-        >
-          <DataTableHeader
-            orderColumn={orderColumn}
-            headCells={headCells}
-            orderData={orderData}
-            onHandleRequestSort={(e:any) => onHandleRequestSort(e)}
-            onResizeRow={(e:any) => onResizeRow(e)}
-            dragVisibility={dragVisibility}
-            showCheckBoxesCol={showCheckBoxesCol}
-            showActionCol={showActionCol}
-          />
-        </DragableHead>
-        {searchHeader === true ? (
-          <SearchHeader
-            id={id}
-            page={page}
-            orderColumn={orderColumn}
-            selectedItems={selectedItems}
-            headCells={headCells}
-            orderData={orderData}
-            container={container}
-            actionComponent={actionComponent}
-            getRowOnActionClick={getRowOnActionClick}
-            dragVisibility={dragVisibility}
-            showCheckBoxesCol={showCheckBoxesCol}
-            showActionCol={showActionCol}
-            showActionSearchHeaderCell={showActionSearchHeaderCell}
-            showHeaderCheckAll={showHeaderCheckAll}
-            onSetCheckAll={onSetCheckAll}
-            checkAllPageWise={checkAllPageWise}
-            initialRows={initialRows}
-          />
-        ) : null}
-          <DataTableBody
+        
+     <CRXDataTableStickyHeaders
+          id={id}
+          orderColumn={orderColumn}
+          headCells={headCells}
+          orderData={orderData}
+          selectedItems={selectedItems}
+          container={container}
+          initialRows={initialRows}
+          actionComponent={actionComponent}
+          searchHeader={searchHeader}
+          page={page}
+          onMoveReorder={onMoveReorder}
+          onReorderEnd={(e: any, _) => onReorderEnd(e, _)}
+          onResizeRow={(e: any) => onResizeRow(e)}
+          getRowOnActionClick={getRowOnActionClick}
+          onHandleRequestSort={(e) => onHandleRequestSort(e)}
+          onSetCheckAll={onSetCheckAll}
+          dragVisibility={dragVisibility}
+          showCheckBoxesCol={showCheckBoxesCol}
+          showActionCol={showActionCol}
+          showActionSearchHeaderCell={showActionSearchHeaderCell}
+          showHeaderCheckAll={false}
+          checkAllPageWise={checkAllPageWise}
+        />
+
+        </Table>
+        </TableContainer> 
+       
+    <TableContainer
+      className={classes.container + " AssetsDataGrid tableScrollValue " + className}
+      component={Paper}
+    >
+      
+      <Table
+        className={"CRXDataTableCustom  tableHeaderVisibility " + classes.table}
+        style={{
+          width: `${allColHide === undefined || allColHide ? "188px" : "100%"}`,
+        }}
+        aria-label="simple table"
+        size="small"
+        stickyHeader
+      >
+        
+        <CRXDataTableStickyHeaders
+          id={id}
+          orderColumn={orderColumn}
+          headCells={headCells}
+          orderData={orderData}
+          selectedItems={selectedItems}
+          container={container}
+          initialRows={initialRows}
+          actionComponent={actionComponent}
+          searchHeader={searchHeader}
+          page={page}
+          onMoveReorder={onMoveReorder}
+          onReorderEnd={(e: any, _) => onReorderEnd(e, _)}
+          onResizeRow={(e: any) => onResizeRow(e)}
+          getRowOnActionClick={getRowOnActionClick}
+          onHandleRequestSort={(e) => onHandleRequestSort(e)}
+          onSetCheckAll={onSetCheckAll}
+          dragVisibility={dragVisibility}
+          showCheckBoxesCol={showCheckBoxesCol}
+          showActionCol={showActionCol}
+          showActionSearchHeaderCell={showActionSearchHeaderCell}
+          showHeaderCheckAll={false}
+          checkAllPageWise={checkAllPageWise}
+        />
+
+        <DataTableBody
             page={page}
             rowsPerPage={rowsPerPage}
             orderColumn={orderColumn}
@@ -113,7 +197,10 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
             showActionCol={showActionCol}
           />
       </Table>
+      
     </TableContainer>
+      <div className="overlayPanel"></div>
+    </>
   );
 };
 

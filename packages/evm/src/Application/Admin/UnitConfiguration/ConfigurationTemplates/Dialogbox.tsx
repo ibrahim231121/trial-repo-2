@@ -40,11 +40,11 @@ const Dialogbox: React.FC<Props> = ({
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6">{title || 'Please confirm'}</Typography>
-          
+        </div>
+        <div className="crossModal"  onClick={() => {setIsOpen(false)}}>
+          <i className="icon icon-cross2 croseIcon"></i>
         </div>
       </DialogTitle>
-    
-     
       <DialogContent>
         {children ? (
           children
@@ -62,10 +62,13 @@ const Dialogbox: React.FC<Props> = ({
       </DialogContent>
       <Divider className="CRXDivider" />
       <DialogActions className="crxConfirmFooterModal" style={{justifyContent:"space-around"}}>
-      {myVar && 
       <div>
-      <Button className="secondaryBtn"
-      disableRipple={true}
+       <Button onClick={() => onConfirm()} disableRipple={true} className="secondaryBtn modal_confrim_btn" variant="contained">  {secondary || "secondary"} </Button>
+      </div>    
+        {myVar && 
+      <div>
+      <Button className="secondaryBtn modal_close_btn"
+      disableRipple={false}
       onClick={() => {
       setIsOpen(false);
       }}
@@ -74,7 +77,6 @@ const Dialogbox: React.FC<Props> = ({
         {primary || "primary"}
       </Button>
       </div>}
-        <Button onClick={() => onConfirm()} disableRipple={true} className="secondaryBtn" variant="contained">  {secondary || "secondary"} </Button>
       </DialogActions>
     </Dialog>
   );

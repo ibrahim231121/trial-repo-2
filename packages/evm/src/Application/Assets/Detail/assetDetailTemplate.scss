@@ -6,7 +6,16 @@
     border: none;
   }
   a {
-    color: #d74b00;
+    color: var(--color-d74b00);
     font-weight: 5000;
   }
 }
+
+.tctown{
+    display: flex;
+    line-height: 30px;
+    
+}
+.tctown span {
+  margin-top: 18px;
+}    

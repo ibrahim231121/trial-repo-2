@@ -1,10 +1,10 @@
 import React from "react";
-import { CRXDrawer, CRXIcon, CRXHeading } from "@cb/shared";
+import { CRXDrawer, CRXIcon, CRXHeading,CRXTooltip } from "@cb/shared";
 import GlobalSearch from "./GlobalSearchContent";
 import "./index.scss";
 const ToggleButton = (
   <CRXIcon className="bucketIcon">
-    <i className="fas fa-search"></i>
+    <CRXTooltip iconName="fas fa-search" arrow={false} title="search" placement="bottom" className="crxSearchTooltip"/>
   </CRXIcon>
 );
 

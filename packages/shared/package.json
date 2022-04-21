@@ -7,7 +7,7 @@
     "build": "yarn clean && tsc && yarn copy-files",
     "start": "yarn clean && yarn copy-files && tsc -w",
     "clean": "rimraf build/",
-    "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.scss src/**/*.css src/**/*.png src/**/*.svg src/**/*.jpg build/"
+    "copy-files": "copyfiles -u 1 src/**/*.html src/**/*.scss src/**/*.css src/**/*.png src/**/*.svg src/**/*.jpg src/components/**/*.html src/components/**/*.scss src/components/**/*.css src/components/**/*.png src/components/**/*.jpg src/controls/**/*.html src/controls/**/*.scss src/controls/**/*.css src/controls/**/*.png src/controls/**/*.jpg build/"
   },
   "private": true,
   "peerDependencies": {
@@ -33,6 +33,7 @@
     "react-virtualized": "^9.22.3"
   },
   "devDependencies": {
+    "@types/googlemaps": "^3.43.3",
     "@types/react": "^17.0.0",
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-date-range": "^1.1.4",

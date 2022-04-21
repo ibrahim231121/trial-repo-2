@@ -133,7 +133,7 @@ const UserActionMenu: React.FC<Props> = ({
   };
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync());
+    // dispatch(getUsersInfoAsync());
   };
 
   React.useEffect(() => {

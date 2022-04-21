@@ -2,53 +2,53 @@
     width: 100%;
     .MuiInput-underline{
         &:before {
-            border:0px solid #d1d2d4;
+            border:0px solid var(--color-d1d2d4);
         }
         &:after {
-            border:0px solid #d1d2d4;
+            border:0px solid var(--color-d1d2d4);
         }
         &:hover{
-            border:0px solid #d1d2d4;
+            border:0px solid var(--color-d1d2d4);
             &:not(.Mui-disabled) {
                 &:before{
-                    border:0px solid #d1d2d4;
+                    border:0px solid var(--color-d1d2d4);
                 }
             }
         }
         &:focus{
-            border:0px solid #d1d2d4;
+            border:0px solid var(--color-d1d2d4);
         }
     }
     input{
-        border: 1px solid #d1d2d4;
+        border: 1px solid var(--color-d1d2d4);
         padding: 0px 0px;
         text-indent: 10px;
         height: 28px;
 
         &:hover{
-            border:1px solid #888787;
+            border:1px solid var(--color-888787);
         }
         &:focus{
-            border:2px solid #888787;
+            border:2px solid var(--color-888787);
         }
     }
 
     .Mui-focused {
-        border:2px solid #888787;
+        border:2px solid var(--color-888787);
         outline: none !important;
     }
 }
 
 .disabled {
-    background: #d1d2d4;
+    background: var(--color-d1d2d4);
     .MuiInput-underline{
         input {
-            background: #d1d2d4;
+            background: var(--color-d1d2d4);
             &:hover{
-                border:1px solid transparent;
+                border:1px solid var(--color-transparent);
             }
             &:focus{
-                border-color: transparent;
+                border-color: var(--color-transparent);
             }
         }
     }
@@ -57,22 +57,22 @@
 .errors{
     .MuiInput-underline{
         input {
-            border:1px solid #aa1d1d;
+            border:1px solid var(--color-aa1d1d);
             &:hover{
-                border:1px solid #aa1d1d;
+                border:1px solid var(--color-aa1d1d);
             }
             &:focus{
-                border-color: #aa1d1d;
+                border-color: var(--color-aa1d1d);
             }
         }
     }
 }
 
 .errorStateContent{
-    color: #aa1d1d;
+    color: var(--color-aa1d1d);
     padding-top:7px;
     .errorState{
-        color: #aa1d1d;
+        color: var(--color-aa1d1d);
         vertical-align: bottom;
     }
 }

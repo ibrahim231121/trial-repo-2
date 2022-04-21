@@ -1,7 +1,5 @@
 .crxTabsPermission {
-  margin-top: 154px;
-  margin-left: 66px;
-  padding-right: 2px;
+  margin-top: 26px;
   .CrxMsgErrorGroup {
     display: inline-flex;
     span {
@@ -10,13 +8,13 @@
     }
   }
   div[role="tabpanel"] {
-    border-top: 1px solid #878787;
+    border-top: 1px solid var(--color-878787);
     margin-top: -2px;
     position: relative;
     &::before {
       width: 1606px;
       height: 9px;
-      background: #fff;
+      background: var(--color-White);
       position: fixed;
       content: " ";
       z-index: 2;
@@ -26,7 +24,7 @@
     &::after {
       // width: 1152px;
       // height: 17px;
-      // background: #fff;
+      // background: var(--color-White);
       // position: fixed;
       // content: " ";
       // z-index: 9999;
@@ -37,7 +35,7 @@
   }
   div[aria-labelledby="crx-tab-3"] {
     &::before {
-      background: transparent;
+      background: var(--color-transparent);
     }
   }
 
@@ -149,7 +147,8 @@
 
     input,
     textarea {
-      width: 50vh;
+      width: 50vh !important;
+      margin-left: 0 !important;
     }
     .MuiOutlinedInput-multiline {
       padding: 0;
@@ -167,7 +166,8 @@
       padding-bottom: 30px;
 
       > span {
-        display: flex;
+        display: flex !important;
+        margin-bottom: 0;
         h6 {
           label {
             &.requiredLable {
@@ -180,16 +180,16 @@
       }
     }
     .inputLabelNoReq {
-      color: #333333;
-      font-family: Arial, Helvetica, sans-serif;
+      color: var(--color-333333);
+      font-family:var(--base-font-family);
       font-size: 14px;
-      font-weight: normal;
+      font-weight: var(--Font-style-normal);
     }
   }
   .indicates-label {
     font-style: italic;
     font-size: 14px;
-    color: #333;
+    color: var(--color-333333);
     b {
       font-size: 20px;
       margin-right: 8px;
@@ -209,15 +209,15 @@
   }
   .confirmMessage {
     font-size: 14px;
-    font-weight: normal;
+    font-weight: var(--Font-style-normal);
     letter-spacing: 0.3px;
     line-height: 18px;
     padding: 13px 13px 0px 2px;
-    color: #333;
+    color: var(--color-333333);
     padding-top: 13px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:var(--base-font-family);
     strong {
-      font-weight: bold;
+      font-weight: var(--Font-style-bold);
     }
     .confirmMessageBottom {
       padding-top: 34px;
@@ -227,12 +227,12 @@
 .errorGroupInfo {
   &.errorMessageShow {
     .userError {
-      outline: 1px solid #d1d2d4;
+      outline: 1px solid var(--color-d1d2d4);
     }
   }
 }
 .errorMessageShow .userError {
-  outline: 2px solid #aa1d1d;
+  outline: 2px solid var(--color-aa1d1d);
 }
 @media only screen and (max-width: 1366px) {
   .crxTabsPermission div[role="tabpanel"]::before {

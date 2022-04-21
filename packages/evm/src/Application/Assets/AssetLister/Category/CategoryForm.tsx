@@ -1,9 +1,7 @@
 import React from 'react';
-import { useRef ,  } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CRXButton } from '@cb/shared';
+import { CRXButton, CRXAlert } from '@cb/shared';
 import { AddToEditFormStateCreator } from '../../../../Redux/CategoryFormSlice';
-import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../../utils/Api/url';
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
@@ -33,13 +31,12 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const [error, setError] = React.useState<boolean>(false);
   const [saveBtn, setSaveBtn] = React.useState(true);
   const [formFields, setFormFields] = React.useState<any>([]);
-  const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
+  const [InitialValuesObject, setInitialValuesObject] = React.useState<any>({});
   const selectedRow = props.rowData;
   const evidenceId = selectedRow.id;
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
-  const alertRef = useRef(null);
 
   React.useEffect(() => {
     props.setModalTitle('Category form');
@@ -52,7 +49,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    //debugger;
     const EvidenceID = selectedRow.id;
     const allCategories = props.filterValue;
     const categoriesFormArr: any[] = [];
@@ -133,7 +129,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
       let key_value_pair = Initial_Values.reduce((obj, item) => ((obj[item.key] = item.value), obj), {});
 
-      setInitial_Values_obj(key_value_pair);
+      setInitialValuesObject(key_value_pair);
       const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
         return {
           key: o[0],
@@ -149,9 +145,22 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       let isFormCompleteFilled: boolean = formFields.some((ele: any) => ele.value.length === 0);
       if (!isFormCompleteFilled) {
         setSaveBtn(false);
+      } else {
+        setSaveBtn(true);
       }
     }
   }, [formFields]);
+
+  React.useEffect(() => {
+    const optionalSticky: any = document.getElementsByClassName("optionalSticky")
+    if (optionalSticky.length > 0) {
+      optionalSticky[0].style.height = "79px"
+    } else {
+      if (optionalSticky.length > 0) {
+        optionalSticky[0].style.height = "119px"
+      }
+    }
+  }, [alert]);
 
   const setFieldsFunction = (e: any) => {
     const { target } = e;
@@ -329,7 +338,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           setSuccess(true);
           setTimeout(() => {
             props.setOpenForm();
-            props.setFilterValue((val: []) => []);
+            props.setFilterValue(() => []);
             props.closeModal(false);
           }, 3000);
         } else {
@@ -341,17 +350,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         console.error(err);
       });
   };
-  React.useEffect(() => {
-    const optionalSticky : any = document.getElementsByClassName("optionalSticky")
-    
-    if(optionalSticky.length > 0) {
-      optionalSticky[0].style.height = "79px"
-    }else {
-      if(optionalSticky.length > 0) {
-          optionalSticky[0].style.height = "119px"
-        }
-    }
-  },[alert])
 
   return (
     <>
@@ -368,20 +366,18 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       <div className={'indicatestext indicateLessPadding ' + isErrorClx}>
         <b>*</b> Indicates required field
       </div>
-      {filteredFormArray.length > 0 ? (
+      {filteredFormArray.length > 0 && (
         filteredFormArray.some((o: any) => o.form.length > 0) ? (
           // If form exist against selected category
           <>
-            {filteredFormArray.map((categoryObj: any, key: any) => (
-              <>
+            {filteredFormArray.map((categoryObj: any) => (
                 <DisplayCategoryForm
-                  key={key}
+                  key={categoryObj.id}
                   categoryObject={categoryObj}
                   isCategoryEmpty={props.isCategoryEmpty}
-                  initialValuesObjects={Initial_Values_obj}
+                  initialValueObjects={InitialValuesObject}
                   setFieldsFunction={(e: any) => setFieldsFunction(e)}
                 />
-              </>
             ))}
             <div className='categoryModalFooter CRXFooter'>
               <CRXButton onClick={submitForm} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
@@ -401,6 +397,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         ) : (
           // Show dialogue Functionality
           <DialogueForm
+            key={"dialogue_form"}
             setActiveForm={props.setActiveForm}
             initialValues={props.filterValue}
             rowData={props.rowData}
@@ -413,7 +410,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             setIndicateTxt={(e: any) => props.setIndicateTxt(e)}
           />
         )
-      ) : null}
+      )}
     </>
   );
 };

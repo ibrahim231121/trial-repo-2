@@ -10,18 +10,24 @@ import notificationMessages from './notificationPanelMessages'
 import timerSlice from './timerslice';
 import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
+import templateSlice1 from './AssetConfiguration';
+import unitTemplateSlice from './templateDynamicForm';
+import stationsSlice from './StationReducer';
+
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
   assetBucket: assetBucketSlice.reducer,
-  groupReducer: groupSlice.reducer, 
-  assetCategory:categorySlice.reducer,
-  CategoryFormFields:CategoryFormSlice.reducer,
+  groupReducer: groupSlice.reducer,
+  assetCategory: categorySlice.reducer,
+  CategoryFormFields: CategoryFormSlice.reducer,
   userReducer: userSlice.reducer,
+  stationReducer: stationsSlice.reducer,
   notificationReducer: notificationMessages.reducer,
   timerReducers: timerSlice.reducer,
-
- templateSlice: templateSlice.reducer,
+  templateSlice: templateSlice.reducer,
+  unitTemplateSlice: unitTemplateSlice.reducer,
+  templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
   unitReducer: unitSlice.reducer
 })

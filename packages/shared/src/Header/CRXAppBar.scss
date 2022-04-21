@@ -1,17 +1,7 @@
-
-$orange : #d74b00;
-$Gray28 : #282828;
-$Gray33 : #333;
-$Nero   : #d1d2d4;
-$White  : #fff;
-$Black  : #000;
-$Grayf5 : #f5f5f5;
-$Gray58 : #58585a;
- 
 .CRXAppBar{
-    background: #000 url('../assets/images/headerBg.jpg') repeat center center;
-    border-top: 4px solid $orange;
-    border-bottom: 2px solid $Gray28;
+    background: var(--color-Black) url('../assets/images/headerBg.jpg') repeat center center;
+    border-top: 4px solid var(--color-d74b00);
+    border-bottom: 2px solid var(--color-282828);
     height: 57px;
 
     .topBarMenu{
@@ -21,7 +11,7 @@ $Gray58 : #58585a;
         &:after {
             height: 13px;
             width: 0.090rem;
-            background-color: $Gray58;
+            background-color: var(--color-58585a);
             position: absolute;
             content: " ";
             top:2px;
@@ -51,7 +41,7 @@ $Gray58 : #58585a;
             content: " ";
             position: absolute;
             left: 7px;
-            background-color: #d1d2d4;
+            background-color: var(--color-d1d2d4);
             width: 1px;
             height: 37px;
             top: 3px;
@@ -65,14 +55,14 @@ $Gray58 : #58585a;
     top: 8px;
     .panelIcon{
         font-size: 24px;
-        color:$Nero;
+        color:var(--color-d1d2d4);
     }
 }.active  {
-    background: transparent !important;
+    background: var(--color-transparent) !important;
     &::before {
-        border-left: 10px solid transparent !important;
-        border-right: 10px solid transparent !important;
-        border-bottom: 10px solid transparent !important;
+        border-left: 10px solid var(--color-transparent) !important;
+        border-right: 10px solid var(--color-transparent) !important;
+        border-bottom: 10px solid var(--color-transparent) !important;
     }
 }
 
