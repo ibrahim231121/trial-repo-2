@@ -29,10 +29,12 @@ const CRXDrawer = ({
   isOpen,
   toggleState,
 }: CBXDrawerProps) => {
+
+  const active = isOpen ? " active" : " "
   return (
     <>
       <Button
-        className={"drawerButton " + btnStyle}
+        className={"drawerButton " + btnStyle +  active}
         onClick={() => toggleState()}
       >
         {button}

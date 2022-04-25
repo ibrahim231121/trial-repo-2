@@ -92,17 +92,17 @@
     border-image-width: 0px;
     border-image-repeat: repeat;
 
-    &:before {
-      width: 0;
-      height: 0;
-      border-left: 8px solid var(--color-transparent);
-      border-right: 8px solid var(--color-transparent);
-      border-bottom: 8px solid var(--color-f5f5f5);
-      position: absolute;
-      right: 112px;
-      top: -7px;
-      content: " ";
-    }
+    // &:before {
+    //   width: 0;
+    //   height: 0;
+    //   border-left: 8px solid var(--color-transparent);
+    //   border-right: 8px solid var(--color-transparent);
+    //   border-bottom: 8px solid var(--color-f5f5f5);
+    //   position: absolute;
+    //   right: 112px;
+    //   top: -7px;
+    //   content: " ";
+    // }
 
     #lightBgContent {
       background: var(--color-White);
@@ -157,12 +157,17 @@
   width: 59px !important;
   border-radius: 0px !important;
   justify-content: left !important;
+  top:2px;
 }
 
 .bucketIconButton:hover,
 .bucketIconButton:focus {
-  background-color: var(--color-1d1c1c) !important;
+  background-color: var(--color-f5f5f5) !important;
   position: relative;
+  .bucketIcon{
+    color: var(--color-333333);
+  }
+  
 }
 
 .bucketIconButton:after {
@@ -171,7 +176,7 @@
   width: 2px;
   height: 18px;
   top: 5px;
-  right: 0px;
+  right: -2px;
   content: "";
 }
 
