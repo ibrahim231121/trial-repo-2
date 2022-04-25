@@ -1,5 +1,6 @@
-import { BlobServiceClient, BlockBlobParallelUploadOptions, BlobHTTPHeaders, } from "@azure/storage-blob";
+import { BlobServiceClient, BlockBlobParallelUploadOptions, BlobHTTPHeaders } from "@azure/storage-blob";
 import { AbortSignalLike, AbortController, AbortSignal } from "@azure/abort-controller";
+import { getFileSize } from "./FileUpload";
 declare const window: any;
 
 
@@ -24,23 +25,7 @@ const uploadFiles = async (files: any) => {
 
         const blockBlobClient = containerClient.getBlockBlobClient(fileName);
         const blobHTTPHeaders: BlobHTTPHeaders = { blobContentType: file.type }
-        const getFileSize = (bytes: number) => {
-            if (bytes < 1024) {
-                return bytes + " Byte";
-            }
-            else if (bytes / 1024 < 1024) {
-                return (bytes / 1024).toFixed(2) + " KB";
-            }
-            else if (bytes / (1024 * 1024) < 1024) {
-                return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-            }
-            else if (bytes / (1024 * 1024 * 1024) < 1024) {
-                return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
-            }
-            else if (bytes / (1024 * 1024 * 1024 * 1024) < 1024) {
-                return (bytes / (1024 * 1024 * 1024 * 1024)).toFixed(2) + " TB";
-            }
-        }
+
         window.tasks[fileName] = new AbortController(allTasksController.signal);
 
 
@@ -53,7 +38,8 @@ const uploadFiles = async (files: any) => {
                     loadedBytes: getFileSize(ev.loadedBytes),
                     percent: Math.round((ev.loadedBytes / file.size) * 100),
                     fileSize: getFileSize(file.size),
-                    fileName: file.name
+                    fileName: file.uploadedFileName,
+                    fileId: file.uploadedFileId
                 };
                 window.dispatchEvent(window.onRecvData);
                 // console.log("fileUpload", {
@@ -77,29 +63,15 @@ const uploadFiles = async (files: any) => {
                 if (e.name == 'AbortError') {
                     window.onRecvData.data = {
                         removed: true,
-                        fileName: file.name
+                        fileName: file.uploadedFileName
                     };
                 }
                 else if (e.name == "RestError") {
                     window.onRecvData.data = {
                         error: true,
-                        fileName: file.name
+                        fileName: file.uploadedFileName
                     };
                 }
-                //                 e.name
-                // 'AbortError'
-
-                //                 e.name
-                // 'RestError'
-                // e.code
-                // 'REQUEST_SEND_ERROR'
-
-
-                // window.onRecvData.data = {
-                //     error: true,
-                //     fileName: file.name
-                // };
-                //window.tasks["Cricket1_202203081238415924.avi"].abort()
 
                 window.dispatchEvent(window.onRecvData);
             })

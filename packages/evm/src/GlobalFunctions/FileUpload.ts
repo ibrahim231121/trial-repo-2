@@ -19,10 +19,14 @@ interface FileInfo {
         }
     }
 }
-
+let filesId = [0];
+let fileCountAtError = 0;
 export const AddFilesToFileService = async (files: any) => {
     const promises = [];
+    filesId = [];
+    fileCountAtError = files.length;
     for (const file of files) {
+        filesId.push(file.id);
         const fileInfo: FileInfo = {
             fileId: file.name.replaceAll(' ', '_'),
             name: file.name.replaceAll(' ', '_'),
@@ -84,7 +88,9 @@ const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => 
                     // });
                     window.onRecvError.data = {
                         message: payload.name + " " + error,
-                        variant: "error", duration: 7000, clearButtton: true
+                        variant: "error", duration: 7000, clearButtton: true,
+                        fileCountAtError: fileCountAtError,
+                        filesId: filesId
                     };
                     window.dispatchEvent(window.onRecvError);
                 }
@@ -123,6 +129,8 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
         if (resp !== undefined) {
             //console.log("resp", resp);
             file.uploadUri = resp.upload.uri;
+            file.uploadedFileName = resp.name;
+            file.uploadedFileId = resp.id;
             resolve("resolve", resp)
         }
         else {
@@ -136,4 +144,23 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
         .catch(function (error) {
             return error;
         });
+}
+
+export const getFileSize = (bytes: number) => {
+    if (bytes < 1024) {
+        return bytes + " Byte";
+    }
+    else if (bytes / 1024 < 1024) {
+        return (bytes / 1024).toFixed(2) + " KB";
+    }
+    else if (bytes / (1024 * 1024) < 1024) {
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    }
+    else if (bytes / (1024 * 1024 * 1024) < 1024) {
+        return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+    }
+    else if (bytes / (1024 * 1024 * 1024 * 1024) < 1024) {
+        return (bytes / (1024 * 1024 * 1024 * 1024)).toFixed(2) + " TB";
+    }
+    else return "";
 }

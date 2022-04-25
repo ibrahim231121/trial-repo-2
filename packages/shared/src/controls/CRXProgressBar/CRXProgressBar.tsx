@@ -114,7 +114,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     // }
 
     setProgressBar(value);
-    return () => {};
+    return () => { };
   }, [value]);
 
   const clx = maxDataSize == true ? "loadingAssets" : "loadingText ";

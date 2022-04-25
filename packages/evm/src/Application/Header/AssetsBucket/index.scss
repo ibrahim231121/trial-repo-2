@@ -653,21 +653,35 @@ body {
     height: calc(42vh + 0px);
   }
 }
+
 .bucketDataTable.crxMessageShow {
   max-height: calc(73vh - 110px);
 }
+
 .crxAccordionBucket {
   .MuiAccordionDetails-root {
     display: block;
     padding-top: 30px;
-    .crxProgressbarBucket {
-      width: 100%;
-      text-align: left;
-      padding: 20px 0;
-      &:first-child {
-        padding: 0;
+      .crxProgressbarBucket {
+        width: 100%;text-align: left;
+        padding:  20px 0;
+        position: relative;
+        &:first-child {
+          padding: 0;
+        }
+        .cencel-loading {
+          button {
+            background: transparent;
+            border:0px;
+            position: absolute;
+            top: 0px;
+            right: 0;
+            i{
+              font-style: normal;
+            }
+          }
+        }
       }
-    }
   }
 }
 
@@ -687,4 +701,51 @@ body {
 }
 .file-upload-show {
   display: block !important;
+}
+
+.add-metadata-window {
+  .metaData-Station-Parent {
+    padding-top: 25px;
+    .metaData-station {
+      .metaData-inner {
+        display: flex;
+        align-items: center;
+        label {
+          margin-right: 55px;
+        }
+        .metaData-Station-Select {
+          width: 386px;
+        }
+      }
+    }
+    .metaData-masterAsset {
+      margin-bottom: 10px;
+      .metaData-inner-masterAsset {
+        display: flex;
+        align-items: center;
+        label {
+          margin-right: 20px;
+        }
+        .metaData-Station-Select {
+          width: 386px;
+        }
+      }
+    }
+    .metaData-owner {
+      display: flex;
+    margin-top: 10px;
+    span{
+      margin-right: 12px;
+    }
+
+    }
+   
+    .metaData-category{
+      display: flex;
+      margin-top: 10px;
+      span {
+        margin-right: 25px;
+      }
+    }
+  }
 }

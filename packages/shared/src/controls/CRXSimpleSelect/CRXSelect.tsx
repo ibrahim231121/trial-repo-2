@@ -74,7 +74,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       popover,
       options,
       defaultOption = true,
-      defaultOptionText = "Please Select",
+      defaultOptionText,
       disabled=false,},
     ref
   ) => {
@@ -87,6 +87,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
     });
 
     return (
+      
       <>
       <Select
         ref={ref}
