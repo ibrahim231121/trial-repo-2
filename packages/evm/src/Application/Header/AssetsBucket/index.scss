@@ -705,47 +705,132 @@ body {
 
 .add-metadata-window {
   .metaData-Station-Parent {
-    padding-top: 25px;
+    padding-top: 45px;
     .metaData-station {
       .metaData-inner {
         display: flex;
         align-items: center;
+        font-size: 14px;
+        color: #333333;
+        font-family: "Helvetica", "Arial", sans-serif;
         label {
-          margin-right: 55px;
+          font-size: 14px;
+          color: #333333;
+          font-family: "Helvetica", "Arial", sans-serif;
+          span {
+            line-height: 24px;
+            margin-left: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333333;
+          }
         }
         .metaData-Station-Select {
           width: 386px;
+          .MuiSelect-select {
+            color: var(--color-74767c);
+          }
+        
+        }
+        &.gepAddClass {
+          .metaData-Station-Select {
+            .MuiSelect-select {
+              color: var(--color-333333);
+            }
+          
+          }
         }
       }
+   
     }
     .metaData-masterAsset {
-      margin-bottom: 10px;
+      margin-bottom: 32px;
+      margin-top: 0px;
+      font-size: 14px;
+      color: #333333;
+      font-family: "Helvetica", "Arial", sans-serif;
       .metaData-inner-masterAsset {
         display: flex;
         align-items: center;
+        font-size: 14px;
+        color: #333333;
+        font-family: "Helvetica", "Arial", sans-serif;
         label {
-          margin-right: 20px;
+        
+          font-size: 14px;
+          color: #333333;
+          font-family: "Helvetica", "Arial", sans-serif;
+          span {
+            line-height: 24px;
+            margin-left: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333333;
+          }
         }
         .metaData-Station-Select {
           width: 386px;
         }
       }
     }
-    .metaData-owner {
-      display: flex;
-    margin-top: 10px;
-    span{
-      margin-right: 12px;
-    }
 
-    }
-   
-    .metaData-category{
+
+    .metaData-category {
       display: flex;
-      margin-top: 10px;
-      span {
-        margin-right: 25px;
+      margin-top: 32px;
+      > span {
+        width: 130px;
+        font-size: 14px;
+        color: #333333;
+        font-family: "Helvetica", "Arial", sans-serif;
       }
+      .requiredLable {
+        width: 130px;
+        font-size: 14px;
+        color: #333333;
+        font-family: "Helvetica", "Arial", sans-serif;
+        span {
+          line-height: 24px;
+          margin-left: 5px;
+          font-size: 20px;
+          font-weight: bold;
+          color: #333333;
+        }
+      }
+      input {
+        color: var(--color-333333);
+
+        &::-webkit-input-placeholder {
+          /* Edge */
+          color: var(--color-74767c);
+          opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+          /* Internet Explorer 10-11 */
+          color: var(--color-74767c);
+          opacity: 1;
+        }
+
+        &::placeholder {
+          color: var(--color-74767c);
+          opacity: 1;
+        }
+      }
+      .MuiIconButton-label {
+        margin: 0;
+      }
+      .MuiFilledInput-adornedStart {
+        input {
+          &::placeholder {
+            width: 0;
+          }
+        }
+      }
+      .crx_MultiSelectBoxLight {width: 368px;}
+    }
+    label {
+      width:137px;
     }
   }
 }

@@ -205,9 +205,9 @@ const AddMetadataForm: React.FC<Props> = ({
     <div className="metaData-Station-Parent">
       <div className="metaData-masterAsset">
         <div className="metaData-inner-masterAsset">
-          <label>Master Asset *</label>
+          <label>Master Asset <span>*</span></label>
           <CRXSelectBox
-            className="metaData-Station-Select"
+            className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"}`}
             id={"select_" + "selectBox"}
             defaultOptionText="Select Master Asset"
             disabled={uploadFile.length == 1 && uploadAssetBucket.length == 0 ? true : false}
@@ -225,8 +225,8 @@ const AddMetadataForm: React.FC<Props> = ({
         </div>
       </div>
       <div className="metaData-station">
-        <div className="metaData-inner">
-          <label>Station *</label>
+        <div className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"}`}>
+          <label>Station <span>*</span></label>
           <CRXSelectBox
             className="metaData-Station-Select"
             id={"select_" + "selectBox"}
@@ -244,7 +244,7 @@ const AddMetadataForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      <div className="metaData-owner">
+      <div className="metaData-category">
         <CRXMultiSelectBoxLight
           className="categortAutocomplete CRXmetaData-owner"
           label="Owner(s)"
