@@ -15,6 +15,7 @@ import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionRedu
 import AssignUser from '../AssignUser/AssignUser';
 import { RootState } from "../../../../Redux/rootReducer";
 import Restricted from "../../../../ApplicationPermission/Restricted";
+import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
 
 type Props = {
   selectedItems?: any;
@@ -27,6 +28,18 @@ export interface AssetBucket {
   assetName: string;
   recordingStarted: string;
   categories: string[];
+}
+
+export enum PersmissionModel {
+  View = 1,
+  Share = 2,
+  Update = 3,
+  Exclusive = 4
+}
+
+export type securityDescriptorType = {
+  groupId: number;
+  permission: PersmissionModel;
 }
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
@@ -50,12 +63,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
   };
 
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
+  const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   React.useEffect(() => {
     /**
      * ! This rerenders if row is updated, it means user clicked the menu from parent component.
      * ! So we need to reset the form index, so that it starts from start.
      */
     if (row?.categories?.length > 0) {
+      setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
       setIsCategoryEmpty(false);
     } else {
       setIsCategoryEmpty(true);
@@ -96,6 +111,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
     else addToAssetBucketDisabled = true;
   }
 
+  const findMaximumDescriptorId = (securityDescriptors: Array<securityDescriptorType>): number => {
+    return Math.max.apply(Math, securityDescriptors.map((o) => {
+      return parseInt(PersmissionModel[o.permission], 10);
+    }));
+  }
+
   return (
     <>
       <FormContainer
@@ -114,15 +135,15 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
         onClose={() => setOpenAssignUser(false)}
         defaultButton={false}
         indicatesText={true}
-        
+
       >
         <AssignUser
-            filterValue={filterValue}
-            setFilterValue={(v: any) => setFilterValue(v)}
-            rowData={row}
-            setRemovedOption={(e: any) => {}}
-            setOnClose={() => setOpenAssignUser(false)}
-          />
+          filterValue={filterValue}
+          setFilterValue={(v: any) => setFilterValue(v)}
+          rowData={row}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenAssignUser(false)}
+        />
       </CRXModalDialog>
 
       <Menu
@@ -140,157 +161,182 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
       >
         <MenuItem>
           <Restricted moduleId={0}>
-            <div
-              className="crx-meu-content groupingMenu crx-spac"
-              onClick={addToAssetBucket}
-            >
-              <div className="crx-menu-icon"></div>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div
-                className={
-                  addToAssetBucketDisabled === false
-                    ? "crx-menu-list"
-                    : "crx-menu-list disabledItem"
-                }
+                className="crx-meu-content groupingMenu crx-spac"
+                onClick={addToAssetBucket}
               >
-                Add to asset bucket
+                <div className="crx-menu-icon"></div>
+                <div
+                  className={
+                    addToAssetBucketDisabled === false
+                      ? "crx-menu-list"
+                      : "crx-menu-list disabledItem"
+                  }
+                >
+                  Add to asset bucket
+                </div>
               </div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">Set as primary asset</div>
-            </div>
-          </Restricted>
-        </MenuItem>
-
-        <MenuItem>
-          <Restricted moduleId={0}>
-            <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
-              <div className="crx-menu-icon">
-                <i className="far fa-user-tag fa-md"></i>
+            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">Set as primary asset</div>
               </div>
-              <div className="crx-menu-list">Assign user</div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content groupingMenu">
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">Modify Retention</div>
-            </div>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-tag fa-md"></i>
+                </div>
+              </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
-       
+        <MenuItem>
+          <Restricted moduleId={0}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">Modify Retention</div>
+              </div>
+            </SecurityDescriptor>
+          </Restricted>
+        </MenuItem>
+
+
 
         {isCategoryEmpty === false ? (
           <MenuItem>
             <Restricted moduleId={3}>
-              <div className="crx-meu-content" onClick={handleChange}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-clipboard-list fa-md"></i>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+                <div className="crx-meu-content" onClick={handleChange}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-clipboard-list fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">Edit Category and Form</div>
                 </div>
-                <div className="crx-menu-list">Edit Category and Form</div>
-              </div>
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : (
           <MenuItem>
             <Restricted moduleId={2}>
-              <div className="crx-meu-content" onClick={handleChange}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-clipboard-list fa-md"></i>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+                <div className="crx-meu-content" onClick={handleChange}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-clipboard-list fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">Categorize</div>
                 </div>
-                <div className="crx-menu-list">Categorize</div>
-              </div>
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         )}
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
-              <div className="crx-menu-icon">
-                <i className="far fa-envelope fa-md"></i>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content">
+                <div className="crx-menu-icon">
+                  <i className="far fa-envelope fa-md"></i>
+                </div>
+                <div className="crx-menu-list">Email</div>
               </div>
-              <div className="crx-menu-list">Email</div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content groupingMenu">
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">
-                <SubMenu label="Export">
-                  <MenuItem>File</MenuItem>
-                  <MenuItem>Metadata</MenuItem>
-                  <MenuItem>Evidence overlaid video</MenuItem>
-                  <MenuItem>Metadata overlaid video</MenuItem>
-                </SubMenu>
+            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">
+                  <SubMenu label="Export">
+                    <MenuItem>File</MenuItem>
+                    <MenuItem>Metadata</MenuItem>
+                    <MenuItem>Evidence overlaid video</MenuItem>
+                    <MenuItem>Metadata overlaid video</MenuItem>
+                  </SubMenu>
+                </div>
               </div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
-              <div className="crx-menu-icon">
-                <i className="far fa-link fa-md"></i>
+            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content">
+                <div className="crx-menu-icon">
+                  <i className="far fa-link fa-md"></i>
+                </div>
+                <div className="crx-menu-list">Link asset</div>
               </div>
-              <div className="crx-menu-list">Link asset</div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem disabled>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list disabledItem">
-                Link to this group
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list disabledItem">
+                  Link to this group
+                </div>
               </div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content">
-              <div className="crx-menu-icon">
-                <i className="far fa-external-link-square fa-md"></i>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content">
+                <div className="crx-menu-icon">
+                  <i className="far fa-external-link-square fa-md"></i>
+                </div>
+                <div className="crx-menu-list">Move asset</div>
               </div>
-              <div className="crx-menu-list">Move asset</div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
         <MenuItem disabled>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content groupingMenu">
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list disabledItem">
-                Move to this group
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list disabledItem">
+                  Move to this group
+                </div>
               </div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <div className="crx-meu-content crx-spac">
-              <div className="crx-menu-icon">
-                <i className="far fa-user-lock fa-md"></i>
+            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content crx-spac">
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">Restrict access</div>
               </div>
-              <div className="crx-menu-list">Restrict access</div>
-            </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
       </Menu>

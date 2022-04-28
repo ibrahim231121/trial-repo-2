@@ -233,7 +233,6 @@ const CRXLefNavigation = () => {
     }
   })
 
-
   return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
 };
 
