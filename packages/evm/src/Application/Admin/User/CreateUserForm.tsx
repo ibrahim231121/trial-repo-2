@@ -407,7 +407,11 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
       if (isPasswordResetRequired) {
         account.status = 3;
       }
-
+      if(radioValue == 'sendAct')
+      {
+        account.status = 3;
+      }
+      
     const payload = {
       email: formpayload.email,
       deactivationDate: formpayload.deactivationDate,
@@ -476,7 +480,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
             }
           } else if (!isNaN(+error)) {
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
-            sendEmail(formpayload.email, parseInt(error), userName);
+            sendEmail(formpayload.email, '', userName);
             showToastMsg({
               message: 'You have created the user account.',
               variant: 'success',
@@ -509,7 +513,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   const onSelectPasswordType = () => {
     if (radioValue === 'genTemp') return generatePassword;
     else if (radioValue === 'manual') return password;
-    else return 'hello123456789';
+    else return '123456';
   };
 
   const setEditPayload = () => {
@@ -789,7 +793,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     }
   };
 
-  const sendEmail = (email: string, clientId: number, applicationName: string) => {
+  const sendEmail = (email: string, clientId: string, applicationName: string) => {
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -797,7 +801,8 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
         TenantId: '1'
       }
     };
-    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${clientId}&applicationName=${applicationName}`;
+    //const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${clientId}&applicationName=${applicationName}`;
+    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${process.env.REACT_APP_CLIENT_ID}&applicationName=${applicationName}`;
     fetch(url, requestOptions);
   };
 
