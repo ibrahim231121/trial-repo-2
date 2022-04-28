@@ -40,7 +40,7 @@ export const EVIDENCE_GET_CATEGORIES_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Ev
 
 export const SETUP_CONFIGURATION_SERVICE_URL = `${BASE_URL_SETUP_SERVICE}`;
 
-export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
+export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=50`
 
 export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`
 
@@ -51,11 +51,11 @@ export const APPLICATION_PERMISSION_URL = `${BASE_URL_USER_SERVICE}/Modules?Page
 
 export const USER_INFO_UPDATE_URL = `${BASE_URL_USER_SERVICE}/Users`
 
-export const STATION_INFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations`
+export const STATION_INFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations?Size=100&Page=1`
 
 export const STATION_INFO_DATA_PERMISSION_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationsInfo`
 
-export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=100&Page=1`
+export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=10&Page=1`
 
 export const CONTAINERMAPPING_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/GetAllByGroup`
 
@@ -72,6 +72,7 @@ export const TEMPLATE_CONFIGURATION_DELETE_URL = `${BASE_URL_UNIT_SERVICE}/Confi
 export const DEVICETYPE_GET_URL = `${BASE_URL_UNIT_SERVICE}/DeviceTypes?Page=1&Size=100`
 export const STATIONINFO_GET_URL = `${BASE_URL_UNIT_SERVICE}/Stations/GetAllStationInfo?Page=1&Size=100`
 export const DATA_RETENTION_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataRetention`
+export const DATA_UPLOAD_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataUpload`
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const STATIONS_GET_ALL = `${BASE_URL_UNIT_SERVICE}/Stations`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`

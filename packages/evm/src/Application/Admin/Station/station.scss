@@ -11,6 +11,7 @@
   }
 }
 .crxStationDataTable {
+  margin-top: 2px;
   table {
     thead {
       &:nth-child(2) {
@@ -27,7 +28,7 @@
 
       &:not(:first-child) {
         th {
-          padding: 15px 17px !important;
+          padding: 0px 8px !important;
         }
       }
       tr {
@@ -35,30 +36,13 @@
           &.TableSearchAbleHead {
             &:first-child {
               left: 0px !important;
-            }
-            &:nth-child(2) {
-              left: 58px !important;
+              width: 80px;
+              min-width: 80px;
             }
           }
           &.CRXDataTableLabelCell {
             &:first-child {
               left: 0px !important;
-            }
-            &:nth-child(2) {
-              left: 58px !important;
-            }
-
-            &:nth-child(3) {
-              width: 200px !important;
-              min-width: 200px !important;
-            }
-            &:nth-child(4) {
-              width: 350px !important;
-              min-width: 350px !important;
-            }
-            &:nth-child(7) {
-              width: 110px !important;
-              min-width: 110px !important;
             }
           }
         }
@@ -81,11 +65,11 @@
               }
             }
           }
-          .rc-menu-button {
-            i {
-              color: #fff;
-            }
-          }
+          // .rc-menu-button {
+          //   i {
+          //     color: #fff;
+          //   }
+          // }
         }
         &:nth-child(even) {
           td {
@@ -166,29 +150,39 @@
         font-weight: bold;
       }
     }
-    .CBX-input {
+
+    .CrxStationError {
+      min-width: 63%;
       display: inline-block;
-      .CrxStationError {
-        min-width: 63%;
-        display: inline-block;
-        .errorStationStyle {
-          color: #aa1d1d;
-          font-size: 14px;
-          margin-top: 2px;
-          i {
-            margin-right: 4px;
-            font-size: 12px;
-          }
-        }
-        input {
-          width: 100%;
+      .errorStationStyle {
+        color: #aa1d1d;
+        font-size: 14px;
+        margin-top: 2px;
+        i {
+          margin-right: 4px;
+          font-size: 12px;
         }
       }
+      input {
+        width: 100%;
+      }
     }
+
     &.errorBrdr {
       padding: 0 0 30px;
-      input {
+      input[name="Name"] {
         outline: 2px solid #aa1d1d;
+        &:hover {
+          outline: 2px solid #aa1d1d;
+        }
+        &:focus {
+          border: 1px solid #888787;
+          outline: 2px solid #aa1d1d;
+        }
+      }
+      .getStationField {
+        outline: 2px solid #aa1d1d;
+        width: 100%;
         &:hover {
           outline: 2px solid #aa1d1d;
         }
@@ -214,7 +208,7 @@
     display: inline-block;
     width: 100%;
     .crx_MultiSelectBoxLight {
-      width: 63%;
+      width: 100%;
       display: inline-block;
     }
   }
@@ -233,21 +227,25 @@
     font-weight: normal;
   }
 }
-.CRXStationModal {
-  .MuiPaper-root .MuiDialogContent-root {
-    padding: 27px 27px 45px;
-  }
-  .MuiPaper-root {
-    min-width: 46% !important;
-  }
-  .crxConfirmFooterModal {
-    button {
-      &.primary {
-        padding: 0 16px !important;
+.userConfirmationModal {
+  &.crx-unblock-modal {
+    &.CRXStationModal {
+      .MuiPaper-root .MuiDialogContent-root {
+        padding: 27px 27px 45px;
       }
-    }
-    button {
-      min-width: 80px !important;
+      .MuiPaper-root {
+        min-width: 46% !important;
+      }
+      .crxConfirmFooterModal {
+        button {
+          &.primary {
+            padding: 0 16px !important;
+          }
+        }
+        button {
+          min-width: 80px !important;
+        }
+      }
     }
   }
 }
@@ -267,8 +265,62 @@
 }
 .crxStationDataUser {
   .manageUserBtn {
-    width: 144px;
+    width: 132px ;
     font-weight: normal;
+  }
+  .stickyPos {
+    top: 142px;
+    height: 60px;
+  }
+  &.crxManageUsers {
+    .col-three {
+      ul {
+        &:first-child {
+          z-index: 98 !important;
+        }
+      }
+    }
+
+  }
+  .AssetsDataGrid{
+    table{
+      tbody {
+        tr {
+          &:hover {
+            .dataTableText {
+              color: var(--color-d1d2d4) !important;
+              text-decoration: var(--Text-decoration-none);
+
+              &::selection {
+                background-color: #d1d2d4;
+                color: #333333;
+              }
+            }
+          }
+          .dataTableText {
+            &::selection {
+              background-color: var(--color-6D6E71);
+              color: var(--color-f5f5f5);
+              
+            }
+          }
+         height: auto;
+          td {
+            &:nth-child(3) {
+              text-align: left;
+            }
+            &:nth-child(4) {
+              .dataTableText {
+              color: var(--color-333333);
+            }
+            }
+            &.MuiTableCell-sizeSmall {
+              padding:  4.5px 11px !important;
+            }
+          }
+        }
+      }
+    }
   }
 }
 @media screen and (max-width: 768px) {
@@ -348,6 +400,13 @@
     &:last-child {
       .crxStationDetail {
         margin: 0 233px;
+      }
+    }
+  }
+  &.gepStationSetting {
+    .stationDetailCol {
+      label {
+        width: 195px;
       }
     }
   }
