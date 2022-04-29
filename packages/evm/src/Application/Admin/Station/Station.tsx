@@ -85,11 +85,7 @@ const Station: React.FC = () => {
         return {
           id: station.id,
           name: station.name + '_' + station.id,
-          // address: station.address,
-          city: station.address.city,
-          state: station.address.state,
-          zip: station.address.zip,
-          country: station.address.country
+          address: station.address.street,
         };
       });
     }
@@ -195,7 +191,7 @@ const Station: React.FC = () => {
       align: 'left',
       // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
       dataComponent: (e: string) =>
-        AnchorDisplay(e, 'anchorStyle', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
+        AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -213,50 +209,6 @@ const Station: React.FC = () => {
       minWidth: '100',
       maxWidth: '100'
     },
-    {
-      label: `${t('City')}`,
-      id: 'city',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
-    },
-    {
-      label: `${t('State')}`,
-      id: 'state',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
-    },
-    {
-      label: `${t('Zip Code')}`,
-      id: 'zip',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
-    },
-    {
-      label: `${t('Country')}`,
-      id: 'country',
-      align: 'left',
-      dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
-    }
   ]);
 
   const searchAndNonSearchMultiDropDown = (
@@ -383,9 +335,7 @@ const Station: React.FC = () => {
   return (
     <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
       <CRXToaster ref={toasterRef} />
-      <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
-        Create Station
-      </CRXButton>
+     
       <CRXModalDialog
         className='createUser CrxCreateUser'
         style={{ minWidth: '680px' }}
@@ -405,6 +355,13 @@ const Station: React.FC = () => {
               showToastMsg={(obj: any) => showToastMsg(obj)}
             />
           }
+          toolBarButton={
+          
+            <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
+            Create Station
+          </CRXButton>
+
+        }
           getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
@@ -428,6 +385,7 @@ const Station: React.FC = () => {
           showCountText={false}
           showCustomizeIcon={false}
           showTotalSelectedText={false}
+          offsetY={205}
         />
       )}
     </div>

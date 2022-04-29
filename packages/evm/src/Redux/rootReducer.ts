@@ -12,6 +12,7 @@ import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
 import templateSlice1 from './AssetConfiguration';
 import unitTemplateSlice from './templateDynamicForm';
+import categoriesSlice from './SetupConfigurationReducer';
 import stationsSlice from './StationReducer';
 
 //combine Reducers
@@ -29,6 +30,7 @@ export const reducer = combineReducers({
   unitTemplateSlice: unitTemplateSlice.reducer,
   templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
-  unitReducer: unitSlice.reducer
+  unitReducer: unitSlice.reducer,
+setupConfigurationReducer : categoriesSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

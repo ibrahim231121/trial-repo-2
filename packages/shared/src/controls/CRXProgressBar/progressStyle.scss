@@ -45,6 +45,9 @@
       color: var(--color-333333);
       font-weight: var(--Font-style-bold);
       margin-bottom:4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 }
 

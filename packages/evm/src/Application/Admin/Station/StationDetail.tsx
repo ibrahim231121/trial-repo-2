@@ -6,7 +6,7 @@ import { RootState } from "../../../Redux/rootReducer";
 import { STATION } from "../../../utils/Api/url";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
-import { getCountryStateAsync } from "../../../Redux/StationReducer";
+import { getCountryStateAsync, getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
 import {
   CRXMultiSelectBoxLight,
   CrxAccordion,
@@ -29,53 +29,61 @@ interface AutoCompleteOptionType {
 type StationFormType = {
   Name: string;
   StreetAddress?: string;
-  Country?: AutoCompleteOptionType;
-  State?: AutoCompleteOptionType;
-  City?: string;
-  ZipCode?: string;
-  PhoneNumber?: string;
   Location?: any;
+  PolicyId?: number;
+  RetentionPolicy?: AutoCompleteOptionType;
+  UploadPolicy?: AutoCompleteOptionType;
+  BlackboxRetentionPolicy?: AutoCompleteOptionType;
 };
 
 const StationDetail: React.FC = () => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(getCountryStateAsync());
+    dispatch(getRetentionStateAsync());
+    dispatch(getUploadStateAsync());
   }, []);
 
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const isAddCase = !!isNaN(+id);
-  const countryStatesResponse: any = useSelector(
-    (state: RootState) => state.stationReducer.countryStates
+  const retentionResponse: any = useSelector(
+    (state: RootState) => state.stationReducer.retentionState
   );
-  const [countryAutoCompleteOptions, setCountryAutoCompleteOptions] =
+  const uploadResponse: any = useSelector(
+    (state: RootState) => state.stationReducer.uploadState
+  );
+  const [retentionAutoCompleteOptions, setRetentionAutoCompleteOptions] =
     React.useState<AutoCompleteOptionType[]>([]);
-  const [statesAutoCompleteOptions, setStatesAutoCompleteOptions] =
+  const [uploadAutoCompleteOptions, setUploadAutoCompleteOptions] =
+    React.useState<AutoCompleteOptionType[]>([]);
+  const [blackBoxAutoCompleteOptions, setBlackBoxAutoCompleteOptions] =
     React.useState<AutoCompleteOptionType[]>([]);
   const [errorResponseMessage, setErrorResponseMessage] =
     React.useState<string>(
       "We 're sorry. The station was unable to be saved. Please retry or contact your Systems Administrator"
     );
   const [expanded, isExpaned] = React.useState("panel1");
+  
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
-    Country: {
-      id: "",
-      label: "",
-    },
-    State: {
-      id: "",
-      label: "",
-    },
-    City: "",
-    ZipCode: "",
-    PhoneNumber: "",
     Location: {
       longitude: null,
       latitude: null,
     },
+    RetentionPolicy: {
+      id: "",
+      label:""
+    },
+    UploadPolicy: {
+      id: "",
+      label:""
+    },
+    BlackboxRetentionPolicy: {
+      id: "",
+      label:""
+    }
   };
   interface IlatLong {
     lat: number;
@@ -86,11 +94,12 @@ const StationDetail: React.FC = () => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<boolean>(false);
-  const [countryAutoCompleteValue, setCountryAutoCompleteValue] =
+  const [retentionAutoCompleteValue, setRetentionAutoCompleteValue] =
     React.useState<AutoCompleteOptionType[]>([]);
-  const [stateAutoCompleteValue, setStateAutoCompleteValue] = React.useState<
-    AutoCompleteOptionType[]
-  >([]);
+  const [uploadAutoCompleteValue, setUploadAutoCompleteValue] =
+    React.useState<AutoCompleteOptionType[]>([]);
+  const [blackBoxAutoCompleteValue, setBlackBoxAutoCompleteValue] =
+    React.useState<AutoCompleteOptionType[]>([]);
   const [reset, setReset] = React.useState<boolean>(false);
 
   const [displayStationErrors, setDisplayStationCategoryForm] =
@@ -101,9 +110,16 @@ const StationDetail: React.FC = () => {
     React.useState<boolean>(true);
 
   React.useEffect(() => {
-    if (countryStatesResponse)
-      setCountryAutoCompleteOptions(countryStatesResponse);
-  }, [countryStatesResponse]);
+    if (retentionResponse) {
+      setRetentionAutoCompleteOptions(retentionResponse)
+      setBlackBoxAutoCompleteOptions(retentionResponse)
+    }
+  }, [retentionResponse]);
+
+  React.useEffect(() => {
+    if (uploadResponse)
+      setUploadAutoCompleteOptions(uploadResponse)
+  }, [uploadResponse]);
 
   React.useEffect(() => {
     if (!isAddCase) {
@@ -113,19 +129,28 @@ const StationDetail: React.FC = () => {
           if (res.ok) return res.json();
         })
         .then((station) => {
+          console.log("Station ", station)
           const _station: StationFormType = {
             Name: station.name,
             StreetAddress: station.address.street,
-            Country: station.address.country,
-            State: station.address.state,
-            City: station.address.city,
-            ZipCode: station.address.zip,
-            PhoneNumber: "1-201-456-15",
             Location: {
               latitude: station.geoLocation.latitude,
               longitude: station.geoLocation.longitude,
             },
+            PolicyId: station.policies[0].id,
+            RetentionPolicy: {
+              id: station.policies[0].retentionPolicyId,
+            },
+            UploadPolicy: {
+              id: station.policies[0].uploadPolicyId,
+            },
+            BlackboxRetentionPolicy : {
+              id : station.policies[0].blackboxRetentionPolicyId,
+            }
           };
+          setRetentionAutoCompleteValue([{id:station.policies[0].retentionPolicyId}])
+          setUploadAutoCompleteValue([{id:station.policies[0].uploadPolicyId}])
+          setBlackBoxAutoCompleteValue([{id:station.policies[0].blackBoxAutoCompleteValue}])
           setStationPayload(_station);
           dispatch(enterPathActionCreator({ val: _station.Name }));
         });
@@ -138,55 +163,51 @@ const StationDetail: React.FC = () => {
     }
   }, []);
 
-  const filterOptionsSource = (arr: Array<any>): Array<any> => {
-    const countryOptionsArray: any = [];
+  const filterData = (arr: Array<any>): Array<any> => {
+    let retentionArray: any = [];
     if (arr.length > 0) {
       for (const elem of arr) {
-        countryOptionsArray.push({
-          id: elem.iso3,
+        retentionArray.push({
+          id: elem.id,
           label: elem.name,
         });
       }
-      const first = "United States";
-      countryOptionsArray.sort((x: any, y: any) => {
-        return x.label == first ? -1 : y.label == first ? 1 : 0;
-      });
+      retentionArray = retentionArray.sort((a: any, b: any) => (a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
     }
-    return countryOptionsArray;
+    return retentionArray;
   };
 
-  const countryAutoCompleteonChange = (
+  const retentionAutoCompleteonChange = (
     _: React.SyntheticEvent,
     val: AutoCompleteOptionType[],
     setFieldValue: any,
     reason: any
   ) => {
-    setFieldValue("Country", val, true);
+    setFieldValue("RetentionPolicy", val, false);
     setReset(!reset);
-    setCountryAutoCompleteValue(val);
-    setStateAutoCompleteValue([]);
-    if (!(reason === "clear")) {
-      const _country: any[] = [];
-      _country.push(val);
-      const _states = countryStatesResponse
-        .find((x: any) => x.name === _country[0].label)
-        .states.map((i: any) => {
-          return {
-            id: i.state_code,
-            label: i.name,
-          };
-        });
-      setStatesAutoCompleteOptions(_states);
-    }
+    setRetentionAutoCompleteValue(val);
   };
 
-  const stateAutoCompleteOnChange = (
+  const blackBoxAutoCompleteonChange = (
     _: React.SyntheticEvent,
-    value: AutoCompleteOptionType[],
-    setFieldValue: any
+    val: AutoCompleteOptionType[],
+    setFieldValue: any,
+    reason: any
   ) => {
-    setFieldValue("State", value, true);
-    setStateAutoCompleteValue(value);
+    setFieldValue("BlackboxRetentionPolicy", val, false);
+    setReset(!reset);
+    setBlackBoxAutoCompleteValue(val);
+  };
+
+  const uploadAutoCompleteonChange = (
+    _: React.SyntheticEvent,
+    val: AutoCompleteOptionType[],
+    setFieldValue: any,
+    reason: any
+  ) => {
+    setFieldValue("UploadPolicy", val, false);
+    setReset(!reset);
+    setUploadAutoCompleteValue(val);
   };
 
   const stationService = async (url: string, type: string, body?: any) => {
@@ -285,19 +306,23 @@ const StationDetail: React.FC = () => {
       name: values.Name,
       address: {
         street: values.StreetAddress,
-        city: values.City,
-        country: values.Country?.label,
-        state: values.State?.label,
-        zip: values.ZipCode,
       },
       geoLocation: {
         latitude: values.Location.latitude,
         longitude: values.Location.longitude,
       },
       units: [],
-      checkIns: [],
-      policies: [],
+      policies: [
+        {
+          Id: values.PolicyId,
+          RetentionPolicyId: values.RetentionPolicy?.id,
+          BlackboxRetentionPolicyId: values.BlackboxRetentionPolicy?.id,
+          UploadPolicyId: values.UploadPolicy?.id,
+        }
+      ],
     };
+
+    console.log("Add ", body)
 
     if (isAddCase) {
       stationService(STATION, "POST", body)
@@ -348,12 +373,10 @@ const StationDetail: React.FC = () => {
   const stationValidationSchema = Yup.object().shape({
     Name: Yup.string().required("Station Name is required"),
     Country: Yup.object().shape({
-      id: Yup.string().nullable()
-        .required()
+      id: Yup.string().nullable().required("Country Name is required")
     }),
     State: Yup.object().shape({
-      id: Yup.string().nullable()
-        .required()
+      id: Yup.string().nullable().required("State Name is required")
     })
   });
   return (
@@ -367,7 +390,7 @@ const StationDetail: React.FC = () => {
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
-          {console.log('errors', errors.State)}
+          {console.log('errors', errors)}
             <Form>
               <div className="ManageStation  switchLeftComponents">
                 {success && (
@@ -492,21 +515,56 @@ const StationDetail: React.FC = () => {
                           xs={12}
                           spacing={0}
                         >
+                          <div className="CBX-input">
+                            <label htmlFor="street">Street Address</label>
+                            <Field id="street" name="StreetAddress" />
+                          </div>
+                        </CRXColumn>
+                      </CRXRows>
+                    </div>
+                  </div>
+                </CrxAccordion>
+                <CrxAccordion
+                  title="Station Settings"
+                  id="accorIdx2"
+                  className="crx-accordion "
+                  ariaControls="Content2"
+                  name="panel2"
+                  isExpanedChange={isExpaned}
+                  expanded={expanded === "panel2"}
+                >
+                  <div className="stationDetailOne gepStationSetting">
+                    <div className="stationColumnSet">
+                      <CRXRows
+                        className="crxStationDetail"
+                        container="container"
+                        spacing={0}
+                      >
+                        <CRXColumn
+                          className="stationDetailCol"
+                          container="container"
+                          item="item"
+                          lg={12}
+                          xs={12}
+                          spacing={0}
+                        >
                           <div className="colstation">
-                            <label htmlFor="countryMultiSelect">Country</label>
+                            <label htmlFor="name">Data Retention Policy</label>
+                            <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
-                              id="countryMultiSelect"
+                              id="retentionPolicyMultiSelect"
+                              className="getStationField"
                               multiple={false}
-                              value={countryAutoCompleteValue}
-                              options={filterOptionsSource(
-                                countryAutoCompleteOptions
+                              value={retentionAutoCompleteValue}
+                              options={filterData(
+                                retentionAutoCompleteOptions
                               )}
                               onChange={(
                                 e: React.SyntheticEvent,
                                 option: AutoCompleteOptionType[],
                                 reason: any
                               ) =>
-                                countryAutoCompleteonChange(
+                                retentionAutoCompleteonChange(
                                   e,
                                   option,
                                   setFieldValue,
@@ -517,13 +575,14 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
-                            {errors.Country !== undefined ? (
+                            {errors.RetentionPolicy !== undefined ? (
                               <div className="errorStationStyle">
                                 <i className="fas fa-exclamation-circle"></i>
-                                {" Country is required"}
+                                {" Retention Policy is required"}
                                 {setDisplayStationCategoryForm("errorBrdr")}
                               </div>
                             ) : null}
+                            </div>
                           </div>
 
                         </CRXColumn>
@@ -536,39 +595,40 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="colstation">
-                            <label htmlFor="stateMultiSelect">
-                              State / Province
-                            </label>
+                            <label htmlFor="name">Data Upload Policy</label>
+                            <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
-                              key={reset}
-                              id="stateMultiSelect"
+                              id="uploadPolicyMultiSelect"
+                              className="getStationField"
                               multiple={false}
-                              value={stateAutoCompleteValue}
+                              value={uploadAutoCompleteValue}
+                              options={filterData(
+                                uploadAutoCompleteOptions
+                              )}
                               onChange={(
                                 e: React.SyntheticEvent,
-                                option: AutoCompleteOptionType[]
+                                option: AutoCompleteOptionType[],
+                                reason: any
                               ) =>
-                                stateAutoCompleteOnChange(
+                                uploadAutoCompleteonChange(
                                   e,
                                   option,
-                                  setFieldValue
+                                  setFieldValue,
+                                  reason
                                 )
                               }
-                              options={statesAutoCompleteOptions}
                               CheckBox={true}
                               checkSign={false}
                               required={true}
-                              getOptionLabel={(option: any) =>
-                                option.label || []
-                              }
                             />
-                            {errors.State !== undefined ? (
+                            {errors.UploadPolicy !== undefined ? (
                               <div className="errorStationStyle">
                                 <i className="fas fa-exclamation-circle"></i>
-                                {" State or Province is required"}
+                                {" Upload Policy is required"}
                                 {setDisplayStationCategoryForm("errorBrdr")}
                               </div>
                             ) : null}
+                            </div>
                           </div>
                         </CRXColumn>
                         <CRXColumn
@@ -579,48 +639,33 @@ const StationDetail: React.FC = () => {
                           xs={12}
                           spacing={0}
                         >
-                          <div className="CBX-input">
-                            <label htmlFor="city">City</label>
-                            <Field id="city" name="City" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="street">Street Address</label>
-                            <Field id="street" name="StreetAddress" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="zipcode">Zip Code</label>
-                            <Field id="zipcode" name="ZipCode" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="phone">Phone Number</label>
-                            <Field id="phone" name="PhoneNumber" />
+                          <div className="colstation">
+                            <label htmlFor="name">BlackBox Retention Policy</label>
+                            <div className="CrxStationError">
+                            <CRXMultiSelectBoxLight
+                              id="blackBoxPolicyMultiSelect"
+                              multiple={false}
+                              value={blackBoxAutoCompleteValue}
+                              options={filterData(
+                                blackBoxAutoCompleteOptions
+                              )}
+                              onChange={(
+                                e: React.SyntheticEvent,
+                                option: AutoCompleteOptionType[],
+                                reason: any
+                              ) =>
+                                blackBoxAutoCompleteonChange(
+                                  e,
+                                  option,
+                                  setFieldValue,
+                                  reason
+                                )
+                              }
+                              CheckBox={true}
+                              checkSign={false}
+                              required={true}
+                            />
+                            </div>
                           </div>
                         </CRXColumn>
                       </CRXRows>

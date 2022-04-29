@@ -60,11 +60,16 @@ const CRXModalDialog = (props: crxDialogProps) => {
     saveButtonTxt = "Primery Button", closeWithConfirm, subTitleText } = props;
 
   const [maxWidthProps, setmaxWidthProps] = React.useState<DialogProps['maxWidth']>('sm');
-
+  const [primaryBtn , setPlrimary] = React.useState<boolean>(false);
+  const [secondaryBtn, setSecondaryBtn] = React.useState<boolean>(false);
   React.useEffect(() => {
+    
     setmaxWidthProps(maxWidth);
+    setPlrimary(primaryButton);
+    setSecondaryBtn(secondaryButton);
     
   }, [maxWidthProps])
+
   return (
     <Dialog
       scroll="paper"
@@ -100,17 +105,16 @@ const CRXModalDialog = (props: crxDialogProps) => {
           secondary="No"
         />
       </div>
-      {primaryButton || secondaryButton && <>
+      
+      {primaryBtn && secondaryBtn && <>
         <Divider className="CRXDivider" />
 
         <DialogActions className="CRXFooter">
 
-          {primaryButton && <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e: mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
-          }    {
-            secondaryButton &&
-            <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e: mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
+          <Button disableRipple={true} className="modalPrimeryBtn" onClick={(e: mouseEvents) => onSave(e)}>{saveButtonTxt}</Button>
+          <Button disableRipple={true} className="modalSecrndoryBtn" onClick={(e: mouseEvents) => onClose(e)}>{cancelButtonTxt}</Button>
 
-          }
+          
         </DialogActions>
       </>}
     </Dialog>

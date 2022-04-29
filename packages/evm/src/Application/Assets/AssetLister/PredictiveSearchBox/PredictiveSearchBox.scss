@@ -126,8 +126,11 @@
 
   .listOfContent {
     width: 116px;
-    padding: 15px 0 4px;
-    height: 133px;
+    margin: 0px 5px;
+    height: 85px;
+    border: 1px solid var(--color-d1d2d4);
+    // padding: 15px 0 4px;
+    // height: 133px;
 
     &:nth-child(1) {
       order: 2;
@@ -148,19 +151,20 @@
 
     .listButton {
       width: 61px;
-      height: 61px;
-      border: 2px solid var(--color-8a8888);
+      height: 30px;
+      // border: 2px solid var(--color-8a8888);
       border-radius: 100%;
       margin: 0 auto;
       text-align: center;
       position: relative;
-      line-height: 46px;
-      background: var(--color-2a2a2a);
+      // line-height: 46px;
+      // background: var(--color-2a2a2a);
       .listParentBtn {
-        padding: 3px 0px;
+        // padding: 3px 0px;
         color: var(--color-White);
         border: 0px;
         height: 100%;
+        display: none;
         &:hover {
           background: var(--color-transparent);
         }
@@ -168,19 +172,19 @@
           background: var(--color-transparent);
         }
       }
-      .listIcon {
-        font-size: 32px;
-        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAApCAMAAABjq9sOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA1VBMVEXR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tT////Na/PbAAAARXRSTlMAGl2268NnnM1WT8D1pu5q3phGIWCwyjx1pb2QVDB45/nVq2+Tz3tjQk72n0hm8NhXljlybMmZtDbth0uE1PKSfi4rlUk9Q418AAAAAWJLR0RGF7r57QAAAAd0SU1FB+UJCBEyDLvbuxIAAAFFSURBVDjLldJtW4IwFAbgTTN7MXszlsjAQBMly8pKLbHS/f+/1M7xQiYbcPV8EbebbYcdQgitVA8yqR1SsgutC0PqqagIUSjokSgWFP4cnyg53RcAGsqRCDnbXwNAkxjBVhQBFIVAnJeBC2oAl2qxJnBVBq5bNxYmDyRhjRJAmv8G7LZt2x0nD3DXw3N3bWYEvL0rzXNMwFWKv2M6YF2Y8YNeH357OriH8UFIyNCXDyOuAWijCIdDoA8agApCXJjDJmMNPCavEf4kHyfGLZ5xCwZbvGjgFYanUrAafAn9kPieeHv/8HLK5FO1TUaO/iVnHVXMHf2yWNDf3oSfCO26h+NFtAgmIa41Z/kNw1AMCjoKxacKaFZ8Re6MpkBkAYambS+WVUOWciKWYCUK8i1X+rHy561fPNE6Nk/H66S/Ny1jNjD3B8+Hp16RqMjoAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTA5LTA4VDE0OjUwOjEyKzAzOjAw04WZWwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wOS0wOFQxNDo1MDoxMiswMzowMKLYIecAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAAElFTkSuQmCC)
-          no-repeat center;
-        width: 25px;
-        fill: var(--color-d1d2d4);
-        margin-left: -6px;
-        height: 32px;
-        background-size: 100% 100%;
-      }
+      // .listIcon {
+      //   font-size: 32px;
+      //   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAApCAMAAABjq9sOAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA1VBMVEXR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tTR0tT////Na/PbAAAARXRSTlMAGl2268NnnM1WT8D1pu5q3phGIWCwyjx1pb2QVDB45/nVq2+Tz3tjQk72n0hm8NhXljlybMmZtDbth0uE1PKSfi4rlUk9Q418AAAAAWJLR0RGF7r57QAAAAd0SU1FB+UJCBEyDLvbuxIAAAFFSURBVDjLldJtW4IwFAbgTTN7MXszlsjAQBMly8pKLbHS/f+/1M7xQiYbcPV8EbebbYcdQgitVA8yqR1SsgutC0PqqagIUSjokSgWFP4cnyg53RcAGsqRCDnbXwNAkxjBVhQBFIVAnJeBC2oAl2qxJnBVBq5bNxYmDyRhjRJAmv8G7LZt2x0nD3DXw3N3bWYEvL0rzXNMwFWKv2M6YF2Y8YNeH357OriH8UFIyNCXDyOuAWijCIdDoA8agApCXJjDJmMNPCavEf4kHyfGLZ5xCwZbvGjgFYanUrAafAn9kPieeHv/8HLK5FO1TUaO/iVnHVXMHf2yWNDf3oSfCO26h+NFtAgmIa41Z/kNw1AMCjoKxacKaFZ8Re6MpkBkAYambS+WVUOWciKWYCUK8i1X+rHy561fPNE6Nk/H66S/Ny1jNjD3B8+Hp16RqMjoAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIxLTA5LTA4VDE0OjUwOjEyKzAzOjAw04WZWwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMS0wOS0wOFQxNDo1MDoxMiswMzowMKLYIecAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAAAAElFTkSuQmCC)
+      //     no-repeat center;
+      //   width: 25px;
+      //   fill: var(--color-d1d2d4);
+      //   margin-left: -6px;
+      //   height: 32px;
+      //   background-size: 100% 100%;
+      // }
 
       .count-badge {
-        position: absolute;
+        // position: absolute;
         background: var(--color-333333);
         border: 1px solid var(--color-8a8888);
         height: 14px;
@@ -193,7 +197,7 @@
         left: 0;
         border-radius: 5px;
         justify-content: center;
-        top: 48px;
+        top: -12px;
         text-align: center;
         color: var(--color-White);
       }
@@ -203,8 +207,8 @@
       text-align: center;
       font-size: 14px;
       color: var(--color-333333);
-      margin-top: 10px;
-      padding: 0px 0px;
+      // margin-top: 10px;
+      // padding: 0px 0px;
       font-family:var(--Arial-font-family);
       line-height: 16px;
     }

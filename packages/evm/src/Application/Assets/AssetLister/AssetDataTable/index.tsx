@@ -552,9 +552,7 @@ const MasterMain: React.FC<Props> = ({
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
           }
-          getRowOnActionClick={(val: EvidenceReformated) =>
-            setSelectedActionRow(val)
-          }
+          getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
           headCells={headCells}

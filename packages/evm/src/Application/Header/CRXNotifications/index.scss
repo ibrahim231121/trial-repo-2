@@ -18,16 +18,12 @@
 }
 
 .NotificationIconButton {
-  padding: 4px 0px !important;
+  padding: 4px 0px 4px 15px  !important;
   line-height: 0px !important;
   position: relative;
   min-width: 39px !important;
   border-radius: 0px !important;
-  &:hover,
-  &:focus {
-    background-color: var(--color-black-9)!important;
-    position: relative;
-  }
+  
   &:after {
     position: absolute;
     background: var(--color-555555);
@@ -36,6 +32,7 @@
     top: 5px;
     right: -2px;
     content: "";
+    display: none;
   }
   .crx-dot {
     .MuiBadge-badge {

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { STATION_INFO_GET_URL, CountryStateApiUrl } from '../utils/Api/url';
+import { STATION_INFO_GET_URL, CountryStateApiUrl, DATA_RETENTION_POLICIES_GET_ALL, DATA_UPLOAD_POLICIES_GET_ALL } from '../utils/Api/url';
 
 export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', async () => {
   const requestOptions = {
@@ -25,9 +25,36 @@ export const getCountryStateAsync: any = createAsyncThunk('getCountryStateAsync'
   }
 });
 
+export const getRetentionStateAsync: any = createAsyncThunk('getRetentionStateAsync', async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', TenantId: '1' }
+  };
+  const resp = await fetch(DATA_RETENTION_POLICIES_GET_ALL, requestOptions);
+  if (resp.ok) {
+    const response = await resp.json();
+    return response;
+  }
+  
+});
+
+export const getUploadStateAsync: any = createAsyncThunk('getUploadStateAsync', async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', TenantId: '1' }
+  };
+  const resp = await fetch(DATA_UPLOAD_POLICIES_GET_ALL, requestOptions);
+  if (resp.ok) {
+    const response = await resp.json();
+    return response;
+  }
+  
+});
+
+
 export const stationsSlice = createSlice({
   name: 'station',
-  initialState: { stationInfo: [], countryStates: [] },
+  initialState: { stationInfo: [], countryStates: [], retentionState: [], uploadState: [] },
   reducers: {},
 
   extraReducers: {
@@ -36,6 +63,12 @@ export const stationsSlice = createSlice({
     },
     [getCountryStateAsync.fulfilled]: (state, { payload }) => {
       state.countryStates = payload;
+    },
+    [getRetentionStateAsync.fulfilled]: (state, { payload }) => {
+      state.retentionState = payload;
+    },
+    [getUploadStateAsync.fulfilled]: (state, { payload }) => {
+      state.uploadState = payload;
     }
   }
 });
