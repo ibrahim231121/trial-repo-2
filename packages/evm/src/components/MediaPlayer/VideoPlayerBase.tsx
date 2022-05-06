@@ -14,6 +14,7 @@ import VideoPlayerSnapshot from "./VideoPlayerSnapshot";
 import moment, { duration } from 'moment';
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
 import { CRXToaster } from "@cb/shared";
+import { FormControlLabel, Switch } from "@mui/material";
 
 
 var videoElements: any[] = [];
@@ -29,6 +30,8 @@ type Timeline = {
   video_duration_in_second: number;
   src: string;
   id: string
+  enableDisplay: boolean,
+  indexNumberToDisplay: number
 }
 
 type MaxMinEndpoint = {
@@ -78,11 +81,11 @@ const videoSpeed = [
 const VideoPlayerBase = (props: any) => {
 
   const screenViews = {
-    "Single": 0,
-    "SideBySide": 1,
-    "PicturesOnSide": 2,
-    "Grid": 3,
-    "PitureInPicture": 4
+    "Single": 1,
+    "SideBySide": 2,
+    "VideosOnSide": 3,
+    "Grid": 4,
+    "Grid6": 6
   };
 
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
@@ -96,7 +99,8 @@ const VideoPlayerBase = (props: any) => {
   const [timelinedetail, settimelinedetail] = React.useState<Timeline[]>([]);
 
 
-  const [viewNumber, setViewNumber] = useState(0);
+  const [viewNumber, setViewNumber] = useState(1);
+  const [mapEnabled, setMapEnabled] = useState<boolean>(false);
   const [singleTimeline, setSingleTimeline] = useState<boolean>(false);
 
   const [controlBar, setControlBar] = useState(0);
@@ -248,6 +252,8 @@ const VideoPlayerBase = (props: any) => {
         video_duration_in_second: video_duration_in_second,
         src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         id: "Video-" + x,
+        enableDisplay: x == 0 ? true : false,
+        indexNumberToDisplay: x == 0 ? 1 : 0
       }
       bufferingArr.push({ id: myData.id, buffering: false })
       rowdetail.push(myData);
@@ -345,7 +351,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   useEffect(() => {
-    timelinedetail.forEach((x: any) => {
+    timelinedetail.filter((y: any) => y.enableDisplay).forEach((x: any) => {
       var videoElement = document.querySelector("#" + x.id);
       videoElements.push(videoElement);
 
@@ -370,7 +376,7 @@ const VideoPlayerBase = (props: any) => {
     var endPointDifference = (video.recording_end_point) - timer;
     videoHandle.currentTime = difference > 0 && endPointDifference > 0 ? difference : 0;
     if (applyAction) {
-      if (videoHandle.currentTime > 0 && bufferingArray.every((y: any) => y.buffering == true)) {
+      if (videoHandle.currentTime > 0 && bufferingArray.filter((y: any) => timelinedetail.find((z: any) => z.id == y.id && z.enableDisplay) !== undefined).every((y: any) => y.buffering == true)) {
         videoHandle.play();
       }
       else {
@@ -381,7 +387,7 @@ const VideoPlayerBase = (props: any) => {
 
   useInterval(
     () => {
-      if (bufferingArray.every((y: any) => y.buffering == true)) {
+      if (bufferingArray.filter((y: any) => timelinedetail.find((z: any) => z.id == y.id && z.enableDisplay) !== undefined).every((y: any) => y.buffering == true)) {
         if (isPlaying === true) {
           if (timer < timelineduration) {
             var timerValue = timer + 1;
@@ -476,33 +482,45 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+
+  const displayThumbnail = (event: any, x: any, displayAll: boolean) => {
+    var timeLineHover: any = singleTimeline ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + x.indexNumberToDisplay);
+    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+
+    var offset = timeLineHover.getBoundingClientRect().left;
+
+    var lenghtDeduct : number = 0;
+    var totalLenght = document.querySelector("#SliderControlBar")?.getBoundingClientRect().right ?? 0;
+    var totalThumbnailsLenght = timelinedetail.filter((x: any) => x.enableDisplay).length * 300;
+    var totalLenghtPlusThumbnails = event.pageX + totalThumbnailsLenght;
+    if(totalLenghtPlusThumbnails > totalLenght)
+    {
+      lenghtDeduct = totalLenghtPlusThumbnails - totalLenght;
+    }
+
+
+    var pos = (event.pageX - offset) / timelineWidth;
+    var ttt = Math.round(pos * x.video_duration_in_second);
+    var Thumbnail: any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
+    var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + x.indexNumberToDisplay);
+
+    var SliderControlBar: any = document.querySelector("#SliderControlBar");
+    var SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
+
+    if (Thumbnail) {
+      Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
+      Thumbnail.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 300) - lenghtDeduct) : 0) + "px";
+      ThumbnailTime.innerHTML = secondsToHms(ttt)
+      ThumbnailTime.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 300) - lenghtDeduct) : 0) + 125 + "px";
+      ThumbnailTime.style.top = (120) + "px";
+    }
+  }
   const displaySeekBarThumbail = (event: any) => {
-    debugger;
     var Indexes: number[] = [];
-    timelinedetail.forEach((x: any, index: number) => {
-      Indexes.push(index)
-
-      var timeLineHover: any = singleTimeline ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + index);
-      var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
-
-      var offset = timeLineHover.getBoundingClientRect().left;
-      var pos = (event.pageX - offset) / timelineWidth;
-      var ttt = Math.round(pos * x.video_duration_in_second);
-      var Thumbnail: any = document.querySelector("#Thumbnail" + index);
-      var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + index);
-
-      var SliderControlBar: any = document.querySelector("#SliderControlBar");
-      var SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
-
-      if (Thumbnail) {
-        Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
-        Thumbnail.style.left = (event.pageX - SliderControlBarOffset) + (index * 300) + "px";
-        ThumbnailTime.innerHTML = secondsToHms(ttt)
-        ThumbnailTime.style.left = (event.pageX - SliderControlBarOffset) + (index * 300) + 125 + "px";
-        ThumbnailTime.style.top = (120) + "px";
-      }
+    timelinedetail.filter((x: any) => x.enableDisplay).forEach((x: any) => {
+      Indexes.push(x.indexNumberToDisplay)
+      displayThumbnail(event, x, true)
     });
-
     setVisibleThumbnail(Indexes);
   }
   const removeSeekBarThumbail = () => {
@@ -525,7 +543,7 @@ const VideoPlayerBase = (props: any) => {
       <CRXToaster ref={bookmarkMsgRef} />
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
         <div id="screens">
-          <VideoScreen videoData={timelinedetail} viewNumber={viewNumber} />
+          <VideoScreen timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} viewNumber={viewNumber} mapEnabled={mapEnabled} videoHandlers={videoHandlers} />
         </div>
         <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
           {/* TIME LINES BAR HERE */}
@@ -537,13 +555,10 @@ const VideoPlayerBase = (props: any) => {
               bookmark={bookmark}
               setbookmark={setbookmark}
               setbookmarkAssetId={setbookmarkAssetId}
-              setControlBar={setControlBar}
-              setTimer={setTimer}
-              handleControlBarChange={handleControlBarChange}
-              secondsToHms={secondsToHms}
               visibleThumbnail={visibleThumbnail}
               setVisibleThumbnail={setVisibleThumbnail}
               singleTimeline={singleTimeline}
+              displayThumbnail={displayThumbnail}
             />
           ) : (<></>)}
 
@@ -618,12 +633,19 @@ const VideoPlayerBase = (props: any) => {
                   <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
                     Side by Side
                   </MenuItem>
-                  <MenuItem onClick={screenClick.bind(this, screenViews.PicturesOnSide)}  >
-                    Pictures On Side View
+                  <MenuItem onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
+                    Videos on Side
                   </MenuItem>
                   <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
-                    Grid
+                    Grid up to 4
                   </MenuItem>
+                  <MenuItem onClick={screenClick.bind(this, screenViews.Grid6)}>
+                    Grid up to 6
+                  </MenuItem>
+                  <MenuItem>
+                    <FormControlLabel control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} label="Side Data Panel" />
+                  </MenuItem>
+
                 </Menu >
               </div>
               <div className="playerView">

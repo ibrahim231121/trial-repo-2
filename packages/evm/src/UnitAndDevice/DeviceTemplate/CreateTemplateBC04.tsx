@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import React, { useEffect, useLayoutEffect,useState,useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
@@ -11,7 +11,7 @@ import VRX from '../unitSchemaVRX.json';
 import BC03LTE from "../unitSchemaBCO3Lte.json";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
-import { CRXConfirmDialog, CRXTooltip ,CRXToaster,CRXAlert} from "@cb/shared";
+import { CRXConfirmDialog, CRXTooltip, CRXToaster, CRXAlert } from "@cb/shared";
 import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
 import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
@@ -70,6 +70,13 @@ const CreateTemplate = (props: any) => {
   const [secondary] = React.useState<string>("No, do not close");
   const history = useHistory();
   let historyState = props.location.state;
+  let templateNameHistory = "";
+  if (historyState.isclone) {
+    templateNameHistory = "CLONE - " + historyState.name;
+  }
+  else {
+    templateNameHistory = historyState.name;
+  }
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
@@ -84,7 +91,7 @@ const CreateTemplate = (props: any) => {
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
- 
+
   let FormSchema: any = null;
   let templateName: string = "";
   const dispatch = useDispatch();
@@ -133,9 +140,8 @@ const CreateTemplate = (props: any) => {
     }
 
     dispatch(getStationsAsync());
-    if (historyState.isedit) {
-
-      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
+    if (historyState.isedit || historyState.isclone) {
+      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + templateNameHistory }));
       loadData();
     }
     else {
@@ -262,6 +268,12 @@ const CreateTemplate = (props: any) => {
         else
           val = e0.value;
 
+        if (historyState.isclone) {
+          if (e0.key == "templateName") {
+            val = templateNameHistory;
+          }
+        }
+
         var keySplitted = e0.key.split('_');
         if (keySplitted.length > 1) {
           var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
@@ -359,7 +371,7 @@ const CreateTemplate = (props: any) => {
         })
       }
       let tab1: any;
-      if (historyState.isedit) {
+      if (historyState.isedit || historyState.isclone) {
         tab1 = editT1;
       }
       else {
@@ -423,7 +435,7 @@ const CreateTemplate = (props: any) => {
             });
           }
           else if (field.type == "fieldarray") {
-            if (!historyState.isedit) {
+            if (!historyState.isedit && !historyState.isclone) {
               field.feilds.map((x: any) =>
                 x.map((y: any) => {
                   if (y.validation && y.depends == undefined) {
@@ -499,7 +511,9 @@ const CreateTemplate = (props: any) => {
       const response = await unitDataResponse.json();
       setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
       setDataFetched(true);
-      setEditCase(true)
+      if (historyState.isclone !== true) {
+        setEditCase(true)
+      }
     }
   };
 
@@ -530,7 +544,7 @@ const CreateTemplate = (props: any) => {
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
 
-    Object.entries(values).map(([key, value]) => {
+    Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
       if (!(valueRaw?.feilds !== undefined)) {
@@ -541,23 +555,18 @@ const CreateTemplate = (props: any) => {
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
         }
         if (valueToSave) {
-          if(split[2] == "Multiselect")
-          {
-            if(valueRaw.includes("add all"))
-            {
-            valueRaw = "";
-            FormSchema["Unit Settings"].find((y:any) => y.key == key).options.map((x:any) => 
-            {
-              if(x.value != "" && x.value != "add all")
-              {
-                valueRaw = valueRaw + x.value + ",";
+          if (split[2] == "Multiselect") {
+            if (valueRaw.includes("add all")) {
+              valueRaw = "";
+              FormSchema["Unit Settings"].find((y: any) => y.key == key).options.map((x: any) => {
+                if (x.value != "" && x.value != "add all") {
+                  valueRaw = valueRaw + x.value + ",";
+                }
+              })
+              if (valueRaw[valueRaw.length - 1] == ',') {
+                valueRaw = valueRaw.substring(0, valueRaw.length - 1);
               }
-            })
-            if(valueRaw[valueRaw.length - 1] == ',')
-            {
-              valueRaw = valueRaw.substring(0, valueRaw.length - 1);
             }
-          }
           }
           Initial_Values.push({
             key: split[1],
@@ -625,21 +634,16 @@ const CreateTemplate = (props: any) => {
 
             response.json().then((res: number) => {
               if (res > 0) {
-                // historyState.id = res;
-                // historyState.isedit = true;
-                // historyState.name = templateNames;
-                // dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + historyState.name }));
-                // setEditCase(true);
-                history.push('/admin/unitanddevices/createtemplate/template',{ id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })  
+                history.push('/admin/unitanddevices/createtemplate/template', { id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
                 history.go(0)
                 resetForm()
               }
             });
-            targetRef.current.showToaster({message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+            targetRef.current.showToaster({ message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true });
 
-          } 
+          }
           else if (response.status == 409) {
-            targetRef.current.showToaster({message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true});
+            targetRef.current.showToaster({ message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true });
           }
           else {
             throw new Error(response.statusText);
@@ -665,7 +669,7 @@ const CreateTemplate = (props: any) => {
         .then((response: any) => {
           if (response.ok) {
             setDataFetched(false);
-            targetRef.current.showToaster({message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+            targetRef.current.showToaster({ message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true });
             loadData();
             resetForm();
           } else {
@@ -679,6 +683,11 @@ const CreateTemplate = (props: any) => {
     }
   };
 
+  const cloneTemplate = () => {
+    history.push('/admin/unitanddevices/createtemplate/template', { id: historyState.id, isclone: true, name: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+    history.go(0)
+  }
+
 
 
   let customEvent = (event: any, y: any, z: any) => {
@@ -690,8 +699,8 @@ const CreateTemplate = (props: any) => {
 
   return (
     <div className="CrxCreateTemplate CrxCreateTemplateUi ">
-        <CRXToaster ref={targetRef} />
-        <CRXAlert
+      <CRXToaster ref={targetRef} />
+      <CRXAlert
         ref={alertRef}
         message={responseError}
         className='crxAlertUserEditForm'
@@ -734,15 +743,15 @@ const CreateTemplate = (props: any) => {
           </MenuButton>
         }
       >
-        <MenuItem>
-          <Link to="/admin/unitsdevicestemplate/clonetemplate">
+        <MenuItem onClick={cloneTemplate}>
+        // <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
                 <i className="far fa-copy"></i>
               </div>
               <div className="crx-menu-list">Clone template</div>
             </div>
-          </Link>
+          // </Link>
         </MenuItem>
         <MenuItem>
           <div className="crx-meu-content groupingMenu crx-spac">
