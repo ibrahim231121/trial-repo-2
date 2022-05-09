@@ -203,6 +203,11 @@ const AddMetadataForm: React.FC<Props> = ({
   let displayText = uploadFile[0].uploadedFileName.substring(0, displayIdIndex);
   return (
     <div className="metaData-Station-Parent">
+      <div className="CrxCreateUser">
+        <div className='CrxIndicates'>
+        <sup>*</sup> Indicates required field
+      </div>
+      </div>
       <div className="metaData-masterAsset">
         <div className="metaData-inner-masterAsset">
           <label>Master Asset <span>*</span></label>
@@ -220,7 +225,7 @@ const AddMetadataForm: React.FC<Props> = ({
               setFormPayload({ ...formpayload, masterAsset: e.target.value })
             }
             options={masterAssetOption}
-            defaultValue="Please Select"
+            defaultValue=""
           />
         </div>
       </div>
@@ -232,15 +237,15 @@ const AddMetadataForm: React.FC<Props> = ({
             id={"select_" + "selectBox"}
             value={
               formpayload.station === ""
-                ? "Select Station"
+                ? ""
                 : formpayload.station
             }
             onChange={(e: any) =>
               setFormPayload({ ...formpayload, station: e.target.value })
             }
-            defaultOptionText="Select Station"
+            defaultOptionText=""
             options={optionList}
-            defaultValue="Select Station"
+            defaultValue=""
           />
         </div>
       </div>
@@ -248,7 +253,7 @@ const AddMetadataForm: React.FC<Props> = ({
         <CRXMultiSelectBoxLight
           className="categortAutocomplete CRXmetaData-owner"
           label="Owner(s)"
-          placeHolder="Select Owner(s)"
+          placeHolder=""
           multiple={true}
           CheckBox={true}
           required={true}
@@ -264,7 +269,7 @@ const AddMetadataForm: React.FC<Props> = ({
       <div className="metaData-category">
         <CRXMultiSelectBoxLight
           className="categortAutocomplete CRXmetaData-category"
-          placeHolder="Select Category"
+          placeHolder=""
           label="Category "
           multiple={true}
           CheckBox={true}

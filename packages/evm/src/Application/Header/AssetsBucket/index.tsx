@@ -10,7 +10,9 @@ import {
   CRXRootRef,
   CRXProgressBar,
   CRXToaster,
-  CrxAccordion, CRXConfirmDialog
+  CrxAccordion, 
+  CRXConfirmDialog,
+  CRXButton
 } from "@cb/shared";
 import BucketActionMenu from "../../Assets/AssetLister/ActionMenu/BucketActionMenu";
 import "./index.scss";
@@ -567,7 +569,7 @@ const CRXAssetsBucketPanel = () => {
   }, [])
 
   const uploadProgressStatus = () => {
-
+    
     const prog = uploadInfo.map((item: FileUploadInfo, i: number) => {
       if (item.uploadInfo.removed != true) {
         return <div className="crxProgressbarBucket">
@@ -576,13 +578,16 @@ const CRXAssetsBucketPanel = () => {
             loadingText={item.uploadInfo.uploadText}
             value={item.uploadInfo.uploadValue}
             error={item.uploadInfo.error}
-
+            width={280}
+            removeIcon={
+              <div className="cencel-loading">
+                <button onClick={() => cancelFileUpload(item)}><i className="fas fa-minus-circle"></i></button>
+              </div>
+            }
             maxDataSize={true}
             loadingCompleted={item.uploadInfo.uploadFileSize}//"5.0Mb"
           />
-          {item.uploadInfo.uploadValue < 100 && item.uploadInfo.error != true ? <div className="cencel-loading">
-            <button onClick={() => cancelFileUpload(item)}><i className="fas fa-minus-circle"></i></button>
-          </div> : null}
+          
         </div>
       }
     })
@@ -717,10 +722,19 @@ const CRXAssetsBucketPanel = () => {
                           setShowSucess={setShowUploadAttention}
                           alertType="inline"
                           persist={true}
-                          children={<div className="check">Please add metadata to finish saving your uploaded Files
+                          children={<div className="check"><div className="attentionPera">Please add metadata to finish saving your uploaded files</div>
                             <div className="btn-center">
-                              <button className="CRXButton" onClick={handleClickOpen}>Add Metadata</button></div>
-
+                              <CRXButton
+                                id="metdaModalButton"
+                                className="MuiButton-containedPrimary" 
+                                onClick={handleClickOpen}
+                                color='primary'
+                                variant='contained'
+                                
+                                >
+                                  Add metadata
+                              </CRXButton>
+                            </div>
                           </div>
                           }
                         />
@@ -729,7 +743,7 @@ const CRXAssetsBucketPanel = () => {
                           primaryButton={true}
                           secondaryButton={true}
                           maxWidth="xl"
-                          title="Choose Asset Metadata"
+                          title="Choose asset metadata"
                           saveButtonTxt={isNext == false ? "Save" : "Next"}
                           cancelButtonTxt="Cancel"
                           showSticky={false}
@@ -770,14 +784,15 @@ const CRXAssetsBucketPanel = () => {
 
                       </div>
                       {fileCount > 0 && <>
-                        <div style={{ textAlign: "left" }}>Uploading:</div>
-                        <div className="crxProgressbarBucket" style={{ textAlign: "left" }}>
+                        <div className="uploading-text">{showUploadAttention ? "Uploaded:" : "Uploading:"} </div>
+                        <div className="crxProgressbarBucket mainProgressBar">
                           <CRXProgressBar
                             id="raw"
                             loadingText={fileCount > 1 ? fileCount + " assets " + "(" + totalFileSize + ")" : fileCount + " asset " + "(" + totalFileSize + ")"}
                             value={totalFilePer}
                             error={mainProgressError}
                             maxDataSize={true}
+                            width={410}
                           // loadingCompleted={"uploadFileSize"}//"5.0Mb"
                           />
                         </div>
@@ -840,17 +855,21 @@ const CRXAssetsBucketPanel = () => {
       </CRXDrawer>
       <CRXConfirmDialog
         className="crx-unblock-modal"
-        title="Confirm Cancel"
+        title="Please confirm"
         setIsOpen={setIsOpenConfirm}
         onConfirm={onConfirm}
         isOpen={isOpenConfirm}
-        primary="Yes"
-        secondary="No"
+        primary="Yes, remove"
+        secondary="No, do not remove"
+        maxWidth="sm"
       >
         <div className="crxUplockContent">
-          <p>
-            Are you sure you want to remove this item?
-          </p>
+        <div className='uploadCancelText'>
+            You are attempting to <strong>remove</strong> the <strong>(file name.file type)</strong> asset from this upload.  Once you remove it, you will not be able to undo this action.
+        </div>
+        <div className='uploadCancelBottom'>
+        Are you sure you would to <strong>remove</strong>  this asset from this upload?
+          </div>
         </div>
 
       </CRXConfirmDialog>

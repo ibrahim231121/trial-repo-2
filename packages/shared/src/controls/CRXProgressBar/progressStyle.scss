@@ -15,8 +15,10 @@
             top: -25px;
             font-size: 14px;
             color:var(--color-333333);
+            display: flex;
+            place-items: center;
             &.assetsLoadingBarIcon {
-              top: -1px;
+              top: -4px;
               right: -23px;
             }
         }
@@ -41,7 +43,7 @@
     }
 
     .loadingAssets {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--color-333333);
       font-weight: var(--Font-style-bold);
       margin-bottom:4px;
@@ -52,7 +54,7 @@
 }
 
 .rotate {
-    animation: rotation 2s infinite linear;
+    animation: rotation 1s infinite linear;
   }
   
 @keyframes rotation {
