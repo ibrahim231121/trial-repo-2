@@ -11,9 +11,13 @@ interface Timelineprops {
   timelinedetail: any[]
   duration: any
   seteditBookmarkForm: any
+  seteditNoteForm: any
   bookmark: any
+  note: any
   setbookmark: any
+  setnote: any
   setbookmarkAssetId: any
+  setnoteAssetId: any
   visibleThumbnail: any
   setVisibleThumbnail: any
   singleTimeline: any
@@ -21,29 +25,59 @@ interface Timelineprops {
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, setnote, note }: Timelineprops,) => {
   const targetRef = useRef<any>();
   const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
+  const [Event, setEvent] = useState();
+  const [timelinedetail1, settimelinedetail1] = useState<any>();
   const [bookmarklocation, setbookmarklocation] = useState<number>();
+  const [mouseovertype, setmouseovertype] = useState("");
+
+  React.useEffect(() => {
+    if (openThumbnail&&Event&&timelinedetail1) {
+      if(mouseovertype == "bookmark"){
+        displayThumbail(Event,timelinedetail1.id,bookmark.description);
+      }
+      else if(mouseovertype == "note"){
+        displayThumbail(Event,timelinedetail1.id,note.description);
+      }
+    }
+  }, [openThumbnail]);
 
   const mouseOut = () => {
+    removeThumbnail();
     setopenThumbnail(false);
   }
 
-  const mouseOver = (y: any, x: any) => {
+  const mouseOverBookmark = (event: any, y: any, x: any) => {
+    setmouseovertype("bookmark");
     setbookmark(y);
-    setbookmarklocation(getbookmarklocation(y.position, x.startdiff));
+    //setbookmarklocation(getbookmarklocation(y.position, x.startdiff));
+    settimelinedetail1(x);
+    setEvent(event);
+    setopenThumbnail(true);
+  }
+  const mouseOverNote = (event: any, y: any, x: any) => {
+    setmouseovertype("note");
+    setnote(y);
+    settimelinedetail1(x);
+    setEvent(event);
     setopenThumbnail(true);
   }
 
-
-  const displayThumbail = (event: any, id: any) => {
+  const displayThumbail = (event: any, id: any, withdescription?: string) => {
     var x = timelinedetail.find((x:any) => x.id == id)
     var index = x?.indexNumberToDisplay ?? 0;
     setVisibleThumbnail([...visibleThumbnail, index]);
-    displayThumbnail(event, x, false)
+    if(withdescription){
+      displayThumbnail(event, x, false, withdescription)
+    }
+    else{
+      displayThumbnail(event, x, false)
+    }
+    
   }
-  const removeThumbnail = (id: any) => {
+  const removeThumbnail = () => {
     setVisibleThumbnail([]);
   }
 
@@ -53,19 +87,16 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
     seteditBookmarkForm(true);
     setbookmarkAssetId(y.assetId);
   }
+  const onClickNote = (y: any) => {
+    setopenThumbnail(false);
+    seteditNoteForm(true);
+    setnoteAssetId(y.assetId);
+  }
 
   const getbookmarklocation = (position: any, startdiff: any) => {
     let timelineposition = position + startdiff;
     let timelinepositionpercentage = Math.round((Math.round(timelineposition / 1000) / duration) * 100)
     return timelinepositionpercentage;
-  }
-
-  const renderDescription = () => {
-    return (
-      <div>
-        {bookmark.description}
-      </div>
-    )
   }
 
   return (
@@ -74,19 +105,29 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
         <div style={{marginTop:10}}>
           <div className="beforeline">
             <div className="line" style={{ position: "relative" }}>
-              {<video width="300" height="150" id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}>
+              <video width="300" height="150" id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}>
                 <source src={x.src} type="video/mp4" />
-
-              </video>}
+              </video>
               <p id={"Thumbnail-Time" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>
+              {openThumbnail && <p id={"Thumbnail-Desc"} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>}
               <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
                 {x.bookmarks && x.bookmarks.map((y: any, index: any) =>
                   <div>
 
                     <i className="fa fa-bookmark" aria-hidden="true"
                       style={{ position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
-                      onMouseOut={() => mouseOut()} onMouseOver={() => mouseOver(y, x)} onClick={() => onClickBookmark(y)}>
+                      onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmark(y)}>
 
+                    </i>
+                  </div>
+                )}
+              </div>
+              <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
+                {x.notes && x.notes.map((y: any, index: any) =>
+                  <div>
+                    <i className="fas fa-sticky-note"
+                      style={{ position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "15px", width: "0px" }}
+                      onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickNote(y)}>
                     </i>
                   </div>
                 )}
@@ -102,7 +143,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 // onDragEnd={(e: any) => setController(e, index)}
                 onMouseOver={(e: any) => displayThumbail(e, x.id)}
                 onMouseMove={(e: any) => displayThumbail(e, x.id)}
-                onMouseOut={() => removeThumbnail(x.id)}>
+                onMouseOut={() => removeThumbnail()}>
                 {<Buffering width={x.video_duration_in_second} id={x.id} />}
               </div>
               }
@@ -113,12 +154,6 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
           </div>
         </div>
       )}
-      {openThumbnail &&
-        <div id="Thumbnail" style={{ backgroundColor: "white", left: bookmarklocation + '%', top: "45%", position: "absolute", boxShadow: "0 0 9px 5px white" }}>
-          <DynamicThumbnail />
-          {renderDescription()}
-        </div>
-      }
     </div>
   )
 

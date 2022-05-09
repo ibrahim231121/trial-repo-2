@@ -82,3 +82,9 @@
   .canvas-width canvas{
     width: 100%;
   }
+  .videoFastRw {
+    display: flex;
+    > div {
+      margin-bottom: 75px;
+    }
+  }

@@ -27,6 +27,7 @@ type assetdata = {
   id:number;
   unitId:number;
   typeOfAsset:string;
+  notes:any;
 }
 
 
@@ -61,10 +62,11 @@ const Getassets = () => {
   const file=extractfile(row.asset.master.files);
   const recording=row.asset.master.recording;
   const bookmarks=row.asset.master.bookMarks??[];
+  const notes=row.asset.master.notes??[];
   const id=row.asset.master.id;
   const unitId=row.asset.master.unitId;
   const typeOfAsset=row.asset.master.typeOfAsset;
-  let myData: assetdata={id:id,files:file,assetduration:masterduration,assetbuffering:buffering,recording:recording,bookmarks:bookmarks,unitId:unitId,typeOfAsset:typeOfAsset}
+  let myData: assetdata={id:id,files:file,assetduration:masterduration,assetbuffering:buffering,recording:recording,bookmarks:bookmarks,unitId:unitId,typeOfAsset:typeOfAsset,notes:notes}
   rowdetail.push(myData);
   rowdetail1=row.asset.children.map((template: any, i:number) => {
     return {
@@ -75,7 +77,8 @@ const Getassets = () => {
         recording:template.recording,
         bookmarks:template.bookMarks??[],
         unitId:template.unitId,
-        typeOfAsset:template.typeOfAsset
+        typeOfAsset:template.typeOfAsset,
+        notes:template.notes??[],
     }
 })
 for(let x=0;x<rowdetail1.length;x++)

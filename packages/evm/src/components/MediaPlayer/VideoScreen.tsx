@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Grid from '@material-ui/core/Grid';
+import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
 import { Switch } from "@mui/material";
@@ -9,10 +10,14 @@ interface VideoScreenProp {
   timelinedetail: any[],
   settimelinedetail: any,
   mapEnabled: boolean,
-  videoHandlers: any
+  videoHandlers: any,
+  setVideoHandlersFwRw: any,
+  setvideoTimerFwRw: any,
+  onClickVideoFwRw: any,
+  isOpenWindowFwRw: boolean
 }
 
-const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers }: VideoScreenProp) => {
+const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
@@ -147,6 +152,7 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
             {getVideoTag(6)}
           </Grid>
         </Grid>
+        {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
         <div className="mapContainerhh" style={{ display: `${mapEnabled ? "block" : "none"}` }}></div>
       </Grid>
       <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} />
