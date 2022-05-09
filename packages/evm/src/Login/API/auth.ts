@@ -5,6 +5,7 @@ import { codeChallengeRemove } from '../../utils/settings';
 interface IDecoded{
     RememberMe:string;
     UserName:string;
+    UserId: string;
 }
 const cookies = new Cookies();
 let decoded:IDecoded;
@@ -20,6 +21,7 @@ export const authenticate = (accessToken:string,idToken:string,refreshToken:stri
           localStorage.setItem("refreshToken",refreshToken)
           localStorage.setItem("username",decoded.UserName)
           localStorage.setItem("remember me",decoded.RememberMe)
+          localStorage.setItem("User Id",decoded.UserId)
         const condition = localStorage.getItem('remember me')
 
         if (condition === 'True')
@@ -68,7 +70,8 @@ export const logOutUser = () => {
         const options = { path:'/' };
         opt = cookies.remove('access_token',options)
         opt = localStorage.removeItem('username')
-        opt = localStorage.removeItem('remember me')       
+        opt = localStorage.removeItem('remember me')     
+        localStorage.removeItem('User Id')     
         window.location.href = "/";
       
     

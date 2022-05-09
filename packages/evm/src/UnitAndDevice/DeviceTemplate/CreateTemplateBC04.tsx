@@ -25,6 +25,7 @@ import { CreateTempelateCase } from "./CreateTemplateCase";
 
 
 var re = /[\/]/;
+const userId = localStorage.getItem('User Id')
 
 const applyValidation = (arrayOfObj: any) => {
   var initialValuesArrayRequiredField: any = [];
@@ -251,7 +252,6 @@ const CreateTemplate = (props: any) => {
     //#region Tab 1
 
     for (var x of tabs) {
-
       var Property = x.label as keyof typeof FormSchema
       let editT1: Array<any> = [];
       let cameraFeildArrayCounterValue: number = 1;
@@ -508,6 +508,7 @@ const CreateTemplate = (props: any) => {
     );
 
     if (unitDataResponse.ok) {
+ 
       const response = await unitDataResponse.json();
       setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
       setDataFetched(true);
@@ -664,7 +665,7 @@ const CreateTemplate = (props: any) => {
         },
         body: JSON.stringify(body),
       };
-      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/KeyValue`;
+      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/${userId}/KeyValue`;
       fetch(url, requestOptions)
         .then((response: any) => {
           if (response.ok) {

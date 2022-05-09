@@ -23,6 +23,7 @@ export const logOutUser = (next:()=>void) =>{
         opt = localStorage.removeItem('username')
         opt = localStorage.removeItem('remember me')
         opt = localStorage.removeItem('refreshToken')
+        localStorage.removeItem('User Id')
         next() 
     
 } 
@@ -38,7 +39,7 @@ export const logOutUserSessionExpired = () =>{
      opt = cookies.remove('access_token',options)
      opt = localStorage.removeItem('username')
      opt = localStorage.removeItem('remember me')
-    
+     localStorage.removeItem('User Id')
   
 } 
 
