@@ -10,10 +10,11 @@ type SaveConfirmFormProps = {
   removedOption: any;
   setremoveClassName: any;
   rowData: any;
-  differenceOfDays: string;
+  differenceOfDays: number;
   removalType: number;
   removeMessage: string;
   retentionId: number;
+  holdUntill: string;
   setActiveForm: (param: any) => void;
   setOpenForm: () => void;
   setFilterValue: (param: any) => void;
@@ -41,12 +42,14 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   React.useEffect(() => {
     if (props.removalType === 1) {
       setWarningMessage(`Please be aware that by removing this category, you
-      are reducing the assets lifetime and the asset will expire in
-      ${props.differenceOfDays}.`);
+      are reducing the assets lifetime and the asset will expire${props.differenceOfDays > 0 ? ` in
+      ${props.differenceOfDays} Hours.` : '.'} `);
+
+
     } else if (props.removalType === 2) {
       setWarningMessage(`Please be aware that by removing this category, you
         are reducing the assets lifetime and the asset will expire in
-        ${props.differenceOfDays}. Unclassified retention policy of station
+        ${props.differenceOfDays} Hours. Unclassified retention policy of station
         will be applied on this evidence group.`);
     }
   }, [props.removalType]);
@@ -63,7 +66,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
         };
       })[0];
     if (newValue) {
-      props.setFilterValue((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
+      /** Set removed option in to State again. */
+      props.setFilterValue((prevState: any) => [...prevState, newValue]);  
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
@@ -78,8 +82,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const message = props.removeMessage;
     const evidenceId = props.rowData.id;
     const categoryId = props.removedOption.id;
-    const retentionId = props.retentionId;
-
+    const retentionId = props.retentionId !== 0 ? [props.retentionId] : null;
+    const holdUntill = props.holdUntill;
     const unAssignCategory = {
       id: categoryId,
       formData: [],
@@ -90,7 +94,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
       updateCategories: [],
-      retentionId: [retentionId]
+      retentionId: retentionId,
+      holdUntill: holdUntill
     };
     const requestOptions = {
       method: 'PATCH',

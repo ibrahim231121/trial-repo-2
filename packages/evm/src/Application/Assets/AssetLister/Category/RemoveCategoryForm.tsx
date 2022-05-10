@@ -17,17 +17,18 @@ type RemoveCategoryFormProps = {
   setOpenForm: () => void;
   setFilterValue: (param: any) => void;
   closeModal: (param: boolean) => void;
-  setDifferenceOfDays: (param: any) => void;
+  setDifferenceOfDays: (param: number) => void;
   setRemovedOption: (param: any) => void;
   setIsformUpdated: (param: boolean) => void;
   setModalTitle: (param: string) => void;
   setRemovalType: (param: number) => void;
   setRemoveMessage: (param: string) => void;
   setRetentionId: (param: number) => void;
+  setHoldUntill: (param: string) => void;
   setIndicateTxt: (param: boolean) => void;
 };
 
-interface FormValues {}
+interface FormValues { }
 
 const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   const [error, setError] = React.useState<boolean>(false);
@@ -99,38 +100,35 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
           for (let i = 0; i <= dataRetentionPromisesResponse.length - 1; i++) {
             retentionDetails.push({
               categoryName: filtered[i].name,
+              retentionId: dataRetentionPromisesResponse[i].id,
               hours:
                 dataRetentionPromisesResponse[i].detail.limit.hours +
                 dataRetentionPromisesResponse[i].detail.limit.gracePeriodInHours
             });
           }
-          // Sorted Array in Descending order by Hours.
+          /** Sorted Array in Descending order by Hours. */
           const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
-          if (sortedArray[0].categoryName === removedCategory.label) {
-            // Selected Category have Highest Hours
+          const highestRetention = sortedArray[0];
+          const SecondHighestRetention = sortedArray[1];
+          if (highestRetention.categoryName === removedCategory.label) {
+            /** Selected Category have Highest Hours */
             const recordingStarted = rowData.recordingStarted;
             const expiryDate = moment(recordingStarted)
-              .add(sortedArray[0].hours, 'hours')
-              .format('YYYY-MM-DD hh:mm:ss');
-
-            const newExpiryDate = moment().add(sortedArray[1].hours, 'hours');
+              .add(highestRetention.hours, 'hours').utc();
+            const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
             const duration = Math.floor(moment.duration(newExpiryDate.diff(expiryDate)).asHours());
-
-            if (duration > 24) {
-              const asDays = Math.floor(duration / 24);
-              props.setDifferenceOfDays(asDays + ' Days');
-            } else {
-              props.setDifferenceOfDays(duration + ' Hours');
-            }
-            // Incase Retention is effected.
+            props.setRetentionId(SecondHighestRetention.retentionId);
+            props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
+            props.setDifferenceOfDays(duration);
+            /** Incase Retention is effected */
             props.setRemovalType(1);
             props.setActiveForm(4);
           } else if (props.filterValue?.length === 0) {
-            // This is the last category
+            /** This is the last category */
             props.setRemovalType(2);
             props.setActiveForm(4);
           } else {
-            // Normal Removal
+            /** Normal Removal */
             props.setRemovalType(0);
             props.setActiveForm(4);
           }

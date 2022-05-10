@@ -6,6 +6,7 @@ import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
+import findRetentionAndHoldUntill from './Utility/findRetentionIdHoldUntill';
 
 type CategoryFormProps = {
   filterValue: any[];
@@ -128,7 +129,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       }
 
       let key_value_pair = Initial_Values.reduce((obj, item) => ((obj[item.key] = item.value), obj), {});
-
       setInitialValuesObject(key_value_pair);
       const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
         return {
@@ -230,9 +230,9 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       dispatch(AddToEditFormStateCreator(categoryBodyArr));
       props.setActiveForm(5);
     } else {
-      // Find highest retention, in categories.
-      let retentionPrmomise = findRetention();
-      Promise.resolve(retentionPrmomise).then((retentionId: number) => {
+      /** Find HighestRetentionId & HoldUntill, from newly added categories. */
+      let retentionPrmomise = findRetentionAndHoldUntill(categoryBodyArr, categoryOptions, props.filterValue, props.rowData);
+      Promise.resolve(retentionPrmomise).then((response: any) => {
         // Remove type key from body.
         categoryBodyArr.forEach((v: any) => {
           delete v.type;
@@ -241,7 +241,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           unAssignCategories: [],
           assignedCategories: categoryBodyArr,
           updateCategories: [],
-          retentionId: [retentionId]
+          retentionId: response !== undefined ? [response.retentionId] : null,
+          holdUntill: response !== undefined ? response.expiryDate : null
         };
         const requestOptions = {
           method: 'PATCH',
@@ -267,44 +268,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           });
       });
     }
-  };
-
-  const findRetention = async () => {
-    const retentionDetails: any = [];
-    let retentionList = '';
-    let count = 0;
-    const categoriesWithRetention = categoryOptions.filter((o: any) => {
-      return props.filterValue.some((e: any) => e.id === o.id);
-    });
-    for (const i of categoriesWithRetention) {
-      const retentionId = i.policies.retentionPolicyId;
-      retentionList +=
-        props.filterValue.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
-      count++;
-    }
-    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-    const call = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
-    })
-      .then(awaitJson)
-      .then((response: any) => {
-        for (let i = 0; i <= response.length - 1; i++) {
-          retentionDetails.push({
-            categoryName: props.filterValue[i].label,
-            hours: response[i].detail.limit.hours + response[i].detail.limit.gracePeriodInHours
-          });
-        }
-        const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
-        const retentionId = categoryOptions.find((o: any) => o.name === sortedArray[0].categoryName).policies
-          .retentionPolicyId;
-        return retentionId;
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err.message);
-      });
-    return call;
   };
 
   const skipBtn = () => {

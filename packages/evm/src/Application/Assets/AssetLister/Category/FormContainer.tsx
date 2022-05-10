@@ -23,13 +23,14 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [activeForm, setActiveForm] = React.useState<number>(0);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
-  const [differenceOfDays, setDifferenceOfDays] = React.useState('');
+  const [differenceOfDays, setDifferenceOfDays] = React.useState<number>(0);
   const [modalTitle, setModalTitle] = React.useState('');
   const [removeClassName, setremoveClassName] = React.useState('');
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
   const [removalType, setRemovalType] = React.useState(0);
   const [removeMessage, setRemoveMessage] = React.useState<string>('');
   const [retentionId, setRetentionId] = React.useState<number>(0);
+  const [holdUntill, setHoldUntill] = React.useState<string>('');
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
   const prevActiveFormRef = React.useRef<number>();
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
@@ -160,12 +161,13 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removedOption={removedOption}
             rowData={props.rowData}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            setDifferenceOfDays={(v: any) => setDifferenceOfDays(v)}
+            setDifferenceOfDays={(v: number) => setDifferenceOfDays(v)}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setRemovalType={(e: number) => setRemovalType(e)}
             setRemoveMessage={(e: string) => setRemoveMessage(e)}
             setRetentionId={(e: number) => setRetentionId(e)}
+            setHoldUntill={(e : string) => setHoldUntill(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
           />
         );
@@ -186,6 +188,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removalType={removalType}
             removeMessage={removeMessage}
             retentionId={retentionId}
+            holdUntill={holdUntill}
           />
         );
       case 5:
