@@ -449,6 +449,7 @@ const CRXAssetsBucketPanel = () => {
         if (rec != undefined || rec != null) {
 
           if (data.data.error != undefined || data.data.error != null) {
+            onFileUploadError();
             rec.uploadInfo.error = true;
             return [...newUploadInfo]
           }
@@ -479,6 +480,39 @@ const CRXAssetsBucketPanel = () => {
     });
 
   }
+  let firstExecution = 0; // Store the first execution time
+  const interval = 7000; // 7 seconds
+  const onFileUploadError = () => {
+    //this function is used for avoiding multiple error message at a time
+    var date = new Date();
+    var milliseconds = date.getTime();
+    if ((milliseconds - firstExecution) > interval) {
+      firstExecution = milliseconds;
+      toasterRef.current.showToaster({
+        message: "File(s) failed to upload.", variant: "error", duration: 7000, clearButtton: true
+      });
+    }
+  }
+  useEffect(() => {
+    let fileSize: number = 0;
+    for (let i = 0; i < files.length; i++) {
+      fileSize = fileSize + files[i].size;
+    }
+    setTotalFileSize(getFileSize(fileSize));
+  }, [files])
+
+  interface UploadInfo {
+    uploadValue: number,
+    uploadText: string,
+    uploadFileSize: string,
+    error: boolean,
+    removed?: boolean
+  }
+  interface FileUploadInfo {
+    uploadInfo: UploadInfo,
+    fileName: string
+  }
+
   useEffect(() => {
     let fileSize: number = 0;
     for (let i = 0; i < files.length; i++) {
