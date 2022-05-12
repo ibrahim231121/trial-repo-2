@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
 import AssignUser from '../AssignUser/AssignUser';
+import ManageRetention from '../ManageRetention/ManageRetention';
 import { RootState } from "../../../../Redux/rootReducer";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
@@ -83,10 +84,15 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
   };
 
   const [openAssignUser, setOpenAssignUser] = React.useState(false);
+  const [openManageRetention, setOpenManageRetention] = React.useState(false);
+
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const handleOpenAssignUserChange = () => {
     setOpenAssignUser(true);
   };
+  const handleOpenManageRetention = () => {
+    setOpenManageRetention(true);
+  }
 
   const MultiCompareAssetBucketData = (
     assetBucketData: AssetBucket[],
@@ -144,6 +150,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenAssignUser(false)}
         />
+      </CRXModalDialog>
+      <CRXModalDialog
+        maxWidth='lg'
+        title={"Modify Retention"}
+        className={'CRXModal'}
+        modelOpen={openManageRetention}
+        onClose={() => setOpenManageRetention(false)}
+        defaultButton={false}
+        indicatesText={true}
+        
+      >
+        <ManageRetention
+            items = {selectedItems}
+            filterValue={filterValue}
+            //setFilterValue={(v: any) => setFilterValue(v)}
+            rowData={row}
+            setRemovedOption={(e: any) => {}}
+            setOnClose={() => setOpenManageRetention(false)}
+          />
       </CRXModalDialog>
 
       <Menu
@@ -206,15 +231,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">Modify Retention</div>
-              </div>
-            </SecurityDescriptor>
+            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+              <div className="crx-menu-icon"></div>
+              <div className="crx-menu-list">Modify Retention</div>
+            </div>
           </Restricted>
         </MenuItem>
-
 
 
         {isCategoryEmpty === false ? (
