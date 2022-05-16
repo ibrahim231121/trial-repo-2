@@ -6,11 +6,13 @@ import { UnitInfoModel } from "./UnitDetail";
 type infoProps = {
   info: UnitInfoModel;
   onChangeGroupInfo: any;
-};
+  validationCheckOnButton:(p: boolean) => void;
+}
 
 const UnitConfigurationInfo: React.FC<infoProps> = ({
   info,
   onChangeGroupInfo,
+  validationCheckOnButton
 }) => {
   const [name, setName] = React.useState(info.name);
   const [description, setDescription] = React.useState(info.description);
@@ -19,7 +21,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   const [configList, setconfigList] = React.useState(info.configTemplateList);
 
   const onChangeName = (e: any) => {
-    onChangeGroupInfo(
+    onChangeGroupInfo(     
       e.target.value,
       description,
       groupName,
@@ -100,6 +102,9 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     }
   };
 
+  React.useEffect(()=>{
+       validationCheckOnButton(!!formpayloadErr.nameErr)
+  },[formpayloadErr.nameErr])
   return (
     <div className="crx-group-info-form CBX-input">
       <div className="crx-group-info">
