@@ -5,7 +5,7 @@ import { CRXButton } from '@cb/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
-import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
+import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
 
 type AssignUserProps = {
@@ -28,7 +28,28 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   React.useEffect(() =>  {
     dispatch(getUsersInfoAsync());
+    getMasterAsset();
   }, []);
+
+  const getMasterAsset = async () => {
+    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/'+ `${props.rowData.assetId}`
+    
+    const res = await fetch(url, {
+      method: 'Get',
+      headers: { 'Content-Type': 'application/json', TenantId: '1'},
+    })
+    var response = await res.json();
+    if(response != null) {
+      let result = response.owners.map((x:any) => { 
+                    let item: any = {
+                      id: x.cmtFieldValue,
+                      label: x.record.filter((t:any) => t.key === 'UserName')[0].value
+                    }
+                    return item
+                  })
+      props.setFilterValue(() => result);
+    } 
+  }
 
   React.useEffect(() => {
     props.setFilterValue(() => props.filterValue);
@@ -75,10 +96,39 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     return false;
   };
 
-  const onSubmitForm = () => {
+  const onSubmitForm = async () => {
+
+    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/'+ `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
+    
     if (props.filterValue?.length !== 0) {
       //props.setActiveForm((prev: any) => prev + 1);
     }
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
+      body: JSON.stringify(props.filterValue.map(x => x.id))
+    })
+      .then(function (res) {
+        if (res.ok) {
+          props.setOnClose();
+          // showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
+        } else if (res.status == 500) {
+          // setAlert(true);
+          // setResponseError(
+          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          // );
+        } 
+        // else return res.text();
+      })
+      // .then((resp) => {
+      //   console.log("S ", resp)
+      //   if (resp !== undefined) {
+      //     let error = JSON.parse(resp);
+      //   }
+      // })
+      .catch(function (error) {
+        return error;
+      });
   };
 
   const cancelBtn = () => {

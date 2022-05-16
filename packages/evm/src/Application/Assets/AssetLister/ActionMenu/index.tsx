@@ -224,6 +224,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
+                <div className="crx-menu-list">Assign User</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
