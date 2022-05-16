@@ -109,7 +109,7 @@ const UnitAndDevices: React.FC = () => {
             // <a href={`unitsanddevices/detail/${unit.recId +"_"+ unit.stationRecId}`}>{unit.station}</a>,
                 return {
                     id: unit.recId,
-                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId,
+                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId+"_"+unit.template,
                     description: unit.description,
                     station: unit.station,
                     serialNumber: unit.serialNumber,
@@ -482,12 +482,11 @@ const openHandler = (_: React.SyntheticEvent ) => {
       minWidth: "80",
       maxWidth: "100",
     },
-
     {
       label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplayUnit(e, "linkColor"),// textDisplay(e, ""),
+      dataComponent: (e: string) => anchorDisplayUnit(e),// textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,

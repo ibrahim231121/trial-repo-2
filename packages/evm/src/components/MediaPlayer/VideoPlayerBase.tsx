@@ -115,6 +115,8 @@ const VideoPlayerBase = (props: any) => {
   const [mode, setMode] = useState<number>(0);
   const [modeFw, setModeFw] = useState<number>(0);
   const [modeRw, setModeRw] = useState<number>(0);
+  const [ismodeFwdisable, setismodeFwdisable] = useState<boolean>(false);
+  const [ismodeRwdisable, setisModeRwdisable] = useState<boolean>(false);
   const [curractionFwRw, setcurractionFwRw] = useState({
     currmode: 0,
     currcase: 0
@@ -187,6 +189,8 @@ const VideoPlayerBase = (props: any) => {
     if (!isPlayingFwRw && videoHandlersFwRw.length > 0) {
       setModeFw(0);
       setModeRw(0);
+      setismodeFwdisable(false);
+      setisModeRwdisable(false);
       videoHandlersFwRw.forEach((videoHandle: any) => {
         videoHandle.pause();
         videoHandle.playbackRate = 1;
@@ -549,14 +553,14 @@ const VideoPlayerBase = (props: any) => {
         if (isPlayingFwRw === true) {
           if (timer < timelineduration) {
             var timerValue: any[] = [];
-            if (modeFw > 0) {
-              timerFwRw.forEach((x: any) => {
-                timerValue.push(x + 0.3);
+            if(modeFw>0){
+              timerFwRw.forEach((x: any)=> {
+                timerValue.push(x+0.25);
               })
             }
-            else if (modeRw > 0) {
-              timerFwRw.forEach((x: any) => {
-                timerValue.push(x - 0.3);
+            else if(modeRw>0){
+              timerFwRw.forEach((x: any)=> {
+                timerValue.push(x-0.25);
               })
             }
 
@@ -651,7 +655,9 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const modeSetFwRw = (Currmode: number, CaseNo: number) => {
-    if (isPlaying) {
+    var video: any = timelinedetail[0];
+    var currVideoStartTime = video.recording_start_point;
+    if(isPlaying){
       setPlaying(false);
       videoHandlers.forEach((videoHandle: any) => {
         videoHandle.pause();
@@ -666,20 +672,20 @@ const VideoPlayerBase = (props: any) => {
     }
     var videoTimerFwRw: any[] = [];
     let num = -2;
-
-    setSpeedFwRw(300);
+    
+    setSpeedFwRw(250);
     setisPlayingFwRw(true);
     switch (CaseNo) {
       case 1: //Forward
         if (modeRw > 0) {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(videoHandle.currentTime + Currmode * num);
+            videoTimerFwRw.push(videoHandle.currentTime+currVideoStartTime+Currmode*num);
             num++;
           });
         }
         else {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(Currmode > 2 ? videoHandle.currentTime + Currmode * num : controlBar + Currmode * num);
+            videoTimerFwRw.push(Currmode>2 ? videoHandle.currentTime+currVideoStartTime+Currmode*num : controlBar+Currmode*num);
             num++;
           });
         }
@@ -689,13 +695,13 @@ const VideoPlayerBase = (props: any) => {
       case 2: //Rewind
         if (modeFw > 0) {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(videoHandle.currentTime + Currmode * num);
+            videoTimerFwRw.push(videoHandle.currentTime+currVideoStartTime+Currmode*num);
             num++;
           });
         }
         else {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(Currmode > 2 ? videoHandle.currentTime + Currmode * num : controlBar + Currmode * num);
+            videoTimerFwRw.push(Currmode>2 ? videoHandle.currentTime+currVideoStartTime+Currmode*num : controlBar+Currmode*num);
             num++;
           });
         }
@@ -710,19 +716,39 @@ const VideoPlayerBase = (props: any) => {
 
   const onClickVideoFwRw = (event: any) => {
     setisPlayingFwRw(false);
+    var video: any = timelinedetail[0];
     let currTime = Math.floor(event.target.currentTime);
-    handleControlBarChange(null, currTime);
+    
+    var currTimeTotal = currTime + (video.recording_start_point);
+
+    handleControlBarChange(null, currTimeTotal);
     setPlaying(!isPlaying);
     if (!isPlaying) {
       videoHandlers.forEach((videoHandle: any) => {
-        hanldeVideoStartStop(currTime, videoHandle, true);
+        hanldeVideoStartStop(currTimeTotal, videoHandle, true);
       });
     }
   }
 
   const onClickFwRw = (Currmode: number, CaseNo: number) => {
-    if (isOpenWindowFwRw && isvideoHandlersFwRw) {
-      modeSetFwRw(Currmode, CaseNo)
+    if(Currmode>=6){
+      switch(CaseNo) {
+        case 1: //Forward
+          setismodeFwdisable(true);
+          break;
+        case 2: //Rewind
+          setisModeRwdisable(true);
+          break;
+        default:
+          break;
+        }
+    }
+    else{
+      setismodeFwdisable(false);
+      setisModeRwdisable(false);
+    }
+    if(isOpenWindowFwRw && isvideoHandlersFwRw){
+      modeSetFwRw(Currmode,CaseNo)
     }
     else {
       setcurractionFwRw({ currmode: Currmode, currcase: CaseNo })
@@ -876,7 +902,7 @@ const VideoPlayerBase = (props: any) => {
           <div className="playerViewFlex">
             <div className="playerViewLeft">
               <div className="PlayPause-container">
-                <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn">
+                <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable}>
                   <i className="fa fa-fast-backward"><span>{modeRw > 0 ? modeRw + "X" : ""}</span></i>
                 </CRXButton>
                 <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn" >
@@ -888,7 +914,7 @@ const VideoPlayerBase = (props: any) => {
                 <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn" >
                   <i className="fas fa-forward"></i>
                 </CRXButton>
-                <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn">
+                <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable}>
                   <i className="fas fa-fast-forward"><span>{modeFw > 0 ? modeFw + "X" : ""}</span></i>
                 </CRXButton>
                 <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn">
