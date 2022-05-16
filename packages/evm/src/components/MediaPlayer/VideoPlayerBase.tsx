@@ -841,6 +841,7 @@ const VideoPlayerBase = (props: any) => {
               setVisibleThumbnail={setVisibleThumbnail}
               singleTimeline={singleTimeline}
               displayThumbnail={displayThumbnail}
+              bookmarkMsgRef={bookmarkMsgRef}
             />
           ) : (<></>)}
 

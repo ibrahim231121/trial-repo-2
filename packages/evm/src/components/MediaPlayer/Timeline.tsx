@@ -22,10 +22,11 @@ interface Timelineprops {
   setVisibleThumbnail: any
   singleTimeline: any
   displayThumbnail: any
+  bookmarkMsgRef: any
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, setnote, note }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, setnote, note, bookmarkMsgRef }: Timelineprops,) => {
   const targetRef = useRef<any>();
   const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
   const [Event, setEvent] = useState();
@@ -83,9 +84,14 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
 
 
   const onClickBookmark = (y: any) => {
-    setopenThumbnail(false);
-    seteditBookmarkForm(true);
-    setbookmarkAssetId(y.assetId);
+    if(y.madeBy == "System"){
+      bookmarkMsgRef.current.showToaster({message: "Cannot Edit System Generated Bookmark", variant: "error", duration: 5000, clearButtton: true});
+    }
+    else{
+      setopenThumbnail(false);
+      seteditBookmarkForm(true);
+      setbookmarkAssetId(y.assetId);
+    }
   }
   const onClickNote = (y: any) => {
     setopenThumbnail(false);
