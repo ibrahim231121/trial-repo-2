@@ -99,7 +99,7 @@ const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, ancho
                           name="radio-buttons" />
                       </td>
                       <td>
-                        {video.id}
+                        {video.camera}
                       </td>
                     </tr>
 

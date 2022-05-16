@@ -104,6 +104,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
       {timelinedetail.filter((x:any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
         <div style={{marginTop:10}}>
           <div className="beforeline">
+          <p>{x.camera}</p>
             <div className="line" style={{ position: "relative" }}>
               <video width="300" height="150" id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}>
                 <source src={x.src} type="video/mp4" />

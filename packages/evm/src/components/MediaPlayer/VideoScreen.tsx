@@ -26,10 +26,14 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
   const getVideo = (camIndexVideoData: any) => {
     if (camIndexVideoData !== undefined) {
       return (
+        <>
         <video id={camIndexVideoData.id} width="100%" height="100%" preload="auto" crossOrigin="anonymous">
           <source src={camIndexVideoData.src} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
+        <p style={{backgroundColor:"black", color:"white", paddingLeft:"45%"}}>{camIndexVideoData.camera}</p>
+        </>
       )
     } else {
       return <div />;
