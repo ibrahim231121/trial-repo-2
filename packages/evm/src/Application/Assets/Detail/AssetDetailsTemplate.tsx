@@ -138,7 +138,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
 
       setEvidence({ ...evidence, categories: categories });
-      console.log("categories", categories);
+     
     }
   }, [evidenceCategoriesResponse]);
 
@@ -199,7 +199,7 @@ const AssetDetailsTemplate = (props: any) => {
       });
     }
   }, [getAssetData]);
-  console.log("this is umair", getAssetData);
+ 
 
   const tabs = [
     { label: "Information", index: 0 },

@@ -7,7 +7,7 @@ import { CRXHeading } from "@cb/shared";
 import { CRXCheckBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { CRXRadio } from "@cb/shared";
-import { Radio } from "@mui/material";
+import { Radio } from "@material-ui/core";
 
 interface VideosSelectionProp {
   timelinedetail: any[],

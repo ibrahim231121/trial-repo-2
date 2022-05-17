@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import moment from 'moment';
+import http from '../../../../../http-common';
 
 type SaveConfirmFormProps = {
   removedOption: any;
   setremoveClassName: any;
-  rowData: any;
+  // rowData: any;
+  evidenceResponse : any;
   differenceOfDays: number;
   removalType: number;
   removeMessage: string;
@@ -78,9 +80,10 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     props.closeModal(false);
   };
 
-  const deleteFetchReq = () => {
+  const deleteRequest = () => {
     const message = props.removeMessage;
-    const evidenceId = props.rowData.id;
+    // const evidenceId = props.rowData.id;
+    const evidenceId = props.evidenceResponse?.id;
     const categoryId = props.removedOption.id;
     const retentionId = props.retentionId !== 0 ? [props.retentionId] : null;
     const holdUntill = props.holdUntill;
@@ -97,19 +100,10 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       retentionId: retentionId,
       holdUntill: holdUntill
     };
-    const requestOptions = {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        TenantId: '1'
-      },
-      body: JSON.stringify(body)
-    };
-
     const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
-    fetch(url, requestOptions)
-      .then((response: any) => {
-        if (response.ok) {
+    http.patch(url, body)
+      .then((response) => {
+        if (response.status == 204) {
           setSuccess(true);
           setTimeout(() => closeModal(), 3000);
         } else {
@@ -137,7 +131,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       <Formik
         initialValues={initialValues}
         onSubmit={() => {
-          deleteFetchReq();
+          deleteRequest();
         }}>
         <Form className='crx-category-remove-form'>
           {props.removalType !== 0 && (

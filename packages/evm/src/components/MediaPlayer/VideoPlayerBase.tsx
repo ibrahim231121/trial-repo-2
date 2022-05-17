@@ -15,7 +15,7 @@ import moment, { duration } from 'moment';
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
 import { CRXToaster } from "@cb/shared";
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Switch } from "@material-ui/core";
 
 
 var videoElements: any[] = [];

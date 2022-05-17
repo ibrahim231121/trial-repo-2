@@ -247,7 +247,7 @@ const User: React.FC = () => {
 
     if(colIdx === 5) {
       
-        console.log("initialRows",initialRows)
+       
         let statuslist: any = [];
 
         if (initialRows !== undefined) {
@@ -334,7 +334,7 @@ const deleteSelectedItems = (
   setHeadCells(headCellReset);
 };
 const openHandler = (_: React.SyntheticEvent) => {
-  console.log("onOpen");
+ 
   //setOpen(true)
 };
 

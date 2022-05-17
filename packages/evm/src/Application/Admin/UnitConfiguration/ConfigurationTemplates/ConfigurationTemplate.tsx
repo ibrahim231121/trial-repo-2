@@ -210,7 +210,7 @@ const ConfigurationTemplates: React.FC = () => {
   }
 
   const openHandler = (_: React.SyntheticEvent) => {
-    console.log("onOpen");
+   
     setOpen(true);
   };
 

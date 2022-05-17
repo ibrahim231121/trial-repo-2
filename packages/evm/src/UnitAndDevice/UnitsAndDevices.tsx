@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +38,7 @@ import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
 import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
+import ApplicationPermissionContext from "../ApplicationPermission/ApplicationPermissionContext";
 
 
 type Unit = {
@@ -99,6 +100,8 @@ const UnitAndDevices: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
 
   const [open, setOpen] = React.useState<boolean>(false)
+
+  const {getModuleIds} = useContext(ApplicationPermissionContext);
 
   const setData = () => {
  
@@ -335,7 +338,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
   const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
 
     if(colIdx === 2) {
-        console.log(initialRows);
+       
 
     let statuslist: any = [];
 
@@ -388,7 +391,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
 
 
     if(colIdx === 9) {
-      console.log(initialRows);
+     
   let templatelist: any = [];
 
   if(initialRows !== undefined){
@@ -468,6 +471,19 @@ const openHandler = (_: React.SyntheticEvent ) => {
 
 
 
+const AnchorDisplay = (e: string) => {
+  if(getModuleIds().includes(16)) {
+  return anchorDisplayUnit(e)
+  }
+  else{
+  let lastid = e.lastIndexOf("_");
+  let text =  e.substring(0,lastid)
+  return textDisplay(text,"")
+  }
+}
+
+
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -486,7 +502,7 @@ const openHandler = (_: React.SyntheticEvent ) => {
       label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplayUnit(e),// textDisplay(e, ""),
+      dataComponent: (e: string) => AnchorDisplay(e),// textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,

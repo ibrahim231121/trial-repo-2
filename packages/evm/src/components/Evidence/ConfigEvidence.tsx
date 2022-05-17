@@ -76,8 +76,8 @@ const Evidence = (props: any) => {
               }
           })
       }
-      console.log("configTemplateRows")
-      console.log(configTemplateRows)  
+     
+     
       setRows(configTemplateRows);
       setReformattedRows(configTemplateRows);
   

@@ -33,7 +33,7 @@ const toggleModal = () => {
 const Deleteconfirm = () => {
   if(row)
   {
-    console.log(row)
+   
     if(row.indicator=="Default")
     {
       setModal(true)

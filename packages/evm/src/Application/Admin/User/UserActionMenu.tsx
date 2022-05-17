@@ -149,7 +149,7 @@ const UserActionMenu: React.FC<Props> = ({
       dispatch(addNotificationMessages(notificationMessage));
     }
   }, [responseError]);
-  console.log("row Status", row?.status);
+ 
   return (
     <>
       <CRXModalDialog

@@ -17,7 +17,6 @@ const CRXLefNavigation = () => {
   };
 
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-
   const items = [
     {
       moduleId: 0,
@@ -120,7 +119,7 @@ const CRXLefNavigation = () => {
     //   ],
     // },
     {
-      moduleId: 0,
+      moduleId: 15,
       label: 'Units & Devices',
       icon: 'fas fa-laptop-code NaveIcon',
      

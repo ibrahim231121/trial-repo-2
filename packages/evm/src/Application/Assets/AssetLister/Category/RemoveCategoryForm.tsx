@@ -6,13 +6,12 @@ import { CRXHeading } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { CRXAlert } from '@cb/shared';
-import { SETUP_CONFIGURATION_SERVICE_URL } from '../../../../utils/Api/url';
 
 type RemoveCategoryFormProps = {
   filterValue: [];
   setremoveClassName: any;
   removedOption: any;
-  rowData: any;
+  evidenceResponse: any;
   setActiveForm: (param: any) => void;
   setOpenForm: () => void;
   setFilterValue: (param: any) => void;
@@ -35,7 +34,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   const [Message, setMessageLenght] = React.useState('');
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const filtered = categoryOptions.filter((o: any) => {
-    return props.rowData?.categories.some((e: any) => e === o.name);
+    return props.evidenceResponse?.categories.some((e: any) => e === o.name);
   });
   const initialValues: FormValues = {
     reason: ''
@@ -51,13 +50,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
     if (Message.length === 0) props.setIsformUpdated(false);
     else props.setIsformUpdated(true);
   }, [Message]);
-
-  const awaitJson = (response: any) => {
-    if (response.ok) {
-      return response.json() as Object;
-    }
-    throw new Error(response.statusText);
-  };
 
   const cancelBtn = () => {
     let newValue = categoryOptions
@@ -78,66 +70,63 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   };
 
   const getPolicyAsync = (message: string) => {
-    const rowData = props.rowData;
+    
     const removedCategory = props.removedOption;
+    const categoryObject = props.evidenceResponse.categories;
     const retentionDetails: any = [];
-    let retentionList = '';
-    let count = 0;
-    for (const i of filtered) {
-      const retentionId = i.policies.retentionPolicyId;
-      retentionList += filtered.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
-      count++;
-    }
-    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-    fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
-    })
-      .then(awaitJson)
-      .then((dataRetentionPromisesResponse: any) => {
-        props.setRemoveMessage(message);
-        if (dataRetentionPromisesResponse.length > 0) {
-          for (let i = 0; i <= dataRetentionPromisesResponse.length - 1; i++) {
-            retentionDetails.push({
-              categoryName: filtered[i].name,
-              retentionId: dataRetentionPromisesResponse[i].id,
-              hours:
-                dataRetentionPromisesResponse[i].detail.limit.hours +
-                dataRetentionPromisesResponse[i].detail.limit.gracePeriodInHours
-            });
-          }
-          /** Sorted Array in Descending order by Hours. */
-          const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
-          const highestRetention = sortedArray[0];
-          const SecondHighestRetention = sortedArray[1];
-          if (highestRetention.categoryName === removedCategory.label) {
-            /** Selected Category have Highest Hours */
-            const recordingStarted = rowData.recordingStarted;
-            const expiryDate = moment(recordingStarted)
-              .add(highestRetention.hours, 'hours').utc();
-            const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
-            const duration = Math.floor(moment.duration(newExpiryDate.diff(expiryDate)).asHours());
-            props.setRetentionId(SecondHighestRetention.retentionId);
-            props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
-            props.setDifferenceOfDays(duration);
-            /** Incase Retention is effected */
-            props.setRemovalType(1);
-            props.setActiveForm(4);
-          } else if (props.filterValue?.length === 0) {
-            /** This is the last category */
-            props.setRemovalType(2);
-            props.setActiveForm(4);
-          } else {
-            /** Normal Removal */
-            props.setRemovalType(0);
-            props.setActiveForm(4);
-          }
-        }
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err.message);
+    props.setRemoveMessage(message);
+    for(const elem of categoryObject) {
+      const Hours = elem.dataRetentionPolicy.record.filter((x: any) => x.key === 'Hours')[0].value;
+      const GracePeriodHours = elem.dataRetentionPolicy.record.filter((x: any) => x.key === 'GracePeriodHours')[0].value;
+      const TotalHours = parseInt(Hours) + parseInt(GracePeriodHours);
+      retentionDetails.push({
+        categoryName: elem.record.record.filter((x: any) => x.key === 'Name')[0].value,
+        retentionId: elem.dataRetentionPolicy.cmtFieldValue,
+        hours: TotalHours
       });
+    }
+    /** 
+     * * Sorted Array in Descending order by Hours. 
+     * */
+    const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
+    const highestRetention = sortedArray[0];
+    if(sortedArray.length == 1){
+      /** 
+       * * This was the last category 
+       * */
+       props.setRemovalType(2);
+       props.setActiveForm(4);
+       return;
+    }
+    const SecondHighestRetention = sortedArray[1];
+    if (highestRetention.categoryName === removedCategory.label) {
+      /** 
+       * * Selected Category have Highest Hours 
+       * */
+      const recordingStarted = props.evidenceResponse?.assets?.master?.recording.started;
+      const expiryDate = moment(recordingStarted)
+        .add(highestRetention.hours, 'hours').utc();
+      const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
+      const duration = Math.floor(moment.duration(newExpiryDate.diff(expiryDate)).asHours());
+      props.setRetentionId(SecondHighestRetention.retentionId);
+      props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
+      props.setDifferenceOfDays(duration);
+      /** Incase Retention is effected */
+      props.setRemovalType(1);
+      props.setActiveForm(4);
+    } else if (props.filterValue?.length === 0) {
+      /** 
+       * * This is the last category 
+       * */
+      props.setRemovalType(2);
+      props.setActiveForm(4);
+    } else {
+      /** 
+       * * Normal Removal 
+       * */
+      props.setRemovalType(0);
+      props.setActiveForm(4);
+    }
   };
 
   return (

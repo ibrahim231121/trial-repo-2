@@ -22,28 +22,28 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 
   React.useEffect(() => {
     const divWidth = document.getElementsByClassName("getWidth");
-    console.log("divWidth", divWidth);
+   
 
     setClientWidth(divWidth);
   }, []);
 
   // React.useEffect(() => {
-  //   console.log("orderColumn", orderColumn);
+  //  
   // });
 
-  // console.log("clientWidth", clientWidth);
-  // console.log("resizeWidth.colIdx", resizeWidth?.colIdx);
+  //
+  //
 
   let finalWidth =
     resizeWidth &&
     resizeWidth.deltaX + clientWidth[resizeWidth.colIdx + 3].clientWidth + "px";
 
-  console.log("finalWidth", finalWidth);
+ 
 
-  // console.log("finalWidth", finalWidth);
+  //
 
   const resizeRow = (e: { colIdx: number; deltaX: number }) => {
-    console.log("colIdx", e.colIdx);
+   
     setResizeWidth(e);
   };
 
@@ -228,10 +228,10 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                   }
 
                   // clientWidth.map((item, index, arr) => {
-                  //   console.log(item[index].id);
+                  //  
                   // });
 
-                  // console.log("Stoped");
+                  //
                   // headCells[resizeWidth.colIdx + 3].minWidth =
                   //   resizeWidth.deltaX +
                   //     clientWidth[resizeWidth.colIdx + 3].clientWidth >

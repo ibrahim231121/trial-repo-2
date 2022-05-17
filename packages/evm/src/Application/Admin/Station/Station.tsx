@@ -91,7 +91,7 @@ const Station: React.FC = () => {
     }
     setRows(stationRows);
     setReformattedRows(stationRows);
-    console.log('userRows', stationRows);
+   
   };
 
   React.useEffect(() => {

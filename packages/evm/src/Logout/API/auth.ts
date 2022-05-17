@@ -48,7 +48,7 @@ export const logoutAlltabs = ()=>{
     logoutChannel.onmessage = event=>{
         logOutUserSessionExpired();
         logoutChannel.close();
-        console.log('asdasdsadsadsd',event.logoutMessage)
+       
     }
 }
 

@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
-import { Switch } from "@mui/material";
+import { Switch } from "@material-ui/core";
 
 interface VideoScreenProp {
   viewNumber?: number,

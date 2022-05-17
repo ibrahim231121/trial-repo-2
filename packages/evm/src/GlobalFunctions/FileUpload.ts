@@ -56,7 +56,7 @@ export const AddFilesToFileService = async (files: any) => {
     await Promise.all(promises).then((messages) => {
         uploadFiles(files);//here we can find the blob url either amazon or azure
     }).catch((e) => {
-        console.log("error", e)
+       
     });
 }
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {

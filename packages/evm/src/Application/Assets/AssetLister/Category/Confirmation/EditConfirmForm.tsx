@@ -5,10 +5,11 @@ import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
-import findRetentionAndHoldUntill from '../Utility/findRetentionIdHoldUntill';
+import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
+import http from '../../../../../http-common';
 
 type EditConfirmFormProps = {
-  rowData?: any;
+  evidenceResponse: any;
   filterValue: any[];
   setremoveClassName: any;
   setOpenForm: () => void;
@@ -27,8 +28,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
-  const selectedRow = props.rowData;
-  const evidenceId = selectedRow.id;
+  const evidenceId = props.evidenceResponse?.id;
   const initialValues: FormValues = {
     reason: ''
   };
@@ -45,13 +45,12 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   }, [Message]);
 
 
-
   const submitForm = (message: string) => {
     const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
     let assignedCategories = CategoryFormFields.filter((e: any) => e.type === 'add');
     let updateCategories = CategoryFormFields.filter((e: any) => e.type === 'update');
 
-    //Remove type key from body.
+    // Remove type key from body.
     assignedCategories = assignedCategories.map((v: any) => {
       return {
         assignedOn: v.assignedOn,
@@ -67,37 +66,31 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         id: v.id
       };
     });
-    /** Find HighestRetentionId & HoldUntill, from newly added categories. */
-    let retentionPrmomise = findRetentionAndHoldUntill(assignedCategories, categoryOptions, props.filterValue, props.rowData);
-    Promise.resolve(retentionPrmomise).then((response: any) => {
+
+    /** 
+     * * Find HighestRetentionId & HoldUntill, from newly added categories. 
+     * */
+    const retentionPromise = findRetentionAndHoldUntill(assignedCategories, categoryOptions, props.filterValue, props.evidenceResponse);
+    Promise.resolve(retentionPromise).then((retention: any) => {
       const body = {
         unAssignCategories: [],
         assignedCategories: assignedCategories,
         updateCategories: updateCategories,
-        retentionId: response !== undefined ? [response.retentionId] : null,
-        holdUntill: response !== undefined ? response.expiryDate : null
+        retentionId: retention !== undefined ? [retention.retentionId] : null,
+        holdUntill: retention !== undefined ? retention.expiryDate : null
       };
-      const requestOptions = {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          TenantId: '1'
-        },
-        body: JSON.stringify(body)
-      };
-      fetch(url, requestOptions)
-        .then((response: any) => {
-          if (response.ok) {
+
+      http.patch(url, body)
+        .then((response) => {
+          if (response.status == 204) {
             setSuccess(true);
             setTimeout(() => closeModal(), 3000);
           } else {
+            setError(true);
             throw new Error(response.statusText);
           }
-        })
-    }).catch((err: any) => {
-      setError(true);
-      console.error(err.message);
-    });
+        });
+    })
   };
 
   const cancelBtn = () => {
