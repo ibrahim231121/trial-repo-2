@@ -10,7 +10,7 @@ import {
   CRXRootRef,
   CRXProgressBar,
   CRXToaster,
-  CrxAccordion, 
+  CrxAccordion,
   CRXConfirmDialog,
   CRXButton
 } from "@cb/shared";
@@ -603,7 +603,7 @@ const CRXAssetsBucketPanel = () => {
   }, [])
 
   const uploadProgressStatus = () => {
-    
+
     const prog = uploadInfo.map((item: FileUploadInfo, i: number) => {
       if (item.uploadInfo.removed != true) {
         return <div className="crxProgressbarBucket">
@@ -621,7 +621,7 @@ const CRXAssetsBucketPanel = () => {
             maxDataSize={true}
             loadingCompleted={item.uploadInfo.uploadFileSize}//"5.0Mb"
           />
-          
+
         </div>
       }
     })
@@ -691,6 +691,19 @@ const CRXAssetsBucketPanel = () => {
 
   })
 
+  const [activeScreen, setActiveScreen] = useState<number>(0);
+  const onSaveOrNextClickHandler = () => {
+    if (activeScreen == 1) {
+      // Screen is on Category,
+      if (isNext === false) {
+        // If Form is no Category attached, 
+      } else {
+        // If Form is attached to Category,
+      }
+      return;
+    }
+    setActiveScreen((prev: number) => prev + 1);
+  }
   return (
     <>
       <CRXToaster ref={toasterRef} />
@@ -760,13 +773,13 @@ const CRXAssetsBucketPanel = () => {
                             <div className="btn-center">
                               <CRXButton
                                 id="metdaModalButton"
-                                className="MuiButton-containedPrimary" 
+                                className="MuiButton-containedPrimary"
                                 onClick={handleClickOpen}
                                 color='primary'
                                 variant='contained'
-                                
-                                >
-                                  Add metadata
+
+                              >
+                                Add metadata
                               </CRXButton>
                             </div>
                           </div>
@@ -777,20 +790,22 @@ const CRXAssetsBucketPanel = () => {
                           primaryButton={true}
                           secondaryButton={true}
                           maxWidth="xl"
-                          title="Choose asset metadata"
+                          title="Choose asset metadata edited-on-purpose"
                           saveButtonTxt={isNext == false ? "Save" : "Next"}
                           cancelButtonTxt="Cancel"
                           showSticky={false}
                           modelOpen={isModalOpen}
                           onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+                          onSave={onSaveOrNextClickHandler}
                         >
                           <AddMetadataForm
                             setCloseWithConfirm={setCloseWithConfirm}
                             onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-                            onSave
+                            // onSave
                             uploadFile={files}
                             setNextButton={setIsNext}
                             uploadAssetBucket={assetBucketData}
+                            activeScreen={activeScreen}
                           />
                         </CRXModalDialog>
                       </CRXRows>
@@ -898,11 +913,11 @@ const CRXAssetsBucketPanel = () => {
         maxWidth="sm"
       >
         <div className="crxUplockContent">
-        <div className='uploadCancelText'>
+          <div className='uploadCancelText'>
             You are attempting to <strong>remove</strong> the <strong>(file name.file type)</strong> asset from this upload.  Once you remove it, you will not be able to undo this action.
-        </div>
-        <div className='uploadCancelBottom'>
-        Are you sure you would to <strong>remove</strong>  this asset from this upload?
+          </div>
+          <div className='uploadCancelBottom'>
+            Are you sure you would to <strong>remove</strong>  this asset from this upload?
           </div>
         </div>
 
