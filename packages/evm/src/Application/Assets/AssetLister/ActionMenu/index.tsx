@@ -232,10 +232,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
         <MenuItem>
           <Restricted moduleId={0}>
+          <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
             <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">Modify Retention</div>
             </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
