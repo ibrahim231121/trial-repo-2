@@ -58,8 +58,8 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "SET PORT=3000 && yarn run start:dev",
-    "build": "yarn run build:dev",
+    "start": "SET PORT=3000 && yarn run start:qa",
+    "build": "yarn run build:qa",
     "start:dev": "env-cmd -f ./environment/.env.dev react-app-rewired start",
     "start:qa": "env-cmd -f ./environment/.env.qa react-app-rewired start",
     "start:prod": "env-cmd -f ./environment/.env.prod react-app-rewired start",
