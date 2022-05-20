@@ -40,7 +40,7 @@ export const EVIDENCE_GET_CATEGORIES_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Ev
 
 export const SETUP_CONFIGURATION_SERVICE_URL = `${BASE_URL_SETUP_SERVICE}`;
 
-export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=50`
+export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
 
 export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`
 

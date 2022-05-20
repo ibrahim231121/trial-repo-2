@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { STATION_INFO_GET_URL, CountryStateApiUrl, DATA_RETENTION_POLICIES_GET_ALL, DATA_UPLOAD_POLICIES_GET_ALL } from '../utils/Api/url';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', async () => {
   const requestOptions = {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json', TenantId: '1' }
+    headers: { 'Content-Type': 'application/json', TenantId: '1',  'Authorization': `Bearer ${cookies.get('access_token')}` }
   };
   const resp = await fetch(STATION_INFO_GET_URL, requestOptions);
   if (resp.ok) {

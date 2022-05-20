@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { CRXDataTable, CRXColumn, CRXToaster } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
 import textDisplay from '../../../GlobalComponents/Display/TextDisplay';
@@ -33,6 +33,7 @@ import AnchorDisplay from '../../../utils/AnchorDisplay';
 import { urlList, urlNames } from '../../../utils/urlList';
 import { useHistory } from 'react-router-dom';
 import './station.scss';
+import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 
 type Station = {
   id: string;
@@ -77,6 +78,8 @@ const Station: React.FC = () => {
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [selectedActionRow, setSelectedActionRow] = React.useState<Station>();
   const history = useHistory();
+  const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+
   const setData = () => {
     let stationRows: Station[] = [];
 
@@ -190,8 +193,8 @@ const Station: React.FC = () => {
       id: 'name',
       align: 'left',
       // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
-      dataComponent: (e: string) =>
-        AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
+      dataComponent: (e: string) => getModuleIds().includes(19) ? AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url): textDisplay(e, ''),
+        //AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,

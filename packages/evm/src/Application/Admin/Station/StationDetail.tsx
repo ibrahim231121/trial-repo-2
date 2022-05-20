@@ -20,6 +20,9 @@ import {
 } from "@cb/shared";
 import "./station.scss";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 interface AutoCompleteOptionType {
   label?: string;
@@ -129,7 +132,7 @@ const StationDetail: React.FC = () => {
           if (res.ok) return res.json();
         })
         .then((station) => {
-          console.log("Station ", station)
+
           const _station: StationFormType = {
             Name: station.name,
             StreetAddress: station.address.street,
@@ -215,18 +218,18 @@ const StationDetail: React.FC = () => {
     if (type === "GET") {
       requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: { "Content-Type": "application/json", TenantId: "1",  'Authorization': `Bearer ${cookies.get('access_token')}` },
       };
     } else if (type === "PUT") {
       requestOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: { "Content-Type": "application/json", TenantId: "1",  'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(body),
       };
     } else {
       requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: { "Content-Type": "application/json", TenantId: "1",  'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(body),
       };
     }
@@ -320,9 +323,9 @@ const StationDetail: React.FC = () => {
           UploadPolicyId: values.UploadPolicy?.id,
         }
       ],
+      passcode: "abc123"
     };
 
-    console.log("Add ", body)
 
     if (isAddCase) {
       stationService(STATION, "POST", body)
@@ -372,12 +375,6 @@ const StationDetail: React.FC = () => {
 
   const stationValidationSchema = Yup.object().shape({
     Name: Yup.string().required("Station Name is required"),
-    Country: Yup.object().shape({
-      id: Yup.string().nullable().required("Country Name is required")
-    }),
-    State: Yup.object().shape({
-      id: Yup.string().nullable().required("State Name is required")
-    })
   });
   return (
     <>
