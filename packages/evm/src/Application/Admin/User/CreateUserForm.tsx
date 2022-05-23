@@ -10,6 +10,9 @@ import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../Redux/notificationPanelMessages';
 import dateDisplayFormat from '../../../GlobalFunctions/DateFormat';
 import { NotificationMessage } from '../../Header/CRXNotifications/notificationsTypes';
+import Grid from '@material-ui/core/Grid';
+import { Link, useHistory } from 'react-router-dom';
+import { urlList, urlNames } from "../../../utils/urlList";
 import {
   CRXAlert,
   CRXInputDatePicker,
@@ -27,8 +30,7 @@ import ApplicationPermissionContext from "../../../ApplicationPermission/Applica
 
 let USER_DATA = {};
 interface Props {
-  onClose: any;
-  setCloseWithConfirm: any;
+
   id?: any;
   showToastMsg: (obj: any) => void;
 }
@@ -59,7 +61,7 @@ type account = {
   isPasswordResetRequired: boolean;
 };
 
-const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, showToastMsg }) => {
+const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
   const [error, setError] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState('sendAct');
   const [generatePassword, setGeneratePassword] = React.useState('');
@@ -107,7 +109,6 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
   const {getModuleIds} = useContext(ApplicationPermissionContext);
-
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -216,7 +217,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
             </button>
           </div>
 
-          <div className='crx-requird-check'>
+          <div className='crx-requird-check ConfirmCheckUi '>
             <CRXCheckBox
               checked={isPasswordResetRequired}
               lightMode={true}
@@ -236,7 +237,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
     return (
       <div className='crx-manually-generate-pass'>
         <TextField
-          className='crx-gente-field'
+          className='crx-gente-field crx-gente-field-pass'
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
           label='Password'
@@ -247,7 +248,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
           onBlur={checkPassword}
         />
         <TextField
-          className='crx-gente-field'
+          className='crx-gente-field crx-gente-field-confrim '
           error={!!formpayloadErr.confirmPasswordErr}
           errorMsg={formpayloadErr.confirmPasswordErr}
           label='Confirm Password'
@@ -330,7 +331,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
   };
 
   React.useEffect(() => {
-    setCloseWithConfirm(false);
+
     fetchGroups();
   }, []);
 
@@ -341,11 +342,11 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
       setError(false);
     }
     if (userName || firstName || lastName || email || userGroups.length || deactivationDate) {
-      setCloseWithConfirm(true);
+
     }
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
-      setCloseWithConfirm(false);
+     
     } else if (userName && firstName && lastName && email) {
       setDisableSave(false);
     } else {
@@ -486,7 +487,7 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
               variant: 'success',
               duration: 7000
             });
-            onClose();
+      
           } else {
             setAlert(true);
             setResponseError(error);
@@ -587,7 +588,6 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
               duration: 7000
             });
           }
-          onClose();
           showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
         } else if (res.status == 500) {
           setAlert(true);
@@ -657,6 +657,12 @@ const CreateUserForm: React.FC<Props> = ({ onClose, setCloseWithConfirm, id, sho
       await onAdd();
     }
   };
+
+  const history  = useHistory();
+
+  const onCancelUser = () => {
+    history.goBack();
+  }
 
   const validateEmail = (email: string) => {
     const re =
@@ -892,8 +898,9 @@ useEffect(() => {
       }
     }
   }, [alert]);
+
   return (
-    <div className=''>
+    <div className='createUser CrxCreateUser CreateUserUi '>
       <CRXToaster ref={toasterRef} />
       <CRXAlert
         ref={alertRef}
@@ -909,53 +916,59 @@ useEffect(() => {
       </div>
       <div className='modalEditCrx'>
         <div className='CrxEditForm'>
-          <TextField
-            error={!!formpayloadErr.userNameErr}
-            errorMsg={formpayloadErr.userNameErr}
-            required={true}
-            value={formpayload.userName}
-            label='Username'
-            className={'users-input ' + isExtUsers}
-            onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
-            // onBlur={(e: any) => {
-            //   !formpayload.userName
-            //     ? setFormPayloadErr({
-            //       ...formpayloadErr,
-            //       userNameErr: 'Username is required'
-            //     })
-            //     : setFormPayloadErr({ ...formpayloadErr, userNameErr: '' });
-            // }}
-            onBlur={checkUserName}
-          />
-          <TextField
-            error={!!formpayloadErr.firstNameErr}
-            errorMsg={formpayloadErr.firstNameErr}
-            required={true}
-            label='First Name'
-            className='users-input'
-            value={formpayload.firstName}
-            onChange={(e: any) => setFormPayload({ ...formpayload, firstName: e.target.value })}
-            onBlur={checkFirstName}
-          />
-          <TextField
-            error={!!formpayloadErr.middleInitialErr}
-            errorMsg={formpayloadErr.middleInitialErr}
-            value={formpayload.middleInitial}
-            label='Middle Initial'
-            className='users-input'
-            onChange={(e: any) => setFormPayload({ ...formpayload, middleInitial: e.target.value })}
-            onBlur={checkMiddleInitial}
-          />
-          <TextField
-            error={!!formpayloadErr.lastNameErr}
-            errorMsg={formpayloadErr.lastNameErr}
-            required={true}
-            value={formpayload.lastName}
-            label='Last Name'
-            className='users-input'
-            onChange={(e: any) => setFormPayload({ ...formpayload, lastName: e.target.value })}
-            onBlur={checkLastName}
-          />
+        <Grid container>
+            <Grid item xs={12} sm={12} md={12} lg={5} >
+              <TextField
+                error={!!formpayloadErr.userNameErr}
+                errorMsg={formpayloadErr.userNameErr}
+                required={true}
+                value={formpayload.userName}
+                label='Username'
+                className={'users-input ' + isExtUsers}
+                onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
+                // onBlur={(e: any) => {
+                //   !formpayload.userName
+                //     ? setFormPayloadErr({
+                //       ...formpayloadErr,
+                //       userNameErr: 'Username is required'
+                //     })
+                //     : setFormPayloadErr({ ...formpayloadErr, userNameErr: '' });
+                // }}
+                onBlur={checkUserName}
+              />
+              <TextField
+                error={!!formpayloadErr.firstNameErr}
+                errorMsg={formpayloadErr.firstNameErr}
+                required={true}
+                label='First Name'
+                className='users-input'
+                value={formpayload.firstName}
+                onChange={(e: any) => setFormPayload({ ...formpayload, firstName: e.target.value })}
+                onBlur={checkFirstName}
+              />
+              <TextField
+                error={!!formpayloadErr.middleInitialErr}
+                errorMsg={formpayloadErr.middleInitialErr}
+                value={formpayload.middleInitial}
+                label='Middle Initial'
+                className='users-input'
+                onChange={(e: any) => setFormPayload({ ...formpayload, middleInitial: e.target.value })}
+                onBlur={checkMiddleInitial}
+              />
+              <TextField
+                error={!!formpayloadErr.lastNameErr}
+                errorMsg={formpayloadErr.lastNameErr}
+                required={true}
+                value={formpayload.lastName}
+                label='Last Name'
+                className='users-input'
+                onChange={(e: any) => setFormPayload({ ...formpayload, lastName: e.target.value })}
+                onBlur={checkLastName}
+              />
+          </Grid>
+          <div className='grid_spacer'>
+          </div> 
+          <Grid item xs={12} sm={12} md={12} lg={5}>
           <TextField
             error={!!formpayloadErr.emailErr}
             errorMsg={formpayloadErr.emailErr}
@@ -977,7 +990,7 @@ useEffect(() => {
           />
 
           {
-            <div className='crxEditFilter'>
+            <div className='crxEditFilter editFilterUi'>
               <CRXMultiSelectBoxLight
                 className='categortAutocomplete CrxUserEditForm'
                 label='User Group'
@@ -990,6 +1003,7 @@ useEffect(() => {
                 value={formpayload.userGroups}
                 autoComplete={false}
                 isSearchable={true}
+        
                 onBlur={checkUserGroup}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   setFormPayload({ ...formpayload, userGroups: value });
@@ -998,7 +1012,7 @@ useEffect(() => {
             </div>
           }
 
-          <div className='dataPickerCustom crxCreateEditDate'>
+          <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
             <label>Deactivation Date</label>
             <CRXInputDatePicker
               value={current_date}
@@ -1010,7 +1024,7 @@ useEffect(() => {
             />
           </div>
 
-          <div className='crxRadioBtn' style={{ display: 'flex' }}>
+          <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" || radioValue == "manual" ? "radioBtnUiSpacer" : ""}`}>
             <label>User Password Setup</label>
             <div className='user-radio-group'>
               <CRXRadio
@@ -1021,15 +1035,17 @@ useEffect(() => {
                 setValue={setRadioValue}
               />
             </div>
-          </div>
+        </div>
+          </Grid>
+        </Grid>
         </div>
         <div className='crxFooterEditFormBtn'>
           <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
             Save
           </CRXButton>
-          <CRXButton className='secondary' onClick={onClose}>
-            Cancel
-          </CRXButton>
+          <Link to={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
+             Cancel
+          </Link>
         </div>
       </div>
     </div>

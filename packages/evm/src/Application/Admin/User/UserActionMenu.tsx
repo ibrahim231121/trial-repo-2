@@ -164,8 +164,7 @@ const UserActionMenu: React.FC<Props> = ({
         {row && (
           <CreateUserForm
             id={row.id}
-            setCloseWithConfirm={setCloseWithConfirm}
-            onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+   
             showToastMsg={showToastMsg}
           />
         )}

@@ -56,7 +56,8 @@ export const urlNames: any = {
     testEvidence: "Evidence",
     adminStation: 'adminStation',
     adminStationCreate: 'adminStationCreate',
-    adminStationEdit: 'adminStationEdit'
+    adminStationEdit: 'adminStationEdit',
+    createUser: 'createUser'
 };
 
 export const urlList: any = [
@@ -115,6 +116,14 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/users", type: "text", label: "Manage Users", }
+        ],
+    },
+    {
+        name: urlNames.createUser,
+        url: "/admin/users/createUser",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/users/createUser", type: "text", label: "Create User", }
         ],
     },
     {

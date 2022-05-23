@@ -6,6 +6,9 @@ import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { RootState } from "../../../Redux/rootReducer";
+import { urlList, urlNames } from "../../../utils/urlList";
+import { useHistory } from "react-router-dom";
+
 import {
   SearchObject,
   ValueString,
@@ -635,27 +638,15 @@ const openHandler = (_: React.SyntheticEvent) => {
     dispatch(getUsersInfoAsync());
   };
 
+  const history = useHistory();
+
+  const CreateUserForm = () => {
+    history.push(urlList.filter((item:any) => item.name === urlNames.createUser)[0].url);
+  }
     return (
         <div className="crxManageUsers switchLeftComponents">
 			<CRXToaster ref={toasterRef}/>
-           
-            <CRXModalDialog
-                className="createUser CrxCreateUser"
-                style={{ minWidth: "680px" }}
-                maxWidth="xl"
-                title="Create User"
-                showSticky={true}
-                modelOpen={open}
-                onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-                closeWithConfirm={closeWithConfirm}
-            >
-                <CreateUserForm
-                    setCloseWithConfirm={setCloseWithConfirm}
-                    onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-                    showToastMsg={(obj: any) => showToastMsg(obj)}
-                />
-            </CRXModalDialog>
-
+      
       {rows && (
         <CRXDataTable
           id="userDataTable"
@@ -669,15 +660,15 @@ const openHandler = (_: React.SyntheticEvent) => {
            
           }
           toolBarButton={
-              <Restricted moduleId={9}>
+    
               <CRXButton
                 id={"createUser"}
                 className="primary manageUserBtn"
-                onClick={handleClickOpen}
+                onClick={CreateUserForm}
               >
-                Create User
+             Create User
               </CRXButton>
-            </Restricted>
+      
           }
           getRowOnActionClick={(val: User) => setSelectedActionRow(val)}
           showToolbar={true}

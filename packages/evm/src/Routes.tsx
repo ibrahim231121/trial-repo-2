@@ -37,6 +37,8 @@ import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/Cre
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
 import Cookies from "universal-cookie";
 import Restricted from "./ApplicationPermission/Restricted";
+import CreateUserForm from "./Application/Admin/User/CreateUserForm";
+
 
 const cookies = new Cookies();
 
@@ -143,6 +145,10 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
+              
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
+
+
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               {/* <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />

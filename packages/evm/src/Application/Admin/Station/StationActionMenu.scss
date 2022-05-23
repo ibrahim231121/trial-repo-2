@@ -144,7 +144,8 @@
       span {
         font-size: 14px;
         color: #333333;
-        font-family: "Helvetica", "Arial", sans-serif;
+        font-family: var(--Arial-font-family);
+        
       }
       .users-input {
         width: 380px;
@@ -161,7 +162,7 @@
           .requiredLable {
             font-size: 14px;
             color: #333333;
-            font-family: "Helvetica", "Arial", sans-serif;
+            font-family: var(--Arial-font-family);
             span {
               font-size: 20px;
               line-height: 24px;
@@ -278,7 +279,6 @@
         padding: 0 0 0 35px;
         > span {
           margin: 2px 0 39px;
-          display: block !important;
         }
         h6 {
           font-size: 14px;
