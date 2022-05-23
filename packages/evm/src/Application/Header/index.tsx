@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CRXRows, CRXColumn, CRXHeading } from "@cb/shared";
 import CRXLeftSideBar from './LeftSideBar'
 import CRXDepartment from './AppBarMenu/Department'
@@ -18,10 +18,17 @@ import './index.scss'
 interface propsTypes {
     onClick : (e : any) => void,
     onClose : (e : any) => void,
-    open : boolean
+    open : boolean,
+    
 }
 
 const AppHeader = ({onClick, onClose, open} : propsTypes) => {
+    const [bucketIsOpen, setBucketIsOpen] = useState<any>(null);
+
+    useEffect(() => {
+        setBucketIsOpen(null)
+    },[bucketIsOpen])
+
     return (
         <div className="CRXAppHeader">
             <CRXRows
@@ -51,9 +58,9 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                             <li><CRXHelp /></li>
                         </ul>
                         <div className="panelContent">
-                            <CRXAssetsBucketPanel />
-                            <CRXNotficationPanel />
-                            <CRXGlobalSearchPanel />
+                            <CRXAssetsBucketPanel isOpenBucket={bucketIsOpen}/>
+                            <CRXNotficationPanel otherPanel={(e : any) => setBucketIsOpen(e)}/>
+                            {/* <CRXGlobalSearchPanel /> */}
                         </div>
                     </div>
                 </CRXColumn>

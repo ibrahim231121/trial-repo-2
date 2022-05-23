@@ -187,7 +187,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
       >
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            {/* <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}> */}
               <div
                 className="crx-meu-content groupingMenu crx-spac"
                 onClick={addToAssetBucket}
@@ -203,7 +203,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
                   Add to asset bucket
                 </div>
               </div>
-            </SecurityDescriptor>
+            {/* </SecurityDescriptor> */}
           </Restricted>
         </MenuItem>
 

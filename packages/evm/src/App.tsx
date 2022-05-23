@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
-
+import Fade from '@material-ui/core/Fade';
 import { CRXPanelStyle } from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
@@ -350,6 +350,7 @@ function App() {
             variantWarning: "warning",
             variantInfo: "info",
           }}
+          TransitionComponent={Fade as React.ComponentType}
         >
           <div className="language_selector_app">
             <CRXSelectBox

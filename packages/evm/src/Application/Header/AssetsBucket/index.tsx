@@ -3,7 +3,6 @@ import {
   CRXDrawer,
   CRXRows,
   CRXColumn,
-  CRXDataTable,
   CRXAlert,
   CRXBadge,
   CRXTooltip,
@@ -12,7 +11,8 @@ import {
   CRXToaster,
   CrxAccordion,
   CRXConfirmDialog,
-  CRXButton
+  CRXButton,
+  CRXCheckBox
 } from "@cb/shared";
 import BucketActionMenu from "../../Assets/AssetLister/ActionMenu/BucketActionMenu";
 import "./index.scss";
@@ -76,12 +76,23 @@ function usePrevious(value: any) {
   return ref.current;
 }
 
-const CRXAssetsBucketPanel = () => {
+type isBucket = {
+  isOpenBucket : boolean
+}
+const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
+  
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+  const [isChecked, setChecked] = useState<any>([]);
+  const [isCheckedAll, setCheckedAll] = useState<boolean>(false)
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket.assetBucketData
   );
+
+  useEffect(() => {
+    setIsOpen(isOpenBucket)
+  },[isOpenBucket])
+
   const isDuplicateFound: boolean = useSelector(
     (state: RootState) => state.assetBucket.isDuplicateFound
   );
@@ -122,12 +133,16 @@ const CRXAssetsBucketPanel = () => {
     dispatch(loadFromLocalStorage());
   }, [])
 
+ 
   useEffect(() => {
+   
     if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined && isDuplicateFound !== false) {
       setAttention({
-        msg: "An Asset you are attempting to add to the Asset Bucket has already been added",
+        msg: "An asset you are attempting to add to the asset bucket has already been added.",
       });
+      setShowMessageClx("bucketMessageShow")
       setShowAttention(true);
+      
       dispatch(updateDuplicateFound());
     }
   }, [isDuplicateFound])
@@ -136,27 +151,34 @@ const CRXAssetsBucketPanel = () => {
     setRows(assetBucketData);
     let local_assetBucket = localStorage.getItem("assetBucket");
     if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
-      setSucess({
-        msg: "You have added the selected assets to the asset bucket.",
+     
+      toasterRef.current.showToaster({
+        message: "You have added the selected assets to the asset bucket.", 
+        variant: "success", 
+        duration: 7000, 
       });
-      setShowMessageClx("bucketMessageShow")
-      setShowSucess(true);
+      
+    
     }
     else if (assetBucketData.length > prevCount) {
-      setSucess({
-        msg: "You have added the selected assets to the asset bucket.",
+      toasterRef.current.showToaster({
+        message: "You have added the selected assets to the asset bucket.", 
+        variant: "success", 
+        duration: 7000, 
+        
       });
-      setShowMessageClx("bucketMessageShow")
-      setShowSucess(true);
     }
     else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
-      setShowMessageClx("bucketMessageShow")
-      setShowSucess(true);
-      setSucess({
-        msg: `${totalRemoved} ${totalRemoved > 1 ? "assets" : "asset"
-          } removed the asset bucket`,
+     
+      toasterRef.current.showToaster({
+        message:`${totalRemoved} ${totalRemoved > 1 ? "assets" : "asset"
+        } removed the asset bucket`, 
+        variant: "success", 
+        duration: 7000, 
+        
       });
+
     }
   }, [assetBucketData]);
 
@@ -179,7 +201,7 @@ const CRXAssetsBucketPanel = () => {
   useEffect(() => {
     let timer: any = null;
     timer = setTimeout(() => {
-      setShowSucess((prev: boolean) => false);
+      // setShowSucess((prev: boolean) => false);
     }, 7000);
     return () => {
       clearTimeout(timer);
@@ -513,7 +535,7 @@ const CRXAssetsBucketPanel = () => {
     if ((milliseconds - firstExecution) > interval) {
       firstExecution = milliseconds;
       toasterRef.current.showToaster({
-        message: "File(s) failed to upload.", variant: "error", duration: 7000, clearButtton: true
+        message: "File failed to upload.", variant: "error", duration: 7000, clearButtton: true
       });
     }
 
@@ -731,9 +753,34 @@ const CRXAssetsBucketPanel = () => {
     }
     setActiveScreen((prev: number) => prev + 1);
   }
+  const checkBoxRef = useRef(null)
+  const selectAssetFromList = (e: any, row:assetRow) => {
+    setSelectedActionRow(row)
+    setChecked({...isChecked, [row.assetId] : e.target.checked});
+    
+  }
+
+  const selectAllAssetFromList = (e:any, assetBucketData:AssetBucket[]) => {
+   
+    setCheckedAll(e.target.checked == true ? true : false)
+    
+  }
+
+  
+  useEffect(() => {
+    
+    const setSelectFill = [...selectedItems];
+    assetBucketData.forEach((element:any) => {
+      setSelectedActionRow(element)
+      setSelectFill.push(element);
+    })
+
+    isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
+
+  },[isCheckedAll])
   return (
     <>
-      <CRXToaster ref={toasterRef} />
+      <CRXToaster ref={toasterRef} className="assetsBucketToster"/>
       <CRXDrawer
         className="CRXBucketPanel crxBucketPanelStyle"
         anchor="right"
@@ -764,29 +811,30 @@ const CRXAssetsBucketPanel = () => {
                           <label>Your Asset Bucket</label>
                         </CRXColumn>
                         <CRXColumn item xs={1} className="topColumn">
-                          <i className="icon-cross2" onClick={() => setIsOpen(false)}></i>
+                          <i className="icon icon-cross2" onClick={() => setIsOpen(false)}></i>
                         </CRXColumn>
                       </CRXRows>
-                      <CRXRows container spacing={0} className={showMessageClx} >
+                      
+                       <CRXRows container spacing={0} className={showMessageClx} >
                         <CRXColumn item xs={12} className="topColumn">
                           <CRXAlert
                             className="crx-alert-notification"
-
+                            alertType="inline"
                             message={attention.msg}
                             type="info"
                             open={showAttention}
                             setShowSucess={setShowAttention}
                           />
-                          <CRXAlert
+                         {/* <CRXAlert
                             className="crx-alert-notification"
                             message={sucess.msg}
                             type="success"
                             open={showSucess}
                             setShowSucess={setShowSucess}
-                          />
+                          />*/}
 
                         </CRXColumn>
-                      </CRXRows>
+                      </CRXRows> 
                       <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
                         <CRXAlert
                           className={"crx-alert-notification file-upload"}
@@ -886,35 +934,54 @@ const CRXAssetsBucketPanel = () => {
                           {uploadProgressStatus()}
 
                         </CrxAccordion>}
-
-
+                      
                       {rows.length > 0 ? (
                         <>
                           <div className="bucketViewLink">
-                            View on Assets Bucket page <i className="icon-arrow-up-right2"></i>{" "}
+                            
+                          <CRXCheckBox 
+                              inputRef={checkBoxRef}
+                              checked={isCheckedAll}
+                              onChange={(e:any) => selectAllAssetFromList(e, assetBucketData)}
+                              name="selectAll"
+                              className="bucketListCheckedAll"
+                              lightMode={true}
+                            /><span className="selectAllText">Select all</span>
+                             View on assets bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
                           </div>
-                          <CRXDataTable
-                            tableId="assetBucket"
-                            actionComponent={<BucketActionMenu
-                              row={selectedActionRow}
-                              setSelectedItems={setSelectedItems}
-                              selectedItems={selectedItems} />
-                            }
-                            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
-                            showToolbar={false}
-                            dataRows={rows}
-                            headCells={headCells}
-                            orderParam={order}
-                            orderByParam={orderBy}
-                            searchHeader={true}
-                            columnVisibilityBar={true}
-                            className={`ManageAssetDataTable crxTableHeight bucketDataTable ${scrollHide}  ${showMessageClx == "bucketMessageHide" ? '' : 'crxMessageShow'}`}
-                            getSelectedItems={(v: assetRow[]) => setSelectedItems(v)}
-                            onResizeRow={resizeRow}
-                            setSelectedItems={setSelectedItems}
-                            selectedItems={selectedItems}
-                            dragVisibility={false}
-                          />
+                          <div className="bucketList" id="assetBucketLists">
+                          {
+                            assetBucketData.map((x:any,index) => {
+                              return <div className="bucketLister">
+                                <div className="assetCheck">
+                                
+                                  <CRXCheckBox 
+                                    inputRef={checkBoxRef}
+                                    checked={isChecked[x.assetId] || isCheckedAll}
+                                    onChange={(e:any) => selectAssetFromList(e, x)}
+                                    name={x.assetId}
+                                    lightMode={true}
+                                  />
+                                </div>
+                                <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
+                                <div className="bucketListTextData">
+                                  <div className="bucketListAssetName">{x.assetName}</div>
+                                  <div className="bucketListRec">{x.assetType}</div>
+                                  <div className="bucketListRec">
+                                  {x.categories.map((item: any) => item).join(", ")}
+                                  </div>
+                                </div>
+                                <div className="bucketActionMenu">{<BucketActionMenu
+                                    row={selectedActionRow}
+                                    setSelectedItems={setSelectedItems}
+                                    selectedItems={selectedItems} />
+                                  }
+                                </div>
+                              </div>
+                            })
+                          }
+                          </div>
+                          
                         </>
                       ) : (
                         <div className="bucketContent">Your Asset Bucket is empty.</div>

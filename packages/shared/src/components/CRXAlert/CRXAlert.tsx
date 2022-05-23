@@ -17,14 +17,15 @@ const useStyles = makeStyles(() =>
       border: "1px solid #646464",
       color: "#666666",
       fontSize: "12px",
-      minHeight: "35px",
-      maxHeight: "50px",
+      // minHeight: "35px",
+      // maxHeight: "50px",
       paddingLeft: "14px",
       paddingRight: "18px",
-      paddingTop: "0px",
+      paddingTop: "8px",
+      paddingBottom: "8px",
       display: "flex",
       placeItems: "center",
-      paddingBottom: "0px",
+      
       boxShadow: "none",
     },
   })
@@ -120,7 +121,7 @@ const CRXAlert: React.FC<Props> = ({
                     setOpenState(false);
                   }}
                 >
-                  {showIcon[type] && <i className="icon-cross"></i>}
+                  {showIcon[type] && <i className="icon icon-cross2"></i>}
                 </IconButton>
               }
             >
