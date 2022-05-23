@@ -157,10 +157,10 @@ const VideoPlayerBase = (props: any) => {
   const [speedFwRw, setSpeedFwRw] = useState<number>(1000);
 
   React.useEffect(() => {
-    setdata(props.history.location.state?.data);
+    setdata(props.history !== undefined ? props.history.location.state?.data : props.data);
   }, []);
-
-  const EvidenceId = props.history.location.state?.EvidenceId
+  
+  const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.EvidenceId;
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
