@@ -9,6 +9,7 @@ import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
 
 type AssignUserProps = {
+  selectedItems: any[];
   filterValue: any[];
   setFilterValue: (param: any) => void;
   rowData: any;
@@ -16,39 +17,85 @@ type AssignUserProps = {
   setRemovedOption: (param: any) => void;
 };
 
+type ownersModel = {
+  evidenceId: any,
+  assetId: any,
+  owners: number[]
+}
 const cookies = new Cookies();
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
+  const [assetOwners,setAssetOwners] = React.useState<ownersModel[]>([]);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
   const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false)
 
-  React.useEffect(() =>  {
+  React.useEffect(() => {
     dispatch(getUsersInfoAsync());
-    getMasterAsset();
+    getData();
+    //getMasterAsset();
   }, []);
-
-  const getMasterAsset = async () => {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/'+ `${props.rowData.assetId}`
+  React.useEffect(() => {
+    debugger;
+    console.log('assetOwners',assetOwners);
+    //sendData();
     
-    const res = await fetch(url, {
-      method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1'},
-    })
-    var response = await res.json();
-    if(response != null) {
-      let result = response.owners.map((x:any) => { 
-                    let item: any = {
-                      id: x.cmtFieldValue,
-                      label: x.record.filter((t:any) => t.key === 'UserName')[0].value
-                    }
-                    return item
-                  })
-      props.setFilterValue(() => result);
-    } 
+      //dispatch(getUsersInfoAsync());
+  }, [assetOwners]);
+  const sendData = async () =>{
+    debugger;
+    const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+        body: JSON.stringify(assetOwners)
+      })
+  }
+  const getData = () => {
+    debugger;
+    let notSame = 0;
+    if (props.selectedItems.length > 1) {
+      var selectedItemsOwnerList = props.selectedItems.map(x => x.evidence?.masterAsset?.owners);
+      for(var i = 0; i< selectedItemsOwnerList.length-1; i++)
+        {
+            if(JSON.stringify(selectedItemsOwnerList[i]) != JSON.stringify(selectedItemsOwnerList[i+1]))
+            {
+              notSame++;
+            }
+        }
+        if(notSame == 0)
+        {
+          getMasterAsset();
+        }
+    }
+    else
+    {
+      getMasterAsset();
+    }
+  }
+  const getMasterAsset = async () => {
+      debugger;
+      const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
+
+      const res = await fetch(url, {
+        method: 'Get',
+        headers: { 'Content-Type': 'application/json', TenantId: '1' },
+      })
+      var response = await res.json();
+      if (response != null) {
+        let result = response.owners.map((x: any) => {
+          let item: any = {
+            id: x.cmtFieldValue,
+            label: x.record.filter((t: any) => t.key === 'UserName')[0].value
+          }
+          return item
+        })
+        props.setFilterValue(() => result);
+      }
+    
   }
 
   React.useEffect(() => {
@@ -97,17 +144,25 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const onSubmitForm = async () => {
-
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/'+ `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
-    
-    if (props.filterValue?.length !== 0) {
-      //props.setActiveForm((prev: any) => prev + 1);
-    }
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
-      body: JSON.stringify(props.filterValue.map(x => x.id))
-    })
+    if (props.selectedItems.length > 1) 
+    {
+      var tempOwnerList = [...assetOwners];
+      props.selectedItems.forEach((el) => {
+        var temp: ownersModel = {
+          evidenceId: el.id,
+          assetId: el.assetId,
+          owners: props.filterValue.map(x => x.id)
+          //IsChildAssetincluded: assignUserCheck
+        }
+        tempOwnerList.push(temp);
+      })
+      setAssetOwners(tempOwnerList);
+      const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+        body: JSON.stringify(tempOwnerList)
+      })
       .then(function (res) {
         if (res.ok) {
           props.setOnClose();
@@ -117,7 +172,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           // setResponseError(
           //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
           // );
-        } 
+        }
         // else return res.text();
       })
       // .then((resp) => {
@@ -129,11 +184,47 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       .catch(function (error) {
         return error;
       });
+      
+    }
+    else
+    {
+    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
+
+    if (props.filterValue?.length !== 0) {
+      //props.setActiveForm((prev: any) => prev + 1);
+    }
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+      body: JSON.stringify(props.filterValue.map(x => x.id))
+    })
+      .then(function (res) {
+        if (res.ok) {
+          props.setOnClose();
+          // showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
+        } else if (res.status == 500) {
+          // setAlert(true);
+          // setResponseError(
+          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          // );
+        }
+        // else return res.text();
+      })
+      // .then((resp) => {
+      //   console.log("S ", resp)
+      //   if (resp !== undefined) {
+      //     let error = JSON.parse(resp);
+      //   }
+      // })
+      .catch(function (error) {
+        return error;
+      });
+    }
   };
 
   const cancelBtn = () => {
     //if (props.filterValue?.length !== 0) {
-      props.setOnClose();
+    props.setOnClose();
     //}
   };
 
@@ -143,61 +234,62 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   return (
     <>
-    <div style={{height:"200px"}}>
-      <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
-        {() => (
-          <Form>
-            <div className='categoryTitle'>
-              Users <b>*</b>
-            </div>
-            <div >
-              <MultiSelectBoxCategory
-                className='categortAutocomplete'
-                multiple={true}
-                CheckBox={true}
-                visibility = {true}
-                options={filterUser(users)}
-                value={props.filterValue}
-                autoComplete={false}
-                isSearchable={true}
-                onChange={(event: any, newValue: any, reason: any, detail: any) => {
-                  return handleChange(event, 1, newValue, reason, detail);
-                }}
-              />
-            </div>
-            <div style={{height:"100px", paddingTop:"20px",
-            display:`${props.rowData.evidence.asset.length > 0
+      <div style={{ height: "200px" }}>
+        <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
+          {() => (
+            <Form>
+              <div className='categoryTitle'>
+                Users <b>*</b>
+              </div>
+              <div >
+                <MultiSelectBoxCategory
+                  className='categortAutocomplete'
+                  multiple={true}
+                  CheckBox={true}
+                  visibility={true}
+                  options={filterUser(users)}
+                  value={props.filterValue}
+                  autoComplete={false}
+                  isSearchable={true}
+                  onChange={(event: any, newValue: any, reason: any, detail: any) => {
+                    return handleChange(event, 1, newValue, reason, detail);
+                  }}
+                />
+              </div>
+              <div style={{
+                height: "100px", paddingTop: "20px",
+                display: `${props.rowData.evidence.asset.length > 0
                   ? ""
                   : "none"
-              }`
-            }}>
-            <CRXCheckBox
-                inputProps={"assignUserCheck"}
-                className="relatedAssetsCheckbox"
-                lightMode={true}
-                checked={assignUserCheck}
-                onChange={(
-                  e: React.ChangeEvent<HTMLInputElement>
-                ) => handleCheck(e)}
-              />
-              Apply to all assets in the group.
-            </div>
-            <div className='modalFooter CRXFooter'>
-              <div className='nextBtn'>
-                <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                  Save
-                </CRXButton>
+                  }`
+              }}>
+                <CRXCheckBox
+                  inputProps={"assignUserCheck"}
+                  className="relatedAssetsCheckbox"
+                  lightMode={true}
+                  checked={assignUserCheck}
+                  onChange={(
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => handleCheck(e)}
+                />
+                Apply to all assets in the group.
               </div>
-              <div className='cancelBtn'>
-                <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                  Cancel
-                </CRXButton>
+              <div className='modalFooter CRXFooter'>
+                <div className='nextBtn'>
+                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
+                    Save
+                  </CRXButton>
+                </div>
+                <div className='cancelBtn'>
+                  <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
+                    Cancel
+                  </CRXButton>
+                </div>
               </div>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </>
   );
 };

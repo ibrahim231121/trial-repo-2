@@ -144,6 +144,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
       >
         <AssignUser
+          selectedItems={selectedItems}
           filterValue={filterValue}
           setFilterValue={(v: any) => setFilterValue(v)}
           rowData={row}
