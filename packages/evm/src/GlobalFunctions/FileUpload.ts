@@ -1,3 +1,4 @@
+import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../src/utils/Api/url';
 import uploadFiles from "../GlobalFunctions/AzureFileUpload";
 declare const window: any;
@@ -60,10 +61,10 @@ export const AddFilesToFileService = async (files: any) => {
     });
 }
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {
-
+    const cookies = new Cookies();
     await fetch(FILE_SERVICE_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1' },
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(payload)
     }).then(function (res) {
         if (res.ok) return res.json();

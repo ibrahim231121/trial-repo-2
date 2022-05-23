@@ -59,7 +59,7 @@ const uploadFiles = async (files: any) => {
                 if (response.errorCode != null) {
                    
                 }
-            }).catch(e => {
+            }).catch(e => { 
                 if (e.name == 'AbortError') {
                     window.onRecvData.data = {
                         removed: true,
@@ -69,7 +69,8 @@ const uploadFiles = async (files: any) => {
                 else if (e.name == "RestError") {
                     window.onRecvData.data = {
                         error: true,
-                        fileName: file.uploadedFileName
+                        fileName: file.uploadedFileName,
+                        fileId : file.uploadedFileId
                     };
                 }
 

@@ -436,19 +436,18 @@ const CRXAssetsBucketPanel = () => {
   const toasterRef = useRef<typeof CRXToaster>(null);
   const [expanded, isExpaned] = React.useState<string | boolean>();
   const [isOpenConfirm, setIsOpenConfirm] = React.useState<boolean>(false);
-  const [fileToRemove, setFileToRemove] = React.useState<string>("");
-
+  const [fileToRemove, setFileToRemove] = React.useState<string>(""); 
+  
   const uploadStatusUpdate = (data: any) => {
-
     let _uploadInfo: FileUploadInfo;
     setUploadInfo(prevState => {
       if (prevState.length > 0) {
         const newUploadInfo = [...prevState];
         const rec = newUploadInfo.find(x => x.fileName == data.data.fileName);
-
         if (rec != undefined || rec != null) {
-
           if (data.data.error != undefined || data.data.error != null) {
+            //Fire Patch request to change the status of File.
+            updateStatusOfFile(data.data.fileId);
             onFileUploadError();
             rec.uploadInfo.error = true;
             return [...newUploadInfo]
@@ -480,6 +479,31 @@ const CRXAssetsBucketPanel = () => {
     });
 
   }
+
+  const updateStatusOfFile = (id: string) => {
+    const body = [
+      {
+        "op": "replace",
+        "path": "state",
+        "value": "Abandoned"
+      }
+    ];
+    const requestOptions = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
+      },
+      body: JSON.stringify(body)
+    };
+    fetch(FILE_SERVICE_URL + `?id=` + id, requestOptions)
+    .then((resp :any) => {
+      console.info(resp);
+    }).catch((err : any) => {
+      console.error(err);
+    });
+  }
+
+
   let firstExecution = 0; // Store the first execution time
   const interval = 7000; // 7 seconds
   const onFileUploadError = () => {
@@ -492,6 +516,9 @@ const CRXAssetsBucketPanel = () => {
         message: "File(s) failed to upload.", variant: "error", duration: 7000, clearButtton: true
       });
     }
+
+
+
   }
   useEffect(() => {
     let fileSize: number = 0;
