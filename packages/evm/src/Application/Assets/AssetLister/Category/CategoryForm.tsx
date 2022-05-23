@@ -6,7 +6,7 @@ import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
-import { findRetentionAndHoldUntill, awaitJson } from './Utility/UtilityFunctions';
+import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
 import http from '../../../../http-common';
 
 type CategoryFormProps = {
