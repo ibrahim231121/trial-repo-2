@@ -305,7 +305,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
     };
 
-    const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+    const resizeRowUserTab = (e: { colIdx: number; deltaX: number }) => {
         let headCellReset = onResizeRow(e, headCells);
         setHeadCells(headCellReset);
     };
@@ -343,7 +343,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     className="ManageAssetDataTable usersGroupDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: User[]) => setSelectedItems(v)}
-                    onResizeRow={resizeRow}
+                    onResizeRow={resizeRowUserTab}
                     onHeadCellChange={onSetHeadCells}
                     setSelectedItems={setSelectedItems}
                     selectedItems={selectedItems}

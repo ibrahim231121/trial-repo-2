@@ -384,7 +384,7 @@ const UnitCreate = (props: historyProps) => {
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
   };
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -621,7 +621,7 @@ const UnitCreate = (props: historyProps) => {
                   className=""
                   onClearAll={clearAll}
                   getSelectedItems={(v: UnitAndDevice[]) => setSelectedItems(v)}
-                  onResizeRow={resizeRow}
+                  onResizeRow={resizeRowUnitDetail}
                   onHeadCellChange={onSetHeadCells}
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}

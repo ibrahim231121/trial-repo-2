@@ -1,0 +1,21 @@
+.manageUsersIndex {
+    thead {
+        &:nth-child(2) {    
+            th {
+                &:nth-child(8) {
+                   .gridFilterGlobal {
+                    .crx-global-Select  {
+                        width: 118px;
+                    }
+                   }
+                }
+                &:nth-child(9) {
+                    .MuiGrid-item {
+                        max-width: 100%;
+                    }
+                }
+            }
+    
+        }
+    }
+}

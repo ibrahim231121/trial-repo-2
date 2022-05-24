@@ -537,7 +537,7 @@ console.log("row data",rowsData)
     setHeadCells(headCellReset);
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowAssetsDataTable = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -566,7 +566,7 @@ console.log("row data",rowsData)
           className="ManageAssetDataTable"
           onClearAll={clearAll}
           getSelectedItems={(v: string[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowAssetsDataTable}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}

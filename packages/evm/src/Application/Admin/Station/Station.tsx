@@ -297,7 +297,7 @@ const Station: React.FC = () => {
     }
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowStation = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -377,7 +377,7 @@ const Station: React.FC = () => {
           className='ManageAssetDataTable crxStationDataTable'
           onClearAll={clearAll}
           getSelectedItems={(v: Station[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowStation}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}

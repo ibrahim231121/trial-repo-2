@@ -24,7 +24,6 @@ import {
   SearchObject,
   ValueString,
   HeadCellProps,
-  onResizeRow,
   Order,
   onTextCompare,
   onMultiToMultiCompare,
@@ -222,71 +221,71 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   );
   const toggleState = () => setIsOpen((prevState: boolean) => !prevState);
 
-  const searchText = (
-    rowsParam: AssetBucket[],
-    headCells: HeadCellProps[],
-    colIdx: number
-  ) => {
-    const onChange = (valuesObject: ValueString[]) => {
-      headCells[colIdx].headerArray = valuesObject;
-      onSelection(valuesObject, colIdx);
-    };
+  // const searchText = (
+  //   rowsParam: AssetBucket[],
+  //   headCells: HeadCellProps[],
+  //   colIdx: number
+  // ) => {
+  //   const onChange = (valuesObject: ValueString[]) => {
+  //     headCells[colIdx].headerArray = valuesObject;
+  //     onSelection(valuesObject, colIdx);
+  //   };
 
-    return (
-      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
-    );
-  };
+  //   return (
+  //     <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
+  //   );
+  // };
 
-  const searchMultiDropDown = (
-    rowsParam: AssetBucket[],
-    headCells: HeadCellProps[],
-    colIdx: number
-  ) => {
-    const onSetSearchData = () => {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-    };
+  // const searchMultiDropDown = (
+  //   rowsParam: AssetBucket[],
+  //   headCells: HeadCellProps[],
+  //   colIdx: number
+  // ) => {
+  //   const onSetSearchData = () => {
+  //     setSearchData((prevArr) =>
+  //       prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+  //     );
+  //   };
 
-    const onSetHeaderArray = (v: ValueString[]) => {
-      headCells[colIdx].headerArray = v;
-    };
-    const noOptionStyled = {
-      width: "116px",
-      marginLeft: "-1px",
-      whiteSpace: "nowrap",
-      overFlow: "hidden",
-      textOverflow: "ellipsis",
-      marginRight: "0",
-      paddingLeft: "5px !important",
-      paddingRight: "10px !important",
-      fontSize: "13px",
-      lineHeight: "15px",
-      top: "0px",
-      marginTop: "0"
-    }
-    const paddLeft = {
-      marginLeft: "2px",
-      paddingRight: "3px !important",
-      marginRight: "2px",
-      paddingLeft: "2px",
+  //   const onSetHeaderArray = (v: ValueString[]) => {
+  //     headCells[colIdx].headerArray = v;
+  //   };
+  //   const noOptionStyled = {
+  //     width: "116px",
+  //     marginLeft: "-1px",
+  //     whiteSpace: "nowrap",
+  //     overFlow: "hidden",
+  //     textOverflow: "ellipsis",
+  //     marginRight: "0",
+  //     paddingLeft: "5px !important",
+  //     paddingRight: "10px !important",
+  //     fontSize: "13px",
+  //     lineHeight: "15px",
+  //     top: "0px",
+  //     marginTop: "0"
+  //   }
+  //   const paddLeft = {
+  //     marginLeft: "2px",
+  //     paddingRight: "3px !important",
+  //     marginRight: "2px",
+  //     paddingLeft: "2px",
 
 
-    }
-    return (
-      <MultSelectiDropDown
-        headCells={headCells}
-        colIdx={colIdx}
-        reformattedRows={rowsParam}
-        isSearchable={true}
-        onMultiSelectChange={onSelection}
-        onSetSearchData={onSetSearchData}
-        onSetHeaderArray={onSetHeaderArray}
-        widthNoOption={noOptionStyled}
-        checkedStyle={paddLeft}
-      />
-    );
-  };
+  //   }
+  //   return (
+  //     <MultSelectiDropDown
+  //       headCells={headCells}
+  //       colIdx={colIdx}
+  //       reformattedRows={rowsParam}
+  //       isSearchable={true}
+  //       onMultiSelectChange={onSelection}
+  //       onSetSearchData={onSetSearchData}
+  //       onSetHeaderArray={onSetHeaderArray}
+  //       widthNoOption={noOptionStyled}
+  //       checkedStyle={paddLeft}
+  //     />
+  //   );
+  // };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -328,29 +327,28 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: searchMultiDropDown,
       minWidth: "100",
       maxWidth: "100",
     },
   ]);
 
-  const onSelection = (v: ValueString[], colIdx: number) => {
-    if (v.length > 0) {
-      for (var i = 0; i < v.length; i++) {
-        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[colIdx].id.toString()
-          )
-        );
-        setSearchData((prevArr) => [...prevArr, searchDataValue]);
-      }
-    } else {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-      );
-    }
-  };
+  // const onSelection = (v: ValueString[], colIdx: number) => {
+  //   if (v.length > 0) {
+  //     for (var i = 0; i < v.length; i++) {
+  //       let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
+  //       setSearchData((prevArr) =>
+  //         prevArr.filter(
+  //           (e) => e.columnName !== headCells[colIdx].id.toString()
+  //         )
+  //       );
+  //       setSearchData((prevArr) => [...prevArr, searchDataValue]);
+  //     }
+  //   } else {
+  //     setSearchData((prevArr) =>
+  //       prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+  //     );
+  //   }
+  // };
 
   const dataArrayBuilder = () => {
     let dataRows: AssetBucket[] = assetBucketData;
@@ -361,11 +359,6 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
         dataRows = onMultiToMultiCompare(dataRows, headCells, el);
     });
     setRows(dataRows);
-  };
-
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
-    let headCellReset = onResizeRow(e, headCells);
-    setHeadCells(headCellReset);
   };
 
   React.useEffect(() => {

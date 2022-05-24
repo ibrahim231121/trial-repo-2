@@ -736,7 +736,7 @@ const dataArrayBuilder = () => {
     }
 };
 
-const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+const resizeRowUnitDevice = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
 };
@@ -796,7 +796,7 @@ useEffect(()=>{
           className=""
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowUnitDevice}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}

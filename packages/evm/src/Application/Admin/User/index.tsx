@@ -37,7 +37,7 @@ import { addNotificationMessages } from "../../../Redux/notificationPanelMessage
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
 import Restricted from "../../../ApplicationPermission/Restricted";
-
+import "./userIndex.scss";
 type User = {
   id: string;
   userName: string;
@@ -346,7 +346,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       label: `${t("ID")}`,
       id: "id",
       align: "right",
-      width: "",
+      width: "80",
       dataComponent: () => null,
       sort: true,
       searchFilter: true,
@@ -354,58 +354,53 @@ const openHandler = (_: React.SyntheticEvent) => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      maxWidth: "100",
     },
     {
       label: `${t("Username")}`,
       id: "userName",
       align: "left",
-      width: "",
+      // width: "174",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "174",
-      maxWidth: "100",
       visible: true,
     },
     {
       label: `${t("First Name")}`,
       id: "firstName",
       align: "left",
-      width: "",
+      width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "156",
-      maxWidth: "100",
       visible: true,
     },
     {
       label: `${t("Last Name")}`,
       id: "lastName",
       align: "left",
-      width: "",
+      width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "156",
-      maxWidth: "100",
       visible: true,
     },
     {
       label: `${t("Email")}`,
       id: "email",
       align: "left",
-      width: "",
+      width: "263",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "263",
-      maxWidth: "100",
       visible: true,
     },
     {
@@ -416,9 +411,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: User[]) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
-      width: "",
+      width: "112",
       minWidth: "112",
-      maxWidth: "100",
       visible: true,
     },
     {
@@ -427,7 +421,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      width: "",
+      width: "161",
       minWidth: "161",
       searchFilter: true,
       searchComponent: searchDate,
@@ -457,7 +451,8 @@ const openHandler = (_: React.SyntheticEvent) => {
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "205",
+      minWidth: "180",
+      width:"180"
     },
   ]);
   const searchAndNonSearchMultiDropDown = (
@@ -590,7 +585,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     }
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowUsers = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -644,7 +639,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     history.push(urlList.filter((item:any) => item.name === urlNames.createUser)[0].url);
   }
     return (
-        <div className="crxManageUsers switchLeftComponents">
+        <div className="crxManageUsers switchLeftComponents manageUsersIndex">
 			<CRXToaster ref={toasterRef}/>
       
       {rows && (
@@ -682,7 +677,7 @@ const openHandler = (_: React.SyntheticEvent) => {
           className="ManageUsersDataTable"
           onClearAll={clearAll}
           getSelectedItems={(v: User[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowUsers}
           onHeadCellChange={onSetHeadCells}
           initialRows={reformattedRows}
           setSelectedItems={setSelectedItems}
@@ -694,7 +689,7 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}
-          offsetY={205}
+          offsetY={209}
         />
       )}
     </div>
