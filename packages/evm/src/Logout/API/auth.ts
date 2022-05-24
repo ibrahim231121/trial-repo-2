@@ -23,7 +23,9 @@ export const logOutUser = (next:()=>void) =>{
         opt = localStorage.removeItem('username')
         opt = localStorage.removeItem('remember me')
         opt = localStorage.removeItem('refreshToken')
-        localStorage.removeItem('User Id')
+        opt = localStorage.removeItem('User Id')
+        opt = localStorage.removeItem('expirytime_token')
+        opt = localStorage.removeItem('expiryDate')
         next() 
     
 } 

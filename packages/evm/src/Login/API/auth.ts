@@ -6,6 +6,7 @@ interface IDecoded{
     RememberMe:string;
     UserName:string;
     UserId: string;
+    exp:string;
 }
 const cookies = new Cookies();
 let decoded:IDecoded;
@@ -22,6 +23,7 @@ export const authenticate = (accessToken:string,idToken:string,refreshToken:stri
           localStorage.setItem("username",decoded.UserName)
           localStorage.setItem("remember me",decoded.RememberMe)
           localStorage.setItem("User Id",decoded.UserId)
+          localStorage.setItem("expirytime_token",decoded.exp)
         const condition = localStorage.getItem('remember me')
 
         if (condition === 'True')

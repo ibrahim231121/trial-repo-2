@@ -28,76 +28,22 @@ import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/Con
 import AssetDetailsTemplate from "./Application/Assets/Detail/AssetDetailsTemplate";
 import VideoPlayer from "./components/MediaPlayer/VideoPlayerBase";
 import Evidence from "./components/Evidence/ConfigEvidence";
-import { isAuthenticated } from "./Login/API/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./Redux/rootReducer";
-import { timerActionCreator } from "../src/Redux/timerslice";
-import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
-import Cookies from "universal-cookie";
+
 import Restricted from "./ApplicationPermission/Restricted";
 import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 
 
-const cookies = new Cookies();
 
-interface CounterState {
-  path: string,
-  expires:Date
-}
 
-const updatetokens = (refreshToken : string, accessToken: string)=>
-{
-  localStorage.setItem("refreshToken", refreshToken)      
-  const condition = localStorage.getItem('remember me')   
-  if (condition == "True")
-  {
-  const date:any = localStorage.getItem('expiryDate')
-  const dateToTimeStamp = new Date(date).getTime()
-  const currentDate = new Date().getTime()
-  const difference = dateToTimeStamp - currentDate
-  var newdateInTimeStamp = difference + currentDate
-  var newdateReadable = new Date(newdateInTimeStamp)
-  const options:CounterState = { path:'/',expires:newdateReadable };
-  cookies.set('access_token', accessToken, options)
-}
-  else
-  {
-    const options = {path:'/'}
-    cookies.set('access_token',accessToken,options);
-  }
-
-}
 
 const Routes = () => {
-  const dispatch = useDispatch()
+
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
 
 
-  const timer: number = useSelector((state: RootState) => state.timerReducers.value);
-  const timers = () => dispatch(timerActionCreator(timer - 1));
-  const refreshToken = localStorage.getItem('refreshToken')
-
-//   useEffect(() => {
-//     if (isAuthenticated()){
-
-//      if (timer == 0){
-//       fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
-//            .then(response  => response.json())
-//             .then(response =>                      
-//                  updatetokens(response.refreshToken, response.accessToken)
-//                  );
-//       dispatch(timerActionCreator(3480)) //time in sec
-//      }
-    
-//       var id = setInterval(timers, 1000);      
-//       return () => clearInterval(id);
-//     }
-//   },
-  
-// );
 
 
   const handleDrawerToggle = () => {
