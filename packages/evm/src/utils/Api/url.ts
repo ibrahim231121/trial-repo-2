@@ -44,6 +44,8 @@ export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo
 
 export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`
 
+export const TEMPLATE_CONFIGURATION_LOG_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationLogs/`
+
 export const GROUP_USER_LIST = `${BASE_URL_USER_SERVICE}/Groups`
 export const USER = `${BASE_URL_USER_SERVICE}/users`
 export const APPLICATION_PERMISSION_URL = `${BASE_URL_USER_SERVICE}/Modules?Page=1&Size=100`

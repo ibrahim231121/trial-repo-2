@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Menu,
   MenuItem,
@@ -11,6 +12,7 @@ import { useDispatch } from "react-redux";
 import  Dialogbox  from "./Dialogbox";
 import { deletetemplate } from "../../../../Redux/TemplateConfiguration";
 import "./ConfigTemplateActionMenu.scss";
+import { useHistory } from "react-router";
 type Props = {
 
   row?: any;
@@ -19,7 +21,7 @@ type Props = {
 
 const ConfigTemplateActionMenu: React.FC<Props> = ({row}) => {
     const dispatch = useDispatch()
-
+    const history = useHistory();
 
 const [modal, setModal] = useState(false);
 const [nondefault, setnondefault] = useState(false);
@@ -46,6 +48,19 @@ const Deleteconfirm = () => {
     }
   }
 };
+
+
+const ViewLog = () => {
+  if(row)
+  {
+  
+    
+    history.push('/admin/unitanddevices/template/viewlog', { id: row.id, type: row.type, name: row.name })
+
+   
+  }
+};
+
 
  async function Onconfirm(){
   console.log("I am called")
@@ -103,6 +118,21 @@ const Deleteconfirm = () => {
           </div>
         </div>
       </MenuItem>
+      <MenuItem >
+      
+        <div className="crx-meu-content  crx-spac" onClick={ViewLog} >
+          <div className="crx-menu-icon">
+            <i className="far fa-trash-alt"></i>
+          </div>
+          <div className="crx-menu-list">
+           View Change Log
+           
+          </div>
+        
+        </div>
+   
+      </MenuItem>
+
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"

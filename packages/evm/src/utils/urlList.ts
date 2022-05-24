@@ -51,6 +51,7 @@ export const urlNames: any = {
     adminUnitConfigurationTemplate: "adminUnitConfigurationTemplate",
     // unitDeviceTemplateCreateBCO3: "unitDeviceTemplateCreateBCO3",
     unitDeviceTemplateCreateBCO4: "unitDeviceTemplateCreateBCO4",
+    unitDeviceTemplateViewLog: "unitDeviceTemplateViewLog",
     // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
     testVideoPlayer: "videoplayer",
     testEvidence: "Evidence",
@@ -207,6 +208,16 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Templates", },
+            //{ type: "text", label: "Create Template : BC04", }
+        ],
+    },
+
+    {
+        name: urlNames.unitDeviceTemplateViewLog, //inuse
+        url: "/admin/unitanddevices/template/viewlog",
+        details: [
+            { type: "text", label: "Admin", },
+            { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Configuration Templates Logs", },
             //{ type: "text", label: "Create Template : BC04", }
         ],
     },
