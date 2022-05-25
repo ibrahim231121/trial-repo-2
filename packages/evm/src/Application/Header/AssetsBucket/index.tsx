@@ -47,6 +47,7 @@ import { CRXModalDialog } from "@cb/shared";
 import AddMetadataForm from "./AddMetadataForm";
 import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../../utils/Api/url'
+import Restricted from "../../../ApplicationPermission/Restricted";
 declare const window: any;
 window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 window.onRecvError = new CustomEvent("onUploadError");
@@ -877,29 +878,29 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                           />
                         </CRXModalDialog>
                       </CRXRows>
-                      <div className="uploadContent">
-                        <div className="iconArea">
-                          <i className="fas fa-layer-plus"></i>
-                        </div>
-                        <div className="textArea">
-                          Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
-                          <br />
-                          <div>
-                            <input
-                              style={{ display: "none" }}
-                              id="upload-Button-file"
-                              multiple
-                              type="file"
-                              onChange={handleOnUpload}
-                            />
-                            <label htmlFor="upload-Button-file">
-                              <a className="textFileBrowser">file browser</a>
-                            </label>
+                      <Restricted moduleId={14}>
+                        <div className="uploadContent">
+                          <div className="iconArea">
+                            <i className="fas fa-layer-plus"></i>
                           </div>
-
+                          <div className="textArea">
+                            Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
+                            <br />
+                            <div>
+                              <input
+                                style={{ display: "none" }}
+                                id="upload-Button-file"
+                                multiple
+                                type="file"
+                                onChange={handleOnUpload}
+                              />
+                              <label htmlFor="upload-Button-file">
+                                <a className="textFileBrowser">file browser</a>
+                              </label>
+                            </div>
+                          </div>
                         </div>
-
-                      </div>
+                      </Restricted>
                       {fileCount > 0 && <>
                         <div className="uploading-text">{showUploadAttention ? "Uploaded:" : "Uploading:"} </div>
                         <div className="crxProgressbarBucket mainProgressBar">

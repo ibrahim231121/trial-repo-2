@@ -3,6 +3,7 @@ import { FILE_SERVICE_URL } from '../../src/utils/Api/url';
 import uploadFiles from "../GlobalFunctions/AzureFileUpload";
 declare const window: any;
 
+const cookies = new Cookies();
 interface FileInfo {
     fileId: string,
     name: string,
@@ -57,7 +58,7 @@ export const AddFilesToFileService = async (files: any) => {
     await Promise.all(promises).then((messages) => {
         uploadFiles(files);//here we can find the blob url either amazon or azure
     }).catch((e) => {
-       
+
     });
 }
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {
