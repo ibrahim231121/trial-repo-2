@@ -43,10 +43,10 @@ export const getStationsAsync: any = createAsyncThunk(
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
         };
-        console.log("wwwww")
+       
         const resp = await fetch(STATIONINFO_GET_URL, requestOptions);
         if (resp.ok) {
-            console.log("wwwww")
+           
             const response = await resp.json();
             return response;
         }

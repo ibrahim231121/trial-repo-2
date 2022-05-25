@@ -76,8 +76,8 @@ const Evidence = (props: any) => {
               }
           })
       }
-      console.log("configTemplateRows")
-      console.log(configTemplateRows)  
+     
+     
       setRows(configTemplateRows);
       setReformattedRows(configTemplateRows);
   
@@ -190,7 +190,7 @@ const Evidence = (props: any) => {
         setRows(dataRows);
     }
 };
-    const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+    const resizeRowConfigEv = (e: { colIdx: number; deltaX: number }) => {
       let headCellReset = onResizeRow(e, headCells);
       setHeadCells(headCellReset);
     };
@@ -233,7 +233,7 @@ const Evidence = (props: any) => {
               className="ManageAssetDataTable crxTableHeight bucketDataTable"
               onClearAll={clearAll}
               getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
-              onResizeRow={resizeRow}
+              onResizeRow={resizeRowConfigEv}
               onHeadCellChange={onSetHeadCells}
               setSelectedItems={setSelectedItems}
               selectedItems={selectedItems}

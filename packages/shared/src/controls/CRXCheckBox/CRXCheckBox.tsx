@@ -14,6 +14,7 @@ interface Props {
   onChange: (e: any) => void;
   className?: string;
   selectedRow?: boolean;
+  inputRef? : any
 }
 
 const useStyles = makeStyles({
@@ -25,6 +26,7 @@ const useStyles = makeStyles({
   icon: {
     fontSize: "18px",
     color: "#d1d2d4",
+    backgroundColor: "#fff",
     "input:hover ~ &": {
       color:"#333333"
     },
@@ -45,6 +47,7 @@ const CRXCheckBox: React.FC<Props> = ({
   lightMode = false,
   onChange,
   name,
+  inputRef,
   inputProps = "uncontrolled-checkbox",
 }) => {
   const classes = useStyles();
@@ -55,17 +58,18 @@ const CRXCheckBox: React.FC<Props> = ({
   const checkStyle = lightMode ? "checkBoxLightTheme" : "checkBoxDarkTheme";
   useEffect(() => {
     if(selectedRow == true && checkBoxSelected == "crxSelectedDark" && checked == true) {
-      setCheckBoxIconClass("fal fa-check-square crxCheckForDarBg");
+      setCheckBoxIconClass("fas fa-check-square crxCheckForDarBg");
     } else if(selectedRow == true && checkBoxSelected == "crxSelectedLight" && checked == true) {
-        setCheckBoxIconClass("fal fa-check-square");
+        setCheckBoxIconClass("fas fa-check-square");
     }else {
-      setCheckBoxIconClass("fal fa-check-square")
+      setCheckBoxIconClass("fas fa-check-square")
     }
   },[checked]);
   return (
     <>
       <Checkbox
-        className={classes.root + " CRXCheckBox " + className + disable + " " + checkStyle}
+        inputRef={inputRef}
+        className={classes.root + " CRXCheckBox " + className + " " + disable + " " + checkStyle}
         checked={checked}
         disableRipple
         onChange={onChange}

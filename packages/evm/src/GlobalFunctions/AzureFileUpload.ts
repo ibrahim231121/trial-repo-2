@@ -42,7 +42,7 @@ const uploadFiles = async (files: any) => {
                     fileId: file.uploadedFileId
                 };
                 window.dispatchEvent(window.onRecvData);
-                // console.log("fileUpload", {
+                //
                 //     loadedBytes: (ev.loadedBytes / (1024 * 1024)).toFixed(2),
                 //     percent: Math.round((ev.loadedBytes / file.size) * 100),
                 //     fileSize: (file.size / (1024 * 1024)).toFixed(2),
@@ -55,11 +55,11 @@ const uploadFiles = async (files: any) => {
         promises.push(blockBlobClient.uploadData(file,
             blockBlobParallelUploadOptions)
             .then(response => {
-                console.log(response)
+               
                 if (response.errorCode != null) {
-                    console.log("failed", file)
+                   
                 }
-            }).catch(e => {
+            }).catch(e => { 
                 if (e.name == 'AbortError') {
                     window.onRecvData.data = {
                         removed: true,
@@ -69,7 +69,8 @@ const uploadFiles = async (files: any) => {
                 else if (e.name == "RestError") {
                     window.onRecvData.data = {
                         error: true,
-                        fileName: file.uploadedFileName
+                        fileName: file.uploadedFileName,
+                        fileId : file.uploadedFileId
                     };
                 }
 

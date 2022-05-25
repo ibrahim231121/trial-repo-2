@@ -1,6 +1,6 @@
 import * as React from "react";
 import Button from "@material-ui/core/Button";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./CRXButton.scss";
 
 interface buttonProps {
@@ -13,7 +13,7 @@ interface buttonProps {
   disabled?: boolean;
   primary?: boolean
 }
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#333333",

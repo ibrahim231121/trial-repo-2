@@ -472,9 +472,10 @@ const Group = () => {
             };
           });
           let dataPermissionObj = {
-             groupId : id,
+            //  groupId : id,
             containerMappings: permissionsToAdd,
             deletedContainerMappingIds: deletedDataPermissions,
+            groupId:groupId
           };
           fetch(UPSERT_CONTAINER_MAPPING_URL, {
             method: "PUT",

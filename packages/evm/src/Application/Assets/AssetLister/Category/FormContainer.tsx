@@ -5,8 +5,12 @@ import CategoryForm from './CategoryForm';
 import RemoveCategoryForm from './RemoveCategoryForm';
 import CancelConfirmForm from './Confirmation/CancelConfirmForm';
 import SaveConfirmForm from './Confirmation/SaveConfirmForm';
-import { useSelector } from 'react-redux';
 import EditConfirmForm from './Confirmation/EditConfirmForm';
+import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url';
+import { filterCategory } from './Utility/UtilityFunctions';
+import { AssetCategory } from './Model/Evidence';
+import http from '../../../../http-common'
+
 
 type FormContainerProps = {
   openForm: boolean;
@@ -23,17 +27,18 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [activeForm, setActiveForm] = React.useState<number>(0);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
-  const [differenceOfDays, setDifferenceOfDays] = React.useState('');
+  const [differenceOfDays, setDifferenceOfDays] = React.useState<number>(0);
   const [modalTitle, setModalTitle] = React.useState('');
   const [removeClassName, setremoveClassName] = React.useState('');
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
   const [removalType, setRemovalType] = React.useState(0);
   const [removeMessage, setRemoveMessage] = React.useState<string>('');
   const [retentionId, setRetentionId] = React.useState<number>(0);
+  const [holdUntill, setHoldUntill] = React.useState<string>('');
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
   const prevActiveFormRef = React.useRef<number>();
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const prevActiveForm = prevActiveFormRef.current;
+  const [evidenceResponse, setEvidenceResponse] = React.useState<AssetCategory.RootObject>();
 
   React.useEffect(() => {
     prevActiveFormRef.current = activeForm;
@@ -43,10 +48,16 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
     if (props.openForm == true) {
       setOpenModal(true);
       if (props.rowData) {
-        const filtered = categoryOptions && categoryOptions.filter((o: any) => {
-          return props.rowData?.categories.some((e: any) => e === o.name);
-        });
-        setFilterValue(filterCategory(filtered));
+        const evidenceId = props.rowData.id;
+        const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}`;
+        http.get<AssetCategory.RootObject>(url)
+          .then((response) => {
+            setFilterValue(filterCategory(response.data.categories));
+            setEvidenceResponse(response.data);
+          })
+          .catch((err: any) => {
+            console.error(err);
+          });
       }
       setActiveForm(0);
     }
@@ -58,7 +69,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
       return;
     }
 
-    const newValue = categoryOptions
+    const newValue = []
       .filter((o: any) => {
         return o.id === removedOption.id;
       })
@@ -77,21 +88,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
     props.setOpenForm();
   };
 
-  const filterCategory = (arr: Array<any>): Array<any> => {
-    let sortedArray = [];
-    if (arr.length > 0) {
-      for (const element of arr) {
-        sortedArray.push({
-          id: element.id,
-          label: element.name
-        });
-      }
-    }
-    sortedArray = sortedArray.sort((a: any, b: any) =>
-      a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1
-    );
-    return sortedArray;
-  };
+
 
   const handleActiveForm = (step: number) => {
     switch (step) {
@@ -102,7 +99,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: number) => setActiveForm(v)}
             filterValue={filterValue}
             setFilterValue={(v: any) => setFilterValue(v)}
-            rowData={props.rowData}
+            evidenceResponse={evidenceResponse}
             isCategoryEmpty={props.isCategoryEmpty}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setOpenForm={() => props.setOpenForm()}
@@ -119,7 +116,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             activeForm={activeForm}
             setActiveForm={(v: any) => setActiveForm(v)}
             filterValue={filterValue}
-            rowData={props.rowData}
+            evidenceResponse={evidenceResponse}
             isCategoryEmpty={props.isCategoryEmpty}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
@@ -158,14 +155,15 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setFilterValue={(v: any) => setFilterValue(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
-            rowData={props.rowData}
+            evidenceResponse={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
-            setDifferenceOfDays={(v: any) => setDifferenceOfDays(v)}
+            setDifferenceOfDays={(v: number) => setDifferenceOfDays(v)}
             setRemovedOption={(e: any) => setRemovedOption(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setRemovalType={(e: number) => setRemovalType(e)}
             setRemoveMessage={(e: string) => setRemoveMessage(e)}
             setRetentionId={(e: number) => setRetentionId(e)}
+            setHoldUntill={(e: string) => setHoldUntill(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
           />
         );
@@ -178,7 +176,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setFilterValue={(v: any) => setFilterValue(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
-            rowData={props.rowData}
+             evidenceResponse={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             differenceOfDays={differenceOfDays}
             setRemovedOption={(e: any) => setRemovedOption(e)}
@@ -186,6 +184,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removalType={removalType}
             removeMessage={removeMessage}
             retentionId={retentionId}
+            holdUntill={holdUntill}
           />
         );
       case 5:
@@ -194,7 +193,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: any) => setActiveForm(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            rowData={props.rowData}
+            evidenceResponse={evidenceResponse}
             filterValue={filterValue}
             setModalTitle={(i: any) => setModalTitle(i)}
             setremoveClassName={(v: any) => setremoveClassName(v)}

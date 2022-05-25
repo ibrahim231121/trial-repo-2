@@ -22,11 +22,19 @@ const ToggleBadge = (
   </CRXBadge>
 );
 
-const CRXNotficationPanel = () => {
+type panelProps = {
+  otherPanel : any
+}
+const CRXNotficationPanel = ({otherPanel} : panelProps) => {
 
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isRead, setIsRead] = React.useState<boolean>(false);
-  const toggleOpen = () => setIsOpen((prevState: boolean) => !prevState);
+
+  const toggleOpen = () => {
+    
+    setIsOpen((prevState: boolean) => !prevState);
+    otherPanel(false)
+  };
   //const toggleRead = () => setIsRead(false);
   const dispatch = useDispatch()
 

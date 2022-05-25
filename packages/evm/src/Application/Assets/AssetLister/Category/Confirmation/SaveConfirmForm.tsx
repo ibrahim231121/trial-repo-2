@@ -5,15 +5,18 @@ import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import moment from 'moment';
+import http from '../../../../../http-common';
 
 type SaveConfirmFormProps = {
   removedOption: any;
   setremoveClassName: any;
-  rowData: any;
-  differenceOfDays: string;
+  // rowData: any;
+  evidenceResponse : any;
+  differenceOfDays: number;
   removalType: number;
   removeMessage: string;
   retentionId: number;
+  holdUntill: string;
   setActiveForm: (param: any) => void;
   setOpenForm: () => void;
   setFilterValue: (param: any) => void;
@@ -41,12 +44,14 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   React.useEffect(() => {
     if (props.removalType === 1) {
       setWarningMessage(`Please be aware that by removing this category, you
-      are reducing the assets lifetime and the asset will expire in
-      ${props.differenceOfDays}.`);
+      are reducing the assets lifetime and the asset will expire${props.differenceOfDays > 0 ? ` in
+      ${props.differenceOfDays} Hours.` : '.'} `);
+
+
     } else if (props.removalType === 2) {
       setWarningMessage(`Please be aware that by removing this category, you
         are reducing the assets lifetime and the asset will expire in
-        ${props.differenceOfDays}. Unclassified retention policy of station
+        ${props.differenceOfDays} Hours. Unclassified retention policy of station
         will be applied on this evidence group.`);
     }
   }, [props.removalType]);
@@ -63,7 +68,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
         };
       })[0];
     if (newValue) {
-      props.setFilterValue((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
+      /** Set removed option in to State again. */
+      props.setFilterValue((prevState: any) => [...prevState, newValue]);  
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
@@ -74,12 +80,13 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     props.closeModal(false);
   };
 
-  const deleteFetchReq = () => {
+  const deleteRequest = () => {
     const message = props.removeMessage;
-    const evidenceId = props.rowData.id;
+    // const evidenceId = props.rowData.id;
+    const evidenceId = props.evidenceResponse?.id;
     const categoryId = props.removedOption.id;
-    const retentionId = props.retentionId;
-
+    const retentionId = props.retentionId !== 0 ? [props.retentionId] : null;
+    const holdUntill = props.holdUntill;
     const unAssignCategory = {
       id: categoryId,
       formData: [],
@@ -90,21 +97,13 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
       updateCategories: [],
-      retentionId: [retentionId]
+      retentionId: retentionId,
+      holdUntill: holdUntill
     };
-    const requestOptions = {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        TenantId: '1'
-      },
-      body: JSON.stringify(body)
-    };
-
     const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
-    fetch(url, requestOptions)
-      .then((response: any) => {
-        if (response.ok) {
+    http.patch(url, body)
+      .then((response) => {
+        if (response.status == 204) {
           setSuccess(true);
           setTimeout(() => closeModal(), 3000);
         } else {
@@ -132,7 +131,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       <Formik
         initialValues={initialValues}
         onSubmit={() => {
-          deleteFetchReq();
+          deleteRequest();
         }}>
         <Form className='crx-category-remove-form'>
           {props.removalType !== 0 && (

@@ -1,17 +1,27 @@
 .toasterMsg {
-    padding: 0px !important;
+    padding: 8px 0px !important;
     border: 1px solid var(--color-646464);
     background: var(--color-White-1) !important;
-    height: 35px;
+    /* height: 35px; */
     padding-left: 13px !important;
+    top: 47px;
+    position: relative;
+    right: 3px;
+    box-shadow: var(--Box-shadow-2) !important;
+    width: 432px;
     #notistack-snackbar {
         padding: 0px !important;
+        width: 98%;
     }
     .toasterContent {
         font-size: 12px;
         color:var(--color-666666);
+        line-height: 14px;
+        max-width: 80%;
+        padding-left: 8px;
         span {
-            padding: 0px 2px 0px 8px;
+            padding: 0px 2px 0px 0px;
+            text-transform: capitalize;
             &:first-letter {
                 text-transform: uppercase;
             }
@@ -67,6 +77,10 @@
         &:hover {
             color: var(--color-646464);
         }
+      }
+      .closeAction{
+        position: absolute;
+        right: -4px;
       }
 }
 

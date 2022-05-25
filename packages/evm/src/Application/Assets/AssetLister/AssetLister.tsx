@@ -161,7 +161,7 @@ const SearchComponent = (props: any) => {
       }
 
       fetchData(QUERRY, constants.SearchType.SimpleSearch);
-      console.log("scroll")
+     
       setAdvanceSearch(false);
       setShowAssetDateCompact(true);
     };

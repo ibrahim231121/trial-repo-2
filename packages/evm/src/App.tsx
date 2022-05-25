@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
-
+import Fade from '@material-ui/core/Fade';
 import { CRXPanelStyle } from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
@@ -17,7 +17,7 @@ import { RootState } from "./Redux/rootReducer";
 import { CRXDropDown } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
 import "./App.scss";
-
+import Cookies from 'universal-cookie';
 import { setupSignalRConnection } from "./utils/hub_config";
 
 import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
@@ -27,6 +27,26 @@ import { Permission } from "./ApplicationPermission/types";
 import { getToken } from "./Login/API/auth";
 import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
+import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
+
+
+interface CounterState {
+  path: string,
+  expires:Date
+}
+
+interface IDecoded{
+  exp:string;
+}
+
+let decoded:IDecoded;
+
+var currentData:any=new Date();
+currentData = Math.floor(currentData.getTime()/1000)
+
+const refreshToken = localStorage.getItem('refreshToken')
+const cookies = new Cookies();
+
 
 function App() {
   const value: string = useSelector(
@@ -48,7 +68,61 @@ function App() {
   const dispatch = useDispatch();
   const [moduleIds, setModuleIds] = React.useState<number[]>([]);
   const [open, setOpen] = useState(true);
+  const [tokenexpiry , setExpiry] = useState<number>(0)
+ 
   const classes = CRXPanelStyle();
+
+
+
+  useEffect(()=>{
+    if(tokenexpiry == 0)
+    {
+      var tokenexpirydatetime:any = localStorage.getItem('expirytime_token')
+      tokenexpirydatetime= tokenexpirydatetime - 600
+      setExpiry(tokenexpirydatetime)
+    }
+    if ( tokenexpiry < currentData && tokenexpiry > 0)
+    {
+    
+      fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
+      
+             .then(response  => response.json())
+              .then(response => updatetokens(response.refreshToken, response.accessToken) );
+    }
+  },[tokenexpiry])
+
+
+ 
+
+
+  const updatetokens = (refreshToken : string, accessToken: string)=>
+{
+
+  decoded = jwt_decode(accessToken)
+  localStorage.setItem("expirytime_token",decoded.exp)
+  var newexpireTime = parseInt(decoded.exp) - 600;
+  setExpiry(newexpireTime)
+  localStorage.setItem("refreshToken", refreshToken)      
+  const condition = localStorage.getItem('remember me')   
+  if (condition == "True")
+  {
+  const date:any = localStorage.getItem('expiryDate')
+  const dateToTimeStamp = new Date(date).getTime()
+  const currentDate = new Date().getTime()
+  const difference = dateToTimeStamp - currentDate
+  var newdateInTimeStamp = difference + currentDate
+  var newdateReadable = new Date(newdateInTimeStamp)
+  const options:CounterState = { path:'/',expires:newdateReadable };
+  cookies.set('access_token', accessToken, options)
+}
+  else
+  {
+    const options = {path:'/'}
+    cookies.set('access_token',accessToken,options);
+  }
+}
+
+
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -350,6 +424,7 @@ function App() {
             variantWarning: "warning",
             variantInfo: "info",
           }}
+          TransitionComponent={Fade as React.ComponentType}
         >
           <div className="language_selector_app">
             <CRXSelectBox

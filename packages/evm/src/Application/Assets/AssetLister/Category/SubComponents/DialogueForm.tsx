@@ -5,11 +5,12 @@ import { Alert } from '@material-ui/lab';
 import { CRXAlert } from '@cb/shared';
 import moment from 'moment';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
+import http from '../../../../../http-common';
 
 type DialogueFormProps = {
-  setremoveClassName:any;
+  setremoveClassName: any;
   formCollection: any;
-  rowData: any;
+  evidenceResponse : any;
   initialValues: any;
   setActiveForm: (param: any) => void;
   setOpenForm: () => void;
@@ -40,7 +41,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   };
 
   const submitForm = (values: any[]) => {
-    const evidenceId = props.rowData.id;
+    const evidenceId = props.evidenceResponse?.id;
     const Assign_Category_Arr: any[] = [];
     const Assign_Category_URL = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
     for (const v of values) {
@@ -52,31 +53,23 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       Assign_Category_Arr.push(_body);
     }
 
-    const _body = {
+    const body = {
       unAssignCategories: [],
       assignedCategories: Assign_Category_Arr,
       updateCategories: []
     };
 
-    const requestOptions = {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        TenantId: '1'
-      },
-      body: JSON.stringify(_body)
-    };
-
-    fetch(Assign_Category_URL, requestOptions)
-      .then(() => {
-        props.setFilterValue((val: []) => []);
-        setSuccess(true);
-        setTimeout(() => closeModal(), 3000);
+    http.patch(Assign_Category_URL, body)
+      .then((response) => {
+        if (response.status == 204) {
+          props.setFilterValue((val: []) => []);
+          setSuccess(true);
+          setTimeout(() => closeModal(), 3000);
+        } else {
+          setError(true);
+          throw new Error(response.statusText);
+        }
       })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err.message);
-      });
   };
 
   return (

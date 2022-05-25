@@ -13,9 +13,11 @@ type ProgressTypes = {
   error: boolean;
   maxDataSize: boolean;
   id: string;
+  removeIcon? : any,
+  width? : any,
 };
 const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
-  const { value, loadingText, loadingCompleted, error, maxDataSize, id } =
+  const { value, loadingText, loadingCompleted, error, maxDataSize, id, removeIcon, width } =
     props;
   const progreesRefs = useRef((id: any) => {
     return id;
@@ -43,75 +45,35 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
   });
 
   const styled = progressStyle();
-  //const [progress, setProgress] = useState<number>(0);
   const [rotate, setRotate] = useState<string>("");
   const [propgresicon, setProgressIcon] = useState<string>("fas fa-sync-alt");
-  //const [errState, setError] = useState<boolean>();
-  //const [limit, setLimit] = useState<number>(100)
   const [errorClx, setErorrClx] = useState<string>("");
   const [progressBar, setProgressBar] = useState<any>(0);
-  //const errConditionValue: any = errState && errState ? limit : progress
+ 
 
   useEffect(() => {
-    //setError(error);
+    
     if (error == true) {
-      // setLimit(40);
-      // setProgress(40)
+     
       setErorrClx("progressErorr");
       setProgressBar("Error");
       setRotate("");
       setProgressIcon("far fa-exclamation-circle");
-    } else {
-      //let progressValue = Math.round(progress) + "%";
-      //setPercentageText(progress)
     }
   }, [error]);
 
   //This block use for initial bind the component or error case hanldler
   useEffect(() => {
     setRotate("rotate");
-
-    // if (errState == true) {
-
-    //     setProgress(40)
-    //     setLimit(40)
-    //     clearInterval(animate)
-
-    // } else {
-
-    //     animate == setInterval(() => {
-    //         setProgress((prevState: any) => prevState < limit && !errState ? prevState + value : limit,)
-    //     }, 800)
-    // }
-
-    // return () => {
-    //     clearInterval(animate)
-    // }
   }, []);
 
   //update the value of progrees and control icon and and class from this block
   useEffect(() => {
-    // if (progress == 40) {
-    //     setError(false);
-    // }
 
     if (value == 100) {
       setRotate("");
       setProgressIcon("far fa-check-circle");
     }
-
-    // if (errState == true) {
-
-    //     // setLimit(40);
-    //     // setProgress(40)
-    //     setErorrClx("progressErorr")
-    //     setPercentageText("Error")
-    //     setRotate("");
-    //     setProgressIcon("far fa-exclamation-circle")
-    // } else {
-    //     let progressValue = Math.round(progress) + "%";
-    //     //setPercentageText(progress)
-    // }
 
     setProgressBar(value);
     return () => { };
@@ -121,10 +83,14 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
 
   const percentageText = errorClx == "progressErorr" ? "" : "%";
 
+  const perc = progressBar * width / 100 - 7;
   return (
     <div className="crx-progress-br">
       <div className={clx}>{loadingText}</div>
       <div className="loader">
+        <div className="linerLoader" style={{width : width + "px"}}>
+
+        
         <LinearProgress
           id={id}
           ref={progreesRefs}
@@ -140,16 +106,20 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
                 : styled.barColorPrimary,
           }}
         />
-        <div className="fileUploadStatus">
-          {maxDataSize && loadingCompleted}
-        </div>
-        <div
+         <div
           className="progressPercentage"
-          style={{ left: progressBar / 2 + percentageText }}
+          style={{ left: perc / 2 + "px" }}
         >
           {progressBar + percentageText}
         </div>
+        </div>
+        <div className="fileUploadStatus">
+          {maxDataSize && loadingCompleted}
+        </div>
+       
+       
         <div className={"loadingIcon " + assetsLoadingBarIcon}>
+          {removeIcon}
           <i className={propgresicon + " " + rotate}></i>
         </div>
       </div>

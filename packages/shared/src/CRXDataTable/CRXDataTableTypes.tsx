@@ -2,7 +2,7 @@ import React from 'react'
 import {
   createStyles,
   makeStyles,
-  createMuiTheme,
+  createTheme,
   Theme,
 } from "@material-ui/core/styles";
 
@@ -36,7 +36,7 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const theme = createMuiTheme({
+export const theme = createTheme({
   overrides: {
     MuiTableRow: {
       root: {

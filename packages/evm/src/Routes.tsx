@@ -28,74 +28,23 @@ import UnitConfigurationTemplate from "./Application/Admin/UnitConfiguration/Con
 import AssetDetailsTemplate from "./Application/Assets/Detail/AssetDetailsTemplate";
 import VideoPlayer from "./components/MediaPlayer/VideoPlayerBase";
 import Evidence from "./components/Evidence/ConfigEvidence";
-import { isAuthenticated } from "./Login/API/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./Redux/rootReducer";
-import { timerActionCreator } from "../src/Redux/timerslice";
-import { AUTHENTICATION_NewAccessToken_URL } from './utils/Api/url'
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
+import ViewConfigurationTemplateLog from './Application/Admin/UnitConfiguration/ConfigurationTemplates/ViewConfigurationTemplateLog'
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
-import Cookies from "universal-cookie";
+
 import Restricted from "./ApplicationPermission/Restricted";
+import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 
-const cookies = new Cookies();
 
-interface CounterState {
-  path: string,
-  expires:Date
-}
 
-const updatetokens = (refreshToken : string, accessToken: string)=>
-{
-  localStorage.setItem("refreshToken", refreshToken)      
-  const condition = localStorage.getItem('remember me')   
-  if (condition == "True")
-  {
-  const date:any = localStorage.getItem('expiryDate')
-  const dateToTimeStamp = new Date(date).getTime()
-  const currentDate = new Date().getTime()
-  const difference = dateToTimeStamp - currentDate
-  var newdateInTimeStamp = difference + currentDate
-  var newdateReadable = new Date(newdateInTimeStamp)
-  const options:CounterState = { path:'/',expires:newdateReadable };
-  cookies.set('access_token', accessToken, options)
-}
-  else
-  {
-    const options = {path:'/'}
-    cookies.set('access_token',accessToken,options);
-  }
 
-}
 
 const Routes = () => {
-  const dispatch = useDispatch()
+
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
 
 
-  const timer: number = useSelector((state: RootState) => state.timerReducers.value);
-  const timers = () => dispatch(timerActionCreator(timer - 1));
-  const refreshToken = localStorage.getItem('refreshToken')
-
-//   useEffect(() => {
-//     if (isAuthenticated()){
-
-//      if (timer == 0){
-//       fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
-//            .then(response  => response.json())
-//             .then(response =>                      
-//                  updatetokens(response.refreshToken, response.accessToken)
-//                  );
-//       dispatch(timerActionCreator(3480)) //time in sec
-//      }
-    
-//       var id = setInterval(timers, 1000);      
-//       return () => clearInterval(id);
-//     }
-//   },
-  
-// );
 
 
   const handleDrawerToggle = () => {
@@ -136,17 +85,27 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) =>  item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
               <PrivateRoute moduleId={8} path={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} exact={true} component={User} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
+              <PrivateRoute moduleId={15} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />     
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
+              
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateViewLog)[0].url} exact={true}  component={(routeProps:any) => <ViewConfigurationTemplateLog {...routeProps} />} />
+
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
+              
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
+
+
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
+              {/* <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
               <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />
-              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />
+              <Route path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} /> */}
+              <PrivateRoute moduleId={17} path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
+              <PrivateRoute moduleId={18} path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />
+              <PrivateRoute moduleId={19} path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />
               <Route path="/token/:token" exact={true} component={Token} />
 
               <Route path="/notfound" component={ErrorPage} /> 

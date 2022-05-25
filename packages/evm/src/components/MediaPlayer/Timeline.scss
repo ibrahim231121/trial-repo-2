@@ -68,6 +68,9 @@
     opacity: 1;
     visibility: visible;
   }
+  .beforelineMain {
+    margin-top: 67px;
+  }
   .beforeline{
     margin: 4px -5px;
     bottom: 12px;
@@ -78,4 +81,10 @@
 
   .canvas-width canvas{
     width: 100%;
+  }
+  .videoFastRw {
+    display: flex;
+    > div {
+      margin-bottom: 75px;
+    }
   }

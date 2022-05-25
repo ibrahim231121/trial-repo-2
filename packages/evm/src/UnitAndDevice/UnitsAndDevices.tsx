@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +38,7 @@ import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
 import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
+import ApplicationPermissionContext from "../ApplicationPermission/ApplicationPermissionContext";
 
 
 type Unit = {
@@ -100,6 +101,8 @@ const UnitAndDevices: React.FC = () => {
 
   const [open, setOpen] = React.useState<boolean>(false)
 
+  const {getModuleIds} = useContext(ApplicationPermissionContext);
+
   const setData = () => {
  
     let unitRows: Unit[] = [];
@@ -109,7 +112,7 @@ const UnitAndDevices: React.FC = () => {
             // <a href={`unitsanddevices/detail/${unit.recId +"_"+ unit.stationRecId}`}>{unit.station}</a>,
                 return {
                     id: unit.recId,
-                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId,
+                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId+"_"+unit.template,
                     description: unit.description,
                     station: unit.station,
                     serialNumber: unit.serialNumber,
@@ -335,7 +338,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
   const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
 
     if(colIdx === 2) {
-        console.log(initialRows);
+       
 
     let statuslist: any = [];
 
@@ -388,7 +391,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
 
 
     if(colIdx === 9) {
-      console.log(initialRows);
+     
   let templatelist: any = [];
 
   if(initialRows !== undefined){
@@ -468,6 +471,19 @@ const openHandler = (_: React.SyntheticEvent ) => {
 
 
 
+const AnchorDisplay = (e: string) => {
+  if(getModuleIds().includes(16)) {
+  return anchorDisplayUnit(e)
+  }
+  else{
+  let lastid = e.lastIndexOf("_");
+  let text =  e.substring(0,lastid)
+  return textDisplay(text,"")
+  }
+}
+
+
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -482,12 +498,11 @@ const openHandler = (_: React.SyntheticEvent ) => {
       minWidth: "80",
       maxWidth: "100",
     },
-
     {
       label: `${t("Unit ID")}`,
       id: "unitId",
       align: "left",
-      dataComponent: (e: string) => anchorDisplayUnit(e, "linkColor"),// textDisplay(e, ""),
+      dataComponent: (e: string) => AnchorDisplay(e),// textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -721,7 +736,7 @@ const dataArrayBuilder = () => {
     }
 };
 
-const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+const resizeRowUnitDevice = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
 };
@@ -781,7 +796,7 @@ useEffect(()=>{
           className=""
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowUnitDevice}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}

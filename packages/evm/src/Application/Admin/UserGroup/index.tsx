@@ -225,7 +225,7 @@ const UserGroup: React.FC = () => {
     }
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowGroupUser = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -266,7 +266,7 @@ const UserGroup: React.FC = () => {
             className="crxTableHeight crxTableDataUi manageUserGroupsDataTable"
             onClearAll={clearAll}
             getSelectedItems={(v: GroupUser[]) => setSelectedItems(v)}
-            onResizeRow={resizeRow}
+            onResizeRow={resizeRowGroupUser}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}

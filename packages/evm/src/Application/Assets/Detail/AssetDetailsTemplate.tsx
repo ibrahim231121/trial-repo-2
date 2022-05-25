@@ -12,12 +12,27 @@ import useGetFetch from "../../../utils/Api/useGetFetch";
 import { EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import moment from "moment";
+import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 
 const AssetDetailsTemplate = (props: any) => {
   const historyState = props.location.state;
   let evidenceId: number = historyState.evidenceId;
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
+
+
+  type assetdata = {
+    files: any;
+    assetduration: number;
+    assetbuffering: any;
+    recording: any;
+    bookmarks: [];
+    id: number;
+    unitId: number;
+    typeOfAsset: string;
+    notes: any;
+    camera: string;
+  }
 
   type EvidenceReformated = {
     id: number;
@@ -70,7 +85,8 @@ const AssetDetailsTemplate = (props: any) => {
   const [value, setValue] = React.useState(0);
   const [evidence, setEvidence] =
     React.useState<EvidenceReformated>(evidenceObj);
-  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<any>([]);
+  const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
   const [openForm, setOpenForm] = React.useState(false);
@@ -94,7 +110,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
     );
   const [assetData, getAssetData] = useGetFetch<any>(
-    EVIDENCE_SERVICE_URL + "/Evidences/" + "2",
+    EVIDENCE_SERVICE_URL + "/Evidences/" + "8",
     {
       "Content-Type": "application/json",
       TenantId: "1",
@@ -138,7 +154,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
 
       setEvidence({ ...evidence, categories: categories });
-      console.log("categories", categories);
+     
     }
   }, [evidenceCategoriesResponse]);
 
@@ -152,10 +168,8 @@ const AssetDetailsTemplate = (props: any) => {
           })
         )
       );
-
-      var owners:any= [];
-      owners.push(getAssetData.assets.master.owners);
-      var ownerSeparated = owners.join(",");
+     
+      var owners : any[] = getAssetData.assets.master.owners.map((x:any) => x.cmtFieldValue);
 
       var unit: number[] = [];
       unit.push(getAssetData.assets.master.unitId);
@@ -172,8 +186,8 @@ const AssetDetailsTemplate = (props: any) => {
       getAssetData.assets.master.files.map((x: any) => {
         size.push(x.size);
       });
-      
-     
+
+
       var categoriesForm: string[] = [];
       getAssetData.categories.map((x: any) => {
         categoriesForm.push(x.record.cmtFieldName);
@@ -181,7 +195,7 @@ const AssetDetailsTemplate = (props: any) => {
 
       setAssetData({
         ...assetInfo,
-        owners: ownerSeparated,
+        owners: owners,
         unit: unit,
         capturedDate: moment(getAssetData.createdOn).format(
           "YYYY / MM / DD HH:mm:ss"
@@ -197,16 +211,70 @@ const AssetDetailsTemplate = (props: any) => {
         categories: categories,
         categoriesForm: categoriesForm,
       });
+      const data = extract(getAssetData);
+      setVideoPlayerData(data);
     }
   }, [getAssetData]);
-  console.log("this is umair", getAssetData);
+ 
+
+  function extract(row: any) {
+    debugger;
+    let rowdetail: assetdata[] = [];
+    let rowdetail1: assetdata[] = [];
+
+    console.log(row);
+    console.log(row.assets);
+
+    const masterduration = row.assets.master.duration;
+    const buffering = row.assets.master.buffering;
+    const camera = row.assets.master.camera;
+    const file = extractfile(row.assets.master.files);
+    const recording = row.assets.master.recording;
+    const bookmarks = row.assets.master.bookMarks ?? [];
+    const notes = row.assets.master.notes ?? [];
+    const id = row.assets.master.id;
+    const unitId = row.assets.master.unitId;
+    const typeOfAsset = row.assets.master.typeOfAsset;
+    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
+    rowdetail.push(myData);
+    rowdetail1 = row.assets.children.map((template: any, i: number) => {
+      return {
+        id: template.id,
+        files: extractfile(template.files),
+        assetduration: template.duration,
+        assetbuffering: template.buffering,
+        recording: template.recording,
+        bookmarks: template.bookMarks ?? [],
+        unitId: template.unitId,
+        typeOfAsset: template.typeOfAsset,
+        notes: template.notes ?? [],
+        camera: camera
+      }
+    })
+    for (let x = 0; x < rowdetail1.length; x++) {
+      rowdetail.push(rowdetail1[x])
+    }
+    return rowdetail
+  }
+  function extractfile(file: any) {
+    let Filedata: assetdata[] = [];
+    Filedata = file.map((template: any, i: number) => {
+      return {
+        filename: template.name,
+        fileurl: template.url,
+        fileduration: template.duration,
+
+      }
+    })
+    return Filedata;
+  }
 
   const tabs = [
     { label: "Information", index: 0 },
     { label: "Map", index: 1 },
     { label: "Related Assets", index: 2 },
   ];
-  
+
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
     if (evidence !== undefined && evidence !== null) {
@@ -302,8 +370,8 @@ const AssetDetailsTemplate = (props: any) => {
         spacing={0}
         style={{ marginTop: "50px", marginRight: "50px" }}
       >
-        <CRXColumn item xs={6}>
-          <div
+        <CRXColumn item xs={8}>
+          {/* <div
             style={{
               marginLeft: "80px",
               marginRight: "80px",
@@ -312,9 +380,9 @@ const AssetDetailsTemplate = (props: any) => {
               color: "white",
               textAlign: "center",
             }}
-          >
-            Video Player Container
-          </div>
+          > */}
+          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} EvidenceId={8} />}
+          {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">
           <div className="tabCreateTemplate">
@@ -322,7 +390,7 @@ const AssetDetailsTemplate = (props: any) => {
             <div className="tctContent">
               <CrxTabPanel value={value} index={0}>
                 <div className="tctown">
-                  <h1>Owners :</h1> <span>{assetInfo.owners}</span>
+                  <h1>Owners :</h1> <span>{assetInfo.owners.join(',')}</span>
                 </div>
                 <div className="tctown">
                   <h1>Unit :</h1> <span>{assetInfo.unit}</span>

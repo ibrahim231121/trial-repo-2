@@ -22,7 +22,7 @@
       font-size: 14px;
       overflow-x: hidden;
       font-family: var(--base-font-family);
-      padding: 7px 53px 5px 27px;
+      padding: 7px 51px 5px 27px;
       .crxUplockContent {
         p {
           &:last-child {
@@ -623,6 +623,7 @@
     top: 2px;
     background: var(--color-White);
     z-index: 1;
+    font-size: 14px;
     sup {
       line-height: 17px;
       margin-right: 5px;
