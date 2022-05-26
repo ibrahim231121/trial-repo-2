@@ -170,8 +170,7 @@ function App() {
     
     var token = getToken();
     if(token){
-          //  setupSignalRConnection("https://localhost:54321/command");
-            setupSignalRConnection("https://localhost:54321/command");
+            setupSignalRConnection("https://localhost:54321/crossbone");
             var moduleIds = getModuleIds();
             if(moduleIds){
              
