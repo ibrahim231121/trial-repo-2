@@ -41,8 +41,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   React.useEffect(() => {
     debugger;
     console.log('assetOwners',assetOwners);
-    //sendData();
-    
+    if(assetOwners.length > 0)
+    {
+    sendData();
+    }
       //dispatch(getUsersInfoAsync());
   }, [assetOwners]);
   const sendData = async () =>{
@@ -53,6 +55,20 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(assetOwners)
       })
+      .then(function (res) {
+        if (res.ok) {
+          props.setOnClose();
+        } 
+        else if (res.status == 500) {
+          // setAlert(true);
+          // setResponseError(
+          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          // );
+        }
+      })
+      .catch(function (error) {
+        return error;
+      });
   }
   const getData = () => {
     debugger;
@@ -152,39 +168,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           evidenceId: el.id,
           assetId: el.assetId,
           owners: props.filterValue.map(x => x.id)
-          //IsChildAssetincluded: assignUserCheck
         }
         tempOwnerList.push(temp);
       })
       setAssetOwners(tempOwnerList);
-      const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-        body: JSON.stringify(tempOwnerList)
-      })
-      .then(function (res) {
-        if (res.ok) {
-          props.setOnClose();
-          // showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
-        } else if (res.status == 500) {
-          // setAlert(true);
-          // setResponseError(
-          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-          // );
-        }
-        // else return res.text();
-      })
-      // .then((resp) => {
-      //   console.log("S ", resp)
-      //   if (resp !== undefined) {
-      //     let error = JSON.parse(resp);
-      //   }
-      // })
-      .catch(function (error) {
-        return error;
-      });
-      
     }
     else
     {
@@ -201,21 +188,15 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       .then(function (res) {
         if (res.ok) {
           props.setOnClose();
-          // showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
-        } else if (res.status == 500) {
+        } 
+        else if (res.status == 500) 
+        {
           // setAlert(true);
           // setResponseError(
           //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
           // );
         }
-        // else return res.text();
       })
-      // .then((resp) => {
-      //   console.log("S ", resp)
-      //   if (resp !== undefined) {
-      //     let error = JSON.parse(resp);
-      //   }
-      // })
       .catch(function (error) {
         return error;
       });

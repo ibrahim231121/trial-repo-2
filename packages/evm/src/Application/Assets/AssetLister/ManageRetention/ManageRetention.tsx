@@ -68,13 +68,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   const [retentionOpt, setRetentionOpt] = React.useState<Retentionmodel[]>(retentionRadio)
 
-  const currRetention = '2022/04/27T12:35:28.537Z';
-
   React.useEffect(() => {
-    // dispatch(getUsersInfoAsync());
-    debugger;
-    sendData();
-    console.log(retentionList);
+    if (retentionList.length > 1) {
+      sendData();
+    }
 
   }, [retentionList]);
 
@@ -83,6 +80,11 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       getRetentionData();
 
   }, []);
+  React.useEffect(() => {
+    if (retention != "1") {
+      setRetentionDays(0);
+    }
+  }, [retention]);
 
 
   const getRetentionData = async () => {
@@ -92,7 +94,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       method: 'Get',
       headers: { 'Content-Type': 'application/json', TenantId: '1' },
     })
-    debugger
     var response = await res.json();
     if (response != null) {
       setOriginalRetention(response.retainUntil);
@@ -102,18 +103,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       }
 
     }
-
-    if (originalRetention != null) {
-
-
-    }
-
-
   }
 
   const onSubmitForm = async () => {
     console.log('Props_Items', props.items[0]);
-
 
     if (props.filterValue?.length !== 0) {
     }
@@ -131,7 +124,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   };
   const sendData = async () => {
-    debugger;
     const url = EVIDENCE_SERVICE_URL + '/Evidences/Retention/' + `${retention}`
     await fetch(url, {
       method: 'PUT',
@@ -160,7 +152,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
           {() => (
             <Form>
-
               <div >
                 <div>Extend {props.items.length} Assets</div>
                 <CRXRadio
@@ -171,7 +162,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   setValue={setRetention}
                 />
 
-                <input type="number" value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} />
+                <input type="number" disabled={retention == "1" ? false : true} value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} />
               </div>
               <div>
                 <h4>Original Retention: {originalRetention}</h4>
