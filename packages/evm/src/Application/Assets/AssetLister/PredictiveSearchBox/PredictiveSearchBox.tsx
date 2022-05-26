@@ -67,6 +67,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
               query: `${searchVal}*`,
               fields: [
                 "asset.assetName",
+                "masterAsset.assetName",
                 "categories",
                 "cADId",
                 "asset.recordedBy",

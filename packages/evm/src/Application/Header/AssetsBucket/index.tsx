@@ -104,6 +104,8 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [scrollHide, setScroll] = React.useState("");
+  const [mainProgressError, setMainProgressError] = React.useState<boolean>(false);
+  const [onAddEvidence, setonAddEvidence] = React.useState<boolean>(false);
   const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
   });
@@ -125,12 +127,21 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   const fileCountRef = React.useRef(fileCount);
   const [files, setFiles] = React.useState<any[]>([]);
   const [totalFileSize, setTotalFileSize] = React.useState<string>("");
+
+  
+  const [uploadInfo, setUploadInfo] = useState<FileUploadInfo[]>([]);
+  const [totalFilePer, setTotalFilePer] = React.useState<any>(0);
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const [expanded, isExpaned] = React.useState<string | boolean>();
+  const [isOpenConfirm, setIsOpenConfirm] = React.useState<boolean>(false);
+  const [fileToRemove, setFileToRemove] = React.useState<string>("");
   //--for asset upload
   const dispatch = useDispatch()
 
   useEffect(() => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
+    
   }, [])
 
  
@@ -149,7 +160,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
 
   useEffect(() => {
     setRows(assetBucketData);
-    let local_assetBucket = localStorage.getItem("assetBucket");
+    let local_assetBucket : any = localStorage.getItem("assetBucket");    
     if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
      
       toasterRef.current.showToaster({
@@ -209,8 +220,27 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   }, [assetBucketData.length]);
 
   const bucketIconByState = assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2"
+  const totalAssetBucketCount = assetBucketData.length+fileCount
+  const onFileUploadErrorBdage = () => {
+    return <>
+      <div className="errorBadge">
+        <span>
+          !
+        </span>
+      <CRXTooltip
+        className="bucketIcon"
+        title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
+        iconName={"fas " + bucketIconByState}
+        placement="left"
+        arrow={true}
+      ></CRXTooltip>
+      </div>
+    </>
+  }
+
   const ToggleButton = (
-    <CRXBadge itemCount={assetBucketData.length} color="primary">
+    mainProgressError && mainProgressError === true ? onFileUploadErrorBdage() :
+    <CRXBadge itemCount={totalAssetBucketCount} color="primary">
       <CRXTooltip
         className="bucketIcon"
         title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
@@ -429,9 +459,10 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
     for (let i = 0; i < e.target.files.length; i++) {
       e.target.files[i].id = +new Date();
     }
-
+    setFiles([])
     setFiles(prev => { return [...prev, ...e.target.files] });
     AddFilesToFileService(e.target.files);
+
   }
 
   interface UploadInfo {
@@ -446,13 +477,6 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
     fileName: string,
     fileId: string
   }
-
-  const [uploadInfo, setUploadInfo] = useState<FileUploadInfo[]>([]);
-  const [totalFilePer, setTotalFilePer] = React.useState<any>(0);
-  const toasterRef = useRef<typeof CRXToaster>(null);
-  const [expanded, isExpaned] = React.useState<string | boolean>();
-  const [isOpenConfirm, setIsOpenConfirm] = React.useState<boolean>(false);
-  const [fileToRemove, setFileToRemove] = React.useState<string>(""); 
   
   const uploadStatusUpdate = (data: any) => {
     let _uploadInfo: FileUploadInfo;
@@ -485,11 +509,13 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
         }
         else {
           _uploadInfo = getUploadInfo(data);
+          setonAddEvidence(false)
           return [...prevState, _uploadInfo]
         }
       }
       else {
         _uploadInfo = getUploadInfo(data);
+        setonAddEvidence(false)
         return [...prevState, _uploadInfo]
       }
     });
@@ -532,9 +558,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
         message: "File failed to upload.", variant: "error", duration: 7000, clearButtton: true
       });
     }
-
-
-
+    setMainProgressError(true)
   }
   useEffect(() => {
     let fileSize: number = 0;
@@ -575,7 +599,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
     uploadInfo: UploadInfo,
     fileName: string
   }
-  const [mainProgressError, setMainProgressError] = React.useState<boolean>(false);
+ 
 
   const handleClickOpen = () => {
     setIsModalOpen(true);
@@ -583,6 +607,12 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   const handleClose = (e: any) => {
     setIsModalOpen(false);
   }
+  useEffect(()=> {
+    if(onAddEvidence){
+     setUploadInfo([])
+     setFileCount(0) 
+  }
+},[onAddEvidence])
 
   useEffect(() => {
     var totalPercentage = 0;
@@ -604,14 +634,14 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
     if (errorCount == fileCount && (errorCount != 0 && fileCount != 0)) {
       setMainProgressError(true);
     }
-    else {
-      setMainProgressError(false);
-    }
   }, [uploadInfo])
 
   useEffect(() => {
     if (totalFilePer === 100) {
       setShowUploadAttention(true);
+      toasterRef.current.showToaster({
+        message: "File(s) uploaded", variant: "success", duration: 7000, clearButtton: true
+      });
     }
 
   }, [totalFilePer])
@@ -649,6 +679,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
 
     const prog = uploadInfo.map((item: FileUploadInfo, i: number) => {
       if (item.uploadInfo.removed != true) {
+        
         return <div className="crxProgressbarBucket">
           <CRXProgressBar
             id="raw"
@@ -830,6 +861,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                         </CRXColumn>
                       </CRXRows> 
                       <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
+                        {!onAddEvidence ?
                         <CRXAlert
                           className={"crx-alert-notification file-upload"}
                           message={"sucess.msg"}
@@ -854,13 +886,12 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                           </div>
                           }
                         />
+                        : ""
+                      }
                         <CRXModalDialog
                           className="add-metadata-window"
-                          primaryButton={true}
-                          secondaryButton={true}
                           maxWidth="xl"
                           title="Choose asset metadata edited-on-purpose"
-                          saveButtonTxt={isNext == false ? "Save" : "Next"}
                           cancelButtonTxt="Cancel"
                           showSticky={false}
                           modelOpen={isModalOpen}
@@ -870,9 +901,8 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                           <AddMetadataForm
                             setCloseWithConfirm={setCloseWithConfirm}
                             onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-                            // onSave
                             uploadFile={files}
-                            setNextButton={setIsNext}
+                            setAddEvidence = {setonAddEvidence}
                             uploadAssetBucket={assetBucketData}
                             activeScreen={activeScreen}
                           />
@@ -901,7 +931,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                           </div>
                         </div>
                       </Restricted>
-                      {fileCount > 0 && <>
+                      {fileCount > 0 && !onAddEvidence && <>
                         <div className="uploading-text">{showUploadAttention ? "Uploaded:" : "Uploading:"} </div>
                         <div className="crxProgressbarBucket mainProgressBar">
                           <CRXProgressBar

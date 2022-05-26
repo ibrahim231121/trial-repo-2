@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { STATION_INFO_GET_URL, CountryStateApiUrl, DATA_RETENTION_POLICIES_GET_ALL, DATA_UPLOAD_POLICIES_GET_ALL } from '../utils/Api/url';
+import { STATION_INFO_GET_URL, CountryStateApiUrl, DATA_RETENTION_POLICIES_GET_ALL, DATA_UPLOAD_POLICIES_GET_ALL, STATION_INFO_DATA_PERMISSION_GET_URL } from '../utils/Api/url';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -13,6 +13,17 @@ export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', asy
   if (resp.ok) {
     const response = await resp.json();
     return response;
+  }
+});
+
+export const getStationsInfoAllAsync: any = createAsyncThunk('getStationsInfoAll', async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', TenantId: '1' }
+  };
+  const resp = await fetch(STATION_INFO_DATA_PERMISSION_GET_URL, requestOptions);
+  if (resp.ok) {
+    return await resp.json();
   }
 });
 
@@ -61,9 +72,13 @@ export const stationsSlice = createSlice({
   reducers: {},
 
   extraReducers: {
+    [getStationsInfoAllAsync.fulfilled]: (state, { payload }) => {
+      state.stationInfo = payload;
+    },
     [getStationsInfoAsync.fulfilled]: (state, { payload }) => {
       state.stationInfo = payload;
     },
+
     [getCountryStateAsync.fulfilled]: (state, { payload }) => {
       state.countryStates = payload;
     },

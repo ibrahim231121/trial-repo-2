@@ -75,6 +75,7 @@ const SearchComponent = (props: any) => {
             query: `${querryString}`,
             fields: [
               'asset.assetName',
+              'masterAsset.assetName',
               'categories',
               'cADId',
               'asset.recordedBy',

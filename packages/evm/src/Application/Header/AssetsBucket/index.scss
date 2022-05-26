@@ -1038,3 +1038,21 @@ body {
 // .toasterMsg{
 //   margin-top: 45px !important;
 // }
+
+
+.errorBadge {
+  position: relative;
+  span{
+    position: absolute;
+    padding: 0 6px;
+    height: 13px;
+    border-radius: 5px;
+    line-height: 12px;
+    color: var(--color-White);
+    top: 0px;
+    right: -13px;
+    border: 1px solid var(--color-4c4c4d);
+    background-color: var(--color-d74b00);
+    font-size: 11px;
+  }
+}
