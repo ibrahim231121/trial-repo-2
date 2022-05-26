@@ -1,17 +1,16 @@
 import { url } from 'inspector';
-import React, { SyntheticEvent, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from '../../../utils/Api/url';
-import useGetFetch from '../../../utils/Api/useGetFetch';
-import { DateFormat } from '../../../GlobalFunctions/globalDataTableFunctions';
 import moment from 'moment';
 import './createUserForm.scss';
-import constants from '../../Assets/utils/constants';
 import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../Redux/notificationPanelMessages';
-import dateDisplayFormat from '../../../GlobalFunctions/DateFormat';
 import { NotificationMessage } from '../../Header/CRXNotifications/notificationsTypes';
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import Grid from '@material-ui/core/Grid';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useHistory, useParams } from "react-router";
+
 import { urlList, urlNames } from "../../../utils/urlList";
 import {
   CRXAlert,
@@ -19,21 +18,14 @@ import {
   CRXCheckBox,
   CRXButton,
   TextField,
-  CRXConfirmDialog,
   CRXRadio,
   CRXToaster,
-  EditableSelect,
   CRXMultiSelectBoxLight
 } from '@cb/shared';
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 
 let USER_DATA = {};
-interface Props {
-
-  id?: any;
-  showToastMsg: (obj: any) => void;
-}
 
 type NameAndValue = {
   groupId: string;
@@ -61,7 +53,11 @@ type account = {
   isPasswordResetRequired: boolean;
 };
 
-const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
+const CreateUserForm = () => {
+  
+ 
+  const { id } = useParams<{ id: string }>();
+ 
   const [error, setError] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState('sendAct');
   const [generatePassword, setGeneratePassword] = React.useState('');
@@ -102,7 +98,7 @@ const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
   const [isPasswordResetRequired, setIsPasswordResetRequired] = React.useState<boolean>(false);
   const alertRef = useRef(null);
   const [disableLink, setDisableLink] = React.useState(false);
-  const toasterRef = useRef<typeof CRXToaster>(null);
+  const userMsgFormRef = useRef<typeof CRXToaster>(null);
   const [isExtUsers, setIsExtUsers] = useState<string>('');
   const [isExtEmail, setIsExtEmail] = useState<string>('');
   const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
@@ -110,11 +106,19 @@ const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
   const [errorType, setErrorType] = useState<string>('error');
   const {getModuleIds} = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
-
+  const userFormMessages = (obj: any) => {
+        userMsgFormRef.current.showToaster({
+          message: obj.message,
+          variant: obj.variant,
+          duration: obj.duration,
+          clearButtton: true,
+      });
+  }
   React.useEffect(() => {
     if (id) fetchUser();
   }, [id]);
 
+ 
   React.useEffect(() => {
     if (userPayload && id) {
       const {
@@ -184,9 +188,18 @@ const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
       headers: { 'Content-Type': 'application/json', TenantId: '1' }
     });
     var response = await res.json();
+    console.log("user name : ", response)
+    dispatch(enterPathActionCreator({ val: response.account.userName }));
     setUserPayload(response);
+    
   };
 
+  React.useEffect(() => {
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
+  }, []);
+  
   const generateTempPassComp = () => {
     const onClickPass = () => {
       var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -482,7 +495,7 @@ const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
           } else if (!isNaN(+error)) {
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
             sendEmail(formpayload.email, '', userName);
-            showToastMsg({
+            userFormMessages({
               message: 'You have created the user account.',
               variant: 'success',
               duration: 7000
@@ -582,13 +595,13 @@ const CreateUserForm: React.FC<Props> = ({  id, showToastMsg }) => {
           if (disableLink) {
             const userName = userPayload.name.first + ' ' + userPayload.name.last;
             sendEmail(payload.email, userPayload.id, userName);
-            showToastMsg({
+            userFormMessages({
               message: 'You have resent the activation link.',
               variant: 'success',
               duration: 7000
             });
           }
-          showToastMsg({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
+          userFormMessages({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
         } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
@@ -901,7 +914,7 @@ useEffect(() => {
 
   return (
     <div className='createUser CrxCreateUser CreateUserUi '>
-      <CRXToaster ref={toasterRef} />
+      <CRXToaster ref={userMsgFormRef} />
       <CRXAlert
         ref={alertRef}
         message={responseError}

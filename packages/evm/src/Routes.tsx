@@ -97,7 +97,7 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
               
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
-
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editUser)[0].url} exact={true}  component={CreateUserForm}  />
 
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               {/* <Route path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />

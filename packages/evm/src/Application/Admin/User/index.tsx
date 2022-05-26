@@ -32,7 +32,6 @@ import { dateOptionsTypes } from "../../../utils/constant";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
 import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { CRXModalDialog } from "@cb/shared";
-import CreateUserForm from "./CreateUserForm";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";

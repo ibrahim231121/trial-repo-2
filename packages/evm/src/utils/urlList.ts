@@ -58,7 +58,8 @@ export const urlNames: any = {
     adminStation: 'adminStation',
     adminStationCreate: 'adminStationCreate',
     adminStationEdit: 'adminStationEdit',
-    createUser: 'createUser'
+    createUser: 'createUser',
+    editUser : 'editUser'
 };
 
 export const urlList: any = [
@@ -124,8 +125,17 @@ export const urlList: any = [
         url: "/admin/users/createUser",
         details: [
             { type: "text", label: "Admin", },
-            { routeTo: "/admin/users/createUser", type: "text", label: "Create User", }
+            { routeTo: "/admin/users/", type: "link", label: "User", },
+            { type: "text", label: "Create user", }
         ],
+    },
+    {
+        name: urlNames.editUser,
+        url: '/admin/users/editUser/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/users/', type: 'link', label: 'User' }
+        ]
     },
     {
         name: urlNames.adminTestDemo,
@@ -161,16 +171,15 @@ export const urlList: any = [
             // { type: 'text', label: 'Station_Name' }
         ]
     },
-    {
-        name: urlNames.adminStationEdit,
-        url: '/admin/stations/station/:id',
-        details: [
-            { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
-            { type: 'text', label: 'Edit Station' }
-        ]
-    }
-    ,
+    // {
+    //     name: urlNames.adminStationEdit,
+    //     url: '/admin/stations/station/:id',
+    //     details: [
+    //         { type: 'text', label: 'Admin' },
+    //         { routeTo: '/admin/stations', type: 'link', label: 'Manage Stations' },
+    //         { type: 'text', label: 'Edit Station' }
+    //     ]
+    // },
 
     {
         name: urlNames.unitsAndDevices,

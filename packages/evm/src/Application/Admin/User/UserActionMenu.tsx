@@ -1,8 +1,6 @@
 import React from "react";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
-import CreateUserForm from "./CreateUserForm";
-import { CRXModalDialog } from "@cb/shared";
 
 import { CRXConfirmDialog, CRXAlert } from "@cb/shared";
 import {
@@ -14,9 +12,10 @@ import "./UserActionMenu.scss";
 
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import Restricted from "../../../ApplicationPermission/Restricted";
+import { urlList, urlNames } from "../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 type Props = {
   selectedItems?: any;
@@ -40,7 +39,7 @@ const UserActionMenu: React.FC<Props> = ({
   const [modalType, setModalType] = React.useState<string>("");
   const [responseError, setResponseError] = React.useState<string>("");
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
-
+  const history = useHistory()
   const unlockUser = () => {
     setTitle("Unlock user account");
     setPrimary("Yes, unlock user account");
@@ -129,11 +128,10 @@ const UserActionMenu: React.FC<Props> = ({
   };
 
   const openCreateUserForm = () => {
-    setOpen(true);
-  };
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    setOpen(false);
-    // dispatch(getUsersInfoAsync());
+   
+    const path = `${urlList.filter((item: any) => item.name === urlNames.editUser)[0].url}`;
+    history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id);
+    
   };
 
   React.useEffect(() => {
@@ -152,7 +150,7 @@ const UserActionMenu: React.FC<Props> = ({
  
   return (
     <>
-      <CRXModalDialog
+      {/* <CRXModalDialog
         className="CrxCreateUser"
         style={{ minWidth: "550px" }}
         title="Edit User"
@@ -168,7 +166,7 @@ const UserActionMenu: React.FC<Props> = ({
             showToastMsg={showToastMsg}
           />
         )}
-      </CRXModalDialog>
+      </CRXModalDialog> */}
       <CRXConfirmDialog
         className="crx-unblock-modal"
         title={title}
