@@ -5,7 +5,8 @@ import AppsIcon from '@material-ui/icons/Apps';
 const listOFMenu = [
     {
         label : 'Getac Command',
-        router : "RealTimeCommand"
+        router : "",
+        onClick: () => {window.location.href = process.env.REACT_APP_COMMAND_URL as string }
     },
     {
         label : 'Getac Enterprise',
