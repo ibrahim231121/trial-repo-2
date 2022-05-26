@@ -49,7 +49,7 @@ type propsTypes = {
 }
 
 
-const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapper, name, btnClass, MenuList, onClick} : propsTypes) => {
+const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapper, name, btnClass, MenuList} : propsTypes) => {
     
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
