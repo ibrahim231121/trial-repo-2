@@ -210,7 +210,7 @@ const ConfigurationTemplates: React.FC = () => {
   }
 
   const openHandler = (_: React.SyntheticEvent) => {
-    console.log("onOpen");
+   
     setOpen(true);
   };
 
@@ -581,7 +581,7 @@ const ConfigurationTemplates: React.FC = () => {
     }
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -661,7 +661,7 @@ const ConfigurationTemplates: React.FC = () => {
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
-            onResizeRow={resizeRow}
+            onResizeRow={resizeRowConfigTemp}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}

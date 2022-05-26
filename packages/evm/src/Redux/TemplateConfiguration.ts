@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { DEVICETYPE_GET_URL, TEMPLATE_CONFIGURATION_GET_URL } from '../utils/Api/url'
+import { DEVICETYPE_GET_URL, TEMPLATE_CONFIGURATION_GET_URL, TEMPLATE_CONFIGURATION_LOG_GET_URL } from '../utils/Api/url'
 import { TEMPLATE_CONFIGURATION_DELETE_URL } from '../utils/Api/url'
 
 
@@ -19,6 +19,25 @@ export const getConfigurationInfoAsync: any = createAsyncThunk(
         }
     }
 );
+
+export const getTemplateConfigurationLogsAsync: any = createAsyncThunk(
+    'GetTemplateConfigurationLogs',
+    async (args: any) => {
+        console.log(args)
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+        };
+
+        const resp = await fetch(TEMPLATE_CONFIGURATION_LOG_GET_URL+ args , requestOptions);
+        if (resp.ok) {
+            const response = await resp.json();
+            return response;
+        }
+    }
+);
+
+
 
 export const getDeviceTypeInfoAsync: any = createAsyncThunk(
     'GetAllDeviceConfiguration',
@@ -58,7 +77,7 @@ export const deletetemplate: any = createAsyncThunk(
 
 export const templateSlice = createSlice({
     name: 'template',
-    initialState: { templateInfo: [], deviceType: [] },
+    initialState: { templateInfo: [], deviceType: [], configTemplateLogs: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getConfigurationInfoAsync.fulfilled, (state: any, { payload }) => {
@@ -66,6 +85,8 @@ export const templateSlice = createSlice({
         })
             .addCase(getDeviceTypeInfoAsync.fulfilled, (state: any, { payload }) => {
                 state.deviceType = payload;
+            }). addCase(getTemplateConfigurationLogsAsync.fulfilled, (state: any, { payload }) => {
+                state.configTemplateLogs = payload;
             })
     }
 });

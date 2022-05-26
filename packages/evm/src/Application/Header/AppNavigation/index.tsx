@@ -17,7 +17,6 @@ const CRXLefNavigation = () => {
   };
 
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-
   const items = [
     {
       moduleId: 0,
@@ -120,7 +119,7 @@ const CRXLefNavigation = () => {
     //   ],
     // },
     {
-      moduleId: 0,
+      moduleId: 15,
       label: 'Units & Devices',
       icon: 'fas fa-laptop-code NaveIcon',
      
@@ -214,7 +213,7 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.testEvidence)[0].url) },
         },
         {
-          moduleIds: 0,
+          moduleIds: 17,
           label: 'Manage Station',
           //command: () => { navigateToPage("/admin/stations") },
           url: "/admin/stations",

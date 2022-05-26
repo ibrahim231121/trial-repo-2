@@ -23,6 +23,9 @@ export const logOutUser = (next:()=>void) =>{
         opt = localStorage.removeItem('username')
         opt = localStorage.removeItem('remember me')
         opt = localStorage.removeItem('refreshToken')
+        opt = localStorage.removeItem('User Id')
+        opt = localStorage.removeItem('expirytime_token')
+        opt = localStorage.removeItem('expiryDate')
         next() 
     
 } 
@@ -38,7 +41,7 @@ export const logOutUserSessionExpired = () =>{
      opt = cookies.remove('access_token',options)
      opt = localStorage.removeItem('username')
      opt = localStorage.removeItem('remember me')
-    
+     localStorage.removeItem('User Id')
   
 } 
 
@@ -47,7 +50,7 @@ export const logoutAlltabs = ()=>{
     logoutChannel.onmessage = event=>{
         logOutUserSessionExpired();
         logoutChannel.close();
-        console.log('asdasdsadsadsd',event.logoutMessage)
+       
     }
 }
 

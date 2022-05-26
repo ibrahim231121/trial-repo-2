@@ -28,7 +28,7 @@ module.exports = {
     //     path: path.resolve(__dirname, 'buildApi')
     // },
     });
-    console.log(config.module)
+   
     return config;
   },
 //    // the paths config used when your React app is builded

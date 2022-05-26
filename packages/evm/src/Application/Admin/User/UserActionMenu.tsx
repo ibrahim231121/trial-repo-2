@@ -149,7 +149,7 @@ const UserActionMenu: React.FC<Props> = ({
       dispatch(addNotificationMessages(notificationMessage));
     }
   }, [responseError]);
-  console.log("row Status", row?.status);
+ 
   return (
     <>
       <CRXModalDialog
@@ -164,8 +164,7 @@ const UserActionMenu: React.FC<Props> = ({
         {row && (
           <CreateUserForm
             id={row.id}
-            setCloseWithConfirm={setCloseWithConfirm}
-            onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+   
             showToastMsg={showToastMsg}
           />
         )}

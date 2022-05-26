@@ -122,15 +122,12 @@
 .middleContent {
   display: flex;
   justify-content: center;
-  padding-top: 21px;
+  padding-top:39px;
 
   .listOfContent {
     width: 116px;
     margin: 0px 5px;
-    height: 85px;
-    border: 1px solid var(--color-d1d2d4);
-    // padding: 15px 0 4px;
-    // height: 133px;
+    height: 60px;
 
     &:nth-child(1) {
       order: 2;
@@ -151,7 +148,7 @@
 
     .listButton {
       width: 61px;
-      height: 30px;
+      height: 17px;
       // border: 2px solid var(--color-8a8888);
       border-radius: 100%;
       margin: 0 auto;

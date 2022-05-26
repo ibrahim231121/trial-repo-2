@@ -306,6 +306,14 @@ iframe {
         }
       }
     }
+    td {
+      &:nth-child(9) {
+        .dataTableText {
+          text-align: left;
+          margin-left: 4px;
+        }
+      }
+    }
   }
   .unitTemplateMultiSelect , .unitVersionMultiSelect, .unitStatusMultiSelect{
       margin: 0 6px;

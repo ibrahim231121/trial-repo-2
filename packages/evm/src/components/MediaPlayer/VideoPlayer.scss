@@ -2,7 +2,7 @@
 #video-player {
   margin-top: 142px;
   margin-left: 120px;
-  width: 50%;
+  width: 91%;;
   // height: 610px;
   box-shadow: 0 0 11px 1px;
   padding: 10px 10px;
@@ -28,6 +28,7 @@
   }
   .videoContainer {
     padding: 0 14px;
+position: relative;
   }
   .MuiGrid-grid-xs-3 {
     margin-bottom: 12px;
@@ -223,3 +224,9 @@
   margin-left: 48px !important;
   margin-bottom: 15px;
 }
+.mapContainerhh {
+  width: 200px;
+ background-color: red;
+display: inline-block;
+}
+.videoMenuCss {position: absolute;top: 34px;right: 42px;}

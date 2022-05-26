@@ -1,10 +1,10 @@
 .drawerButton{
     min-width: 80px;
-    top: 1px;
+    top: 3px;
     height: 25px;
 
-    &:hover, &:focus  {
-        background-color: var(--color-f5f5f5) !important;
+    &:hover  {
+        background-color: var(--color-White) !important;
         position: relative;
         .bucketIcon{
             color: var(--color-333333);

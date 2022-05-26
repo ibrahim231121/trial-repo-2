@@ -6,25 +6,29 @@ type Props = {
     message : string,
     showBar : boolean,
     variant : any,
-    duration : number
+    duration : number,
+    persist? : boolean,
+    TransitionComponent: any
 }
 
 const CRXToaster = forwardRef((_, ref) => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const action = (key:any) => (
-        <>
+        <div className='closeAction'>
             <button className="closeToaster" onClick={() => { closeSnackbar(key) }}>
                 <i className="icon icon-cross2"></i>
             </button>
-        </>
+        </div>
     );
     useImperativeHandle(ref, () => ({
-        showToaster({message, variant, duration} : Props) {
+        showToaster({message, variant, duration, TransitionComponent, persist = false} : Props) {
             let customMssg = <div className="toasterContent"><span className={variant + "-stater"}>{variant + ":"}</span> {message}</div>;
             enqueueSnackbar(customMssg, {
                 variant : variant,
                 autoHideDuration : duration,
                 preventDuplicate: false,
+                persist: persist,
+                TransitionComponent: TransitionComponent,
                 action
             })
         }

@@ -4,7 +4,7 @@
     background: var(--color-f5f5f5);
     overflow: visible;
     border-left: 1px solid var(--color-b7b8b9);
-    box-shadow: -2px 0px 5px var(--color-00000029);
+    box-shadow: -2px 5px 5px var(--color-00000029);
     width: 479px;
     padding: 7px 3px 5px;
     border-bottom: 4px var(--color-d74b00) solid;
@@ -26,8 +26,8 @@
     display: flex;
     align-items: flex-start;
     justify-content: left;
-    margin-top: 40px;
-    // width: 425px;
+    margin-top: 31px;
+    margin-bottom: 15px;
     height: 48px;
     place-items: center;
     .iconArea {
@@ -67,6 +67,19 @@
     color: var(--color-c34400);
     font-size: 14px;
     font-weight: var(--Font-style-normal);
+    position: relative;
+    .bucketListCheckedAll {
+      position: absolute;
+      left: 0px;
+      bottom: 6px;
+    }
+
+    .selectAllText {
+      position: absolute;
+      left: 53px;
+      bottom: 14px;
+      color:var(--color-333333)
+    }
   }
   .topColumn {
     color: var(--color-d1d2d4);
@@ -92,18 +105,6 @@
     border-image-width: 0px;
     border-image-repeat: repeat;
 
-    // &:before {
-    //   width: 0;
-    //   height: 0;
-    //   border-left: 8px solid var(--color-transparent);
-    //   border-right: 8px solid var(--color-transparent);
-    //   border-bottom: 8px solid var(--color-f5f5f5);
-    //   position: absolute;
-    //   right: 112px;
-    //   top: -7px;
-    //   content: " ";
-    // }
-
     #lightBgContent {
       background: var(--color-White);
       opacity: 0.5;
@@ -113,6 +114,33 @@
       top: 7px;
       left: 8px;
     }
+
+    .uploading-text {
+      text-align: left;
+      font-size: 16px;
+      font-family: var(--base-font-family);
+      color: var(--color-333333);
+      margin-bottom: 15px;
+    }
+
+    .crxProgressbarBucket {
+      text-align: left;
+      margin-bottom: 10px;
+      width: 94.5%;
+    
+
+      &.mainProgressBar {
+        .crx-progress-br {
+          .loader {
+            .loadingIcon {
+              &.assetsLoadingBarIcon {
+                top: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   .bucketMessageHide {
@@ -120,6 +148,34 @@
   }
   .bucketMessageShow {
     display: block;
+  }
+
+  .MuiButton-containedPrimary {
+      padding: 0px 12px;
+      font-size: 12px;
+      box-shadow: none;
+      height: 22px;
+      min-height: 22px;
+    &:hover {
+      box-shadow: none;
+      span {
+        color: var(--color-f5f5f5) !important;
+      }
+    }
+
+    &:focus {
+      box-shadow: none;
+      span {
+        color: var(--color-f5f5f5) !important;
+      }
+    }
+    span {
+      color: var(--color-d1d2d4) !important;
+      font-size: 12px;
+      font-family: var(--base-font-family);
+      font-weight: normal !important;
+      text-transform: none !important;
+    }
   }
 }
 .crxBucketPanelStyle {
@@ -136,6 +192,8 @@
 .bucketIcon {
   color: var(--color-d1d2d4);
   font-size: 18px !important;
+  position: relative;
+  
   &.crxTooltipAll {
     font-size: 14px !important;
     top: 3px;
@@ -152,22 +210,20 @@
   }
 }
 .bucketIconButton {
-  padding: 4px 0px 4px 13px !important;
+  padding: 2px 0px 4px 13px !important;
   line-height: 0px !important;
   width: 59px !important;
   border-radius: 0px !important;
   justify-content: left !important;
-  top:2px;
+  top: 4px;
 }
 
 .bucketIconButton:hover,
 .bucketIconButton:focus {
-  background-color: var(--color-f5f5f5) !important;
   position: relative;
-  .bucketIcon{
+  .bucketIcon {
     color: var(--color-333333);
   }
-  
 }
 
 .bucketIconButton:after {
@@ -442,15 +498,15 @@
             border-right: 1px solid var(--color-ccc) !important;
             border-bottom: 1px solid var(--color-ccc) !important;
           }
-        } 
-          &.col-two {
-            left: 0px;
-            position: static !important;
-          }
-          &.col-three {
-            left: 60px;
-            position: static;
-          }
+        }
+        &.col-two {
+          left: 0px;
+          position: static !important;
+        }
+        &.col-three {
+          left: 60px;
+          position: static;
+        }
       }
       th {
         &.CRXDataTableLabelCell {
@@ -482,7 +538,6 @@
           right: 4px;
         }
       }
- 
     }
   }
   &::-webkit-scrollbar {
@@ -659,52 +714,125 @@ body {
 }
 
 .crxAccordionBucket {
+  border: 1px solid #d1d2d4 !important;
+
+  .MuiTypography-root {
+    font-size: 14px;
+    position: relative;
+    top: 1px;
+    padding-left: 15px;
+  }
+
+  .MuiAccordionSummary-root {
+    height: 36px !important;
+    min-height: 36px;
+    &.Mui-expanded {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  .Mui-expanded {
+    min-height: 36px !important;
+    place-items: center;
+  }
+
+  .MuiButtonBase-root {
+    padding-left: 15px;
+    padding-right: 15px;
+    .MuiIconButton-label {
+      .fa-chevron-right {
+        font-size: 14px;
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
   .MuiAccordionDetails-root {
     display: block;
     padding-top: 30px;
-      .crxProgressbarBucket {
-        width: 100%;text-align: left;
-        padding:  20px 0;
-        position: relative;
-        &:first-child {
-          padding: 0;
-        }
-        .cencel-loading {
-          button {
-            background: transparent;
-            border:0px;
-            position: absolute;
-            top: 0px;
-            right: 0;
-            i{
-              font-style: normal;
-            }
+    .crxProgressbarBucket {
+      width: 93%;
+      text-align: left;
+      padding: 20px 0;
+      position: relative;
+      .loader {
+        // .MuiLinearProgress-root {
+        //   width: 80%;
+        // }
+      }
+      &:first-child {
+        padding: 0;
+      }
+      .cencel-loading {
+        button {
+          background: transparent;
+          border: 0px;
+          position: relative;
+          top: 1px;
+          right: 55px;
+
+          i {
+            font-style: normal;
+            font-size: 15px;
           }
         }
       }
+    }
   }
 }
 
 .btn-center {
   margin: 0 auto;
-  text-align: center;
-  margin-top: 10px;
+  text-align: left;
+  margin-top: 13px;
+  margin-bottom: 4px;
+  position: relative;
+  right: 58px;
 }
-.crx-alert-notification.file-upload {
-  place-items: initial;
-  padding: 10px 15px;
-  max-height: 100%;
-}
+
 
 .file-upload-hide {
   display: none !important;
 }
 .file-upload-show {
   display: block !important;
+  .file-upload {
+    place-items: initial;
+    padding: 10px 0px 10px 15px;
+    max-height: 100%;
+  }
+  .file-upload {
+    .MuiAlert-icon {
+      margin-top: 0px;
+    }
+  }
+
+  .MuiAlert-message {
+    span {
+      display: flex;
+      span{
+        padding-right: 0px;
+      }
+      .check {
+        .attentionPera {
+          white-space: nowrap;
+          padding-left: 3px;
+        }
+      }
+    }
+  }
 }
 
 .add-metadata-window {
   .metaData-Station-Parent {
+    padding-top: 41px;
+    .CrxCreateUser {
+      margin-bottom: 35px;
+      .CrxIndicates {
+        margin: 0;
+      }
+    }
     padding-top: 45px;
     .metaData-station {
       .metaData-inner {
@@ -730,18 +858,15 @@ body {
           .MuiSelect-select {
             color: var(--color-74767c);
           }
-        
         }
         &.gepAddClass {
           .metaData-Station-Select {
             .MuiSelect-select {
               color: var(--color-333333);
             }
-          
           }
         }
       }
-   
     }
     .metaData-masterAsset {
       margin-bottom: 32px;
@@ -756,7 +881,6 @@ body {
         color: #333333;
         font-family: "Helvetica", "Arial", sans-serif;
         label {
-        
           font-size: 14px;
           color: #333333;
           font-family: "Helvetica", "Arial", sans-serif;
@@ -773,7 +897,6 @@ body {
         }
       }
     }
-
 
     .metaData-category {
       display: flex;
@@ -827,10 +950,91 @@ body {
           }
         }
       }
-      .crx_MultiSelectBoxLight {width: 368px;}
+      .crx_MultiSelectBoxLight {
+        width: 368px;
+      }
     }
     label {
-      width:137px;
+      width: 137px;
     }
   }
+  .CRXContent_user {
+    &::-webkit-scrollbar-button:vertical:increment {
+      height: 15px;
+     }
+  }
 }
+
+
+.crxUplockContent {
+  .uploadCancelText {
+    padding-top: 12px;
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .uploadCancelBottom {
+    position: relative;
+    top: 29px;
+    font-size: 14px;
+    color: #333333;
+  }
+}
+
+#assetBucketLists {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  overflow-y: auto;
+  max-height: calc(100% - 210px);
+  .bucketLister {
+    display: flex;
+    flex: 1 1;
+    
+    place-items: center;
+    margin-bottom: 20px;
+    .bucketThumb {
+      margin: 0 20px;
+      flex: 110px;
+    }
+    .bucketListTextData{
+      text-align: left;
+      flex: 250px;
+      font-size: 14px;
+        .bucketListAssetName{
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+        }
+        .bucketListRec{
+          color: var(--color-333333);
+          font-family: var(--App-font-family);
+          font-size: 14px;
+        }
+    }
+    .bucketActionMenu{
+      .rc-menu-button{
+        background: transparent;
+        border: 0px;
+        font-size: 23px;
+        width: 40px;
+        padding: 5px 0px;
+        color: var(--color-333333);
+        &.rc-menu-button--open {
+          background: #333333;
+          color: #d1d2d4;
+        }
+      }
+    }
+    .assetCheck{
+      flex: 30px;
+    }
+    
+  }
+}
+
+
+// .toasterMsg{
+//   margin-top: 45px !important;
+// }

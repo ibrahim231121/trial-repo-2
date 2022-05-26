@@ -244,11 +244,11 @@ const CRXMultiSelectBoxLight = ({
 
     <>
       {label &&
-        <span>
+        <>
           <Typography variant="subtitle1" className="label">
             {reformatedLabel()}
           </Typography>
-        </span>
+        </>
       }
       <Autocomplete
         defaultValue={defaultValue}

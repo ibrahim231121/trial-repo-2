@@ -6,13 +6,15 @@ import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
+import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
+import http from '../../../../http-common';
 
 type CategoryFormProps = {
   filterValue: any[];
   setremoveClassName: any;
   activeForm: number;
-  rowData: any;
   isCategoryEmpty: boolean;
+  evidenceResponse: any;
   setFilterValue: (param: any) => void;
   closeModal: (param: boolean) => void;
   setActiveForm: (param: any) => void;
@@ -32,8 +34,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const [saveBtn, setSaveBtn] = React.useState(true);
   const [formFields, setFormFields] = React.useState<any>([]);
   const [InitialValuesObject, setInitialValuesObject] = React.useState<any>({});
-  const selectedRow = props.rowData;
-  const evidenceId = selectedRow.id;
+  const evidenceResponse = props.evidenceResponse;
+  const evidenceId = evidenceResponse?.id;
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
@@ -43,19 +45,17 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     props.setIndicateTxt(false);
     props.setshowSSticky(true)
     props.setremoveClassName('crxEditCategoryForm');
-
     // Untill save button get enabled, form will be in non updated.
     if (saveBtn) props.setIsformUpdated(false);
   }, []);
 
   React.useEffect(() => {
-    const EvidenceID = selectedRow.id;
     const allCategories = props.filterValue;
     const categoriesFormArr: any[] = [];
     // Check how many categories are added recently,
-    const previousAttachedCategoriesWithOutID = selectedRow.categories;
+    const previousAttachedCategories = evidenceResponse?.categories;
     const newSelectedCategories = allCategories.filter((x: any) => {
-      return !previousAttachedCategoriesWithOutID.some((o: any) => o == x.label);
+      return !previousAttachedCategories.some((o: any) => o.name == x.label);
     });
 
     // If user selected addtional categories, then cross icon click should be a update case.
@@ -77,30 +77,19 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     }
 
     // It means category was attacehd from the backend
-    if (previousAttachedCategoriesWithOutID.length > 0) {
+    if (previousAttachedCategories.length > 0) {
       props.setModalTitle('Edit category');
-      const url = `${EVIDENCE_SERVICE_URL}/Evidences/${EvidenceID}`;
-      fetch(url, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', TenantId: '1' }
-      })
-        .then(awaitJson)
-        .then((response: any) => {
-          let changingResponse = response.categories.map((o: any) => {
-            return {
-              id: o.id,
-              name: o.record.record.find((x: any) => x.key === 'Name').value,
-              form: o.formData,
-              type: 'update'
-            };
-          });
-          categoriesFormArr.push(...changingResponse);
-          setFilteredFormArray(categoriesFormArr);
-        })
-        .catch((err: any) => {
-          setError(true);
-          console.error(err);
-        });
+      let changingResponse = evidenceResponse.categories.map((o: any) => {
+        return {
+          id: o.id,
+          name: o.record.record.find((x: any) => x.key === 'Name').value,
+          form: o.formData,
+          type: 'update'
+        };
+      });
+      categoriesFormArr.push(...changingResponse);
+      setFilteredFormArray(categoriesFormArr);
+
     } else {
       setFilteredFormArray(categoriesFormArr);
     }
@@ -128,7 +117,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       }
 
       let key_value_pair = Initial_Values.reduce((obj, item) => ((obj[item.key] = item.value), obj), {});
-
       setInitialValuesObject(key_value_pair);
       const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
         return {
@@ -169,13 +157,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     });
     setFormFields(() => [...newArray, { key: target.name, value: target.value }]);
     props.setIsformUpdated(true);
-  };
-
-  const awaitJson = (response: any) => {
-    if (response.ok) {
-      return response.json() as Object;
-    }
-    throw new Error(response.statusText);
   };
 
   const backBtn = () => {
@@ -230,81 +211,39 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       dispatch(AddToEditFormStateCreator(categoryBodyArr));
       props.setActiveForm(5);
     } else {
-      // Find highest retention, in categories.
-      let retentionPrmomise = findRetention();
-      Promise.resolve(retentionPrmomise).then((retentionId: number) => {
-        // Remove type key from body.
-        categoryBodyArr.forEach((v: any) => {
-          delete v.type;
-        });
+      /** 
+       * * Find HighestRetentionId & HoldUntill, from newly added categories. 
+       * */
+      const retentionPromise = findRetentionAndHoldUntill(categoryBodyArr, categoryOptions, props.filterValue, props.evidenceResponse);
+
+      /**
+       * * Remove type key from body.
+       * */
+      categoryBodyArr.forEach((v: any) => {
+        delete v.type;
+      });
+
+      Promise.resolve(retentionPromise).then((retention: any) => {
         const body = {
           unAssignCategories: [],
           assignedCategories: categoryBodyArr,
           updateCategories: [],
-          retentionId: [retentionId]
-        };
-        const requestOptions = {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            TenantId: '1'
-          },
-          body: JSON.stringify(body)
+          retentionId: retention !== undefined ? [retention.retentionId] : null,
+          holdUntill: retention !== undefined ? retention.expiryDate : null
         };
         const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
-        fetch(url, requestOptions)
-          .then((response: any) => {
-            if (response.ok) {
+        http.patch(url, body)
+          .then((response) => {
+            if (response.status == 204) {
               setSuccess(true);
               setTimeout(() => closeModalFunc(), 3000);
             } else {
+              setError(true);
               throw new Error(response.statusText);
             }
-          })
-          .catch((err: any) => {
-            setError(true);
-            console.error(err);
           });
-      });
-    }
-  };
-
-  const findRetention = async () => {
-    const retentionDetails: any = [];
-    let retentionList = '';
-    let count = 0;
-    const categoriesWithRetention = categoryOptions.filter((o: any) => {
-      return props.filterValue.some((e: any) => e.id === o.id);
-    });
-    for (const i of categoriesWithRetention) {
-      const retentionId = i.policies.retentionPolicyId;
-      retentionList +=
-        props.filterValue.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
-      count++;
-    }
-    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-    const call = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
-    })
-      .then(awaitJson)
-      .then((response: any) => {
-        for (let i = 0; i <= response.length - 1; i++) {
-          retentionDetails.push({
-            categoryName: props.filterValue[i].label,
-            hours: response[i].detail.limit.hours + response[i].detail.limit.gracePeriodInHours
-          });
-        }
-        const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
-        const retentionId = categoryOptions.find((o: any) => o.name === sortedArray[0].categoryName).policies
-          .retentionPolicyId;
-        return retentionId;
       })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err.message);
-      });
-    return call;
+    }
   };
 
   const skipBtn = () => {
@@ -323,18 +262,11 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       assignedCategories: categoryBodyArr,
       updateCategories: []
     };
-    const requestOptions = {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        TenantId: '1'
-      },
-      body: JSON.stringify(body)
-    };
+
     const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
-    fetch(url, requestOptions)
-      .then((response: any) => {
-        if (response.ok) {
+    http.patch(url, body)
+      .then((response) => {
+        if (response.status == 204) {
           setSuccess(true);
           setTimeout(() => {
             props.setOpenForm();
@@ -342,13 +274,10 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             props.closeModal(false);
           }, 3000);
         } else {
+          setError(true);
           throw new Error(response.statusText);
         }
       })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err);
-      });
   };
 
   return (
@@ -371,13 +300,13 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           // If form exist against selected category
           <>
             {filteredFormArray.map((categoryObj: any) => (
-                <DisplayCategoryForm
-                  key={categoryObj.id}
-                  categoryObject={categoryObj}
-                  isCategoryEmpty={props.isCategoryEmpty}
-                  initialValueObjects={InitialValuesObject}
-                  setFieldsFunction={(e: any) => setFieldsFunction(e)}
-                />
+              <DisplayCategoryForm
+                key={categoryObj.id}
+                categoryObject={categoryObj}
+                isCategoryEmpty={props.isCategoryEmpty}
+                initialValueObjects={InitialValuesObject}
+                setFieldsFunction={(e: any) => setFieldsFunction(e)}
+              />
             ))}
             <div className='categoryModalFooter CRXFooter'>
               <CRXButton onClick={submitForm} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
@@ -400,7 +329,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             key={"dialogue_form"}
             setActiveForm={props.setActiveForm}
             initialValues={props.filterValue}
-            rowData={props.rowData}
+            evidenceResponse={evidenceResponse}
             formCollection={filteredFormArray}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: boolean) => props.closeModal(v)}

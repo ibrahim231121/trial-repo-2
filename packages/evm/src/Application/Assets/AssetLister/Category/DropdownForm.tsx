@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import './categoryForm.scss';
 import ApplicationPermissionContext from '../../../../ApplicationPermission/ApplicationPermissionContext';
 import { Visibility } from '@material-ui/icons';
+import { filterCategory } from './Utility/UtilityFunctions';
 
 type DropdownFormProps = {
   filterValue: any[];
   setremoveClassName: any;
   activeForm: number;
-  rowData: any;
+  evidenceResponse: any;
   isCategoryEmpty: boolean;
   setFilterValue: (param: any) => void;
   setOpenForm: () => void;
@@ -43,7 +44,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
     // Dropdown is updated, so x button will redirect to cancel confirmation.
     // Check either new value added.
     const changeInValues = props.filterValue.filter((o: any) => {
-      return !props.rowData.categories.some((i: string) => i === o.value);
+      return !props.evidenceResponse?.categories.some((i: string) => i === o.value);
     });
 
     if (changeInValues.length > 0) {
@@ -51,20 +52,6 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
     }
     props.setIndicateTxt(true);
   }, [props.filterValue]);
-
-  const filterCategory = (arr: Array<any>): Array<any> => {
-    let sortedArray: any = [];
-    if (arr.length > 0) {
-      for (const element of arr) {
-        sortedArray.push({
-          id: element.id,
-          label: element.name
-        });
-      }
-    }
-    sortedArray = sortedArray.sort((a: any, b: any) => (a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
-    return sortedArray;
-  };
 
   const handleChange = (e: any, colIdx: number, v: any, reason: any, detail: any) => {
     props.setFilterValue(() => [...v]);
@@ -81,7 +68,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   };
 
   const isNewlyAddedCategory = (label: string): boolean => {
-    let removedValueWasSaved = props.rowData.categories.some((x: any) => x === label);
+    let removedValueWasSaved = props.evidenceResponse?.categories.some((x: any) => x === label);
     if (removedValueWasSaved) {
       return true;
     }
@@ -109,7 +96,6 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
       <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
         {() => (
           <Form>
-            {/* <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div> */}
             <div className='categoryDescription'>From the field below, select one or more relevant category.</div>
             <div className='categoryTitle'>
               Category <b>*</b>

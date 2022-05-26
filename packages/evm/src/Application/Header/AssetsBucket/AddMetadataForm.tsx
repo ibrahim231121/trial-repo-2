@@ -9,14 +9,17 @@ import { RootState } from "../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { getAllCategories } from "../../../Redux/SetupConfigurationReducer";
 import { CRXButton } from "@cb/shared";
+import CategoryFormOFAssetBucket from "./SubComponents/CategoryFormOFAssetBucket";
+import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBucket";
 
 interface Props {
   onClose: any;
   setCloseWithConfirm: any;
-  onSave: any;
+  // onSave: any;
   uploadFile: any;
-  setNextButton: any;
-  uploadAssetBucket: any
+  uploadAssetBucket: any;
+  activeScreen: number;
+  setNextButton: (param: boolean) => void;
 }
 
 type NameAndValue = {
@@ -56,9 +59,10 @@ const AddMetadataForm: React.FC<Props> = ({
   onClose,
   setCloseWithConfirm,
   setNextButton,
-  onSave,
+  // onSave,
   uploadFile,
-  uploadAssetBucket
+  uploadAssetBucket,
+  activeScreen
 }) => {
   const [formpayload, setFormPayload] = React.useState<addMetadata>({
     station: "",
@@ -140,10 +144,10 @@ const AddMetadataForm: React.FC<Props> = ({
       var j: MasterAssetBucket = {
         id: x.assetId,
         value: x.assetName
-      } ;
+      };
       return j;
     })
-    setMasterAssetOption([...assetName,...assetBucket]);
+    setMasterAssetOption([...assetName, ...assetBucket]);
   };
 
   const fetchUser = () => {
@@ -197,88 +201,120 @@ const AddMetadataForm: React.FC<Props> = ({
     return setCategoryOption(dateOfArry);
   };
 
-  onSave = () => {};
-
   let displayIdIndex = uploadFile[0].uploadedFileName.lastIndexOf(".");
   let displayText = uploadFile[0].uploadedFileName.substring(0, displayIdIndex);
+
+  const categoryDropdownOnChangeHandler = (event: React.SyntheticEvent, value: string[]) => {
+    event.isDefaultPrevented();
+    setFormPayload({ ...formpayload, category: value });
+    setNextButton(true);
+  }
+
+  const handleActiveScreen = (activeScreen: number) => {
+    console.log('formpayload', formpayload.category);
+    switch (activeScreen) {
+      case 0:
+        return (
+          <>
+            <div className="CrxCreateUser">
+              <div className='CrxIndicates'>
+                <sup>*</sup> Indicates required field
+              </div>
+            </div>
+            <div className="metaData-masterAsset">
+              <div className="metaData-inner-masterAsset">
+                <label>Master Asset <span>*</span></label>
+                <CRXSelectBox
+                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"}`}
+                  id={"select_" + "selectBox"}
+                  defaultOptionText="Select Master Asset"
+                  disabled={uploadFile.length == 1 && uploadAssetBucket.length == 0 ? true : false}
+                  value={
+                    formpayload.masterAsset === ""
+                      ? displayText
+                      : formpayload.masterAsset
+                  }
+                  onChange={(e: any) =>
+                    setFormPayload({ ...formpayload, masterAsset: e.target.value })
+                  }
+                  options={masterAssetOption}
+                  defaultValue=""
+                />
+              </div>
+            </div>
+            <div className="metaData-station">
+              <div className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"}`}>
+                <label>Station <span>*</span></label>
+                <CRXSelectBox
+                  className="metaData-Station-Select"
+                  id={"select_" + "selectBox"}
+                  value={
+                    formpayload.station === ""
+                      ? ""
+                      : formpayload.station
+                  }
+                  onChange={(e: any) =>
+                    setFormPayload({ ...formpayload, station: e.target.value })
+                  }
+                  defaultOptionText=""
+                  options={optionList}
+                  defaultValue=""
+                />
+              </div>
+            </div>
+            <div className="metaData-category">
+              <CRXMultiSelectBoxLight
+                className="categortAutocomplete CRXmetaData-owner"
+                label="Owner(s)"
+                placeHolder=""
+                multiple={true}
+                CheckBox={true}
+                required={true}
+                options={userOption}
+                value={formpayload.owner}
+                autoComplete={false}
+                isSearchable={true}
+                onChange={(e: React.SyntheticEvent, value: string[]) => {
+                  setFormPayload({ ...formpayload, owner: value });
+                }}
+              />
+            </div>
+            <div className="metaData-category">
+              <CRXMultiSelectBoxLight
+                className="categortAutocomplete CRXmetaData-category"
+                placeHolder=""
+                label="Category"
+                multiple={true}
+                CheckBox={true}
+                options={categoryOption}
+                value={formpayload.category}
+                autoComplete={false}
+                isSearchable={true}
+                onChange={(e: React.SyntheticEvent, value: string[]) => categoryDropdownOnChangeHandler(e, value)}
+              />
+            </div>
+          </>
+        );
+      case 1:
+        return (
+          <>
+            {formpayload.category.some((o: any) => o.form.length > 0)
+              ?
+              formpayload.category.map((obj: any) => (
+                <CategoryFormOFAssetBucket categoryObject={obj} />
+              ))
+              :
+              <NoFormAttachedOfAssetBucket categoryCollection={formpayload.category} />}
+          </>
+        );
+    }
+  }
   return (
     <div className="metaData-Station-Parent">
-      <div className="metaData-masterAsset">
-        <div className="metaData-inner-masterAsset">
-          <label>Master Asset <span>*</span></label>
-          <CRXSelectBox
-            className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"}`}
-            id={"select_" + "selectBox"}
-            defaultOptionText="Select Master Asset"
-            disabled={uploadFile.length == 1 && uploadAssetBucket.length == 0 ? true : false}
-            value={
-              formpayload.masterAsset === ""
-                ? displayText
-                : formpayload.masterAsset
-            }
-            onChange={(e: any) =>
-              setFormPayload({ ...formpayload, masterAsset: e.target.value })
-            }
-            options={masterAssetOption}
-            defaultValue="Please Select"
-          />
-        </div>
-      </div>
-      <div className="metaData-station">
-        <div className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"}`}>
-          <label>Station <span>*</span></label>
-          <CRXSelectBox
-            className="metaData-Station-Select"
-            id={"select_" + "selectBox"}
-            value={
-              formpayload.station === ""
-                ? "Select Station"
-                : formpayload.station
-            }
-            onChange={(e: any) =>
-              setFormPayload({ ...formpayload, station: e.target.value })
-            }
-            defaultOptionText="Select Station"
-            options={optionList}
-            defaultValue="Select Station"
-          />
-        </div>
-      </div>
-      <div className="metaData-category">
-        <CRXMultiSelectBoxLight
-          className="categortAutocomplete CRXmetaData-owner"
-          label="Owner(s)"
-          placeHolder="Select Owner(s)"
-          multiple={true}
-          CheckBox={true}
-          required={true}
-          options={userOption}
-          value={formpayload.owner}
-          autoComplete={false}
-          isSearchable={true}
-          onChange={(e: React.SyntheticEvent, value: string[]) => {
-            setFormPayload({ ...formpayload, owner: value });
-          }}
-        />
-      </div>
-      <div className="metaData-category">
-        <CRXMultiSelectBoxLight
-          className="categortAutocomplete CRXmetaData-category"
-          placeHolder="Select Category"
-          label="Category "
-          multiple={true}
-          CheckBox={true}
-          options={categoryOption}
-          value={formpayload.category}
-          autoComplete={false}
-          isSearchable={true}
-          onChange={(e: React.SyntheticEvent, value: string[]) => {
-            setFormPayload({ ...formpayload, category: value });
-          }}
-        />
-      </div>
+      {handleActiveScreen(activeScreen)}
     </div>
   );
 };
 
 export default AddMetadataForm;
+

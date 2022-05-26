@@ -1,6 +1,5 @@
 import React from "react";
 import { Dialog, IconButton} from "@material-ui/core";
-//import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import "./CRXDropContent.scss";
 import { makeStyles } from "@material-ui/core/styles";
 

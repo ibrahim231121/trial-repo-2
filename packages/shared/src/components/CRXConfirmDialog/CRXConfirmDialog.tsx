@@ -11,6 +11,9 @@ import {
 import CRXButton from '../../controls/CRXButton/CRXButton'
 
 import './index.scss';
+
+type maxsize = 'lg' | 'md' | 'sm' | 'xl' | 'xs' | false;
+
 type Props = {
   title?: string;
   content?: string;
@@ -22,7 +25,8 @@ type Props = {
   secondary?: string
   className?: string
   text?: string;
-  primaryDisabled?: boolean
+  primaryDisabled?: boolean,
+  maxWidth? : maxsize
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -33,10 +37,11 @@ const CRXConfirmDialog: React.FC<Props> = ({
   setIsOpen,
   isOpen,
   children, primary, secondary, primaryDisabled,
-  text
+  text,
+  maxWidth
 }) => {
   return (
-    <Dialog open={isOpen} className={"crx-confirm-modal userConfirmationModal crx-unblock-modal " + className}>
+    <Dialog open={isOpen} maxWidth={maxWidth} className={"crx-confirm-modal userConfirmationModal crx-unblock-modal " + className}>
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography className="userConfirmTitle" variant="h6">{title || 'Please confirm'}</Typography>

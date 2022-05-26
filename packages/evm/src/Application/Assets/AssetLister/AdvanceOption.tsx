@@ -155,7 +155,7 @@ const AdvancedSearch: React.FC<Props> = ({
     setCurrentInput(value);
 
     let found = options.find((opt: any) => i == opt.usedBy);
-    console.log("found", found);
+   
     if (found) {
       found.inputValue = value;
     }

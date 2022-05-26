@@ -1,6 +1,6 @@
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import './CRXAppBar.scss'
 
 type Position =  'absolute' | 'fixed' | 'relative' | 'static' | 'sticky'
@@ -14,7 +14,7 @@ interface CBXAppBarProps {
     color? : Colors
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: "#333333",

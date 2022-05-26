@@ -122,7 +122,7 @@ const MasterMain: React.FC<Props> = ({
   showDateCompact,
 }) => {
   let reformattedRows: EvidenceReformated[] = [];
-
+console.log("row data",rowsData)
   rowsData.map((row: Evidence, i: number) => {
     let evidence: EvidenceReformated = {
       id: row.id,
@@ -505,6 +505,9 @@ const MasterMain: React.FC<Props> = ({
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
+  useEffect(() => {
+    console.log(selectedItems)
+  },[selectedItems]);
 
   useEffect(() => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
@@ -534,7 +537,7 @@ const MasterMain: React.FC<Props> = ({
     setHeadCells(headCellReset);
   };
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRowAssetsDataTable = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
@@ -563,7 +566,7 @@ const MasterMain: React.FC<Props> = ({
           className="ManageAssetDataTable"
           onClearAll={clearAll}
           getSelectedItems={(v: string[]) => setSelectedItems(v)}
-          onResizeRow={resizeRow}
+          onResizeRow={resizeRowAssetsDataTable}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}

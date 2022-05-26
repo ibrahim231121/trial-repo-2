@@ -1,7 +1,9 @@
+import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../src/utils/Api/url';
 import uploadFiles from "../GlobalFunctions/AzureFileUpload";
 declare const window: any;
 
+const cookies = new Cookies();
 interface FileInfo {
     fileId: string,
     name: string,
@@ -21,10 +23,13 @@ interface FileInfo {
 }
 let filesId = [0];
 let fileCountAtError = 0;
+let isErrorOccured = false;
 export const AddFilesToFileService = async (files: any) => {
     const promises = [];
     filesId = [];
     fileCountAtError = files.length;
+    isErrorOccured = false;
+
     for (const file of files) {
         filesId.push(file.id);
         const fileInfo: FileInfo = {
@@ -53,59 +58,61 @@ export const AddFilesToFileService = async (files: any) => {
     await Promise.all(promises).then((messages) => {
         uploadFiles(files);//here we can find the blob url either amazon or azure
     }).catch((e) => {
-        console.log("error", e)
+
     });
 }
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {
-
+    const cookies = new Cookies();
     await fetch(FILE_SERVICE_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1' },
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(payload)
-    })
-        .then(function (res) {
-            if (res.ok) return res.json();
-            else if (res.status == 500) {
-                window.onRecvError.data = {
-                    message: "We're sorry. The file was unable to be saved. Please retry or contact your System Administrator.",
-                    variant: "error", duration: 7000, clearButtton: true
-                };
-                window.dispatchEvent(window.onRecvError);
+    }).then(function (res) {
+        if (res.ok) return res.json();
+        else if (res.status == 500) {
+            dispatchError();
+            return false;
+        }
+        else return res.text();
+    }).then(function (resp) {
+        if (resp !== undefined) {
+            let error = JSON.parse(resp);
+            if (error.errors !== undefined) {
             }
-            else return res.text();
-        }).then(function (resp) {
-            if (resp !== undefined) {
-                let error = JSON.parse(resp);
-                if (error.errors !== undefined) {
-                }
-                else if (!isNaN(+error)) {
-                    //console.log("post", resp)
-                    fetchFile(resp, file, resolve);
-                }
-                else {
-                    // toasterRef.current.showToaster({
-                    //     message: payload.name + " " + error, variant: "error", duration: 7000, clearButtton: true
-                    // });
-                    window.onRecvError.data = {
-                        message: payload.name + " " + error,
-                        variant: "error", duration: 7000, clearButtton: true,
-                        fileCountAtError: fileCountAtError,
-                        filesId: filesId
-                    };
-                    window.dispatchEvent(window.onRecvError);
-                }
+            else if (!isNaN(+error)) {
+                //console.log("post", resp)
+                fetchFile(resp, file, resolve);
             }
             else {
                 window.onRecvError.data = {
-                    message: "We're sorry. The file was unable to be saved. Please retry or contact your System Administrator.",
-                    variant: "error", duration: 7000, clearButtton: true
+                    message: payload.name + " " + error,
+                    variant: "error", duration: 7000, clearButtton: true,
+                    fileCountAtError: fileCountAtError,
+                    filesId: filesId
                 };
                 window.dispatchEvent(window.onRecvError);
             }
-        })
-        .catch(function (error) {
-            return error;
-        });
+        }
+        else {
+            dispatchError();
+        }
+    }).catch(function (error) {
+        dispatchError();
+        return error;
+    });
+}
+const dispatchError = () => {
+    if (!isErrorOccured) {
+        window.onRecvError.data = {
+            message: "We're sorry. The file was unable to be saved. Please retry or contact your System Administrator.",
+            variant: "error", duration: 7000, clearButtton: true,
+            fileCountAtError: fileCountAtError,
+            filesId: filesId
+        };
+        window.dispatchEvent(window.onRecvError);
+        isErrorOccured = true;
+    }
+
 }
 const fetchFile = async (id: string, file: any, resolve: any) => {
 

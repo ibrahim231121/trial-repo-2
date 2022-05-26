@@ -4,10 +4,12 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
-import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../../../utils/Api/url';
+import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
+import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
+import http from '../../../../../http-common';
 
 type EditConfirmFormProps = {
-  rowData?: any;
+  evidenceResponse: any;
   filterValue: any[];
   setremoveClassName: any;
   setOpenForm: () => void;
@@ -26,8 +28,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
-  const selectedRow = props.rowData;
-  const evidenceId = selectedRow.id;
+  const evidenceId = props.evidenceResponse?.id;
   const initialValues: FormValues = {
     reason: ''
   };
@@ -43,19 +44,13 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
     else props.setIsformUpdated(true);
   }, [Message]);
 
-  const awaitJson = (response: any) => {
-    if (response.ok) {
-      return response.json() as Object;
-    }
-    throw new Error(response.statusText);
-  };
 
   const submitForm = (message: string) => {
     const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
     let assignedCategories = CategoryFormFields.filter((e: any) => e.type === 'add');
     let updateCategories = CategoryFormFields.filter((e: any) => e.type === 'update');
 
-    //Remove type key from body.
+    // Remove type key from body.
     assignedCategories = assignedCategories.map((v: any) => {
       return {
         assignedOn: v.assignedOn,
@@ -71,75 +66,31 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         id: v.id
       };
     });
-    // Find highest retention, in categories.
-    let retentionPrmomise = findRetention();
-    Promise.resolve(retentionPrmomise).then((retentionId: number) => {
+
+    /** 
+     * * Find HighestRetentionId & HoldUntill, from newly added categories. 
+     * */
+    const retentionPromise = findRetentionAndHoldUntill(assignedCategories, categoryOptions, props.filterValue, props.evidenceResponse);
+    Promise.resolve(retentionPromise).then((retention: any) => {
       const body = {
         unAssignCategories: [],
         assignedCategories: assignedCategories,
         updateCategories: updateCategories,
-        retentionId: [retentionId]
+        retentionId: retention !== undefined ? [retention.retentionId] : null,
+        holdUntill: retention !== undefined ? retention.expiryDate : null
       };
-      const requestOptions = {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          TenantId: '1'
-        },
-        body: JSON.stringify(body)
-      };
-      fetch(url, requestOptions)
-        .then((response: any) => {
-          if (response.ok) {
+
+      http.patch(url, body)
+        .then((response) => {
+          if (response.status == 204) {
             setSuccess(true);
             setTimeout(() => closeModal(), 3000);
           } else {
+            setError(true);
             throw new Error(response.statusText);
           }
-        })
-        .catch((err: any) => {
-          setError(true);
-          console.error(err);
         });
-    });
-  };
-
-  const findRetention = async () => {
-    const retentionDetails: any = [];
-    let retentionList = '';
-    let count = 0;
-    const categoriesWithRetention = categoryOptions.filter((o: any) => {
-      return props.filterValue.some((e: any) => e.id === o.id);
-    });
-    for (const i of categoriesWithRetention) {
-      const retentionId = i.policies.retentionPolicyId;
-      retentionList +=
-        props.filterValue.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
-      count++;
-    }
-    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-    let call = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
     })
-      .then(awaitJson)
-      .then((response: any) => {
-        for (let i = 0; i <= response.length - 1; i++) {
-          retentionDetails.push({
-            categoryName: props.filterValue[i].label,
-            hours: response[i].detail.limit.hours + response[i].detail.limit.gracePeriodInHours
-          });
-        }
-        const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
-        const retentionId = categoryOptions.find((o: any) => o.name === sortedArray[0].categoryName).policies
-          .retentionPolicyId;
-        return retentionId;
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err.message);
-      });
-    return call;
   };
 
   const cancelBtn = () => {
