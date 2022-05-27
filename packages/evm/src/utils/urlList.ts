@@ -180,7 +180,6 @@ export const urlList: any = [
     //         { type: 'text', label: 'Edit Station' }
     //     ]
     // },
-
     {
         name: urlNames.unitsAndDevices,
         url: "/unitsanddevices",

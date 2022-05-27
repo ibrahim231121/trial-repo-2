@@ -11,7 +11,6 @@ import {
   CRXMultiSelectBoxLight,
   CrxAccordion,
   CRXAlert,
-  CRXModalDialog,
   GoogleMap,
   CRXButton,
   CRXRows,
@@ -32,6 +31,7 @@ interface AutoCompleteOptionType {
 type StationFormType = {
   Name: string;
   StreetAddress?: string;
+  Passcode?: string;
   Location?: any;
   PolicyId?: number;
   RetentionPolicy?: AutoCompleteOptionType;
@@ -71,6 +71,7 @@ const StationDetail: React.FC = () => {
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
+    Passcode: "",
     Location: {
       longitude: null,
       latitude: null,
@@ -105,12 +106,13 @@ const StationDetail: React.FC = () => {
     React.useState<AutoCompleteOptionType[]>([]);
   const [reset, setReset] = React.useState<boolean>(false);
 
-  const [displayStationErrors, setDisplayStationCategoryForm] =
+  const [displayStationErrors, setDisplayStationError] =
     React.useState<string>("");
 
   const [latLong, setLatLong] = React.useState<IlatLong>();
   const [disableSaveButton, setDisableSaveButton] =
     React.useState<boolean>(true);
+  const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
 
   React.useEffect(() => {
     if (retentionResponse) {
@@ -132,10 +134,10 @@ const StationDetail: React.FC = () => {
           if (res.ok) return res.json();
         })
         .then((station) => {
-
           const _station: StationFormType = {
             Name: station.name,
             StreetAddress: station.address.street,
+            Passcode: station.passcode,
             Location: {
               latitude: station.geoLocation.latitude,
               longitude: station.geoLocation.longitude,
@@ -151,7 +153,7 @@ const StationDetail: React.FC = () => {
               id : station.policies[0].blackboxRetentionPolicyId,
             }
           };
-          setRetentionAutoCompleteValue([{id:station.policies[0].retentionPolicyId}])
+          setRetentionAutoCompleteValue([{id : station.policies[0].retentionPolicyId}])
           setUploadAutoCompleteValue([{id:station.policies[0].uploadPolicyId}])
           setBlackBoxAutoCompleteValue([{id:station.policies[0].blackBoxAutoCompleteValue}])
           setStationPayload(_station);
@@ -237,49 +239,21 @@ const StationDetail: React.FC = () => {
   };
 
   const errorHandler = (param: any) => {
+    
     if (param !== undefined) {
       let error = JSON.parse(param);
+      console.log("Error ", error)
       if (error.errors !== undefined) {
         if (
-          error.errors.UserName !== undefined &&
-          error.errors.UserName.length > 0
+          error.errors.Passcode !== undefined &&
+          error.errors.Passcode.length > 0
         ) {
           setError(true);
-          setErrorResponseMessage(error.errors.UserName[0]);
+          setErrorResponseMessage(error.errors.Passcode[0]);
         }
-        if (error.errors.First !== undefined && error.errors.First.length > 0) {
+        if (error.errors.Name !== undefined && error.errors.Name.length > 0) {
           setError(true);
-          setErrorResponseMessage(error.errors.First[0]);
-        }
-        if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Last[0]);
-        }
-        if (
-          error.errors.Middle !== undefined &&
-          error.errors.Middle.length > 0
-        ) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Middle[0]);
-        }
-        if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Email[0]);
-        }
-        if (
-          error.errors.Number !== undefined &&
-          error.errors.Number.length > 0
-        ) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Number[0]);
-        }
-
-        if (
-          error.errors.Password !== undefined &&
-          error.errors.Password.length > 0
-        ) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Password[0]);
+          setErrorResponseMessage(error.errors.Name[0]);
         }
         if (
           error.errors['Address.State'] !== undefined
@@ -323,9 +297,8 @@ const StationDetail: React.FC = () => {
           UploadPolicyId: values.UploadPolicy?.id,
         }
       ],
-      passcode: "abc123"
+      passcode: values.Passcode,
     };
-
 
     if (isAddCase) {
       stationService(STATION, "POST", body)
@@ -374,11 +347,20 @@ const StationDetail: React.FC = () => {
   };
 
   const stationValidationSchema = Yup.object().shape({
+    
     Name: Yup.string().required("Station Name is required"),
+    //Passcode: Yup.string().required("Pass Code is required"),
+    Passcode: Yup.string()
+    .test(
+      'len',
+      'Minimum 5 and maximum 64 characters are allowed in Passcode field.',
+      (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64) )
+      ) 
+      .trim().matches(regex, 'Only alphabets and digits are allowed.').required("Pass Code is required")
   });
+
   return (
     <>
-    
       <Formik
         enableReinitialize={true}
         initialValues={stationPayload}
@@ -447,7 +429,7 @@ const StationDetail: React.FC = () => {
                                 <div className="errorStationStyle">
                                   <i className="fas fa-exclamation-circle"></i>
                                   {errors.Name}
-                                  {setDisplayStationCategoryForm("errorBrdr")}
+                                  {setDisplayStationError("errorBrdr")}
                                 </div>
                               ) : null}
                             </div>
@@ -517,6 +499,37 @@ const StationDetail: React.FC = () => {
                             <Field id="street" name="StreetAddress" />
                           </div>
                         </CRXColumn>
+                        <CRXColumn
+                          className={
+                            "stationDetailCol " +
+                            ` ${errors.Passcode && touched.Passcode == true
+                              ? displayStationErrors
+                              : ""
+                            }`
+                          }
+                          container="container"
+                          item="item"
+                          lg={12}
+                          xs={12}
+                          spacing={0}
+                        >
+                          <div className="CBX-input">
+                            <label htmlFor="passcode">
+                              Pass Code <span>*</span>
+                            </label>
+                            <div className="CrxStationError">
+                              <Field id="passcode" name="Passcode" />
+                              {errors.Passcode !== undefined &&
+                                touched.Passcode === true ? (
+                                <div className="errorStationStyle">
+                                  <i className="fas fa-exclamation-circle"></i>
+                                  {errors.Passcode}
+                                  {setDisplayStationError("errorBrdr")}
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        </CRXColumn>
                       </CRXRows>
                     </div>
                   </div>
@@ -572,11 +585,12 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
+                            
                             {errors.RetentionPolicy !== undefined ? (
                               <div className="errorStationStyle">
                                 <i className="fas fa-exclamation-circle"></i>
                                 {" Retention Policy is required"}
-                                {setDisplayStationCategoryForm("errorBrdr")}
+                                {setDisplayStationError("errorBrdr")}
                               </div>
                             ) : null}
                             </div>
@@ -622,7 +636,7 @@ const StationDetail: React.FC = () => {
                               <div className="errorStationStyle">
                                 <i className="fas fa-exclamation-circle"></i>
                                 {" Upload Policy is required"}
-                                {setDisplayStationCategoryForm("errorBrdr")}
+                                {setDisplayStationError("errorBrdr")}
                               </div>
                             ) : null}
                             </div>

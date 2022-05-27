@@ -202,6 +202,7 @@ const CRXMultiSelectBoxLight = ({
     value && value.length > 1 ? setAutoHeight("auto") : setAutoHeight("31px");
 
     if (multiple == false && value != undefined) {
+      
       if (Object.keys(value).length > 0) {
         setControled('')
         setIsClearIcon(false);
@@ -238,6 +239,11 @@ const CRXMultiSelectBoxLight = ({
       return <span className="singleLabel">{option.label}</span>
     }
   }
+
+  const [getSaveValue, setSaveValue] = React.useState<any>();
+  React.useEffect(() => {
+    setSaveValue(value)
+  },[value])
   return (
 
 
@@ -250,6 +256,8 @@ const CRXMultiSelectBoxLight = ({
           </Typography>
         </>
       }
+      {console.log("inter change :", value)}
+      {console.log("inter change id:", id)}
       <Autocomplete
         defaultValue={defaultValue}
         autoComplete={autoComplete}
@@ -266,6 +274,7 @@ const CRXMultiSelectBoxLight = ({
         multiple={multiple}
         id={id}
         value={value}
+        inputValue = {getSaveValue}
         onChange={onChange}
         options={options}
         getOptionLabel={option => option.label || ""}

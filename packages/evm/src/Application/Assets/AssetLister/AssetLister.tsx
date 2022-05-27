@@ -8,7 +8,9 @@ import SelectedAsset from './SelectedAsset';
 import queries from '../QueryManagement/queries';
 import constants from '../utils/constants';
 import {DateTimeComponent, DateTimeObject } from '../../../GlobalComponents/DateTime';
-import { useDispatch } from 'react-redux';
+import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
+import { RootState } from "../../../Redux/rootReducer";
+import { useDispatch, useSelector } from 'react-redux';
 import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
 import moment from 'moment';
 import {
@@ -64,8 +66,10 @@ const SearchComponent = (props: any) => {
                                                   });
 
   const iconRotate = showAdvance ? ' ' : 'rotate90';
-  const [postDataForSearch, responseForSearch] = usePostFetch<any>(EVIDENCE_GET_URL);
-
+  //const [postDataForSearch, responseForSearch] = usePostFetch<any>(EVIDENCE_GET_URL);
+  const responseForSearch: any = useSelector(
+    (state: RootState) => state.assetSearchReducer.assetSearchInfo
+  );
   
   const QUERRY: any = {
     bool: {
@@ -92,7 +96,11 @@ const SearchComponent = (props: any) => {
   };
 
   React.useEffect(() => {
-    setSearchData(responseForSearch);
+    
+    if(responseForSearch.length > 0)
+    {
+      setSearchData(responseForSearch);
+    }
   }, [responseForSearch]);
 
   React.useEffect(() => {
@@ -103,7 +111,6 @@ const SearchComponent = (props: any) => {
 
   // fetchData
   const fetchData = (querry: any, searchType: any) => {
-
     /* Previous Fetch Logic */
     // fetch(url, {
     //   method: 'POST', // or 'PUT'
@@ -116,10 +123,13 @@ const SearchComponent = (props: any) => {
     /* res => setSearchData(res) ==> This part is handled in useEffect, line no 70.  */
 
     /* Applying usePostFetch Hook*/
-    postDataForSearch(querry || QUERRY, {
-        'Authorization': `Bearer ${getToken()}`,
-        'Content-Type': 'application/json',
-    });
+
+    // postDataForSearch(querry || QUERRY, {
+    //     'Authorization': `Bearer ${getToken()}`,
+    //     'Content-Type': 'application/json',
+    // });
+
+    dispatch(getAssetSearchInfoAsync(querry || QUERRY));
 
     if (searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch) {
       setShowShortCutSearch(false);

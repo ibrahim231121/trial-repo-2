@@ -14,7 +14,7 @@ const REACT_APP_FILE_SERVICE_URL = process.env.REACT_APP_FILE_SERVICE_URL
 
 export const EVIDENCE_PREDITIVE_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/predictive`
 
-export const EVIDENCE_GET_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence?Size=500&Page=1`
+export const EVIDENCE_GET_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence?Size=1000&Page=1`
 
 export const EVIDENCE_SEARCH_VERSION_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/Version`
 

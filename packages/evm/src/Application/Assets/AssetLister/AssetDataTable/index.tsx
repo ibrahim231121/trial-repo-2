@@ -122,7 +122,7 @@ const MasterMain: React.FC<Props> = ({
   showDateCompact,
 }) => {
   let reformattedRows: EvidenceReformated[] = [];
-console.log("row data",rowsData)
+
   rowsData.map((row: Evidence, i: number) => {
     let evidence: EvidenceReformated = {
       id: row.id,
