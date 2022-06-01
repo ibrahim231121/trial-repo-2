@@ -158,7 +158,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             bookmarkTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
             position: BookmarktimePositon,
             description: formpayload.description,
-            madeBy: "Trigger"
+            madeBy: "User"
         };
         const bookmarkaddurl = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Bookmarks";
         await fetch(bookmarkaddurl, {

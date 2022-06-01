@@ -264,7 +264,7 @@ const CreateTemplate = (props: any) => {
         else if (e0.fieldType == "CheckBox")
           val = e0.value.toLowerCase() === "true" ? true : false;
         else if (e0.fieldType == "Multiselect")
-          val = e0.value.split(',')
+          val = (e0.value ?? "").split(',')
         else
           val = e0.value;
 

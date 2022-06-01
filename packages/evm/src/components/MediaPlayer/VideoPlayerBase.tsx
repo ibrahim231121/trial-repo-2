@@ -155,11 +155,15 @@ const VideoPlayerBase = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [speed, setSpeed] = useState<number>(1000);
   const [speedFwRw, setSpeedFwRw] = useState<number>(1000);
+  const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
+  const [mouseovertype, setmouseovertype] = useState("");
+  const [timelinedetail1, settimelinedetail1] = useState<any>();
+  const [Event, setEvent] = useState();
 
   React.useEffect(() => {
     setdata(props.history !== undefined ? props.history.location.state?.data : props.data);
   }, []);
-  
+
   const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.EvidenceId;
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
@@ -279,19 +283,21 @@ const VideoPlayerBase = (props: any) => {
 
 
 
+
   async function TimelineData_generator(data: any, minstartpoint: string, duration: number) {
     let rowdetail: Timeline[] = [];
     let bufferingArr: any[] = [];
     for (let x = 0; x < data.length; x++) {
+      let offset = 0;
       let recording_start_time = moment(timeextractor(data[x].recording.started), "HH:mm:ss").format('HH:mm:ss');
-      let recording_start_point = convert_to_Second(moment.utc(moment(recording_start_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
+      let recording_start_point = convert_to_Second(moment.utc(moment(recording_start_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss")) + offset;
       let recording_Start_point_ratio = Math.ceil((recording_start_point / duration) * 100)
       let recording_end_time = moment(timeextractor(data[x].recording.ended), "HH:mm:ss").format('HH:mm:ss');
-      let recording_end_point = convert_to_Second(moment.utc(moment(recording_end_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss"));
       let video_duration_in_second = moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss")) / 1000;//convert_to_Second(moment(moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss"))).format('HH:mm:ss'));
+      let recording_end_point = convert_to_Second(moment.utc(moment(recording_end_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss")) + offset;
       let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / duration) * 100)
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
-      let startdiff = moment(timeextractor(data[x].recording.started), "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"));
+      let startdiff = moment(timeextractor(data[x].recording.started), "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss")) + (offset * 1000);
 
       let myData: Timeline =
       {
@@ -329,6 +335,12 @@ const VideoPlayerBase = (props: any) => {
   };
 
   const screenClick = (view: number, event: any) => {
+    var tempTimelines = [...timelinedetail];
+    var disableTimline = tempTimelines.filter((x:any) => x.indexNumberToDisplay > view);
+    disableTimline.forEach((x:any) => {
+      x.indexNumberToDisplay = 0;
+      x.enableDisplay = false;
+    })
     return setViewNumber(view);
   }
 
@@ -553,14 +565,14 @@ const VideoPlayerBase = (props: any) => {
         if (isPlayingFwRw === true) {
           if (timer < timelineduration) {
             var timerValue: any[] = [];
-            if(modeFw>0){
-              timerFwRw.forEach((x: any)=> {
-                timerValue.push(x+0.25);
+            if (modeFw > 0) {
+              timerFwRw.forEach((x: any) => {
+                timerValue.push(x + 0.25);
               })
             }
-            else if(modeRw>0){
-              timerFwRw.forEach((x: any)=> {
-                timerValue.push(x-0.25);
+            else if (modeRw > 0) {
+              timerFwRw.forEach((x: any) => {
+                timerValue.push(x - 0.25);
               })
             }
 
@@ -657,7 +669,7 @@ const VideoPlayerBase = (props: any) => {
   const modeSetFwRw = (Currmode: number, CaseNo: number) => {
     var video: any = timelinedetail[0];
     var currVideoStartTime = video.recording_start_point;
-    if(isPlaying){
+    if (isPlaying) {
       setPlaying(false);
       videoHandlers.forEach((videoHandle: any) => {
         videoHandle.pause();
@@ -672,20 +684,20 @@ const VideoPlayerBase = (props: any) => {
     }
     var videoTimerFwRw: any[] = [];
     let num = -2;
-    
+
     setSpeedFwRw(250);
     setisPlayingFwRw(true);
     switch (CaseNo) {
       case 1: //Forward
         if (modeRw > 0) {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(videoHandle.currentTime+currVideoStartTime+Currmode*num);
+            videoTimerFwRw.push(videoHandle.currentTime + currVideoStartTime + Currmode * num);
             num++;
           });
         }
         else {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(Currmode>2 ? videoHandle.currentTime+currVideoStartTime+Currmode*num : controlBar+Currmode*num);
+            videoTimerFwRw.push(Currmode > 2 ? videoHandle.currentTime + currVideoStartTime + Currmode * num : controlBar + Currmode * num);
             num++;
           });
         }
@@ -695,13 +707,13 @@ const VideoPlayerBase = (props: any) => {
       case 2: //Rewind
         if (modeFw > 0) {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(videoHandle.currentTime+currVideoStartTime+Currmode*num);
+            videoTimerFwRw.push(videoHandle.currentTime + currVideoStartTime + Currmode * num);
             num++;
           });
         }
         else {
           videoHandlersFwRw.forEach((videoHandle: any) => {
-            videoTimerFwRw.push(Currmode>2 ? videoHandle.currentTime+currVideoStartTime+Currmode*num : controlBar+Currmode*num);
+            videoTimerFwRw.push(Currmode > 2 ? videoHandle.currentTime + currVideoStartTime + Currmode * num : controlBar + Currmode * num);
             num++;
           });
         }
@@ -718,7 +730,7 @@ const VideoPlayerBase = (props: any) => {
     setisPlayingFwRw(false);
     var video: any = timelinedetail[0];
     let currTime = Math.floor(event.target.currentTime);
-    
+
     var currTimeTotal = currTime + (video.recording_start_point);
 
     handleControlBarChange(null, currTimeTotal);
@@ -730,9 +742,64 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+  const onClickBookmarkNote = (event: any, Case: number) => {
+    var videos: any = timelinedetail;
+    var video: any;
+    switch (Case) {
+      case 1: //Bookmark
+        videos.forEach((vid: any) => {
+          if (vid.bookmarks.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
+        }
+        )
+        break;
+      case 2: //Notes
+        videos.forEach((vid: any) => {
+          if (vid.notes.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
+        }
+        )
+        break;
+      default:
+        break;
+    }
+    if (video) {
+      var position = event.position / 1000;
+      var currTimeTotal = position + (video.recording_start_point);
+      handleControlBarChange(null, currTimeTotal);
+    }
+  }
+
+  const mouseOut = () => {
+    setopenThumbnail(false);
+  }
+
+  const mouseOverBookmark = (event: any, y: any, x: any) => {
+    setmouseovertype("bookmark");
+    setbookmark(y);
+    //setbookmarklocation(getbookmarklocation(y.position, x.startdiff));
+    settimelinedetail1(x);
+    setEvent(event);
+    setopenThumbnail(true);
+  }
+
+  const mouseOverNote = (event: any, y: any, x: any) => {
+    setmouseovertype("note");
+    setnote(y);
+    settimelinedetail1(x);
+    setEvent(event);
+    setopenThumbnail(true);
+  }
+
+  const getbookmarklocation = (position: any, startdiff: any) => {
+    var timeLineHover: any = document.querySelector("#SliderControlBar");
+    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+    let timelineposition = position + ((startdiff) * 1000);
+    let timelinepositionpercentage = (timelineWidth / timelineduration) * (timelineposition / 1000)  // Math.round((Math.round(timelineposition / 1000) / timelineWidth))
+    return timelinepositionpercentage;
+  }
+
   const onClickFwRw = (Currmode: number, CaseNo: number) => {
-    if(Currmode>=6){
-      switch(CaseNo) {
+    if (Currmode >= 6) {
+      switch (CaseNo) {
         case 1: //Forward
           setismodeFwdisable(true);
           break;
@@ -741,14 +808,14 @@ const VideoPlayerBase = (props: any) => {
           break;
         default:
           break;
-        }
+      }
     }
-    else{
+    else {
       setismodeFwdisable(false);
       setisModeRwdisable(false);
     }
-    if(isOpenWindowFwRw && isvideoHandlersFwRw){
-      modeSetFwRw(Currmode,CaseNo)
+    if (isOpenWindowFwRw && isvideoHandlersFwRw) {
+      modeSetFwRw(Currmode, CaseNo)
     }
     else {
       setcurractionFwRw({ currmode: Currmode, currcase: CaseNo })
@@ -776,6 +843,7 @@ const VideoPlayerBase = (props: any) => {
     var ttt = Math.round(pos * x.video_duration_in_second);
     var Thumbnail: any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
     var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + x.indexNumberToDisplay);
+    var ThumbnailCameraDesc: any = document.querySelector("#Thumbnail-CameraDesc" + x.indexNumberToDisplay);
     var ThumbnailDesc: any = document.querySelector("#Thumbnail-Desc");
 
     var SliderControlBar: any = document.querySelector("#SliderControlBar");
@@ -787,6 +855,11 @@ const VideoPlayerBase = (props: any) => {
       ThumbnailTime.innerHTML = secondsToHms(ttt)
       ThumbnailTime.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 300) - lenghtDeduct) : 0) + 125 + "px";
       ThumbnailTime.style.top = (120) + "px";
+      ThumbnailCameraDesc.innerHTML = x.camera;
+      ThumbnailCameraDesc.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 300) - lenghtDeduct) : 0) + 10 + "px";
+      ThumbnailCameraDesc.style.top = (-24) + "px";
+      ThumbnailCameraDesc.style.width = 280 + "px";
+      ThumbnailCameraDesc.style.textAlign = "center";
       if (withdescription) {
         ThumbnailDesc.innerHTML = withdescription;
         ThumbnailDesc.style.left = (event.pageX - SliderControlBarOffset) + 125 + "px";
@@ -832,6 +905,72 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+  const adjustTimeline = (event: any, timeline: any, mode: number) => {
+    mode = mode / 1000;
+    var timeLineHover: any = document.querySelector("#timeLine-hover" + timeline.indexNumberToDisplay);
+    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+    var offset = timeLineHover.getBoundingClientRect().left;
+    var pos = (event.pageX - offset) / timelineWidth;
+    var ttt = mode === 0 ? Math.round(pos * timeline.video_duration_in_second) : mode;
+    var newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
+    var tempTimelines = [...timelinedetail];
+
+    var timelineDurations: number[] = [...tempTimelines.map((x: any) => x.recording_end_point)];
+    var lastTimeline: any = timelineDurations.find((x: any) => x == timelineduration);
+    const index = timelineDurations.indexOf(lastTimeline);
+    if (index > -1) { timelineDurations.splice(index, 1); }
+
+    timelineDurations = [...timelineDurations, newTimelineDuration];
+    var maxTimelineDuration: number = Math.max(...timelineDurations);
+
+    var tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
+    if (tempTimeline) {
+      let recording_start_point = tempTimeline.recording_start_point + ttt;
+      let recording_Start_point_ratio = Math.ceil((recording_start_point / maxTimelineDuration) * 100)
+      let recording_end_point = tempTimeline.recording_end_point + ttt;
+      let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / maxTimelineDuration) * 100)
+      let startdiff = recording_start_point * 1000;
+      let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
+
+      if(recording_start_point >= 0)
+      {
+      tempTimeline.recording_start_point = recording_start_point;
+      tempTimeline.recording_Start_point_ratio = recording_Start_point_ratio;
+      tempTimeline.recording_end_point = recording_end_point;
+      tempTimeline.recording_end_point_ratio = recording_end_point_ratio;
+      tempTimeline.startdiff = startdiff;
+      tempTimeline.recordingratio = recordingratio;
+      }
+    }
+    if (tempTimeline.recording_start_point >= 0) {
+      settimelinedetail(tempTimelines);
+      
+      if (maxTimelineDuration !== timelineduration) {
+        updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay)
+      }
+    }
+  }
+
+
+
+  const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines : Timeline[], indexNumberToDisplay : number) => {
+    var durationinformat = secondsToHms(maxTimelineDuration);
+    setfinalduration(durationinformat.toString())
+    settimelineduration(maxTimelineDuration);
+
+    tempTimelines.filter((x: any) => x.indexNumberToDisplay !== indexNumberToDisplay).forEach((x: any) => {
+      let recording_Start_point_ratio = Math.ceil((x.recording_start_point / maxTimelineDuration) * 100)
+      let recording_end_point_ratio = 100 - Math.ceil((x.recording_end_point / maxTimelineDuration) * 100)
+      let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
+
+      x.recording_Start_point_ratio = recording_Start_point_ratio;
+      x.recording_end_point_ratio = recording_end_point_ratio;
+      x.recordingratio = recordingratio;
+    })
+    settimelinedetail(tempTimelines)
+  }
+
+
   return (
     <div id="video-player" >
       <CRXToaster ref={bookmarkMsgRef} />
@@ -859,8 +998,6 @@ const VideoPlayerBase = (props: any) => {
               seteditNoteForm={seteditNoteForm}
               bookmark={bookmark}
               note={note}
-              setbookmark={setbookmark}
-              setnote={setnote}
               setbookmarkAssetId={setbookmarkAssetId}
               setnoteAssetId={setnoteAssetId}
               visibleThumbnail={visibleThumbnail}
@@ -868,6 +1005,16 @@ const VideoPlayerBase = (props: any) => {
               singleTimeline={singleTimeline}
               displayThumbnail={displayThumbnail}
               bookmarkMsgRef={bookmarkMsgRef}
+              onClickBookmarkNote={onClickBookmarkNote}
+              openThumbnail={openThumbnail}
+              mouseovertype={mouseovertype}
+              timelinedetail1={timelinedetail1}
+              mouseOverBookmark={mouseOverBookmark}
+              mouseOverNote={mouseOverNote}
+              mouseOut={mouseOut}
+              Event={Event}
+              getbookmarklocation={getbookmarklocation}
+              adjustTimeline={adjustTimeline}
             />
           ) : (<></>)}
 
@@ -877,6 +1024,37 @@ const VideoPlayerBase = (props: any) => {
         <div id="controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
           <div>
             <div className="main-control-bar">
+              <div id="SliderBookmarkNote" style={{ position: "relative" }}>
+                {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
+                  return (
+                    <>
+                      {x.enableDisplay && x.bookmarks.map((y: any, index: any) =>
+                        {
+                          if(y.madeBy == "User")
+                          {
+                            return(
+                              <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "10px", width: "10px" }}>
+                              <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "red"}} aria-hidden="true"
+                              onMouseOut={() =>
+                              mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y,1)}>
+                              </i>
+                              </div>
+                            )
+                          }
+                        }
+                      )}
+                      {x.enableDisplay && x.notes.map((y: any, index: any) =>
+                        <div style={{  zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "10px", width: "10px" }}>
+                          <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "purple"}} aria-hidden="true"
+                          onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y,2)}>
+                          </i>
+                        </div>
+                      )}
+                    </>
+                  )
+                })
+                }
+              </div>
               <Slider
                 id="SliderControlBar"
                 value={typeof controlBar === 'number' ? controlBar : 0}

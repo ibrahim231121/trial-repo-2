@@ -41,6 +41,7 @@ const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, ancho
         tempItem.indexNumberToDisplay = indexNumber;
       }
       settimelinedetail(tempArray);
+      setCheckedVideo("")
     }
     else
     {

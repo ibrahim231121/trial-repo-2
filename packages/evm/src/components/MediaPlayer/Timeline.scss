@@ -1,90 +1,98 @@
+.line {
+  height: 12px;
+  width: 100%;
+  display: flex;
 
-.line
-{
-    height:12px;
-    width:100%;
-    display:flex;
-    
 
 }
-.line .beforerecording
-{
-    background:rgb(163, 161, 161);
-    height:100%;
-    display:table-cell;
-    
+
+.line .beforerecording {
+  background: rgb(163, 161, 161);
+  height: 100%;
+  display: table-cell;
+
 }
 
-.line .afterrecording
-{
-    background:rgb(163, 161, 161);
-    width:40%;
-    height:100%;
-    display:table-cell;
- 
-  
+.line .afterrecording {
+  background: rgb(163, 161, 161);
+  width: 40%;
+  height: 100%;
+  display: table-cell;
+
+
 }
+
 .dot {
-    height: 100%;
-    width: 2%;
-    background:rgb(238, 224, 34);
-    border-radius: 50%;
-    display:table-cell;
+  height: 100%;
+  width: 2%;
+  background: rgb(238, 224, 34);
+  border-radius: 50%;
+  display: table-cell;
 
-    
 
+
+}
+
+.hovertext {
+  position: relative;
+  border-bottom: 1px dotted black;
+  height: 100%;
+  width: 2%;
+  background: rgb(238, 224, 34);
+  border-radius: 50%;
+  display: table-cell;
+
+}
+
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  transition: opacity 1s ease-in-out;
+
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: -280%;
+}
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.beforelineMain {
+  margin-top: 67px;
+}
+
+.beforeline {
+  margin: 4px -5px;
+  bottom: 12px;
+  left: -12px;
+  padding-left: 13px;
+  padding-right: 13px
+}
+
+.canvas-width canvas {
+  width: 100%;
+}
+
+.videoFastRw {
+  display: flex;
+
+  >div {
+    margin-bottom: 75px;
+  }
+}
+.test_canvas {
+  input {
+    margin: 0 20px;
   }
 
-  .hovertext {
-    position: relative;
-    border-bottom: 1px dotted black;
-    height: 100%;
-    width: 2%;
-    background:rgb(238, 224, 34);
-    border-radius: 50%;
-    display:table-cell;
-
-  }
-  
-  .hovertext:before {
-    content: attr(data-hover);
-    visibility: hidden;
-    opacity: 0;
-    width: 140px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px 0;
-    transition: opacity 1s ease-in-out;
-  
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: -280%;
-  }
-  
-  .hovertext:hover:before {
-    opacity: 1;
-    visibility: visible;
-  }
-  .beforelineMain {
-    margin-top: 67px;
-  }
-  .beforeline{
-    margin: 4px -5px;
-    bottom: 12px;
-    left: -12px;
-    padding-left: 13px;
-    padding-right:13px
-  }
-
-  .canvas-width canvas{
-    width: 100%;
-  }
-  .videoFastRw {
-    display: flex;
-    > div {
-      margin-bottom: 75px;
-    }
-  }
+}

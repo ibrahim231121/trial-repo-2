@@ -119,7 +119,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             noteTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
             position: NotetimePositon,
             description: description,
-            madeBy: "Trigger"
+            madeBy: "User"
         };
         const noteaddurl = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
         await fetch(noteaddurl, {
