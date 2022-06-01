@@ -163,11 +163,11 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
     let local_assetBucket : any = localStorage.getItem("assetBucket");    
     if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
      
-      toasterRef.current.showToaster({
-        message: "You have added the selected assets to the asset bucket.", 
-        variant: "success", 
-        duration: 7000, 
-      });
+      // toasterRef.current.showToaster({
+      //   message: "You have added the selected assets to the asset bucket.", 
+      //   variant: "success", 
+      //   duration: 7000, 
+      // });
       
     
     }
