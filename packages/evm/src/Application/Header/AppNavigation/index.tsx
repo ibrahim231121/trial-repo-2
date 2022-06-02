@@ -119,7 +119,7 @@ const CRXLefNavigation = () => {
     //   ],
     // },
     {
-      moduleId: 15,
+      moduleId: 13,
       label: 'Units & Devices',
       icon: 'fas fa-laptop-code NaveIcon',
      

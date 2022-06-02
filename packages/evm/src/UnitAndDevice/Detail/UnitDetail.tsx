@@ -35,6 +35,8 @@ import {
   onClearAll,
 } from "../../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 export type UnitInfoModel = {
   name: string;
@@ -127,7 +129,7 @@ const UnitCreate = (props: historyProps) => {
       unitID +
       "/GetPrimaryDeviceInfo",
     {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
       TenantId: "1",
     }
   );
@@ -139,7 +141,7 @@ const UnitCreate = (props: historyProps) => {
       unitID +
       "/GetConfigurationTemplate",
     {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
       TenantId: "1",
     }
   );
@@ -151,7 +153,7 @@ const UnitCreate = (props: historyProps) => {
       unitID +
       "?Page=1&Size=100",
     {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
       TenantId: "1",
     }
   );
