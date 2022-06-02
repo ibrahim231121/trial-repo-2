@@ -6,6 +6,7 @@ interface Props {
   assetType:string;
   fontSize?:string;
   className?:string;
+  onClick?:any;
 }
 
 export const AssetThumbnailIcon = (data: string) : string => {
@@ -27,10 +28,10 @@ export const AssetThumbnailIcon = (data: string) : string => {
       }
 };
 
-export const AssetThumbnail: React.FC<Props> = ({ assetType,className=' ' }) => {
+export const AssetThumbnail: React.FC<Props> = ({ assetType,className=' ', onClick }) => {
   return (
     <>
-      <div className={"assetThumb " + className}>
+      <div className={"assetThumb " + className} onClick={onClick}>
         <i
           className={AssetThumbnailIcon(assetType)}
         ></i>

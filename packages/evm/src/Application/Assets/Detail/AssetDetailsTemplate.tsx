@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { CRXTabs, CrxTabPanel, CRXRows, CRXColumn } from "@cb/shared";
+//import {  } from "@cb/shared";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
 import ActionMenu, { AssetBucket } from "../AssetLister/ActionMenu";
@@ -11,15 +11,35 @@ import FormContainer from "../AssetLister/Category/FormContainer";
 import useGetFetch from "../../../utils/Api/useGetFetch";
 import { EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+import { makeStyles } from "@material-ui/core/styles";
+import AssetNameTooltip from "../AssetLister/AssetDataTable/AssetNameTooltip";
+import { AssetThumbnail } from "../AssetLister/AssetDataTable/AssetThumbnail"
+import { Link } from "react-router-dom";
 import moment from "moment";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
-
+import {
+  CRXMultiSelectBoxLight,
+  CrxAccordion,CRXTabs, CrxTabPanel,
+  CRXAlert,
+  CRXModalDialog,
+  GoogleMap,
+  CRXButton,
+  CRXRows,
+  CRXColumn,
+  CRXConfirmDialog,
+} from "@cb/shared";
+import { hexToRgb } from "@material-ui/core";
+import { RestorePageSharp } from "@material-ui/icons";
+import { string } from "yup/lib/locale";
+import { useHistory } from "react-router";
 const AssetDetailsTemplate = (props: any) => {
   const historyState = props.location.state;
+  const history = useHistory();
   let evidenceId: number = historyState.evidenceId;
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
-
+  const [expanded, isExpaned] = React.useState("panel1");
 
   type assetdata = {
     files: any;
@@ -110,7 +130,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
     );
   const [assetData, getAssetData] = useGetFetch<any>(
-    EVIDENCE_SERVICE_URL + "/Evidences/" + "8",
+    EVIDENCE_SERVICE_URL + "/Evidences/" + evidenceId,
     {
       "Content-Type": "application/json",
       TenantId: "1",
@@ -127,6 +147,7 @@ const AssetDetailsTemplate = (props: any) => {
     setValue(newValue);
   }
   useEffect(() => {
+    
     if (res !== undefined) {
       setEvidence({
         ...evidence,
@@ -159,6 +180,7 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
+    
     if (getAssetData !== undefined) {
       var categories: string[] = [];
       getAssetData.categories.map((x: any) =>
@@ -216,9 +238,7 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [getAssetData]);
  
-
   function extract(row: any) {
-    debugger;
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
 
@@ -272,9 +292,17 @@ const AssetDetailsTemplate = (props: any) => {
   const tabs = [
     { label: "Information", index: 0 },
     { label: "Map", index: 1 },
-    { label: "Related Assets", index: 2 },
+    { label: "GROUPED AND RELATED ASSETS", index: 2 },
   ];
-
+  const refresh=()=>{ 
+    window.location.reload(); 
+}
+const newRound=(x:any, y: any)=>{
+   history.push('/assetdetail', {  evidenceId: evidenceId,
+    assetId: x,
+    assetName: y, })
+   history.go(0)
+}
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
     if (evidence !== undefined && evidence !== null) {
@@ -381,7 +409,7 @@ const AssetDetailsTemplate = (props: any) => {
               textAlign: "center",
             }}
           > */}
-          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} EvidenceId={8} />}
+          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} EvidenceId={evidenceId} />}
           {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">
@@ -417,7 +445,97 @@ const AssetDetailsTemplate = (props: any) => {
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={2}>
-                <div>Test</div>
+                
+              <CrxAccordion
+                  title="GROUPED ASSETS"
+                  id="accorIdx1"
+                  className="crx-accordion"
+                  ariaControls="Content1"
+                  name="panel1"
+                  isExpanedChange={isExpaned}
+                  expanded={expanded === "panel1"}
+                >
+                  <div className="stationDetailOne">
+                    <div className="stationColumnSet">
+               
+                    {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
+                    
+                    <table>
+              <tbody>
+          
+                {(getAssetData !== undefined)
+                  ? getAssetData.assets.children.map((asset: any, index: number) => {
+                  
+                      var lastChar = asset.name.substr(asset.name.length - 4);
+                      return (
+                        <>
+                          <tr key={index}>
+                         
+                            <td>
+                              <AssetThumbnail
+                                assetType={asset.typeOfAsset}
+                                className={"CRXPopupTableImage  CRXPopupTableImageUi"}
+                                onClick = {()=>newRound(asset.id, asset.name)}
+                              />
+                            </td>
+                            <td>
+                              <Link
+                                 className="linkColor"
+                                  onClick = {refresh}
+                                  to={{
+                                pathname: "/assetdetail",
+                                state: {
+                                  evidenceId: evidenceId,
+                                  assetId: asset.id,
+                                  assetName: asset.name,
+                                },
+                                }}>
+                               
+                                <div id="middletruncate" data-truncate={lastChar}>
+                                  <p>{asset.name}</p>
+                                </div>
+
+                              {/* <div>{asset.name}</div> */}
+                              
+                              
+                              </Link>
+
+                                <div className="timeLineLister">
+                                {asset.camera !== undefined &&
+                              asset.camera !== null &&
+                              asset.camera !== "" ? (
+                                <div>
+                                  <label className="CRXPopupDetailFontSize">
+                                    {asset.camera}
+                                  </label>
+                                </div>
+                              ) : (
+                                <div>
+                                  <label className="CRXPopupDetailFontSize">
+                                    {asset.typeOfAsset}
+                                  </label>
+                                </div>
+                              )}
+                              <label className="CRXPopupDetailFontSize">
+                                {dateDisplayFormat(asset.recording.started)}
+                              </label>
+                                </div>
+                           
+                            </td>
+                           
+                          </tr>
+                          
+                        </>
+                      );
+                    })
+                  : null}
+              </tbody>
+            </table>
+          
+                    </div>
+         
+                  </div>
+                </CrxAccordion>
               </CrxTabPanel>
             </div>
           </div>
