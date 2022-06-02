@@ -66,10 +66,10 @@ const Routes = () => {
       <SessionRoute  exact path="/sessionExpiration" component={Session} />
       <Route exact path="/token/:token" component={Token}/>
         <>
-        {/* <IdleTimer 
+        <IdleTimer 
           timeout={1200000}
           onIdle={handleOnIdle}
-        >  */}
+        > 
           <CRXAppBar position="fixed">
             <AppHeader onClick={handleDrawerToggle} onClose={handleDrawerToggle} open={open} />
           </CRXAppBar>
@@ -116,7 +116,7 @@ const Routes = () => {
           <footer>
             <Footer />
           </footer>
-          {/* </IdleTimer> */}
+          </IdleTimer>
         </>
       </Switch>
      

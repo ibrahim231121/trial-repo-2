@@ -291,11 +291,11 @@ const VideoPlayerBase = (props: any) => {
       let offset = 0;
       let recording_start_time = moment(timeextractor(data[x].recording.started), "HH:mm:ss").format('HH:mm:ss');
       let recording_start_point = convert_to_Second(moment.utc(moment(recording_start_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss")) + offset;
-      let recording_Start_point_ratio = Math.ceil((recording_start_point / duration) * 100)
+      let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
       let recording_end_time = moment(timeextractor(data[x].recording.ended), "HH:mm:ss").format('HH:mm:ss');
       let video_duration_in_second = moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss")) / 1000;//convert_to_Second(moment(moment(recording_end_time, "HH:mm:ss").diff(moment(recording_start_time, "HH:mm:ss"))).format('HH:mm:ss'));
       let recording_end_point = convert_to_Second(moment.utc(moment(recording_end_time, "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss"))).format("HH:mm:ss")) + offset;
-      let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / duration) * 100)
+      let recording_end_point_ratio = 100 - ((recording_end_point / duration) * 100)
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
       let startdiff = moment(timeextractor(data[x].recording.started), "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss")) + (offset * 1000);
 
@@ -336,8 +336,8 @@ const VideoPlayerBase = (props: any) => {
 
   const screenClick = (view: number, event: any) => {
     var tempTimelines = [...timelinedetail];
-    var disableTimline = tempTimelines.filter((x:any) => x.indexNumberToDisplay > view);
-    disableTimline.forEach((x:any) => {
+    var disableTimline = tempTimelines.filter((x: any) => x.indexNumberToDisplay > view);
+    disableTimline.forEach((x: any) => {
       x.indexNumberToDisplay = 0;
       x.enableDisplay = false;
     })
@@ -907,44 +907,50 @@ const VideoPlayerBase = (props: any) => {
 
   const adjustTimeline = (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
-    var timeLineHover: any = document.querySelector("#timeLine-hover" + timeline.indexNumberToDisplay);
+
+    var timeLineHover: any = document.querySelector("#SliderControlBar");
     var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
     var offset = timeLineHover.getBoundingClientRect().left;
-    var pos = (event.pageX - offset) / timelineWidth;
-    var ttt = mode === 0 ? Math.round(pos * timeline.video_duration_in_second) : mode;
+
+    var pxPerSecond = timelineWidth / timelineduration;
+    var positionInSeconds = ((event.pageX - offset) / pxPerSecond)
+    var ttt = mode === 0 ? (positionInSeconds - timeline.recording_start_point) : mode;
+    ttt = (timeline.recording_start_point + ttt) < 0 ? 0 : ttt;
+
     var newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
     var tempTimelines = [...timelinedetail];
-
-    var timelineDurations: number[] = [...tempTimelines.map((x: any) => x.recording_end_point)];
-    var lastTimeline: any = timelineDurations.find((x: any) => x == timelineduration);
-    const index = timelineDurations.indexOf(lastTimeline);
-    if (index > -1) { timelineDurations.splice(index, 1); }
-
-    timelineDurations = [...timelineDurations, newTimelineDuration];
-    var maxTimelineDuration: number = Math.max(...timelineDurations);
-
     var tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
+
     if (tempTimeline) {
       let recording_start_point = tempTimeline.recording_start_point + ttt;
-      let recording_Start_point_ratio = Math.ceil((recording_start_point / maxTimelineDuration) * 100)
       let recording_end_point = tempTimeline.recording_end_point + ttt;
-      let recording_end_point_ratio = 100 - Math.ceil((recording_end_point / maxTimelineDuration) * 100)
+
+      debugger;
+      tempTimeline.recording_start_point = recording_start_point;
+      tempTimeline.recording_end_point = recording_end_point;
+      var recording_end_points = [...tempTimelines.map((x: any) => x.recording_end_point)];
+      var recording_start_points = [...tempTimelines.map((x: any) => x.recording_start_point)];
+
+      var maxTimelinesDuration: number = Math.max(...recording_end_points);
+      var minTimelinesDuration: number = Math.min(...recording_start_points);
+      maxTimelinesDuration = newTimelineDuration > maxTimelinesDuration ? newTimelineDuration : maxTimelinesDuration;
+      minTimelinesDuration = newTimelineDuration < minTimelinesDuration ? newTimelineDuration : minTimelinesDuration;
+
+      var maxTimelineDuration = Math.abs(minTimelinesDuration - maxTimelinesDuration) < maxTimelinesDuration ? maxTimelinesDuration : Math.abs(minTimelinesDuration - maxTimelinesDuration);
+
+      let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
+      let recording_end_point_ratio = 100 - ((recording_end_point / maxTimelineDuration) * 100)
       let startdiff = recording_start_point * 1000;
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
 
-      if(recording_start_point >= 0)
-      {
-      tempTimeline.recording_start_point = recording_start_point;
       tempTimeline.recording_Start_point_ratio = recording_Start_point_ratio;
-      tempTimeline.recording_end_point = recording_end_point;
+
       tempTimeline.recording_end_point_ratio = recording_end_point_ratio;
       tempTimeline.startdiff = startdiff;
       tempTimeline.recordingratio = recordingratio;
-      }
-    }
-    if (tempTimeline.recording_start_point >= 0) {
+
       settimelinedetail(tempTimelines);
-      
+
       if (maxTimelineDuration !== timelineduration) {
         updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay)
       }
@@ -953,14 +959,14 @@ const VideoPlayerBase = (props: any) => {
 
 
 
-  const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines : Timeline[], indexNumberToDisplay : number) => {
+  const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number) => {
     var durationinformat = secondsToHms(maxTimelineDuration);
     setfinalduration(durationinformat.toString())
     settimelineduration(maxTimelineDuration);
 
     tempTimelines.filter((x: any) => x.indexNumberToDisplay !== indexNumberToDisplay).forEach((x: any) => {
-      let recording_Start_point_ratio = Math.ceil((x.recording_start_point / maxTimelineDuration) * 100)
-      let recording_end_point_ratio = 100 - Math.ceil((x.recording_end_point / maxTimelineDuration) * 100)
+      let recording_Start_point_ratio = ((x.recording_start_point / maxTimelineDuration) * 100)
+      let recording_end_point_ratio = 100 - ((x.recording_end_point / maxTimelineDuration) * 100)
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
 
       x.recording_Start_point_ratio = recording_Start_point_ratio;
