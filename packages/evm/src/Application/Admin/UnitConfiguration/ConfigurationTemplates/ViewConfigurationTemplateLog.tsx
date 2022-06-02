@@ -2,6 +2,7 @@ import React from 'react'
 import { CRXDataTable, CRXMenu } from "@cb/shared";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
+import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import { BASE_URL_UNIT_SERVICE } from '../../../../utils/Api/url'
 import { getTemplateConfigurationLogsAsync } from "../../../../Redux/TemplateConfiguration";
@@ -29,6 +30,7 @@ type ConfigTemplateLogs = {
     field: string;
     value: string;
     logTime: string;
+    user:string;
   };
 
 const ViewConfigurationTemplateLog= (props: any) => {
@@ -84,6 +86,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
                         field: log.field,
                         value: log.value,
                         logTime: log.logTime,
+                        user:log.user
                      }
                 })
             }
@@ -109,39 +112,52 @@ const ViewConfigurationTemplateLog= (props: any) => {
           maxWidth: "100",
         },
         {
+          label: `${t("Log Time")}`,
+          id: "logTime",
+          align: "center",
+          dataComponent: dateDisplayFormat,
+          sort: true,
+          searchFilter: true,
+          searchComponent: () => null,
+          minWidth: "190"
+        },
+        {
+          label: `${t("User")}`,
+          id: "user",
+          align: "left",
+          dataComponent: (f: string) =>  textDisplay(f, ""),
+          sort: true,
+          searchFilter: true,
+          searchComponent: () => null,
+          minWidth: "90",
+          width: "",
+          maxWidth: "95"
+        },
+        {
             label: `${t("Field")}`,
             id: "field",
             align: "left",
-            dataComponent: (e: string) =>  textDisplay(e, ""),
+            dataComponent: (a: string) =>  textDisplay(a, ""),
             sort: true,
             searchFilter: true,
             searchComponent: () => null,
-            minWidth: "100",
+            minWidth: "88",
             width: "",
-            maxWidth: "100"
+            maxWidth: "90"
           },
           {
             label: `${t("Value")}`,
             id: "value",
             align: "left",
-            dataComponent: (e: string) =>  textDisplay(e, ""),
+            dataComponent: (f: string) =>  textDisplay(f, ""),
             sort: true,
             searchFilter: true,
             searchComponent: () => null,
-            minWidth: "100",
+            minWidth: "110",
             width: "",
-            maxWidth: "100"
+            maxWidth: "112"
           },
-          {
-            label: `${t("Log Time")}`,
-            id: "logTime",
-            align: "center",
-            dataComponent: dateDisplayFormat,
-            sort: true,
-            searchFilter: true,
-            searchComponent: () => null,
-            minWidth: "190"
-          },
+         
     ]);
 
     const resizeRow = (e: { colIdx: number; deltaX: number }) => {
@@ -170,7 +186,14 @@ const ViewConfigurationTemplateLog= (props: any) => {
         rows && (
           <CRXDataTable
             id="unitConfigTemplateLogsDataTable"
-                   
+            toolBarButton={
+             
+              <div className="Button">
+                            <Link to={{ pathname: '/admin/configurationtemplate' }}>
+                              <div>X</div>
+                            </Link>
+                  </div>
+              }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
@@ -186,7 +209,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
             allowDragableToList={false}
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
-            showCustomizeIcon={true}
+            showCustomizeIcon={false}
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplateLogs[]) => setSelectedItems(v)}

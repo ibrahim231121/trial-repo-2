@@ -14,12 +14,13 @@ import { deletetemplate } from "../../../../Redux/TemplateConfiguration";
 import "./ConfigTemplateActionMenu.scss";
 import { useHistory } from "react-router";
 type Props = {
-
+  selectedItems?: any;
   row?: any;
 };
 
 
-const ConfigTemplateActionMenu: React.FC<Props> = ({row}) => {
+const ConfigTemplateActionMenu: React.FC<Props> = ({selectedItems, row}) => {
+ 
     const dispatch = useDispatch()
     const history = useHistory();
 
@@ -118,6 +119,7 @@ const ViewLog = () => {
           </div>
         </div>
       </MenuItem>
+      {selectedItems.length <=1 ? (
       <MenuItem >
       
         <div className="crx-meu-content  crx-spac" onClick={ViewLog} >
@@ -125,14 +127,13 @@ const ViewLog = () => {
             <i className="far fa-trash-alt"></i>
           </div>
           <div className="crx-menu-list">
-           View Change Log
-           
-          </div>
-        
+           View Change Log           
+          </div>        
         </div>
-   
       </MenuItem>
-
+       ) : (
+          <div></div>
+          )} 
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"

@@ -25,7 +25,7 @@ import { CreateTempelateCase } from "./CreateTemplateCase";
 
 
 var re = /[\/]/;
-const userId = localStorage.getItem('User Id')
+const username = localStorage.getItem('username')
 
 const applyValidation = (arrayOfObj: any) => {
   var initialValuesArrayRequiredField: any = [];
@@ -665,7 +665,7 @@ const CreateTemplate = (props: any) => {
         },
         body: JSON.stringify(body),
       };
-      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/${userId}/KeyValue`;
+      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
       fetch(url, requestOptions)
         .then((response: any) => {
           if (response.ok) {

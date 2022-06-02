@@ -612,6 +612,7 @@ const ConfigurationTemplates: React.FC = () => {
             id="unitConfifTemplateDataTable"
             actionComponent={<ConfigTemplateActionMenu
               row={selectedActionRow}
+              selectedItems={selectedItems}
             />}
             toolBarButton={
              
