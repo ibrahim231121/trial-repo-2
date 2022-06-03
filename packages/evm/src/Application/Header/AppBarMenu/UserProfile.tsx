@@ -15,12 +15,13 @@ const CRXUserProfile = () => {
         {
             label : 'Logout',
             router : "Logout",
-            onClick:()=>logOut
+            onClick:logOut
         },
     ];
 
 function logOut(){
     logOutUser(()=>{
+
         history.push('/logout')
       })
 }

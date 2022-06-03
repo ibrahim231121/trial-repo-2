@@ -13,6 +13,8 @@ import  Dialogbox  from "./Dialogbox";
 import { deletetemplate } from "../../../../Redux/TemplateConfiguration";
 import "./ConfigTemplateActionMenu.scss";
 import { useHistory } from "react-router";
+import Restricted from "../../../../ApplicationPermission/Restricted";
+
 type Props = {
   selectedItems?: any;
   row?: any;
@@ -64,7 +66,6 @@ const ViewLog = () => {
 
 
  async function Onconfirm(){
-  console.log("I am called")
   dispatch(await deletetemplate(row))
   setnondefault(false);
 
@@ -90,6 +91,7 @@ const ViewLog = () => {
     
     >
     <MenuItem >
+    <Restricted moduleId={24}>
         <div className="crx-meu-content   crx-spac"  >
           <div className="crx-menu-icon">
           <i className="far fa-pencil"></i>
@@ -98,6 +100,7 @@ const ViewLog = () => {
             Edit template
           </div>
         </div>
+        </Restricted>
       </MenuItem>
       <MenuItem >
         <div className="crx-meu-content groupingMenu crx-spac"  >
@@ -110,6 +113,7 @@ const ViewLog = () => {
         </div>
       </MenuItem>
       <MenuItem >
+      <Restricted moduleId={25}>
         <div className="crx-meu-content  crx-spac" onClick={Deleteconfirm} >
           <div className="crx-menu-icon">
             <i className="far fa-trash-alt"></i>
@@ -118,6 +122,7 @@ const ViewLog = () => {
            Delete template
           </div>
         </div>
+        </Restricted>
       </MenuItem>
       {selectedItems.length <=1 ? (
       <MenuItem >

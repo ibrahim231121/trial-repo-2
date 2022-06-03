@@ -37,6 +37,8 @@ type StationFormType = {
   RetentionPolicy?: AutoCompleteOptionType;
   UploadPolicy?: AutoCompleteOptionType;
   BlackboxRetentionPolicy?: AutoCompleteOptionType;
+  SSId?:string;
+  Password?:string;
 };
 
 const StationDetail: React.FC = () => {
@@ -87,7 +89,9 @@ const StationDetail: React.FC = () => {
     BlackboxRetentionPolicy: {
       id: "",
       label:""
-    }
+    },
+    SSId: "",
+    Password: ""
   };
   interface IlatLong {
     lat: number;
@@ -128,12 +132,14 @@ const StationDetail: React.FC = () => {
 
   React.useEffect(() => {
     if (!isAddCase) {
+      
       const url = `${STATION}/${id}`;
       stationService(url, "GET")
         .then((res) => {
           if (res.ok) return res.json();
         })
         .then((station) => {
+
           const _station: StationFormType = {
             Name: station.name,
             StreetAddress: station.address.street,
@@ -151,7 +157,9 @@ const StationDetail: React.FC = () => {
             },
             BlackboxRetentionPolicy : {
               id : station.policies[0].blackboxRetentionPolicyId,
-            }
+            },
+            SSId:  station.ssid,
+            Password:  station.password,
           };
           setRetentionAutoCompleteValue([{id : station.policies[0].retentionPolicyId}])
           setUploadAutoCompleteValue([{id:station.policies[0].uploadPolicyId}])
@@ -261,6 +269,18 @@ const StationDetail: React.FC = () => {
           setErrorResponseMessage(error.errors['Address.State'][0]);
           setError(true);
         }
+        if (
+          error.errors.SSId !== undefined
+        ) {
+          setErrorResponseMessage(error.errors.SSId[0]);
+          setError(true);
+        }
+        if (
+          error.errors.Password !== undefined
+        ) {
+          setErrorResponseMessage(error.errors.Password[0]);
+          setError(true);
+        }
       } else if (!isNaN(+error)) {
       } else if (error) {
         setError(true);
@@ -298,6 +318,8 @@ const StationDetail: React.FC = () => {
         }
       ],
       passcode: values.Passcode,
+      SSId: values.SSId,
+      password: values.Password,
     };
 
     if (isAddCase) {
@@ -349,14 +371,26 @@ const StationDetail: React.FC = () => {
   const stationValidationSchema = Yup.object().shape({
     
     Name: Yup.string().required("Station Name is required"),
-    //Passcode: Yup.string().required("Pass Code is required"),
     Passcode: Yup.string()
     .test(
       'len',
-      'Minimum 5 and maximum 64 characters are allowed in Passcode field.',
+      'Minimum 5 characters are allowed.',
       (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64) )
       ) 
-      .trim().matches(regex, 'Only alphabets and digits are allowed.').required("Pass Code is required")
+      .trim().matches(regex, 'Only alphabets and digits are allowed.').required("Pass Code is required"),
+    SSId: Yup.string().test(
+      'len',
+      'Minimum 5 characters are allowed.',
+      (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64) )
+      )
+      .trim().matches(regex, 'Only alphabets and digits are allowed.') .notRequired(),
+    Password: Yup.string().test(
+      'len',
+      'Minimum 5 characters are allowed.',
+      (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64) )
+      )
+      .trim().matches(regex, 'Only alphabets and digits are allowed.') .notRequired(),
+    //RetentionPolicy: Yup.string().required("Retention policy is required"),
   });
 
   return (
@@ -676,6 +710,76 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
+                            </div>
+                          </div>
+                        </CRXColumn>
+                      </CRXRows>
+                    </div>
+                    <div className="stationColumnSet">
+                      <CRXRows
+                        className="crxStationDetail"
+                        container="container"
+                        spacing={0}
+                      >
+                        <CRXColumn
+                          className={
+                            "stationDetailCol " +
+                            ` ${errors.SSId && touched.SSId == true
+                              ? displayStationErrors
+                              : ""
+                            }`
+                          }
+                          container="container"
+                          item="item"
+                          lg={10}
+                          xs={10}
+                          spacing={0}
+                        >
+                          <div className="CBX-input">
+                            <label htmlFor="SSId">
+                              SSID
+                            </label>
+                            <div className="CrxStationError">
+                              <Field id="SSId" name="SSId" />
+                              {errors.SSId !== undefined &&
+                                touched.SSId === true ? (
+                                <div className="errorStationStyle">
+                                  <i className="fas fa-exclamation-circle"></i>
+                                  {errors.SSId}
+                                  {setDisplayStationError("errorBrdr")}
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        </CRXColumn>
+                        <CRXColumn
+                          className={
+                            "stationDetailCol " +
+                            ` ${errors.Password && touched.Password == true
+                              ? displayStationErrors
+                              : ""
+                            }`
+                          }
+                          container="container"
+                          item="item"
+                          lg={10}
+                          xs={10}
+                          spacing={0}
+                        >
+                          <div className="CBX-input">
+                            <label htmlFor="password">
+                              Password
+                            </label>
+                            <div className="CrxStationError">
+                              <Field id="password" name="Password" />
+                              {errors.Password !== undefined &&
+                                touched.Password === true ? (
+                                <div className="errorStationStyle">
+                                  <i className="fas fa-exclamation-circle"></i>
+                                  {errors.Password}
+                                  {setDisplayStationError("errorBrdr")}
+                                </div>
+                              ) : null}
                             </div>
                           </div>
                         </CRXColumn>

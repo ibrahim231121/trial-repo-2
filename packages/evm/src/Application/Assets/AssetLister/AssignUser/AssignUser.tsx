@@ -58,6 +58,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       })
       .then(function (res) {
         if (res.ok) {
+          setTimeout(() => {  dispatch(getAssetSearchInfoAsync("")) }, 1000);
           props.setOnClose();
         } 
         else if (res.status == 500) {

@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { DEVICETYPE_GET_URL, TEMPLATE_CONFIGURATION_GET_URL, TEMPLATE_CONFIGURATION_LOG_GET_URL } from '../utils/Api/url'
 import { TEMPLATE_CONFIGURATION_DELETE_URL } from '../utils/Api/url'
+import Cookies from 'universal-cookie';
 
-
-
+const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
     'GetAllConfiguration',
     async () => {
         const requestOptions = {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
+            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
         };
 
         const resp = await fetch(TEMPLATE_CONFIGURATION_GET_URL, requestOptions);
@@ -59,11 +59,10 @@ export const getDeviceTypeInfoAsync: any = createAsyncThunk(
 export const deletetemplate: any = createAsyncThunk(
     'Delete',
     async (args: any) => {
-
         const requestOptions = {
             method: 'Delete',
             headers: {
-                'Content-Type': 'application/json', 'TenantId': '1'
+                'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}`
             },
         };
         const resp = await fetch(TEMPLATE_CONFIGURATION_DELETE_URL + args.id, requestOptions);

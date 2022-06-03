@@ -203,7 +203,7 @@ const CRXLefNavigation = () => {
 
         },
         {
-          moduleIds: 0,
+          moduleIds: 22,
           label: 'Manage Device & Unit Templates',
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) },
         },

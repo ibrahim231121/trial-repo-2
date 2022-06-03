@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { CRXDataTable, CRXMenu } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
@@ -40,6 +40,7 @@ import {
 import { CRXGlobalSelectFilter } from "@cb/shared";
 import { PausePresentation } from "@material-ui/icons";
 import { classicNameResolver } from "typescript";
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 
 type ConfigTemplate = {
   id: number;
@@ -89,7 +90,7 @@ const configTemplate = (name: string, device: any) => {
         children={name}
         key={device.recId}
         to={{
-          pathname: "/admin/unitanddevices/createtemplate/template",
+          pathname: urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url,
           state: {
             id: device.recId,
             name: name,
@@ -107,7 +108,8 @@ const ConfigurationTemplates: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let history = useHistory();
-
+  const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+  console.log("Module Ids", getModuleIds())
   React.useEffect(() => {
     dispatch(getConfigurationInfoAsync());
     dispatch(getDeviceTypeInfoAsync());
@@ -499,7 +501,8 @@ const ConfigurationTemplates: React.FC = () => {
       label: `${t("Name")}`,
       id: "name",
       align: "left",
-      dataComponent: configTemplate,
+      //dataComponent: configTemplate,
+      dataComponent: getModuleIds().includes(24) ? configTemplate: textDisplay,
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -633,7 +636,7 @@ const ConfigurationTemplates: React.FC = () => {
                   {createTemplateDropdown.map((x, y) => {
                     return (
                       <MenuItem >
-                        <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
+                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
                           <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
                         </Link>
                       </MenuItem>

@@ -21,7 +21,9 @@ import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies();
 
 
 var re = /[\/]/;
@@ -625,6 +627,7 @@ const CreateTemplate = (props: any) => {
         headers: {
           "Content-Type": "application/json",
           TenantId: "1",
+          'Authorization': `Bearer ${cookies.get('access_token')}`
         },
         body: JSON.stringify(body),
       };
@@ -662,6 +665,7 @@ const CreateTemplate = (props: any) => {
         headers: {
           "Content-Type": "application/json",
           TenantId: "1",
+          'Authorization': `Bearer ${cookies.get('access_token')}`
         },
         body: JSON.stringify(body),
       };

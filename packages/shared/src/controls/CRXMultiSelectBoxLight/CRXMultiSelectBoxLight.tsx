@@ -256,8 +256,6 @@ const CRXMultiSelectBoxLight = ({
           </Typography>
         </>
       }
-      {console.log("inter change :", value)}
-      {console.log("inter change id:", id)}
       <Autocomplete
         defaultValue={defaultValue}
         autoComplete={autoComplete}
