@@ -69,14 +69,15 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const [retentionOpt, setRetentionOpt] = React.useState<Retentionmodel[]>(retentionRadio)
 
   React.useEffect(() => {
-    if (retentionList.length > 1) {
+    debugger;
+    if (retentionList.length > 0) {
       sendData();
     }
-
+    console.log('Curr_Retention',currentRetention);
   }, [retentionList]);
 
   React.useEffect(() => {
-    if (props.items.length == 1)
+    if (props.items.length <= 1)
       getRetentionData();
 
   }, []);
@@ -96,9 +97,18 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     })
     var response = await res.json();
     if (response != null) {
-      setOriginalRetention(response.retainUntil);
+      setOriginalRetention(moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
       if (response.extendedRetainUntil != null) {
-        setCurrentRetention(response.extendedRetainUntil);
+        debugger;
+        console.log('curr_ret_moment ',moment(response.extendedRetainUntil).format('DD-MM-YYYY'));
+        if(moment(response.extendedRetainUntil).format('DD-MM-YYYY') == "31-12-9999")
+        {
+          setCurrentRetention("Indefinite");
+        }
+        else
+        {
+        setCurrentRetention(moment(response.extendedRetainUntil).format('DD-MM-YYYY HH:MM:ss'));
+        }
         setRetentionOpt((prev: any) => [...prev, { value: "3", label: "Revert to original retention", Comp: () => { } }])
       }
 
@@ -110,24 +120,35 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
     if (props.filterValue?.length !== 0) {
     }
+    debugger;
     var sdaasd = [...retentionList];
-
-    props.items.forEach((el) => {
+    if (props.items.length > 1) {
+      props.items.forEach((el) => {
+        var evidenceData: evidenceModel = {
+          Id: el.evidence.id,
+          ExtendedDays: retentionDays
+        }
+        sdaasd.push(evidenceData)
+      })
+    }
+    else
+    {
       var evidenceData: evidenceModel = {
-        Id: el.evidence.id,
+        Id: props.rowData.id,
         ExtendedDays: retentionDays
       }
       sdaasd.push(evidenceData)
-    })
+    }
     setRetentionList(sdaasd)
 
 
   };
   const sendData = async () => {
+    debugger;
     const url = EVIDENCE_SERVICE_URL + '/Evidences/Retention/' + `${retention}`
     await fetch(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
       body: JSON.stringify(retentionList)
     })
       .then(function (res) {
@@ -153,7 +174,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           {() => (
             <Form>
               <div >
-                <div>Extend {props.items.length} Assets</div>
+                <div>Extend {props.items.length > 1 ? props.items.length : 1} Assets</div>
                 <CRXRadio
                   className='crxEditRadioBtn'
                   disableRipple={true}

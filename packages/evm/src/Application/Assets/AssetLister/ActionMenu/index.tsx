@@ -187,7 +187,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
       >
         <MenuItem>
           <Restricted moduleId={0}>
-            {/* <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}> */}
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div
                 className="crx-meu-content groupingMenu crx-spac"
                 onClick={addToAssetBucket}
@@ -203,7 +203,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
                   Add to asset bucket
                 </div>
               </div>
-            {/* </SecurityDescriptor> */}
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
@@ -220,14 +220,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
         <MenuItem>
           <Restricted moduleId={21}>
-            {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Assign User</div>
               </div>
-            {/* </SecurityDescriptor> */}
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
@@ -246,47 +246,47 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
         {isCategoryEmpty === false ? (
           <MenuItem>
             <Restricted moduleId={3}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">Edit Category and Form</div>
                 </div>
-              </SecurityDescriptor>
+                </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : (
           <MenuItem>
             <Restricted moduleId={2}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">Categorize</div>
                 </div>
-              </SecurityDescriptor>
+                </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         )}
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-envelope fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Email</div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
@@ -298,20 +298,20 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
                   </SubMenu>
                 </div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-link fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Link asset</div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
@@ -330,39 +330,39 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-external-link-square fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Move asset</div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
         <MenuItem disabled>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
                   Move to this group
                 </div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+          <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content crx-spac">
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Restrict access</div>
               </div>
-            </SecurityDescriptor>
+              </SecurityDescriptor>
           </Restricted>
         </MenuItem>
       </Menu>
