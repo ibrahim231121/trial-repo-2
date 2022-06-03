@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState, useEffect } from "react";
 import { InputBase, Select, MenuItem } from "@material-ui/core";
 import { withStyles} from "@material-ui/core/styles";
 import "./SelectBox.scss";
@@ -11,6 +11,7 @@ type SelectBoxProps = {
   className?: string;
   onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
   onClick?: (e: React.MouseEventHandler<HTMLAnchorElement>) => void;
+  onClose?: any;
   IconName?: React.ReactElement<any>;
   icon?: boolean;
   options: Object[];
@@ -19,7 +20,11 @@ type SelectBoxProps = {
   defaultOptionText: string;
   ref?: any;
   IconComponent?: any;
-  disabled:boolean
+  disabled:boolean,
+  isRequried? : boolean,
+  errorMsg? : string,
+  error? : boolean
+
 };
 
 //Style For Select Menu Paper
@@ -75,9 +80,15 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       options,
       defaultOption = true,
       defaultOptionText,
+      isRequried,
+      errorMsg,
+      onClose,
+      error,
       disabled=false,},
     ref
   ) => {
+    const [errMsg, setErrorMsg] = useState<string | undefined>();
+   const errorMessage = (!error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errMsg}</span> </div>)
     const option = Object.assign(options).map((data: any, i: number) => {
       return (
         <StyledMenuItem aria-label="None" key={i} value={data.value}>
@@ -85,6 +96,12 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         </StyledMenuItem>
       );
     });
+
+    useEffect(() => {
+
+      setErrorMsg(errorMsg)
+
+    },[errorMsg])
 
     return (
       
@@ -99,7 +116,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
           </i>)}
         className={"CRXSimpleSelect " + className}
         value={value}
-        //renderValue={(value : any) => <div>{value}</div>}
+        onClose={onClose}
         displayEmpty={true}
         defaultValue={defaultOptionText}
         onChange={onChange}
@@ -131,6 +148,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         )}
         {option}
       </Select>
+      {isRequried && <div>{errorMessage}</div>}
       </>
     );
   }

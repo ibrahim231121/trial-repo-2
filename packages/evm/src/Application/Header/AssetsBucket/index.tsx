@@ -766,18 +766,6 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
   })
 
   const [activeScreen, setActiveScreen] = useState<number>(0);
-  const onSaveOrNextClickHandler = () => {
-    if (activeScreen == 1) {
-      // Screen is on Category,
-      if (isNext === false) {
-        // If Form is no Category attached, 
-      } else {
-        // If Form is attached to Category,
-      }
-      return;
-    }
-    setActiveScreen((prev: number) => prev + 1);
-  }
   const checkBoxRef = useRef(null)
   const selectAssetFromList = (e: any, row:assetRow) => {
     setSelectedActionRow(row)
@@ -896,7 +884,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                           showSticky={false}
                           modelOpen={isModalOpen}
                           onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-                          onSave={onSaveOrNextClickHandler}
+                          
                         >
                           <AddMetadataForm
                             setCloseWithConfirm={setCloseWithConfirm}
@@ -905,6 +893,7 @@ const CRXAssetsBucketPanel = ({isOpenBucket} : isBucket) => {
                             setAddEvidence = {setonAddEvidence}
                             uploadAssetBucket={assetBucketData}
                             activeScreen={activeScreen}
+                            setActiveScreen={setActiveScreen}
                           />
                         </CRXModalDialog>
                       </CRXRows>

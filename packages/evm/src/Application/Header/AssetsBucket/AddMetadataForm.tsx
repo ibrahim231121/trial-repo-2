@@ -20,6 +20,7 @@ interface Props {
   uploadAssetBucket: any;
   activeScreen: number;
   setAddEvidence: any;
+  setActiveScreen: (param: number) => void;
 }
 
 type NameAndValue = {
@@ -120,6 +121,7 @@ const AddMetadataForm: React.FC<Props> = ({
   uploadFile,
   uploadAssetBucket,
   activeScreen,
+  setActiveScreen,
 }) => {
   const [formpayload, setFormPayload] = React.useState<addMetadata>({
     station: "",
@@ -128,12 +130,23 @@ const AddMetadataForm: React.FC<Props> = ({
     category: [],
   });
 
+  const [formpayloadErr, setformpayloadErr] = React.useState({
+    masterAssetErr: "",
+    stationErr: "",
+    ownerErr: "",
+  });
+
   const [optionList, setOptionList] = useState<any>([]);
   const [userOption, setUserOption] = useState<any>([]);
   const [categoryOption, setCategoryOption] = useState<any>([]);
   const [masterAssetOption, setMasterAssetOption] = useState<any>([]);
   const [isNext, setNextButton] = useState<boolean>(false);
   const [stationDisable, setStationDisable] = useState<boolean>(false);
+  const [isDisable, setIsDisable] = useState<boolean>(false);
+  const [meteDataErrMsg, setMetaDataErrMsg] = useState({
+    required: "",
+  });
+
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
@@ -169,6 +182,16 @@ const AddMetadataForm: React.FC<Props> = ({
           setNextButton(true);
         }
       });
+    }
+
+    if (
+      !formpayload.masterAsset ||
+      !formpayload.station ||
+      formpayload.owner.length == 0
+    ) {
+      setIsDisable(true);
+    } else {
+      setIsDisable(false);
     }
   }, [formpayload]);
 
@@ -231,14 +254,22 @@ const AddMetadataForm: React.FC<Props> = ({
         owner: ownerDateOfArry,
       });
       setStationDisable(true);
+      setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
     } else if (checkSubmitType.length == 0) {
       setStationDisable(false);
       setFormPayload({ ...formpayload, category: [], station: "", owner: [] });
     }
   }, [formpayload.masterAsset]);
 
-  let displayIdIndex = uploadFile[0].uploadedFileName.lastIndexOf(".");
-  let displayText = uploadFile[0].uploadedFileName.substring(0, displayIdIndex);
+  let displayText: any = "";
+  if (uploadFile.length != 0) {
+    let displayIdIndex = uploadFile[0].uploadedFileName.lastIndexOf(".");
+    displayText = uploadFile[0].uploadedFileName.substring(
+      0,
+      uploadFile[0].uploadedFileName.lastIndexOf(".")
+    );
+  }
+
   useEffect(() => {
     setFormPayload({ ...formpayload, masterAsset: displayText });
   }, [uploadFile]);
@@ -336,6 +367,17 @@ const AddMetadataForm: React.FC<Props> = ({
     return setCategoryOption(dateOfArry);
   };
 
+  const checkOwners = () => {
+    if (!formpayload.owner || formpayload.owner.length === 0) {
+      setformpayloadErr({
+        ...formpayloadErr,
+        ownerErr: "owner(s) are required",
+      });
+    } else {
+      setformpayloadErr({ ...formpayloadErr, ownerErr: "" });
+    }
+  };
+
   const checkAssetType = (assetType: string) => {
     var answer: string = "";
     switch (assetType) {
@@ -417,22 +459,28 @@ const AddMetadataForm: React.FC<Props> = ({
       default:
         answer = "Others";
     }
-    return answer
+    return answer;
   };
   const currentStartDate = () => {
     var currentDate = new Date();
     var mm = "" + (currentDate.getMonth() + 1);
     var dd = "" + currentDate.getDate();
     var yyyy = currentDate.getFullYear();
+    var hh = currentDate.getHours().toString();
+    var m = currentDate.getMinutes().toString();
+    var ss = currentDate.getSeconds().toString();
 
     if (mm.length < 2) mm = "0" + mm;
     if (dd.length < 2) dd = "0" + dd;
-    return [yyyy, mm, dd].join("-") + "T00:00:00" + ".537Z";
+    if (hh.length < 2) hh = "0" + hh;
+    if (m.length < 2) m = "0" + m;
+    if (ss.length < 2) ss = "0" + ss;
+    return [yyyy, mm, dd].join("-") + "T" + hh + ":" + m + ":" + ss + ".537Z";
   };
 
-const insertCategory = (payloadCategory: any) => {
-  const categoryArrayIndex = new Array();
-  payloadCategory.forEach((catIndexs: any, i: any) => {
+  const insertCategory = (payloadCategory: any) => {
+    const categoryArrayIndex = new Array();
+    payloadCategory.forEach((catIndexs: any, i: any) => {
       if (catIndexs.form.length != 0) {
         catIndexs.form.forEach((formIndex: any) =>
           formIndex.fields.forEach((index: any) => {
@@ -441,8 +489,8 @@ const insertCategory = (payloadCategory: any) => {
               fields: [
                 {
                   fieldId: index.id,
-                  key: "Button",
-                  value: index.name,
+                  key: index.name,
+                  value: "",
                   datatype: index.type,
                   version: "",
                 },
@@ -456,14 +504,88 @@ const insertCategory = (payloadCategory: any) => {
         categoryArrayIndex[i] = { id: catIndexs.id, formData: [] };
       }
     });
-    return categoryArrayIndex
-    
-}
+    return categoryArrayIndex;
+  };
 
+  const [duration, setDuration] = useState<any>();
+
+  const getDecimalPart = (num: any) => {
+    return num % 1;
+  };
+
+  const recordingEnded = () => {
+    let displayText = formpayload.masterAsset.substring(
+      0,
+      formpayload.masterAsset.lastIndexOf("_")
+    );
+    const filterObject = uploadFile.find(
+      (x: any) => x.name.substring(0, x.name.lastIndexOf(".")) === displayText
+    );
+    var hh = 0;
+    var mm = 0;
+    var ss = 0;
+
+    if (filterObject != undefined) {
+      const fileNameExtension = filterObject.name.substring(
+        filterObject.name.lastIndexOf("."),
+        filterObject.name.length
+      );
+      if (
+        fileNameExtension === ".mp4" ||
+        fileNameExtension === ".mp3" ||
+        fileNameExtension === "avi" ||
+        fileNameExtension === "mkv"
+      ) {
+        var myVideos: any = [];
+        myVideos.push(filterObject);
+        var video = document.createElement("video");
+        video.preload = "metadata";
+        video.src = URL.createObjectURL(filterObject);
+        video.onloadedmetadata = function () {
+          window.URL.revokeObjectURL(video.src);
+          var duration = video.duration;
+          myVideos[myVideos.length - 1].duration = duration;
+          setDuration(duration);
+        };
+      } else {
+        return currentStartDate();
+      }
+    }
+
+    const hours = duration / 3600;
+    hh = Math.trunc(hours);
+    const minutes = getDecimalPart(hours) * 60;
+    mm = Math.trunc(minutes);
+    const seconds = getDecimalPart(minutes) * 60;
+    ss = Math.trunc(seconds);
+    var today = new Date();
+    today.setHours(today.getHours() + hh);
+    today.setMinutes(today.getMinutes() + mm);
+    today.setSeconds(today.getSeconds() + ss);
+    var m = "" + (today.getMonth() + 1);
+    var dd = "" + today.getDate();
+    var yyyy = today.getFullYear();
+    var currentHour = today.getHours().toString();
+    var currentMinute = today.getMinutes().toString();
+    var currentSecond = today.getSeconds().toString();
+    if (currentHour.length < 2) currentHour = "0" + currentHour;
+    if (currentMinute.length < 2) currentMinute = "0" + currentMinute;
+    if (currentSecond.length < 2) currentSecond = "0" + currentSecond;
+    return (
+      [yyyy, m, dd].join("-") +
+      "T" +
+      currentHour +
+      ":" +
+      currentMinute +
+      ":" +
+      currentSecond +
+      ".537Z"
+    );
+  };
 
   const onAddMetaData = () => {
     const categories = insertCategory(formpayload.category);
-     
+
     const uploadedFile = uploadFile.map((index: any) => {
       let masterAssetValueIndex = index.uploadedFileName.lastIndexOf(".");
       let name = index.uploadedFileName;
@@ -483,7 +605,7 @@ const insertCategory = (payloadCategory: any) => {
         duration: 0,
         recording: {
           started: currentStartDate(),
-          ended: currentStartDate(),
+          ended: recordingEnded(),
         },
         buffering: {
           pre: 20,
@@ -514,7 +636,7 @@ const insertCategory = (payloadCategory: any) => {
         duration: 10,
         recording: {
           started: currentStartDate(),
-          ended: currentStartDate(),
+          ended: recordingEnded(),
         },
         sequence: 0,
         checksum: {
@@ -542,7 +664,7 @@ const insertCategory = (payloadCategory: any) => {
         duration: asset.duration,
         recording: {
           started: currentStartDate(),
-          ended: currentStartDate(),
+          ended: recordingEnded(),
         },
         buffering: {
           pre: asset.buffering.pre,
@@ -575,7 +697,7 @@ const insertCategory = (payloadCategory: any) => {
         duration: childAsset.duration,
         recording: {
           started: currentStartDate(),
-          ended: currentStartDate(),
+          ended: recordingEnded(),
         },
         buffering: {
           pre: childAsset.buffering.pre,
@@ -612,7 +734,6 @@ const insertCategory = (payloadCategory: any) => {
       version: "",
     };
   };
-
 
   const onAdd = async () => {
     const payload = onAddMetaData();
@@ -661,8 +782,10 @@ const insertCategory = (payloadCategory: any) => {
 
     //category that are recently added
     let formpayloadCategory: any = [];
+    let formpayloadCategoryId: any = [];
     formpayload.category.forEach((x: any) => {
       formpayloadCategory.push(x.label);
+      formpayloadCategoryId.push(x.id);
     });
 
     const categoriesPayload: any = [];
@@ -673,6 +796,19 @@ const insertCategory = (payloadCategory: any) => {
       b.forEach((index: any) => {
         if (index == x.label) {
           categoriesPayload.push(x);
+        }
+      });
+    });
+
+    const categoriesId: any = [];
+    const c = categoryDataArray.filter(
+      (element: any) => !formpayloadCategory.includes(element)
+    );
+
+    categoryOption.forEach((x: any) => {
+      c.forEach((index: any) => {
+        if (index == x.label) {
+          categoriesId.push(x.id);
         }
       });
     });
@@ -701,7 +837,7 @@ const insertCategory = (payloadCategory: any) => {
         duration: index.evidence.masterAsset.duration,
         recording: {
           started: currentStartDate(),
-          ended: currentStartDate(),
+          ended: recordingEnded(),
         },
         buffering: {
           pre: index.evidence.masterAsset.preBuffer,
@@ -736,7 +872,7 @@ const insertCategory = (payloadCategory: any) => {
           duration: i.duration,
           recording: {
             started: currentStartDate(),
-            ended: currentStartDate(),
+            ended: recordingEnded(),
           },
           buffering: {
             pre: i.preBuffer,
@@ -819,7 +955,7 @@ const insertCategory = (payloadCategory: any) => {
       });
     });
 
-   const categories =  insertCategory(prevCategoriesPayloads)
+    const categories = insertCategory(prevCategoriesPayloads);
 
     // formatted data for posting the recently added category
     let formCategory: any = {};
@@ -878,9 +1014,10 @@ const insertCategory = (payloadCategory: any) => {
       tag: "Crime Scene",
       version: "",
     };
-    return [payload, uploadedFile, owners, formCategory];
+    return [payload, uploadedFile, owners, formCategory, categoriesId];
   };
 
+  
   const onEdit = async (ids: any, assetId: any) => {
     let payload = setEditPayload();
     let urlEdit = EVIDENCE_ASSET_DATA_URL + "/" + ids + "/Assets/AddBulkAsset";
@@ -910,6 +1047,24 @@ const insertCategory = (payloadCategory: any) => {
           });
         }
 
+        if (payload[4].length != 0) {
+          payload[4].forEach((x: any) => {
+            let urlDeleteCategories =
+              EVIDENCE_ASSET_DATA_URL + "/" + ids + "/Categories" + "/" + +x;
+
+            fetch(urlDeleteCategories, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                TenantId: "1",
+                Authorization: `Bearer ${cookies.get("access_token")}`,
+              },
+            }).then(function (res) {
+              return res.status;
+            });
+          });
+        }
+
         let urlUpdate = EVIDENCE_ASSET_DATA_URL + "/" + ids;
         fetch(urlUpdate, {
           method: "PUT",
@@ -933,7 +1088,6 @@ const insertCategory = (payloadCategory: any) => {
   const onSubmit = async (e: any) => {
     var ids: number = 0;
     var assetId: number = 0;
-    debugger;
     let checkSubmitType: any = uploadAssetBucket
       .filter(
         (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
@@ -958,6 +1112,17 @@ const insertCategory = (payloadCategory: any) => {
     event.isDefaultPrevented();
     setFormPayload({ ...formpayload, category: value });
     setNextButton(true);
+  };
+
+  const stationSelectClose = (e: any) => {
+    if (e.target.value == undefined || e.target.value != 0) {
+      setMetaDataErrMsg({
+        ...meteDataErrMsg,
+        required: "This field is required!",
+      });
+    } else {
+      setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
+    }
   };
 
   const handleActiveScreen = (activeScreen: number) => {
@@ -1016,9 +1181,13 @@ const insertCategory = (payloadCategory: any) => {
                   id={"select_" + "selectBox"}
                   value={formpayload.station === "" ? "" : formpayload.station}
                   disabled={stationDisable ? true : false}
-                  onChange={(e: any) =>
-                    setFormPayload({ ...formpayload, station: e.target.value })
-                  }
+                  onChange={(e: any) => {
+                    setFormPayload({ ...formpayload, station: e.target.value });
+                  }}
+                  onClose={(e: any) => stationSelectClose(e)}
+                  isRequried={true}
+                  error={meteDataErrMsg.required == "" ? true : false}
+                  errorMsg={meteDataErrMsg.required}
                   defaultOptionText=""
                   options={optionList}
                   defaultValue=""
@@ -1037,6 +1206,9 @@ const insertCategory = (payloadCategory: any) => {
                 value={formpayload.owner}
                 autoComplete={false}
                 isSearchable={true}
+                error={!!formpayloadErr.ownerErr}
+                errorMsg={formpayloadErr.ownerErr}
+                onBlur={checkOwners}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   setFormPayload({ ...formpayload, owner: value });
                 }}
@@ -1076,16 +1248,25 @@ const insertCategory = (payloadCategory: any) => {
         );
     }
   };
+
+  const nextBtnHandler = () => {
+    setActiveScreen(activeScreen + 1);
+    setNextButton(false);
+  };
   return (
     <div className="metaData-Station-Parent">
       {handleActiveScreen(activeScreen)}
       <div className="crxFooterEditFormBtn">
         {!isNext ? (
-          <CRXButton className="primary" onClick={onSubmit}>
+          <CRXButton
+            className="primary"
+            disabled={isDisable}
+            onClick={onSubmit}
+          >
             Save
           </CRXButton>
         ) : (
-          <CRXButton className="primary" onClick={onSubmit}>
+          <CRXButton className="primary"  disabled={isDisable} onClick={nextBtnHandler}>
             Next
           </CRXButton>
         )}
