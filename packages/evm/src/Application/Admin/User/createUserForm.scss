@@ -469,6 +469,13 @@
     bottom: 55px !important;
     position: fixed !important;
     border: none !important;
+
+    .groupInfoTabButtons-Close {
+      min-width: 80px !important;
+      height: 30px;
+      margin-right: 0px;
+      margin-left: 900px;
+    }
     &::before {
       position: absolute;
       content: "";

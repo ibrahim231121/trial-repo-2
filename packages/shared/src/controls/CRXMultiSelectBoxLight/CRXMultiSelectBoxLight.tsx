@@ -169,6 +169,7 @@ interface multiSelectProps {
   required?: boolean,
   errorMsg?: string,
   label?: string,
+  disabled?: boolean;
 
 }
 
@@ -187,6 +188,7 @@ const CRXMultiSelectBoxLight = ({
   error,
   required,
   errorMsg,
+  disabled
 }: multiSelectProps) => {
 
   const classes = useSelectBoxStyle();
@@ -272,6 +274,7 @@ const CRXMultiSelectBoxLight = ({
         multiple={multiple}
         id={id}
         value={value}
+ disabled = {disabled}
         inputValue = {getSaveValue}
         onChange={onChange}
         options={options}

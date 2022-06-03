@@ -104,6 +104,7 @@ const CreateUserForm = () => {
   const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
+  const [isADUser , setIsADUser] = useState<boolean>(false);
   const {getModuleIds} = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
   const userFormMessages = (obj: any) => {
@@ -115,7 +116,7 @@ const CreateUserForm = () => {
       });
   }
   React.useEffect(() => {
-    if (id) fetchUser();
+    if (id) {fetchUser();}
   }, [id]);
 
  
@@ -127,7 +128,8 @@ const CreateUserForm = () => {
         account: { userName,password },
         contacts,
         userGroups,
-        deactivationDate
+        deactivationDate,
+        isADUser
       } = userPayload;
 
       const phoneNumber =
@@ -136,6 +138,14 @@ const CreateUserForm = () => {
           : '';
 
       const userGroupNames = userGroups?.map((x: any) => x.groupName);
+
+if(isADUser){
+  setIsADUser(true)
+
+}
+else{
+  setIsADUser(false)
+}
 
       USER_DATA = {
         userName,
@@ -290,6 +300,7 @@ const CreateUserForm = () => {
     {
       moduleIds: 11,
       label: ActivationLinkLabel,
+      isDisabled : {isADUser},
       // label: "Send Activation Link",
       value: 'sendAct',
       Comp: () => sendActivationLink()
@@ -297,12 +308,14 @@ const CreateUserForm = () => {
     {
       moduleIds: 0,
       label: "Generate Temporary Password",
+      isDisabled : {isADUser},
       value: "genTemp",
       Comp: () => generateTempPassComp(),
     },
     {
       moduleIds: 0,
       label: "Manually Set Password",
+      isDisabled : {isADUser},
       value: "manual",
       Comp: () => manuallyGeneratePass(),
     },
@@ -912,6 +925,13 @@ useEffect(() => {
     }
   }, [alert]);
 
+  const redirectPage = () => {
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.adminUsers)[0]
+        .url
+    );
+  }
+
   return (
     <div className='createUser CrxCreateUser CreateUserUi '>
       <CRXToaster ref={userMsgFormRef} />
@@ -939,6 +959,7 @@ useEffect(() => {
                 label='Username'
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
+                disabled = {isADUser}
                 // onBlur={(e: any) => {
                 //   !formpayload.userName
                 //     ? setFormPayloadErr({
@@ -987,6 +1008,7 @@ useEffect(() => {
             errorMsg={formpayloadErr.emailErr}
             required={true}
             value={formpayload.email}
+            disabled = {isADUser}
             label='Email'
             className={'users-input ' + isExtEmail}
             onChange={(e: any) => setFormPayload({ ...formpayload, email: e.target.value })}
@@ -1016,7 +1038,7 @@ useEffect(() => {
                 value={formpayload.userGroups}
                 autoComplete={false}
                 isSearchable={true}
-        
+        disabled = {isADUser}
                 onBlur={checkUserGroup}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
                   setFormPayload({ ...formpayload, userGroups: value });
@@ -1059,6 +1081,15 @@ useEffect(() => {
           <Link to={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
              Cancel
           </Link>
+          <CRXButton
+          onClick={() => redirectPage()}
+          className="groupInfoTabButtons-Close secondary"
+          color="secondary"
+          variant="outlined"
+        >
+          Close
+        </CRXButton>
+       
         </div>
       </div>
     </div>

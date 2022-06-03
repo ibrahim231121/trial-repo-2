@@ -46,6 +46,7 @@ type User = {
   status: string;
   lastLogin: string;
   groups: string[];
+  isADUser: boolean;
   showToastMsg?: (obj: any) => void;
 };
 
@@ -108,6 +109,7 @@ const User: React.FC = () => {
                 })
               : [],
           email: user.email,
+          isADUser : user.isADUser,
           status: user.status,
         };
       });
