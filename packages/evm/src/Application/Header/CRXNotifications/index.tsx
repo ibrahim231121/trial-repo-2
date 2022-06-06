@@ -91,51 +91,58 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
       isOpen={isOpen}
       toggleState={toggleOpen}
     >    
-          <label>Notification panel</label>
-          <br/>
-          <div style={{textAlign:"left"}}>
-            <div style={{width:"100%", textAlign:"right"}}>
-              <CRXButton
-                className={"CRXCloseButton"}
-                disableRipple={true}
-                onClick={(e:React.DOMAttributes<HTMLButtonElement>) => clearAllMessage(e,notificationMessage)}
-              >
-                Clear All
-              </CRXButton>
+
+          <div className="notification-panel">
+            <div className="bucketPanelTitle">
+            <label>Notifications</label>
             </div>
-            <div >
-              {reverseArray(notificationMessage).map((x:NotificationMessage) => {
-                return (
-                  <>
-                    <div style={{border: "1px solid black",display:"flex"}}>
-                      <div style={{width:"5%",verticalAlign:"middle"}}>
-                          <span className={"fas " + setIcon[x.type]} />
-                      </div>
-                      <div style={{width:"80%"}}>
-                        <div style={{display:"flex"}}> 
-                          <div style={{width:"30%"}}><b>{x.title}</b></div>
-                          <div style={{width:"70%", textAlign:"right"}}>{x.date}</div>
+            
+            
+              <div className="notification-close-btn" style={{width:"100%", textAlign:"right"}}>
+                <CRXButton
+                  className={"CRXCloseButton"}
+                  disableRipple={true}
+                  onClick={(e:React.DOMAttributes<HTMLButtonElement>) => clearAllMessage(e,notificationMessage)}
+                >
+                  Clear All
+                </CRXButton>
+              </div>
+              <div className="notification-scroll">
+                {reverseArray(notificationMessage).map((x:NotificationMessage) => {
+                  return (
+                    <>
+                    
+                      <div className="uploadContent">
+                          <div className="iconArea">
+                          <span className={"fas " + setIcon[x.type] + " notification_" + x.type} />
+                          </div>
+                          
+                          <div className="textArea">
+                          <div style={{display:"flex"}}> 
+                            <div style={{flex: 6}}><b>{x.title}</b></div>
+                            <div className="notification-date" style={{flex: 6}}>{x.date}</div>
+                              
+                            </div>
+                          <div className="notification-message"></div>
+                            <p>{x.message}</p>
+                          </div>
+                         
+                          <div style={{textAlign:"right",width:"15%"}}>
+                              <CRXButton
+                                className={"notification-cross"}
+                                disableRipple={true}
+                                onClick={(e:React.DOMAttributes<HTMLButtonElement>) => removeMessage(e,x)}
+                              >
+                                <div className="icon icon-cross2"></div>
+                              </CRXButton>
+                            </div>
                         </div>
-                        <div style={{color: "gray"}}>
-                          {x.message}
-                        </div>
-                      </div>
-                      <div style={{textAlign:"right",width:"15%"}}>
-                        <CRXButton
-                          className={"CRXCloseButton"}
-                          disableRipple={true}
-                          onClick={(e:React.DOMAttributes<HTMLButtonElement>) => removeMessage(e,x)}
-                        >
-                          <div className="icon-cross2 detailPopupCloseIcon"></div>
-                        </CRXButton>
-                      </div>
-                      
-                    </div>
-                    <div style={{height:"5px"}}></div>
-                  </>
-                )
-              })}
-            </div>
+
+                    </>
+                  )
+                })}
+              </div>
+            
           </div>
     </CRXDrawer>
   );
