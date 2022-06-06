@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn } from "@cb/shared";
+import React, { useEffect,useRef } from "react";
+import { CRXDataTable,CRXToaster } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -28,7 +28,6 @@ import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
-import { CBXLink } from "@cb/shared";
 import { Link } from "react-router-dom";
 
 type DateTimeProps = {
@@ -546,14 +545,24 @@ const MasterMain: React.FC<Props> = ({
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
-
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const showToastMsg = (obj: any) => {
+    toasterRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  };
   return (
     <>
+     <CRXToaster ref={toasterRef}/>
       {rows && (
+       
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
-            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} />
+            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />
           }
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
           showToolbar={true}

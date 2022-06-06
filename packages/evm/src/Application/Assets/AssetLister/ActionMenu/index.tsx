@@ -21,6 +21,7 @@ import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescri
 type Props = {
   selectedItems?: any;
   row?: any;
+  showToastMsg(obj: any): any;
 };
 
 export interface AssetBucket {
@@ -43,7 +44,7 @@ export type securityDescriptorType = {
   permission: PersmissionModel;
 }
 
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg }) => {
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
   const assetBucketData: AssetBucket[] = useSelector(
@@ -150,6 +151,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
           rowData={row}
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenAssignUser(false)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
+          
         />
       </CRXModalDialog>
       <CRXModalDialog
@@ -169,6 +172,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row }) => {
             rowData={row}
             setRemovedOption={(e: any) => {}}
             setOnClose={() => setOpenManageRetention(false)}
+            showToastMsg={(obj: any) => showToastMsg(obj)}
           />
       </CRXModalDialog>
 

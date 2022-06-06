@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox } from '@cb/shared';
-import { CRXButton } from '@cb/shared';
+import { MultiSelectBoxCategory, CRXCheckBox,CRXButton, CRXAlert } from '@cb/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
+import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
+import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import Cookies from 'universal-cookie';
-import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import moment from 'moment';
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -16,6 +17,7 @@ type AssignUserProps = {
   rowData: any;
   setOnClose: () => void;
   setRemovedOption: (param: any) => void;
+  showToastMsg: (obj: any) => any;
 };
 
 type ownersModel = {
@@ -28,7 +30,10 @@ const cookies = new Cookies();
 const AssignUser: React.FC<AssignUserProps> = (props) => {
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
-  const [assetOwners,setAssetOwners] = React.useState<ownersModel[]>([]);
+  const [assetOwners, setAssetOwners] = React.useState<ownersModel[]>([]);
+  const [responseError, setResponseError] = React.useState<string>('');
+  const [alert, setAlert] = React.useState<boolean>(false);
+  const alertRef = useRef(null);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
@@ -46,26 +51,63 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     {
     sendData();
     }
-      //dispatch(getUsersInfoAsync());
   }, [assetOwners]);
-  const sendData = async () =>{
 
+
+  useEffect(() => {
+
+    if (responseError !== undefined && responseError !== '') {
+      let notificationMessage: NotificationMessage = {
+        title: 'User',
+        message: responseError,
+        type: 'error',
+        date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  }, [responseError]);
+  useEffect(() => {
+    debugger;
+    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
+    const optionalSticky: any = document.getElementsByClassName("optionalSticky");
+    const altRef = alertRef.current;
+
+    if (alert === false && altRef === null) {
+
+      alertClx[0].style.display = "none";
+      //optionalSticky[0].style.height = "79px"
+    } else {
+      alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
+      if (optionalSticky.length > 0) {
+        optionalSticky[0].style.height = "119px"
+      }
+    }
+  }, [alert]);
+
+  const sendData = async () => {
+    debugger;
     const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-        body: JSON.stringify(assetOwners)
-      })
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+      body: JSON.stringify(assetOwners)
+    })
       .then(function (res) {
         if (res.ok) {
           setTimeout(() => {  dispatch(getAssetSearchInfoAsync("")) }, 1000);
           props.setOnClose();
-        } 
+          props.showToastMsg({
+            message: "Asset Assignees updated",
+            variant: "success",
+            duration: 7000,
+            clearButtton: true,
+          });
+        }
         else if (res.status == 500) {
-          // setAlert(true);
-          // setResponseError(
-          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-          // );
+          setAlert(true);
+          setResponseError(
+            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          );
         }
       })
       .catch(function (error) {
@@ -77,20 +119,16 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     let notSame = 0;
     if (props.selectedItems.length > 1) {
       var selectedItemsOwnerList = props.selectedItems.map(x => x.evidence?.masterAsset?.owners);
-      for(var i = 0; i< selectedItemsOwnerList.length-1; i++)
-        {
-            if(JSON.stringify(selectedItemsOwnerList[i]) != JSON.stringify(selectedItemsOwnerList[i+1]))
-            {
-              notSame++;
-            }
+      for (var i = 0; i < selectedItemsOwnerList.length - 1; i++) {
+        if (JSON.stringify(selectedItemsOwnerList[i]) != JSON.stringify(selectedItemsOwnerList[i + 1])) {
+          notSame++;
         }
-        if(notSame == 0)
-        {
-          getMasterAsset();
-        }
+      }
+      if (notSame == 0) {
+        getMasterAsset();
+      }
     }
-    else
-    {
+    else {
       getMasterAsset();
     }
   }
@@ -160,10 +198,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     }
     return false;
   };
-
   const onSubmitForm = async () => {
-    if (props.selectedItems.length > 1) 
-    {
+    setResponseError('');
+    setAlert(false);
+    if (props.selectedItems.length > 1) {
       var tempOwnerList = [...assetOwners];
       props.selectedItems.forEach((el) => {
         var temp: ownersModel = {
@@ -175,34 +213,37 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       })
       setAssetOwners(tempOwnerList);
     }
-    else
-    {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
+    else {
+      const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
 
-    if (props.filterValue?.length !== 0) {
-      //props.setActiveForm((prev: any) => prev + 1);
-    }
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-      body: JSON.stringify(props.filterValue.map(x => x.id))
-    })
-      .then(function (res) {
-        if (res.ok) {
-          setTimeout(() => {  dispatch(getAssetSearchInfoAsync("")) }, 1000);
-          props.setOnClose();
-        } 
-        else if (res.status == 500) 
-        {
-          // setAlert(true);
-          // setResponseError(
-          //   "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-          // );
-        }
+      if (props.filterValue?.length !== 0) {
+        //props.setActiveForm((prev: any) => prev + 1);
+      }
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+        body: JSON.stringify(props.filterValue.map(x => x.id))
       })
-      .catch(function (error) {
-        return error;
-      });
+        .then(function (res) {
+          if (res.ok) {
+            props.setOnClose();
+            props.showToastMsg({
+              message: "Asset Assignees updated",
+              variant: "success",
+              duration: 7000,
+              clearButtton: true,
+            });
+          }
+          else if (res.status == 500) {
+            setAlert(true);
+            setResponseError(
+              "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
+          }
+        })
+        .catch(function (error) {
+          return error;
+        });
     }
   };
 
@@ -218,6 +259,15 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   return (
     <>
+      <CRXAlert
+        ref={alertRef}
+        message={responseError}
+        className='crxAlertUserEditForm'
+        alertType='inline'
+        type='error'
+        open={alert}
+        setShowSucess={() => null}
+      />
       <div style={{ height: "200px" }}>
         <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
           {() => (
