@@ -86,7 +86,6 @@ const CreateTemplate = (props: any) => {
   const retention: any = useSelector((state: RootState) => state.unitTemplateSlice.retentionPolicy);
   const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
-  const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
   const formikProps = useFormikContext()
   const [errCkher, seterrChker] = React.useState<string>("");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -134,6 +133,8 @@ const CreateTemplate = (props: any) => {
     }
     tabs1.push({ label: data, index: y })
   })
+
+
 
   React.useEffect(() => {
     if (historyState.deviceType == "Incar") {
@@ -231,7 +232,6 @@ const CreateTemplate = (props: any) => {
         })
       }
       setFormSchema(FormSchema);
-      setStationsLoaded(true);
     }
   }
 
@@ -510,7 +510,7 @@ const CreateTemplate = (props: any) => {
     );
 
     if (unitDataResponse.ok) {
-
+ 
       const response = await unitDataResponse.json();
       setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
       setDataFetched(true);
@@ -804,24 +804,7 @@ const CreateTemplate = (props: any) => {
                               <p>{formObj.labelGroupRecording}</p>
                             </div>;
 
-                            return (formObj.type !== undefined ? (
-                              <div key={key}>
-                                {stationsLoaded && <CreateTempelateCase
-                                  formObj={formObj}
-                                  values={values}
-                                  setValues={setValues}
-                                  FormSchema={FormSchema}
-                                  index={0}
-                                  handleChange={handleChange}
-                                  setFieldValue={setFieldValue}
-                                  cameraFeildArrayCounter={cameraFeildArrayCounter}
-                                  setCameraFeildArrayCounter={setCameraFeildArrayCounter}
-                                  applyValidation={applyValidation}
-                                  Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
-                                  setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
-                                  isValid={isValid} setformSchema={setformSchema}
-                                  touched={touched} errors={errors} />}
-                              </div>) : (<></>));
+                            return (formObj.type !== undefined ? (<div key={key}><CreateTempelateCase formObj={formObj} values={values} setValues={setValues} FormSchema={FormSchema} index={0} handleChange={handleChange} setFieldValue={setFieldValue} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} /></div>) : (<></>));
 
                           }
                         )}
