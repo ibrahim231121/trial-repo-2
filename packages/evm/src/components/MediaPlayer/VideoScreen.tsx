@@ -4,6 +4,7 @@ import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
 import { Switch } from "@material-ui/core";
+import AssetDetailsDropdown from "../../../src/Application/Assets/Detail/AssetDetailsDropdown"
 
 interface VideoScreenProp {
   viewNumber?: number,
@@ -14,10 +15,13 @@ interface VideoScreenProp {
   setVideoHandlersFwRw: any,
   setvideoTimerFwRw: any,
   onClickVideoFwRw: any,
-  isOpenWindowFwRw: boolean
+  isOpenWindowFwRw: boolean,
+  data:any,
+  evidenceId:any,
+  setData:any
 }
 
-const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw }: VideoScreenProp) => {
+const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData}: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
@@ -157,7 +161,9 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
           </Grid>
         </Grid>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
-        <div className="mapContainerhh" style={{ display: `${mapEnabled ? "block" : "none"}` }}></div>
+        <div className="mapContainerhh"  style={{ display: `${mapEnabled ? "block" : "none"}` }} >
+        <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  />
+        </div>
       </Grid>
       <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} />
 

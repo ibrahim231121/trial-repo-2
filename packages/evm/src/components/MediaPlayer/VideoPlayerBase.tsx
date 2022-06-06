@@ -164,7 +164,7 @@ const VideoPlayerBase = (props: any) => {
     setdata(props.history !== undefined ? props.history.location.state?.data : props.data);
   }, []);
 
-  const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.EvidenceId;
+  const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.evidenceId;
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
@@ -983,6 +983,9 @@ const VideoPlayerBase = (props: any) => {
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
         <div id="screens">
           <VideoScreen
+            setData={setdata}
+            evidenceId={EvidenceId}
+            data={props.data}
             timelinedetail={timelinedetail}
             settimelinedetail={settimelinedetail}
             viewNumber={viewNumber}

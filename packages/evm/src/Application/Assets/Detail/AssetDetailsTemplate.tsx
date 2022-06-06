@@ -396,9 +396,9 @@ const newRound=(x:any, y: any)=>{
       <CRXRows
         container
         spacing={0}
-        style={{ marginTop: "50px", marginRight: "50px" }}
+        style={{ marginTop: "50px", marginRight: "0px" }}
       >
-        <CRXColumn item xs={8}>
+        <CRXColumn item xs={12}>
           {/* <div
             style={{
               marginLeft: "80px",
@@ -409,7 +409,7 @@ const newRound=(x:any, y: any)=>{
               textAlign: "center",
             }}
           > */}
-          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} EvidenceId={evidenceId} />}
+          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} />}
           {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">
