@@ -9,6 +9,7 @@ import { addNotificationMessages } from '../../../../Redux/notificationPanelMess
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import Cookies from 'universal-cookie';
 import moment from 'moment';
+import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 
 type AssignUserProps = {
   selectedItems: any[];
