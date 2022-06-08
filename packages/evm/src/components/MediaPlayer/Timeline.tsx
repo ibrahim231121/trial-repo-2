@@ -30,15 +30,18 @@ interface Timelineprops {
   mouseOut: any
   Event: any
   getbookmarklocation: any
-  adjustTimeline: any
+  AdjustTimeline: any
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, adjustTimeline }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline }: Timelineprops,) => {
   const targetRef = useRef<any>();
-  
-  
+  // const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
+  // const [Event, setEvent] = useState();
+  // const [timelinedetail1, settimelinedetail1] = useState<any>();
+
   const [bookmarklocation, setbookmarklocation] = useState<number>();
+  // const [mouseovertype, setmouseovertype] = useState("");
 
   React.useEffect(() => {
     if (openThumbnail&&Event&&timelinedetail1) {
@@ -118,17 +121,29 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
       {timelinedetail.filter((x:any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
         <div style={{marginTop:10}}>
           <div className="beforeline">
-          <p>{x.camera}</p>
+          {/* <p>{x.camera}</p> */}
             <div className="line" style={{ position: "relative" }}>
-              <video width="300" height="150" id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}>
+            <div className="video_player_hover_thumb" id={"video_player_hover_thumb"+ x.indexNumberToDisplay}
+              style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform:"translate(-50px, 0px)"  }}>
+              
+              <video 
+                width="100%" 
+                height="100%" 
+                id={"Thumbnail" + x.indexNumberToDisplay} 
+                //</div>id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}
+                >
                 <source src={x.src} type="video/mp4" />
               </video>
-              <p id={"Thumbnail-Time" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>
+              <div className="video_thumb_line_time" id={"Thumbnail-Time" + x.indexNumberToDisplay}></div>
+              {/* <p id={"Thumbnail-Time" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p> */}
               <p id={"Thumbnail-CameraDesc" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>
+              
               {openThumbnail && <p id={"Thumbnail-Desc"} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>}
+              
+              </div>
               <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
                 {x.bookmarks && singleTimeline == false && x.bookmarks.map((y: any, index: any) =>
-                  <div>
+                  <div className="time_line_bookMarks">
 
                     <i className="fa fa-bookmark" aria-hidden="true"
                       style={{zIndex:2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "15px", width: "0px" }}
@@ -150,12 +165,12 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
               </div>
 
               {singleTimeline == false && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
-              onClick={(e: any) => adjustTimeline(e, x, 0)}
+              onClick={(e: any) => AdjustTimeline(e, x, 0)}
               ></div>}
               {singleTimeline == false && <><div className="canvas-width" 
                 style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '12px', display: 'flex' }}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
-                onClick={(e: any) => adjustTimeline(e, x, 0)}
+                onClick={(e: any) => AdjustTimeline(e, x, 0)}
                 // draggable="true"
                 // onClick={(e: any) => setController(e, index)}
                 // onDrag={(e: any) => setController(e, index)}
@@ -165,15 +180,15 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 onMouseOut={() => removeThumbnail()}>
                 {<Buffering width={x.video_duration_in_second} id={x.id} />}
               </div>
-                <input type="button" style={{left:x.recording_Start_point_ratio + 2 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => adjustTimeline(e,x,-1000)} value="<"></input>
-                <input type="button" style={{left:x.recording_Start_point_ratio + 5 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => adjustTimeline(e,x,-100)} value="<<"></input>
-                <input type="button" style={{left:x.recording_Start_point_ratio + 8 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => adjustTimeline(e,x,100)} value=">>"></input>
-                <input type="button" style={{left:x.recording_Start_point_ratio + 11 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => adjustTimeline(e,x,1000)} value=">"></input>
+                <input type="button" style={{left:x.recording_Start_point_ratio + 2 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,-1000)} value="<"></input>
+                <input type="button" style={{left:x.recording_Start_point_ratio + 5 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,-100)} value="<<"></input>
+                <input type="button" style={{left:x.recording_Start_point_ratio + 8 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,100)} value=">>"></input>
+                <input type="button" style={{left:x.recording_Start_point_ratio + 11 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,1000)} value=">"></input>
               </>
               }
               {singleTimeline == false &&
                 <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%' }} id={"timeLine-hover-after" + x.indexNumberToDisplay}
-                onClick={(e: any) => adjustTimeline(e, x, 0)}
+                onClick={(e: any) => AdjustTimeline(e, x, 0)}
                 ></div>
               }
             </div>
