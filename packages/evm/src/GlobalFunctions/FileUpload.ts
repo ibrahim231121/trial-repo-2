@@ -1,8 +1,7 @@
-import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../src/utils/Api/url';
-import uploadFiles from "../GlobalFunctions/AzureFileUpload";
+import uploadFiles, { resumeFile } from "../GlobalFunctions/AzureFileUpload";
+import Cookies from 'universal-cookie';
 declare const window: any;
-
 const cookies = new Cookies();
 interface FileInfo {
     fileId: string,
@@ -56,13 +55,27 @@ export const AddFilesToFileService = async (files: any) => {
             }));
     }
     await Promise.all(promises).then((messages) => {
-        uploadFiles(files);//here we can find the blob url either amazon or azure
+        //here we can find the blob url either amazon or azure
+        filesToUpload(files);
     }).catch((e) => {
-
+        console.log("error", e)
     });
 }
+const filesToUpload = async (files: any) => {
+    const promises: any = [];
+    for (const file of files) {
+        promises.push(new Promise((resolve, reject) => {
+            uploadFiles(file, resolve, reject);
+        }));
+    }
+
+    await Promise.all(promises).catch((e) => {
+        console.log("error", e)
+    });
+}
+
 const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => {
-    const cookies = new Cookies();
+
     await fetch(FILE_SERVICE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
@@ -170,4 +183,7 @@ export const getFileSize = (bytes: number) => {
         return (bytes / (1024 * 1024 * 1024 * 1024)).toFixed(2) + " TB";
     }
     else return "";
+}
+export const resumeFileUpload = async (fileName: string) => {
+    resumeFile(fileName);
 }

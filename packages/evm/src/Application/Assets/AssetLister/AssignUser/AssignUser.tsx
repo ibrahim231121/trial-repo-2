@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox,CRXButton, CRXAlert } from '@cb/shared';
+import { MultiSelectBoxCategory, CRXCheckBox, CRXButton, CRXAlert } from '@cb/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
+import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import Cookies from 'universal-cookie';
 import moment from 'moment';
-import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -47,10 +47,9 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   }, []);
   React.useEffect(() => {
 
-    console.log('assetOwners',assetOwners);
-    if(assetOwners.length > 0)
-    {
-    sendData();
+    console.log('assetOwners', assetOwners);
+    if (assetOwners.length > 0) {
+      sendData();
     }
   }, [assetOwners]);
 
@@ -95,7 +94,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     })
       .then(function (res) {
         if (res.ok) {
-          setTimeout(() => {  dispatch(getAssetSearchInfoAsync("")) }, 1000);
+          setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1000);
           props.setOnClose();
           props.showToastMsg({
             message: "Asset Assignees updated",
@@ -136,23 +135,23 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const getMasterAsset = async () => {
 
     const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
-    
+
     const res = await fetch(url, {
       method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1'},
+      headers: { 'Content-Type': 'application/json', TenantId: '1' },
     })
     var response = await res.json();
 
-    if(response != null) {
-      let result = response.owners.map((x:any) => { 
-                    let item: any = {
-                      id: x.id.split("_")[2],
-                      label: x.record.length > 0 ? x.record.filter((t:any) => t.key === 'UserName')[0].value : "" 
-                    }
-                    return item
-                  })
+    if (response != null) {
+      let result = response.owners.map((x: any) => {
+        let item: any = {
+          id: x.id.split("_")[2],
+          label: x.record.length > 0 ? x.record.filter((t: any) => t.key === 'UserName')[0].value : ""
+        }
+        return item
+      })
       props.setFilterValue(() => result);
-    } 
+    }
   }
 
   React.useEffect(() => {

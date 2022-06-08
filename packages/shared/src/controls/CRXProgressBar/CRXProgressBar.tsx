@@ -13,8 +13,8 @@ type ProgressTypes = {
   error: boolean;
   maxDataSize: boolean;
   id: string;
-  removeIcon? : any,
-  width? : any,
+  removeIcon?: any,
+  width?: any,
 };
 const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
   const { value, loadingText, loadingCompleted, error, maxDataSize, id, removeIcon, width } =
@@ -49,16 +49,22 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
   const [propgresicon, setProgressIcon] = useState<string>("fas fa-sync-alt");
   const [errorClx, setErorrClx] = useState<string>("");
   const [progressBar, setProgressBar] = useState<any>(0);
- 
+
 
   useEffect(() => {
-    
+
     if (error == true) {
-     
+
       setErorrClx("progressErorr");
       setProgressBar("Error");
       setRotate("");
       setProgressIcon("far fa-exclamation-circle");
+    }
+    else {
+      setErorrClx("");
+      setProgressBar("");
+      setRotate("rotate");
+      setProgressIcon("fas fa-sync-alt");
     }
   }, [error]);
 
@@ -88,36 +94,36 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     <div className="crx-progress-br">
       <div className={clx}>{loadingText}</div>
       <div className="loader">
-        <div className="linerLoader" style={{width : width + "px"}}>
+        <div className="linerLoader" style={{ width: width + "px" }}>
 
-        
-        <LinearProgress
-          id={id}
-          ref={progreesRefs}
-          variant="determinate"
-          className={errorClx}
-          value={value}
-          classes={{
-            root: styled.root,
-            colorPrimary: styled.colorPrimary,
-            barColorPrimary:
-              value && value == 100
-                ? styled.barColorSecondary
-                : styled.barColorPrimary,
-          }}
-        />
-         <div
-          className="progressPercentage"
-          style={{ left: perc / 2 + "px" }}
-        >
-          {progressBar + percentageText}
-        </div>
+
+          <LinearProgress
+            id={id}
+            ref={progreesRefs}
+            variant="determinate"
+            className={errorClx}
+            value={value}
+            classes={{
+              root: styled.root,
+              colorPrimary: styled.colorPrimary,
+              barColorPrimary:
+                value && value == 100
+                  ? styled.barColorSecondary
+                  : styled.barColorPrimary,
+            }}
+          />
+          <div
+            className="progressPercentage"
+            style={{ left: perc / 2 + "px" }}
+          >
+            {progressBar + percentageText}
+          </div>
         </div>
         <div className="fileUploadStatus">
           {maxDataSize && loadingCompleted}
         </div>
-       
-       
+
+
         <div className={"loadingIcon " + assetsLoadingBarIcon}>
           {removeIcon}
           <i className={propgresicon + " " + rotate}></i>
