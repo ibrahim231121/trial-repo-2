@@ -122,7 +122,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
         <div style={{marginTop:10}}>
           <div className="beforeline">
           {/* <p>{x.camera}</p> */}
-            <div className="line" style={{ position: "relative" }}>
+            <div className="line" style={{ position: "relative", display: 'flex'}}>
             <div className="video_player_hover_thumb" id={"video_player_hover_thumb"+ x.indexNumberToDisplay}
               style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform:"translate(-50px, 0px)"  }}>
               
@@ -164,7 +164,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 )}
               </div>
 
-              {singleTimeline == false && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
+              {singleTimeline == false && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: '12px', display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
               onClick={(e: any) => AdjustTimeline(e, x, 0)}
               ></div>}
               {singleTimeline == false && <><div className="canvas-width" 
@@ -187,7 +187,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
               </>
               }
               {singleTimeline == false &&
-                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%' }} id={"timeLine-hover-after" + x.indexNumberToDisplay}
+                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%', height: '12px', display: 'flex' }} id={"timeLine-hover-after" + x.indexNumberToDisplay}
                 onClick={(e: any) => AdjustTimeline(e, x, 0)}
                 ></div>
               }

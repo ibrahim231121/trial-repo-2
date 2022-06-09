@@ -14,7 +14,8 @@ interface VideosSelectionProp {
   settimelinedetail: any,
   setAnchorEl: any,
   anchorEl: any,
-  indexNumber: any
+  indexNumber: any,
+  setupdateVideoSelection: any
 }
 
 type CheckValue = {
@@ -22,7 +23,7 @@ type CheckValue = {
   assetId: string;
 };
 
-const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, anchorEl, indexNumber }: VideosSelectionProp) => {
+const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, anchorEl, indexNumber, setupdateVideoSelection }: VideosSelectionProp) => {
 
   const open = Boolean(anchorEl);
   const [checkedVideo, setCheckedVideo] = React.useState<string>("");
@@ -41,7 +42,8 @@ const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, ancho
         tempItem.indexNumberToDisplay = indexNumber;
       }
       settimelinedetail(tempArray);
-      setCheckedVideo("")
+      setCheckedVideo("");
+      setupdateVideoSelection(true);
     }
     else
     {

@@ -32,13 +32,14 @@ type Timeline = {
   recording_end_point_ratio: number;
   recordingratio: number;
   bookmarks: any;
-  notes: any
+  notes: any;
   startdiff: number;
   video_duration_in_second: number;
   src: string;
-  id: string
-  enableDisplay: boolean,
-  indexNumberToDisplay: number,
+  id: string;
+  dataId: string; 
+  enableDisplay: boolean;
+  indexNumberToDisplay: number;
   camera: string
 }
 
@@ -110,8 +111,9 @@ const VideoPlayerBase = (props: any) => {
 
   const [viewNumber, setViewNumber] = useState(1);
   const [mapEnabled, setMapEnabled] = useState<boolean>(false);
-  const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(true);
-  const [singleTimeline, setSingleTimeline] = useState<boolean>(false);
+  const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
+  const [singleTimeline, setSingleTimeline] = useState<boolean>(true);
+  const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
   const [controlBar, setControlBar] = useState(0);
 
@@ -164,6 +166,7 @@ const VideoPlayerBase = (props: any) => {
   const [mouseovertype, setmouseovertype] = useState("");
   const [timelinedetail1, settimelinedetail1] = useState<any>();
   const [Event, setEvent] = useState();
+  const [updateVideoSelection, setupdateVideoSelection] = useState<boolean>(false);
   const [showFRicon,setShowFRicon] = useState({
       showFRCon: false,
        caseNum: 0
@@ -179,7 +182,32 @@ const VideoPlayerBase = (props: any) => {
 
 
   React.useEffect(() => {
-    setdata(props.history !== undefined ? props.history.location.state?.data : props.data);
+    let propdata;
+    if(props.history !== undefined)
+    {
+      propdata = props.history.location.state?.data;
+    }
+    else
+    {
+      propdata = props.data;
+    }
+    if(propdata)
+    {
+      propdata = propdata.filter((x: any) => x.typeOfAsset == "Video");
+      if(propdata.length > 1)
+      {
+        setsingleVideoLoad(false);
+      }
+      propdata.forEach((x: any, index: number) => {
+        if(index==0){
+          x.multivideotimeline = true;
+        }
+        else{
+          x.multivideotimeline = false;
+        }
+      });
+      setdata(propdata);
+    }
   }, []);
 
   const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.evidenceId;
@@ -188,9 +216,6 @@ const VideoPlayerBase = (props: any) => {
   //video size max upto net duration
   React.useEffect(() => {
     if (data.length > 0) {
-      if (data.length == 1) {
-        setSingleTimeline(true);
-      }
       Durationfinder(data);
       setLoading(true)
     }
@@ -232,18 +257,36 @@ const VideoPlayerBase = (props: any) => {
     setModePrev(true);
   }, [isOpenWindowFwRw, isvideoHandlersFwRw]);
 
+  React.useEffect(() => {
+    if (updateVideoSelection) {
+      var tempdata = JSON.parse(JSON.stringify(data));
+      timelinedetail.forEach((x: any)=> 
+        {
+          var tempdataobj = tempdata.find((y: any)=> x.dataId == y.id)
+          if(tempdataobj && x.enableDisplay){
+            tempdataobj.multivideotimeline = true;
+          }
+          if(tempdataobj && !x.enableDisplay){
+            tempdataobj.multivideotimeline = false;
+          }
+        })
+      setdata(tempdata);
+    }
+  }, [updateVideoSelection]);
 
 
   async function Durationfinder(Data: any) {
     var data = JSON.parse(JSON.stringify(Data));
-    data = data.filter((x: any) => x.typeOfAsset !== "Image");
     var maximum_endpoint = timeextractor(data[0].recording.ended)
     var minimum_startpont = timeextractor(data[0].recording.started)
     for (let x = 1; x < data.length; x++) {
-      var T_max_endpoint = timeextractor(data[x].recording.ended)
-      var T_min_startpont = timeextractor(data[x].recording.started)
-      maximum_endpoint = timeoperation(maximum_endpoint, T_max_endpoint, "getmax")
-      minimum_startpont = timeoperation(T_min_startpont, minimum_startpont, "getmin")
+      if(data[x].multivideotimeline)
+      {
+        var T_max_endpoint = timeextractor(data[x].recording.ended)
+        var T_min_startpont = timeextractor(data[x].recording.started)
+        maximum_endpoint = timeoperation(maximum_endpoint, T_max_endpoint, "getmax")
+        minimum_startpont = timeoperation(T_min_startpont, minimum_startpont, "getmin")
+      }
     }
     var duration = moment.utc(moment(maximum_endpoint, "HH:mm:ss").diff(moment(minimum_startpont, "HH:mm:ss"))).format("HH:mm:ss");
     var durationinformat = moment(duration, "HH:mm:ss").format("mm:ss")
@@ -318,28 +361,58 @@ const VideoPlayerBase = (props: any) => {
       let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
       let startdiff = moment(timeextractor(data[x].recording.started), "HH:mm:ss").diff(moment(minstartpoint, "HH:mm:ss")) + (offset * 1000);
 
-      let myData: Timeline =
-      {
-        recording_start_point: recording_start_point,
-        recording_Start_point_ratio: recording_Start_point_ratio,
-        recording_end_point: recording_end_point,
-        recording_end_point_ratio: recording_end_point_ratio,
-        recordingratio: recordingratio,
-        bookmarks: data[x].bookmarks,
-        notes: data[x].notes,
-        startdiff: startdiff,
-        video_duration_in_second: video_duration_in_second,
-        src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        id: "Video-" + x,
-        enableDisplay: x == 0 ? true : false,
-        indexNumberToDisplay: x == 0 ? 1 : 0,
-        camera: data[x].camera,
+      if(updateVideoSelection){
+        var temptimelinedetail = timelinedetail.find((y: any)=> y.dataId == data[x].id)
+        if(temptimelinedetail){
+          let myData: Timeline =
+          {
+            recording_start_point: recording_start_point,
+            recording_Start_point_ratio: recording_Start_point_ratio,
+            recording_end_point: recording_end_point,
+            recording_end_point_ratio: recording_end_point_ratio,
+            recordingratio: recordingratio,
+            bookmarks: temptimelinedetail.bookmarks,
+            notes: temptimelinedetail.notes,
+            startdiff: startdiff,
+            video_duration_in_second: video_duration_in_second,
+            src: temptimelinedetail.src,
+            id: temptimelinedetail.id,
+            dataId: temptimelinedetail.dataId,
+            enableDisplay: temptimelinedetail.enableDisplay,
+            indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
+            camera: temptimelinedetail.camera
+          }
+          rowdetail.push(myData);
+        }
       }
-      bufferingArr.push({ id: myData.id, buffering: false })
-      rowdetail.push(myData);
+      else{
+        let myData: Timeline =
+        {
+          recording_start_point: recording_start_point,
+          recording_Start_point_ratio: recording_Start_point_ratio,
+          recording_end_point: recording_end_point,
+          recording_end_point_ratio: recording_end_point_ratio,
+          recordingratio: recordingratio,
+          bookmarks: data[x].bookmarks,
+          notes: data[x].notes,
+          startdiff: startdiff,
+          video_duration_in_second: video_duration_in_second,
+          src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          id: "Video-" + x,
+          dataId: data[x].id,
+          enableDisplay: x == 0 ? true : false,
+          indexNumberToDisplay: x == 0 ? 1 : 0,
+          camera: data[x].camera
+        }
+        bufferingArr.push({ id: myData.id, buffering: false })
+        rowdetail.push(myData);
+      }
     }
-    await setBufferingArray(bufferingArr)
+    if(!updateVideoSelection){
+      await setBufferingArray(bufferingArr)
+    }
     await settimelinedetail(rowdetail)
+    setupdateVideoSelection(false)
   }
 
 
@@ -910,6 +983,7 @@ const VideoPlayerBase = (props: any) => {
 
   const enableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
+    setSingleTimeline(!event.target.checked)
     if (event.target.checked == false) {
       var timelinedetailTemp = [...timelinedetail]
       timelinedetailTemp.forEach((x: any) => {
@@ -1050,6 +1124,7 @@ const VideoPlayerBase = (props: any) => {
             setvideoTimerFwRw={setvideoTimerFwRw}
             onClickVideoFwRw={onClickVideoFwRw}
             isOpenWindowFwRw={isOpenWindowFwRw}
+            setupdateVideoSelection={setupdateVideoSelection}
           />
 
           <div className="ClickerIcons"> 
@@ -1116,7 +1191,7 @@ const VideoPlayerBase = (props: any) => {
                           if(y.madeBy == "User")
                           {
                             return(
-                              <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "10px", width: "10px" }}>
+                              <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
                               <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "red"}} aria-hidden="true"
                               onMouseOut={() =>
                               mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y,1)}>
@@ -1127,7 +1202,7 @@ const VideoPlayerBase = (props: any) => {
                         }
                       )}
                       {x.enableDisplay && x.notes.map((y: any, index: any) =>
-                        <div style={{  zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.startdiff) + '%', height: "10px", width: "10px" }}>
+                        <div style={{  zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
                           <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "purple"}} aria-hidden="true"
                           onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y,2)}>
                           </i>
@@ -1287,7 +1362,7 @@ const VideoPlayerBase = (props: any) => {
                     }
                   >
                     <MenuItem>
-                      <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => enableMultipleTimeline(event)} />} label="Multi Timelines" />
+                    {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => enableMultipleTimeline(event)} />} label="Multi Timelines" />}
                     </MenuItem>
 
                   </Menu >

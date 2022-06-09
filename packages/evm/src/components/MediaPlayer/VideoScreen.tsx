@@ -18,10 +18,11 @@ interface VideoScreenProp {
   isOpenWindowFwRw: boolean,
   data:any,
   evidenceId:any,
-  setData:any
+  setData:any,
+  setupdateVideoSelection: any
 }
 
-const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData}: VideoScreenProp) => {
+const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData,setupdateVideoSelection}: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
@@ -64,6 +65,7 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
     if (tempItemToRemove !== undefined) {
       tempItemToRemove.enableDisplay = false;
       tempItemToRemove.indexNumberToDisplay = 0;
+      setupdateVideoSelection(true);
     }
     settimelinedetail(tempArray);
     setIndexNumber(0);
@@ -165,7 +167,7 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
         <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  />
         </div>
       </Grid>
-      <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} />
+      <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} setupdateVideoSelection={setupdateVideoSelection}/>
 
     </div>
   );
