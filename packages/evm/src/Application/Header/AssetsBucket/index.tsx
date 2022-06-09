@@ -959,7 +959,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           />
                         </CRXModalDialog>
                       </CRXRows>
-                      <Restricted moduleId={21}>
+                      <Restricted moduleId={26}>
                         <div className="uploadContent">
                           <div className="iconArea">
                             <i className="fas fa-layer-plus"></i>
