@@ -71,7 +71,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   React.useEffect(() => {
-    debugger;
      if(selectedItems.length > 1)
      {
       setShareAssetDisabled(true);
@@ -214,6 +213,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             rowData={row}
             setRemovedOption={(e: any) => {}}
             setOnClose={() => setOpenAssetShare(false)}
+            showToastMsg={(obj: any) => showToastMsg(obj)}
           />
       </CRXModalDialog>
 
@@ -413,14 +413,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {shareAssetDisabled === false?(
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+            {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Share Asset</div>
               </div>
-            </SecurityDescriptor>
+            {/* </SecurityDescriptor> */}
           </Restricted>
         </MenuItem>
         ):null
