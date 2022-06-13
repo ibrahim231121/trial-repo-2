@@ -114,10 +114,16 @@ const UnitCreate = (props: historyProps) => {
   const unitID = location.state.unitId;
   const inCarTab: any = location.state.template;
 
-  const tabs = [{ label: "Configuration", index: 0 }];
+  const tabs = [
+    { label: "Configuration", index: 0 },
+    { label: "Queued Assets", index: 1 },
+    { label: "Events", index: 2 },
+    { label: "Device Diagnostic", index: 3 },
+    { label: "Update History", index: 4 }
+  ];
 
   const tabs1 = [
-    { label: "Configuration", index: 0 },
+    { label: "Configurations", index: 0 },
     { label: "Devices", index: 1 },
   ];
 
@@ -514,8 +520,6 @@ const UnitCreate = (props: historyProps) => {
                     <span className="noRow"></span>
                     <p>STATION</p>
                   </div>
-                </div>
-                <div className="RightBoard">
                   <div className="pannelBoard">
                     <h2>0</h2>
                     <span className="pdUpload">
@@ -547,7 +551,9 @@ const UnitCreate = (props: historyProps) => {
                     </span>
                     <p>ASSIGNED TO</p>
                   </div>
+
                 </div>
+                
                 <div
                   onClick={() => {
                     toggleChecker();
