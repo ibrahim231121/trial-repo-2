@@ -19,10 +19,12 @@ interface VideoScreenProp {
   data:any,
   evidenceId:any,
   setData:any,
-  setupdateVideoSelection: any
+  onClickBookmarkNote:any,
+  setupdateVideoSelection:any
 }
 
-const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData,setupdateVideoSelection}: VideoScreenProp) => {
+
+const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData,setupdateVideoSelection,onClickBookmarkNote}: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
@@ -164,7 +166,7 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
         </Grid>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
         <div className="mapContainerhh"  style={{ display: `${mapEnabled ? "block" : "none"}` }} >
-        <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  />
+        <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} />
         </div>
       </Grid>
       <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} setupdateVideoSelection={setupdateVideoSelection}/>

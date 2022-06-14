@@ -332,7 +332,7 @@ const VideoPlayerBase = (props: any) => {
         minimum_startpont = minimum_startpont > T_min_startpont ? T_min_startpont : minimum_startpont;
       }
     }
-    debugger;
+
     var duration = maximum_endpoint - minimum_startpont;
     var durationInDateFormat = new Date(duration);
     var durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
@@ -1292,6 +1292,7 @@ const VideoPlayerBase = (props: any) => {
                 setvideoTimerFwRw={setvideoTimerFwRw}
                 onClickVideoFwRw={onClickVideoFwRw}
                 isOpenWindowFwRw={isOpenWindowFwRw}
+                onClickBookmarkNote={onClickBookmarkNote}
                 setupdateVideoSelection={setupdateVideoSelection}
               />
 

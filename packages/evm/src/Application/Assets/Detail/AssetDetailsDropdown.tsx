@@ -1,20 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { CRXSelectBox,CRXButton } from "@cb/shared";
-import moment from "moment";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import TextField from "@material-ui/core/TextField";
+import React,{useRef,useState} from "react";
+import { CRXSelectBox,CRXToaster,CRXAlert,GoogleMap } from "@cb/shared";
 import "./AssetDetailsDropdown.scss";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url';
+import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 
-const AssetDetailsDropdown = ({data,evidenceId,setData}:any) => {
+type propsObject = {
+  data:any;
+  evidenceId:string;
+  setData:any;
+  onClickBookmarkNote:any
+}
+
+const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote}:propsObject) => {
    
 
   const [selectDropDown, setSelectDropDown] = React.useState("map");
-  const [isEditing, setisEditing] = useState<number[]>([]);
-  const [isReadMore, setIsReadMore] = useState<any[]>([]);
-  const [searchTerm, setsearchTerm] = React.useState("");
+  const targetRef = React.useRef<typeof CRXToaster>(null);
+  const alertRef = useRef(null);
+  const [alertType] = useState<string>('inline');
+  const [errorType] = useState<string>('error');
+  const [responseError] = React.useState<string>('');
+  const [alert] = React.useState<boolean>(false);
   const options = [
     { value: "map", displayText: "Map" },
     { value: "bookmarks", displayText: "Bookmarks" },
@@ -25,83 +31,109 @@ const AssetDetailsDropdown = ({data,evidenceId,setData}:any) => {
   const handleChangeDropDown = (event: any) => {
     setSelectDropDown(event.target.value);
   };
-  const onEditEnd = () => {
-    setisEditing([]);
+
+
+
+
+  const handleEdit = (x:any)=>{
+    {selectDropDown == "notes" ? handleNoteEdit(x):handleBookmarkEdit(x)}
+  }
+
+
+const handleNoteEdit = (noteData:any)=>{
+  const noteBody = {
+    assetId: noteData.assetId, 
+    id: noteData.id,
+    position: noteData.position,
+    description: noteData.description,
+    version: noteData.version
+};
+const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      TenantId: "1",
+    },
+    body: JSON.stringify(noteBody)
+  };
+const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+noteData.assetId+"/Notes/"+noteData.id;
+fetch(url, requestOptions)
+.then((response: any) => {
+    if (response.ok) {
+      targetRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});    
+    } 
+})
+.catch((err: any) => {
+
+    console.error(err);
+
+
+});
+}
+
+const handleBookmarkEdit= (bookmarkData:any)=>{
+          const bookmarkBody = {
+            id: bookmarkData.id,
+            bookmarkTime: bookmarkData.bookmarkTime,
+            position: bookmarkData.position,
+            description: bookmarkData.description,
+            madeBy: bookmarkData.madeBy,
+            version: bookmarkData.version
+          };
+          const requestOptions = {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              TenantId: "1",
+            },
+            body: JSON.stringify(bookmarkBody),
+          };
+          const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+bookmarkData.assetId+"/Bookmarks/"+bookmarkData.id;
+          fetch(url, requestOptions)
+          .then((response: any) => {
+            if (response.ok) {
+              targetRef.current.showToaster({message: "Bookmark Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});  
+            } 
+          })
+          .catch((err: any) => { 
+            console.error(err);
+          });
+}
+
+
+
+
+const handleDelete = (noteId:any,assetId:any)=>{
+    
+ { selectDropDown == "notes" ? 
+  handleNoteDelete(noteId,assetId)
+ :handleBookmarkDelete(noteId,assetId) }
+ 
+}
+
+const handleBookmarkDelete = (noteId:any,assetId:any)=>{
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      TenantId: "1",
+    },
   };
 
-
-  const handleSetNotes = (event:any,noteObject:any)=>{
-    var tempData = [...data]
-    var obj = tempData[0].notes.find((x:any)=>x.id == noteObject.id)
-    if (obj !== undefined) {
-     obj.description = event.target.value
-    }
-    setData(tempData)
-  }
-
-  const handleEdit = (x:string)=>{
-  console.log("here we edit",x)
-  //   const body = {
-  //     id: bookmark.id,
-  //     bookmarkTime: bookmark.bookmarkTime,
-  //     position: bookmark.position,
-  //     description: bookmark.description,
-  //     madeBy:"User",
-  //     version: bookmark.version
-  // };
-  // const requestOptions = {
-  //   method: "PUT",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     TenantId: "1",
-  //   },
-  //   body: JSON.stringify(body),
-  // };
-  // const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
-  // fetch(url, requestOptions)
-  // .then((response: any) => {
-  //     if (response.ok) {
-  //        alert("happened")
-  //     } else {
-         
-  //     }
-  // })
-  // .catch((err: any) => {
-  //     // setError(true);
-  //     console.error(err);
-  // });
-
-  }
-
-  const handleCancel = (id: number) =>{
-    setisEditing(isEditing.filter((x:any) => x !== id));
-  }
-
-  const onFocusFunction = (id : number) => {
-    setisEditing([id]);
-  };
-
- const handleReadMore = (e : any, id: number)=>{
-   debugger
-     var tempIsExist = [...isReadMore]
-    var isExist = tempIsExist.find((y:any) => y.id == id);
-    if(isExist !== undefined)
-    {
-      
-        isExist.value = !isExist.value;
-    }
-    else{
-        tempIsExist.push(
-            {
-                id: id,
-                value: true
-            }
-        )
-    }
-    setIsReadMore(tempIsExist)
-  
- }
-
+const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Bookmarks/"+noteId;
+fetch(url, requestOptions)
+.then((response: any) => {
+    if (response.ok) {
+      targetRef.current.showToaster({message: "Bookmark Delete Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+      var tempData = [...data]
+      tempData[0].bookmarks = tempData[0].bookmarks.filter((x:any) => x.id !== noteId);
+      setData(tempData)
+    } 
+})
+.catch((err: any) => {
+    console.error(err);
+});
+}
 
 
 const handleNoteDelete = (noteId:any,assetId:any)=>{
@@ -119,6 +151,7 @@ const handleNoteDelete = (noteId:any,assetId:any)=>{
     fetch(url, requestOptions)
     .then((response: any) => {
         if (response.ok) {
+          targetRef.current.showToaster({message: "Note Deleted Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
           var tempData = [...data]
           tempData[0].notes = tempData[0].notes.filter((x:any) => x.id !== noteId);
           setData(tempData)
@@ -131,17 +164,21 @@ const handleNoteDelete = (noteId:any,assetId:any)=>{
 
 }
 
-const handleFilter = (e:any)=>{
-  setsearchTerm(e.target.value)
-}
-
-
-
 
   return (
-    
+  
     <div className="detailDropdownMain">
   
+      <CRXToaster ref={targetRef} />
+        <CRXAlert
+        ref={alertRef}
+        message={responseError}
+        className='crxAlertUserEditForm'
+        alertType={alertType}
+        type={errorType}
+        open={alert}
+        setShowSucess={() => null}
+      />
       <CRXSelectBox
         options={options}
         id="simpleSelectBox"
@@ -149,119 +186,47 @@ const handleFilter = (e:any)=>{
         value={selectDropDown}
       />
       
-      {selectDropDown == "map" && <h1>Map</h1>}
-      {selectDropDown == "bookmarks" && <h1>Bookmark</h1>}
-      {selectDropDown == "notes" && (
-        
-        <div className="inner-detailDropdownMain">    
-        <List onMouseLeave={onEditEnd}>
-          <h2>Search Notes</h2>
-          <TextField
-           type="text" 
-           placeholder="Search by Name, keyword, etc." 
-           onChange={handleFilter}
-           value={searchTerm} 
-           variant={"outlined"} 
-           fullWidth 
-            />
-
-            
-            { data[0].notes.filter((x: any) => {
-                   if (searchTerm == ""){
-                    return x
-                  }
-                  else if (x.description.toLowerCase().includes(searchTerm.toLowerCase())){
-                    return x
-                  }
-                     } ).map((x:any)=>{
-              
-              return (
-                <div className="item-detailDropdownMain">
-                    <ListItem >
-                    {moment(x.createdOn).format("HH:MM:SS")}
-                    {` Form : ${x.madeBy}`}
-                    <br />
-                    <div >
-                  <div className="menu">
-                  <Menu
-                    align="start"
-                    viewScroll="initial"
-                    direction="bottom"
-                    position="auto"
-                    arrow
-                    menuButton={
-                    <MenuButton>
-                    <i className="fas fa-ellipsis-v"></i>
-                    </MenuButton>}>
-                    <MenuItem>
-            
-                        <div onClick={()=>handleNoteDelete(x.id,x.assetId)}
-                            className="crx-meu-content groupingMenu crx-spac">
-                            <div className="crx-menu-icon"></div>
-                            <div >
-                            Delete
-                            </div>
-                        </div>
-                        
-                    </MenuItem>
-                    </Menu>
-                    </div>
-                      <div className="textToggler">
-                        {x.description.length > 0 && x.description.length < 100 &&  
+      {selectDropDown == "map" &&  
+                <>
+                  <GoogleMap
+                    apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                    zoomLevel={30}
+                    mapTypeControl={true}
+                    initialMarker={{ lat: 13.084828874547332, long: 8.7890625 }}
+                   
   
-                     <TextField
-                       name={String(x.id)}
-                       value={x.description}
-                       variant={isEditing.includes(x.id) ?"outlined":"standard"} 
-                       color="primary"
-                       multiline={true}
-                       rows={2}
-                       fullWidth 
-                       onChange={(event) => handleSetNotes(event,x)}
-                       onFocus={() => onFocusFunction(x.id)}>  
-                       </TextField>
+                   
+                  />
+                </>
+              }
+      {selectDropDown == "bookmarks" && 
+      <AssetDetailNotesandBookmark
+       data={data}
+       setData={setData}
+       searchFieldHeading="Search Bookmark"
+       searchFieldPlaceholder="Search by Name, keyword, etc."
+       condition={false}
+       URL={data[0].bookmarks}
+       onDeleteNotes={handleDelete}
+       onEdit={handleEdit}
+       onClickBookmarkNote={onClickBookmarkNote}
+       />
+       }
 
-                       }
-            
-                     {x.description.length  > 100 && x.description.length < 10000 &&  
-                      <div className={isReadMore.find((y:any) => y.id == x.id)?.value ? " ReadMoreShow" :  "ReadMoreHide" }>
-                          <div className="readMore">
-                            <TextField
-                            name={String(x.id)}
-                            value={x.description}
-                            InputProps={{endAdornment: <div onClick={(e) => handleReadMore(e, x.id) }>{isReadMore.find((y:any) => y.id == x.id)?.value ?
-                            <i className="fas fa-angle-up"> Showless </i> : <i className="fas fa-angle-down"> Read More </i>  }</div> }}
-                            variant={isEditing.includes(x.id)  ?"outlined":"standard"} 
-                            color="primary"
-                            multiline
-                            rows={2}
-                            fullWidth 
-                            rowsMax={12}
-                            onChange={(event) => handleSetNotes(event,x)}
-                            onFocus={() => onFocusFunction(x.id)}     
-                             /> 
-                           </div>
-                      </div>
-                      }
-                      </div>
-                    
-                    {isEditing.includes(x.id) && (
-                      <div >
-                        <CRXButton onClick={()=>handleEdit(x)}><i className="fas fa-check"></i></CRXButton>
-                        <CRXButton onClick={(e : any) => handleCancel(x.id)}><i className="fas fa-times"></i></CRXButton>
-                      </div>
-                    )}
-                  </div>
-                </ListItem>
-                </div>
-              )}
-            )}
-                    
-            
-          
-        </List>
-        </div>
-      )}
+
+      {selectDropDown == "notes" && 
+      <AssetDetailNotesandBookmark
+       data={data}
+       setData={setData}
+       searchFieldHeading="Search Notes"
+       searchFieldPlaceholder="Search by Name, keyword, etc."
+       condition={true}
+       URL={data[0].notes}
+       onDeleteNotes={handleDelete}
+       onEdit={handleEdit}
+       onClickBookmarkNote={onClickBookmarkNote}
+       />
+      }
     </div>
   );
 };
