@@ -31,10 +31,11 @@ interface Timelineprops {
   Event: any
   getbookmarklocation: any
   AdjustTimeline: any
+  startTimelineSync: any
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync }: Timelineprops,) => {
   const targetRef = useRef<any>();
   // const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
   // const [Event, setEvent] = useState();
@@ -165,12 +166,12 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
               </div>
 
               {singleTimeline == false && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: '12px', display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
-              onClick={(e: any) => AdjustTimeline(e, x, 0)}
+              onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => {}}
               ></div>}
               {singleTimeline == false && <><div className="canvas-width" 
                 style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '12px', display: 'flex' }}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
-                onClick={(e: any) => AdjustTimeline(e, x, 0)}
+                onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => {}}
                 // draggable="true"
                 // onClick={(e: any) => setController(e, index)}
                 // onDrag={(e: any) => setController(e, index)}
@@ -180,15 +181,17 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 onMouseOut={() => removeThumbnail()}>
                 {<Buffering width={x.video_duration_in_second} id={x.id} />}
               </div>
+              {startTimelineSync && <>
                 <input type="button" style={{left:x.recording_Start_point_ratio + 2 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,-1000)} value="<"></input>
                 <input type="button" style={{left:x.recording_Start_point_ratio + 5 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,-100)} value="<<"></input>
                 <input type="button" style={{left:x.recording_Start_point_ratio + 8 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,100)} value=">>"></input>
                 <input type="button" style={{left:x.recording_Start_point_ratio + 11 + '%', position:"absolute", zIndex:2 }} onClick={(e:any) => AdjustTimeline(e,x,1000)} value=">"></input>
+                </>}
               </>
               }
               {singleTimeline == false &&
                 <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%', height: '12px', display: 'flex' }} id={"timeLine-hover-after" + x.indexNumberToDisplay}
-                onClick={(e: any) => AdjustTimeline(e, x, 0)}
+                onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => {}}
                 ></div>
               }
             </div>
