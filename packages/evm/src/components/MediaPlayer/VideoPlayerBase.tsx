@@ -12,6 +12,7 @@ import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
 import { CRXToaster } from "@cb/shared";
 import { FormControlLabel, Switch } from "@material-ui/core";
+import VideoPlayerViewReason from "./VideoPlayerViewReason";
 import { setTimeout } from "timers";
 import CRXVideoPlayerStyle from './CRXVideoPlayerStyle'
 import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
@@ -1265,390 +1266,398 @@ const VideoPlayerBase = (props: any) => {
   }
 
   return (
-    <div className="searchComponents">
-      <div id="crx_video_player" >
-        <CRXToaster ref={bookmarkMsgRef} />
-        <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
-          <div id="screens">
-            <VideoScreen
-              setData={setdata}
-              evidenceId={EvidenceId}
-              data={props.data}
-              timelinedetail={timelinedetail}
-              settimelinedetail={settimelinedetail}
-              viewNumber={viewNumber}
-              mapEnabled={mapEnabled}
-              videoHandlers={videoHandlers}
-              setVideoHandlersFwRw={setVideoHandlersFwRw}
-              setvideoTimerFwRw={setvideoTimerFwRw}
-              onClickVideoFwRw={onClickVideoFwRw}
-              isOpenWindowFwRw={isOpenWindowFwRw}
-              setupdateVideoSelection={setupdateVideoSelection}
-            />
+    <>
+      {true && <VideoPlayerViewReason
+        setOpenViewReason={setopenNoteForm}
+        openViewReason={true}
+        EvidenceId={EvidenceId}
+        AssetData={data[0]}
+      />}
 
-            <div className="ClickerIcons">
-              <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="fal fa-long-arrow-left iconForwardScreen"></i><span className="iconFSSpan">{`${modeFw}X`}</span></span> : ""}  </p>
-              <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="fal fa-long-arrow-left  iconBackward2Screen"></i><span className="iconFSSpan">{`${modeRw}X`}</span></span> : ""}  </p>
-            </div>
-            <div className="modeButton">
-
-              {modePrev && mode == 2 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
-              {modePrev && mode == 4 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
-              {modePrev && mode == 6 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
-              {modePrev && mode == -2 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
-              {modePrev && mode == -4 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
-              {modePrev && mode == -6 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
-            </div>
-            <div className="caretLeftRight">
-              {frameForward ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
-              {frameReverse ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
-            </div>
-
-          </div>
-          <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-            {/* TIME LINES BAR HERE */}
-            {loading ? (
-              <Timelines
+      <div className="searchComponents">
+        <div id="crx_video_player" >
+          <CRXToaster ref={bookmarkMsgRef} />
+          <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
+            <div id="screens">
+              <VideoScreen
+                setData={setdata}
+                evidenceId={EvidenceId}
+                data={props.data}
                 timelinedetail={timelinedetail}
-                duration={timelineduration}
-                seteditBookmarkForm={seteditBookmarkForm}
-                seteditNoteForm={seteditNoteForm}
-                bookmark={bookmark}
-                note={note}
-                setbookmarkAssetId={setbookmarkAssetId}
-                setnoteAssetId={setnoteAssetId}
-                visibleThumbnail={visibleThumbnail}
-                setVisibleThumbnail={setVisibleThumbnail}
-                singleTimeline={singleTimeline}
-                displayThumbnail={displayThumbnail}
-                bookmarkMsgRef={bookmarkMsgRef}
-                onClickBookmarkNote={onClickBookmarkNote}
-                openThumbnail={openThumbnail}
-                mouseovertype={mouseovertype}
-                timelinedetail1={timelinedetail1}
-                mouseOverBookmark={mouseOverBookmark}
-                mouseOverNote={mouseOverNote}
-                mouseOut={mouseOut}
-                Event={Event}
-                getbookmarklocation={getbookmarklocation}
-                AdjustTimeline={AdjustTimeline}
-                startTimelineSync={startTimelineSync}
+                settimelinedetail={settimelinedetail}
+                viewNumber={viewNumber}
+                mapEnabled={mapEnabled}
+                videoHandlers={videoHandlers}
+                setVideoHandlersFwRw={setVideoHandlersFwRw}
+                setvideoTimerFwRw={setvideoTimerFwRw}
+                onClickVideoFwRw={onClickVideoFwRw}
+                isOpenWindowFwRw={isOpenWindowFwRw}
+                setupdateVideoSelection={setupdateVideoSelection}
               />
-            ) : (<></>)}
 
-          </div>
-          <div>
-          </div>
-          <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-            <div className="player_controls_inner">
-              <div className="main-control-bar">
-                <div id="SliderBookmarkNote" style={{ position: "relative" }}>
-                  {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
-                    return (
-                      <>
-                        {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
-                          if (y.madeBy == "User") {
-                            return (
-                              <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
-                                <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "red" }} aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
-                                </i>
-                              </div>
-                            )
-                          }
-                        }
-                        )}
-                        {x.enableDisplay && x.notes.map((y: any, index: any) =>
-                          <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
-                            <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "purple" }} aria-hidden="true"
-                              onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
-                            </i>
-                          </div>
-                        )}
-                      </>
-                    )
-                  })
-                  }
-                </div>
-                <Slider
-                  id="SliderControlBar"
-                  value={typeof controlBar === 'number' ? controlBar : 0}
-                  onChange={handleControlBarChange}
-                  onMouseOver={(e: any) => displaySeekBarThumbail(e)}
-                  onMouseMove={(e: any) => displaySeekBarThumbail(e)}
-                  onMouseOut={() => removeSeekBarThumbail()}
-                  aria-labelledby="input-slider"
-                  step={1}
-                  min={0}
-                  max={timelineduration}
-                  classes={{
-                    ...classes
-                  }}
+              <div className="ClickerIcons">
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="fal fa-long-arrow-left iconForwardScreen"></i><span className="iconFSSpan">{`${modeFw}X`}</span></span> : ""}  </p>
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="fal fa-long-arrow-left  iconBackward2Screen"></i><span className="iconFSSpan">{`${modeRw}X`}</span></span> : ""}  </p>
+              </div>
+              <div className="modeButton">
+
+                {modePrev && mode == 2 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
+                {modePrev && mode == 4 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
+                {modePrev && mode == 6 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
+                {modePrev && mode == -2 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
+                {modePrev && mode == -4 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
+                {modePrev && mode == -6 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
+              </div>
+              <div className="caretLeftRight">
+                {frameForward ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
+                {frameReverse ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
+              </div>
+
+            </div>
+            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+              {/* TIME LINES BAR HERE */}
+              {loading ? (
+                <Timelines
+                  timelinedetail={timelinedetail}
+                  duration={timelineduration}
+                  seteditBookmarkForm={seteditBookmarkForm}
+                  seteditNoteForm={seteditNoteForm}
+                  bookmark={bookmark}
+                  note={note}
+                  setbookmarkAssetId={setbookmarkAssetId}
+                  setnoteAssetId={setnoteAssetId}
+                  visibleThumbnail={visibleThumbnail}
+                  setVisibleThumbnail={setVisibleThumbnail}
+                  singleTimeline={singleTimeline}
+                  displayThumbnail={displayThumbnail}
+                  bookmarkMsgRef={bookmarkMsgRef}
+                  onClickBookmarkNote={onClickBookmarkNote}
+                  openThumbnail={openThumbnail}
+                  mouseovertype={mouseovertype}
+                  timelinedetail1={timelinedetail1}
+                  mouseOverBookmark={mouseOverBookmark}
+                  mouseOverNote={mouseOverNote}
+                  mouseOut={mouseOut}
+                  Event={Event}
+                  getbookmarklocation={getbookmarklocation}
+                  AdjustTimeline={AdjustTimeline}
+                  startTimelineSync={startTimelineSync}
                 />
-              </div>
-              <div className="videoPlayer_Timeline_Time">
-                <div className="V_timeline_start_time">
-                  <div id="counter">{milliSecondsToTimeFormat(new Date(controlBar * 1000))}</div>
-                </div>
-                <div className="V_timeline_end_time">
-                  <div id="counter">{finalduration}</div>
-                </div>
-              </div>
+              ) : (<></>)}
+
             </div>
-            {/* <div className="crx_video_graph"></div> */}
-            <div className="playerViewFlex">
-              <div className="playerViewLeft">
-                <div className="PlayPause-container">
-                  <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
-                    <CRXTooltip
-                      content={<SVGImage
-                        width="12"
-                        height="23.4"
-                        d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z"
-                        viewBox="0 0 12 23.4"
-                        fill="#fff"
-                      />}
-                      placement="top"
-                      title={<>Back frame by frame <i className="fal fa-long-arrow-left longArrowLeftUi"></i></>}
-                      arrow={false}
-                    />
-                  </CRXButton>
-
-                  <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable}>
-                    <CRXTooltip
-                      iconName={"icon icon-backward2 backward2Icon"}
-                      placement="top"
-                      title={<>Rewind  <span className="RewindToolTip">Shift + [</span></>}
-                      arrow={false}
-                    />
-                  </CRXButton>
-
-                  <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className="videoPlayerBtn" >
-                    <CRXTooltip
-                      iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
-                      placement="top"
-                      title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Space</span></>}
-                      arrow={false}
-                    />
-                  </CRXButton>
-                  <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable}>
-                    <CRXTooltip
-                      iconName={"icon icon-forward3 backward3Icon"}
-                      placement="top"
-                      title={<>Fast forward  <span className="RewindToolTip">Shift + ]</span></>}
-                      arrow={false}
-                    />
-                  </CRXButton>
-                  <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" >
-                    <CRXTooltip
-                      content={<SVGImage
-                        width="12"
-                        height="23.4"
-                        d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z"
-                        viewBox="0 0 12 23.4"
-                        fill="#fff"
+            <div>
+            </div>
+            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+              <div className="player_controls_inner">
+                <div className="main-control-bar">
+                  <div id="SliderBookmarkNote" style={{ position: "relative" }}>
+                    {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
+                      return (
+                        <>
+                          {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
+                            if (y.madeBy == "User") {
+                              return (
+                                <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
+                                  <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "red" }} aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
+                                  </i>
+                                </div>
+                              )
+                            }
+                          }
+                          )}
+                          {x.enableDisplay && x.notes.map((y: any, index: any) =>
+                            <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
+                              <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "purple" }} aria-hidden="true"
+                                onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
+                              </i>
+                            </div>
+                          )}
+                        </>
+                      )
+                    })
+                    }
+                  </div>
+                  <Slider
+                    id="SliderControlBar"
+                    value={typeof controlBar === 'number' ? controlBar : 0}
+                    onChange={handleControlBarChange}
+                    onMouseOver={(e: any) => displaySeekBarThumbail(e)}
+                    onMouseMove={(e: any) => displaySeekBarThumbail(e)}
+                    onMouseOut={() => removeSeekBarThumbail()}
+                    aria-labelledby="input-slider"
+                    step={1}
+                    min={0}
+                    max={timelineduration}
+                    classes={{
+                      ...classes
+                    }}
+                  />
+                </div>
+                <div className="videoPlayer_Timeline_Time">
+                  <div className="V_timeline_start_time">
+                    <div id="counter">{milliSecondsToTimeFormat(new Date(controlBar * 1000))}</div>
+                  </div>
+                  <div className="V_timeline_end_time">
+                    <div id="counter">{finalduration}</div>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="crx_video_graph"></div> */}
+              <div className="playerViewFlex">
+                <div className="playerViewLeft">
+                  <div className="PlayPause-container">
+                    <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
+                      <CRXTooltip
+                        content={<SVGImage
+                          width="12"
+                          height="23.4"
+                          d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z"
+                          viewBox="0 0 12 23.4"
+                          fill="#fff"
+                        />}
+                        placement="top"
+                        title={<>Back frame by frame <i className="fal fa-long-arrow-left longArrowLeftUi"></i></>}
+                        arrow={false}
                       />
+                    </CRXButton>
+
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable}>
+                      <CRXTooltip
+                        iconName={"icon icon-backward2 backward2Icon"}
+                        placement="top"
+                        title={<>Rewind  <span className="RewindToolTip">Shift + [</span></>}
+                        arrow={false}
+                      />
+                    </CRXButton>
+
+                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className="videoPlayerBtn" >
+                      <CRXTooltip
+                        iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
+                        placement="top"
+                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Space</span></>}
+                        arrow={false}
+                      />
+                    </CRXButton>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable}>
+                      <CRXTooltip
+                        iconName={"icon icon-forward3 backward3Icon"}
+                        placement="top"
+                        title={<>Fast forward  <span className="RewindToolTip">Shift + ]</span></>}
+                        arrow={false}
+                      />
+                    </CRXButton>
+                    <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" >
+                      <CRXTooltip
+                        content={<SVGImage
+                          width="12"
+                          height="23.4"
+                          d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z"
+                          viewBox="0 0 12 23.4"
+                          fill="#fff"
+                        />
+                        }
+                        placement="top"
+                        title={<>Forward frame by frame <i className="fal fa-long-arrow-right longArrowLeftUi"></i></>}
+                        arrow={false}
+                      />
+                    </CRXButton>
+
+                  </div>
+                  <div>
+                    <VolumeControl setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
+                  </div>
+                </div>
+                <div className="playerViewMiddle">
+                  <div className="playBackMode">
+                    <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
+                      {mode < 0 ? <span className="modeIconUndoLinker" style={{ background: modeColorMinus }}><span>{modeMinus}</span>{"x"}</span> : ""}
+                      <CRXTooltip
+                        iconName={"fas fa-undo-alt undoAltIcon"}
+                        placement="top"
+                        title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
+                        arrow={false}
+                      />
+                    </button>
+                    <button className="MinusIconPosition" disabled={disabledModeMinus} onClick={() => modeSet(0)}>
+                      <CRXTooltip
+                        iconName={"icon icon-minus iconMinusUndo"}
+                        placement="top"
+                        title={<>Normal speed <span className="normalSped">/</span></>}
+                        arrow={false}
+                      />
+                    </button>
+                    <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
+                      {mode > 0 ? <span className="modeIconRedoLinker" style={{ background: modeColorPlus }}><span>{mode}</span>{"x"}</span> : ""}
+                      <CRXTooltip
+                        iconName={"fas fa-redo-alt undoRedoIcon"}
+                        placement="top"
+                        title={<>Playback speed up <span className="playBackTooltipUp">Shift + .</span></>}
+                        arrow={false}
+                      />
+                    </button>
+                  </div>
+                </div>
+                <div className="player_right_responsive">
+                  <CRXButton color="primary" onClick={() => expandButton()} variant="contained" className="videoPlayerBtn">
+                    <CRXTooltip
+                      iconName={`${iconChanger ? "fas fa-chevron-up" : "fas fa-chevron-down"} CrxchevronDown`}
+                      placement="top"
+                      title={<>{iconChanger ? "Collapse" : "Expand"} <span className="RewindToolTip">x</span></>}
+                      arrow={false}
+                    />
+                  </CRXButton>
+                </div>
+                <div className={` playerViewRight ${iconChanger ? 'clickViewRightBtn' : ""}`}>
+                  <div className="SettingGrid">
+                    <Menu
+                      align="start"
+                      viewScroll="initial"
+                      direction="top"
+
+                      className="ViewScreenMenu"
+                      menuButton={
+                        <i>
+                          <CRXTooltip
+                            iconName={"fas fa-cog faCogIcon"}
+                            placement="top"
+                            title={<>Settings <span className="settingsTooltip">,</span></>}
+                            arrow={false}
+                          />
+                        </i>
                       }
+                    >
+                      <MenuItem>
+                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
+                      </MenuItem>
+
+                    </Menu >
+                  </div>
+                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn">
+                    <CRXTooltip
+                      iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
-                      title={<>Forward frame by frame <i className="fal fa-long-arrow-right longArrowLeftUi"></i></>}
+                      title={<>Notes <span className="notesTooltip">N</span></>}
                       arrow={false}
                     />
                   </CRXButton>
 
-                </div>
-                <div>
-                  <VolumeControl setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
-                </div>
-              </div>
-              <div className="playerViewMiddle">
-                <div className="playBackMode">
-                  <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
-                    {mode < 0 ? <span className="modeIconUndoLinker" style={{ background: modeColorMinus }}><span>{modeMinus}</span>{"x"}</span> : ""}
+                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn">
                     <CRXTooltip
-                      iconName={"fas fa-undo-alt undoAltIcon"}
+                      iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
-                      title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
+                      title={<>Bookmarks  <span className="BookmarksTooltip">B</span></>}
                       arrow={false}
                     />
-                  </button>
-                  <button className="MinusIconPosition" disabled={disabledModeMinus} onClick={() => modeSet(0)}>
-                    <CRXTooltip
-                      iconName={"icon icon-minus iconMinusUndo"}
-                      placement="top"
-                      title={<>Normal speed <span className="normalSped">/</span></>}
-                      arrow={false}
-                    />
-                  </button>
-                  <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
-                    {mode > 0 ? <span className="modeIconRedoLinker" style={{ background: modeColorPlus }}><span>{mode}</span>{"x"}</span> : ""}
-                    <CRXTooltip
-                      iconName={"fas fa-redo-alt undoRedoIcon"}
-                      placement="top"
-                      title={<>Playback speed up <span className="playBackTooltipUp">Shift + .</span></>}
-                      arrow={false}
-                    />
-                  </button>
-                </div>
-              </div>
-              <div className="player_right_responsive">
-                <CRXButton color="primary" onClick={() => expandButton()} variant="contained" className="videoPlayerBtn">
-                  <CRXTooltip
-                    iconName={`${iconChanger ? "fas fa-chevron-up" : "fas fa-chevron-down"} CrxchevronDown`}
-                    placement="top"
-                    title={<>{iconChanger ? "Collapse" : "Expand"} <span className="RewindToolTip">x</span></>}
-                    arrow={false}
-                  />
-                </CRXButton>
-              </div>
-              <div className={` playerViewRight ${iconChanger ? 'clickViewRightBtn' : ""}`}>
-                <div className="SettingGrid">
-                  <Menu
-                    align="start"
-                    viewScroll="initial"
-                    direction="top"
+                  </CRXButton>
+                  {multiTimelineEnabled && <div className="MenuListGrid">
+                    <Menu
+                      align="start"
+                      viewScroll="initial"
+                      direction="top"
+                      className="ViewScreenMenu"
+                      menuButton={
+                        <i>
+                          <CRXTooltip
+                            iconName={"fas fa-table iconTableClr"}
+                            placement="top"
+                            title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                            arrow={false}
+                          />
+                        </i>
+                      }
+                    >
+                      <MenuItem onClick={screenClick.bind(this, screenViews.Single)}  >
+                        Single View
+                      </MenuItem>
+                      <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
+                        Side by Side
+                      </MenuItem>
+                      <MenuItem onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
+                        Videos on Side
+                      </MenuItem>
+                      <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
+                        Grid up to 4
+                      </MenuItem>
+                      <MenuItem onClick={screenClick.bind(this, screenViews.Grid6)}>
+                        Grid up to 6
+                      </MenuItem>
+                      <MenuItem>
+                        <FormControlLabel control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} label="Side Data Panel" />
+                      </MenuItem>
 
-                    className="ViewScreenMenu"
-                    menuButton={
-                      <i>
+                    </Menu >
+                  </div>}
+                  <div className="playerView">
+                    {ViewScreen ?
+                      <div onClick={viewScreenEnter} >
                         <CRXTooltip
-                          iconName={"fas fa-cog faCogIcon"}
+                          iconName={"fas fa-expand-wide"}
                           placement="top"
-                          title={<>Settings <span className="settingsTooltip">,</span></>}
+                          title={<>Full screen <span className="FullScreenTooltip">F</span></>}
                           arrow={false}
                         />
-                      </i>
-                    }
-                  >
-                    <MenuItem>
-                      {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
-                    </MenuItem>
-
-                  </Menu >
-                </div>
-                <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn">
-                  <CRXTooltip
-                    iconName={"fas fa-comment-alt-plus commentAltpPlus"}
-                    placement="top"
-                    title={<>Notes <span className="notesTooltip">N</span></>}
-                    arrow={false}
-                  />
-                </CRXButton>
-
-                <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn">
-                  <CRXTooltip
-                    iconName={"fas fa-bookmark faBookmarkIcon"}
-                    placement="top"
-                    title={<>Bookmarks  <span className="BookmarksTooltip">B</span></>}
-                    arrow={false}
-                  />
-                </CRXButton>
-                {multiTimelineEnabled && <div className="MenuListGrid">
-                  <Menu
-                    align="start"
-                    viewScroll="initial"
-                    direction="top"
-                    className="ViewScreenMenu"
-                    menuButton={
-                      <i>
+                      </div> :
+                      <div onClick={viewScreenExit}>
                         <CRXTooltip
-                          iconName={"fas fa-table iconTableClr"}
+                          iconName={"fas fa-compress-wide"}
                           placement="top"
-                          title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                          title={<>Minimize screen <span className="FullScreenTooltip">M</span></>}
                           arrow={false}
                         />
-                      </i>
-                    }
-                  >
-                    <MenuItem onClick={screenClick.bind(this, screenViews.Single)}  >
-                      Single View
-                    </MenuItem>
-                    <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
-                      Side by Side
-                    </MenuItem>
-                    <MenuItem onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
-                      Videos on Side
-                    </MenuItem>
-                    <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
-                      Grid up to 4
-                    </MenuItem>
-                    <MenuItem onClick={screenClick.bind(this, screenViews.Grid6)}>
-                      Grid up to 6
-                    </MenuItem>
-                    <MenuItem>
-                      <FormControlLabel control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} label="Side Data Panel" />
-                    </MenuItem>
+                      </div>}
+                  </div>
 
-                  </Menu >
-                </div>}
-                <div className="playerView">
-                  {ViewScreen ?
-                    <div onClick={viewScreenEnter} >
-                      <CRXTooltip
-                        iconName={"fas fa-expand-wide"}
-                        placement="top"
-                        title={<>Full screen <span className="FullScreenTooltip">F</span></>}
-                        arrow={false}
-                      />
-                    </div> :
-                    <div onClick={viewScreenExit}>
-                      <CRXTooltip
-                        iconName={"fas fa-compress-wide"}
-                        placement="top"
-                        title={<>Minimize screen <span className="FullScreenTooltip">M</span></>}
-                        arrow={false}
-                      />
-                    </div>}
                 </div>
-
               </div>
             </div>
-          </div>
-          {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} />}
-          {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-          {startTimelineSync == false && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
-        </FullScreen>
-        {openBookmarkForm && <VideoPlayerBookmark
-          setopenBookmarkForm={setopenBookmarkForm}
-          seteditBookmarkForm={seteditBookmarkForm}
-          openBookmarkForm={openBookmarkForm}
-          editBookmarkForm={editBookmarkForm}
-          videoHandle={videoHandlers[0]}
-          AssetData={data[0]}
-          EvidenceId={EvidenceId}
-          BookmarktimePositon={bookmarktime}
-          bookmark={bookmark}
-          Data={data}
-          setData={setdata}
-          bookmarkAssetId={bookmarkAssetId}
-          bookmarkMsgRef={bookmarkMsgRef}
-        />}
-        {openNoteForm && <VideoPlayerNote
-          setopenNoteForm={setopenNoteForm}
-          seteditNoteForm={seteditNoteForm}
-          openNoteForm={openNoteForm}
-          editNoteForm={editNoteForm}
-          AssetData={data[0]}
-          EvidenceId={EvidenceId}
-          NotetimePositon={bookmarktime}
-          note={note}
-          Data={data}
-          setData={setdata}
-          noteAssetId={noteAssetId}
-          noteMsgRef={bookmarkMsgRef}
-        />}
+            {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} />}
+            {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
+            {startTimelineSync == false && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
+          </FullScreen>
+          {openBookmarkForm && <VideoPlayerBookmark
+            setopenBookmarkForm={setopenBookmarkForm}
+            seteditBookmarkForm={seteditBookmarkForm}
+            openBookmarkForm={openBookmarkForm}
+            editBookmarkForm={editBookmarkForm}
+            videoHandle={videoHandlers[0]}
+            AssetData={data[0]}
+            EvidenceId={EvidenceId}
+            BookmarktimePositon={bookmarktime}
+            bookmark={bookmark}
+            Data={data}
+            setData={setdata}
+            bookmarkAssetId={bookmarkAssetId}
+            bookmarkMsgRef={bookmarkMsgRef}
+          />}
+          {openNoteForm && <VideoPlayerNote
+            setopenNoteForm={setopenNoteForm}
+            seteditNoteForm={seteditNoteForm}
+            openNoteForm={openNoteForm}
+            editNoteForm={editNoteForm}
+            AssetData={data[0]}
+            EvidenceId={EvidenceId}
+            NotetimePositon={bookmarktime}
+            note={note}
+            Data={data}
+            setData={setdata}
+            noteAssetId={noteAssetId}
+            noteMsgRef={bookmarkMsgRef}
+          />}
 
-        <TimelineSyncInstructionsModal
-          setOpenTimelineSyncInstructions={setOpenTimelineSyncInstructions}
-          openTimelineSyncInstructions={openTimelineSyncInstructions} />
+          <TimelineSyncInstructionsModal
+            setOpenTimelineSyncInstructions={setOpenTimelineSyncInstructions}
+            openTimelineSyncInstructions={openTimelineSyncInstructions} />
 
-        <TimelineSyncConfirmationModal
-          setOpenTimelineSyncConfirmation={setOpenTimelineSyncConfirmation}
-          openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
+          <TimelineSyncConfirmationModal
+            setOpenTimelineSyncConfirmation={setOpenTimelineSyncConfirmation}
+            openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
 
+        </div>
       </div>
-    </div>
-  );
+    </>);
 }
 
 export default VideoPlayerBase
