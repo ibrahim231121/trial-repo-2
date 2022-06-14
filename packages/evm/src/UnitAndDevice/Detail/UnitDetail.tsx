@@ -44,6 +44,8 @@ export type UnitInfoModel = {
   groupName: string;
   configTemp: any;
   configTemplateList: any;
+  stationList: any;
+  stationId: any;
 };
 
 type UnitAndDevice = {
@@ -82,6 +84,8 @@ const UnitCreate = (props: historyProps) => {
     groupName: "",
     configTemp: "",
     configTemplateList: [],
+    stationList: [],
+    stationId: ""
   });
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -104,6 +108,10 @@ const UnitCreate = (props: historyProps) => {
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
+
+
+  const [stationName, SetStationName] = React.useState<string>('');
+
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
   }
@@ -145,6 +153,19 @@ const UnitCreate = (props: historyProps) => {
       TenantId: "1",
     }
   );
+
+  const [getstationList, stationList] = useGetFetch<any>(
+    BASE_URL_UNIT_SERVICE +
+      "/Stations/GetAllStationInfo",
+    {
+      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
+      TenantId: "1",
+    }
+  );
+
+
+
+
   const [getAllDevices, allDevicesList] = useGetFetch<any>(
     BASE_URL_UNIT_SERVICE +
       "/Stations/" +
@@ -161,6 +182,7 @@ const UnitCreate = (props: historyProps) => {
   React.useEffect(() => {
     getResponse();
     getconfigTemplateList();
+    getstationList();
     getAllDevices();
   }, []);
 
@@ -195,11 +217,18 @@ const UnitCreate = (props: historyProps) => {
   });
 
   React.useEffect(() => {
-    if (res !== undefined && configTemplateList !== undefined) {
+    if (res !== undefined && configTemplateList !== undefined &&  stationList !== undefined) {
+      SetStationName(res.station)
       let template: any = [{ displayText: "None", value: "0" }];
       configTemplateList.map((x: any) => {
         template.push({ displayText: x.name, value: x.id });
       });
+
+
+        let stationlst: any = [{ displayText: "None", value: "0" }];
+        stationList.map((x: any) => {
+          stationlst.push({ displayText: x.name, value: x.id });
+        });
 
       setUnitInfo({
         name: res.name,
@@ -207,6 +236,8 @@ const UnitCreate = (props: historyProps) => {
         groupName: res.triggerGroup,
         configTemp: res.configTemplateId,
         configTemplateList: template,
+        stationList: stationlst,
+        stationId: stationID
       });
       dispatch(
         enterPathActionCreator({
@@ -224,7 +255,9 @@ const UnitCreate = (props: historyProps) => {
     decription: string,
     groupName: string,
     configTemp: any,
-    configTemplateList: any
+    configTemplateList: any,
+    stationList: any,
+    stationId: any
   ) => {
     setUnitInfo({
       name: name,
@@ -232,6 +265,8 @@ const UnitCreate = (props: historyProps) => {
       groupName: groupName,
       configTemp: configTemp,
       configTemplateList: configTemplateList,
+      stationList: stationList,
+      stationId: stationId
     });
   };
 
@@ -242,6 +277,8 @@ const UnitCreate = (props: historyProps) => {
       groupName: res === undefined ? "" : res.triggerGroup,
       configTemp: res === undefined ? "" : res.configTemplateId, // none
       configTemplateList: configTemplateList,
+      stationList: stationList,
+      stationId: res === undefined ? "" : stationID
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -260,6 +297,8 @@ const UnitCreate = (props: historyProps) => {
       groupName: res === undefined ? "" : res.triggerGroup,
       configTemp: res === undefined ? "" : res.configTemplateId,
       configTemplateList: res === undefined ? [] : unitInfo.configTemplateList,
+      stationList: res === undefined ? [] : unitInfo.stationList,
+      stationId: res === undefined ? "": stationID
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -288,11 +327,12 @@ const UnitCreate = (props: historyProps) => {
       unitID +
       "/ChangeUnitInfo";
 
-    let unitData = {
+    let unitData = { 
       name: unitInfo.name,
       description: unitInfo.description,
       triggerGroup: unitInfo.groupName,
       unitConfigurationTemplate: unitInfo.configTemp,
+      stationId: unitInfo.stationId
     };
     let status = 0;
 
@@ -309,7 +349,8 @@ const UnitCreate = (props: historyProps) => {
         if (res.status == 204) {
           targetRef.current.showToaster({message: "Unit Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
           setIsSaveButtonDisabled(true);
-      
+          SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText)
+       
         }
         status = res.status;
         return res.text();
@@ -510,7 +551,7 @@ const UnitCreate = (props: historyProps) => {
                     <p>CURRENT VERSION</p>
                   </div>
                   <div className="pannelBoard">
-                    <h2>{res.station.toUpperCase()}</h2>
+                    <h2>{stationName.toUpperCase()}</h2>
                     <span className="noRow"></span>
                     <p>STATION</p>
                   </div>

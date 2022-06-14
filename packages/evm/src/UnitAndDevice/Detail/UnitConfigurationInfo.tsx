@@ -19,6 +19,8 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   const [groupName, setGroupName] = React.useState(info.groupName);
   const [configTemplate, setconfigTemplate] = React.useState(info.configTemp);
   const [configList, setconfigList] = React.useState(info.configTemplateList);
+  const [stationlst, setstationList] = React.useState(info.stationList);
+  const [stationId, setstationId] = React.useState(info.stationId);
 
   const onChangeName = (e: any) => {
     onChangeGroupInfo(     
@@ -26,7 +28,9 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       description,
       groupName,
       configTemplate,
-      configList
+      configList,
+      stationlst,
+      stationId
     );
     setName(e.target.value);
   };
@@ -36,7 +40,9 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       e.target.value,
       groupName,
       configTemplate,
-      configList
+      configList,
+      stationlst,
+      stationId
     );
     setDescription(e.target.value);
   };
@@ -46,24 +52,34 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       description,
       e.target.value,
       configTemplate,
-      configList
+      configList,
+      stationlst,
+      stationId,
     );
     setGroupName(e.target.value);
   };
   useEffect(() => {
+    
     setName(info.name);
     setDescription(info.description);
     setGroupName(info.groupName);
     setconfigTemplate(info.configTemp);
     setconfigList(info.configTemplateList);
+    setstationList(info.stationList);
+    setstationId(info.stationId);
   }, [info]);
 
   const [formpayloadErr, setFormPayloadErr] = React.useState({
     nameErr: "",
   });
   const onChange = (e: any) => {
-    onChangeGroupInfo(name, description, groupName, e.target.value, configList);
+    onChangeGroupInfo(name, description, groupName, e.target.value, configList, stationlst, stationId);
     setconfigTemplate(e.target.value);
+  };
+
+  const onChangeStation = (e: any) => {
+    onChangeGroupInfo(name, description, groupName, configTemplate, configList, stationlst, e.target.value);
+    setstationId(e.target.value);
   };
 
   const validateUserName = ( name: string):{ error: boolean; errorMessage: string } => {
@@ -118,6 +134,20 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
             onChange={onChange}
           />
         </div>
+
+
+        <div className="configurationTemplateLabel">
+          <label>Station</label>
+          <CRXSelectBox
+            name="Station"
+            value={info.stationId == "" ? 0 : info.stationId}
+            icon={true}
+            options={stationlst}
+            onChange={onChangeStation}
+          />
+        </div>
+
+
         <div className="groupInfoInputs">
           <TextField
             error={!!formpayloadErr.nameErr}
