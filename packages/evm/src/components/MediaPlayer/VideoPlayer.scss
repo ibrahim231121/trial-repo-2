@@ -1,4 +1,3 @@
-
 #crx_video_player {
   // width: 91%;
   background-color: var(--color-Black);
@@ -30,48 +29,47 @@
     }
     .videoPlayer_Timeline_Time {
       display: flex;
-      justify-content: space-between;  
+      justify-content: space-between;
       flex: 1;
       padding-top: 5px;
-      color: #FFFFFF;
+      color: #ffffff;
       font-size: 14px;
       font-family: var(--base-font-family);
       .V_timeline_start_time {
-
       }
-      .V_timeline_end_time{
-
+      .V_timeline_end_time {
       }
     }
     .main-control-bar {
       #SliderControlBar {
         position: relative;
         &::before {
-          position : absolute;
-          content : "";
+          position: absolute;
+          content: "";
           width: 2px;
-          height : inherit;
-          background : #D79903;
-          left:0px;
+          height: inherit;
+          background: #d79903;
+          left: 0px;
           top: 0px;
           z-index: 9;
-          transition: all 0.25s ease-in-out,
+          transition: all 0.25s ease-in-out;
         }
         &::after {
-          position : absolute;
-          content : "";
+          position: absolute;
+          content: "";
           width: 2px;
-          height : inherit;
-          background : #D79903;
-          right:0px;
+          height: inherit;
+          background: #d79903;
+          right: 0px;
           top: 0px;
           z-index: 9;
-          transition: all 0.25s ease-in-out,
+          transition: all 0.25s ease-in-out;
         }
 
         &:hover {
-          &::before, &::after{
-            transform: scaley(2.5),
+          &::before,
+          &::after {
+            transform: scaley(2.5);
           }
         }
         .MuiSlider-thumb {
@@ -80,14 +78,12 @@
           }
         }
       }
-    
+
       &:hover {
         .MuiSlider-thumb {
           visibility: visible !important;
         }
       }
-      
-      
     }
   }
 
@@ -97,6 +93,69 @@
   .videoContainer {
     padding: 0 14px;
     position: relative;
+
+    .videoFrontLayer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      margin: auto;
+      display: block;
+      height: 100%;
+      width: 100%;
+    }
+    .alignmentPlayPause {
+      &.crxAddTransition {
+        .crxAlignmentPausePlay {
+          -webkit-animation-name: fadeOut;
+          animation-name: fadeOut;
+        }
+      }
+
+      i {
+        color: var(--color-White);
+
+        &.icon-pause2 {
+          font-size: 92px;
+        }
+        &.icon-play4 {
+          font-size: 80px;
+          position: relative;
+          left: 1px;
+        }
+      }
+      .crxAlignmentPausePlay {
+        top: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        margin: auto;
+        place-content: center;
+        border-radius: 100%;
+        width: 134px;
+        height: 134px;
+        background-color: rgb(255, 255, 255, 0.15);
+        -webkit-animation-duration: 3s;animation-duration: 3s;
+        -webkit-animation-fill-mode: both;animation-fill-mode: both;
+      }
+      @-webkit-keyframes fadeOut {
+        0% {opacity: 1;}
+        100% {opacity: 0;}
+     }
+
+     @keyframes fadeOut {
+        0% {opacity: 1;}
+        100% {opacity: 0;}
+     }
+      .crxAlignmentPause {
+        width: 114px;
+        height: 114px;
+      }
+    }
   }
   .MuiGrid-grid-xs-3 {
     margin-bottom: 12px;
@@ -156,13 +215,13 @@
         color: white;
         font-size: 32px;
         top: -3px;
-        transition: .1s all linear;
+        transition: 0.1s all linear;
         &:hover {
           transform: scale(1.3);
         }
       }
     }
-    @media  only screen and (max-width:900px ) and (min-height:500px) {
+    @media only screen and (max-width: 900px) and (min-height: 500px) {
       .playerViewRight {
         display: none;
       }
@@ -184,17 +243,16 @@
     }
     .clickViewRightBtn {
       &::before {
-          position: absolute;
-          content: "";
-          background: black;
-          width: 315px;
-          height: 55px;
-          right: -44px;
-          z-index: 0;
-          top: -14px;
+        position: absolute;
+        content: "";
+        background: black;
+        width: 315px;
+        height: 55px;
+        right: -44px;
+        z-index: 0;
+        top: -14px;
       }
-  }
-
+    }
 
     .MenuListGrid {
       margin-bottom: -4px;
@@ -209,9 +267,9 @@
         i {
           color: var(--color-White);
           font-size: 32px;
-          transition: .1s all;
+          transition: 0.1s all;
           &:hover {
-            // font-size: 36px; 
+            // font-size: 36px;
             transform: scale(1.3);
             cursor: pointer;
           }
@@ -224,7 +282,7 @@
         background: var(--color-333333) !important;
         color: var(--color-White);
         border: none;
-        font-family:var(--base-font-family);
+        font-family: var(--base-font-family);
         font-weight: 500;
         line-height: 1.75;
         padding: 7px 7px;
@@ -240,14 +298,14 @@
     .playerViewMiddle {
       position: relative;
       top: -1px;
-      left:20px;
-      @media only screen and (max-width:1025px) {
+      left: 20px;
+      @media only screen and (max-width: 1025px) {
         left: 26px;
       }
-      @media only screen and (max-width:800px) {
+      @media only screen and (max-width: 800px) {
         left: 80px;
       }
-      @media only screen and (max-width:730px) {
+      @media only screen and (max-width: 730px) {
         left: 87px;
       }
       .UndoIconPosition {
@@ -264,7 +322,7 @@
         position: absolute;
         top: -7px;
         left: 10px;
-        transition: .1s all linear;
+        transition: 0.1s all linear;
         &:hover {
           transform: scale(1.3);
         }
@@ -316,7 +374,7 @@
       color: white;
     }
     i {
-      font-size:34px;
+      font-size: 34px;
       position: relative;
       top: 8px;
     }
@@ -329,16 +387,16 @@
     font-size: 28px;
     position: absolute;
     right: 51px;
-    transition: .2s all;
+    transition: 0.2s all;
     &:hover {
       // font-size: 36px;
       transform: scale(1.3);
       cursor: pointer;
     }
   }
-  .caretLeftIcon  {
+  .caretLeftIcon {
     font-size: 42px;
-    transition: .1s all;
+    transition: 0.1s all;
     position: absolute;
     &:hover {
       // font-size: 48px;
@@ -346,19 +404,19 @@
       cursor: pointer;
     }
   }
-   .caretRightIcon {
+  .caretRightIcon {
     position: absolute;
     left: 118px;
     font-size: 42px;
-    transition: .1s all;
+    transition: 0.1s all;
     &:hover {
       // font-size: 48px;
       transform: scale(1.3);
     }
   }
-   .backward3Icon   {
+  .backward3Icon {
     font-size: 34px;
-    transition: .1s all;
+    transition: 0.1s all;
     position: absolute;
     left: 85px;
     top: 4px;
@@ -367,14 +425,14 @@
       transform: scale(1.4);
     }
   }
-  .backward2Icon  {
+  .backward2Icon {
     font-size: 34px;
-    transition: .1s all;
+    transition: 0.1s all;
     position: absolute;
     left: 18px;
     top: 3px;
     &:hover {
-      // font-size: 42px;    
+      // font-size: 42px;
       transform: scale(1.4);
     }
   }
@@ -383,20 +441,20 @@
     position: absolute;
     left: 53px;
     top: 4px;
-    transition: .1s all;
+    transition: 0.1s all;
     &:hover {
-      // font-size: 42px;    
+      // font-size: 42px;
       transform: scale(1.3);
     }
   }
   .iconPause2 {
     font-size: 30px;
-    transition: .1s all;
+    transition: 0.1s all;
     left: 53px;
     top: 5px;
     position: absolute;
     &:hover {
-      // font-size: 42px;    
+      // font-size: 42px;
       transform: scale(1.3);
     }
   }
@@ -404,32 +462,32 @@
     span {
       color: white;
       font-size: 28px;
-      transition: .2s all;
+      transition: 0.2s all;
       &:hover {
-      // font-size: 34px;
-      transform: scale(1.3);
-      margin-top: -7px;
+        // font-size: 34px;
+        transform: scale(1.3);
+        margin-top: -7px;
       }
     }
   }
   .iconMinusUndo {
     font-size: 28px;
-    transition: .1s all linear;
+    transition: 0.1s all linear;
     &:hover {
       // font-size: 36px;
-      transform:scale(1.3);
+      transform: scale(1.3);
     }
   }
-  .undoAltIcon , .undoRedoIcon  {
+  .undoAltIcon,
+  .undoRedoIcon {
     font-size: 25px;
-    transition: .1s all;
-  
+    transition: 0.1s all;
   }
   .faCogIcon {
     font-size: 28px;
     color: white;
     margin-right: -15px;
-    transition: .1s all;
+    transition: 0.1s all;
     &:hover {
       cursor: pointer;
       // font-size: 36px;
@@ -440,7 +498,7 @@
     font-size: 26px;
     position: absolute;
     right: 133px;
-    transition: .1s all;
+    transition: 0.1s all;
     &:hover {
       // font-size: 34px;
       transform: scale(1.3);
@@ -450,7 +508,7 @@
     font-size: 26px;
     position: absolute;
     right: 99px;
-    transition: .1s all;
+    transition: 0.1s all;
     &:hover {
       // font-size: 34px;
       transform: scale(1.3);
@@ -462,19 +520,19 @@
     top: 49%;
     margin-top: 64px;
     margin-left: 3px;
-    @media(max-width:730px) {
+    @media (max-width: 730px) {
       margin-top: 10px;
     }
     i {
       color: white;
-      transition: .5s all linear;
+      transition: 0.5s all linear;
       font-size: 33px;
     }
   }
   .modeNumCount {
     font-size: 16px;
   }
-  .modeBtnIconLeft{
+  .modeBtnIconLeft {
     transform: rotate(330deg);
     font-size: 28px;
     display: block;
@@ -502,14 +560,13 @@
       padding: 5px 4px;
       border: 1px solid #3333;
       transform: rotate(28deg);
-        span {
-          font-size: 12px;
-        }
+      span {
+        font-size: 12px;
+      }
     }
-    
   }
 
-  .modeBtnIconRight{
+  .modeBtnIconRight {
     transform: rotate(54deg);
     font-size: 28px;
     display: block;
@@ -551,10 +608,9 @@
     }
   }
   .videoFR_Screen {
-    video 
-    {
+    video {
       border: 10px solid black;
-     }
+    }
   }
 }
 
@@ -587,22 +643,20 @@
   top: 9px;
   left: 8px;
   svg {
-    transition: .1s all linear;
+    transition: 0.1s all linear;
   }
-    &:hover {
-      svg {
-        transform: scale(1.5);
-      }
+  &:hover {
+    svg {
+      transform: scale(1.5);
     }
-  
+  }
 }
-.handleforwardIcon  {
+.handleforwardIcon {
   position: relative;
   left: 133px;
   top: 10px;
   svg {
-    transition: .1s all linear;
-
+    transition: 0.1s all linear;
   }
   &:hover {
     svg {
@@ -612,14 +666,13 @@
 }
 
 .playBackMode {
-
   button {
     margin: 0 4px;
     background: var(--color-transparent);
     border: none;
     &:disabled {
       i {
-      color: #979797;
+        color: #979797;
       }
     }
     i {
@@ -629,7 +682,7 @@
       &:hover {
         cursor: pointer;
       }
- 
+
       span {
         top: 10px;
         position: absolute;
@@ -653,7 +706,7 @@
         }
       }
     }
-    .undoAltIcon  {
+    .undoAltIcon {
       span {
         top: 3px !important;
         transform: rotate(306deg) !important;
@@ -670,7 +723,6 @@
       span {
         transform: rotate(-50deg);
       }
-
     }
     .fa-redo-alt {
       transform: rotate(-38deg);
@@ -690,7 +742,7 @@
     font-weight: 700;
     font-size: 10px;
     margin-left: 5px;
-    margin-top: 5px; 
+    margin-top: 5px;
     span {
       font-size: 12px;
     }
@@ -710,25 +762,24 @@
     span {
       font-size: 12px;
     }
-
   }
   .UndoIconHover {
-    transition: .1s all linear;
+    transition: 0.1s all linear;
     &:hover {
       .modeIconUndoLinker {
-          // font-size: 13px;
+        // font-size: 13px;
         cursor: pointer;
       }
       .modeIconRedoLinker {
         // font-size: 13px;
         cursor: pointer;
       }
-    .undoAltIcon , .undoRedoIcon   {
+      .undoAltIcon,
+      .undoRedoIcon {
         // font-size: 30px !important;
         cursor: pointer !important;
-      
-       }
-       transform: scale(1.3);
+      }
+      transform: scale(1.3);
     }
   }
 }
@@ -740,27 +791,18 @@
     }
   }
 }
-
-.gridFilterTextBox{
-  // display: inline-flex !important;
-  // margin-bottom: 15px;
-}
-// .gridFilterTextBox input{
-//   margin-left: 20px !important;
-//   width: 300px !important;
-// }
-.custom-class{
+.custom-class {
   display: inline-flex !important;
   padding-left: 6px;
 }
-.custom-class img{
+.custom-class img {
   margin-left: 48px !important;
   margin-bottom: 15px;
 }
 .mapContainerhh {
   width: 200px;
- background-color: red;
-display: inline-block;
+  background-color: red;
+  display: inline-block;
 }
 .videoMenuCss {
   position: absolute;
@@ -785,7 +827,7 @@ display: inline-block;
 }
 .MuteTool {
   margin: 0 0;
-  span  {
+  span {
     color: white;
     margin-left: 77px;
     font-size: 14px;
@@ -793,7 +835,6 @@ display: inline-block;
   i {
     color: white;
     font-size: 14px;
-
   }
   .fa-long-arrow-up {
     margin-left: 44px;
@@ -803,11 +844,11 @@ display: inline-block;
   }
 }
 .MuteTool_1 {
-  margin-bottom: 8px ;
-} 
+  margin-bottom: 8px;
+}
 .MuteTool_3 {
-  margin-top: 14px ;
-} 
+  margin-top: 14px;
+}
 .playBackTooltip {
   color: white;
   font-size: 14px;
@@ -858,10 +899,156 @@ span.playBackTooltipUp {
   left: 50%;
   top: 50%;
   margin-top: 5%;
-  transition: .1s all ;
+  transition: 0.1s all;
   svg {
     circle {
       display: none;
     }
+  }
+}
+.___CRXBookMark__ {
+  &.___CRXBookNote__ {
+    .CrxEditForm {
+      margin-bottom: 80px;
+    }
+  }
+  &.crx-model {
+    .gridFilterTextBox {
+      min-width: 470px;
+      max-width: 470px;
+      padding: 0;
+      .errors {
+        .MuiInput-underline {
+          textarea {
+            outline: 2px solid #aa1d1d;
+            border: 1px solid transparent;
+            &:focus {
+              border: 1px solid #888787;
+              outline: 2px solid #aa1d1d;
+            }
+          }
+        }
+      }
+      h6 {
+        height: 25px;
+        margin-top: 2px;
+         .inputLabelReq{
+          margin-left: 6px;
+          line-height: 24px;
+         }
+      }
+      textarea {
+        width: 100%;
+        height: 73px !important;
+        min-height: 73px;
+        overflow: auto !important;
+        text-indent: 0;
+        padding: 15px 15px;
+        max-height: 73px;
+        font-family: var(--Arial-font-family);
+
+        &::-webkit-scrollbar {
+          width: 1em;
+          height: 15px;
+        }
+
+        &::-webkit-scrollbar-track {
+          border-radius: 0px;
+          margin-left: 0px;
+          border-right: 0px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 0px;
+          background-color: var(--color-c8c8c8);
+          outline: 0px solid var(--color-slategrey);
+          border: 2px solid var(--color-black-3);
+          background-clip: content-box;
+        }
+
+        &::-webkit-scrollbar-track-piece {
+          background-color: var(--color-f1f1f1);
+          border: 1px solid var(--color-d1d2d4) !important;
+          border-right: 0px;
+          border-left: 0px;
+        }
+
+        &::-webkit-scrollbar-button:vertical:decrement {
+          width: 30px;
+          height: 15px;
+          border: 0px solid var(--color-transparent);
+          background: url("../../Assets/Images/scrollBarVerTop.jpg") no-repeat
+            center center;
+          background-size: contain;
+          background-clip: border-box;
+          position: relative;
+          background-position: 0 0 !important;
+          top: 0 !important;
+        }
+
+        &::-webkit-scrollbar-button:vertical:increment {
+          width: 30px;
+          height: 15px;
+          border: 1px solid var(--color-d1d2d4);
+
+          background: url("../../Assets/Images/scrollVerBottom.png") no-repeat
+            center top var(--color-f1f1f1);
+          background-size: contain;
+
+          background-clip: border-box;
+          position: relative;
+          background-position: 0 0 !important;
+          left: 0 !important;
+        }
+
+        &::-webkit-scrollbar:vertical {
+          display: block !important;
+        }
+        &::-webkit-scrollbar:horizontal {
+          display: none !important;
+        }
+      }
+      .requiredLable {
+        .inputLabel {
+          font-size: 13px;
+        }
+      }
+      .errorStateContent {
+        padding: 0;
+        margin: -2px 0;
+      }
+    }
+    .crx-requird-check {
+      margin-bottom: 69px;
+      margin-top: 16px;
+      label {
+        vertical-align: middle;
+        margin-left: 7px;
+      }
+      .crxCheckBoxCreate {
+        padding-left: 3px;
+      }
+    }
+    .modelTitle {
+      h2 {
+        font-size: 16px;
+      }
+    }
+    .crx-message-alert {
+      .crxAlertSnapShotEditForm {
+        height: 35px;
+      }
+    }
+  }
+  .__CRXAlertDes__ {
+    .crx-message-alert {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+  .categoryModalFooter {
+    padding: 22px 25px 25px !important;
+    height: auto;
+    display: block;
   }
 }

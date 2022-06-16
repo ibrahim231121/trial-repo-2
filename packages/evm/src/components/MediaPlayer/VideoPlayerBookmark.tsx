@@ -406,13 +406,13 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             <CRXModalDialog
                 maxWidth="gl"
                 title="Bookmark"
-                className={'CRXModal ' + removeClassName}
+                className={'CRXModal ___CRXBookMark__' + removeClassName}
                 modelOpen={openModal}
                 onClose={handleClose}
                 defaultButton={false}
                 showSticky={false}
             >
-                <div className=''>
+                <div className={` ${alert == true ? "__CRXAlertDes__" : ""}`}>
                     <CRXAlert
                         ref={alertRef}
                         message={responseError}
@@ -422,12 +422,13 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                         open={alert}
                         setShowSucess={() => null}
                     />
-                    <div className='modalEditCrx'>
+                    <div className="modalEditCrx">
                         <div className='CrxEditForm'>
                             <TextField
                                 error={!!descriptionErr}
                                 errorMsg={descriptionErr}
                                 value={formpayload.description}
+                                multiline
                                 label='Description'
                                 className='description-input'
                                 required={true}
@@ -444,7 +445,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                                 <label>Take snapshort</label>
                             </div>
                         </div>
-                        <div className='crxFooterEditFormBtn'>
+                        <div className='categoryModalFooter CRXFooter'>
                             <CRXButton className='primary' onClick={onSubmit} disabled={onSave}>
                                 Save
                             </CRXButton>

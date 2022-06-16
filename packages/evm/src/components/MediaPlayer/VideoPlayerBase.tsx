@@ -320,12 +320,12 @@ const VideoPlayerBase = (props: any) => {
   }
   async function Durationfinder(Data: any) {
     var data = JSON.parse(JSON.stringify(Data));
-    var timeOffset = data[0].recording.timeOffset;
+    var timeOffset = data[0].recording.timeOffset ?? 0;
     var maximum_endpoint = new Date(data[0].recording.ended).getTime() + timeOffset;
     var minimum_startpont = new Date(data[0].recording.started).getTime() + timeOffset;
     for (let x = 1; x < data.length; x++) {
       if (data[x].multivideotimeline) {
-        var T_timeOffset = data[x].recording.timeOffset;
+        var T_timeOffset = data[x].recording.timeOffset ?? 0;
         var T_max_endpoint = new Date(data[x].recording.ended).getTime() + T_timeOffset;
         var T_min_startpont = new Date(data[x].recording.started).getTime() + T_timeOffset;
         maximum_endpoint = maximum_endpoint > T_max_endpoint ? maximum_endpoint : T_max_endpoint;
@@ -352,7 +352,7 @@ const VideoPlayerBase = (props: any) => {
     let rowdetail: Timeline[] = [];
     let bufferingArr: any[] = [];
     for (let x = 0; x < data.length; x++) {
-      let timeOffset = data[x].recording.timeOffset;
+      let timeOffset = data[x].recording.timeOffset ?? 0;
       debugger;
       let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
       let recording_start_point = (recording_start_time - minstartpoint) / 1000;
@@ -504,7 +504,7 @@ const VideoPlayerBase = (props: any) => {
     });
     setisPlayingFwRw(false);
     const playerCurrentTime = Math.round(timer * 1000);
-    let timeOffset = data[0].recording.timeOffset;
+    let timeOffset = data[0].recording.timeOffset ?? 0;
     let startdiff = new Date(data[0].recording.started).getTime() + timeOffset - (maxminendpoint?.Min_Start_point ?? 0);
     let enddiff = new Date(data[0].recording.ended).getTime() + timeOffset - (maxminendpoint?.Min_Start_point ?? 0);
     if (playerCurrentTime >= startdiff && playerCurrentTime <= enddiff) {
@@ -1283,6 +1283,7 @@ const VideoPlayerBase = (props: any) => {
                 setData={setdata}
                 evidenceId={EvidenceId}
                 data={props.data}
+                isPlaying={isPlaying}
                 timelinedetail={timelinedetail}
                 settimelinedetail={settimelinedetail}
                 viewNumber={viewNumber}

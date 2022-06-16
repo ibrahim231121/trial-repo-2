@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState , useRef } from "react";
 import Grid from '@material-ui/core/Grid';
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
 import { Switch } from "@material-ui/core";
 import AssetDetailsDropdown from "../../../src/Application/Assets/Detail/AssetDetailsDropdown"
+import { Style } from "@material-ui/icons";
 
 interface VideoScreenProp {
   viewNumber?: number,
@@ -19,16 +20,16 @@ interface VideoScreenProp {
   data:any,
   evidenceId:any,
   setData:any,
-  onClickBookmarkNote:any,
-  setupdateVideoSelection:any
+  isPlaying :boolean
+  setupdateVideoSelection: any
+  onClickBookmarkNote:any
+
 }
 
-
-const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data ,evidenceId,setData,setupdateVideoSelection,onClickBookmarkNote}: VideoScreenProp) => {
+const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
-
 
   const getVideo = (camIndexVideoData: any) => {
     if (camIndexVideoData !== undefined) {
@@ -81,6 +82,21 @@ const VideoScreen = ({ viewNumber, timelinedetail, settimelinedetail, mapEnabled
     var camIndexVideoData = timelinedetail.find((x: any) => x.indexNumberToDisplay == camIndex && x.enableDisplay);
     return (
       <div className="videoContainer">
+              <div
+          className="videoFrontLayer">
+          <span className={`alignmentPlayPause ${isPlaying ? "crxAddTransition"  : ""}`} >
+            
+            {isPlaying ? (
+              <div className="crxAlignmentPausePlay crxAlignmentPause">
+              <i className="icon icon-pause2"></i>
+              </div>
+            ) : (
+              <div className="crxAlignmentPausePlay crxAlignmentPlay">
+                 <i className="icon icon-play4"></i>
+              </div>
+            )}
+          </span>
+        </div>
         {getVideo(camIndexVideoData)}
 
         <div className="videoMenuCss" style={{ display: camIndex == 1 ? 'none' : 'block' }}>

@@ -8,20 +8,18 @@
   align-items: center;
   width: 100%;
   bottom: 10px;
-  padding-bottom:35px;
-  // background: var(--color-White);
-  font-family:var(--Arial-font-family);
-  z-index: 2;
-
+  font-family: var(--Arial-font-family);
+  z-index: 5;
+  background: var(--color-White);
   i {
     position: absolute;
     right: 16px;
     font-size: 24px;
-    color: var(--color-White-2);
+    color: var(--color-d1d2d4);
 
     &:hover {
-        color:var(--color-333333);
-        cursor: pointer;
+      color: var(--color-333333);
+      cursor: pointer;
     }
   }
 }

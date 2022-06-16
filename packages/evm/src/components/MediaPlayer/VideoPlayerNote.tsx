@@ -280,13 +280,13 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             <CRXModalDialog
                 maxWidth="gl"
                 title="Notes"
-                className={'CRXModal '}
+                className={'CRXModal ___CRXBookMark__ ___CRXBookNote__ '}
                 modelOpen={openModal}
                 onClose={handleClose}
                 defaultButton={false}
                 showSticky={false}
             >
-                <div className=''>
+                <div className={` ${alert == true ? "__CRXAlertDes__" : ""}`}>
                     <CRXAlert
                         ref={alertRef}
                         message={responseError}
@@ -303,13 +303,14 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                                 errorMsg={descriptionErr}
                                 value={description}
                                 label='Description'
+                                multiline
                                 className='description-input'
                                 required={true}
                                 onChange={(e: any) => setdescription(e.target.value)}
                                 onBlur={checkDescription}
                             />
                         </div>
-                        <div className='crxFooterEditFormBtn'>
+                        <div className='categoryModalFooter CRXFooter'>
                             <CRXButton className='primary' onClick={onSubmit} disabled={onSave}>
                                 Save
                             </CRXButton>

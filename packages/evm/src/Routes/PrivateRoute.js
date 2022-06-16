@@ -31,16 +31,16 @@ return (
                                                   state: { from: props.location }
                                                 }}
                                             />
-          if (isAuthenticated()){
-            if( getModuleIds().includes(moduleId) || moduleId === 0 ){ // moduleId === 0 this is temporary logic and will be removed once all the permission included into application.
-               return component;
-            }else{
-              return redirectToNotFoundComponent;
-            }  
-          }
-          else{
-              return redirectToLoginComponent;
-          }
+          // if (isAuthenticated()){
+          //   if( getModuleIds().includes(moduleId) || moduleId === 0 ){ // moduleId === 0 this is temporary logic and will be removed once all the permission included into application.
+                return component;
+          //   }else{
+          //     return redirectToNotFoundComponent;
+          //   }  
+          // }
+          // else{
+          //     return redirectToLoginComponent;
+          // }
         }}
       />
 )
