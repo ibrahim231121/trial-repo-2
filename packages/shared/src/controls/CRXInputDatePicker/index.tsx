@@ -23,6 +23,7 @@ const CRXInputDatePicker = ({
   id,
   minDate,
   maxDate,
+  disabled
 }: InputProps) => {
   return (
       <Input
@@ -32,6 +33,7 @@ const CRXInputDatePicker = ({
         name={name}
         onChange={onChange}
         id={id}
+        disabled = {disabled}
         type="datetime-local"
         inputProps={{ min: minDate, max: maxDate }}
       />
