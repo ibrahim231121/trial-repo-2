@@ -14,13 +14,17 @@ iframe {
     background-color: var(--color-333333);
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    padding: 0 38px 0 45px;
+    // justify-content: space-between;
+    justify-content: center;
+    // padding: 0 38px 0 45px;
     position: relative;
     top: -13px;
   }
   .LeftBoard {
     display: flex;
+  }
+  .LeftBoard div:first-child{
+    padding-left: 0px;
   }
   .LeftBoardMove {
     margin-left: -128px;
@@ -40,7 +44,8 @@ iframe {
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    width: 157px;
+    // width: 157px;
+    padding-left: 60px;
     h2 {
       color: var(--color-f2f2f2);
       font-size: 20px;
@@ -174,8 +179,18 @@ iframe {
 }
 
 .UnitDetailMain {
+  .crxMainTab .MuiTabs-indicator{
+    display: block;
+  }
+  .crxTabsPermission .MuiTab-root{
+    padding: 0px 25px;
+    min-width: 192px;
+    text-transform: uppercase;
+  }
   .CrxUnitDetailId {
     margin-top: 82px !important;
+    padding: 0 4px 0px 65px;
+    transition: 1s padding ease-out;
     .unitDeviceDetail {
       margin-top: 0 !important;
       margin-left: 0 !important;
@@ -197,7 +212,7 @@ iframe {
     margin-right: 3px;
     position: sticky;
     z-index: 99999999;
-    top: 96px;
+    top: 90px;
     display: flex;
     align-items: center;
     justify-content: flex-end;

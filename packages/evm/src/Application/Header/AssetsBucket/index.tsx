@@ -1024,6 +1024,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             /><span className="selectAllText">Select all</span>
                             View on assets bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
                           </div>
+                          <div className="bucketScroll">
                           <div className="bucketList" id="assetBucketLists">
                             {
                               assetBucketData.map((x: any, index) => {

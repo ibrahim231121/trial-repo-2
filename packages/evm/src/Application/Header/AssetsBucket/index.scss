@@ -141,6 +141,10 @@
         }
       }
     }
+    .bucketScroll{
+      overflow-y: auto;
+      height: calc(100% - 210px);
+    }
   }
 
   .bucketMessageHide {
@@ -986,8 +990,8 @@ body {
   flex: 1;
   flex-wrap: wrap;
   padding-top: 20px;
-  overflow-y: auto;
-  max-height: calc(100% - 210px);
+  // overflow-y: auto;
+  // max-height: calc(100% - 210px);
   .bucketLister {
     display: flex;
     flex: 1 1;
