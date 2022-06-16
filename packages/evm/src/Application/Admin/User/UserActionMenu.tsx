@@ -96,7 +96,6 @@ const UserActionMenu: React.FC<Props> = ({
     }
     // dispatch(e);
   };
-
   const onConfirm = () => {
     switch (modalType) {
       case "unlock": {
@@ -227,7 +226,7 @@ const UserActionMenu: React.FC<Props> = ({
             </div>
           </Restricted>
         </MenuItem>
-        {row?.status.toLocaleLowerCase() == "accountlocked" && row?.isADUser ? (
+        {row?.status.toLocaleLowerCase() == "accountlocked" && !row?.isADUser ? (
           <MenuItem>
             <Restricted moduleId={12}>
               <div className="crx-meu-content" onClick={unlockUser}>
@@ -241,7 +240,7 @@ const UserActionMenu: React.FC<Props> = ({
         ) : (
           <div></div>
         )}
-        {row?.status.toLocaleLowerCase() != "deactivated" && row?.isADUser ? (
+        {row?.status.toLocaleLowerCase() != "deactivated" && !row?.isADUser ? (
           <MenuItem>
             <Restricted moduleId={11}>
               <div className="crx-meu-content" onClick={deactivateUser}>

@@ -20,10 +20,12 @@ import {
   TextField,
   CRXRadio,
   CRXToaster,
-  CRXMultiSelectBoxLight
+  CRXMultiSelectBoxLight,
+  CRXConfirmDialog
 } from '@cb/shared';
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+
 
 let USER_DATA = {};
 
@@ -105,6 +107,7 @@ const CreateUserForm = () => {
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
   const [isADUser , setIsADUser] = useState<boolean>(false);
+  const [isOpen,setIsOpen] = useState<boolean>(false);
   const {getModuleIds} = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
   const userFormMessages = (obj: any) => {
@@ -174,7 +177,7 @@ else{
     }
   }, [userPayload]);
 
-  const cookies = new Cookies();
+  const cookiesBiscuit = new Cookies();
 
   var current_date;
   if (formpayload.deactivationDate != null) {
@@ -300,7 +303,7 @@ else{
     {
       moduleIds: 11,
       label: ActivationLinkLabel,
-      isDisabled : {isADUser},
+      isDisabled : isADUser,
       // label: "Send Activation Link",
       value: 'sendAct',
       Comp: () => sendActivationLink()
@@ -308,14 +311,14 @@ else{
     {
       moduleIds: 0,
       label: "Generate Temporary Password",
-      isDisabled : {isADUser},
+      isDisabled : isADUser,
       value: "genTemp",
       Comp: () => generateTempPassComp(),
     },
     {
       moduleIds: 0,
       label: "Manually Set Password",
-      isDisabled : {isADUser},
+      isDisabled : isADUser,
       value: "manual",
       Comp: () => manuallyGeneratePass(),
     },
@@ -327,7 +330,7 @@ else{
   const fetchGroups = async () => {
     const res = await fetch(GROUP_USER_LIST, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` }
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` }
     });
     var response = await res.json();
     var groupNames = response.map((x: any) => {
@@ -460,7 +463,7 @@ else{
     const payload = setAddPayload();
     await fetch(USER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
+      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
       body: JSON.stringify(payload)
     })
       .then(function (res) {
@@ -600,7 +603,7 @@ else{
 
     await fetch(urlEdit, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookies.get('access_token')}` },
+      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
       body: JSON.stringify(payload)
     })
       .then(function (res) {
@@ -926,11 +929,43 @@ useEffect(() => {
   }, [alert]);
 
   const redirectPage = () => {
+
+    const phoneNumber =
+        userPayload.contacts.length > 0
+          ? userPayload.contacts.find((x: any) => x.contactType === 1).number
+          : '';
+      const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
+    const user_temp = {
+      userName :  userPayload.account.userName,
+      firstName : userPayload.name.first,
+      middleInitial : userPayload.name.middle,
+      lastName : userPayload.name.last,
+      email : userPayload.email,
+      phoneNumber : phoneNumber,
+      userGroups : userGroupNames,
+      deactivationDate : userPayload.deactivationDate,
+    }
+    if(JSON.stringify(formpayload) !== JSON.stringify(user_temp)){
+      console.log("running inside")
+      setIsOpen(true);
+    }
+    else{
+      history.push(
+        urlList.filter((item: any) => item.name === urlNames.adminUsers)[0]
+          .url
+      );
+    }
+    
+  }
+
+  const closeDialog = () => {
+    setIsOpen(false);
     history.push(
       urlList.filter((item: any) => item.name === urlNames.adminUsers)[0]
         .url
     );
-  }
+  };
+
 
   return (
     <div className='createUser CrxCreateUser CreateUserUi '>
@@ -1055,6 +1090,7 @@ useEffect(() => {
               className='users-input'
               onChange={(e: any) => setFormPayload({ ...formpayload, deactivationDate: e.target.value })}
               minDate={minStartDate()}
+              disabled = {isADUser}
               maxDate=''
             />
           </div>
@@ -1089,8 +1125,26 @@ useEffect(() => {
         >
           Close
         </CRXButton>
-       
         </div>
+        <CRXConfirmDialog
+        setIsOpen={() => setIsOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isOpen}
+        className="userGroupNameConfirm"
+        primary="Yes, close"
+        secondary="No, do not close"
+        text="user group form"
+      >
+        <div className="confirmMessage">
+          You are attempting to <strong>close</strong> the{" "}
+          <strong>'user form'</strong>. If you close the form, any changes
+          you've made will not be saved. You will not be able to undo this
+          action.
+          <div className="confirmMessageBottom">
+            Are you sure you would like to <strong>close</strong> the form?
+          </div>
+        </div>
+      </CRXConfirmDialog>
       </div>
     </div>
   );
