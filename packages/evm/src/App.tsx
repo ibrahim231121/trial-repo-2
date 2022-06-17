@@ -14,16 +14,15 @@ import { getCategoryAsync } from "./Redux/categoryReducer";
 import { useSelector } from "react-redux";
 import { cultureActionCreator } from "./Redux/languageSlice";
 import { RootState } from "./Redux/rootReducer";
-import { CRXDropDown } from "@cb/shared";
 import { CRXSelectBox } from "@cb/shared";
 import "./App.scss";
 import Cookies from 'universal-cookie';
 import { setupSignalRConnection } from "./utils/hub_config";
 
-import { SnackbarProvider, useSnackbar } from "notistack/dist/index";
+import { SnackbarProvider } from "notistack/dist/index";
 
 import ApplicationPermissionProvider from "./ApplicationPermission/ApplicationPermissionProvider";
-import { Permission } from "./ApplicationPermission/types";
+
 import { getToken } from "./Login/API/auth";
 import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
