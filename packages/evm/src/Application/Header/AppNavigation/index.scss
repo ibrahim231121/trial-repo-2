@@ -151,7 +151,7 @@
             }
             ul {
                 li {
-                    &:first-child(1) {
+                    &::first-child(1) {
                         margin-bottom: 0px;
                     }
                     &:nth-child(3) {
