@@ -408,3 +408,23 @@
     padding-bottom: 0;
   }
 }
+
+
+.stationDeleteBody{
+  padding-top: 11px;
+  ._station_delete_pera{
+    margin: 0px;
+    padding-bottom: 32px;
+  }
+
+  ._station_delete_note {
+    padding-bottom: 40px;
+  }
+
+  ._station_delete_body_style {
+    font-size: 14px;
+    color:var(--color-333333);
+    font-family: var(--Arial-font-family);
+    font-weight: normal;
+  }
+}

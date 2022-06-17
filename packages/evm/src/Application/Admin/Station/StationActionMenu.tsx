@@ -227,17 +227,17 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         secondary={secondary}>
         {
           <>
-          <CRXAlert
+          {/* <CRXAlert
             message={message}
             alertType="inline"
             type="error"
             open={alert}
             setShowSucess={() => null}
-          />
-          <div >
-            <p>You are attempting to delete the station `{stationName}`.</p>
-            <p>You will not be able to undo this action.</p>
-            <p>Are you sure you would like to delete the station?</p>
+          /> */}
+          <div className='stationDeleteBody'>
+            <div className="_station_delete_pera _station_delete_body_style">You are attempting to delete the station <strong>`{stationName}`</strong>. You will not be able to undo this action.</div>
+            
+            <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to delete the station?</div>
           </div>
           </>
           

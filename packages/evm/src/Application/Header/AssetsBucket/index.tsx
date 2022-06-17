@@ -872,8 +872,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                 <Draggable
                   draggableId="assetBucketEmptyDraggable"
                   index={0}
-                  isDragDisabled={true}
-                >
+                  isDragDisabled={true}>
+
                   {(provided: any) => (
                     <div id="divMainBucket"
                       className="divMainBucket"
@@ -1057,12 +1057,13 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                               })
                             }
                           </div>
-
+                          </div>
                         </>
                       ) : (
                         <div className="bucketContent">Your Asset Bucket is empty.</div>
                       )
                       }
+                      
                     </div>
                   )}
                 </Draggable>
