@@ -12,6 +12,7 @@ import { CRXButton } from "@cb/shared";
 import CategoryFormOFAssetBucket from "./SubComponents/CategoryFormOFAssetBucket";
 import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBucket";
 import Cookies from "universal-cookie";
+import { CRXAlert } from "@cb/shared";
 
 interface Props {
   onClose: any;
@@ -146,7 +147,10 @@ const AddMetadataForm: React.FC<Props> = ({
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
   });
-
+  const [alertType, setAlertType] = useState<string>("inline");
+  const [alert, setAlert] = React.useState<boolean>(false);
+  const [responseError, setResponseError] = React.useState<string>("");
+  const [errorType, setErrorType] = useState<string>("error");
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
@@ -263,7 +267,7 @@ const AddMetadataForm: React.FC<Props> = ({
 
   let displayText: any = "";
   if (uploadFile.length != 0) {
-    let displayIdIndex = uploadFile[0].uploadedFileName.lastIndexOf(".");
+    
     displayText = uploadFile[0].uploadedFileName.substring(
       0,
       uploadFile[0].uploadedFileName.lastIndexOf(".")
@@ -583,6 +587,8 @@ const AddMetadataForm: React.FC<Props> = ({
     );
   };
 
+  
+
   const onAddMetaData = () => {
     const categories = insertCategory(formpayload.category);
 
@@ -750,6 +756,20 @@ const AddMetadataForm: React.FC<Props> = ({
         if (res.ok) {
           onClose();
           setAddEvidence(true);
+        } else if (res.status == 400) {
+          setAlert(true);
+          setResponseError(
+            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          );
+        }
+      })
+      .then((resp) => {
+        if (resp != undefined) {
+          let error = JSON.parse(resp);
+          if (error.errors != undefined) {
+            setAlert(true);
+            setResponseError(error.errors);
+          }
         }
       })
       .catch(function (error) {
@@ -1017,7 +1037,6 @@ const AddMetadataForm: React.FC<Props> = ({
     return [payload, uploadedFile, owners, formCategory, categoriesId];
   };
 
-  
   const onEdit = async (ids: any, assetId: any) => {
     let payload = setEditPayload();
     let urlEdit = EVIDENCE_ASSET_DATA_URL + "/" + ids + "/Assets/AddBulkAsset";
@@ -1078,6 +1097,12 @@ const AddMetadataForm: React.FC<Props> = ({
           return response.json();
         });
       }
+      if (res.status == 500 || res.status == 400) {
+        setAlert(true);
+        setResponseError(
+          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+        );
+      }
       if (res.ok) {
         onClose();
         setAddEvidence(true);
@@ -1130,6 +1155,14 @@ const AddMetadataForm: React.FC<Props> = ({
       case 0:
         return (
           <>
+            <CRXAlert
+              message={responseError}
+              className="crxAlertUserEditForm"
+              alertType={alertType}
+              type={errorType}
+              open={alert}
+              setShowSucess={() => null}
+            />
             <div className="CrxCreateUser">
               <div className="CrxIndicates">
                 <sup>*</sup> Indicates required field
@@ -1235,6 +1268,14 @@ const AddMetadataForm: React.FC<Props> = ({
       case 1:
         return (
           <>
+            <CRXAlert
+              message={responseError}
+              className="crxAlertUserEditForm"
+              alertType={alertType}
+              type={errorType}
+              open={alert}
+              setShowSucess={() => null}
+            />
             {formpayload.category.some((o: any) => o.form.length > 0) ? (
               formpayload.category.map((obj: any) => (
                 <CategoryFormOFAssetBucket categoryObject={obj} />
@@ -1266,7 +1307,11 @@ const AddMetadataForm: React.FC<Props> = ({
             Save
           </CRXButton>
         ) : (
-          <CRXButton className="primary"  disabled={isDisable} onClick={nextBtnHandler}>
+          <CRXButton
+            className="primary"
+            disabled={isDisable}
+            onClick={nextBtnHandler}
+          >
             Next
           </CRXButton>
         )}
