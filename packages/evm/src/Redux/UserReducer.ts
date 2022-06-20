@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
-import { USER_INFO_GET_URL, USER_INFO_UPDATE_URL } from '../utils/Api/url'
+import { USER_INFO_GET_URL, USER_INFO_UPDATE_URL, USER } from '../utils/Api/url'
 
 const cookies = new Cookies();
 const Users = [
@@ -1059,18 +1059,34 @@ const Users = [
 
 export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
-    async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
-        };
-        const resp = await fetch(USER_INFO_GET_URL, requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
+    async (filter?: any) => {
+        if(filter == null) {
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
+            };
+            const resp = await fetch(USER_INFO_GET_URL, requestOptions);
+            if (resp.ok) {
+                const response = await resp.json();
+                return response;
+            }
         }
+        else {
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
+                body: JSON.stringify(filter),
+            };
+            const resp = await fetch( USER + "/filter?Size=100&Page=1",requestOptions);
+            if (resp.ok) {
+                const response = await resp.json();
+                return response;
+            }
+        }
+        
     }
 );
+
 // export const getUsersInfoAsync: any = createAsyncThunk(
 //     'getUsersInfo',
 //     async () => {

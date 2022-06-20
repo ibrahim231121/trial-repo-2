@@ -8,7 +8,7 @@ import {
   CheckAllPageWise
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-//import { fixedColumnAlignment } from './FixedColumnAlignment'
+import { fixedColumnAlignment } from './FixedColumnAlignment'
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   page,
@@ -88,8 +88,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           <TableCell
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
             style={{
-              left: "58px",
-            //left: `${fixedColumnAlignment(dragVisibility,showCheckBoxesCol,2)}`,
+              // left: "58px",
+            left: `${fixedColumnAlignment(false,showCheckBoxesCol,2)}`,
                     position: "sticky", 
                     zIndex: 4 }}
           >
@@ -103,7 +103,12 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
                 {actionComponent}
               </div>
               :
-              null
+                (!showCheckBoxesCol && showActionSearchHeaderCell) ? 
+                  <div onClick={() => getRowOnActionClick(null)}>
+                    {actionComponent}
+                  </div>
+                  :
+                  null
             } 
           </TableCell>
         : null

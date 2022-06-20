@@ -4,10 +4,10 @@ export const fixedColumnAlignment = (showDragCol:boolean | undefined, showCheckB
       showDragCol === false ? x = "0px" : x = "60px"
     if(columnNumber === 2)
     {
-      showDragCol === false ? 
-        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? x = "0px" : x = "62px" 
-        : 
-        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? x = "60px" : x = "118px"                  
+      // showDragCol === false ? 
+        (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? x = "0px" : x = "60px" 
+        // : 
+        // (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? x = "60px" : x = "118px"                  
     }
     return x
   }

@@ -23,6 +23,7 @@ import {
   onSaveHeadCellData,
   onSetHeadCellVisibility,
   onMultipleCompare,
+  GridFilter
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
@@ -37,15 +38,16 @@ import { NotificationMessage } from "../../Header/CRXNotifications/notifications
 import moment from "moment";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import "./userIndex.scss";
+
 type User = {
   id: string;
   userName: string;
-  firstName: string;
-  lastName: string;
+  fName: string;
+  lName: string;
   email: string;
   status: string;
   lastLogin: string;
-  groups: string[];
+  userGroups: string[];
   isADUser: boolean;
   showToastMsg?: (obj: any) => void;
 };
@@ -99,10 +101,10 @@ const User: React.FC = () => {
         return {
           id: user.recId,
           userName: user.userName,
-          firstName: user.fName,
-          lastName: user.lName,
+          fName: user.fName,
+          lName: user.lName,
           lastLogin: user.lastLogin,
-          groups:
+          userGroups:
             user.userGroups != null
               ? user.userGroups.split(",").map((x: string) => {
                   return x.trim();
@@ -121,6 +123,66 @@ const User: React.FC = () => {
   React.useEffect(() => {
     setData();
   }, [users]);
+
+  const getFilteredUserData = () => {
+
+    let gridFilter: GridFilter = {
+      logic: "and",
+      filters: []
+    }
+
+    searchData.forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: item.value.length > 1 ? "between" : "contains",
+          field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0]
+        }
+        gridFilter.filters?.push(x)
+    })
+
+    dispatch(getUsersInfoAsync(gridFilter));
+
+    // gridFilter = {
+    //   filters: [
+    //     // {
+    //     //   operator: "contains",
+    //     //   field: "assets.master.camera",
+    //     //   value: "YourCam"
+    //     // },
+    //     {
+    //       operator: "contains",
+    //       field: "UserName",
+    //       value: "faisal"
+    //     },
+    //     // {
+    //     //   operator: "contains",
+    //     //   field: "fName",
+    //     //   value: "Faisal"
+    //     // },
+    //     {
+    //         operator: "between",
+    //         field: "LastLogin",
+    //         //value: "2022-06-01T00:00:00+05:00"
+    //         value: "2022-05-01T00:00:00+05:00@2022-06-30T23:59:00+05:00"
+    //     }
+    //   ]
+    // }
+
+    // console.log("grifFilter ", gridFilter)
+
+    // const requestOptions = {
+    //   method: 'Post',
+    //   headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
+    //   body: JSON.stringify(gridFilter),
+    // };
+    // const resp = fetch("http://127.0.0.1:8085/Users/filter?Size=100&Page=1",requestOptions);
+    // //const resp = fetch("http://127.0.0.1:8080/Evidences/filter?Size=100&Page=1",requestOptions);
+    // if (resp) {
+    //   const response = resp
+    //   console.log("Resp", response)
+    //   return response;
+    // }
+  }
 
   
   const searchText = (
@@ -370,7 +432,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     },
     {
       label: `${t("First Name")}`,
-      id: "firstName",
+      id: "fName",
       align: "left",
       width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -382,7 +444,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     },
     {
       label: `${t("Last Name")}`,
-      id: "lastName",
+      id: "lName",
       align: "left",
       width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -442,7 +504,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     // }
     {
       label: `${t("Groups")}`,
-      id: "groups",
+      id: "userGroups",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, "elipcestext"),
       sort: true,
@@ -523,7 +585,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     }
   };
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
 
   useEffect(() => {
@@ -562,10 +624,10 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchData.forEach((el: SearchObject) => {
         if (
           el.columnName === "userName" ||
-          el.columnName === "firstName" ||
-          el.columnName === "lastName" ||
+          el.columnName === "fName" ||
+          el.columnName === "lName" ||
           el.columnName === "email" ||
-          el.columnName === "groups" 
+          el.columnName === "userGroups" 
         )
           dataRows = onTextCompare(dataRows, headCells, el);
         if (el.columnName === "lastLogin")
@@ -592,6 +654,7 @@ const openHandler = (_: React.SyntheticEvent) => {
   };
 
   const clearAll = () => {
+    dispatch(getUsersInfoAsync());
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -639,8 +702,9 @@ const openHandler = (_: React.SyntheticEvent) => {
   const CreateUserForm = () => {
     history.push(urlList.filter((item:any) => item.name === urlNames.createUser)[0].url);
   }
-    return (
-        <div className="crxManageUsers switchLeftComponents manageUsersIndex">
+
+  return (
+    <div className="crxManageUsers switchLeftComponents manageUsersIndex">
 			<CRXToaster ref={toasterRef}/>
       
       {rows && (
@@ -656,15 +720,16 @@ const openHandler = (_: React.SyntheticEvent) => {
            
           }
           toolBarButton={
-    
+            <>
               <CRXButton
                 id={"createUser"}
                 className="primary manageUserBtn"
                 onClick={CreateUserForm}
               >
-             Create User
+                  Create User
               </CRXButton>
-      
+              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> Filter </CRXButton>
+            </>
           }
           getRowOnActionClick={(val: User) => setSelectedActionRow(val)}
           showToolbar={true}

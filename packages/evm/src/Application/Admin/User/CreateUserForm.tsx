@@ -10,7 +10,7 @@ import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
 import { useHistory, useParams } from "react-router";
-
+import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { urlList, urlNames } from "../../../utils/urlList";
 import {
   CRXAlert,
@@ -118,6 +118,8 @@ const CreateUserForm = () => {
           clearButtton: true,
       });
   }
+  const [actual_formPayload,setactual_formPayload] = useState<userStateProps>(formpayload);
+
   React.useEffect(() => {
     if (id) {fetchUser();}
   }, [id]);
@@ -201,7 +203,6 @@ else{
       headers: { 'Content-Type': 'application/json', TenantId: '1' }
     });
     var response = await res.json();
-    console.log("user name : ", response)
     dispatch(enterPathActionCreator({ val: response.account.userName }));
     setUserPayload(response);
     
@@ -516,6 +517,8 @@ else{
               variant: 'success',
               duration: 7000
             });
+            dispatch(getUsersInfoAsync());
+            setDisableSave(true)
       
           } else {
             setAlert(true);
@@ -616,8 +619,12 @@ else{
               variant: 'success',
               duration: 7000
             });
+            dispatch(getUsersInfoAsync());
+            setDisableSave(true)
           }
           userFormMessages({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
+          dispatch(getUsersInfoAsync());
+          setDisableSave(true)
         } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
@@ -930,32 +937,40 @@ useEffect(() => {
 
   const redirectPage = () => {
 
-    const phoneNumber =
-        userPayload.contacts.length > 0
-          ? userPayload.contacts.find((x: any) => x.contactType === 1).number
-          : '';
+    if(id) {
+      const phoneNumber = 
+          userPayload.contacts.length > 0
+            ? userPayload.contacts.find((x: any) => x.contactType === 1).number
+            : '';
       const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
-    const user_temp = {
-      userName :  userPayload.account.userName,
-      firstName : userPayload.name.first,
-      middleInitial : userPayload.name.middle,
-      lastName : userPayload.name.last,
-      email : userPayload.email,
-      phoneNumber : phoneNumber,
-      userGroups : userGroupNames,
-      deactivationDate : userPayload.deactivationDate,
+      const user_temp = {
+        userName :  userPayload.account.userName,
+        firstName : userPayload.name.first,
+        middleInitial : userPayload.name.middle,
+        lastName : userPayload.name.last,
+        email : userPayload.email,
+        phoneNumber : phoneNumber,
+        userGroups : userGroupNames,
+        deactivationDate : userPayload.deactivationDate,
+      }
+      if(JSON.stringify(formpayload) !== JSON.stringify(user_temp)){
+        setIsOpen(true);
+      }
+      else {
+        history.push(
+          urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url
+        );
+      }
     }
-    if(JSON.stringify(formpayload) !== JSON.stringify(user_temp)){
-      console.log("running inside")
-      setIsOpen(true);
+    else {
+      if(JSON.stringify(formpayload) !== JSON.stringify(actual_formPayload))
+        setIsOpen(true);
+      else {
+        history.push(
+          urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url
+        );
+      }
     }
-    else{
-      history.push(
-        urlList.filter((item: any) => item.name === urlNames.adminUsers)[0]
-          .url
-      );
-    }
-    
   }
 
   const closeDialog = () => {
@@ -991,7 +1006,7 @@ useEffect(() => {
                 errorMsg={formpayloadErr.userNameErr}
                 required={true}
                 value={formpayload.userName}
-                label='Username'
+                label='User Name'
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
                 disabled = {isADUser}

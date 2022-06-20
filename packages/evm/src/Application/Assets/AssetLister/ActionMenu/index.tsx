@@ -47,6 +47,7 @@ export type securityDescriptorType = {
 }
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg }) => {
+  
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
   const assetBucketData: AssetBucket[] = useSelector(
@@ -85,9 +86,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      * ! This rerenders if row is updated, it means user clicked the menu from parent component.
      * ! So we need to reset the form index, so that it starts from start.
      */
-    
-    if (row?.categories?.length > 0) {
+    if (row?.evidence?.securityDescriptors?.length > 0)
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
+    if (row?.categories?.length > 0) {
       setIsCategoryEmpty(false);
     } else {
       setIsCategoryEmpty(true);
@@ -252,7 +253,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-        <MenuItem>
+        {/* <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -261,7 +262,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem>
           <Restricted moduleId={21}>

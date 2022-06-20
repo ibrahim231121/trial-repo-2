@@ -38,6 +38,14 @@ export interface HeadCellProps {
   detailedDataComponentId?: string;
 }
 
+export type GridFilter = {
+  logic?: string;
+  operator?: string;
+  field?: string;
+  value?: string;
+  filters?: GridFilter[];
+}
+
 export function DateFormat(value: string) {
   const stillUtc = moment.utc(value).toDate();
   const localDate = moment(stillUtc).local().format("YYYY-MM-DD");

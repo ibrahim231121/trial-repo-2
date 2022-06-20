@@ -391,6 +391,15 @@ const Group = () => {
     setIsAppPermissionsChange(onChangeAppPermissions);
   };
 
+  const showToastMsg = () => {
+    groupMsgRef.current.showToaster({
+      message: message[0].message,
+      variant: "success",
+      duration: 7000,
+      clearButtton: true,
+    });
+ };
+
   const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {
     let editCase = !isNaN(+id);
     let method = editCase ? "PUT" : "POST";
@@ -428,14 +437,7 @@ const Group = () => {
     let groupId = 0;
     let status = 0;
 
-    const showToastMsg = () => {
-      groupMsgRef.current.showToaster({
-        message: message[0].message,
-        variant: "success",
-        duration: 7000,
-        clearButtton: true,
-      });
-    };
+    
     fetch(groupURL, {
       method: method,
       headers: {
@@ -487,16 +489,17 @@ const Group = () => {
             body: JSON.stringify(dataPermissionObj),
           })
             .then((container) => {
+              
               if (container.status === 201 || container.status === 204) {
                 // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+                showToastMsg();
               } else if (
                 container.status === 500 ||
                 container.status === 400 ||
                 container.status === 409 ||
                 container.status === 404
               ) {
-                effectAfterSave(groupId.toString(),container.status)
-
+                effectAfterSave(groupId.toString(),container.status, true)
                 setAlertType("inline");
                 setMessages(message[2].message);
                 setError(message[2].messageType);
@@ -507,11 +510,7 @@ const Group = () => {
               
             });
 
-          effectAfterSave(groupId.toString(),status)
-
-          setAlertType("toast");
-          setMessages(message[0].message);
-          setError(message[0].messageType);
+          effectAfterSave(groupId.toString(),status, false)
         } else if (status === 500 || status === 400) {
           setShowSuccess(true);
           functionInitialized();
@@ -524,8 +523,7 @@ const Group = () => {
           let error = JSON.parse(grpResponse);
 
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
-
-          effectAfterSave(groupId.toString(),status)
+          effectAfterSave(groupId.toString(),status, true)
 
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow");
@@ -541,8 +539,8 @@ const Group = () => {
     if (ids !== undefined) getResponse()
   }, [ids]);
 
-  const effectAfterSave = (groupId: string,status: number) => {
-    setShowSuccess(true);
+  const effectAfterSave = (groupId: string,status: number, bl:boolean) => {
+    setShowSuccess(bl);
     functionInitialized();
     if(status != 409  ){
       redirectingToId(groupId);

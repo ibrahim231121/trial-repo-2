@@ -1,5 +1,6 @@
 import React, { useEffect,useRef } from "react";
-import { CRXDataTable,CRXToaster } from "@cb/shared";
+import { useDispatch } from "react-redux";
+import { CRXDataTable,CRXToaster,CRXButton } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -17,10 +18,12 @@ import {
   onSaveHeadCellData,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
+  GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import "./index.scss";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../ActionMenu";
+import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { AssetThumbnail } from "./AssetThumbnail";
@@ -85,6 +88,7 @@ type Props = {
   dateTimeDetail: DateTimeObject;
   showDateCompact: boolean;
 };
+
 //-----------------
 
 const thumbTemplate = (assetType: string) => {
@@ -109,7 +113,10 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
       >
         <div>{assetName}</div>
       </Link>
-      <DetailedAssetPopup asset={assets} />
+      <DetailedAssetPopup 
+        asset={assets} 
+        row={evidence}
+      />
     </>
   );
 };
@@ -150,7 +157,7 @@ const MasterMain: React.FC<Props> = ({
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<EvidenceReformated>();
-
+    const dispatch = useDispatch();
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -502,7 +509,7 @@ const MasterMain: React.FC<Props> = ({
   }, [dateTime]);
 
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
   useEffect(() => {
     console.log(selectedItems)
@@ -554,15 +561,82 @@ const MasterMain: React.FC<Props> = ({
       clearButtton: true,
     });
   };
+
+  const getFilteredEvidenceData = () => {
+    console.log("Evidence Data")
+    let gridFilter: GridFilter = {
+      logic: "and",
+      filters: []
+    }
+
+    searchData.forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: item.value.length > 1 ? "between" : "contains",
+          field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0]
+        }
+        gridFilter.filters?.push(x)
+    })
+
+    console.log("gridFilter ", gridFilter)
+
+    dispatch(getAssetSearchInfoAsync(gridFilter));
+
+    // gridFilter = {
+    //   filters: [
+    //     // {
+    //     //   operator: "contains",
+    //     //   field: "assets.master.camera",
+    //     //   value: "YourCam"
+    //     // },
+    //     {
+    //       operator: "contains",
+    //       field: "UserName",
+    //       value: "faisal"
+    //     },
+    //     // {
+    //     //   operator: "contains",
+    //     //   field: "fName",
+    //     //   value: "Faisal"
+    //     // },
+    //     {
+    //         operator: "between",
+    //         field: "LastLogin",
+    //         //value: "2022-06-01T00:00:00+05:00"
+    //         value: "2022-05-01T00:00:00+05:00@2022-06-30T23:59:00+05:00"
+    //     }
+    //   ]
+    // }
+
+    // console.log("grifFilter ", gridFilter)
+
+    // const requestOptions = {
+    //   method: 'Post',
+    //   headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
+    //   body: JSON.stringify(gridFilter),
+    // };
+    // const resp = fetch("http://127.0.0.1:8085/Users/filter?Size=100&Page=1",requestOptions);
+    // //const resp = fetch("http://127.0.0.1:8080/Evidences/filter?Size=100&Page=1",requestOptions);
+    // if (resp) {
+    //   const response = resp
+    //   console.log("Resp", response)
+    //   return response;
+    // }
+  }
+  
   return (
     <>
      <CRXToaster ref={toasterRef}/>
+      
       {rows && (
        
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />
+          }
+          toolBarButton={
+              <CRXButton className="secondary manageUserBtn" onClick={() => getFilteredEvidenceData()}> Filter </CRXButton>
           }
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
           showToolbar={true}
@@ -581,7 +655,7 @@ const MasterMain: React.FC<Props> = ({
           selectedItems={selectedItems}
           showActionSearchHeaderCell={true}
           dragVisibility={true}
-          showCheckBoxesCol={true}
+          //showCheckBoxesCol={true}
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}

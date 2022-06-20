@@ -17,6 +17,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
 import { Asset } from "../../../../GlobalFunctions/globalDataTableFunctions"
+import DetailedAssetPopupAction from "./DetailedAssetPopupAction"
+
 type CheckValue = {
   isChecked: boolean;
   assetId: string;
@@ -24,9 +26,10 @@ type CheckValue = {
 
 type Props = {
   asset: Asset[]
+  row?: any;
 }
 
-const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
+const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const [groupedAsset, setGroupedAsset] = useState<Asset[]>();
@@ -34,6 +37,8 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
   const { t } = useTranslation<string>();
   const [checkAll, setCheckAll] = useState<boolean>(false);
   const [selected, setSelected] = useState<CheckValue[]>([]);
+  const [selectedActionRow, setSelectedActionRow] =
+    React.useState<any>();
 
   const widgetStyle = makeStyles({
     CRXArrowStyle: {
@@ -194,7 +199,13 @@ const DetailedAssetPopup: React.FC<Props> = ({asset}) => {
                               </label>
                             </td>
                             <td className="CRXPopupActionIcon">
-                              <i className="far fa-ellipsis-v actionIcon"></i>
+                              
+                                {/* <i className="far fa-ellipsis-v actionIcon"> */}
+                                <span onClick={() => setSelectedActionRow(asset)}>
+                                  <DetailedAssetPopupAction row={row} asset={asset} selectedItems={selected} />
+                                </span>
+                                {/* </i> */}
+                              
                             </td>
                           </tr>
                           
