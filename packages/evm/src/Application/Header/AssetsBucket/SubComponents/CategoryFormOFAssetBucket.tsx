@@ -1,9 +1,10 @@
 import { TextField, CRXHeading } from "@cb/shared";
 interface Props {
     categoryObject: any
+    setFieldForm : any
 }
 
-const CategoryFormOFAssetBucket: React.FC<Props> = ({ categoryObject }) => {
+const CategoryFormOFAssetBucket: React.FC<Props> = ({ categoryObject,setFieldForm }) => {
     return (
         <>
             {categoryObject.form.map((formObj: any) => (
@@ -17,7 +18,7 @@ const CategoryFormOFAssetBucket: React.FC<Props> = ({ categoryObject }) => {
                         {formObj.fields.map((field: any) => (
                             <div>
                                 <label className="categoryFormLabel" htmlFor={field.id}>{field.display.caption}</label>
-                                <TextField type="text" id={field.id} name={field.name === undefined ? field.value : field.name} onChange={() => { }} />
+                                <TextField type="text" id={field.id} name={field.name === undefined ? field.value : field.name} onChange={(e: any) => {setFieldForm(e)}} />
                             </div>
                         ))}
                     </div>

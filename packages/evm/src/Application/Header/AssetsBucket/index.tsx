@@ -1066,6 +1066,7 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
                                 multiple
                                 type="file"
                                 onChange={handleOnUpload}
+
                               />
                               <label htmlFor="upload-Button-file">
                                 <a className="textFileBrowser">file browser</a>
