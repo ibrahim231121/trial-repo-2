@@ -561,6 +561,10 @@ const UnitCreate = (props: historyProps) => {
                     <span className="noRow"></span>
                     <p>STATION</p>
                   </div>
+                  
+                </div>
+
+                <div className="RightBoard">
                   <div className="pannelBoard">
                     <h2>0</h2>
                     <span className="pdUpload">
@@ -592,7 +596,6 @@ const UnitCreate = (props: historyProps) => {
                     </span>
                     <p>ASSIGNED TO</p>
                   </div>
-
                 </div>
                 
                 <div

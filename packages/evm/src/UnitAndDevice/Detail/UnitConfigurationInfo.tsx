@@ -123,63 +123,67 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   },[formpayloadErr.nameErr])
   return (
     <div className="crx-group-info-form CBX-input">
-      <div className="crx-group-info">
-        <div className="configurationTemplateLabel">
-          <label>Unit Configuration Template</label>
-          <CRXSelectBox
-            name="configurationTemplate"
-            value={info.configTemp == "" ? 0 : info.configTemp}
-            icon={true}
-            options={configList}
-            onChange={onChange}
-          />
-        </div>
+      <div className="crx-group-info unitConfiguration">
+
+<div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
+  <div className="select_label">Unit Configuration Template</div>
+  <CRXSelectBox
+    name="configurationTemplate"
+    value={info.configTemp == "" ? 0 : info.configTemp}
+    icon={true}
+    options={configList}
+    onChange={onChange}
+  />
+</div>
 
 
-        <div className="configurationTemplateLabel">
-          <label>Station</label>
-          <CRXSelectBox
-            name="Station"
-            value={info.stationId == "" ? 0 : info.stationId}
-            icon={true}
-            options={stationlst}
-            onChange={onChangeStation}
-          />
-        </div>
+<div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
+  <div className="select_label">Station</div>
+  <div>
+  <CRXSelectBox
+    label="Station"
+    name="Station"
+    value={info.stationId == "" ? 0 : info.stationId}
+    icon={true}
+    options={stationlst}
+    onChange={onChangeStation}
+  />
+  </div>
+</div>
 
 
-        <div className="groupInfoInputs">
-          <TextField
-            error={!!formpayloadErr.nameErr}
-            errorMsg={formpayloadErr.nameErr}
-            onBlur={checkUserName}
-            required={true}
-            label="Unit ID"
-            value={name}
-            className='users-input'
-            onChange={onChangeName}
-          />
-        </div>
-        <div className="groupInfoInputs">
-          <TextField
-            label="Description"
-            multiline
-            variant="outlined"
-            rows={1}
-            value={description}
-            onChange={onChangeDescription}
-          />
-        </div>
-        <div className="groupInfoInputs">
-          <TextField
-            label="Group Name"
-            variant="outlined"
-            rows={2}
-            value={groupName}
-            onChange={onChangeGroupName}
-          />
-        </div>
-      </div>
+<div className="groupInfoInputs">
+  <TextField
+    error={!!formpayloadErr.nameErr}
+    errorMsg={formpayloadErr.nameErr}
+    onBlur={checkUserName}
+    required={true}
+    label="Unit ID"
+    value={name}
+    className='users-input'
+    onChange={onChangeName}
+  />
+</div>
+<div className="groupInfoInputs">
+  <TextField
+    label="Description"
+    multiline
+    variant="outlined"
+    rows={1}
+    value={description}
+    onChange={onChangeDescription}
+  />
+</div>
+<div className="groupInfoInputs">
+  <TextField
+    label="Group Name"
+    variant="outlined"
+    rows={2}
+    value={groupName}
+    onChange={onChangeGroupName}
+  />
+</div>
+</div>
     </div>
   );
 };

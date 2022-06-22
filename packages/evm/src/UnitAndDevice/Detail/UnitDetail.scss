@@ -173,7 +173,7 @@ iframe {
   }
   .RightBoard {
     .pannelBoard {
-      width: 112px;
+      // width: 112px;
     }
   }
 }
@@ -268,6 +268,9 @@ iframe {
       font-size: 14px !important;
     }
   }
+  .crxTabsPermission div[role=tabpanel]::before{
+    display: none;
+  }
 }
 .UnitDetailMainDetail {
   .rc-menu__arrow {
@@ -276,6 +279,25 @@ iframe {
   .menuCss {
     margin-top: -14px;
     margin-left: 3px;
+  }
+  .unitConfiguration{
+    align-items: start; 
+    .unitConfiguration_select{
+      display: inline-flex;
+    }
+    label{
+      width: 225px !important;
+    }
+    .select_label{
+      width: 225px;
+      padding: 0 6px 0 6px;
+    }
+    .groupInfoInputs h6{
+      width: 220px;
+    }
+    .MuiInputBase-root.CRXSimpleSelect.undefined{
+      width: 52vh;
+    }
   }
 }
 
