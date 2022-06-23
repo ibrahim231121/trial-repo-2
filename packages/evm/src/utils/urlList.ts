@@ -225,7 +225,7 @@ export const urlList: any = [
         url: "/admin/unitanddevices/template/viewlog",
         details: [
             { type: "text", label: "Admin", },
-            { routeTo: "/admin/configurationtemplate", type: "link", label: "Units & Devices Configuration Templates Logs", },
+            { routeTo: "/admin/configurationtemplate", type: "link", label: "Manage Units & Devices Configuration Templates", },
             //{ type: "text", label: "Create Template : BC04", }
         ],
     },

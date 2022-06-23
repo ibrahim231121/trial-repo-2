@@ -27,8 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 type ConfigTemplateLogs = {
     id: number;
-    field: string;
-    value: string;
+    updateddata: string;
     logTime: string;
     user:string;
   };
@@ -78,13 +77,11 @@ const ViewConfigurationTemplateLog= (props: any) => {
       const setData = () => {
  
         let ConfigTemplateLogsRows: ConfigTemplateLogs[] = [];
-     
             if (configTemplateLogs && configTemplateLogs.length > 0) {
                 ConfigTemplateLogsRows = configTemplateLogs.map((log: any, i:number) => {
                      return {
                         id: log.recId,
-                        field: log.field,
-                        value: log.value,
+                        updateddata: log.updatedData,
                         logTime: log.logTime,
                         user:log.user
                      }
@@ -134,29 +131,18 @@ const ViewConfigurationTemplateLog= (props: any) => {
           maxWidth: "95"
         },
         {
-            label: `${t("Field")}`,
-            id: "field",
-            align: "left",
-            dataComponent: (a: string) =>  textDisplay(a, ""),
-            sort: true,
-            searchFilter: true,
-            searchComponent: () => null,
-            minWidth: "88",
-            width: "",
-            maxWidth: "90"
-          },
-          {
-            label: `${t("Value")}`,
-            id: "value",
-            align: "left",
-            dataComponent: (f: string) =>  textDisplay(f, ""),
-            sort: true,
-            searchFilter: true,
-            searchComponent: () => null,
-            minWidth: "110",
-            width: "",
-            maxWidth: "112"
-          },
+          label: `${t("Changes")}`,
+          id: "updateddata",
+          align: "left",
+          dataComponent: (a: string) =>  textDisplay(a, ""),
+          sort: true,
+          searchFilter: true,
+          searchComponent: () => null,
+          minWidth: "88",
+          width: "",
+          maxWidth: "90"
+        },
+     
          
     ]);
 
