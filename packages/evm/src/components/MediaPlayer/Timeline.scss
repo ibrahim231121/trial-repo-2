@@ -1,16 +1,16 @@
-
-
 .showControllerBar {
 
   .video_player_hover_thumb {
-    bottom:7px;
+    bottom: 17px;
     max-width: 136px;
-    max-height: 80px;
-    background:var(--color-Black);
+    min-height: 80px;
+    max-height: 96px;
+    background: var(--color-Black);
     padding: 4px;
+
     .video_thumb_line_time {
       position: absolute;
-      bottom: 3px;
+      bottom: 2px;
       font-size: 14px;
       color: #fff;
       text-align: center;
@@ -23,116 +23,266 @@
       height: 18px;
       left: calc(100% / 3.5);
     }
+
+    ._timeline_thumb_top_area {
+      font-size: 12px;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      top: -1px;
+      font-family: var(--base-font-family);
+    }
   }
 }
-.line .beforerecording
-{
-    background:rgb(163, 161, 161);
-    height:100%;
-    display:table-cell;
-    
+
+.line .beforerecording {
+  background: rgb(163, 161, 161);
+  height: 100%;
+  display: table-cell;
+
 }
 
-.line .afterrecording
-{
-    background:rgb(163, 161, 161);
-    width:40%;
-    height:100%;
-    display:table-cell;
- 
-  
+.line .afterrecording {
+  background: rgb(163, 161, 161);
+  width: 40%;
+  height: 100%;
+  display: table-cell;
+
+
 }
+
 .dot {
-    height: 100%;
-    width: 2%;
-    background:rgb(238, 224, 34);
-    border-radius: 50%;
-    display:table-cell;
+  height: 100%;
+  width: 2%;
+  background: rgb(238, 224, 34);
+  border-radius: 50%;
+  display: table-cell;
 
-    
 
+
+}
+
+.hovertext {
+  position: relative;
+  border-bottom: 1px dotted black;
+  height: 100%;
+  width: 2%;
+  background: rgb(238, 224, 34);
+  border-radius: 50%;
+  display: table-cell;
+
+}
+
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
+  width: 140px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  transition: opacity 1s ease-in-out;
+
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: -280%;
+}
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.canvas-width canvas {
+  width: 100%;
+}
+
+.videoFastRw {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  left: 0;
+  bottom: 267px;
+
+  .videoForwardRewind {
+    height: 70px;
+    width: 124px;
+    border: 4px solid #000000;
+    object-fit: fill;
+    margin-bottom: 17px !important;
+
+    @media screen and (max-width:1000px) {
+      height: 65px;
+      width: 120px;
+    }
+
+    @media screen and (max-width:900px) {
+      height: 65px;
+      width: 110px;
+    }
+
+    @media screen and (max-width:821px) {
+      height: 65px;
+      width: 98px;
+    }
+
+    @media screen and (max-width:780px) {
+      height: 60px;
+      width: 90px;
+    }
   }
 
-  .hovertext {
+  .videoForwardRewind+p {
+    display: none;
+  }
+
+  .videoFRCTimeline {
     position: relative;
-    border-bottom: 1px dotted black;
-    height: 100%;
-    width: 2%;
-    background:rgb(238, 224, 34);
-    border-radius: 50%;
-    display:table-cell;
 
-  }
-  
-  .hovertext:before {
-    content: attr(data-hover);
-    visibility: hidden;
-    opacity: 0;
-    width: 140px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px 0;
-    transition: opacity 1s ease-in-out;
-  
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: -280%;
-  }
-  
-  .hovertext:hover:before {
-    opacity: 1;
-    visibility: visible;
-  }
+    p {
+      position: absolute;
+      bottom: -5px;
+      background: black;
+      color: white;
+      padding: 0px 5px;
+      right: 3px;
+      font-weight: 700;
 
-  .canvas-width canvas{
-    width: 100%;
-  }
-  .videoFastRw {
-    width: 100%;
-    position: absolute;
-    bottom: 335px;
-    padding: 0 60px;
-    .videoFR_Screen {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      div {
-        position: relative;
-        video {
-          width: 250px;
-          height: auto;
-          
-        }
-        p {
-          right: 9px;
-          bottom: 7px
-        }
-        #vid-2 {
-          width: 450px;
-        }
+      @media(max-width:821px) {
+        font-size: 12px;
       }
     }
   }
 
+  .videoForwardRewindCenter {
+    height: 149px;
+    width: 264px;
+    border: 4px solid #000000;
+    object-fit: fill;
 
-  /*After demo it will be remove */
+    @media screen and (max-width:1000px) {
+      width: 254px;
+      height: 139px;
 
-  .demo-bookMark {
-    padding-left: 12px;
-    padding-right: 12px;
-    i{
-      color: #fff;
-      font-size: 12px;
     }
-    span {
-      font-family: var(--base-font-family);
-      font-weight: var(--Font-style-bold);
-      color: #fff;
-      display: inline-block;
-      padding-left: 19px;
-      font-size: 12px;
+
+    @media screen and (max-width:975px) {
+      width: 233px;
+      height: 122px;
+    }
+
+    @media screen and (max-width:940px) {
+      width: 200px;
+      height: 118px;
+    }
+
+    @media screen and (max-width:860px) {
+      width: 160px;
+      height: 110px;
+    }
+
+    @media screen and (max-width:780px) {
+      width: 148px;
+      height: 99px;
     }
   }
+
+  #vid-0,
+  #vid-1 {
+    margin-right: 12px;
+  }
+
+  #vid-3,
+  #vid-4 {
+    margin-left: 12px;
+  }
+
+  .videoFR_Screen {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+      position: relative;
+
+      video {
+        width: 250px;
+        height: auto;
+
+      }
+
+      p {
+        right: 9px;
+        bottom: 7px
+      }
+
+      #vid-2 {
+        width: 450px;
+      }
+    }
+  }
+}
+
+
+/*After demo it will be remove */
+
+.demo-bookMark {
+  padding-left: 12px;
+  padding-right: 12px;
+
+  i {
+    color: #fff;
+    font-size: 12px;
+  }
+
+  span {
+    font-family: var(--base-font-family);
+    font-weight: var(--Font-style-bold);
+    color: #fff;
+    display: inline-block;
+    padding-left: 19px;
+    font-size: 12px;
+  }
+}
+
+.main-control-bar {
+  #SliderBookmarkNote {
+    top: 1px;
+
+    ._timeLine_bookMark_note_pip {
+      .pip_icon {
+        width: 2px;
+        height: 4px;
+        display: block;
+        cursor: pointer;
+        transition: all 0.25s ease-in-out;
+      }
+
+    }
+
+    &:hover+#SliderControlBar {
+      .MuiSlider-rail {
+        transform: scaley(2.5);
+      }
+
+      &::after {
+        transform: scaley(2.5);
+      }
+
+      &::before {
+        transform: scaley(2.5);
+      }
+    }
+  }
+
+  &:hover .pip_icon {
+    transform: scaley(2.5);
+    transition: all 0.25s ease-in-out;
+  }
+}

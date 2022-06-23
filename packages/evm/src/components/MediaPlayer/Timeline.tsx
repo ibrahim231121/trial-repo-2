@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect } from "react";
 //import ColorSlider from 'multicolorslider'
 import "./Timeline.scss"
 import "./VideoPlayer.scss"
@@ -36,15 +36,8 @@ interface Timelineprops {
 
 
 const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync }: Timelineprops,) => {
-  const targetRef = useRef<any>();
-  // const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
-  // const [Event, setEvent] = useState();
-  // const [timelinedetail1, settimelinedetail1] = useState<any>();
 
-  const [bookmarklocation, setbookmarklocation] = useState<number>();
-  // const [mouseovertype, setmouseovertype] = useState("");
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (openThumbnail&&Event&&timelinedetail1) {
       if(mouseovertype == "bookmark"){
         displayThumbail(Event,timelinedetail1.id,bookmark.description);
@@ -120,24 +113,25 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   return (
     <div className="beforelineMain">
       {timelinedetail.filter((x:any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
-        <div style={{marginTop:10}}>
+        <div className="time_line_container">
           <div className="beforeline">
           {/* <p>{x.camera}</p> */}
             <div className="line" style={{ position: "relative", display: 'flex'}}>
             <div className="video_player_hover_thumb" id={"video_player_hover_thumb"+ x.indexNumberToDisplay}
               style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform:"translate(-50px, 0px)"  }}>
-              
+               
+               <div className="_timeline_thumb_top_area" id={"Thumbnail-CameraDesc" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden" }}></div>
+
               <video 
                 width="100%" 
                 height="100%" 
                 id={"Thumbnail" + x.indexNumberToDisplay} 
-                //</div>id={"Thumbnail" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute" }}
                 >
                 <source src={x.src} type="video/mp4" />
               </video>
               <div className="video_thumb_line_time" id={"Thumbnail-Time" + x.indexNumberToDisplay}></div>
-              {/* <p id={"Thumbnail-Time" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p> */}
-              <p id={"Thumbnail-CameraDesc" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>
+             
+             
               
               {openThumbnail && <p id={"Thumbnail-Desc"} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", width: 50, color: "white", background: "black" }}></p>}
               
@@ -172,10 +166,6 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: '12px', display: 'flex' }}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => {}}
-                // draggable="true"
-                // onClick={(e: any) => setController(e, index)}
-                // onDrag={(e: any) => setController(e, index)}
-                // onDragEnd={(e: any) => setController(e, index)}
                 onMouseOver={(e: any) => displayThumbail(e, x.id)}
                 onMouseMove={(e: any) => displayThumbail(e, x.id)}
                 onMouseOut={() => removeThumbnail()}>

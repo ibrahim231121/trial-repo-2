@@ -106,7 +106,6 @@ const VideoPlayerBase = (props: any) => {
     "Grid": 4,
     "Grid6": 6
   };
-
   const buttonArray = [
     {
       label: 'Save',
@@ -353,7 +352,6 @@ const VideoPlayerBase = (props: any) => {
     let bufferingArr: any[] = [];
     for (let x = 0; x < data.length; x++) {
       let timeOffset = data[x].recording.timeOffset ?? 0;
-      debugger;
       let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
       let recording_start_point = (recording_start_time - minstartpoint) / 1000;
       let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
@@ -464,6 +462,7 @@ const VideoPlayerBase = (props: any) => {
   const handlePlayPause = () => {
     setPlaying(!isPlaying);
     setisPlayingFwRw(false);
+    setShowFRicon({ showFRCon: false, caseNum: 0 })
     if (!isPlaying) {
       videoHandlers.forEach((videoHandle: any) => {
         hanldeVideoStartStop(timer, videoHandle, true);
@@ -915,6 +914,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickFwRw = (Currmode: number, CaseNo: number) => {
+    setShowFRicon({ showFRCon: true, caseNum: CaseNo });
     if (Currmode >= 6) {
       switch (CaseNo) {
         case 1: //Forward
@@ -938,6 +938,7 @@ const VideoPlayerBase = (props: any) => {
       setcurractionFwRw({ currmode: Currmode, currcase: CaseNo })
       setisOpenWindowFwRw(true);
     }
+
   }
 
 
@@ -1298,8 +1299,8 @@ const VideoPlayerBase = (props: any) => {
               />
 
               <div className="ClickerIcons">
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="fal fa-long-arrow-left iconForwardScreen"></i><span className="iconFSSpan">{`${modeFw}X`}</span></span> : ""}  </p>
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="fal fa-long-arrow-left  iconBackward2Screen"></i><span className="iconFSSpan">{`${modeRw}X`}</span></span> : ""}  </p>
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`${modeFw}X`}</span></span> : ""}  </p>
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`${modeRw}X`}</span></span> : ""}  </p>
               </div>
               <div className="modeButton">
 
@@ -1360,21 +1361,21 @@ const VideoPlayerBase = (props: any) => {
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
                             if (y.madeBy == "User") {
                               return (
-                                <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
-                                  <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "red" }} aria-hidden="true"
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                                  <span className="pip_icon" style={{ backgroundColor: "red" }} aria-hidden="true"
                                     onMouseOut={() =>
                                       mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
-                                  </i>
+                                  </span>
                                 </div>
                               )
                             }
                           }
                           )}
                           {x.enableDisplay && x.notes.map((y: any, index: any) =>
-                            <div style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "10px", width: "10px" }}>
-                              <i className="fas fa-horizontal-rule" style={{ transform: "rotateZ(90deg)", color: "purple" }} aria-hidden="true"
+                            <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                              <span className="pip_icon" style={{ backgroundColor: "purple" }} aria-hidden="true"
                                 onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
-                              </i>
+                              </span>
                             </div>
                           )}
                         </>
@@ -1399,7 +1400,7 @@ const VideoPlayerBase = (props: any) => {
                   />
                 </div>
                 <div className="videoPlayer_Timeline_Time">
-                  <div className="V_timeline_start_time">
+                  <div className="playerViewFlexTimer">
                     <div id="counter">{milliSecondsToTimeFormat(new Date(controlBar * 1000))}</div>
                   </div>
                   <div className="V_timeline_end_time">
@@ -1408,7 +1409,7 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
               {/* <div className="crx_video_graph"></div> */}
-              <div className="playerViewFlex">
+              <div className={`playerViewFlex ${multiTimelineEnabled ? " enablebViewFlex" : "disabledViewFlex"}`}>
                 <div className="playerViewLeft">
                   <div className="PlayPause-container">
                     <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
@@ -1466,7 +1467,6 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-
                   </div>
                   <div>
                     <VolumeControl setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
@@ -1533,9 +1533,10 @@ const VideoPlayerBase = (props: any) => {
                     >
                       <MenuItem>
                         {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
+
                       </MenuItem>
 
-                    </Menu >
+                    </Menu>
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn">
                     <CRXTooltip
@@ -1545,7 +1546,6 @@ const VideoPlayerBase = (props: any) => {
                       arrow={false}
                     />
                   </CRXButton>
-
                   <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn">
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
@@ -1559,7 +1559,7 @@ const VideoPlayerBase = (props: any) => {
                       align="start"
                       viewScroll="initial"
                       direction="top"
-                      className="ViewScreenMenu"
+                      className="ViewScreenMenu  ViewScreenLayouts"
                       menuButton={
                         <i>
                           <CRXTooltip
@@ -1571,23 +1571,72 @@ const VideoPlayerBase = (props: any) => {
                         </i>
                       }
                     >
-                      <MenuItem onClick={screenClick.bind(this, screenViews.Single)}  >
-                        Single View
+                      <MenuItem className="layoutHeader MenuItemLayout_1">
+                        Layouts
                       </MenuItem>
-                      <MenuItem onClick={screenClick.bind(this, screenViews.SideBySide)}>
-                        Side by Side
+                      <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  >
+                        {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
+                        <span className="textContentLayout">Single View</span>
+                        <div className="screenViewsSingle  ViewDiv"></div>
                       </MenuItem>
-                      <MenuItem onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
-                        Videos on Side
+                      <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)}>
+                        {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
+                        <span className="textContentLayout">Side by Side </span>
+                        <div className="screenViewsSideBySide ViewDiv">
+                          <p></p>
+                          <p></p>
+                        </div>
                       </MenuItem>
-                      <MenuItem onClick={screenClick.bind(this, screenViews.Grid)}>
-                        Grid up to 4
+                      <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
+                        {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
+                        <span className="textContentLayout"> Videos on Side </span>
+                        <div className="screenViewsVideosOnSide ViewDiv">
+                          <p className="first"></p>
+                          <p className="second">
+                            <span></span>
+                            <span></span>
+                          </p>
+                        </div>
                       </MenuItem>
-                      <MenuItem onClick={screenClick.bind(this, screenViews.Grid6)}>
-                        Grid up to 6
+                      <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)}>
+                        {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
+                        <span className="textContentLayout">Grid up to 4</span>
+                        <div className="screenViewsGrid ViewDiv">
+                          <p>
+                            <span></span>
+                            <span></span>
+                          </p>
+                          <p>
+                            <span></span>
+                            <span></span>
+                          </p>
+                        </div>
                       </MenuItem>
-                      <MenuItem>
-                        <FormControlLabel control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} label="Side Data Panel" />
+                      <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)}>
+                        {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
+                        <span className="textContentLayout">Grid up to 6</span>
+                        <div className="screenViewsGrid6 ViewDiv">
+                          <p>
+                            <span></span>
+                            <span></span>
+                          </p>
+                          <p>
+                            <span></span>
+                            <span></span>
+                          </p>
+                          <p>
+                            <span></span>
+                            <span></span>
+                          </p>
+                        </div>
+                      </MenuItem>
+                      <MenuItem className="SidePanelMenu">
+                        <div className="sidePanelGrid">
+                          <div></div>
+                          <p></p>
+                        </div>
+                        <FormControlLabel className="switchBaseLayout" label="Side Data Panel" control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} />
+                        <span className="switcherBtn">{mapEnabled ? "ON" : "OFF"}</span>
                       </MenuItem>
 
                     </Menu >

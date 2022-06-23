@@ -3,56 +3,56 @@ import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 
 type tooltipProps = {
-  placement?: any;
+  placement?: string;
   title: string;
   className?: string;
   iconName?: string;
   content?: HTMLCollection;
   arrow?: boolean;
 };
-// const CRXUseStyles = makeStyles(() => ({
-//   arrow: {
-//     color: "#333",
-//   },
-//   tooltip: {
-//     backgroundColor: "#333333",
-//     color: "#d1d2d4",
-//     fontFamily: "Arial",
-//     fontSize: "14px",
-//     padding: "12px 16px",
-//     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.20)",
-//     borderRadius: "0px",
-//     maxWidth: "250px",
-//   }
-// }));
+const CRXUseStyles = makeStyles(() => ({
+  arrow: {
+    color: "#333",
+  },
+  tooltip: {
+    backgroundColor: "#333333",
+    color: "#d1d2d4",
+    fontFamily: "Arial",
+    fontSize: "14px",
+    padding: "12px 16px",
+    boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.20)",
+    borderRadius: "0px",
+    maxWidth: "250px",
+  }
+}));
 
 const CRXIconStyle = makeStyles(() => ({
   iconCls: {
     position: "relative",
     top: "0px",
     height: "17px",
-
+    
   },
 }));
 
-// function CRXCustomizedTooltip(props: any) {
-//   const classes = CRXUseStyles();
+function CRXCustomizedTooltip(props: any) {
+  const classes = CRXUseStyles();
 
-//   return (
-//     <Tooltip
-//       arrow
-//       classes={{
-//         className: classes.tooltip,
-//         arrow:
-//           props.placement.length && classes.arrow + " crxArrowTooltip",
-
-//         tooltip:
-//           props.placement.length && classes.tooltip + " " + props.className + " crxTooltipAll",
-//       }}
-//       {...props}
-//     />
-//   );
-// }
+  return (
+    <Tooltip
+      arrow
+      classes={{
+        className: classes.tooltip,
+        arrow:
+          props.placement.length && classes.arrow + " crxArrowTooltip",
+       
+        tooltip:
+          props.placement.length && classes.tooltip + " " + props.className + " crxTooltipAll",
+      }}
+      {...props}
+    />
+  );
+}
 
 const CRXTooltip = ({
   placement,
@@ -77,7 +77,7 @@ const CRXTooltip = ({
 
   return (
     <>
-      <Tooltip
+      <CRXCustomizedTooltip
         arrow={arrow}
         placement={placement}
         title={addTooltipTitle}
@@ -88,7 +88,7 @@ const CRXTooltip = ({
         onClose={() => setTooltipIsOpen(false)}
       >
         {tooltipData()}
-      </Tooltip>
+      </CRXCustomizedTooltip>
     </>
   );
 };

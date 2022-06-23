@@ -8,25 +8,36 @@
   min-width: 507px;
   min-height: 538px;
   padding: 25px 10px 10px 10px;
+
   video {
     // margin-top: 68px;
     margin-top: 0px;
     margin-bottom: 0px;
   }
+
   .videoPlayerBtn {
     color: var(--color-White) !important;
     margin: 0 5px !important;
     background-color: transparent !important;
+
+    svg {
+      circle {
+        display: none;
+      }
+    }
   }
+
   #CRX_Video_Player_Controls {
     margin: 0px;
     bottom: 12px;
     left: -12px;
     padding-left: 15px;
     padding-right: 15px;
+
     .crx_video_graph {
       height: 80px;
     }
+
     .videoPlayer_Timeline_Time {
       display: flex;
       justify-content: space-between;
@@ -35,31 +46,34 @@
       color: #ffffff;
       font-size: 14px;
       font-family: var(--base-font-family);
-      .V_timeline_start_time {
-      }
-      .V_timeline_end_time {
-      }
     }
+
+    .V_timeline_end_time {
+      .V_timeline_end_time {}
+    }
+
     .main-control-bar {
       #SliderControlBar {
         position: relative;
+
         &::before {
           position: absolute;
           content: "";
           width: 2px;
           height: inherit;
-          background: #d79903;
+          background: #D79903;
           left: 0px;
           top: 0px;
           z-index: 9;
           transition: all 0.25s ease-in-out;
         }
+
         &::after {
           position: absolute;
           content: "";
           width: 2px;
           height: inherit;
-          background: #d79903;
+          background: #D79903;
           right: 0px;
           top: 0px;
           z-index: 9;
@@ -67,11 +81,13 @@
         }
 
         &:hover {
+
           &::before,
           &::after {
             transform: scaley(2.5);
           }
         }
+
         .MuiSlider-thumb {
           &::after {
             visibility: hidden !important;
@@ -90,6 +106,7 @@
   .MuiGrid-grid-xs-1 {
     display: none;
   }
+
   .videoContainer {
     padding: 0 14px;
     position: relative;
@@ -104,6 +121,7 @@
       height: 100%;
       width: 100%;
     }
+
     .alignmentPlayPause {
       &.crxAddTransition {
         .crxAlignmentPausePlay {
@@ -118,12 +136,14 @@
         &.icon-pause2 {
           font-size: 92px;
         }
+
         &.icon-play4 {
           font-size: 80px;
           position: relative;
           left: 1px;
         }
       }
+
       .crxAlignmentPausePlay {
         top: 0;
         position: absolute;
@@ -139,48 +159,76 @@
         width: 134px;
         height: 134px;
         background-color: rgb(255, 255, 255, 0.15);
-        -webkit-animation-duration: 3s;animation-duration: 3s;
-        -webkit-animation-fill-mode: both;animation-fill-mode: both;
+        -webkit-animation-duration: 3s;
+        animation-duration: 3s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
       }
-      @-webkit-keyframes fadeOut {
-        0% {opacity: 1;}
-        100% {opacity: 0;}
-     }
 
-     @keyframes fadeOut {
-        0% {opacity: 1;}
-        100% {opacity: 0;}
-     }
+      @-webkit-keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0;
+        }
+      }
+
       .crxAlignmentPause {
         width: 114px;
         height: 114px;
       }
     }
   }
+
   .MuiGrid-grid-xs-3 {
     margin-bottom: 12px;
   }
+
   .GridCointainerBlock {
     display: block;
   }
+
   .GridCointainerHide {
     display: none;
   }
+
   .videoTransformApply {
     margin-top: -162px;
   }
+
   .pictureViewGrid {
     margin-left: auto;
     margin-top: -126px;
   }
+
   #video-player-screens {
     background-color: var(--color-black-11);
   }
+
   .PlayPause-container {
     margin-top: 8px;
   }
+
   .main-control-bar {
     padding: 0px 0px;
+    line-height: 0;
+  }
+
+  .playerViewFlexTimer {
+    height: 60px;
+
   }
 
   .playerViewFlex {
@@ -191,49 +239,61 @@
     padding-left: 10px;
     padding-right: 17px;
     height: 60px;
+
     .playerViewRight {
       display: flex;
-      margin-top: 14px;
+      margin-top: 5px;
       margin-right: -1px;
       align-items: center;
       position: relative;
+
       .SettingGrid {
         width: 30px;
+
         .faCogIcon {
           position: absolute;
           right: 229px;
         }
       }
+
       .playerView {
         position: absolute;
         right: 0px;
       }
     }
+
     .player_right_responsive {
       display: none;
+
       .CrxchevronDown {
         color: white;
         font-size: 32px;
         top: -3px;
         transition: 0.1s all linear;
+
         &:hover {
           transform: scale(1.3);
         }
       }
     }
+
     @media only screen and (max-width: 900px) and (min-height: 500px) {
       .playerViewRight {
         display: none;
       }
+
       .player_right_responsive {
         display: block;
         position: relative;
         right: -25px;
+        top: -3px;
       }
+
       .playerView {
         top: -2px !important;
       }
     }
+
     .clickViewRightBtn {
       position: absolute;
       bottom: -46px;
@@ -241,6 +301,7 @@
       z-index: 24;
       display: flex !important;
     }
+
     .clickViewRightBtn {
       &::before {
         position: absolute;
@@ -258,16 +319,19 @@
       margin-bottom: -4px;
       margin-right: -24px;
     }
+
     #volume-controls {
       top: 29px;
       left: 196px;
     }
+
     .playerView {
       div {
         i {
           color: var(--color-White);
           font-size: 32px;
           transition: 0.1s all;
+
           &:hover {
             // font-size: 36px;
             transform: scale(1.3);
@@ -287,42 +351,52 @@
         line-height: 1.75;
         padding: 7px 7px;
       }
+
       .rc-menu__item {
         color: var(--color-White);
         padding: 9px 8px !important;
       }
+
       .rc-menu-container {
         top: 0;
       }
     }
+
     .playerViewMiddle {
       position: relative;
-      top: -1px;
+      top: -5px;
       left: 20px;
-      @media only screen and (max-width: 1025px) {
+
+      @media only screen and (max-width:1025px) {
         left: 26px;
       }
-      @media only screen and (max-width: 800px) {
+
+      @media only screen and (max-width:800px) {
         left: 80px;
       }
-      @media only screen and (max-width: 730px) {
+
+      @media only screen and (max-width:730px) {
         left: 87px;
       }
+
       .UndoIconPosition {
         position: absolute;
         left: -31px;
         top: -4px;
       }
+
       .RedoIconPosition {
         position: absolute;
         left: 55px;
         top: -4px;
       }
+
       .MinusIconPosition {
         position: absolute;
         top: -7px;
         left: 10px;
         transition: 0.1s all linear;
+
         &:hover {
           transform: scale(1.3);
         }
@@ -332,23 +406,29 @@
 
   .timeLineBar {
     margin-top: 15px;
+
     .MuiLinearProgress-root {
       margin-bottom: 15px;
     }
+
     .linearbarThird {
       div {
         background-color: var(--color-olive);
       }
     }
+
     .linearbarfourth {
       div {
         background-color: var(--color-coral);
       }
     }
   }
+
   .showControllerBar {
     display: block;
+    margin-top: 10px;
   }
+
   .hideControllerBar {
     display: none;
   }
@@ -356,9 +436,11 @@
   .trueshow {
     display: block !important;
   }
+
   .notShowFRicon {
     display: none;
   }
+
   .showFRicon {
     display: block;
     position: absolute;
@@ -369,100 +451,156 @@
     z-index: 6;
     left: 50%;
     top: 50%;
-    margin-top: 88px;
+    transform: translate(-50%, -50%);
+    margin-top: 77px;
+
+    @media screen and (max-width:1000px) {
+      margin-top: 96px;
+    }
+
+    @media screen and (max-width:975px) {
+      margin-top: 88px;
+    }
+
+    @media screen and (max-width:940px) {
+      margin-top: 79px;
+    }
+
+    @media screen and (max-width:900px) {
+      margin-top: 66px;
+    }
+
+    @media screen and (max-width:860px) {
+      margin-top: 50px;
+
+    }
+
+    @media screen and (max-width:780px) {
+      margin-top: -17px;
+
+    }
+
     p {
       color: white;
     }
+
     i {
       font-size: 34px;
       position: relative;
       top: 8px;
+
+      @media screen and (max-width:1000px) {
+        font-size: 30px;
+      }
     }
+
     .iconFSSpan {
       font-size: 16px;
+      margin-left: 4px;
+
+      @media screen and (max-width:1000px) {
+        position: relative;
+        top: 0px;
+      }
     }
   }
+
   .iconTableClr {
     color: white;
     font-size: 28px;
     position: absolute;
     right: 51px;
     transition: 0.2s all;
+
     &:hover {
       // font-size: 36px;
       transform: scale(1.3);
       cursor: pointer;
     }
   }
+
   .caretLeftIcon {
     font-size: 42px;
     transition: 0.1s all;
     position: absolute;
+
     &:hover {
       // font-size: 48px;
       transform: scale(1.3);
       cursor: pointer;
     }
   }
+
   .caretRightIcon {
     position: absolute;
     left: 118px;
     font-size: 42px;
     transition: 0.1s all;
+
     &:hover {
       // font-size: 48px;
       transform: scale(1.3);
     }
   }
+
   .backward3Icon {
     font-size: 34px;
     transition: 0.1s all;
     position: absolute;
     left: 85px;
     top: 4px;
+
     &:hover {
       // font-size: 42px;
       transform: scale(1.4);
     }
   }
+
   .backward2Icon {
     font-size: 34px;
     transition: 0.1s all;
     position: absolute;
     left: 18px;
     top: 3px;
+
     &:hover {
       // font-size: 42px;
       transform: scale(1.4);
     }
   }
+
   .iconPlay4 {
     font-size: 34px;
     position: absolute;
     left: 53px;
     top: 4px;
     transition: 0.1s all;
+
     &:hover {
       // font-size: 42px;
       transform: scale(1.3);
     }
   }
+
   .iconPause2 {
     font-size: 30px;
     transition: 0.1s all;
     left: 53px;
     top: 5px;
     position: absolute;
+
     &:hover {
       // font-size: 42px;
       transform: scale(1.3);
     }
   }
+
   .volume-icon {
     span {
       color: white;
       font-size: 28px;
       transition: 0.2s all;
+
       &:hover {
         // font-size: 34px;
         transform: scale(1.3);
@@ -470,72 +608,88 @@
       }
     }
   }
+
   .iconMinusUndo {
     font-size: 28px;
     transition: 0.1s all linear;
+
     &:hover {
       // font-size: 36px;
       transform: scale(1.3);
     }
   }
+
   .undoAltIcon,
   .undoRedoIcon {
     font-size: 25px;
-    transition: 0.1s all;
+    transition: .1s all;
+
   }
+
   .faCogIcon {
     font-size: 28px;
     color: white;
     margin-right: -15px;
     transition: 0.1s all;
+
     &:hover {
       cursor: pointer;
       // font-size: 36px;
       transform: scale(1.3);
     }
   }
+
   .faBookmarkIcon {
     font-size: 26px;
     position: absolute;
     right: 133px;
     transition: 0.1s all;
+
     &:hover {
       // font-size: 34px;
       transform: scale(1.3);
     }
   }
+
   .commentAltpPlus {
     font-size: 26px;
     position: absolute;
     right: 99px;
     transition: 0.1s all;
+
     &:hover {
       // font-size: 34px;
       transform: scale(1.3);
     }
   }
+
   .modeButton {
     position: absolute;
     left: 48%;
     top: 49%;
     margin-top: 64px;
     margin-left: 3px;
-    @media (max-width: 730px) {
-      margin-top: 10px;
+
+    @media (max-width: 780px) {
+      margin-top: -11px;
     }
+
     i {
       color: white;
       transition: 0.5s all linear;
       font-size: 33px;
     }
   }
+
   .modeNumCount {
     font-size: 16px;
   }
+
   .modeBtnIconLeft {
     transform: rotate(330deg);
     font-size: 28px;
     display: block;
+
     &::before {
       position: absolute;
       content: "";
@@ -549,6 +703,7 @@
       border-radius: 207px;
       transform: rotate(30deg);
     }
+
     .circleRedo {
       position: absolute;
       font-size: 8px;
@@ -560,6 +715,7 @@
       padding: 5px 4px;
       border: 1px solid #3333;
       transform: rotate(28deg);
+
       span {
         font-size: 12px;
       }
@@ -570,6 +726,7 @@
     transform: rotate(54deg);
     font-size: 28px;
     display: block;
+
     &::before {
       position: absolute;
       content: "";
@@ -583,6 +740,7 @@
       border-radius: 207px;
       transform: rotate(30deg);
     }
+
     .circleRedo {
       position: absolute;
       font-size: 8px;
@@ -594,22 +752,226 @@
       padding: 5px 4px;
       border: 1px solid #3333;
       transform: rotate(303deg);
+
       span {
         font-size: 12px;
       }
     }
   }
+
   .playerViewLeft {
     margin-left: -5px;
+    margin-top: -10px;
+
     button {
       min-width: auto;
       padding: 0 0;
       margin: 0 0;
     }
   }
+
   .videoFR_Screen {
     video {
       border: 10px solid black;
+    }
+  }
+
+  .ViewScreenLayouts {
+    background-color: #404041;
+    left: -434px !important;
+    top: -363px !important;
+    width: 366px;
+
+    li {
+      color: #D1D2D4;
+      font-size: 14px;
+      position: relative;
+      height: 50px !important;
+    }
+
+    .MenuItemLayout_1 {
+      height: 34px !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid #69696A;
+
+      &:hover,
+      &:active {
+        background-color: transparent;
+
+      }
+    }
+
+    .faCheckLayout {
+      position: absolute;
+      left: 15px;
+      font-size: 14px;
+    }
+
+    .textContentLayout {
+      position: absolute;
+      left: 44px;
+      font-family: var(--base-font-family);
+      font-weight: normal;
+      font-size: 14px;
+    }
+
+    .ViewDiv {
+      position: absolute;
+      left: 161px;
+    }
+
+    .SidePanelMenu {
+      position: relative;
+      border-top: 1px solid #69696A;
+
+      .sidePanelGrid {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        left: 161px;
+
+        div {
+          background-color: #D1D2D4;
+          height: 30px;
+          border: 1px solid #707070;
+          width: 61px;
+        }
+
+        p {
+          background-color: #A7A9AC;
+          height: 30px;
+          border: 1px solid #707070;
+          width: 18px;
+        }
+      }
+
+      .MuiSwitch-root {
+        position: absolute;
+        right: 5px;
+      }
+
+      .MuiFormControlLabel-label {
+        position: absolute;
+        left: 44px;
+        font-size: 14px;
+      }
+
+    }
+
+    .switchBaseLayout {
+      .MuiSwitch-switchBase {
+        width: 16px;
+        height: 16px;
+        background-color: #FFFFFF;
+        top: 12px;
+        left: 10px;
+      }
+
+      .MuiSwitch-track {
+        height: 18px;
+        width: 30px;
+        background-color: #E5E5E5 !important;
+        opacity: 1;
+        border-radius: 8px;
+      }
+
+      .Mui-checked {
+        +.MuiSwitch-track {
+          background-color: #003A5D !important;
+          opacity: 1;
+          border-radius: 8px;
+        }
+      }
+    }
+
+    .switcherBtn {
+      font-size: 14PX;
+      position: absolute;
+      right: 65px;
+      top: 16px;
+    }
+
+    .activeLayout {
+      background-color: #231F20;
+
+      &:hover {
+        background-color: #6E6E6E;
+      }
+    }
+  }
+
+  .screenViewsSingle {
+    background: #D1D2D4;
+    height: 32px;
+    width: 54px;
+    border: 1px solid #707070;
+  }
+
+  .screenViewsSideBySide {
+    display: flex;
+
+    p {
+      background: #D1D2D4;
+      height: 30px;
+      width: 53px;
+      border: 1px solid #707070;
+
+    }
+  }
+
+  .screenViewsVideosOnSide {
+    display: flex;
+    align-items: center;
+
+    .first {
+      background: #D1D2D4;
+      height: 30px;
+      width: 53px;
+      border: 1px solid #707070;
+    }
+
+    .second {
+      span {
+        background: #D1D2D4;
+        height: 15px;
+        width: 26px;
+        display: block;
+        border: 1px solid #707070;
+
+      }
+    }
+  }
+
+  .screenViewsGrid {
+    display: flex;
+    align-items: center;
+
+    p {
+      span {
+        width: 26px;
+        height: 15px;
+        display: block;
+        background: #D1D2D4;
+        border: 1px solid #707070;
+
+      }
+    }
+  }
+
+  .screenViewsGrid6 {
+    display: flex;
+    align-items: center;
+
+    p {
+      span {
+        width: 26px;
+        height: 15px;
+        display: block;
+        background: #D1D2D4;
+        border: 1px solid #707070;
+      }
     }
   }
 }
@@ -621,6 +983,7 @@
     padding-left: 58px;
     padding-right: 27px;
   }
+
   #timelines {
     position: absolute;
     bottom: 146px;
@@ -628,9 +991,11 @@
     padding-left: 50px;
     padding-right: 59px;
   }
+
   #counter {
     color: var(--color-White);
   }
+
   .volume-icon {
     span {
       color: var(--color-White);
@@ -642,22 +1007,27 @@
   position: relative;
   top: 9px;
   left: 8px;
+
   svg {
     transition: 0.1s all linear;
   }
+
   &:hover {
     svg {
       transform: scale(1.5);
     }
   }
 }
+
 .handleforwardIcon {
   position: relative;
   left: 133px;
   top: 10px;
+
   svg {
     transition: 0.1s all linear;
   }
+
   &:hover {
     svg {
       transform: scale(1.5);
@@ -670,15 +1040,18 @@
     margin: 0 4px;
     background: var(--color-transparent);
     border: none;
+
     &:disabled {
       i {
         color: #979797;
       }
     }
+
     i {
       color: var(--color-White);
       font-size: 37px;
       position: relative;
+
       &:hover {
         cursor: pointer;
       }
@@ -695,42 +1068,51 @@
         border: 1px solid black;
       }
     }
+
     .undoRedoIcon {
       span {
         top: 5px;
         left: -3px;
       }
+
       &:hover {
         span {
           font-size: 10px;
         }
       }
     }
+
     .undoAltIcon {
       span {
         top: 3px !important;
         transform: rotate(306deg) !important;
         left: 13px !important;
       }
+
       &:hover {
         span {
           font-size: 10px;
         }
       }
     }
+
     .fa-undo-alt {
       transform: rotate(55deg);
+
       span {
         transform: rotate(-50deg);
       }
     }
+
     .fa-redo-alt {
       transform: rotate(-38deg);
+
       span {
         transform: rotate(42deg);
       }
     }
   }
+
   .modeIconUndoLinker {
     background: white;
     position: absolute;
@@ -743,10 +1125,12 @@
     font-size: 10px;
     margin-left: 5px;
     margin-top: 5px;
+
     span {
       font-size: 12px;
     }
   }
+
   .modeIconRedoLinker {
     background: white;
     position: absolute;
@@ -759,26 +1143,32 @@
     font-size: 10px;
     margin-top: 6px;
     margin-left: 2px;
+
     span {
       font-size: 12px;
     }
   }
+
   .UndoIconHover {
     transition: 0.1s all linear;
+
     &:hover {
       .modeIconUndoLinker {
         // font-size: 13px;
         cursor: pointer;
       }
+
       .modeIconRedoLinker {
         // font-size: 13px;
         cursor: pointer;
       }
+
       .undoAltIcon,
       .undoRedoIcon {
         // font-size: 30px !important;
         cursor: pointer !important;
       }
+
       transform: scale(1.3);
     }
   }
@@ -791,19 +1181,23 @@
     }
   }
 }
+
 .custom-class {
   display: inline-flex !important;
   padding-left: 6px;
 }
+
 .custom-class img {
   margin-left: 48px !important;
   margin-bottom: 15px;
 }
+
 .mapContainerhh {
   width: 200px;
   background-color: red;
   display: inline-block;
 }
+
 .videoMenuCss {
   position: absolute;
   top: 34px;
@@ -815,83 +1209,102 @@
   margin-left: 25px;
   color: white;
 }
+
 .RewindToolTip {
   color: white;
   margin-left: 23px;
   font-size: 14px;
 }
+
 .playPause {
   font-size: 14px;
   color: white;
   margin-left: 23px;
 }
+
 .MuteTool {
   margin: 0 0;
+
   span {
     color: white;
     margin-left: 77px;
     font-size: 14px;
   }
+
   i {
     color: white;
     font-size: 14px;
   }
+
   .fa-long-arrow-up {
     margin-left: 44px;
   }
+
   .fa-long-arrow-down {
     margin-left: 30px;
   }
 }
+
 .MuteTool_1 {
   margin-bottom: 8px;
 }
+
 .MuteTool_3 {
   margin-top: 14px;
 }
+
 .playBackTooltip {
   color: white;
   font-size: 14px;
   margin-left: 23px;
 }
+
 .UnMuteSpacer {
   margin-left: 59px !important;
 }
+
 .normalSped {
   color: white;
   margin-left: 23px;
   font-size: 14px;
 }
+
 span.playBackTooltipUp {
   color: white;
   margin-left: 23px;
   font-size: 14px;
 }
+
 .settingsTooltip {
   font-size: 14px;
   color: white;
   margin-left: 25px;
 }
+
 .notesTooltip {
   color: white;
   font-size: 14px;
   margin-left: 23px;
 }
+
 .BookmarksTooltip {
   color: white;
   font-size: 14px;
   margin-left: 23px;
 }
+
 .LayoutsTooltips {
   color: white;
   font-size: 14px;
   margin-left: 23px;
 }
+
 .FullScreenTooltip {
   color: white;
   font-size: 14px;
   margin-left: 23px;
 }
+
 .triangleRightSetter {
   color: white;
   font-size: 42px;
@@ -900,28 +1313,33 @@ span.playBackTooltipUp {
   top: 50%;
   margin-top: 5%;
   transition: 0.1s all;
+
   svg {
     circle {
       display: none;
     }
   }
 }
+
 .___CRXBookMark__ {
   &.___CRXBookNote__ {
     .CrxEditForm {
       margin-bottom: 80px;
     }
   }
+
   &.crx-model {
     .gridFilterTextBox {
       min-width: 470px;
       max-width: 470px;
       padding: 0;
+
       .errors {
         .MuiInput-underline {
           textarea {
             outline: 2px solid #aa1d1d;
             border: 1px solid transparent;
+
             &:focus {
               border: 1px solid #888787;
               outline: 2px solid #aa1d1d;
@@ -929,14 +1347,17 @@ span.playBackTooltipUp {
           }
         }
       }
+
       h6 {
         height: 25px;
         margin-top: 2px;
-         .inputLabelReq{
+
+        .inputLabelReq {
           margin-left: 6px;
           line-height: 24px;
-         }
+        }
       }
+
       textarea {
         width: 100%;
         height: 73px !important;
@@ -977,8 +1398,7 @@ span.playBackTooltipUp {
           width: 30px;
           height: 15px;
           border: 0px solid var(--color-transparent);
-          background: url("../../Assets/Images/scrollBarVerTop.jpg") no-repeat
-            center center;
+          background: url("../../Assets/Images/scrollBarVerTop.jpg") no-repeat center center;
           background-size: contain;
           background-clip: border-box;
           position: relative;
@@ -991,8 +1411,7 @@ span.playBackTooltipUp {
           height: 15px;
           border: 1px solid var(--color-d1d2d4);
 
-          background: url("../../Assets/Images/scrollVerBottom.png") no-repeat
-            center top var(--color-f1f1f1);
+          background: url("../../Assets/Images/scrollVerBottom.png") no-repeat center top var(--color-f1f1f1);
           background-size: contain;
 
           background-clip: border-box;
@@ -1004,51 +1423,119 @@ span.playBackTooltipUp {
         &::-webkit-scrollbar:vertical {
           display: block !important;
         }
+
         &::-webkit-scrollbar:horizontal {
           display: none !important;
         }
       }
+
       .requiredLable {
         .inputLabel {
           font-size: 13px;
         }
       }
+
       .errorStateContent {
         padding: 0;
         margin: -2px 0;
       }
     }
+
     .crx-requird-check {
       margin-bottom: 69px;
       margin-top: 16px;
+
       label {
         vertical-align: middle;
         margin-left: 7px;
       }
+
       .crxCheckBoxCreate {
         padding-left: 3px;
       }
     }
+
     .modelTitle {
       h2 {
         font-size: 16px;
       }
     }
+
     .crx-message-alert {
       .crxAlertSnapShotEditForm {
         height: 35px;
       }
     }
   }
+
   .__CRXAlertDes__ {
     .crx-message-alert {
       margin-top: 20px;
       margin-bottom: 20px;
     }
   }
+
   .categoryModalFooter {
     padding: 22px 25px 25px !important;
     height: auto;
     display: block;
+  }
+}
+
+.multiTimelineEnabled {
+  .faBookmarkIcon {
+    right: 54px !important;
+  }
+
+  .commentAltpPlus {
+    right: 19px !important;
+  }
+
+  .faCogIcon {
+    right: 165px !important;
+  }
+
+  @media(min-width:900px) {
+    .playerViewMiddle {
+      left: 65px !important;
+    }
+  }
+
+  @media screen and (max-width:900px) {
+    .clickViewRightBtn {
+      &::before {
+        width: 250px !important;
+      }
+    }
+  }
+}
+
+.disabledViewFlex {
+  .faBookmarkIcon {
+    right: 60px !important;
+  }
+
+  .commentAltpPlus {
+    right: 26px !important;
+  }
+
+  .faCogIcon {
+    right: 182px !important;
+  }
+
+  .playerViewMiddle {
+    left: 56px !important;
+  }
+
+  @media(max-width:900px) {
+    .clickViewRightBtn {
+      &::before {
+        width: 269px !important;
+      }
+    }
+
+    .playerViewMiddle {
+      left: 87px !important;
+    }
   }
 }

@@ -4,11 +4,12 @@
     position: relative;
     margin-left: auto;
     .volume-slider{
-        height: 100px;
         position: absolute;
-        top: -168px;
+        top: -235px;
+        left:3px;
         z-index: 3;
-        width: 35px;
+        height: 159px;
+
     }
     .volume-icon{
         margin-left: 10px;
