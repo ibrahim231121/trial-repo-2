@@ -23,7 +23,6 @@ import {
   CrxAccordion,CRXTabs, CrxTabPanel,
   CRXAlert,
   CRXModalDialog,
-  GoogleMap,
   CRXButton,
   CRXRows,
   CRXColumn,
@@ -34,6 +33,43 @@ import { RestorePageSharp } from "@material-ui/icons";
 import { string } from "yup/lib/locale";
 import { useHistory } from "react-router";
 const AssetDetailsTemplate = (props: any) => {
+  let tempgpsjson: any = [
+    {
+      "LAT": "24.813632",
+      "LON": "67.027721",
+      "LOGTIME": "1652857260"
+    },
+    {
+      "LAT": "24.814917",
+      "LON": "67.028923",
+      "LOGTIME": "1652857262"
+    },
+    {
+      "LAT": "24.818851",
+      "LON": "67.032187",
+      "LOGTIME": "1652857264"
+    },
+    {
+      "LAT": "24.823019",
+      "LON": "67.034721",
+      "LOGTIME": "1652857266"
+    },
+    {
+      "LAT": "24.827381",
+      "LON": "67.034574",
+      "LOGTIME": "1652857268"
+    },
+    {
+      "LAT": "24.832951",
+      "LON": "67.033673",
+      "LOGTIME": "1652857270"
+    },
+    {
+      "LAT": "24.839260",
+      "LON": "67.032900",
+      "LOGTIME": "1652857272"
+    }
+  ]
   const historyState = props.location.state;
   const history = useHistory();
   let evidenceId: number = historyState.evidenceId;
@@ -110,6 +146,9 @@ const AssetDetailsTemplate = (props: any) => {
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
   const [openForm, setOpenForm] = React.useState(false);
+  const [openMap, setOpenMap] = React.useState(false);
+  const [gpsJson, setGpsJson] = React.useState<any>();
+  const [apiKey, setApiKey] = React.useState<string>("");
   const handleChange = () => {
     setOpenForm(true);
   };
@@ -141,7 +180,15 @@ const AssetDetailsTemplate = (props: any) => {
     assetData();
     getEvidenceCategoriesResponse();
     dispatch(enterPathActionCreator({ val: "Asset Detail: " + assetName }));
+    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
+    setGpsJson(tempgpsjson);
   }, []);
+
+  useEffect(() => {
+    if(gpsJson && gpsJson.length>0){
+      setOpenMap(true);
+    }
+  }, [gpsJson]);
 
   function tabHandleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -316,7 +363,6 @@ const newRound=(x:any, y: any)=>{
     }
   };
 
-
   return (
     <div style={{ marginTop: "120px" }}>
       <p style={{ marginLeft: 50 }}>
@@ -409,7 +455,7 @@ const newRound=(x:any, y: any)=>{
               textAlign: "center",
             }}
           > */}
-          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} />}
+          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">

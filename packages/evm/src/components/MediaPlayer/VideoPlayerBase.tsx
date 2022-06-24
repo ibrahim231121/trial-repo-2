@@ -217,10 +217,23 @@ const VideoPlayerBase = (props: any) => {
   const [openTimelineSyncInstructions, setOpenTimelineSyncInstructions] = useState<boolean>(false);
   const [startTimelineSync, setStartTimelineSync] = useState<boolean>(false);
   const [openTimelineSyncConfirmation, setOpenTimelineSyncConfirmation] = useState<boolean>(false);
+  const [gpsJson, setGpsJson] = React.useState<any>();
+  const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
+  const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
 
   const classes = CRXVideoPlayerStyle()
 
+  React.useEffect(() => {
+    if (onMarkerClickTimeData) {
+      seekSliderOnMarkerClick(onMarkerClickTimeData);
+    }
+  }, [onMarkerClickTimeData]);
 
+  React.useEffect(() => {
+    if (props.gpsJson && props.gpsJson.length>0) {
+      setGpsJson(props.gpsJson);
+    }
+  }, [props.gpsJson]);
 
 
   React.useEffect(() => {
@@ -331,7 +344,6 @@ const VideoPlayerBase = (props: any) => {
         minimum_startpont = minimum_startpont > T_min_startpont ? T_min_startpont : minimum_startpont;
       }
     }
-
     var duration = maximum_endpoint - minimum_startpont;
     var durationInDateFormat = new Date(duration);
     var durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
@@ -656,6 +668,7 @@ const VideoPlayerBase = (props: any) => {
             videoHandlers.forEach((videoHandle: any) => {
               hanldeVideoStartStop(timerValue, videoHandle, true);
             });
+            renderMarkerOnSeek(timerValue);
           }
           else {
             setPlaying(false);
@@ -1266,6 +1279,44 @@ const VideoPlayerBase = (props: any) => {
       });
   }
 
+  const seekSliderOnMarkerClick = (logtime : Date) => {
+    let video: any = timelinedetail[0];
+    let datavideo: any = data[0];
+    if (video && datavideo) {
+      let timeOffset = datavideo.recording.timeOffset;
+      let video_start = new Date(datavideo.recording.started).getTime() + timeOffset;
+      let duration = logtime.getTime() - video_start;
+      let durationInDateFormat = (new Date(duration).getTime())/1000;
+      let recording_start_point = video.recording_start_point + durationInDateFormat;
+      setTimer(recording_start_point);
+      setControlBar(recording_start_point);
+    }
+  }
+
+  const renderMarkerOnSeek = (timerValue: number) => {
+    if(gpsJson){
+      if(gpsJson.length>0){
+        renderMarkerOnSeekTimelime(timerValue, data[0])
+      }
+    }
+  }
+
+  const renderMarkerOnSeekTimelime=(timerValue:number, firstdataobj: any)=>{
+    let timeOffset = firstdataobj.recording.timeOffset;
+    let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
+    let duration = ((timerValue*1000) + video_time)/1000;
+    let ObjLatLog : any = []
+    gpsJson.forEach((e: any) => {
+      if(e.LOGTIME == duration){
+        ObjLatLog.push(e);
+      }
+    });
+    if(ObjLatLog.length>0)
+    {
+      setUpdateSeekMarker(ObjLatLog);
+    }
+  }
+
   return (
     <>
       {true && <VideoPlayerViewReason
@@ -1296,6 +1347,11 @@ const VideoPlayerBase = (props: any) => {
                 isOpenWindowFwRw={isOpenWindowFwRw}
                 onClickBookmarkNote={onClickBookmarkNote}
                 setupdateVideoSelection={setupdateVideoSelection}
+                updateSeekMarker={updateSeekMarker}
+                gMapApiKey={props.apiKey}
+                gpsJson={gpsJson}
+                openMap={props.openMap}
+                setOnMarkerClickTimeData={setOnMarkerClickTimeData}
               />
 
               <div className="ClickerIcons">

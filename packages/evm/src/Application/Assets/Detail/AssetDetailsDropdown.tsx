@@ -1,19 +1,25 @@
 import React,{useRef,useState} from "react";
-import { CRXSelectBox,CRXToaster,CRXAlert,GoogleMap } from "@cb/shared";
+import { CRXSelectBox,CRXToaster,CRXAlert } from "@cb/shared";
 import "./AssetDetailsDropdown.scss";
 import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url';
 import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
+import GoogleMap from "../../../map/google/GoogleMap";
+
 
 type propsObject = {
   data:any;
   evidenceId:string;
   setData:any;
-  onClickBookmarkNote:any
+  onClickBookmarkNote:any;
+  updateSeekMarker:any
+  gMapApiKey:any
+  gpsJson:any
+  openMap:boolean
+  setOnMarkerClickTimeData:any
 }
 
-const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote}:propsObject) => {
-   
-
+const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData}:propsObject) => {
+  
   const [selectDropDown, setSelectDropDown] = React.useState("map");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
@@ -21,12 +27,12 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote}:prop
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
+  
   const options = [
     { value: "map", displayText: "Map" },
     { value: "bookmarks", displayText: "Bookmarks" },
     { value: "notes", displayText: "Notes" },
   ];
-  
 
   const handleChangeDropDown = (event: any) => {
     setSelectDropDown(event.target.value);
@@ -163,6 +169,11 @@ const handleNoteDelete = (noteId:any,assetId:any)=>{
     });
 
 }
+const callBackOnMarkerClick=(logtime:any)=>{
+  const milliseconds = logtime * 1000
+  const dateObject = new Date(milliseconds);
+  setOnMarkerClickTimeData(dateObject);
+}
 
 
   return (
@@ -186,19 +197,16 @@ const handleNoteDelete = (noteId:any,assetId:any)=>{
         value={selectDropDown}
       />
       
-      {selectDropDown == "map" &&  
-                <>
-                  <GoogleMap
-                    apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                    zoomLevel={30}
-                    mapTypeControl={true}
-                    initialMarker={{ lat: 13.084828874547332, long: 8.7890625 }}
-                   
-  
-                   
-                  />
-                </>
-              }
+      {selectDropDown == "map" &&  openMap &&
+        <GoogleMap
+          apiKey={gMapApiKey}
+          zoomLevel={15}
+          mapTypeControl={true}
+          gpsData = {gpsJson}
+          callBackOnMarkerClick={callBackOnMarkerClick}
+          updateSeekMarker={updateSeekMarker}
+        />
+      }
       {selectDropDown == "bookmarks" && 
       <AssetDetailNotesandBookmark
        data={data}

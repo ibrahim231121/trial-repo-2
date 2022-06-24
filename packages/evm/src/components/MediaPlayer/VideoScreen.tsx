@@ -23,10 +23,14 @@ interface VideoScreenProp {
   isPlaying :boolean
   setupdateVideoSelection: any
   onClickBookmarkNote:any
-
+  updateSeekMarker:any
+  gMapApiKey: any
+  gpsJson: any
+  openMap:boolean
+  setOnMarkerClickTimeData:any
 }
 
-const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection }: VideoScreenProp) => {
+const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
@@ -181,9 +185,9 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
           </Grid>
         </Grid>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
-        <div className="mapContainerhh"  style={{ display: `${mapEnabled ? "block" : "none"}` }} >
-        <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} />
-        </div>
+        {mapEnabled && <div className="mapContainerhh" >
+          <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} />
+        </div>}
       </Grid>
       <VideosSelection timelinedetail={timelinedetail} settimelinedetail={settimelinedetail} anchorEl={anchorEl} setAnchorEl={setAnchorEl} indexNumber={indexNumber} setupdateVideoSelection={setupdateVideoSelection}/>
 
