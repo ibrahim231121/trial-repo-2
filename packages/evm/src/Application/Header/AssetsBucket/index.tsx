@@ -51,7 +51,7 @@ import Restricted from "../../../ApplicationPermission/Restricted";
 declare const window: any;
 window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 window.onRecvError = new CustomEvent("onUploadError");
-
+window.URL = window.URL || window.webkitURL;
 const cookies = new Cookies();
 //for asset upload--
 
@@ -137,8 +137,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [isOpenConfirm, setIsOpenConfirm] = React.useState<boolean>(false);
   const [isSubProgressBarOpen, setIsSubProgressBarOpen] = React.useState<boolean>(false);
   const [isMainProgressBarOpen, setIsMainProgressBarOpen] = React.useState<boolean>(false);
-  const [isMetaDataOpen,setIsMetaDataOpen] = React.useState<boolean>(false);
-  const [isFileUploadHide,setIsFileUploadHide] = useState<boolean>(false);
+  const [isMetaDataOpen, setIsMetaDataOpen] = React.useState<boolean>(false);
+  const [isFileUploadHide, setIsFileUploadHide] = useState<boolean>(false);
   const [fileToRemove, setFileToRemove] = React.useState<string>("");
   //--for asset upload
   const dispatch = useDispatch()
@@ -436,6 +436,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   //--for asset upload
   const handleOnUpload = async (e: any) => {
 
+    var av = [];
     for (let i = 0; i < e.target.files.length; i++) {
       let fileName = e.target.files[i].name.replaceAll(' ', '_');
 
@@ -454,6 +455,22 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           return false;
         }
       }
+
+      //for getting duration
+      var fileNameExtension = e.target.files[i].name.substring(
+        e.target.files[i].name.lastIndexOf("."),
+        e.target.files[i].name.length
+      );
+      if (fileNameExtension === ".mp4" ||
+        fileNameExtension === ".mp3" ||
+        fileNameExtension === ".mkv" ||
+        fileNameExtension === ".webm" ||
+        fileNameExtension === ".3gp" ||
+        fileNameExtension === ".wav") {
+        //wmv and avi does not support by browser       
+        av.push({ file: e.target.files[i] });
+      }
+
     }
 
     setFileCount(prev => {
@@ -468,6 +485,29 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setFiles(prev => { return [...prev, ...e.target.files] });
     AddFilesToFileService(e.target.files);
 
+    av.forEach(async x => {
+      await getDuration(x.file).then(
+        //duration => console.log("File Duration ", duration)
+      )
+    });
+
+  }
+  const getDuration = async (file: any) => {
+    let videoNode = document.createElement("video");
+    videoNode.preload = 'metadata';
+    let promise = new Promise(function (resolve, reject) {
+      videoNode.addEventListener("loadedmetadata", function () {
+        file.duration = videoNode.duration;
+        resolve(videoNode.duration);
+      });
+      videoNode.addEventListener("error", function (e) {
+        reject("Error");
+      });
+    });
+
+    const URL = window.URL || window.webkitURL;
+    videoNode.src = URL.createObjectURL(file);
+    return promise;
   }
 
   const uploadStatusUpdate = (data: any) => {
@@ -587,14 +627,14 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const handleClose = (e: any) => {
     setIsModalOpen(false);
   }
- 
 
-      
+
+
 
   useEffect(() => {
     var totalPercentage = 0;
     var eCount = 0;
-    if(totalFilePer === 100 && files.length == 0  ) {
+    if (totalFilePer === 100 && files.length == 0) {
       setUploadInfo([])
     }
 
@@ -612,7 +652,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     });
 
     if (totalPercentage != 0 && fileCountRef.current != 0) {
-      
+
       setTotalFilePer(Math.round(totalPercentage / fileCountRef.current));
     }
     else {
@@ -622,33 +662,34 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     if (eCount == fileCount && (eCount != 0 && fileCount != 0)) {
       setMainProgressError(true);
     }
-else {
+    else {
       setMainProgressError(false);
     }
     //in any error show badge
     setErrorCount(eCount);
 
 
-    if(uploadInfo.length > 0 && totalFilePer < 100  ){
-      if(!isCheckTrue){
-        
+    if (uploadInfo.length > 0 && totalFilePer < 100) {
+      if (!isCheckTrue) {
+
         setIsMetaDataOpen(true)
         setShowUploadAttention(true);
         // setFileCount(files.length)
-       
+
       }
-      if(!onAddEvidence){
+      if (!onAddEvidence && fileCount > 0) {
+
         setIsMainProgressBarOpen(true)
         setIsSubProgressBarOpen(true)
         // setFileCount(files.length)
-        
+
       }
     }
 
-    
+
   }, [uploadInfo])
 
-const setUploadInfoRemoveCase = (fileName: string) => {
+  const setUploadInfoRemoveCase = (fileName: string) => {
     setUploadInfo(prevState => {
       if (prevState.length > 0) {
         const newUploadInfo = [...prevState];
@@ -658,84 +699,83 @@ const setUploadInfoRemoveCase = (fileName: string) => {
     })
   }
 
-const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
+  const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
 
   useEffect(() => {
     if (totalFilePer === 100) {
       toasterRef.current.showToaster({
         message: "File(s) uploaded", variant: "success", duration: 7000, clearButtton: true
       });
-      if(isCheckTrue){
+      if (isCheckTrue) {
         setIsMainProgressBarOpen(false);
         setIsFileUploadHide(false)
-        setIsSubProgressBarOpen(false) 
+        setIsSubProgressBarOpen(false)
         setIsCheckTrue(false)
         setUploadInfo([])
         setFiles([])
         setFileCount(0)
-         
+
       }
       else {
-        
         setIsMainProgressBarOpen(true);
-        setIsSubProgressBarOpen(true) 
+        setIsSubProgressBarOpen(true)
         setIsFileUploadHide(false)
-        
+
       }
-      
-      if(!onAddEvidence){
+
+      if (!onAddEvidence) {
         setIsFileUploadHide(false)
       }
     }
 
-    if(uploadInfo.length > 0 && totalFilePer < 100  ){
-      if(!isCheckTrue){
-       
+    if (uploadInfo.length > 0 && totalFilePer < 100) {
+      if (!isCheckTrue) {
+
         setFileCount(files.length)
       }
-      if(!onAddEvidence){
-        setFileCount(files.length)  
+      if (!onAddEvidence) {
+        setFileCount(files.length)
       }
     }
-    
+
   }, [totalFilePer])
 
 
 
   useEffect(() => {
-    if(isCheckTrue){
+    if (isCheckTrue) {
       setIsMetaDataOpen(false);
       setShowUploadAttention(false);
     }
-  },[isCheckTrue])
-  
+  }, [isCheckTrue])
 
-  useEffect(()=> {
-    if(onAddEvidence){
+
+  useEffect(() => {
+    if (onAddEvidence) {
       toasterRef.current.showToaster({
         message: "Asset saved", variant: "success", duration: 7000, clearButtton: true
       });
-     setIsMetaDataOpen(false);
-     setShowUploadAttention(false)
-     setonAddEvidence(false)
-    setIsMainProgressBarOpen(false);
-    setIsSubProgressBarOpen(false)
-    
-    setIsFileUploadHide(true)
-    if(totalFilePer == 100){
-      setIsFileUploadHide(false)
-      if(onAddEvidence){
+      setIsMetaDataOpen(false);
+      setShowUploadAttention(false)
+      setonAddEvidence(false)
+      setIsMainProgressBarOpen(false);
+      setIsSubProgressBarOpen(false)
 
-        setFiles([])
-         setUploadInfo([])
+      setIsFileUploadHide(true)
+      if (totalFilePer == 100) {
+        setIsFileUploadHide(false)
+        if (onAddEvidence) {
+
+          setFiles([])
+          setUploadInfo([])
+        }
+        setFileCount(0)
       }
-      setFileCount(0)
+      else {
+        setIsCheckTrue(true);
+      }
     }
-    else {
-      setIsCheckTrue(true);
-    }
-  }
-},[onAddEvidence])
+  }, [onAddEvidence])
 
   const getUploadInfo = (data: any) => {
     return {
@@ -845,7 +885,11 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
   const onConfirm = () => {
     window.tasks[fileToRemove].abortSignal.abort();
     setFileCount(prev => {
+
       fileCountRef.current = prev - 1;
+      if (prev - 1 == 0) {
+        setIsMainProgressBarOpen(false);
+      }
       return prev - 1;
     });
 
@@ -946,6 +990,7 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
   }, [isCheckedAll])
   return (
     <>
+
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <CRXDrawer
         className="CRXBucketPanel crxBucketPanelStyle"
@@ -1001,7 +1046,7 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
 
                         </CRXColumn>
                       </CRXRows>
-                      <CRXRows container spacing={0} className={ isMetaDataOpen ? "file-upload-show" : "file-upload-hide"} >
+                      <CRXRows container spacing={0} className={isMetaDataOpen ? "file-upload-show" : "file-upload-hide"} >
                         {!onAddEvidence && fileCount > 0 ?
                           <CRXAlert
                             className={"crx-alert-notification file-upload"}
@@ -1050,48 +1095,49 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
                           />
                         </CRXModalDialog>
                       </CRXRows>
-                    {!isFileUploadHide ? 
-                      <Restricted moduleId={26}>
-                        <div className="uploadContent">
-                          <div className="iconArea">
-                            <i className="fas fa-layer-plus"></i>
-                          </div>
-                          <div className="textArea">
-                            Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
-                            <br />
-                            <div>
-                              <input
-                                style={{ display: "none" }}
-                                id="upload-Button-file"
-                                multiple
-                                type="file"
-                                onChange={handleOnUpload}
+                      {!isFileUploadHide ?
+                        <Restricted moduleId={26}>
+                          <div className="uploadContent">
+                            <div className="iconArea">
+                              <i className="fas fa-layer-plus"></i>
+                            </div>
+                            <div className="textArea">
+                              Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
+                              <br />
+                              <div>
+                                <input
+                                  style={{ display: "none" }}
+                                  id="upload-Button-file"
+                                  multiple
+                                  type="file"
+                                  onChange={handleOnUpload}
 
-                              />
-                              <label htmlFor="upload-Button-file">
-                                <a className="textFileBrowser">file browser</a>
-                              </label>
+                                />
+                                <label htmlFor="upload-Button-file">
+                                  <a className="textFileBrowser">file browser</a>
+                                </label>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Restricted> 
-                      : <></>
+                        </Restricted>
+                        : <></>
                       }
 
-                      {isMainProgressBarOpen && !onAddEvidence && <>
-                        <div className="uploading-text">{showUploadAttention ? "Uploaded:" : "Uploading:"} </div>
-                        <div className="crxProgressbarBucket mainProgressBar">
-                          <CRXProgressBar
-                            id="raw"
-                            loadingText={fileCount > 1 ? fileCount + " assets " + "(" + totalFileSize + ")" : fileCount + " asset " + "(" + totalFileSize + ")"}
-                            value={totalFilePer}
-                            error={mainProgressError}
-                            maxDataSize={true}
-                            width={410}
-                          // loadingCompleted={"uploadFileSize"}//"5.0Mb"
-                          />
-                        </div>
-                      </>}
+                      {
+                        isMainProgressBarOpen && !onAddEvidence && <>
+                          <div className="uploading-text">{totalFilePer == 100 ? "Uploaded:" : "Uploading:"} </div>
+                          <div className="crxProgressbarBucket mainProgressBar">
+                            <CRXProgressBar
+                              id="raw"
+                              loadingText={fileCount > 1 ? fileCount + " assets " + "(" + totalFileSize + ")" : fileCount + " asset " + "(" + totalFileSize + ")"}
+                              value={totalFilePer}
+                              error={mainProgressError}
+                              maxDataSize={true}
+                              width={410}
+                            // loadingCompleted={"uploadFileSize"}//"5.0Mb"
+                            />
+                          </div>
+                        </>}
                       {
                         uploadInfo.filter(x => x.uploadInfo.removed != true).length > 0 && fileCount > 0 && isSubProgressBarOpen && <CrxAccordion
                           title="Upload Details"
@@ -1121,45 +1167,45 @@ const [isCheckTrue,setIsCheckTrue] = useState<boolean>(false);
                             View on assets bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
                           </div>
                           <div className="bucketScroll">
-                          <div className="bucketList" id="assetBucketLists">
-                            {
-                              assetBucketData.map((x: any, index) => {
-                                return <div className="bucketLister">
-                                  <div className="assetCheck">
+                            <div className="bucketList" id="assetBucketLists">
+                              {
+                                assetBucketData.map((x: any, index) => {
+                                  return <div className="bucketLister">
+                                    <div className="assetCheck">
 
-                                    <CRXCheckBox
-                                      inputRef={checkBoxRef}
-                                      checked={isChecked[x.assetId] || isCheckedAll}
-                                      onChange={(e: any) => selectAssetFromList(e, x)}
-                                      name={x.assetId}
-                                      lightMode={true}
-                                    />
-                                  </div>
-                                  <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
-                                  <div className="bucketListTextData">
-                                    <div className="bucketListAssetName">{x.assetName}</div>
-                                    <div className="bucketListRec">{x.assetType}</div>
-                                    <div className="bucketListRec">
-                                      {x.categories.map((item: any) => item).join(", ")}
+                                      <CRXCheckBox
+                                        inputRef={checkBoxRef}
+                                        checked={isChecked[x.assetId] || isCheckedAll}
+                                        onChange={(e: any) => selectAssetFromList(e, x)}
+                                        name={x.assetId}
+                                        lightMode={true}
+                                      />
+                                    </div>
+                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
+                                    <div className="bucketListTextData">
+                                      <div className="bucketListAssetName">{x.assetName}</div>
+                                      <div className="bucketListRec">{x.assetType}</div>
+                                      <div className="bucketListRec">
+                                        {x.categories.map((item: any) => item).join(", ")}
+                                      </div>
+                                    </div>
+                                    <div className="bucketActionMenu">{<BucketActionMenu
+                                      row={selectedActionRow}
+                                      setSelectedItems={setSelectedItems}
+                                      selectedItems={selectedItems} />
+                                    }
                                     </div>
                                   </div>
-                                  <div className="bucketActionMenu">{<BucketActionMenu
-                                    row={selectedActionRow}
-                                    setSelectedItems={setSelectedItems}
-                                    selectedItems={selectedItems} />
-                                  }
-                                  </div>
-                                </div>
-                              })
-                            }
-                          </div>
+                                })
+                              }
+                            </div>
                           </div>
                         </>
                       ) : (
                         <div className="bucketContent">Your Asset Bucket is empty.</div>
                       )
                       }
-                      
+
                     </div>
                   )}
                 </Draggable>

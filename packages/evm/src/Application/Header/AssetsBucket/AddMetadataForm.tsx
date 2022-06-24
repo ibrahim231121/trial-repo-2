@@ -186,13 +186,13 @@ const AddMetadataForm: React.FC<Props> = ({
       if (isEditCase) {
         setNextButton(false);
       } else {
-     let checkFormExist =  formpayload.category.some((index: any) => index.form.length > 0 )
-     if(checkFormExist ){
-       setNextButton(true)
-      }
-      else{
-       setNextButton(false);
-     }
+        let checkFormExist = formpayload.category.some((index: any) => index.form.length > 0)
+        if (checkFormExist) {
+          setNextButton(true)
+        }
+        else {
+          setNextButton(false);
+        }
       }
     }
 
@@ -280,11 +280,11 @@ const AddMetadataForm: React.FC<Props> = ({
       setFormPayload({ ...formpayload, category: [], station: "", owner: [] });
     }
   }, [formpayload.masterAsset]);
-  
+
 
   let displayText: any = "";
   if (uploadFile.length != 0) {
-    
+
     displayText = uploadFile[0].uploadedFileName.substring(
       0,
       uploadFile[0].uploadedFileName.lastIndexOf(".")
@@ -421,6 +421,7 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".tiff":
       case ".psd":
       case ".ai":
+      case ".jpg":
         answer = "Image";
         break;
 
@@ -554,29 +555,21 @@ const AddMetadataForm: React.FC<Props> = ({
         filterObject.name.lastIndexOf("."),
         filterObject.name.length
       );
-      if (
-        fileNameExtension === ".mp4" ||
+      if (fileNameExtension === ".mp4" ||
         fileNameExtension === ".mp3" ||
-        fileNameExtension === "avi" ||
-        fileNameExtension === "mkv"
-      ) {
+        fileNameExtension === ".mkv" ||
+        fileNameExtension === ".webm" ||
+        fileNameExtension === ".3gp" ||
+        fileNameExtension === ".wav") {
         var myVideos: any = [];
         myVideos.push(filterObject);
-        var video = document.createElement("video");
-        video.preload = "metadata";
-        video.src = URL.createObjectURL(filterObject);
-        video.onloadedmetadata = function () {
-          window.URL.revokeObjectURL(video.src);
-          var duration = video.duration;
-          myVideos[myVideos.length - 1].duration = duration;
-          setDuration(duration);
-        };
+        myVideos[myVideos.length - 1].duration = filterObject.duration;
       } else {
         return currentStartDate();
       }
     }
 
-    const hours = duration / 3600;
+    const hours = filterObject.duration / 3600;
     hh = Math.trunc(hours);
     const minutes = getDecimalPart(hours) * 60;
     mm = Math.trunc(minutes);
@@ -607,7 +600,6 @@ const AddMetadataForm: React.FC<Props> = ({
     );
   };
 
-  
 
   const onAddMetaData = () => {
     const categories = insertCategory(formpayload.category);
@@ -760,9 +752,10 @@ const AddMetadataForm: React.FC<Props> = ({
       version: "",
     };
   };
-;
+  ;
   const onAdd = async () => {
     const payload = onAddMetaData();
+
     await fetch(EVIDENCE_ASSET_DATA_URL, {
       method: "POST",
       headers: {
@@ -996,7 +989,6 @@ const AddMetadataForm: React.FC<Props> = ({
     });
 
     const categories = insertCategory(prevCategoriesPayloads);
-
     // formatted data for posting the recently added category
     let formCategory: any = {};
     let assignedCategories: any = [];
@@ -1207,7 +1199,7 @@ const AddMetadataForm: React.FC<Props> = ({
       },
     ]);
   };
-  
+
 
   const handleActiveScreen = (activeScreen: number) => {
     switch (activeScreen) {
@@ -1233,9 +1225,8 @@ const AddMetadataForm: React.FC<Props> = ({
                   Master Asset <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select ${
-                    formpayload.masterAsset === "" ? "" : "gepAddClass"
-                  }`}
+                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
+                    }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText="Select Master Asset"
                   disabled={
@@ -1261,9 +1252,8 @@ const AddMetadataForm: React.FC<Props> = ({
             </div>
             <div className="metaData-station">
               <div
-                className={`metaData-inner ${
-                  formpayload.station === "" ? "" : "gepAddClass"
-                }`}
+                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
+                  }`}
               >
                 <label>
                   Station <span>*</span>
