@@ -102,8 +102,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openManageRetention, setOpenManageRetention] = React.useState(false);
   const [openAssetShare, setOpenAssetShare] = React.useState(false);
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
-
   const [filterValue, setFilterValue] = React.useState<any>([]);
+  
   const handleOpenAssignUserChange = () => {
     setOpenAssignUser(true);
   };

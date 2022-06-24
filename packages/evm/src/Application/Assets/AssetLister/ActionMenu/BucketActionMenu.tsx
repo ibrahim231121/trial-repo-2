@@ -11,6 +11,7 @@ import './index.scss'
 import { removeAssetFromBucketActionCreator } from "../../../../Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
 import { assetRow } from "./types";
+import RestrictAccessDialogue from "../RestrictAccessDialogue";
 
 type Props = {
   selectedItems: assetRow[];
@@ -22,9 +23,9 @@ type Props = {
 
 const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelectedItems }) => {
   const dispatch = useDispatch()
+  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
 
   const removeFromAssetBucket = () => {
-   
     if (row) {
       const find = selectedItems.findIndex((selected: assetRow) => selected.id === row.id)
       const data = find === -1 ? row : selectedItems
@@ -39,7 +40,14 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
     }
   }
 
+  const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
+  
+  const confirmCallBackForRestrictModal = () => {
+    alert('Confirm Btn Clicked!')
+  }
+
   return (
+    <>
     <Menu
       align="start"
       viewScroll="initial"
@@ -198,7 +206,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         </div>
       </MenuItem>
       <MenuItem>
-        <div className="crx-meu-content crx-spac">
+        <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
           <div className="crx-menu-icon">
             <i className="far fa-user-lock fa-md"></i>
           </div>
@@ -208,6 +216,13 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         </div>
       </MenuItem>
     </Menu>
+
+    <RestrictAccessDialogue
+        openOrCloseModal={openRestrictAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
+        onConfirmBtnHandler={confirmCallBackForRestrictModal}
+      />
+    </>
   );
 };
 export default BucketActionMenu;
