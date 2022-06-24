@@ -109,7 +109,7 @@ const ConfigurationTemplates: React.FC = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-  console.log("Module Ids", getModuleIds())
+  
   React.useEffect(() => {
     dispatch(getConfigurationInfoAsync());
     dispatch(getDeviceTypeInfoAsync());

@@ -59,7 +59,8 @@ export const urlNames: any = {
     adminStationCreate: 'adminStationCreate',
     adminStationEdit: 'adminStationEdit',
     createUser: 'createUser',
-    editUser : 'editUser'
+    editUser : 'editUser',
+    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate'
 };
 
 export const urlList: any = [
@@ -263,7 +264,13 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Evidence List", }
         ],
+    },
+    {
+        name: urlNames.manageUnitDeviceTemplate,
+        url: "/admin/defaultUnitTemplate",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/defaultUnitTemplate', type: 'text', label: 'Manage Default Unit Template' }
+        ],
     }
-
-
 ];

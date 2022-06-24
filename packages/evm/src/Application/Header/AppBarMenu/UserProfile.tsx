@@ -15,7 +15,7 @@ const CRXUserProfile = () => {
         {
             label : 'Logout',
             router : "Logout",
-            onClick:logOut
+            onClick: logOut
         },
     ];
 

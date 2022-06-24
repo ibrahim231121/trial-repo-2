@@ -42,7 +42,9 @@ export const SETUP_CONFIGURATION_SERVICE_URL = `${BASE_URL_SETUP_SERVICE}`;
 
 export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
 
-export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`
+export const TEMPLATE_CONFIGURATION_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100`;
+
+export const TEMPLATE_CONFIGURATION_DETAIL_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates?Size=100&Page=1`;
 
 export const TEMPLATE_CONFIGURATION_LOG_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationLogs/`
 
@@ -82,3 +84,4 @@ export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
 
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
 export const STATION = `${BASE_URL_UNIT_SERVICE}/Stations`;
+export const DEFAULT_UNIT_TEMPLATE_END_POINT = `${BASE_URL_UNIT_SERVICE}/Stations/DefaultUnitTemplate`;

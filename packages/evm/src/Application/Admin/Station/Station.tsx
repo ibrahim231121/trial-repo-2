@@ -338,7 +338,6 @@ const Station: React.FC = () => {
   return (
     <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
       <CRXToaster ref={toasterRef} />
-     
       <CRXModalDialog
         className='createUser CrxCreateUser'
         style={{ minWidth: '680px' }}
@@ -347,7 +346,6 @@ const Station: React.FC = () => {
         modelOpen={open}
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}></CRXModalDialog>
-
       {rows && (
         <CRXDataTable
           id='stationDataTable'
@@ -359,11 +357,9 @@ const Station: React.FC = () => {
             />
           }
           toolBarButton={
-          
             <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
             Create Station
           </CRXButton>
-
         }
           getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}
           showToolbar={true}
@@ -384,7 +380,7 @@ const Station: React.FC = () => {
           dragVisibility={false}
           showCheckBoxesCol={false}
           showActionCol={true}
-          showActionSearchHeaderCell={false}
+          showActionSearchHeaderCell={true}
           showCountText={false}
           showCustomizeIcon={false}
           showTotalSelectedText={false}

@@ -218,7 +218,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                   ]
                                 )
                               : headCells[colIdx].dataComponent(
-                                  row[headCells[colIdx].id]
+                                  row[headCells[colIdx].id], row[keyId]
                                 )}
                           </TableCell>
                         ))}

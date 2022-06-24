@@ -19,6 +19,7 @@ import ShareAsset from '../ShareAsset/ShareAsset';
 import { RootState } from "../../../../Redux/rootReducer";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
+import RestrictAccessDialogue from "../RestrictAccessDialogue";
 
 type Props = {
   selectedItems?: any;
@@ -47,41 +48,28 @@ export type securityDescriptorType = {
 }
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg }) => {
-  
+
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket.assetBucketData
   );
-
-  const addToAssetBucket = () => {
-    //if undefined it means header is clicked
-    if (row !== undefined && row !== null) {
-      const find = selectedItems.findIndex(
-        (selected: any) => selected.id === row.id
-      );
-      const data = find === -1 ? row : selectedItems;
-      dispatch(addAssetToBucketActionCreator(data));
-    } else {
-      dispatch(addAssetToBucketActionCreator(selectedItems));
-    }
-  };
-
   const [shareAssetDisabled, setShareAssetDisabled] = React.useState<boolean>(false);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
-
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
+  const [openForm, setOpenForm] = React.useState(false);
+
   React.useEffect(() => {
-     if(selectedItems.length > 1)
-     {
+    if (selectedItems.length > 1) {
       setShareAssetDisabled(true);
-     }
-     else{
+    }
+    else {
       setShareAssetDisabled(false);
-     }
-  },[selectedItems])
+    }
+  }, [selectedItems]);
+
   React.useEffect(() => {
-    
+
     /**
      * ! This rerenders if row is updated, it means user clicked the menu from parent component.
      * ! So we need to reset the form index, so that it starts from start.
@@ -95,15 +83,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     }
   }, [row]);
 
-  const [openForm, setOpenForm] = React.useState(false);
   const handleChange = () => {
     setOpenForm(true);
   };
-
+  const addToAssetBucket = () => {
+    //if undefined it means header is clicked
+    if (row !== undefined && row !== null) {
+      const find = selectedItems.findIndex(
+        (selected: any) => selected.id === row.id
+      );
+      const data = find === -1 ? row : selectedItems;
+      dispatch(addAssetToBucketActionCreator(data));
+    } else {
+      dispatch(addAssetToBucketActionCreator(selectedItems));
+    }
+  };
   const [openAssignUser, setOpenAssignUser] = React.useState(false);
   const [openManageRetention, setOpenManageRetention] = React.useState(false);
   const [openAssetShare, setOpenAssetShare] = React.useState(false);
-
+  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
 
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const handleOpenAssignUserChange = () => {
@@ -128,7 +126,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     });
     return value;
   };
-  
+
   if (row !== undefined && row !== null) {
     assetBucketData.map((data) => {
       if (data.id === row.id) addToAssetBucketDisabled = true;
@@ -145,6 +143,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     }));
   }
 
+  const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
+
+  const confirmCallBackForRestrictModal = () => {
+    alert('Confirm Btn Clicked!')
+  }
   return (
     <>
       <FormContainer
@@ -163,8 +166,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         onClose={() => setOpenAssignUser(false)}
         defaultButton={false}
         indicatesText={true}
-        
-
       >
         <AssignUser
           selectedItems={selectedItems}
@@ -174,7 +175,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenAssignUser(false)}
           showToastMsg={(obj: any) => showToastMsg(obj)}
-          
+
         />
       </CRXModalDialog>
       <CRXModalDialog
@@ -185,17 +186,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         onClose={() => setOpenManageRetention(false)}
         defaultButton={false}
         indicatesText={true}
-      
+
       >
         <ManageRetention
-            items = {selectedItems}
-            filterValue={filterValue}
-            //setFilterValue={(v: any) => setFilterValue(v)}
-            rowData={row}
-            setRemovedOption={(e: any) => {}}
-            setOnClose={() => setOpenManageRetention(false)}
-            showToastMsg={(obj: any) => showToastMsg(obj)}
-          />
+          items={selectedItems}
+          filterValue={filterValue}
+          //setFilterValue={(v: any) => setFilterValue(v)}
+          rowData={row}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenManageRetention(false)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
+        />
       </CRXModalDialog>
       <CRXModalDialog
         maxWidth='lg'
@@ -205,17 +206,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         onClose={() => setOpenAssetShare(false)}
         defaultButton={false}
         indicatesText={true}
-      
+
       >
         <ShareAsset
-            items = {selectedItems}
-            filterValue={filterValue}
-            //setFilterValue={(v: any) => setFilterValue(v)}
-            rowData={row}
-            setRemovedOption={(e: any) => {}}
-            setOnClose={() => setOpenAssetShare(false)}
-            showToastMsg={(obj: any) => showToastMsg(obj)}
-          />
+          items={selectedItems}
+          filterValue={filterValue}
+          //setFilterValue={(v: any) => setFilterValue(v)}
+          rowData={row}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenAssetShare(false)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
+        />
       </CRXModalDialog>
 
       <Menu
@@ -279,60 +280,59 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">Modify Retention</div>
-            </div>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">Modify Retention</div>
+              </div>
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
-
         {isCategoryEmpty === false ? (
           <MenuItem>
             <Restricted moduleId={3}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">Edit Category and Form</div>
                 </div>
-                </SecurityDescriptor>
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : (
           <MenuItem>
             <Restricted moduleId={2}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">Categorize</div>
                 </div>
-                </SecurityDescriptor>
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         )}
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-envelope fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Email</div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
@@ -344,20 +344,20 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   </SubMenu>
                 </div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-link fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Link asset</div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
@@ -376,58 +376,64 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-external-link-square fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Move asset</div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
         <MenuItem disabled>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
                   Move to this group
                 </div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content crx-spac">
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              {/* descriptorId={4} */}
+              <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Restrict access</div>
               </div>
-              </SecurityDescriptor>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
-        {shareAssetDisabled === false?(
-        <MenuItem>
-          <Restricted moduleId={0}>
-            {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+        {shareAssetDisabled === false ? (
+          <MenuItem>
+            <Restricted moduleId={0}>
+              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">Share Asset</div>
               </div>
-            {/* </SecurityDescriptor> */}
-          </Restricted>
-        </MenuItem>
-        ):null
+              {/* </SecurityDescriptor> */}
+            </Restricted>
+          </MenuItem>
+        ) : null
         }
-        
       </Menu>
+
+      <RestrictAccessDialogue
+        openOrCloseModal={openRestrictAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
+        onConfirmBtnHandler={confirmCallBackForRestrictModal}
+      />
     </>
   );
 });

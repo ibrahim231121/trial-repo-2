@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import { CRXModalDialog, CRXToaster } from '@cb/shared';
@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import './StationActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
-import { validate } from 'uuid';
+
 import { BASE_URL_UNIT_SERVICE, EVIDENCE_SERVICE_URL } from '../../../utils/Api/url'
 import { getStationsInfoAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
@@ -72,13 +72,13 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
   const isStationExistsInUnits = async () => {
     const url = BASE_URL_UNIT_SERVICE + '/Stations/' + `${row.id}` + '/Units'
-    
+
     const res = await fetch(url, {
       method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1'},
+      headers: { 'Content-Type': 'application/json', TenantId: '1' },
     })
     var response = await res.json();
-    if(response != null && response.length > 0)
+    if (response != null && response.length > 0)
       return response.length
     else
       return 0
@@ -88,7 +88,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
     const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${row.id}` + '/isStationExistsinEvidence?Page=1&Size=100'
     const res = await fetch(url, {
       method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1'},
+      headers: { 'Content-Type': 'application/json', TenantId: '1' },
     })
     var response = await res.json();
     return response
@@ -98,26 +98,26 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
     const url = BASE_URL_UNIT_SERVICE + '/Stations/' + `${row.id}`
     const res = await fetch(url, {
       method: 'Delete',
-      headers: { 'Content-Type': 'application/json', TenantId: '1',  'Authorization': `Bearer ${cookies.get('access_token')}`},
+      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
     })
-    .then(function (res) {
-      if (res.ok) {
-        setIsOpenDelete(false);
-        toasterRef.current.showToaster({
-          message: "Station deleted", variant: "success", duration: 7000, clearButtton: true
-        });
-        dispatch(getStationsInfoAsync());
-      }
-      else //if (res.status == 500) {
-        setAlert(true);
+      .then(function (res) {
+        if (res.ok) {
+          setIsOpenDelete(false);
+          toasterRef.current.showToaster({
+            message: "Station deleted", variant: "success", duration: 7000, clearButtton: true
+          });
+          dispatch(getStationsInfoAsync());
+        }
+        else //if (res.status == 500) {
+          setAlert(true);
         setMessage(
           "We're sorry. The station was unable to be deleted. Please retry or contact your System Administrator."
         );
-    })
-    .catch(function (error) {
-      return error;
-    });
-    
+      })
+      .catch(function (error) {
+        return error;
+      });
+
   }
 
   const onConfirm = async () => {
@@ -147,8 +147,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
       case 'delete': {
         let units = await isStationExistsInUnits();
         let assets = await isStationExistsInAssets();
-        if(units > 0 || assets > 0)
-        {
+        if (units > 0 || assets > 0) {
           setAlert(true);
           setMessage("The station can't be deleted, please check for dependent units and assets")
         }
@@ -170,6 +169,11 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
     history.push(path);
   };
 
+  const defaultUnitTemplateClickHandler = () => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.manageUnitDeviceTemplate)[0].url}`;
+    history.push(path);
+  }
+
   const openStationDeleteForm = () => {
     setTitle("Delete station");
     setModalType("delete");
@@ -190,9 +194,9 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   }
 
   useEffect(() => {
-    if(row?.name.length > 0)
+    if (row?.name.length > 0)
       setStationNameProcess(row?.name)
-  },[row])
+  }, [row])
 
   return (
     <>
@@ -240,46 +244,69 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to delete the station?</div>
           </div>
           </>
-          
+
         }
       </CRXConfirmDialog>
 
-      <Menu
-        align='start'
-        viewScroll='initial'
-        direction='right'
-        position='auto'
-        className='menuCss'
-        arrow
-        menuButton={
-          <MenuButton>
-            <i className='far fa-ellipsis-v'></i>
-          </MenuButton>
-        }>
-        <MenuItem onClick={openStationDetailForm}>
-          <Restricted moduleId={19}>
-                <div className='crx-meu-content groupingMenu crx-spac'>
-                  <div className='crx-menu-icon'>
-                    <i className='fas fa-pen'></i>
-                  </div>
-                  <div className='crx-menu-list'>Edit station</div>
+      {row !== null ?
+        <Menu
+          align='start'
+          viewScroll='initial'
+          direction='right'
+          position='auto'
+          className='menuCss'
+          arrow
+          menuButton={
+            <MenuButton>
+              <i className='far fa-ellipsis-v'></i>
+            </MenuButton>
+          }>
+          <MenuItem onClick={openStationDetailForm}>
+            <Restricted moduleId={19}>
+              <div className='crx-meu-content groupingMenu crx-spac'>
+                <div className='crx-menu-icon'>
+                  <i className='fas fa-pen'></i>
                 </div>
+                <div className='crx-menu-list'>Edit station</div>
+              </div>
 
             </Restricted>
-        </MenuItem>
-        <MenuItem onClick={openStationDeleteForm}>
-          <Restricted moduleId={20}>
+          </MenuItem>
+          <MenuItem onClick={openStationDeleteForm}>
+            <Restricted moduleId={20}>
 
-                  <div className='crx-meu-content groupingMenu crx-spac'>
-                    <div className='crx-menu-icon'>
-                      <i className='fas fa-trash'></i>
-                    </div>
-                    <div className='crx-menu-list'>Delete station</div>
-                  </div>
+              <div className='crx-meu-content groupingMenu crx-spac'>
+                <div className='crx-menu-icon'>
+                  <i className='fas fa-trash'></i>
+                </div>
+                <div className='crx-menu-list'>Delete station</div>
+              </div>
 
             </Restricted>
-        </MenuItem>
-      </Menu>
+          </MenuItem>
+        </Menu>
+        :
+        <Menu align='start'
+          viewScroll='initial'
+          direction='right'
+          position='auto'
+          className='menuCss'
+          arrow
+          menuButton={
+            <MenuButton>
+              <i className='far fa-ellipsis-v'></i>
+            </MenuButton>
+          }>
+          <MenuItem onClick={defaultUnitTemplateClickHandler}>
+            <div className='crx-meu-content groupingMenu crx-spac'>
+              <div className='crx-menu-icon'>
+                <i className='fas fa-folder-open'></i>
+              </div>
+              <div className='crx-menu-list'>View default unit templates</div>
+            </div>
+          </MenuItem>
+        </Menu>
+      }
     </>
   );
 };

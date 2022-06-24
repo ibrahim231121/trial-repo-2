@@ -424,7 +424,6 @@ const SearchComponent = (props: any) => {
             <div className='advanceSearchContet'>
               <CRXButton
                 onClick={() => {
-              
                   setShowAdvance(!showAdvance);
                 }}
                 className='PreSearchButton'

@@ -20,7 +20,7 @@ import moment from "moment";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 import {
   CRXMultiSelectBoxLight,
-  CrxAccordion,CRXTabs, CrxTabPanel,
+  CrxAccordion, CRXTabs, CrxTabPanel,
   CRXAlert,
   CRXModalDialog,
   CRXButton,
@@ -32,6 +32,7 @@ import { hexToRgb } from "@material-ui/core";
 import { RestorePageSharp } from "@material-ui/icons";
 import { string } from "yup/lib/locale";
 import { useHistory } from "react-router";
+import RestrictAccessDialogue from "../AssetLister/RestrictAccessDialogue";
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
     {
@@ -146,6 +147,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
   const [openForm, setOpenForm] = React.useState(false);
+  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [openMap, setOpenMap] = React.useState(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
@@ -194,7 +196,7 @@ const AssetDetailsTemplate = (props: any) => {
     setValue(newValue);
   }
   useEffect(() => {
-    
+
     if (res !== undefined) {
       setEvidence({
         ...evidence,
@@ -222,12 +224,12 @@ const AssetDetailsTemplate = (props: any) => {
       }
 
       setEvidence({ ...evidence, categories: categories });
-     
+
     }
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
-    
+
     if (getAssetData !== undefined) {
       var categories: string[] = [];
       getAssetData.categories.map((x: any) =>
@@ -237,8 +239,8 @@ const AssetDetailsTemplate = (props: any) => {
           })
         )
       );
-     
-      var owners : any[] = getAssetData.assets.master.owners.map((x:any) => x.cmtFieldValue);
+
+      var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
 
       var unit: number[] = [];
       unit.push(getAssetData.assets.master.unitId);
@@ -284,7 +286,7 @@ const AssetDetailsTemplate = (props: any) => {
       setVideoPlayerData(data);
     }
   }, [getAssetData]);
- 
+
   function extract(row: any) {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
@@ -341,15 +343,17 @@ const AssetDetailsTemplate = (props: any) => {
     { label: "Map", index: 1 },
     { label: "GROUPED AND RELATED ASSETS", index: 2 },
   ];
-  const refresh=()=>{ 
-    window.location.reload(); 
-}
-const newRound=(x:any, y: any)=>{
-   history.push('/assetdetail', {  evidenceId: evidenceId,
-    assetId: x,
-    assetName: y, })
-   history.go(0)
-}
+  const refresh = () => {
+    window.location.reload();
+  }
+  const newRound = (x: any, y: any) => {
+    history.push('/assetdetail', {
+      evidenceId: evidenceId,
+      assetId: x,
+      assetName: y,
+    })
+    history.go(0)
+  }
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
     if (evidence !== undefined && evidence !== null) {
@@ -362,6 +366,11 @@ const newRound=(x:any, y: any)=>{
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
   };
+  const confirmCallBackForRestrictModal = () => {
+    alert('Confirm Btn Clicked!')
+  }
+
+  const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
 
   return (
     <div style={{ marginTop: "120px" }}>
@@ -433,11 +442,25 @@ const newRound=(x:any, y: any)=>{
               </Restricted>
             </MenuItem>
           )}
+          <MenuItem>
+            <Restricted moduleId={0}>
+              <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">Restrict access</div>
+              </div>
+            </Restricted>
+          </MenuItem>
         </Menu>
 
         {/* <CBXLink  children = "Exit"   onClick={() => history.goBack()} /> */}
       </div>
-      <div></div>
+      <RestrictAccessDialogue
+        openOrCloseModal={openRestrictAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
+        onConfirmBtnHandler={confirmCallBackForRestrictModal}
+      />
 
       <CRXRows
         container
@@ -491,8 +514,8 @@ const newRound=(x:any, y: any)=>{
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={2}>
-                
-              <CrxAccordion
+
+                <CrxAccordion
                   title="GROUPED ASSETS"
                   id="accorIdx1"
                   className="crx-accordion"
@@ -503,83 +526,83 @@ const newRound=(x:any, y: any)=>{
                 >
                   <div className="stationDetailOne">
                     <div className="stationColumnSet">
-               
-                    {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
-                    
-                    <table>
-              <tbody>
-          
-                {(getAssetData !== undefined)
-                  ? getAssetData.assets.children.map((asset: any, index: number) => {
-                  
-                      var lastChar = asset.name.substr(asset.name.length - 4);
-                      return (
-                        <>
-                          <tr key={index}>
-                         
-                            <td>
-                              <AssetThumbnail
-                                assetType={asset.typeOfAsset}
-                                className={"CRXPopupTableImage  CRXPopupTableImageUi"}
-                                onClick = {()=>newRound(asset.id, asset.name)}
-                              />
-                            </td>
-                            <td>
-                              <Link
-                                 className="linkColor"
-                                  onClick = {refresh}
-                                  to={{
-                                pathname: "/assetdetail",
-                                state: {
-                                  evidenceId: evidenceId,
-                                  assetId: asset.id,
-                                  assetName: asset.name,
-                                },
-                                }}>
-                               
-                                <div id="middletruncate" data-truncate={lastChar}>
-                                  <p>{asset.name}</p>
-                                </div>
 
-                              {/* <div>{asset.name}</div> */}
-                              
-                              
-                              </Link>
+                      {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
 
-                                <div className="timeLineLister">
-                                {asset.camera !== undefined &&
-                              asset.camera !== null &&
-                              asset.camera !== "" ? (
-                                <div>
-                                  <label className="CRXPopupDetailFontSize">
-                                    {asset.camera}
-                                  </label>
-                                </div>
-                              ) : (
-                                <div>
-                                  <label className="CRXPopupDetailFontSize">
-                                    {asset.typeOfAsset}
-                                  </label>
-                                </div>
-                              )}
-                              <label className="CRXPopupDetailFontSize">
-                                {dateDisplayFormat(asset.recording.started)}
-                              </label>
-                                </div>
-                           
-                            </td>
-                           
-                          </tr>
-                          
-                        </>
-                      );
-                    })
-                  : null}
-              </tbody>
-            </table>
-          
+                      <table>
+                        <tbody>
+
+                          {(getAssetData !== undefined)
+                            ? getAssetData.assets.children.map((asset: any, index: number) => {
+
+                              var lastChar = asset.name.substr(asset.name.length - 4);
+                              return (
+                                <>
+                                  <tr key={index}>
+
+                                    <td>
+                                      <AssetThumbnail
+                                        assetType={asset.typeOfAsset}
+                                        className={"CRXPopupTableImage  CRXPopupTableImageUi"}
+                                        onClick={() => newRound(asset.id, asset.name)}
+                                      />
+                                    </td>
+                                    <td>
+                                      <Link
+                                        className="linkColor"
+                                        onClick={refresh}
+                                        to={{
+                                          pathname: "/assetdetail",
+                                          state: {
+                                            evidenceId: evidenceId,
+                                            assetId: asset.id,
+                                            assetName: asset.name,
+                                          },
+                                        }}>
+
+                                        <div id="middletruncate" data-truncate={lastChar}>
+                                          <p>{asset.name}</p>
+                                        </div>
+
+                                        {/* <div>{asset.name}</div> */}
+
+
+                                      </Link>
+
+                                      <div className="timeLineLister">
+                                        {asset.camera !== undefined &&
+                                          asset.camera !== null &&
+                                          asset.camera !== "" ? (
+                                          <div>
+                                            <label className="CRXPopupDetailFontSize">
+                                              {asset.camera}
+                                            </label>
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <label className="CRXPopupDetailFontSize">
+                                              {asset.typeOfAsset}
+                                            </label>
+                                          </div>
+                                        )}
+                                        <label className="CRXPopupDetailFontSize">
+                                          {asset.recording && dateDisplayFormat(asset.recording.started)}
+                                        </label>
+                                      </div>
+
+                                    </td>
+
+                                  </tr>
+
+                                </>
+                              );
+                            })
+                            : null}
+                        </tbody>
+                      </table>
+
                     </div>
-         
+
                   </div>
                 </CrxAccordion>
               </CrxTabPanel>

@@ -1,6 +1,5 @@
-import React, { useEffect,useRef } from "react";
-import { useDispatch } from "react-redux";
-import { CRXDataTable,CRXToaster,CRXButton } from "@cb/shared";
+import React, { useEffect, useRef } from "react";
+import { CRXDataTable, CRXToaster, CRXIcon, CRXButton} from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -26,12 +25,15 @@ import ActionMenu from "../ActionMenu";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
+import { AssetRetentionFormat, CalculateHoldUntill } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { AssetThumbnail } from "./AssetThumbnail";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import { useDispatch } from "react-redux";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -64,6 +66,8 @@ type Evidence = {
   station: string;
   asset: Asset[];
   masterAsset: MasterAsset;
+  holdUntill: string;
+  extendedHoldUntil?: string;
 };
 
 type EvidenceReformated = {
@@ -80,6 +84,8 @@ type EvidenceReformated = {
   recordedBy: string[];
   recordingStarted: string;
   status: string;
+  holdUntill: string;
+  extendedHoldUntil?: string;
 };
 
 type Props = {
@@ -101,7 +107,7 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
   return (
     <>
       <Link
-      className="linkColor"
+        className="linkColor"
         to={{
           pathname: "/assetdetail",
           state: {
@@ -128,8 +134,7 @@ const MasterMain: React.FC<Props> = ({
   showDateCompact,
 }) => {
   let reformattedRows: EvidenceReformated[] = [];
-
-  rowsData.map((row: Evidence, i: number) => {
+  rowsData.forEach((row: Evidence, i: number) => {
     let evidence: EvidenceReformated = {
       id: row.id,
       assetId: row.masterAsset.assetId,
@@ -144,8 +149,9 @@ const MasterMain: React.FC<Props> = ({
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
       evidence: row,
+      holdUntill: row.holdUntill,
+      extendedHoldUntil: row.extendedHoldUntil
     };
-
     reformattedRows.push(evidence);
   });
 
@@ -306,6 +312,29 @@ const MasterMain: React.FC<Props> = ({
     );
   };
 
+
+  const retentionSpanText = (_: string, evidence: Evidence): JSX.Element => {
+    console.log('evidence In header', evidence);
+    if (evidence.extendedHoldUntil != null) {
+      if (moment(evidence.extendedHoldUntil).format('DD-MM-YYYY') == "31-12-9999") {
+        //display just a infinity icon
+        return (
+          <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+        );
+      }
+      //show a horizontal arrow beneath the retention span number.
+      return (
+        <p>
+          {AssetRetentionFormat(_)}
+          <br />
+          <CRXIcon className=""><i className="fas fa-angle-right "></i></CRXIcon>
+        </p>
+      );
+    }
+    return (
+      <p>{AssetRetentionFormat(_)}</p>
+    );
+  }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("ID")}`,
@@ -327,7 +356,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: thumbTemplate,
       minWidth: "130",
       maxWidth: "150",
-	  width: ""
+      width: ""
     },
     {
       label: `${t("AssetID")}`,
@@ -368,6 +397,19 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "338",
       width: "",
       maxWidth: "210",
+    },
+    {
+      label: `${t("Retention Span")}`,
+      id: "holdUntill",
+      align: "left",
+      dataComponent: retentionSpanText,
+      sort: true,
+      searchFilter: true,
+      searchComponent: () => null,
+      minWidth: "338",
+      width: "",
+      maxWidth: "210",
+      detailedDataComponentId: "evidence",
     },
     {
       label: `${t("Captured")}`,
@@ -513,7 +555,7 @@ const MasterMain: React.FC<Props> = ({
   }, [searchData]);
   useEffect(() => {
     console.log(selectedItems)
-  },[selectedItems]);
+  }, [selectedItems]);
 
   useEffect(() => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
@@ -626,10 +668,9 @@ const MasterMain: React.FC<Props> = ({
   
   return (
     <>
-     <CRXToaster ref={toasterRef}/>
+      <CRXToaster ref={toasterRef} />
       
       {rows && (
-       
         <CRXDataTable
           id="assetDataTable"
           actionComponent={

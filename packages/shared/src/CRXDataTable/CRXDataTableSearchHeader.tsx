@@ -103,13 +103,14 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
                 {actionComponent}
               </div>
               :
-                (!showCheckBoxesCol && showActionSearchHeaderCell) ? 
+              /** Changed code in order to cater the requirement of GEP-1153, */
+              (!showCheckBoxesCol && showActionSearchHeaderCell) ?
                   <div onClick={() => getRowOnActionClick(null)}>
                     {actionComponent}
                   </div>
                   :
                   null
-            } 
+            }
           </TableCell>
         : null
         }
