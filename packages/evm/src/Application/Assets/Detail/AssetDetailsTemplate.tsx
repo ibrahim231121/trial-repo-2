@@ -306,7 +306,7 @@ const AssetDetailsTemplate = (props: any) => {
     const typeOfAsset = row.assets.master.typeOfAsset;
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
     rowdetail.push(myData);
-    rowdetail1 = row.assets.children.map((template: any, i: number) => {
+    rowdetail1 = row.assets.children.filter((x:any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
       return {
         id: template.id,
         files: extractfile(template.files),
@@ -478,7 +478,7 @@ const AssetDetailsTemplate = (props: any) => {
               textAlign: "center",
             }}
           > */}
-          {videoPlayerData.length > 0 && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
+          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video"  && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">
@@ -487,26 +487,26 @@ const AssetDetailsTemplate = (props: any) => {
             <div className="tctContent">
               <CrxTabPanel value={value} index={0}>
                 <div className="tctown">
-                  <h1>Owners :</h1> <span>{assetInfo.owners.join(',')}</span>
+                  <h1>Owners :</h1> <span>{assetInfo?.owners.join(',')}</span>
                 </div>
                 <div className="tctown">
-                  <h1>Unit :</h1> <span>{assetInfo.unit}</span>
+                  <h1>Unit :</h1> <span>{assetInfo?.unit}</span>
                 </div>
                 <div className="tctown">
-                  <h1>CheckSum :</h1> <span>{assetInfo.checksum}</span>{" "}
+                  <h1>CheckSum :</h1> <span>{assetInfo?.checksum}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Video Duration :</h1> <span>{assetInfo.duration}</span>{" "}
+                  <h1>Video Duration :</h1> <span>{assetInfo?.duration}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Size : </h1> <span>{assetInfo.size} MB</span>
+                  <h1>Size : </h1> <span>{assetInfo?.size} MB</span>
                 </div>
                 <div className="tctown">
                   <h1>Retention :</h1>
-                  <span>{assetInfo.retention}</span>{" "}
+                  <span>{assetInfo?.retention}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Categories :</h1> <span>{assetInfo.categories}</span>
+                  <h1>Categories :</h1> <span>{assetInfo?.categories}</span>
                 </div>
               </CrxTabPanel>
               <CrxTabPanel value={value} index={1}>
@@ -600,7 +600,6 @@ const AssetDetailsTemplate = (props: any) => {
                             : null}
                         </tbody>
                       </table>
-
                     </div>
 
                   </div>
