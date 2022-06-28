@@ -36,6 +36,7 @@ import {
 } from "../../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
+import QueuedAsstsDataTable from "./AssetQueuedDataTable";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -133,6 +134,7 @@ const UnitCreate = (props: historyProps) => {
   const tabs1 = [
     { label: "Configurations", index: 0 },
     { label: "Devices", index: 1 },
+    { label: "Queued Assets", index: 2 }
   ];
 
   const [getResponse, res] = useGetFetch<any>(
@@ -686,6 +688,17 @@ const UnitCreate = (props: historyProps) => {
             {`template name == ${inCarTab}`} */}
           </CrxTabPanel>
         ) : null}
+
+      {inCarTab === "Incar" ? (
+        <CrxTabPanel value={value} index={2}>    
+          <QueuedAsstsDataTable/>       
+        </CrxTabPanel>
+          ) : null}
+
+        <CrxTabPanel value={value} index={1}>    
+          <QueuedAsstsDataTable/>       
+        </CrxTabPanel>
+
 
         <div className="tab-bottom-buttons">
           <div className="save-cancel-button-box">
