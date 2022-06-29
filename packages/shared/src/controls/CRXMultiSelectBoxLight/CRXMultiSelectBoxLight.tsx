@@ -1,12 +1,12 @@
 import * as React from 'react';
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete, { createFilterOptions } from "@material-ui/lab/Autocomplete";
 import Typography from "@material-ui/core/Typography";
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 import './crx_MultiSelectBoxLight.scss'
 
-const useSelectBoxStyle = makeStyles((theme: Theme) =>
+const useSelectBoxStyle = makeStyles((theme: any) =>
   createStyles({
     root: {
       backgroundColor: "#fff",
@@ -154,9 +154,17 @@ const useSelectBoxStyle = makeStyles((theme: Theme) =>
   }),
 );
 
+interface renderCheck {
+  inputValue? : string,
+  label?: string,
+  id?: number,
+}
+
+const filter = createFilterOptions<renderCheck>();
+
 interface multiSelectProps {
   multiple?: boolean,
-  options: any[],
+  options: renderCheck[],
   onChange: (e: any, v: any) => void,
   id: string,
   defaultValue?: any[],
@@ -170,6 +178,7 @@ interface multiSelectProps {
   errorMsg?: string,
   label?: string,
   disabled?: boolean;
+  freeSolo? : boolean
 
 }
 
@@ -188,7 +197,8 @@ const CRXMultiSelectBoxLight = ({
   error,
   required,
   errorMsg,
-  disabled
+  disabled,
+  freeSolo=false,
 }: multiSelectProps) => {
 
   const classes = useSelectBoxStyle();
@@ -264,8 +274,13 @@ const CRXMultiSelectBoxLight = ({
         filterSelectedOptions={false}
         disableClearable={isClear}
         disableCloseOnSelect={true}
-        // freeSolo
+        freeSolo={freeSolo}
+        forcePopupIcon={true}
         //open={true}
+        autoHighlight={true}
+        selectOnFocus
+        clearOnBlur
+        handleHomeEndKeys
         closeText=""
         openText=""
         style={{ height: styelHeight }}
@@ -274,17 +289,33 @@ const CRXMultiSelectBoxLight = ({
         multiple={multiple}
         id={id}
         value={value}
- disabled = {disabled}
+        disabled = {disabled}
         inputValue = {getSaveValue}
-        onChange={onChange}
+        onChange={(e: any, val:any) => {
+          return onChange(e,val)
+        }}
         options={options}
-        getOptionLabel={option => option.label || ""}
+        getOptionLabel={option => option.label || option.inputValue}
         getOptionSelected={(option: any, value: any) => option.label == value.label}
         popupIcon={controled}
         closeIcon={closeIcon}
         renderOption={(option: any, { selected }) => (
           optionLabel(option, selected)
         )}
+
+        filterOptions={(options, params) => {
+          const filtered = filter(options, params);
+  
+          // Suggest the creation of a new value
+          if (params.inputValue !== '') {
+            filtered.push({
+              inputValue: params.inputValue,
+              label: params.inputValue,
+            });
+          }
+  
+          return filtered;
+        }}
 
         renderInput={(params: any) => (
           <TextField
