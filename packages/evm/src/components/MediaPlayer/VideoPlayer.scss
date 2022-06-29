@@ -10,7 +10,6 @@
   padding: 25px 10px 10px 10px;
 
   video {
-    // margin-top: 68px;
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -120,74 +119,57 @@
       display: block;
       height: 100%;
       width: 100%;
-    }
+      display: flex;
+      place-content: center;
+      align-items: center;
 
-    .alignmentPlayPause {
-      &.crxAddTransition {
-        .crxAlignmentPausePlay {
-          -webkit-animation-name: fadeOut;
-          animation-name: fadeOut;
-        }
-      }
-
-      i {
-        color: var(--color-White);
-
-        &.icon-pause2 {
-          font-size: 92px;
-        }
-
-        &.icon-play4 {
-          font-size: 80px;
-          position: relative;
-          left: 1px;
-        }
-      }
-
-      .crxAlignmentPausePlay {
-        top: 0;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-        align-content: center;
-        margin: auto;
-        place-content: center;
-        border-radius: 100%;
+      ._video_button_size {
         width: 134px;
         height: 134px;
-        background-color: rgb(255, 255, 255, 0.15);
-        -webkit-animation-duration: 3s;
-        animation-duration: 3s;
-        -webkit-animation-fill-mode: both;
-        animation-fill-mode: both;
-      }
+        border-radius: 100%;
+        text-align: center;
+        background: rgba($color: #ffffff, $alpha: 0.15);
+        font-size: 92px;
+        color: var(--color-White);
+        transition: transform 1s ease-in-out;
 
-      @-webkit-keyframes fadeOut {
-        0% {
-          opacity: 1;
-        }
-
-        100% {
-          opacity: 0;
+        .video_PauseButton, .video_playButton {
+          line-height: 150px;
+          transition: transform 1s ease-in-out;
         }
       }
+      
+      #_video_play {
+        // transform: scale(1.2,1.2);
+        // font-size: 92px;
+        transition: transform 1s ease-in-out;
+        opacity: 1;
+        //animation: fadeinout 1s ease-in-out;
+      }
 
+      #_video_pause {
+        // transform: scale(1.2,1.2);
+        // font-size: 92px;
+        transition: transform 1s ease-in-out;
+        opacity: 1;
+        //animation: fadeinout 1s ease-in-out;
+      }
+
+      .showAnimation {
+        animation: fadein 1s ease-in-out;
+      }
+      .hideAnimation {
+        animation: fadeOut 1s ease-in-out;
+      }
+      @keyframes fadein {
+        0%{ opacity: 1; transform: scale(1, 1); font-size: 80px;}
+        50% { opacity: 1; transform: scale(1.2, 1.2); font-size: 92px;}
+        100%{ opacity: 0; transform: scale(1, 1); font-size: 80px;}
+      }
       @keyframes fadeOut {
-        0% {
-          opacity: 1;
-        }
-
-        100% {
-          opacity: 0;
-        }
-      }
-
-      .crxAlignmentPause {
-        width: 114px;
-        height: 114px;
+        0%{ opacity: 1; transform: scale(1, 1); font-size: 80px;}
+        50% { opacity: 1; transform: scale(1.2, 1.2); font-size: 92px;}
+        100%{ opacity: 0; transform: scale(1, 1); font-size: 80px;}
       }
     }
   }
