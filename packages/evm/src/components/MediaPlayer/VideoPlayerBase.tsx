@@ -1020,9 +1020,9 @@ const VideoPlayerBase = (props: any) => {
     var m = Math.floor(d % 3600 / 60);
     var s = Math.floor(d % 3600 % 60);
 
-    var hDisplay = h > 0 ? h + " : " : "";
-    var mDisplay = m >= 0 ? ('00' + m).slice(-2) + " : " : "";
-    var sDisplay = s >= 0 ? ('00' + s).slice(-2) : "";
+    var hDisplay = h > 0 ? h + " : " : "00:";
+    var mDisplay = m >= 0 ? ('00' + m).slice(-2) + ":" : "";
+    var sDisplay = s >= 0 ? ('00' + s).slice(-2):"";
     return hDisplay + mDisplay + sDisplay;
   }
 
