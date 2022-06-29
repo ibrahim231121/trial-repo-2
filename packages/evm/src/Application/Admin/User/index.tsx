@@ -585,7 +585,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     }
   };
   useEffect(() => {
-    //dataArrayBuilder();
+    dataArrayBuilder();
   }, [searchData]);
 
   useEffect(() => {

@@ -444,7 +444,8 @@ const UnitCreate = (props: historyProps) => {
     setHeadCells(headCellsArray);
   };
   return (
-    <div className="UnitDetailMain UnitDetailMainDetail ">
+    <div className="UnitDetailMain UnitDetailMainDetail switchLeftComponents">
+      <CRXToaster ref={targetRef} />
       <div className="unitDetailAction">
         <div className="menuUnitDetail">
           <Menu
@@ -618,8 +619,8 @@ const UnitCreate = (props: historyProps) => {
         ) : null}
     
 
-        <CRXToaster ref={targetRef} />
-        <CRXAlert
+        
+        {/* <CRXAlert
         ref={alertRef}
         message={responseError}
         className='crxAlertUserEditForm'
@@ -627,7 +628,7 @@ const UnitCreate = (props: historyProps) => {
         type={errorType}
         open={alert}
         setShowSucess={() => null}
-      />
+      /> */}
 
         <CRXTabs
           value={value}

@@ -280,6 +280,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     useEffect(() => {
         if(searchData.length > 0)
             dataArrayBuilder();
+            console.log("searching")
     }, [searchData]);
 
     const dataArrayBuilder = () => {
