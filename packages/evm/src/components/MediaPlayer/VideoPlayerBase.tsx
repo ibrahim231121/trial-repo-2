@@ -7,6 +7,8 @@ import Slider from "@material-ui/core/Slider";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import MaterialMenu from "@material-ui/core/Menu";
+import MaterialMenuItem from "@material-ui/core/MenuItem";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
@@ -19,6 +21,10 @@ import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
 import { EVIDENCE_SERVICE_URL } from "../../utils/Api/url";
+import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
+import { Radio } from "@material-ui/icons";
+import { CRXRadio } from "@cb/shared";
+import { CRXCheckBox } from "@cb/shared";
 
 
 var videoElements: any[] = [];
@@ -188,7 +194,7 @@ const VideoPlayerBase = (props: any) => {
   const [data, setdata] = React.useState<any>([]);
   const [bookmarkAssetId, setbookmarkAssetId] = React.useState<number>();
   const [noteAssetId, setnoteAssetId] = React.useState<number>();
-  const bookmarkMsgRef = React.useRef<typeof CRXToaster>(null);
+  const toasterMsgRef = React.useRef<typeof CRXToaster>(null);
 
 
   const [controllerBar, setControllerBar] = useState(true);
@@ -217,6 +223,10 @@ const VideoPlayerBase = (props: any) => {
   const [openTimelineSyncInstructions, setOpenTimelineSyncInstructions] = useState<boolean>(false);
   const [startTimelineSync, setStartTimelineSync] = useState<boolean>(false);
   const [openTimelineSyncConfirmation, setOpenTimelineSyncConfirmation] = useState<boolean>(false);
+  const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
+  const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
+  const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
+  const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
   const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
@@ -535,12 +545,12 @@ const VideoPlayerBase = (props: any) => {
     }
     else {
       if (action == "bookmark") {
-        bookmarkMsgRef.current.showToaster({
+        toasterMsgRef.current.showToaster({
           message: "Please seek to appropriate time of master camera to bookmark", variant: "Error", duration: 5000, clearButtton: true
         });
       }
       else if (action == "note") {
-        bookmarkMsgRef.current.showToaster({
+        toasterMsgRef.current.showToaster({
           message: "Please seek to appropriate time of master camera to bookmark notes", variant: "Error", duration: 5000, clearButtton: true
         });
       }
@@ -556,7 +566,7 @@ const VideoPlayerBase = (props: any) => {
       data[0].bookmarks?.forEach((y: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
           error = true;
-          bookmarkMsgRef.current.showToaster({
+          toasterMsgRef.current.showToaster({
             message: "Unable To Add Duplicate Bookmark", variant: "Error", duration: 5000, clearButtton: true
           });
         }
@@ -566,7 +576,7 @@ const VideoPlayerBase = (props: any) => {
       data[0].notes?.forEach((y: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
           error = true;
-          bookmarkMsgRef.current.showToaster({
+          toasterMsgRef.current.showToaster({
             message: "Unable To Add Duplicate Note", variant: "Error", duration: 5000, clearButtton: true
           });
         }
@@ -1032,6 +1042,13 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+  const OverlayChangeEvent = (event: any) => {
+    if(event.target.checked) {
+        setOverlayMenuEnabled(event.currentTarget)
+    }
+    setOverlayEnabled(event.target.checked); 
+    setSettingMenuEnabled(null)
+  }
 
   const AdjustTimeline = (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
@@ -1163,6 +1180,9 @@ const VideoPlayerBase = (props: any) => {
     })
     settimelinedetail(tempTimelines);
     setTimelineSyncHistoryCounter(0);
+    toasterMsgRef.current.showToaster({
+      message: "Times reverted to original", variant: "Success", duration: 5000, clearButtton: true
+    });
   }
   const UndoRedo = (indexOperation: number) => {
     var tempTimelines = [...timelinedetail];
@@ -1191,6 +1211,12 @@ const VideoPlayerBase = (props: any) => {
       })
       var index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
       setTimelineSyncHistoryCounter(indexOperation == 0 ? 0 : index);
+    }
+    if(indexOperation == 0)
+    {
+      toasterMsgRef.current.showToaster({
+        message: "Timelines reverted to last save", variant: "Success", duration: 5000, clearButtton: true
+      });
     }
   }
 
@@ -1265,6 +1291,9 @@ const VideoPlayerBase = (props: any) => {
     fetch(url, requestOptions)
       .then((response: any) => {
         if (response.ok) {
+          toasterMsgRef.current.showToaster({
+            message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
+          });
           var timelineSyncHistoryTemp: TimelineSyncHistoryMain[] = [{
             maxTimelineDuration: timelineduration,
             timelinesHistory: timelineHistoryArray
@@ -1272,11 +1301,15 @@ const VideoPlayerBase = (props: any) => {
           setTimelineSyncHistory(timelineSyncHistoryTemp);
           setTimelineSyncHistoryCounter(0);
         } else {
-          // throw new Error(response.statusText);
+          toasterMsgRef.current.showToaster({
+            message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
+          });
         }
       })
       .catch((err: any) => {
-        console.error(err);
+        toasterMsgRef.current.showToaster({
+          message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
+        });
       });
   }
 
@@ -1330,9 +1363,17 @@ const VideoPlayerBase = (props: any) => {
 
       <div className="searchComponents">
         <div id="crx_video_player" >
-          <CRXToaster ref={bookmarkMsgRef} />
+          <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
             <div id="screens">
+            {overlayEnabled && <div className="overlayVideo"  style={{height:50, background: "#7a7a7a"}}>
+              <ul>
+                <li><img src={getacVideoSolution} style={{height:30}}></img></li>
+                {overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors") && <li>Sensors</li>}
+                {overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)") && <li>GPS (location + speed)</li>}
+                {overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp") && <li>Timestamp</li>}
+              </ul>
+            </div>}
               <VideoScreen
                 setData={setdata}
                 evidenceId={EvidenceId}
@@ -1391,7 +1432,7 @@ const VideoPlayerBase = (props: any) => {
                   setVisibleThumbnail={setVisibleThumbnail}
                   singleTimeline={singleTimeline}
                   displayThumbnail={displayThumbnail}
-                  bookmarkMsgRef={bookmarkMsgRef}
+                  toasterMsgRef={toasterMsgRef}
                   onClickBookmarkNote={onClickBookmarkNote}
                   openThumbnail={openThumbnail}
                   mouseovertype={mouseovertype}
@@ -1573,28 +1614,79 @@ const VideoPlayerBase = (props: any) => {
                 </div>
                 <div className={` playerViewRight ${iconChanger ? 'clickViewRightBtn' : ""}`}>
                   <div className="SettingGrid">
-                    <Menu
-                      align="start"
-                      viewScroll="initial"
-                      direction="top"
-                      
-                      className="ViewScreenMenu"
-                      menuButton={
-                        <i>
-                          <CRXTooltip
+                    <div onClick={(e : any) => {setSettingMenuEnabled(e.currentTarget)}}>
+                  <CRXTooltip
                             iconName={"fas fa-cog faCogIcon"}
                             placement="top"
                             title={<>Settings <span className="settingsTooltip">,</span></>}
                             arrow={false}
-                          />
-                        </i>
-                      }
+                          /></div>
+                  
+                    <MaterialMenu
+                      className="ViewScreenMenu"
+                      anchorEl={settingMenuEnabled}
+                      keepMounted
+                      open={Boolean(settingMenuEnabled)}
+                      onClose={(e : any) => {setSettingMenuEnabled(null)}}
+                      
                     >
-                      <MenuItem>
-                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" disabled={viewReasonControlsDisabled}/>}
-                      </MenuItem>
+                      <MaterialMenuItem>
+                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
+                      </MaterialMenuItem>
+                      <MaterialMenuItem>
+                        <FormControlLabel control={<Switch checked={overlayEnabled} onChange={(event) => OverlayChangeEvent(event) } />} label="Overlay" />
+                      </MaterialMenuItem>
+                    </MaterialMenu>
 
-                    </Menu>
+                    <MaterialMenu
+                      className="ViewScreenMenu"
+                      anchorEl={overlayMenuEnabled}
+                      keepMounted
+                      open={Boolean(overlayMenuEnabled)}
+                      onClose={(e : any) => {overlayMenuEnabled(null)}}
+                      
+                    >
+                      <MaterialMenuItem>
+                        <CRXButton color="primary" onClick={(e : any) => {setSettingMenuEnabled(e.currentTarget); setOverlayMenuEnabled(null)}}>Back</CRXButton>
+                      </MaterialMenuItem>
+                      <MaterialMenuItem>
+                        <CRXCheckBox
+                          checked={overlayCheckedItems.some((x: any) => x == "All")}
+                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems(["All"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "All"))}}
+                          name="selectAll"
+                          className="bucketListCheckedAll"
+                          lightMode={true}/>
+                        <span className="selectAllText">Select all</span>
+                      </MaterialMenuItem>
+                      <MaterialMenuItem>
+                        <CRXCheckBox
+                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp")}
+                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Timestamp"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "Timestamp"))}}
+                          name="Timestamp"
+                          className="bucketListCheckedAll"
+                          lightMode={true}/>
+                        <span className="Timestamp">Timestamp</span>
+                      </MaterialMenuItem>
+                      <MaterialMenuItem>
+                        <CRXCheckBox
+                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")}
+                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "GPS (location + speed)"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "GPS (location + speed)"))}}
+                          name="GPS (location + speed)"
+                          className="bucketListCheckedAll"
+                          lightMode={true}/>
+                        <span className="GPS (location + speed)">GPS (location + speed)</span>
+                      </MaterialMenuItem>
+                      <MaterialMenuItem>
+                        <CRXCheckBox
+                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors")}
+                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Sensors"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "Sensors"))}}
+                          name="Sensors"
+                          className="bucketListCheckedAll"
+                          lightMode={true}/>
+                        <span className="Sensors">Sensors</span>
+                      </MaterialMenuItem>
+                    </MaterialMenu>
+					
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
@@ -1723,7 +1815,7 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
             </div>
-            {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} />}
+            {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
             {startTimelineSync == false || viewReasonControlsDisabled && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
           </FullScreen>
@@ -1740,7 +1832,7 @@ const VideoPlayerBase = (props: any) => {
             Data={data}
             setData={setdata}
             bookmarkAssetId={bookmarkAssetId}
-            bookmarkMsgRef={bookmarkMsgRef}
+            toasterMsgRef={toasterMsgRef}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
@@ -1754,7 +1846,7 @@ const VideoPlayerBase = (props: any) => {
             Data={data}
             setData={setdata}
             noteAssetId={noteAssetId}
-            noteMsgRef={bookmarkMsgRef}
+            toasterMsgRef={toasterMsgRef}
           />}
 
           <TimelineSyncInstructionsModal

@@ -22,11 +22,11 @@ type VideoPlayerNoteProps = {
     Data:any;
     setData: any;
     noteAssetId?: number;
-    noteMsgRef: any;
+    toasterMsgRef: any;
 };
 
 const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
-    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,Data,setData,noteAssetId,noteMsgRef} = props;
+    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,Data,setData,noteAssetId,toasterMsgRef} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -144,7 +144,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                     else if (!isNaN(+err)) {
                         setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
                         setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-                        noteMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                        toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
                     } else {
                             setAlert(true);
                             setResponseError(err);
@@ -180,7 +180,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             if (response.ok) {
                 setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
                 setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
-                noteMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
             } else {
                 setAlert(true);
                 setResponseError(
@@ -211,7 +211,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             if (response.ok) {
                 setnoteobj({ ...noteobj, id: body.id })
                 setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
-                noteMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
             } else {
                 setAlert(true);
                 setResponseError(

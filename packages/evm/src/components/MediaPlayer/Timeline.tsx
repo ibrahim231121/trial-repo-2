@@ -20,7 +20,7 @@ interface Timelineprops {
   setVisibleThumbnail: any
   singleTimeline: any
   displayThumbnail: any
-  bookmarkMsgRef: any
+  toasterMsgRef: any
   onClickBookmarkNote: any
   openThumbnail: boolean
   mouseovertype: any
@@ -35,7 +35,7 @@ interface Timelineprops {
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, bookmarkMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, singleTimeline, displayThumbnail, seteditNoteForm, setnoteAssetId, note, toasterMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync }: Timelineprops,) => {
 
   useEffect(() => {
     if (openThumbnail&&Event&&timelinedetail1) {
@@ -90,7 +90,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
 
   // const onClickBookmark = (y: any) => {
     // if(y.madeBy == "System"){
-    //   bookmarkMsgRef.current.showToaster({message: "Cannot Edit System Generated Bookmark", variant: "error", duration: 5000, clearButtton: true});
+    //   toasterMsgRef.current.showToaster({message: "Cannot Edit System Generated Bookmark", variant: "error", duration: 5000, clearButtton: true});
     // }
     // else{
     //   setopenThumbnail(false);

@@ -28,11 +28,11 @@ type VideoPlayerSnapshotProps = {
     Data:any;
     setData: any;
     bookmarkAssetId?: number;
-    bookmarkMsgRef: any;
+    toasterMsgRef: any;
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,Data,setData,bookmarkAssetId,bookmarkMsgRef} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,Data,setData,bookmarkAssetId,toasterMsgRef} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -183,7 +183,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     else if (!isNaN(+err)) {
                         setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
                         setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-                        bookmarkMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                        toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
                     } else {
                             setAlert(true);
                             setResponseError(err);
@@ -262,7 +262,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     if (error.errors !== undefined) {
                     }
                     else if (!isNaN(+error)) {
-                        bookmarkMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                        toasterMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
                         setOpenModal(false);
                         setopenBookmarkForm(false);
                     } else {
@@ -299,7 +299,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             if (response.ok) {
                 setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: body.id, madeBy: body.madeBy, position: body.position, version: body.version, createdOn: bookmark.createdOn, modifiedOn: bookmark.modifiedOn })
                 setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
-                bookmarkMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
             } else {
                 setAlert(true);
                 setResponseError(
@@ -330,7 +330,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             if (response.ok) {
                 setbookmarkobj({ ...bookmarkobj, id: body.id })
                 setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
-                bookmarkMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
             } else {
                 setAlert(true);
                 setResponseError(
