@@ -53,7 +53,6 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
   }
 
   const adjustSound = (enableSound: boolean, id?: any) => {
-    debugger;
     var videoHandle = videoHandlers.find((x: any) => x.id == id);
     if (videoHandle !== undefined) {
       setAdjustSoundEnabled(enableSound)

@@ -217,6 +217,7 @@ const VideoPlayerBase = (props: any) => {
   const [openTimelineSyncInstructions, setOpenTimelineSyncInstructions] = useState<boolean>(false);
   const [startTimelineSync, setStartTimelineSync] = useState<boolean>(false);
   const [openTimelineSyncConfirmation, setOpenTimelineSyncConfirmation] = useState<boolean>(false);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
@@ -1324,6 +1325,7 @@ const VideoPlayerBase = (props: any) => {
         openViewReason={true}
         EvidenceId={EvidenceId}
         AssetData={data[0]}
+        setViewReasonControlsDisabled={setViewReasonControlsDisabled}
       />}
 
       <div className="searchComponents">
@@ -1450,6 +1452,7 @@ const VideoPlayerBase = (props: any) => {
                     step={1}
                     min={0}
                     max={timelineduration}
+                    disabled={viewReasonControlsDisabled}
                     classes={{
                       ...classes
                     }}
@@ -1468,7 +1471,7 @@ const VideoPlayerBase = (props: any) => {
               <div className={`playerViewFlex ${multiTimelineEnabled ? " enablebViewFlex" : "disabledViewFlex"}`}>
                 <div className="playerViewLeft">
                   <div className="PlayPause-container">
-                    <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
+                    <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         content={<SVGImage
                           width="12"
@@ -1483,7 +1486,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable || viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={"icon icon-backward2 backward2Icon"}
                         placement="top"
@@ -1492,7 +1495,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className="videoPlayerBtn" >
+                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
                         placement="top"
@@ -1500,7 +1503,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable || viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={"icon icon-forward3 backward3Icon"}
                         placement="top"
@@ -1508,7 +1511,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" >
+                    <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         content={<SVGImage
                           width="12"
@@ -1530,7 +1533,7 @@ const VideoPlayerBase = (props: any) => {
                 </div>
                 <div className="playerViewMiddle">
                   <div className="playBackMode">
-                    <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
+                    <button className="UndoIconHover UndoIconPosition" disabled={disabledModeLeft || viewReasonControlsDisabled} onClick={() => modeSet(mode > 0 ? -2 : (mode - 2))} >
                       {mode < 0 ? <span className="modeIconUndoLinker" style={{ background: modeColorMinus }}><span>{modeMinus}</span>{"x"}</span> : ""}
                       <CRXTooltip
                         iconName={"fas fa-undo-alt undoAltIcon"}
@@ -1539,7 +1542,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </button>
-                    <button className="MinusIconPosition" disabled={disabledModeMinus} onClick={() => modeSet(0)}>
+                    <button className="MinusIconPosition" disabled={disabledModeMinus || viewReasonControlsDisabled} onClick={() => modeSet(0)}>
                       <CRXTooltip
                         iconName={"icon icon-minus iconMinusUndo"}
                         placement="top"
@@ -1547,7 +1550,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </button>
-                    <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
+                    <button className="UndoIconHover RedoIconPosition" disabled={disabledModeRight || viewReasonControlsDisabled} onClick={() => modeSet(mode < 0 ? 2 : (mode + 2))} >
                       {mode > 0 ? <span className="modeIconRedoLinker" style={{ background: modeColorPlus }}><span>{mode}</span>{"x"}</span> : ""}
                       <CRXTooltip
                         iconName={"fas fa-redo-alt undoRedoIcon"}
@@ -1574,7 +1577,7 @@ const VideoPlayerBase = (props: any) => {
                       align="start"
                       viewScroll="initial"
                       direction="top"
-
+                      
                       className="ViewScreenMenu"
                       menuButton={
                         <i>
@@ -1588,13 +1591,12 @@ const VideoPlayerBase = (props: any) => {
                       }
                     >
                       <MenuItem>
-                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
-
+                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" disabled={viewReasonControlsDisabled}/>}
                       </MenuItem>
 
                     </Menu>
                   </div>
-                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn">
+                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
@@ -1602,7 +1604,8 @@ const VideoPlayerBase = (props: any) => {
                       arrow={false}
                     />
                   </CRXButton>
-                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn">
+
+                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
@@ -1630,12 +1633,12 @@ const VideoPlayerBase = (props: any) => {
                       <MenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
                       </MenuItem>
-                      <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  >
+                      <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single View</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
                       </MenuItem>
-                      <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)}>
+                      <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Side by Side </span>
                         <div className="screenViewsSideBySide ViewDiv">
@@ -1643,7 +1646,7 @@ const VideoPlayerBase = (props: any) => {
                           <p></p>
                         </div>
                       </MenuItem>
-                      <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  >
+                      <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">
@@ -1654,7 +1657,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MenuItem>
-                      <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)}>
+                      <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 4</span>
                         <div className="screenViewsGrid ViewDiv">
@@ -1668,7 +1671,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MenuItem>
-                      <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)}>
+                      <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 6</span>
                         <div className="screenViewsGrid6 ViewDiv">
@@ -1691,7 +1694,7 @@ const VideoPlayerBase = (props: any) => {
                           <div></div>
                           <p></p>
                         </div>
-                        <FormControlLabel className="switchBaseLayout" label="Side Data Panel" control={<Switch onChange={(event) => setMapEnabled(event.target.checked)} />} />
+                        <FormControlLabel className="switchBaseLayout" label="Side Data Panel" control={<Switch disabled={viewReasonControlsDisabled} onChange={(event) => setMapEnabled(event.target.checked)} />} />
                         <span className="switcherBtn">{mapEnabled ? "ON" : "OFF"}</span>
                       </MenuItem>
 
@@ -1722,7 +1725,7 @@ const VideoPlayerBase = (props: any) => {
             </div>
             {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {startTimelineSync == false && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
+            {startTimelineSync == false || viewReasonControlsDisabled && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
           </FullScreen>
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}

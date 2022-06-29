@@ -21,7 +21,7 @@ type VideoPlayerViewReasonProps = {
     EvidenceId: any;
     setOpenViewReason: any;
     AssetData: any;
-
+    setViewReasonControlsDisabled: any
 };
 
 type ViewReason = {
@@ -30,7 +30,7 @@ type ViewReason = {
 }
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, setOpenViewReason, AssetData } = props;
+    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled } = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -70,13 +70,19 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     }, [ip])
     const handleClose = async (e: React.MouseEvent<HTMLElement>) => {
 
+        setOpenModal(false);
+        setOpenViewReason(false);
+    };
+
+    const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
+
         const AssetId = AssetData.id;
         const body = {
             id: null,
             assetId: AssetId,
             cmtUserRecId: 1,
             sourceIPAddress: ip,
-            ViewReason: reason == "Other" ? description : reason
+            ViewReason: reason == "Other" ? description : reason,
         };
         const AssetViewReasonURL = EVIDENCE_SERVICE_URL + "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
         await fetch(AssetViewReasonURL, {
@@ -85,7 +91,10 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             body: JSON.stringify(body)
         })
             .then(function (response) {
-                if (response.ok) return response.json();
+                if (response.ok) {
+                    setViewReasonControlsDisabled(false);
+                    return response.json();
+                }
                 else if (response.status == 500) {
                     setAlert(true);
                     setResponseError(
@@ -103,6 +112,9 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         setOpenModal(false);
         setOpenViewReason(false);
     };
+
+
+
     const handleBack = (e: React.MouseEvent<HTMLElement>) => {
         history.goBack();
     };
@@ -196,7 +208,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                         <div className='crxFooterEditFormBtn'>
                             <CRXButton
                                 className='primary'
-                                onClick={handleClose}
+                                onClick={handleSave}
                                 disabled={reason == "Other" && descriptionErr.length > 0 ? true : false}>
                                 Save
                             </CRXButton>
