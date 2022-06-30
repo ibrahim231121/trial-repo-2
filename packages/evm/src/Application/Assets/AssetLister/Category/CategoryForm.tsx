@@ -8,6 +8,7 @@ import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
 import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
 import http from '../../../../http-common';
+import { useTranslation } from "react-i18next";
 
 type CategoryFormProps = {
   filterValue: any[];
@@ -26,6 +27,7 @@ type CategoryFormProps = {
 };
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [filteredFormArray, setFilteredFormArray] = React.useState<any[]>([]);
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -41,7 +43,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const isErrorClx = error && 'onErrorcaseClx';
 
   React.useEffect(() => {
-    props.setModalTitle('Category form');
+    props.setModalTitle(t('Category_form'));
     props.setIndicateTxt(false);
     props.setshowSSticky(true)
     props.setremoveClassName('crxEditCategoryForm');
@@ -78,7 +80,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
     // It means category was attacehd from the backend
     if (previousAttachedCategories.length > 0) {
-      props.setModalTitle('Edit category');
+      props.setModalTitle(t('Edit_category'));  
       let changingResponse = evidenceResponse.categories.map((o: any) => {
         return {
           id: o.id,
@@ -282,18 +284,18 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
   return (
     <>
-      {success && <CRXAlert message='Success: You have saved the asset categorization' alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           className='errorMessageCategory'
-          message="We 're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator"
+          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
         />
       )}
       <div className={'indicatestext indicateLessPadding ' + isErrorClx}>
-        <b>*</b> Indicates required field
+        <b>*</b> {t('Indicates_required_field')}
       </div>
       {filteredFormArray.length > 0 && (
         filteredFormArray.some((o: any) => o.form.length > 0) ? (
@@ -311,14 +313,14 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             <div className='categoryModalFooter CRXFooter'>
               <CRXButton onClick={submitForm} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
                 {' '}
-                {props.isCategoryEmpty === false ? 'Next' : 'Save'}
+                {props.isCategoryEmpty === false ? t("Next") : t("Save")}
               </CRXButton>
               <CRXButton className='cancelButton secondary' color='secondary' variant='contained' onClick={backBtn}>
-                Back
+                {t("Back")}
               </CRXButton>
               {props.isCategoryEmpty && (
                 <CRXButton className='skipButton' onClick={skipBtn}>
-                  Skip category form & save
+                  {t("Skip_category_form_and_save")}
                 </CRXButton>
               )}
             </div>

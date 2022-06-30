@@ -30,6 +30,7 @@ import { NotificationMessage } from "../../../Header/CRXNotifications/notificati
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { getToken } from "../../../../Login/API/auth";
+import { useTranslation } from "react-i18next";
 
 export type GroupInfoModel = {
   name: string;
@@ -54,6 +55,7 @@ export type ApplicationPermission = {
   children?: ApplicationPermission[];
 };
 const Group = () => {
+  const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -106,23 +108,23 @@ const Group = () => {
     setValue(newValue);
   }
   const tabs = [
-    { label: "GROUP NAME", index: 0 },
-    { label: "USERS", index: 1 },
-    { label: "APPLICATION PERMISSIONS", index: 2 },
-    { label: "DATA PERMISSIONS", index: 3 },
+    { label: t("GROUP_NAME"), index: 0 },
+    { label: t("USERS"), index: 1 },
+    { label: t("APPLICATION PERMISSIONS"), index: 2 },
+    { label: t("DATA PERMISSIONS"), index: 3 },
   ];
 
   const message = [
-    { messageType: "success", message: "User group saved successfully." },
+    { messageType: "success", message: t("User_group_saved_successfully.") },
     {
       messageType: "error",
       message:
-        "We're sorry. The group information, users, and application permissions were unable to be saved. Please retry or contact your System Administrator.",
+        t("We_re_sorry_The_group_information_users_and_application_permissions_were_unable_to_be_saved__Please_retry_or_contact_your_System_Administrator."),
     },
     {
       messageType: "error",
       message:
-        "We're sorry. The data permissions were unable to be saved. Please retry or contact your System Administrator.",
+        t("We_re_sorry_The_data_permissions_were_unable_to_be_saved._Please_retry+or_contact_your_System_Administrator."),
     },
   ];
 
@@ -661,7 +663,7 @@ const Group = () => {
             onClick={onSave}
             disabled={isSaveButtonDisabled}
           >
-            Save
+            {t("Save")}
           </CRXButton>
           <CRXButton
             className="groupInfoTabButtons secondary"
@@ -675,7 +677,7 @@ const Group = () => {
               )
             }
           >
-            Cancel
+            {t("Cancel")}
           </CRXButton>
         </div>
         <CRXButton
@@ -684,7 +686,7 @@ const Group = () => {
           color="secondary"
           variant="outlined"
         >
-          Close
+          {t("Close")}
         </CRXButton>
       </div>
       <CRXConfirmDialog
@@ -692,17 +694,16 @@ const Group = () => {
         onConfirm={closeDialog}
         isOpen={isOpen}
         className="userGroupNameConfirm"
-        primary="Yes, close"
-        secondary="No, do not close"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
         text="user group form"
       >
         <div className="confirmMessage">
-          You are attempting to <strong>close</strong> the{" "}
-          <strong>'user group form'</strong>. If you close the form, any changes
-          you've made will not be saved. You will not be able to undo this
-          action.
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user_group_form'")}</strong>. {t("If_you_close_the_form")}, 
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
           <div className="confirmMessageBottom">
-            Are you sure you would like to <strong>close</strong> the form?
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
           </div>
         </div>
       </CRXConfirmDialog>

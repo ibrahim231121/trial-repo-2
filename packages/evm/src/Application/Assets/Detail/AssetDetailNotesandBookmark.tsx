@@ -7,6 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import "./AssetDetailsDropdown.scss";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { CRXTooltip,CRXConfirmDialog } from "@cb/shared";
+import { useTranslation } from "react-i18next";
 
 type propsObject = {
   data:any;
@@ -22,6 +23,7 @@ type propsObject = {
 
 
 const AssetDetailNotesandBookmark = ({data,setData,searchFieldHeading,searchFieldPlaceholder,URL,condition,onDeleteNotes,onEdit,onClickBookmarkNote}:propsObject) => {
+  const { t } = useTranslation<string>();
   const [isEditing, setisEditing] = useState<number[]>([]);
   const [isReadMore, setIsReadMore] = useState<any[]>([]);
   const [searchTerm, setsearchTerm] = React.useState("");
@@ -129,7 +131,7 @@ const onConfirmm = () => {
      <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
-        title="Please Confirm"
+        title={t("Please_confirm")}
         isOpen={open}
         modelOpen={open}
         primary={primary}
@@ -137,11 +139,11 @@ const onConfirmm = () => {
       >
         {
           <div className="crxUplockContent">
-            You are attempting to <strong>Delete</strong> the{" "}
-            <strong>{condition == true ? "Notes" : "Bookmark"}</strong>. 
-            action.
+            {t("You_are_attempting_to")} <strong>{t("Delete")}</strong> {t("the")}{" "}
+            <strong>{condition == true ? t("Notes") : t("Bookmark")}</strong>. 
+            {t("action")}.
             <p>
-              Are you sure you would like to <strong>close</strong> the dialogue?
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_dialogue?")}
             </p>
           </div>
         }
@@ -176,7 +178,7 @@ const onConfirmm = () => {
 
                     <ListItem onClick={()=>handleNoteClicked(x)} >
                     {condition ==true ?  moment(x.noteTime).format("HH:MM:SS"):moment(x.bookmarkTime).format("HH:MM:SS")}
-                    {` Form : ${x.madeBy}`}
+                    {` ${t("Form")} : ${x.madeBy}`}
                     <br />
                     <div >
                   {x.madeBy.includes("User") && 
@@ -202,7 +204,7 @@ const onConfirmm = () => {
                             className="crx-meu-content groupingMenu crx-spac">
                             <div className="crx-menu-icon"></div>
                             <div >
-                            Delete
+                            {t("Delete")}
                             </div>
                         </div>
 
@@ -212,7 +214,7 @@ const onConfirmm = () => {
                             className="crx-meu-content groupingMenu crx-spac">
                             <div className="crx-menu-icon"></div>
                             <div >
-                            Edit
+                            {t("Edit")}
                             </div>
                         </div>
                        
@@ -243,7 +245,7 @@ const onConfirmm = () => {
                             name={String(x.id)}
                             value={x.description}
                             InputProps={{endAdornment: <div onClick={(e) => handleReadMore(e, x.id) }>{isReadMore.find((y:any) => y.id == x.id)?.value ?
-                            <i className="fas fa-angle-up"> Showless </i> : <i className="fas fa-angle-down"> Read More </i>  }</div> }}
+                            <i className="fas fa-angle-up"> {t("Showless")} </i> : <i className="fas fa-angle-down"> {t("Read_More")} </i>  }</div> }}
                             variant={isEditing.includes(x.id)  ?"outlined":"standard"} 
                             color="primary"
                             multiline

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { TextField } from '@cb/shared'
+import { useTranslation } from "react-i18next";
 
 const GlobalSearch = () => {
+    const { t } = useTranslation<string>();
     const [searchValue, setValue] = useState<any>();
 
     const changeHandler = (event : React.ChangeEvent<HTMLInputElement>) => {
@@ -15,7 +17,7 @@ const GlobalSearch = () => {
                 type="text"
                 value={searchValue}
                 onChange={(e : React.ChangeEvent<HTMLInputElement>) => changeHandler(e)}
-                placeholder="Search assets by ID#, case#, CAD#, categories, etc"
+                placeholder={t("Search_assets_by_ID_case_CAD_categories_etc")}
             />
         </>
     )

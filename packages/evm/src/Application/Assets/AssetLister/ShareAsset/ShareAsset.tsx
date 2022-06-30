@@ -10,6 +10,7 @@ import { EVIDENCE_SERVICE_URL } from "../../../../utils/Api/url";
 import moment from "moment";
 import { log } from 'console';
 import { Link } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 type ShareAssetProps = {
   items: any[];
@@ -24,7 +25,7 @@ type ShareAssetProps = {
 const cookies = new Cookies();
 
 const ShareAsset: React.FC<ShareAssetProps> = (props) => {
-
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const [metaDataCheck, setMetaDataCheck] = React.useState<boolean>(false)
@@ -87,9 +88,9 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         Version: string
     }
   const linkExpireOptions = [
-    { value: 3, displayText: 'Infinite' },
-    { value: 2, displayText: 'Days' },
-    { value: 1, displayText: 'Hours' }
+    { value: 3, displayText: t("Infinite") },
+    { value: 2, displayText: t("Days") },
+    { value: 1, displayText: t("Hours") }
  ];
 
   const [currentRetention, setCurrentRetention] = React.useState<string>("-")
@@ -171,7 +172,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
           debugger
           props.setOnClose();
           props.showToastMsg({
-            message: "Share email sent to recipients",
+            message: t("Share_email_sent_to_recipients"),
             variant: "success",
             duration: 7000,
             clearButtton: true,
@@ -180,7 +181,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         else if (res.status == 500) {
           setAlert(true);
           setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
       })
@@ -221,10 +222,10 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => handleCheck(e)}
                 />
-                Include Metadata.
+                {t("Include_Metadata")}.
               </div>
               <div className='categoryTitle'>
-                Link Expiry
+                {t("Link_Expiry")}
               </div>
               <div >
                 <input type="text"  value={linkExpire} onChange={(e) => setLinkExpire(e.target.value)} />
@@ -256,7 +257,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => handleViewableCheck(e)}
                 />
-                Viewable once
+                {t("Viewable_once")}
               </div>
               <div style={{
                 height: "0px", paddingTop: "5px",
@@ -274,17 +275,17 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => handleDownloadCheck(e)}
                 />
-                Downloadable
+                {t("Downloadable")}
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
                   <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                    Save
+                    {t("Save")}
                   </CRXButton>
                 </div>
                 <div className='cancelBtn'>
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                    Cancel
+                  {t("Cancel")}
                   </CRXButton>
                 </div>
               </div>

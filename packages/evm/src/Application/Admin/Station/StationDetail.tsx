@@ -22,6 +22,7 @@ import "./station.scss";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import Cookies from 'universal-cookie';
 import { ConfigurationTemplates, TypeOfDevice } from "./DefaultUnitTemplate/DefaultUnitTemplateModel";
+import { useTranslation } from 'react-i18next';
 
 type StationFormType = {
   Name: string;
@@ -44,6 +45,7 @@ interface AutoCompleteOptionType {
 
 const cookies = new Cookies();
 const StationDetail: React.FC = () => {
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(getCountryStateAsync());
@@ -68,7 +70,7 @@ const StationDetail: React.FC = () => {
     React.useState<AutoCompleteOptionType[]>([]);
   const [errorResponseMessage, setErrorResponseMessage] =
     React.useState<string>(
-      "We 're sorry. The station was unable to be saved. Please retry or contact your Systems Administrator"
+      t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
     );
   const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<TypeOfDevice[]>([]);
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
@@ -392,26 +394,26 @@ const StationDetail: React.FC = () => {
 
   const stationValidationSchema = Yup.object().shape({
 
-    Name: Yup.string().required("Station Name is required"),
+    Name: Yup.string().required(t("Station_Name_is_required")),
     Passcode: Yup.string()
       .test(
         'len',
-        'Minimum 5 characters are allowed.',
+        t("Minimum_5_characters_are_allowed."),
         (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
       )
-      .trim().matches(regex, 'Only alphabets and digits are allowed.').required("Pass Code is required"),
+      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Pass_Code_is_required")),
     SSId: Yup.string().test(
       'len',
-      'Minimum 5 characters are allowed.',
+      t("Minimum_5_characters_are_allowed."),
       (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
     )
-      .trim().matches(regex, 'Only alphabets and digits are allowed.').notRequired(),
+      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
     Password: Yup.string().test(
       'len',
-      'Minimum 5 characters are allowed.',
+      t("Minimum_5_characters_are_allowed."),
       (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
     )
-      .trim().matches(regex, 'Only alphabets and digits are allowed.').notRequired(),
+      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
     //RetentionPolicy: Yup.string().required("Retention policy is required"),
   });
 
@@ -635,7 +637,7 @@ const StationDetail: React.FC = () => {
               <div className="ManageStation  switchLeftComponents">
                 {success && (
                   <CRXAlert
-                    message="Success: You have saved the Station"
+                    message={t("Success_You_have_saved_the_Station")}
                     alertType="toast"
                     open={true}
                   />
@@ -650,7 +652,7 @@ const StationDetail: React.FC = () => {
                   />
                 )}
                 <CrxAccordion
-                  title="Station"
+                  title={t("Station")}
                   id="accorIdx1"
                   className="crx-accordion"
                   ariaControls="Content1"
@@ -681,7 +683,7 @@ const StationDetail: React.FC = () => {
                         >
                           <div className="CBX-input">
                             <label htmlFor="name">
-                              Station Name <span>*</span>
+                              {t("Station_Name")} <span>*</span>
                             </label>
                             <div className="CrxStationError">
                               <Field id="name" name="Name" />
@@ -705,7 +707,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="CBX-input">
-                            <label htmlFor="latitude">Latitude</label>
+                            <label htmlFor="latitude">{t("Latitude")}</label>
                             <Field id="latitude" name="Location.latitude" />
                           </div>
                         </CRXColumn>
@@ -718,7 +720,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="CBX-input">
-                            <label htmlFor="longitude">Longitude</label>
+                            <label htmlFor="longitude">{t("Longitude")}</label>
                             <Field id="longitude" name="Location.longitude" />
                           </div>
                         </CRXColumn>
@@ -730,13 +732,13 @@ const StationDetail: React.FC = () => {
                           xs={12}
                           spacing={0}
                         >
-                          <label htmlFor="Location">Location</label>
+                          <label htmlFor="Location">{t("Location")}</label>
                           <CRXButton
                             className="groupInfoTabButtons secondary"
                             onClick={() => setModal(true)}
                             color="secondary"
                           >
-                            Map location
+                            {t("Map_location")}
                           </CRXButton>
                         </CRXColumn>
                       </CRXRows>
@@ -756,7 +758,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="CBX-input">
-                            <label htmlFor="street">Street Address</label>
+                            <label htmlFor="street">{t("Street_Address")}</label>
                             <Field id="street" name="StreetAddress" />
                           </div>
                         </CRXColumn>
@@ -776,7 +778,7 @@ const StationDetail: React.FC = () => {
                         >
                           <div className="CBX-input">
                             <label htmlFor="passcode">
-                              Pass Code <span>*</span>
+                              {t("Pass_Code")} <span>*</span>
                             </label>
                             <div className="CrxStationError">
                               <Field id="passcode" name="Passcode" />
@@ -796,7 +798,7 @@ const StationDetail: React.FC = () => {
                   </div>
                 </CrxAccordion>
                 <CrxAccordion
-                  title="Station Settings"
+                  title={t("Station_Settings")}
                   id="accorIdx2"
                   className="crx-accordion "
                   ariaControls="Content2"
@@ -820,7 +822,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="colstation">
-                            <label htmlFor="name">Data Retention Policy</label>
+                            <label htmlFor="name">{t("Data_Retention_Policy")}</label>
                             <div className="CrxStationError">
                               <CRXMultiSelectBoxLight
                                 id="retentionPolicyMultiSelect"
@@ -850,7 +852,7 @@ const StationDetail: React.FC = () => {
                               {errors.RetentionPolicy !== undefined ? (
                                 <div className="errorStationStyle">
                                   <i className="fas fa-exclamation-circle"></i>
-                                  {" Retention Policy is required"}
+                                  {"Retention_Policy_is_required"}
                                   {setDisplayStationError("errorBrdr")}
                                 </div>
                               ) : null}
@@ -867,7 +869,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="colstation">
-                            <label htmlFor="name">Data Upload Policy</label>
+                            <label htmlFor="name">{t("Data_Upload_Policy")}</label>
                             <div className="CrxStationError">
                               <CRXMultiSelectBoxLight
                                 id="uploadPolicyMultiSelect"
@@ -896,7 +898,7 @@ const StationDetail: React.FC = () => {
                               {errors.UploadPolicy !== undefined ? (
                                 <div className="errorStationStyle">
                                   <i className="fas fa-exclamation-circle"></i>
-                                  {" Upload Policy is required"}
+                                  {t("Upload_Policy_is_required")}
                                   {setDisplayStationError("errorBrdr")}
                                 </div>
                               ) : null}
@@ -912,7 +914,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="colstation">
-                            <label htmlFor="name">BlackBox Retention Policy</label>
+                            <label htmlFor="name">{t("BlackBox_Retention_Policy")}</label>
                             <div className="CrxStationError">
                               <CRXMultiSelectBoxLight
                                 id="blackBoxPolicyMultiSelect"
@@ -964,7 +966,7 @@ const StationDetail: React.FC = () => {
                         >
                           <div className="CBX-input">
                             <label htmlFor="SSId">
-                              SSID
+                              {t("SSID")}
                             </label>
                             <div className="CrxStationError">
                               <Field id="SSId" name="SSId" />
@@ -995,7 +997,7 @@ const StationDetail: React.FC = () => {
                         >
                           <div className="CBX-input">
                             <label htmlFor="password">
-                              Password
+                              {t("Password")}
                             </label>
                             <div className="CrxStationError">
                               <Field id="password" name="Password" />
@@ -1015,7 +1017,7 @@ const StationDetail: React.FC = () => {
                   </div>
                 </CrxAccordion>
                 <CrxAccordion
-                  title="Unit Templates"
+                  title={t("Unit_Templates")}
                   id="accorIdx3"
                   className="crx-accordion "
                   ariaControls="Content3"
@@ -1043,7 +1045,7 @@ const StationDetail: React.FC = () => {
                         variant="contained"
                         className="groupInfoTabButtons"
                       >
-                        Save
+                        {t("Save")}
                       </CRXButton>
                       <CRXButton
                         className="groupInfoTabButtons secondary"
@@ -1051,7 +1053,7 @@ const StationDetail: React.FC = () => {
                         variant="outlined"
                         onClick={navigateToStations}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </CRXButton>
                     </div>
                   </CRXColumn>
@@ -1061,12 +1063,12 @@ const StationDetail: React.FC = () => {
 
             <CRXConfirmDialog
               className="crx-unblock-modal CRXStationModal"
-              title={"Select location on the map"}
+              title={t("Select_location_on_the_map")}
               setIsOpen={setModal}
               onConfirm={() => onConfirm(setFieldValue)}
               isOpen={modal}
-              primary={"Save Location"}
-              secondary={"Cancel"}
+              primary={t("Save_Location")}
+              secondary={t("Cancel")}
               primaryDisabled={disableSaveButton}
             >
               {

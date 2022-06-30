@@ -6,6 +6,7 @@ import { withRouter, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import { urlList, urlNames } from "../../../utils/urlList"
+import { useTranslation } from "react-i18next";
 
 type BreadCrumbItem = {
   type: string,
@@ -15,7 +16,7 @@ type BreadCrumbItem = {
 
 const Breadcrumb: React.FC<any> = (props) => {
   
-
+  const { t } = useTranslation<string>();
   const [urlPath, setUrlPath] = React.useState("")
   const { location: { pathname }, } = props;
   const [width, setWidth] = React.useState<number>(window.innerHeight);
@@ -154,7 +155,7 @@ const Breadcrumb: React.FC<any> = (props) => {
         <>
           <CRXBreadcrumb maxItems={width <= 650 ? 3 : 100}>
             <Link className="brdLinks breadCrumbItem" to="/">
-              Home
+              {t("Home")}
             </Link>
             {getPaths()} 
             {otherLabels && <label>{otherLabels}</label>}

@@ -8,6 +8,7 @@ import {
   Divider,
   DialogActions,
 } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
 
 import './index.scss';
 type Props = {
@@ -35,11 +36,12 @@ const Dialogbox: React.FC<Props> = ({
   text,
   myVar
 }) => {
+  const { t } = useTranslation<string>();
   return (
     <Dialog open={isOpen} className={"crx-confirm-modal " + className}>
       <DialogTitle>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6">{title || 'Please confirm'}</Typography>
+          <Typography variant="h6">{title || t('Please_confirm')}</Typography>
         </div>
         <div className="crossModal"  onClick={() => {setIsOpen(false)}}>
           <i className="icon icon-cross2 croseIcon"></i>
@@ -50,12 +52,11 @@ const Dialogbox: React.FC<Props> = ({
           children
         ) : (
           <Typography variant="subtitle2">{content ? content : <span>
-            You are attempting to close the {(text !== undefined && text !== "" ? text : "modal dialog" )}. 
-            If you close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}, any changes you've made will not be saved. 
-            You will not be able to undo this action.
-            <br />
-            <br />
-            Are you sure you would like to close the {(text !== undefined && text !== "" ? "form" : "modal dialog" )}?
+            {t("You_are_attempting_to")} {t("close")} {(text !== undefined && text !== "" ? `${t("the")} ${text}` : t("the_modal_dialog") )}. 
+            {t("If_you_close_the_modal_dialog,")} 
+            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <br /> <br />
+            {t("Are_you_sure_you_would_like_to")} {t("close")} {t("the")} {(text !== undefined && text !== "" ? `${t("the")} ${text}` : t("the_modal_dialog") )}?
           </span>
           }</Typography>
         )}

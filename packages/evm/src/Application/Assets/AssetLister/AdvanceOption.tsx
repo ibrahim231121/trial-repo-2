@@ -4,6 +4,7 @@ import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import { advancedSearchOptions } from "../utils/constants";
 import { dateOptions, basicDateDefaultValue } from "../../../utils/constant";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
+import { useTranslation } from "react-i18next";
 
 interface IOptions {
   value: string;
@@ -37,6 +38,7 @@ const AdvancedSearch: React.FC<Props> = ({
   dateOptionType,
   dateTimeDetail,
 }) => {
+  const { t } = useTranslation<string>();
   const selectRef = useRef<any>(null);
   const [selectsLength, setSelectsLength] = useState(1);
   const [showSearchCriteria, setShowSearchCriteria] = useState(false);
@@ -78,7 +80,7 @@ const AdvancedSearch: React.FC<Props> = ({
   }, []);
 
   const defaultSearchCriteria = {
-    value: "Please Select",
+    value: t("Please_Select"),
     key: "",
     _id: "0",
     usedBy: null,
@@ -279,11 +281,11 @@ const AdvancedSearch: React.FC<Props> = ({
               className="adVSelectBox"
               id={"select_" + i.toString()}
               value={
-                select.isUsed === true ? select.value : "Please Select"
+                select.isUsed === true ? select.value : t("Please_Select")
               }
               onChange={(e: any) => onSelectInputChange(e, i)}
               options={newOptions}
-              defaultValue="Please Select"
+              defaultValue={t("Please_Select")}
             />
           </CRXColumn>
           {select?.isUsed && (
@@ -294,7 +296,7 @@ const AdvancedSearch: React.FC<Props> = ({
                   className="adVInputBox"
                   onChange={(e: any) => onInputChange(e, i)}
                   value={select?.inputValue}
-                  placeholder={`Search by ${select.value}`}
+                  placeholder={`${t("Search_by")} ${select.value}`}
                   autoComplete="off"
                 />
 
@@ -313,7 +315,7 @@ const AdvancedSearch: React.FC<Props> = ({
     <div className="advanceSerachContainer">
       <CRXRows container spacing={2}>
         <CRXColumn item xs={3}>
-          <label className="dateTimeLabel">Date and Time</label>
+          <label className="dateTimeLabel">{t("Date_and_Time")}</label>
         </CRXColumn>
         <CRXColumn item xs={9}>
           <DateTimeComponent
@@ -336,7 +338,7 @@ const AdvancedSearch: React.FC<Props> = ({
           disabled={showSearchCriteria ? false : true}
         >
           <i className="fa fa-plus"></i>{" "}
-          <span className="btn-text">Add search criteria </span>
+          <span className="btn-text">{t("Add_search_criteria")} </span>
         </button>
         <button
           className="resetAdvancedSearchBtn"
@@ -344,7 +346,7 @@ const AdvancedSearch: React.FC<Props> = ({
           disabled={showSearchCriteria ? false : true}
         >
           <span className="btn-text" onClick={() => reset()}>
-            Reset advanced search
+          {t("Reset_advanced_search")}
           </span>
         </button>
       </div>
@@ -356,7 +358,7 @@ const AdvancedSearch: React.FC<Props> = ({
         onClick={(e: any) => AdvancedSearch(e)}
         disabled={disableButton}
       >
-        <span className="btn-text">Advanced Search</span>
+        <span className="btn-text">{t("Advanced_Search")}</span>
       </CRXButton>
     </div>
   );

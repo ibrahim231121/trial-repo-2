@@ -176,7 +176,7 @@ const Station: React.FC = () => {
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
-      label: `${t('ID')}`,
+      label: t('ID'),
       id: 'id',
       align: 'right',
       dataComponent: () => null,
@@ -189,7 +189,7 @@ const Station: React.FC = () => {
       maxWidth: '100'
     },
     {
-      label: `${t('Station')}`,
+      label: t('Station'),
       id: 'name',
       align: 'left',
       // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
@@ -202,7 +202,7 @@ const Station: React.FC = () => {
       maxWidth: '200'
     },
     {
-      label: `${t('Address')}`,
+      label: t('Address'),
       id: 'address',
       align: 'left',
       dataComponent: (e: string) => textDisplay(e, ''),
@@ -342,7 +342,7 @@ const Station: React.FC = () => {
         className='createUser CrxCreateUser'
         style={{ minWidth: '680px' }}
         maxWidth='xl'
-        title='Create Station'
+        title={t('Create Station')}
         modelOpen={open}
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}></CRXModalDialog>
@@ -358,8 +358,8 @@ const Station: React.FC = () => {
           }
           toolBarButton={
             <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
-            Create Station
-          </CRXButton>
+              {t('Create Station')}
+            </CRXButton>
         }
           getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}
           showToolbar={true}

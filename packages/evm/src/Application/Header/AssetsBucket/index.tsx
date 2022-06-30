@@ -97,7 +97,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     (state: RootState) => state.assetBucket.isDuplicateFound
   );
   const [selectedItems, setSelectedItems] = React.useState<assetRow[]>([]);
-  const [selectedActionRow, setSelectedActionRow] = React.useState<assetRow>();
   const [rows, setRows] = React.useState<AssetBucket[]>(assetBucketData);
   const { t } = useTranslation<string>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
@@ -146,7 +145,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
-
+    setCheckedAll(false)
   }, [])
 
 
@@ -154,7 +153,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
     if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined && isDuplicateFound !== false) {
       setAttention({
-        msg: "An asset you are attempting to add to the asset bucket has already been added.",
+        msg: t("An_asset_you_are_attempting_to_add_to_the_asset_bucket_has_already_been_added."),
       });
       setShowMessageClx("bucketMessageShow")
       setShowAttention(true);
@@ -164,7 +163,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }, [isDuplicateFound])
 
   useEffect(() => {
+    console.log("assetBucketData ", assetBucketData)
     setRows(assetBucketData);
+    assetBucketData.forEach((x:any) => {
+      isChecked[x.assetId]=false;
+    })
+    setCheckedAll(false)
     let local_assetBucket: any = localStorage.getItem("assetBucket");
     if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
 
@@ -178,7 +182,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
     else if (assetBucketData.length > prevCount) {
       toasterRef.current.showToaster({
-        message: "You have added the selected assets to the asset bucket.",
+        message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
         variant: "success",
         duration: 7000,
 
@@ -188,8 +192,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       const totalRemoved = prevCount - assetBucketData.length;
 
       toasterRef.current.showToaster({
-        message: `${totalRemoved} ${totalRemoved > 1 ? "assets" : "asset"
-          } removed the asset bucket`,
+        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
         variant: "success",
         duration: 7000,
 
@@ -234,7 +237,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         </span>
         <CRXTooltip
           className="bucketIcon"
-          title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
+          title={t("Asset_Bucket_can_be_used_to_build_cases_and_do_one_action_on_many_assets_at_the_same_time.")}
           iconName={"fas " + bucketIconByState}
           placement="left"
           arrow={true}
@@ -248,7 +251,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       <CRXBadge itemCount={totalAssetBucketCount} color="primary">
         <CRXTooltip
           className="bucketIcon"
-          title="Asset Bucket can be used to build cases and do one action on many assets at the same time."
+          title={t("Asset_Bucket_can_be_used_to_build_cases_and_do_one_action_on_many_assets_at_the_same_time.")}
           iconName={"fas " + bucketIconByState}
           placement="left"
           arrow={true}
@@ -325,7 +328,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
-      label: `${t("ID")}`,
+      label: t("ID"),
       id: "id",
       align: "right",
       dataComponent: () => null,
@@ -338,7 +341,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       maxWidth: "100",
     },
     {
-      label: `${t("AssetThumbnail")}`,
+      label: t("Asset_Thumbnail"),
       id: "assetType",
       align: "left",
       dataComponent: thumbTemplate,
@@ -357,7 +360,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     //   maxWidth: "100",
     // },
     {
-      label: `${t("Categories")}`,
+      label: t("Category"),
       id: "categories",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
@@ -412,7 +415,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (sucess.msg !== undefined && sucess.msg !== "") {
       let notificationMessage: NotificationMessage = {
-        title: "Asset Bucket",
+        title: t("Asset_Bucket"),
         message: sucess.msg,
         type: "success",
         date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
@@ -424,7 +427,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (attention.msg !== undefined && attention.msg !== "") {
       let notificationMessage: NotificationMessage = {
-        title: "Asset Bucket",
+        title: t("Asset_Bucket"),
         message: attention.msg,
         type: "info",
         date: moment(moment().toDate()).local().format("YYYY / MM / DD HH:mm:ss")
@@ -442,7 +445,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
       if (fileName.length < 3 || fileName.length > 128) {
         toasterRef.current.showToaster({
-          message: "Minimum 3 and maximum 128 characters are allowed", variant: "error", duration: 7000, clearButtton: true
+          message: t("Minimum_3_and_maximum_128_characters_are_allowed"), variant: "error", duration: 7000, clearButtton: true
         });
         return false;
       }
@@ -450,7 +453,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         var pattern = new RegExp("^([A-Z]|[a-z]){1}[A-Za-z0-9._-]*$");
         if (!pattern.test(fileName)) {
           toasterRef.current.showToaster({
-            message: "Only alphabets, digits and _, - are allowed. Must start with an alphabet only", variant: "error", duration: 7000, clearButtton: true
+            message: t("Only_alphabets_digits_and_,_-_are_allowed._Must_start_with_an_alphabet_only"), variant: "error", duration: 7000, clearButtton: true
           });
           return false;
         }
@@ -591,7 +594,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     if ((milliseconds - firstExecution) > interval) {
       firstExecution = milliseconds;
       toasterRef.current.showToaster({
-        message: "File(s) failed to upload.", variant: "error", duration: 7000, clearButtton: true
+        message: t("File(s)_failed_to_upload."), variant: "error", duration: 7000, clearButtton: true
       });
     }
   }
@@ -704,7 +707,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (totalFilePer === 100) {
       toasterRef.current.showToaster({
-        message: "File(s) uploaded", variant: "success", duration: 7000, clearButtton: true
+        message: t("File(s) uploaded"), variant: "success", duration: 7000, clearButtton: true
       });
       if (isCheckTrue) {
         setIsMainProgressBarOpen(false);
@@ -753,7 +756,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (onAddEvidence) {
       toasterRef.current.showToaster({
-        message: "Asset saved", variant: "success", duration: 7000, clearButtton: true
+        message: t("Asset_saved"), variant: "success", duration: 7000, clearButtton: true
       });
       setIsMetaDataOpen(false);
       setShowUploadAttention(false)
@@ -930,7 +933,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     const resp = await fetch(FILE_SERVICE_URL + `?id=` + file.uploadedFileId, requestOptions);
     if (resp.ok) {
       toasterRef.current.showToaster({
-        message: "File has been removed successfully", variant: "success", duration: 7000, clearButtton: true
+        message: t("File_has_been_removed_successfully"), variant: "success", duration: 7000, clearButtton: true
       });
     }
     else {
@@ -965,29 +968,34 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [activeScreen, setActiveScreen] = useState<number>(0);
   const checkBoxRef = useRef(null)
   const selectAssetFromList = (e: any, row: assetRow) => {
-    setSelectedActionRow(row)
+    if(!e.target.checked)
+      setCheckedAll(false)
     setChecked({ ...isChecked, [row.assetId]: e.target.checked });
-
+    if(e.target.checked)
+      setSelectedItems((prevArr) => [...prevArr, row]);
+    else
+      setSelectedItems((prevArr) => prevArr.filter((e) => e.id !== row.id));
   }
 
-  const selectAllAssetFromList = (e: any, assetBucketData: AssetBucket[]) => {
-
+  const selectAllAssetFromList = (e: any) => {
+    
     setCheckedAll(e.target.checked == true ? true : false)
-
+    rows.forEach((row: AssetBucket, index: number) => {
+      isChecked[row.assetId] = e.target.checked;
+    })
+    setSelectedItems([])
   }
-
 
   useEffect(() => {
 
     const setSelectFill = [...selectedItems];
     assetBucketData.forEach((element: any) => {
-      setSelectedActionRow(element)
       setSelectFill.push(element);
     })
-
-    isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
-
+    if(isCheckedAll) 
+        setSelectedItems(setSelectFill)
   }, [isCheckedAll])
+
   return (
     <>
 
@@ -1019,7 +1027,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                     >
                       <CRXRows container spacing={0}>
                         <CRXColumn item xs={11} className="bucketPanelTitle">
-                          <label>Your Asset Bucket</label>
+                          <label>{t("Your_Asset_Bucket")}</label>
                         </CRXColumn>
                         <CRXColumn item xs={1} className="topColumn">
                           <i className="icon icon-cross2" onClick={() => setIsOpen(false)}></i>
@@ -1056,7 +1064,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             setShowSucess={setShowUploadAttention}
                             alertType="inline"
                             persist={true}
-                            children={<div className="check"><div className="attentionPera">Please add metadata to finish saving your uploaded files</div>
+                            children={<div className="check"><div className="attentionPera">{t("Please_add_metadata_to_finish_saving_your_uploaded_files")}</div>
                               <div className="btn-center">
                                 <CRXButton
                                   id="metdaModalButton"
@@ -1066,7 +1074,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                   variant='contained'
 
                                 >
-                                  Add metadata
+                                  {t("Add_metadata")}
                                 </CRXButton>
                               </div>
                             </div>
@@ -1077,7 +1085,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                         <CRXModalDialog
                           className="add-metadata-window"
                           maxWidth="xl"
-                          title="Choose asset metadata edited-on-purpose"
+                          title={t("Choose_asset_metadata_edited-on-purpose")}
                           cancelButtonTxt="Cancel"
                           showSticky={false}
                           modelOpen={isModalOpen}
@@ -1096,13 +1104,13 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                         </CRXModalDialog>
                       </CRXRows>
                       {!isFileUploadHide ?
-                        <Restricted moduleId={26}>
+                        <Restricted moduleId={1}>
                           <div className="uploadContent">
                             <div className="iconArea">
                               <i className="fas fa-layer-plus"></i>
                             </div>
                             <div className="textArea">
-                              Drag and drop an <b>asset</b> to the Asset Bucket to add, or use the
+                              {t("Drag_and_drop_an")} <b>{t("asset")}</b> {t("to_the_Asset_Bucket_to_add_or_use_the")}
                               <br />
                               <div>
                                 <input
@@ -1114,7 +1122,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
                                 />
                                 <label htmlFor="upload-Button-file">
-                                  <a className="textFileBrowser">file browser</a>
+                                  <a className="textFileBrowser">{t("file_browser")}</a>
                                 </label>
                               </div>
                             </div>
@@ -1129,7 +1137,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           <div className="crxProgressbarBucket mainProgressBar">
                             <CRXProgressBar
                               id="raw"
-                              loadingText={fileCount > 1 ? fileCount + " assets " + "(" + totalFileSize + ")" : fileCount + " asset " + "(" + totalFileSize + ")"}
+                              loadingText={fileCount > 1 ? fileCount + ` ${t("assets")} ` + "(" + totalFileSize + ")" : fileCount + ` ${t("asset")} ` + "(" + totalFileSize + ")"}
                               value={totalFilePer}
                               error={mainProgressError}
                               maxDataSize={true}
@@ -1140,7 +1148,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                         </>}
                       {
                         uploadInfo.filter(x => x.uploadInfo.removed != true).length > 0 && fileCount > 0 && isSubProgressBarOpen && <CrxAccordion
-                          title="Upload Details"
+                          title={t("Upload_Details")}
                           id="accorIdx2"
                           className="crx-accordion crxAccordionBucket"
                           ariaControls="Content2"
@@ -1159,12 +1167,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             <CRXCheckBox
                               inputRef={checkBoxRef}
                               checked={isCheckedAll}
-                              onChange={(e: any) => selectAllAssetFromList(e, assetBucketData)}
+                              onChange={(e: any) => selectAllAssetFromList(e)}
                               name="selectAll"
                               className="bucketListCheckedAll"
                               lightMode={true}
-                            /><span className="selectAllText">Select all</span>
-                            View on assets bucket page <i className="icon icon-arrow-up-right2"></i>{" "}
+                            /><span className="selectAllText">{t("Select_All")}</span>
+                            {t("View_on_assets_bucket_page")} <i className="icon icon-arrow-up-right2"></i>{" "}
                           </div>
                           <div className="bucketScroll">
                             <div className="bucketList" id="assetBucketLists">
@@ -1190,7 +1198,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                       </div>
                                     </div>
                                     <div className="bucketActionMenu">{<BucketActionMenu
-                                      row={selectedActionRow}
+                                      row={x}
                                       setSelectedItems={setSelectedItems}
                                       selectedItems={selectedItems} />
                                     }
@@ -1202,7 +1210,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           </div>
                         </>
                       ) : (
-                        <div className="bucketContent">Your Asset Bucket is empty.</div>
+                        <div className="bucketContent">{t("Your_Asset_Bucket_is_empty.")}</div>
                       )
                       }
 
@@ -1217,20 +1225,20 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       </CRXDrawer>
       <CRXConfirmDialog
         className="crx-unblock-modal"
-        title="Please confirm"
+        title={t("Please_confirm")}
         setIsOpen={setIsOpenConfirm}
         onConfirm={onConfirm}
         isOpen={isOpenConfirm}
-        primary="Yes, remove"
-        secondary="No, do not remove"
+        primary={t("Yes_remove")}
+        secondary={t("No_do_not_remove")}
         maxWidth="sm"
       >
         <div className="crxUplockContent">
           <div className='uploadCancelText'>
-            You are attempting to <strong>remove</strong> the file <strong>( {fileToRemove} )</strong> asset from this upload.  Once you remove it, you will not be able to undo this action.
+          {t("You_are_attempting_to")} <strong>{t("remove")}</strong> {t("the_file")} <strong>( {fileToRemove} )</strong> {t("asset_from_this_upload.")}  {t("Once_you_remove_it")}, {t("You_will_not_be_able_to_undo_this_action.")}
           </div>
           <div className='uploadCancelBottom'>
-            Are you sure you would to <strong>remove</strong>  this asset from this upload?
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("remove")}</strong> {t("this_asset_from_this_upload?")}
           </div>
         </div>
 

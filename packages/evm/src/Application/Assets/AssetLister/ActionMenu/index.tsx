@@ -19,6 +19,7 @@ import ShareAsset from '../ShareAsset/ShareAsset';
 import { RootState } from "../../../../Redux/rootReducer";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
+import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
 
 type Props = {
@@ -49,6 +50,7 @@ export type securityDescriptorType = {
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg }) => {
 
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
   const assetBucketData: AssetBucket[] = useSelector(
@@ -160,7 +162,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
       <CRXModalDialog
         maxWidth='lg'
-        title={"Assign User"}
+        title={t("Assign_User")}  
         className={'CRXModal'}
         modelOpen={openAssignUser}
         onClose={() => setOpenAssignUser(false)}
@@ -180,7 +182,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       </CRXModalDialog>
       <CRXModalDialog
         maxWidth='lg'
-        title={"Modify Retention"}
+        title={t("Modify_Retention")}
         className={'CRXModal'}
         modelOpen={openManageRetention}
         onClose={() => setOpenManageRetention(false)}
@@ -200,7 +202,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       </CRXModalDialog>
       <CRXModalDialog
         maxWidth='lg'
-        title={"Share Asset"}
+        title={t("Share_Asset")}
         className={'CRXModal'}
         modelOpen={openAssetShare}
         onClose={() => setOpenAssetShare(false)}
@@ -247,7 +249,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                       : "crx-menu-list disabledItem"
                   }
                 >
-                  Add to asset bucket
+                  {t("Add_to_asset_bucket")}
                 </div>
               </div>
             </SecurityDescriptor>
@@ -272,7 +274,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Assign User</div>
+                <div className="crx-menu-list">{t("Assign_User")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -280,11 +282,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">Modify Retention</div>
-              </div>
+          <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+              <div className="crx-menu-icon"></div>
+              <div className="crx-menu-list">{t("Modify_Retention")}</div>
+            </div>
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
@@ -297,7 +299,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">Edit Category and Form</div>
+                  <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
                 </div>
               </SecurityDescriptor>
             </Restricted>
@@ -310,7 +312,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">Categorize</div>
+                  <div className="crx-menu-list">{t("Categorize")}</div>
                 </div>
               </SecurityDescriptor>
             </Restricted>
@@ -324,7 +326,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-envelope fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Email</div>
+                <div className="crx-menu-list">{t("Email")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -337,10 +339,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   <SubMenu label="Export">
-                    <MenuItem>File</MenuItem>
-                    <MenuItem>Metadata</MenuItem>
-                    <MenuItem>Evidence overlaid video</MenuItem>
-                    <MenuItem>Metadata overlaid video</MenuItem>
+                    <MenuItem>{t("File")}</MenuItem>
+                    <MenuItem>{t("Metadata")}</MenuItem>
+                    <MenuItem>{t("Evidence_overlaid_video")}</MenuItem>
+                    <MenuItem>{t("Metadata_overlaid_video")}</MenuItem>
                   </SubMenu>
                 </div>
               </div>
@@ -355,7 +357,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-link fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Link asset</div>
+                <div className="crx-menu-list">{t("Link_asset")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -367,7 +369,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               <div className="crx-meu-content">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
-                  Link to this group
+                  {t("Link_to_this_group")}
                 </div>
               </div>
             </SecurityDescriptor>
@@ -381,7 +383,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-external-link-square fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Move asset</div>
+                <div className="crx-menu-list">{t("Move_asset")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -392,7 +394,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
-                  Move to this group
+                  {t("Move_to_this_group")}
                 </div>
               </div>
             </SecurityDescriptor>
@@ -407,7 +409,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Restrict access</div>
+                <div className="crx-menu-list">{t("Restrict_access")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -420,7 +422,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Share Asset</div>
+                <div className="crx-menu-list">{t("Share_Asset")}</div>
               </div>
               {/* </SecurityDescriptor> */}
             </Restricted>

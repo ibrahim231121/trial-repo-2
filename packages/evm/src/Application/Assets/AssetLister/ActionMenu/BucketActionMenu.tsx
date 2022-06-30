@@ -12,10 +12,11 @@ import { removeAssetFromBucketActionCreator } from "../../../../Redux/AssetActio
 import { useDispatch } from "react-redux";
 import { assetRow } from "./types";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   selectedItems: assetRow[];
-  row?: assetRow;
+  row: assetRow;
   setSelectedItems?: any
 };
 
@@ -25,19 +26,21 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
   const dispatch = useDispatch()
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
 
+  const { t } = useTranslation<string>();
   const removeFromAssetBucket = () => {
-    if (row) {
+    //if (row) {
       const find = selectedItems.findIndex((selected: assetRow) => selected.id === row.id)
+      console.log("Find ", find)
       const data = find === -1 ? row : selectedItems
       dispatch(removeAssetFromBucketActionCreator(data))
       if (find !== -1) {
         setSelectedItems([])
       }
-    }
-    else {
-      dispatch(removeAssetFromBucketActionCreator(selectedItems))
-      setSelectedItems([])
-    }
+    // }
+    // else {
+    //   dispatch(removeAssetFromBucketActionCreator(selectedItems))
+    //   setSelectedItems([])
+    // }
   }
 
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
@@ -66,7 +69,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket} >
           <div className="crx-menu-icon"></div>
           <div className="crx-menu-list">
-            Remove from asset bucket
+          {`${t("Remove_from_asset_bucket")}`}
           </div>
         </div>
       </MenuItem>
@@ -76,7 +79,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-clipboard-list fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Categorize
+          {`${t("Categorize")}`}
           </div>
         </div>
       </MenuItem>
@@ -86,7 +89,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list">
-            Set as primary asset
+          {`${t("Set_as_primary_asset")}`}
           </div>
         </div>
       </MenuItem>
@@ -96,7 +99,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list">
-            Assign to case
+          {`${t("Assign_to_case")}`}
           </div>
         </div>
       </MenuItem>
@@ -106,7 +109,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-user-tag fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Assign user
+            {`${t("Assign_User")}`}
           </div>
         </div>
       </MenuItem>
@@ -116,7 +119,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list">
-            Modify Retention
+          {`${t("Modify_Retention")}`}
           </div>
         </div>
       </MenuItem>
@@ -126,7 +129,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list">
-            TBD
+          {`${t("TBD")}`}
           </div>
         </div>
       </MenuItem>
@@ -136,7 +139,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-envelope fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Email
+          {`${t("Email")}`}
           </div>
         </div>
       </MenuItem>
@@ -147,10 +150,10 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
           </div>
           <div className="crx-menu-list">
             <SubMenu label="Export">
-              <MenuItem>File</MenuItem>
-              <MenuItem>Metadata</MenuItem>
-              <MenuItem>Evidence overlaid video</MenuItem>
-              <MenuItem>Metadata overlaid video</MenuItem>
+              <MenuItem>{`${t("File")}`}</MenuItem>
+              <MenuItem>{`${t("Metadata")}`}</MenuItem>
+              <MenuItem>{`${t("Evidence_overlaid_video")}`}</MenuItem>
+              <MenuItem>{`${t("Metadata_overlaid_video")}`}</MenuItem>
             </SubMenu>
           </div>
         </div>
@@ -161,7 +164,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-photo-video fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Open in Getac AI tools App
+            {`${t("Open_in_Getac_AI_tools_App")}`}
           </div>
         </div>
       </MenuItem>
@@ -171,7 +174,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-link fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Link asset
+            {`${t("Link_asset")}`}
           </div>
         </div>
       </MenuItem>
@@ -181,7 +184,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list disabledItem">
-            Link to this group
+          {`${t("Link_to_this_group")}`}
           </div>
         </div>
       </MenuItem>
@@ -191,7 +194,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-external-link-square fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Move asset
+          {`${t("Move_asset")}`}
           </div>
         </div>
       </MenuItem>
@@ -201,7 +204,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
 
           </div>
           <div className="crx-menu-list disabledItem">
-            Move to this group
+          {`${t("Move_to_this_group")}`}
           </div>
         </div>
       </MenuItem>
@@ -211,7 +214,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
             <i className="far fa-user-lock fa-md"></i>
           </div>
           <div className="crx-menu-list">
-            Restrict access
+          {`${t("Restrict_access")}`}
           </div>
         </div>
       </MenuItem>

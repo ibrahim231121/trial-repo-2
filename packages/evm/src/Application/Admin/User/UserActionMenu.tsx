@@ -16,6 +16,7 @@ import { NotificationMessage } from "../../Header/CRXNotifications/notifications
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   selectedItems?: any;
@@ -30,7 +31,7 @@ const UserActionMenu: React.FC<Props> = ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [title, setTitle] = React.useState<string>("");
@@ -41,16 +42,16 @@ const UserActionMenu: React.FC<Props> = ({
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
   const history = useHistory()
   const unlockUser = () => {
-    setTitle("Unlock user account");
-    setPrimary("Yes, unlock user account");
-    setSecondary("No, do not unlock");
+    setTitle(t("Unlock_user_account"));
+    setPrimary(t("Yes_unlock_user_account"));  
+    setSecondary(t("No_do_not_unlock"));
     setIsOpen(true);
     setModalType("unlock");
   };
   const deactivateUser = () => {
-    setTitle("Deactivate user account");
-    setPrimary("Yes, deactivate user account");
-    setSecondary("No, do not deactivate");
+    setTitle(t("Deactivate_user_account"));
+    setPrimary(t("Yes_deactivate_user_account"));
+    setSecondary(t("No_do_not_deactivate"));
     setIsOpen(true);
     setModalType("deactivate");
   };
@@ -59,7 +60,7 @@ const UserActionMenu: React.FC<Props> = ({
       case "unlock": {
         if (isSuccess) {
           showToastMsg({
-            message: "You have unlocked the user account.",
+            message: t("You_have_unlocked_the_user_account."),
             variant: "success",
             duration: 7000,
           });
@@ -68,7 +69,7 @@ const UserActionMenu: React.FC<Props> = ({
         } else {
           setShowAlert(true);
           setResponseError(
-            "We're sorry. The account was unable to be unlocked. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
         break;
@@ -76,7 +77,7 @@ const UserActionMenu: React.FC<Props> = ({
       case "deactivate": {
         if (isSuccess) {
           showToastMsg({
-            message: "You have deactivated the user account.",
+            message: t("You_have_deactivated_the_user_account"),
             variant: "success",
             duration: 7000,
           });
@@ -85,7 +86,7 @@ const UserActionMenu: React.FC<Props> = ({
         } else {
           setShowAlert(true);
           setResponseError(
-            "We're sorry. The account was unable to be deactivated. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
         break;
@@ -136,7 +137,7 @@ const UserActionMenu: React.FC<Props> = ({
   React.useEffect(() => {
     if (responseError !== undefined && responseError !== "") {
       let notificationMessage: NotificationMessage = {
-        title: "Assets Action Menu",
+        title: t("Assets_Action_Menu"),
         message: responseError,
         type: "error",
         date: moment(moment().toDate())
@@ -189,15 +190,13 @@ const UserActionMenu: React.FC<Props> = ({
             )}
             <div className="crxUplockContent">
               <p>
-                You are attempting to <b>{modalType}</b> the following user
-                account:
+              {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}
               </p>
               <p>
                 {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
               </p>
               <p>
-                Please confirm if you would like to {modalType} this user
-                account.
+                {t("Please_confirm_if_you_would_like_to")} {modalType} {t("this_user_account.")}
               </p>
             </div>
           </>
@@ -222,7 +221,7 @@ const UserActionMenu: React.FC<Props> = ({
               <div className="crx-menu-icon">
                 <i className="fas fa-pen"></i>
               </div>
-              <div className="crx-menu-list">Edit user</div>
+              <div className="crx-menu-list">{t("Edit_user")}</div>
             </div>
           </Restricted>
         </MenuItem>
@@ -233,7 +232,7 @@ const UserActionMenu: React.FC<Props> = ({
                 <div className="crx-menu-icon">
                   <i className="fas fa-lock"></i>
                 </div>
-                <div className="crx-menu-list">Unlock account</div>
+                <div className="crx-menu-list">{t("Unlock_account")}</div>
               </div>
             </Restricted>
           </MenuItem>
@@ -245,7 +244,7 @@ const UserActionMenu: React.FC<Props> = ({
             <Restricted moduleId={11}>
               <div className="crx-meu-content" onClick={deactivateUser}>
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">Deactivate account</div>
+                <div className="crx-menu-list">{t("Deactivate_account")}</div>
               </div>
             </Restricted>
           </MenuItem>

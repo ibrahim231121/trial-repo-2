@@ -14,6 +14,7 @@ import { BASE_URL_UNIT_SERVICE, EVIDENCE_SERVICE_URL } from '../../../utils/Api/
 import { getStationsInfoAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import Cookies from 'universal-cookie';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   selectedItems?: any;
@@ -26,7 +27,7 @@ const cookies = new Cookies();
 const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = React.useState<boolean>(false);
@@ -40,27 +41,27 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   const [stationName, setStationName] = useState<string>('')
 
   const unlockUser = () => {
-    setTitle('Unlock user account');
-    setPrimary('Yes, unlock user account');
-    setSecondary('No, do not unlock');
+    setTitle(t("Unlock_user_account"));
+    setPrimary(t("Yes_unlock_user_account"));  
+    setSecondary(t("No_do_not_unlock"));
     setIsOpen(true);
-    setModalType('unlock');
+    setModalType(t("unlock"));
   };
   const deactivateUser = () => {
-    setTitle('Deactivate user account');
-    setPrimary('Yes, deactivate user account');
-    setSecondary('No, do not deactivate');
+    setTitle(t("Deactivate_user_account"));
+    setPrimary(t("Yes_deactivate_user_account"));
+    setSecondary(t("No_do_not_deactivate"));
     setIsOpen(true);
-    setModalType('deactivate');
+    setModalType(t("deactivate"));
   };
   const dispatchNewCommand = (e: any) => {
     switch (modalType) {
       case 'unlock': {
-        showToastMsg({ message: 'You have unlocked the user account.', variant: 'success', duration: 7000 });
+        showToastMsg({ message: t("You_have_unlocked_the_user_account."), variant: 'success', duration: 7000 });
         break;
       }
       case 'deactivate': {
-        showToastMsg({ message: 'You have deactivated the user account.', variant: 'success', duration: 7000 });
+        showToastMsg({ message: t("You_have_deactivated_the_user_account"), variant: 'success', duration: 7000 });
         break;
       }
       default: {
@@ -104,14 +105,14 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         if (res.ok) {
           setIsOpenDelete(false);
           toasterRef.current.showToaster({
-            message: "Station deleted", variant: "success", duration: 7000, clearButtton: true
+            message: t("Station_deleted"), variant: "success", duration: 7000, clearButtton: true
           });
           dispatch(getStationsInfoAsync());
         }
         else //if (res.status == 500) {
           setAlert(true);
         setMessage(
-          "We're sorry. The station was unable to be deleted. Please retry or contact your System Administrator."
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
         );
       })
       .catch(function (error) {
@@ -149,7 +150,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         let assets = await isStationExistsInAssets();
         if (units > 0 || assets > 0) {
           setAlert(true);
-          setMessage("The station can't be deleted, please check for dependent units and assets")
+          setMessage(t("The_station_cant_be_deleted__please_check_for_dependent_units_and_assets"))
         }
         else {
           await deleteStation();
@@ -175,11 +176,11 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   }
 
   const openStationDeleteForm = () => {
-    setTitle("Delete station");
-    setModalType("delete");
+    setTitle(t("Delete_station"));
+    setModalType(t("delete"));
     setIsOpenDelete(true);
-    setPrimary("Yes");
-    setSecondary("No");
+    setPrimary(t("Yes"));
+    setSecondary(t("No"));
     setAlert(false);
   };
 
@@ -212,12 +213,12 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         {
           <div className='crxUplockContent'>
             <p>
-              You are attempting to <b>{modalType}</b> the following user account:
+            {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}:
             </p>
             <p>
               {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
             </p>
-            <p>Please confirm if you would like to {modalType} this user account.</p>
+            <p>{t("Please_confirm_if_you_would_like_to")} {modalType} {t("this_user_account.")}</p>
           </div>
         }
       </CRXConfirmDialog>
@@ -239,9 +240,9 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             setShowSucess={() => null}
           /> */}
           <div className='stationDeleteBody'>
-            <div className="_station_delete_pera _station_delete_body_style">You are attempting to delete the station <strong>`{stationName}`</strong>. You will not be able to undo this action.</div>
+            <div className="_station_delete_pera _station_delete_body_style">{t("You_are_attempting_to_delete_the_station")} <strong>`{stationName}`</strong>. {t("You_will_not_be_able_to_undo_this_action.")}</div>
             
-            <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to delete the station?</div>
+            <div className="_station_delete_note _station_delete_body_style">{t("Are_you_sure_you_would_like_to_delete_the_station?")}</div>
           </div>
           </>
 
@@ -267,7 +268,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
                 <div className='crx-menu-icon'>
                   <i className='fas fa-pen'></i>
                 </div>
-                <div className='crx-menu-list'>Edit station</div>
+                <div className='crx-menu-list'>{t("Edit_station")}</div>
               </div>
 
             </Restricted>
@@ -279,7 +280,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
                 <div className='crx-menu-icon'>
                   <i className='fas fa-trash'></i>
                 </div>
-                <div className='crx-menu-list'>Delete station</div>
+                <div className='crx-menu-list'>{t("Delete_station")}</div>
               </div>
 
             </Restricted>
@@ -302,7 +303,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
               <div className='crx-menu-icon'>
                 <i className='fas fa-folder-open'></i>
               </div>
-              <div className='crx-menu-list'>View default unit templates</div>
+              <div className='crx-menu-list'>{t("View_default_unit_templates")}</div>
             </div>
           </MenuItem>
         </Menu>

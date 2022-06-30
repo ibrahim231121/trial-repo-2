@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form } from 'formik';
 import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
+import { useTranslation } from "react-i18next";
 
 type CancelConfirmFormProps = {
   isCategoryEmpty: boolean;
@@ -23,7 +24,7 @@ interface FormValues {}
 const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const initialValues: FormValues = {};
-
+  const { t } = useTranslation<string>();
   React.useEffect(() => {
     props.setModalTitle('Please confirm');
     props.setIndicateTxt(false);
@@ -83,17 +84,17 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
         <Form>
           <div className='modalContentText'>
             <div className='cancelConfrimText'>
-              You are attempting to <strong>close</strong> the modal dialog. If you close the modal dialog, any changes
-              you've made will not be saved. You will not be able to undo this action.{' '}
+              {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the_modal_dialog")} {t("If_you_close_the_modal_dialog,")}  
+              {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}{' '}
             </div>
           </div>
           <div className='modalBottomText modalBottomTextClose'>
-            Are you sure you would like to <strong>close</strong> the modal dialog?
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_modal_dialog")}?
           </div>
           <div className='cancelForm'>
             <div className='buttonContainer'>
               <CRXButton type='submit' className='primeryBtn'>
-                Yes, close
+              {t("Yes")}, {t("close")}
               </CRXButton>
             </div>
             <div className='buttonContainer'>
@@ -102,7 +103,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
                 color='secondary'
                 variant='contained'
                 className='cancelButtonCate secondary'>
-                No, do not close
+                  {t("No,_do_not_close")}
               </CRXButton>
             </div>
           </div>

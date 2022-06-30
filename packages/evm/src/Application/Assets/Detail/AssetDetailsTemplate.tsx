@@ -32,10 +32,13 @@ import { hexToRgb } from "@material-ui/core";
 import { RestorePageSharp } from "@material-ui/icons";
 import { string } from "yup/lib/locale";
 import { useHistory } from "react-router";
-import RestrictAccessDialogue from "../AssetLister/RestrictAccessDialogue";
+import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
+import { useTranslation } from "react-i18next";
+
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
 const AssetDetailsTemplate = (props: any) => {
+  const { t } = useTranslation<string>();
   let tempgpsjson: any = [
     {
       "LAT": "24.813632",
@@ -168,7 +171,7 @@ const AssetDetailsTemplate = (props: any) => {
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
     
-    dispatch(enterPathActionCreator({ val: "Asset Detail: " + assetName }));
+    dispatch(enterPathActionCreator({ val: t("Asset Detail: ") + assetName }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
   }, []);
@@ -326,9 +329,9 @@ const AssetDetailsTemplate = (props: any) => {
   }
 
   const tabs = [
-    { label: "Information", index: 0 },
-    { label: "Map", index: 1 },
-    { label: "GROUPED AND RELATED ASSETS", index: 2 },
+    { label: t("Information"), index: 0 },
+    { label: t("Map"), index: 1 },
+    { label: t("GROUPED_AND_RELATED_ASSETS"), index: 2 },
   ];
   const refresh = () => {
     window.location.reload();
@@ -362,8 +365,8 @@ const AssetDetailsTemplate = (props: any) => {
   return (
     <div style={{ marginTop: "120px" }}>
       <p style={{ marginLeft: 50 }}>
-        <h5>Captured Date : {assetInfo.capturedDate}</h5>
-        <h5>Categories : {assetInfo.categoriesForm}</h5>
+        <h5>{t("Captured Date")} : {assetInfo.capturedDate}</h5>
+        <h5>{t("Categories")} : {assetInfo.categoriesForm}</h5>
       </p>
 
       <div className="CRXAssetDetail">
@@ -401,7 +404,7 @@ const AssetDetailsTemplate = (props: any) => {
                       : "crx-menu-list disabledItem"
                   }
                 >
-                  Add to asset bucket
+                  {t("Add_to_asset_bucket")}
                 </div>
               </div>
             </Restricted>
@@ -413,7 +416,7 @@ const AssetDetailsTemplate = (props: any) => {
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">Edit Category and Form</div>
+                  <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
                 </div>
               </Restricted>
             </MenuItem>
@@ -424,7 +427,7 @@ const AssetDetailsTemplate = (props: any) => {
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">Categorize</div>
+                  <div className="crx-menu-list">{t("Categorize")}</div>
                 </div>
               </Restricted>
             </MenuItem>
@@ -435,7 +438,7 @@ const AssetDetailsTemplate = (props: any) => {
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
-                <div className="crx-menu-list">Restrict access</div>
+                <div className="crx-menu-list">{t("Restrict_access")}</div>
               </div>
             </Restricted>
           </MenuItem>
@@ -474,36 +477,36 @@ const AssetDetailsTemplate = (props: any) => {
             <div className="tctContent">
               <CrxTabPanel value={value} index={0}>
                 <div className="tctown">
-                  <h1>Owners :</h1> <span>{assetInfo?.owners.join(',')}</span>
+                  <h1>{t("Owners")} :</h1> <span>{assetInfo.owners.join(',')}</span>
                 </div>
                 <div className="tctown">
-                  <h1>Unit :</h1> <span>{assetInfo?.unit}</span>
+                  <h1>{t("Unit")} :</h1> <span>{assetInfo.unit}</span>
                 </div>
                 <div className="tctown">
-                  <h1>CheckSum :</h1> <span>{assetInfo?.checksum}</span>{" "}
+                  <h1>{t("CheckSum")} :</h1> <span>{assetInfo.checksum}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Video Duration :</h1> <span>{assetInfo?.duration}</span>{" "}
+                  <h1>{t("Video_Duration")} :</h1> <span>{assetInfo.duration}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Size : </h1> <span>{assetInfo?.size} MB</span>
+                  <h1>{t("Size")} : </h1> <span>{assetInfo.size} MB</span>
                 </div>
                 <div className="tctown">
-                  <h1>Retention :</h1>
+                  <h1>{t("Retention")} :</h1>
                   <span>{assetInfo?.retention}</span>{" "}
                 </div>
                 <div className="tctown">
-                  <h1>Categories :</h1> <span>{assetInfo?.categories}</span>
+                  <h1>{t("Categories")} :</h1> <span>{assetInfo.categories}</span>
                 </div>
               </CrxTabPanel>
               <CrxTabPanel value={value} index={1}>
-                <div>Map</div>
+                <div>{t("Map")}</div>
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={2}>
 
                 <CrxAccordion
-                  title="GROUPED ASSETS"
+                  title={t("Grouped_Assets")}
                   id="accorIdx1"
                   className="crx-accordion"
                   ariaControls="Content1"

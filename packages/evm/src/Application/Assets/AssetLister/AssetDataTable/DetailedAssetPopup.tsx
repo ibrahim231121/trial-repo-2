@@ -133,7 +133,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
           </div>
           <div className="CRXPopupHeader">
             <CRXHeading className="DRPTitle" variant="h3">
-              {t("GroupedAssets")}
+              {t("Grouped_Assets")}
             </CRXHeading>
           </div>
           <div className="CRXPopupTableDiv">
@@ -147,7 +147,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                       onChange={(e:React.ChangeEvent<HTMLInputElement>) =>handleCheckAll(e)}
                     />
                   </td>
-                  <td className="CRXPopupTableCellTwo">{t("Select All")}</td>
+                  <td className="CRXPopupTableCellTwo">{t("Select_All")}</td>
                   <td className="CRXPopupTableCellThree"></td>
                   <td className="CRXPopupTableCellFour"></td>
                 </tr>

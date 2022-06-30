@@ -6,6 +6,7 @@ import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import moment from 'moment';
 import http from '../../../../../http-common';
+import { useTranslation } from "react-i18next";
 
 type SaveConfirmFormProps = {
   removedOption: any;
@@ -29,6 +30,8 @@ type SaveConfirmFormProps = {
 interface FormValues { }
 
 const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
+
+  const { t } = useTranslation<string>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [WarningMessage, setWarningMessage] = React.useState<string>('');
@@ -36,23 +39,20 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
 
   React.useEffect(() => {
-    props.setModalTitle('Please confirm');
+    props.setModalTitle(t("Please_confirm"));
     props.setIndicateTxt(false);
     props.setremoveClassName('crx-remove-category-form crxPleaseConfirmForm');
   }, []);
 
   React.useEffect(() => {
     if (props.removalType === 1) {
-      setWarningMessage(`Please be aware that by removing this category, you
-      are reducing the assets lifetime and the asset will expire${props.differenceOfDays > 0 ? ` in
-      ${props.differenceOfDays} Hours.` : '.'} `);
+      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire")}${props.differenceOfDays > 0 ? ` ${t("in")}
+      ${props.differenceOfDays} ${t("Hours.")}` : '.'} `);
 
 
     } else if (props.removalType === 2) {
-      setWarningMessage(`Please be aware that by removing this category, you
-        are reducing the assets lifetime and the asset will expire in
-        ${props.differenceOfDays} Hours. Unclassified retention policy of station
-        will be applied on this evidence group.`);
+      setWarningMessage(`${t("Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in")}
+        ${props.differenceOfDays} ${t("Hours.")} ${t("Unclassified_retention_policy_of_station_will_be_applied_on_this_evidence_group.")}`);
     }
   }, [props.removalType]);
 
@@ -118,10 +118,10 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
 
   return (
     <>
-      {success && <CRXAlert message='Success: You have saved the asset categorization' alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
-          message="We 're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator"
+          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
@@ -138,18 +138,18 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
             <CRXAlert message={WarningMessage} className='crx-warning' type='warning' alertType='inline' open={true} />
           )}
           <div className='CRXCategory crx-category-attempting'>
-            You are attempting to remove '<b>{props.removedOption.label}</b>' category.
+          {t("You_are_attempting_to_remove")} '<b>{props.removedOption.label}</b>' {t("category")}.
           </div>
-          <div className='CRXCategory crx-continue-category'>Do you want yo continue with removing the category?</div>
+          <div className='CRXCategory crx-continue-category'>{t("Do_you_want_you_continue_with_removing_the_category?")}</div>
           <div className='modalFooter CRXFooter removeFooter removeCategoryFooter'>
             <div className='nextBtn'>
               <CRXButton className='primeryBtn' type='submit'>
-                Yes, remove category
+                {t("Yes,_remove-category")}
               </CRXButton>
             </div>
             <div className='cancelBtn'>
               <CRXButton color='secondary' variant='contained' className='cancelButton secondary' onClick={cancelBtn}>
-                No, do not remove category
+                {t("No,_do_not_remove_category")}
               </CRXButton>
             </div>
           </div>

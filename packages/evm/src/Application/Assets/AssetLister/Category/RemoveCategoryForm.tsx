@@ -6,6 +6,7 @@ import { CRXHeading } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { CRXAlert } from '@cb/shared';
+import { useTranslation } from "react-i18next";
 
 type RemoveCategoryFormProps = {
   filterValue: [];
@@ -30,6 +31,7 @@ type RemoveCategoryFormProps = {
 interface FormValues { }
 
 const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const [error, setError] = React.useState<boolean>(false);
   const [Message, setMessageLenght] = React.useState('');
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
@@ -41,7 +43,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   };
 
   React.useEffect(() => {
-    props.setModalTitle('Removing the category requires a reason');
+    props.setModalTitle(t('Removing_the_category_requires_a_reason'));
     props.setremoveClassName('crx-remove-category-form');
     props.setIndicateTxt(false);
   }, []);
@@ -133,7 +135,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
     <>
       {error && (
         <CRXAlert
-          message="We 're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator"
+          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
@@ -151,16 +153,16 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
           actions.setSubmitting(false);
         }}
         validationSchema={Yup.object({
-          reason: Yup.string().required('Required')
+          reason: Yup.string().required(t("Required"))
         })}>
         {({ handleChange, isValid, dirty }) => (
           <Form>
-            <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div>
+            <div className="indicatestext indicateLessPadding"><b>*</b> {t('Indicates_required_field')}</div>
             <CRXHeading className='categoryDescription removeCategoryDescription' variant='h6'>
-              Please enter the reason for removing the category.
+              {t('Please_enter_the_reason_for_removing_the_category.')}
             </CRXHeading>
             <div className='CRXCategory'>
-              Category removal reason <b className='formStaric'>*</b>
+              {t('Category_removal_reason')} <b className='formStaric'>*</b>
             </div>
             <Field
               id='reaon'
@@ -176,12 +178,12 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
             <div className='modalFooter CRXFooter removeFooter'>
               <div className='nextBtn'>
                 <CRXButton className='primeryBtn' type='submit' disabled={!(isValid && dirty)}>
-                  Save
+                {t("Save")}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>
                 <CRXButton onClick={cancelBtn} className='cancelButton'>
-                  Cancel
+                {t("Cancel")}
                 </CRXButton>
               </div>
             </div>

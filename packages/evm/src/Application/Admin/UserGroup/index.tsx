@@ -142,7 +142,7 @@ const UserGroup: React.FC = () => {
         className="adVSelectBox"
         // value={selectedOpt ? selectedOpt.value : "Please Select"}
         onChange={(e: any) => onSelectInputChange(e)}
-        defaultValue="Please Select"
+        defaultValue={t("Please_Select")}
        />
      
     )
@@ -161,7 +161,7 @@ const UserGroup: React.FC = () => {
   
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
-      label: `${t("ID")}`,
+      label: t("ID"),
       id: "id",
       align: "right",
       dataComponent: () => null,
@@ -174,7 +174,7 @@ const UserGroup: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: `${t("Group Name")}`,
+      label: t("Group_Name"),
       id: "name",
       align: "left",
       dataComponent: (e: string) => AnchorDisplay(e),
@@ -185,7 +185,7 @@ const UserGroup: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: `${t("Description")}`,
+      label: t("Description"),
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -196,7 +196,7 @@ const UserGroup: React.FC = () => {
       maxWidth: "200",
     },
     {
-      label: `${t("Total Users Assigned")}`,
+      label: t("Total_Users_Assigned"),
       id: "userCount",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -252,7 +252,7 @@ const UserGroup: React.FC = () => {
             toolBarButton = {
               <Restricted moduleId={6}>
                 <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
-                  Create Group
+                  {t("Create_Group")}
                 </CRXButton>
               </Restricted>
             }

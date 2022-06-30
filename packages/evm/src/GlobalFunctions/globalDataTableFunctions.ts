@@ -36,6 +36,8 @@ export interface HeadCellProps {
   headerArray?: ValueString[];
   headerObject?: any;
   detailedDataComponentId?: string;
+  attributeName? : string;
+  attributeType? : string;
 }
 
 export type GridFilter = {
@@ -43,6 +45,7 @@ export type GridFilter = {
   operator?: string;
   field?: string;
   value?: string;
+  fieldType? : string;
   filters?: GridFilter[];
 }
 

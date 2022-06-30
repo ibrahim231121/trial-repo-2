@@ -1,19 +1,21 @@
 import { TextField, CRXHeading } from "@cb/shared";
+import { useTranslation } from "react-i18next";
 interface Props {
     categoryObject: any
     setFieldForm : any
 }
 
 const CategoryFormOFAssetBucket: React.FC<Props> = ({ categoryObject,setFieldForm }) => {
+    const { t } = useTranslation<string>();
     return (
         <>
             {categoryObject.form.map((formObj: any) => (
                     <div>
                         <CRXHeading variant="h4">
-                            Category {categoryObject.label}
+                            {t("Category")} {categoryObject.label}
                         </CRXHeading>
                         <CRXHeading variant="h6">
-                             Form {formObj.name}
+                             {t("Form")} {formObj.name}
                         </CRXHeading>
                         {formObj.fields.map((field: any) => (
                             <div>

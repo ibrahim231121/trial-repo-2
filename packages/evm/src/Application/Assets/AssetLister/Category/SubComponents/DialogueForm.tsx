@@ -6,6 +6,7 @@ import { CRXAlert } from '@cb/shared';
 import moment from 'moment';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import http from '../../../../../http-common';
+import { useTranslation } from "react-i18next";
 
 type DialogueFormProps = {
   setremoveClassName: any;
@@ -21,6 +22,7 @@ type DialogueFormProps = {
 };
 
 const DialogueForm: React.FC<DialogueFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const rowLen: number = props.formCollection?.length;
@@ -74,10 +76,10 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   return (
     <div className='categoryModal'>
-      {success && <CRXAlert message='Success: You have saved the asset categorization' alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
-          message="We 're sorry. The form was unable to be saved. Please retry or  contact your Systems Administrator"
+          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
@@ -91,7 +93,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
         }}>
         <Form>
           <CRXHeading variant='h6' className='categoryNextTitle dailogFormHeading'>
-            Category Title Placeholder Here
+            {t("Category_Title_Placeholder_Here")}
             {props.formCollection.map((field: any, _key: number) => (
               <span key={_key}>
                 <b> {field.name}</b>
@@ -100,7 +102,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
             ))}
           </CRXHeading>
           <Alert className='attentionAlert' severity='info' icon={alertIcon}>
-            <b>Attention:</b> There is no form response for the category named,{' '}
+            <b>{t("Attention")}:</b> {t("There_is_no_form_response_for_the_category_named,")}{' '}
             {props.formCollection.map((field: any, _key: any) => (
               <span key={_key}>
                 <span className='cateName' key={_key}>
@@ -109,17 +111,17 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
                 {rowLen !== _key + 1 && <span>,</span>}
               </span>
             ))}
-            . Please save to continue.{' '}
+            . {t("Please_sav_to_continue.")}{' '}
           </Alert>
           <div className='modalFooter nextForm'>
             <div className='nextBtn'>
               <CRXButton type='submit' className='nextButton' color='primary' variant='contained'>
-                Save
+              {t("Save")}
               </CRXButton>
             </div>
             <div className='cancelBtn'>
               <CRXButton onClick={backBtn} color='secondary' variant='contained' className='cancelButton secondary'>
-                Back
+              {t("Back")}
               </CRXButton>
             </div>
           </div>

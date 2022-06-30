@@ -56,7 +56,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
        // dispatch(getConfigurationInfoAsync());
         //dispatch(getDeviceTypeInfoAsync());
         
-        dispatch(enterPathActionCreator({ val: "Change Log: " + historyState.name}));
+        dispatch(enterPathActionCreator({ val: t("Change_Log") + historyState.name}));
         dispatch(getTemplateConfigurationLogsAsync(historyState.id)); 
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);
@@ -95,7 +95,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
 
       const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
-          label: `${t("ID")}`,
+          label: t("ID"),
           id: "id",
           align: "right",
           dataComponent: () => null,
@@ -109,7 +109,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
           maxWidth: "100",
         },
         {
-          label: `${t("Log Time")}`,
+          label: t("Log_Time"),
           id: "logTime",
           align: "center",
           dataComponent: dateDisplayFormat,
@@ -119,7 +119,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
           minWidth: "190"
         },
         {
-          label: `${t("User")}`,
+          label: t("User"),
           id: "user",
           align: "left",
           dataComponent: (f: string) =>  textDisplay(f, ""),
@@ -131,7 +131,7 @@ const ViewConfigurationTemplateLog= (props: any) => {
           maxWidth: "95"
         },
         {
-          label: `${t("Changes")}`,
+          label: t("Changes"),
           id: "updateddata",
           align: "left",
           dataComponent: (a: string) =>  textDisplay(a, ""),

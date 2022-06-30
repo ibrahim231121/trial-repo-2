@@ -4,8 +4,6 @@ import {
   Menu,
   MenuItem,
   MenuButton,
-  SubMenu,
-  MenuDivider,
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import { useDispatch } from "react-redux";
@@ -14,6 +12,7 @@ import { deletetemplate } from "../../../../Redux/TemplateConfiguration";
 import "./ConfigTemplateActionMenu.scss";
 import { useHistory } from "react-router";
 import Restricted from "../../../../ApplicationPermission/Restricted";
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   selectedItems?: any;
@@ -22,9 +21,9 @@ type Props = {
 
 
 const ConfigTemplateActionMenu: React.FC<Props> = ({selectedItems, row}) => {
- 
-    const dispatch = useDispatch()
-    const history = useHistory();
+const { t } = useTranslation<string>();
+const dispatch = useDispatch()
+const history = useHistory();
 
 const [modal, setModal] = useState(false);
 const [nondefault, setnondefault] = useState(false);
@@ -97,7 +96,7 @@ const ViewLog = () => {
           <i className="far fa-pencil"></i>
           </div>
           <div className="crx-menu-list">
-            Edit template
+            {t("Edit template")}
           </div>
         </div>
         </Restricted>
@@ -108,7 +107,7 @@ const ViewLog = () => {
           <i className="far fa-copy"></i>
           </div>
           <div className="crx-menu-list">
-            Clone template
+            {t("Clone_template")}
           </div>
         </div>
       </MenuItem>
@@ -119,7 +118,7 @@ const ViewLog = () => {
             <i className="far fa-trash-alt"></i>
           </div>
           <div className="crx-menu-list">
-           Delete template
+          {t("Delete_template")}
           </div>
         </div>
         </Restricted>
@@ -132,7 +131,7 @@ const ViewLog = () => {
             <i className="far fa-trash-alt"></i>
           </div>
           <div className="crx-menu-list">
-           View Change Log           
+          {t("View_Change_Log")}         
           </div>        
         </div>
       </MenuItem>
@@ -153,9 +152,10 @@ const ViewLog = () => {
         {
           <div className="crxUplockContent configuserParaMain">
             <p className="configuserPara1">
-            You are attempting to <span className="boldPara">delete</span> this <span className="boldPara">{unitId}</span> template. You will not be abe to undo this action.
+            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{unitId}</span> {t("template")}. 
+            {t("You_will_not_be_able_to_undo_this_action.")}
             </p>
-            <p className="configuserPara2">Are you sure you would like to delete template?</p>
+            <p className="configuserPara2">{("Are_you_sure_you_would_like_to_delete_template?")}</p>
           </div>
         }
       </Dialogbox> 

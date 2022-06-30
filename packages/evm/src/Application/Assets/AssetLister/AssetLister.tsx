@@ -22,6 +22,7 @@ dateOptionsTypes,
 import usePostFetch from '../../../utils/Api/usePostFetch';
 import { EVIDENCE_GET_URL } from '../../../utils/Api/url'
 import { getToken } from "../../../Login/API/auth";
+import { useTranslation } from "react-i18next";
 
 const AssetSearchType = {
   basicSearch: "BasicSearch",
@@ -29,6 +30,7 @@ const AssetSearchType = {
 }
 
 const SearchComponent = (props: any) => {
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showAdvanceSearch, setAdvanceSearch] = React.useState(true); //showShortCutSearch
@@ -36,8 +38,8 @@ const SearchComponent = (props: any) => {
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState('');
   const [defaultDateValue, setDefaultDateValue] = React.useState(basicDateDefaultValue);
- const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
- const [error, setError] = React.useState(true);
+  const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
+  const [error, setError] = React.useState(true);
   const [searchData, setSearchData] = React.useState<any>();
   const [brdState, setBrdState] = React.useState<any>('');
   const [predictiveText, setPredictiveText] = React.useState('');
@@ -45,8 +47,8 @@ const SearchComponent = (props: any) => {
   const [searchType, setSearchType] = React.useState(AssetSearchType.basicSearch)
  
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
-                                                                  startDate: moment().startOf("day").subtract(29, "days").set("second", 0).format(), 
-                                                                  endDate: moment().endOf("day").set("second", 0).format(), 
+                                                                  startDate: moment().startOf(t("day")).subtract(29, t("days")).set(t("second"), 0).format(), 
+                                                                  endDate: moment().endOf(t("day")).set(t("second"), 0).format(), 
                                                                   value:basicDateDefaultValue, 
                                                                   displayText:basicDateDefaultValue
                                                                 });
@@ -136,7 +138,7 @@ const SearchComponent = (props: any) => {
       setAdvanceSearch(false);
     } 
 
-    dispatch(enterPathActionCreator({ val: 'Search Results' }));
+    dispatch(enterPathActionCreator({ val: t('Search_Results') }));
 
     const titleCOnt = document.getElementsByClassName('titlePage');
     var appendClass = document.getElementsByClassName('bottomLine');
@@ -263,7 +265,7 @@ const SearchComponent = (props: any) => {
               fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate),constants.SearchType.ShortcutSearch) 
             }
 
-            var  approachingMaxDateValue = dateOptions.approachingDeletion.find(x=> x.value === "next 30 days");
+            var  approachingMaxDateValue = dateOptions.approachingDeletion.find(x=> x.value === t("next_30_days"));
             if(approachingMaxDateValue){
 
               setCompactDateRange({
@@ -380,14 +382,14 @@ const SearchComponent = (props: any) => {
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
 
-                <label className='searchLabel'>Search Assets</label>
+                <label className='searchLabel'>{t("Search_Assets")}</label>
                 <PredictiveSearchBox
                   onSet={(e) => onChangePredictiveSearch(e)}
                   value={predictiveText}
                 />
             </CRXColumn>
             <CRXColumn item xs={6}>
-              <label className='dateTimeLabel'>Date and Time</label>
+              <label className='dateTimeLabel'>{t("Date_and_Time")}</label>
               <DateTimeComponent
                 showCompact={compactDateRange.showCompact}
                 minDate={compactDateRange.minDate}
@@ -408,7 +410,7 @@ const SearchComponent = (props: any) => {
             color='primary'
             variant='contained'
           >
-            Search
+            {t("Search")}
           </CRXButton>
         </div>
 
@@ -428,8 +430,8 @@ const SearchComponent = (props: any) => {
                 }}
                 className='PreSearchButton'
               >
-                <i className={'fas fa-sort-down ' + iconRotate}></i> Advanced
-                Search
+                <i className={'fas fa-sort-down ' + iconRotate}></i> {t("Advanced")}
+                {t("Search")}
               </CRXButton>
 
               {showAdvance && (

@@ -1,9 +1,11 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next';
 
 const UnitConfiguration= () => {
+    const { t } = useTranslation<string>();
     return (
         <div className="manageUnitHeading">
-            Manage Unit Configuration
+            {t("Manage_Unit_Configuration")}
         </div>
     )
 }

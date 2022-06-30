@@ -13,6 +13,7 @@ import CategoryFormOFAssetBucket from "./SubComponents/CategoryFormOFAssetBucket
 import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBucket";
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onClose: any;
@@ -124,6 +125,7 @@ const AddMetadataForm: React.FC<Props> = ({
   activeScreen,
   setActiveScreen,
 }) => {
+  const { t } = useTranslation<string>();
   const [formpayload, setFormPayload] = React.useState<addMetadata>({
     station: "",
     masterAsset: "",
@@ -392,7 +394,7 @@ const AddMetadataForm: React.FC<Props> = ({
     if (!formpayload.owner || formpayload.owner.length === 0) {
       setformpayloadErr({
         ...formpayloadErr,
-        ownerErr: "owner(s) are required",
+        ownerErr: t("owner(s)_are_required"),
       });
     } else {
       setformpayloadErr({ ...formpayloadErr, ownerErr: "" });
@@ -772,7 +774,7 @@ const AddMetadataForm: React.FC<Props> = ({
         } else if (res.status == 400) {
           setAlert(true);
           setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
       })
@@ -1112,7 +1114,7 @@ const AddMetadataForm: React.FC<Props> = ({
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
         setResponseError(
-          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
         );
       }
       if (res.ok) {
@@ -1155,7 +1157,7 @@ const AddMetadataForm: React.FC<Props> = ({
     if (e.target.value == undefined || e.target.value != 0) {
       setMetaDataErrMsg({
         ...meteDataErrMsg,
-        required: "This field is required!",
+        required: t("This_field_is_required!"),
       });
     } else {
       setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
@@ -1216,19 +1218,19 @@ const AddMetadataForm: React.FC<Props> = ({
             />
             <div className="CrxCreateUser">
               <div className="CrxIndicates">
-                <sup>*</sup> Indicates required field
+                <sup>*</sup> {t("Indicates_required_field")}
               </div>
             </div>
             <div className="metaData-masterAsset">
               <div className="metaData-inner-masterAsset">
                 <label>
-                  Master Asset <span>*</span>
+                  {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
                   className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
                     }`}
                   id={"select_" + "selectBox"}
-                  defaultOptionText="Select Master Asset"
+                  defaultOptionText={t("Select_Master_Asset")}
                   disabled={
                     uploadFile.length == 1 && uploadAssetBucket.length == 0
                       ? true
@@ -1256,7 +1258,7 @@ const AddMetadataForm: React.FC<Props> = ({
                   }`}
               >
                 <label>
-                  Station <span>*</span>
+                  {t("Station")} <span>*</span>
                 </label>
                 <CRXSelectBox
                   className="metaData-Station-Select"
@@ -1279,7 +1281,7 @@ const AddMetadataForm: React.FC<Props> = ({
             <div className="metaData-category">
               <CRXMultiSelectBoxLight
                 className="categortAutocomplete CRXmetaData-owner"
-                label="Owner(s)"
+                label={t("Owner(s)")}
                 placeHolder=""
                 multiple={true}
                 CheckBox={true}
@@ -1301,7 +1303,7 @@ const AddMetadataForm: React.FC<Props> = ({
               <CRXMultiSelectBoxLight
                 className="categortAutocomplete CRXmetaData-category"
                 placeHolder=""
-                label="Category"
+                label={t("Category")}
                 multiple={true}
                 CheckBox={true}
                 options={categoryOption}
@@ -1359,7 +1361,7 @@ const AddMetadataForm: React.FC<Props> = ({
             disabled={isDisable}
             onClick={onSubmit}
           >
-            Save
+            {t("Save")}
           </CRXButton>
         ) : (
           <CRXButton
@@ -1367,11 +1369,11 @@ const AddMetadataForm: React.FC<Props> = ({
             disabled={isDisable}
             onClick={nextBtnHandler}
           >
-            Next
+            {t("Next")}
           </CRXButton>
         )}
         <CRXButton className="secondary" onClick={onClose}>
-          Cancel
+          {t("Cancel")}
         </CRXButton>
       </div>
     </div>

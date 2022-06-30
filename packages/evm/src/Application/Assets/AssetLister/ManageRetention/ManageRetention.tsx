@@ -11,6 +11,7 @@ import { addNotificationMessages } from '../../../../Redux/notificationPanelMess
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";
 import { log } from 'console';
+import { useTranslation } from "react-i18next";
 
 type ManageRetentionProps = {
   items: any[];
@@ -25,7 +26,7 @@ type ManageRetentionProps = {
 const cookies = new Cookies();
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
-
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   
@@ -64,10 +65,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const alertRef = useRef(null);
   let retentionRadio = [
     {
-      value: "1", label: "Extend retention by days", Comp: () => { }
+      value: "1", label: `${t("Extend_retention_by_days")}`, Comp: () => { }
     },
     {
-      value: "2", label: "Extend retention Indefinitely", Comp: () => { }
+      value: "2", label: `${t("Extend_retention_Indefinitely")}`, Comp: () => { }
     }
   ]
 
@@ -92,7 +93,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   useEffect(() => {
     if (responseError !== undefined && responseError !== '') {
       let notificationMessage: NotificationMessage = {
-        title: 'User',
+        title: `${t("User")}`,
         message: responseError,
         type: 'error',
         date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
@@ -137,7 +138,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         {
         setCurrentRetention(moment(response.extendedRetainUntil).format('DD-MM-YYYY HH:MM:ss'));
         }
-        setRetentionOpt((prev: any) => [...prev, { value: "3", label: "Revert to original retention", Comp: () => { } }])
+        setRetentionOpt((prev: any) => [...prev, { value: "3", label: `${t("Revert_to_original_retention")}`, Comp: () => { } }])
       }
 
     }
@@ -183,7 +184,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         if (res.ok) {
           props.setOnClose();
           props.showToastMsg({
-            message: (retention == "1" || retention == "2") ? "Retention Extended":"Retention Reverted",
+            message: (retention == "1" || retention == "2") ? t("Retention_Extended"): t("Retention_Reverted"),
             variant: "success",
             duration: 7000,
             clearButtton: true,
@@ -192,7 +193,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
       })
@@ -221,7 +222,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
           {() => (
             <Form>
               <div >
-                <div>Extend {props.items.length > 1 ? props.items.length : 1} Assets</div>
+                <div>{t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Assets")}</div>
                 <CRXRadio
                   className='crxEditRadioBtn'
                   disableRipple={true}
@@ -233,8 +234,8 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                 <input type="number" disabled={retention == "1" ? false : true} value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} />
               </div>
               <div>
-                <h4>Original Retention: {originalRetention}</h4>
-                <h4>Current Retention: {currentRetention}</h4>
+                <h4>{t("Original_Retention:")} {originalRetention}</h4>
+                <h4>{t("Current_Retention:")} {currentRetention}</h4>
                 <br></br>
                 <br></br>
 
@@ -243,12 +244,12 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
                   <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                    Save
+                  {t("Save")}
                   </CRXButton>
                 </div>
                 <div className='cancelBtn'>
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                    Cancel
+                    {t("Cancel")}
                   </CRXButton>
                 </div>
               </div>

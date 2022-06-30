@@ -25,7 +25,7 @@ import {
 } from '@cb/shared';
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
-
+import { useTranslation } from "react-i18next";
 
 let USER_DATA = {};
 
@@ -57,7 +57,7 @@ type account = {
 
 const CreateUserForm = () => {
   
- 
+  const { t } = useTranslation<string>();
   const { id } = useParams<{ id: string }>();
  
   const [error, setError] = React.useState(false);
@@ -103,7 +103,7 @@ const CreateUserForm = () => {
   const userMsgFormRef = useRef<typeof CRXToaster>(null);
   const [isExtUsers, setIsExtUsers] = useState<string>('');
   const [isExtEmail, setIsExtEmail] = useState<string>('');
-  const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>('Send Activation Link');
+  const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>(t('Send Activation Link'));
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
   const [isADUser , setIsADUser] = useState<boolean>(false);
@@ -174,7 +174,7 @@ else{
         deactivationDate,
         userGroups: userGroupNames
       });
-      setActivationLinkLabel('Resend Activation Link');
+      setActivationLinkLabel(t('Resend Activation Link'));
       setRadioValue('');
     }
   }, [userPayload]);
@@ -230,7 +230,7 @@ else{
         <div className='crx-Generate-pass'>
           <div className='crxGeneratePassword'>
             <CRXButton className='primary' onClick={onClickPass}>
-              Generate
+              {t("Generate")}
             </CRXButton>
             <TextField className='crx-generate-btn' value={generatePassword} />
           </div>
@@ -240,7 +240,7 @@ else{
               onClick={() => {
                 navigator.clipboard.writeText(generatePassword);
               }}>
-              Copy
+              {t("Copy")}
             </button>
           </div>
 
@@ -253,7 +253,7 @@ else{
                 setIsPasswordResetRequired(e.target.checked)
               }
             />
-            <label>Require user to change password on next login</label>
+            <label>{t("Require_user_to_change_password_on_next_login")}</label>
           </div>
         </div>
       </>
@@ -267,7 +267,7 @@ else{
           className='crx-gente-field crx-gente-field-pass'
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
-          label='Password'
+          label={t("Password")}
           type='password'
           required={true}
           value={password}
@@ -278,7 +278,7 @@ else{
           className='crx-gente-field crx-gente-field-confrim '
           error={!!formpayloadErr.confirmPasswordErr}
           errorMsg={formpayloadErr.confirmPasswordErr}
-          label='Confirm Password'
+          label={t("Confirm_Password")}
           required={true}
           type='password'
           value={confirmPassword}
@@ -294,7 +294,7 @@ else{
               setIsPasswordResetRequired(e.target.checked)
             }
           />
-          <label>Require user to change password on next login</label>
+          <label>{t("Require_user_to_change_password_on_next_login")}</label>
         </div>
       </div>
     );
@@ -311,14 +311,14 @@ else{
     },
     {
       moduleIds: 0,
-      label: "Generate Temporary Password",
+      label: t("Generate_Temporary_Password"),
       isDisabled : isADUser,
       value: "genTemp",
       Comp: () => generateTempPassComp(),
     },
     {
       moduleIds: 0,
-      label: "Manually Set Password",
+      label: t("Manually_Set_Password"),
       isDisabled : isADUser,
       value: "manual",
       Comp: () => manuallyGeneratePass(),
@@ -387,7 +387,7 @@ else{
   useEffect(() => {
     if (responseError !== undefined && responseError !== '') {
       let notificationMessage: NotificationMessage = {
-        title: 'User',
+        title: t('User'),
         message: responseError,
         type: errorType,
         date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
@@ -472,7 +472,7 @@ else{
         else if (res.status == 500) {
           setAlert(true);
           setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         } else return res.text();
       })
@@ -513,7 +513,7 @@ else{
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
             sendEmail(formpayload.email, '', userName);
             userFormMessages({
-              message: 'You have created the user account.',
+              message: t('You_have_created_the_user_account.'),
               variant: 'success',
               duration: 7000
             });
@@ -615,20 +615,20 @@ else{
             const userName = userPayload.name.first + ' ' + userPayload.name.last;
             sendEmail(payload.email, userPayload.id, userName);
             userFormMessages({
-              message: 'You have resent the activation link.',
+              message: t('You_have_resent_the_activation_link.'),
               variant: 'success',
               duration: 7000
             });
             dispatch(getUsersInfoAsync());
             setDisableSave(true)
           }
-          userFormMessages({ message: 'You have updated the user account.', variant: 'success', duration: 7000 });
+          userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
           dispatch(getUsersInfoAsync());
           setDisableSave(true)
         } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         } else return res.text();
       })
@@ -709,12 +709,12 @@ else{
   const validateUserName = (userName: string) : { error: boolean, errorMessage: string } => {
     const chracterRegx = /^[a-zA-Z0-9-_.]+$/.test(String(userName).toLowerCase());
     if (!chracterRegx) {
-      return { error: true, errorMessage: `Please provide a valid User name.` };
+      return { error: true, errorMessage: t("Please_provide_a_valid_User_name") };
     } else if (userName.length < 3) {
-      return { error: true, errorMessage: `User name must contain atleast three characters.` };
+      return { error: true, errorMessage: t("User_name_must_contain_atleast_three_characters.") };
     }
     else if (userName.length > 128) {
-      return { error: true, errorMessage: `User name must not exceed 128 characters.` };
+      return { error: true, errorMessage: t("User_name_must_not_exceed_128_characters.") };
     }
     return { error: false, errorMessage: '' };
   };
@@ -722,22 +722,22 @@ else{
   const validateFirstLastAndMiddleName = (userName: string, _type: string): { error: boolean, errorMessage: string } => {
     const characterReg = /^[a-zA-Z0-9 ]+$/.test(String(userName).toLowerCase());
     if (!characterReg) {
-      return { error: true, errorMessage: `Please provide a valid ${_type}.` };
+      return { error: true, errorMessage: `${t("Please_provide_a_valid")} ${_type}.` };
     } else if (userName.length < 3) {
-      return { error: true, errorMessage: `${_type} must contain atleast three characters.` };
+      return { error: true, errorMessage: `${_type} ${t("must_contain_atleast_three_characters.")}` };
     }
     else if (userName.length > 128) {
-      return { error: true, errorMessage: `${_type} must not exceed 128 characters.` };
+      return { error: true, errorMessage: `${_type} ${t("must_not_exceed_128_characters.")}` };
     }
     return { error: false, errorMessage: '' };
   }
 
   const checkFirstName = () => {
-    const isUserFirstNameValid = validateFirstLastAndMiddleName(formpayload.firstName, 'First Name');
+    const isUserFirstNameValid = validateFirstLastAndMiddleName(formpayload.firstName, t('First_Name'));
     if (!formpayload.firstName) {
       setFormPayloadErr({
         ...formpayloadErr,
-        firstNameErr: 'First Name is required'
+        firstNameErr: t('First_Name_is_required')
       });
     } else if (isUserFirstNameValid.error) {
       setFormPayloadErr({
@@ -750,11 +750,11 @@ else{
   };
 
   const checkLastName = () => {
-    const isUserLastNameValid = validateFirstLastAndMiddleName(formpayload.lastName, 'Last Name');
+    const isUserLastNameValid = validateFirstLastAndMiddleName(formpayload.lastName, t('Last_Name'));
     if (!formpayload.lastName) {
       setFormPayloadErr({
         ...formpayloadErr,
-        lastNameErr: 'Last Name is required'
+        lastNameErr: t('Last_Name_is_required')
       });
     } else if (isUserLastNameValid.error) {
       setFormPayloadErr({
@@ -771,7 +771,7 @@ else{
     if (!formpayload.userName) {
       setFormPayloadErr({
         ...formpayloadErr,
-        userNameErr: 'Username is required'
+        userNameErr: t('Username is required')
       });
     } else if (isUserNameValid.error) {
       setFormPayloadErr({
@@ -789,12 +789,12 @@ else{
     if (!formpayload.email) {
       setFormPayloadErr({
         ...formpayloadErr,
-        emailErr: 'Email is required'
+        emailErr: t("Email_is_required")
       });
     } else if (!isEmailValid) {
       setFormPayloadErr({
         ...formpayloadErr,
-        emailErr: 'Please provide a valid email address'
+        emailErr: t('Please_provide_a_valid_email_address')
       });
     } else {
       setFormPayloadErr({ ...formpayloadErr, emailErr: '' });
@@ -812,7 +812,7 @@ else{
     if (!password) {
       setFormPayloadErr({
         ...formpayloadErr,
-        passwordErr: 'Password is required'
+        passwordErr: t("Password_is_required")
       });
     } else {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
@@ -823,12 +823,12 @@ else{
     if (!confirmPassword) {
       setFormPayloadErr({
         ...formpayloadErr,
-        confirmPasswordErr: 'Confirm Password is required'
+        confirmPasswordErr: t("Confirm_Password_is_required")
       });
     } else if (password !== confirmPassword) {
       setFormPayloadErr({
         ...formpayloadErr,
-        confirmPasswordErr: 'Passwords are not same'
+        confirmPasswordErr: t("Passwords_are_not_same")
       });
     } else {
       setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: '' });
@@ -858,9 +858,9 @@ else{
           <div className='crxCreateEditFormActivationLink'>
             <div className='crxActivationLink'>
               <CRXButton className='secondary' onClick={linkClick} disabled={disableLink}>
-                Resend Activation Link
+                {t("Resend_Activation_Link")}
               </CRXButton>
-              <label>(Link will be sent after saving this form.)</label>
+              <label>{t("(Link_will_be_sent_after_saving_this_form.)")}</label>
             </div>
           </div>
         )}
@@ -871,9 +871,9 @@ else{
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {
     const phoneCharacter = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/.test(String(phoneNumber));
     if (!phoneCharacter) {
-      return { error: true, errorMessage: `Please provide a valid phone number.` };
+      return { error: true, errorMessage: t("Please_provide_a_valid_phone_number.") };
     } else if (phoneNumber.length > 15) {
-      return { error: true, errorMessage: `Number must not exceed 15 characters.` };
+      return { error: true, errorMessage: t("Number_must_not_exceed_15_characters.") };
     }
     return { error: false, errorMessage: '' };
   }
@@ -905,7 +905,7 @@ else{
     if (formpayload.userGroups.length === 0 || !formpayload.userGroups) {
       setFormPayloadErr({
         ...formpayloadErr,
-        userGroupErr: 'User group is required'
+        userGroupErr: t("User_group_is_required")
       });
     } else {
       setFormPayloadErr({ ...formpayloadErr, userGroupErr: '' });
@@ -995,7 +995,7 @@ useEffect(() => {
         setShowSucess={() => null}
       />
       <div className='CrxIndicates'>
-        <sup>*</sup> Indicates required field
+        <sup>*</sup> {t("Indicates_required_field")}
       </div>
       <div className='modalEditCrx'>
         <div className='CrxEditForm'>
@@ -1006,7 +1006,7 @@ useEffect(() => {
                 errorMsg={formpayloadErr.userNameErr}
                 required={true}
                 value={formpayload.userName}
-                label='User Name'
+                label={t("User_Name")}
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
                 disabled = {isADUser}
@@ -1024,7 +1024,7 @@ useEffect(() => {
                 error={!!formpayloadErr.firstNameErr}
                 errorMsg={formpayloadErr.firstNameErr}
                 required={true}
-                label='First Name'
+                label={t("First_Name")}
                 className='users-input'
                 value={formpayload.firstName}
                 onChange={(e: any) => setFormPayload({ ...formpayload, firstName: e.target.value })}
@@ -1034,7 +1034,7 @@ useEffect(() => {
                 error={!!formpayloadErr.middleInitialErr}
                 errorMsg={formpayloadErr.middleInitialErr}
                 value={formpayload.middleInitial}
-                label='Middle Initial'
+                label={t("Middle_Initial")}
                 className='users-input'
                 onChange={(e: any) => setFormPayload({ ...formpayload, middleInitial: e.target.value })}
                 onBlur={checkMiddleInitial}
@@ -1044,7 +1044,7 @@ useEffect(() => {
                 errorMsg={formpayloadErr.lastNameErr}
                 required={true}
                 value={formpayload.lastName}
-                label='Last Name'
+                label={t("Last_Name")}
                 className='users-input'
                 onChange={(e: any) => setFormPayload({ ...formpayload, lastName: e.target.value })}
                 onBlur={checkLastName}
@@ -1059,7 +1059,7 @@ useEffect(() => {
             required={true}
             value={formpayload.email}
             disabled = {isADUser}
-            label='Email'
+            label={t("Email")}
             className={'users-input ' + isExtEmail}
             onChange={(e: any) => setFormPayload({ ...formpayload, email: e.target.value })}
             onBlur={checkEmail}
@@ -1068,7 +1068,7 @@ useEffect(() => {
             error={!!formpayloadErr.phoneNumberErr}
             errorMsg={formpayloadErr.phoneNumberErr}
             value={formpayload.phoneNumber}
-            label='Phone Number'
+            label={t("Phone_Number")}
             className='users-input'
             onChange={(e: any) => setFormPayload({ ...formpayload, phoneNumber: e.target.value })}
             onBlur={checkPhoneumber}
@@ -1078,7 +1078,7 @@ useEffect(() => {
             <div className='crxEditFilter editFilterUi'>
               <CRXMultiSelectBoxLight
                 className='categortAutocomplete CrxUserEditForm'
-                label='User Group'
+                label={t("User_Group")}
                 multiple={true}
                 CheckBox={true}
                 required={true}
@@ -1098,7 +1098,7 @@ useEffect(() => {
           }
 
           <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
-            <label>Deactivation Date</label>
+            <label>{t("Deactivation_Date")}</label>
             <CRXInputDatePicker
               value={current_date}
               type='datetime-local'
@@ -1111,7 +1111,7 @@ useEffect(() => {
           </div>
 
           <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" || radioValue == "manual" ? "radioBtnUiSpacer" : ""}`}>
-            <label>User Password Setup</label>
+            <label>{t("User_Password_Setup")}</label>
             <div className='user-radio-group'>
               <CRXRadio
                 className='crxEditRadioBtn'
@@ -1127,10 +1127,10 @@ useEffect(() => {
         </div>
         <div className='crxFooterEditFormBtn'>
           <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
-            Save
+            {t("Save")}
           </CRXButton>
           <Link to={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
-             Cancel
+             {t("Cancel")}
           </Link>
           <CRXButton
           onClick={() => redirectPage()}
@@ -1138,7 +1138,7 @@ useEffect(() => {
           color="secondary"
           variant="outlined"
         >
-          Close
+          {t("Close")}
         </CRXButton>
         </div>
         <CRXConfirmDialog
@@ -1146,17 +1146,16 @@ useEffect(() => {
         onConfirm={closeDialog}
         isOpen={isOpen}
         className="userGroupNameConfirm"
-        primary="Yes, close"
-        secondary="No, do not close"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
         text="user group form"
       >
         <div className="confirmMessage">
-          You are attempting to <strong>close</strong> the{" "}
-          <strong>'user form'</strong>. If you close the form, any changes
-          you've made will not be saved. You will not be able to undo this
-          action.
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
           <div className="confirmMessageBottom">
-            Are you sure you would like to <strong>close</strong> the form?
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
           </div>
         </div>
       </CRXConfirmDialog>

@@ -8,13 +8,14 @@ import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import usePostFetch from "../../../../utils/Api/usePostFetch";
 import { EVIDENCE_PREDITIVE_URL } from '../../../../utils/Api/url'
 import { getToken } from "../../../../Login/API/auth";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onSet: (e: any) => void;
   value: string;
 }
 const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
-
+  const { t } = useTranslation<string>();
   const [showSearch, setShowSearch] = React.useState<any>(false);
   const [outCome, setOutCome] = React.useState<any>([]);
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -113,7 +114,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
       <EditableSelect
         id="combo-box-demo"
         options={outCome}
-        placeHolder={"Search assets by ID#, case#, CAD#, categories, etc."}
+        placeHolder={t("Search_assets_by_ID#_case#_CAD#_categories_etc.")}
         onChange={onChangeAutoComplete}
         onInputChange={handleOnChange}
         clearText={() => setInputValue("")}

@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { getNotificationMessages, removeNotificationMessages, clearAllNotificationMessages }  from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage, setIcon, messageType } from "./notificationsTypes"
+import { useTranslation } from "react-i18next";
 
 const ToggleBadge = (
   <CRXBadge itemCount={3} color="primary">
@@ -26,7 +27,7 @@ type panelProps = {
   otherPanel : any
 }
 const CRXNotficationPanel = ({otherPanel} : panelProps) => {
-
+  const { t } = useTranslation<string>();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [isRead, setIsRead] = React.useState<boolean>(false);
 
@@ -94,7 +95,7 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
 
           <div className="notification-panel">
             <div className="bucketPanelTitle">
-            <label>Notifications</label>
+            <label>{t("Notifications")}</label>
             </div>
             
             
@@ -104,7 +105,7 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
                   disableRipple={true}
                   onClick={(e:React.DOMAttributes<HTMLButtonElement>) => clearAllMessage(e,notificationMessage)}
                 >
-                  Clear All
+                  {t("Clear_All")}
                 </CRXButton>
               </div>
               <div className="notification-scroll">

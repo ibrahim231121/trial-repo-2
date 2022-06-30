@@ -267,7 +267,7 @@ const User: React.FC = () => {
               ? reformattedRows[reformattedRows.length - 1].lastLogin
               : "",
           value: "custom",
-          displayText: "custom range",
+          displayText: t("custom_range"),
         },
         colIdx: 0,
       };
@@ -325,7 +325,7 @@ const User: React.FC = () => {
         }
        
         statuslist = statuslist.filter(findUniqueValue);
-        let status: any = [{ label: "No Status" }];
+        let status: any = [{ label: t("No_Status") }];
         statuslist.map((x: string) => {
           status.push({ label: x });
         });
@@ -370,7 +370,7 @@ const User: React.FC = () => {
             onOpen={(e: React.SyntheticEvent) => {
               return openHandler(e);
             }}
-            noOptionsText="No Status"
+            noOptionsText={t("No_Status")}
           />
         </div>
     )
@@ -431,7 +431,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       visible: true,
     },
     {
-      label: `${t("First Name")}`,
+      label: `${t("First_Name")}`,
       id: "fName",
       align: "left",
       width: "156",
@@ -443,7 +443,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       visible: true,
     },
     {
-      label: `${t("Last Name")}`,
+      label: `${t("Last_Name")}`,
       id: "lName",
       align: "left",
       width: "156",
@@ -479,7 +479,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       visible: true,
     },
     {
-      label: `${t("Last Login")}`,
+      label: `${t("Last_Login")}`,
       id: "lastLogin",
       align: "center",
       dataComponent: dateDisplayFormat,
@@ -681,7 +681,7 @@ const openHandler = (_: React.SyntheticEvent) => {
 
     if (obj.message !== undefined && obj.message !== "") {
       let notificationMessage: NotificationMessage = {
-        title: "User",
+        title: t("User"),
         message: obj.message,
         type: "success",
         date: moment(moment().toDate())
@@ -726,9 +726,9 @@ const openHandler = (_: React.SyntheticEvent) => {
                 className="primary manageUserBtn"
                 onClick={CreateUserForm}
               >
-                  Create User
+                  {t("Create_User")}
               </CRXButton>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> Filter </CRXButton>
+              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
             </>
           }
           getRowOnActionClick={(val: User) => setSelectedActionRow(val)}

@@ -138,7 +138,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
 
         groupNames = groupNames.filter(findUniqueValue);
-        let groups: any = [{ label: "No Groups"}];
+        let groups: any = [{ label: t("No_Groups")}];
         groupNames.map((x: string) => { groups.push({ label: x}) })
         
         const settingValues = (headCell: HeadCellProps) => {
@@ -167,7 +167,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
                     getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
                     onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-                    noOptionsText="No Group"
+                    noOptionsText={t("No_Groups")}
                 />
             </div>
         )
@@ -197,7 +197,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     //
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
-            label: `${t("ID")}`,
+            label: t("ID"),
             id: "id",
             align: "right",
             dataComponent: () => null,
@@ -210,7 +210,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             maxWidth: "80",
         },
         {
-            label: `${t("Username")}`,
+            label: t("Username"),
             id: "userName",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
@@ -222,7 +222,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             visible: true,
         },
         {
-            label: `${t("First Name")}`,
+            label: t("First_Name"),
             id: "firstName",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
@@ -234,7 +234,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             visible: true,
         },
         {
-            label: `${t("Last Name")}`,
+            label: t("Last_Name"),
             id: "lastName",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),
@@ -246,7 +246,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             visible: true,
         },
         {
-            label: `${t("Groups")}`,
+            label: t("Groups"),
             id: "groups",
             align: "left",
             dataComponent: (e: string[]) => multitextDisplay(e, ""),

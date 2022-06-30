@@ -11,7 +11,6 @@ const cookies = new Cookies();
 export const getAssetSearchInfoAsync: any = createAsyncThunk(
     'getAssetSearchInfo',
     async (QUERRY: any) => {
-        console.log("QUERRY", QUERRY )
         if(QUERRY !== undefined && QUERRY.filters == undefined) {
             // let local_assetSearchQuerry = localStorage.getItem("assetSearchQuerry");
             if (QUERRY === "") {
@@ -36,6 +35,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
             const resp = await fetch(EVIDENCE_GET_URL, requestOptions);
             if (resp.ok) {
                 const response = await resp.json();
+                console.log("Response Evidence", response);
                 return response;
             }
         }
@@ -49,6 +49,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
             const resp = await fetch( EVIDENCE_GET_CATEGORIES_URL + "/filter?Size=100&Page=1",requestOptions);
             if (resp.ok) {
                 const response = await resp.json();
+                console.log("Response Filter", response);
                 return response;
             }
         }

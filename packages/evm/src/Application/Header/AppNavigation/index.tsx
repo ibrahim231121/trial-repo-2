@@ -9,8 +9,12 @@ import useGetFetch from "../../../utils/Api/useGetFetch";
 import { urlList, urlNames } from "./../../../utils/urlList"
 import "./index.scss";
 
+import { useTranslation } from 'react-i18next';
+
+
 
 const CRXLefNavigation = () => {
+  const { t } = useTranslation<string>();
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
@@ -20,12 +24,12 @@ const CRXLefNavigation = () => {
   const items = [
     {
       moduleId: 0,
-      label: "Home",
+      label: t("Home"),
       icon: "fas fa-chart-pie NaveIcon",
     },
     {
       moduleId: 1,
-      label: "Assets",
+      label: t("Assets"),
       icon: "icon icon-file-video NaveIcon",
       url: urlList.filter((item: any) => item.name === urlNames.assets)[0].url,
       disabled: false,
@@ -33,7 +37,7 @@ const CRXLefNavigation = () => {
     },
     {
       moduleId: 0,
-      label: "Cases",
+      label: t("Cases"),
       icon: "fas fa-briefcase NaveIcon",
       // items: [
       //   {
@@ -120,7 +124,7 @@ const CRXLefNavigation = () => {
     // },
     {
       moduleId: 13,
-      label: 'Units & Devices',
+      label: t('Units_&_Devices'),
       icon: 'fas fa-laptop-code NaveIcon',
      
       command: () => {
@@ -130,25 +134,25 @@ const CRXLefNavigation = () => {
 
     {
       moduleId: 0,
-      label: "ALPR",
+      label: t("ALPR"),
       icon: "fas fa-address-card NaveIcon",
       classes: "aplrTab",
       items: [
         {
           moduleIds: 0,
-          label: "Plate Captures",
+          label: t("Plate_Captures"),
         },
         {
           moduleIds: 0,
-          label: "Live ALPR",
+          label: t("Live_ALPR"),
         },
         {
           moduleIds: 0,
-          label: "Live ALPR",
+          label: t("Live_ALPR"),
         },
         {
           moduleIds: 0,
-          label: "Manage Hot List",
+          label: t("Manage_Hot_List"),
         },
         {
           moduleIds: 0,
@@ -156,11 +160,11 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 0,
-          label: "Manage Hot List Data Source",
+          label: t("Manage_Hot_List_Data_Source"),
         },
         {
           moduleIds: 0,
-          label: "Manage License Plates",
+          label: t("Manage_License_Plates"),
         },
       ],
     },
@@ -184,19 +188,19 @@ const CRXLefNavigation = () => {
 
     {
       moduleId: 0,
-      label: "Admin",
+      label: t("Admin"),
       icon: "fas fa-sitemap NaveIcon",
       items: [
         {
           moduleIds: 5,
-          label: "Manage User Groups & Permissions",
+          label: t("Manage_User_Groups_Permissions"),
           command: () => {
             navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUserGroups)[0].url);
           },
         },
         {
           moduleIds: 8,
-          label: "Manage Users",
+          label: t("Manage_Users"),
           command: () => {
             navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url);
           },
@@ -204,18 +208,17 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 22,
-          label: 'Manage Device & Unit Templates',
+          label: t('Manage_Device_Unit_Templates'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) },
         },
         {
           moduleIds: 0,
-          label: 'Evidence(Dev)',
+          label: t('Evidence(Dev)'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.testEvidence)[0].url) },
         },
         {
           moduleIds: 17,
-          label: 'Manage Station',
-          //command: () => { navigateToPage("/admin/stations") },
+          label: t('Manage_Station'),
           url: "/admin/stations",
         }
       ],

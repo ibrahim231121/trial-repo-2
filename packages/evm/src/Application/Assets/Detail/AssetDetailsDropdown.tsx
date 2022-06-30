@@ -6,7 +6,7 @@ import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 import GoogleMap from "../../../map/google/GoogleMap";
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
-
+import { useTranslation } from "react-i18next";
 
 type propsObject = {
   data:any;
@@ -21,7 +21,7 @@ type propsObject = {
 }
 
 const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData}:propsObject) => {
-  
+  const { t } = useTranslation<string>();
   const [selectDropDown, setSelectDropDown] = React.useState("map");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
@@ -31,9 +31,9 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updat
   const [alert] = React.useState<boolean>(false);
   
   const options = [
-    { value: "map", displayText: "Map" },
-    { value: "bookmarks", displayText: "Bookmarks" },
-    { value: "notes", displayText: "Notes" },
+    { value: "map", displayText: t("Map") },
+    { value: "bookmarks", displayText: t("Bookmarks") },
+    { value: "notes", displayText: t("Notes") },
   ];
 
   const handleChangeDropDown = (event: any) => {
@@ -47,7 +47,6 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updat
     {selectDropDown == "notes" ? handleNoteEdit(x):handleBookmarkEdit(x)}
   }
 
-
 const handleNoteEdit = (noteData:Note)=>{
   const noteBody : Note = {
     assetId: noteData.assetId, 
@@ -60,7 +59,7 @@ const handleNoteEdit = (noteData:Note)=>{
   };
   const url = "/Evidences/" + evidenceId + "/Assets/" + noteData.assetId + "/Notes/" + noteData.id;
   EvidenceAgent.updateNote(url, noteBody).then(() => {
-    targetRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});    
+    targetRef.current.showToaster({message: t("Note_Sucessfully_Updated"), variant: t("Success"), duration: 5000, clearButtton: true});    
   })
 }
 
@@ -76,7 +75,7 @@ const handleBookmarkEdit= (bookmarkData:Bookmark)=>{
   };
   const url = "/Evidences/" + evidenceId + "/Assets/" + bookmarkData.assetId + "/Bookmarks/" + bookmarkData.id;
   EvidenceAgent.updateBookmark(url, bookmarkBody).then(() => {
-    targetRef.current.showToaster({message: "Bookmark Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});  
+    targetRef.current.showToaster({message: t("Bookmark_Edited_Sucessfully"), variant: t("Success"), duration: 5000, clearButtton: true});  
   })
 }
 
@@ -94,7 +93,7 @@ const handleDelete = (noteId:any,assetId:any)=>{
 const handleBookmarkDelete = (noteId:any,assetId:any)=>{
   const url = "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Bookmarks/"+noteId;
   EvidenceAgent.deleteBookmark(url).then(() => {
-    targetRef.current.showToaster({message: "Bookmark Delete Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+    targetRef.current.showToaster({message: t("Bookmark_Delete_Sucessfully"), variant: t("Success"), duration: 5000, clearButtton: true});
     var tempData = [...data]
     tempData[0].bookmarks = tempData[0].bookmarks.filter((x:any) => x.id !== noteId);
     setData(tempData)
@@ -105,7 +104,7 @@ const handleBookmarkDelete = (noteId:any,assetId:any)=>{
 const handleNoteDelete = (noteId:any,assetId:any)=>{
   const url = "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Notes/"+noteId;
   EvidenceAgent.deleteNote(url).then(() => {
-    targetRef.current.showToaster({message: "Note Deleted Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+    targetRef.current.showToaster({message: t("Note_Deleted_Sucessfully"), variant: t("Success"), duration: 5000, clearButtton: true});
     var tempData = [...data]
     tempData[0].notes = tempData[0].notes.filter((x:any) => x.id !== noteId);
     setData(tempData)
@@ -153,8 +152,8 @@ const callBackOnMarkerClick=(logtime:any)=>{
       <AssetDetailNotesandBookmark
        data={data}
        setData={setData}
-       searchFieldHeading="Search Bookmark"
-       searchFieldPlaceholder="Search by Name, keyword, etc."
+       searchFieldHeading={t("Search Bookmark")}
+       searchFieldPlaceholder={t("Search_by_Name_keyword_etc.")}
        condition={false}
        URL={data[0].bookmarks}
        onDeleteNotes={handleDelete}
@@ -168,8 +167,8 @@ const callBackOnMarkerClick=(logtime:any)=>{
       <AssetDetailNotesandBookmark
        data={data}
        setData={setData}
-       searchFieldHeading="Search Notes"
-       searchFieldPlaceholder="Search by Name, keyword, etc."
+       searchFieldHeading={t("Search Notes")}
+       searchFieldPlaceholder={t("Search_by_Name_keyword_etc.")}
        condition={true}
        URL={data[0].notes}
        onDeleteNotes={handleDelete}

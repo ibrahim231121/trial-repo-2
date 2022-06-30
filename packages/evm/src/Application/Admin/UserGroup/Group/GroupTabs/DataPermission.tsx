@@ -13,6 +13,7 @@ import { PermissionData, PermissionValue, Category, Station, StationResponse } f
 import "./dataPermission.scss"
 import { DataPermissionModel } from "..";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import { useTranslation } from "react-i18next";
 
 
 type infoProps = {
@@ -24,7 +25,7 @@ type infoProps = {
 
 const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeDataPermission, onDeletePermission }) => {
     let [dataPermissions, setDataPermissions] = useState<PermissionData[]>([])
-
+    const { t } = useTranslation<string>();
     let [categories, setCategories] = useState<PermissionValue[]>([]);
     let [stations, setStations] = useState<PermissionValue[]>([]);
     let [isdisable, setisDisable] = useState<Boolean>(true);
@@ -149,8 +150,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     .map((x: Category) => {
                         return { value: x.id, label: x.name }
                     })
-                categories.push({ value: -2, label: 'All' })
-                categories.push({ value: -1, label: 'Uncategorized' })
+                categories.push({ value: -2, label: t('All') })
+                categories.push({ value: -1, label: t('Uncategorized') })
                 
                 
                 setCategories(categories);
@@ -177,8 +178,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                         let StationR: Station = { value: (x.id), label: x.name }
                         return StationR;
                     })
-                stations.push({ value: -2, label: 'All' })
-                stations.push({ value: -1, label: 'No Station' })
+                stations.push({ value: -2, label: t('All') })
+                stations.push({ value: -1, label: t('No_Station') })
                 
                 
                 setStations(stations);
@@ -287,9 +288,9 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         <div className="crx-datapermission-tab">
             <div className="dataPermissionContent">
                 <CRXRows container="container" spacing={0}>
-                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>Permission Type</CRXColumn>
-                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={6} spacing={0}>Permission Value</CRXColumn>
-                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>Permission Level</CRXColumn>
+                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Permission_Type")}</CRXColumn>
+                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={6} spacing={0}>{t("Permission_Value")}</CRXColumn>
+                    <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Permission_Level")}</CRXColumn>
                 </CRXRows>
             </div>
             <div className="crxPermissionPageScroll">
@@ -364,7 +365,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                     onClick={onAddPermission}
                     color='primary'
                     variant='contained'
-                > + Add data permissions
+                > {t("Add_data_permissions")}
                 </CRXButton>
             </div>
         </div>

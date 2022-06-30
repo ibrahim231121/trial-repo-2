@@ -7,6 +7,7 @@ import { CRXAlert } from '@cb/shared';
 import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
 import http from '../../../../../http-common';
+import { useTranslation } from "react-i18next";
 
 type EditConfirmFormProps = {
   evidenceResponse: any;
@@ -24,6 +25,7 @@ interface FormValues {
 }
 
 const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
@@ -35,7 +37,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const [Message, setMessage] = React.useState('');
 
   React.useEffect(() => {
-    props.setModalTitle('Editing the category form requires a reason');
+    props.setModalTitle(t("Editing_the_category_form_requires_a_reason"));
     props.setremoveClassName('crx-remove-category-form');
   }, []);
 
@@ -107,7 +109,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       {success && (
         <CRXAlert
           className='cateoryAlert-Success'
-          message='Success: You have saved the asset categorization'
+          message={t("Success:_You_have_saved_the_asset_categorization")}
           alertType='toast'
           open={true}
         />
@@ -115,14 +117,14 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       {error && (
         <CRXAlert
           className='cateoryAlert-Error errorMessageCategory'
-          message=" Error: We're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator"
+          message={t("Error_We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
         />
       )}
       <div className='indicatestext indicateLessPadding'>
-        <b>*</b> Indicates required field
+        <b>*</b> {t("Indicates_required_field")}
       </div>
       <Formik
         initialValues={initialValues}
@@ -135,9 +137,9 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         })}>
         {({ handleChange, isValid, dirty }) => (
           <Form>
-            <div className='categoryDescription'>Please enter the reason for editing the form.</div>
+            <div className='categoryDescription'>{t("Please_enter_the_reason_for_editing_the_form.")}</div>
             <div className='CRXCategory categoryTitle'>
-              Category form edit reason <b className='formStaric'>*</b>
+            {t("Category_form_edit_reason")} <b className='formStaric'>*</b>
             </div>
             <Field
               id='reaon'
@@ -157,12 +159,12 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
                   className={!(isValid && dirty) ? 'primeryBtnDisable' : 'primeryBtn boxshNone'}
                   color='primary'
                   variant='contained'>
-                  Save
+                    {t("Save")}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>
                 <CRXButton onClick={cancelBtn} color='secondary' variant='contained' className='cancelButton secondary'>
-                  Cancel
+                  {t("Cancel")}
                 </CRXButton>
               </div>
             </div>

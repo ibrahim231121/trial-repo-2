@@ -272,7 +272,7 @@ const ConfigurationTemplates: React.FC = () => {
         }
       }
       stationlist = stationlist.filter(findUniqueValue);
-      let station: any = [{ label: "No Station" }];
+      let station: any = [{ label: t("No_Station") }];
       stationlist.map((x: string) => {
         station.push({ label: x });
       });
@@ -318,7 +318,7 @@ const ConfigurationTemplates: React.FC = () => {
             onOpen={(e: React.SyntheticEvent) => {
               return openHandler(e);
             }}
-            noOptionsText="No Version"
+            noOptionsText={t("No_Version")}
           />
         </div>
       );
@@ -345,7 +345,7 @@ const ConfigurationTemplates: React.FC = () => {
       }
       typelist = typelist.filter(findUniqueValue);
 
-      let type: any = [{ label: "No type" }];
+      let type: any = [{ label: t("No_type") }];
       typelist.map((x: string) => {
         type.push({ label: x });
       });
@@ -392,7 +392,7 @@ const ConfigurationTemplates: React.FC = () => {
             onOpen={(e: React.SyntheticEvent) => {
               return openHandler(e);
             }}
-            noOptionsText="No Type"
+            noOptionsText={t("No_type")}
           />
         </div>
       );
@@ -419,7 +419,7 @@ const ConfigurationTemplates: React.FC = () => {
       }
       indicatorlist = indicatorlist.filter(findUniqueValue);
 
-      let indicator: any = [{ label: "Default" }];
+      let indicator: any = [{ label: t("Default") }];
       indicatorlist.map((x: string) => {
         indicator.push({ label: x });
       });
@@ -465,7 +465,7 @@ const ConfigurationTemplates: React.FC = () => {
             onOpen={(e: React.SyntheticEvent) => {
               return openHandler(e);
             }}
-            noOptionsText="No Indicator"
+            noOptionsText={t("No_Indicator")}
           />
         </div>
       );
@@ -473,7 +473,7 @@ const ConfigurationTemplates: React.FC = () => {
   };
 
   const IndicatorDisplay = (text: string, classes: string | undefined) => {
-    return <div>Default</div>;
+    return <div>{t("Default")}</div>;
   };
 
   const StationDisplay = (text: string, classes: string | undefined) => {
@@ -484,7 +484,7 @@ const ConfigurationTemplates: React.FC = () => {
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
-      label: `${t("ID")}`,
+      label: t("ID"),
       id: "id",
       align: "right",
       dataComponent: () => null,
@@ -498,7 +498,7 @@ const ConfigurationTemplates: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: `${t("Name")}`,
+      label: t("Name"),
       id: "name",
       align: "left",
       //dataComponent: configTemplate,
@@ -512,7 +512,7 @@ const ConfigurationTemplates: React.FC = () => {
       detailedDataComponentId: "device",
     },
     {
-      label: `${t("Station")}`,
+      label: t("Station"),
       id: "Station",
       align: "left",
       width: "",
@@ -530,7 +530,7 @@ const ConfigurationTemplates: React.FC = () => {
       detailedDataComponentId: "id",
     },
     {
-      label: `${t("Type")}`,
+      label: t("Type"),
       id: "type",
       align: "left",
       width: "",
@@ -547,7 +547,7 @@ const ConfigurationTemplates: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: `${t("Indicator")}`,
+      label: t("Indicator"),
       id: "indicator",
       width: "",
       align: "left",
@@ -629,7 +629,7 @@ const ConfigurationTemplates: React.FC = () => {
                   arrow
                   menuButton={
                     <MenuButton>
-                      Create Template
+                      {t("Create_Template")}
                     </MenuButton>
                   }
                 >
@@ -637,7 +637,7 @@ const ConfigurationTemplates: React.FC = () => {
                     return (
                       <MenuItem >
                         <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
-                          <div style={{ backgroundColor: '#FFFFFF' }}>Create {x.name}</div>
+                          <div style={{ backgroundColor: '#FFFFFF' }}>{t("Create")} {x.name}</div>
                         </Link>
                       </MenuItem>
                     )

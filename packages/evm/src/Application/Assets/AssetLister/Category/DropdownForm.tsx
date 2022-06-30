@@ -7,6 +7,7 @@ import './categoryForm.scss';
 import ApplicationPermissionContext from '../../../../ApplicationPermission/ApplicationPermissionContext';
 import { Visibility } from '@material-ui/icons';
 import { filterCategory } from './Utility/UtilityFunctions';
+import { useTranslation } from "react-i18next";
 
 type DropdownFormProps = {
   filterValue: any[];
@@ -25,6 +26,7 @@ type DropdownFormProps = {
 };
 
 const DropdownForm: React.FC<DropdownFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const {
@@ -33,7 +35,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
 
   const isCancelable = getModuleIds().includes(4) ? true : false
   React.useEffect(() => {
-    const modalTitleProps = props.isCategoryEmpty ? 'Choose category' : 'Edit category';
+    const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_Category");
     props.setModalTitle(modalTitleProps);
     props.setremoveClassName('crxEditCategoryDropdown');
   });
@@ -92,13 +94,13 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
 
   return (
     <>
-    <div className="indicatestext indicateLessPadding"><b>*</b> Indicates required field</div>
+    <div className="indicatestext indicateLessPadding"><b>*</b> {t('Indicates_required_field')}</div>
       <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
         {() => (
           <Form>
-            <div className='categoryDescription'>From the field below, select one or more relevant category.</div>
+            <div className='categoryDescription'>{t('From_the_field_below,_select_one_or_more_relevant_category.')}</div>
             <div className='categoryTitle'>
-              Category <b>*</b>
+            {t('Category')} <b>*</b>
             </div>
             <div className='crxDrpDownCatergory'>
               <MultiSelectBoxCategory
@@ -118,12 +120,12 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
             <div className='modalFooter CRXFooter'>
               <div className='nextBtn'>
                 <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                  Next
+                {t('Next')}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>
                 <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                  Cancel
+                {t('Cancel')}
                 </CRXButton>
               </div>
             </div>

@@ -2,18 +2,21 @@ import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
 import { logOutUser } from "../../../Logout/API/auth";
 import { useHistory } from "react-router";
+import { useTranslation } from 'react-i18next';
+
 
 
 const CRXUserProfile = () => {
+    const { t } = useTranslation<string>();
     const history = useHistory();
     const listOFMenu = [
         {
-            label : 'User Profile',
+            label : t('User_Profile'),
             router : "userProfile",
            
         },
         {
-            label : 'Logout',
+            label : t('Logout'),
             router : "Logout",
             onClick: logOut
         },
@@ -30,7 +33,7 @@ function logOut(){
         <div className="department">
              <CRXMenu
             id="userProfile"
-            name="Username"  //Get Current User name and add here
+            name={t("Username")}  //Get Current User name and add here
             className="DarkTheme"
             btnClass="customButton"
             MenuList = {listOFMenu}

@@ -9,8 +9,10 @@ import { StationInfo, TypeOfDevice } from './DefaultUnitTemplateModel';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CRXAlert } from '@cb/shared';
+import { useTranslation } from 'react-i18next';
 
 const DefaultUnitTemplate: React.FC = () => {
+    const { t } = useTranslation<string>();
     const history = useHistory();
     const [selectBoxValues, setSelectBoxValues] = React.useState<any[]>([]); // <= State Of SelectBox Values.
     const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
@@ -70,7 +72,7 @@ const DefaultUnitTemplate: React.FC = () => {
                 headCellArray.push(headCellObject);
             }
             headCellArray.push({
-                label: 'To Get ID',
+                label: t("To_Get_ID"),
                 id: 'id',
                 align: 'center',
                 dataComponent: () => null,
@@ -198,7 +200,7 @@ const DefaultUnitTemplate: React.FC = () => {
         <>
             {success && (
                 <CRXAlert
-                    message="Success: You have saved the Default Unit Template"
+                    message={t("Success_You_have_saved_the_Default_Unit_Template")}
                     alertType="toast"
                     open={true}
                 />
@@ -206,7 +208,7 @@ const DefaultUnitTemplate: React.FC = () => {
             {error && (
                 <CRXAlert
                     className=""
-                    message={"We 're sorry. The Default Unit Devices are unable to be saved. Please retry or contact your Systems Administrator"}
+                    message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
                     type="error"
                     alertType="inline"
                     open={true}
@@ -244,39 +246,39 @@ const DefaultUnitTemplate: React.FC = () => {
                     className="groupInfoTabButtons secondary"
                     onClick={saveBtnClickHandler}
                     disabled={disableSaveBtn}>
-                    Save
+                    {t("Save")}
                 </CRXButton>
                 <CRXButton
                     className="groupInfoTabButtons secondary"
                     onClick={cancelBtnHandler}
                     disabled={false}>
-                    Cancel
+                    {t("Cancel")}
                 </CRXButton>
                 <CRXButton
                     className="groupInfoTabButtons secondary"
                     onClick={closeBtnHandler}
                     disabled={false}
                 >
-                    Close
+                    {t("Close")}
                 </CRXButton>
 
                 <CRXConfirmDialog
                     className="crx-unblock-modal CRXStationModal"
-                    title={"Please confirm"}
+                    title={t("Please_confirm")}
                     setIsOpen={setConfirmModalDisplay}
                     onConfirm={closeOnConfirmBtnHandler}
                     isOpen={confirmModalDisplay}
-                    primary={"Yes, close"}
-                    secondary={"No, do not close"}
+                    primary={t("Yes_close")}
+                    secondary={t("No,_do_not_close")}
                 >
                     <div className='modalContentText'>
                         <div className='cancelConfrimText'>
-                            You are attempting to <strong>close</strong> the Manage Default Unit Template. If you close it, any changes
-                            you've made will not be saved. You will not be able to undo this action.{' '}
+                        {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")} {t("Manage_Default_Unit_Template")} {t("If_you_close_the_form")}, 
+                        {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}{' '}
                         </div>
                     </div>
                     <div className='modalBottomText modalBottomTextClose'>
-                        Are you sure you would like to <strong>close</strong> Manage Default Unit Template?
+                    {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("Manage_Default_Unit_Template")}?
                     </div>
                 </CRXConfirmDialog>
             </div>

@@ -51,7 +51,7 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
     //   maxWidth: "20",
     // },
     {
-      label: `${t("Module Names")}`,
+      label: t("Module_Names"),
       id: "2",
       align: "right",
       minWidth: "300",
@@ -66,21 +66,21 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
     //   maxWidth: "250",
     // },
     {
-      label: `${t("Basic level")}`,
+      label: t("Basic_level"),
       id: "4",
       align: "center",
       minWidth: "270",
       maxWidth: "100%",
     },
     {
-      label: `${t("Advanced level")}`,
+      label: t("Advanced_level"),
       id: "5",
       align: "center",
       minWidth: "270",
       maxWidth: "100%",
     },
     {
-      label: `${t("Restricted level")}`,
+      label: t("Restricted_level"),
       id: "6",
       align: "center",
       minWidth: "270",
@@ -265,7 +265,7 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
   return (
     <div className="applicationPermission-content">
     <div className="application-permission-menu">
-        <label>Apply application permissions from:</label>
+        <label>{t("Apply_application_permissions_from")}:</label>
         <CRXMenu
             id={selectedUserGroup?.id}
             name={selectedUserGroup?.name}

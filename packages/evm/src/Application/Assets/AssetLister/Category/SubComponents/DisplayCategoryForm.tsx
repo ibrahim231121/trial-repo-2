@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { CRXHeading } from "@cb/shared";
+import { useTranslation } from "react-i18next";
 
 type DisplayCategoryFormProps = {
   isCategoryEmpty: boolean;
@@ -11,6 +12,7 @@ type DisplayCategoryFormProps = {
 };
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
+  const { t } = useTranslation<string>();
   const [displayErrors, setDisplayCategoryForm] = React.useState<string>('');
   const initialValueArray = [];
   for (const initialValue in props.initialValueObjects) {
@@ -18,7 +20,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
   }
 
   const validationSchema = initialValueArray.reduce(
-    (obj, item) => ({ ...obj, [item]: Yup.string().required('Required') }),
+    (obj, item) => ({ ...obj, [item]: Yup.string().required(t("Required")) }),
     {}
   );
   
@@ -27,7 +29,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
       {Object.keys(props.initialValueObjects).length > 0 && props.categoryObject.form.map((formObj: any) => (
         <div className="categoryFormAdded" key={formObj.formId}>
           <CRXHeading variant="h4" className="categoryFormTitle">
-            Category Forms{" "}
+          {t("Category_Forms")}{" "}
             {formObj.record !== undefined
               ? formObj.record.record.find((x: any) => x.key === "Name").value
               : formObj.name}
@@ -68,7 +70,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                       {errors[field.name === undefined ? field.value : field.name] !== undefined ? (
                         <div className="errorStyle">
                           <i className="fas fa-exclamation-circle"></i>
-                          <span>{field.name === undefined ? field.value : field.name}</span> is required
+                          <span>{field.name === undefined ? field.value : field.name}</span> {t("is_required")}
                           {setDisplayCategoryForm("errorBrdr")}
                         </div>
                       ) : null}

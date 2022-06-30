@@ -314,7 +314,6 @@ const MasterMain: React.FC<Props> = ({
 
 
   const retentionSpanText = (_: string, evidence: Evidence): JSX.Element => {
-    console.log('evidence In header', evidence);
     if (evidence.extendedHoldUntil != null) {
       if (moment(evidence.extendedHoldUntil).format('DD-MM-YYYY') == "31-12-9999") {
         //display just a infinity icon
@@ -337,7 +336,7 @@ const MasterMain: React.FC<Props> = ({
   }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
-      label: `${t("ID")}`,
+      label: t("ID"),
       id: "id",
       align: "right",
       dataComponent: () => null,
@@ -369,9 +368,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "200",
       width: "",
       detailedDataComponentId: "evidence",
+      attributeName: "Assets.Master.AssetName",
+      attributeType: "String"
     },
     {
-      label: `${t("Categories")}`,
+      label: `${t("Category")}`,  
       id: "categories",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
@@ -385,9 +386,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "250",
       width: "",
       visible: false,
+      attributeName: "Categories.Record",
+      attributeType: "CMTEntityRecordList"
     },
     {
-      label: `${t("Description")}`,
+      label: t("Description"),
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "dataTableEllipsesText"),
@@ -397,9 +400,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "338",
       width: "",
       maxWidth: "210",
+      attributeName: "Description",
+      attributeType: "String"
     },
     {
-      label: `${t("Retention Span")}`,
+      label: t("Retention_Span"),
       id: "holdUntill",
       align: "left",
       dataComponent: retentionSpanText,
@@ -410,9 +415,10 @@ const MasterMain: React.FC<Props> = ({
       width: "",
       maxWidth: "210",
       detailedDataComponentId: "evidence",
+      visible:false
     },
     {
-      label: `${t("Captured")}`,
+      label: t("Captured"),
       id: "recordingStarted",
       align: "center",
       dataComponent: dateDisplayFormat,
@@ -420,6 +426,8 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "230",
       searchFilter: true,
       searchComponent: searchDate,
+      attributeName: "Assets.Master.Recording.Started",
+      attributeType: "DateTime"
     },
     {
       label: `${t("AssetType")}`,
@@ -436,9 +444,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "250",
       visible: false,
       width: "",
+      attributeName: "Assets.Master.TypeOfAsset",
+      attributeType: "List"
     },
     {
-      label: `${t("Device")}`,
+      label: t("Device"),
       id: "unit",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -452,9 +462,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "250",
       width: "",
       visible: false,
+      attributeName: "Assets.Master.Unit",
+      attributeType: "CMTEntityRecord"
     },
     {
-      label: `${t("Station")}`,
+      label: t("Station"),
       id: "station",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -468,9 +480,11 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "250",
       width: "",
       visible: false,
+      attributeName: 'StationName',
+      attributeType: "CMTEntityRecord"
     },
     {
-      label: `${t("Username")}`,
+      label: t("User_Name"),
       id: "recordedBy",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, "linkColor"),
@@ -483,9 +497,11 @@ const MasterMain: React.FC<Props> = ({
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "210",
       width: "",
+      attributeName: "Assets.Master.Owners",
+      attributeType: "List"
     },
     {
-      label: `${t("FileStatus")}`,
+      label: t("File_Status"),
       id: "status",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -498,6 +514,8 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+      attributeName: "MasterAsset.Status",
+      attributeType: "List"
     },
   ]);
 
@@ -605,7 +623,7 @@ const MasterMain: React.FC<Props> = ({
   };
 
   const getFilteredEvidenceData = () => {
-    console.log("Evidence Data")
+    
     let gridFilter: GridFilter = {
       logic: "and",
       filters: []
@@ -614,8 +632,10 @@ const MasterMain: React.FC<Props> = ({
     searchData.forEach((item:any, index:number) => {
         let x: GridFilter = {
           operator: item.value.length > 1 ? "between" : "contains",
-          field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0]
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
         }
         gridFilter.filters?.push(x)
     })
@@ -676,9 +696,9 @@ const MasterMain: React.FC<Props> = ({
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />
           }
-          toolBarButton={
-              <CRXButton className="secondary manageUserBtn" onClick={() => getFilteredEvidenceData()}> Filter </CRXButton>
-          }
+          // toolBarButton={
+          //     <CRXButton className="secondary manageUserBtn" onClick={() => getFilteredEvidenceData()}> Filter </CRXButton>
+          // }
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
