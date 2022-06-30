@@ -1,14 +1,16 @@
 import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Categories, Forms } from './models/Categories';
-import { Bookmark, Evidence, Note } from './models/EvidenceModels';
+import { Asset, Bookmark, Evidence, Note, TimelinesSync } from './models/EvidenceModels';
 import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 var config = {
     headers: {
         'Content-Type': 'application/json',
         'TenantId': '1',
-        // 'Authorization': 'Bearer ' + localStorage.getItem('token')
+        'Authorization': 'Bearer ' + cookies.get("access_token")
     }
 }
 
@@ -41,8 +43,12 @@ export const SetupConfigurationAgent = {
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences'),
+    getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
+    getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url),
+    getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
     updateNote: (url: string, body: Note) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
     updateBookmark: (url: string, body: Bookmark) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
     deleteNote: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
     deleteBookmark: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
+    TimelineSync: (url: string, body: TimelinesSync[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
 }

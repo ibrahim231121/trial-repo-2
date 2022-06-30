@@ -25,6 +25,8 @@ import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { Radio } from "@material-ui/icons";
 import { CRXRadio } from "@cb/shared";
 import { CRXCheckBox } from "@cb/shared";
+import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
+import { EvidenceAgent } from "../../utils/Api/ApiAgent";
 
 
 var videoElements: any[] = [];
@@ -1267,7 +1269,7 @@ const VideoPlayerBase = (props: any) => {
 
   const saveOffsets = () => {
     var timelineHistoryArray: TimelineSyncHistory[] = [];
-    let body = timelinedetail.map((x: any) => {
+    let body : TimelinesSync[] = timelinedetail.map((x: any) => {
       var timelineHistoryObj: TimelineSyncHistory = {
         assetId: x.dataId,
         timeOffset: x.timeOffset,
@@ -1276,44 +1278,30 @@ const VideoPlayerBase = (props: any) => {
       }
       timelineHistoryArray.push(timelineHistoryObj)
 
-      let obj: any = {};
-      obj.AssetId = x.dataId;
-      obj.EvidenceId = EvidenceId;
-      obj.TimeOffset = x.timeOffset;
+      let obj: TimelinesSync = {
+        evidenceId: EvidenceId,
+        assetId: x.dataId,
+        timeOffset: x.timeOffset
+      }
       return obj;
     })
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        TenantId: "1",
-      },
-      body: JSON.stringify(body),
-    };
     const url = EVIDENCE_SERVICE_URL + "/Evidences/" + EvidenceId + "/TimelineSync";
-    fetch(url, requestOptions)
-      .then((response: any) => {
-        if (response.ok) {
-          toasterMsgRef.current.showToaster({
-            message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
-          });
-          var timelineSyncHistoryTemp: TimelineSyncHistoryMain[] = [{
-            maxTimelineDuration: timelineduration,
-            timelinesHistory: timelineHistoryArray
-          }];
-          setTimelineSyncHistory(timelineSyncHistoryTemp);
-          setTimelineSyncHistoryCounter(0);
-        } else {
-          toasterMsgRef.current.showToaster({
-            message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
-          });
-        }
-      })
-      .catch((err: any) => {
-        toasterMsgRef.current.showToaster({
-          message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
-        });
+    EvidenceAgent.TimelineSync(url, body).then(() => {
+      toasterMsgRef.current.showToaster({
+        message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
       });
+      var timelineSyncHistoryTemp: TimelineSyncHistoryMain[] = [{
+        maxTimelineDuration: timelineduration,
+        timelinesHistory: timelineHistoryArray
+      }];
+      setTimelineSyncHistory(timelineSyncHistoryTemp);
+      setTimelineSyncHistoryCounter(0);
+    })
+    .catch((err: any) => {
+      toasterMsgRef.current.showToaster({
+        message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
+      });
+    })
   }
 
   const seekSliderOnMarkerClick = (logtime : Date) => {

@@ -87,11 +87,18 @@ export interface Asset {
     owners: CMTEntityRecord[]
 }
 
+export interface TimelinesSync {
+    assetId: number
+    evidenceId: number
+    timeOffset: number
+}
 export interface Evidence {
     id: number
     categories: Category[]
-    assets: Asset
+    assets: Assets
     stationId: CMTEntityRecord
     retentionPolicyId: CMTEntityRecord
+    retainUntil: Date
+    createdOn: Date
 }
 

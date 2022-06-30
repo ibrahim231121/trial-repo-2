@@ -33,6 +33,8 @@ import { RestorePageSharp } from "@material-ui/icons";
 import { string } from "yup/lib/locale";
 import { useHistory } from "react-router";
 import RestrictAccessDialogue from "../AssetLister/RestrictAccessDialogue";
+import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
+import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
     {
@@ -151,36 +153,21 @@ const AssetDetailsTemplate = (props: any) => {
   const [openMap, setOpenMap] = React.useState(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
+  const [getAssetData, setGetAssetData] = React.useState<Evidence>();
+  const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
+  const [res, setRes] = React.useState<Asset>();
   const handleChange = () => {
     setOpenForm(true);
   };
 
-  const [getResponse, res] = useGetFetch<any>(
-    EVIDENCE_SERVICE_URL + "/Evidences/" + evidenceId + "/Assets/" + assetId,
-    {
-      "Content-Type": "application/json",
-      TenantId: "1",
-    }
-  );
-  const [getEvidenceCategoriesResponse, evidenceCategoriesResponse] =
-    useGetFetch<any>(
-      EVIDENCE_SERVICE_URL + "/Evidences/" + evidenceId + "/Categories",
-      {
-        "Content-Type": "application/json",
-        TenantId: "1",
-      }
-    );
-  const [assetData, getAssetData] = useGetFetch<any>(
-    EVIDENCE_SERVICE_URL + "/Evidences/" + evidenceId,
-    {
-      "Content-Type": "application/json",
-      TenantId: "1",
-    }
-  );
   useEffect(() => {
-    getResponse();
-    assetData();
-    getEvidenceCategoriesResponse();
+    EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
+      setGetAssetData(response);  
+      setEvidenceCategoriesResponse(response.categories)
+    });
+    const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
+    EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
+    
     dispatch(enterPathActionCreator({ val: "Asset Detail: " + assetName }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
