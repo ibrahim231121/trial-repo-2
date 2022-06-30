@@ -10,6 +10,8 @@ import { NotificationMessage } from '../../../Header/CRXNotifications/notificati
 import Cookies from 'universal-cookie';
 import moment from 'moment';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import { useTranslation } from "react-i18next";
+
 type AssignUserProps = {
   selectedItems: any[];
   filterValue: any[];
@@ -28,6 +30,8 @@ type ownersModel = {
 const cookies = new Cookies();
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
+
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const [assetOwners, setAssetOwners] = React.useState<ownersModel[]>([]);
@@ -66,7 +70,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     }
   }, [responseError]);
   useEffect(() => {
-    debugger;
     const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
     const optionalSticky: any = document.getElementsByClassName("optionalSticky");
     const altRef = alertRef.current;
@@ -84,7 +87,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   }, [alert]);
 
   const sendData = async () => {
-    debugger;
     const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
     await fetch(url, {
       method: 'POST',
@@ -93,7 +95,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     })
       .then(function (res) {
         if (res.ok) {
-          setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1000);
+          setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
           props.setOnClose();
           props.showToastMsg({
             message: "Asset Assignees updated",
@@ -140,7 +142,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       headers: { 'Content-Type': 'application/json', TenantId: '1' },
     })
     var response = await res.json();
-
     if (response != null) {
       let result = response.owners.map((x: any) => {
         let item: any = {
@@ -225,6 +226,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       })
         .then(function (res) {
           if (res.ok) {
+            setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
             props.setOnClose();
             props.showToastMsg({
               message: "Asset Assignees updated",
@@ -272,7 +274,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           {() => (
             <Form>
               <div className='categoryTitle'>
-                Users <b>*</b>
+              {t("Users")}<b>*</b>
               </div>
               <div >
                 <MultiSelectBoxCategory
@@ -305,17 +307,17 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => handleCheck(e)}
                 />
-                Apply to all assets in the group.
+                {t("Apply_to_all_assets_in_the_group")}.
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
-                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                    Save
+                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} >
+                    {t("Save")}
                   </CRXButton>
                 </div>
                 <div className='cancelBtn'>
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                    Cancel
+                  {t("Cancel")}
                   </CRXButton>
                 </div>
               </div>

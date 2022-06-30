@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import { CRXDataTable, CRXToaster, CRXIcon, CRXButton} from "@cb/shared";
+import React, { useEffect,useRef } from "react";
+import { useDispatch } from "react-redux";
+import { CRXDataTable,CRXToaster,CRXIcon,CRXButton } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -33,7 +34,6 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { useDispatch } from "react-redux";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -347,9 +347,10 @@ const MasterMain: React.FC<Props> = ({
       visible: false,
       width: "",
       minWidth: "250",
+      
     },
     {
-      label: `${t("AssetThumbnail")}`,
+      label: `${t("Asset_Thumbnail")}`,
       id: "assetId",
       align: "left",
       dataComponent: thumbTemplate,
@@ -358,7 +359,7 @@ const MasterMain: React.FC<Props> = ({
       width: ""
     },
     {
-      label: `${t("AssetID")}`,
+      label: `${t("Asset_ID")}`,
       id: "assetName",
       align: "left",
       dataComponent: assetNameTemplate,
@@ -372,7 +373,7 @@ const MasterMain: React.FC<Props> = ({
       attributeType: "String"
     },
     {
-      label: `${t("Category")}`,  
+      label: `${t("Category")}`,
       id: "categories",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplay(e, ""),
@@ -430,7 +431,7 @@ const MasterMain: React.FC<Props> = ({
       attributeType: "DateTime"
     },
     {
-      label: `${t("AssetType")}`,
+      label: `${t("Asset_Type")}`,
       id: "assetType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -501,7 +502,7 @@ const MasterMain: React.FC<Props> = ({
       attributeType: "List"
     },
     {
-      label: t("File_Status"),
+      label: `${t("File_Status")}`,
       id: "status",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -690,15 +691,14 @@ const MasterMain: React.FC<Props> = ({
     <>
       <CRXToaster ref={toasterRef} />
       
+      
       {rows && (
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
             <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />
           }
-          // toolBarButton={
-          //     <CRXButton className="secondary manageUserBtn" onClick={() => getFilteredEvidenceData()}> Filter </CRXButton>
-          // }
+          
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
@@ -716,7 +716,7 @@ const MasterMain: React.FC<Props> = ({
           selectedItems={selectedItems}
           showActionSearchHeaderCell={true}
           dragVisibility={true}
-          //showCheckBoxesCol={true}
+          showCheckBoxesCol={true}
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
