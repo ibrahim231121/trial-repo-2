@@ -19,14 +19,14 @@ type VideoPlayerNoteProps = {
     EvidenceId: any;
     NotetimePositon?: number;
     note: any;
-    Data:any;
-    setData: any;
     noteAssetId?: number;
     toasterMsgRef: any;
+    timelinedetail: any;
+    settimelinedetail: any;
 };
 
 const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
-    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,Data,setData,noteAssetId,toasterMsgRef} = props;
+    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail,settimelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -43,7 +43,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     const [description, setdescription] = React.useState(editNoteForm ? note.description : "");
 
     const [noteobj, setnoteobj] = React.useState<any>({
-        assetId: editNoteForm ? noteAssetId : AssetData.id,
+        assetId: editNoteForm ? noteAssetId : AssetData.dataId,
         createdOn: "",
         description: "",
         id: 0,
@@ -59,41 +59,41 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     }, []);
 
     React.useEffect(() => {
-        if(isSuccess.success && isSuccess.SuccessType == "Add"){
-            var tempData = [...Data];
-            tempData.forEach((x:any)=> 
-                        {if(x.id == noteobj.assetId){
-                            x.notes = [...x.notes, noteobj]
-                        }})
-            setData([...tempData]);
-            setOpenModal(false);
-            setopenNoteForm(false);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-        }
-        else if(isSuccess.success && isSuccess.SuccessType == "Update"){
-            var tempData = [...Data];
-            tempData.forEach((x:any)=> 
-                        {if(x.id == noteobj.assetId){
-                            x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
-                            x.notes = [...x.notes, noteobj];
-                        }})
-            setData([...tempData]);
-            setOpenModal(false);
-            setopenNoteForm(false);
-            seteditNoteForm(false);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-        }
-        else if(isSuccess.success && isSuccess.SuccessType == "Delete"){
-            var tempData = [...Data]//JSON.parse(JSON.stringify(Data));
-            tempData.forEach((x:any)=> 
-                        {if(x.id == noteobj.assetId){
-                            x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
-                        }})
-            setData([...tempData]);
-            setOpenModal(false);
-            setopenNoteForm(false);
-            seteditNoteForm(false);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+        if(isSuccess.success){
+            let tempData = [...timelinedetail];
+            if(isSuccess.SuccessType == "Add"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == noteobj.assetId){
+                                x.notes = [...x.notes, noteobj]
+                            }})
+                settimelinedetail([...tempData]);
+                setOpenModal(false);
+                setopenNoteForm(false);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+            }
+            else if(isSuccess.SuccessType == "Update"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == noteobj.assetId){
+                                x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
+                                x.notes = [...x.notes, noteobj];
+                            }})
+                settimelinedetail([...tempData]);
+                setOpenModal(false);
+                setopenNoteForm(false);
+                seteditNoteForm(false);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+            }
+            else if(isSuccess.SuccessType == "Delete"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == noteobj.assetId){
+                                x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
+                            }})
+                settimelinedetail([...tempData]);
+                setOpenModal(false);
+                setopenNoteForm(false);
+                seteditNoteForm(false);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+            }
         }
     }, [isSuccess]);
 
@@ -114,7 +114,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     };
 
     const AddNote = async () => {
-        const AssetId = AssetData.id;
+        const AssetId = AssetData.dataId;
         const body = {
             noteTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
             position: NotetimePositon,

@@ -25,14 +25,14 @@ type VideoPlayerSnapshotProps = {
     EvidenceId: any;
     BookmarktimePositon?: number;
     bookmark: any;
-    Data:any;
-    setData: any;
     bookmarkAssetId?: number;
     toasterMsgRef: any;
+    timelinedetail: any;
+    settimelinedetail: any;
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,Data,setData,bookmarkAssetId,toasterMsgRef} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,settimelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -54,7 +54,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     });
 
     const [bookmarkobj, setbookmarkobj] = React.useState<any>({
-        assetId: editBookmarkForm ? bookmarkAssetId : AssetData.id,
+        assetId: editBookmarkForm ? bookmarkAssetId : AssetData.dataId,
         bookmarkTime: "",
         createdOn: "",
         modifiedOn: null,
@@ -75,44 +75,45 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     }, []);
 
     React.useEffect(() => {
-        if(isSuccess.success && isSuccess.SuccessType == "Add"){
-            var tempData = [...Data];
-            tempData.map((x:any)=> 
-                        {if(x.id == bookmarkobj.assetId){
-                            x.bookmarks = [...x.bookmarks, bookmarkobj]
-                        }})
-            setData([...tempData]);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-            if(!isSnapshotRequired){
+        if(isSuccess.success){
+            var tempData = [...timelinedetail];
+            if(isSuccess.SuccessType == "Add"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == bookmarkobj.assetId){
+                                x.bookmarks = [...x.bookmarks, bookmarkobj]
+                            }})
+                settimelinedetail([...tempData]);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+                if(!isSnapshotRequired){
+                    setOpenModal(false);
+                    setopenBookmarkForm(false);
+                }
+            }
+            else if(isSuccess.SuccessType == "Update"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == bookmarkobj.assetId){
+                                x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
+                                x.bookmarks = [...x.bookmarks, bookmarkobj];
+                            }})
+                settimelinedetail([...tempData]);
                 setOpenModal(false);
                 setopenBookmarkForm(false);
+                seteditBookmarkForm(false);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
+            }
+            else if(isSuccess.SuccessType == "Delete"){
+                tempData.forEach((x:any)=> 
+                            {if(x.dataId == bookmarkobj.assetId){
+                                x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
+                            }})
+                settimelinedetail([...tempData]);
+                setOpenModal(false);
+                setopenBookmarkForm(false);
+                seteditBookmarkForm(false);
+                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
             }
         }
-        else if(isSuccess.success && isSuccess.SuccessType == "Update"){
-            var tempData = [...Data];
-            tempData.map((x:any)=> 
-                        {if(x.id == bookmarkobj.assetId){
-                            x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
-                            x.bookmarks = [...x.bookmarks, bookmarkobj];
-                        }})
-            setData([...tempData]);
-            setOpenModal(false);
-            setopenBookmarkForm(false);
-            seteditBookmarkForm(false);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-        }
-        else if(isSuccess.success && isSuccess.SuccessType == "Delete"){
-            var tempData = [...Data]//JSON.parse(JSON.stringify(Data));
-            tempData.map((x:any)=> 
-                        {if(x.id == bookmarkobj.assetId){
-                            x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
-                        }})
-            setData([...tempData]);
-            setOpenModal(false);
-            setopenBookmarkForm(false);
-            seteditBookmarkForm(false);
-            setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-        }
+        
     }, [isSuccess]);
 
     React.useEffect(() => {
@@ -153,7 +154,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     };
 
     const AddBookmark = async () => {
-        const AssetId = AssetData.id;
+        const AssetId = AssetData.dataId;
         const body = {
             bookmarkTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
             position: BookmarktimePositon,

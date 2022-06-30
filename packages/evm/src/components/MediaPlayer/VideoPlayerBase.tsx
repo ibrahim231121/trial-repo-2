@@ -42,6 +42,7 @@ type Timeline = {
   src: string;
   id: string;
   dataId: string;
+  unitId: string;
   enableDisplay: boolean,
   indexNumberToDisplay: number,
   camera: string,
@@ -402,6 +403,7 @@ const VideoPlayerBase = (props: any) => {
             src: temptimelinedetail.src,
             id: temptimelinedetail.id,
             dataId: temptimelinedetail.dataId,
+            unitId: temptimelinedetail.unitId,
             enableDisplay: temptimelinedetail.enableDisplay,
             indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
             camera: temptimelinedetail.camera,
@@ -425,6 +427,7 @@ const VideoPlayerBase = (props: any) => {
           src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
           id: "Video-" + x,
           dataId: data[x].id,
+          unitId: data[x].unitId,
           enableDisplay: x == 0 ? true : false,
           indexNumberToDisplay: x == 0 ? 1 : 0,
           camera: data[x].camera,
@@ -1825,28 +1828,28 @@ const VideoPlayerBase = (props: any) => {
             openBookmarkForm={openBookmarkForm}
             editBookmarkForm={editBookmarkForm}
             videoHandle={videoHandlers[0]}
-            AssetData={data[0]}
+            AssetData={timelinedetail[0]}
             EvidenceId={EvidenceId}
             BookmarktimePositon={bookmarktime}
             bookmark={bookmark}
-            Data={data}
-            setData={setdata}
             bookmarkAssetId={bookmarkAssetId}
             toasterMsgRef={toasterMsgRef}
+            timelinedetail={timelinedetail}
+            settimelinedetail={settimelinedetail}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
             seteditNoteForm={seteditNoteForm}
             openNoteForm={openNoteForm}
             editNoteForm={editNoteForm}
-            AssetData={data[0]}
+            AssetData={timelinedetail[0]}
             EvidenceId={EvidenceId}
             NotetimePositon={bookmarktime}
             note={note}
-            Data={data}
-            setData={setdata}
             noteAssetId={noteAssetId}
             toasterMsgRef={toasterMsgRef}
+            timelinedetail={timelinedetail}
+            settimelinedetail={settimelinedetail}
           />}
 
           <TimelineSyncInstructionsModal
