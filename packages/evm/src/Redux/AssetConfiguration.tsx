@@ -1,20 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { EvidenceAgent } from '../utils/Api/ApiAgent';
+import { Evidence } from '../utils/Api/models/EvidenceModels';
 import { EVIDENCE_ASSET_DATA_URL  } from '../utils/Api/url'
 
 
 export const getEvidenceinfosync: any = createAsyncThunk(
     'GetAllEvidence',
     async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-        };
-        const resp = await fetch(EVIDENCE_ASSET_DATA_URL, requestOptions);
-        
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
+        return await EvidenceAgent.getEvidences().then((response:Evidence[]) => response)
     }
 );
 

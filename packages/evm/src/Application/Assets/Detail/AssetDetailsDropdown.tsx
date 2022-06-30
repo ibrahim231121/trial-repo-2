@@ -4,6 +4,8 @@ import "./AssetDetailsDropdown.scss";
 import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url';
 import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 import GoogleMap from "../../../map/google/GoogleMap";
+import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
+import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 
 
 type propsObject = {
@@ -46,64 +48,36 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updat
   }
 
 
-const handleNoteEdit = (noteData:any)=>{
-  const noteBody = {
+const handleNoteEdit = (noteData:Note)=>{
+  const noteBody : Note = {
     assetId: noteData.assetId, 
     id: noteData.id,
     position: noteData.position,
     description: noteData.description,
-    version: noteData.version
-};
-const requestOptions = {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      TenantId: "1",
-    },
-    body: JSON.stringify(noteBody)
+    version: noteData.version,
+    noteTime: noteData.noteTime,
+    madeBy: noteData.madeBy
   };
-const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+noteData.assetId+"/Notes/"+noteData.id;
-fetch(url, requestOptions)
-.then((response: any) => {
-    if (response.ok) {
-      targetRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});    
-    } 
-})
-.catch((err: any) => {
-
-    console.error(err);
-
-
-});
+  const url = "/Evidences/" + evidenceId + "/Assets/" + noteData.assetId + "/Notes/" + noteData.id;
+  EvidenceAgent.updateNote(url, noteBody).then(() => {
+    targetRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});    
+  })
 }
 
-const handleBookmarkEdit= (bookmarkData:any)=>{
-          const bookmarkBody = {
-            id: bookmarkData.id,
-            bookmarkTime: bookmarkData.bookmarkTime,
-            position: bookmarkData.position,
-            description: bookmarkData.description,
-            madeBy: bookmarkData.madeBy,
-            version: bookmarkData.version
-          };
-          const requestOptions = {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-            },
-            body: JSON.stringify(bookmarkBody),
-          };
-          const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+bookmarkData.assetId+"/Bookmarks/"+bookmarkData.id;
-          fetch(url, requestOptions)
-          .then((response: any) => {
-            if (response.ok) {
-              targetRef.current.showToaster({message: "Bookmark Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});  
-            } 
-          })
-          .catch((err: any) => { 
-            console.error(err);
-          });
+const handleBookmarkEdit= (bookmarkData:Bookmark)=>{
+  const bookmarkBody: Bookmark = {
+    id: bookmarkData.id,
+    assetId: bookmarkData.assetId,
+    bookmarkTime: bookmarkData.bookmarkTime,
+    position: bookmarkData.position,
+    description: bookmarkData.description,
+    madeBy: bookmarkData.madeBy,
+    version: bookmarkData.version
+  };
+  const url = "/Evidences/" + evidenceId + "/Assets/" + bookmarkData.assetId + "/Bookmarks/" + bookmarkData.id;
+  EvidenceAgent.updateBookmark(url, bookmarkBody).then(() => {
+    targetRef.current.showToaster({message: "Bookmark Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});  
+  })
 }
 
 
@@ -118,56 +92,24 @@ const handleDelete = (noteId:any,assetId:any)=>{
 }
 
 const handleBookmarkDelete = (noteId:any,assetId:any)=>{
-  const requestOptions = {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      TenantId: "1",
-    },
-  };
-
-const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Bookmarks/"+noteId;
-fetch(url, requestOptions)
-.then((response: any) => {
-    if (response.ok) {
-      targetRef.current.showToaster({message: "Bookmark Delete Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
-      var tempData = [...data]
-      tempData[0].bookmarks = tempData[0].bookmarks.filter((x:any) => x.id !== noteId);
-      setData(tempData)
-    } 
-})
-.catch((err: any) => {
-    console.error(err);
-});
+  const url = "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Bookmarks/"+noteId;
+  EvidenceAgent.deleteBookmark(url).then(() => {
+    targetRef.current.showToaster({message: "Bookmark Delete Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+    var tempData = [...data]
+    tempData[0].bookmarks = tempData[0].bookmarks.filter((x:any) => x.id !== noteId);
+    setData(tempData)
+  })
 }
 
 
 const handleNoteDelete = (noteId:any,assetId:any)=>{
-    
- 
-    const requestOptions = {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          TenantId: "1",
-        },
-      };
-
-    const url = EVIDENCE_SERVICE_URL + "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Notes/"+noteId;
-    fetch(url, requestOptions)
-    .then((response: any) => {
-        if (response.ok) {
-          targetRef.current.showToaster({message: "Note Deleted Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
-          var tempData = [...data]
-          tempData[0].notes = tempData[0].notes.filter((x:any) => x.id !== noteId);
-          setData(tempData)
-        } 
-    })
-    .catch((err: any) => {
-        // setError(true);
-        console.error(err);
-    });
-
+  const url = "/Evidences/"+evidenceId+"/Assets/"+assetId+"/Notes/"+noteId;
+  EvidenceAgent.deleteNote(url).then(() => {
+    targetRef.current.showToaster({message: "Note Deleted Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+    var tempData = [...data]
+    tempData[0].notes = tempData[0].notes.filter((x:any) => x.id !== noteId);
+    setData(tempData)
+  })
 }
 const callBackOnMarkerClick=(logtime:any)=>{
   const milliseconds = logtime * 1000
