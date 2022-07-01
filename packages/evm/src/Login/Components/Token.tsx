@@ -5,22 +5,12 @@ import { useHistory } from "react-router";
 import jwt_decode  from 'jwt-decode'
 import ApplicationPermissionContext from '../../ApplicationPermission/ApplicationPermissionContext'
 import {TokenType} from '../../types'
+import { AuthenticationAgent } from "../../utils/Api/ApiAgent";
+import { Token } from "../../utils/Api/models/AuthenticationModels";
 
-// type TokenType = {
-//   AssignedGroups:string;
-//   AssignedModules:string;
-//   ClientIP:string;
-//   Email:string;
-//   Id:string;
-//   TenantId:string;
-//   UserId:string;
-//   exp:number;
-//   iat:number;
-//   nbf:number;
-// }
 
-export default function Token(props:any) {
-
+const TokenPage=(props:any)=> {
+  const url = props.match.params.token
   const {
     moduleIds,
     setModuleIds
@@ -34,20 +24,13 @@ export default function Token(props:any) {
       history.push("/assets");
     } else {
      
-      
-      fetch(getVerificationURL(props.match.params.token))
-  
-        .then((res) => res.json())
-        
-        .then((response) =>
-        
+    
+        AuthenticationAgent.getAccessToken(url).then((response:Token) => response)
+        .then((response) => 
         authenticate(response.accessToken,response.idToken,response.refreshToken
           , () => {
             var accessTokenDecode :TokenType =  jwt_decode(response.accessToken);
-            // 
-            // 
-            // 
-            // 
+       
             if(accessTokenDecode !== null &&  accessTokenDecode.AssignedModules && accessTokenDecode.AssignedModules !== ""){
                 var moduleIdsAssigned = accessTokenDecode.AssignedModules
                                                 .split(',')
@@ -59,7 +42,10 @@ export default function Token(props:any) {
             history.push("/assets");
           })
         );
+        
     }
   },[]);
   return null;
 }
+
+export default TokenPage

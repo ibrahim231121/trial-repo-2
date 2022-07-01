@@ -3,6 +3,8 @@ import { StringIfPlural } from 'react-i18next';
 import { Categories, Forms } from './models/Categories';
 import { Asset, Bookmark, Evidence, Note, TimelinesSync } from './models/EvidenceModels';
 import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
+import { getVerificationURL } from "../../utils/settings";
+import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
@@ -51,4 +53,8 @@ export const EvidenceAgent = {
     deleteNote: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
     deleteBookmark: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
     TimelineSync: (url: string, body: TimelinesSync[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
+}
+
+export const AuthenticationAgent = {
+    getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'')
 }
