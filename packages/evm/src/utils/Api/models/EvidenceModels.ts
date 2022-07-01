@@ -92,6 +92,50 @@ export interface TimelinesSync {
     evidenceId: number
     timeOffset: number
 }
+export interface AssetViewReason {
+    id: number
+    assetId: number
+    cmtUserRecId: number
+    sourceIPAddress: string
+    viewReason: string
+}
+export interface AddOwner {
+    evidenceId: number,
+    assetId: number,
+    owners: number[]
+}
+export interface ExtendRetention {
+    id: number,
+    extendedDays: number
+}
+
+export interface PermissionModel {
+    isOneTimeViewable: boolean,
+    isDownloadable: boolean,
+    isAvailable: boolean,
+    isViewable: boolean,
+    isMetadataOnly: boolean
+  }
+
+  export interface SharedModel {
+    expiryDuration: number,
+    by: number,
+    on: Date,
+    status: string,
+    type: string
+  }
+
+  export interface RevokedModel {
+    by: number,
+    on: Date,
+  }
+export interface AssetSharingModel {
+    message: string,
+    permissons: PermissionModel,
+    shared: SharedModel,
+    revoked: RevokedModel,
+    version: string
+}
 export interface Evidence {
     id: number
     categories: Category[]
@@ -100,5 +144,6 @@ export interface Evidence {
     retentionPolicyId: CMTEntityRecord
     retainUntil: Date
     createdOn: Date
+    extendedRetainUntil: Date
 }
 

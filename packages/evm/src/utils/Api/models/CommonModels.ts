@@ -1,7 +1,7 @@
 export interface CMTEntityRecord {
-    iD: string
-    cMTFieldName: string
-    cMTFieldValue: number
+    id: string
+    cmtFieldName: string
+    cmtFieldValue: number
     record: Record[]
 }
 export interface Record {

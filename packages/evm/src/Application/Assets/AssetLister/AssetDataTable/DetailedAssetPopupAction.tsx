@@ -12,6 +12,7 @@ import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
 import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 
 type Props = {
   row?: any;
@@ -82,19 +83,12 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
  };
 
   const onConfirm = async () => {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
-    const requestOptions = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'TenantId': '1'}
+    const url = '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
 
-    };
-    await fetch(url,requestOptions)
-    .then(async function(res) {
-      if (res.ok) {
-        setIsOpen(false);
-        await setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
-        showToastMsg();
-      }
+    EvidenceAgent.setPrimaryAsset(url).then(() => {
+      setIsOpen(false);
+      setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
+      showToastMsg();
     })
     .catch(function (error) {
       return error;

@@ -11,7 +11,9 @@ import { addNotificationMessages } from '../../../../Redux/notificationPanelMess
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";
 import { log } from 'console';
-import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import { Evidence, ExtendRetention } from '../../../../utils/Api/models/EvidenceModels';
+import { useTranslation } from 'react-i18next';
 
 type ManageRetentionProps = {
   items: any[];
@@ -47,17 +49,13 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     CMTFieldValue: number
   }
 
-  type evidenceModel = {
-    Id: any,
-    ExtendedDays: number,
-  }
   
   
   const [retention, setRetention] = React.useState<string>("")
   const [currentRetention, setCurrentRetention] = React.useState<string>("-")
   const [originalRetention, setOriginalRetention] = React.useState<string>("-")
   
-  const [retentionList, setRetentionList] = React.useState<evidenceModel[]>([])
+  const [retentionList, setRetentionList] = React.useState<ExtendRetention[]>([])
   
   const [retentionDays, setRetentionDays] = React.useState<number>(0)
   const [responseError,setResponseError] = React.useState<string>('');
@@ -118,14 +116,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }, [alert]);
 
   const getRetentionData = async () => {
-    const url = EVIDENCE_SERVICE_URL + "/Evidences/" + `${props.rowData.id}`
-
-    const res = await fetch(url, {
-      method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
-    })
-    var response = await res.json();
-    if (response != null) {
+    EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
       setOriginalRetention(moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
       if (response.extendedRetainUntil != null) {
         debugger;
@@ -140,8 +131,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         }
         setRetentionOpt((prev: any) => [...prev, { value: "3", label: `${t("Revert_to_original_retention")}`, Comp: () => { } }])
       }
-
-    }
+    });
   }
   const onSubmitForm = async () => {
     console.log('Props_Items', props.items[0]);
@@ -152,18 +142,18 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     var sdaasd = [...retentionList];
     if (props.items.length > 1) {
       props.items.forEach((el) => {
-        var evidenceData: evidenceModel = {
-          Id: el.evidence.id,
-          ExtendedDays: retentionDays
+        var evidenceData: ExtendRetention = {
+          id: el.evidence.id,
+          extendedDays: retentionDays
         }
         sdaasd.push(evidenceData)
       })
     }
     else
     {
-      var evidenceData: evidenceModel = {
-        Id: props.rowData.id,
-        ExtendedDays: retentionDays
+      var evidenceData: ExtendRetention = {
+        id: props.rowData.id,
+        extendedDays: retentionDays
       }
       sdaasd.push(evidenceData)
     }
@@ -172,34 +162,28 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   };
   const sendData = async () => {
-    debugger;
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/Retention/' + `${retention}`
+    const url = '/Evidences/Retention/' + `${retention}`
+    EvidenceAgent.updateRetentionPolicy(url, retentionList).then(() => {
+      props.setOnClose();
+      props.showToastMsg({
+        message: (retention == "1" || retention == "2") ? "Retention Extended":"Retention Reverted",
+        variant: "success",
+        duration: 7000,
+        clearButtton: true,
+      });
+    })
+    .catch(function (error) {
+      setAlert(true);
+      setResponseError(
+        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+      );
+      return error;
+    })
     await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
       body: JSON.stringify(retentionList)
     })
-      .then(function (res) {
-        
-        if (res.ok) {
-          props.setOnClose();
-          props.showToastMsg({
-            message: (retention == "1" || retention == "2") ? t("Retention_Extended"): t("Retention_Reverted"),
-            variant: "success",
-            duration: 7000,
-            clearButtton: true,
-          });
-          
-        } else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        }
-      })
-      .catch(function (error) {
-        return error;
-      })
   }
 
   const cancelBtn = () => {

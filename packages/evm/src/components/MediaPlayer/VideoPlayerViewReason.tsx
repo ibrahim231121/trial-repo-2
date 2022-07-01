@@ -14,6 +14,8 @@ import CRXAppDropdown from '../../Application/Header/AppBarMenu/AppBarLinks';
 import axios from 'axios';
 
 import { useHistory } from "react-router";
+import { EvidenceAgent } from '../../utils/Api/ApiAgent';
+import { AssetViewReason } from '../../utils/Api/models/EvidenceModels';
 
 
 type VideoPlayerViewReasonProps = {
@@ -40,7 +42,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     const alertRef = useRef(null);
     const [onSave, setOnSave] = useState(true);
     const [descriptionErr, setdescriptionErr] = React.useState("");
-    const [reason, setReason] = React.useState<string | null>("Reason 1");
+    const [reason, setReason] = React.useState<string>("Reason 1");
     const [description, setdescription] = React.useState("");
     const [otherReason, setOtherReason] = React.useState(false);
     const [ip, setIP] = useState('');
@@ -75,40 +77,24 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     };
 
     const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
-
         const AssetId = AssetData.id;
-        const body = {
-            id: null,
+        const body : AssetViewReason = {
+            id: 0,
             assetId: AssetId,
             cmtUserRecId: 1,
             sourceIPAddress: ip,
-            ViewReason: reason == "Other" ? description : reason,
+            viewReason: reason == "Other" ? description : reason,
         };
-        const AssetViewReasonURL = EVIDENCE_SERVICE_URL + "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
-        await fetch(AssetViewReasonURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', TenantId: '1' },
-            body: JSON.stringify(body)
+        const AssetViewReasonURL = "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
+        EvidenceAgent.addAssetViewReason(AssetViewReasonURL, body).then(()=>{
+            setViewReasonControlsDisabled(false);
         })
-            .then(function (response) {
-                if (response.ok) {
-                    setViewReasonControlsDisabled(false);
-                    return response.json();
-                }
-                else if (response.status == 500) {
-                    setAlert(true);
-                    setResponseError(
-                        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                    );
-                } else return response.text();
-            })
-            .catch(function (error) {
-                return error;
-            });
-
-
-
-
+        .catch((e:any) => {
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
+        })
         setOpenModal(false);
         setOpenViewReason(false);
     };

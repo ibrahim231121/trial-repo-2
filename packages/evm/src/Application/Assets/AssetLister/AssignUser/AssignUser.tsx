@@ -10,6 +10,9 @@ import { NotificationMessage } from '../../../Header/CRXNotifications/notificati
 import Cookies from 'universal-cookie';
 import moment from 'moment';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import { AddOwner, Asset } from '../../../../utils/Api/models/EvidenceModels';
+import { CMTEntityRecord } from '../../../../utils/Api/models/CommonModels';
 import { useTranslation } from "react-i18next";
 
 type AssignUserProps = {
@@ -22,11 +25,6 @@ type AssignUserProps = {
   showToastMsg: (obj: any) => any;
 };
 
-type ownersModel = {
-  evidenceId: any,
-  assetId: any,
-  owners: number[]
-}
 const cookies = new Cookies();
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
@@ -34,7 +32,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
-  const [assetOwners, setAssetOwners] = React.useState<ownersModel[]>([]);
+  const [assetOwners, setAssetOwners] = React.useState<AddOwner[]>([]);
   const [responseError, setResponseError] = React.useState<string>('');
   const [alert, setAlert] = React.useState<boolean>(false);
   const alertRef = useRef(null);
@@ -87,33 +85,24 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   }, [alert]);
 
   const sendData = async () => {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-      body: JSON.stringify(assetOwners)
-    })
-      .then(function (res) {
-        if (res.ok) {
-          setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
-          props.setOnClose();
-          props.showToastMsg({
-            message: "Asset Assignees updated",
-            variant: "success",
-            duration: 7000,
-            clearButtton: true,
-          });
-        }
-        else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-          );
-        }
-      })
-      .catch(function (error) {
-        return error;
+    const url = '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
+    EvidenceAgent.addUsersToMultipleAsset(url, assetOwners).then(() => {
+      setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1000);
+      props.setOnClose();
+      props.showToastMsg({
+        message: "Asset Assignees updated",
+        variant: "success",
+        duration: 7000,
+        clearButtton: true,
       });
+    })
+    .catch(function (error) {
+      setAlert(true);
+        setResponseError(
+          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+        );
+      return error;
+    });
   }
   const getData = () => {
 
@@ -134,16 +123,9 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     }
   }
   const getMasterAsset = async () => {
-
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
-
-    const res = await fetch(url, {
-      method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
-    })
-    var response = await res.json();
-    if (response != null) {
-      let result = response.owners.map((x: any) => {
+    const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
+    EvidenceAgent.getAsset(url).then((response: any) => {
+      let result = response.owners.map((x: CMTEntityRecord) => {
         let item: any = {
           id: x.id.split("_")[2],
           label: x.record.length > 0 ? x.record.filter((t: any) => t.key === 'UserName')[0].value : ""
@@ -151,7 +133,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         return item
       })
       props.setFilterValue(() => result);
-    }
+    })
   }
 
   React.useEffect(() => {
@@ -204,7 +186,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     if (props.selectedItems.length > 1) {
       var tempOwnerList = [...assetOwners];
       props.selectedItems.forEach((el) => {
-        var temp: ownersModel = {
+        var temp: AddOwner = {
           evidenceId: el.id,
           assetId: el.assetId,
           owners: props.filterValue.map(x => x.id)
@@ -214,37 +196,24 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       setAssetOwners(tempOwnerList);
     }
     else {
-      const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
-
-      if (props.filterValue?.length !== 0) {
-        //props.setActiveForm((prev: any) => prev + 1);
-      }
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-        body: JSON.stringify(props.filterValue.map(x => x.id))
-      })
-        .then(function (res) {
-          if (res.ok) {
-            setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
-            props.setOnClose();
-            props.showToastMsg({
-              message: "Asset Assignees updated",
-              variant: "success",
-              duration: 7000,
-              clearButtton: true,
-            });
-          }
-          else if (res.status == 500) {
-            setAlert(true);
-            setResponseError(
-              "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-          }
-        })
-        .catch(function (error) {
-          return error;
+      const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
+      EvidenceAgent.addUsersToAsset(url, props.filterValue.map(x => x.id)).then(() => {
+        props.setOnClose();
+        props.showToastMsg({
+          message: "Asset Assignees updated",
+          variant: "success",
+          duration: 7000,
+          clearButtton: true,
         });
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setAlert(true);
+        setResponseError(
+          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+        );
+        return error;
+      });
     }
   };
 

@@ -1286,7 +1286,7 @@ const VideoPlayerBase = (props: any) => {
       return obj;
     })
     const url = EVIDENCE_SERVICE_URL + "/Evidences/" + EvidenceId + "/TimelineSync";
-    EvidenceAgent.TimelineSync(url, body).then(() => {
+    EvidenceAgent.timelineSync(url, body).then(() => {
       toasterMsgRef.current.showToaster({
         message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
       });
@@ -1368,7 +1368,7 @@ const VideoPlayerBase = (props: any) => {
               <VideoScreen
                 setData={setdata}
                 evidenceId={EvidenceId}
-                data={props.data}
+                data={data}
                 isPlaying={isPlaying}
                 timelinedetail={timelinedetail}
                 settimelinedetail={settimelinedetail}

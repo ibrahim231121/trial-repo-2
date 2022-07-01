@@ -9,6 +9,8 @@ import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
+import { Bookmark } from '../../utils/Api/models/EvidenceModels';
+import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 
 type VideoPlayerSnapshotFormProps = {
     description: string;
@@ -278,69 +280,42 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     }
 
     const onUpdate = async () => {
-        const body = {
+        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
+        const body : Bookmark = {
             id: bookmark.id,
+            assetId: bookmark.assetId,
             bookmarkTime: bookmark.bookmarkTime,
             position: bookmark.position,
             description: formpayload.description,
             madeBy: bookmark.madeBy,
             version: bookmark.version
         };
-        const requestOptions = {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-            },
-            body: JSON.stringify(body),
-          };
-        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
-        fetch(url, requestOptions)
-        .then((response: any) => {
-            if (response.ok) {
-                setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: body.id, madeBy: body.madeBy, position: body.position, version: body.version, createdOn: bookmark.createdOn, modifiedOn: bookmark.modifiedOn })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
-                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
-            } else {
-                setAlert(true);
-                setResponseError(
-                    "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                );
-            }
+        EvidenceAgent.updateBookmark(url, body).then(() => {
+            setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: body.id, madeBy: body.madeBy, position: body.position, version: body.version, createdOn: bookmark.createdOn, modifiedOn: bookmark.modifiedOn })
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
+            toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});        
         })
         .catch((err: any) => {
-            // setError(true);
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
             console.error(err);
         });
     };
 
     const onDelete = async () => {
-        const body = {
-            id: bookmark.id
-        };
-        const requestOptions = {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-            },
-          };
         const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
-        fetch(url, requestOptions)
-        .then((response: any) => {
-            if (response.ok) {
-                setbookmarkobj({ ...bookmarkobj, id: body.id })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
-                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
-            } else {
-                setAlert(true);
-                setResponseError(
-                    "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                );
-            }
+        EvidenceAgent.deleteBookmark(url).then(() => {
+            setbookmarkobj({ ...bookmarkobj, id: bookmark.id })
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
+            toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
         })
         .catch((err: any) => {
-            // setError(true);
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
             console.error(err);
         });
     };

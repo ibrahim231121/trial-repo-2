@@ -5,12 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
-import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { EVIDENCE_SERVICE_URL } from "../../../../utils/Api/url";
 import moment from "moment";
 import { log } from 'console';
 import { Link } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import { AssetSharingModel, PermissionModel, RevokedModel, SharedModel } from '../../../../utils/Api/models/EvidenceModels';
+import { useTranslation } from 'react-i18next';
 
 type ShareAssetProps = {
   items: any[];
@@ -59,34 +60,6 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     Id: any,
     ExtendedDays: number,
   }
-  type PermissionModel = {
-    isOneTimeViewable: boolean,
-    isDownloadable: boolean,
-    isAvailable: boolean,
-    isViewable: boolean,
-    isMetadataOnly: boolean
-  }
-  type SharedModel = {
-    expiryDuration: number,
-    by: number,
-    on: Date,
-    status: string,
-    type: string
-  }
-  type RevokedModel = {
-    by: number,
-    on: Date,
-  }
-  type AssetSharingModel = 
-    {
-        Message: string,
-        Permissons: PermissionModel,
-        Shared: SharedModel,
-        Revoked: RevokedModel,
-        //CreatedOn
-        //ModifiedOn
-        Version: string
-    }
   const linkExpireOptions = [
     { value: 3, displayText: t("Infinite") },
     { value: 2, displayText: t("Days") },
@@ -131,63 +104,50 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     setLinkExpireType(e.target.value);
 }
   const onSubmitForm = async () => {
-    debugger;
     var temp: AssetSharingModel = {
-      Message: email,
-      Permissons: {
+      message: email,
+      permissons: {
         isOneTimeViewable: viewableOnce,
         isDownloadable: downloadable,
         isAvailable: true,
         isViewable: true,
         isMetadataOnly: metaDataCheck
       },
-      Shared: {
+      shared: {
         expiryDuration: parseInt(linkExpire),
         by: 1,
         on: new Date("2021-03-08T15:14:53.251Z"),
         status: 'InProgress',
         type: 'Email'
       },
-      Revoked: {
+      revoked: {
         by: 1,
         on: new Date("2021-03-08T15:14:53.251Z"),
       },
-      Version: ''
+      version: ''
     }
 
     setAssetSharing(temp);
 
   };
   const sendData = async () => {
-    debugger;
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
-    await fetch(url, 
-      {
-        method:'POST',
-        headers:{ 'Content-Type': 'application/json', TenantId:'1', 'Authorization': `Bearer ${cookies.get('access_token')}`},
-        body: JSON.stringify(assetSharing)
-      })
-      .then(function (res) {
-        if (res.ok) {
-          debugger
-          props.setOnClose();
-          props.showToastMsg({
-            message: t("Share_email_sent_to_recipients"),
-            variant: "success",
-            duration: 7000,
-            clearButtton: true,
-          });
-        }
-        else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        }
-      })
-      .catch(function (error) {
-        return error;
+    const url = '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
+    EvidenceAgent.shareAsset(url, assetSharing).then(() => {
+      props.setOnClose();
+      props.showToastMsg({
+        message: "Share email sent to recipients",
+        variant: "success",
+        duration: 7000,
+        clearButtton: true,
       });
+    })
+    .catch(function (error) {
+      setAlert(true);
+      setResponseError(
+        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+      );
+      return error;
+    });
   }
 
   const cancelBtn = () => {
