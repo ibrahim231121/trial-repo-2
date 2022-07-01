@@ -749,14 +749,14 @@ const CreateTemplate = (props: any) => {
         }
       >
         <MenuItem onClick={cloneTemplate}>
-        // <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
+        <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
                 <i className="far fa-copy"></i>
               </div>
               <div className="crx-menu-list">Clone template</div>
             </div>
-          // </Link>
+          </Link>
         </MenuItem>
         <MenuItem>
           <div className="crx-meu-content groupingMenu crx-spac">

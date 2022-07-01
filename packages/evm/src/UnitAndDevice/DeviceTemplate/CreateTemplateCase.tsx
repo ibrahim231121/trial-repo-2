@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useRef} from 'react';
 import { Field, FieldArray, ErrorMessage } from 'formik';
 import { CRXTooltip } from '@cb/shared';
 import { Select, MenuItem, ListItemText } from '@material-ui/core';
@@ -125,11 +125,11 @@ const onChange = (e: any, formObj: any, applyValidation: any, Initial_Values_obj
   handleChange(e);
   if (formObj.validationChangeFeilds !== undefined) {
     let arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
-    formObj.validationChangeFeilds.filter((x: any) => x.value == e.target.value)?.map((x: any) => {
-
+    formObj.validationChangeFeilds.filter((x: any) => x.value == e.target.checked)?.map((x: any) => {
+      
       var splittedKey = x.key.split('_');
       var parentSplittedKey = formObj.key.split('_');
-      var newKey = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+      var newKey = splittedKey.length > 1 ? splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2] : x.key;
       if (x.todo == "add") {
         if (x.validation) {
           arrayOfObj.push({ "key": newKey, "value": { "type": x.type, "validation": x.validation } });
@@ -139,7 +139,7 @@ const onChange = (e: any, formObj: any, applyValidation: any, Initial_Values_obj
         arrayOfObj = arrayOfObj.filter((x: any) => x.key !== newKey);
       }
     })
-
+    
     let key_value_pairs = arrayOfObj.reduce(
       (formObj: any, item: any) => ((formObj[item.key] = { type: item.value.type, validation: item.value.validation }), formObj),
       {}
@@ -506,18 +506,18 @@ export const CreateTempelateCase = (props: any) => {
                 <div className="UiCheckboxRight">
                   <div className="UiCheckboxRightPosition">
                     <label className="containerCheck" >
-                      <Field
+                      <Field           
                         name={formObj.key}
                         id={formObj.id}
                         type={formObj.type}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        onClick={(event: React.ChangeEvent<HTMLInputElement>) => {                   
                           handleChange(event);
                           if (formObj.dependant != null) {
-
                             customEvent(event, setFieldValue, formObj.dependant);
                           }
-
-                        }}
+                          else if (formObj.validationChangeFeilds != null) {
+                            onChange(event, formObj, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, handleChange)
+                        }}}
                         validateOnChange
                       />
                       <span className="checkmark" ></span>

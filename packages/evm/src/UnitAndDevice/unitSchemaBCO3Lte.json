@@ -296,7 +296,26 @@
       "required": true,
       "seconds": true,
       "hinttext": true,
-      "hintvalue": "Allows to specify categories for selection after recording"
+      "hintvalue": "Allows to specify categories for selection after recording",
+      "validationChangeFeilds": [
+        {
+          "key": "device/categories/Select",
+          "value": false,
+          "todo" : "remove"
+        },
+        {
+          "key": "device/categories/Select",
+          "value": true,
+          "todo" : "add",
+          "type": "select",
+          "validation": [
+            {
+              "key": "required",
+              "msg": "required"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "3",
