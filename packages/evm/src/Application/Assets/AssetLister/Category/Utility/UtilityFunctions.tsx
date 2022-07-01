@@ -1,5 +1,7 @@
 import moment from "moment";
 import http from "../../../../../http-common";
+import { SetupConfigurationAgent } from "../../../../../utils/Api/ApiAgent";
+import { Policy } from "../../../../../utils/Api/models/PolicyModels";
 import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../../../utils/Api/url";
 
 const findRetentionAndHoldUntill = async (assignedCategories: any, categoryOptions: any, filterValue: any, evidenceResponse: any) => {
@@ -17,14 +19,12 @@ const findRetentionAndHoldUntill = async (assignedCategories: any, categoryOptio
     count++;
   }
   const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-  await http.get(url)
-    .then(awaitJson)
-    .then((response: any) => {
+  await SetupConfigurationAgent.getPoliciesAccordingToType(url).then((response:Policy[]) => {
       for (let i = 0; i <= response.length - 1; i++) {
         retentionDetails.push({
           categoryName: categoriesWithRetention[i].name,
           retentionId: response[i].id,
-          hours: response[i].detail.limit.hours + response[i].detail.limit.gracePeriodInHours
+          hours: (response[i].detail.limit.hours ?? 0) + (response[i].detail.limit.gracePeriodInHours ?? 0)
         });
       }
       const retentionDecrementedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();

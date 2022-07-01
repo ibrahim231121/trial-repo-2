@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
-import { Categories, Forms } from './models/Categories';
+import { Category, Forms } from './models/CategoryModels';
+import { Policy } from './models/PolicyModels';
 import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention, Note, TimelinesSync } from './models/EvidenceModels';
 import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
 import { getVerificationURL } from "../../utils/settings";
@@ -38,10 +39,11 @@ const requests = {
     delete: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
 }
 export const SetupConfigurationAgent = {
-    getCategories: () => requests.get<Categories[]>(SETUP_CONFIGURATION_SERVICE_URL, '/Blog'),
+    getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url),
+    getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url),
     getForms: () => requests.get<Forms[]>(SETUP_CONFIGURATION_SERVICE_URL, '/Forms'),
-    getCategory: (id: string) => requests.get<Categories>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`),
-    create: (category: Categories) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, '/CarPlates', category),
+    getCategory: (id: string) => requests.get<Category>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`),
+    create: (category: Category) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, '/CarPlates', category),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences'),

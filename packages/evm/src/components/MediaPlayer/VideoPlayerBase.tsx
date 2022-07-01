@@ -230,7 +230,7 @@ const VideoPlayerBase = (props: any) => {
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
-  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
