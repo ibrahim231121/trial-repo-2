@@ -1,4 +1,4 @@
-import { url } from 'inspector';
+
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from '../../../utils/Api/url';
 import moment from 'moment';
@@ -26,6 +26,7 @@ import {
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { useTranslation } from "react-i18next";
+import { REACT_APP_CLIENT_ID} from '../../../../../evm/src/utils/Api/url'
 
 let USER_DATA = {};
 
@@ -844,7 +845,7 @@ else{
       }
     };
     //const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${clientId}&applicationName=${applicationName}`;
-    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${process.env.REACT_APP_CLIENT_ID}&applicationName=${applicationName}`;
+    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${REACT_APP_CLIENT_ID}&applicationName=${applicationName}`;
     fetch(url, requestOptions);
   };
 

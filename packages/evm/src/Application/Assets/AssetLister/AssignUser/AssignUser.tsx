@@ -198,6 +198,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     else {
       const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
       EvidenceAgent.addUsersToAsset(url, props.filterValue.map(x => x.id)).then(() => {
+        setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
         props.setOnClose();
         props.showToastMsg({
           message: "Asset Assignees updated",
