@@ -95,8 +95,9 @@ export interface TimelinesSync {
 export interface AssetViewReason {
     id: number
     assetId: number
-    cmtUserRecId: number
-    sourceIPAddress: string
+    userId: number
+    viewedTime: Date
+    ipAddress: string
     viewReason: string
 }
 export interface AddOwner {

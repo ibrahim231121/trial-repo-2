@@ -81,9 +81,10 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         const body : AssetViewReason = {
             id: 0,
             assetId: AssetId,
-            cmtUserRecId: 1,
-            sourceIPAddress: ip,
+            userId: parseInt(localStorage.getItem('User Id') ?? "0"),
+            ipAddress: ip,
             viewReason: reason == "Other" ? description : reason,
+            viewedTime: new Date()
         };
         const AssetViewReasonURL = "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
         EvidenceAgent.addAssetViewReason(AssetViewReasonURL, body).then(()=>{
