@@ -416,7 +416,7 @@ const MasterMain: React.FC<Props> = ({
       width: "",
       maxWidth: "210",
       detailedDataComponentId: "evidence",
-      visible:false
+      visible: true
     },
     {
       label: t("Captured"),

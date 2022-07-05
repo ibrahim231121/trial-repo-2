@@ -23,6 +23,7 @@ import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import Cookies from 'universal-cookie';
 import { ConfigurationTemplates, TypeOfDevice } from "./DefaultUnitTemplate/DefaultUnitTemplateModel";
 import { useTranslation } from 'react-i18next';
+import InputShowHide from "../../../utils/InputShowHide/InputShowHide";
 
 type StationFormType = {
   Name: string;
@@ -313,7 +314,6 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
-    debugger;
     let body = {
       name: values.Name,
       address: {
@@ -781,7 +781,9 @@ const StationDetail: React.FC = () => {
                               {t("Pass_Code")} <span>*</span>
                             </label>
                             <div className="CrxStationError">
-                              <Field id="passcode" name="Passcode" />
+                              <Field id="passcode" name="Passcode" component={InputShowHide} />
+                              {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
+                              {/* <Field id="passcode" name="Passcode"  />
                               {errors.Passcode !== undefined &&
                                 touched.Passcode === true ? (
                                 <div className="errorStationStyle">
@@ -789,7 +791,7 @@ const StationDetail: React.FC = () => {
                                   {errors.Passcode}
                                   {setDisplayStationError("errorBrdr")}
                                 </div>
-                              ) : null}
+                              ) : null} */}
                             </div>
                           </div>
                         </CRXColumn>
@@ -1000,7 +1002,9 @@ const StationDetail: React.FC = () => {
                               {t("Password")}
                             </label>
                             <div className="CrxStationError">
-                              <Field id="password" name="Password" />
+                              <Field id="password" name="Password" component={InputShowHide} />
+                              {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
+                              {/* <Field id="password" name="Password" />
                               {errors.Password !== undefined &&
                                 touched.Password === true ? (
                                 <div className="errorStationStyle">
@@ -1008,7 +1012,7 @@ const StationDetail: React.FC = () => {
                                   {errors.Password}
                                   {setDisplayStationError("errorBrdr")}
                                 </div>
-                              ) : null}
+                              ) : null} */}
                             </div>
                           </div>
                         </CRXColumn>
