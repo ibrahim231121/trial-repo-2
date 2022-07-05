@@ -188,11 +188,12 @@ const AddMetadataForm: React.FC<Props> = ({
       if (isEditCase) {
         setNextButton(false);
       } else {
-        let checkFormExist = formpayload.category.some((index: any) => index.form.length > 0)
+        let checkFormExist = formpayload.category.some(
+          (index: any) => index.form.length > 0
+        );
         if (checkFormExist) {
-          setNextButton(true)
-        }
-        else {
+          setNextButton(true);
+        } else {
           setNextButton(false);
         }
       }
@@ -208,7 +209,6 @@ const AddMetadataForm: React.FC<Props> = ({
       setIsDisable(false);
     }
   }, [formpayload]);
-
 
   React.useEffect(() => {
     let checkSubmitType: any = uploadAssetBucket.filter(
@@ -283,10 +283,8 @@ const AddMetadataForm: React.FC<Props> = ({
     }
   }, [formpayload.masterAsset]);
 
-
   let displayText: any = "";
   if (uploadFile.length != 0) {
-
     displayText = uploadFile[0].uploadedFileName.substring(
       0,
       uploadFile[0].uploadedFileName.lastIndexOf(".")
@@ -379,12 +377,42 @@ const AddMetadataForm: React.FC<Props> = ({
 
   const sendCategoryOptionList = (data: any[]) => {
     const dateOfArry: any = [];
+    const formOfArry: any = [];
     data?.forEach((item, index) => {
-      dateOfArry.push({
-        id: item.categoryId,
-        label: item.categoryName,
-        form: item.categroyForm,
-      });
+      if (item.categroyForm.length != 0) {
+        item.categroyForm.forEach((index: any) => {
+          index.fields.forEach((x: any) => {
+            let formfields = {
+              id: x.id,
+              formId: index.id,
+              name: x.name,
+              datatype: x.type,
+              display: {
+                caption: x.display.caption,
+              },
+            };
+            formOfArry.push(formfields);
+          });
+          const fields = formOfArry.filter((x: any) => x.formId === index.id);
+          dateOfArry.push({
+            id: item.categoryId,
+            label: item.categoryName,
+            form: [
+              {
+                id: index.id,
+                name: index.name,
+                fields,
+              },
+            ],
+          });
+        });
+      } else {
+        dateOfArry.push({
+          id: item.categoryId,
+          label: item.categoryName,
+          form: [],
+        });
+      }
     });
 
     return setCategoryOption(dateOfArry);
@@ -394,7 +422,7 @@ const AddMetadataForm: React.FC<Props> = ({
     if (!formpayload.owner || formpayload.owner.length === 0) {
       setformpayloadErr({
         ...formpayloadErr,
-        ownerErr: t("owner(s)_are_required"),
+        ownerErr: "Owner is required",
       });
     } else {
       setformpayloadErr({ ...formpayloadErr, ownerErr: "" });
@@ -506,29 +534,32 @@ const AddMetadataForm: React.FC<Props> = ({
     const categoryArrayIndex = new Array();
     payloadCategory.forEach((catIndexs: any, i: any) => {
       if (catIndexs.form.length != 0) {
-        catIndexs.form.forEach((formIndex: any) =>
-          formIndex.fields.forEach((index: any) => {
-            let filteredValue = filteredForm.find(
-              (x: any) => x.fieldId === index.id
-            );
-            let j = {
-              formId: index.id,
-              fields: [
-                {
-                  fieldId: index.id,
-                  key: index.name,
-                  value: filteredValue == undefined ? "" : filteredValue.value,
-                  datatype: index.type,
-                  version: "",
-                },
-              ],
+        catIndexs.form.forEach((formIndex: any) => {
+          let filteredValues = filteredForm.filter(
+            (x: any) => x.formId === formIndex.id
+          );
+          let fields = filteredValues.map((x: any) => {
+            return {
+              fieldId: x.fieldId,
+              key: x.key,
+              value: x == undefined ? "" : x.value,
+              dataType: x.dataType,
+              version: "",
             };
+          });
 
-            categoryArrayIndex[i] = { id: catIndexs.id, formData: [j] };
-          })
-        );
+          categoryArrayIndex.push({
+            id: catIndexs.id,
+            formData: [
+              {
+                formId: formIndex.id,
+                fields,
+              },
+            ],
+          });
+        });
       } else {
-        categoryArrayIndex[i] = { id: catIndexs.id, formData: [] };
+        categoryArrayIndex.push({ id: catIndexs.id, formData: [] });
       }
     });
     return categoryArrayIndex;
@@ -557,12 +588,14 @@ const AddMetadataForm: React.FC<Props> = ({
         filterObject.name.lastIndexOf("."),
         filterObject.name.length
       );
-      if (fileNameExtension === ".mp4" ||
+      if (
+        fileNameExtension === ".mp4" ||
         fileNameExtension === ".mp3" ||
         fileNameExtension === ".mkv" ||
         fileNameExtension === ".webm" ||
         fileNameExtension === ".3gp" ||
-        fileNameExtension === ".wav") {
+        fileNameExtension === ".wav"
+      ) {
         var myVideos: any = [];
         myVideos.push(filterObject);
         myVideos[myVideos.length - 1].duration = filterObject.duration;
@@ -601,7 +634,6 @@ const AddMetadataForm: React.FC<Props> = ({
       ".537Z"
     );
   };
-
 
   const onAddMetaData = () => {
     const categories = insertCategory(formpayload.category);
@@ -754,7 +786,6 @@ const AddMetadataForm: React.FC<Props> = ({
       version: "",
     };
   };
-  ;
   const onAdd = async () => {
     const payload = onAddMetaData();
 
@@ -1157,7 +1188,7 @@ const AddMetadataForm: React.FC<Props> = ({
     if (e.target.value == undefined || e.target.value != 0) {
       setMetaDataErrMsg({
         ...meteDataErrMsg,
-        required: t("This_field_is_required!"),
+        required: "Station is required",
       });
     } else {
       setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
@@ -1165,15 +1196,16 @@ const AddMetadataForm: React.FC<Props> = ({
   };
   useEffect(() => {
     const filteredArray: any = [];
-    formpayload.category.forEach((formIndex: any) => {
+        formpayload.category.forEach((formIndex: any) => {
       if (formIndex.form.length > 0) {
         formIndex.form.forEach((fieldIndex: any) => {
           fieldIndex.fields.forEach((x: any) => {
             let j = {
               fieldId: x.id,
+              formId: x.formId,
               key: x.name,
               value: "",
-              datatype: x.type,
+              datatype: x.datatype,
               version: "",
             };
             filteredArray.push(j);
@@ -1184,9 +1216,10 @@ const AddMetadataForm: React.FC<Props> = ({
     });
   }, [formpayload.category]);
 
-  const setFormField = (e: any) => {
-    const { target } = e;
 
+
+  const setFormField = (e: any, formId: any, datatype: string) => {
+    const { target } = e;
     let newArray = filteredForm.filter((o: any) => {
       return o.key !== target.name;
     });
@@ -1194,14 +1227,14 @@ const AddMetadataForm: React.FC<Props> = ({
       ...newArray,
       {
         fieldId: target.id,
+        formId: formId,
         key: target.name,
         value: target.value,
-        dataType: "CaseNo",
+        dataType: datatype,
         version: "",
       },
     ]);
   };
-
 
   const handleActiveScreen = (activeScreen: number) => {
     switch (activeScreen) {
@@ -1227,8 +1260,9 @@ const AddMetadataForm: React.FC<Props> = ({
                   {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
-                    }`}
+                  className={`metaData-Station-Select ${
+                    formpayload.masterAsset === "" ? "" : "gepAddClass"
+                  }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText={t("Select_Master_Asset")}
                   disabled={
@@ -1254,8 +1288,9 @@ const AddMetadataForm: React.FC<Props> = ({
             </div>
             <div className="metaData-station">
               <div
-                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
-                  }`}
+                className={`metaData-inner ${
+                  formpayload.station === "" ? "" : "gepAddClass"
+                }`}
               >
                 <label>
                   {t("Station")} <span>*</span>
@@ -1333,7 +1368,9 @@ const AddMetadataForm: React.FC<Props> = ({
               formpayload.category.map((obj: any) => (
                 <CategoryFormOFAssetBucket
                   categoryObject={obj}
-                  setFieldForm={(e: any) => setFormField(e)}
+                  setFieldForm={(e: any, formId: any, datatype: string) =>
+                    setFormField(e, formId, datatype)
+                  }
                 />
               ))
             ) : (
@@ -1345,7 +1382,6 @@ const AddMetadataForm: React.FC<Props> = ({
         );
     }
   };
-
 
   const nextBtnHandler = () => {
     setActiveScreen(activeScreen + 1);

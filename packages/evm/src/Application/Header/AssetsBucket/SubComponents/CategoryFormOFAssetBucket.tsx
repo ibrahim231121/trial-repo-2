@@ -20,7 +20,7 @@ const CategoryFormOFAssetBucket: React.FC<Props> = ({ categoryObject,setFieldFor
                         {formObj.fields.map((field: any) => (
                             <div>
                                 <label className="categoryFormLabel" htmlFor={field.id}>{field.display.caption}</label>
-                                <TextField type="text" id={field.id} name={field.name === undefined ? field.value : field.name} onChange={(e: any) => {setFieldForm(e)}} />
+                                <TextField type="text" id={field.id} name={field.name === undefined ? field.value : field.name} onChange={(e: any,formField: any) => {setFieldForm(e,field.formId,field.datatype)}} />
                             </div>
                         ))}
                     </div>

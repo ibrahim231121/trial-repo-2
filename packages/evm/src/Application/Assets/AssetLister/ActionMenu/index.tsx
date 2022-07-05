@@ -339,10 +339,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   <SubMenu label="Export">
-                    <MenuItem>{t("File")}</MenuItem>
-                    <MenuItem>{t("Metadata")}</MenuItem>
-                    <MenuItem>{t("Evidence_overlaid_video")}</MenuItem>
-                    <MenuItem>{t("Metadata_overlaid_video")}</MenuItem>
+                    <MenuItem>Download asset(s)</MenuItem>
+                    <MenuItem>Download metadata info</MenuItem>
+                    <MenuItem>Download audit trail </MenuItem>
                   </SubMenu>
                 </div>
               </div>

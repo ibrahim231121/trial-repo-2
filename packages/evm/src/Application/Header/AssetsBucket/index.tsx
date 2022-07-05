@@ -524,13 +524,11 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         }
         else {
           _uploadInfo = getUploadInfo(data);
-          // setonAddEvidence(false)
           return [...prevState, _uploadInfo]
         }
       }
       else {
         _uploadInfo = getUploadInfo(data);
-        // setonAddEvidence(false)
         return [...prevState, _uploadInfo]
       }
     });
@@ -657,9 +655,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     if (totalPercentage != 0 && fileCountRef.current != 0) {
 
       setTotalFilePer(Math.round(totalPercentage / fileCountRef.current));
-    }
-    else {
-      setTotalFilePer(0);
     }
 
     if (eCount == fileCount && (eCount != 0 && fileCount != 0)) {

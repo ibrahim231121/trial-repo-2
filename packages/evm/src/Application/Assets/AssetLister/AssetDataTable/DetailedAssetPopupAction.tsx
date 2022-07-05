@@ -12,7 +12,9 @@ import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
 import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import Cookies from "universal-cookie";
+import { CRXAlert } from "@cb/shared";
+
 
 type Props = {
   row?: any;
@@ -46,12 +48,17 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const [primary, setPrimary] = React.useState<string>('Confirm');
   const [secondary, setSecondary] = React.useState<string>('Close');
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
+  const [alertType, setAlertType] = React.useState<string>("inline");
+  const [alert, setAlert] = React.useState<boolean>(false);
+  const [responseError, setResponseError] = React.useState<string>("");
+  const [errorType, setErrorType] = React.useState<string>("error");
+  const [showSuccess, setShowSuccess] = React.useState<boolean>(false);
   const DetailedPopupMsgRef = React.useRef<typeof CRXToaster>(null);
+  const cookies = new Cookies();
 
   const message = [
-    { messageType: "success", message: `${asset.assetName}` + ' is successfully set as primary asset' },
+    { messageType: "success", message:' Asset set as the primary' },
   ];
-
 
   React.useEffect(() => {
     if (row?.securityDescriptors?.length > 0)
@@ -83,12 +90,26 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
  };
 
   const onConfirm = async () => {
-    const url = '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
+    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
+    const requestOptions = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`}
 
-    EvidenceAgent.setPrimaryAsset(url).then(() => {
-      setIsOpen(false);
-      setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
-      showToastMsg();
+    };
+    await fetch(url,requestOptions)
+    .then(async function(res) {
+      if (res.ok) {
+        setIsOpen(false);
+        await setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
+        showToastMsg();
+      }
+      else {
+        setAlert(true);
+          setResponseError(
+            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          );
+      }
+
     })
     .catch(function (error) {
       return error;
@@ -111,6 +132,14 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         secondary={secondary}>
         {
           <div className='crxUplockContent'>
+            <CRXAlert
+        className={"CrxAlertNotificationGroup "}
+        message={responseError}
+        type={errorType}
+        open={alert}
+        alertType={alertType}
+        setShowSucess={setShowSuccess}
+      />
             <p>
               You are sure want to make '{asset.assetName}' the primary asset?
             </p>
