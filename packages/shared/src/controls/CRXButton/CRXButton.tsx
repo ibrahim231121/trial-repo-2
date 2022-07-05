@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import "./CRXButton.scss";
 
 interface buttonProps {
-  id: string;
+  id?: string;
   children?: React.ReactNode;
   onClick?: (e: any, value?: any) => void;
   color?: "default" | "primary" | "secondary";

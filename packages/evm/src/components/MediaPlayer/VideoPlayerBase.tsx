@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 import VideoScreen from "./VideoScreen";
 import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
@@ -6,13 +6,13 @@ import { CRXButton, CRXTooltip, SVGImage } from "@cb/shared";
 import Slider from "@material-ui/core/Slider";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import { Menu, MenuItem } from "@szhsin/react-menu";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
-import { CRXToaster } from "@cb/shared";
+
 import { FormControlLabel, Switch } from "@material-ui/core";
 import VideoPlayerViewReason from "./VideoPlayerViewReason";
 import { setTimeout } from "timers";
@@ -22,12 +22,9 @@ import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
 import { EVIDENCE_SERVICE_URL } from "../../utils/Api/url";
 import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
-import { Radio } from "@material-ui/icons";
-import { CRXRadio } from "@cb/shared";
-import { CRXCheckBox } from "@cb/shared";
 import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../utils/Api/ApiAgent";
-
+import { CRXToaster, CRXCheckBox } from "@cb/shared";
 
 var videoElements: any[] = [];
 
@@ -469,6 +466,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const handleControlBarChange = (event: any, newValue: any) => {
+
     setTimer(newValue);
     setisPlayingFwRw(false);
     setControlBar(newValue);
@@ -744,15 +742,33 @@ const VideoPlayerBase = (props: any) => {
     isPlayingFwRw ? speedFwRw : null,
   );
 
+
+  const [volumPercent, setVolumPercent] = useState<number>();
+  const [mutePercentVol, setMutePercentVol] = useState<number>();
   const setVolumeHandle = (volume: number) => {
+    setVolumPercent(volume);
+    setMutePercentVol(volume);
+    document?.getElementById("volumePercentage")?.classList.add("ShowVolumePercentage");
+    document?.getElementById("volumePercentage")?.classList.remove("HideVolumePercentage");
+
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.volume = (volume / 100);
     });
   }
 
+  setTimeout(() => {
+    document?.getElementById("volumePercentage")?.classList.remove("ShowVolumePercentage");
+    document?.getElementById("volumePercentage")?.classList.add("HideVolumePercentage");
+
+  }, 1000)
+
   const setMuteHandle = (isMuted: boolean) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.muted = isMuted;
+      let volumeMute = videoHandle.muted ? 0 : mutePercentVol == undefined ? 100 : mutePercentVol;
+      setVolumPercent(volumeMute);
+      document?.getElementById("volumePercentage")?.classList.add("ShowVolumePercentage");
+      document?.getElementById("volumePercentage")?.classList.remove("HideVolumePercentage");
     });
   }
   const reset = () => {
@@ -934,6 +950,19 @@ const VideoPlayerBase = (props: any) => {
     setopenThumbnail(true);
   }
 
+  const mouseOverRecordingStart = (event: any, y: any, x: any) => {
+    setmouseovertype("recordingstart");
+    settimelinedetail1(x);
+    setEvent(event);
+    setopenThumbnail(true);
+  }
+  const mouseOverRecordingEnd = (event: any, y: any, x: any) => {
+    setmouseovertype("recordingend");
+    settimelinedetail1(x);
+    setEvent(event);
+    setopenThumbnail(true);
+  }
+
   const getbookmarklocation = (position: any, startdiff: any) => {
     var timeLineHover: any = document.querySelector("#SliderControlBar");
     var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
@@ -979,7 +1008,7 @@ const VideoPlayerBase = (props: any) => {
 
     var lenghtDeduct: number = 0;
     var totalLenght = document.querySelector("#SliderControlBar")?.getBoundingClientRect().right ?? 0;
-    var totalThumbnailsLenght = timelinedetail.filter((x: any) => x.enableDisplay).length * 300;
+    var totalThumbnailsLenght = timelinedetail.filter((x: any) => x.enableDisplay).length * 128;
     var totalLenghtPlusThumbnails = event.pageX + totalThumbnailsLenght;
     if (totalLenghtPlusThumbnails > totalLenght) {
       lenghtDeduct = totalLenghtPlusThumbnails - totalLenght;
@@ -990,19 +1019,29 @@ const VideoPlayerBase = (props: any) => {
     var ttt = Math.round(pos * x.video_duration_in_second);
     var Thumbnail: any = document.querySelector("#Thumbnail" + x.indexNumberToDisplay);
     var ThumbnailContainer: any = document.querySelector("#video_player_hover_thumb" + x.indexNumberToDisplay);
+    var TimeLinePipe: any = document.querySelector("#_hover_timeLine_pipeGray");
     var ThumbnailTime: any = document.querySelector("#Thumbnail-Time" + x.indexNumberToDisplay);
-    var ThumbnailCameraDesc: any = document.querySelector("#Thumbnail-CameraDesc" + x.indexNumberToDisplay);
+    //var ThumbnailCameraDesc: any = document.querySelector("#Thumbnail-CameraDesc" + x.indexNumberToDisplay);
     var ThumbnailDesc: any = document.querySelector("#Thumbnail-Desc");
 
     var SliderControlBar: any = document.querySelector("#SliderControlBar");
     var SliderControlBarOffset = SliderControlBar?.getBoundingClientRect().left;
 
+
     if (Thumbnail) {
+      TimeLinePipe.style.left = (event.pageX - leftPadding) + "px";
       Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
-      ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 300) - lenghtDeduct) : 0) + "px";
+      ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 128)) : 0) + "px";
       ThumbnailTime.innerHTML = secondsToHms(ttt)
-      ThumbnailCameraDesc.innerHTML = x.camera;
+      //ThumbnailCameraDesc.innerHTML = x.camera;
       if (withdescription) {
+        var ThumbnailIcon: any = document.querySelector("#Thumbnail-Icon" + x.indexNumberToDisplay);
+        if (mouseovertype == "bookmark") {
+          ThumbnailIcon.classList = ('fas fa-bookmark');
+        }
+        else if (mouseovertype == "note") {
+          ThumbnailIcon.classList = ('fas fa-comment-alt-plus ');
+        }
         ThumbnailDesc.innerHTML = withdescription;
 
       }
@@ -1015,6 +1054,7 @@ const VideoPlayerBase = (props: any) => {
       displayThumbnail(event, x, true)
     });
     setVisibleThumbnail(Indexes);
+
   }
   const removeSeekBarThumbail = () => {
     setVisibleThumbnail([]);
@@ -1342,6 +1382,22 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+  let volumePer = volumPercent !== undefined ? volumPercent == 0 ? "icon-volume-mute1" : volumPercent >= 1 && volumPercent <= 33 ? "icon-volume-low1" : volumPercent >= 34 && volumPercent <= 66 ? "icon-volume-medium1" : "icon-volume-high1" : "";
+
+  const showTrackHoverBar = (e: any) => {
+    //Function for Grabbing icon show and hide.
+    e._reactName === "onMouseDown" ?
+      e.currentTarget.childNodes[3].style.visibility = "visible"
+      :
+      e.currentTarget.childNodes[3].style.visibility = "hidden";
+
+
+    let sliderTest = document.getElementById("SliderControlBar");
+    sliderTest?.addEventListener("mousemove", () => {
+      document?.querySelector<HTMLElement>("#SliderControlBar .MuiSlider-thumb")?.classList.add("cursorAdded")
+    });
+  }
+
   return (
     <>
       {true && <VideoPlayerViewReason
@@ -1381,6 +1437,7 @@ const VideoPlayerBase = (props: any) => {
                 isOpenWindowFwRw={isOpenWindowFwRw}
                 onClickBookmarkNote={onClickBookmarkNote}
                 setupdateVideoSelection={setupdateVideoSelection}
+                isMultiTimelineEnabled={multiTimelineEnabled}
                 updateSeekMarker={updateSeekMarker}
                 gMapApiKey={props.apiKey}
                 gpsJson={gpsJson}
@@ -1389,8 +1446,8 @@ const VideoPlayerBase = (props: any) => {
               />
 
               <div className="ClickerIcons">
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`${modeFw}X`}</span></span> : ""}  </p>
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`${modeRw}X`}</span></span> : ""}  </p>
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`x${modeFw}`}</span></span> : ""}  </p>
+                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`x${modeRw}`}</span></span> : ""}  </p>
               </div>
               <div className="modeButton">
 
@@ -1402,10 +1459,18 @@ const VideoPlayerBase = (props: any) => {
                 {modePrev && mode == -6 ? <span className="modeBtnIconRight"> <i className="fas fa-undo-alt "><span className="circleRedo" ><span>{modeMinus}</span>X</span></i> </span> : ""}
               </div>
               <div className="caretLeftRight">
-                {frameForward ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
-                {frameReverse ? <span className=" triangleRightSetter"><SVGImage width="12" height="23.4" d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
+                {frameForward ? <span className=" triangleRightSetter"><SVGImage width={12} height={23.4} d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
+                {frameReverse ? <span className=" triangleRightSetter"><SVGImage width={12} height={23.4} d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
               </div>
+              <div id="volumePercentage">
 
+                <i className={
+                  volumePer
+                }>
+
+                </i>
+                <p className={volumPercent == 100 ? "volPercentSpace" : ""}>{volumPercent}%</p>
+              </div>
             </div>
             <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
               {/* TIME LINES BAR HERE */}
@@ -1448,11 +1513,27 @@ const VideoPlayerBase = (props: any) => {
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
                       return (
                         <>
+                          {x.enableDisplay &&
+                            <>
+                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_start_point * 1000, x.recording_start_point) }}>
+                                <span className="pip_icon" aria-hidden="true"
+                                  onMouseOut={() =>
+                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
+                                </span>
+                              </div>
+                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_end_point * 1000, x.recording_start_point) }}>
+                                <span className="pip_icon" aria-hidden="true"
+                                  onMouseOut={() =>
+                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
+                                </span>
+                              </div>
+                            </>
+                          }
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
                             if (y.madeBy == "User") {
                               return (
-                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                                  <span className="pip_icon" style={{ backgroundColor: "red" }} aria-hidden="true"
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                                  <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
                                     onMouseOut={() =>
                                       mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
                                   </span>
@@ -1462,8 +1543,8 @@ const VideoPlayerBase = (props: any) => {
                           }
                           )}
                           {x.enableDisplay && x.notes.map((y: any, index: any) =>
-                            <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 1, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                              <span className="pip_icon" style={{ backgroundColor: "purple" }} aria-hidden="true"
+                            <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                              <span className="pip_icon" style={{ backgroundColor: "#7D03D7" }} aria-hidden="true"
                                 onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
                               </span>
                             </div>
@@ -1480,6 +1561,8 @@ const VideoPlayerBase = (props: any) => {
                     onMouseOver={(e: any) => displaySeekBarThumbail(e)}
                     onMouseMove={(e: any) => displaySeekBarThumbail(e)}
                     onMouseOut={() => removeSeekBarThumbail()}
+                    onMouseDown={(e: any) => showTrackHoverBar(e)}
+                    onMouseUp={(e: any) => showTrackHoverBar(e)}
                     aria-labelledby="input-slider"
                     step={1}
                     min={0}
@@ -1489,6 +1572,7 @@ const VideoPlayerBase = (props: any) => {
                       ...classes
                     }}
                   />
+                  <div className="_hover_timeLine_pipeGray" id="_hover_timeLine_pipeGray"></div>
                 </div>
                 <div className="videoPlayer_Timeline_Time">
                   <div className="playerViewFlexTimer">
@@ -1506,8 +1590,8 @@ const VideoPlayerBase = (props: any) => {
                     <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         content={<SVGImage
-                          width="12"
-                          height="23.4"
+                          width={12}
+                          height={23.4}
                           d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z"
                           viewBox="0 0 12 23.4"
                           fill="#fff"
@@ -1546,8 +1630,8 @@ const VideoPlayerBase = (props: any) => {
                     <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         content={<SVGImage
-                          width="12"
-                          height="23.4"
+                          width={12}
+                          height={23.4}
                           d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z"
                           viewBox="0 0 12 23.4"
                           fill="#fff"
@@ -1559,6 +1643,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
                   </div>
+
                   <div>
                     <VolumeControl setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
                   </div>
@@ -1622,7 +1707,8 @@ const VideoPlayerBase = (props: any) => {
                       
                     >
                       <MaterialMenuItem>
-                        {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
+                        {/* {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />} */}
+                        {<FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
                       </MaterialMenuItem>
                       <MaterialMenuItem>
                         <FormControlLabel control={<Switch checked={overlayEnabled} onChange={(event) => OverlayChangeEvent(event) } />} label="Overlay" />
@@ -1718,7 +1804,7 @@ const VideoPlayerBase = (props: any) => {
                       </MenuItem>
                       <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout">Single View</span>
+                        <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
                       </MenuItem>
                       <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
@@ -1849,7 +1935,7 @@ const VideoPlayerBase = (props: any) => {
             openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
 
         </div>
-      </div>
+      </div >
     </>);
 }
 

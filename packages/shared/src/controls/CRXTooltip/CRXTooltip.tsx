@@ -4,10 +4,10 @@ import Tooltip from "@material-ui/core/Tooltip";
 
 type tooltipProps = {
   placement?: string;
-  title: string;
+  title: any;
   className?: string;
   iconName?: string;
-  content?: HTMLCollection;
+  content?: any;
   arrow?: boolean;
 };
 const CRXUseStyles = makeStyles(() => ({
@@ -31,7 +31,7 @@ const CRXIconStyle = makeStyles(() => ({
     position: "relative",
     top: "0px",
     height: "17px",
-    
+
   },
 }));
 
@@ -45,7 +45,7 @@ function CRXCustomizedTooltip(props: any) {
         className: classes.tooltip,
         arrow:
           props.placement.length && classes.arrow + " crxArrowTooltip",
-       
+
         tooltip:
           props.placement.length && classes.tooltip + " " + props.className + " crxTooltipAll",
       }}

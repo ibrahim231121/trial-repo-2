@@ -11,7 +11,7 @@ type Props = {
     TransitionComponent: any
 }
 
-const CRXToaster = forwardRef((_, ref) => {
+const CRXToaster : any = forwardRef((_, ref) => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const action = (key:any) => (
         <div className='closeAction'>

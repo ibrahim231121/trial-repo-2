@@ -19,6 +19,10 @@ const VolumeControl = (props: VolumecontrolProp) => {
 
   const VolumeControlCss = VolumeControlStyle();
 
+
+
+
+
   const handleVolumeChange = (event: any, value: any) => {
 
     setVolume(value);
@@ -27,6 +31,7 @@ const VolumeControl = (props: VolumecontrolProp) => {
     if (volume == 0) {
       setIsMute(true);
       props.setMuteHandle(true);
+
     }
     else {
       setIsMute(false);
@@ -54,6 +59,7 @@ const VolumeControl = (props: VolumecontrolProp) => {
 
   }
 
+
   const getVolumeIconClass = () => {
 
     if (isMute || volume == 0) {
@@ -73,11 +79,11 @@ const VolumeControl = (props: VolumecontrolProp) => {
 
   };
 
+  setTimeout(() => {
+    document?.getElementById("volumePercentage")?.classList.remove("ShowVolumePercentage");
+    document?.getElementById("volumePercentage")?.classList.add("HideVolumePercentage");
 
-
-
-
-
+  }, 1000)
 
   return (
     <div id="volume-controls" onMouseLeave={VolumeBarLeave}>

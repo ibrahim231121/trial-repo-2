@@ -12,6 +12,7 @@ const CRXVideoPlayerStyle = makeStyles((theme: Theme) =>
             height : "4px",
             opacity: 1,
             padding: "0px",
+            
             '&::before' : {
                 position : "absolute",
                 content : "",
@@ -68,7 +69,7 @@ const CRXVideoPlayerStyle = makeStyles((theme: Theme) =>
         },
 
         focusVisible : {
-            visibility : "visible",
+            visibility : "hidden",
         }
 
     })

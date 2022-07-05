@@ -23,7 +23,8 @@ interface VideoScreenProp {
   setData:any,
   isPlaying :boolean
   setupdateVideoSelection: any
-  onClickBookmarkNote:any
+  onClickBookmarkNote:any,
+  isMultiTimelineEnabled : boolean,
   updateSeekMarker:any
   gMapApiKey: any
   gpsJson: any
@@ -31,12 +32,12 @@ interface VideoScreenProp {
   setOnMarkerClickTimeData:any
 }
 
-const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData }: VideoScreenProp) => {
+const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData,isMultiTimelineEnabled  }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] =
     React.useState<boolean>(true);
-
+  
   const getVideo = (camIndexVideoData: any) => {
     if (camIndexVideoData !== undefined) {
       return (
@@ -52,15 +53,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
             Your browser does not support the video tag.
           </video>
 
-          <p
-            style={{
-              backgroundColor: "black",
-              color: "white",
-              paddingLeft: "45%",
-            }}
-          >
-            {camIndexVideoData.camera}
-          </p>
+        { isMultiTimelineEnabled && <div style={{backgroundColor:"black", color:"white", paddingLeft:"45%"}}>{camIndexVideoData.camera}</div> }
         </>
       );
     } else {

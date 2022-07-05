@@ -1,15 +1,15 @@
 import React from "react";
 
 interface loadingProps {
-    className : string
-    rect : boolean,
+    className? : string
+    rect ?: boolean,
     width: number,
     height : number,
-    viewBox : string,
+    viewBox? : string,
     fill : string,
     d : string,
-    crFill : string,
-    transform: string,
+    crFill? : string,
+    transform?: string,
 }
 
 

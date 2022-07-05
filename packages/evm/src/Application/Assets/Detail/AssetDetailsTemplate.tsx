@@ -81,7 +81,7 @@ const AssetDetailsTemplate = (props: any) => {
   let evidenceId: number = historyState.evidenceId;
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
-  const [expanded, isExpaned] = React.useState("panel1");
+  const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
 
   type assetdata = {
     files: any;
@@ -199,7 +199,7 @@ const AssetDetailsTemplate = (props: any) => {
   useEffect(() => {
     if (evidenceCategoriesResponse !== undefined) {
       var categories: string[] = [];
-      evidenceCategoriesResponse.map((x: any) =>
+      evidenceCategoriesResponse.forEach((x: any) =>
         x.formData.map((y: any) =>
           y.fields.map((z: any) => {
             categories.push(z.value);
@@ -222,9 +222,9 @@ const AssetDetailsTemplate = (props: any) => {
 
     if (getAssetData !== undefined) {
       var categories: string[] = [];
-      getAssetData.categories.map((x: any) =>
-        x.formData.map((y: any) =>
-          y.fields.map((z: any) => {
+      getAssetData.categories.forEach((x: any) =>
+        x.formData.forEach((y: any) =>
+          y.fields.forEach((z: any) => {
             categories.push(z.key);
           })
         )
@@ -236,7 +236,7 @@ const AssetDetailsTemplate = (props: any) => {
       unit.push(getAssetData.assets.master.unitId);
 
       var checksum: number[] = [];
-      getAssetData.assets.master.files.map((x: any) => {
+      getAssetData.assets.master.files.forEach((x: any) => {
         checksum.push(x.checksum.checksum);
       });
 
@@ -244,13 +244,13 @@ const AssetDetailsTemplate = (props: any) => {
       duration.push(getAssetData.assets.master.duration);
 
       var size: number[] = [];
-      getAssetData.assets.master.files.map((x: any) => {
+      getAssetData.assets.master.files.forEach((x: any) => {
         size.push(x.size);
       });
 
 
       var categoriesForm: string[] = [];
-      getAssetData.categories.map((x: any) => {
+      getAssetData.categories.forEach((x: any) => {
         categoriesForm.push(x.record.cmtFieldName);
       });
 
@@ -455,7 +455,7 @@ const AssetDetailsTemplate = (props: any) => {
       <CRXRows
         container
         spacing={0}
-        style={{ marginTop: "50px", marginRight: "0px" }}
+       
       >
         <CRXColumn item xs={12}>
           {/* <div

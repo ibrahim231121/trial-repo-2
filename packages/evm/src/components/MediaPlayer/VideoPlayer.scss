@@ -50,56 +50,6 @@
     .V_timeline_end_time {
       .V_timeline_end_time {}
     }
-
-    .main-control-bar {
-      #SliderControlBar {
-        position: relative;
-
-        &::before {
-          position: absolute;
-          content: "";
-          width: 2px;
-          height: inherit;
-          background: #D79903;
-          left: 0px;
-          top: 0px;
-          z-index: 9;
-          transition: all 0.25s ease-in-out;
-        }
-
-        &::after {
-          position: absolute;
-          content: "";
-          width: 2px;
-          height: inherit;
-          background: #D79903;
-          right: 0px;
-          top: 0px;
-          z-index: 9;
-          transition: all 0.25s ease-in-out;
-        }
-
-        &:hover {
-
-          &::before,
-          &::after {
-            transform: scaley(2.5);
-          }
-        }
-
-        .MuiSlider-thumb {
-          &::after {
-            visibility: hidden !important;
-          }
-        }
-      }
-
-      &:hover {
-        .MuiSlider-thumb {
-          visibility: visible !important;
-        }
-      }
-    }
   }
 
   .MuiGrid-grid-xs-1 {
@@ -119,7 +69,6 @@
       display: block;
       height: 100%;
       width: 100%;
-      display: flex;
       place-content: center;
       align-items: center;
 
@@ -201,11 +150,6 @@
 
   .PlayPause-container {
     margin-top: 8px;
-  }
-
-  .main-control-bar {
-    padding: 0px 0px;
-    line-height: 0;
   }
 
   .playerViewFlexTimer {
@@ -404,11 +348,6 @@
         background-color: var(--color-coral);
       }
     }
-  }
-
-  .showControllerBar {
-    display: block;
-    margin-top: 10px;
   }
 
   .hideControllerBar {
@@ -856,8 +795,12 @@
         width: 16px;
         height: 16px;
         background-color: #FFFFFF;
-        top: 12px;
-        left: 10px;
+        top: 13px;
+        left: 13px;
+      }
+
+      .MuiButtonBase-root {
+        padding: 8px !important;
       }
 
       .MuiSwitch-track {
@@ -869,11 +812,15 @@
       }
 
       .Mui-checked {
+        left: 4px;
+        top: 13px;
+
         +.MuiSwitch-track {
           background-color: #003A5D !important;
           opacity: 1;
           border-radius: 8px;
         }
+
       }
     }
 
@@ -1529,4 +1476,62 @@ span.playBackTooltipUp {
       left: 87px !important;
     }
   }
+}
+
+#volumePercentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  width: 114px;
+  margin-left: 35px;
+  margin-top: -174px;
+
+  i {
+    font-size: 46px;
+    position: absolute;
+    top: 33px;
+    left: -5px;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: 700;
+    position: absolute;
+    top: 59px;
+    left: 1px;
+  }
+
+  &::before {
+    background: white;
+    content: "";
+    width: 114px;
+    height: 114px;
+    position: absolute;
+    z-index: 1;
+    border-radius: 84px;
+    opacity: 15%;
+    left: -37px;
+  }
+
+  .volPercentSpace {
+    left: -5px;
+  }
+}
+
+.ShowVolumePercentage {
+  display: block;
+  position: absolute;
+  top: 0;
+}
+
+.HideVolumePercentage {
+  display: none;
+  position: absolute;
+  top: 0;
+}
+
+.cursorAdded {
+  cursor: grabbing;
 }
