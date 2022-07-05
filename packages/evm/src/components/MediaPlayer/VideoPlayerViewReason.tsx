@@ -91,6 +91,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             setViewReasonControlsDisabled(false);
         })
         .catch((e:any) => {
+            console.log(e);
             setAlert(true);
             setResponseError(
                 "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."

@@ -9,6 +9,8 @@ import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
+import { EvidenceAgent } from '../../utils/Api/ApiAgent';
+import { Note } from '../../utils/Api/models/EvidenceModels';
 
 type VideoPlayerNoteProps = {
     openNoteForm: boolean;
@@ -159,69 +161,42 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     
 
     const onUpdate = async () => {
-        const body = {
+        const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+        const body: Note = {
             assetId: note.assetId, 
             id: note.id,
             position: note.position,
             description: description,
-            version: note.version
+            version: note.version,
+            noteTime: note.noteTime,
+            madeBy: note.madeBy,
         };
-        const requestOptions = {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-            },
-            body: JSON.stringify(body),
-          };
-        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
-        fetch(url, requestOptions)
-        .then((response: any) => {
-            if (response.ok) {
-                setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
-                toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
-            } else {
-                setAlert(true);
-                setResponseError(
-                    "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                );
-            }
+        EvidenceAgent.updateNote(url, body).then(() => {
+            setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
+            toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
         })
         .catch((err: any) => {
-            // setError(true);
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
             console.error(err);
         });
     };
 
     const onDelete = async () => {
-        const body = {
-            id: note.id
-        };
-        const requestOptions = {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-            },
-          };
-        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
-        fetch(url, requestOptions)
-        .then((response: any) => {
-            if (response.ok) {
-                setnoteobj({ ...noteobj, id: body.id })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
-                toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
-            } else {
-                setAlert(true);
-                setResponseError(
-                    "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                );
-            }
+        const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+        EvidenceAgent.deleteNote(url).then(() => {
+            setnoteobj({ ...noteobj, id: note.id })
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
+            toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
         })
-        .catch((err: any) => {
-            // setError(true);
-            console.error(err);
+        .catch(() => {
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
         });
     };
 

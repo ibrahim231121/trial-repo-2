@@ -280,7 +280,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     }
 
     const onUpdate = async () => {
-        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
+        const url = "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
         const body : Bookmark = {
             id: bookmark.id,
             assetId: bookmark.assetId,
@@ -305,7 +305,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     };
 
     const onDelete = async () => {
-        const url = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
+        const url = "/Evidences/"+EvidenceId+"/Assets/"+bookmark.assetId+"/Bookmarks/"+bookmark.id;
         EvidenceAgent.deleteBookmark(url).then(() => {
             setbookmarkobj({ ...bookmarkobj, id: bookmark.id })
             setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})

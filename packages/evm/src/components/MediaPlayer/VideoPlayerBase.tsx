@@ -2,29 +2,25 @@ import React, { useState, useEffect, SyntheticEvent } from "react";
 import VideoScreen from "./VideoScreen";
 import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
-import { CRXButton, CRXTooltip, SVGImage } from "@cb/shared";
-import Slider from "@material-ui/core/Slider";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
-import { Menu, MenuItem } from "@szhsin/react-menu";
-import MaterialMenu from "@material-ui/core/Menu";
-import MaterialMenuItem from "@material-ui/core/MenuItem";
+import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
-
 import { FormControlLabel, Switch } from "@material-ui/core";
 import VideoPlayerViewReason from "./VideoPlayerViewReason";
 import { setTimeout } from "timers";
-import CRXVideoPlayerStyle from './CRXVideoPlayerStyle'
 import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
-import { EVIDENCE_SERVICE_URL } from "../../utils/Api/url";
-import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../utils/Api/ApiAgent";
-import { CRXToaster, CRXCheckBox } from "@cb/shared";
+import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
+import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
+import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
+import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
+
 
 var videoElements: any[] = [];
 
@@ -62,6 +58,35 @@ type TimelineSyncHistoryMain = {
 type MaxMinEndpoint = {
   Min_Start_point: number;
   Max_end_point: number;
+}
+type DurationFinderModel = {
+  Data: any
+  setfinalduration: any
+  settimelineduration: any
+  setmaxminendpoint: any
+  updateVideoSelection: boolean
+  timelinedetail: Timeline[]
+  settimelinedetail: any 
+  timelineSyncHistory: TimelineSyncHistoryMain[]
+  setTimelineSyncHistory: any
+  timelineSyncHistoryCounter: number
+  setTimelineSyncHistoryCounter: any
+  setBufferingArray: any
+  setupdateVideoSelection: any
+}
+type TimelineGeneratorModel = {
+  data: any
+  minstartpoint: number
+  duration: number
+  updateVideoSelection: boolean
+  timelinedetail: Timeline[]
+  settimelinedetail: any
+  timelineSyncHistory: TimelineSyncHistoryMain[]
+  setTimelineSyncHistory: any
+  timelineSyncHistoryCounter: number
+  setTimelineSyncHistoryCounter: any
+  setBufferingArray: any
+  setupdateVideoSelection: any
 }
 
 
@@ -102,6 +127,204 @@ const videoSpeed = [
     "speed": 250,
   }
 ]
+function secondsToHms(d: number) {
+  d = Number(d);
+  let h = Math.floor(d / 3600);
+  let m = Math.floor(d % 3600 / 60);
+  let s = Math.floor(d % 3600 % 60);
+
+  let hDisplay = h > 0 ? h + " : " : "00:";
+  let mDisplay = m >= 0 ? ('00' + m).slice(-2) + ":" : "";
+  let sDisplay = s >= 0 ? ('00' + s).slice(-2):"";
+  return hDisplay + mDisplay + sDisplay;
+}
+function padTo2Digits(num: number) {
+  return num.toString().padStart(2, '0');
+}
+const milliSecondsToTimeFormat = (date: Date) => {
+  return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+}
+async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
+  const {data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection} = TimelineGeneratorModel
+  let rowdetail: Timeline[] = [];
+  let bufferingArr: any[] = [];
+  for (let x = 0; x < data.length; x++) {
+    let timeOffset = data[x].recording.timeOffset ?? 0;
+    let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
+    let recording_start_point = (recording_start_time - minstartpoint) / 1000;
+    let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
+    let recording_end_time = new Date(data[x].recording.ended).getTime() + timeOffset;
+    let video_duration_in_second = (recording_end_time - recording_start_time) / 1000;
+    let recording_end_point = (recording_end_time - minstartpoint) / 1000;
+    let recording_end_point_ratio = 100 - ((recording_end_point / duration) * 100)
+    let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
+    let startdiff = recording_start_point * 1000;
+
+    if (updateVideoSelection) {
+      let temptimelinedetail = timelinedetail.find((y: any) => y.dataId == data[x].id)
+      if (temptimelinedetail) {
+        let myData: Timeline =
+        {
+          recording_start_point: recording_start_point,
+          recording_Start_point_ratio: recording_Start_point_ratio,
+          recording_end_point: recording_end_point,
+          recording_end_point_ratio: recording_end_point_ratio,
+          recordingratio: recordingratio,
+          bookmarks: temptimelinedetail.bookmarks,
+          notes: temptimelinedetail.notes,
+          startdiff: startdiff,
+          video_duration_in_second: video_duration_in_second,
+          src: temptimelinedetail.src,
+          id: temptimelinedetail.id,
+          dataId: temptimelinedetail.dataId,
+          unitId: temptimelinedetail.unitId,
+          enableDisplay: temptimelinedetail.enableDisplay,
+          indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
+          camera: temptimelinedetail.camera,
+          timeOffset: temptimelinedetail.timeOffset
+        }
+        rowdetail.push(myData);
+      }
+    }
+    else {
+      let myData: Timeline =
+      {
+        recording_start_point: recording_start_point,
+        recording_Start_point_ratio: recording_Start_point_ratio,
+        recording_end_point: recording_end_point,
+        recording_end_point_ratio: recording_end_point_ratio,
+        recordingratio: recordingratio,
+        bookmarks: data[x].bookmarks,
+        notes: data[x].notes,
+        startdiff: startdiff,
+        video_duration_in_second: video_duration_in_second,
+        src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        id: "Video-" + x,
+        dataId: data[x].id,
+        unitId: data[x].unitId,
+        enableDisplay: x == 0 ? true : false,
+        indexNumberToDisplay: x == 0 ? 1 : 0,
+        camera: data[x].camera,
+        timeOffset: timeOffset
+      }
+      bufferingArr.push({ id: myData.id, buffering: false })
+      rowdetail.push(myData);
+    }
+  }
+
+
+  let timelineSyncHistoryTemp = [...timelineSyncHistory];
+  timelineSyncHistoryTemp = timelineSyncHistoryTemp.slice(0, timelineSyncHistoryCounter + 1);
+  let timelineHistoryArray: TimelineSyncHistory[] = [];
+  rowdetail.forEach((x: any) => {
+    timelineHistoryArray.push({
+      assetId: x.dataId,
+      timeOffset: x.timeOffset,
+      recording_start_point: x.recording_start_point,
+      recording_end_point: x.recording_end_point,
+    })
+  })
+  timelineSyncHistoryTemp = [{
+    maxTimelineDuration: duration,
+    timelinesHistory: timelineHistoryArray
+  }]
+  setTimelineSyncHistory(timelineSyncHistoryTemp);
+  setTimelineSyncHistoryCounter(0);
+  if (!updateVideoSelection) {
+    await setBufferingArray(bufferingArr)
+  }
+  await settimelinedetail(rowdetail)
+  setupdateVideoSelection(false)
+}
+async function Durationfinder(DurationFinderModel:DurationFinderModel) {
+  const {Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection} = DurationFinderModel
+  
+  let data = JSON.parse(JSON.stringify(Data));
+  let timeOffset = data[0].recording.timeOffset ?? 0;
+  let maximum_endpoint = new Date(data[0].recording.ended).getTime() + timeOffset;
+  let minimum_startpont = new Date(data[0].recording.started).getTime() + timeOffset;
+  for (let x = 1; x < data.length; x++) {
+    if (data[x].multivideotimeline) {
+      let T_timeOffset = data[x].recording.timeOffset ?? 0;
+      let T_max_endpoint = new Date(data[x].recording.ended).getTime() + T_timeOffset;
+      let T_min_startpont = new Date(data[x].recording.started).getTime() + T_timeOffset;
+      maximum_endpoint = maximum_endpoint > T_max_endpoint ? maximum_endpoint : T_max_endpoint;
+      minimum_startpont = minimum_startpont > T_min_startpont ? T_min_startpont : minimum_startpont;
+    }
+  }
+  let duration = maximum_endpoint - minimum_startpont;
+  let durationInDateFormat = new Date(duration);
+  let durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
+  await setfinalduration(durationinformat)
+
+  let finalduration = durationInDateFormat.getTime() / 1000;
+  await settimelineduration(finalduration)
+  //first entity is max second is min
+  let maxminarray: MaxMinEndpoint = { Min_Start_point: minimum_startpont, Max_end_point: maximum_endpoint }
+  setmaxminendpoint(maxminarray);
+  await TimelineData_generator({ 
+      data,
+      minstartpoint: minimum_startpont,
+      duration: finalduration,
+      updateVideoSelection,
+      timelinedetail, 
+      settimelinedetail, 
+      timelineSyncHistory, 
+      setTimelineSyncHistory, 
+      timelineSyncHistoryCounter, 
+      setTimelineSyncHistoryCounter, 
+      setBufferingArray, 
+      setupdateVideoSelection
+    });
+}
+
+const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?: number, removeIndex?: boolean) => {
+  let recording_end_points = [...tempTimelines.map((x: any) => {
+    let recording_end_point = x.recording_end_point;
+    if (removeIndex) {
+      recording_end_point -= x.timeOffset / 1000;
+    }
+    return recording_end_point;
+  })];
+
+  let recording_start_points = [...tempTimelines.map((x: any) => {
+    let recording_start_point = x.recording_start_point;
+    if (removeIndex) {
+      recording_start_point -= x.timeOffset / 1000;
+    }
+    return recording_start_point;
+  })];
+
+  let maxTimelinesDuration: number = Math.max(...recording_end_points);
+  let minTimelinesDuration: number = Math.min(...recording_start_points);
+  if (newTimelineDuration !== undefined) {
+    maxTimelinesDuration = newTimelineDuration > maxTimelinesDuration ? newTimelineDuration : maxTimelinesDuration;
+    minTimelinesDuration = newTimelineDuration < minTimelinesDuration ? newTimelineDuration : minTimelinesDuration;
+  }
+
+  let maxTimelineDuration = Math.abs(minTimelinesDuration - maxTimelinesDuration) < maxTimelinesDuration ? maxTimelinesDuration : Math.abs(minTimelinesDuration - maxTimelinesDuration);
+  let negativeHandler = Math.abs(minTimelinesDuration < 0 ? minTimelinesDuration : 0);
+  return {
+    maxTimelineDuration: maxTimelineDuration,
+    negativeHandler: negativeHandler
+  };
+}
+const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number, setfinalduration: any, settimelineduration: any, settimelinedetail: any) => {
+  let durationinformat = secondsToHms(maxTimelineDuration);
+  setfinalduration(durationinformat.toString())
+  settimelineduration(maxTimelineDuration);
+
+  tempTimelines.filter((x: any) => x.indexNumberToDisplay !== indexNumberToDisplay).forEach((x: any) => {
+    let recording_Start_point_ratio = ((x.recording_start_point / maxTimelineDuration) * 100)
+    let recording_end_point_ratio = 100 - ((x.recording_end_point / maxTimelineDuration) * 100)
+    let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
+
+    x.recording_Start_point_ratio = recording_Start_point_ratio;
+    x.recording_end_point_ratio = recording_end_point_ratio;
+    x.recordingratio = recordingratio;
+  })
+  settimelinedetail(tempTimelines)
+}
 
 const VideoPlayerBase = (props: any) => {
 
@@ -225,14 +448,12 @@ const VideoPlayerBase = (props: any) => {
   const [openTimelineSyncConfirmation, setOpenTimelineSyncConfirmation] = useState<boolean>(false);
   const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
-  const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
   const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
-
-  const classes = CRXVideoPlayerStyle()
+  
 
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
@@ -278,7 +499,21 @@ const VideoPlayerBase = (props: any) => {
   //video size max upto net duration
   React.useEffect(() => {
     if (data.length > 0) {
-      Durationfinder(data);
+      Durationfinder({
+        Data: data,
+        setfinalduration, 
+        settimelineduration, 
+        setmaxminendpoint, 
+        updateVideoSelection, 
+        timelinedetail, 
+        settimelinedetail, 
+        timelineSyncHistory, 
+        setTimelineSyncHistory, 
+        timelineSyncHistoryCounter, 
+        setTimelineSyncHistoryCounter, 
+        setBufferingArray, 
+        setupdateVideoSelection
+      });
       setLoading(true)
     }
   }, [data]);
@@ -334,135 +569,6 @@ const VideoPlayerBase = (props: any) => {
       setdata(tempdata);
     }
   }, [updateVideoSelection]);
-
-  function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-  }
-  const milliSecondsToTimeFormat = (date: Date) => {
-    return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
-  }
-  async function Durationfinder(Data: any) {
-    var data = JSON.parse(JSON.stringify(Data));
-    var timeOffset = data[0].recording.timeOffset ?? 0;
-    var maximum_endpoint = new Date(data[0].recording.ended).getTime() + timeOffset;
-    var minimum_startpont = new Date(data[0].recording.started).getTime() + timeOffset;
-    for (let x = 1; x < data.length; x++) {
-      if (data[x].multivideotimeline) {
-        var T_timeOffset = data[x].recording.timeOffset ?? 0;
-        var T_max_endpoint = new Date(data[x].recording.ended).getTime() + T_timeOffset;
-        var T_min_startpont = new Date(data[x].recording.started).getTime() + T_timeOffset;
-        maximum_endpoint = maximum_endpoint > T_max_endpoint ? maximum_endpoint : T_max_endpoint;
-        minimum_startpont = minimum_startpont > T_min_startpont ? T_min_startpont : minimum_startpont;
-      }
-    }
-    var duration = maximum_endpoint - minimum_startpont;
-    var durationInDateFormat = new Date(duration);
-    var durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
-    await setfinalduration(durationinformat)
-
-    var finalduration = durationInDateFormat.getTime() / 1000;
-    await settimelineduration(finalduration)
-    //first entity is max second is min
-    let maxminarray: MaxMinEndpoint = { Min_Start_point: minimum_startpont, Max_end_point: maximum_endpoint }
-    setmaxminendpoint(maxminarray);
-    await TimelineData_generator(data, minimum_startpont, finalduration);
-  }
-
-
-
-  async function TimelineData_generator(data: any, minstartpoint: number, duration: number) {
-    let rowdetail: Timeline[] = [];
-    let bufferingArr: any[] = [];
-    for (let x = 0; x < data.length; x++) {
-      let timeOffset = data[x].recording.timeOffset ?? 0;
-      let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
-      let recording_start_point = (recording_start_time - minstartpoint) / 1000;
-      let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
-      let recording_end_time = new Date(data[x].recording.ended).getTime() + timeOffset;
-      let video_duration_in_second = (recording_end_time - recording_start_time) / 1000;
-      let recording_end_point = (recording_end_time - minstartpoint) / 1000;
-      let recording_end_point_ratio = 100 - ((recording_end_point / duration) * 100)
-      let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
-      let startdiff = recording_start_point * 1000;
-
-      if (updateVideoSelection) {
-        var temptimelinedetail = timelinedetail.find((y: any) => y.dataId == data[x].id)
-        if (temptimelinedetail) {
-          let myData: Timeline =
-          {
-            recording_start_point: recording_start_point,
-            recording_Start_point_ratio: recording_Start_point_ratio,
-            recording_end_point: recording_end_point,
-            recording_end_point_ratio: recording_end_point_ratio,
-            recordingratio: recordingratio,
-            bookmarks: temptimelinedetail.bookmarks,
-            notes: temptimelinedetail.notes,
-            startdiff: startdiff,
-            video_duration_in_second: video_duration_in_second,
-            src: temptimelinedetail.src,
-            id: temptimelinedetail.id,
-            dataId: temptimelinedetail.dataId,
-            unitId: temptimelinedetail.unitId,
-            enableDisplay: temptimelinedetail.enableDisplay,
-            indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
-            camera: temptimelinedetail.camera,
-            timeOffset: temptimelinedetail.timeOffset
-          }
-          rowdetail.push(myData);
-        }
-      }
-      else {
-        let myData: Timeline =
-        {
-          recording_start_point: recording_start_point,
-          recording_Start_point_ratio: recording_Start_point_ratio,
-          recording_end_point: recording_end_point,
-          recording_end_point_ratio: recording_end_point_ratio,
-          recordingratio: recordingratio,
-          bookmarks: data[x].bookmarks,
-          notes: data[x].notes,
-          startdiff: startdiff,
-          video_duration_in_second: video_duration_in_second,
-          src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          id: "Video-" + x,
-          dataId: data[x].id,
-          unitId: data[x].unitId,
-          enableDisplay: x == 0 ? true : false,
-          indexNumberToDisplay: x == 0 ? 1 : 0,
-          camera: data[x].camera,
-          timeOffset: timeOffset
-        }
-        bufferingArr.push({ id: myData.id, buffering: false })
-        rowdetail.push(myData);
-      }
-    }
-
-
-    var timelineSyncHistoryTemp = [...timelineSyncHistory];
-    timelineSyncHistoryTemp = timelineSyncHistoryTemp.slice(0, timelineSyncHistoryCounter + 1);
-    var timelineHistoryArray: TimelineSyncHistory[] = [];
-    rowdetail.forEach((x: any) => {
-      var timelineHistoryObj: TimelineSyncHistory = {
-        assetId: x.dataId,
-        timeOffset: x.timeOffset,
-        recording_start_point: x.recording_start_point,
-        recording_end_point: x.recording_end_point,
-      }
-      timelineHistoryArray.push(timelineHistoryObj)
-    })
-    timelineSyncHistoryTemp = [{
-      maxTimelineDuration: duration,
-      timelinesHistory: timelineHistoryArray
-    }]
-    setTimelineSyncHistory(timelineSyncHistoryTemp);
-    setTimelineSyncHistoryCounter(0);
-    if (!updateVideoSelection) {
-      await setBufferingArray(bufferingArr)
-    }
-    await settimelinedetail(rowdetail)
-    setupdateVideoSelection(false)
-  }
-
 
 
   const handleControlBarChange = (event: any, newValue: any) => {
@@ -1047,53 +1153,9 @@ const VideoPlayerBase = (props: any) => {
       }
     }
   }
-  const displaySeekBarThumbail = (event: any) => {
-    var Indexes: number[] = [];
-    timelinedetail.filter((x: any) => x.enableDisplay).forEach((x: any) => {
-      Indexes.push(x.indexNumberToDisplay)
-      displayThumbnail(event, x, true)
-    });
-    setVisibleThumbnail(Indexes);
+ 
 
-  }
-  const removeSeekBarThumbail = () => {
-    setVisibleThumbnail([]);
-  }
-  function secondsToHms(d: number) {
-    d = Number(d);
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
-
-    var hDisplay = h > 0 ? h + " : " : "00:";
-    var mDisplay = m >= 0 ? ('00' + m).slice(-2) + ":" : "";
-    var sDisplay = s >= 0 ? ('00' + s).slice(-2):"";
-    return hDisplay + mDisplay + sDisplay;
-  }
-
-  const EnableMultipleTimeline = (event: any) => {
-    setMultiTimelineEnabled(event.target.checked)
-    setSingleTimeline(!event.target.checked)
-    if (event.target.checked == false) {
-      var timelinedetailTemp = [...timelinedetail]
-      timelinedetailTemp.forEach((x: any) => {
-        if (x.indexNumberToDisplay != 1) {
-          x.indexNumberToDisplay = 0;
-          x.enableDisplay = false;
-        }
-      })
-      settimelinedetail(timelinedetailTemp);
-      screenClick(1, event);
-    }
-  }
-
-  const OverlayChangeEvent = (event: any) => {
-    if(event.target.checked) {
-        setOverlayMenuEnabled(event.currentTarget)
-    }
-    setOverlayEnabled(event.target.checked); 
-    setSettingMenuEnabled(null)
-  }
+ 
 
   const AdjustTimeline = (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
@@ -1128,7 +1190,7 @@ const VideoPlayerBase = (props: any) => {
       tempTimeline.recording_start_point = recording_start_point;
       tempTimeline.recording_end_point = recording_end_point;
 
-      var maxTimelineDuration = MaxTimelineCalculation(tempTimelines, newTimelineDuration)?.maxTimelineDuration;
+      let maxTimelineDuration = MaxTimelineCalculation(tempTimelines, newTimelineDuration)?.maxTimelineDuration;
 
       let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
       let recording_end_point_ratio = 100 - ((recording_end_point / maxTimelineDuration) * 100)
@@ -1140,20 +1202,19 @@ const VideoPlayerBase = (props: any) => {
       tempTimeline.recording_end_point_ratio = recording_end_point_ratio;
       tempTimeline.startdiff = startdiff;
       tempTimeline.recordingratio = recordingratio;
-      tempTimeline.timeOffset += ttt;
+      tempTimeline.timeOffset += ttt * 1000;
       settimelinedetail(tempTimelines);
 
-      var timelineSyncHistoryTemp = [...timelineSyncHistory];
+      let timelineSyncHistoryTemp = [...timelineSyncHistory];
       timelineSyncHistoryTemp = timelineSyncHistoryTemp.slice(0, timelineSyncHistoryCounter + 1);
-      var timelineHistoryArray: TimelineSyncHistory[] = [];
+      let timelineHistoryArray: TimelineSyncHistory[] = [];
       tempTimelines.forEach((x: any) => {
-        var timelineHistoryObj: TimelineSyncHistory = {
+        timelineHistoryArray.push({
           assetId: x.dataId,
           timeOffset: x.timeOffset,
           recording_start_point: x.recording_start_point,
           recording_end_point: x.recording_end_point,
-        }
-        timelineHistoryArray.push(timelineHistoryObj)
+        })
       })
       timelineSyncHistoryTemp.push({
         maxTimelineDuration: maxTimelineDuration,
@@ -1163,41 +1224,9 @@ const VideoPlayerBase = (props: any) => {
       setTimelineSyncHistoryCounter(timelineSyncHistoryTemp.length - 1);
 
       if (maxTimelineDuration !== timelineduration) {
-        updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay)
+        updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay, setfinalduration, settimelineduration, settimelinedetail)
       }
     }
-  }
-
-  const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?: number, removeIndex?: boolean) => {
-    var recording_end_points = [...tempTimelines.map((x: any) => {
-      var recording_end_point = x.recording_end_point;
-      if (removeIndex) {
-        recording_end_point -= x.timeOffset / 1000;
-      }
-      return recording_end_point;
-    })];
-
-    var recording_start_points = [...tempTimelines.map((x: any) => {
-      var recording_start_point = x.recording_start_point;
-      if (removeIndex) {
-        recording_start_point -= x.timeOffset / 1000;
-      }
-      return recording_start_point;
-    })];
-
-    var maxTimelinesDuration: number = Math.max(...recording_end_points);
-    var minTimelinesDuration: number = Math.min(...recording_start_points);
-    if (newTimelineDuration !== undefined) {
-      maxTimelinesDuration = newTimelineDuration > maxTimelinesDuration ? newTimelineDuration : maxTimelinesDuration;
-      minTimelinesDuration = newTimelineDuration < minTimelinesDuration ? newTimelineDuration : minTimelinesDuration;
-    }
-
-    var maxTimelineDuration = Math.abs(minTimelinesDuration - maxTimelinesDuration) < maxTimelinesDuration ? maxTimelinesDuration : Math.abs(minTimelinesDuration - maxTimelinesDuration);
-    var negativeHandler = Math.abs(minTimelinesDuration < 0 ? minTimelinesDuration : 0);
-    return {
-      maxTimelineDuration: maxTimelineDuration,
-      negativeHandler: negativeHandler
-    };
   }
 
   const RevertToOriginal = () => {
@@ -1265,22 +1294,6 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
-  const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number) => {
-    var durationinformat = secondsToHms(maxTimelineDuration);
-    setfinalduration(durationinformat.toString())
-    settimelineduration(maxTimelineDuration);
-
-    tempTimelines.filter((x: any) => x.indexNumberToDisplay !== indexNumberToDisplay).forEach((x: any) => {
-      let recording_Start_point_ratio = ((x.recording_start_point / maxTimelineDuration) * 100)
-      let recording_end_point_ratio = 100 - ((x.recording_end_point / maxTimelineDuration) * 100)
-      let recordingratio = 100 - recording_end_point_ratio - recording_Start_point_ratio
-
-      x.recording_Start_point_ratio = recording_Start_point_ratio;
-      x.recording_end_point_ratio = recording_end_point_ratio;
-      x.recordingratio = recordingratio;
-    })
-    settimelinedetail(tempTimelines)
-  }
 
   //Video Player  Logics
   const modeMinus = mode == -2 ? "2" : mode == -4 ? "4" : "6";
@@ -1305,18 +1318,15 @@ const VideoPlayerBase = (props: any) => {
 
   }, 500);
 
-
-
   const saveOffsets = () => {
     var timelineHistoryArray: TimelineSyncHistory[] = [];
     let body : TimelinesSync[] = timelinedetail.map((x: any) => {
-      var timelineHistoryObj: TimelineSyncHistory = {
+      timelineHistoryArray.push({
         assetId: x.dataId,
         timeOffset: x.timeOffset,
         recording_start_point: x.recording_start_point,
         recording_end_point: x.recording_end_point,
-      }
-      timelineHistoryArray.push(timelineHistoryObj)
+      })
 
       let obj: TimelinesSync = {
         evidenceId: EvidenceId,
@@ -1325,7 +1335,7 @@ const VideoPlayerBase = (props: any) => {
       }
       return obj;
     })
-    const url = EVIDENCE_SERVICE_URL + "/Evidences/" + EvidenceId + "/TimelineSync";
+    const url = "/Evidences/" + EvidenceId + "/TimelineSync";
     EvidenceAgent.timelineSync(url, body).then(() => {
       toasterMsgRef.current.showToaster({
         message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
@@ -1413,14 +1423,10 @@ const VideoPlayerBase = (props: any) => {
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
             <div id="screens">
-            {overlayEnabled && <div className="overlayVideo"  style={{height:50, background: "#7a7a7a"}}>
-              <ul>
-                <li><img src={getacVideoSolution} style={{height:30}}></img></li>
-                {overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors") && <li>Sensors</li>}
-                {overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)") && <li>GPS (location + speed)</li>}
-                {overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp") && <li>Timestamp</li>}
-              </ul>
-            </div>}
+              <VideoPlayerOverlayMenu
+              overlayEnabled = {overlayEnabled}
+              overlayCheckedItems = {overlayCheckedItems}
+              />
               <VideoScreen
                 setData={setdata}
                 evidenceId={EvidenceId}
@@ -1554,25 +1560,14 @@ const VideoPlayerBase = (props: any) => {
                     })
                     }
                   </div>
-                  <Slider
-                    id="SliderControlBar"
-                    value={typeof controlBar === 'number' ? controlBar : 0}
-                    onChange={handleControlBarChange}
-                    onMouseOver={(e: any) => displaySeekBarThumbail(e)}
-                    onMouseMove={(e: any) => displaySeekBarThumbail(e)}
-                    onMouseOut={() => removeSeekBarThumbail()}
-                    onMouseDown={(e: any) => showTrackHoverBar(e)}
-                    onMouseUp={(e: any) => showTrackHoverBar(e)}
-                    aria-labelledby="input-slider"
-                    step={1}
-                    min={0}
-                    max={timelineduration}
-                    disabled={viewReasonControlsDisabled}
-                    classes={{
-                      ...classes
-                    }}
-                  />
-                  <div className="_hover_timeLine_pipeGray" id="_hover_timeLine_pipeGray"></div>
+                  <VideoPlayerSeekbar
+                  controlBar ={controlBar}
+                  handleControlBarChange ={handleControlBarChange}
+                  timelineduration ={timelineduration}
+                  viewReasonControlsDisabled ={viewReasonControlsDisabled}
+                  timelinedetail ={timelinedetail}
+                  displayThumbnail ={displayThumbnail}
+                  setVisibleThumbnail ={setVisibleThumbnail}/>
                 </div>
                 <div className="videoPlayer_Timeline_Time">
                   <div className="playerViewFlexTimer">
@@ -1697,73 +1692,21 @@ const VideoPlayerBase = (props: any) => {
                             title={<>Settings <span className="settingsTooltip">,</span></>}
                             arrow={false}
                           /></div>
-                  
-                    <MaterialMenu
-                      className="ViewScreenMenu"
-                      anchorEl={settingMenuEnabled}
-                      keepMounted
-                      open={Boolean(settingMenuEnabled)}
-                      onClose={(e : any) => {setSettingMenuEnabled(null)}}
-                      
-                    >
-                      <MaterialMenuItem>
-                        {/* {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />} */}
-                        {<FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
-                      </MaterialMenuItem>
-                      <MaterialMenuItem>
-                        <FormControlLabel control={<Switch checked={overlayEnabled} onChange={(event) => OverlayChangeEvent(event) } />} label="Overlay" />
-                      </MaterialMenuItem>
-                    </MaterialMenu>
-
-                    <MaterialMenu
-                      className="ViewScreenMenu"
-                      anchorEl={overlayMenuEnabled}
-                      keepMounted
-                      open={Boolean(overlayMenuEnabled)}
-                      onClose={(e : any) => {overlayMenuEnabled(null)}}
-                      
-                    >
-                      <MaterialMenuItem>
-                        <CRXButton color="primary" onClick={(e : any) => {setSettingMenuEnabled(e.currentTarget); setOverlayMenuEnabled(null)}}>Back</CRXButton>
-                      </MaterialMenuItem>
-                      <MaterialMenuItem>
-                        <CRXCheckBox
-                          checked={overlayCheckedItems.some((x: any) => x == "All")}
-                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems(["All"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "All"))}}
-                          name="selectAll"
-                          className="bucketListCheckedAll"
-                          lightMode={true}/>
-                        <span className="selectAllText">Select all</span>
-                      </MaterialMenuItem>
-                      <MaterialMenuItem>
-                        <CRXCheckBox
-                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp")}
-                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Timestamp"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "Timestamp"))}}
-                          name="Timestamp"
-                          className="bucketListCheckedAll"
-                          lightMode={true}/>
-                        <span className="Timestamp">Timestamp</span>
-                      </MaterialMenuItem>
-                      <MaterialMenuItem>
-                        <CRXCheckBox
-                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")}
-                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "GPS (location + speed)"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "GPS (location + speed)"))}}
-                          name="GPS (location + speed)"
-                          className="bucketListCheckedAll"
-                          lightMode={true}/>
-                        <span className="GPS (location + speed)">GPS (location + speed)</span>
-                      </MaterialMenuItem>
-                      <MaterialMenuItem>
-                        <CRXCheckBox
-                          checked={overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors")}
-                          onChange={(e: any) => { e.target.checked ? setOverlayCheckedItems([...overlayCheckedItems, "Sensors"]) : setOverlayCheckedItems(overlayCheckedItems.filter((x:any) => x !== "Sensors"))}}
-                          name="Sensors"
-                          className="bucketListCheckedAll"
-                          lightMode={true}/>
-                        <span className="Sensors">Sensors</span>
-                      </MaterialMenuItem>
-                    </MaterialMenu>
-					
+                      <VideoPlayerSettingMenu
+                      singleVideoLoad ={singleVideoLoad}
+                      multiTimelineEnabled ={multiTimelineEnabled}
+                      setMultiTimelineEnabled ={setMultiTimelineEnabled}
+                      settingMenuEnabled ={settingMenuEnabled}
+                      setSettingMenuEnabled ={setSettingMenuEnabled}
+                      setSingleTimeline ={setSingleTimeline}
+                      timelinedetail ={timelinedetail}
+                      settimelinedetail ={settimelinedetail}
+                      screenClick ={screenClick}
+                      overlayEnabled ={overlayEnabled}
+                      setOverlayEnabled ={setOverlayEnabled}
+                      overlayCheckedItems ={overlayCheckedItems}
+                      setOverlayCheckedItems ={setOverlayCheckedItems}
+                      />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
@@ -1894,7 +1837,7 @@ const VideoPlayerBase = (props: any) => {
             </div>
             {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {startTimelineSync == false || viewReasonControlsDisabled && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
+            {!startTimelineSync && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
           </FullScreen>
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
