@@ -60,7 +60,7 @@ pipeline {
           sh label: 'publish', script: """
           mkdir -p "${WORKSPACE}/publish"
           cp "${WORKSPACE}/src/packages/evm/Dockerfile-jenkins-linux" "${WORKSPACE}/publish/Dockerfile"
-          cp -R "${WORKSPACE}/src/packages/evm/build-qa" "${WORKSPACE}/publish/evm"
+          cp -R "${WORKSPACE}/src/packages/evm/build" "${WORKSPACE}/publish/evm"
           """
         }
       }
