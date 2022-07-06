@@ -6,7 +6,6 @@ import { RootState } from "../../../../Redux/rootReducer";
 import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
 import useGetFetch from "../../../../utils/Api/useGetFetch";
-import { EVIDENCE_SERVICE_URL } from "../../../../utils/Api/url";
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";

@@ -34,7 +34,7 @@ export interface Bookmark {
     id: number
     assetId: number
     bookmarkTime: Date
-    position: Date
+    position: number
     description: string
     madeBy: string
     version: string
@@ -43,7 +43,7 @@ export interface Note {
     id: number
     assetId: number
     noteTime: Date
-    position: Date
+    position: number
     description: string
     madeBy: string
     version: string
@@ -55,11 +55,12 @@ export interface File {
     name: string
     type: string
     extension: string
-    uRL: string
+    url: string
     size: number
     duration: number
     recording: Recording
     sequence: number
+    checksum: any
 }
 export interface Assets {
     master: Asset,
@@ -72,19 +73,19 @@ export interface Asset {
     status: string
     state: string
     unitId: number
-    unit: CMTEntityRecord
+    unit?: CMTEntityRecord
     isRestrictedView: boolean
     duration: number
     recording: Recording
     buffering: RecordingBuffer
-    audioDevice: string
-    camera: string
+    audioDevice?: string
+    camera?: string
     isOverlaid: boolean
-    recordedByCSV: string
+    recordedByCSV?: string
     bookMarks: Bookmark[]
     notes: Note[]
     files: File[]
-    owners: CMTEntityRecord[]
+    owners: CMTEntityRecord[] | number[]
 }
 
 export interface TimelinesSync {

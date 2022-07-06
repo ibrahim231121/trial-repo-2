@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
-import { EVIDENCE_SERVICE_URL } from "../../../../utils/Api/url";
 import moment from "moment";
 import { log } from 'console';
 import { Link } from 'react-router-dom';

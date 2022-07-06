@@ -9,7 +9,6 @@ import { RootState } from "../../../Redux/rootReducer";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
 import FormContainer from "../AssetLister/Category/FormContainer";
 import useGetFetch from "../../../utils/Api/useGetFetch";
-import { EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { makeStyles } from "@material-ui/core/styles";

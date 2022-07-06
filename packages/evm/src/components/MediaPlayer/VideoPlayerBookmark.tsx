@@ -4,12 +4,11 @@ import { CRXModalDialog } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
 import { CRXAlert } from '@cb/shared';
 import { TextField } from '@cb/shared';
-import { EVIDENCE_SERVICE_URL } from '../../utils/Api/url';
 import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
-import { Bookmark } from '../../utils/Api/models/EvidenceModels';
+import { Asset, Bookmark, File } from '../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 
 type VideoPlayerSnapshotFormProps = {
@@ -157,51 +156,37 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
 
     const AddBookmark = async () => {
         const AssetId = AssetData.dataId;
-        const body = {
-            bookmarkTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
-            position: BookmarktimePositon,
+        const body : Bookmark = {
+            id: 0,
+            assetId: AssetId,
+            bookmarkTime: new Date(),
+            position: BookmarktimePositon ?? 0,
             description: formpayload.description,
-            madeBy: "User"
+            madeBy: "User",
+            version: ""
         };
-        const bookmarkaddurl = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Bookmarks";
-        await fetch(bookmarkaddurl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', TenantId: '1' },
-            body: JSON.stringify(body)
+        const bookmarkaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Bookmarks";
+        EvidenceAgent.addBookmark(bookmarkaddurl, body).then((response: any) => {
+            setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
+            toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
         })
-            .then(function (response) {
-                if (response.ok) return response.json();
-                else if (response.status == 500) {
-                    setAlert(true);
-                    setResponseError(
-                        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                    );
-                } else return response.text();
-            })
-            .then((response) => {
-                if (response !== undefined) {
-                    let err = JSON.parse(response);
-                    if (err.errors !== undefined) {
-                    }
-                    else if (!isNaN(+err)) {
-                        setbookmarkobj({ ...bookmarkobj, bookmarkTime: body.bookmarkTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
-                        setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-                        toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-                    } else {
-                            setAlert(true);
-                            setResponseError(err);
-                    }
-                }
-            })
-            .catch(function (error) {
-                return error;
-            });
+        .catch((e:any) =>{
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
+            setResponseError(e);
+        })
     }
 
     const AddSnapshot = async () => {
         const formdata = formpayload;
         var guid = uuidv4();
-        const AssetFilebody = {
+        const AssetFilebody : File = {
+            id:0,
+            filesId: 0,
+            assetId: 0,
             name: "Snapshot_FILE_" + guid,
             type: "Image",
             extension: "jpeg",
@@ -216,67 +201,47 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             },
             recording: {
                 started: new Date(),
-                ended: new Date()
+                ended: new Date(),
+                timeOffset: 0
             }
         };
-        const Assetbody = {
+        const Assetbody : Asset = {
+            id: 0,
             name: "Snapshot_" + guid,
             typeOfAsset: "Image",
             state: "Normal",
             status: "Queued",
             unitId: AssetData.unitId,
             duration: 0,
-            recordedByCSV: null,
             bookMarks: [],
             files: [AssetFilebody],
             owners: [1],
-            lock: { roles: [] },
             recording: {
                 started: new Date(),
-                ended: new Date()
+                ended: new Date(),
+                timeOffset: 0,
             },
             isRestrictedView: false,
             buffering: {
                 pre: 0,
                 post: 0
               },
-            audioDevice: null,
-            camera: null,
-            isOverlaid: false
+            isOverlaid: false,
+            notes: []
         };
-        
-        await fetch(EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', TenantId: '1' },
-            body: JSON.stringify(Assetbody)
+        const url = "/Evidences/" + EvidenceId + "/Assets";
+        EvidenceAgent.addAsset(url, Assetbody).then(() => {
+            toasterMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+            setOpenModal(false);
+            setopenBookmarkForm(false);
         })
-            .then(function (res) {
-                if (res.ok) return res.json();
-                else if (res.status == 500) {
-                    setAlert(true);
-                    setResponseError(
-                        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                    );
-                } else return res.text();
-            })
-            .then((resp) => {
-                if (resp !== undefined) {
-                    let error = JSON.parse(resp);
-                    if (error.errors !== undefined) {
-                    }
-                    else if (!isNaN(+error)) {
-                        toasterMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-                        setOpenModal(false);
-                        setopenBookmarkForm(false);
-                    } else {
-                        setAlert(true);
-                        setResponseError(error);
-                    }
-                }
-            })
-            .catch(function (error) {
-                return error;
-            });
+        .catch((e:any) =>{
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
+            setResponseError(e);
+        })
     }
 
     const onUpdate = async () => {

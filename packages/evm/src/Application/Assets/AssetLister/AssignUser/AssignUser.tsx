@@ -4,7 +4,6 @@ import { MultiSelectBoxCategory, CRXCheckBox, CRXButton, CRXAlert } from '@cb/sh
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
-import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import Cookies from 'universal-cookie';

@@ -117,45 +117,28 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
 
     const AddNote = async () => {
         const AssetId = AssetData.dataId;
-        const body = {
-            noteTime: moment().format('YYYY-MM-DDTHH:mm:ssZ'),
-            position: NotetimePositon,
+        const body : Note = {
+            id: 0,
+            assetId: AssetId,
+            noteTime: new Date(),
+            position: NotetimePositon ?? 0,
             description: description,
-            madeBy: "User"
+            madeBy: "User",
+            version: ""
         };
         const noteaddurl = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
-        await fetch(noteaddurl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', TenantId: '1' },
-            body: JSON.stringify(body)
+        EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
+            setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
+            setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
+            toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
         })
-            .then(function (response) {
-                if (response.ok) return response.json();
-                else if (response.status == 500) {
-                    setAlert(true);
-                    setResponseError(
-                        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-                    );
-                } else return response.text();
-            })
-            .then((response) => {
-                if (response !== undefined) {
-                    let err = JSON.parse(response);
-                    if (err.errors !== undefined) {
-                    }
-                    else if (!isNaN(+err)) {
-                        setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
-                        setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-                        toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-                    } else {
-                            setAlert(true);
-                            setResponseError(err);
-                    }
-                }
-            })
-            .catch(function (error) {
-                return error;
-            });
+        .catch((e:any) =>{
+            setAlert(true);
+            setResponseError(
+                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+            );
+            setResponseError(e);
+        })
     }
 
     
