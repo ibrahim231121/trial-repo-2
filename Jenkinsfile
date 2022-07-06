@@ -54,7 +54,6 @@ pipeline {
         dir('src') {
           buildName "1.0.${currentBuild.number}"
 		  sh label: 'removing node_module', script: 'rm -rf node_modules/'
-		  sh label: 'preinstall', script: 'npm run preinstall'
           sh label: 'npm install', script: 'npm install'
           sh label: 'lerna bootstrap', script: 'npx lerna bootstrap'
           sh label: 'npm run build', script: 'npm run build'
