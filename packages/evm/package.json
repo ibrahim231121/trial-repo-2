@@ -61,7 +61,7 @@
     "react-inject-env": "^2.1.0"
   },
   "scripts": {
-	"preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
+	
     "start": "SET PORT=3000 && yarn run start:dev",
     "build": "yarn run build:dev && yarn react-inject-env set  ",
     "build_qa": "yarn run build:qa && yarn react-inject-env set ",
