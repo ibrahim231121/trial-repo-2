@@ -23,7 +23,7 @@ export interface crxDialogProps {
   secondaryButton?: boolean,
   primaryButton?: boolean,
   closeWithConfirm?: boolean,
-  confirmContent: any,
+  confirmContent?: any,
   id?: string,
   subTitleText?: string,
   showSticky? : boolean

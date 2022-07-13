@@ -10,6 +10,7 @@ import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
 import { FormControlLabel, Switch } from "@material-ui/core";
 import VideoPlayerViewReason from "./VideoPlayerViewReason";
+import VideoPlayerViewRequirement from "./VideoPlayerViewRequirement";
 import { setTimeout } from "timers";
 import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
@@ -449,11 +450,12 @@ const VideoPlayerBase = (props: any) => {
   const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
-  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(false);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
-  
+  const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(true);
+  const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
@@ -1410,7 +1412,12 @@ const VideoPlayerBase = (props: any) => {
 
   return (
     <>
-      {true && <VideoPlayerViewReason
+      <VideoPlayerViewRequirement
+        openViewRequirement={openViewRequirement}
+        setOpenViewRequirement={setOpenViewRequirement}
+        setReasonForViewing={setReasonForViewing}
+      />
+      {reasonForViewing && <VideoPlayerViewReason
         setOpenViewReason={setopenNoteForm}
         openViewReason={true}
         EvidenceId={EvidenceId}
@@ -1579,7 +1586,7 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
               {/* <div className="crx_video_graph"></div> */}
-              <div className={`playerViewFlex ${multiTimelineEnabled ? " enablebViewFlex" : "disabledViewFlex"}`}>
+              <div className={`playerViewFlex enablebViewFlex`}>
                 <div className="playerViewLeft">
                   <div className="PlayPause-container">
                     <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" disabled={viewReasonControlsDisabled}>
@@ -1725,7 +1732,7 @@ const VideoPlayerBase = (props: any) => {
                       arrow={false}
                     />
                   </CRXButton>
-                  {multiTimelineEnabled && <div className="MenuListGrid">
+                  <div className="MenuListGrid">
                     <Menu
                       align="start"
                       viewScroll="initial"
@@ -1745,20 +1752,20 @@ const VideoPlayerBase = (props: any) => {
                       <MenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
                       </MenuItem>
-                      <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  disabled={viewReasonControlsDisabled}>
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
-                      </MenuItem>
-                      <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
+                      </MenuItem>}
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Side by Side </span>
                         <div className="screenViewsSideBySide ViewDiv">
                           <p></p>
                           <p></p>
                         </div>
-                      </MenuItem>
-                      <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  disabled={viewReasonControlsDisabled}>
+                      </MenuItem>}
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">
@@ -1768,8 +1775,8 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>
-                      <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
+                      </MenuItem>}
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 4</span>
                         <div className="screenViewsGrid ViewDiv">
@@ -1782,8 +1789,8 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>
-                      <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
+                      </MenuItem>}
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 6</span>
                         <div className="screenViewsGrid6 ViewDiv">
@@ -1800,7 +1807,7 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>
+                      </MenuItem>}
                       <MenuItem className="SidePanelMenu">
                         <div className="sidePanelGrid">
                           <div></div>
@@ -1811,7 +1818,7 @@ const VideoPlayerBase = (props: any) => {
                       </MenuItem>
 
                     </Menu >
-                  </div>}
+                  </div>
                   <div className="playerView">
                     {ViewScreen ?
                       <div onClick={viewScreenEnter} >
