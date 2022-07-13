@@ -4,7 +4,6 @@ import { CRXModalDialog } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
 import { CRXAlert } from '@cb/shared';
 import { TextField } from '@cb/shared';
-import { EVIDENCE_SERVICE_URL } from '../../utils/Api/url';
 import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
@@ -126,7 +125,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             madeBy: "User",
             version: ""
         };
-        const noteaddurl = EVIDENCE_SERVICE_URL + "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
+        const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
         EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
             setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
             setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});

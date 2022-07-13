@@ -10,11 +10,12 @@ import './StationActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
 
-import { BASE_URL_UNIT_SERVICE, EVIDENCE_SERVICE_URL } from '../../../utils/Api/url'
+import { BASE_URL_UNIT_SERVICE } from '../../../utils/Api/url'
 import { getStationsInfoAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
+import { EvidenceAgent } from '../../../utils/Api/ApiAgent';
 
 type Props = {
   selectedItems?: any;
@@ -86,13 +87,8 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   }
 
   const isStationExistsInAssets = async () => {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${row.id}` + '/isStationExistsinEvidence?Page=1&Size=100'
-    const res = await fetch(url, {
-      method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
-    })
-    var response = await res.json();
-    return response
+    const url = '/Evidences/' + `${row.id}` + '/isStationExistsinEvidence?Page=1&Size=100'
+    return await EvidenceAgent.isStationExistsinEvidence(url).then((response:number) => response);
   }
 
   const deleteStation = async () => {

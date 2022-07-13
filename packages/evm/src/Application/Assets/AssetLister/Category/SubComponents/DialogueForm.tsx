@@ -4,9 +4,10 @@ import { CRXButton, CRXHeading } from '@cb/shared';
 import { Alert } from '@material-ui/lab';
 import { CRXAlert } from '@cb/shared';
 import moment from 'moment';
-import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
+import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
+import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 
 type DialogueFormProps = {
   setremoveClassName: any;
@@ -44,34 +45,32 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   const submitForm = (values: any[]) => {
     const evidenceId = props.evidenceResponse?.id;
-    const Assign_Category_Arr: any[] = [];
-    const Assign_Category_URL = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
+    const Assign_Category_Arr: Category[] = [];
+    const Assign_Category_URL = `/Evidences/${evidenceId}/Categories`;
     for (const v of values) {
-      const _body = {
+      const _body : Category = {
         id: v.id,
         formData: [],
-        assignedOn: moment().format('YYYY-MM-DDTHH:mm:ss')
+        assignedOn: new Date(),
+        name: ""
       };
       Assign_Category_Arr.push(_body);
     }
 
-    const body = {
+    const body: EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: Assign_Category_Arr,
       updateCategories: []
     };
 
-    http.patch(Assign_Category_URL, body)
-      .then((response) => {
-        if (response.status == 204) {
-          props.setFilterValue((val: []) => []);
-          setSuccess(true);
-          setTimeout(() => closeModal(), 3000);
-        } else {
-          setError(true);
-          throw new Error(response.statusText);
-        }
-      })
+    EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
+      props.setFilterValue((val: []) => []);
+      setSuccess(true);
+      setTimeout(() => closeModal(), 3000);
+    })
+    .catch((ex: any) => {
+      setError(true);
+    })
   };
 
   return (

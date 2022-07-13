@@ -4,10 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
-import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
 import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
+import { EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 
 type EditConfirmFormProps = {
   evidenceResponse: any;
@@ -48,7 +49,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
 
 
   const submitForm = (message: string) => {
-    const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
+    const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
     let assignedCategories = CategoryFormFields.filter((e: any) => e.type === 'add');
     let updateCategories = CategoryFormFields.filter((e: any) => e.type === 'update');
 
@@ -74,7 +75,8 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
      * */
     const retentionPromise = findRetentionAndHoldUntill(assignedCategories, categoryOptions, props.filterValue, props.evidenceResponse);
     Promise.resolve(retentionPromise).then((retention: any) => {
-      const body = {
+      
+      const body : EvdenceCategoryAssignment = {
         unAssignCategories: [],
         assignedCategories: assignedCategories,
         updateCategories: updateCategories,
@@ -82,16 +84,13 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
         holdUntill: retention !== undefined ? retention.expiryDate : null
       };
 
-      http.patch(url, body)
-        .then((response) => {
-          if (response.status == 204) {
-            setSuccess(true);
-            setTimeout(() => closeModal(), 3000);
-          } else {
-            setError(true);
-            throw new Error(response.statusText);
-          }
-        });
+      EvidenceAgent.changeCategories(url, body).then((response: any) => {
+        setSuccess(true);
+        setTimeout(() => closeModal(), 3000);
+      })
+      .catch((ex: any) => {
+        setError(true);
+      })
     })
   };
 

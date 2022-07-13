@@ -6,10 +6,11 @@ import RemoveCategoryForm from './RemoveCategoryForm';
 import CancelConfirmForm from './Confirmation/CancelConfirmForm';
 import SaveConfirmForm from './Confirmation/SaveConfirmForm';
 import EditConfirmForm from './Confirmation/EditConfirmForm';
-import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url';
 import { filterCategory } from './Utility/UtilityFunctions';
 import { AssetCategory } from './Model/Evidence';
 import http from '../../../../http-common'
+import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 
 
 type FormContainerProps = {
@@ -38,7 +39,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
   const prevActiveFormRef = React.useRef<number>();
   const prevActiveForm = prevActiveFormRef.current;
-  const [evidenceResponse, setEvidenceResponse] = React.useState<AssetCategory.RootObject>();
+  const [evidenceResponse, setEvidenceResponse] = React.useState<Evidence>();
 
   React.useEffect(() => {
     prevActiveFormRef.current = activeForm;
@@ -49,15 +50,13 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
       setOpenModal(true);
       if (props.rowData) {
         const evidenceId = props.rowData.id;
-        const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}`;
-        http.get<AssetCategory.RootObject>(url)
-          .then((response) => {
-            setFilterValue(filterCategory(response.data.categories));
-            setEvidenceResponse(response.data);
-          })
-          .catch((err: any) => {
-            console.error(err);
-          });
+        EvidenceAgent.getEvidence(evidenceId).then((response:Evidence) => {
+          setFilterValue(filterCategory(response.categories));
+          setEvidenceResponse(response);
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
       }
       setActiveForm(0);
     }

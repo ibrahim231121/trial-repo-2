@@ -12,11 +12,11 @@ export interface FormData {
     fields: Field[],
 }
 export interface Category {
-    categoryId: number,
+    id: number,
     formData: FormData[],
     assignedOn: Date,
-    record: CMTEntityRecord,
-    DataRetentionPolicy: CMTEntityRecord,
+    record?: CMTEntityRecord,
+    DataRetentionPolicy?: CMTEntityRecord,
     name: string,
 }
 
@@ -149,3 +149,11 @@ export interface Evidence {
     extendedRetainUntil: Date
 }
 
+export interface EvdenceCategoryAssignment
+{
+    unAssignCategories : Category[]
+    assignedCategories : Category[]
+    updateCategories : Category[]
+    retentionId? : number[] | null
+    holdUntill? : string
+}

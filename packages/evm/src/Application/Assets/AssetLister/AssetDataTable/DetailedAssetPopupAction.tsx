@@ -10,10 +10,10 @@ import "./index.scss";
 import { CRXConfirmDialog, CRXToaster } from '@cb/shared';
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
-import { EVIDENCE_SERVICE_URL } from '../../../../utils/Api/url'
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 
 
 type Props = {
@@ -90,28 +90,17 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
  };
 
   const onConfirm = async () => {
-    const url = EVIDENCE_SERVICE_URL + '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
-    const requestOptions = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`}
-
-    };
-    await fetch(url,requestOptions)
-    .then(async function(res) {
-      if (res.ok) {
-        setIsOpen(false);
-        await setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
-        showToastMsg();
-      }
-      else {
-        setAlert(true);
-          setResponseError(
-            "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-          );
-      }
-
+    const url = '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
+    EvidenceAgent.setPrimaryAsset(url).then(() => {
+      setIsOpen(false);
+      setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
+      showToastMsg();
     })
     .catch(function (error) {
+      setAlert(true);
+      setResponseError(
+        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+      );
       return error;
     });
   };

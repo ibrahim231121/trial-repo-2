@@ -95,7 +95,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         clearButtton: true,
       });
     })
-    .catch(function (error) {
+    .catch((error: any) => {
       setAlert(true);
         setResponseError(
           "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."

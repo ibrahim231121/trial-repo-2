@@ -3,10 +3,11 @@ import { Formik, Form } from 'formik';
 import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
-import { EVIDENCE_SERVICE_URL } from '../../../../../utils/Api/url';
 import moment from 'moment';
 import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
+import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
+import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 
 type SaveConfirmFormProps = {
   removedOption: any;
@@ -87,33 +88,28 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const categoryId = props.removedOption.id;
     const retentionId = props.retentionId !== 0 ? [props.retentionId] : null;
     const holdUntill = props.holdUntill;
-    const unAssignCategory = {
+    const unAssignCategory : Category = {
       id: categoryId,
       formData: [],
-      assignedOn: moment().format('YYYY-MM-DDTHH:mm:ss')
+      assignedOn: new Date(),
+      name: ""
     };
 
-    const body = {
+    const body : EvdenceCategoryAssignment = {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
       updateCategories: [],
       retentionId: retentionId,
       holdUntill: holdUntill
     };
-    const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories?editReason=${message}`;
-    http.patch(url, body)
-      .then((response) => {
-        if (response.status == 204) {
-          setSuccess(true);
-          setTimeout(() => closeModal(), 3000);
-        } else {
-          throw new Error(response.statusText);
-        }
-      })
-      .catch((err: any) => {
-        setError(true);
-        console.error(err);
-      });
+    const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
+    EvidenceAgent.changeCategories(url, body).then((response: any) => {
+      setSuccess(true);
+      setTimeout(() => closeModal(), 3000);
+    })
+    .catch((ex: any) => {
+      setError(true);
+    })
   };
 
   return (

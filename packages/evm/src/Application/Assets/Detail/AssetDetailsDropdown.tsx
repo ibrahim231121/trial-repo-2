@@ -1,7 +1,6 @@
 import React,{useRef,useState} from "react";
 import { CRXSelectBox,CRXToaster,CRXAlert } from "@cb/shared";
 import "./AssetDetailsDropdown.scss";
-import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url';
 import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 import GoogleMap from "../../../map/google/GoogleMap";
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";

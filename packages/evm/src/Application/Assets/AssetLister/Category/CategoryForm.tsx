@@ -2,13 +2,14 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CRXButton, CRXAlert } from '@cb/shared';
 import { AddToEditFormStateCreator } from '../../../../Redux/CategoryFormSlice';
-import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from '../../../../utils/Api/url';
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
 import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
 import http from '../../../../http-common';
 import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 
 type CategoryFormProps = {
   filterValue: any[];
@@ -226,24 +227,23 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       });
 
       Promise.resolve(retentionPromise).then((retention: any) => {
-        const body = {
+        const body : EvdenceCategoryAssignment = {
           unAssignCategories: [],
           assignedCategories: categoryBodyArr,
           updateCategories: [],
           retentionId: retention !== undefined ? [retention.retentionId] : null,
           holdUntill: retention !== undefined ? retention.expiryDate : null
         };
-        const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
-        http.patch(url, body)
-          .then((response) => {
-            if (response.status == 204) {
-              setSuccess(true);
-              setTimeout(() => closeModalFunc(), 3000);
-            } else {
-              setError(true);
-              throw new Error(response.statusText);
-            }
-          });
+        const url = `/Evidences/${evidenceId}/Categories`;
+
+        EvidenceAgent.changeCategories(url, body).then((response: any) => {
+          setSuccess(true);
+          setTimeout(() => closeModalFunc(), 3000);
+        })
+        .catch((ex: any) => {
+          setError(true);
+        })
+
       })
     }
   };
@@ -259,27 +259,23 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       categoryBodyArr.push(_categoryBody);
     }
 
-    const body = {
+    const body : EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: categoryBodyArr,
-      updateCategories: []
+      updateCategories: [],
     };
-
-    const url = `${EVIDENCE_SERVICE_URL}/Evidences/${evidenceId}/Categories`;
-    http.patch(url, body)
-      .then((response) => {
-        if (response.status == 204) {
-          setSuccess(true);
-          setTimeout(() => {
-            props.setOpenForm();
-            props.setFilterValue(() => []);
-            props.closeModal(false);
-          }, 3000);
-        } else {
-          setError(true);
-          throw new Error(response.statusText);
-        }
-      })
+    const url = `/Evidences/${evidenceId}/Categories`;
+    EvidenceAgent.changeCategories(url, body).then((response: any) => {
+      setSuccess(true);
+      setTimeout(() => {
+        props.setOpenForm();
+        props.setFilterValue(() => []);
+        props.closeModal(false);
+      }, 3000);
+    })
+    .catch((ex: any) => {
+      setError(true);
+    })
   };
 
   return (

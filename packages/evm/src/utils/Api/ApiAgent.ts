@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention, Note, TimelinesSync } from './models/EvidenceModels';
+import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, EvdenceCategoryAssignment, Evidence, ExtendRetention, Note, TimelinesSync } from './models/EvidenceModels';
 import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
@@ -36,6 +36,7 @@ const requests = {
     get: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBody)},
     post: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody)},
     put: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
+    patch: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
     delete: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
 }
 export const SetupConfigurationAgent = {
@@ -49,6 +50,7 @@ export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences'),
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url),
+    isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
     addBookmark: (url: string, body: Bookmark) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
@@ -58,11 +60,12 @@ export const EvidenceAgent = {
     updateNote: (url: string, body: Note) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
     deleteNote: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
     timelineSync: (url: string, body: TimelinesSync[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
-    addAssetViewReason: (url: string, body: AssetViewReason) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
-    addUsersToMultipleAsset: (url: string, body: AddOwner[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
-    addUsersToAsset: (url: string, body: number[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
+    addAssetViewReason: (url: string, body: AssetViewReason) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),
+    addUsersToMultipleAsset: (url: string, body: AddOwner[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),
+    addUsersToAsset: (url: string, body: number[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),
     setPrimaryAsset: (url: string) => requests.get<void>(EVIDENCE_SERVICE_URL, url),
     updateRetentionPolicy: (url: string, body: ExtendRetention[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
+    changeCategories: (url: string, body: EvdenceCategoryAssignment) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body),
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}),
 }
 
