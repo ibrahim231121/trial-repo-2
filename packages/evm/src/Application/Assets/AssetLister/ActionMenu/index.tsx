@@ -8,7 +8,7 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
-import { CRXModalDialog } from '@cb/shared';
+import { CRXModalDialog, CRXAlert } from '@cb/shared';
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
@@ -21,6 +21,9 @@ import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
 import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
+import http from "../../../../http-common";
+import { EVIDENCE_PATCH_LOCK_UNLOCK_URL } from "../../../../utils/Api/url";
+import { AxiosError } from "axios";
 
 type Props = {
   selectedItems?: any;
@@ -60,6 +63,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   const [openForm, setOpenForm] = React.useState(false);
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   React.useEffect(() => {
     if (selectedItems.length > 1) {
@@ -105,7 +111,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openAssetShare, setOpenAssetShare] = React.useState(false);
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
-  
+
   const handleOpenAssignUserChange = () => {
     setOpenAssignUser(true);
   };
@@ -148,7 +154,36 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
 
   const confirmCallBackForRestrictModal = () => {
-    alert('Confirm Btn Clicked!')
+    debugger;
+    const _requestBody = [];
+    for (const selectedItem of selectedItems) {
+      _requestBody.push({
+        evidenceId: row?.id,
+        assetId: selectedItem.assetId,
+        userRecId: localStorage.getItem('User Id'),
+        operation: "Lock"
+      });
+    }
+    const _body = JSON.stringify(_requestBody);
+    const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
+    http.patch(_url, _body).then((response) => {
+      if (response.status === 204) {
+        setSuccess(true);
+        setTimeout(() => {
+          setOpenRestrictAccessDialogue(false);
+          setSuccess(false);
+        }, 3000);
+      }
+    })
+      .catch((error) => {
+        const err = error as AxiosError;
+        if (err.request.status === 409) {
+          setErrorMessage("The asset is already locked.");
+        } else {
+          setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
+        }
+        setError(true);
+      });
   }
   return (
     <>
@@ -220,6 +255,16 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           showToastMsg={(obj: any) => showToastMsg(obj)}
         />
       </CRXModalDialog>
+
+      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
+      {error && (
+        <CRXAlert
+          message={errorMessage}
+          type='error'
+          alertType='inline'
+          open={true}
+        />
+      )}
 
       <Menu
         align="start"

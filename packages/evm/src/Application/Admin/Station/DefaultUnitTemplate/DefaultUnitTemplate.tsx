@@ -157,7 +157,6 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const saveBtnClickHandler = () => {
-        debugger;
         const _body = JSON.stringify(selectBoxValues);
         http.post(DEFAULT_UNIT_TEMPLATE_END_POINT, _body).then((response) => {
             console.info(response);

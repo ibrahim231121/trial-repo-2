@@ -146,11 +146,10 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
     setCheckedAll(false)
-  }, [])
+  }, []);
 
 
   useEffect(() => {
-
     if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined && isDuplicateFound !== false) {
       setAttention({
         msg: t("An_asset_you_are_attempting_to_add_to_the_asset_bucket_has_already_been_added."),
@@ -160,7 +159,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
       dispatch(updateDuplicateFound());
     }
-  }, [isDuplicateFound])
+  }, [isDuplicateFound]);
 
   useEffect(() => {
     console.log("assetBucketData ", assetBucketData)
@@ -937,7 +936,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }
   //for asset upload--
 
-  React.useEffect(() => {
+  useEffect(() => {
 
     const trAtiveValue = document.querySelector(".rc-menu--open")?.closest("tr[class*='MuiTableRow-hover-']");
 
@@ -958,14 +957,18 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
     })
 
-  })
+  });
 
   const [activeScreen, setActiveScreen] = useState<number>(0);
-  const checkBoxRef = useRef(null)
+  const checkBoxRef = useRef(null);
   const selectAssetFromList = (e: any, row: assetRow) => {
     if(!e.target.checked)
       setCheckedAll(false)
     setChecked({ ...isChecked, [row.assetId]: e.target.checked });
+    /*
+    * * Change made to tackle situation, in which it is mandatory to select checkbox.  
+    */
+    setSelectedItems([...selectedItems, row]);
     if(e.target.checked)
       setSelectedItems((prevArr) => [...prevArr, row]);
     else
@@ -982,15 +985,16 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }
 
   useEffect(() => {
-
     const setSelectFill = [...selectedItems];
     assetBucketData.forEach((element: any) => {
       setSelectFill.push(element);
     })
     if(isCheckedAll) 
-        setSelectedItems(setSelectFill)
-  }, [isCheckedAll])
-
+        setSelectedItems(setSelectFill);
+  
+    isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
+  }, [isCheckedAll]);
+  
   return (
     <>
 
