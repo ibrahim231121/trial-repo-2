@@ -5,6 +5,7 @@ import {
   CRXButton,
   CRXCheckBox,
   CRXTooltip,
+  CRXMiddleTruncationPopover
 } from "@cb/shared";
 
 import "./DetailedAssetPopup.scss";
@@ -175,10 +176,17 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                               />
                             </td>
                             <td>
-                              <AssetNameTooltip
+                            
+                            <CRXMiddleTruncationPopover
+                              content={asset.assetName}
+                              isPopover={true}
+                              maxWidth={200}
+                              minWidth={150}
+                            />
+                              {/* <AssetNameTooltip
                                 key={index}
                                 assetName={asset.assetName}
-                              />
+                              /> */}
                               {asset.camera !== undefined &&
                               asset.camera !== null &&
                               asset.camera !== "" ? (

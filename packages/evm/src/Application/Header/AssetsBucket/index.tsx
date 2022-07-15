@@ -109,7 +109,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
   });
-  const [attention, setAttention] = React.useState<{ msg: string }>({
+  const [attention, setAttention] = React.useState<{ msg: string}>({
     msg: "",
   });
   const [showSucess, setShowSucess] = React.useState<boolean>(false);
@@ -205,26 +205,17 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }, [searchData]);
 
   useEffect(() => {
-    let timer: any = null;
-    timer = setTimeout(() => {
-      setShowAttention((prev: boolean) => false);
-      setShowSucess((prev: boolean) => false);
-      setShowMessageClx("bucketMessageHide");
-    }, 7000);
-    return () => {
-      clearTimeout(timer);
-    };
+    // let timer: any = null;
+    // timer = setTimeout(() => {
+    //   setShowAttention((prev: boolean) => false);
+    //   setShowSucess((prev: boolean) => false);
+    //   setShowMessageClx("bucketMessageHide");
+    // }, 7000);
+    // return () => {
+    //   clearTimeout(timer);
+    // };
   }, [isDuplicateFound == true]);
 
-  useEffect(() => {
-    let timer: any = null;
-    timer = setTimeout(() => {
-      // setShowSucess((prev: boolean) => false);
-    }, 7000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [assetBucketData.length]);
 
   const bucketIconByState = assetBucketData.length > 0 ? "icon-drawer" : "icon-drawer2"
   const totalAssetBucketCount = assetBucketData.length + fileCount
@@ -369,24 +360,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       maxWidth: "100",
     },
   ]);
-
-  // const onSelection = (v: ValueString[], colIdx: number) => {
-  //   if (v.length > 0) {
-  //     for (var i = 0; i < v.length; i++) {
-  //       let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-  //       setSearchData((prevArr) =>
-  //         prevArr.filter(
-  //           (e) => e.columnName !== headCells[colIdx].id.toString()
-  //         )
-  //       );
-  //       setSearchData((prevArr) => [...prevArr, searchDataValue]);
-  //     }
-  //   } else {
-  //     setSearchData((prevArr) =>
-  //       prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-  //     );
-  //   }
-  // };
 
   const dataArrayBuilder = () => {
     let dataRows: AssetBucket[] = assetBucketData;
@@ -789,10 +762,28 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       isPause: false
     };
   }
+
+  //Error message system administrator
+  const [errorMsg, setErrorMsg] = useState<any>({
+    msg : '',
+    type : '',
+  })
+  const [showErrorMsg, setShowErrorMsg] = useState<boolean>(false)
+  const [errorMsgClass, setErrorMsgClass] = useState<string>("erroMessageContainerHide")
   const uploadError = (data: any) => {
-    toasterRef.current.showToaster({
-      message: data.data.message, variant: data.data.variant, duration: data.data.duration, clearButtton: data.data.clearButtton
-    });
+    // toasterRef.current.showToaster({
+    //   message: data.data.message, variant: data.data.variant, duration: data.data.duration, clearButtton: data.data.clearButtton, persist : true
+    // });
+    
+    
+    setErrorMsg({
+      msg : data.data.message,
+      type: data.data.variant,
+      
+    })
+    setErrorMsgClass("erroMessageContainerShow")
+    setShowErrorMsg(true);
+    
     setFileCount((prev) => { return prev >= data.data.fileCountAtError ? prev - data.data.fileCountAtError : prev })
     setFiles((pre) => {
       return pre.filter(x => x.id !== data.data.filesId[0]);
@@ -1042,6 +1033,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             type="info"
                             open={showAttention}
                             setShowSucess={setShowAttention}
+                            
                           />
                           {/* <CRXAlert
                             className="crx-alert-notification"
@@ -1052,25 +1044,37 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           />*/}
 
                         </CRXColumn>
-                      </CRXRows>
-                      <CRXRows container spacing={0} className={isMetaDataOpen ? "file-upload-show" : "file-upload-hide"} >
-                        {!onAddEvidence && fileCount > 0 ?
-                          <CRXAlert
-                            className={"crx-alert-notification file-upload"}
-                            message={"sucess.msg"}
-                            type="info"
-                            open={showUploadAttention}
-                            setShowSucess={setShowUploadAttention}
-                            alertType="inline"
-                            persist={true}
-                            children={<div className="check"><div className="attentionPera">{t("Please_add_metadata_to_finish_saving_your_uploaded_files")}</div>
-                              <div className="btn-center">
-                                <CRXButton
-                                  id="metdaModalButton"
-                                  className="MuiButton-containedPrimary"
-                                  onClick={handleClickOpen}
-                                  color='primary'
-                                  variant='contained'
+                      </CRXRows> 
+                      {showErrorMsg &&  <CRXRows className={errorMsgClass}> 
+                        <CRXColumn>
+                            <CRXAlert
+                              className="crx-alert-notification"
+                              message={errorMsg.msg}
+                              type={errorMsg.type}
+                              alertType="inline"
+                              persist={true}
+                              open={showErrorMsg}
+                              setShowSucess={setShowErrorMsg}
+                            />
+                        </CRXColumn>
+                      </CRXRows> }
+                      <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
+                        <CRXAlert
+                          className={"crx-alert-notification file-upload"}
+                          message={"sucess.msg"}
+                          type="info"
+                          open={showUploadAttention}
+                          setShowSucess={setShowUploadAttention}
+                          alertType="inline"
+                          persist={true}
+                          children={<div className="check"><div className="attentionPera">Please add metadata to finish saving your uploaded files</div>
+                            <div className="btn-center">
+                              <CRXButton
+                                id="metdaModalButton"
+                                className="MuiButton-containedPrimary"
+                                onClick={handleClickOpen}
+                                color='primary'
+                                variant='contained'
 
                                 >
                                   {t("Add_metadata")}
@@ -1080,7 +1084,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             }
                           />
                           : ""
-                        }
+                        
                         <CRXModalDialog
                           className="add-metadata-window"
                           maxWidth="xl"

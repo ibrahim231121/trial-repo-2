@@ -428,37 +428,40 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "174",
+      maxWidth: "174",
       visible: true,
     },
     {
       label: `${t("First_Name")}`,
       id: "fName",
       align: "left",
-      width: "156",
+      //width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "156",
+      maxWidth: "156",
       visible: true,
     },
     {
       label: `${t("Last_Name")}`,
       id: "lName",
       align: "left",
-      width: "156",
+      //width: "156",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "156",
+      //minWidth: "156",
+      maxWidth: "156",
       visible: true,
     },
     {
       label: `${t("Email")}`,
       id: "email",
       align: "left",
-      width: "263",
+      
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
@@ -474,7 +477,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       sort: true,
       searchFilter: true,
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: User[]) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
-      width: "112",
+      
       minWidth: "112",
       visible: true,
     },
@@ -484,7 +487,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      width: "161",
+      
       minWidth: "161",
       searchFilter: true,
       searchComponent: searchDate,
@@ -514,8 +517,9 @@ const openHandler = (_: React.SyntheticEvent) => {
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "180",
-      width:"180"
+      minWidth: "430",
+      maxWidth : "430"
+     
     },
   ]);
   const searchAndNonSearchMultiDropDown = (

@@ -36,6 +36,7 @@ export interface HeadCellProps {
   headerArray?: ValueString[];
   headerObject?: any;
   detailedDataComponentId?: string;
+  isPopover?: boolean;
   attributeName? : string;
   attributeType? : string;
 }

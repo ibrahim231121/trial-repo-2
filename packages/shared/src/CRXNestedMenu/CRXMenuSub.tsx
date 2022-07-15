@@ -42,10 +42,9 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : 
     }
 
     const onLeafClick = () => {
-        setActiveItem(
-            null
-        );
+        setActiveItem(null);
     }
+    
     const onChildItemKeyDown = () => {
 
     }
@@ -70,6 +69,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : 
 
         if (root) {
             if (item.items) {
+                
                 if (activeItem && item === activeItem) {
                     setActiveItem(
                          null
