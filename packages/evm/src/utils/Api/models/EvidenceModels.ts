@@ -129,10 +129,11 @@ export interface PermissionModel {
 
   export interface RevokedModel {
     by: number,
-    on: Date,
+    on?: Date,
   }
 export interface AssetSharingModel {
     message: string,
+    email: string,
     permissons: PermissionModel,
     shared: SharedModel,
     revoked: RevokedModel,

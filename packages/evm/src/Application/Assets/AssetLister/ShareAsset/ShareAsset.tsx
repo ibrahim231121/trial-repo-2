@@ -1,15 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox, CRXRadio,CRXSelectBox,CRXButton } from '@cb/shared';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from "../../../../Redux/rootReducer";
-import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
+import { CRXCheckBox, CRXSelectBox,CRXButton } from '@cb/shared';
+import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
-import moment from "moment";
-import { log } from 'console';
-import { Link } from 'react-router-dom';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { AssetSharingModel, PermissionModel, RevokedModel, SharedModel } from '../../../../utils/Api/models/EvidenceModels';
+import { AssetSharingModel } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 
 type ShareAssetProps = {
@@ -35,30 +30,19 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [linkExpireType, setLinkExpireType] = React.useState<string>("")
   const [email, setEmail] = React.useState<string>("")
+  const [comment, setComment] = React.useState<string>("")
+  const [reasonForView, setReasonForView] = React.useState<string>("")
+  
   const [linkExpire, setLinkExpire] = React.useState<string>("")
+  const [linkExpireDuration, setLinkExpireDuration] = React.useState<string>("")
+
   const [responseError, setResponseError] = React.useState<string>('');
   const [alert, setAlert] = React.useState<boolean>(false);
-  
-  type Retentionmodel = {
-    value: string;
-    label: string;
-    Comp: any;
-  };
-  type assetModel = {
-    master: any,
-    children: any
-  }
-  type stationModel = {
-    CMTFieldValue: number
-  }
-  type RetentionPolicyModel = {
-    CMTFieldValue: number
-  }
+  const [emailError, setEmailError] = React.useState<string>('');
+  const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
 
-  type evidenceModel = {
-    Id: any,
-    ExtendedDays: number,
-  }
+  const regex = /^(\s?[^\s,]+@[^\s,]+\.[^\s,]+\s?,)*(\s?[^\s,]+@[^\s,]+\.[^\s,]+)$/;
+  
   const linkExpireOptions = [
     { value: 3, displayText: t("Infinite") },
     { value: 2, displayText: t("Days") },
@@ -68,23 +52,50 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const [currentRetention, setCurrentRetention] = React.useState<string>("-")
   const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel>()
 
-  const [retentionList, setRetentionList] = React.useState<evidenceModel[]>([])
-
-  const [retentionDays, setRetentionDays] = React.useState<number>(0)
-
   React.useEffect(() => {
-    debugger;
-    if(assetSharing != null)
+    
+    if(assetSharing != null && emailError == "")
     {
       sendData();
     }
   }, [assetSharing]);
+  React.useEffect(() => {
+    debugger;
+    if(linkExpireType == "1")//hour
+    {
+      setLinkExpireDuration(linkExpire);
+    }
+    else if(linkExpireType == "2")//day
+    {
+      let tmpExpireTime = parseInt(linkExpire)*24
+      setLinkExpireDuration(tmpExpireTime+'');
+    }
+    else if(linkExpireType == "3")//infinite
+    {
+      setLinkExpireDuration(linkExpire);
+    }
+  }, [linkExpireType]);
 
   React.useEffect(() => {
     if (props.items.length <= 1)
       getRetentionData();
 
   }, []);
+  React.useEffect(() => {
+    
+    
+    if(email == "")
+    {
+      setEmailError('');
+      setShowEmailError(false);
+    }
+    else if(regex.test(email) == false)
+    {
+      setEmailError('Invalid format');
+      setShowEmailError(true);
+    }
+    
+  },[email])
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMetaDataCheck(e.target.checked)
@@ -103,8 +114,10 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     setLinkExpireType(e.target.value);
 }
   const onSubmitForm = async () => {
-    var temp: AssetSharingModel = {
-      message: email,
+   
+    let temp: AssetSharingModel = {
+      message: comment,
+      email: email,
       permissons: {
         isOneTimeViewable: viewableOnce,
         isDownloadable: downloadable,
@@ -113,15 +126,15 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         isMetadataOnly: metaDataCheck
       },
       shared: {
-        expiryDuration: parseInt(linkExpire),
+        expiryDuration: parseInt(linkExpireDuration), //linkExpireDuration
         by: 1,
-        on: new Date("2021-03-08T15:14:53.251Z"),
+        on: new Date(),
         status: 'InProgress',
         type: 'Email'
       },
       revoked: {
         by: 1,
-        on: new Date("2021-03-08T15:14:53.251Z"),
+        on: undefined,
       },
       version: ''
     }
@@ -130,8 +143,10 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   };
   const sendData = async () => {
+    debugger;
     const url = '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
     EvidenceAgent.shareAsset(url, assetSharing).then(() => {
+      debugger;
       props.setOnClose();
       props.showToastMsg({
         message: "Share email sent to recipients",
@@ -141,6 +156,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       });
     })
     .catch(function (error) {
+      debugger;
       setAlert(true);
       setResponseError(
         "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
@@ -148,16 +164,31 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       return error;
     });
   }
+  
 
   const cancelBtn = () => {
     props.setOnClose();
   };
+  const validateMultipleEmails = () => {
+    // Get value on emails input as a string
+    let emails = email.split(",");
+   
+    for (let i = 0; i < emails.length; i++) {
+      // Trim whitespaces from email address
+      emails[i] = emails[i].trim();
+  }
+  }
+
 
   return (
     <>
-      <div style={{ height: "270px" }}>
-        <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
-          {() => (
+      <div style={{ height: "380px" }}>
+        <Formik 
+        initialValues={{email}} 
+        onSubmit={() => onSubmitForm()}
+        >
+          {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
+            <>
             <Form>
               <div className='categoryTitle'>
                 Email
@@ -165,6 +196,12 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
               <div >
                 <input type="text"  value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
+              {showEmailError ? (
+              <div className="errorStationStyle" style={{color: "red"}}>
+                                 <i className="fas fa-exclamation-circle"></i> 
+                                  {emailError}
+                                </div>):null
+              }
               <div style={{
                 height: "0px", paddingTop: "5px",
                 display: `${props.rowData.evidence.asset.length > 0
@@ -236,6 +273,24 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                 />
                 {t("Downloadable")}
               </div>
+              <div className='categoryTitle'>
+                Comments
+              </div>
+              <div >
+                <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} ></textarea>
+                {/* <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} /> */}
+              </div>
+              <div className='categoryTitle'>
+              Reason for view
+              </div>
+              <div >
+              <textarea  value={reasonForView} onChange={(e) => setReasonForView(e.target.value)} rows={3} ></textarea>
+                {/* <input type="text" value={reasonForView} onChange={(e) => setReasonForView(e.target.value)} /> */}
+              </div>
+              <br />
+              <br /><br />
+              <br />
+
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
                   <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
@@ -249,6 +304,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                 </div>
               </div>
             </Form>
+            </>
           )}
         </Formik>
       </div>

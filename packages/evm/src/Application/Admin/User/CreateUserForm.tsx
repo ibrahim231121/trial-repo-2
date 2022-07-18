@@ -34,6 +34,10 @@ type NameAndValue = {
   groupId: string;
   groupName: string;
 };
+interface AutoCompleteOptionType {
+  label?: string;
+  id?: string;
+}
 
 interface userStateProps {
   userName: string;
@@ -42,7 +46,7 @@ interface userStateProps {
   lastName: string;
   email: string;
   phoneNumber: string;
-  userGroups: string[];
+  userGroups: AutoCompleteOptionType[];
   deactivationDate: string;
 }
 
@@ -127,6 +131,7 @@ const CreateUserForm = () => {
 
  
   React.useEffect(() => {
+    
     if (userPayload && id) {
       const {
         email,
@@ -143,8 +148,13 @@ const CreateUserForm = () => {
           ? userPayload.contacts.find((x: any) => x.contactType === 1).number
           : '';
 
-      const userGroupNames = userGroups?.map((x: any) => x.groupName);
-
+let userGroupNames: any = [];
+      for (const elem of userGroups) {
+        userGroupNames.push({
+          id: elem.groupId,
+          label: elem.groupName,
+        });
+      }
 if(isADUser){
   setIsADUser(true)
 
@@ -330,6 +340,7 @@ else{
   const activationLinkPermission = content.filter((x:any) => getModuleIds().includes(x.moduleIds) || x.moduleIds === 0);
 
   const fetchGroups = async () => {
+    
     const res = await fetch(GROUP_USER_LIST, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` }
@@ -404,6 +415,7 @@ else{
   };
 
   const setAddPayload = () => {
+    
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
         return formpayload.userGroups.some((e: any) => e.id === item.groupId);
@@ -551,6 +563,7 @@ else{
   };
 
   const setEditPayload = () => {
+    
     let userGroupsListIDs : any = userGroupsList
       ?.filter((item: any) => {
         return formpayload.userGroups.find((e: any) => e === item.groupName || e.label === item.groupName);
@@ -1077,6 +1090,7 @@ useEffect(() => {
 
           {
             <div className='crxEditFilter editFilterUi'>
+              {console.log('UserGroups: ',formpayload.userGroups)}
               <CRXMultiSelectBoxLight
                 className='categortAutocomplete CrxUserEditForm'
                 label={t("User_Group")}
@@ -1087,11 +1101,13 @@ useEffect(() => {
                 errorMsg={formpayloadErr.userGroupErr}
                 options={optionList}
                 value={formpayload.userGroups}
+                //value={[{id:'2226',label:'dev23215ds'}]}
+
                 autoComplete={false}
                 isSearchable={true}
         disabled = {isADUser}
                 onBlur={checkUserGroup}
-                onChange={(e: React.SyntheticEvent, value: string[]) => {
+                onChange={(_e: React.SyntheticEvent, value: AutoCompleteOptionType[]) => {
                   setFormPayload({ ...formpayload, userGroups: value });
                 }}
               />

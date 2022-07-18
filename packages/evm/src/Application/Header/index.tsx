@@ -24,10 +24,20 @@ interface propsTypes {
 
 const AppHeader = ({onClick, onClose, open} : propsTypes) => {
     const [bucketIsOpen, setBucketIsOpen] = useState<any>(null);
+    const [isguestUser, setIsguestUser] = useState<boolean>(false);
 
     useEffect(() => {
         setBucketIsOpen(null)
     },[bucketIsOpen])
+    useEffect(() => {
+        let url = window.location.href;
+        let validString = url.split('/');
+        let validEndPoint = validString[4].split('?');
+        if(validEndPoint[0] == "SharedMedia")
+        {
+            setIsguestUser(true);
+        }
+    },[])
 
     return (
         <div className="CRXAppHeader">
@@ -37,13 +47,17 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
             >
                 <CRXColumn item xs={4}>
                     <div className="CRXLogoMenu">
+                        {!isguestUser? (
                         <CRXLeftSideBar 
                             onClick = {onClick}
                             onClose = {onClose}
                             open    = {open}
-                        />
-                        
+                        />):(null)
+                        }
+                        {!isguestUser? (
                         <CRXAppDropdown />
+                        ):(null)
+                        }
                         <img src={AppLogo} className="appLogo"/>
                         {/* <CRXHeading align="left" className="AppName"  variant="h4">
                             ENTERPRISE
@@ -51,6 +65,7 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                     </div>
                 </CRXColumn>
                 <CRXColumn item xs={8}>
+                {!isguestUser? (
                     <div className="MasterHeadRight">
                         <ul id="rightMenu">
                             <li><CRXStation/></li>
@@ -63,6 +78,8 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                             {/* <CRXGlobalSearchPanel /> */}
                         </div>
                     </div>
+                    ):(null)
+                }
                 </CRXColumn>
             </CRXRows>
             <CRXActiveBreadcrumb shiftContent={open}/>
