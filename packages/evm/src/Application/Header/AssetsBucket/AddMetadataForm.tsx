@@ -513,6 +513,52 @@ const AddMetadataForm: React.FC<Props> = ({
     }
     return answer;
   };
+
+  const checkFileType = (fileType: string) => {
+    var typeOfFile: string = "";
+    switch (fileType) {
+      case ".mp4":
+      case ".mp3":
+      case ".avi":
+      case ".mkv":
+        typeOfFile = "Video";
+        break;
+
+      case ".mp3":
+      case ".wma":
+      case ".aac":
+        typeOfFile = "Audio";
+        break;
+
+      case ".pdf":
+        typeOfFile = "PdfDocument";
+        break;
+
+      case ".jpeg":
+      case ".png":
+      case ".gif":
+      case ".tiff":
+      case ".psd":
+      case ".ai":
+      case ".jpg":
+        typeOfFile = "Image";
+        break;
+
+      case ".xml":
+      case ".csv":
+      case ".wpt":
+      case ".dat":
+      case ".ppc":
+      case ".wpr":
+      case ".trl":
+        typeOfFile = "GPS";
+        break;
+
+      default:
+        typeOfFile = "Other";
+    }
+    return typeOfFile;
+  };
   const currentStartDate = () => {
     var currentDate = new Date();
     var mm = "" + (currentDate.getMonth() + 1);
@@ -565,7 +611,7 @@ const AddMetadataForm: React.FC<Props> = ({
     return categoryArrayIndex;
   };
 
-  const [duration, setDuration] = useState<any>();
+  // const [duration, setDuration] = useState<any>();
 
   const getDecimalPart = (num: any) => {
     return num % 1;
@@ -594,7 +640,8 @@ const AddMetadataForm: React.FC<Props> = ({
         fileNameExtension === ".mkv" ||
         fileNameExtension === ".webm" ||
         fileNameExtension === ".3gp" ||
-        fileNameExtension === ".wav"
+        fileNameExtension === ".wav" 
+
       ) {
         var myVideos: any = [];
         myVideos.push(filterObject);
@@ -646,6 +693,29 @@ const AddMetadataForm: React.FC<Props> = ({
         name.length
       );
 
+      const files: masterAssetFile = {
+        id: 0,
+        assetId: 0,
+        filesId: index.uploadedFileId,
+        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        type: checkFileType(extension),
+        extension: extension,
+        url: "www.hdc.com",
+        size: 430,
+        duration: 10,
+        recording: {
+          started: currentStartDate(),
+          ended: recordingEnded(),
+        },
+        sequence: 0,
+        checksum: {
+          checksum: "bc527343c7ffc103111f3a694b004e2f",
+          status: true,
+          algorithm: "SHA-257",
+        },
+        version: "",
+      };
+
       return {
         id: index.uploadedFileId,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
@@ -663,6 +733,7 @@ const AddMetadataForm: React.FC<Props> = ({
           pre: 20,
           post: 20,
         },
+        files: [files],
         audioDevice: "Youraudio",
         camera: "Yourcam",
         isOverlaid: true,
@@ -676,28 +747,6 @@ const AddMetadataForm: React.FC<Props> = ({
     let master: any = {};
 
     if (asset != undefined) {
-      const files: masterAssetFile = {
-        id: 0,
-        assetId: 0,
-        filesId: 10002,
-        name: asset.name,
-        type: asset.typeOfAsset,
-        extension: "mp4",
-        url: "www.hdc.com",
-        size: 430,
-        duration: 10,
-        recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
-        },
-        sequence: 0,
-        checksum: {
-          checksum: "bc527343c7ffc103111f3a694b004e2f",
-          status: true,
-          algorithm: "SHA-257",
-        },
-        version: "",
-      };
 
       const owners = formpayload.owner.map((x: any) => {
         return {
@@ -729,7 +778,7 @@ const AddMetadataForm: React.FC<Props> = ({
         camera: asset.camera,
         isOverlaid: asset.isOverlaid,
         recordedByCSV: asset.recordedByCSV,
-        files: [files],
+        files: asset.files,
       };
       master = masterAssetData;
     }
@@ -737,6 +786,7 @@ const AddMetadataForm: React.FC<Props> = ({
     const FilteringchildAsset = uploadedFile.filter(
       (x: any) => x.id != master.id
     );
+
     const children = FilteringchildAsset.map((childAsset: any) => {
       return {
         id: childAsset.id,
@@ -757,6 +807,7 @@ const AddMetadataForm: React.FC<Props> = ({
         },
         bookMarks: [],
         notes: [],
+        files: childAsset.files,
         audioDevice: childAsset.audioDevice,
         camera: childAsset.camera,
         isOverlaid: childAsset.isOverlaid,
@@ -786,6 +837,7 @@ const AddMetadataForm: React.FC<Props> = ({
       version: "",
     };
   };
+
   const onAdd = async () => {
     const payload = onAddMetaData();
 
@@ -802,25 +854,33 @@ const AddMetadataForm: React.FC<Props> = ({
         if (res.ok) {
           onClose();
           setAddEvidence(true);
-        } else if (res.status == 400) {
+          return res.json()
+        } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
             t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
+        else return res.text()
       })
       .then((resp) => {
-        if (resp != undefined) {
+        if(resp != undefined){
           let error = JSON.parse(resp);
-          if (error.errors != undefined) {
+          if(error.errors['Assets.Master.Files[0].Type'][0] != undefined){
             setAlert(true);
-            setResponseError(error.errors);
+            setResponseError(error.errors['Assets.Master.Files[0].Type'][0]);
+          }
+          if(error.errors['Assets.Master.Files[0].Type'][1] != undefined){
+            setAlert(true);
+            setResponseError(error.errors['Assets.Master.Files[0].Type'][1]);
+          }
+          else {
+            setAlert(true);
+            setResponseError(error);
           }
         }
+        
       })
-      .catch(function (error) {
-        return error;
-      });
   };
 
   const setEditPayload = () => {
@@ -976,8 +1036,8 @@ const AddMetadataForm: React.FC<Props> = ({
         isRestrictedView: true,
         duration: 0,
         recording: {
-          started: "2020-07-25T12:35:28.537Z",
-          ended: "2020-07-25T12:35:28.537Z",
+          started: currentStartDate(),
+          ended: recordingEnded(),
         },
         buffering: {
           pre: 20,
