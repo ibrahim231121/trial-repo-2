@@ -123,19 +123,9 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 ? ""
                 : "none"
             }`,
-            // minWidth:
-            //   resizeWidth &&
-            //   colIdx === resizeWidth?.colIdx &&
-            //   resizeWidth.deltaX +
-            //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
-            //     349
-            //     ? resizeWidth.deltaX +
-            //       clientWidth[resizeWidth.colIdx + 3].clientWidth
-            //     : "350px",
-
             userSelect: "none",
             minWidth: headCells[colIdx].minWidth + "px",
-            
+            maxWidth: headCells[colIdx].maxWidth + "px",
           }}
           align={
             headCells[colIdx].align === "right"
@@ -226,19 +216,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                           : headCells[colIdx].minWidth;
                     }
                   }
-
-                  // clientWidth.map((item, index, arr) => {
-                  //  
-                  // });
-
-                  //
-                  // headCells[resizeWidth.colIdx + 3].minWidth =
-                  //   resizeWidth.deltaX +
-                  //     clientWidth[resizeWidth.colIdx + 3].clientWidth >
-                  //   349
-                  //     ? resizeWidth.deltaX +
-                  //       clientWidth[resizeWidth.colIdx + 3].clientWidth
-                  //     : headCells[resizeWidth.colIdx + 3].minWidth;
                 }}
                 position={{ x: 0, y: 0 }}
               >

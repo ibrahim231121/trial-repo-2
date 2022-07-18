@@ -250,25 +250,25 @@
       display: inline-table !important;
     }
   }
-  &::before {
-    content: "";
-    background: var(--color-333333);
-    width: 18px;
-    right: 0;
-    height: 92px;
-    z-index: 3;
-    position: absolute;
-  }
-  &::after {
-    content: "";
-    background: var(--color-ccc);
-    width: 21px;
-    top: 62px;
-    right: 0;
-    height: 1px;
-    z-index: 3;
-    position: absolute;
-  }
+  // &::before {
+  //   content: "";
+  //   background: var(--color-333333);
+  //   width: 18px;
+  //   right: 0;
+  //   height: 92px;
+  //   z-index: 3;
+  //   position: absolute;
+  // }
+  // &::after {
+  //   content: "";
+  //   background: var(--color-ccc);
+  //   width: 21px;
+  //   top: 62px;
+  //   right: 0;
+  //   height: 1px;
+  //   z-index: 3;
+  //   position: absolute;
+  // }
   .centerPosition {
     padding-left: 0;
     width: 116px;
@@ -282,7 +282,7 @@
     &.CRXDataTableCustom {
       min-height: 180px;
       overflow: hidden;
-      display: initial;
+      display: table;
     }
     tr {
       td {

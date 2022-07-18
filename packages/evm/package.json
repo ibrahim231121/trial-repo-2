@@ -62,7 +62,7 @@
   },
   "scripts": {
 	
-    "start": "SET PORT=3000 && yarn run start:dev",
+    "start": "SET PORT=3000 && yarn run start:qa",
     "build": "yarn run build:dev && yarn react-inject-env set  ",
     "build_qa": "yarn run build:qa && yarn react-inject-env set ",
     "start:dev": "env-cmd -f ./environment/.env.dev react-app-rewired start",

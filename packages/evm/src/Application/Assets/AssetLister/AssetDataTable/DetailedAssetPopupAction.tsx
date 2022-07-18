@@ -151,7 +151,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
       >
 
         <MenuItem>
-          <Restricted moduleId={0}>
+          <Restricted moduleId={30}>
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>

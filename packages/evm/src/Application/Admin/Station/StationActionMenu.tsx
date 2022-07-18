@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
-import { CRXModalDialog, CRXToaster } from '@cb/shared';
-
-import { CRXConfirmDialog, CRXAlert } from '@cb/shared';
+import { CRXConfirmDialog, CRXToaster } from '@cb/shared';
 import { updateUsersInfoAsync, getUsersInfoAsync } from '../../../Redux/UserReducer';
 import { useDispatch } from 'react-redux';
 import './StationActionMenu.scss';

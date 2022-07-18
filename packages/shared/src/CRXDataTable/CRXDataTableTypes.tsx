@@ -167,6 +167,7 @@ export interface HeadCellProps {
   headerArray?: ValueString[];
   headerObject?: any;
   detailedDataComponentId?: string;
+  isPopover? : boolean;
 }
 
 export interface DataTableToolbarProps {
@@ -216,7 +217,7 @@ export type DataTableProps = {
   initialRows?: any[];
   toolBarButton? : React.ReactNode,
   offsetY? : number,
-  headerOffSetY? : number
+  headerOffSetY? : number,
 };
 
 export type OrderData = {
@@ -257,7 +258,6 @@ export type DataTableContainerProps = {
   initialRows?: any[];
   offsetY? : number,
   headerOffSetY? : number
-  
 };
 
 export type DataTableStickyHeadersProps = {
@@ -305,6 +305,7 @@ export type DataTableBodyProps = {
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
   lightMode?: boolean;
+  
 };
 
 export type SearchHeaderProps = {

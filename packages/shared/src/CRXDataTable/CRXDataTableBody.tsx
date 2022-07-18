@@ -7,7 +7,6 @@ import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
 import { fixedColumnAlignment } from './FixedColumnAlignment'
-
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
   rowsPerPage,
@@ -90,6 +89,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                     <React.Fragment key={index}>
                       <TableRow
                         hover
+                        id={row.id}
                         key={row[keyId]}
                         role="checkbox"
                         aria-checked={isItemSelected}
@@ -205,21 +205,34 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                   : "normal",
                             }}
                           >
-                            {headCells[colIdx].detailedDataComponentId !==
-                            undefined
-                              ? headCells[colIdx].dataComponent(
-                                  row[headCells[colIdx].id],
-                                  row[
-                                    headCells[colIdx]
-                                      .detailedDataComponentId !== undefined
-                                      ? headCells[colIdx]
-                                          .detailedDataComponentId
-                                      : headCells[colIdx].id
-                                  ]
-                                )
-                              : headCells[colIdx].dataComponent(
-                                  row[headCells[colIdx].id], row[keyId]
-                                )}
+                           {
+                                headCells[colIdx].detailedDataComponentId !==
+                                undefined
+                                  ? headCells[colIdx].dataComponent(
+                                      row[headCells[colIdx].id],
+                                      row[
+                                        headCells[colIdx]
+                                          .detailedDataComponentId !== undefined
+                                          ? headCells[colIdx]
+                                              .detailedDataComponentId
+                                          : headCells[colIdx].id
+                                      ]
+                                    )
+                                  : headCells[colIdx].dataComponent(
+                                      row[headCells[colIdx].id]
+                                    )
+                              }
+                            {/* <CRXDataTablePopover
+                              isPopover={headCells[colIdx].isPopover !== undefined || headCells[colIdx].visible === true ? headCells[colIdx].isPopover: false}
+                              id={i}
+                              title={headCells[colIdx].label}
+                              minWidth={headCells[colIdx].minWidth}
+                              rows={row.id}
+                              headCellColIdx = {row[headCells[colIdx].id] }
+                              content= 
+                            /> */}
+                            
+                            
                           </TableCell>
                         ))}
                       </TableRow>
@@ -236,3 +249,4 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
 };
 
 export default DataTableBody;
+

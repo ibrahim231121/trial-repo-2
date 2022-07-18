@@ -9,6 +9,7 @@ import { RootState } from "../../../Redux/rootReducer";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
 import FormContainer from "../AssetLister/Category/FormContainer";
 import useGetFetch from "../../../utils/Api/useGetFetch";
+import { EVIDENCE_PATCH_LOCK_UNLOCK_URL, EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { makeStyles } from "@material-ui/core/styles";
@@ -36,6 +37,9 @@ import { useTranslation } from "react-i18next";
 
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
+import SecurityDescriptor from "../../../ApplicationPermission/SecurityDescriptor";
+import http from "../../../http-common";
+import { AxiosError } from "axios";
 const AssetDetailsTemplate = (props: any) => {
   const { t } = useTranslation<string>();
   let tempgpsjson: any = [
@@ -144,8 +148,7 @@ const AssetDetailsTemplate = (props: any) => {
   );
 
   const [value, setValue] = React.useState(0);
-  const [evidence, setEvidence] =
-    React.useState<EvidenceReformated>(evidenceObj);
+  const [evidence, setEvidence] = React.useState<EvidenceReformated>(evidenceObj);
   const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
@@ -158,25 +161,29 @@ const AssetDetailsTemplate = (props: any) => {
   const [getAssetData, setGetAssetData] = React.useState<Evidence>();
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
   const [res, setRes] = React.useState<Asset>();
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
+
   const handleChange = () => {
     setOpenForm(true);
   };
 
   useEffect(() => {
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
-      setGetAssetData(response);  
+      setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
     });
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
-    
+
     dispatch(enterPathActionCreator({ val: t("Asset Detail: ") + assetName }));
-    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
+    setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
   }, []);
 
   useEffect(() => {
-    if(gpsJson && gpsJson.length>0){
+    if (gpsJson && gpsJson.length > 0) {
       setOpenMap(true);
     }
   }, [gpsJson]);
@@ -279,10 +286,6 @@ const AssetDetailsTemplate = (props: any) => {
   function extract(row: any) {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
-
-    console.log(row);
-    console.log(row.assets);
-
     const masterduration = row.assets.master.duration;
     const buffering = row.assets.master.buffering;
     const camera = row.assets.master.camera;
@@ -295,7 +298,7 @@ const AssetDetailsTemplate = (props: any) => {
     const typeOfAsset = row.assets.master.typeOfAsset;
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
     rowdetail.push(myData);
-    rowdetail1 = row.assets.children.filter((x:any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+    rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
       return {
         id: template.id,
         files: extractfile(template.files),
@@ -355,8 +358,35 @@ const AssetDetailsTemplate = (props: any) => {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
   };
+
   const confirmCallBackForRestrictModal = () => {
-    alert('Confirm Btn Clicked!')
+    const _requestBody = [];
+    _requestBody.push({
+      evidenceId: getAssetData?.id,
+      assetId: getAssetData?.assets?.master?.id,
+      userRecId: localStorage.getItem('User Id'),
+      operation: "Lock"
+    });
+    const _body = JSON.stringify(_requestBody);
+    const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
+    http.patch(_url, _body).then((response) => {
+      if (response.status === 204) {
+        setSuccess(true);
+        setTimeout(() => {
+          setOpenRestrictAccessDialogue(false);
+          setSuccess(false);
+        }, 3000);
+      }
+    })
+      .catch((error) => {
+        const err = error as AxiosError;
+        if (err.request.status === 409) {
+          setErrorMessage("The asset is already locked.");
+        } else {
+          setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
+        }
+        setError(true);
+      });
   }
 
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
@@ -367,7 +397,6 @@ const AssetDetailsTemplate = (props: any) => {
         <h5>{t("Captured Date")} : {assetInfo.capturedDate}</h5>
         <h5>{t("Categories")} : {assetInfo.categoriesForm}</h5>
       </p>
-
       <div className="CRXAssetDetail">
         <FormContainer
           setOpenForm={() => setOpenForm(false)}
@@ -445,6 +474,16 @@ const AssetDetailsTemplate = (props: any) => {
 
         {/* <CBXLink  children = "Exit"   onClick={() => history.goBack()} /> */}
       </div>
+      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
+      {error && (
+        <CRXAlert
+          message={errorMessage}
+          type='error'
+          alertType='inline'
+          open={true}
+        />
+      )}
+
       <RestrictAccessDialogue
         openOrCloseModal={openRestrictAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
@@ -467,7 +506,7 @@ const AssetDetailsTemplate = (props: any) => {
               textAlign: "center",
             }}
           > */}
-          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video"  && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
+          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
         </CRXColumn>
         <CRXColumn item xs={4} className="topColumn">

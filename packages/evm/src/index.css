@@ -35,7 +35,7 @@ body {
 }
 
 .linkColor {
-  color: var(--color-c34400) !important;
+  color: var(--color-c34400);
   cursor: pointer;
   box-shadow: none !important;
 }
@@ -46,7 +46,12 @@ body {
 }
 
 .linkColor > div {
-  line-height: 14px;
+  line-height: 17px;
+  white-space: break-spaces;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .testClass {

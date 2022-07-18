@@ -103,6 +103,33 @@
   // margin-top: 118px;
   // margin-left: 65px;
 
+  table {
+    tr {
+      th {
+        &.MuiTableCell-sizeSmall {
+          &:nth-child(4) {
+            width: 187px;
+          }
+          &:nth-child(5) {
+            width: 191px;
+          }
+          &:nth-child(6) {
+            width: 191px;
+          }
+          &:nth-child(7) {
+            width: 286px;
+          }
+          &:nth-child(8) {
+            width: 141px;
+          }
+          &:nth-child(9) {
+            width: 186px;
+          }
+        }
+      }
+    }
+  }
+
   .Autocomplete_multi {
     width: 100%;
   }
@@ -116,14 +143,12 @@
     &:hover {
       border: 1px solid #6e6e6e;
     }
-
   }
   .CRXCheckBox {
     margin-left: 2px !important;
   }
 
   .AssetsDataGrid {
-    
     .centerPosition {
       width: 100%;
       min-width: 100%;
@@ -140,36 +165,41 @@
     tr {
       height: 50px;
 
-     // &:hover {
-        // td {
-        //   &:nth-child(2) {
-        //     background-color: #333 !important;
-        //     .rc-menu-button {
-        //       color: #d1d2d4 !important;
-        //     }
-        //   }
-        // }
-        // .CRXCheckBox {
-        //   span {
-        //     span {
-        //       color: #d1d2d4;
-        //       &::after {
-        //         color: transparent !important;
-        //       }
-        //     }
-        //   }
-        // }
-   //   }
+      // &:hover {
+      // td {
+      //   &:nth-child(2) {
+      //     background-color: #333 !important;
+      //     .rc-menu-button {
+      //       color: #d1d2d4 !important;
+      //     }
+      //   }
+      // }
+      // .CRXCheckBox {
+      //   span {
+      //     span {
+      //       color: #d1d2d4;
+      //       &::after {
+      //         color: transparent !important;
+      //       }
+      //     }
+      //   }
+      // }
+      //   }
       td {
         vertical-align: middle !important;
         &:first-child {
-          
           &:hover {
             border: 0 solid transparent !important;
             border-right: 1px solid #ccc !important;
             border-bottom: 1px solid #ccc !important;
           }
+          .CRXCheckBox {
+            .fal {
+              background: transparent;
+            }
+          }
         }
+
         &:nth-child(4),
         &:nth-child(7) {
           div {
@@ -337,30 +367,30 @@
       tr {
         td {
           &.col-two {
-           left : 0px !important;
-           
-           .fal {
-            position: relative;
-            &::after {
-              content: "";
-              color: #fff;
-              left: 0;
-              position: absolute;
-              font-family: "Font Awesome 5 Duotone";
-              font-weight: 900;
-              right: 0;
-            }
-            &.crxCheckForDarBg {
+            left: 0px !important;
+
+            .fal {
+              position: relative;
               &::after {
-                color: transparent;
+                content: "";
+                color: #fff;
+                left: 0;
+                position: absolute;
+                font-family: "Font Awesome 5 Duotone";
+                font-weight: 900;
+                right: 0;
+              }
+              &.crxCheckForDarBg {
+                &::after {
+                  color: transparent;
+                }
               }
             }
-          }
-          &:hover {
-            border-top: none;
-            border-left: none;
-            border-bottom: none;
-          }
+            &:hover {
+              border-top: none;
+              border-left: none;
+              border-bottom: none;
+            }
           }
           &.col-three {
             left: 58px !important;
@@ -381,11 +411,10 @@
         // }
       }
       .SelectedActionMenu {
-       background-color: transparent !important;
+        background-color: transparent !important;
       }
     }
   }
-
 }
 .CreateUserUi {
   margin-left: 62px;
@@ -440,15 +469,15 @@
       > span {
         font-size: 20px;
         padding-left: 2px !important;
-          margin-left: 8px !important;
+        margin-left: 8px !important;
       }
     }
-  .inputError {
-    margin-bottom: 0px !important;
-  }
-   > span {
-    width: 167px;
-   }
+    .inputError {
+      margin-bottom: 0px !important;
+    }
+    > span {
+      width: 167px;
+    }
   }
   .crxRadioBtnUi {
     display: flex;
@@ -457,7 +486,7 @@
     .user-radio-group {
       margin-top: 4px;
       width: 100% !important;
-    } 
+    }
     label {
       font-size: 14px;
       margin-right: 0px !important;
@@ -486,16 +515,16 @@
       right: 0;
     }
   }
-  .errorStateContent  {
+  .errorStateContent {
     position: absolute;
   }
-  .errors  {
+  .errors {
     .MuiInput-underline {
       input {
         border: 2px solid var(--color-aa1d1d);
         outline: none;
       }
-    } 
+    }
   }
   .radioBtnUiSpacer {
     margin-bottom: 160px;
@@ -503,7 +532,7 @@
   .CrxIndicates {
     position: fixed !important;
     top: 87px !important;
-    height: 50px ;
+    height: 50px;
     background-color: white !important;
     padding-top: 19px;
     width: 100%;
@@ -526,7 +555,7 @@
   }
   .crx-manually-generate-pass {
     .errorStateContent {
-      left: 203px ;
+      left: 203px;
       right: 6px !important;
       margin-top: 38px !important;
       i {
@@ -535,13 +564,11 @@
     }
     .crx-requird-check {
       position: absolute;
-      left: 203px;   
+      left: 203px;
       margin-top: -10px !important;
-        label {
-          width: 320px  !important;
-
-        }
-      
+      label {
+        width: 320px !important;
+      }
     }
     .crx-gente-field {
       width: 100% !important;
@@ -550,14 +577,13 @@
       left: 2px !important;
     }
   }
-  .crx-gente-field-confrim + .errorStateContent    {
-    width: 250px  !important;
+  .crx-gente-field-confrim + .errorStateContent {
+    width: 250px !important;
     left: 203px;
     bottom: 22px;
-    
   }
-  
-  .ConfirmCheckUi  {
+
+  .ConfirmCheckUi {
     width: 430px !important;
     label {
       width: 300px !important;
@@ -576,14 +602,15 @@
       border: 1px solid #333333 !important;
       color: #333333 !important;
     }
-    &:active , &:focus {
-      border: 1px solid #231F20 !important;
-      background: #231F20 !important;
-      color: #F5F5F5 !important;
+    &:active,
+    &:focus {
+      border: 1px solid #231f20 !important;
+      background: #231f20 !important;
+      color: #f5f5f5 !important;
     }
   }
 
-  .crxCreateEditDate  {
+  .crxCreateEditDate {
     margin-top: 23px !important;
     label {
       width: 220px !important;
@@ -602,164 +629,155 @@
     flex-direction: row;
     justify-content: space-between;
     .primary {
-    margin-right: 29px !important;
-
+      margin-right: 29px !important;
     }
-    
+
     button {
       min-width: 90px;
     }
     .crx-generate-btn {
       width: 100% !important;
-    }  
-  .gridFilterTextBox {
-    display: block !important; 
-    width: 100%;
-  }
-  }
-
-
-  .crxFooterEditFormBtn{
-    &::After { 
-    content: "";background: #d1d2d4 !important;
-    width: 93.89%;
-    position: absolute;
-    top: 0;
-    height: 1px;
-    /* padding: 0 49px; */
-    left: 89px;
+    }
+    .gridFilterTextBox {
+      display: block !important;
+      width: 100%;
     }
   }
 
-  @media screen  and (max-width: 1026px) {
-    .crxFooterEditFormBtn{
-      &::After { 
+  .crxFooterEditFormBtn {
+    &::after {
+      content: "";
+      background: #d1d2d4 !important;
+      width: 93.89%;
+      position: absolute;
+      top: 0;
+      height: 1px;
+      /* padding: 0 49px; */
+      left: 89px;
+    }
+  }
 
+  @media screen and (max-width: 1026px) {
+    .crxFooterEditFormBtn {
+      &::after {
         width: 88.89%;
-
       }
     }
   }
 
-
-  @media screen  and (min-width: 2200px) {
+  @media screen and (min-width: 2200px) {
     .grid_spacer {
       width: 193px;
     }
   }
 
-
-  @media screen  and (min-width: 1700px) and (max-width:2200px) {
+  @media screen and (min-width: 1700px) and (max-width: 2200px) {
     .grid_spacer {
       width: 144px;
     }
   }
 
-
   @media screen and (max-width: 1786px) {
-  .CrxEditForm {
-    .crxRadioBtn {
+    .CrxEditForm {
+      .crxRadioBtn {
         flex-direction: column;
-    }
-    .crxRadioBtn  {
-      .user-radio-group  {
-        padding-left: 70px;
-        padding-top: 20px;
       }
-    }
-  }
-  }
-
-  @media screen and (max-width:1944px) {
-    .crxRadioBtn  { 
-      .crx-manually-generate-pass  {
-        .crx-requird-check {
-          label {
-              padding-right: 36px;
-          }
-        } 
-      }
-
-    }
-  }
-
-  @media screen and (max-width:1500px) {
-        .crxRadioBtn  { 
-      .crx-manually-generate-pass  {
-        .crx-requird-check {
-          label {
-              padding-right:158px;
-          }
-        } 
-      }
-    }
-  }
-
-  @media screen and (max-width:1346px) {
-    .crxRadioBtn  { 
-      .crx-manually-generate-pass  {
-        .crx-requird-check {
-          label {
-              padding-right:193px;
-          }
-        } 
-      }
-  }
-}
-
-@media screen and (max-width:1279px) {
-  .grid_spacer {
-    display: none;
-  }  
-  .modalEditCrx {
-    padding: 0 185px !important;
-  }
-    .crxRadioBtn  { 
-      .crx-manually-generate-pass  {
-        .crx-requird-check {
-          label {
-              padding-right:0px;
-          }
-        } 
-      }
-  }
-  .user-radio-group {
-    padding-bottom: 90px;      
-  } 
-  .crxFooterEditFormBtn {
-    &::before {
-      width: 100%;
-      top: 70px;
-    }
-  }
-}
-
-@media screen and (max-width:1084px) {
-    .crxRadioBtn  { 
-      .crx-manually-generate-pass  {
-        .crx-requird-check {
-          label {
-              padding-right:38px;
-          }
-        } 
-      }
-    }
-}
-
-@media screen and (max-width:1035px) {
-  .crxRadioBtn  { 
-    .crx-manually-generate-pass  {
-      .crx-requird-check {
-        label {
-            padding-right:72px;
+      .crxRadioBtn {
+        .user-radio-group {
+          padding-left: 70px;
+          padding-top: 20px;
         }
-      } 
+      }
     }
-}
-}
+  }
 
-}
+  @media screen and (max-width: 1944px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 36px;
+          }
+        }
+      }
+    }
+  }
 
+  @media screen and (max-width: 1500px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 158px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1346px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 193px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1279px) {
+    .grid_spacer {
+      display: none;
+    }
+    .modalEditCrx {
+      padding: 0 185px !important;
+    }
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 0px;
+          }
+        }
+      }
+    }
+    .user-radio-group {
+      padding-bottom: 90px;
+    }
+    .crxFooterEditFormBtn {
+      &::before {
+        width: 100%;
+        top: 70px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1084px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 38px;
+          }
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 1035px) {
+    .crxRadioBtn {
+      .crx-manually-generate-pass {
+        .crx-requird-check {
+          label {
+            padding-right: 72px;
+          }
+        }
+      }
+    }
+  }
+}
 
 .mr_L_10 {
   margin-left: 10px !important;

@@ -669,7 +669,7 @@ const ConfigurationTemplates: React.FC = () => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={192}
+            offsetY={206}
           />
         )
       }

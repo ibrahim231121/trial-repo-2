@@ -1,6 +1,6 @@
-import React, { useEffect,useRef } from "react";
+import React, { useEffect ,useRef } from "react";
 import { useDispatch } from "react-redux";
-import { CRXDataTable,CRXToaster,CRXIcon,CRXButton } from "@cb/shared";
+import {CRXDataTable, CRXToaster,CRXIcon,CRXDataTableTextPopover } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -104,26 +104,33 @@ const thumbTemplate = (assetType: string) => {
 const assetNameTemplate = (assetName: string, evidence: Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
+  const dataLink = <>
+              <Link
+              className="linkColor"
+                to={{
+                  pathname: "/assetdetail",
+                  state: {
+                    evidenceId: evidence.id,
+                    assetId: masterAsset.assetId,
+                    assetName: assetName,
+                  },
+                }}
+              >
+                <div className="assetName">{"#" + assetName}</div>
+              </Link>
+              
+              <DetailedAssetPopup asset={assets} />
+            </>
   return (
-    <>
-      <Link
-        className="linkColor"
-        to={{
-          pathname: "/assetdetail",
-          state: {
-            evidenceId: evidence.id,
-            assetId: masterAsset.assetId,
-            assetName: assetName,
-          },
-        }}
-      >
-        <div>{assetName}</div>
-      </Link>
-      <DetailedAssetPopup 
-        asset={assets} 
-        row={evidence}
-      />
-    </>
+    CRXDataTableTextPopover({
+      content : dataLink,
+      id : "dataAssets",
+      isPopover : true,
+      counts : assetName,
+      title:"Assets ID",
+      minWidth: "130",
+      maxWidth: "263",
+    })
   );
 };
 
@@ -362,13 +369,14 @@ const MasterMain: React.FC<Props> = ({
       label: `${t("Asset_ID")}`,
       id: "assetName",
       align: "left",
-      dataComponent: assetNameTemplate,
+      dataComponent: (e : any, d:any) => assetNameTemplate(e, d),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "200",
-      width: "",
+      minWidth: "130",
+      maxWidth: "263",
       detailedDataComponentId: "evidence",
+      isPopover: true,
       attributeName: "Assets.Master.AssetName",
       attributeType: "String"
     },

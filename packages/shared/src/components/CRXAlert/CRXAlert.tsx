@@ -25,7 +25,8 @@ const useStyles = makeStyles(() =>
       paddingBottom: "8px",
       display: "flex",
       placeItems: "center",
-      
+      opacity: "1", 
+      visibility: "visible" ,
       boxShadow: "none",
     },
   })
@@ -54,12 +55,12 @@ const CRXAlert: React.FC<Props> = ({
   const [openState, setOpenState] = React.useState(open);
   const [openSnack, setOpenSnack] = React.useState(true);
 
-  const showIcon = {
-    success: true,
-    error: false,
-    warning: false,
-    info: true,
-  };
+  // const showIcon = {
+  //   success: true,
+  //   error: false,
+  //   warning: false,
+  //   info: true,
+  // };
 
   const messageType = {
     success: "Success",
@@ -121,7 +122,7 @@ const CRXAlert: React.FC<Props> = ({
                     setOpenState(false);
                   }}
                 >
-                  {showIcon[type] && <i className="icon icon-cross2"></i>}
+                  {<i className="icon icon-cross2"></i>}
                 </IconButton>
               }
             >

@@ -52,4 +52,6 @@ export { default as CircleLoader } from "./controls/CircularLoaderIndicator/"
 export { default as GoogleMap } from './maps/google/GoogleMap'
 export { default as BingMap } from './maps/bing/BingMap'
 export { default as SVGImage } from './controls/SVGImages/SVGImg'
+export { default as CRXDataTableTextPopover} from './CRXDataTable/CRXDataTableTextPopover'
+export { default as CRXMiddleTruncationPopover } from './CRXDataTable/CRXMiddleTruncationPopover'
 
