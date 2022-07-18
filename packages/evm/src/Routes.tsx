@@ -31,7 +31,7 @@ import Evidence from "./components/Evidence/ConfigEvidence";
 import CreateUnitAndDevicesTemplateBC04 from './UnitAndDevice/DeviceTemplate/CreateTemplateBC04'
 import ViewConfigurationTemplateLog from './Application/Admin/UnitConfiguration/ConfigurationTemplates/ViewConfigurationTemplateLog'
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
-
+import SharedMedia from "./Application/Assets/SharedMedia/SharedMedia";
 import Restricted from "./ApplicationPermission/Restricted";
 import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplate";
@@ -100,7 +100,7 @@ const Routes = () => {
               
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editUser)[0].url} exact={true}  component={CreateUserForm}  />
-
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sharedMedia)[0].url}  component={SharedMedia}  />
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
              
               <PrivateRoute moduleId={17} path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />

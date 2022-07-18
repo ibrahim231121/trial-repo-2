@@ -60,7 +60,7 @@ export const urlNames: any = {
     adminStationEdit: 'adminStationEdit',
     createUser: 'createUser',
     editUser : 'editUser',
-    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
+    sharedMedia : 'sharedMedia',    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
     liveVideo : 'liveVideo',
     avlMap:"avlMap"
 };
@@ -71,6 +71,13 @@ export const urlList: any = [
         url: "/assets",
         details: [
             { type: "text", label: "Assets", }
+        ],
+    },
+    {
+        name: urlNames.sharedMedia,
+        url: "/assets/sharedMedia",
+        details: [
+            { routeTo: "/assets/sharedMedia", type: "text", label: "Shared Media", }
         ],
     },
     {
