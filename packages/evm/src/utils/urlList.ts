@@ -63,7 +63,7 @@ export const urlNames: any = {
     sharedMedia : 'sharedMedia',    
     manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
     liveVideo : 'liveVideo',
-    avlMap:"avlMap"
+    avlMap: 'avlMap'
 };
 
 export const urlList: any = [
@@ -232,7 +232,7 @@ export const urlList: any = [
         url: "/admin/configurationtemplate",
         details: [
             { type: "text", label: "Admin" },
-            { type: "Link", label: "Manage Units & Devices Templates", },///Command/?tmplId=3
+            { type: "Link", label: "Manage Units & Devices Templates", },
         ],
     },
     {
