@@ -60,7 +60,8 @@ export const urlNames: any = {
     adminStationEdit: 'adminStationEdit',
     createUser: 'createUser',
     editUser : 'editUser',
-    sharedMedia : 'sharedMedia',    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
+    sharedMedia : 'sharedMedia',    
+    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
     liveVideo : 'liveVideo',
     avlMap:"avlMap"
 };
