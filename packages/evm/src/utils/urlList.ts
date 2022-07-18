@@ -60,8 +60,10 @@ export const urlNames: any = {
     adminStationEdit: 'adminStationEdit',
     createUser: 'createUser',
     editUser : 'editUser',
-    sharedMedia : 'sharedMedia',
-    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate'
+    sharedMedia : 'sharedMedia',    
+    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
+    liveVideo : 'liveVideo',
+    avlMap: 'avlMap'
 };
 
 export const urlList: any = [
@@ -194,6 +196,20 @@ export const urlList: any = [
         url: "/unitsanddevices",
         details: [
             { type: "text", label: "Units & Devices", }
+        ],
+    },
+    {
+        name: urlNames.liveVideo,
+        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=3`,  //Multi Live View URL
+        details: [
+            { type: "text", label: "Live Video", }
+        ],
+    },
+    {
+        name: urlNames.avlMap,
+        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=1`,  //Avl Map Live View URL
+        details: [
+            { type: "text", label: "Avl Map", }
         ],
     },
     {
