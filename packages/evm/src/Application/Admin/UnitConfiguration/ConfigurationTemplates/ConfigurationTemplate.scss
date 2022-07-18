@@ -41,6 +41,7 @@ iframe {
       height: 30px;
       font-size: 14px;
       line-height: 16px;
+      margin-top: -18px;
       font-family: Arial, Helvetica, sans-serif;
       transition: 0.2s all;
       // top: -40px;
@@ -96,11 +97,11 @@ iframe {
   }
 
   .configTemplate {
-    margin-top: 0px;
+    margin-top: -3px;
     tr {
       &:nth-child(odd) {
         .col-three {
-          background-color: var(--color-White) !important;
+          background-color: var(--color-White);
           left: 0 !important;
           ::selection {
             background-color: red !important;
@@ -204,6 +205,11 @@ iframe {
       text-indent: 5px;
       &:first-child {
         text-indent: 5px;
+        .CRXCheckBox {
+          .fal {
+            background: transparent;
+          }
+        }
       }
     }
   }
@@ -295,8 +301,9 @@ iframe {
     }
   }
   .stickyPos {
-    z-index: 1000 ;
-    top: 150px;
+    z-index: 1000;
+    top: 151px;
+    height: 79px;
   }
   .table_Inner_Action {
     .rc-menu {

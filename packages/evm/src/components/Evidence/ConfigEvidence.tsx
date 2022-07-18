@@ -207,7 +207,7 @@ const Evidence = (props: any) => {
     };
 
     return (
-        <div style={{ marginLeft: "6%", marginTop: "10%" }}>
+        <div className="switchLeftComponents">
 
         
           {
