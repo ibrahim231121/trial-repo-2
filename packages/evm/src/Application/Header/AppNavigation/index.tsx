@@ -132,22 +132,22 @@ const CRXLefNavigation = () => {
       ],
     },
 
-    {
-      moduleId:0,
-      label: "Reports",
-      icon: "icon icon-file-text NaveIcon",
-      classes: "reportingTab",
-      items: [
-        {
-          moduleIds:0,
-          label: "Analytics Map",
-        },
-        {
-          moduleIds:0,
-          label: "AVL Map",
-        },
-      ],
-    },
+    // {
+    //   moduleId:0,
+    //   label: "Reports",
+    //   icon: "icon icon-file-text NaveIcon",
+    //   classes: "reportingTab",
+    //   items: [
+    //     {
+    //       moduleIds:0,
+    //       label: "Analytics Map",
+    //     },
+    //     {
+    //       moduleIds:0,
+    //       label: "AVL Map",
+    //     },
+    //   ],
+    // },
 
     {
       moduleId: 0,
