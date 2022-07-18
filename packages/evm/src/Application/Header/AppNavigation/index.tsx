@@ -72,19 +72,6 @@ const CRXLefNavigation = () => {
       //   },
       // ],
     },
-   
-    // {
-    //   moduleId:0,
-    //   label: "Maps",
-    //   icon: "icon icon-compass5 NaveIcon",
-    //   classes: "mapsTab",
-    //   items: [
-    //     {
-    //       moduleIds:0,
-    //       label: "Analytics Map",
-    //     },
-    //   ],
-    // },
     {
       moduleId: 13,
       label: t('Units_&_Devices'),
