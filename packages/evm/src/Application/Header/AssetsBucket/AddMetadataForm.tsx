@@ -14,6 +14,7 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
+import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 interface Props {
   onClose: any;
@@ -115,6 +116,10 @@ type masterAssetStation = {
 type retentionPolicyId = {
   CMTFieldValue: number;
 };
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 
 const AddMetadataForm: React.FC<Props> = ({
   onClose,
@@ -172,7 +177,7 @@ const AddMetadataForm: React.FC<Props> = ({
   React.useEffect(() => {
     fetchStation();
     masterAssets();
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
     dispatch(getAllCategories());
   }, []);
 

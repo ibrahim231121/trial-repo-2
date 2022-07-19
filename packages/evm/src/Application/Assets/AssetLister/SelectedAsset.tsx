@@ -3,7 +3,6 @@ import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import { CRXButton , CRXBadge } from "@cb/shared";
 import "./PredictiveSearchBox/PredictiveSearchBox.scss";
 import queries from "../QueryManagement/queries";
-import constants from '../utils/constants'
 import { DateTimeObject } from '../../../GlobalComponents/DateTime';
 interface Props {
   shortcutData: {

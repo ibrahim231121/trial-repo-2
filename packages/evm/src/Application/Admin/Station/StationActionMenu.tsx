@@ -13,6 +13,7 @@ import { getStationsInfoAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
+import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { EvidenceAgent } from '../../../utils/Api/ApiAgent';
 
 type Props = {
@@ -22,6 +23,11 @@ type Props = {
 };
 
 const cookies = new Cookies();
+
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 
 const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
   const [open, setOpen] = React.useState(false);
@@ -180,7 +186,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
   };
 
   const setStationNameProcess = (text: string) => {

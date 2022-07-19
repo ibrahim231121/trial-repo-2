@@ -13,6 +13,7 @@ import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { AddOwner, Asset } from '../../../../utils/Api/models/EvidenceModels';
 import { CMTEntityRecord } from '../../../../utils/Api/models/CommonModels';
 import { useTranslation } from "react-i18next";
+import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -25,6 +26,11 @@ type AssignUserProps = {
 };
 
 const cookies = new Cookies();
+
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
 
@@ -41,7 +47,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
     getData();
     //getMasterAsset();
   }, []);
@@ -86,10 +92,10 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const sendData = async () => {
     const url = '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
     EvidenceAgent.addUsersToMultipleAsset(url, assetOwners).then(() => {
-      setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1000);
+      setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
       props.setOnClose();
       props.showToastMsg({
-        message: "Asset Assignees updated",
+        message: t("Asset_Assignees_updated"),
         variant: "success",
         duration: 7000,
         clearButtton: true,
@@ -98,7 +104,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     .catch((error: any) => {
       setAlert(true);
         setResponseError(
-          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
         );
       return error;
     });
@@ -200,7 +206,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
         props.setOnClose();
         props.showToastMsg({
-          message: "Asset Assignees updated",
+          message: t("Asset_Assignees_updated"),
           variant: "success",
           duration: 7000,
           clearButtton: true,
@@ -210,7 +216,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         console.log(error);
         setAlert(true);
         setResponseError(
-          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
         );
         return error;
       });

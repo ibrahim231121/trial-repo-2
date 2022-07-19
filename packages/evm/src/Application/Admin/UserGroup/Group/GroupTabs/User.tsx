@@ -19,7 +19,8 @@ import {
     onClearAll,
     onSaveHeadCellData,
     onSetHeadCellVisibility,
-    onMultiToMultiCompare
+    onMultiToMultiCompare,
+    GridFilter
 } from "../../../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
@@ -42,6 +43,10 @@ interface renderCheckMultiselect {
     id?: string,
 
 }
+let gridFilter: GridFilter = {
+    logic: "and",
+    filters: []
+  }
 
 const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
@@ -60,7 +65,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     React.useEffect(() => {
         
-        dispatch(getUsersInfoAsync());
+        dispatch(getUsersInfoAsync(gridFilter));
 
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);
@@ -210,7 +215,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             maxWidth: "80",
         },
         {
-            label: t("Username"),
+            label: t("User_Name"),
             id: "userName",
             align: "left",
             dataComponent: (e: string) => textDisplay(e, ""),

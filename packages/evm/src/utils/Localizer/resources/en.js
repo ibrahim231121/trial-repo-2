@@ -34,16 +34,16 @@ export const resources = {
         "Inspiring statement about Getac / Getac product that is relevant to user":"Inspiring statement about Getac / Getac product that is relevant to user",
         "You are accessing a restricated information system. Your usage may be monitored, recoreded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalities. By using this system and clicking Log In, you consent to your usage being monitored and recorded.":"You are accessing a restricated information system. Your usage may be monitored, recoreded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalities. By using this system and clicking Log In , you consent to your usage being monitored and recorded.",
         "Log_In":"Log In",
-        "assetDataTable": "Assets",
-        "userGroup_DataTable": "User Groups",
-        "Tables_columns_filter": "Tables columns filter",
-        "Close" : "Close",
-        "Reset_to_default" : "Reset to default",
-        "Clearall_filters": "Clear all filters",
-        "Customize_columns": "Customize columns",
-        "Save_and_close" : "Save and close",
-        "Saveas_preset" : "Save as preset",
-        "Actions": "Actions",
+        "assetDataTable":"Assets",
+        "userGroup_DataTable":"User Groups",
+        "Tables_columns_filter":"Tables columns filter",
+        "Close":"Close",
+        "Reset_to_default":"Reset to default",
+        "Clearall_filters":"Clear all filters",
+        "Customize_columns":"Customize columns",
+        "Save_and_close":"Save and close",
+        "Saveas_preset":"Save as preset",
+        "Actions":"Actions",
         "ID":"ID",
         "Asset_Thumbnail":"Asset Thumbnail",
         "Asset_ID":"Asset ID",
@@ -185,7 +185,7 @@ export const resources = {
         "Search_Bookmark":"Search Bookmark",
         "Search_by_Name_keyword_etc.":"Search by Name, keyword, etc.",
         "Search_Notes":"Search Notes",
-        "Asset Detail: ":"Asset Detail: ",
+        "Asset_Detail:_":"Asset Detail: ",
         "Information":"Information",
         "GROUPED_AND_RELATED_ASSETS":"GROUPED AND RELATED ASSETS",
         "Captured_Date":"Captured Date",
@@ -197,7 +197,12 @@ export const resources = {
         "Retention":"Retention",
         "Categories":"Categories",
         "Copyright_©_Getac_Video_Solutions_Inc._and_its_subsidiaries._All_rights_reserved._|_Enterprise_Version":"Copyright © Getac Video Solutions, Inc. and its subsidiaries. All rights reserved. | Enterprise Version",
-
+        "is_successfully_set_as_primary_asset":"is successfully set as primary asset",
+        "You_are_sure_want_to_make":"You are sure want to make",
+        "the_primary_asset?":"the primary asset?",
+        "Set_as_primary_asset":"Set as primary asset",
+        "Export":"Export",
+        "Asset_Assignees_updated":"Asset Assignees updated",
         // -------------------------
 
         // --------- User ----------
@@ -332,6 +337,8 @@ export const resources = {
         "Unit_Templates":"Unit Templates",
         "Select_location_on_the_map":"Select location on the map",
         "Save_Location":"Save Location",
+        "Phone_Number_is_not_valid!":"Phone Number is not valid!",
+        "Phone_Number":"Phone Number",
         // -------------------------
         
         // --------- Unit ----------
@@ -432,7 +439,27 @@ export const resources = {
         "Notifications":"Notifications",
         "Clear_All":"Clear All",
         // -------------------------
-
+        
+        // --------- Constant ----------
+        "Deleted":"Deleted",
+        "Trash":"Trash",
+        "Not_Categorized":"Not Categorized",
+        "Approaching_Deletion":"Approaching Deletion",
+        "SimpleSearch":"SimpleSearch",
+        "AdvanceSearch":"AdvanceSearch",
+        "ShortcutSearch":"ShortcutSearch",
+        "Unit_ID":"Unit ID",
+        "UnCategorized":"UnCategorized",
+        // -------------------------
+        
+        // --------- Data Table ----------
+        "Tables_columns_filter":"Tables columns filter",
+        "Clear_all_filters":"Clear all filters",
+        "Basic":"Basic",
+        "Advance":"Advance",
+        "Restrictive":"Restrictive",
+        "total_users_in_group":"total users in group",
+        "":"",
 
 
       }

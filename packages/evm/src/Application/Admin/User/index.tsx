@@ -69,12 +69,35 @@ interface renderCheckMultiselect {
 
 }
 
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
+
+// type PageiGrid = {
+//   gridFilter: GridFilter,
+//   page: number,
+//   size: number
+// }
+
 const User: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-
+  // const [page, setPage] = React.useState<number>(0);
+  // const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  // const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+  //     gridFilter: {
+  //       logic: "and",
+  //       filters: []
+  //     },
+  //     page: page,
+  //     size: rowsPerPage
+  // })
+  
+  
+  
   React.useEffect(() => {
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
 
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
@@ -125,11 +148,6 @@ const User: React.FC = () => {
   }, [users]);
 
   const getFilteredUserData = () => {
-
-    let gridFilter: GridFilter = {
-      logic: "and",
-      filters: []
-    }
 
     searchData.forEach((item:any, index:number) => {
         let x: GridFilter = {
@@ -184,7 +202,20 @@ const User: React.FC = () => {
     // }
   }
 
-  
+  // useEffect(() => {
+  //   console.log("Row per Page ")
+  //   setPageiGrid({...pageiGrid, size:rowsPerPage}); 
+  // },[rowsPerPage])
+
+  // useEffect(() => {
+  //   console.log("page ")
+  //   setPageiGrid({...pageiGrid, page:page}); 
+  // },[page])
+
+  // useEffect(() => {
+  //   console.log("pageiGrid ", pageiGrid)
+  // },[pageiGrid])
+
   const searchText = (
     rowsParam: User[],
     headCells: HeadCellProps[],
@@ -419,7 +450,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "80",
     },
     {
-      label: `${t("Username")}`,
+      label: `${t("User_Name")}`,
       id: "userName",
       align: "left",
       // width: "174",
@@ -589,7 +620,7 @@ const openHandler = (_: React.SyntheticEvent) => {
     }
   };
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
 
   useEffect(() => {
@@ -658,7 +689,8 @@ const openHandler = (_: React.SyntheticEvent) => {
   };
 
   const clearAll = () => {
-    dispatch(getUsersInfoAsync());
+    gridFilter.filters = []
+    dispatch(getUsersInfoAsync(gridFilter));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -727,7 +759,7 @@ const openHandler = (_: React.SyntheticEvent) => {
             <>
               <CRXButton
                 id={"createUser"}
-                className="primary manageUserBtn"
+                className="primary manageUserBtn" 
                 onClick={CreateUserForm}
               >
                   {t("Create_User")}
@@ -760,6 +792,10 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCustomizeIcon={true}
           showTotalSelectedText={false}
           offsetY={209}
+          // page={page}
+          // rowsPerPage={rowsPerPage}
+          // setPage= {(e:any) => setPage(e)}
+          // setRowsPerPage= {(e:any) => setRowsPerPage(e)}
         />
       )}
     </div>

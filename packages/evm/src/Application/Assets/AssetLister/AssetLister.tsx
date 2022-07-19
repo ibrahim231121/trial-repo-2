@@ -6,7 +6,6 @@ import MasterMain from './AssetDataTable';
 import './AssetLister.scss';
 import SelectedAsset from './SelectedAsset';
 import queries from '../QueryManagement/queries';
-import constants from '../utils/constants';
 import {DateTimeComponent, DateTimeObject } from '../../../GlobalComponents/DateTime';
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 import { RootState } from "../../../Redux/rootReducer";
@@ -133,7 +132,7 @@ const SearchComponent = (props: any) => {
 
     dispatch(getAssetSearchInfoAsync(querry || QUERRY));
 
-    if (searchType === constants.SearchType.SimpleSearch || searchType === constants.SearchType.ShortcutSearch) {
+    if (searchType === "SimpleSearch" || searchType === "ShortcutSearch") {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);
     } 
@@ -173,7 +172,7 @@ const SearchComponent = (props: any) => {
         });
       }
 
-      fetchData(QUERRY, constants.SearchType.SimpleSearch);
+      fetchData(QUERRY, "SimpleSearch");
      
       setAdvanceSearch(false);
       setShowAssetDateCompact(true);
@@ -181,12 +180,12 @@ const SearchComponent = (props: any) => {
 
     if (querryString &&
       querryString.length > 0 &&
-      querryString.startsWith(constants.assetShortCutPrefix)
+      querryString.startsWith("#")
     ) {
       let exactShortCutName = querryString.substring(1);
       let shortCut = shortcutData.find(x => x.text === exactShortCutName);
       if (shortCut) {
-        if (shortCut.text === constants.AssetShortCuts.ApproachingDeletion) {
+        if (shortCut.text === t("Approaching_Deletion")) {
           shortCut.renderData(dateTimeDropDown);
         } else {
           shortCut.renderData(undefined) // For Trash and Not Categorized
@@ -201,44 +200,44 @@ const SearchComponent = (props: any) => {
 
   const shortcutData = [
     {
-      text: constants.AssetShortCuts.NotCategorized,
+      text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized( dateTimeDropDown.startDate, dateTimeDropDown.endDate),
       renderData: function () {
-        setPredictiveText(constants.AssetShortCutsWithPrefix.NotCategorized);
-        setQuerryString(constants.AssetShortCutsWithPrefix.NotCategorized);
-        fetchData(this.query(), constants.SearchType.ShortcutSearch);
+        setPredictiveText(t("Not_Categorized"));
+        setQuerryString(t("Not_Categorized"));
+        fetchData(this.query(), t("ShortcutSearch"));
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
 
       },
     },
     {
-      text: constants.AssetShortCuts.Trash,
-      query: () => queries.GetAssetsBySatus(constants.AssetStatus.Trash),
+      text: t("Trash"),
+      query: () => queries.GetAssetsBySatus(t("Trash")),
       renderData: function () {
-        setPredictiveText(constants.AssetShortCutsWithPrefix.Trash);
-        setQuerryString(constants.AssetShortCutsWithPrefix.Trash);
-        fetchData(this.query(), constants.SearchType.ShortcutSearch);
+        setPredictiveText(t("Trash"));
+        setQuerryString(t("Trash"));
+        fetchData(this.query(), t("ShortcutSearch"));
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
 
       },
     },
     {
-      text: constants.AssetShortCuts.ApproachingDeletion,
+      text: t("Approaching_Deletion"),
       query: () =>
         queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
         renderData: function (dateTimeObject : DateTimeObject | undefined = undefined) {
 
             setDateOptionType(dateOptionsTypes.approachingDeletion); 
             setSearchType(AssetSearchType.approachingDeletion);
-            setPredictiveText(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
-            setQuerryString(constants.AssetShortCutsWithPrefix.ApproachingDeletion);
+            setPredictiveText(t("Approaching_Deletion"));
+            setQuerryString(t("Approaching_Deletion"));
 
             if(!dateTimeObject){
               var  approachingdateValue = dateOptions.approachingDeletion.find(x=> x.value === approachingDateDefaultValue);
               if(approachingdateValue != null){
-                fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate()),constants.SearchType.ShortcutSearch) 
+                fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate()),t("ShortcutSearch")) 
                
                 var  defaultDateValue = dateOptions.basicoptions.find(x=> x.value === basicDateDefaultValue);
                 if(defaultDateValue !== undefined){
@@ -262,7 +261,7 @@ const SearchComponent = (props: any) => {
               }
             }
             else{
-              fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate),constants.SearchType.ShortcutSearch) 
+              fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate),t("ShortcutSearch")) 
             }
 
             var  approachingMaxDateValue = dateOptions.approachingDeletion.find(x=> x.value === t("next_30_days"));
@@ -341,13 +340,13 @@ const SearchComponent = (props: any) => {
         });
       }
 
-      fetchData(AdvancedSearchQuerry, constants.SearchType.AdvanceSearch);
+      fetchData(AdvancedSearchQuerry, t("AdvanceSearch"));
     }
   }, [addvancedOptions]);
 
   const onChangePredictiveSearch = (e: any) => {
     setQuerryString(e);
-    if ( e.startsWith('#') &&  e === constants.AssetShortCutsWithPrefix.ApproachingDeletion ) {
+    if ( e.startsWith('#') &&  e === t("Approaching_Deletion") ) {
      // setDateOptionsState(approachingDeletionDateOptions);
      setDateOptionType(dateOptionsTypes.approachingDeletion); 
      setDefaultDateValue(approachingDateDefaultValue);

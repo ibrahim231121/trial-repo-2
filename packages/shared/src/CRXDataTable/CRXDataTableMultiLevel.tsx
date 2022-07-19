@@ -12,6 +12,7 @@ import {
   MultiLevelProps,
 } from "./CRXDataTableTypes";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
+import { useTranslation } from "react-i18next";
 
 
 const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
@@ -23,7 +24,7 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
   onSetRow,
   onCheckUnCheckChildren
 }) => {
-
+  const { t } = useTranslation<string>();
   const orderColumn = new Array(headCells.length).fill(null).map((_, i) => i)
   const classes = useStyles();
 
@@ -36,15 +37,15 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>, colIdx:number) => {
     if(colIdx === finalLevel-1) {
       setCheckAllBasicLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"Basic")
+      onSetCheckAllLevel(e.target.checked,t("Basic"))
     }
     else if(colIdx === finalLevel) {
       setCheckAllAdvanceLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"Advance")
+      onSetCheckAllLevel(e.target.checked,t("Advance"))
     }
     else if(colIdx === finalLevel+1) {
       setCheckAllRestrictLevel(e.target.checked)
-      onSetCheckAllLevel(e.target.checked,"Restrictive")
+      onSetCheckAllLevel(e.target.checked,t("Restrictive"))
     }
   }
 
@@ -52,11 +53,11 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
     setActive(!active)
     onSetRow(check, row)
     if(row.levelType !== undefined && check === false) {
-      if(row.levelType === "Basic") 
+      if(row.levelType === t("Basic"))
         setCheckAllBasicLevel(check)
-      else if(row.levelType === "Advance") 
+      else if(row.levelType === t("Advance")) 
         setCheckAllAdvanceLevel(check)
-      else if(row.levelType === "Restrictive") 
+      else if(row.levelType === t("Restrictive")) 
         setCheckAllRestrictLevel(check)
       onCheckUnCheckChildren(check, row)
     }
@@ -83,10 +84,10 @@ const DataTableMultiLevel: React.FC<MultiLevelProps> = ({
     let countAdvanceChecks: any = {totalCount:0, checkedCount:0}
     let countRestrictChecks: any = {totalCount:0, checkedCount:0}
     if(rows !== undefined && rows.length > 0) {
-      rows.map((row: any) => { 
-        countBasicChecks = setCheckAlltoParent(row, "Basic", countBasicChecks)
-        countAdvanceChecks = setCheckAlltoParent(row, "Advance", countAdvanceChecks)
-        countRestrictChecks = setCheckAlltoParent(row, "Restrictive", countRestrictChecks)
+      rows.forEach((row: any) => { 
+        countBasicChecks = setCheckAlltoParent(row, t("Basic"), countBasicChecks)
+        countAdvanceChecks = setCheckAlltoParent(row, t("Advance"), countAdvanceChecks)
+        countRestrictChecks = setCheckAlltoParent(row, t("Restrictive"), countRestrictChecks)
       })
       if(countBasicChecks.totalCount ===  countBasicChecks.checkedCount && countBasicChecks.totalCount > 0)
         setCheckAllBasicLevel(true)

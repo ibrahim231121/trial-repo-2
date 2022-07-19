@@ -31,6 +31,7 @@ import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
+import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 export type GroupInfoModel = {
   name: string;
@@ -54,6 +55,10 @@ export type ApplicationPermission = {
   levelType?: string;
   children?: ApplicationPermission[];
 };
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 const Group = () => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
@@ -110,8 +115,8 @@ const Group = () => {
   const tabs = [
     { label: t("GROUP_NAME"), index: 0 },
     { label: t("USERS"), index: 1 },
-    { label: t("APPLICATION PERMISSIONS"), index: 2 },
-    { label: t("DATA PERMISSIONS"), index: 3 },
+    { label: t("APPLICATION_PERMISSIONS"), index: 2 },
+    { label: t("DATA_PERMISSIONS"), index: 3 },
   ];
 
   const message = [
@@ -161,7 +166,7 @@ const Group = () => {
       getContainerMappingRes();
     }
     getResponseAppPermission();
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
   };
 
   const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {

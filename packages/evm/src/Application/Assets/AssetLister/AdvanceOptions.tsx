@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./AdvancedSearch.scss";
 import { CRXButton, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
-import { advancedSearchOptions } from "../utils/constants";
+//import { advancedSearchOptions } from "../utils/constants";
 import { dateOptions, basicDateDefaultValue } from "../../../utils/constant";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useTranslation } from "react-i18next";
@@ -38,7 +38,35 @@ const AdvancedSearch: React.FC<Props> = ({
   dateOptionType,
   dateTimeDetail,
 }) => {
+
   const { t } = useTranslation<string>();
+  const advancedSearchOptions= [
+  
+    {
+      value: t("User_Name"),
+      key: "username",
+      _id: "1",
+      usedBy: null,
+      isUsed: false,
+      inputValue: "",
+    }, 
+    {
+      value: t("Unit_ID"),
+      key: "unit",
+      _id: "2",
+      usedBy: null,
+      isUsed: false,
+      inputValue: "",
+    },
+    {
+      value: t("Category"),
+      key: "category",
+      _id: "3",
+      usedBy: null,
+      isUsed: false,
+      inputValue: "",
+    },
+  ]
   const selectRef = useRef<any>(null);
   const refs: any = [useRef(), useRef(), useRef()];
   const [selectsLength, setSelectsLength] = useState(1);

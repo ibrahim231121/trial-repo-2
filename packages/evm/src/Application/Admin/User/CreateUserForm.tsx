@@ -26,6 +26,7 @@ import {
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { useTranslation } from "react-i18next";
+import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { REACT_APP_CLIENT_ID} from '../../../../../evm/src/utils/Api/url'
 
 let USER_DATA = {};
@@ -59,6 +60,11 @@ type account = {
   password: string;
   isPasswordResetRequired: boolean;
 };
+
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 
 const CreateUserForm = () => {
   
@@ -530,7 +536,7 @@ else{
               variant: 'success',
               duration: 7000
             });
-            dispatch(getUsersInfoAsync());
+            dispatch(getUsersInfoAsync(gridFilter));
             setDisableSave(true)
       
           } else {
@@ -633,11 +639,11 @@ else{
               variant: 'success',
               duration: 7000
             });
-            dispatch(getUsersInfoAsync());
+            dispatch(getUsersInfoAsync(gridFilter));
             setDisableSave(true)
           }
           userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
-          dispatch(getUsersInfoAsync());
+          dispatch(getUsersInfoAsync(gridFilter));
           setDisableSave(true)
         } else if (res.status == 500) {
           setAlert(true);

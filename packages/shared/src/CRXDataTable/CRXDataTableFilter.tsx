@@ -57,7 +57,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
             <div style={{position:'absolute', top:"-20px", right:"0px"}}>
                 
             </div>
-            <CRXTypography className="DRPTitle" variant="h3" >{t('Tablescolumnsfilter')} </CRXTypography>
+            <CRXTypography className="DRPTitle" variant="h3" >{t('Tables_columns_filter')} </CRXTypography>
 
             <div className="footerDRP">
             <Grid container spacing={0}>
@@ -80,7 +80,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
                     variant="outlined" 
                     className="clearAllFilterBtn"
                     >
-                    {t('Clearallfilters')}
+                    {t('Clear_all_filters')}
                     </CRXButton>
                 </Grid>
                 

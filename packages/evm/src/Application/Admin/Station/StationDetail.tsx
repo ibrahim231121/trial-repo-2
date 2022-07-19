@@ -28,6 +28,7 @@ import InputShowHide from "../../../utils/InputShowHide/InputShowHide";
 type StationFormType = {
   Name: string;
   StreetAddress?: string;
+  Phone?:string;
   Passcode?: string;
   Location?: any;
   PolicyId?: number;
@@ -81,6 +82,7 @@ const StationDetail: React.FC = () => {
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
+    Phone: "",
     Passcode: "",
     Location: {
       longitude: null,
@@ -126,6 +128,7 @@ const StationDetail: React.FC = () => {
   const [disableSaveButton, setDisableSaveButton] =
     React.useState<boolean>(true);
   const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
+  const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
 
   React.useEffect(() => {
     getDeviceTypeRecord();
@@ -157,6 +160,7 @@ const StationDetail: React.FC = () => {
           const _station: StationFormType = {
             Name: station.name,
             StreetAddress: station.address.street,
+            Phone: station.address.phone,
             Passcode: station.passcode,
             Location: {
               latitude: station.geoLocation.latitude,
@@ -265,7 +269,6 @@ const StationDetail: React.FC = () => {
   const errorHandler = (param: any) => {
     if (param !== undefined) {
       let error = JSON.parse(param);
-      console.error("Error ", error)
       if (error.errors !== undefined) {
         if (
           error.errors.Passcode !== undefined &&
@@ -273,6 +276,13 @@ const StationDetail: React.FC = () => {
         ) {
           setError(true);
           setErrorResponseMessage(error.errors.Passcode[0]);
+        }
+        if (
+          error.errors.Address.Phone !== undefined &&
+          error.errors.Address.Phone.length > 0
+        ) {
+          setError(true);
+          setErrorResponseMessage(error.errors.Address.Phone[0]);
         }
         if (error.errors.Name !== undefined && error.errors.Name.length > 0) {
           setError(true);
@@ -318,6 +328,7 @@ const StationDetail: React.FC = () => {
       name: values.Name,
       address: {
         street: values.StreetAddress,
+        phone: values.Phone,
       },
       geoLocation: {
         latitude: values.Location.latitude,
@@ -402,6 +413,8 @@ const StationDetail: React.FC = () => {
         (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
       )
       .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Pass_Code_is_required")),
+    Phone: Yup.string()
+      .trim().matches(regex_PhoneNumber, t("Phone_Number_is_not_valid!")).notRequired(),
     SSId: Yup.string().test(
       'len',
       t("Minimum_5_characters_are_allowed."),
@@ -760,6 +773,29 @@ const StationDetail: React.FC = () => {
                           <div className="CBX-input">
                             <label htmlFor="street">{t("Street_Address")}</label>
                             <Field id="street" name="StreetAddress" />
+                          </div>
+                        </CRXColumn>
+                        <CRXColumn
+                          className="stationDetailCol"
+                          container="container"
+                          item="item"
+                          lg={12}
+                          xs={12}
+                          spacing={0}
+                        >
+                          <div className="CBX-input">
+                            <label htmlFor="phone">{t("Phone_Number")}</label>
+                            <Field id="phone" name="Phone" />
+                            <div className="CrxStationError">
+                              {errors.Phone !== undefined &&
+                                touched.Phone === true ? (
+                                <div className="errorStationStyle">
+                                  <i className="fas fa-exclamation-circle"></i>
+                                  {errors.Phone}
+                                  {setDisplayStationError("errorBrdr")}
+                                </div>
+                              ) : null}
+                            </div>
                           </div>
                         </CRXColumn>
                         <CRXColumn

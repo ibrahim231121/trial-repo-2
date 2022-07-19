@@ -17,12 +17,18 @@ import Restricted from "../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 type Props = {
   selectedItems?: any;
   row?: any;
   showToastMsg(obj: any): any;
 };
+
+let gridFilter: GridFilter = {
+  logic: "and",
+  filters: []
+}
 
 const UserActionMenu: React.FC<Props> = ({
   selectedItems,
@@ -64,7 +70,7 @@ const UserActionMenu: React.FC<Props> = ({
             variant: "success",
             duration: 7000,
           });
-          dispatch(getUsersInfoAsync());
+          dispatch(getUsersInfoAsync(gridFilter));
           setIsOpen(false);
         } else {
           setShowAlert(true);

@@ -1,57 +1,59 @@
-const assetShortCutPrefix = "#";
 
-const AssetStatus ={
-    Deleted : "Deleted",
-    Trash : "Trash",   
-}
+// const assetShortCutPrefix = "#";
 
-const AssetShortCuts = {
-  Trash:"Trash",
-  NotCategorized : "Not Categorized",
-  ApproachingDeletion:"Approaching Deletion"
-}
+// const AssetStatus = {
+//     Deleted : i18n.t("Deleted"),
+//     Trash : i18n.t("Trash"),   
+// }
 
-const AssetShortCutsWithPrefix = {
+// const AssetShortCuts = {
+//   Trash: i18n.t("Trash"),  
+//   NotCategorized : i18n.t("Not_Categorized"),
+//   ApproachingDeletion: i18n.t("Approaching_Deletion")
+// }
 
-  NotCategorized : assetShortCutPrefix + AssetShortCuts.NotCategorized,
-  Trash:assetShortCutPrefix + AssetShortCuts.Trash,
-  ApproachingDeletion:assetShortCutPrefix + AssetShortCuts.ApproachingDeletion,
-}
+// const AssetShortCutsWithPrefix = {
 
-const SearchType = {
-   SimpleSearch: "SimpleSearch",
-   AdvanceSearch: "AdvanceSearch",
-   ShortcutSearch: "ShortcutSearch"
-}
+//   NotCategorized : assetShortCutPrefix + AssetShortCuts.NotCategorized,
+//   Trash:assetShortCutPrefix + AssetShortCuts.Trash,
+//   ApproachingDeletion:assetShortCutPrefix + AssetShortCuts.ApproachingDeletion,
+// }
 
-export const advancedSearchOptions= [
-    {
-      value: "User Name",
-      key: "username",
-      _id: "1",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    }, 
-    {
-      value: "Unit ID",
-      key: "unit",
-      _id: "2",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    },
-    {
-      value: "Category",
-      key: "category",
-      _id: "3",
-      usedBy: null,
-      isUsed: false,
-      inputValue: "",
-    },
-  ]
+// const SearchType = {
+//    SimpleSearch: i18n.t("SimpleSearch"),
+//    AdvanceSearch: i18n.t("AdvanceSearch"),
+//    ShortcutSearch: i18n.t("ShortcutSearch")
+// }
 
-const AssetUnCategorized  = "UnCategorized";
+// export const advancedSearchOptions= [
+  
+//     {
+//       value: i18n.t("User_Name"),
+//       key: "username",
+//       _id: "1",
+//       usedBy: null,
+//       isUsed: false,
+//       inputValue: "",
+//     }, 
+//     {
+//       value: i18n.t("Unit_ID"),
+//       key: "unit",
+//       _id: "2",
+//       usedBy: null,
+//       isUsed: false,
+//       inputValue: "",
+//     },
+//     {
+//       value: i18n.t("Category"),
+//       key: "category",
+//       _id: "3",
+//       usedBy: null,
+//       isUsed: false,
+//       inputValue: "",
+//     },
+//   ]
+
+//const AssetUnCategorized  = i18n.t("UnCategorized");
 
 
-export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}
+//export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}

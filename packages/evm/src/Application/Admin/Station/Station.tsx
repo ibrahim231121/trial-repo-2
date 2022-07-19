@@ -358,7 +358,7 @@ const Station: React.FC = () => {
           }
           toolBarButton={
             <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
-              {t('Create Station')}
+              {t('Create_Station')}
             </CRXButton>
         }
           getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}

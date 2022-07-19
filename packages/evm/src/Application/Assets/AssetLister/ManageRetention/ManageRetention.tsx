@@ -183,6 +183,27 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
       body: JSON.stringify(retentionList)
     })
+      .then(function (res) {
+        
+        if (res.ok) {
+          props.setOnClose();
+          props.showToastMsg({
+            message: (retention == "1" || retention == "2") ? t("Retention_Extended"): t("Retention_Reverted"),
+            variant: "success",
+            duration: 7000,
+            clearButtton: true,
+          });
+          
+        } else if (res.status == 500) {
+          setAlert(true);
+          setResponseError(
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+          );
+        }
+      })
+      .catch(function (error) {
+        return error;
+      })
   }
 
   const cancelBtn = () => {

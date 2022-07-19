@@ -218,6 +218,10 @@ export type DataTableProps = {
   toolBarButton? : React.ReactNode,
   offsetY? : number,
   headerOffSetY? : number,
+  // page: number
+  // rowsPerPage: number;
+  // setPage: (e: any) => void;
+  // setRowsPerPage: (e: any) => void;
 };
 
 export type OrderData = {

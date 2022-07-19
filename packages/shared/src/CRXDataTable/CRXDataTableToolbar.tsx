@@ -47,7 +47,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
       {
         (showTotalSelectedText || showTotalSelectedText === undefined) ?
           <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-            {<>{numSelected} total users in group </>}
+            {<>{numSelected} {t("total_users_in_group")} </>}
           </Typography> : <></>
       }
 

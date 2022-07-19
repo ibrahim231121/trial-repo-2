@@ -182,7 +182,9 @@ const CRXLefNavigation = () => {
         {
           moduleIds: 17,
           label: t('Manage_Station'),
-          url: "/admin/stations",
+          command: () => {
+            navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminStation)[0].url);
+          },
         }
       ],
     },

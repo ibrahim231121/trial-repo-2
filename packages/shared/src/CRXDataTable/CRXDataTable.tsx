@@ -98,7 +98,11 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   toolBarButton,
   offsetY,
   headerOffSetY,
-  showHeaderCheckAll
+  showHeaderCheckAll,
+  // page,
+  // rowsPerPage,
+  // setPage,
+  // setRowsPerPage
 }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState<number>(0);
@@ -291,6 +295,14 @@ const CRXDataTable: React.FC<DataTableProps> = ({
     setCheckAllPageWise([])
     //setSelectedItems([]);
   };
+
+  // useEffect(() => {
+  //   setPage(page);
+  // },[page])
+
+  // useEffect(() => {
+  //   setRowsPerPage(rowsPerPage);
+  // },[rowsPerPage])
 
   const onReorderEnd = useCallback(
     ({ oldIndex, newIndex }, _) => {

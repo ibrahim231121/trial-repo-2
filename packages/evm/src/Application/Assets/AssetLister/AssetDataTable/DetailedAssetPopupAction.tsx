@@ -13,7 +13,8 @@ import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescri
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 
 
 type Props = {
@@ -43,10 +44,11 @@ export type securityDescriptorType = {
 }
 
 const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, selectedItems }) => {
+  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const [primary, setPrimary] = React.useState<string>('Confirm');
-  const [secondary, setSecondary] = React.useState<string>('Close');
+  const [primary, setPrimary] = React.useState<string>(t('Confirm'));
+  const [secondary, setSecondary] = React.useState<string>(t('Close'));
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   const [alertType, setAlertType] = React.useState<string>("inline");
   const [alert, setAlert] = React.useState<boolean>(false);
@@ -57,7 +59,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const cookies = new Cookies();
 
   const message = [
-    { messageType: "success", message:' Asset set as the primary' },
+    { messageType: "success", message: `${asset.assetName}` + ` ${t("is_successfully_set_as_primary_asset")}` },
   ];
 
   React.useEffect(() => {
@@ -113,7 +115,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
       <CRXToaster ref={DetailedPopupMsgRef} />
       <CRXConfirmDialog
         className='crx-unblock-modal'
-        title={"Please Confirm"}
+        title={t("Please_Confirm")}
         setIsOpen={setIsOpen}
         onConfirm={onConfirm}
         isOpen={isOpen}
@@ -130,7 +132,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         setShowSucess={setShowSuccess}
       />
             <p>
-              You are sure want to make '{asset.assetName}' the primary asset?
+              {t("You_are_sure_want_to_make")} '{asset.assetName}' {t("the_primary_asset?")}
             </p>
           </div>
         }
@@ -155,7 +157,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">Set as primary asset</div>
+                <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>

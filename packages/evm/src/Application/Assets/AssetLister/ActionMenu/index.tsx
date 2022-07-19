@@ -383,7 +383,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
-                  <SubMenu label="Export">
+                  <SubMenu label={t("Export")}>
                     <MenuItem>Download asset(s)</MenuItem>
                     <MenuItem>Download metadata info</MenuItem>
                     <MenuItem>Download audit trail </MenuItem>
