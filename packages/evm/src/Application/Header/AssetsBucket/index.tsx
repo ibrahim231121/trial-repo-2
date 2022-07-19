@@ -1211,6 +1211,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                               }
                             </div>
                           </div>
+                        
                         </>
                       ) : (
                         <div className="bucketContent">{t("Your_Asset_Bucket_is_empty.")}</div>

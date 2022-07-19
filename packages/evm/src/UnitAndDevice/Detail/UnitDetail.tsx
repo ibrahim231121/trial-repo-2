@@ -3,7 +3,6 @@ import {
   CRXTabs,
   CrxTabPanel,
   CRXButton,
-  CRXAlert,
   CRXToaster,
 } from "@cb/shared";
 import { useHistory } from "react-router";
@@ -14,12 +13,11 @@ import DVRVRX20 from "../../Assets/Images/DVR-VR-X20.png";
 import BC04 from "../../Assets/Images/BC04.png";
 import MASTERDOCK from "../../Assets/Images/Master-Dock.png";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
-import { CRXConfirmDialog } from "@cb/shared";
+import { CRXConfirmDialog, CRXDataTable } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import "./UnitDetail.scss";
 import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
 import { useDispatch } from "react-redux";
-import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../GlobalComponents/Display/TextDisplay";
 import {
@@ -121,7 +119,7 @@ const UnitCreate = (props: historyProps) => {
   const unitID = location.state.unitId;
   const inCarTab: any = location.state.template;
 
-  const tabs = [
+  const tabs1 = [
     { label: "Configuration", index: 0 },
     { label: "Queued Assets", index: 1 },
     { label: "Events", index: 2 },
@@ -129,7 +127,7 @@ const UnitCreate = (props: historyProps) => {
     { label: "Update History", index: 4 }
   ];
 
-  const tabs1 = [
+  const tabs = [
     { label: "Configurations", index: 0 },
     { label: "Devices", index: 1 },
     { label: "Queued Assets", index: 2 }
@@ -378,8 +376,7 @@ const UnitCreate = (props: historyProps) => {
     setHeadCells(headCellsArray);
   };
   return (
-    <div className="UnitDetailMain UnitDetailMainDetail switchLeftComponents">
-      <CRXToaster ref={targetRef} />
+    <div className="UnitDetailMain switchLeftComponents _Unit_Detail_View">
       <div className="unitDetailAction">
         <div className="menuUnitDetail">
           <Menu
@@ -422,7 +419,7 @@ const UnitCreate = (props: historyProps) => {
         </div>
       </div>
 
-      <div className="App crxTabsPermission CrxUnitDetailId">
+      <div className="crxTabsPermission CrxUnitDetailId">
         {primaryDeviceInfo != undefined ? (
           <div className="unitDeviceDetail">
             <div className="uddDashboard">
@@ -451,10 +448,10 @@ const UnitCreate = (props: historyProps) => {
                     className={
                       size < 1540 && resChecker === false
                         ? "pannelBoard pannelBoardHide"
-                        : "pannelBoard"
+                        : "pannelBoard mr-59"
                     }
                   >
-                    <h2>{primaryDeviceInfo.deviceType.toUpperCase()}</h2>
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.deviceType.toUpperCase()}</div>
                     <img
                       className="deviceImage"
                       src={
@@ -473,28 +470,28 @@ const UnitCreate = (props: historyProps) => {
                   <div
                     className={
                       size < 1350 && resChecker === false
-                        ? "pannelBoard pannelBoardHide pannelBoard_2"
-                        : "pannelBoard pannelBoard_2"
+                        ? "pannelBoard pannelBoardHide mr-59"
+                        : "pannelBoard mr-59"
                     }
                   >
-                    <h2>{primaryDeviceInfo.status.toUpperCase()}</h2>
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.status.toUpperCase()}</div>
                     <span className={`pdStatus ${primaryDeviceInfo.status}`}>
                       <i className="fas fa-circle"></i>
                     </span>
                     <p>STATUS</p>
                   </div>
-                  <div className="pannelBoard">
-                    <h2>{primaryDeviceInfo.serialNumber.toUpperCase()}</h2>
+                  <div className="pannelBoard mr-59">
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.serialNumber.toUpperCase()}</div>
                     <span className="noRow"></span>
                     <p>SERIAL NUMBER</p>
                   </div>
-                  <div className="pannelBoard">
-                    <h2>{primaryDeviceInfo.version}</h2>
+                  <div className="pannelBoard mr-59">
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.version}</div>
                     <span className="noRow"></span>
                     <p>CURRENT VERSION</p>
                   </div>
-                  <div className="pannelBoard">
-                    <h2>{stationName.toUpperCase()}</h2>
+                  <div className="pannelBoard mr-59">
+                    <div className="panel_Heading_unitDetail">#01</div>
                     <span className="noRow"></span>
                     <p>STATION</p>
                   </div>
@@ -502,8 +499,8 @@ const UnitCreate = (props: historyProps) => {
                 </div>
 
                 <div className="RightBoard">
-                  <div className="pannelBoard">
-                    <h2>0</h2>
+                  <div className="pannelBoard mr-50">
+                    <div className="panel_Heading_unitDetail">0</div>
                     <span className="pdUpload">
                       <i className="fad fa-sync-alt"></i>
                     </span>
@@ -512,11 +509,11 @@ const UnitCreate = (props: historyProps) => {
                   <div
                     className={
                       size < 1350 && resChecker === true
-                        ? "pannelBoard pannelBoardHide"
-                        : "pannelBoard"
+                        ? "pannelBoard pannelBoardHide mr-50"
+                        : "pannelBoard mr-50"
                     }
                   >
-                    <h2>0</h2>
+                    <div className="panel_Heading_unitDetail">0</div>
                     <span className="noRow"></span>
                     <p>ASSETS</p>
                   </div>
@@ -527,7 +524,7 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard"
                     }
                   >
-                    <h2>{primaryDeviceInfo.assignedTo}</h2>
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.assignedTo}</div>
                     <span className="pdDotted">
                       <i className="fas fa-ellipsis-h"></i>
                     </span>

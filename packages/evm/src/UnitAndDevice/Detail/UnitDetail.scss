@@ -2,10 +2,6 @@
   text-decoration: none;
 }
 
-.unitDeviceDetail {
-  margin-left: 68px;
-  margin-top: 143px;
-}
 iframe {
   display: none;
 }
@@ -14,24 +10,39 @@ iframe {
     background-color: var(--color-333333);
     width: 100%;
     display: flex;
-    // justify-content: space-between;
-    // justify-content: center;
-    // padding: 0 38px 0 45px;
+    justify-content: space-between;
+    height: 130px;
+    padding: 0 50px 0 49px;
     position: relative;
     top: -13px;
     padding-left: 43px;
+    overflow-x: hidden;
   }
   .LeftBoard {
     display: flex;
+    flex: 0 70%;
+    .pannelBoard {
+      &.mr-59 {
+        margin-right: 59px;
+      }
+    }
   }
-  .LeftBoard div:first-child{
-    padding-left: 0px;
-  }
-  .LeftBoardMove {
-    margin-left: -128px;
-  }
+  // .LeftBoard div:first-child{
+  //   padding-left: 0px;
+  // }
+  // .LeftBoardMove {
+  //   margin-left: -128px;
+  // }
   .RightBoard {
     display: flex;
+    flex: 0 30%;
+    justify-content: end;
+    .pannelBoard{
+      &.mr-50 {
+        margin-right: 50px;
+      }
+    }
+    
   }
   .deviceImage {
     height: 35px;
@@ -40,24 +51,25 @@ iframe {
   }
   .pannelBoard {
     text-align: center;
-    margin: 4px 6px 1px 6px;
+    margin: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    // width: 157px;
-    padding-left: 60px;
-    h2 {
+    padding-top: 17px;
+    .panel_Heading_unitDetail {
       color: var(--color-f2f2f2);
       font-size: 20px;
       font-family:var(--base-font-family);
       font-weight: var(--Font-style-normal);
+      padding-bottom: 18px;
     }
     p {
       color: var(--color-f2f2f2);
       font-size: 14px;
       font-family:var(--base-font-family);
       font-weight: var(--Font-style-normal);
+      margin: 12px 0 0 0;
+      white-space: nowrap;
     }
     span {
       display: block;
@@ -79,12 +91,12 @@ iframe {
     }
     .Unregistered {
       i {
-        color: red !important;
+        color: #FFD000 !important;
       }
     }
     .Suspended {
       i {
-        color: blue !important;
+        color: #d1d2d4 !important;
       }
     }
 
@@ -137,10 +149,15 @@ iframe {
     display: block;
     color: var(--color-d1d2d4);
     z-index: 8;
-    right: 17px;
+    right: 0;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    background: #333;
+    height: 128px;
+    width: 40px;
+    line-height: 124px;
+    text-align: center;
   }
   .arrowResponsiveLeftHide {
     display: none;
@@ -172,11 +189,6 @@ iframe {
   .arrowResponsiveHide {
     display: none;
   }
-  .RightBoard {
-    .pannelBoard {
-      // width: 112px;
-    }
-  }
 }
 
 .UnitDetailMain {
@@ -189,7 +201,6 @@ iframe {
     text-transform: uppercase;
   }
   .CrxUnitDetailId {
-    margin-top: 0px !important;
     padding: 0px;
     transition: 1s padding ease-out;
     .unitDeviceDetail {
@@ -211,9 +222,10 @@ iframe {
   }
   .unitDetailAction {
     margin-right: 3px;
-    position: relative;
+    position: absolute;
     z-index: 99999999;
     top: -33px;
+    right:30px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -273,8 +285,20 @@ iframe {
   .crxTabsPermission div[role=tabpanel]::before{
     display: none;
   }
+  .crx-message-alert{
+    display: none;
+  }
+  .crx-group-info-form{
+    padding-top: 0px;
+  }
+  .makeStyles-root {
+    height: 550px;
+  }
+  .UnitDetailMain div#crx-tabpanel-0 {
+    height: 550px;
+  }
 }
-.UnitDetailMainDetail {
+._Unit_Detail_View {
   .rc-menu__arrow {
     display: none;
   }
@@ -301,6 +325,9 @@ iframe {
       width: 52vh;
     }
   }
+  .crxTabsPermission {
+    margin-top: 19px;
+  }
 }
 
 // media query
@@ -313,7 +340,7 @@ iframe {
 @media (max-width: 1200px) {
   .uddDashboard {
     .MainBoard {
-      justify-content: space-evenly;
+      
     }
   }
 }

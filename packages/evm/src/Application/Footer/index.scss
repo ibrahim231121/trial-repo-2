@@ -8,9 +8,11 @@
   align-items: center;
   width: 100%;
   bottom: 10px;
-  font-family: var(--Arial-font-family);
-  z-index: 5;
-  background: var(--color-White);
+  // padding-bottom:35px;
+  // background: var(--color-White);
+  font-family:var(--Arial-font-family);
+  z-index: 2;
+
   i {
     position: absolute;
     right: 16px;
