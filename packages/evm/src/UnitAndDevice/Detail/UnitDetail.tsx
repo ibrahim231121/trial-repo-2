@@ -14,11 +14,6 @@ import DVRVRX20 from "../../Assets/Images/DVR-VR-X20.png";
 import BC04 from "../../Assets/Images/BC04.png";
 import MASTERDOCK from "../../Assets/Images/Master-Dock.png";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
-import {
-  Unit_GET_BY_ID_URL,
-  EDIT_UNIT_URL,
-  BASE_URL_UNIT_SERVICE,
-} from "../../utils/Api/url";
 import { CRXConfirmDialog } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import "./UnitDetail.scss";
@@ -37,6 +32,9 @@ import {
 import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
 import QueuedAsstsDataTable from "./AssetQueuedDataTable";
+import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
+import { GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
+import { Station } from "../../utils/Api/models/StationModels";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -137,70 +135,25 @@ const UnitCreate = (props: historyProps) => {
     { label: "Queued Assets", index: 2 }
   ];
 
-  const [getResponse, res] = useGetFetch<any>(
-    Unit_GET_BY_ID_URL +
-      "/Stations/" +
-      stationID +
-      "/Units/" +
-      unitID +
-      "/GetPrimaryDeviceInfo",
-    {
-      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
-      TenantId: "1",
-    }
-  );
-  const [getconfigTemplateList, configTemplateList] = useGetFetch<any>(
-    BASE_URL_UNIT_SERVICE +
-      "/Stations/" +
-      stationID +
-      "/Units/" +
-      unitID +
-      "/GetConfigurationTemplate",
-    {
-      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
-      TenantId: "1",
-    }
-  );
-
-  const [getstationList, stationList] = useGetFetch<any>(
-    BASE_URL_UNIT_SERVICE +
-      "/Stations/GetAllStationInfo",
-    {
-      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
-      TenantId: "1",
-    }
-  );
-
-
-
-
-  const [getAllDevices, allDevicesList] = useGetFetch<any>(
-    BASE_URL_UNIT_SERVICE +
-      "/Stations/" +
-      stationID +
-      "/Units/" +
-      unitID +
-      "?Page=1&Size=100",
-    {
-      "Content-Type": "application/json",'Authorization': `Bearer ${cookies.get('access_token')}`,
-      TenantId: "1",
-    }
-  );
+  const [devicesList, setDevicesList] = useState<any>();
+  const [stationList, setStationList] = useState<any>();
+  const [configTemplateList, setConfigTemplateList] = useState<any>();
+  const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
 
   React.useEffect(() => {
-    getResponse();
-    getconfigTemplateList();
-    getstationList();
-    getAllDevices();
+    UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/GetPrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
+    UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/GetConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
+    UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "?Page=1&Size=100").then((response:Unit) => setDevicesList(response));
   }, []);
 
   React.useEffect(() => {
     let unitAndDevicesRows: UnitAndDevice[] = [];
     let deviceNames:UnitAndDevice[]=[]
   
-    if (allDevicesList != undefined) {
-      deviceNames = allDevicesList.name
-      unitAndDevicesRows = allDevicesList.devices.map((data: any) => {
+    if (devicesList != undefined) {
+      deviceNames = devicesList.name
+      unitAndDevicesRows = devicesList.devices.map((data: any) => {
         return { id: data.id,deviceNames:deviceNames, deviceTypes:data.publicKey.format,deviceSerialNumbers:data.identifier,
           deviceVersions:data.version.current.major+"."+data.version.current.minor+"."+data.version.current.build+"."+data.version.current.revision
          };
@@ -208,7 +161,7 @@ const UnitCreate = (props: historyProps) => {
 
       setRows(unitAndDevicesRows);
     }
-  }, [allDevicesList]);
+  }, [devicesList]);
 
   React.useEffect(() => {
     showSave();
@@ -225,8 +178,8 @@ const UnitCreate = (props: historyProps) => {
   });
 
   React.useEffect(() => {
-    if (res !== undefined && configTemplateList !== undefined &&  stationList !== undefined) {
-      SetStationName(res.station)
+    if (primaryDeviceInfo !== undefined && configTemplateList !== undefined &&  stationList !== undefined) {
+      SetStationName(primaryDeviceInfo.station)
       let template: any = [{ displayText: "None", value: "0" }];
       configTemplateList.map((x: any) => {
         template.push({ displayText: x.name, value: x.id });
@@ -239,10 +192,10 @@ const UnitCreate = (props: historyProps) => {
         });
 
       setUnitInfo({
-        name: res.name,
-        description: res.description,
-        groupName: res.triggerGroup,
-        configTemp: res.configTemplateId,
+        name: primaryDeviceInfo.name,
+        description: primaryDeviceInfo.description,
+        groupName: primaryDeviceInfo.triggerGroup,
+        configTemp: primaryDeviceInfo.configTemplateId,
         configTemplateList: template,
         stationList: stationlst,
         stationId: stationID
@@ -251,12 +204,12 @@ const UnitCreate = (props: historyProps) => {
         enterPathActionCreator({
           val:
             "Unit Detail: " +
-            res.name.charAt(0).toUpperCase() +
-            res.name.slice(1),
+            primaryDeviceInfo.name.charAt(0).toUpperCase() +
+            primaryDeviceInfo.name.slice(1),
         })
       );
     }
-  }, [res, configTemplateList]);
+  }, [primaryDeviceInfo, configTemplateList]);
 
   const onChangeGroupInfo = (
     name: string,
@@ -280,13 +233,13 @@ const UnitCreate = (props: historyProps) => {
 
   const redirectPage = () => {
     var unitInfo_temp: UnitInfoModel = {
-      name: res === undefined ? "" : res.name,
-      description: res === undefined ? "" : res.description,
-      groupName: res === undefined ? "" : res.triggerGroup,
-      configTemp: res === undefined ? "" : res.configTemplateId, // none
+      name: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.name,
+      description: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.description,
+      groupName: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.triggerGroup,
+      configTemp: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.configTemplateId, // none
       configTemplateList: configTemplateList,
       stationList: stationList,
-      stationId: res === undefined ? "" : stationID
+      stationId: primaryDeviceInfo === undefined ? "" : stationID
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -300,13 +253,13 @@ const UnitCreate = (props: historyProps) => {
 
   const showSave = () => {
     let unitInfo_temp: UnitInfoModel = {
-      name: res === undefined ? "" : res.name,
-      description: res === undefined ? "" : res.description,
-      groupName: res === undefined ? "" : res.triggerGroup,
-      configTemp: res === undefined ? "" : res.configTemplateId,
-      configTemplateList: res === undefined ? [] : unitInfo.configTemplateList,
-      stationList: res === undefined ? [] : unitInfo.stationList,
-      stationId: res === undefined ? "": stationID
+      name: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.name,
+      description: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.description,
+      groupName: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.triggerGroup,
+      configTemp: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.configTemplateId,
+      configTemplateList: primaryDeviceInfo === undefined ? [] : unitInfo.configTemplateList,
+      stationList: primaryDeviceInfo === undefined ? [] : unitInfo.stationList,
+      stationId: primaryDeviceInfo === undefined ? "": stationID
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -326,43 +279,24 @@ const UnitCreate = (props: historyProps) => {
 
   const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {
     //let editCase = !isNaN(+id);
-    let method = "PUT"; //: "POST";
-    var unitURL =
-      EDIT_UNIT_URL +
-      "/Stations/" +
-      stationID +
-      "/Units/" +
-      unitID +
-      "/ChangeUnitInfo";
+    var url = "/Stations/" + stationID + "/Units/" + unitID + "/ChangeUnitInfo";
 
-    let unitData = { 
+    let unitData: UnitTemp = { 
       name: unitInfo.name,
       description: unitInfo.description,
       triggerGroup: unitInfo.groupName,
       unitConfigurationTemplate: unitInfo.configTemp,
       stationId: unitInfo.stationId
     };
-    let status = 0;
 
-   
-    fetch(unitURL, {
-      method: method,
-      headers: {
-        TenantId: "1",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(unitData),
+    UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
+      targetRef.current.showToaster({message: "Unit Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+      setIsSaveButtonDisabled(true);
+      SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText)    
     })
-      .then((res) => {
-        if (res.status == 204) {
-          targetRef.current.showToaster({message: "Unit Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
-          setIsSaveButtonDisabled(true);
-          SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText)
-       
-        }
-        status = res.status;
-        return res.text();
-      })
+    .catch(function (error) {
+      return error;
+    })
       
   };
   const alertMsgDiv = showSuccess ? " " : "hideMessageGroup";
@@ -489,7 +423,7 @@ const UnitCreate = (props: historyProps) => {
       </div>
 
       <div className="App crxTabsPermission CrxUnitDetailId">
-        {res != undefined ? (
+        {primaryDeviceInfo != undefined ? (
           <div className="unitDeviceDetail">
             <div className="uddDashboard">
               <div
@@ -520,19 +454,19 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard"
                     }
                   >
-                    <h2>{res.deviceType.toUpperCase()}</h2>
+                    <h2>{primaryDeviceInfo.deviceType.toUpperCase()}</h2>
                     <img
                       className="deviceImage"
                       src={
-                        res.deviceType === "BC03"
+                        primaryDeviceInfo.deviceType === "BC03"
                           ? BC03
-                          : res.deviceType === "BC04"
+                          : primaryDeviceInfo.deviceType === "BC04"
                           ? BC04
-                          : res.deviceType === "MasterDock"
+                          : primaryDeviceInfo.deviceType === "MasterDock"
                           ? MASTERDOCK
                           : DVRVRX20
                       }
-                      alt={res.deviceType}
+                      alt={primaryDeviceInfo.deviceType}
                     />
                     <p>PRIMARY UNIT DEVICE</p>
                   </div>
@@ -543,19 +477,19 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard pannelBoard_2"
                     }
                   >
-                    <h2>{res.status.toUpperCase()}</h2>
-                    <span className={`pdStatus ${res.status}`}>
+                    <h2>{primaryDeviceInfo.status.toUpperCase()}</h2>
+                    <span className={`pdStatus ${primaryDeviceInfo.status}`}>
                       <i className="fas fa-circle"></i>
                     </span>
                     <p>STATUS</p>
                   </div>
                   <div className="pannelBoard">
-                    <h2>{res.serialNumber.toUpperCase()}</h2>
+                    <h2>{primaryDeviceInfo.serialNumber.toUpperCase()}</h2>
                     <span className="noRow"></span>
                     <p>SERIAL NUMBER</p>
                   </div>
                   <div className="pannelBoard">
-                    <h2>{res.version}</h2>
+                    <h2>{primaryDeviceInfo.version}</h2>
                     <span className="noRow"></span>
                     <p>CURRENT VERSION</p>
                   </div>
@@ -593,7 +527,7 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard"
                     }
                   >
-                    <h2>{res.assignedTo}</h2>
+                    <h2>{primaryDeviceInfo.assignedTo}</h2>
                     <span className="pdDotted">
                       <i className="fas fa-ellipsis-h"></i>
                     </span>

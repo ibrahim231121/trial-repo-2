@@ -3,7 +3,6 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
-import { DEVICETYPE_GET_URL, STATION } from "../../../utils/Api/url";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { getCountryStateAsync, getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
@@ -21,9 +20,12 @@ import {
 import "./station.scss";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import Cookies from 'universal-cookie';
-import { ConfigurationTemplates, TypeOfDevice } from "./DefaultUnitTemplate/DefaultUnitTemplateModel";
+import { TypeOfDevice } from "./DefaultUnitTemplate/DefaultUnitTemplateModel";
 import { useTranslation } from 'react-i18next';
 import InputShowHide from "../../../utils/InputShowHide/InputShowHide";
+import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { ConfigurationTemplate, DeviceType } from "../../../utils/Api/models/UnitModels";
+import { Station } from "../../../utils/Api/models/StationModels";
 
 type StationFormType = {
   Name: string;
@@ -37,7 +39,7 @@ type StationFormType = {
   BlackboxRetentionPolicy?: AutoCompleteOptionType;
   SSId?: string;
   Password?: string;
-  ConfigurationTemplate: ConfigurationTemplates[] | any[];
+  ConfigurationTemplate: ConfigurationTemplate[] | any[];
 };
 
 interface AutoCompleteOptionType {
@@ -74,7 +76,7 @@ const StationDetail: React.FC = () => {
     React.useState<string>(
       t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
     );
-  const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<TypeOfDevice[]>([]);
+  const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<DeviceType[]>([]);
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
   const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
   const [expanded, isExpaned] = React.useState("panel1");
@@ -151,41 +153,40 @@ const StationDetail: React.FC = () => {
 
   React.useEffect(() => {
     if (!isAddCase) {
-      const url = `${STATION}/${id}`;
-      stationService(url, "GET")
-        .then((res) => {
-          if (res.ok) return res.json();
-        })
-        .then((station) => {
-          const _station: StationFormType = {
-            Name: station.name,
-            StreetAddress: station.address.street,
-            Phone: station.address.phone,
-            Passcode: station.passcode,
-            Location: {
-              latitude: station.geoLocation.latitude,
-              longitude: station.geoLocation.longitude,
-            },
-            PolicyId: station.policies[0].id,
-            RetentionPolicy: {
-              id: station.policies[0].retentionPolicyId,
-            },
-            UploadPolicy: {
-              id: station.policies[0].uploadPolicyId,
-            },
-            BlackboxRetentionPolicy: {
-              id: station.policies[0].blackboxRetentionPolicyId,
-            },
-            SSId: station.ssid,
-            Password: station.password,
-            ConfigurationTemplate: station.policies[0].configurationTemplates
-          };
-          setRetentionAutoCompleteValue([{ id: station.policies[0].retentionPolicyId }]);
-          setUploadAutoCompleteValue([{ id: station.policies[0].uploadPolicyId }]);
-          setBlackBoxAutoCompleteValue([{ id: station.policies[0].blackBoxAutoCompleteValue }]);
-          setStationPayload(_station);
-          dispatch(enterPathActionCreator({ val: _station.Name }));
-        });
+      const url1 = `/Stations/${id}`;
+      UnitsAndDevicesAgent.getStation(url1)
+      .then((response:Station) => {
+        return response
+      })
+      .then((station) => {
+        const _station: StationFormType = {
+          Name: station.name,
+          StreetAddress: station.address.street,
+          Passcode: station.passcode,
+          Location: {
+            latitude: station.geoLocation.latitude,
+            longitude: station.geoLocation.longitude,
+          },
+          PolicyId: station.policies[0].id,
+          RetentionPolicy: {
+            id: String(station.policies[0].retentionPolicyId),
+          },
+          UploadPolicy: {
+            id: String(station.policies[0].uploadPolicyId),
+          },
+          BlackboxRetentionPolicy: {
+            id: String(station.policies[0].blackboxRetentionPolicyId),
+          },
+          SSId: station.sSID,
+          Password: station.password,
+          ConfigurationTemplate: station.policies[0].configurationTemplates
+        };
+        setRetentionAutoCompleteValue([{ id: _station.RetentionPolicy?.id }]);
+        setUploadAutoCompleteValue([{ id: _station.UploadPolicy?.id }]);
+        setBlackBoxAutoCompleteValue([{ id: _station.BlackboxRetentionPolicy?.id }]);
+        setStationPayload(_station);
+        dispatch(enterPathActionCreator({ val: _station.Name }));
+      });
     }
   }, [isAddCase]);
 
@@ -268,7 +269,8 @@ const StationDetail: React.FC = () => {
 
   const errorHandler = (param: any) => {
     if (param !== undefined) {
-      let error = JSON.parse(param);
+      let error = param;
+      console.error("Error ", error)
       if (error.errors !== undefined) {
         if (
           error.errors.Passcode !== undefined &&
@@ -324,7 +326,8 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
-    let body = {
+    let body : Station = {
+      id: 0,
       name: values.Name,
       address: {
         street: values.StreetAddress,
@@ -337,56 +340,45 @@ const StationDetail: React.FC = () => {
       units: [],
       policies: [
         {
-          Id: values.PolicyId,
-          RetentionPolicyId: values.RetentionPolicy?.id,
-          BlackboxRetentionPolicyId: values.BlackboxRetentionPolicy?.id,
-          UploadPolicyId: values.UploadPolicy?.id,
-          ConfigurationTemplates: values.ConfigurationTemplate
+          id: values.PolicyId,
+          retentionPolicyId: Number(values.RetentionPolicy?.id),
+          blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
+          uploadPolicyId: Number(values.UploadPolicy?.id),
+          configurationTemplates: values.ConfigurationTemplate?? []
         }
       ],
-      passcode: values.Passcode,
-      SSId: values.SSId,
-      password: values.Password
+      passcode: values.Passcode?? "",
+      sSID: values.SSId?? ""
     };
     /**
      * * Due To Validation On DeviceType.
      */
-    body.policies[0].ConfigurationTemplates = body.policies[0].ConfigurationTemplates.map((obj: any) => {
+    body.policies[0].configurationTemplates = body.policies[0].configurationTemplates.map((obj: any) => {
       return {
         ...obj, typeOfDevice: { id: obj.typeOfDevice.id }
       }
     });
     if (isAddCase) {
-      stationService(STATION, "POST", body)
-        .then((res: any) => {
-          if (res.ok) {
-            setSuccess(true);
-            setTimeout(() => navigateToStations(), 3000);
-          } else return res.text();
-        })
-        .then((message) => {
-          errorHandler(message);
-        })
-        .catch((err: any) => {
-          setError(true);
-          console.error(err);
-        });
+      UnitsAndDevicesAgent.addStation(body).then((response: number)=>{
+        setSuccess(true);
+        setTimeout(() => navigateToStations(), 3000);
+      })
+      .catch((e:any) => {
+        errorHandler(e.response.data);
+        setError(true);
+        console.error(e);
+      });
     } else {
-
-      stationService(`${STATION}/${id}`, "PUT", body)
-        .then((res: any) => {
-          if (res.ok) {
-            setSuccess(true);
-            setTimeout(() => navigateToStations(), 3000);
-          } else return res.text();
-        })
-        .then((message) => {
-          errorHandler(message);
-        })
-        .catch((err: any) => {
-          setError(true);
-          console.error(err);
-        });
+      body.id = Number(id);
+      UnitsAndDevicesAgent.updateStation(`/Stations/${id}`,body).then(()=>{
+        setSuccess(true);
+        setTimeout(() => navigateToStations(), 3000);
+      })
+      .catch((e:any) => {
+        errorHandler(e.response.data);
+        setError(true);
+        console.error(e);
+      });
     }
     actions.setSubmitting(false);
   };
@@ -431,9 +423,9 @@ const StationDetail: React.FC = () => {
   });
 
   const getDeviceTypeRecord = () => {
-    stationService(DEVICETYPE_GET_URL, "GET")
-      .then((res) => {
-        if (res.ok) return res.json();
+    UnitsAndDevicesAgent.getAllDeviceTypes()
+      .then((response:DeviceType[]) => {
+        return response
       })
       .then((data) => {
         setDeviceTypeCollection(data);
@@ -446,7 +438,7 @@ const StationDetail: React.FC = () => {
 
   const fillDefaultUnitTemplateSelectBoxValues = () => {
     let stateObjectArray = [];
-    if ((Object.keys(stationPayload.ConfigurationTemplate).length > 0)) {
+    if ((stationPayload.ConfigurationTemplate) && (Object.keys(stationPayload.ConfigurationTemplate).length > 0)) {
       for (const x of stationPayload.ConfigurationTemplate) {
         stateObjectArray.push({ deviceId: x.typeOfDevice.id, templateId: x.id });
       }

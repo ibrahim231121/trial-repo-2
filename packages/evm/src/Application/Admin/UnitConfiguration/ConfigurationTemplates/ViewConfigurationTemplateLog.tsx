@@ -4,7 +4,6 @@ import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
-import { BASE_URL_UNIT_SERVICE } from '../../../../utils/Api/url'
 import { getTemplateConfigurationLogsAsync } from "../../../../Redux/TemplateConfiguration";
 import { RootState } from "../../../../Redux/rootReducer";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';

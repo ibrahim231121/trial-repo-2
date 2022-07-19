@@ -12,7 +12,6 @@ import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import anchorDisplay from "../../../../GlobalComponents/Display//AnchorDisplay";
 import { RootState } from "../../../../Redux/rootReducer";
 import "./ConfigurationTemplate.scss";
-import { DEVICETYPE_GET_URL } from "../../../../utils/Api/url";
 import { CRXButton } from "@cb/shared";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import ConfigTemplateActionMenu from "./ConfigTemplateActionMenu";

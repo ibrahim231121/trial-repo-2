@@ -3,10 +3,12 @@ import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
 import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, EvdenceCategoryAssignment, Evidence, ExtendRetention, Note, TimelinesSync } from './models/EvidenceModels';
-import { EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
+import { BASE_URL_UNIT_SERVICES, EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
+import { ConfigurationTemplate, ConfigurationTemplateLogs, DefaultConfigurationTemplate, DefaultUnitTemplate, DeviceConfigurationTemplate, DeviceType, GetPrimaryDeviceInfo, Unit, UnitInfo, UnitTemp, UnitTemplateConfigurationInfo } from './models/UnitModels';
+import { Station } from './models/StationModels';
 const cookies = new Cookies();
 
 let config = {
@@ -26,9 +28,7 @@ axios.interceptors.response.use(async response => {
         return await Promise.reject(ex);
     }
 }, async error => {
-    if (error.response.status == 400) {
-        return Promise.reject(error);
-    }
+    return Promise.reject(error);
 })
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
@@ -43,9 +43,6 @@ const requests = {
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url),
-    getForms: () => requests.get<Forms[]>(SETUP_CONFIGURATION_SERVICE_URL, '/Forms'),
-    getCategory: (id: string) => requests.get<Category>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`),
-    create: (category: Category) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, '/CarPlates', category),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences'),
@@ -72,4 +69,28 @@ export const EvidenceAgent = {
 
 export const AuthenticationAgent = {
     getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'')
+}
+
+export const UnitsAndDevicesAgent = {
+    getAllUnits: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url),
+    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url),
+    getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url),
+    getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url),
+    changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body),
+    deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url),
+    getUnitInfo: () => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, "/Stations/0/Units/getunitInfo?Page=1&Size=100"),
+    getAllStations: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url),
+    getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url),
+    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo"+url),
+    addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body),
+    updateStation: (url: string, body: Station) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body),
+    getTemplateConfiguration: (url: string) => requests.get<DefaultConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url),
+    getAllTemplate: () => requests.get<ConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates?Size=100&Page=1"),
+    addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body),
+    changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body),
+    getAllDeviceConfigurationTemplate: () => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100"),
+    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetTemplateConfigurationLogs/"+url),
+    deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/"+url),
+    getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100"),
+    postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body),
 }

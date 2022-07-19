@@ -12,7 +12,6 @@ import BC03LTE from "../unitSchemaBCO3Lte.json";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip, CRXToaster, CRXAlert } from "@cb/shared";
-import { BASE_URL_UNIT_SERVICE } from '../../utils/Api/url'
 import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
 import { CRXTitle } from "@cb/shared";
@@ -22,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
+import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
+import { ConfigurationTemplate, DefaultConfigurationTemplate } from "../../utils/Api/models/UnitModels";
 
 const cookies = new Cookies();
 
@@ -499,25 +500,17 @@ const CreateTemplate = (props: any) => {
 
 
   const loadData = async () => {
-    const requestOptions = {
-      method: "GET",
-      headers: { "Content-Type": "application/json", TenantId: "1" },
-    };
-
-    const unitDataResponse = await fetch(
-      `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.name}`,
-      requestOptions
-    );
-
-    if (unitDataResponse.ok) {
-
-      const response = await unitDataResponse.json();
-      setUnitData(response.templateData); // If we get this it puts in the values for the forms !!!!
-      setDataFetched(true);
+    const url = `/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.name}`;
+    UnitsAndDevicesAgent.getTemplateConfiguration(url)
+    .then((response:DefaultConfigurationTemplate) => 
+    {
+      setUnitData(response.templateData) // If we get this it puts in the values for the forms !!!!
+      setDataFetched(true)
       if (historyState.isclone !== true) {
         setEditCase(true)
       }
     }
+    );
   };
 
   function handleChange(event: any, newValue: number) {
@@ -611,80 +604,47 @@ const CreateTemplate = (props: any) => {
     });
 
     var stationId = Initial_Values.find(x => x.key == "station").value;
-    const body = {
+    let body: ConfigurationTemplate = {
+      id: 0,
       name: templateNames,
-      isDefault: true, //added because of removal of defaultTemplate
       fields: fields,
-      valueType: "1",
       stationId: stationId,
       typeOfDevice: { id: historyState.deviceId },
       // sequence:
     };
     if (editCase == false) {
-
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          TenantId: "1",
-          'Authorization': `Bearer ${cookies.get('access_token')}`
-        },
-        body: JSON.stringify(body),
-      };
-      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates`;
-      fetch(url, requestOptions)
-        .then((response: any) => {
-          if (response.ok) {
-
-            response.json().then((res: number) => {
-              if (res > 0) {
-                history.push('/admin/unitanddevices/createtemplate/template', { id: res, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
-                history.go(0)
-                resetForm()
-              }
-            });
-            targetRef.current.showToaster({ message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true });
-
-          }
-          else if (response.status == 409) {
-            targetRef.current.showToaster({ message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true });
-          }
-          else {
-            throw new Error(response.statusText);
-          }
-        })
-        .catch((err: any) => {
-          // setError(true);
-          console.error(err);
-        });
+      UnitsAndDevicesAgent.addTemplateConfiguration(body).then((response: number)=>{
+        if (response > 0) {
+          history.push('/admin/unitanddevices/createtemplate/template', { id: response, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+          history.go(0)
+          resetForm()
+        }
+        targetRef.current.showToaster({ message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true });
+      })
+      .catch((e:any) => {
+        if (e.request.status == 409) {
+          targetRef.current.showToaster({ message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true });
+        }
+        else{
+          console.error(e.message);
+          return e;
+        }
+      })
     }
 
     else {
-      const requestOptions = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          TenantId: "1",
-          'Authorization': `Bearer ${cookies.get('access_token')}`
-        },
-        body: JSON.stringify(body),
-      };
-      const url = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
-      fetch(url, requestOptions)
-        .then((response: any) => {
-          if (response.ok) {
-            setDataFetched(false);
-            targetRef.current.showToaster({ message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true });
-            loadData();
-            resetForm();
-          } else {
-            throw new Error(response.statusText);
-          }
-        })
-        .catch((err: any) => {
-          // setError(true);
-          console.error(err);
-        });
+      body.id = historyState.id;
+      const url = `/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
+      UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
+        setDataFetched(false);
+        targetRef.current.showToaster({ message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true });
+        loadData();
+        resetForm();
+      })
+      .catch((e:any) => {
+        console.error(e);
+        throw new Error(e.statusText);
+      })
     }
   };
 

@@ -4,12 +4,14 @@ import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
 import { HeadCellProps } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import DropdownComponent from './DropdownComponent';
 import http from '../../../../http-common';
-import { DEVICETYPE_GET_URL, STATION_INFO_GET_URL, DEFAULT_UNIT_TEMPLATE_END_POINT } from '../../../../utils/Api/url';
 import { StationInfo, TypeOfDevice } from './DefaultUnitTemplateModel';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CRXAlert } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
+import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
+import { DeviceType } from '../../../../utils/Api/models/UnitModels';
+import { Station } from '../../../../utils/Api/models/StationModels';
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -18,7 +20,7 @@ const DefaultUnitTemplate: React.FC = () => {
     const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
     const [stationDataTableRow, setStationDataTableRow] = React.useState<StationInfo[]>([]);
     const [headCellState, setHeadCellState] = React.useState<HeadCellProps[]>([]);
-    const [deviceTypeCollection, setDeviceType] = React.useState<TypeOfDevice[]>([]);
+    const [deviceTypeCollection, setDeviceType] = React.useState<DeviceType[]>([]);
     const [stationCollection, setStationCollection] = React.useState<any[]>([]);
     const [disableSaveBtn, setDisableSaveBtn] = React.useState<boolean>(true);
     const [isStateChanged, setIsStateChanged] = React.useState<boolean>(false);
@@ -58,7 +60,7 @@ const DefaultUnitTemplate: React.FC = () => {
             }
             for (const headerColObj of headerColumnCollection) {
                 const headCellObject: HeadCellProps = {
-                    label: headerColObj.name,
+                    label: headerColObj.name?? "",
                     id: headerColObj.dropdown_policy_id,
                     align: 'center',
                     dataComponent: (e: any, rowId: any) => headerColObj.type === 'text' ? textDisplay(e, "") : dropdownDataComponent(e, rowId, headerColObj.dropdown_policy_id, configurationTemplatesFromStore, selectBoxValues),
@@ -92,16 +94,20 @@ const DefaultUnitTemplate: React.FC = () => {
     }, [deviceTypeCollection, selectBoxValues, stationCollection]);
 
     const getDeviceTypeRecord = () => {
-        http.get<TypeOfDevice[]>(DEVICETYPE_GET_URL).then(({ data }) => setDeviceType(data))
-            .catch((error) => {
-                console.error(error.response.data);
-            });
+        UnitsAndDevicesAgent.getAllDeviceTypes()
+        .then((response:DeviceType[]) => {
+            setDeviceType(response)
+        })
+        .catch((error: any) => {
+            console.error(error.response.data);
+        });
     }
 
     const getAllStationRecord = () => {
-        http.get(STATION_INFO_GET_URL).then(({ data }) => {
-            setStationCollection(data);
-            let stationInfo = data.map((x: any) => {
+        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`)
+        .then((response:Station[]) => {
+            setStationCollection(response);
+            let stationInfo = response.map((x: any) => {
                 return {
                     id: x.id,
                     name: x.name
@@ -109,9 +115,9 @@ const DefaultUnitTemplate: React.FC = () => {
             }) as StationInfo[];
             setStationDataTableRow(stationInfo)
         })
-            .catch((error) => {
-                console.error(error.response.data);
-            });
+        .catch((error: any) => {
+            console.error(error.response.data);
+        });
     }
 
     const manipulateSelectBoxValueResponse = (e: any, _stationId: number) => {
@@ -157,15 +163,13 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const saveBtnClickHandler = () => {
-        const _body = JSON.stringify(selectBoxValues);
-        http.post(DEFAULT_UNIT_TEMPLATE_END_POINT, _body).then((response) => {
-            console.info(response);
+        UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(()=>{
             setSuccess(true);
         })
-            .catch((error) => {
-                setError(true);
-                console.error(error.response.data);
-            });
+        .catch((error:any) => {
+            setError(true);
+            console.error(error.response.data);
+        });
     }
 
     const cancelBtnHandler = () => {

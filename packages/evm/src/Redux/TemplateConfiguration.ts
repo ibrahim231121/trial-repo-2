@@ -1,22 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { DEVICETYPE_GET_URL, TEMPLATE_CONFIGURATION_GET_URL, TEMPLATE_CONFIGURATION_LOG_GET_URL } from '../utils/Api/url'
-import { TEMPLATE_CONFIGURATION_DELETE_URL } from '../utils/Api/url'
 import Cookies from 'universal-cookie';
+import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
+import { ConfigurationTemplateLogs, DeviceConfigurationTemplate, DeviceType } from '../utils/Api/models/UnitModels';
 
 const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
     'GetAllConfiguration',
     async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
-        };
-
-        const resp = await fetch(TEMPLATE_CONFIGURATION_GET_URL, requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
+        return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate().then((response:DeviceConfigurationTemplate[]) => response);
     }
 );
 
@@ -24,16 +15,7 @@ export const getTemplateConfigurationLogsAsync: any = createAsyncThunk(
     'GetTemplateConfigurationLogs',
     async (args: any) => {
         console.log(args)
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-        };
-
-        const resp = await fetch(TEMPLATE_CONFIGURATION_LOG_GET_URL+ args , requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
+        return await UnitsAndDevicesAgent.getTemplateConfigurationLogs(args).then((response:ConfigurationTemplateLogs[]) => response);
     }
 );
 
@@ -42,16 +24,7 @@ export const getTemplateConfigurationLogsAsync: any = createAsyncThunk(
 export const getDeviceTypeInfoAsync: any = createAsyncThunk(
     'GetAllDeviceConfiguration',
     async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-        };
-
-        const resp = await fetch(DEVICETYPE_GET_URL, requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
+        return await UnitsAndDevicesAgent.getAllDeviceTypes().then((response:DeviceType[]) => response);
     }
 );
 
@@ -59,18 +32,13 @@ export const getDeviceTypeInfoAsync: any = createAsyncThunk(
 export const deletetemplate: any = createAsyncThunk(
     'Delete',
     async (args: any) => {
-        const requestOptions = {
-            method: 'Delete',
-            headers: {
-                'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}`
-            },
-        };
-        const resp = await fetch(TEMPLATE_CONFIGURATION_DELETE_URL + args.id, requestOptions);
-        if (resp.ok) {
+        UnitsAndDevicesAgent.deleteConfigurationTemplate(args.id)
+        .then(() => {
             window.location.reload();
-            //return true;
-            // args.dispatch(getUsersInfoAsync());
-        }
+        })
+        .catch(function (error) {
+            return error;
+        });
     }
 );
 

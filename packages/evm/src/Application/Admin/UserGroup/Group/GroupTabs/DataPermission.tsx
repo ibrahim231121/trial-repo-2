@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { CRXMultiSelectBoxAutocomplete, CRXRows, CRXColumn, CRXSelectBox, CRXButton } from "@cb/shared";
-import { STATION_INFO_GET_URL, CATEGORY_INFO_GET_URL } from '../../../../../utils/Api/url'
+import { CATEGORY_INFO_GET_URL } from '../../../../../utils/Api/url'
 import {
     defaultPermissionType,
     defaultPermissionValue,
@@ -14,6 +14,7 @@ import "./dataPermission.scss"
 import { DataPermissionModel } from "..";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useTranslation } from "react-i18next";
+import { UnitsAndDevicesAgent } from "../../../../../utils/Api/ApiAgent";
 
 
 type infoProps = {
@@ -161,14 +162,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }
 
     const loadStations = async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-        };
-        const stationResponse = await fetch(STATION_INFO_GET_URL, requestOptions);
-
-        if (stationResponse.ok) {
-            const response: StationResponse[] = await stationResponse.json();
+        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`)
+        .then((response) => {
             if (response && response.length > 0) {
                 
                 
@@ -185,7 +180,10 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 setStations(stations);
                 LoadStationPermissionsByDb(stations);
             }
-        }
+        })
+        .catch((error: any) => {
+            console.error(error.response.data);
+        });
     }
 
     const addDefaultPermission = () => {

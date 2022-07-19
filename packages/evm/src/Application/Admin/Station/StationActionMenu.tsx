@@ -8,11 +8,13 @@ import './StationActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
 
-import { BASE_URL_UNIT_SERVICE } from '../../../utils/Api/url'
+import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url'
 import { getStationsInfoAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
+import { UnitsAndDevicesAgent } from '../../../utils/Api/ApiAgent';
+import { Unit } from '../../../utils/Api/models/UnitModels';
 import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { EvidenceAgent } from '../../../utils/Api/ApiAgent';
 
@@ -77,13 +79,9 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   };
 
   const isStationExistsInUnits = async () => {
-    const url = BASE_URL_UNIT_SERVICE + '/Stations/' + `${row.id}` + '/Units'
+    const url = '/Stations/' + `${row.id}` + '/Units'
 
-    const res = await fetch(url, {
-      method: 'Get',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' },
-    })
-    var response = await res.json();
+    var response = await UnitsAndDevicesAgent.getAllUnits(url).then((response:Unit[]) => response);
     if (response != null && response.length > 0)
       return response.length
     else
@@ -96,29 +94,21 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   }
 
   const deleteStation = async () => {
-    const url = BASE_URL_UNIT_SERVICE + '/Stations/' + `${row.id}`
-    const res = await fetch(url, {
-      method: 'Delete',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-    })
-      .then(function (res) {
-        if (res.ok) {
-          setIsOpenDelete(false);
-          toasterRef.current.showToaster({
-            message: t("Station_deleted"), variant: "success", duration: 7000, clearButtton: true
-          });
-          dispatch(getStationsInfoAsync());
-        }
-        else //if (res.status == 500) {
-          setAlert(true);
-        setMessage(
-          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-        );
-      })
-      .catch(function (error) {
-        return error;
+    const url = '/Stations/' + `${row.id}`
+    UnitsAndDevicesAgent.deleteUnit(url).then(() => {
+      setIsOpenDelete(false);
+      toasterRef.current.showToaster({
+        message: t("Station_deleted"), variant: "success", duration: 7000, clearButtton: true
       });
-
+      dispatch(getStationsInfoAsync());
+    })
+    .catch(function (error) {
+      setAlert(true);
+      setMessage(
+        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+      );
+      return error;
+    });
   }
 
   const onConfirm = async () => {

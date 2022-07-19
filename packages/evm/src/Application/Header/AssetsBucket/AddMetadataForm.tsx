@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  EVIDENCE_ASSET_DATA_URL,
-  STATION_INFO_DATA_PERMISSION_GET_URL,
+  EVIDENCE_ASSET_DATA_URL
 } from "../../../utils/Api/url";
 import { useDispatch, useSelector } from "react-redux";
 import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
@@ -14,6 +13,8 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
+import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { Station } from "../../../utils/Api/models/StationModels";
 import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 interface Props {
@@ -301,11 +302,7 @@ const AddMetadataForm: React.FC<Props> = ({
   }, [uploadFile]);
 
   const fetchStation = async () => {
-    const res = await fetch(STATION_INFO_DATA_PERMISSION_GET_URL, {
-      method: "GET",
-      headers: { "Content-Type": "application/json", TenantId: "1" },
-    });
-    var response = await res.json();
+    var response = await UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => response);
     var stationNames = response.map((x: any, i: any) => {
       let j: NameAndValue = {
         id: x.id,

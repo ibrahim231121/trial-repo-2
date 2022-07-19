@@ -1,3 +1,5 @@
+import { History } from "./CommonModels"
+
 export interface Policy {
     id: number,
     type: string,

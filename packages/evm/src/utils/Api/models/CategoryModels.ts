@@ -1,3 +1,5 @@
+import { History } from "./CommonModels"
+
 export interface Category {
     id: number,
     name: string,
@@ -34,10 +36,4 @@ export interface Display {
     Caption: string,
     Width: number,
     Order: number
-}
-
-export interface History {
-    CreatedOn: string,
-    ModifiedOn: string,
-    Version: string
 }
