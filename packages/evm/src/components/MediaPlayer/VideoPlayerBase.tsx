@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect, SyntheticEvent, useRef } from "react";
 import VideoScreen from "./VideoScreen";
 import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
@@ -67,7 +67,7 @@ type DurationFinderModel = {
   setmaxminendpoint: any
   updateVideoSelection: boolean
   timelinedetail: Timeline[]
-  settimelinedetail: any 
+  settimelinedetail: any
   timelineSyncHistory: TimelineSyncHistoryMain[]
   setTimelineSyncHistory: any
   timelineSyncHistoryCounter: number
@@ -136,7 +136,7 @@ function secondsToHms(d: number) {
 
   let hDisplay = h > 0 ? h + " : " : "00:";
   let mDisplay = m >= 0 ? ('00' + m).slice(-2) + ":" : "";
-  let sDisplay = s >= 0 ? ('00' + s).slice(-2):"";
+  let sDisplay = s >= 0 ? ('00' + s).slice(-2) : "";
   return hDisplay + mDisplay + sDisplay;
 }
 function padTo2Digits(num: number) {
@@ -146,7 +146,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
 async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
-  const {data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection} = TimelineGeneratorModel
+  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
@@ -237,9 +237,9 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   await settimelinedetail(rowdetail)
   setupdateVideoSelection(false)
 }
-async function Durationfinder(DurationFinderModel:DurationFinderModel) {
-  const {Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection} = DurationFinderModel
-  
+async function Durationfinder(DurationFinderModel: DurationFinderModel) {
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection } = DurationFinderModel
+
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
   let maximum_endpoint = new Date(data[0].recording.ended).getTime() + timeOffset;
@@ -263,20 +263,20 @@ async function Durationfinder(DurationFinderModel:DurationFinderModel) {
   //first entity is max second is min
   let maxminarray: MaxMinEndpoint = { Min_Start_point: minimum_startpont, Max_end_point: maximum_endpoint }
   setmaxminendpoint(maxminarray);
-  await TimelineData_generator({ 
-      data,
-      minstartpoint: minimum_startpont,
-      duration: finalduration,
-      updateVideoSelection,
-      timelinedetail, 
-      settimelinedetail, 
-      timelineSyncHistory, 
-      setTimelineSyncHistory, 
-      timelineSyncHistoryCounter, 
-      setTimelineSyncHistoryCounter, 
-      setBufferingArray, 
-      setupdateVideoSelection
-    });
+  await TimelineData_generator({
+    data,
+    minstartpoint: minimum_startpont,
+    duration: finalduration,
+    updateVideoSelection,
+    timelinedetail,
+    settimelinedetail,
+    timelineSyncHistory,
+    setTimelineSyncHistory,
+    timelineSyncHistoryCounter,
+    setTimelineSyncHistoryCounter,
+    setBufferingArray,
+    setupdateVideoSelection
+  });
 }
 
 const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?: number, removeIndex?: boolean) => {
@@ -457,6 +457,8 @@ const VideoPlayerBase = (props: any) => {
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(true);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
 
+  const volumeIcon = useRef<any>(null)
+
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
       seekSliderOnMarkerClick(onMarkerClickTimeData);
@@ -464,7 +466,7 @@ const VideoPlayerBase = (props: any) => {
   }, [onMarkerClickTimeData]);
 
   React.useEffect(() => {
-    if (props.gpsJson && props.gpsJson.length>0) {
+    if (props.gpsJson && props.gpsJson.length > 0) {
       setGpsJson(props.gpsJson);
     }
   }, [props.gpsJson]);
@@ -503,17 +505,17 @@ const VideoPlayerBase = (props: any) => {
     if (data.length > 0) {
       Durationfinder({
         Data: data,
-        setfinalduration, 
-        settimelineduration, 
-        setmaxminendpoint, 
-        updateVideoSelection, 
-        timelinedetail, 
-        settimelinedetail, 
-        timelineSyncHistory, 
-        setTimelineSyncHistory, 
-        timelineSyncHistoryCounter, 
-        setTimelineSyncHistoryCounter, 
-        setBufferingArray, 
+        setfinalduration,
+        settimelineduration,
+        setmaxminendpoint,
+        updateVideoSelection,
+        timelinedetail,
+        settimelinedetail,
+        timelineSyncHistory,
+        setTimelineSyncHistory,
+        timelineSyncHistoryCounter,
+        setTimelineSyncHistoryCounter,
+        setBufferingArray,
         setupdateVideoSelection
       });
       setLoading(true)
@@ -853,32 +855,44 @@ const VideoPlayerBase = (props: any) => {
 
   const [volumPercent, setVolumPercent] = useState<number>();
   const [mutePercentVol, setMutePercentVol] = useState<number>();
+
   const setVolumeHandle = (volume: number) => {
     setVolumPercent(volume);
     setMutePercentVol(volume);
-    document?.getElementById("volumePercentage")?.classList.add("ShowVolumePercentage");
-    document?.getElementById("volumePercentage")?.classList.remove("HideVolumePercentage");
+    volumeAnimation();
 
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.volume = (volume / 100);
     });
   }
 
-  setTimeout(() => {
-    document?.getElementById("volumePercentage")?.classList.remove("ShowVolumePercentage");
-    document?.getElementById("volumePercentage")?.classList.add("HideVolumePercentage");
-
-  }, 1000)
-
   const setMuteHandle = (isMuted: boolean) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.muted = isMuted;
       let volumeMute = videoHandle.muted ? 0 : mutePercentVol == undefined ? 100 : mutePercentVol;
       setVolumPercent(volumeMute);
-      document?.getElementById("volumePercentage")?.classList.add("ShowVolumePercentage");
-      document?.getElementById("volumePercentage")?.classList.remove("HideVolumePercentage");
+      volumeAnimation()
+
     });
   }
+
+  const volumeAnimation = () => {
+    volumeIcon.current.style.opacity = 1
+    volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomOut"))
+    volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomIn"));
+    volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("fontSizeIn"));
+
+    setTimeout(() => {
+      volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
+      volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
+      volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
+
+    }, 1200)
+  }
+  useEffect(() => {
+    volumeIcon.current.style.opacity = 0
+  }, [])
+
   const reset = () => {
     //(false);
     setTimer(0);
@@ -1155,9 +1169,9 @@ const VideoPlayerBase = (props: any) => {
       }
     }
   }
- 
 
- 
+
+
 
   const AdjustTimeline = (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
@@ -1288,8 +1302,7 @@ const VideoPlayerBase = (props: any) => {
       var index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
       setTimelineSyncHistoryCounter(indexOperation == 0 ? 0 : index);
     }
-    if(indexOperation == 0)
-    {
+    if (indexOperation == 0) {
       toasterMsgRef.current.showToaster({
         message: "Timelines reverted to last save", variant: "Success", duration: 5000, clearButtton: true
       });
@@ -1322,7 +1335,7 @@ const VideoPlayerBase = (props: any) => {
 
   const saveOffsets = () => {
     var timelineHistoryArray: TimelineSyncHistory[] = [];
-    let body : TimelinesSync[] = timelinedetail.map((x: any) => {
+    let body: TimelinesSync[] = timelinedetail.map((x: any) => {
       timelineHistoryArray.push({
         assetId: x.dataId,
         timeOffset: x.timeOffset,
@@ -1349,21 +1362,21 @@ const VideoPlayerBase = (props: any) => {
       setTimelineSyncHistory(timelineSyncHistoryTemp);
       setTimelineSyncHistoryCounter(0);
     })
-    .catch((err: any) => {
-      toasterMsgRef.current.showToaster({
-        message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
-      });
-    })
+      .catch((err: any) => {
+        toasterMsgRef.current.showToaster({
+          message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
+        });
+      })
   }
 
-  const seekSliderOnMarkerClick = (logtime : Date) => {
+  const seekSliderOnMarkerClick = (logtime: Date) => {
     let video: any = timelinedetail[0];
     let datavideo: any = data[0];
     if (video && datavideo) {
       let timeOffset = datavideo.recording.timeOffset;
       let video_start = new Date(datavideo.recording.started).getTime() + timeOffset;
       let duration = logtime.getTime() - video_start;
-      let durationInDateFormat = (new Date(duration).getTime())/1000;
+      let durationInDateFormat = (new Date(duration).getTime()) / 1000;
       let recording_start_point = video.recording_start_point + durationInDateFormat;
       setTimer(recording_start_point);
       setControlBar(recording_start_point);
@@ -1371,25 +1384,24 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const renderMarkerOnSeek = (timerValue: number) => {
-    if(gpsJson){
-      if(gpsJson.length>0){
+    if (gpsJson) {
+      if (gpsJson.length > 0) {
         renderMarkerOnSeekTimelime(timerValue, data[0])
       }
     }
   }
 
-  const renderMarkerOnSeekTimelime=(timerValue:number, firstdataobj: any)=>{
+  const renderMarkerOnSeekTimelime = (timerValue: number, firstdataobj: any) => {
     let timeOffset = firstdataobj.recording.timeOffset;
     let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
-    let duration = ((timerValue*1000) + video_time)/1000;
-    let ObjLatLog : any = []
+    let duration = ((timerValue * 1000) + video_time) / 1000;
+    let ObjLatLog: any = []
     gpsJson.forEach((e: any) => {
-      if(e.LOGTIME == duration){
+      if (e.LOGTIME == duration) {
         ObjLatLog.push(e);
       }
     });
-    if(ObjLatLog.length>0)
-    {
+    if (ObjLatLog.length > 0) {
       setUpdateSeekMarker(ObjLatLog);
     }
   }
@@ -1431,8 +1443,8 @@ const VideoPlayerBase = (props: any) => {
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
             <div id="screens">
               <VideoPlayerOverlayMenu
-              overlayEnabled = {overlayEnabled}
-              overlayCheckedItems = {overlayCheckedItems}
+                overlayEnabled={overlayEnabled}
+                overlayCheckedItems={overlayCheckedItems}
               />
               <VideoScreen
                 setData={setdata}
@@ -1475,14 +1487,11 @@ const VideoPlayerBase = (props: any) => {
                 {frameForward ? <span className=" triangleRightSetter"><SVGImage width={12} height={23.4} d="M10.92,12.76L0,23.4V0L10.92,10.64l1.08,1.06-1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
                 {frameReverse ? <span className=" triangleRightSetter"><SVGImage width={12} height={23.4} d="M1.08,12.76l10.92,10.64V0L1.08,10.64l-1.08,1.06,1.08,1.06Z" viewBox="0 0 12 23.4" fill="#fff" /></span> : null}
               </div>
-              <div id="volumePercentage">
-
-                <i className={
-                  volumePer
-                }>
-
-                </i>
-                <p className={volumPercent == 100 ? "volPercentSpace" : ""}>{volumPercent}%</p>
+              <div id="volumePercentage" ref={volumeIcon}>
+                <div className="volume_video_icon animated">
+                  <i className={volumePer}></i>
+                  <div className={`volume_percent_text ${volumPercent == 100 ? "volPercentSpace" : ""} `}>{volumPercent}%</div>
+                </div>
               </div>
             </div>
             <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
@@ -1568,13 +1577,13 @@ const VideoPlayerBase = (props: any) => {
                     }
                   </div>
                   <VideoPlayerSeekbar
-                  controlBar ={controlBar}
-                  handleControlBarChange ={handleControlBarChange}
-                  timelineduration ={timelineduration}
-                  viewReasonControlsDisabled ={viewReasonControlsDisabled}
-                  timelinedetail ={timelinedetail}
-                  displayThumbnail ={displayThumbnail}
-                  setVisibleThumbnail ={setVisibleThumbnail}/>
+                    controlBar={controlBar}
+                    handleControlBarChange={handleControlBarChange}
+                    timelineduration={timelineduration}
+                    viewReasonControlsDisabled={viewReasonControlsDisabled}
+                    timelinedetail={timelinedetail}
+                    displayThumbnail={displayThumbnail}
+                    setVisibleThumbnail={setVisibleThumbnail} />
                 </div>
                 <div className="videoPlayer_Timeline_Time">
                   <div className="playerViewFlexTimer">
@@ -1692,28 +1701,28 @@ const VideoPlayerBase = (props: any) => {
                 </div>
                 <div className={` playerViewRight ${iconChanger ? 'clickViewRightBtn' : ""}`}>
                   <div className="SettingGrid">
-                    <div onClick={(e : any) => {setSettingMenuEnabled(e.currentTarget)}}>
-                  <CRXTooltip
-                            iconName={"fas fa-cog faCogIcon"}
-                            placement="top"
-                            title={<>Settings <span className="settingsTooltip">,</span></>}
-                            arrow={false}
-                          /></div>
-                      <VideoPlayerSettingMenu
-                      singleVideoLoad ={singleVideoLoad}
-                      multiTimelineEnabled ={multiTimelineEnabled}
-                      setMultiTimelineEnabled ={setMultiTimelineEnabled}
-                      settingMenuEnabled ={settingMenuEnabled}
-                      setSettingMenuEnabled ={setSettingMenuEnabled}
-                      setSingleTimeline ={setSingleTimeline}
-                      timelinedetail ={timelinedetail}
-                      settimelinedetail ={settimelinedetail}
-                      screenClick ={screenClick}
-                      overlayEnabled ={overlayEnabled}
-                      setOverlayEnabled ={setOverlayEnabled}
-                      overlayCheckedItems ={overlayCheckedItems}
-                      setOverlayCheckedItems ={setOverlayCheckedItems}
-                      />
+                    <div onClick={(e: any) => { setSettingMenuEnabled(e.currentTarget) }}>
+                      <CRXTooltip
+                        iconName={"fas fa-cog faCogIcon"}
+                        placement="top"
+                        title={<>Settings <span className="settingsTooltip">,</span></>}
+                        arrow={false}
+                      /></div>
+                    <VideoPlayerSettingMenu
+                      singleVideoLoad={singleVideoLoad}
+                      multiTimelineEnabled={multiTimelineEnabled}
+                      setMultiTimelineEnabled={setMultiTimelineEnabled}
+                      settingMenuEnabled={settingMenuEnabled}
+                      setSettingMenuEnabled={setSettingMenuEnabled}
+                      setSingleTimeline={setSingleTimeline}
+                      timelinedetail={timelinedetail}
+                      settimelinedetail={settimelinedetail}
+                      screenClick={screenClick}
+                      overlayEnabled={overlayEnabled}
+                      setOverlayEnabled={setOverlayEnabled}
+                      overlayCheckedItems={overlayCheckedItems}
+                      setOverlayCheckedItems={setOverlayCheckedItems}
+                    />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
