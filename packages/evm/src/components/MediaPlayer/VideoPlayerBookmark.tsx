@@ -1,20 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { CRXModalDialog } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
-import { CRXAlert } from '@cb/shared';
 import { TextField } from '@cb/shared';
 import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
-import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
-import { Asset, Bookmark, File } from '../../utils/Api/models/EvidenceModels';
+import { Asset, Bookmark, File as EvidenceFile } from '../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
-
-type VideoPlayerSnapshotFormProps = {
-    description: string;
-    imageString: string;
-};
+import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
+declare const window: any;
+window.onRecvData = new CustomEvent("onUploadSnapshotStatusUpdate");
 
 type VideoPlayerSnapshotProps = {
     openBookmarkForm: boolean;
@@ -37,22 +32,15 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
-    const [alert, setAlert] = React.useState<boolean>(false);
-    const [responseError, setResponseError] = React.useState<string>('');
-    const [alertType, setAlertType] = useState<string>('inline');
-    const [errorType, setErrorType] = useState<string>('error');
-    const alertRef = useRef(null);
     const [onSave, setOnSave] = useState(true);
     const [isSnapshotRequired, setIsSnapshotRequired] = React.useState(false);
     const [descriptionErr, setdescriptionErr] = React.useState("");
+    const [snapshotImage, setSnapshotImage] = useState<File>();
     const [isSuccess, setIsSuccess] = React.useState({
         success: false,
         SuccessType: "",
     });
-    const [formpayload, setFormPayload] = React.useState<VideoPlayerSnapshotFormProps>({
-        description: editBookmarkForm ? bookmark.description:'',
-        imageString: '',
-    });
+    const [formpayloadDescription, setFormPayloadDescription] = React.useState<string>(editBookmarkForm ? bookmark.description:"");
 
     const [bookmarkobj, setbookmarkobj] = React.useState<any>({
         assetId: editBookmarkForm ? bookmarkAssetId : AssetData.dataId,
@@ -66,10 +54,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         version: ""
     });
 
-    const [formpayloadErr, setFormPayloadErr] = React.useState({
-        descriptionErr: '',
-        imageStringErr: '',
-    });
+    useEffect(() => {
+        window.addEventListener("onUploadSnapshotStatusUpdate", uploadSnapshotStatusStatusUpdate);
+      }, [])
 
     React.useEffect(() => {
         setOpenModal(openBookmarkForm)
@@ -128,16 +115,26 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             if (ctx) {
                 ctx.drawImage(videoHandle, 0, 0, w, h);
             }
-            setFormPayload({ ...formpayload, imageString: canvas.toDataURL() })
-        }
-        else {
-            setFormPayload({ ...formpayload, imageString: "" });
+            //Usage example:
+            urltoFile(canvas.toDataURL(), 'Snapshot.png','image/png')
+            .then(function(file)
+            {
+                setSnapshotImage(file); 
+                console.log(file);
+            });
         }
     }, [isSnapshotRequired]);
 
     useEffect(() => {
-        formpayload.description.length > 0 ? setOnSave(false) : setOnSave(true);
-    }, [formpayload.description]);
+        formpayloadDescription.length > 0 ? setOnSave(false) : setOnSave(true);
+    }, [formpayloadDescription]);
+
+    function urltoFile(url:any, filename:any, mimeType:any){
+        return (fetch(url)
+            .then(function(res){return res.arrayBuffer();})
+            .then(function(buf){return new File([buf], filename, {type: mimeType});})
+        );
+    }
 
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
         setOpenModal(false);
@@ -146,11 +143,16 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     };
 
     const onAdd = async () => {
-        if(formpayload.description.length > 0){
+        setOnSave(true);
+        if(formpayloadDescription.length > 0){
             await AddBookmark();
+            if(!isSnapshotRequired){
+                setOnSave(false);
+            }
         }
         if(isSnapshotRequired){
-            await AddSnapshot();
+            await AddSnapshotBase();
+            setOnSave(false);
         }
     };
 
@@ -161,7 +163,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             assetId: AssetId,
             bookmarkTime: new Date(),
             position: BookmarktimePositon ?? 0,
-            description: formpayload.description,
+            description: formpayloadDescription,
             madeBy: "User",
             version: ""
         };
@@ -172,26 +174,44 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
         })
         .catch((e:any) =>{
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-            setResponseError(e);
+            toasterMsgRef.current.showToaster({message: "Bookmark Not Saved", variant: "error", duration: 5000, clearButtton: true});
         })
     }
 
-    const AddSnapshot = async () => {
-        const formdata = formpayload;
-        var guid = uuidv4();
-        const AssetFilebody : File = {
+    const AddSnapshotBase = async () => {
+        handleOnUpload();
+    }
+
+    const handleOnUpload = async () => {
+        if(snapshotImage){
+            let files = [];
+            let file: any = snapshotImage;
+            file.id = +new Date();
+            files.push(file);
+            AddFilesToFileService(files);
+        }
+    }
+
+    const uploadSnapshotStatusStatusUpdate =  (data: any) => {
+        if(data.data.percent == 100 && data.data.fileSize == data.data.loadedBytes){
+            AddSnapshot(data.data);
+        }
+        else if(data.data.error){
+            toasterMsgRef.current.showToaster({message: "Snapshot Upload Error", variant: "error", duration: 5000, clearButtton: true});
+        }
+    }
+
+    const AddSnapshot = async (fileresponse: any) => {
+        debugger;
+        const AssetFilebody : EvidenceFile = {
             id:0,
             filesId: 0,
             assetId: 0,
-            name: "Snapshot_FILE_" + guid,
+            name: fileresponse.fileName,
             type: "Image",
-            extension: "jpeg",
-            url: "www.hdc.com:8080",
-            size: 1280,
+            extension: "png",
+            url: fileresponse.url,
+            size: snapshotImage?.size ?? 1280,
             sequence: 0,
             duration: 0,
             checksum: {
@@ -207,15 +227,20 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         };
         const Assetbody : Asset = {
             id: 0,
-            name: "Snapshot_" + guid,
+            name: fileresponse.fileName,
             typeOfAsset: "Image",
             state: "Normal",
-            status: "Queued",
+            status: "Available",
             unitId: AssetData.unitId,
             duration: 0,
             bookMarks: [],
             files: [AssetFilebody],
-            owners: [1],
+            owners: [{
+                id: "",
+                cmtFieldValue: 1,
+                record: []
+            }],
+            lock: { roles: [] },
             recording: {
                 started: new Date(),
                 ended: new Date(),
@@ -236,11 +261,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             setopenBookmarkForm(false);
         })
         .catch((e:any) =>{
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-            setResponseError(e);
+            toasterMsgRef.current.showToaster({message: "Snapshot Saved Error", variant: "error", duration: 5000, clearButtton: true});
         })
     }
 
@@ -251,7 +272,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             assetId: bookmark.assetId,
             bookmarkTime: bookmark.bookmarkTime,
             position: bookmark.position,
-            description: formpayload.description,
+            description: formpayloadDescription,
             madeBy: bookmark.madeBy,
             version: bookmark.version
         };
@@ -261,10 +282,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});        
         })
         .catch((err: any) => {
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
+            toasterMsgRef.current.showToaster({message: "Bookmark Update Error", variant: "error", duration: 5000, clearButtton: true});
             console.error(err);
         });
     };
@@ -277,21 +295,16 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
         })
         .catch((err: any) => {
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
+            toasterMsgRef.current.showToaster({message: "Bookmark Delete Error", variant: "error", duration: 5000, clearButtton: true});
             console.error(err);
         });
     };
 
     const onSubmit = async (e: any) => {
-        setResponseError('');
-        setAlert(false);
         if(editBookmarkForm){
             await onUpdate()
             if(isSnapshotRequired){
-                await AddSnapshot();
+                await AddSnapshotBase();
             }
         }else{
             await onAdd();
@@ -302,8 +315,6 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         setIsOpenConfirmDailog(true);
     };
     const onDeleteConfirm = async () => {
-        setResponseError('');
-        setAlert(false);
         await onDelete();
     };
 
@@ -312,7 +323,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     }
 
     const checkDescription = () => {
-        if (!formpayload.description) {
+        if (!formpayloadDescription) {
             setdescriptionErr('Description is required');
         }
         else {
@@ -353,27 +364,18 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                 defaultButton={false}
                 showSticky={false}
             >
-                <div className={` ${alert == true ? "__CRXAlertDes__" : ""}`}>
-                    <CRXAlert
-                        ref={alertRef}
-                        message={responseError}
-                        className='crxAlertSnapShotEditForm'
-                        alertType={alertType}
-                        type={errorType}
-                        open={alert}
-                        setShowSucess={() => null}
-                    />
+                <div>
                     <div className="modalEditCrx">
                         <div className='CrxEditForm'>
                             <TextField
                                 error={!!descriptionErr}
                                 errorMsg={descriptionErr}
-                                value={formpayload.description}
+                                value={formpayloadDescription}
                                 multiline
                                 label='Description'
                                 className='description-input'
                                 required={true}
-                                onChange={(e: any) => setFormPayload({ ...formpayload, description: e.target.value })}
+                                onChange={(e: any) => setFormPayloadDescription(e.target.value )}
                                 onBlur={checkDescription}
                             />
                             <div className='crx-requird-check'>

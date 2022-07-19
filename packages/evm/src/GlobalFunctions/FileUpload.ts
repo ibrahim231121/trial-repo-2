@@ -151,6 +151,7 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
             file.uploadUri = resp.upload.uri;
             file.uploadedFileName = resp.name;
             file.uploadedFileId = resp.id;
+            file.url = resp.url;
             resolve("resolve", resp)
         }
         else {

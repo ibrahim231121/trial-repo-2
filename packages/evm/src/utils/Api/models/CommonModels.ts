@@ -1,6 +1,6 @@
 export interface CMTEntityRecord {
     id: string
-    cmtFieldName: string
+    cmtFieldName?: string
     cmtFieldValue: number
     record: Record[]
 }

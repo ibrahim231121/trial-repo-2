@@ -11,7 +11,6 @@ type VideoPlayerViewRequirementProps = {
 };
 
 const VideoPlayerViewRequirement: React.FC<VideoPlayerViewRequirementProps> = React.memo((props) => {
-    debugger;
     const { openViewRequirement, setOpenViewRequirement, setReasonForViewing } = props;
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
         setOpenViewRequirement(false);

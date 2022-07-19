@@ -95,6 +95,7 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
                 fileSize: getFileSize(usb.file.size),
                 fileName: usb.file.uploadedFileName,
                 fileId: usb.file.uploadedFileId,
+                url: usb.file.url,
                 error: false,
                 removed: false,
             };

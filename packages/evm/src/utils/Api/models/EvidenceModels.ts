@@ -86,6 +86,16 @@ export interface Asset {
     notes: Note[]
     files: File[]
     owners: CMTEntityRecord[] | number[]
+    lock: Lock
+}
+
+export interface Lock {
+    roles: Role[]
+}
+
+export interface Role {
+    id: number
+    hierarchy: number
 }
 
 export interface TimelinesSync {
