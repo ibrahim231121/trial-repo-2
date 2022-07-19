@@ -1,0 +1,37 @@
+
+.errorPageMain{
+    padding: 0 4px 0px 65px;
+    padding-top: 65px;
+    transition: 1s padding ease-out;
+    display: flex;
+    flex-direction: column;
+    .errorPageHeading{
+        font-weight: bold;
+        font-size: 24px;
+        padding-bottom: 35px;
+    }
+    .errorPageFirst{
+        text-transform: uppercase;
+        padding-bottom: 18px;
+        font-size: 14px;
+        font-family: var(--base-font-family);
+    }
+    .errorPageSecond{
+        padding-bottom: 35px;
+        font-size: 14px;
+    }
+    .errorPageSuggestion{
+        font-size: 14px;
+        font-weight: bold;
+        padding-bottom: 18px;
+    }
+    span ul{
+        padding: 0px 0px 0px 17px;
+        margin: 0px;
+        font-size: 14px;
+    }
+    a{
+        color: #c34400;
+        cursor: pointer;
+    }
+}
