@@ -26,7 +26,9 @@ type Props = {
   className?: string
   text?: string;
   primaryDisabled?: boolean,
-  maxWidth? : maxsize
+  maxWidth? : maxsize,
+  buttonPrimary?: string,
+  buttonSecondary?: string
 };
 
 const CRXConfirmDialog: React.FC<Props> = ({
@@ -36,9 +38,12 @@ const CRXConfirmDialog: React.FC<Props> = ({
   className,
   setIsOpen,
   isOpen,
-  children, primary, secondary, primaryDisabled,
+  children, 
+  // primary, secondary,
+  primaryDisabled,
   text,
-  maxWidth
+  maxWidth,
+  buttonPrimary,buttonSecondary
 }) => {
   return (
     <Dialog open={isOpen} maxWidth={maxWidth} className={"crx-confirm-modal userConfirmationModal crx-unblock-modal " + className}>
@@ -83,7 +88,8 @@ const CRXConfirmDialog: React.FC<Props> = ({
             //setIsOpen(true);
           }}
         >
-          {primary || "primary"}
+          {/* {primary || "primary"} */}
+          {buttonPrimary || "buttonPrimary"}
         </CRXButton>
 
         <CRXButton
@@ -92,7 +98,8 @@ const CRXConfirmDialog: React.FC<Props> = ({
           className="secondary"
           variant="outlined"
           color="secondary">
-          {secondary || "secondary"}
+          {/* {secondary || "secondary"} */}
+          {buttonSecondary || "buttonSecondary"}
         </CRXButton>
       </DialogActions>
     </Dialog>

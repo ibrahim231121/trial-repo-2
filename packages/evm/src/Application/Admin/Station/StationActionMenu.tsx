@@ -228,8 +228,11 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         setIsOpen={setIsOpenDelete}
         onConfirm={onConfirm}
         isOpen={isOpenDelete}
-        primary={primary}
-        secondary={secondary}>
+        // primary={primary}
+        // secondary={secondary}
+        buttonPrimary="Yes, delete"
+        buttonSecondary="No, do not delete"
+        >
         {
           <>
           {/* <CRXAlert
@@ -240,9 +243,9 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             setShowSucess={() => null}
           /> */}
           <div className='stationDeleteBody'>
-            <div className="_station_delete_pera _station_delete_body_style">{t("You_are_attempting_to_delete_the_station")} <strong>`{stationName}`</strong>. {t("You_will_not_be_able_to_undo_this_action.")}</div>
+            <div className="_station_delete_pera _station_delete_body_style">You are attempting to <strong>delete</strong> the station <strong>`{stationName}`</strong>. {t("You_will_not_be_able_to_undo_this_action.")}</div>
             
-            <div className="_station_delete_note _station_delete_body_style">{t("Are_you_sure_you_would_like_to_delete_the_station?")}</div>
+            <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to <strong>delete</strong> the station?</div>
           </div>
           </>
 
@@ -278,7 +281,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
               <div className='crx-meu-content groupingMenu crx-spac'>
                 <div className='crx-menu-icon'>
-                  <i className='fas fa-trash'></i>
+                  <i className='fas fa-trash-alt'></i>
                 </div>
                 <div className='crx-menu-list'>{t("Delete_station")}</div>
               </div>
