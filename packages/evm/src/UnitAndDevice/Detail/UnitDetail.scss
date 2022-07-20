@@ -36,7 +36,7 @@ iframe {
   .RightBoard {
     display: flex;
     flex: 0 30%;
-    justify-content: end;
+    justify-content: flex-end;
     .pannelBoard{
       &.mr-50 {
         margin-right: 50px;

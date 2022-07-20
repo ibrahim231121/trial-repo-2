@@ -1,23 +1,30 @@
 import React, { useEffect } from "react";
-//import {  } from "@cb/shared";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
-import ActionMenu, { AssetBucket } from "../AssetLister/ActionMenu";
+import { AssetBucket } from "../AssetLister/ActionMenu";
 import Restricted from "../../../ApplicationPermission/Restricted";
+import {DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
 import FormContainer from "../AssetLister/Category/FormContainer";
-import useGetFetch from "../../../utils/Api/useGetFetch";
+import { dateOptionsTypes } from '../../../utils/constant';
 import { EVIDENCE_PATCH_LOCK_UNLOCK_URL, EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
-import { makeStyles } from "@material-ui/core/styles";
-import AssetNameTooltip from "../AssetLister/AssetDataTable/AssetNameTooltip";
+import { useTranslation } from "react-i18next";
 import { AssetThumbnail } from "../AssetLister/AssetDataTable/AssetThumbnail"
 import { Link } from "react-router-dom";
 import moment from "moment";
+import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
+import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
+import { useHistory } from "react-router";
+import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
+import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
+import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
+import http from "../../../http-common";
+import { AxiosError } from "axios";
 import {
   CRXMultiSelectBoxLight,
   CrxAccordion, CRXTabs, CrxTabPanel,
@@ -26,22 +33,22 @@ import {
   CRXButton,
   CRXRows,
   CRXColumn,
+  CRXDataTable,
   CRXConfirmDialog,
 } from "@cb/shared";
-import { hexToRgb } from "@material-ui/core";
-import { RestorePageSharp } from "@material-ui/icons";
-import { string } from "yup/lib/locale";
-import { useHistory } from "react-router";
-import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
-import { useTranslation } from "react-i18next";
 
-import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
-import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
-import SecurityDescriptor from "../../../ApplicationPermission/SecurityDescriptor";
-import http from "../../../http-common";
-import { AxiosError } from "axios";
+import {
+  HeadCellProps,
+  onResizeRow,
+  Order,
+  ValueString,
+  onSetSearchDataValue,
+  SearchObject,
+  onSetSingleHeadCellVisibility,
+  onClearAll,
+} from "../../../GlobalFunctions/globalDataTableFunctions";
+
 const AssetDetailsTemplate = (props: any) => {
-  const { t } = useTranslation<string>();
   let tempgpsjson: any = [
     {
       "LAT": "24.813632",
@@ -86,6 +93,16 @@ const AssetDetailsTemplate = (props: any) => {
   let assetName: string = historyState.assetName;
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
 
+  type DateTimeProps = {
+    dateTimeObj: DateTimeObject;
+    colIdx: number;
+  };
+  type DateTimeObject = {
+    startDate: string;
+    endDate: string;
+    value: string;
+    displayText: string;
+  };
   type assetdata = {
     files: any;
     assetduration: number;
@@ -97,6 +114,12 @@ const AssetDetailsTemplate = (props: any) => {
     typeOfAsset: string;
     notes: any;
     camera: string;
+  }
+  type AuditTrail = {
+    sequenceNumber:string;
+    captured:any;
+    username:string;
+    activity:string
   }
 
   type EvidenceReformated = {
@@ -149,8 +172,9 @@ const AssetDetailsTemplate = (props: any) => {
 
   const [value, setValue] = React.useState(0);
   const [evidence, setEvidence] = React.useState<EvidenceReformated>(evidenceObj);
-  const [selectedItems, setSelectedItems] = React.useState<any>([]);
+  //const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
+  const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
   const [openForm, setOpenForm] = React.useState(false);
@@ -164,7 +188,14 @@ const AssetDetailsTemplate = (props: any) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-
+  const [order] = React.useState<Order>("asc");
+  const { t } = useTranslation<string>();
+  const [orderBy] = React.useState<string>("name");
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [rows, setRows] = React.useState<AuditTrail[]>([]);
+  const [selectedActionRow, setSelectedActionRow] =React.useState<AuditTrail>();
+  const [selectedItems, setSelectedItems] = React.useState<AuditTrail[]>([]);
+  const [reformattedRows, setReformattedRows] = React.useState<AuditTrail[]>();
   const handleChange = () => {
     setOpenForm(true);
   };
@@ -282,7 +313,127 @@ const AssetDetailsTemplate = (props: any) => {
       setVideoPlayerData(data);
     }
   }, [getAssetData]);
+  const searchText = (
+    rowsParam: AuditTrail[],
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
 
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
+    };
+
+    const onSelection = (v: ValueString[], colIdx: number) => {
+   
+      if (v.length > 0) {
+        for (var i = 0; i < v.length; i++) {
+          let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
+          setSearchData((prevArr) =>
+            prevArr.filter(
+              (e) => e.columnName !== headCells[colIdx].id.toString()
+            )
+          );
+          setSearchData((prevArr) => [...prevArr, searchDataValue]);
+         
+        }
+      } else {
+        setSearchData((prevArr) =>
+          prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+        );
+      }
+    };
+  
+
+    return (
+      <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
+      );
+    };
+
+    const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+      dateTimeObj: {
+          startDate: "",
+          endDate: "",
+          value: "",
+          displayText: "",
+      },
+      colIdx: 0,
+  });
+
+    const searchDate = (
+      rowsParam: AuditTrail[],
+      headCells: HeadCellProps[],
+      colIdx: number
+  ) => {
+      let reset: boolean = false;
+
+      let dateTimeObject: DateTimeProps = {
+          dateTimeObj: {
+              startDate: "",
+              endDate: "",
+              value: "",
+              displayText: "",
+          },
+          colIdx: 0,
+      };
+
+      if (
+          headCells[colIdx].headerObject !== null ||
+          headCells[colIdx].headerObject === undefined
+      )
+          reset = false;
+      else reset = true;
+
+      if (
+          headCells[colIdx].headerObject === undefined ||
+          headCells[colIdx].headerObject === null
+      ) {
+          dateTimeObject = {
+              dateTimeObj: {
+                  startDate: reformattedRows !== undefined ? reformattedRows[0].captured : "",
+                  endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].captured : "",
+                  value: "custom",
+                  displayText: "custom range",
+              },
+              colIdx: 0,
+          };
+      } else {
+          dateTimeObject = {
+              dateTimeObj: {
+                  ...headCells[colIdx].headerObject
+              },
+              colIdx: 0,
+          };
+      }
+
+      function onSelection(dateTime: DateTimeObject) {
+          dateTimeObject = {
+              dateTimeObj: {
+                  ...dateTime
+              },
+              colIdx: colIdx,
+          };
+          setDateTime(dateTimeObject);
+          headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
+      }
+
+      return (
+          <CRXColumn item xs={11}>
+              <DateTimeComponent
+                  showCompact={false}
+                  reset={reset}
+                  dateTimeDetail={dateTimeObject.dateTimeObj}
+                  getDateTimeDropDown={(dateTime: DateTimeObject) => {
+                      onSelection(dateTime);
+                  }}
+                  dateOptionType={dateOptionsTypes.basicoptions}
+              />
+          </CRXColumn>
+      );
+
+  };
+
+ 
   function extract(row: any) {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
@@ -334,6 +485,7 @@ const AssetDetailsTemplate = (props: any) => {
     { label: t("Information"), index: 0 },
     { label: t("Map"), index: 1 },
     { label: t("GROUPED_AND_RELATED_ASSETS"), index: 2 },
+    { label: "AUDIT TRAIL", index: 3 },
   ];
   const refresh = () => {
     window.location.reload();
@@ -346,6 +498,62 @@ const AssetDetailsTemplate = (props: any) => {
     })
     history.go(0)
   }
+const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
+  
+  {
+    label: `${t("Seq No")}`,
+    id: "sequenceNumber",
+    align: "right",
+    dataComponent: (e: string) => textDisplay(e, " "),
+    sort: true,
+  },
+  {
+    label: `${t("Captured")}`,
+    id: "captured",
+    align: "right",
+    dataComponent: dateDisplayFormat,
+  //  dataComponent: (e: string) => textDisplay(e, " "),
+    searchFilter: true,
+    searchComponent: searchDate,
+    sort: false,
+  },
+  {
+    label: `${t("Username")}`,
+    id: "username",
+    align: "right",
+    searchFilter: true,
+    searchComponent: searchText,
+    dataComponent: (e: string) => textDisplay(e, " "),
+    sort: true
+  },
+  {
+    label: `${t("Activity")}`,
+    id: "activity",
+    align: "right",
+    searchFilter: true,
+    searchComponent: searchText,
+    dataComponent: (e: string) => textDisplay(e, " "),
+    sort: true
+  }
+]);
+const clearAll = () => {
+  const clearButton: any = document.getElementsByClassName(
+    "MuiAutocomplete-clearIndicator"
+  )[0];
+  clearButton && clearButton.click();
+  setOpen(false);
+  // setSearchData([]);
+  let headCellReset = onClearAll(headCells);
+  setHeadCells(headCellReset);
+};
+const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
+  let headCellReset = onResizeRow(e, headCells);
+  setHeadCells(headCellReset);
+};
+const onSetHeadCells = (e: HeadCellProps[]) => {
+  let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
+  setHeadCells(headCellsArray);
+};
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
     if (evidence !== undefined && evidence !== null) {
@@ -509,7 +717,7 @@ const AssetDetailsTemplate = (props: any) => {
           {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
         </CRXColumn>
-        <CRXColumn item xs={4} className="topColumn">
+        <CRXColumn item xs={8} className="topColumn">
           <div className="tabCreateTemplate">
             <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
             <div className="tctContent">
@@ -633,6 +841,56 @@ const AssetDetailsTemplate = (props: any) => {
                   </div>
                 </CrxAccordion>
               </CrxTabPanel>
+
+              <CrxTabPanel value={value} index={3}>
+            <div className="unitDeviceMain searchComponents unitDeviceMainUii">
+              {rows && (
+                <CRXDataTable
+                  id="Audit Trail"
+                  getRowOnActionClick={(val: AuditTrail) =>
+                    setSelectedActionRow(val)
+                  }
+                  toolBarButton = {
+           
+                      <CRXButton  >
+                        Export
+                      </CRXButton>
+                  
+                  }
+                  showToolbar={true}
+                  showCountText={false}
+                  columnVisibilityBar={true}
+                  showHeaderCheckAll={false}
+                  initialRows={reformattedRows}
+                  dragVisibility={false}
+                  showCheckBoxesCol={false}
+                  showActionCol={false}
+                  headCells={headCells}
+                  dataRows={rows}
+                  orderParam={order}
+                  orderByParam={orderBy}
+                  searchHeader={true}
+                  allowDragableToList={true}
+                  showTotalSelectedText={false}
+                  showActionSearchHeaderCell={true}
+                  showCustomizeIcon={false}
+
+
+                  className=""
+                  onClearAll={clearAll}
+                  getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
+                  onResizeRow={resizeRowUnitDetail}
+                  onHeadCellChange={onSetHeadCells}
+                  setSelectedItems={setSelectedItems}
+                  selectedItems={selectedItems}
+                  offsetY={190}
+                />
+              )}
+            </div>
+ 
+          </CrxTabPanel>
+
+
             </div>
           </div>
         </CRXColumn>
