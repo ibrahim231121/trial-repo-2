@@ -198,8 +198,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '200',
-      maxWidth: '200'
+      minWidth: '350',
+      maxWidth: '500'
     },
     {
       label: t('Address'),
@@ -209,8 +209,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '100'
+      minWidth: '250',
+      maxWidth: '400'
     },
   ]);
 

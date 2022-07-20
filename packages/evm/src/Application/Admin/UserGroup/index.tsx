@@ -174,15 +174,15 @@ const UserGroup: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: t("Group_Name"),
+      label: t("Group Name"),
       id: "name",
       align: "left",
       dataComponent: (e: string) => AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100",
+      minWidth: "250",
+      maxWidth: "400",
     },
     {
       label: t("Description"),
@@ -192,19 +192,19 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
-      minWidth: "100",
-      maxWidth: "200",
+      minWidth: "300",
+      maxWidth: "500",
     },
     {
-      label: t("Total_Users_Assigned"),
+      label: t("Total Users Assigned"),
       id: "userCount",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      maxWidth: "100",
+      minWidth: "250",
+      maxWidth: "300",
     }
   ]);
 
@@ -277,7 +277,7 @@ const UserGroup: React.FC = () => {
             showCheckBoxesCol={false}
             showActionCol={true}
             showTotalSelectedText={false}
-            offsetY={198}
+            offsetY={201}
    
           />
         )

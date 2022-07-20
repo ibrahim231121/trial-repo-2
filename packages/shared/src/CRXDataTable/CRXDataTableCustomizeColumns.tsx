@@ -210,6 +210,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
         placement="top-end"
         transition
         disablePortal
+        container={document.body}
       >
         {({ TransitionProps, placement }) => (
           <Grow

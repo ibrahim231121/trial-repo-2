@@ -103,32 +103,32 @@
   // margin-top: 118px;
   // margin-left: 65px;
 
-  table {
-    tr {
-      th {
-        &.MuiTableCell-sizeSmall {
-          &:nth-child(4) {
-            width: 187px;
-          }
-          &:nth-child(5) {
-            width: 191px;
-          }
-          &:nth-child(6) {
-            width: 191px;
-          }
-          &:nth-child(7) {
-            width: 286px;
-          }
-          &:nth-child(8) {
-            width: 141px;
-          }
-          &:nth-child(9) {
-            width: 186px;
-          }
-        }
-      }
-    }
-  }
+  // table {
+  //   tr {
+  //     th {
+  //       &.MuiTableCell-sizeSmall {
+  //         &:nth-child(4) {
+  //           width: 187px;
+  //         }
+  //         &:nth-child(5) {
+  //           width: 191px;
+  //         }
+  //         &:nth-child(6) {
+  //           width: 191px;
+  //         }
+  //         &:nth-child(7) {
+  //           width: 286px;
+  //         }
+  //         &:nth-child(8) {
+  //           width: 141px;
+  //         }
+  //         &:nth-child(9) {
+  //           width: 186px;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   .Autocomplete_multi {
     width: 100%;

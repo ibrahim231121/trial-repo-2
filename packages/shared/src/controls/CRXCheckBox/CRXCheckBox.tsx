@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   icon: {
     fontSize: "18px",
     color: "#d1d2d4",
-    backgroundColor: "#fff",
+
     "input:hover ~ &": {
       color:"#333333"
     },

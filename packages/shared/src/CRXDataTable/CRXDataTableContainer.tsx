@@ -101,7 +101,7 @@ useEffect(()=> {
       id="customizedStickyHeader"
       ref={tableHeader}
       className={classes.container + " AssetsDataGrid stickyTableHeader  " + className}
-      style={{overflowX : "hidden", position: "sticky", top : offsetY + "px", zIndex : "999", transition: "all 1s ease-in-out !important"}}
+      style={{overflowX : "hidden", position: "sticky", top : offsetY + "px", zIndex : "100", transition: "all 1s ease-in-out !important"}}
       component={Paper}
     >
     <Table
