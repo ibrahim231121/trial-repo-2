@@ -16,7 +16,6 @@ console.log('URL: ', window.location.href);
 console.log('E: ', token);
 
 useEffect(() => {
-  debugger;
   DecryptLink();
   }, []);
 
@@ -28,9 +27,10 @@ debugger;
     method: 'Get',
     headers: { 'Content-Type': 'application/json', TenantId: '1' },
   })
+  debugger;
   let response = await res.json();
 
-  if (response != null) {
+  if (response != null && response != "Asset not found") {
     setlinkStatus("Link is authorized")
   }
   else{

@@ -1,18 +1,17 @@
 import React, {  useEffect, useRef } from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox, CRXRadio,CRXButton,CRXAlert } from '@cb/shared';
+import { CRXRadio,CRXButton,CRXAlert,CRXConfirmDialog } from '@cb/shared';
 import { useDispatch } from 'react-redux';
-import { RootState } from "../../../../Redux/rootReducer";
-import { USER_INFO_GET_URL } from '../../../../utils/Api/url'
 import Cookies from 'universal-cookie';
-import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";
-import { log } from 'console';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { Evidence, ExtendRetention } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory, useParams } from "react-router";
+
 
 type ManageRetentionProps = {
   items: any[];
@@ -29,7 +28,8 @@ const cookies = new Cookies();
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [buttonState, setButtonState] = React.useState<boolean>(false);
+  const [buttonState, setButtonState] = React.useState(true);
+  
   
   
   type Retentionmodel = {
@@ -49,15 +49,16 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   
-  
   const [retention, setRetention] = React.useState<string>("")
   const [currentRetention, setCurrentRetention] = React.useState<string>("-")
   const [originalRetention, setOriginalRetention] = React.useState<string>("-")
+  const [isOpen,setIsOpen] = React.useState<boolean>(false);
   
   const [retentionList, setRetentionList] = React.useState<ExtendRetention[]>([])
   
   const [retentionDays, setRetentionDays] = React.useState<number>(0)
   const [responseError,setResponseError] = React.useState<string>('');
+  const [response,setResponse] = React.useState<Evidence>();
   const [alert,setAlert] = React.useState<boolean>(false);
   const alertRef = useRef(null);
   let retentionRadio = [
@@ -72,21 +73,29 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const [retentionOpt, setRetentionOpt] = React.useState<Retentionmodel[]>(retentionRadio)
 
   React.useEffect(() => {
-    if (retentionList.length >= 0) {
+    
+    if (retentionList.length > 0) {
       sendData();
     }
   }, [retentionList]);
 
   React.useEffect(() => {
+    
     if (props.items.length <= 1)
       getRetentionData();
 
   }, []);
   React.useEffect(() => {
+    if (retention != "") {
+      setButtonState(false);
+    }
     if (retention != "1") {
+      
       setRetentionDays(0);
     }
+
   }, [retention]);
+
   useEffect(() => {
     if (responseError !== undefined && responseError !== '') {
       let notificationMessage: NotificationMessage = {
@@ -113,31 +122,38 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       }
     }
   }, [alert]);
-
+  const closeDialog = () => {
+    setIsOpen(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.assets)[0]
+        .url
+    );
+    
+  };
   const getRetentionData = async () => {
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
-      setOriginalRetention(moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
+      setResponse(response);
+      setOriginalRetention("Original Retention: " + moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
       if (response.extendedRetainUntil != null) {
-        debugger;
         console.log('curr_ret_moment ',moment(response.extendedRetainUntil).format('DD-MM-YYYY'));
         if(moment(response.extendedRetainUntil).format('DD-MM-YYYY') == "31-12-9999")
         {
-          setCurrentRetention("Indefinite");
+          setCurrentRetention("Current Retention: Indefinite");
         }
         else
         {
-        setCurrentRetention(moment(response.extendedRetainUntil).format('DD-MM-YYYY HH:MM:ss'));
+        setCurrentRetention("Current Retention: " + moment(response.extendedRetainUntil).format('DD-MM-YYYY HH:MM:ss'));
         }
         setRetentionOpt((prev: any) => [...prev, { value: "3", label: `${t("Revert_to_original_retention")}`, Comp: () => { } }])
       }
     });
   }
+  const history  = useHistory();
   const onSubmitForm = async () => {
     console.log('Props_Items', props.items[0]);
 
     if (props.filterValue?.length !== 0) {
     }
-    debugger;
     var sdaasd = [...retentionList];
     if (props.items.length > 1) {
       props.items.forEach((el) => {
@@ -207,7 +223,13 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   const cancelBtn = () => {
-    props.setOnClose();
+    if(retention != "" || retentionDays > 0){
+      setIsOpen(true);
+    }
+    else
+    {
+      props.setOnClose();
+    }
   };
 
   return (
@@ -247,7 +269,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
-                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
+                  <CRXButton type='submit' className='primeryBtn' disabled={buttonState}>
                   {t("Save")}
                   </CRXButton>
                 </div>
@@ -255,6 +277,26 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
                     {t("Cancel")}
                   </CRXButton>
+                  <CRXConfirmDialog
+        setIsOpen={() => setIsOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isOpen}
+        className="userGroupNameConfirm"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
+        buttonPrimary={t("Yes_close")}
+        buttonSecondary={t("No,_do_not_close")}  
+        text="user group form"
+      >
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          </div>
+        </div>
+      </CRXConfirmDialog>
                 </div>
               </div>
             </Form>

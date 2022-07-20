@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox, CRXButton, CRXAlert } from '@cb/shared';
+import { MultiSelectBoxCategory, CRXCheckBox, CRXButton, CRXAlert,CRXConfirmDialog } from '@cb/shared';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
@@ -14,6 +14,10 @@ import { AddOwner, Asset } from '../../../../utils/Api/models/EvidenceModels';
 import { CMTEntityRecord } from '../../../../utils/Api/models/CommonModels';
 import { useTranslation } from "react-i18next";
 import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { useHistory, useParams } from "react-router";
+import { urlList, urlNames } from "../../../../utils/urlList";
+
+
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -36,10 +40,13 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [buttonState, setButtonState] = React.useState<boolean>(false);
+  const [initialfilterValue, setInitialfilterValue] = React.useState(props.filterValue);
+
+  const [buttonState, setButtonState] = React.useState(true);
   const [assetOwners, setAssetOwners] = React.useState<AddOwner[]>([]);
   const [responseError, setResponseError] = React.useState<string>('');
   const [alert, setAlert] = React.useState<boolean>(false);
+  const [isOpen,setIsOpen] = React.useState<boolean>(false);
   const alertRef = useRef(null);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
@@ -52,6 +59,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     //getMasterAsset();
   }, []);
   React.useEffect(() => {
+    
 
     console.log('assetOwners', assetOwners);
     if (assetOwners.length > 0) {
@@ -88,7 +96,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       }
     }
   }, [alert]);
-
+  const history  = useHistory();
   const sendData = async () => {
     const url = '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
     EvidenceAgent.addUsersToMultipleAsset(url, assetOwners).then(() => {
@@ -127,7 +135,16 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       getMasterAsset();
     }
   }
+  const closeDialog = () => {
+    setIsOpen(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.assets)[0]
+        .url
+    );
+    
+  };
   const getMasterAsset = async () => {
+    debugger;
     const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
     EvidenceAgent.getAsset(url).then((response: any) => {
       let result = response.owners.map((x: CMTEntityRecord) => {
@@ -152,6 +169,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   }, [props.filterValue]);
 
   const filterUser = (arr: Array<any>): Array<any> => {
+    debugger;
     let sortedArray: any = [];
     if (arr.length > 0) {
       for (const element of arr) {
@@ -224,9 +242,13 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const cancelBtn = () => {
-    //if (props.filterValue?.length !== 0) {
-    props.setOnClose();
-    //}
+    if(initialfilterValue != props.filterValue){
+      setIsOpen(true);
+    }
+    else
+    {
+      props.setOnClose();
+    }
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -265,6 +287,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     return handleChange(event, 1, newValue, reason, detail);
                   }}
                 />
+                <div>(Selected users will replace all current assigned users)</div>
               </div>
               <div style={{
                 height: "100px", paddingTop: "20px",
@@ -286,7 +309,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
-                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} >
+                  <CRXButton type='submit' className='primeryBtn' disabled={buttonState} >
                     {t("Save")}
                   </CRXButton>
                 </div>
@@ -294,6 +317,26 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
                   {t("Cancel")}
                   </CRXButton>
+                  <CRXConfirmDialog
+        setIsOpen={() => setIsOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isOpen}
+        className="userGroupNameConfirm"
+        primary={t("Yes_close")}
+        buttonPrimary={t("Yes_close")}
+        buttonSecondary={t("No,_do_not_close")}              
+        secondary={t("No,_do_not_close")}
+        text="user group form"
+      >
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          </div>
+        </div>
+      </CRXConfirmDialog>
                 </div>
               </div>
             </Form>

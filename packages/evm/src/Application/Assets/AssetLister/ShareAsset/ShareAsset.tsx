@@ -84,7 +84,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   React.useEffect(() => {
     
     
-    if(email == "")
+    if(email == "" || regex.test(email) == true)
     {
       setEmailError('');
       setShowEmailError(false);
