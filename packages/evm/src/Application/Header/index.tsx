@@ -32,11 +32,14 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
     useEffect(() => {
         let url = window.location.href;
         let validString = url.split('/');
-        let validEndPoint = validString[4].split('?');
-        if(validEndPoint[0] == "SharedMedia")
-        {
-            setIsguestUser(true);
+        if(validString[4]) {
+            let validEndPoint = validString[4].split('?');
+            if(validEndPoint[0] == "SharedMedia")
+            {
+                setIsguestUser(true);
+            }
         }
+       
     },[])
 
     return (
