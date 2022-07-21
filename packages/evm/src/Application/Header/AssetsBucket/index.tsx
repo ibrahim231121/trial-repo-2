@@ -49,8 +49,8 @@ import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../../utils/Api/url'
 import Restricted from "../../../ApplicationPermission/Restricted";
 declare const window: any;
-window.onRecvData = new CustomEvent("onUploadStatusUpdate");
-window.onRecvError = new CustomEvent("onUploadError");
+// window.onRecvData = new CustomEvent("onUploadStatusUpdate");
+// window.onRecvError = new CustomEvent("onUploadError");
 window.URL = window.URL || window.webkitURL;
 const cookies = new Cookies();
 //for asset upload--
@@ -109,7 +109,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
   });
-  const [attention, setAttention] = React.useState<{ msg: string}>({
+  const [attention, setAttention] = React.useState<{ msg: string }>({
     msg: "",
   });
   const [showSucess, setShowSucess] = React.useState<boolean>(false);
@@ -164,8 +164,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     console.log("assetBucketData ", assetBucketData)
     setRows(assetBucketData);
-    assetBucketData.forEach((x:any) => {
-      isChecked[x.assetId]=false;
+    assetBucketData.forEach((x: any) => {
+      isChecked[x.assetId] = false;
     })
     setCheckedAll(false)
     let local_assetBucket: any = localStorage.getItem("assetBucket");
@@ -765,8 +765,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   //Error message system administrator
   const [errorMsg, setErrorMsg] = useState<any>({
-    msg : '',
-    type : '',
+    msg: '',
+    type: '',
   })
   const [showErrorMsg, setShowErrorMsg] = useState<boolean>(false)
   const [errorMsgClass, setErrorMsgClass] = useState<string>("erroMessageContainerHide")
@@ -774,16 +774,16 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     // toasterRef.current.showToaster({
     //   message: data.data.message, variant: data.data.variant, duration: data.data.duration, clearButtton: data.data.clearButtton, persist : true
     // });
-    
-    
+
+
     setErrorMsg({
-      msg : data.data.message,
+      msg: data.data.message,
       type: data.data.variant,
-      
+
     })
     setErrorMsgClass("erroMessageContainerShow")
     setShowErrorMsg(true);
-    
+
     setFileCount((prev) => { return prev >= data.data.fileCountAtError ? prev - data.data.fileCountAtError : prev })
     setFiles((pre) => {
       return pre.filter(x => x.id !== data.data.filesId[0]);
@@ -792,6 +792,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
 
   useEffect(() => {
+    window.onRecvData = new CustomEvent("onUploadStatusUpdate");
+    window.onRecvError = new CustomEvent("onUploadError");
     window.addEventListener("onUploadStatusUpdate", uploadStatusUpdate)
     window.addEventListener("onUploadError", uploadError)
     // return () => window.removeEventListener("onUploadStatusUpdate", MyData);
@@ -953,21 +955,21 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [activeScreen, setActiveScreen] = useState<number>(0);
   const checkBoxRef = useRef(null);
   const selectAssetFromList = (e: any, row: assetRow) => {
-    if(!e.target.checked)
+    if (!e.target.checked)
       setCheckedAll(false)
     setChecked({ ...isChecked, [row.assetId]: e.target.checked });
     /*
     * * Change made to tackle situation, in which it is mandatory to select checkbox.  
     */
     setSelectedItems([...selectedItems, row]);
-    if(e.target.checked)
+    if (e.target.checked)
       setSelectedItems((prevArr) => [...prevArr, row]);
     else
       setSelectedItems((prevArr) => prevArr.filter((e) => e.id !== row.id));
   }
 
   const selectAllAssetFromList = (e: any) => {
-    
+
     setCheckedAll(e.target.checked == true ? true : false)
     rows.forEach((row: AssetBucket, index: number) => {
       isChecked[row.assetId] = e.target.checked;
@@ -980,12 +982,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     assetBucketData.forEach((element: any) => {
       setSelectFill.push(element);
     })
-    if(isCheckedAll) 
-        setSelectedItems(setSelectFill);
-  
+    if (isCheckedAll)
+      setSelectedItems(setSelectFill);
+
     isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
   }, [isCheckedAll]);
-  
+
   return (
     <>
 
@@ -1033,7 +1035,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             type="info"
                             open={showAttention}
                             setShowSucess={setShowAttention}
-                            
+
                           />
                           {/* <CRXAlert
                             className="crx-alert-notification"
@@ -1044,20 +1046,20 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           />*/}
 
                         </CRXColumn>
-                      </CRXRows> 
-                      {showErrorMsg &&  <CRXRows className={errorMsgClass}> 
+                      </CRXRows>
+                      {showErrorMsg && <CRXRows className={errorMsgClass}>
                         <CRXColumn>
-                            <CRXAlert
-                              className="crx-alert-notification"
-                              message={errorMsg.msg}
-                              type={errorMsg.type}
-                              alertType="inline"
-                              persist={true}
-                              open={showErrorMsg}
-                              setShowSucess={setShowErrorMsg}
-                            />
+                          <CRXAlert
+                            className="crx-alert-notification"
+                            message={errorMsg.msg}
+                            type={errorMsg.type}
+                            alertType="inline"
+                            persist={true}
+                            open={showErrorMsg}
+                            setShowSucess={setShowErrorMsg}
+                          />
                         </CRXColumn>
-                      </CRXRows> }
+                      </CRXRows>}
                       <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
                         <CRXAlert
                           className={"crx-alert-notification file-upload"}
@@ -1076,15 +1078,15 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                 color='primary'
                                 variant='contained'
 
-                                >
-                                  {t("Add_metadata")}
-                                </CRXButton>
-                              </div>
+                              >
+                                {t("Add_metadata")}
+                              </CRXButton>
                             </div>
-                            }
-                          />
-                          : ""
-                        
+                          </div>
+                          }
+                        />
+                        : ""
+
                         <CRXModalDialog
                           className="add-metadata-window"
                           maxWidth="xl"
@@ -1211,7 +1213,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                               }
                             </div>
                           </div>
-                        
+
                         </>
                       ) : (
                         <div className="bucketContent">{t("Your_Asset_Bucket_is_empty.")}</div>
@@ -1239,10 +1241,10 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       >
         <div className="crxUplockContent">
           <div className='uploadCancelText'>
-          {t("You_are_attempting_to")} <strong>{t("remove")}</strong> {t("the_file")} <strong>( {fileToRemove} )</strong> {t("asset_from_this_upload.")}  {t("Once_you_remove_it")}, {t("You_will_not_be_able_to_undo_this_action.")}
+            {t("You_are_attempting_to")} <strong>{t("remove")}</strong> {t("the_file")} <strong>( {fileToRemove} )</strong> {t("asset_from_this_upload.")}  {t("Once_you_remove_it")}, {t("You_will_not_be_able_to_undo_this_action.")}
           </div>
           <div className='uploadCancelBottom'>
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("remove")}</strong> {t("this_asset_from_this_upload?")}
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("remove")}</strong> {t("this_asset_from_this_upload?")}
           </div>
         </div>
 

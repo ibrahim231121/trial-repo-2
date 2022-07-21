@@ -89,12 +89,13 @@ const Station: React.FC = () => {
           id: station.id,
           name: station.name + '_' + station.id,
           address: station.address.street,
+          phone: station.address.phone
         };
       });
     }
     setRows(stationRows);
     setReformattedRows(stationRows);
-   
+
   };
 
   React.useEffect(() => {
@@ -193,8 +194,8 @@ const Station: React.FC = () => {
       id: 'name',
       align: 'left',
       // dataComponent: (e: string) => StationAnchorDisplay(e, "anchorStyle"),
-      dataComponent: (e: string) => getModuleIds().includes(19) ? AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url): textDisplay(e, ''),
-        //AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
+      dataComponent: (e: string) => getModuleIds().includes(19) ? AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url) : textDisplay(e, ''),
+      //AnchorDisplay(e, 'linkColor', urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -211,6 +212,17 @@ const Station: React.FC = () => {
       searchComponent: searchText,
       minWidth: '250',
       maxWidth: '400'
+    },
+    {
+      label: t('Phone_Number'),
+      id: 'phone',
+      align: 'left',
+      dataComponent: (e: string) => textDisplay(e, ''),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: '100',
+      maxWidth: '100'
     },
   ]);
 
@@ -283,15 +295,11 @@ const Station: React.FC = () => {
       let dataRows: Station[] = reformattedRows;
       searchData.forEach((el: SearchObject) => {
         if (
-          el.columnName === 'userName' ||
-          el.columnName === 'firstName' ||
-          el.columnName === 'lastName' ||
-          el.columnName === 'email' ||
-          el.columnName === 'groups' ||
-          el.columnName === 'status'
+          el.columnName === 'name' ||
+          el.columnName === 'address' ||
+          el.columnName === 'phone'
         )
           dataRows = onTextCompare(dataRows, headCells, el);
-        if (el.columnName === 'lastLogin') dataRows = onDateCompare(dataRows, headCells, el);
       });
       setRows(dataRows);
     }
@@ -360,7 +368,7 @@ const Station: React.FC = () => {
             <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
               {t('Create_Station')}
             </CRXButton>
-        }
+          }
           getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
