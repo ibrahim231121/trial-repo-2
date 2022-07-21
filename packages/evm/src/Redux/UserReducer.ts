@@ -1063,9 +1063,9 @@ export const getUsersInfoAsync: any = createAsyncThunk(
         const url = USER + `/GetAllUsersInfo?Page=1&Size=1000`
         // if(filter == null) {
             const requestOptions = {
-                method: 'POST',
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
-                body: JSON.stringify(filter),
+                //body: JSON.stringify(filter),
             };
             const resp = await fetch(url, requestOptions);
             if (resp.ok) {

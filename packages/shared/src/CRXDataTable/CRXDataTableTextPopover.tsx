@@ -69,6 +69,7 @@ const useGapStyles = makeStyles({
         style={{
             minWidth :  calcMinWidth + "px", 
             maxWidth : calcMaxWidth + "px",
+            width : calcMinWidth + "px",
             textDecoration : `${open === true ? "underline" : "" }`,
             cursor : "pointer"
         }}

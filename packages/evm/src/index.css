@@ -52,6 +52,7 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  word-break: break-all;
 }
 
 .testClass {
@@ -358,4 +359,13 @@ a::selection {
 
 .data_table_fixedWidth_wrapText {
   word-break: break-all;
+}
+
+.small_checked {
+  width: 32px !important;
+  height: 20px !important;
+}
+
+.small_checked .Mui-checked {
+  padding: 2px !important;
 }
