@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Menu,
   MenuItem,
@@ -24,6 +24,8 @@ import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import http from "../../../../http-common";
 import { EVIDENCE_PATCH_LOCK_UNLOCK_URL } from "../../../../utils/Api/url";
 import { AxiosError } from "axios";
+import { CRXToaster } from "@cb/shared";
+import UnlockAccessDialogue from "../UnlockAccessDialogue";
 
 type Props = {
   selectedItems?: any;
@@ -61,11 +63,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   );
   const [shareAssetDisabled, setShareAssetDisabled] = React.useState<boolean>(false);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
+  const [isLockedAccess,setIsLockedAccess] = React.useState<boolean>(false);
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   const [openForm, setOpenForm] = React.useState(false);
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [isSelectedItem,setIsSelectedItem] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (selectedItems.length > 1) {
@@ -73,6 +77,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     }
     else {
       setShareAssetDisabled(false);
+    }
+    if(selectedItems.length > 0) {
+      setIsSelectedItem(true);
+    }
+    else{
+      setIsSelectedItem(false);
+
     }
   }, [selectedItems]);
 
@@ -89,7 +100,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     } else {
       setIsCategoryEmpty(true);
     }
+    
+    if(row?.evidence?.masterAsset?.lock != null){
+      
+      setIsLockedAccess(false)
+    }
+    else{
+     
+      setIsLockedAccess(true)
+    }
   }, [row]);
+
 
   const handleChange = () => {
     setOpenForm(true);
@@ -110,6 +131,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openManageRetention, setOpenManageRetention] = React.useState(false);
   const [openAssetShare, setOpenAssetShare] = React.useState(false);
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
+  const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
 
   const handleOpenAssignUserChange = () => {
@@ -152,28 +174,61 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   }
 
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
+  const UnlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
+  const userId = parseInt(localStorage.getItem('User Id') ?? "0")
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  console.log("userId",userId)
+  
 
   const confirmCallBackForRestrictModal = () => {
-    debugger;
     const _requestBody = [];
-    for (const selectedItem of selectedItems) {
+      if(isSelectedItem){
+        selectedItems.map((x: any) => {
+          if(x.evidence.masterAsset.lock){
+          _requestBody.push({
+            evidenceId: x.id,
+            assetId: x.assetId,
+            userRecId:  parseInt(localStorage.getItem('User Id') ?? "0") ,
+            operation:  "UnLock"
+          })
+        }
+        
+      })
+      }
+      else{
       _requestBody.push({
         evidenceId: row?.id,
-        assetId: selectedItem.assetId,
-        userRecId: localStorage.getItem('User Id'),
-        operation: "Lock"
-      });
+        assetId: row.assetId,
+        userRecId:  parseInt(localStorage.getItem('User Id') ?? "0") ,
+        operation: isLockedAccess ? "Lock" : "UnLock"
+      })
     }
+    // }
     const _body = JSON.stringify(_requestBody);
     const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
-    http.patch(_url, _body).then((response) => {
-      if (response.status === 204) {
+    fetch(_url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        TenantId: "1", 
+      },
+      body: (_body),
+    }).then(function (res) {
+         if (res.status === 204) {
+          toasterRef.current.showToaster({
+            message: isLockedAccess ? "Access Restricted" : "Access Unlocked",
+            variant: "success",
+            duration: 7000,
+        
+          });
         setSuccess(true);
         setTimeout(() => {
           setOpenRestrictAccessDialogue(false);
+          setOpenUnlockAccessDialogue(false);
           setSuccess(false);
         }, 3000);
       }
+      return res.status;
     })
       .catch((error) => {
         const err = error as AxiosError;
@@ -185,8 +240,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         setError(true);
       });
   }
+  
   return (
     <>
+    <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <FormContainer
         setOpenForm={() => setOpenForm(false)}
         openForm={openForm}
@@ -256,7 +313,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         />
       </CRXModalDialog>
 
-      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
+      <CRXAlert message='Success: The assets are locked.' type = 'success' alertType='toast' open={true} />
       {error && (
         <CRXAlert
           message={errorMessage}
@@ -300,6 +357,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
+
+        
 
         {/* <MenuItem>
           <Restricted moduleId={0}>
@@ -445,6 +504,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem> */}
 
+{isLockedAccess ?
         <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
@@ -458,6 +518,22 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
+        :
+        <MenuItem>
+          <Restricted moduleId={0}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              {/* descriptorId={4} */}
+              <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">UnLock Access</div>
+              </div>
+            </SecurityDescriptor>
+          </Restricted>
+        </MenuItem>
+}
+       
         {shareAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
@@ -480,6 +556,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
         onConfirmBtnHandler={confirmCallBackForRestrictModal}
       />
+      <UnlockAccessDialogue
+        openOrCloseModal={openUnlockAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenUnlockAccessDialogue(e)}
+        onConfirmBtnHandler={confirmCallBackForRestrictModal}
+      />
+
     </>
   );
 });

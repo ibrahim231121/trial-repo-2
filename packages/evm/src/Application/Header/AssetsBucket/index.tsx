@@ -1060,7 +1060,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           />
                         </CRXColumn>
                       </CRXRows>}
-                      <CRXRows container spacing={0} className={totalFilePer === 100 ? "file-upload-show" : "file-upload-hide"} >
+                      <CRXRows container spacing={0} className={isMetaDataOpen ? "file-upload-show" : "file-upload-hide"} >
                         <CRXAlert
                           className={"crx-alert-notification file-upload"}
                           message={"sucess.msg"}

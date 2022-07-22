@@ -1036,7 +1036,7 @@ const AddMetadataForm: React.FC<Props> = ({
         state: "Normal",
         unitId: 20,
         isRestrictedView: true,
-        duration: 0,
+        duration: index.duration,
         recording: {
           started: currentStartDate(),
           ended: recordingEnded(),
