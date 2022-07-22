@@ -394,7 +394,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-        <MenuItem>
+        {/* <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -405,9 +405,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuItem disabled>
+        {/* <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -418,9 +418,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuItem>
+        {/* <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -431,8 +431,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
-        <MenuItem disabled>
+        </MenuItem> */}
+        {/* <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
@@ -443,11 +443,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               {/* descriptorId={4} */}
               <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
                 <div className="crx-menu-icon">
@@ -461,14 +461,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {shareAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Share_Asset")}</div>
               </div>
-              {/* </SecurityDescriptor> */}
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : null
