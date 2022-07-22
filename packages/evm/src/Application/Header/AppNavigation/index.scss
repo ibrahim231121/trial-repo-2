@@ -191,7 +191,29 @@
                     }
                 }
 
-                &:nth-child(5) {
+                &:nth-child(7) {
+                    .p-submenu-list {
+                        top: auto;
+                        bottom: -3%;
+                    }
+                }
+            }
+        }
+    }
+  }
+
+  @media screen and (max-width: 1700px) {
+    .p-tieredmenu {
+        ul {
+            li {
+                &:last-child {
+                    .p-submenu-list {
+                        top: auto;
+                        bottom: -3%;
+                    }
+                }
+
+                &:nth-child(7) {
                     .p-submenu-list {
                         top: auto;
                         bottom: -3%;
