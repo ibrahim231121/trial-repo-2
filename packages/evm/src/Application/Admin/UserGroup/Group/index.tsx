@@ -31,6 +31,8 @@ import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
 import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
+import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
+import { GroupSubModules, Module, UserGroups } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
 import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 export type GroupInfoModel = {
@@ -69,6 +71,8 @@ const Group = () => {
     description: "",
   });
   const [userIds, setUserIds] = React.useState<Number[]>([]);
+
+  //const [resAppPermission, setresAppPermission] = useState<any>();
   const [subModulesIds, setSubModulesIds] = React.useState<Number[]>([]);
   const [showGroupScroll, setShowGroupScroll] = React.useState(false);
   const [messagesadd, setMessagesadd] = useState<string>("crxScrollGroupTop");
@@ -106,7 +110,8 @@ const Group = () => {
     id: "",
     name: "",
   });
-
+  const [res,setRes] = React.useState<UserGroups>() 
+  const [resAppPermission,setResponseAppPermission] = React.useState<Module>()
   const groupMsgRef = useRef<typeof CRXToaster>(null);
 
   function handleChange(event: any, newValue: number) {
@@ -136,19 +141,19 @@ const Group = () => {
   const { id } = useParams<{ id: string }>();
   const [ids, setIds] = useState<string>(id);
 
-  const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + ids, {
-    "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}`
-  });
+  // const [getResponse, res] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + ids, {
+  //   "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}`
+  // });
 
   const [getContainerMappingRes, ContainerMappingRes] = useGetFetch<any>(
     CONTAINERMAPPING_INFO_GET_URL + "?groupId=" + id,
     { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` }
   );
 
-  const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
-    APPLICATION_PERMISSION_URL,
-    { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${getToken()}` }
-  );
+  // const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
+  //   APPLICATION_PERMISSION_URL,
+  //   { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${getToken()}` }
+  // );
 
   React.useEffect(() => {
     functionInitialized();
@@ -162,10 +167,16 @@ const Group = () => {
   const functionInitialized = () => {
     //this work is done for edit, if id available then retrive data from url
     if (!isNaN(+id)) {
-      getResponse();
+      UsersAndIdentitiesServiceAgent.getUserGroupsById(ids).then((response: UserGroups) => {
+        setRes(response)
+     });
+      //getResponse();
       getContainerMappingRes();
     }
-    getResponseAppPermission();
+    UsersAndIdentitiesServiceAgent.getResponseAppPermission(APPLICATION_PERMISSION_URL).then((response:Module ) => {
+      setResponseAppPermission(response)
+   });
+    //getResponseAppPermission();
     dispatch(getUsersInfoAsync(gridFilter));
   };
 
@@ -409,26 +420,21 @@ const Group = () => {
 
   const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {
     let editCase = !isNaN(+id);
-    let method = editCase ? "PUT" : "POST";
     var groupURL = SAVE_USER_GROUP_URL;
 
-    if (editCase) {
-      groupURL = groupURL + "/" + id;
-    }
-
-    let subModules = applicationPermissions
-      .map((x) => x.children)
-      .flat(1)
-      .filter((x) => x?.selected === true)
-      .map((x) => {
-        return { subModuleId: x?.id };
-      });
-
-    // if(editCase){
-    //   subModules.map(x=> {return {...x, "id":parseInt(id)}})
-    // }
-
-    let userGroup = {
+    
+    let subModules : GroupSubModules[] = applicationPermissions
+    .map((x) => x.children)
+    .flat(1)
+    .filter((x) => x?.selected === true)
+    .map((x) => {
+      return { 
+        id: "0",
+        subModuleId: (x !== undefined ? String(x.id) : "0")
+      };
+    })
+    let userGroup : UserGroups= {
+      id: editCase ? id : "0",
       name: groupInfo.name,
       description: groupInfo.description,
       groupSubModules: subModules,
@@ -437,113 +443,163 @@ const Group = () => {
 
       members: {
         users: userIds.map((x) => {
-          return { id: x };
+          return x;
         }),
       },
     };
     let groupId = 0;
     let status = 0;
+    if (editCase) {
+      groupURL = groupURL + "/" + id;
+      UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup).then(() => {
+        groupId = parseInt(id);
+        functionalityAfterRequest(groupId, 204)
+      } )
+    }
+    else{
+      UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup).then((response: any) => {
+        groupId = parseInt(response.replace(/["']/g, ""));
+        functionalityAfterRequest(groupId, 201)
+      } )
+    }
+    
+
+    // if(editCase){
+    //   subModules.map(x=> {return {...x, "id":parseInt(id)}})
+    // }
+
+    //change here
+    
+   
 
     
-    fetch(groupURL, {
-      method: method,
+    // fetch(groupURL, {
+    //   method: method,
+    //   headers: {
+    //     TenantId: "1",
+    //     "Content-Type": "application/json",
+    //     'Authorization': `Bearer ${getToken()}`
+        
+    //   },
+    //   body: JSON.stringify(userGroup),
+    // })
+    //   .then((res) => {
+    //     status = res.status;
+    //     return res.text();
+    //   })
+    //   .then((grpResponse) => {
+    //     if (status === 201 || status === 204) {
+    //       //which means group has been created or updated now its time to save container permission for station and categories.
+    //       let groupId = 0;
+    //       if (status === 201) {
+    //         groupId = parseInt(grpResponse.replace(/["']/g, ""));
+    //       }
+    //       if (status === 204) {
+    //         groupId = parseInt(id);
+    //       }
+          
+    //     } else if (status === 500 || status === 400) {
+    //       setShowSuccess(true);
+    //       functionInitialized();
+    //       setIsAppPermissionsChange(false);
+    //       setIsSaveButtonDisabled(true);
+
+    //       setMessages(message[1].message);
+    //       setError(message[1].messageType);
+    //     } else if (status === 409 || status === 404) {
+    //       let error = JSON.parse(grpResponse);
+
+    //       // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
+    //       effectAfterSave(groupId.toString(),status, true)
+
+    //       setShowMessageCls("showMessageGroup");
+    //       setShowMessageError("errorMessageShow");
+
+    //       setMessages(error);
+    //       setAlertType("inline");
+    //       setError("error");
+    //     }
+    //   });
+  };
+
+  const functionalityAfterRequest = (groupId: number, status: number) => {
+    let permissionsToAdd = dataPermissions.map((x) => {
+      return {
+        id: x.containerMappingId,
+        mappingId: x.mappingId,
+        groupMapping: {
+          groupId: groupId,
+          permission: x.permission,
+        },
+        fieldType: x.fieldType,
+      };
+    });
+    let dataPermissionObj = {
+      //  groupId : id,
+      containerMappings: permissionsToAdd,
+      deletedContainerMappingIds: deletedDataPermissions,
+      groupId:groupId
+    };
+    fetch(UPSERT_CONTAINER_MAPPING_URL, {
+      method: "PUT",
       headers: {
         TenantId: "1",
         "Content-Type": "application/json",
         'Authorization': `Bearer ${getToken()}`
-        
       },
-      body: JSON.stringify(userGroup),
+      body: JSON.stringify(dataPermissionObj),
     })
-      .then((res) => {
-        status = res.status;
-        return res.text();
+      .then((container) => {
+        
+        if (container.status === 201 || container.status === 204) {
+          // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+          showToastMsg();
+        } else if (
+          container.status === 500 ||
+          container.status === 400 ||
+          container.status === 409 ||
+          container.status === 404
+        ) {
+          effectAfterSave(groupId.toString(),container.status, true)
+          setAlertType("inline");
+          setMessages(message[2].message);
+          setError(message[2].messageType);
+        }
       })
-      .then((grpResponse) => {
-        if (status === 201 || status === 204) {
-          //which means group has been created or updated now its time to save container permission for station and categories.
-          let groupId = 0;
-          if (status === 201) {
-            groupId = parseInt(grpResponse.replace(/["']/g, ""));
-          }
-          if (status === 204) {
-            groupId = parseInt(id);
-          }
-          let permissionsToAdd = dataPermissions.map((x) => {
-            return {
-              id: x.containerMappingId,
-              mappingId: x.mappingId,
-              groupMapping: {
-                groupId: groupId,
-                permission: x.permission,
-              },
-              fieldType: x.fieldType,
-            };
-          });
-          let dataPermissionObj = {
-            //  groupId : id,
-            containerMappings: permissionsToAdd,
-            deletedContainerMappingIds: deletedDataPermissions,
-            groupId:groupId
-          };
-          fetch(UPSERT_CONTAINER_MAPPING_URL, {
-            method: "PUT",
-            headers: {
-              TenantId: "1",
-              "Content-Type": "application/json",
-              'Authorization': `Bearer ${getToken()}`
-            },
-            body: JSON.stringify(dataPermissionObj),
-          })
-            .then((container) => {
-              
-              if (container.status === 201 || container.status === 204) {
-                // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
-                showToastMsg();
-              } else if (
-                container.status === 500 ||
-                container.status === 400 ||
-                container.status === 409 ||
-                container.status === 404
-              ) {
-                effectAfterSave(groupId.toString(),container.status, true)
-                setAlertType("inline");
-                setMessages(message[2].message);
-                setError(message[2].messageType);
-              }
-            })
-            .catch((err: Error) => {
-              
-              
-            });
-
-          effectAfterSave(groupId.toString(),status, false)
-        } else if (status === 500 || status === 400) {
+      .catch((error: any) => {
+        if (error.response.status === 500 || error.response.status === 400) {
           setShowSuccess(true);
           functionInitialized();
           setIsAppPermissionsChange(false);
           setIsSaveButtonDisabled(true);
-
+  
           setMessages(message[1].message);
           setError(message[1].messageType);
-        } else if (status === 409 || status === 404) {
-          let error = JSON.parse(grpResponse);
-
+        } else if (error.response.status === 409 || error.response.status === 404) {
+          let errorJson = JSON.parse(error);
+  
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
           effectAfterSave(groupId.toString(),status, true)
-
+  
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow");
-
-          setMessages(error);
+  
+          setMessages(errorJson);
           setAlertType("inline");
           setError("error");
         }
+        
       });
-  };
+  
+    effectAfterSave(groupId.toString(),status, false)
+   }
+  
 
   useEffect(() => {
-    if (ids !== undefined) getResponse()
+    if (ids !== undefined)  
+     UsersAndIdentitiesServiceAgent.getUserGroupsById(ids).then((response: UserGroups) => {
+      setRes(response)
+   });
   }, [ids]);
 
   const effectAfterSave = (groupId: string,status: number, bl:boolean) => {

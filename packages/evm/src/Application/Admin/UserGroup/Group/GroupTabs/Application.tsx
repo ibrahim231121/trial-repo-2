@@ -8,6 +8,8 @@ import { idText } from "typescript";
 import { ApplicationPermission, GroupIdName } from ".."
 import "./application.scss"
 import Condition from "yup/lib/Condition";
+import { UsersAndIdentitiesServiceAgent } from "../../../../../utils/Api/ApiAgent";
+import { UserGroups } from "../../../../../utils/Api/models/UsersAndIdentitiesModel";
 
 type Props = {
   resAppPermission: any;
@@ -28,7 +30,8 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
 
   const finalLevel: number = 2
 
-  
+  const [responseGroups,setResponseGroups] = React.useState<UserGroups[]>([])
+  const [responseSelectedGroup,setResponseSelectedGroups] =  React.useState<UserGroups>()
   const [userGroupsList, setUserGroupsList] = React.useState<NameAndValue[]>();
   const [selectedUserGroup, setSelectedUserGroup] = React.useState<GroupIdName>(
       isAppPermissionsChange ? {
@@ -38,9 +41,10 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
     groupIdName
   );
 
+
   
-  const [getResponseGroups, responseGroups] = useGetFetch<any>(GROUP_GET_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
-  const [getResponseSelectedGroup, responseSelectedGroup] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + selectedUserGroup?.id, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  //const [getResponseGroups, responseGroups] = useGetFetch<any>(GROUP_GET_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  //const [getResponseSelectedGroup, responseSelectedGroup] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + selectedUserGroup?.id, { 'Content-Type': 'application/json', 'TenantId': '1' });
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // {
@@ -88,9 +92,10 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
     }
   ]);
 
-  React.useEffect(() => {
-      
-      getResponseGroups();
+  React.useEffect(() => {    
+    UsersAndIdentitiesServiceAgent.getUsersGroups().then((response: UserGroups[]) => {
+      setResponseGroups(response)
+   });
   }, [])
 
   const selectGroup = (e : any, id:string, name:string) => {
@@ -99,10 +104,12 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
 
   useEffect(() => {
     if (selectedUserGroup !== undefined) {
-      getResponseSelectedGroup();
+      UsersAndIdentitiesServiceAgent.getUserGroupsById(selectedUserGroup?.id).then((response: UserGroups) => {
+        setResponseSelectedGroups(response)
+     });
     }
+  
   },[selectedUserGroup])
-
   const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
     let count: number = 0
     if(response.subModules && response.subModules.length > 0)  {

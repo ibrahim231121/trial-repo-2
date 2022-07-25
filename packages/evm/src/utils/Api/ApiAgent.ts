@@ -2,11 +2,12 @@ import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, EvdenceCategoryAssignment, Evidence, ExtendRetention, Note, TimelinesSync } from './models/EvidenceModels';
-import { BASE_URL_UNIT_SERVICES, EVIDENCE_SERVICE_URL, SETUP_CONFIGURATION_SERVICE_URL } from './url';
+import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention, Note, TimelinesSync,EvdenceCategoryAssignment } from './models/EvidenceModels';
+import { EVIDENCE_SERVICE_URL,BASE_URL_USER_SERVICE, SETUP_CONFIGURATION_SERVICE_URL ,USER_INFO_GET_URL,GROUP_USER_LIST,USER,GROUP_GET_URL,GROUP_GET_BY_ID_URL,GROUP_USER_COUNT_GET_URL,SAVE_USER_GROUP_URL,BASE_URL_UNIT_SERVICES } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
+import {UsersInfo,UserGroups,GroupUserCount, UserList, User, Module, GroupList} from './models/UsersAndIdentitiesModel'
 import { ConfigurationTemplate, ConfigurationTemplateLogs, DefaultConfigurationTemplate, DefaultUnitTemplate, DeviceConfigurationTemplate, DeviceType, GetPrimaryDeviceInfo, Unit, UnitInfo, UnitTemp, UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { Station } from './models/StationModels';
 const cookies = new Cookies();
@@ -23,6 +24,7 @@ let config = {
 
 axios.interceptors.response.use(async response => {
     try {
+      
         return response;
     } catch (ex) {
         return await Promise.reject(ex);
@@ -71,6 +73,20 @@ export const AuthenticationAgent = {
     getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'')
 }
 
+export const UsersAndIdentitiesServiceAgent = {
+    getUsersInfo: (url:string, body: any) => requests.post<UsersInfo[]>(USER_INFO_GET_URL,'',body),
+    getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL,''),
+    getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL,''),
+    getUser:(userId: string) => requests.get<UserList>(USER , `/${userId}`),
+    addUser: (url: string, body: User) => requests.post<number>(BASE_URL_USER_SERVICE,url, body),
+    editUser: (url: string, body: User) => requests.put<number>(BASE_URL_USER_SERVICE,url, body),
+    getResponseAppPermission: (url: string) => requests.get<Module>(BASE_URL_USER_SERVICE, url),
+    updateUserInfoURL: (url: string, body: any) => requests.patch<void>(BASE_URL_USER_SERVICE, url, body),
+    getUserGroupsById:(id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL , `/${id}`),
+    getSelectedUserGroups:(id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL , `/${id}`),
+    addUserGroup:(url: string, body: UserGroups) => requests.post<number>(GROUP_GET_BY_ID_URL , url, body),
+    editUserGroup:(url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL , url, body)
+}
 export const UnitsAndDevicesAgent = {
     getAllUnits: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url),
     getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url),

@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
+import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
+import { UsersInfo } from '../utils/Api/models/UsersAndIdentitiesModel';
 import { USER_INFO_GET_URL, USER_INFO_UPDATE_URL, USER } from '../utils/Api/url'
 
 const cookies = new Cookies();
@@ -1061,33 +1063,8 @@ export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
     async (filter?: any) => {
         const url = USER + `/GetAllUsersInfo?Page=1&Size=1000`
-        // if(filter == null) {
-            const requestOptions = {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}` },
-                //body: JSON.stringify(filter),
-            };
-            const resp = await fetch(url, requestOptions);
-            if (resp.ok) {
-                const response = await resp.json();
-                return response;
-            }
-        // }
-        // else {
-        //     const requestOptions = {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
-        //         body: JSON.stringify(filter),
-        //     };
-        //     const resp = await fetch( USER + "/filter?Size=100&Page=1",requestOptions);
-        //     if (resp.ok) {
-        //         const response = await resp.json();
-        //         return response;
-        //     }
-        // }
-        
-    }
-);
+             return await UsersAndIdentitiesServiceAgent.getUsersInfo(url, filter).then((response:UsersInfo[]) => response)
+});
 
 // export const getUsersInfoAsync: any = createAsyncThunk(
 //     'getUsersInfo',
@@ -1105,20 +1082,28 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
                 "value": args.valueToUpdate
             }
         ]
-        const requestOptions = {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
-            },
-            body: JSON.stringify(body)
-        };
-        const resp = await fetch(USER_INFO_UPDATE_URL + `?userId=` + args.userId, requestOptions);
-        if (resp.ok) {
+        // const requestOptions = {
+        //     method: 'PATCH',
+        //     headers: {
+        //         'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
+        //     },
+        //     body: JSON.stringify(body)
+        // };
+        const url = '/Users?userId='+ args.userId;
+        
+        // const resp = await fetch(USER_INFO_UPDATE_URL + `?userId=` + args.userId, requestOptions);
+         await UsersAndIdentitiesServiceAgent.updateUserInfoURL(url, JSON.stringify(body)).then(()=> {
             args.dispatchNewCommand(true);
-        }
-        else {
+        }).catch((e: any) =>{ 
             args.dispatchNewCommand(false);
-        }
+        })
+        
+        // if (resp.ok) {
+        //     args.dispatchNewCommand(true);
+        // }
+        // else {
+        //     args.dispatchNewCommand(false);
+        // }
     }
 );
 

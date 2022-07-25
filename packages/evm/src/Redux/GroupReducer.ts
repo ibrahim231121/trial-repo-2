@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
 import { GROUP_GET_URL, GROUP_USER_COUNT_GET_URL } from '../utils/Api/url'
-
+import { GroupUserCount } from '../utils/Api/models/UsersAndIdentitiesModel';
+import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
 const cookies = new Cookies();
 
 export const getGroupAsync: any = createAsyncThunk(
@@ -21,16 +22,18 @@ export const getGroupAsync: any = createAsyncThunk(
 export const getGroupUserCountAsync: any = createAsyncThunk(
     'getGroupUserCounts',
     async () => {
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' , 'Authorization': `Bearer ${cookies.get('access_token')}`},
-        };
-        const resp = await fetch(GROUP_USER_COUNT_GET_URL, requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
-    }
+    //     const requestOptions = {
+    //         method: 'GET',
+    //         headers: { 'Content-Type': 'application/json', 'TenantId': '1' , 'Authorization': `Bearer ${cookies.get('access_token')}`},
+    //     };
+    //     const resp = await fetch(GROUP_USER_COUNT_GET_URL, requestOptions);
+    //     if (resp.ok) {
+    //         const response = await resp.json();
+    //         return response;
+    //     }
+    return await UsersAndIdentitiesServiceAgent.getUserGroupCount().then((response:GroupUserCount[]) => response)
+
+    } 
 );
 
 export const groupSlice = createSlice({

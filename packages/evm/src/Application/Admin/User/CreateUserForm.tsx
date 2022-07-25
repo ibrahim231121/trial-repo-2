@@ -28,6 +28,8 @@ import ApplicationPermissionContext from "../../../ApplicationPermission/Applica
 import { useTranslation } from "react-i18next";
 import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { REACT_APP_CLIENT_ID} from '../../../../../evm/src/utils/Api/url'
+import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
+import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
 
 let USER_DATA = {};
 
@@ -51,15 +53,15 @@ interface userStateProps {
   deactivationDate: string;
 }
 
-type account = {
-  isAdministrator: number;
-  lastLogin: Date;
-  passwordDetail: any;
-  status: number;
-  userName: string;
-  password: string;
-  isPasswordResetRequired: boolean;
-};
+// type account = {
+//   isAdministrator: number;
+//   lastLogin: Date;
+//   passwordDetail: any;
+//   status: number;
+//   userName: string;
+//   password: string;
+//   isPasswordResetRequired: boolean;
+// };
 
 let gridFilter: GridFilter = {
   logic: "and",
@@ -215,13 +217,18 @@ else{
   };
 
   const fetchUser = async () => {
-    const res = await fetch(`${USER}/${id}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' }
+    ///Change here!!!!!
+    // const res = await fetch(`${USER}/${id}`, {
+    //   method: 'GET',
+    //   headers: { 'Content-Type': 'application/json', TenantId: '1' }
+    // });
+    // var response = await res.json();
+     UsersAndIdentitiesServiceAgent.getUser(id).then((response: UserList) => {
+      dispatch(enterPathActionCreator({ val: response.account.userName }));
+      setUserPayload(response);
     });
-    var response = await res.json();
-    dispatch(enterPathActionCreator({ val: response.account.userName }));
-    setUserPayload(response);
+    // dispatch(enterPathActionCreator({ val: response.account.userName }));
+    // setUserPayload(response);
     
   };
 
@@ -345,13 +352,9 @@ else{
   //Permission applied when user doesnot have permission of Activate and Deactivate Users
   const activationLinkPermission = content.filter((x:any) => getModuleIds().includes(x.moduleIds) || x.moduleIds === 0);
 
-  const fetchGroups = async () => {
-    
-    const res = await fetch(GROUP_USER_LIST, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` }
-    });
-    var response = await res.json();
+  const fetchGroups = () => {
+
+    UsersAndIdentitiesServiceAgent.getUsersGroups().then((response:UserGroups[])=>{
     var groupNames = response.map((x: any) => {
       let j: NameAndValue = {
         groupId: x.id,
@@ -364,6 +367,7 @@ else{
     });
     setUserGroupsList(groupNames);
     sendOptionList(groupNames);
+    })
   };
 
   const [optionList, setOptionList] = useState<any>([]);
@@ -441,7 +445,7 @@ else{
     }
 
 
-    const account: account = {
+    const account: Account = {
       isAdministrator: 1,
       status: 1,
       userName: formpayload.userName,
@@ -462,15 +466,26 @@ else{
         account.status = 3;
       }
       
-    const payload = {
-      email: formpayload.email,
-      deactivationDate: formpayload.deactivationDate,
-      name,
-      account,
-      contacts,
-      assignedGroupIds: userGroupsListIDs,
-      timeZone: 'America/Chicago'
-    };
+    // const payload = {
+    //   email: formpayload.email,
+    //   deactivationDate: formpayload.deactivationDate,
+    //   name,
+    //   account,
+    //   contacts,
+    //   assignedGroupIds: userGroupsListIDs,
+    //   timeZone: 'America/Chicago'
+    // };
+    const payload : User = {
+     email : formpayload.email,
+     deactivationDate: formpayload.deactivationDate,
+     name,
+     account,
+     contacts,
+     assignedGroupIds: userGroupsListIDs,
+     timeZone: 'America/Chicago'
+  };
+
+
     return payload;
   };
 
@@ -481,22 +496,20 @@ else{
     }
 
     const payload = setAddPayload();
-    await fetch(USER, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
-      body: JSON.stringify(payload)
-    })
-      .then(function (res) {
-        if (res.ok) return res.json();
-        else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        } else return res.text();
-      })
-      .then((resp) => {
-        if (resp !== undefined) {
+    const AddUser = "/Users";
+    UsersAndIdentitiesServiceAgent.addUser(AddUser, payload).then(function (res: number){
+      if (res)
+        return res;
+      //   else if (res.status == 500) {
+      //     setAlert(true);
+      //     setResponseError(
+      //       t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+      //     );
+      //   } else return res.text();
+      // })
+    
+    }).then((resp: any)=>{
+     if (resp !== undefined) {
           let error = JSON.parse(resp);
           if (error.errors !== undefined) {
             if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
@@ -556,10 +569,97 @@ else{
             }
           }
         }
-      })
-      .catch(function (error) {
-        return error;
+    })
+      .catch(function (e: any) {
+        if (e.request.status == 500) 
+        {
+          setAlert(true);
+          setResponseError(
+            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+          );
+        }
+
+        return e;
       });
+    // await fetch(USER, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
+    //   body: JSON.stringify(payload)
+    // })
+    //   .then(function (res) {
+    //     if (res.ok) return res.json();
+    //     else if (res.status == 500) {
+    //       setAlert(true);
+    //       setResponseError(
+    //         t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+    //       );
+    //     } else return res.text();
+    //   })
+    //   .then((resp) => {
+    //     if (resp !== undefined) {
+    //       let error = JSON.parse(resp);
+    //       if (error.errors !== undefined) {
+    //         if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.UserName[0]);
+    //         }
+    //         if (error.errors.First !== undefined && error.errors.First.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.First[0]);
+    //         }
+    //         if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.Last[0]);
+    //         }
+    //         if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.Middle[0]);
+    //         }
+    //         if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.Email[0]);
+    //         }
+    //         if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.Number[0]);
+    //         }
+
+    //         if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+    //           setAlert(true);
+    //           setResponseError(error.errors.Password[0]);
+    //         }
+    //       } else if (!isNaN(+error)) {
+    //         const userName = formpayload.firstName + ' ' + formpayload.lastName;
+    //         sendEmail(formpayload.email, '', userName);
+    //         userFormMessages({
+    //           message: t('You_have_created_the_user_account.'),
+    //           variant: 'success',
+    //           duration: 7000
+    //         });
+    //         dispatch(getUsersInfoAsync());
+    //         setDisableSave(true)
+      
+    //       } else {
+    //         setAlert(true);
+    //         setResponseError(error);
+    //         const errorString = error;
+    //         if (errorString.includes('email') === true) {
+    //           setIsExtEmail('isExtEmail');
+    //         } else {
+    //           setIsExtEmail('');
+    //         }
+
+    //         if (errorString.includes('username') === true) {
+    //           setIsExtUsers('isExtUserName');
+    //         } else {
+    //           setIsExtUsers('');
+    //         }
+    //       }
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     return error;
+    //   });
   };
 
   const onSelectPasswordType = () => {
@@ -600,7 +700,7 @@ else{
       contacts.push({ contactType: 1, number: formpayload.phoneNumber });
     }
 
-    const payload = {
+    const payload: User = {
       ...userPayload,
       email: formpayload.email,
       deactivationDate: formpayload.deactivationDate,
@@ -613,7 +713,10 @@ else{
 
     return payload;
   };
+  const functionalityAfterRequest = () => {
 
+
+  }
   const onEdit = async () => {
     if (formpayload.userGroups.length === 0) {
       setError(true);
@@ -623,86 +726,159 @@ else{
     const urlEdit = USER + '/' + `${id}`;
 
     const payload = setEditPayload();
-
-    await fetch(urlEdit, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
-      body: JSON.stringify(payload)
-    })
-      .then(function (res) {
-        if (res.ok) {
-          if (disableLink) {
-            const userName = userPayload.name.first + ' ' + userPayload.name.last;
-            sendEmail(payload.email, userPayload.id, userName);
-            userFormMessages({
-              message: t('You_have_resent_the_activation_link.'),
-              variant: 'success',
-              duration: 7000
-            });
-            dispatch(getUsersInfoAsync(gridFilter));
-            setDisableSave(true)
-          }
-          userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
+    UsersAndIdentitiesServiceAgent.editUser(urlEdit, payload).then(() => {
+      if (disableLink)
+       {
+          const userName = userPayload.name.first + ' ' + userPayload.name.last;
+          sendEmail(payload.email, userPayload.id, userName);
+          userFormMessages({
+                    message: t('You_have_resent_the_activation_link.'),
+                    variant: 'success',
+                    duration: 7000
+              });
           dispatch(getUsersInfoAsync(gridFilter));
           setDisableSave(true)
-        } else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        } else return res.text();
-      })
-      .then((resp) => {
-        if (resp !== undefined) {
-          let error = JSON.parse(resp);
+       }
+       userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
+       dispatch(getUsersInfoAsync());
+       setDisableSave(true)
+               
+      functionalityAfterRequest()
+    }).catch((e: any)=>
+    {
+      
+            if (e !== undefined) {
+                      let error = JSON.parse(e);
+            
+                      if (error.errors !== undefined) {
+                        if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.UserName[0]);
+                        }
+                        if (error.errors.First !== undefined && error.errors.First.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.First[0]);
+                        }
+                        if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.Last[0]);
+                        }
+                        if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.Email[0]);
+                        }
+                        if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.Password[0]);
+                        }
+                        if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+                          setAlert(true);
+                          setResponseError(error.errors.Password[0]);
+                        }
+                      } else {
+                        setAlert(true);
+                        setResponseError(error);
+                        const errorString = error;
+                        if (errorString.includes('email') === true) {
+                          setIsExtEmail('isExtEmail');
+                        } else {
+                          setIsExtEmail('');
+                        }
+            
+                        if (errorString.includes('username') === true) {
+                          setIsExtUsers('isExtUserName');
+                        } else {
+                          setIsExtUsers('');
+                        }
+                      }
+                    }
+                    else if (e.status == 500) {
+                      setAlert(true);
+                      setResponseError(
+                        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+                      );
+                  }
+            return error;
+    });
+  //   await fetch(urlEdit, {
+  //     method: 'PUT',
+  //     headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
+  //     body: JSON.stringify(payload)
+  //   })
+  //     .then(function (res) {
+  //       if (res.ok) {
+  //         if (disableLink) {
+  //           const userName = userPayload.name.first + ' ' + userPayload.name.last;
+  //           sendEmail(payload.email, userPayload.id, userName);
+  //           userFormMessages({
+  //             message: t('You_have_resent_the_activation_link.'),
+  //             variant: 'success',
+  //             duration: 7000
+  //           });
+  //           dispatch(getUsersInfoAsync());
+  //           setDisableSave(true)
+  //         }
+  //         userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
+  //         dispatch(getUsersInfoAsync());
+  //         setDisableSave(true)
+  //       } else if (res.status == 500) {
+  //         setAlert(true);
+  //         setResponseError(
+  //           t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+  //         );
+  //       } else return res.text();
+  //     })
+  //     .then((resp) => {
+  //       if (resp !== undefined) {
+  //         let error = JSON.parse(resp);
 
-          if (error.errors !== undefined) {
-            if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.UserName[0]);
-            }
-            if (error.errors.First !== undefined && error.errors.First.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.First[0]);
-            }
-            if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Last[0]);
-            }
-            if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Email[0]);
-            }
-            if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Password[0]);
-            }
-            if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Password[0]);
-            }
-          } else {
-            setAlert(true);
-            setResponseError(error);
-            const errorString = error;
-            if (errorString.includes('email') === true) {
-              setIsExtEmail('isExtEmail');
-            } else {
-              setIsExtEmail('');
-            }
+  //         if (error.errors !== undefined) {
+  //           if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.UserName[0]);
+  //           }
+  //           if (error.errors.First !== undefined && error.errors.First.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.First[0]);
+  //           }
+  //           if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.Last[0]);
+  //           }
+  //           if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.Email[0]);
+  //           }
+  //           if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.Password[0]);
+  //           }
+  //           if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+  //             setAlert(true);
+  //             setResponseError(error.errors.Password[0]);
+  //           }
+  //         } else {
+  //           setAlert(true);
+  //           setResponseError(error);
+  //           const errorString = error;
+  //           if (errorString.includes('email') === true) {
+  //             setIsExtEmail('isExtEmail');
+  //           } else {
+  //             setIsExtEmail('');
+  //           }
 
-            if (errorString.includes('username') === true) {
-              setIsExtUsers('isExtUserName');
-            } else {
-              setIsExtUsers('');
-            }
-          }
-        }
-      })
-      .catch(function (error) {
-        return error;
-      });
-  };
+  //           if (errorString.includes('username') === true) {
+  //             setIsExtUsers('isExtUserName');
+  //           } else {
+  //             setIsExtUsers('');
+  //           }
+  //         }
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       return error;
+  //     });
+   };
 
   const onSubmit = async (e: any) => {
     setResponseError('');
