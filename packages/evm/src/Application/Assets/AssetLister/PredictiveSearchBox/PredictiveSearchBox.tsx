@@ -72,6 +72,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
                 "categories",
                 "cADId",
                 "asset.recordedBy",
+                "asset.unit"
               ],
             },
           },

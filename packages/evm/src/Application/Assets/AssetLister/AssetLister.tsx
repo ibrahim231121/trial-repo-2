@@ -84,6 +84,7 @@ const SearchComponent = (props: any) => {
               'categories',
               'cADId',
               'asset.recordedBy',
+              'asset.unit'
             ],
           },
         },

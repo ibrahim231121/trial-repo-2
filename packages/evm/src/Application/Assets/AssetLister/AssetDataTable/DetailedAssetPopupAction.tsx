@@ -15,6 +15,7 @@ import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import ActionMenu from "../ActionMenu";
 
 
 type Props = {
@@ -56,6 +57,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const [errorType, setErrorType] = React.useState<string>("error");
   const [showSuccess, setShowSuccess] = React.useState<boolean>(false);
   const DetailedPopupMsgRef = React.useRef<typeof CRXToaster>(null);
+  const [isPrimaryAsset,setIsPrimaryAsset] = React.useState(true)
   const cookies = new Cookies();
 
   const message = [
@@ -138,33 +140,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         }
       </CRXConfirmDialog>
 
-      <Menu
-        align="start"
-        viewScroll="initial"
-        direction="right"
-        position="auto"
-        className="menuCss"
-        arrow
-        menuButton={
-          <MenuButton>
-            <i className="far fa-ellipsis-v actionIcon"></i>
-          </MenuButton>
-        }
-      >
-
-        <MenuItem>
-          <Restricted moduleId={30}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem>
-
-
-      </Menu>
+      <ActionMenu row={row} selectedItems={selectedItems} showToastMsg={() => showToastMsg()} setIsOpen = {setIsOpen} IsOpen= {isPrimaryAsset}/>
     </>
   );
 });

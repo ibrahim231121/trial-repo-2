@@ -31,6 +31,8 @@ type Props = {
   selectedItems?: any;
   row?: any;
   showToastMsg(obj: any): any;
+  setIsOpen: any
+  IsOpen: any
 };
 
 export interface AssetBucket {
@@ -53,7 +55,7 @@ export type securityDescriptorType = {
   permission: PersmissionModel;
 }
 
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg,setIsOpen, IsOpen }) => {
 
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -95,6 +97,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      */
     if (row?.evidence?.securityDescriptors?.length > 0)
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
+      if (row?.securityDescriptors?.length > 0)
+      setMaximumDescriptor(findMaximumDescriptorId(row?.securityDescriptors));
     if (row?.categories?.length > 0) {
       setIsCategoryEmpty(false);
     } else {
@@ -143,7 +147,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const handleOpenAssetShare = () => {
     setOpenAssetShare(true);
   }
-
+  const handlePrimaryAsset = () => {
+    setIsOpen(true);
+  };
   const MultiCompareAssetBucketData = (
     assetBucketData: AssetBucket[],
     selectedItems: any[]
@@ -158,7 +164,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   };
 
   if (row !== undefined && row !== null) {
-    assetBucketData.map((data) => {
+    assetBucketData.forEach((data) => {
       if (data.id === row.id) addToAssetBucketDisabled = true;
     });
   } else if (selectedItems !== undefined && selectedItems.length > 0) {
@@ -230,8 +236,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       }
       return res.status;
     })
-      .catch((error) => {
-        const err = error as AxiosError;
+      .catch((errors) => {
+        const err = errors as AxiosError;
         if (err.request.status === 409) {
           setErrorMessage("The asset is already locked.");
         } else {
@@ -358,18 +364,19 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-        
-
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content">
+        {IsOpen ? (
+        <MenuItem>
+          <Restricted moduleId={30}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">Set as primary asset</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
+): null
+}
 
         <MenuItem>
           <Restricted moduleId={21}>

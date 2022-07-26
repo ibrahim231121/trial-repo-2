@@ -613,8 +613,6 @@ const AddMetadataForm: React.FC<Props> = ({
     return categoryArrayIndex;
   };
 
-  // const [duration, setDuration] = useState<any>();
-
   const getDecimalPart = (num: any) => {
     return num % 1;
   };
@@ -625,7 +623,10 @@ const AddMetadataForm: React.FC<Props> = ({
       formpayload.masterAsset.lastIndexOf("_")
     );
     const filterObject = uploadFile.find(
-      (x: any) => x.name.substring(0, x.name.lastIndexOf(".")) === displayText
+      (x: any) =>
+        
+        x.name.substring(0, x.name.lastIndexOf(".")).replaceAll(' ', '_') === displayText
+       
     );
     var hh = 0;
     var mm = 0;
@@ -694,7 +695,6 @@ const AddMetadataForm: React.FC<Props> = ({
         masterAssetValueIndex,
         name.length
       );
-
       const files: masterAssetFile = {
         id: 0,
         assetId: 0,
@@ -702,9 +702,9 @@ const AddMetadataForm: React.FC<Props> = ({
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
         type: checkFileType(extension),
         extension: extension,
-        url: "www.hdc.com",
-        size: 430,
-        duration: 10,
+        url: index.url,
+        size: index.size,
+        duration: index.duration,
         recording: {
           started: currentStartDate(),
           ended: recordingEnded(),
@@ -722,7 +722,7 @@ const AddMetadataForm: React.FC<Props> = ({
         id: index.uploadedFileId,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
         typeOfAsset: checkAssetType(extension),
-        status: "Available",
+        status: "Uploading",
         state: "Normal",
         unitId: 20,
         isRestrictedView: true,

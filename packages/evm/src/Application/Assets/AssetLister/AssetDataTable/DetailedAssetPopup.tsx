@@ -54,7 +54,6 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   useEffect(() => {
     controlSelection(false)
   }, [groupedAsset]);
-
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
@@ -106,7 +105,6 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
     if (checkValues.length === countCheck) setCheckAll(true);
     else setCheckAll(false);
   };
-
   return (
     <div className="CRXPopupOuterDiv">
       <span

@@ -161,6 +161,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
   }, [isDuplicateFound]);
 
+
+
   useEffect(() => {
     console.log("assetBucketData ", assetBucketData)
     setRows(assetBucketData);
@@ -485,6 +487,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     return promise;
   }
 
+
+
+
   const uploadStatusUpdate = (data: any) => {
     let _uploadInfo: FileUploadInfo;
     setUploadInfo(prevState => {
@@ -709,7 +714,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
 
   }, [totalFilePer])
-
 
 
   useEffect(() => {

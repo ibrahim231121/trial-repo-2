@@ -119,7 +119,7 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
                 <div className="assetName">{"#" + assetName}</div>
               </Link>
               
-              <DetailedAssetPopup asset={assets} />
+              <DetailedAssetPopup asset={assets} row={evidence}/>
             </>
   return (
     CRXDataTableTextPopover({
@@ -168,6 +168,7 @@ const MasterMain: React.FC<Props> = ({
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+  const [isOpen, setIsOpen] = React.useState<any>(undefined)
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<EvidenceReformated>();
     const dispatch = useDispatch();
@@ -704,7 +705,7 @@ const MasterMain: React.FC<Props> = ({
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
-            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)} />
+            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)}  setIsOpen={setIsOpen} IsOpen= {isOpen} />
           }
           
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
