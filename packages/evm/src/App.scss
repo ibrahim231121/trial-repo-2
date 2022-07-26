@@ -145,4 +145,15 @@ iframe {
         color: var(--color-333333);
     }
   }
+
+    .lightBorder {
+        .MuiSwitch-track {
+            border-color: #FFFFFF;
+        }
+    }
+    .darkBorder {
+        .MuiSwitch-track {
+            border-color: #404041;
+        }
+    }
 }
