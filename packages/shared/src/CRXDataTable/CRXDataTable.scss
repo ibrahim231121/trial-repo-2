@@ -187,7 +187,6 @@
               .grid-grip-icon {
                 display: block;
               }
-              
             }
           }
         }
@@ -983,6 +982,7 @@ tr.Mui-selected {
   .columnList {
     padding: 0px 0px 0px 15px;
     overflow: auto;
+    max-height: 429px;
     ul.columnUlList {
       padding-left: 0px;
       margin-top: 0px;

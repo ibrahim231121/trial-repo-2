@@ -365,11 +365,6 @@ a::selection {
   word-break: break-all;
 }
 
-.small_checked {
-  width: 32px !important;
-  height: 20px !important;
-}
-
 .small_checked .Mui-checked {
-  padding: 2px !important;
+  
 }

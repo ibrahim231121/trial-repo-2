@@ -3,15 +3,15 @@ import { makeStyles  } from '@material-ui/core/styles';
 export const SmallSwitcher = makeStyles({
   
     root: {
-      width: 30,
-      height: 18,
+      width: 32,
+      height: 20,
       padding: 0,
       display: 'flex',
       overflow: "visible",
     },
     
     switchBase: {
-      padding: 1,
+      padding: 2,
       color: "#fff",
       '&$checked': {
         transform: 'translateX(12px)',
@@ -20,8 +20,6 @@ export const SmallSwitcher = makeStyles({
           
           opacity: 1,
           backgroundColor: "#003A5D",
-          outline: "2px solid  #888787",
-          borderWidth: '1px',
           borderStyle : "solid",
           borderRadius: "12px",  
         },
@@ -40,7 +38,6 @@ export const SmallSwitcher = makeStyles({
         opacity: 1,
         backgroundColor: "#E5E5E5",
         position : "relative",
-        
     },
     checked: {},
     
@@ -77,8 +74,6 @@ export const LargeSwitcher = makeStyles({
         '& + $track': {
           opacity: 1,
           backgroundColor: "#003A5D",
-          outline: "2px solid  #888787",
-          borderWidth: '1px',
           borderStyle : "solid",
           borderRadius: "22px",  
         },
