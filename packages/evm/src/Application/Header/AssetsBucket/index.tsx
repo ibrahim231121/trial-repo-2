@@ -164,7 +164,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
 
   useEffect(() => {
-    console.log("assetBucketData ", assetBucketData)
+    
     setRows(assetBucketData);
     assetBucketData.forEach((x: any) => {
       isChecked[x.assetId] = false;

@@ -184,7 +184,10 @@
           }
           &:hover {
             .draggableCellIcon {
-              display: block;
+              .grid-grip-icon {
+                display: block;
+              }
+              
             }
           }
         }
@@ -252,7 +255,7 @@
   .draggableCellIcon {
     padding: 13px 0 0;
     .grid-grip-icon {
-      display: block;
+      display: none;
       font-size: 16px;
       color: var(--color-d1d2d4);
       text-indent: 0;

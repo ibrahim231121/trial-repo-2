@@ -242,7 +242,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
                     </div>
 
                     <CRXTypography className="DRPTitle" variant="h3">
-                      {t("Customizecolumns")}
+                      {t("Customize_columns")}
                     </CRXTypography>
                     <CRXTypography className="subTItle" variant="h5">
                       {t("Select to show a column. Drag and drop to recorder.")}
@@ -275,7 +275,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
                       variant="contained"
                       className="closeDRP"
                     >
-                      {t("Saveandclose")}
+                      {t("Save_and_close")}
                     </CRXButton>
 
                     <CRXButton
@@ -285,7 +285,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
                       variant="outlined"
                       className="resetCheckBox"
                     >
-                      {t("Resettodefault")}
+                      {t("Reset_to_default")}
                     </CRXButton>
 
                     <FormControlLabel
@@ -299,7 +299,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
                           inputProps="primary checkbox"
                         />
                       }
-                      label={t("Saveaspreset")}
+                      label={t("Saveas_preset")}
                       labelPlacement="end"
                     />
                   </div>

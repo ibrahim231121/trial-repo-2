@@ -345,8 +345,12 @@ a::selection {
   position: absolute;
   left: 2px;
   top: 21px;
-  display: none;
+  display: block;
 }
+
+/* .draggableCellIcon .grid-grip-icon{
+  display: none;
+} */
 
 
 .ManageStation {
