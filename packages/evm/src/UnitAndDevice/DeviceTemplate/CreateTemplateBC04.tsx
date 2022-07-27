@@ -145,7 +145,7 @@ const CreateTemplate = (props: any) => {
     dispatch(getStationsAsync());
     if (historyState.isedit || historyState.isclone) {
       dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + templateNameHistory }));
-      loadData();
+      loadData(historyState.name);
     }
     else {
       setDataFetched(true);
@@ -499,8 +499,8 @@ const CreateTemplate = (props: any) => {
   }, [Initial_Values_obj_RequiredField])
 
 
-  const loadData = async () => {
-    const url = `/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${historyState.name}`;
+  const loadData = async (templateName:string) => {
+    const url = `/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${templateName}`;
     UnitsAndDevicesAgent.getTemplateConfiguration(url)
     .then((response:DefaultConfigurationTemplate) => 
     {
@@ -638,7 +638,8 @@ const CreateTemplate = (props: any) => {
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
         targetRef.current.showToaster({ message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true });
-        loadData();
+        loadData(templateNames);
+        dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + templateNames }));
         resetForm();
       })
       .catch((e:any) => {
