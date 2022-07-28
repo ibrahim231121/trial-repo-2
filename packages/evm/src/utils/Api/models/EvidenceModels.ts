@@ -149,6 +149,13 @@ export interface AssetSharingModel {
     revoked: RevokedModel,
     version: string
 }
+export interface SubmitAnalysisModel {
+    isAudioSource: boolean,
+    audioSource: string,
+    videoAnalysis: boolean,
+    audioAnalysis: boolean,
+    note: string,
+}
 export interface Evidence {
     id: number
     categories: Category[]

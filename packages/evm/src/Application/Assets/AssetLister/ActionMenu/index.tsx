@@ -24,6 +24,7 @@ import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import http from "../../../../http-common";
 import { EVIDENCE_PATCH_LOCK_UNLOCK_URL } from "../../../../utils/Api/url";
 import { AxiosError } from "axios";
+import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import { CRXToaster } from "@cb/shared";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
 
@@ -63,7 +64,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket.assetBucketData
   );
-  const [shareAssetDisabled, setShareAssetDisabled] = React.useState<boolean>(false);
+  const [multiAssetDisabled, setMultiAssetDisabled] = React.useState<boolean>(false);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [isLockedAccess,setIsLockedAccess] = React.useState<boolean>(false);
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
@@ -75,10 +76,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
   React.useEffect(() => {
     if (selectedItems.length > 1) {
-      setShareAssetDisabled(true);
+      setMultiAssetDisabled(true);
     }
     else {
-      setShareAssetDisabled(false);
+      setMultiAssetDisabled(false);
     }
     if(selectedItems.length > 0) {
       setIsSelectedItem(true);
@@ -134,6 +135,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openAssignUser, setOpenAssignUser] = React.useState(false);
   const [openManageRetention, setOpenManageRetention] = React.useState(false);
   const [openAssetShare, setOpenAssetShare] = React.useState(false);
+  const [openAssignSubmission, setOpenAssignSubmission] = React.useState(false);
+
+  const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
@@ -147,6 +151,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const handleOpenAssetShare = () => {
     setOpenAssetShare(true);
   }
+  const handleOpenAssignSubmission = () => {
+    debugger;
+    setOpenSubmitAnalysis(true);
+  }
+
   const handlePrimaryAsset = () => {
     setIsOpen(true);
   };
@@ -318,7 +327,38 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           showToastMsg={(obj: any) => showToastMsg(obj)}
         />
       </CRXModalDialog>
+      <CRXModalDialog
+        maxWidth='lg'
+        title={t("Submit_For_Analysis")}
+        className={'CRXModal'}
+        modelOpen={openSubmitAnalysis}
+        onClose={() => setOpenSubmitAnalysis(false)}
+        defaultButton={false}
+        indicatesText={true}
 
+      >
+        {/* <ShareAsset
+          items={selectedItems}
+          filterValue={filterValue}
+          //setFilterValue={(v: any) => setFilterValue(v)}
+          rowData={row}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenAssetShare(false)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
+        /> */}
+        <SubmitAnalysis
+          items={selectedItems}
+          filterValue={filterValue}
+          //setFilterValue={(v: any) => setFilterValue(v)}
+          rowData={row}
+          setRemovedOption={(e: any) => { }}
+          setOnClose={() => setOpenSubmitAnalysis(false)}
+          showToastMsg={(obj: any) => showToastMsg(obj)}
+        />
+      </CRXModalDialog>
+      
+
+      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
      {success &&<CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
       {error && (
         <CRXAlert
@@ -525,6 +565,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
+        
         :
         <MenuItem>
           <Restricted moduleId={0}>
@@ -539,9 +580,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
-}
+        }
        
-        {shareAssetDisabled === false ? (
+        {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
               <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
@@ -550,6 +591,21 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Share_Asset")}</div>
+              </div>
+              </SecurityDescriptor>
+            </Restricted>
+          </MenuItem>
+        ) : null
+        }
+        {multiAssetDisabled === false ? (
+          <MenuItem>
+            <Restricted moduleId={0}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
               </div>
               </SecurityDescriptor>
             </Restricted>

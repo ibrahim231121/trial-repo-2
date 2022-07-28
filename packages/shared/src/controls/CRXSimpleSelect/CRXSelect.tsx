@@ -106,6 +106,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
     return (
       
       <>
+      {console.log("defaultOption", defaultOption)}
       <Select
         ref={ref}
         id={id}
