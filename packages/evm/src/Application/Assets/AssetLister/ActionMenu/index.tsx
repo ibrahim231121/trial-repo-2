@@ -319,7 +319,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         />
       </CRXModalDialog>
 
-      <CRXAlert message='Success: The assets are locked.' type = 'success' alertType='toast' open={true} />
+     {success &&<CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           message={errorMessage}
@@ -370,7 +370,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">Set as primary asset</div>
+                <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
               </div>
             </SecurityDescriptor>
           </Restricted>

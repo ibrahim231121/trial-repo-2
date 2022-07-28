@@ -110,11 +110,10 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   };
 
   useEffect(() => {
-  },[isOpen])
+  },[isOpen]) 
 
   return (
     <>
-      <CRXToaster ref={DetailedPopupMsgRef} />
       <CRXConfirmDialog
         className='crx-unblock-modal'
         title={t("Please_Confirm")}

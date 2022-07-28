@@ -80,7 +80,6 @@ const StationDetail: React.FC = () => {
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
   const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
   const [expanded, isExpaned] = React.useState("panel1");
-
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
@@ -326,6 +325,17 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
+    let configurationTemplates = values.ConfigurationTemplate.map((configIndex: ConfigurationTemplate) => {
+      return  {
+        fields: configIndex.fields,
+        history: configIndex.history,
+        name: configIndex.name,
+        operationType: Number(configIndex.operationType),
+        stationId: Number(configIndex.stationId),
+        id: Number(configIndex.id),
+        typeOfDevice: configIndex.typeOfDevice
+      }
+    })
     let body : Station = {
       id: 0,
       name: values.Name,
@@ -344,7 +354,7 @@ const StationDetail: React.FC = () => {
           retentionPolicyId: Number(values.RetentionPolicy?.id),
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
-          configurationTemplates: values.ConfigurationTemplate?? []
+          configurationTemplates: configurationTemplates?? []
         }
       ],
       passcode: values.Passcode?? "",
@@ -447,7 +457,6 @@ const StationDetail: React.FC = () => {
   }
 
   const UnitTemplatesRender = ({ setFieldValue, values }: any): JSX.Element => {
-
     let Quotient = deviceTypeCollection.length / 2;
     let Remainder = deviceTypeCollection.length % 2;
     let NoOFColumnInFirstRow;
@@ -627,7 +636,6 @@ const StationDetail: React.FC = () => {
       </>
     );
   }
-
   return (
     <>
       <Formik
@@ -637,6 +645,7 @@ const StationDetail: React.FC = () => {
         onSubmit={onSubmit}
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
+          
           <>
             <Form>
               <div className="ManageStation  switchLeftComponents">

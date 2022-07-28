@@ -74,7 +74,6 @@ export interface ConfigurationTemplate {
     history?: History,
     fields: ConfigurationField[],
     operationType?: number
-    categories?: string
 }
 
 export interface DeviceType {
