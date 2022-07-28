@@ -1,61 +1,121 @@
-.CRXAssetDetail {
-  display: flex;
-  justify-content: flex-end;
-  button {
-    background: none;
-    border: none;
-  }
-  a {
-    color: var(--color-d74b00);
-    font-weight: 5000;
-  }
-}
-
-.tctown{
+#_asset_detail_view_idx {
+  .CRXAssetDetail {
     display: flex;
-    line-height: 30px;
+    padding-top: 10px;
+    justify-content: space-between;
+    .rc-menu-button {
+      background: transparent;
+      color: var(--color-333333);
+      font-size: 18px;
+      border: 0px;
+    }
+
+    .asset_date_categories {
+      flex-grow : 1;
+      span {
+        font-size: 14px;
+        color: var(--color-333333);
+        font-family: var(--Arial-font-family);
+        padding-right: 25px;
+        display: inline-block;
+      }
+    }
+  }
+
+  .searchComponents {
+    padding-top: 25px !important;
+    padding-left: 0px !important;
+  }
+  .touchPoint_bar {
+    background: #eee;
+    padding: 5px 0px 4px 0px;
+    margin:10px 0px ;
+    text-align: center;
     
-}
-.tctown span {
-  margin-top: 18px;
-}    
+    ._angle_down_up_icon_btn {
+      border: 0px;
+      background: transparent;
+      font-size: 30px;
+      color: var(--color-444444);
+      padding: 0px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      place-items: center;
+      cursor: pointer;
+    }
+  }
 
-#middletruncate {
-  position: relative;
-  width: 55px;
+  .tabCreateTemplate {
+    margin-top: 70px;
+  }
+  .topBorderForDetail{
+    height: 1px;
+    width: 100%;
+    background: var(--color-d1d2d4);
+    margin-top: 9px;
+    position: relative;
+    z-index: 99999;
+  }
 }
+// .CRXAssetDetail {
+//   display: flex;
+//   justify-content: flex-end;
+//   button {
+//     background: none;
+//     border: none;
+//   }
+//   a {
+//     color: var(--color-d74b00);
+//     font-weight: 5000;
+//   }
+// }
 
-#middletruncate p {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+// .tctown{
+//     display: flex;
+//     line-height: 30px;
+    
+// }
+// .tctown span {
+//   margin-top: 18px;
+// }    
 
-#middletruncate:after {
-  content: attr(data-truncate);
-  position: absolute;
-  left: 100%;
-  top: 0;
-}
+// #middletruncate {
+//   position: relative;
+//   width: 55px;
+// }
+
+// #middletruncate p {
+//   white-space: nowrap;
+//   text-overflow: ellipsis;
+//   overflow: hidden;
+// }
+
+// #middletruncate:after {
+//   content: attr(data-truncate);
+//   position: absolute;
+//   left: 100%;
+//   top: 0;
+// }
 
 
-/*Show on hover*/
+// /*Show on hover*/
 
-#middletruncate:hover {
-  width: auto
-}
+// #middletruncate:hover {
+//   width: auto
+// }
 
-#middletruncate:hover:after {
-  display: none;
-}
+// #middletruncate:hover:after {
+//   display: none;
+// }
 
-.timeLineLister {
-  display: flex;
-  width: 287px;
-  flex-direction: column;
-}
-.CRXPopupTableImageUi {
-  height: 87px;
-  width: 154px;
-  margin-right: 4px;
-}
+// .timeLineLister {
+//   display: flex;
+//   width: 287px;
+//   flex-direction: column;
+// }
+// .CRXPopupTableImageUi {
+//   height: 87px;
+//   width: 154px;
+//   margin-right: 4px;
+// }

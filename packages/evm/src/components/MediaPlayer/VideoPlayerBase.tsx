@@ -1853,7 +1853,7 @@ const VideoPlayerBase = (props: any) => {
             </div>
             {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {!startTimelineSync && <CRXButton color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
+            {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
           </FullScreen>
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
 import { AssetBucket } from "../AssetLister/ActionMenu";
@@ -92,7 +92,9 @@ const AssetDetailsTemplate = (props: any) => {
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
-
+  const [detailContent , setDetailContent] = useState<boolean>(false);
+  const detail_view = React.useRef(null);
+  
   type DateTimeProps = {
     dateTimeObj: DateTimeObject;
     colIdx: number;
@@ -599,13 +601,21 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
 
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
 
+ 
+  const gotoSeeMoreView = (e : any, targetId:any) => {
+    detailContent == false ? setDetailContent(true) : setDetailContent(false);
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
+
   return (
-    <div style={{ marginTop: "120px" }}>
-      <p style={{ marginLeft: 50 }}>
-        <h5>{t("Captured Date")} : {assetInfo.capturedDate}</h5>
-        <h5>{t("Categories")} : {assetInfo.categoriesForm}</h5>
-      </p>
-      <div className="CRXAssetDetail">
+    <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
+      <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
+      <div className="asset_date_categories">
+        <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
+        <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
+      </div>
         <FormContainer
           setOpenForm={() => setOpenForm(false)}
           openForm={openForm}
@@ -716,9 +726,22 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           > */}
           {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
+          {detailContent && <div className="topBorderForDetail"></div>}
+          <div className="touchPoint_bar">
+            {detailContent == false ? 
+            <button  id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+              <i className="fas fa-angle-down"></i>
+            </button>
+            :
+            <button id="lessMoreButton"  data-target="#v_asset_detail_view_idx" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "_asset_detail_view_idx")}>
+              <i className="fas fa-angle-up"></i>
+            </button>
+            }
+          </div>
+          
         </CRXColumn>
-        <CRXColumn item xs={8} className="topColumn">
-          <div className="tabCreateTemplate">
+        <CRXColumn item xs={12} className="topColumn">
+          <div className="tabCreateTemplate crxTabsPermission" id="detail_view" ref={detail_view}>
             <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
             <div className="tctContent">
               <CrxTabPanel value={value} index={0}>
@@ -843,7 +866,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={3}>
-            <div className="unitDeviceMain searchComponents unitDeviceMainUii">
+            <div className="">
               {rows && (
                 <CRXDataTable
                   id="Audit Trail"
