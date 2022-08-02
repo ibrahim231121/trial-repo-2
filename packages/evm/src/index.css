@@ -368,3 +368,9 @@ a::selection {
 .small_checked .Mui-checked {
   
 }
+
+.DataTableBodyCell .rc-menu-container{
+  position: unset;
+  width: auto;
+  height: auto;
+}

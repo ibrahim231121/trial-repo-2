@@ -294,12 +294,6 @@ iframe {
     .col-three {
       position: sticky;
       left: 59px !important;
-      ul {
-        &:first-child {
-          left: 67px !important;
-          top: -79px !important;
-        }
-      }
     }
     td {
       &:nth-child(9) {

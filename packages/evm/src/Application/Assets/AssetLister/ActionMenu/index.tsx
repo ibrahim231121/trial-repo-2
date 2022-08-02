@@ -370,12 +370,15 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       )}
 
       <Menu
-        align="start"
-        viewScroll="initial"
+        key="right"
+        align="center"
+        viewScroll="auto"
         direction="right"
         position="auto"
+        offsetX={25}
+        offsetY={12}
         className="menuCss"
-        arrow
+        
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>

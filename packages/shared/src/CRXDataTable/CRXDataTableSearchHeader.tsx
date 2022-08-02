@@ -88,7 +88,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           <TableCell
             className={classes.searchHeaderStickness + " TableSearchAbleHead"}
             style={{
-              // left: "58px",
+            width: "80px",
+            minWidth : "80px",
             left: `${fixedColumnAlignment(false,showCheckBoxesCol,2)}`,
                     position: "sticky", 
                     zIndex: 4 }}

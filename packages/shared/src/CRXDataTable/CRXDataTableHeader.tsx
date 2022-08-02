@@ -73,6 +73,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
           style={{
             width: "60px",
             minWidth: "60px",
+            maxWidth : "96px",
             left: "0px",
             // left: `${fixedColumnAlignment(
             //   dragVisibility,

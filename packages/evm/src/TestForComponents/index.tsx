@@ -95,6 +95,7 @@ const TabsDemo = () => {
       <Grid container spacing={3}>
         <Grid item xs={4}>
           <Paper className={classes.paper}>
+            
             <CBXSwitcher 
           checked={state.checkedC} onChange={handleChange} theme="light" name="checkedC" size="small"
         />
@@ -102,6 +103,7 @@ const TabsDemo = () => {
         </Grid>
         <Grid item xs={4}>
         <Paper className={clx.paper}>
+          
           <CBXSwitcher 
           checked={state.checkedDark} 
           theme="dark" 
@@ -110,7 +112,7 @@ const TabsDemo = () => {
           size="small"
           toggleActiveText="SHOW"
           toggleInActiveText="HIDE"
-          labelWidth={44}
+          labelWidth={45}
           />
           </Paper>
         </Grid>
