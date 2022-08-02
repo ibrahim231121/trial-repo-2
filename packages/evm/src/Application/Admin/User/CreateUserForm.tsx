@@ -1325,36 +1325,40 @@ useEffect(() => {
         </Grid>
         </div>
         <div className='crxFooterEditFormBtn'>
+          <div className='__crxFooterBtnUser__'>
           <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
             {t("Save")}
           </CRXButton>
+          
           <Link to={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
              {t("Cancel")}
           </Link>
+          </div>
+          <div className='__crxFooterBtnUser__'>
           <CRXButton
           onClick={() => redirectPage()}
           className="groupInfoTabButtons-Close secondary"
           color="secondary"
           variant="outlined"
         >
-          {t("Close")}
+         Close
         </CRXButton>
+        </div>
         </div>
         <CRXConfirmDialog
         setIsOpen={() => setIsOpen(false)}
         onConfirm={closeDialog}
         isOpen={isOpen}
         className="userGroupNameConfirm"
-        primary={t("Yes_close")}
-        secondary={t("No,_do_not_close")}
+        buttonPrimary={t("Yes,_close")}
+        buttonSecondary={t("No,_do_not_close")}
         text="user group form"
       >
-        <div className="confirmMessage">
-          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
-          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+        <div className="confirmMessage __crx__Please__confirm__modal">
+        {t("You_are_attempting_to")} <strong> {t("close_out_of_this_screen_with_unsaved_changes.")}</strong><strong className='__crx__please_confirm_'>{t(" ")}</strong>{" "}
+          {t("If_you_close_this_screen")}, {t("any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.")}
           <div className="confirmMessageBottom">
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          {t("Would_you_like_to")} <strong>{t("close")}</strong> {t("this_screen?")}
           </div>
         </div>
       </CRXConfirmDialog>

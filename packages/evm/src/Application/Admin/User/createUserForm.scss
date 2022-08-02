@@ -491,16 +491,30 @@
     }
   }
   .crxFooterEditFormBtn {
-    padding: 0 89px !important;
+    padding: 0 28px 0 89px !important;
     bottom: 55px !important;
     position: fixed !important;
     border: none !important;
+    place-content: space-between;
+    display: flex;
 
     .groupInfoTabButtons-Close {
       min-width: 80px !important;
-      height: 30px;
-      margin-right: 0px;
-      margin-left: 900px;
+    height: 30px;
+    border: 1px solid #878787;
+    background: #ffffff;
+    color: #333333;
+    box-shadow: none;
+    &:focus {
+      border: 1px solid #231f20 !important;
+      background: #231f20 !important;
+      color: #f5f5f5 !important;
+    }
+    &:hover {
+      border: 1px solid #878787;
+      background: #f5f5f5 !important;
+      color: #333333 !important;
+    }
     }
     &::before {
       position: absolute;
@@ -510,6 +524,9 @@
       background: white;
       top: 49px;
       right: 0;
+    }
+    .__crxFooterBtnUser__ {
+      display: flex;
     }
   }
   .errorStateContent {

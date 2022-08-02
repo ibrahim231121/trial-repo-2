@@ -270,7 +270,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       <CRXModalDialog
         maxWidth='lg'
         title={t("Assign_User")}  
-        className={'CRXModal'}
+        className={'CRXModal CRXModalAssignUser'}
         modelOpen={openAssignUser}
         onClose={() => setOpenAssignUser(false)}
         defaultButton={false}

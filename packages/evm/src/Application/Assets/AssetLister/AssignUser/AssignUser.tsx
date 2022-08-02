@@ -1,23 +1,27 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Formik, Form } from 'formik';
-import { MultiSelectBoxCategory, CRXCheckBox, CRXButton, CRXAlert,CRXConfirmDialog } from '@cb/shared';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState, useRef } from "react";
+import { Formik, Form } from "formik";
+import {
+  MultiSelectBoxCategory,
+  CRXCheckBox,
+  CRXButton,
+  CRXAlert,
+  CRXConfirmDialog,
+} from "@cb/shared";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
-import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
-import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
-import Cookies from 'universal-cookie';
-import moment from 'moment';
+import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
+import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
+import Cookies from "universal-cookie";
+import moment from "moment";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { AddOwner, Asset } from '../../../../utils/Api/models/EvidenceModels';
-import { CMTEntityRecord } from '../../../../utils/Api/models/CommonModels';
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { AddOwner, Asset } from "../../../../utils/Api/models/EvidenceModels";
+import { CMTEntityRecord } from "../../../../utils/Api/models/CommonModels";
 import { useTranslation } from "react-i18next";
 import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
-
-
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -33,25 +37,26 @@ const cookies = new Cookies();
 
 let gridFilter: GridFilter = {
   logic: "and",
-  filters: []
-}
+  filters: [],
+};
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
-
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [initialfilterValue, setInitialfilterValue] = React.useState(props.filterValue);
+  const [initialfilterValue, setInitialfilterValue] = React.useState(
+    props.filterValue
+  );
 
   const [buttonState, setButtonState] = React.useState(true);
   const [assetOwners, setAssetOwners] = React.useState<AddOwner[]>([]);
-  const [responseError, setResponseError] = React.useState<string>('');
+  const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
-  const [isOpen,setIsOpen] = React.useState<boolean>(false);
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const alertRef = useRef(null);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
-  const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false)
+  const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     dispatch(getUsersInfoAsync(gridFilter));
@@ -59,108 +64,126 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     //getMasterAsset();
   }, []);
   React.useEffect(() => {
-    
-
-    console.log('assetOwners', assetOwners);
+    console.log("assetOwners", assetOwners);
     if (assetOwners.length > 0) {
       sendData();
     }
   }, [assetOwners]);
 
-
   useEffect(() => {
-
-    if (responseError !== undefined && responseError !== '') {
+    if (responseError !== undefined && responseError !== "") {
       let notificationMessage: NotificationMessage = {
-        title: 'User',
+        title: "User",
         message: responseError,
-        type: 'error',
-        date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
+        type: "error",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
       };
       dispatch(addNotificationMessages(notificationMessage));
     }
   }, [responseError]);
   useEffect(() => {
-    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
-    const optionalSticky: any = document.getElementsByClassName("optionalSticky");
+    const alertClx: any = document.getElementsByClassName(
+      "crxAlertUserEditForm"
+    );
+    const optionalSticky: any =
+      document.getElementsByClassName("optionalSticky");
     const altRef = alertRef.current;
 
     if (alert === false && altRef === null) {
-
       alertClx[0].style.display = "none";
       //optionalSticky[0].style.height = "79px"
     } else {
-      alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
+      alertClx[0].setAttribute(
+        "style",
+        "display:flex;margin-top:42px;margin-bottom:42px"
+      );
       if (optionalSticky.length > 0) {
-        optionalSticky[0].style.height = "119px"
+        optionalSticky[0].style.height = "119px";
       }
     }
   }, [alert]);
-  const history  = useHistory();
+  const history = useHistory();
   const sendData = async () => {
-    const url = '/Evidences/AssignUsers?IsChildAssetincluded=' + `${assignUserCheck}`
-    EvidenceAgent.addUsersToMultipleAsset(url, assetOwners).then(() => {
-      setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
-      props.setOnClose();
-      props.showToastMsg({
-        message: t("Asset_Assignees_updated"),
-        variant: "success",
-        duration: 7000,
-        clearButtton: true,
-      });
-    })
-    .catch((error: any) => {
-      setAlert(true);
+    const url =
+      "/Evidences/AssignUsers?IsChildAssetincluded=" + `${assignUserCheck}`;
+    EvidenceAgent.addUsersToMultipleAsset(url, assetOwners)
+      .then(() => {
+        setTimeout(() => {
+          dispatch(getAssetSearchInfoAsync(""));
+        }, 1500);
+        props.setOnClose();
+        props.showToastMsg({
+          message: t("Asset_Assignees_updated"),
+          variant: "success",
+          duration: 7000,
+          clearButtton: true,
+        });
+      })
+      .catch((error: any) => {
+        setAlert(true);
         setResponseError(
-          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+          t(
+            "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
+          )
         );
-      return error;
-    });
-  }
+        return error;
+      });
+  };
   const getData = () => {
-
     let notSame = 0;
     if (props.selectedItems.length > 1) {
-      var selectedItemsOwnerList = props.selectedItems.map(x => x.evidence?.masterAsset?.owners);
+      var selectedItemsOwnerList = props.selectedItems.map(
+        (x) => x.evidence?.masterAsset?.owners
+      );
       for (var i = 0; i < selectedItemsOwnerList.length - 1; i++) {
-        if (JSON.stringify(selectedItemsOwnerList[i]) != JSON.stringify(selectedItemsOwnerList[i + 1])) {
+        if (
+          JSON.stringify(selectedItemsOwnerList[i]) !=
+          JSON.stringify(selectedItemsOwnerList[i + 1])
+        ) {
           notSame++;
         }
       }
       if (notSame == 0) {
         getMasterAsset();
       }
-    }
-    else {
+    } else {
       getMasterAsset();
     }
-  }
+  };
   const closeDialog = () => {
     setIsOpen(false);
     history.push(
-      urlList.filter((item: any) => item.name === urlNames.assets)[0]
-        .url
+      urlList.filter((item: any) => item.name === urlNames.assets)[0].url
     );
-    
   };
   const getMasterAsset = async () => {
-    debugger;
-    const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}`
+    const url =
+      "/Evidences/" +
+      `${props.rowData.id}` +
+      "/assets/" +
+      `${props.rowData.assetId}`;
     EvidenceAgent.getAsset(url).then((response: any) => {
       let result = response.owners.map((x: CMTEntityRecord) => {
         let item: any = {
           id: x.id.split("_")[2],
-          label: x.record.length > 0 ? x.record.filter((t: any) => t.key === 'UserName')[0].value : ""
-        }
-        return item
-      })
+          label:
+            x.record.length > 0
+              ? x.record.filter((t: any) => t.key === "UserName")[0].value
+              : "",
+        };
+        return item;
+      });
       props.setFilterValue(() => result);
-    })
-  }
+    });
+  };
 
   React.useEffect(() => {
     props.setFilterValue(() => props.filterValue);
-    props.filterValue?.length > 0 ? setButtonState(false) : setButtonState(true);
+    props.filterValue?.length > 0
+      ? setButtonState(false)
+      : setButtonState(true);
     // Dropdown is updated, so x button will redirect to cancel confirmation.
     // Check either new value added.
     const changeInValues = props.filterValue.filter((o: any) => {
@@ -169,23 +192,30 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   }, [props.filterValue]);
 
   const filterUser = (arr: Array<any>): Array<any> => {
-    debugger;
     let sortedArray: any = [];
     if (arr.length > 0) {
       for (const element of arr) {
         sortedArray.push({
           id: element.recId,
-          label: element.userName
+          label: element.userName,
         });
       }
     }
-    sortedArray = sortedArray.sort((a: any, b: any) => (a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
+    sortedArray = sortedArray.sort((a: any, b: any) =>
+      a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1
+    );
     return sortedArray;
   };
 
-  const handleChange = (e: any, colIdx: number, v: any, reason: any, detail: any) => {
+  const handleChange = (
+    e: any,
+    colIdx: number,
+    v: any,
+    reason: any,
+    detail: any
+  ) => {
     props.setFilterValue(() => [...v]);
-    if (reason === 'remove-option') {
+    if (reason === "remove-option") {
       // Show "Remove Category Reason" Modal Here.
       // Set value of removed option in to parent state.
       if (isNewlyAddedCategory(detail.option.label)) {
@@ -197,14 +227,16 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const isNewlyAddedCategory = (label: string): boolean => {
-    let removedValueWasSaved = props.rowData.categories.some((x: any) => x === label);
+    let removedValueWasSaved = props.rowData.categories.some(
+      (x: any) => x === label
+    );
     if (removedValueWasSaved) {
       return true;
     }
     return false;
   };
   const onSubmitForm = async () => {
-    setResponseError('');
+    setResponseError("");
     setAlert(false);
     if (props.selectedItems.length > 1) {
       var tempOwnerList = [...assetOwners];
@@ -212,131 +244,164 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         var temp: AddOwner = {
           evidenceId: el.id,
           assetId: el.assetId,
-          owners: props.filterValue.map(x => x.id)
-        }
+          owners: props.filterValue.map((x) => x.id),
+        };
         tempOwnerList.push(temp);
-      })
-      setAssetOwners(tempOwnerList);
-    }
-    else {
-      const url = '/Evidences/' + `${props.rowData.id}` + '/assets/' + `${props.rowData.assetId}` + '/AssignUsersToAssets?IsChildAssetincluded=' + `${assignUserCheck}`
-      EvidenceAgent.addUsersToAsset(url, props.filterValue.map(x => x.id)).then(() => {
-        setTimeout(() => { dispatch(getAssetSearchInfoAsync("")) }, 1500);
-        props.setOnClose();
-        props.showToastMsg({
-          message: t("Asset_Assignees_updated"),
-          variant: "success",
-          duration: 7000,
-          clearButtton: true,
-        });
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setAlert(true);
-        setResponseError(
-          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-        );
-        return error;
       });
+      setAssetOwners(tempOwnerList);
+    } else {
+      const url =
+        "/Evidences/" +
+        `${props.rowData.id}` +
+        "/assets/" +
+        `${props.rowData.assetId}` +
+        "/AssignUsersToAssets?IsChildAssetincluded=" +
+        `${assignUserCheck}`;
+      EvidenceAgent.addUsersToAsset(
+        url,
+        props.filterValue.map((x) => x.id)
+      )
+        .then(() => {
+          setTimeout(() => {
+            dispatch(getAssetSearchInfoAsync(""));
+          }, 1500);
+          props.setOnClose();
+          props.showToastMsg({
+            message: t("Asset_Assignees_updated"),
+            variant: "success",
+            duration: 7000,
+            clearButtton: true,
+          });
+        })
+        .catch((error: any) => {
+          console.log(error);
+          setAlert(true);
+          setResponseError(
+            t(
+              "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
+            )
+          );
+          return error;
+        });
     }
   };
 
   const cancelBtn = () => {
-    if(initialfilterValue != props.filterValue){
+    if (initialfilterValue != props.filterValue) {
       setIsOpen(true);
-    }
-    else
-    {
+    } else {
       props.setOnClose();
     }
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAssignUserCheck(e.target.checked)
-  }
+    setAssignUserCheck(e.target.checked);
+  };
 
   return (
     <>
       <CRXAlert
         ref={alertRef}
         message={responseError}
-        className='crxAlertUserEditForm'
-        alertType='inline'
-        type='error'
+        className="crxAlertUserEditForm"
+        alertType="inline"
+        type="error"
         open={alert}
         setShowSucess={() => null}
       />
-      <div style={{ height: "200px" }}>
+      <div className="assignModalContent">
         <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
           {() => (
             <Form>
-              <div className='categoryTitle'>
-              {t("Users")}<b>*</b>
+              <div className="assignFieldBlock">
+                <div className="categoryTitle">
+                  {t("Users")}
+                  <b>*</b>
+                </div>
+                <div className="fieldAssigInput">
+                  <MultiSelectBoxCategory
+                    className="categortAutocomplete"
+                    multiple={true}
+                    CheckBox={true}
+                    visibility={true}
+                    options={filterUser(users)}
+                    value={props.filterValue}
+                    autoComplete={true}
+                    isSearchable={true}
+                    onChange={(
+                      event: any,
+                      newValue: any,
+                      reason: any,
+                      detail: any
+                    ) => {
+                      return handleChange(event, 1, newValue, reason, detail);
+                    }}
+                  />
+                  <div className="fieldAssigSelectT">
+                    (Selected users will replace all current assigned users)
+                  </div>
+                </div>
               </div>
-              <div >
-                <MultiSelectBoxCategory
-                  className='categortAutocomplete'
-                  multiple={true}
-                  CheckBox={true}
-                  visibility={true}
-                  options={filterUser(users)}
-                  value={props.filterValue}
-                  autoComplete={false}
-                  isSearchable={true}
-                  onChange={(event: any, newValue: any, reason: any, detail: any) => {
-                    return handleChange(event, 1, newValue, reason, detail);
-                  }}
-                />
-                <div>(Selected users will replace all current assigned users)</div>
-              </div>
-              <div style={{
-                height: "100px", paddingTop: "20px",
-                display: `${props.rowData.evidence.asset.length > 0
-                  ? ""
-                  : "none"
-                  }`
-              }}>
+              <div
+                className="checkBoxAssign"
+                style={{
+                  display: `${
+                    props.rowData.evidence.asset.length > 0 ? "" : "none"
+                  }`,
+                }}
+              >
                 <CRXCheckBox
                   inputProps={"assignUserCheck"}
                   className="relatedAssetsCheckbox"
                   lightMode={true}
                   checked={assignUserCheck}
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => handleCheck(e)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleCheck(e)
+                  }
                 />
                 {t("Apply_to_all_assets_in_the_group")}.
               </div>
-              <div className='modalFooter CRXFooter'>
-                <div className='nextBtn'>
-                  <CRXButton type='submit' className='primeryBtn' disabled={buttonState} >
+              <div className="modalFooter CRXFooter">
+                <div className="nextBtn">
+                  <CRXButton
+                    type="submit"
+                    className={"nextButton " + buttonState && "primeryBtn"}
+                    disabled={buttonState}
+                  >
                     {t("Save")}
                   </CRXButton>
                 </div>
-                <div className='cancelBtn'>
-                  <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                  {t("Cancel")}
+                <div className="cancelBtn">
+                  <CRXButton
+                    onClick={cancelBtn}
+                    className="cancelButton secondary"
+                  >
+                    {t("Cancel")}
                   </CRXButton>
                   <CRXConfirmDialog
-        setIsOpen={() => setIsOpen(false)}
-        onConfirm={closeDialog}
-        isOpen={isOpen}
-        className="userGroupNameConfirm"
-        primary={t("Yes_close")}
-        buttonPrimary={t("Yes_close")}
-        buttonSecondary={t("No,_do_not_close")}              
-        secondary={t("No,_do_not_close")}
-        text="user group form"
-      >
-        <div className="confirmMessage">
-          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
-          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-          <div className="confirmMessageBottom">
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-          </div>
-        </div>
-      </CRXConfirmDialog>
+                    setIsOpen={() => setIsOpen(false)}
+                    onConfirm={closeDialog}
+                    isOpen={isOpen}
+                    className="userGroupNameConfirm"
+                    primary={t("Yes_close")}
+                    buttonPrimary={t("Yes_close")}
+                    buttonSecondary={t("No,_do_not_close")}
+                    secondary={t("No,_do_not_close")}
+                    text="user group form"
+                  >
+                    <div className="confirmMessage">
+                      {t("You_are_attempting_to")}{" "}
+                      <strong> {t("close")}</strong> {t("the")}{" "}
+                      <strong>{t("'user form'")}</strong>.{" "}
+                      {t("If_you_close_the_form")},
+                      {t("any_changes_you_ve_made_will_not_be_saved.")}{" "}
+                      {t("You_will_not_be_able_to_undo_this_action.")}
+                      <div className="confirmMessageBottom">
+                        {t("Are_you_sure_you_would_like_to")}{" "}
+                        <strong>{t("close")}</strong> {t("the_form?")}
+                      </div>
+                    </div>
+                  </CRXConfirmDialog>
                 </div>
               </div>
             </Form>
