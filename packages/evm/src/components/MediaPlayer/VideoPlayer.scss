@@ -405,7 +405,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    margin-top: 77px;
+    margin-top: 109px;
 
     @media screen and (max-width:1000px) {
       margin-top: 96px;
@@ -590,6 +590,9 @@
       // font-size: 36px;
       transform: scale(1.3);
     }
+    &:active , &:focus , &:visited {
+      transform: scale(1.3);
+    }
   }
 
   .faBookmarkIcon {
@@ -620,7 +623,7 @@
     position: absolute;
     left: 48%;
     top: 49%;
-    margin-top: 64px;
+    margin-top: 94px;
     margin-left: 3px;
 
     @media (max-width: 780px) {
@@ -1535,4 +1538,7 @@ span.playBackTooltipUp {
   .volume_percent_text {
     margin-bottom: -28px !important;
   }
+}
+.faCogIconScale {
+  transform: scale(1.3);
 }

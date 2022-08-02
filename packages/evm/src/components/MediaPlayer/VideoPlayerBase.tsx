@@ -497,6 +497,21 @@ const VideoPlayerBase = (props: any) => {
     }
   }, []);
 
+  useEffect(() => {
+    let path = window.location.pathname;
+    let pathBody = document.querySelector("body");
+    if (path == "/videoplayer") {
+      pathBody?.classList.add("pathVideoPlayer");
+    } else if (path == "/assetdetail") {
+      pathBody?.classList.add("pathAssetDetail");
+    } else {
+      pathBody?.classList.remove("pathVideoPlayer");
+      pathBody?.classList.remove("pathAssetDetail");
+
+    }
+
+  })
+
   const EvidenceId = props.history !== undefined ? props.history.location.state?.EvidenceId : props.evidenceId;
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
@@ -1416,11 +1431,15 @@ const VideoPlayerBase = (props: any) => {
       e.currentTarget.childNodes[3].style.visibility = "hidden";
 
 
+
+  }
+
+  useEffect(() => {
     let sliderTest = document.getElementById("SliderControlBar");
     sliderTest?.addEventListener("mousemove", () => {
-      document?.querySelector<HTMLElement>("#SliderControlBar .MuiSlider-thumb")?.classList.add("cursorAdded")
+      document?.querySelector<HTMLElement>("#SliderControlBar .MuiSlider-thumb")?.classList.add("cursorAdded");
     });
-  }
+  })
 
   return (
     <>
@@ -1703,7 +1722,7 @@ const VideoPlayerBase = (props: any) => {
                   <div className="SettingGrid">
                     <div onClick={(e: any) => { setSettingMenuEnabled(e.currentTarget) }}>
                       <CRXTooltip
-                        iconName={"fas fa-cog faCogIcon"}
+                        iconName={`fas fa-cog faCogIcon ${settingMenuEnabled}`}
                         placement="top"
                         title={<>Settings <span className="settingsTooltip">,</span></>}
                         arrow={false}
@@ -1758,10 +1777,11 @@ const VideoPlayerBase = (props: any) => {
                         </i>
                       }
                     >
+
                       <MenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
                       </MenuItem>
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)}  disabled={viewReasonControlsDisabled}>
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
@@ -1774,7 +1794,7 @@ const VideoPlayerBase = (props: any) => {
                           <p></p>
                         </div>
                       </MenuItem>}
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)}  disabled={viewReasonControlsDisabled}>
+                      {multiTimelineEnabled && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">

@@ -106,7 +106,7 @@
   justify-content: center;
   width: 100%;
   left: 0;
-  bottom: 267px;
+  bottom: 204px;
 
   .videoForwardRewind {
     height: 70px;
@@ -313,7 +313,9 @@
     .Mui-focusVisible {
       visibility: visible;
     }
-
+    .MuiSlider-active {
+      visibility: visible;
+    }
   
   }
 
