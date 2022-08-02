@@ -42,7 +42,6 @@ function CRXCustomizedTooltip(props: any) {
     <Tooltip
       arrow
       classes={{
-        className: classes.tooltip,
         arrow:
           props.placement.length && classes.arrow + " crxArrowTooltip",
 

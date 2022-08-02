@@ -113,7 +113,7 @@ const CRXAlert: React.FC<Props> = ({
               className={classes.notification + " " + className}
               icon={<span className={"fas " + setIcon[type]} />}
               action={
-                <IconButton
+                showCloseButton &&  <IconButton
                   aria-label="close"
                   color="inherit"
                   size="small"
@@ -122,7 +122,7 @@ const CRXAlert: React.FC<Props> = ({
                     setOpenState(false);
                   }}
                 >
-                  {<i className="icon icon-cross2"></i>}
+                  { <i className="icon icon-cross2"></i>}
                 </IconButton>
               }
             >

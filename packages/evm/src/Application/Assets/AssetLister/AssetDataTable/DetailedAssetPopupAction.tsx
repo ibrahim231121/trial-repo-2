@@ -55,7 +55,8 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const [alert, setAlert] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>("");
   const [errorType, setErrorType] = React.useState<string>("error");
-  const [showSuccess, setShowSuccess] = React.useState<boolean>(false);
+  const [showSuccess, setShowSuccess] = React.useState<boolean>(true);
+  const [openState, setOpenState] = React.useState<boolean>(false);
   const DetailedPopupMsgRef = React.useRef<typeof CRXToaster>(null);
   const [isPrimaryAsset,setIsPrimaryAsset] = React.useState(true)
   const cookies = new Cookies();
@@ -115,25 +116,37 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   return (
     <>
       <CRXConfirmDialog
-        className='crx-unblock-modal'
-        title={t("Please_Confirm")}
+        className={`crx-unblock-modal __set__Primary__Modal__
+        
+        ${alert === true ? "__crx__Set_primary_Show" : "__crx__Set_primary_Hide"} `}
+        title={t("Please_confirm")}
         setIsOpen={setIsOpen}
         onConfirm={onConfirm}
         isOpen={isOpen}
-        primary={primary}
-        secondary={secondary}>
+        buttonPrimary="Yes, set as primary"
+        buttonSecondary="No, do not set as primary">
         {
           <div className='crxUplockContent'>
-            <CRXAlert
-        className={"CrxAlertNotificationGroup "}
+        <CRXAlert
+        className={"CrxAlertNotificationGroup"}
         message={responseError}
         type={errorType}
         open={alert}
         alertType={alertType}
+        showCloseButton={false}
         setShowSucess={setShowSuccess}
       />
+           {/* <p>
+              {t("You_are_sure_want_to_make")} <b>'{asset.assetName}'</b> {t("the_primary_asset?")}
+            </p> */}
             <p>
-              {t("You_are_sure_want_to_make")} '{asset.assetName}' {t("the_primary_asset?")}
+            {t("You_are_attempting_to")} <b> {t("set_the '")}{asset.assetName}{t("' as_the_primary_asset")}</b>.
+            {/* You are attempting to <b>set the '{asset.assetName}' as the primary asset</b>. */}
+            </p>
+
+            <p>
+            {t("Are_you_sure_would_like_to")} <b> {t("set '")}{asset.assetName}{t("' asset_as_the_primary_asset")}</b>?
+            {/* Are you sure would like to <b> set '{asset.assetName}' asset as the primary asset</b>? */}
             </p>
           </div>
         }
