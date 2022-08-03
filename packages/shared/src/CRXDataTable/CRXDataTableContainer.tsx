@@ -107,7 +107,7 @@ useEffect(()=> {
     <Table
         className={"CRXDataTableCustom visibleTable " + classes.table}
         style={{
-          width: `${allColHide === undefined || allColHide ? "140px" : "100%"}`,
+          width: `${allColHide === undefined || allColHide ? "140px" : "auto"}`,
         }}
         aria-label="simple table"
         size="small"
@@ -150,7 +150,7 @@ useEffect(()=> {
       <Table
         className={"CRXDataTableCustom  tableHeaderVisibility " + classes.table}
         style={{
-          width: `${allColHide === undefined || allColHide ? "140px" : "100%"}`,
+          width: `${allColHide === undefined || allColHide ? "140px" : "auto"}`,
         }}
         aria-label="simple table"
         size="small"

@@ -497,7 +497,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "263",
+      minWidth: "200",
       maxWidth: "263",
       visible: true,
     },

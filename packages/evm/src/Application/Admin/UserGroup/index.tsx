@@ -182,7 +182,7 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "250",
-      maxWidth: "400",
+      maxWidth: "500",
     },
     {
       label: t("Description"),
@@ -204,7 +204,7 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "250",
-      maxWidth: "300",
+      maxWidth: "370",
     }
   ]);
 

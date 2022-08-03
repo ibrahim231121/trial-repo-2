@@ -320,21 +320,6 @@
   .rc-menu {
     left: 45px !important;
   }
-  table {
-    tr {
-      td {
-        ul {
-          &:first-child {
-            left: 0px !important;
-            margin-left: 69px;
-            @media (max-width: 1380px) {
-              margin-left: 69px;
-            }
-          }
-        }
-      }
-    }
-  }
 }
 .ManageUsersDataTable {
   table {

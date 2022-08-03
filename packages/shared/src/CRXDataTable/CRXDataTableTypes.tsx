@@ -89,7 +89,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     table: {
-      //width: 188,
+      width: "auto",
     },
     visuallyHidden: {
       border: 0,

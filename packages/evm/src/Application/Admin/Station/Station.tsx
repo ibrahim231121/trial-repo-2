@@ -211,7 +211,7 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '250',
-      maxWidth: '400'
+      maxWidth: '500'
     },
     {
       label: t('Phone_Number'),
@@ -222,7 +222,7 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '100',
-      maxWidth: '100'
+      maxWidth: '400'
     },
   ]);
 

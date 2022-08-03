@@ -131,11 +131,6 @@ iframe {
           position: relative;
           top: 5px;
         }
-        ul {
-          &:first-child {
-            left: 78px !important;
-          }
-        }
       }
     }
 
@@ -303,11 +298,6 @@ iframe {
     z-index: 1000;
     top: 151px;
     height: 79px;
-  }
-  .table_Inner_Action {
-    .rc-menu {
-      top: -87px !important;
-    }
   }
   .menu_List_Button {
     ul {

@@ -126,7 +126,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             }`,
             userSelect: "none",
             minWidth: headCells[colIdx].minWidth + "px",
-            maxWidth: headCells[colIdx].maxWidth + "px",
             width : headCells[colIdx].maxWidth + "px",
           }}
           align={

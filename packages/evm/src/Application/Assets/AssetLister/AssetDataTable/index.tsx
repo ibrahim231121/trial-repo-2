@@ -393,8 +393,8 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "250",
-      width: "",
+      minWidth: "230",
+      maxWidth: "250",
       visible: false,
       attributeName: "Categories.Record",
       attributeType: "CMTEntityRecordList"
@@ -407,9 +407,8 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "338",
-      width: "",
-      maxWidth: "210",
+      minWidth: "210",
+      maxWidth: "338",
       attributeName: "Description",
       attributeType: "String"
     },
@@ -421,9 +420,8 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: () => null,
-      minWidth: "338",
-      width: "",
-      maxWidth: "210",
+      minWidth: "210",
+      maxWidth: "230",
       detailedDataComponentId: "evidence",
       visible: true
     },
@@ -434,6 +432,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: dateDisplayFormat,
       sort: true,
       minWidth: "230",
+      maxWidth: "250",
       searchFilter: true,
       searchComponent: searchDate,
       attributeName: "Assets.Master.Recording.Started",
@@ -451,9 +450,9 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-      minWidth: "250",
+      minWidth: "230",
+      maxWidth: "250",
       visible: false,
-      width: "",
       attributeName: "Assets.Master.TypeOfAsset",
       attributeType: "List"
     },
@@ -469,8 +468,8 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "250",
-      width: "",
+      minWidth: "230",
+      maxWidth: "250",
       visible: false,
       attributeName: "Assets.Master.Unit",
       attributeType: "CMTEntityRecord"
@@ -487,8 +486,8 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      minWidth: "250",
-      width: "",
+      minWidth: "230",
+      maxWidth: "250",
       visible: false,
       attributeName: 'StationName',
       attributeType: "CMTEntityRecord"
@@ -506,7 +505,7 @@ const MasterMain: React.FC<Props> = ({
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "210",
-      width: "",
+      maxWidth: "230",
       attributeName: "Assets.Master.Owners",
       attributeType: "List"
     },
@@ -517,7 +516,7 @@ const MasterMain: React.FC<Props> = ({
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       minWidth: "230",
-      width: "",
+      maxWidth: "250",
       searchFilter: true,
       searchComponent: (
         rowData: EvidenceReformated[],
@@ -650,8 +649,6 @@ const MasterMain: React.FC<Props> = ({
         gridFilter.filters?.push(x)
     })
 
-    console.log("gridFilter ", gridFilter)
-
     dispatch(getAssetSearchInfoAsync(gridFilter));
 
     // gridFilter = {
@@ -699,7 +696,7 @@ const MasterMain: React.FC<Props> = ({
   return (
     <>
       <CRXToaster ref={toasterRef} />
-      
+      {console.log("rows", rows)}
       
       {rows && (
         <CRXDataTable
