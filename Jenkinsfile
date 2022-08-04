@@ -106,7 +106,7 @@ pipeline {
               image.push(currentBuild.displayName)
               image.push('latest')
             }
-            zip archive: true, dir: '', exclude: '', glob: 'evm/**', zipFile: 'evm.zip'
+            zip archive: true, dir: '', exclude: '', glob: 'evm/**', zipFile: "Crossbones_UI_${currentBuild.displayName}.zip"
           }
         }
       }
