@@ -384,8 +384,6 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     isOpen={isOpen}
                     className="userGroupNameConfirm"
                     primary={t("Yes_close")}
-                    buttonPrimary={t("Yes_close")}
-                    buttonSecondary={t("No,_do_not_close")}
                     secondary={t("No,_do_not_close")}
                     text="user group form"
                   >

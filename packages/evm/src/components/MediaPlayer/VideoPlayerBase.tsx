@@ -21,6 +21,7 @@ import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
 import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
 import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
+import BookmarkNotePopup from "./BookmarkNotePopup";
 
 
 var videoElements: any[] = [];
@@ -456,6 +457,10 @@ const VideoPlayerBase = (props: any) => {
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(true);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
+  const [bookmarksNotesPopup, setBookmarksNotesPopup] = useState<any[]>([]);
+  const [isBookmarkNotePopup, setIsBookmarkNotePopup] = useState(false);
+  const [bookmarkNotePopupArrObj, setBookmarkNotePopupArrObj] = useState<any>([]);
+
 
   const volumeIcon = useRef<any>(null)
 
@@ -588,6 +593,38 @@ const VideoPlayerBase = (props: any) => {
       setdata(tempdata);
     }
   }, [updateVideoSelection]);
+
+  React.useEffect(() => {
+    if (timelinedetail) { // work for BookmarkNotePopup Component
+      var tempbookmarksnotesarray: any[] = [];
+      //var tempnotesarray: any[] = [];
+      timelinedetail.forEach((x:Timeline) => 
+        {x.enableDisplay && x.bookmarks.forEach((y:any)=>
+          {y.timerValue = x.recording_start_point + (y.position/1000);
+          y.objtype = "Bookmark";
+          tempbookmarksnotesarray.push(y);}
+        )
+        x.enableDisplay && x.notes.forEach((y:any)=> 
+          {y.timerValue = x.recording_start_point + (y.position/1000);
+          y.objtype = "Note";
+          tempbookmarksnotesarray.push(y);}
+        )}
+      )
+      setBookmarksNotesPopup(tempbookmarksnotesarray);
+      //setNotesPopup(tempnotesarray);
+    }
+  }, [timelinedetail]);
+
+  React.useEffect(() => {
+    if (bookmarkNotePopupArrObj.length>0) { // work for BookmarkNotePopup Component
+      console.log("Jamil",bookmarkNotePopupArrObj);
+      setIsBookmarkNotePopup(true);
+    }
+    else{
+      setIsBookmarkNotePopup(false);
+      console.log("Jamil",bookmarkNotePopupArrObj);
+    }
+  }, [bookmarkNotePopupArrObj]);
 
 
   const handleControlBarChange = (event: any, newValue: any) => {
@@ -808,6 +845,7 @@ const VideoPlayerBase = (props: any) => {
               hanldeVideoStartStop(timerValue, videoHandle, true);
             });
             renderMarkerOnSeek(timerValue);
+            renderBookmarkNotePopupOnSeek(timerValue);
           }
           else {
             setPlaying(false);
@@ -1101,6 +1139,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const getbookmarklocation = (position: any, startdiff: any) => {
+    //debugger;
     var timeLineHover: any = document.querySelector("#SliderControlBar");
     var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
     let timelineposition = position + ((startdiff) * 1000);
@@ -1441,6 +1480,36 @@ const VideoPlayerBase = (props: any) => {
     });
   })
 
+  const renderBookmarkNotePopupOnSeek = (timerValue: number) => {
+    let temparray: any[] = [];
+    bookmarksNotesPopup.forEach((x:any)=> 
+      {
+        if(timerValue==x.timerValue)
+        {
+          let temp : any = JSON.parse(JSON.stringify(x));
+          temp.timerValue = secondsToHms(temp.timerValue);
+          temparray.push(temp);
+        }
+      }
+    )
+    if(temparray.length>0)
+    {
+      let temparray1 = [...bookmarkNotePopupArrObj, ...temparray];
+      setBookmarkNotePopupArrObj(temparray1);
+    }
+  }
+  useInterval(
+    () => {
+      if (bookmarkNotePopupArrObj.length>0) {
+        let temp :any[] = [...bookmarkNotePopupArrObj];
+        temp.shift();
+        setBookmarkNotePopupArrObj(temp);
+      }
+    },
+    // Speed in milliseconds or null to stop it
+    isBookmarkNotePopup ? 5000 : null,
+  );
+
   return (
     <>
       <VideoPlayerViewRequirement
@@ -1571,16 +1640,14 @@ const VideoPlayerBase = (props: any) => {
                             </>
                           }
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
-                            if (y.madeBy == "User") {
-                              return (
-                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                                  <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
-                                    onMouseOut={() =>
-                                      mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
-                                  </span>
-                                </div>
-                              )
-                            }
+                            return (
+                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                                <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
+                                  onMouseOut={() =>
+                                    mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
+                                </span>
+                              </div>
+                            )
                           }
                           )}
                           {x.enableDisplay && x.notes.map((y: any, index: any) =>
@@ -1912,6 +1979,21 @@ const VideoPlayerBase = (props: any) => {
           <TimelineSyncConfirmationModal
             setOpenTimelineSyncConfirmation={setOpenTimelineSyncConfirmation}
             openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
+
+          <div className="BookmarkNotePopupMain">
+            {bookmarkNotePopupArrObj.map((bookmarkNotePopupObj:any) =>
+              {return (
+                <BookmarkNotePopup
+                bookmarkNotePopupObj={bookmarkNotePopupObj}
+                bookmarkNotePopupArrObj={bookmarkNotePopupArrObj} 
+                setBookmarkNotePopupArrObj={setBookmarkNotePopupArrObj}
+                EvidenceId={EvidenceId}
+                timelinedetail={timelinedetail}
+                settimelinedetail={settimelinedetail}
+                toasterMsgRef={toasterMsgRef} />
+              )}
+            )}
+          </div>
 
         </div>
       </div >

@@ -284,8 +284,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         className="userGroupNameConfirm"
         primary={t("Yes_close")}
         secondary={t("No,_do_not_close")}
-        buttonPrimary={t("Yes_close")}
-        buttonSecondary={t("No,_do_not_close")}  
         text="user group form"
       >
         <div className="confirmMessage">

@@ -37,7 +37,7 @@ const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 
 const requests = {
     get: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBody)},
-    post: <T>(baseUrl: string, url: string, body: {}) => {debugger; setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody)},
+    post: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody)},
     put: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
     patch: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
     delete: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},

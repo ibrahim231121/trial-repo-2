@@ -218,10 +218,8 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         setIsOpen={setIsOpenDelete}
         onConfirm={onConfirm}
         isOpen={isOpenDelete}
-        // primary={primary}
-        // secondary={secondary}
-        buttonPrimary="Yes, delete"
-        buttonSecondary="No, do not delete"
+        primary="Yes, delete"
+        secondary="No, do not delete"
         >
         {
           <>
