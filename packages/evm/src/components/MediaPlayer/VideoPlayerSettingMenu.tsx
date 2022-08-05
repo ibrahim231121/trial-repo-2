@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-import { FormControlLabel, Switch } from "@material-ui/core";
-import { CRXButton, CRXCheckBox } from "@cb/shared";
+import { CRXButton, CRXCheckBox,CBXSwitcher } from "@cb/shared";
 import "./VideoPlayerSettingMenu.scss";
-import { CBXSwitcher } from '@cb/shared';
 const VideoPlayerSettingMenu = (props: any) => {
 
   const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, setSingleTimeline, timelinedetail, settimelinedetail, screenClick, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems } = props;
@@ -24,7 +22,7 @@ const VideoPlayerSettingMenu = (props: any) => {
           x.indexNumberToDisplay = 0;
           x.enableDisplay = false;
         }
-      })
+      }) 
       settimelinedetail(timelinedetailTemp);
       screenClick(1, event);
     }

@@ -302,6 +302,7 @@ const AddMetadataForm: React.FC<Props> = ({
   }, [uploadFile]);
 
   const fetchStation = async () => {
+    debugger;
     var response = await UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => response);
     var stationNames = response.map((x: any, i: any) => {
       let j: NameAndValue = {

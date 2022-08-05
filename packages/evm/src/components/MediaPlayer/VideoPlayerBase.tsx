@@ -428,7 +428,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [loading, setLoading] = useState(false);
-  const [speed, setSpeed] = useState<number>(1000);
+  const [speed, setSpeed] = useState<number>(1000); 
   const [speedFwRw, setSpeedFwRw] = useState<number>(1000);
   const [openThumbnail, setopenThumbnail] = useState<boolean>(false);
   const [mouseovertype, setmouseovertype] = useState("");
@@ -451,7 +451,7 @@ const VideoPlayerBase = (props: any) => {
   const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
-  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();

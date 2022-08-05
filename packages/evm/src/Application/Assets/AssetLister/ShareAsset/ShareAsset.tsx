@@ -60,7 +60,6 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     }
   }, [assetSharing]);
   React.useEffect(() => {
-    debugger;
     if(linkExpireType == "1")//hour
     {
       setLinkExpireDuration(linkExpire);
@@ -143,10 +142,8 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   };
   const sendData = async () => {
-    debugger;
     const url = '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
     EvidenceAgent.shareAsset(url, assetSharing).then(() => {
-      debugger;
       props.setOnClose();
       props.showToastMsg({
         message: "Share email sent to recipients",
@@ -156,7 +153,6 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       });
     })
     .catch(function (error) {
-      debugger;
       setAlert(true);
       setResponseError(
         "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."

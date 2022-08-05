@@ -16,7 +16,7 @@ import Cookies from "universal-cookie";
 import moment from "moment";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
-import { AddOwner, Asset } from "../../../../utils/Api/models/EvidenceModels";
+import { AddOwner } from "../../../../utils/Api/models/EvidenceModels";
 import { CMTEntityRecord } from "../../../../utils/Api/models/CommonModels";
 import { useTranslation } from "react-i18next";
 import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
@@ -134,7 +134,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const getData = () => {
     let notSame = 0;
     if (props.selectedItems.length > 1) {
-      var selectedItemsOwnerList = props.selectedItems.map(
+      let selectedItemsOwnerList = props.selectedItems.map(
         (x) => x.evidence?.masterAsset?.owners
       );
       for (var i = 0; i < selectedItemsOwnerList.length - 1; i++) {
@@ -170,7 +170,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           id: x.id.split("_")[2],
           label:
             x.record.length > 0
-              ? x.record.filter((t: any) => t.key === "UserName")[0].value
+              ? x.record.filter((_t: any) => _t.key === "UserName")[0].value
               : "",
         };
         return item;
@@ -208,8 +208,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const handleChange = (
-    e: any,
-    colIdx: number,
+    _e: any,
+    _colIdx: number,
     v: any,
     reason: any,
     detail: any
@@ -264,7 +264,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         .then(() => {
           setTimeout(() => {
             dispatch(getAssetSearchInfoAsync(""));
-          }, 1500);
+          }, 1510);
           props.setOnClose();
           props.showToastMsg({
             message: t("Asset_Assignees_updated"),

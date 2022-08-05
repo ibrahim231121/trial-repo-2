@@ -152,7 +152,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     setOpenAssetShare(true);
   }
   const handleOpenAssignSubmission = () => {
-    debugger;
     setOpenSubmitAnalysis(true);
   }
 
@@ -337,15 +336,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         indicatesText={true}
 
       >
-        {/* <ShareAsset
-          items={selectedItems}
-          filterValue={filterValue}
-          //setFilterValue={(v: any) => setFilterValue(v)}
-          rowData={row}
-          setRemovedOption={(e: any) => { }}
-          setOnClose={() => setOpenAssetShare(false)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
-        /> */}
+
         <SubmitAnalysis
           items={selectedItems}
           filterValue={filterValue}

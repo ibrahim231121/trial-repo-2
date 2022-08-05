@@ -65,10 +65,9 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
         { value: 1, displayText: masterAudioDevice }
      ];
       
-      debugger;
       var audioDevices = props.rowData.evidence.asset.map((x:any) => x.audioDevice  );
       console.log('audio Devices: ' + audioDevices);
-      for(var i = 0;i < audioDevices.length; i++)
+      for(var i = 0;i < audioDevices.length-1; i++)
       {
         if(audioDevices[i] != null)
         {
@@ -101,7 +100,6 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
     }
     
     const onAudioSourceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      debugger;
       setAudioSource(e.target.value);
   }
     const onSubmitForm = async () => {
@@ -208,7 +206,13 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
                  
                    </div>
                    <div style={{
-                  height: "0px", paddingTop: "35px", paddingBottom: "30px",
+                  height: "0px", paddingTop: "40px", paddingBottom: "0px"
+                  
+                }}>
+                  {t("Analysis Option")}*
+                </div>
+                   <div style={{
+                  height: "0px",marginLeft:"120px", paddingTop: "35px", paddingBottom: "30px", display:"inline"
                   
                 }}>
                    {t("Video_Analysis")}
@@ -233,7 +237,7 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
         </IconButton>
         </div>
                 <div style={{
-                  height: "0px", paddingTop: "5px", paddingBottom:"10px",
+                  height: "0px",marginLeft:"120px", paddingTop: "5px", paddingBottom:"10px",
                   
                 }}>
                   {t("Audio_Analysis")}
