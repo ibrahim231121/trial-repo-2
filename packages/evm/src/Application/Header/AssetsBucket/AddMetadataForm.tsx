@@ -217,8 +217,17 @@ const AddMetadataForm: React.FC<Props> = ({
   }, [formpayload]);
 
   React.useEffect(() => {
+
     let checkSubmitType: any = uploadAssetBucket.filter(
-      (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
+      (x: any) => {
+        debugger
+        if (!x.evidence) {
+          // Exception
+        }
+        if (x.evidence.masterAsset.assetName === formpayload.masterAsset) {
+          return;
+        }
+      }
     );
 
     if (checkSubmitType.length != 0) {
@@ -302,7 +311,7 @@ const AddMetadataForm: React.FC<Props> = ({
   }, [uploadFile]);
 
   const fetchStation = async () => {
-    debugger;
+
     var response = await UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => response);
     var stationNames = response.map((x: any, i: any) => {
       let j: NameAndValue = {
@@ -625,9 +634,9 @@ const AddMetadataForm: React.FC<Props> = ({
     );
     const filterObject = uploadFile.find(
       (x: any) =>
-        
+
         x.name.substring(0, x.name.lastIndexOf(".")).replaceAll(' ', '_') === displayText
-       
+
     );
     var hh = 0;
     var mm = 0;
@@ -644,7 +653,7 @@ const AddMetadataForm: React.FC<Props> = ({
         fileNameExtension === ".mkv" ||
         fileNameExtension === ".webm" ||
         fileNameExtension === ".3gp" ||
-        fileNameExtension === ".wav" 
+        fileNameExtension === ".wav"
 
       ) {
         var myVideos: any = [];
@@ -867,13 +876,13 @@ const AddMetadataForm: React.FC<Props> = ({
         else return res.text()
       })
       .then((resp) => {
-        if(resp != undefined){
+        if (resp != undefined) {
           let error = JSON.parse(resp);
-          if(error.errors['Assets.Master.Files[0].Type'][0] != undefined){
+          if (error.errors['Assets.Master.Files[0].Type'][0] != undefined) {
             setAlert(true);
             setResponseError(error.errors['Assets.Master.Files[0].Type'][0]);
           }
-          if(error.errors['Assets.Master.Files[0].Type'][1] != undefined){
+          if (error.errors['Assets.Master.Files[0].Type'][1] != undefined) {
             setAlert(true);
             setResponseError(error.errors['Assets.Master.Files[0].Type'][1]);
           }
@@ -882,7 +891,7 @@ const AddMetadataForm: React.FC<Props> = ({
             setResponseError(error);
           }
         }
-        
+
       })
   };
 
@@ -1259,7 +1268,7 @@ const AddMetadataForm: React.FC<Props> = ({
   };
   useEffect(() => {
     const filteredArray: any = [];
-        formpayload.category.forEach((formIndex: any) => {
+    formpayload.category.forEach((formIndex: any) => {
       if (formIndex.form.length > 0) {
         formIndex.form.forEach((fieldIndex: any) => {
           fieldIndex.fields.forEach((x: any) => {
@@ -1323,9 +1332,8 @@ const AddMetadataForm: React.FC<Props> = ({
                   {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select ${
-                    formpayload.masterAsset === "" ? "" : "gepAddClass"
-                  }`}
+                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
+                    }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText={t("Select_Master_Asset")}
                   disabled={
@@ -1351,9 +1359,8 @@ const AddMetadataForm: React.FC<Props> = ({
             </div>
             <div className="metaData-station">
               <div
-                className={`metaData-inner ${
-                  formpayload.station === "" ? "" : "gepAddClass"
-                }`}
+                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
+                  }`}
               >
                 <label>
                   {t("Station")} <span>*</span>

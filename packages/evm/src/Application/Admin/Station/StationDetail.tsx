@@ -515,7 +515,8 @@ const StationDetail: React.FC = () => {
         let filteredCollection: any;
         if (!isAddCase) {
           filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
-            if ((parseInt(obj.typeOfDevice.id) === deviceId) && (obj.stationId == id)) {
+            if ((parseInt(obj.typeOfDevice.id) === deviceId)) {
+              // && (obj.stationId == id)
               return obj;
             }
           });

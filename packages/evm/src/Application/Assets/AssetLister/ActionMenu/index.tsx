@@ -56,7 +56,7 @@ export type securityDescriptorType = {
   permission: PersmissionModel;
 }
 
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg,setIsOpen, IsOpen }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, IsOpen }) => {
 
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -66,13 +66,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   );
   const [multiAssetDisabled, setMultiAssetDisabled] = React.useState<boolean>(false);
   const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
-  const [isLockedAccess,setIsLockedAccess] = React.useState<boolean>(false);
+  const [isLockedAccess, setIsLockedAccess] = React.useState<boolean>(false);
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   const [openForm, setOpenForm] = React.useState(false);
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>('');
-  const [isSelectedItem,setIsSelectedItem] = React.useState<boolean>(false);
+  const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (selectedItems.length > 1) {
@@ -81,10 +81,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     else {
       setMultiAssetDisabled(false);
     }
-    if(selectedItems.length > 0) {
+    if (selectedItems.length > 0) {
       setIsSelectedItem(true);
     }
-    else{
+    else {
       setIsSelectedItem(false);
 
     }
@@ -98,20 +98,20 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      */
     if (row?.evidence?.securityDescriptors?.length > 0)
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
-      if (row?.securityDescriptors?.length > 0)
+    if (row?.securityDescriptors?.length > 0)
       setMaximumDescriptor(findMaximumDescriptorId(row?.securityDescriptors));
     if (row?.categories?.length > 0) {
       setIsCategoryEmpty(false);
     } else {
       setIsCategoryEmpty(true);
     }
-    
-    if(row?.evidence?.masterAsset?.lock != null){
-      
+
+    if (row?.evidence?.masterAsset?.lock != null) {
+
       setIsLockedAccess(false)
     }
-    else{
-     
+    else {
+
       setIsLockedAccess(true)
     }
   }, [row]);
@@ -121,12 +121,24 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     setOpenForm(true);
   };
   const addToAssetBucket = () => {
+
     //if undefined it means header is clicked
     if (row !== undefined && row !== null) {
       const find = selectedItems.findIndex(
         (selected: any) => selected.id === row.id
       );
+
       const data = find === -1 ? row : selectedItems;
+      // Apply Condition
+      debugger
+      Object.preventExtensions(data);
+      let a = Object.isExtensible(data);
+      if (data.evidence) {
+        data.isMaster = data.evidence.masterAssetId === data.id;
+      }
+      else {
+        data.isMaster = data.masterAssetId === data.id;
+      }
       dispatch(addAssetToBucketActionCreator(data));
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
@@ -199,26 +211,27 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const toasterRef = useRef<typeof CRXToaster>(null);
   
 
+
   const confirmCallBackForRestrictModal = () => {
     const _requestBody = [];
-      if(isSelectedItem){
-        selectedItems.map((x: any) => {
-          if(x.evidence.masterAsset.lock){
+    if (isSelectedItem) {
+      selectedItems.map((x: any) => {
+        if (x.evidence.masterAsset.lock) {
           _requestBody.push({
             evidenceId: x.id,
             assetId: x.assetId,
-            userRecId:  parseInt(localStorage.getItem('User Id') ?? "0") ,
-            operation:  "UnLock"
+            userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
+            operation: "UnLock"
           })
         }
-        
+
       })
-      }
-      else{
+    }
+    else {
       _requestBody.push({
         evidenceId: row?.id,
         assetId: row.assetId,
-        userRecId:  parseInt(localStorage.getItem('User Id') ?? "0") ,
+        userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
         operation: isLockedAccess ? "Lock" : "UnLock"
       })
     }
@@ -229,17 +242,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        TenantId: "1", 
+        TenantId: "1",
       },
       body: (_body),
     }).then(function (res) {
-         if (res.status === 204) {
-          toasterRef.current.showToaster({
-            message: isLockedAccess ? "Access Restricted" : "Access Unlocked",
-            variant: "success",
-            duration: 7000,
-        
-          });
+      if (res.status === 204) {
+        toasterRef.current.showToaster({
+          message: isLockedAccess ? "Access Restricted" : "Access Unlocked",
+          variant: "success",
+          duration: 7000,
+
+        });
         setSuccess(true);
         setTimeout(() => {
           setOpenRestrictAccessDialogue(false);
@@ -259,10 +272,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         setError(true);
       });
   }
-  
+
   return (
     <>
-    <CRXToaster ref={toasterRef} className="assetsBucketToster" />
+      <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <FormContainer
         setOpenForm={() => setOpenForm(false)}
         openForm={openForm}
@@ -273,7 +286,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
       <CRXModalDialog
         maxWidth='lg'
-        title={t("Assign_User")}  
+        title={t("Assign_User")}
         className={'CRXModal CRXModalAssignUser'}
         modelOpen={openAssignUser}
         onClose={() => setOpenAssignUser(false)}
@@ -352,10 +365,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           showToastMsg={(obj: any) => showToastMsg(obj)}
         />
       </CRXModalDialog>
-      
+
 
       {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
-     {success &&<CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
+      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           message={errorMessage}
@@ -374,34 +387,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         offsetX={25}
         offsetY={12}
         className="menuCss"
-        
+
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
           </MenuButton>
         }
       >
-        <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
-              <div
-                className="crx-meu-content groupingMenu crx-spac"
-                onClick={addToAssetBucket}
-              >
-                <div className="crx-menu-icon"></div>
-                <div
-                  className={
-                    addToAssetBucketDisabled === false
-                      ? "crx-menu-list"
-                      : "crx-menu-list disabledItem"
-                  }
-                >
-                  {t("Add_to_asset_bucket")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem>
+
 
         {IsOpen ? (
         <MenuItem>
@@ -432,11 +425,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         <MenuItem>
           <Restricted moduleId={0}>
-          <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">{t("Modify_Retention")}</div>
-            </div>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">{t("Modify_Retention")}</div>
+              </div>
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
@@ -550,67 +543,95 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem> */}
 
-{isLockedAccess ?
-        <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              {/* descriptorId={4} */}
-              <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
+        {isLockedAccess ?
+          <MenuItem>
+            <Restricted moduleId={0}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+                {/* descriptorId={4} */}
+                <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Restrict_access")}</div>
                 </div>
-                <div className="crx-menu-list">{t("Restrict_access")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem>
-        
-        :
+              </SecurityDescriptor>
+            </Restricted>
+          </MenuItem>
+
+          :
+          <MenuItem>
+            <Restricted moduleId={0}>
+              <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+                {/* descriptorId={4} */}
+                <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">UnLock Access</div>
+                </div>
+              </SecurityDescriptor>
+            </Restricted>
+          </MenuItem>
+        }
+
+
         <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
-              {/* descriptorId={4} */}
-              <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
+              <div
+                className="crx-meu-content groupingMenu crx-spac"
+                onClick={addToAssetBucket}
+              >
+                <div className="crx-menu-icon"></div>
+                <div
+                  className={
+                    addToAssetBucketDisabled === false
+                      ? "crx-menu-list"
+                      : "crx-menu-list disabledItem"
+                  }
+                >
+                  {t("Add_to_asset_bucket")}
                 </div>
-                <div className="crx-menu-list">UnLock Access</div>
               </div>
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
-        }
-       
+
+
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
               <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
+                <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Share_Asset")}</div>
                 </div>
-                <div className="crx-menu-list">{t("Share_Asset")}</div>
-              </div>
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : null
         }
+
+
+
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
               <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
+                <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
                 </div>
-                <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
-              </div>
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : null
         }
+
       </Menu>
 
       <RestrictAccessDialogue

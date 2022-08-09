@@ -70,7 +70,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   };
 
   const isNewlyAddedCategory = (label: string): boolean => {
-    let removedValueWasSaved = props.evidenceResponse?.categories.some((x: any) => x === label);
+    let removedValueWasSaved = props.evidenceResponse?.categories.some((x: any) => x.name === label);
     if (removedValueWasSaved) {
       return true;
     }

@@ -394,7 +394,7 @@ export const resources = {
         "Your_Asset_Bucket":"hr-Your Asset Bucket",
         "Please_add_metadata_to_finish_saving_your_uploaded_files":"hr-Please add metadata to finish saving your uploaded files",
         "Add_metadata":"hr-Add metadata",
-        "Choose_asset_metadata_edited-on-purpose":"hr-Choose asset metadata edited-on-purpose",
+        "Choose_asset_metadata":"hr-Choose asset metadata",
         "Drag_and_drop_an":"hr-Drag and drop an",
         "to_the_Asset_Bucket_to_add_or_use_the":"hr-to the Asset Bucket to add, or use the",
         "file_browser":"hr-file browser",

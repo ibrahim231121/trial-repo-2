@@ -17,7 +17,8 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({ deviceTypeId, sta
     const filterOptionValuesOnTheBaseOfDropdownId = (_deviceTypeId: number, _stationId: any) => {
         if (Object.keys(configurationTemplatesFromStore).length > 0) {
             const filteredCollection = configurationTemplatesFromStore.filter((obj: any) => {
-                if ((parseInt(obj.typeOfDevice.id) === _deviceTypeId) && (obj.stationId == _stationId)) {
+                if ((parseInt(obj.typeOfDevice.id) === _deviceTypeId)) {
+                    //&& (obj.stationId == _stationId)
                     return obj;
                 }
             });

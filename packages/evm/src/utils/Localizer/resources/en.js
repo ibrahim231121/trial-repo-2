@@ -422,7 +422,7 @@ export const resources = {
         "Your_Asset_Bucket":"Your Asset Bucket",
         "Please_add_metadata_to_finish_saving_your_uploaded_files":"Please add metadata to finish saving your uploaded files",
         "Add_metadata":"Add metadata",
-        "Choose_asset_metadata_edited-on-purpose":"Choose asset metadata edited-on-purpose",
+        "Choose_asset_metadata":"Choose asset metadata",
         "Drag_and_drop_an":"Drag and drop an",
         "to_the_Asset_Bucket_to_add_or_use_the":"to the Asset Bucket to add, or use the",
         "file_browser":"file browser",

@@ -1093,7 +1093,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                         <CRXModalDialog
                           className="add-metadata-window"
                           maxWidth="xl"
-                          title={t("Choose_asset_metadata_edited-on-purpose")}
+                          title={t("Choose_asset_metadata")}
                           cancelButtonTxt="Cancel"
                           showSticky={false}
                           modelOpen={isModalOpen}

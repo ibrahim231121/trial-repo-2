@@ -36,7 +36,6 @@ const DefaultUnitTemplate: React.FC = () => {
     }, []);
 
     React.useEffect(() => {
-        console.log('selectBoxValues', selectBoxValues);
         /**
         * * Create HeaderCell For DataTable.
         * */
