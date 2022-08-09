@@ -302,13 +302,13 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                             <CRXSelectBox
                                                 className={`adVSelectBox createUserSelectBox ${permission.type.value ? crxDatapermissionClass : ""}`}
                                                 id={i}
-                                                value={permission.type.value > 0 ? permission.type.value : defaultPermissionType}
+                                                value={permission.type.value > 0 ? permission.type.value : t(defaultPermissionType)}
                                                 onChange={(e: any) => onPermissionTypeChange(e, i)}
                                                 options={permissionTypes}
                                                 icon={true}
                                                 popover={"crxSelectPermissionGroup"}
-                                                defaultOptionText={defaultPermissionType}
-                                                defaultValue={defaultPermissionType} />
+                                                defaultOptionText={t(defaultPermissionType)}
+                                                defaultValue={t(defaultPermissionType)} />
                                         </CRXColumn>
                                         <CRXColumn className="permissionCol" container="container" item="item" xs={6} spacing={0}>
                                             <CRXMultiSelectBoxAutocomplete

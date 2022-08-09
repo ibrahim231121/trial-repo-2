@@ -497,7 +497,7 @@ const ConfigurationTemplates: React.FC = () => {
       maxWidth: "100",
     },
     {
-      label: t("Name"),
+      label: `${t("Name")}`,
       id: "name",
       align: "left",
       //dataComponent: configTemplate,

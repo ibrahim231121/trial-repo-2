@@ -131,6 +131,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
+    showToastMsg({
+      message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
+      variant: "success",
+      duration: 7000,
+
+    })
   };
   const [openAssignUser, setOpenAssignUser] = React.useState(false);
   const [openManageRetention, setOpenManageRetention] = React.useState(false);
@@ -191,7 +197,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const UnlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
   const userId = parseInt(localStorage.getItem('User Id') ?? "0")
   const toasterRef = useRef<typeof CRXToaster>(null);
-  console.log("userId",userId)
   
 
   const confirmCallBackForRestrictModal = () => {
@@ -247,9 +252,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       .catch((errors) => {
         const err = errors as AxiosError;
         if (err.request.status === 409) {
-          setErrorMessage("The asset is already locked.");
+          setErrorMessage("The_asset_is_already_locked");
         } else {
-          setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
+          setErrorMessage(t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"));
         }
         setError(true);
       });
@@ -404,7 +409,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Set_as_primary")}</div>
+                <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
               </div>
              </SecurityDescriptor> 
            </Restricted> 
@@ -484,9 +489,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   <SubMenu label={t("Export")}>
-                    <MenuItem>Download asset(s)</MenuItem>
-                    <MenuItem>Download metadata info</MenuItem>
-                    <MenuItem>Download audit trail </MenuItem>
+                    <MenuItem>{t("Download_asset(s)")}</MenuItem>
+                    <MenuItem>{t("Download_metadata_info")}</MenuItem>
+                    <MenuItem>{t("Download_audit_trail")} </MenuItem>
                   </SubMenu>
                 </div>
               </div>

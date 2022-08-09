@@ -732,7 +732,7 @@ const openHandler = (_: React.SyntheticEvent) => {
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync());
+    dispatch(getUsersInfoAsync(gridFilter));
   };
 
   const history = useHistory();

@@ -9,6 +9,7 @@ import {
 import "@szhsin/react-menu/dist/index.css";
 import './index.scss'
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 type Props = {
     selectedItems?: any;
@@ -16,7 +17,7 @@ type Props = {
 };
 
 const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
-
+    const { t } = useTranslation<string>();
     return (
         <Menu
             align="start"
@@ -33,7 +34,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 <i className="fas fa-pen"></i>
                 </div>
                 <div className="crx-menu-list">
-                    {`Edit <Configuration>`}
+                    {`${t("Edit_Configuration")}`}
                 </div>
             </div>
         </MenuItem>
@@ -42,7 +43,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 <div className="crx-menu-icon">
                 </div>
                 <div className="crx-menu-list">
-                    Assign user(s)
+                {t("Assign_user(s)")}
                 </div>
             </div>
         </MenuItem>
@@ -51,7 +52,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 <div className="crx-menu-icon">
                 </div>
                 <div className="crx-menu-list">
-                    Deactivate
+                {t("Deactivate")}
                 </div>
             </div>
         </MenuItem>

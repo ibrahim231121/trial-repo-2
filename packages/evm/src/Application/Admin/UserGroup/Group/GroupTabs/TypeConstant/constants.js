@@ -1,6 +1,6 @@
-export const defaultPermissionType = "-- Select permission type --"
-export const defaultPermissionValue = "-- Select permission value --"
-export const defaultPermissionLevel = "-- Select permission level --"
+export const defaultPermissionType = "Select_permission_type"
+export const defaultPermissionValue = "Select_permission_value"
+export const defaultPermissionLevel = "Select_permission_level"
 
 export const permissionTypes = [
     { value: 2, displayText: 'Category' },

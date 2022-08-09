@@ -87,7 +87,7 @@ const UserActionMenu: React.FC<Props> = ({
             variant: "success",
             duration: 7000,
           });
-          dispatch(getUsersInfoAsync());
+          dispatch(getUsersInfoAsync(gridFilter));
           setIsOpen(false);
         } else {
           setShowAlert(true);

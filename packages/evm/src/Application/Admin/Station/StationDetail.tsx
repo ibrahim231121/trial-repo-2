@@ -7,8 +7,9 @@ import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { getCountryStateAsync, getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
 import {
+  CRXTabs,
+  CrxTabPanel,
   CRXMultiSelectBoxLight,
-  CrxAccordion,
   CRXAlert,
   GoogleMap,
   CRXButton,
@@ -56,7 +57,7 @@ const StationDetail: React.FC = () => {
     dispatch(getRetentionStateAsync());
     dispatch(getUploadStateAsync());
   }, []);
-
+  const [value, setValue] = React.useState(0);
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const isAddCase = !!isNaN(+id);
@@ -79,7 +80,6 @@ const StationDetail: React.FC = () => {
   const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<DeviceType[]>([]);
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
   const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
-  const [expanded, isExpaned] = React.useState("panel1");
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
@@ -130,6 +130,7 @@ const StationDetail: React.FC = () => {
     React.useState<boolean>(true);
   const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
   const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
+  const [isOpen, setIsOpen] = React.useState(false);
 
   React.useEffect(() => {
     getDeviceTypeRecord();
@@ -161,6 +162,7 @@ const StationDetail: React.FC = () => {
         const _station: StationFormType = {
           Name: station.name,
           StreetAddress: station.address.street,
+          Phone: station.address.phone,
           Passcode: station.passcode,
           Location: {
             latitude: station.geoLocation.latitude,
@@ -179,12 +181,12 @@ const StationDetail: React.FC = () => {
           SSId: station.sSID,
           Password: station.password,
           ConfigurationTemplate: station.policies[0].configurationTemplates
-        };
+          };
         setRetentionAutoCompleteValue([{ id: _station.RetentionPolicy?.id }]);
         setUploadAutoCompleteValue([{ id: _station.UploadPolicy?.id }]);
         setBlackBoxAutoCompleteValue([{ id: _station.BlackboxRetentionPolicy?.id }]);
         setStationPayload(_station);
-        dispatch(enterPathActionCreator({ val: _station.Name }));
+        dispatch(enterPathActionCreator({ val: t("Station")+": "+ _station.Name }));
       });
     }
   }, [isAddCase]);
@@ -636,6 +638,37 @@ const StationDetail: React.FC = () => {
       </>
     );
   }
+  function handleChange(event: any, newValue: number) {
+    setValue(newValue);
+  }
+  const tabs = [
+    { label: t("General"), index: 0 },
+    { label: t("Station_Settings"), index: 1 },
+    { label: t("Unit_Templates"), index: 2 },
+
+  ];
+
+  const redirectPage = (values: StationFormType) => {
+      if (
+        JSON.stringify(stationPayload) !==
+        JSON.stringify(values)
+      ) {
+        setIsOpen(true)
+        setValue(tabs[0].index);
+      } else
+      history.push(
+        urlList.filter((item: any) => item.name === urlNames.adminStation)[0]
+          .url
+      );
+  };
+
+  const closeDialog = () => {
+    setIsOpen(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.adminStation)[0].url
+    );
+  };
+
   return (
     <>
       <Formik
@@ -665,15 +698,9 @@ const StationDetail: React.FC = () => {
                     open={true}
                   />
                 )}
-                <CrxAccordion
-                  title={t("Station")}
-                  id="accorIdx1"
-                  className="crx-accordion"
-                  ariaControls="Content1"
-                  name="panel1"
-                  isExpanedChange={isExpaned}
-                  expanded={expanded === "panel1"}
-                >
+
+                <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+                <CrxTabPanel value={value} index={0}>
                   <div className="stationDetailOne">
                     <div className="stationColumnSet">
                       <CRXRows
@@ -777,7 +804,13 @@ const StationDetail: React.FC = () => {
                           </div>
                         </CRXColumn>
                         <CRXColumn
-                          className="stationDetailCol"
+                          className={
+                            "stationDetailCol " +
+                            ` ${errors.Phone && touched.Phone == true
+                              ? displayStationErrors
+                              : ""
+                            }`
+                          }
                           container="container"
                           item="item"
                           lg={12}
@@ -786,8 +819,9 @@ const StationDetail: React.FC = () => {
                         >
                           <div className="CBX-input">
                             <label htmlFor="phone">{t("Phone_Number")}</label>
-                            <Field id="phone" name="Phone" />
                             <div className="CrxStationError">
+                              <Field id="phone" name="Phone" />
+                            
                               {errors.Phone !== undefined &&
                                 touched.Phone === true ? (
                                 <div className="errorStationStyle">
@@ -796,7 +830,7 @@ const StationDetail: React.FC = () => {
                                   {setDisplayStationError("errorBrdr")}
                                 </div>
                               ) : null}
-                            </div>
+                            </div> 
                           </div>
                         </CRXColumn>
                         <CRXColumn
@@ -835,16 +869,8 @@ const StationDetail: React.FC = () => {
                       </CRXRows>
                     </div>
                   </div>
-                </CrxAccordion>
-                <CrxAccordion
-                  title={t("Station_Settings")}
-                  id="accorIdx2"
-                  className="crx-accordion "
-                  ariaControls="Content2"
-                  name="panel2"
-                  isExpanedChange={isExpaned}
-                  expanded={expanded === "panel2"}
-                >
+                </CrxTabPanel>
+                <CrxTabPanel value={value} index={1}>
                   <div className="stationDetailOne gepStationSetting">
                     <div className="stationColumnSet">
                       <CRXRows
@@ -1056,51 +1082,65 @@ const StationDetail: React.FC = () => {
                       </CRXRows>
                     </div>
                   </div>
-                </CrxAccordion>
-                <CrxAccordion
-                  title={t("Unit_Templates")}
-                  id="accorIdx3"
-                  className="crx-accordion "
-                  ariaControls="Content3"
-                  name="panel3"
-                  isExpanedChange={isExpaned}
-                  expanded={expanded === "panel3"}
-                >
-                  {deviceTypeCollection.length > 0 &&
-                    UnitTemplatesRender({ setFieldValue, values })
-                  }
-                </CrxAccordion>
+                </CrxTabPanel>
+                <CrxTabPanel value={value} index={2}>
+                  <div>
+                    {deviceTypeCollection.length > 0 &&
+                      UnitTemplatesRender({ setFieldValue, values })
+                    }
+                  </div>
+                </CrxTabPanel>
 
-                <CRXRows container="container" spacing={0}>
-                  <CRXColumn
-                    className=""
-                    container="container"
-                    item="item"
-                    xs={12}
-                    spacing={0}
-                  >
-                    <div className="crxStationDetailBtn">
-                      <CRXButton
+
+                  <div className="crxStationDetailBtn">
+                    <CRXButton
                         type="submit"
                         disabled={!(isValid && dirty)}
                         variant="contained"
                         className="groupInfoTabButtons"
                       >
                         {t("Save")}
-                      </CRXButton>
-                      <CRXButton
+                    </CRXButton>
+                    <CRXButton
                         className="groupInfoTabButtons secondary"
                         color="secondary"
                         variant="outlined"
                         onClick={navigateToStations}
                       >
                         {t("Cancel")}
-                      </CRXButton>
-                    </div>
-                  </CRXColumn>
-                </CRXRows>
-              </div>
+                    </CRXButton>
+                    <CRXButton
+                    onClick={() => redirectPage(values)}
+                    className="groupInfoTabButtons-Close secondary"
+                    color="secondary"
+                    variant="outlined"
+                  >
+                    {t("Close")}
+                  </CRXButton>
+                  </div>
+                  
+                </div>
+
             </Form>
+
+            <CRXConfirmDialog
+              setIsOpen={() => setIsOpen(false)}
+              onConfirm={closeDialog}
+              isOpen={isOpen}
+              className="userGroupNameConfirm"
+              primary={t("Yes_close")}
+              secondary={t("No,_do_not_close")}
+              text="user group form"
+            >
+              <div className="confirmMessage">
+                {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+                <strong>{t("'station'")}</strong>. {t("If_you_close_the_form")}, 
+                {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+                <div className="confirmMessageBottom">
+                {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+                </div>
+              </div>
+            </CRXConfirmDialog>
 
             <CRXConfirmDialog
               className="crx-unblock-modal CRXStationModal"

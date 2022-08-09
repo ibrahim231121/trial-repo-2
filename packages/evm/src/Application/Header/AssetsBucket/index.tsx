@@ -171,23 +171,11 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     })
     setCheckedAll(false)
     let local_assetBucket: any = localStorage.getItem("assetBucket");
+
     if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
-
-      // toasterRef.current.showToaster({
-      //   message: "You have added the selected assets to the asset bucket.", 
-      //   variant: "success", 
-      //   duration: 7000, 
-      // });
-
-
     }
-    else if (assetBucketData.length > prevCount) {
-      toasterRef.current.showToaster({
-        message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
-        variant: "success",
-        duration: 7000,
-
-      });
+    else 
+    if (assetBucketData.length > prevCount) {
     }
     else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
@@ -198,6 +186,17 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         duration: 7000,
 
       });
+
+      let notificationMessage: NotificationMessage = {
+        title: t("Asset_Lister"),
+        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+
 
     }
   }, [assetBucketData]);

@@ -19,14 +19,13 @@ const rows = [
   {},{}]
 
 const QueuedAsstsDataTable = ()=>{
-
+    const { t } = useTranslation<string>();
     const [reformattedRows, setReformattedRows] = React.useState<QueuedAssets[]>();
     const [selectedActionRow, setSelectedActionRow] =React.useState<QueuedAssets>();
     const [order] = React.useState<Order>("asc");
     const [orderBy] = React.useState<string>("name");
     const [open, setOpen] = React.useState<boolean>(false);
     const [selectedItems, setSelectedItems] = React.useState<QueuedAssets[]>([]);
-    const { t } = useTranslation<string>();
 
     const resizeQueuedAssets = (e: { colIdx: number; deltaX: number }) => {
         let headCellReset = onResizeRow(e, headCells);
@@ -96,7 +95,7 @@ const QueuedAsstsDataTable = ()=>{
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
        
         {
-          label: `${t("File Name")}`,
+          label: `${t("File_Name")}`,
           id: "filename",
           align: "right",
           dataComponent: (e: string) => textDisplay(e, " "),
@@ -116,7 +115,7 @@ const QueuedAsstsDataTable = ()=>{
         <div className="">
         {/* {rows && ( */}
           <CRXDataTable
-            id="Queued Assets"
+            id={t("Queued_Assets")}
             getRowOnActionClick={(val: QueuedAssets) =>
               setSelectedActionRow(val)
             }

@@ -218,7 +218,7 @@ const UnitAndDevices: React.FC = () => {
                   startDate: reformattedRows !== undefined ? reformattedRows[0].lastCheckedIn : "",
                   endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].lastCheckedIn : "",
                   value: "custom",
-                  displayText: "custom range",
+                  displayText: t("custom_range"),
               },
               colIdx: 0,
           };
@@ -290,7 +290,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
   }
 }
   versionlist = versionlist.filter(findUniqueValue);
-  let version: any = [{ label: "No Version"}];
+  let version: any = [{ label: t("No_Version")}];
   versionlist.map((x: string) => { version.push({ label: x}) })
 
   const settingValues = (headCell: HeadCellProps) => {
@@ -325,7 +325,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
               getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
               onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-              noOptionsText="No Version"
+              noOptionsText={t("No_Version")}
      
           />                  
       </div>
@@ -350,7 +350,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
     }
   }
     statuslist = statuslist.filter(findUniqueValue);
-    let status: any = [{ label: "No Status"}];
+    let status: any = [{ label: t("No_Status")}];
     statuslist.map((x: string) => { status.push({ label: x}) })
     const settingValues = (headCell: HeadCellProps) => {
   
@@ -383,7 +383,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
                 getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
                 getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
                 onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-                noOptionsText="No Status"
+                noOptionsText={t("No_Status")}
             />
         </div>
     )
@@ -402,7 +402,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
   }
 }
   templatelist = templatelist.filter(findUniqueValue);
-  let template: any = [{ label: "No Template"}];
+  let template: any = [{ label: t("No_Template")}];
   templatelist.map((x: string) => { template.push({ label: x}) })
   const settingValues = (headCell: HeadCellProps) => {
 
@@ -438,7 +438,7 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
               getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
               onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-              noOptionsText="No Template"
+              noOptionsText={t("No_Template")}
           />
       </div>
   )
@@ -499,7 +499,7 @@ const AnchorDisplay = (e: string) => {
       maxWidth: "100",
     },
     {
-      label: `${t("Unit ID")}`,
+      label: `${t("Unit_ID")}`,
       id: "unitId",
       align: "left",
       dataComponent: (e: string) => AnchorDisplay(e),// textDisplay(e, ""),
@@ -536,7 +536,7 @@ const AnchorDisplay = (e: string) => {
       maxWidth: "265",
     },
     {
-      label: `${t("Assigned To")}`,
+      label: `${t("Assigned_To")}`,
       id: "assignedTo",
       align: "left",
       dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
@@ -549,7 +549,7 @@ const AnchorDisplay = (e: string) => {
       maxWidth: "20",
     },
     {
-      label: `${t("Serial Number")}`,
+      label: `${t("Serial_Number")}`,
       id: "serialNumber",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
@@ -584,7 +584,7 @@ const AnchorDisplay = (e: string) => {
       maxWidth: "185",
     },
     {
-      label: `${t("Last Checked In")}`,
+      label: `${t("Last_Checked_In")}`,
       id: "lastCheckedIn",
       align: "center",
       dataComponent: dateDisplayFormat,
@@ -594,7 +594,7 @@ const AnchorDisplay = (e: string) => {
       minWidth: "190"
     },
     {
-      label: `Template`,
+      label: `${t("Template")}`, 
       id: "template",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
@@ -770,7 +770,7 @@ useEffect(()=>{
         
         rows && (
         <CRXDataTable
-          id="Units & Devices"
+          id={t("Units_&_Devices")}
           actionComponent={<UnitAndDevicesActionMenu />}
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)

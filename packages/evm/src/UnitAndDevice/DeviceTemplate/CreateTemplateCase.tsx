@@ -4,7 +4,7 @@ import { CRXTooltip } from '@cb/shared';
 import { Select, MenuItem, ListItemText } from '@material-ui/core';
 import { CRXButton, CRXConfirmDialog } from '@cb/shared';
 import { useLocation } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 
 var re = /[\/]/;
 
@@ -194,7 +194,7 @@ let customEvent = (event: any, y: any, z: any) => {
 
 
 export const CreateTempelateCase = (props: any) => {
-
+  const { t } = useTranslation<string>();
   let LocationPath: any = useLocation();
 
   if (LocationPath?.state?.deviceType === "Incar") {
@@ -238,12 +238,12 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={`formMainHeading   ${formObj.labelGroupRecording} `}>{formObj.labelGroupRecording}</h1></span></span>}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={`formMainHeading   ${formObj.labelGroupRecording} `}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <span className={formObj.class}>
             <div className={touched[formObj.key] == true && errors[formObj.key] ? " textFieldError" : "textField"} >
               <div className="UiLabelTextbox " >
                 <div>
-                  <label className="labelRadioo">{formObj.label}
+                  <label className="labelRadioo">{t(formObj.label)}
                     <label>
                       {formObj.validation?.some((x: any) => x.key == 'required') === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
                     </label>
@@ -269,7 +269,7 @@ export const CreateTempelateCase = (props: any) => {
                     <CRXTooltip
                       className="CRXTooltip_form"
                       iconName="fas fa-info-circle"
-                      title={formObj.hintvalue}
+                      title={t(formObj.hintvalue)}
                       placement="right"
                     />
                   ) : null}
@@ -288,8 +288,8 @@ export const CreateTempelateCase = (props: any) => {
             className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'DynamicFormTimeUi DynamicFormTimeUiDepend' : 'DynamicFormTimeUi'}
           >
             <div className='DFTUILeft'>
-              <label>{formObj.labelMute}</label>
-              <label className='DFTUILabel'>{formObj.label}</label>
+              <label>{t(formObj.labelMute)}</label>
+              <label className='DFTUILabel'>{t(formObj.label)}</label>
               <label className='DFTUIRequired'>
                 {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
               </label>
@@ -303,7 +303,7 @@ export const CreateTempelateCase = (props: any) => {
               {formObj.hinttext == true ? (
                 <CRXTooltip
                   iconName="fas fa-info-circle"
-                  title={formObj.hintvalue}
+                  title={t(formObj.hintvalue)}
                   placement="right"
                 />
               ) : null}
@@ -326,11 +326,11 @@ export const CreateTempelateCase = (props: any) => {
           {
             (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
             <>
-              {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`} >{formObj.labelGroupRecording}</h1>}
+              {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`} >{t(formObj.labelGroupRecording)}</h1>}
               <div className={formObj.class}>
                 <div className="UiRadioMain">
                   <div className="UiRadioLabel">
-                    <label >{formObj.labelMute}</label>
+                    <label >{t(formObj.labelMute)}</label>
                   </div>
                   <div
                     className="UiRadioCheck"
@@ -346,18 +346,18 @@ export const CreateTempelateCase = (props: any) => {
                         />
                         <span className="checkmarkRadio"></span>
                       </label>
-                      <label className={formObj.label + "Text"}>{formObj.label}
+                      <label className={formObj.label + "Text"}>{t(formObj.label)}
                         <label>
                           {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                         </label>
-                        <p className="labelMutedText"> {formObj.labelMutedText} </p>
+                        <p className="labelMutedText"> {t(formObj.labelMutedText)} </p>
 
                       </label>
 
                       {formObj.hinttext == true ? (
                         <CRXTooltip
                           iconName="fas fa-info-circle"
-                          title={formObj.hintvalue}
+                          title={t(formObj.hintvalue)}
                           placement="right"
                         />
                       ) : null}
@@ -382,13 +382,13 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{formObj.labelGroupRecording}</h1></span></span>}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
             >
               <div>
-                <label className='UiStationSelectLabel'>{formObj.label}
+                <label className='UiStationSelectLabel'>{t(formObj.label)}
                   <label>
                     {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                   </label></label>
@@ -406,7 +406,7 @@ export const CreateTempelateCase = (props: any) => {
                         <MenuItem
                           value={opt.value}
                           key={key}
-                        >{opt.label}{" "}</MenuItem>
+                        >{t(opt.label)}{" "}</MenuItem>
                       )
                     )}
                   </Field>
@@ -415,7 +415,7 @@ export const CreateTempelateCase = (props: any) => {
                     {formObj.hinttext == true ? (
                       <CRXTooltip
                         iconName="fas fa-info-circle"
-                        title={formObj.hintvalue}
+                        title={t(formObj.hintvalue)}
                         placement="right"
                       />
                     ) : null}
@@ -445,7 +445,7 @@ export const CreateTempelateCase = (props: any) => {
           className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
         >
           <div className='multiSelectUiLeft'>
-            <label className='multiSelectUiLabel'>{formObj.label}</label>
+            <label className='multiSelectUiLabel'>{t(formObj.label)}</label>
             <label className='multiSelectUiStar'>
               {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
             </label>
@@ -463,7 +463,7 @@ export const CreateTempelateCase = (props: any) => {
 
                   <MenuItem key={opt.label} value={opt.value}>
                     {/* <Checkbox checked={name.indexOf(opt.value) > -1} /> */}
-                    <ListItemText primary={opt.label} />
+                    <ListItemText primary={t(opt.label)} />
                   </MenuItem>
 
                   // <option
@@ -479,7 +479,7 @@ export const CreateTempelateCase = (props: any) => {
             {formObj.hinttext == true ? (
               <CRXTooltip
                 iconName="fas fa-info-circle"
-                title={formObj.hintvalue}
+                title={t(formObj.hintvalue)}
                 placement="right"
               />) : (<></>)}
           </div>
@@ -490,14 +490,14 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{formObj.labelGroupRecording}</h1></span></span>}
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'UiCheckbox UiCheckboxDepend ' : 'UiCheckbox'}
             >
               <div className="UiCheckboxMain">
                 <div className="UiCheckboxLeft">
-                  <label className={formObj.label ? "labelAdded" : "labelNotAdded"}>{formObj.label}
+                  <label className={formObj.label ? "labelAdded" : "labelNotAdded"}>{t(formObj.label)}
                     <label>
                       {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                     </label>
@@ -521,13 +521,13 @@ export const CreateTempelateCase = (props: any) => {
                         validateOnChange
                       />
                       <span className="checkmark" ></span>
-                      <p className="checkHelperText">{formObj.checkHelperText}</p>
+                      <p className="checkHelperText">{t(formObj.checkHelperText)}</p>
                     </label>
-                    <div>{formObj.checkBoxText ? <p>{formObj.checkBoxText}</p> : ''}</div>
+                    <div>{formObj.checkBoxText ? <p>{t(formObj.checkBoxText)}</p> : ''}</div>
                     {formObj.hinttext == true ? (
                       <CRXTooltip
                         iconName="fas fa-info-circle"
-                        title={formObj.hintvalue}
+                        title={t(formObj.hintvalue)}
                         placement="right"
                       />
                     ) : null}
@@ -558,10 +558,10 @@ export const CreateTempelateCase = (props: any) => {
                 className={`${formObj.seconds === false ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
 
               >
-                {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{formObj.labelGroupRecording}</h1>}
+                {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1>}
                 <div className={formObj.checkHelperText ? 'UiNumberSelectorMain checkHelperTextMain ' : 'UiNumberSelectorMain'}>
                   <div className="UiNumberSelectorLeft ">
-                    <label>{formObj.label}
+                    <label>{t(formObj.label)}
                       <label>
                         {formObj.validation?.some((x: any) => x.key == 'required') === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "starikRed" : "starikBlack"}>*</span> : null}
                       </label>
@@ -576,14 +576,14 @@ export const CreateTempelateCase = (props: any) => {
                       />
                       <label className="timeShow">
                         {formObj.seconds === true
-                          ? "seconds"
-                          : formObj.volts ? "volts" : "minutes"}
+                          ? t("seconds")
+                          : formObj.volts ? t("volts") : t("minutes")}
                       </label>
-                      <p className="checkSelectorText">{formObj.checkHelperText}</p>
+                      <p className="checkSelectorText">{t(formObj.checkHelperText)}</p>
                       {formObj.hinttext == true ? (
                         <CRXTooltip
                           iconName="fas fa-info-circle"
-                          title={formObj.hintvalue}
+                          title={t(formObj.hintvalue)}
                           placement="right"
                         />
                       ) : null}
@@ -605,7 +605,6 @@ export const CreateTempelateCase = (props: any) => {
           </div>
         </div>
       );
-
     case "fieldarray":
       return (
         <FieldArray
@@ -623,7 +622,7 @@ export const CreateTempelateCase = (props: any) => {
                       key == 0 ?
                         <>
                           <div className='cameraSetup'>
-                            <h1>Camera {(index + 1)}</h1>
+                            <h1>{t("Camera")} {(index + 1)}</h1>
                             <i className="fas fa-minus-circle" onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}></i>
                           </div>
                           <div key={formObj.key + "_DIV" + key}>
@@ -642,7 +641,7 @@ export const CreateTempelateCase = (props: any) => {
               <div className='AddCameraLineIncar'></div>
               <div className='AddCameraIncar'>
                 <CRXButton onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
-                  <i className="fa fa-plus"></i>  Add camera
+                  <i className="fa fa-plus"></i>  {t("Add camera")}
                 </CRXButton>
               </div>
 
@@ -651,22 +650,23 @@ export const CreateTempelateCase = (props: any) => {
               <CRXConfirmDialog
                 setIsOpen={(e: React.MouseEvent<HTMLElement>) => { IncarModalClose(); setOpen(false); }}
                 onConfirm={() => { IncarModalClose(); setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema); arrayHelpers.remove(removeIndex); }}
-                title="Please Confirm"
+                title={t("Please_Confirm")}
                 isOpen={open}
                 className="IncarDeviceModalUiMain"
                 modelOpen={open}
-                primary="Remove camera"
-                secondary="Cancel"
+                primary={t("Remove_camera")}
+                secondary={t("Cancel")}
               >
                 {
                   <div className="crxUplockContent">
                     <p className='modalPara1'>
-                      You are attempting to <strong>remove</strong> <strong>Camera {removeIndex + 1}</strong>. If you remove this camera, any changes
-                      you've made will not be saved. You will not be able to undo this
-                      action.
+                    {t("You_are_attempting_to")} <strong>{t("remove")}</strong> <strong>{t("Camera")} {removeIndex + 1}</strong>. 
+                    {t("If_you_remove_this_camera,")} 
+                    {t("any_changes_you_ve_made_will_not_be_saved.")} 
+                    {t("You_will_not_be_able_to_undo_this_action.")}
                     </p>
                     <p className='modalPara2'>
-                      Are you sure you would like to <strong>remove</strong> this camera?
+                    {t("Are_you_sure_you_would_like_to")}<strong>{t("remove")}</strong> {t("this_camera?")}
                     </p>
                   </div>
                 }

@@ -245,7 +245,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
                       {t("Customize_columns")}
                     </CRXTypography>
                     <CRXTypography className="subTItle" variant="h5">
-                      {t("Select to show a column. Drag and drop to recorder.")}
+                      {t("Select_to_show_a_column_Drag_and_drop_to_recorder.")}
                     </CRXTypography>
                   </div>
                   <div className="columnList">

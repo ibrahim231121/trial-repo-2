@@ -13,6 +13,7 @@ import "./ConfigTemplateActionMenu.scss";
 import { useHistory } from "react-router";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
+import { urlList, urlNames } from '../../../../utils/urlList';
 
 type Props = {
   selectedItems?: any;
@@ -57,8 +58,9 @@ const ViewLog = () => {
   {
   
     
-    history.push('/admin/unitanddevices/template/viewlog', { id: row.id, type: row.type, name: row.name })
-
+    // history.push('/admin/unitanddevices/template/viewlog', { id: row.id, type: row.type, name: row.name })
+    history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateViewLog)[0].url, { id: row.id, type: row.type, name: row.name })
+    
    
   }
 };
@@ -148,8 +150,8 @@ const ViewLog = () => {
         onConfirm={Onconfirm}
         isOpen={nondefault}
         myVar={true}
-        secondary={"Yes, delete"}
-        primary={"No, do not delete"}
+        secondary={t("Yes_delete")}
+        primary={t("No_do_not_delete")}
       >
         {
           <div className="crxUplockContent configuserParaMain">

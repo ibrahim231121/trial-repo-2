@@ -34,6 +34,8 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
+import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 
 type DateTimeProps = {
   dateTimeObj: DateTimeObject;
@@ -580,9 +582,6 @@ const MasterMain: React.FC<Props> = ({
   useEffect(() => {
     //dataArrayBuilder();
   }, [searchData]);
-  useEffect(() => {
-    console.log(selectedItems)
-  }, [selectedItems]);
 
   useEffect(() => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
@@ -622,6 +621,7 @@ const MasterMain: React.FC<Props> = ({
     setHeadCells(headCellsArray);
   };
   const toasterRef = useRef<typeof CRXToaster>(null);
+
   const showToastMsg = (obj: any) => {
     toasterRef.current.showToaster({
       message: obj.message,
@@ -629,6 +629,17 @@ const MasterMain: React.FC<Props> = ({
       duration: obj.duration,
       clearButtton: true,
     });
+    if (obj.message !== undefined && obj.message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("Asset_Lister"),
+        message: obj.message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
   };
 
   const getFilteredEvidenceData = () => {

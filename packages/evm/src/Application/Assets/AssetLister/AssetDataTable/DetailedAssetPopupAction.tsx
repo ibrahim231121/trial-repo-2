@@ -104,7 +104,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
     .catch(function (error) {
       setAlert(true);
       setResponseError(
-        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
       );
       return error;
     });

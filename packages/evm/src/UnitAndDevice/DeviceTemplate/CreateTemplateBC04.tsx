@@ -23,6 +23,7 @@ import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
 import { ConfigurationTemplate, DefaultConfigurationTemplate } from "../../utils/Api/models/UnitModels";
+import { useTranslation } from "react-i18next";
 
 const cookies = new Cookies();
 
@@ -63,6 +64,7 @@ const applyValidation = (arrayOfObj: any) => {
 }
 
 const CreateTemplate = (props: any) => {
+  const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
   const [_FormSchema, setFormSchema] = React.useState({});
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
@@ -70,13 +72,13 @@ const CreateTemplate = (props: any) => {
   const [open, setOpen] = React.useState(false);
   const [cameraFeildArrayCounter, setCameraFeildArrayCounter] = React.useState<number>(1);
   const [formSchema, setformSchema] = React.useState<any>({});
-  const [primary] = React.useState<string>("Yes, close");
-  const [secondary] = React.useState<string>("No, do not close");
+  const [primary] = React.useState<string>(t("Yes_close"));
+  const [secondary] = React.useState<string>(t("No,_do_not_close"));
   const history = useHistory();
   let historyState = props.location.state;
   let templateNameHistory = "";
   if (historyState.isclone) {
-    templateNameHistory = "CLONE - " + historyState.name;
+    templateNameHistory = t("CLONE - ") + historyState.name;
   }
   else {
     templateNameHistory = historyState.name;
@@ -144,12 +146,12 @@ const CreateTemplate = (props: any) => {
 
     dispatch(getStationsAsync());
     if (historyState.isedit || historyState.isclone) {
-      dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + templateNameHistory }));
+      dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
       loadData(historyState.name);
     }
     else {
       setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: "Create Template : " + historyState.deviceType }));
+      dispatch(enterPathActionCreator({ val: t("Create_Template") + historyState.deviceType }));
     }
 
     return () => {
@@ -308,7 +310,7 @@ const CreateTemplate = (props: any) => {
               Initial_Values_RequiredField.push({
                 key: key,
                 type: feildObj.type,
-                validation: feildObj.validation
+                validation: t(feildObj.validation)
               });
             }
             if (feildObj.validationChangeFeilds) {
@@ -320,7 +322,7 @@ const CreateTemplate = (props: any) => {
                   Initial_Values_RequiredField.push({
                     key: newKey,
                     type: x.type,
-                    validation: x.validation
+                    validation: t(x.validation)
                   })
                 }
               })
@@ -619,11 +621,11 @@ const CreateTemplate = (props: any) => {
           history.go(0)
           resetForm()
         }
-        targetRef.current.showToaster({ message: "Template Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: "Success", duration: 5000, clearButtton: true });
       })
       .catch((e:any) => {
         if (e.request.status == 409) {
-          targetRef.current.showToaster({ message: `Template with this name ${templateNames} is already exists`, variant: "Error", duration: 5000, clearButtton: true });
+          targetRef.current.showToaster({ message: `${t("Template_with_this_name")} ${templateNames} ${t("is_already_exists")}`, variant: "Error", duration: 5000, clearButtton: true });
         }
         else{
           console.error(e.message);
@@ -637,9 +639,9 @@ const CreateTemplate = (props: any) => {
       const url = `/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
-        targetRef.current.showToaster({ message: "Template Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
         loadData(templateNames);
-        dispatch(enterPathActionCreator({ val: "Template, " + historyState.deviceType + ": " + templateNames }));
+        dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNames }));
         resetForm();
       })
       .catch((e:any) => {
@@ -678,7 +680,7 @@ const CreateTemplate = (props: any) => {
       <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
-        title="Please Confirm"
+        title={t("Please_Confirm")}
         isOpen={open}
         modelOpen={open}
         primary={primary}
@@ -686,12 +688,12 @@ const CreateTemplate = (props: any) => {
       >
         {
           <div className="crxUplockContent">
-            You are attempting to <strong>close</strong> the{" "}
-            <strong>BC03 Template</strong>. If you close the form, any changes
-            you've made will not be saved. You will not be able to undo this
-            action.
+            {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
+            <strong>{t("BC03_Template")}</strong>. {t("If_you_close_the_form")} 
+            {t("any_changes_you_ve_made_will_not_be_saved.")} 
+            {t("You_will_not_be_able_to_undo_this_action.")}
             <p>
-              Are you sure you would like to <strong>close</strong> the form?
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
             </p>
           </div>
         }
@@ -715,7 +717,7 @@ const CreateTemplate = (props: any) => {
               <div className="crx-menu-icon">
                 <i className="far fa-copy"></i>
               </div>
-              <div className="crx-menu-list">Clone template</div>
+              <div className="crx-menu-list">{t("Clone_template")}</div>
             </div>
           </Link>
         </MenuItem>
@@ -724,7 +726,7 @@ const CreateTemplate = (props: any) => {
             <div className="crx-menu-icon">
               <i className="far fa-trash-alt"></i>
             </div>
-            <div className="crx-menu-list">Delete template</div>
+            <div className="crx-menu-list">{t("Delete_template")}</div>
           </div>
         </MenuItem>
       </Menu>
@@ -755,7 +757,7 @@ const CreateTemplate = (props: any) => {
 
                     {tabs.map(x => {
                       return <CrxTabPanel value={value} index={x.index}>
-                        <p className="DeviceIndicator"><span>*</span> Indicates required field</p>
+                        <p className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</p>
                         <div>
 
                         </div>
@@ -798,15 +800,15 @@ const CreateTemplate = (props: any) => {
                       type="submit"
                       onClick={() => handleSave(values, resetForm)}
                     >
-                      Save
+                      {t("Save")}
                     </CRXButton>
                     <CRXButton onClick={() => history.goBack()}>
-                      Cancel
+                    {t("Cancel")}
                     </CRXButton>
                   </div>
                   <div className="tctRight">
                     <CRXButton onClick={() => handleChangeCloseButton(!dirty)}>
-                      Close
+                    {t("Close")}
                     </CRXButton>
                   </div>
                 </div>

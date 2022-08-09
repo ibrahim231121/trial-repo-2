@@ -120,17 +120,17 @@ const UnitCreate = (props: historyProps) => {
   const inCarTab: any = location.state.template;
 
   const tabs1 = [
-    { label: "Configuration", index: 0 },
-    { label: "Queued Assets", index: 1 },
-    { label: "Events", index: 2 },
-    { label: "Device Diagnostic", index: 3 },
-    { label: "Update History", index: 4 }
+    { label: t("Configuration"), index: 0 },
+    { label: t("Queued_Assets"), index: 1 },
+    { label: t("Events"), index: 2 },
+    { label: t("Device_Diagnostic"), index: 3 },
+    { label: t("Update_History"), index: 4 }
   ];
 
   const tabs = [
-    { label: "Configurations", index: 0 },
-    { label: "Devices", index: 1 },
-    { label: "Queued Assets", index: 2 }
+    { label: t("Configurations"), index: 0 },
+    { label: t("Devices"), index: 1 },
+    { label: t("Queued_Assets"), index: 2 }
   ];
 
   const [devicesList, setDevicesList] = useState<any>();
@@ -178,13 +178,13 @@ const UnitCreate = (props: historyProps) => {
   React.useEffect(() => {
     if (primaryDeviceInfo !== undefined && configTemplateList !== undefined &&  stationList !== undefined) {
       SetStationName(primaryDeviceInfo.station)
-      let template: any = [{ displayText: "None", value: "0" }];
+      let template: any = [{ displayText: t("None"), value: "0" }];
       configTemplateList.map((x: any) => {
         template.push({ displayText: x.name, value: x.id });
       });
 
 
-        let stationlst: any = [{ displayText: "None", value: "0" }];
+        let stationlst: any = [{ displayText: t("None"), value: "0" }];
         stationList.map((x: any) => {
           stationlst.push({ displayText: x.name, value: x.id });
         });
@@ -201,7 +201,7 @@ const UnitCreate = (props: historyProps) => {
       dispatch(
         enterPathActionCreator({
           val:
-            "Unit Detail: " +
+            t("Unit_Detail") +
             primaryDeviceInfo.name.charAt(0).toUpperCase() +
             primaryDeviceInfo.name.slice(1),
         })
@@ -288,7 +288,7 @@ const UnitCreate = (props: historyProps) => {
     };
 
     UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
-      targetRef.current.showToaster({message: "Unit Edited Sucessfully ", variant: "Success", duration: 5000, clearButtton: true});
+      targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true});
       setIsSaveButtonDisabled(true);
       SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText)    
     })
@@ -329,21 +329,21 @@ const UnitCreate = (props: historyProps) => {
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
   
     {
-      label: `${t("Device Name")}`,
+      label: `${t("Device_Name")}`,
       id: "deviceNames",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
     },
     {
-      label: `${t("Device Type")}`,
+      label: `${t("Device_Type")}`,
       id: "deviceTypes",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
     },
     {
-      label: `${t("Serial Number")}`,
+      label: `${t("Serial_Number")}`,
       id: "deviceSerialNumbers",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
@@ -397,25 +397,25 @@ const UnitCreate = (props: historyProps) => {
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
-                <div className="crx-menu-list">test</div>
+                <div className="crx-menu-list">{t("test")}</div>
               </div>
             </MenuItem>
             <MenuItem>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">test</div>
+                <div className="crx-menu-list">{t("test")}</div>
               </div>
             </MenuItem>
             <MenuItem>
               <div className="crx-meu-content ">
                 <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">test</div>
+                <div className="crx-menu-list">{t("test")}</div>
               </div>
             </MenuItem>
           </Menu>
         </div>
         <div className="unitExit">
-          <p onClick={history.goBack}>Exit</p>
+          <p onClick={history.goBack}>{t("Exit")}</p>
         </div>
       </div>
 
@@ -465,7 +465,7 @@ const UnitCreate = (props: historyProps) => {
                       }
                       alt={primaryDeviceInfo.deviceType}
                     />
-                    <p>PRIMARY UNIT DEVICE</p>
+                    <p>{t("PRIMARY_UNIT_DEVICE")}</p>
                   </div>
                   <div
                     className={
@@ -474,26 +474,26 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-59"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.status.toUpperCase()}</div>
+                    <div className="panel_Heading_unitDetail">{t(primaryDeviceInfo.status.toUpperCase())}</div>
                     <span className={`pdStatus ${primaryDeviceInfo.status}`}>
                       <i className="fas fa-circle"></i>
                     </span>
-                    <p>STATUS</p>
+                    <p>{t("STATUS")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
                     <div className="panel_Heading_unitDetail">{primaryDeviceInfo.serialNumber.toUpperCase()}</div>
                     <span className="noRow"></span>
-                    <p>SERIAL NUMBER</p>
+                    <p>{t("SERIAL_NUMBER")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
                     <div className="panel_Heading_unitDetail">{primaryDeviceInfo.version}</div>
                     <span className="noRow"></span>
-                    <p>CURRENT VERSION</p>
+                    <p>{t("CURRENT_VERSION")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
                     <div className="panel_Heading_unitDetail">#01</div>
                     <span className="noRow"></span>
-                    <p>STATION</p>
+                    <p>{t("STATION")}</p>
                   </div>
                   
                 </div>
@@ -504,7 +504,7 @@ const UnitCreate = (props: historyProps) => {
                     <span className="pdUpload">
                       <i className="fad fa-sync-alt"></i>
                     </span>
-                    <p>UPLOADING</p>
+                    <p>{t("UPLOADING")}</p>
                   </div>
                   <div
                     className={
@@ -515,7 +515,7 @@ const UnitCreate = (props: historyProps) => {
                   >
                     <div className="panel_Heading_unitDetail">0</div>
                     <span className="noRow"></span>
-                    <p>ASSETS</p>
+                    <p>{t("ASSETS")}</p>
                   </div>
                   <div
                     className={
@@ -528,7 +528,7 @@ const UnitCreate = (props: historyProps) => {
                     <span className="pdDotted">
                       <i className="fas fa-ellipsis-h"></i>
                     </span>
-                    <p>ASSIGNED TO</p>
+                    <p>{t("ASSIGNED_TO")}</p>
                   </div>
                 </div>
                 
@@ -581,7 +581,7 @@ const UnitCreate = (props: historyProps) => {
             <div className="unitDeviceMain searchComponents unitDeviceMainUii">
               {rows && (
                 <CRXDataTable
-                  id="Unit Details"
+                  id={t("Unit_Details")}
                   getRowOnActionClick={(val: UnitAndDevice) =>
                     setSelectedActionRow(val)
                   }
@@ -640,7 +640,7 @@ const UnitCreate = (props: historyProps) => {
               onClick={onSave}
               disabled={isSaveButtonDisabled}
             >
-              Save
+              {t("Save")}
             </CRXButton>
             <CRXButton
               className="groupInfoTabButtons secondary"
@@ -654,7 +654,7 @@ const UnitCreate = (props: historyProps) => {
                 )
               }
             >
-              Cancel
+              {t("Cancel")}
             </CRXButton>
           </div>
           <CRXButton
@@ -663,7 +663,7 @@ const UnitCreate = (props: historyProps) => {
             color="secondary"
             variant="outlined"
           >
-            Close
+            {t("Close")}
           </CRXButton>
         </div>
         <CRXConfirmDialog
@@ -676,12 +676,12 @@ const UnitCreate = (props: historyProps) => {
           text="unit configuration form"
         >
           <div className="confirmMessage">
-            You are attempting to <strong>close</strong> the{" "}
-            <strong>'unit configuration form'</strong>. If you close the form,
-            any changes you've made will not be saved. You will not be able to
-            undo this action.
+          {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
+            <strong>{t("'unit_configuration_form'")}</strong>. {t("If_you_close_the_form")},
+            {t("any_changes_you_ve_made_will_not_be_saved.")} 
+            {t("You_will_not_be_able_to_undo_this_action.")}
             <div className="confirmMessageBottom">
-              Are you sure you would like to <strong>close</strong> the form?
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
             </div>
           </div>
         </CRXConfirmDialog>

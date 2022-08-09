@@ -1,17 +1,19 @@
 import React from 'react';
 import './InputShowHide.css';
+import { useTranslation } from 'react-i18next';
 type InputShowHideProps = {
 
 }
 const InputShowHide: React.FC<any> = ({ field, form }) => {
+    const { t } = useTranslation<string>();
     const [showHideInputText, changeShowHideInputText] = React.useState(false);
     const hasError = form.touched[field.name] && form.errors[field.name];
     return (
         <>
-            <input type={showHideInputText ? "text" : "password"} {...field} />
+            <input type={showHideInputText ? t("text") : t("password")} {...field} />
             <i className={"fa fa-key icon"}
                 onClick={() => changeShowHideInputText(!showHideInputText)} style={{ cursor: 'pointer' }}>
-                {showHideInputText ? "Hide" : "Show"}
+                {showHideInputText ? t("Hide") : t("Show")}
             </i>
             {hasError && (
                 <div className="errorStationStyle">

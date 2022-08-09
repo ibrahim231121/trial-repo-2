@@ -89,7 +89,7 @@ const Station: React.FC = () => {
           id: station.id,
           name: station.name + '_' + station.id,
           address: station.address.street,
-          phone: station.address.phone
+          phone: station.address.phone,
         };
       });
     }
@@ -223,7 +223,7 @@ const Station: React.FC = () => {
       searchComponent: searchText,
       minWidth: '100',
       maxWidth: '400'
-    },
+    }
   ]);
 
   const searchAndNonSearchMultiDropDown = (

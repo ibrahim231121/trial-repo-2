@@ -1,6 +1,7 @@
 import { TextField, CRXSelectBox } from "@cb/shared";
 import React, { useEffect, useState } from "react";
 import { UnitInfoModel } from "./UnitDetail";
+import { useTranslation } from "react-i18next";
 
 
 type infoProps = {
@@ -14,6 +15,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   onChangeGroupInfo,
   validationCheckOnButton
 }) => {
+  const { t } = useTranslation<string>();
   const [name, setName] = React.useState(info.name);
   const [description, setDescription] = React.useState(info.description);
   const [groupName, setGroupName] = React.useState(info.groupName);
@@ -87,16 +89,16 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       String(name).toLowerCase()
     );
     if (!chracterRegx) {
-      return { error: true, errorMessage: `Please provide a valid Unit Id.` };
+      return { error: true, errorMessage: t("Please_provide_a_valid_Unit_Id.") };
     } else if (name.length < 3) {
       return {
         error: true,
-        errorMessage: `Unit Id must contains atleast three characters.`,
+        errorMessage: t("Unit_Id_must_contains_atleast_three_characters."),
       };
     } else if (name.length > 128) {
       return {
         error: true,
-        errorMessage: `Unit Id must not exceed 128 characters.`,
+        errorMessage: t("Unit_Id_must_not_exceed_128_characters."),
       };
     }
     return { error: false, errorMessage: "" };
@@ -106,7 +108,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     if (!name) {
       setFormPayloadErr({
         ...formpayloadErr,
-        nameErr: "Unit Id is Required",
+        nameErr: t("Unit_Id_is_Required"),
       });
     } else if (isUserNameValid.error) {
       setFormPayloadErr({
@@ -126,7 +128,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
       <div className="crx-group-info unitConfiguration">
 
 <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
-  <div className="select_label">Unit Configuration Template</div>
+  <div className="select_label">{t("Unit_Configuration_Template")}</div>
   <CRXSelectBox
     name="configurationTemplate"
     value={info.configTemp == "" ? 0 : info.configTemp}
@@ -138,10 +140,10 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
 
 
 <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
-  <div className="select_label">Station</div>
+  <div className="select_label">{t("Station")}</div>
   <div>
   <CRXSelectBox
-    label="Station"
+    label={t("Station")}
     name="Station"
     value={info.stationId == "" ? 0 : info.stationId}
     icon={true}
@@ -158,7 +160,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     errorMsg={formpayloadErr.nameErr}
     onBlur={checkUserName}
     required={true}
-    label="Unit ID"
+    label={t("Unit_ID")}
     value={name}
     className='users-input'
     onChange={onChangeName}
@@ -166,7 +168,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
 </div>
 <div className="groupInfoInputs">
   <TextField
-    label="Description"
+    label={t("Description")}
     multiline
     variant="outlined"
     rows={1}
@@ -174,9 +176,9 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     onChange={onChangeDescription}
   />
 </div>
-<div className="groupInfoInputs">
+<div className="groupInfoInputs"> 
   <TextField
-    label="Group Name"
+    label={t("Group_Name")}
     variant="outlined"
     rows={2}
     value={groupName}

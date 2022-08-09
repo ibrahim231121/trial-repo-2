@@ -14,7 +14,6 @@ const notificationPanelMessages = createSlice({
 
     add: (state: any, action: PayloadAction<any>) => {
       const { payload } = action;
-    
       if (!Array.isArray(payload)) {
           state.notificationMessages.push(payload);
       } 
