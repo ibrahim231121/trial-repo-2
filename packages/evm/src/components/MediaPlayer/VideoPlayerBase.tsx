@@ -380,7 +380,6 @@ const VideoPlayerBase = (props: any) => {
   const [viewNumber, setViewNumber] = useState(1);
   const [mapEnabled, setMapEnabled] = useState<boolean>(false);
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
-  const [singleTimeline, setSingleTimeline] = useState<boolean>(true);
   const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
   const [controlBar, setControlBar] = useState(0);
@@ -457,6 +456,7 @@ const VideoPlayerBase = (props: any) => {
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(true);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
+  const [isMultiViewEnable, setIsMultiViewEnable] = React.useState<boolean>(false);
   const [bookmarksNotesPopup, setBookmarksNotesPopup] = useState<any[]>([]);
   const [isBookmarkNotePopup, setIsBookmarkNotePopup] = useState(false);
   const [bookmarkNotePopupArrObj, setBookmarkNotePopupArrObj] = useState<any>([]);
@@ -595,9 +595,23 @@ const VideoPlayerBase = (props: any) => {
   }, [updateVideoSelection]);
 
   React.useEffect(() => {
-    if (timelinedetail) { // work for BookmarkNotePopup Component
+    if (timelinedetail) {
+      // work for multiview timeline
+      let count =0;
+      timelinedetail.forEach((x: any) => {
+        if(x.enableDisplay){
+          count++;
+        }
+      })
+      if(count>1){
+        setIsMultiViewEnable(true);
+      }
+      else{
+        setIsMultiViewEnable(false);
+      }
+
+      // work for BookmarkNotePopup Component
       var tempbookmarksnotesarray: any[] = [];
-      //var tempnotesarray: any[] = [];
       timelinedetail.forEach((x:Timeline) => 
         {x.enableDisplay && x.bookmarks.forEach((y:any)=>
           {y.timerValue = x.recording_start_point + (y.position/1000);
@@ -611,7 +625,6 @@ const VideoPlayerBase = (props: any) => {
         )}
       )
       setBookmarksNotesPopup(tempbookmarksnotesarray);
-      //setNotesPopup(tempnotesarray);
     }
   }, [timelinedetail]);
 
@@ -644,6 +657,7 @@ const VideoPlayerBase = (props: any) => {
       x.indexNumberToDisplay = 0;
       x.enableDisplay = false;
     })
+    setupdateVideoSelection(true);
     return setViewNumber(view);
   }
 
@@ -1177,7 +1191,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const displayThumbnail = (event: any, x: any, displayAll: boolean, withdescription?: string) => {
-    var timeLineHover: any = singleTimeline ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + x.indexNumberToDisplay);
+    var timeLineHover: any = !isMultiViewEnable ? document.querySelector("#SliderControlBar") : document.querySelector("#timeLine-hover" + x.indexNumberToDisplay);
     var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
 
     var leftPadding = timeLineHover.getBoundingClientRect().left;
@@ -1596,7 +1610,7 @@ const VideoPlayerBase = (props: any) => {
                   setnoteAssetId={setnoteAssetId}
                   visibleThumbnail={visibleThumbnail}
                   setVisibleThumbnail={setVisibleThumbnail}
-                  singleTimeline={singleTimeline}
+                  isMultiViewEnable={isMultiViewEnable}
                   displayThumbnail={displayThumbnail}
                   toasterMsgRef={toasterMsgRef}
                   onClickBookmarkNote={onClickBookmarkNote}
@@ -1610,6 +1624,7 @@ const VideoPlayerBase = (props: any) => {
                   getbookmarklocation={getbookmarklocation}
                   AdjustTimeline={AdjustTimeline}
                   startTimelineSync={startTimelineSync}
+                  multiTimelineEnabled={multiTimelineEnabled}
                 />
               ) : (<></>)}
 
@@ -1640,14 +1655,16 @@ const VideoPlayerBase = (props: any) => {
                             </>
                           }
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
-                            return (
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
-                                <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
-                                </span>
-                              </div>
-                            )
+                            if (multiTimelineEnabled ? y.madeBy == "User" : true) {
+                              return (
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
+                                  <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverBookmark(e, y, x)} onClick={() => onClickBookmarkNote(y, 1)}>
+                                  </span>
+                                </div>
+                              )
+                            }
                           }
                           )}
                           {x.enableDisplay && x.notes.map((y: any, index: any) =>
@@ -1800,14 +1817,11 @@ const VideoPlayerBase = (props: any) => {
                       setMultiTimelineEnabled={setMultiTimelineEnabled}
                       settingMenuEnabled={settingMenuEnabled}
                       setSettingMenuEnabled={setSettingMenuEnabled}
-                      setSingleTimeline={setSingleTimeline}
-                      timelinedetail={timelinedetail}
-                      settimelinedetail={settimelinedetail}
-                      screenClick={screenClick}
                       overlayEnabled={overlayEnabled}
                       setOverlayEnabled={setOverlayEnabled}
                       overlayCheckedItems={overlayCheckedItems}
                       setOverlayCheckedItems={setOverlayCheckedItems}
+                      isMultiViewEnable={isMultiViewEnable}
                     />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
@@ -1848,12 +1862,12 @@ const VideoPlayerBase = (props: any) => {
                       <MenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
                       </MenuItem>
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
                       </MenuItem>}
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Side by Side </span>
                         <div className="screenViewsSideBySide ViewDiv">
@@ -1861,7 +1875,7 @@ const VideoPlayerBase = (props: any) => {
                           <p></p>
                         </div>
                       </MenuItem>}
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">
@@ -1872,7 +1886,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MenuItem>}
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 4</span>
                         <div className="screenViewsGrid ViewDiv">
@@ -1886,7 +1900,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MenuItem>}
-                      {multiTimelineEnabled && <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 6</span>
                         <div className="screenViewsGrid6 ViewDiv">

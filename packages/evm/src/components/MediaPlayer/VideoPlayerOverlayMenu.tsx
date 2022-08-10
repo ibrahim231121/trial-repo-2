@@ -12,8 +12,9 @@ const VideoPlayerOverlayMenu = (props:any)  => {
       <ul>
         <li><img src={getacVideoSolution} style={{height:30}}></img></li>
         {overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors") && <li>Sensors</li>}
-        {overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)") && <li>GPS (location + speed)</li>}
+        {overlayCheckedItems.some((x: any) => x == "All" || x == "GPS") && <li>GPS</li>}
         {overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp") && <li>Timestamp</li>}
+        {overlayCheckedItems.some((x: any) => x == "All" || x == "Speed") && <li>Speed</li>}
       </ul>
     </div>}
     </>

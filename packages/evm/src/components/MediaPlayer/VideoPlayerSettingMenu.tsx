@@ -5,7 +5,7 @@ import { CRXButton, CRXCheckBox,CBXSwitcher } from "@cb/shared";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, setSingleTimeline, timelinedetail, settimelinedetail, screenClick, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems } = props;
+  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
@@ -14,18 +14,6 @@ const VideoPlayerSettingMenu = (props: any) => {
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
-    setSingleTimeline(!event.target.checked)
-    if (event.target.checked == false) {
-      let timelinedetailTemp = [...timelinedetail]
-      timelinedetailTemp.forEach((x: any) => {
-        if (x.indexNumberToDisplay != 1) {
-          x.indexNumberToDisplay = 0;
-          x.enableDisplay = false;
-        }
-      }) 
-      settimelinedetail(timelinedetailTemp);
-      screenClick(1, event);
-    }
   }
 
   const OverlayChangeEvent = (event: any) => {
@@ -114,6 +102,20 @@ useEffect(() => {
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
+
+        {!singleVideoLoad && isMultiViewEnable &&
+          <>
+            <MaterialMenuItem className="settingOverlay">
+              <i className="far fa-stream iconsLeft"></i>
+              <div className="SwitcherControl"  >
+                <label>
+                  <span>Multiple Timelines</span>
+                  <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={multiTimelineEnabled} size="small" onChange={(event: any) => EnableMultipleTimeline(event)} name="Multiple Timelines" />
+                </label>
+              </div>
+            </MaterialMenuItem>
+          </>
+        }
 
       </MaterialMenu>
 
