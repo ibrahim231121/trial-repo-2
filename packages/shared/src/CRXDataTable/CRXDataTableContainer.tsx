@@ -35,7 +35,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   onSetCheckAll,
   checkAllPageWise,
   initialRows,
-  offsetY
+  offsetY,
+  showHeaderCheckAll
 }) => {
 
   //NOTE : Sticky Header code block please dont do the any changes on this block 
@@ -135,7 +136,7 @@ useEffect(()=> {
           showCheckBoxesCol={showCheckBoxesCol}
           showActionCol={showActionCol}
           showActionSearchHeaderCell={showActionSearchHeaderCell}
-          showHeaderCheckAll={false}
+          showHeaderCheckAll={showHeaderCheckAll}
           checkAllPageWise={checkAllPageWise}
         />
 
@@ -178,7 +179,7 @@ useEffect(()=> {
           showCheckBoxesCol={showCheckBoxesCol}
           showActionCol={showActionCol}
           showActionSearchHeaderCell={showActionSearchHeaderCell}
-          showHeaderCheckAll={false}
+          showHeaderCheckAll={showHeaderCheckAll}
           checkAllPageWise={checkAllPageWise}
         />
 

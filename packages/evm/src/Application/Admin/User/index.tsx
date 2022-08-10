@@ -794,6 +794,7 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCustomizeIcon={true}
           showTotalSelectedText={false}
           offsetY={209}
+          showHeaderCheckAll={true}
           // page={page}
           // rowsPerPage={rowsPerPage}
           // setPage= {(e:any) => setPage(e)}

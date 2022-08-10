@@ -22,11 +22,12 @@ import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescri
 import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import http from "../../../../http-common";
-import { EVIDENCE_PATCH_LOCK_UNLOCK_URL } from "../../../../utils/Api/url";
-import { AxiosError } from "axios";
+import { EVIDENCE_PATCH_LOCK_UNLOCK_URL, FILE_SERVICE_URL, EVIDENCE_EXPORT_META_DATA_URL } from "../../../../utils/Api/url";
+import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import { CRXToaster } from "@cb/shared";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
+
 
 type Props = {
   selectedItems?: any;
@@ -209,7 +210,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const UnlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
   const userId = parseInt(localStorage.getItem('User Id') ?? "0")
   const toasterRef = useRef<typeof CRXToaster>(null);
-  
+
 
 
   const confirmCallBackForRestrictModal = () => {
@@ -271,6 +272,92 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         }
         setError(true);
       });
+  }
+
+
+  const handleDownloadAssetClick = () => {
+    const masterAsset = row.evidence.masterAsset;
+    const assetFileId = masterAsset.files && masterAsset.files[0].filesId;
+    if (!assetFileId) {
+      setErrorMessage("There is no File against this Asset. Please contact your Systems Administrator");
+      setError(true);
+      return;
+    }
+
+    const url = `${FILE_SERVICE_URL}/download/${assetFileId}`;
+    http.get(url)
+      .then((response) => {
+        downloadFileByURLResponse(response.data);
+      }).catch((error) => {
+        const err = error as AxiosError;
+        if (err.request.status === 500) {
+          setErrorMessage("We 're sorry. Please retry or contact your Systems Administrator");
+        }
+        setError(true);
+      });
+  }
+
+  const handleDownloadMetaDataClick = () => {
+    /**
+     * ! This snippet is only for Asset Lister.
+     * ! Since there will be no child asset in lister, so only row data would be extracted.
+     * ! For child asset, extract 'selectedItem' prop.
+     */
+    if (selectedItems.length != 0) {
+
+    }
+    const evidenceId = row.evidence.id;
+    const assetId = row.assetId;
+    const fileType = 2;
+    const url = `${EVIDENCE_EXPORT_META_DATA_URL}/${evidenceId}/${assetId}/${fileType}`;
+    http.get(url, {
+      headers: {
+        TenantId: '1',
+        'Content-Type': 'application/json',
+      },
+      responseType: 'blob'
+    })
+      .then((response) => {
+        downloadFileByFileResponse(response);
+      }).catch((error) => {
+        const err = error as AxiosError;
+        if (err.request.status === 500) {
+          setErrorMessage("We 're sorry. Please retry or contact your Systems Administrator");
+        }
+        setError(true);
+      });
+  }
+
+
+  const downloadFileByFileResponse = (response: AxiosResponse) => {
+    let fileStream = response.data;
+    const fileName = `Import_Video_${Date.now()}.pdf`;
+    const blob = new Blob([fileStream],
+      { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', fileName);
+    link.click();
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+  }
+
+  const downloadFileByURLResponse = (url: string) => {
+    // Create Link to trigger browser api to download.
+    const link = document.createElement('a');
+    // Give url to link.
+    link.href = url;
+    //set download attribute to that link.
+    link.setAttribute('download', ``);
+    // Append to html link element page.
+    document.body.appendChild(link);
+    // start download.
+    link.click();
+    // Clean up and remove the link.
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
   }
 
   return (
@@ -395,20 +482,42 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         }
       >
 
+        <MenuItem>
+          <Restricted moduleId={0}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <div
+                className="crx-meu-content groupingMenu crx-spac"
+                onClick={addToAssetBucket}
+              >
+                <div className="crx-menu-icon"></div>
+                <div
+                  className={
+                    addToAssetBucketDisabled === false
+                      ? "crx-menu-list"
+                      : "crx-menu-list disabledItem"
+                  }
+                >
+                  {t("Add_to_asset_bucket")}
+                </div>
+              </div>
+            </SecurityDescriptor>
+          </Restricted>
+        </MenuItem>
+
 
         {IsOpen ? (
-        <MenuItem>
-          <Restricted moduleId={30}> 
-             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
-              </div>
-             </SecurityDescriptor> 
-           </Restricted> 
-        </MenuItem>
-): null
-}
+          <MenuItem>
+            <Restricted moduleId={30}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+                <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+                  <div className="crx-menu-icon"></div>
+                  <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
+                </div>
+              </SecurityDescriptor>
+            </Restricted>
+          </MenuItem>
+        ) : null
+        }
 
         <MenuItem>
           <Restricted moduleId={21}>
@@ -462,6 +571,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </MenuItem>
         )}
 
+
+
+
         <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
@@ -470,23 +582,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <i className="far fa-envelope fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Email")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem>
-
-        <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">
-                  <SubMenu label={t("Export")}>
-                    <MenuItem>{t("Download_asset(s)")}</MenuItem>
-                    <MenuItem>{t("Download_metadata_info")}</MenuItem>
-                    <MenuItem>{t("Download_audit_trail")} </MenuItem>
-                  </SubMenu>
-                </div>
               </div>
             </SecurityDescriptor>
           </Restricted>
@@ -505,7 +600,38 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem> */}
 
-        {/* <MenuItem disabled>
+        <MenuItem>
+          <Restricted moduleId={0}>
+            <SecurityDescriptor descriptorId={4} maximumDescriptor={maximumDescriptor}>
+              <div className="crx-meu-content groupingMenu">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">
+                  <SubMenu label={t("Export")}>
+                    <MenuItem onClick={handleDownloadAssetClick}>
+                      {t("Download_asset(s)")}
+                    </MenuItem>
+                    <MenuItem onClick={handleDownloadMetaDataClick}>
+                      {t("Download_metadata_info")}
+                    </MenuItem>
+                    <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                  </SubMenu>
+                </div>
+              </div>
+            </SecurityDescriptor>
+          </Restricted>
+        </MenuItem>
+
+        <MenuItem>
+          <div className="crx-meu-content crx-spac" onClick={handleDownloadMetaDataClick}>
+            <div className="crx-menu-icon">
+              <i className="far fa-user-lock fa-md"></i>
+            </div>
+            <div className="crx-menu-list">For Meta Data Purpose</div>
+          </div>
+        </MenuItem>
+
+
+        <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -516,9 +642,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
 
-        {/* <MenuItem>
+
+        <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -529,8 +656,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
-        {/* <MenuItem disabled>
+        </MenuItem>
+
+        <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
@@ -541,7 +669,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
 
         {isLockedAccess ?
           <MenuItem>
@@ -554,49 +682,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   </div>
                   <div className="crx-menu-list">{t("Restrict_access")}</div>
                 </div>
+                <div className="crx-menu-list">{t("Restrict_access")}</div>
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
-
           :
-          <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
-                {/* descriptorId={4} */}
-                <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">UnLock Access</div>
-                </div>
-              </SecurityDescriptor>
-            </Restricted>
-          </MenuItem>
+          null
         }
-
-
-        <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
-              <div
-                className="crx-meu-content groupingMenu crx-spac"
-                onClick={addToAssetBucket}
-              >
-                <div className="crx-menu-icon"></div>
-                <div
-                  className={
-                    addToAssetBucketDisabled === false
-                      ? "crx-menu-list"
-                      : "crx-menu-list disabledItem"
-                  }
-                >
-                  {t("Add_to_asset_bucket")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem>
-
 
         {multiAssetDisabled === false ? (
           <MenuItem>

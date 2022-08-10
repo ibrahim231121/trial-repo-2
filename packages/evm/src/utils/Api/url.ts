@@ -65,5 +65,6 @@ export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
 
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
 export const EVIDENCE_PATCH_LOCK_UNLOCK_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/LockUnlock`;
+export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID
