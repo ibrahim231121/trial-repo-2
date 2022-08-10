@@ -11,6 +11,7 @@ import { AssetCategory } from './Model/Evidence';
 import http from '../../../../http-common'
 import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import usePrevious from './Utility/usePrev';
 
 
 type FormContainerProps = {
@@ -37,26 +38,28 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [retentionId, setRetentionId] = React.useState<number>(0);
   const [holdUntill, setHoldUntill] = React.useState<string>('');
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
-  const prevActiveFormRef = React.useRef<number>();
-  const prevActiveForm = prevActiveFormRef.current;
   const [evidenceResponse, setEvidenceResponse] = React.useState<Evidence>();
+  const [previousValueState, setPreviousValueState] = React.useState(0);
+  const prevActiveForm = usePrevious(activeForm);
 
   React.useEffect(() => {
-    prevActiveFormRef.current = activeForm;
-  });
-
+    if (previousValueState !== prevActiveForm) {
+      setPreviousValueState(prevActiveForm)
+    }
+  }, [activeForm]);
+ 
   React.useEffect(() => {
     if (props.openForm == true) {
       setOpenModal(true);
       if (props.rowData) {
         const evidenceId = props.rowData.id;
-        EvidenceAgent.getEvidence(evidenceId).then((response:Evidence) => {
+        EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
           setFilterValue(filterCategory(response.categories));
           setEvidenceResponse(response);
         })
-        .catch((err: any) => {
-          console.error(err);
-        });
+          .catch((err: any) => {
+            console.error(err);
+          });
       }
       setActiveForm(0);
     }
@@ -86,8 +89,6 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
     setActiveForm(0);
     props.setOpenForm();
   };
-
-
 
   const handleActiveForm = (step: number) => {
     switch (step) {
@@ -139,7 +140,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setRemovedOption={(v: any) => setRemovedOption(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
-            previousActive={prevActiveForm !== undefined ? prevActiveForm : 0}
+            previousActive={previousValueState}
             setModalTitle={(i: any) => setModalTitle(i)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
           />
@@ -175,7 +176,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setFilterValue={(v: any) => setFilterValue(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
-             evidenceResponse={evidenceResponse}
+            evidenceResponse={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             differenceOfDays={differenceOfDays}
             setRemovedOption={(e: any) => setRemovedOption(e)}

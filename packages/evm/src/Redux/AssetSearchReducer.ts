@@ -35,12 +35,12 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
             const resp = await fetch(EVIDENCE_GET_URL, requestOptions);
             if (resp.ok) {
                 const response = await resp.json();
-                console.log("Response Evidence", response);
+                
                 return response;
             }
         }
         else {
-            console.log("Evidence Asset")
+           
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'TenantId': '1','Authorization': `Bearer ${getToken()}`},
@@ -49,7 +49,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
             const resp = await fetch( EVIDENCE_GET_CATEGORIES_URL + "/filter?Size=100&Page=1",requestOptions);
             if (resp.ok) {
                 const response = await resp.json();
-                console.log("Response Filter", response);
+               
                 return response;
             }
         }

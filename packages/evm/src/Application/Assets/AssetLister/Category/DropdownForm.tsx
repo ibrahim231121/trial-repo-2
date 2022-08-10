@@ -43,17 +43,18 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   React.useEffect(() => {
     props.setFilterValue(() => props.filterValue);
     props.filterValue?.length > 0 ? setButtonState(false) : setButtonState(true);
-    // Dropdown is updated, so x button will redirect to cancel confirmation.
-    // Check either new value added.
-    const changeInValues = props.filterValue.filter((o: any) => {
-      return !props.evidenceResponse?.categories.some((i: string) => i === o.value);
-    });
-
-    if (changeInValues.length > 0) {
-      props.setIsformUpdated(true);
+    // Dropdown is updated, so 'x' button will redirect to cancel confirmation.
+    // Check either new value added, but that is dependant on 'evidenceResponse'.
+    if (props.evidenceResponse) {
+      const changeInValues = props.filterValue.filter((o: any) => {
+        return !props.evidenceResponse?.categories.some((i: any) => i.name === o.label);
+      });
+      if (changeInValues.length > 0) {
+        props.setIsformUpdated(true);
+      }
     }
     props.setIndicateTxt(true);
-  }, [props.filterValue]);
+  }, [props.filterValue, props.evidenceResponse]);
 
   const handleChange = (e: any, colIdx: number, v: any, reason: any, detail: any) => {
     props.setFilterValue(() => [...v]);
@@ -94,20 +95,20 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
 
   return (
     <>
-    <div className="indicatestext indicateLessPadding"><b>*</b> {t('Indicates_required_field')}</div>
+      <div className="indicatestext indicateLessPadding"><b>*</b> {t('Indicates_required_field')}</div>
       <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
         {() => (
           <Form>
             <div className='categoryDescription'>{t('From_the_field_below,_select_one_or_more_relevant_category.')}</div>
             <div className='categoryTitle'>
-            {t('Category')} <b>*</b>
+              {t('Category')} <b>*</b>
             </div>
             <div className='crxDrpDownCatergory'>
               <MultiSelectBoxCategory
                 className='categortAutocomplete'
                 multiple={true}
                 CheckBox={true}
-                visibility = {isCancelable}
+                visibility={isCancelable}
                 options={filterCategory(categoryOptions)}
                 value={props.filterValue}
                 autoComplete={false}
@@ -120,12 +121,12 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
             <div className='modalFooter CRXFooter'>
               <div className='nextBtn'>
                 <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                {t('Next')}
+                  {t('Next')}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>
                 <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                {t('Cancel')}
+                  {t('Cancel')}
                 </CRXButton>
               </div>
             </div>

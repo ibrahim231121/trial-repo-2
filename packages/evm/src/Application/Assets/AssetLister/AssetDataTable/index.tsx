@@ -707,7 +707,7 @@ const MasterMain: React.FC<Props> = ({
   return (
     <>
       <CRXToaster ref={toasterRef} />
-      {console.log("rows", rows)}
+      
       
       {rows && (
         <CRXDataTable
