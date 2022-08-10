@@ -81,6 +81,7 @@ export interface User {
     }[];
     assignedGroupIds: any[] | undefined;
     timeZone: string;
+    pin? : string | null;
 }
 export interface Account {
     isAdministrator: number;

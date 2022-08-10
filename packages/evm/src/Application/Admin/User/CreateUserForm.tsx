@@ -27,7 +27,7 @@ import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { useTranslation } from "react-i18next";
 import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
-import { REACT_APP_CLIENT_ID} from '../../../../../evm/src/utils/Api/url'
+import { REACT_APP_CLIENT_ID } from '../../../../../evm/src/utils/Api/url'
 import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
 
@@ -51,6 +51,7 @@ interface userStateProps {
   phoneNumber: string;
   userGroups: AutoCompleteOptionType[];
   deactivationDate: string;
+  pin: string | null;
 }
 
 // type account = {
@@ -69,10 +70,10 @@ let gridFilter: GridFilter = {
 }
 
 const CreateUserForm = () => {
-  
+
   const { t } = useTranslation<string>();
   const { id } = useParams<{ id: string }>();
- 
+
   const [error, setError] = React.useState(false);
   const [radioValue, setRadioValue] = React.useState('sendAct');
   const [generatePassword, setGeneratePassword] = React.useState('');
@@ -84,7 +85,8 @@ const CreateUserForm = () => {
     email: '',
     phoneNumber: '',
     userGroups: [],
-    deactivationDate: ''
+    deactivationDate: '',
+    pin: null
   });
 
   const [formpayloadErr, setFormPayloadErr] = React.useState({
@@ -97,7 +99,8 @@ const CreateUserForm = () => {
     userGroupErr: '',
     deactivationDateErr: '',
     passwordErr: '',
-    confirmPasswordErr: ''
+    confirmPasswordErr: '',
+    pinErr: ''
   });
 
   const [disableSave, setDisableSave] = React.useState(true);
@@ -119,36 +122,36 @@ const CreateUserForm = () => {
   const [ActivationLinkLabel, setActivationLinkLabel] = React.useState<string>(t('Send Activation Link'));
   const [alertType, setAlertType] = useState<string>('inline');
   const [errorType, setErrorType] = useState<string>('error');
-  const [isADUser , setIsADUser] = useState<boolean>(false);
-  const [isOpen,setIsOpen] = useState<boolean>(false);
-  const {getModuleIds} = useContext(ApplicationPermissionContext);
+  const [isADUser, setIsADUser] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { getModuleIds } = useContext(ApplicationPermissionContext);
   const dispatch = useDispatch();
   const userFormMessages = (obj: any) => {
-        userMsgFormRef.current.showToaster({
-          message: obj.message,
-          variant: obj.variant,
-          duration: obj.duration,
-          clearButtton: true,
-      });
+    userMsgFormRef.current.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
   }
-  const [actual_formPayload,setactual_formPayload] = useState<userStateProps>(formpayload);
+  const [actual_formPayload, setactual_formPayload] = useState<userStateProps>(formpayload);
 
   React.useEffect(() => {
-    if (id) {fetchUser();}
+    if (id) { fetchUser(); }
   }, [id]);
 
- 
+
   React.useEffect(() => {
-    
     if (userPayload && id) {
       const {
         email,
         name: { first: firstName, last: lastName, middle: middleInitial },
-        account: { userName,password },
+        account: { userName, password },
         contacts,
         userGroups,
         deactivationDate,
-        isADUser
+        isADUser,
+        pin
       } = userPayload;
 
       const phoneNumber =
@@ -156,20 +159,20 @@ const CreateUserForm = () => {
           ? userPayload.contacts.find((x: any) => x.contactType === 1).number
           : '';
 
-let userGroupNames: any = [];
+      let userGroupNames: any = [];
       for (const elem of userGroups) {
         userGroupNames.push({
           id: elem.groupId,
           label: elem.groupName,
         });
       }
-if(isADUser){
-  setIsADUser(true)
+      if (isADUser) {
+        setIsADUser(true)
 
-}
-else{
-  setIsADUser(false)
-}
+      }
+      else {
+        setIsADUser(false)
+      }
 
       USER_DATA = {
         userName,
@@ -191,7 +194,8 @@ else{
         lastName,
         phoneNumber,
         deactivationDate,
-        userGroups: userGroupNames
+        userGroups: userGroupNames,
+        pin
       });
       setActivationLinkLabel(t('Resend Activation Link'));
       setRadioValue('');
@@ -223,13 +227,13 @@ else{
     //   headers: { 'Content-Type': 'application/json', TenantId: '1' }
     // });
     // var response = await res.json();
-     UsersAndIdentitiesServiceAgent.getUser(id).then((response: UserList) => {
+    UsersAndIdentitiesServiceAgent.getUser(id).then((response: UserList) => {
       dispatch(enterPathActionCreator({ val: response.account.userName }));
       setUserPayload(response);
     });
     // dispatch(enterPathActionCreator({ val: response.account.userName }));
     // setUserPayload(response);
-    
+
   };
 
   React.useEffect(() => {
@@ -237,7 +241,7 @@ else{
       dispatch(enterPathActionCreator({ val: "" }));
     }
   }, []);
-  
+
   const generateTempPassComp = () => {
     const onClickPass = () => {
       var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -328,7 +332,7 @@ else{
     {
       moduleIds: 11,
       label: ActivationLinkLabel,
-      isDisabled : isADUser,
+      isDisabled: isADUser,
       // label: "Send Activation Link",
       value: 'sendAct',
       Comp: () => sendActivationLink()
@@ -336,37 +340,37 @@ else{
     {
       moduleIds: 0,
       label: t("Generate_Temporary_Password"),
-      isDisabled : isADUser,
+      isDisabled: isADUser,
       value: "genTemp",
       Comp: () => generateTempPassComp(),
     },
     {
       moduleIds: 0,
       label: t("Manually_Set_Password"),
-      isDisabled : isADUser,
+      isDisabled: isADUser,
       value: "manual",
       Comp: () => manuallyGeneratePass(),
     },
   ];
 
   //Permission applied when user doesnot have permission of Activate and Deactivate Users
-  const activationLinkPermission = content.filter((x:any) => getModuleIds().includes(x.moduleIds) || x.moduleIds === 0);
+  const activationLinkPermission = content.filter((x: any) => getModuleIds().includes(x.moduleIds) || x.moduleIds === 0);
 
   const fetchGroups = () => {
 
-    UsersAndIdentitiesServiceAgent.getUsersGroups().then((response:UserGroups[])=>{
-    var groupNames = response.map((x: any) => {
-      let j: NameAndValue = {
-        groupId: x.id,
-        groupName: x.name
-      };
-      return j;
-    });
-    groupNames = groupNames.sort(function (a: any, b: any) {
-      return a.groupName.localeCompare(b.groupName);
-    });
-    setUserGroupsList(groupNames);
-    sendOptionList(groupNames);
+    UsersAndIdentitiesServiceAgent.getUsersGroups().then((response: UserGroups[]) => {
+      var groupNames = response.map((x: any) => {
+        let j: NameAndValue = {
+          groupId: x.id,
+          groupName: x.name
+        };
+        return j;
+      });
+      groupNames = groupNames.sort(function (a: any, b: any) {
+        return a.groupName.localeCompare(b.groupName);
+      });
+      setUserGroupsList(groupNames);
+      sendOptionList(groupNames);
     })
   };
 
@@ -398,7 +402,7 @@ else{
     }
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
-     
+
     } else if (userName && firstName && lastName && email) {
       setDisableSave(false);
     } else {
@@ -425,14 +429,14 @@ else{
   };
 
   const setAddPayload = () => {
-    
+
     let userGroupsListIDs = userGroupsList
       ?.filter((item: any) => {
         return formpayload.userGroups.some((e: any) => e.id === item.groupId);
 
       })
       .map((i: any) => i.groupId);
-      
+
     const name = {
       first: formpayload.firstName,
       last: formpayload.lastName,
@@ -455,17 +459,16 @@ else{
       passwordDetail: null
     };
 
-     /*
-     * * setting status to pending if user enable change password on next login checkbox 
-     */
-      if (isPasswordResetRequired) {
-        account.status = 3;
-      }
-      if(radioValue == 'sendAct')
-      {
-        account.status = 3;
-      }
-      
+    /*
+    * * setting status to pending if user enable change password on next login checkbox 
+    */
+    if (isPasswordResetRequired) {
+      account.status = 3;
+    }
+    if (radioValue == 'sendAct') {
+      account.status = 3;
+    }
+
     // const payload = {
     //   email: formpayload.email,
     //   deactivationDate: formpayload.deactivationDate,
@@ -475,15 +478,16 @@ else{
     //   assignedGroupIds: userGroupsListIDs,
     //   timeZone: 'America/Chicago'
     // };
-    const payload : User = {
-     email : formpayload.email,
-     deactivationDate: formpayload.deactivationDate,
-     name,
-     account,
-     contacts,
-     assignedGroupIds: userGroupsListIDs,
-     timeZone: 'America/Chicago'
-  };
+    const payload: User = {
+      email: formpayload.email,
+      deactivationDate: formpayload.deactivationDate,
+      name,
+      account,
+      contacts,
+      assignedGroupIds: userGroupsListIDs,
+      timeZone: 'America/Chicago',
+      pin : formpayload.pin
+    };
 
 
     return payload;
@@ -497,7 +501,7 @@ else{
 
     const payload = setAddPayload();
     const AddUser = "/Users";
-    UsersAndIdentitiesServiceAgent.addUser(AddUser, payload).then(function (res: number){
+    UsersAndIdentitiesServiceAgent.addUser(AddUser, payload).then(function (res: number) {
       if (res)
         return res;
       //   else if (res.status == 500) {
@@ -507,72 +511,71 @@ else{
       //     );
       //   } else return res.text();
       // })
-    
-    }).then((resp: any)=>{
-     if (resp !== undefined) {
-          let error = JSON.parse(resp);
-          if (error.errors !== undefined) {
-            if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.UserName[0]);
-            }
-            if (error.errors.First !== undefined && error.errors.First.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.First[0]);
-            }
-            if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Last[0]);
-            }
-            if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Middle[0]);
-            }
-            if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Email[0]);
-            }
-            if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Number[0]);
-            }
 
-            if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Password[0]);
-            }
-          } else if (!isNaN(+error)) {
-            const userName = formpayload.firstName + ' ' + formpayload.lastName;
-            sendEmail(formpayload.email, '', userName);
-            userFormMessages({
-              message: t('You_have_created_the_user_account.'),
-              variant: 'success',
-              duration: 7000
-            });
-            dispatch(getUsersInfoAsync(gridFilter));
-            setDisableSave(true)
-      
-          } else {
+    }).then((resp: any) => {
+      if (resp !== undefined) {
+        let error = JSON.parse(resp);
+        if (error.errors !== undefined) {
+          if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
             setAlert(true);
-            setResponseError(error);
-            const errorString = error;
-            if (errorString.includes('email') === true) {
-              setIsExtEmail('isExtEmail');
-            } else {
-              setIsExtEmail('');
-            }
+            setResponseError(error.errors.UserName[0]);
+          }
+          if (error.errors.First !== undefined && error.errors.First.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.First[0]);
+          }
+          if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Last[0]);
+          }
+          if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Middle[0]);
+          }
+          if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Email[0]);
+          }
+          if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Number[0]);
+          }
 
-            if (errorString.includes('username') === true) {
-              setIsExtUsers('isExtUserName');
-            } else {
-              setIsExtUsers('');
-            }
+          if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Password[0]);
+          }
+        } else if (!isNaN(+error)) {
+          const userName = formpayload.firstName + ' ' + formpayload.lastName;
+          sendEmail(formpayload.email, '', userName);
+          userFormMessages({
+            message: t('You_have_created_the_user_account.'),
+            variant: 'success',
+            duration: 7000
+          });
+          dispatch(getUsersInfoAsync(gridFilter));
+          setDisableSave(true)
+
+        } else {
+          setAlert(true);
+          setResponseError(error);
+          const errorString = error;
+          if (errorString.includes('email') === true) {
+            setIsExtEmail('isExtEmail');
+          } else {
+            setIsExtEmail('');
+          }
+
+          if (errorString.includes('username') === true) {
+            setIsExtUsers('isExtUserName');
+          } else {
+            setIsExtUsers('');
           }
         }
+      }
     })
       .catch(function (e: any) {
-        if (e.request.status == 500) 
-        {
+        if (e.request.status == 500) {
           setAlert(true);
           setResponseError(
             t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
@@ -638,7 +641,7 @@ else{
     //         });
     //         dispatch(getUsersInfoAsync());
     //         setDisableSave(true)
-      
+
     //       } else {
     //         setAlert(true);
     //         setResponseError(error);
@@ -669,8 +672,7 @@ else{
   };
 
   const setEditPayload = () => {
-    
-    let userGroupsListIDs : any = userGroupsList
+    let userGroupsListIDs: any = userGroupsList
       ?.filter((item: any) => {
         return formpayload.userGroups.find((e: any) => e === item.groupName || e.label === item.groupName);
       })
@@ -708,7 +710,8 @@ else{
       account,
       contacts,
       assignedGroupIds: userGroupsListIDs,
-      timeZone: 'America/Chicago'
+      timeZone: 'America/Chicago',
+      pin : formpayload.pin
     };
 
     return payload;
@@ -727,158 +730,156 @@ else{
 
     const payload = setEditPayload();
     UsersAndIdentitiesServiceAgent.editUser(urlEdit, payload).then(() => {
-      if (disableLink)
-       {
-          const userName = userPayload.name.first + ' ' + userPayload.name.last;
-          sendEmail(payload.email, userPayload.id, userName);
-          userFormMessages({
-                    message: t('You_have_resent_the_activation_link.'),
-                    variant: 'success',
-                    duration: 7000
-              });
-          dispatch(getUsersInfoAsync(gridFilter));
-          setDisableSave(true)
-       }
-       userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
-       dispatch(getUsersInfoAsync());
-       setDisableSave(true)
-               
+      if (disableLink) {
+        const userName = userPayload.name.first + ' ' + userPayload.name.last;
+        sendEmail(payload.email, userPayload.id, userName);
+        userFormMessages({
+          message: t('You_have_resent_the_activation_link.'),
+          variant: 'success',
+          duration: 7000
+        });
+        dispatch(getUsersInfoAsync(gridFilter));
+        setDisableSave(true)
+      }
+      userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
+      dispatch(getUsersInfoAsync());
+      setDisableSave(true)
+
       functionalityAfterRequest()
-    }).catch((e: any)=>
-    {
-      
-            if (e !== undefined) {
-                      let error = JSON.parse(e);
-            
-                      if (error.errors !== undefined) {
-                        if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.UserName[0]);
-                        }
-                        if (error.errors.First !== undefined && error.errors.First.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.First[0]);
-                        }
-                        if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.Last[0]);
-                        }
-                        if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.Email[0]);
-                        }
-                        if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.Password[0]);
-                        }
-                        if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-                          setAlert(true);
-                          setResponseError(error.errors.Password[0]);
-                        }
-                      } else {
-                        setAlert(true);
-                        setResponseError(error);
-                        const errorString = error;
-                        if (errorString.includes('email') === true) {
-                          setIsExtEmail('isExtEmail');
-                        } else {
-                          setIsExtEmail('');
-                        }
-            
-                        if (errorString.includes('username') === true) {
-                          setIsExtUsers('isExtUserName');
-                        } else {
-                          setIsExtUsers('');
-                        }
-                      }
-                    }
-                    else if (e.status == 500) {
-                      setAlert(true);
-                      setResponseError(
-                        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-                      );
-                  }
-            return error;
+    }).catch((e: any) => {
+
+      if (e !== undefined) {
+        let error = JSON.parse(e);
+
+        if (error.errors !== undefined) {
+          if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.UserName[0]);
+          }
+          if (error.errors.First !== undefined && error.errors.First.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.First[0]);
+          }
+          if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Last[0]);
+          }
+          if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Email[0]);
+          }
+          if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Password[0]);
+          }
+          if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+            setAlert(true);
+            setResponseError(error.errors.Password[0]);
+          }
+        } else {
+          setAlert(true);
+          setResponseError(error);
+          const errorString = error;
+          if (errorString.includes('email') === true) {
+            setIsExtEmail('isExtEmail');
+          } else {
+            setIsExtEmail('');
+          }
+
+          if (errorString.includes('username') === true) {
+            setIsExtUsers('isExtUserName');
+          } else {
+            setIsExtUsers('');
+          }
+        }
+      }
+      else if (e.status == 500) {
+        setAlert(true);
+        setResponseError(
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+        );
+      }
+      return error;
     });
-  //   await fetch(urlEdit, {
-  //     method: 'PUT',
-  //     headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
-  //     body: JSON.stringify(payload)
-  //   })
-  //     .then(function (res) {
-  //       if (res.ok) {
-  //         if (disableLink) {
-  //           const userName = userPayload.name.first + ' ' + userPayload.name.last;
-  //           sendEmail(payload.email, userPayload.id, userName);
-  //           userFormMessages({
-  //             message: t('You_have_resent_the_activation_link.'),
-  //             variant: 'success',
-  //             duration: 7000
-  //           });
-  //           dispatch(getUsersInfoAsync());
-  //           setDisableSave(true)
-  //         }
-  //         userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
-  //         dispatch(getUsersInfoAsync());
-  //         setDisableSave(true)
-  //       } else if (res.status == 500) {
-  //         setAlert(true);
-  //         setResponseError(
-  //           t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-  //         );
-  //       } else return res.text();
-  //     })
-  //     .then((resp) => {
-  //       if (resp !== undefined) {
-  //         let error = JSON.parse(resp);
+    //   await fetch(urlEdit, {
+    //     method: 'PUT',
+    //     headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
+    //     body: JSON.stringify(payload)
+    //   })
+    //     .then(function (res) {
+    //       if (res.ok) {
+    //         if (disableLink) {
+    //           const userName = userPayload.name.first + ' ' + userPayload.name.last;
+    //           sendEmail(payload.email, userPayload.id, userName);
+    //           userFormMessages({
+    //             message: t('You_have_resent_the_activation_link.'),
+    //             variant: 'success',
+    //             duration: 7000
+    //           });
+    //           dispatch(getUsersInfoAsync());
+    //           setDisableSave(true)
+    //         }
+    //         userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
+    //         dispatch(getUsersInfoAsync());
+    //         setDisableSave(true)
+    //       } else if (res.status == 500) {
+    //         setAlert(true);
+    //         setResponseError(
+    //           t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+    //         );
+    //       } else return res.text();
+    //     })
+    //     .then((resp) => {
+    //       if (resp !== undefined) {
+    //         let error = JSON.parse(resp);
 
-  //         if (error.errors !== undefined) {
-  //           if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.UserName[0]);
-  //           }
-  //           if (error.errors.First !== undefined && error.errors.First.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.First[0]);
-  //           }
-  //           if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.Last[0]);
-  //           }
-  //           if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.Email[0]);
-  //           }
-  //           if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.Password[0]);
-  //           }
-  //           if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-  //             setAlert(true);
-  //             setResponseError(error.errors.Password[0]);
-  //           }
-  //         } else {
-  //           setAlert(true);
-  //           setResponseError(error);
-  //           const errorString = error;
-  //           if (errorString.includes('email') === true) {
-  //             setIsExtEmail('isExtEmail');
-  //           } else {
-  //             setIsExtEmail('');
-  //           }
+    //         if (error.errors !== undefined) {
+    //           if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.UserName[0]);
+    //           }
+    //           if (error.errors.First !== undefined && error.errors.First.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.First[0]);
+    //           }
+    //           if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.Last[0]);
+    //           }
+    //           if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.Email[0]);
+    //           }
+    //           if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.Password[0]);
+    //           }
+    //           if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+    //             setAlert(true);
+    //             setResponseError(error.errors.Password[0]);
+    //           }
+    //         } else {
+    //           setAlert(true);
+    //           setResponseError(error);
+    //           const errorString = error;
+    //           if (errorString.includes('email') === true) {
+    //             setIsExtEmail('isExtEmail');
+    //           } else {
+    //             setIsExtEmail('');
+    //           }
 
-  //           if (errorString.includes('username') === true) {
-  //             setIsExtUsers('isExtUserName');
-  //           } else {
-  //             setIsExtUsers('');
-  //           }
-  //         }
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       return error;
-  //     });
-   };
+    //           if (errorString.includes('username') === true) {
+    //             setIsExtUsers('isExtUserName');
+    //           } else {
+    //             setIsExtUsers('');
+    //           }
+    //         }
+    //       }
+    //     })
+    //     .catch(function (error) {
+    //       return error;
+    //     });
+  };
 
   const onSubmit = async (e: any) => {
     setResponseError('');
@@ -890,7 +891,7 @@ else{
     }
   };
 
-  const history  = useHistory();
+  const history = useHistory();
 
   const onCancelUser = () => {
     history.goBack();
@@ -902,7 +903,7 @@ else{
     return re.test(String(email).toLowerCase());
   };
 
-  const validateUserName = (userName: string) : { error: boolean, errorMessage: string } => {
+  const validateUserName = (userName: string): { error: boolean, errorMessage: string } => {
     const chracterRegx = /^[a-zA-Z0-9-_.]+$/.test(String(userName).toLowerCase());
     if (!chracterRegx) {
       return { error: true, errorMessage: t("Please_provide_a_valid_User_name") };
@@ -962,6 +963,28 @@ else{
     }
   }
 
+  const validatePin = (pin: string): { error: boolean, errorMessage: string } => {
+    const characterReg = /^[0-9 ]+$/.test(String(pin));
+    if (!characterReg) {
+      return { error: true, errorMessage: `${t("Pin_should_be_numeric_value")}.` };
+    } else if (pin.length !== 4) {
+      return { error: true, errorMessage: `${t("Pin_must_be_4_numbers")}` };
+    }
+    return { error: false, errorMessage: '' };
+  }
+
+  const checkPin = () => {
+    if (formpayload.pin !== null) {
+      const isPinValid = validatePin(formpayload.pin.toString());
+      if (isPinValid.error) {
+        setFormPayloadErr({ ...formpayloadErr, pinErr: isPinValid.errorMessage });
+      }
+      else {
+        setFormPayloadErr({ ...formpayloadErr, pinErr: '' });
+      }
+    }
+  }
+
   const checkUserName = () => {
     const isUserNameValid = validateUserName(formpayload.userName);
     if (!formpayload.userName) {
@@ -1004,13 +1027,16 @@ else{
 
   const checkPassword = () => {
     const isPasswwordValid = validatePassword(password);
-
     if (!password) {
       setFormPayloadErr({
         ...formpayloadErr,
         passwordErr: t("Password_is_required")
       });
-    } else {
+    }
+    else if (password.length < 6) {
+      setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_six_characters")}` });
+    }
+    else {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
     }
   };
@@ -1108,24 +1134,24 @@ else{
     }
   };
 
-useEffect(() => {
-  const alertClx:any = document.getElementsByClassName("crxAlertUserEditForm");
-  const crxIndicate : any = document.getElementsByClassName("CrxIndicates");
-  const modalEditCrx : any = document.getElementsByClassName("modalEditCrx");
-  const optionalSticky : any = document.getElementsByClassName("optionalSticky");
-  const altRef = alertRef.current;
-  
-  if(alert === false && altRef === null  && optionalSticky.length > 0) {
-    
-    alertClx[0].style.display = "none";
-    crxIndicate[0].style.top = "42px";
-    modalEditCrx[0].style.paddingTop = "42px";
-    optionalSticky[0].style.height = "79px"
-  }else {
-    alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
-    crxIndicate[0].style.top = "83px";
-    modalEditCrx[0].style.paddingTop = "2px";
-    if(optionalSticky.length > 0) {
+  useEffect(() => {
+    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
+    const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
+    const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
+    const optionalSticky: any = document.getElementsByClassName("optionalSticky");
+    const altRef = alertRef.current;
+
+    if (alert === false && altRef === null && optionalSticky.length > 0) {
+
+      alertClx[0].style.display = "none";
+      crxIndicate[0].style.top = "42px";
+      modalEditCrx[0].style.paddingTop = "42px";
+      optionalSticky[0].style.height = "79px"
+    } else {
+      alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
+      crxIndicate[0].style.top = "83px";
+      modalEditCrx[0].style.paddingTop = "2px";
+      if (optionalSticky.length > 0) {
         optionalSticky[0].style.height = "119px"
       }
     }
@@ -1133,23 +1159,23 @@ useEffect(() => {
 
   const redirectPage = () => {
 
-    if(id) {
-      const phoneNumber = 
-          userPayload.contacts.length > 0
-            ? userPayload.contacts.find((x: any) => x.contactType === 1).number
-            : '';
+    if (id) {
+      const phoneNumber =
+        userPayload.contacts.length > 0
+          ? userPayload.contacts.find((x: any) => x.contactType === 1).number
+          : '';
       const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
       const user_temp = {
-        userName :  userPayload.account.userName,
-        firstName : userPayload.name.first,
-        middleInitial : userPayload.name.middle,
-        lastName : userPayload.name.last,
-        email : userPayload.email,
-        phoneNumber : phoneNumber,
-        userGroups : userGroupNames,
-        deactivationDate : userPayload.deactivationDate,
+        userName: userPayload.account.userName,
+        firstName: userPayload.name.first,
+        middleInitial: userPayload.name.middle,
+        lastName: userPayload.name.last,
+        email: userPayload.email,
+        phoneNumber: phoneNumber,
+        userGroups: userGroupNames,
+        deactivationDate: userPayload.deactivationDate,
       }
-      if(JSON.stringify(formpayload) !== JSON.stringify(user_temp)){
+      if (JSON.stringify(formpayload) !== JSON.stringify(user_temp)) {
         setIsOpen(true);
       }
       else {
@@ -1159,7 +1185,7 @@ useEffect(() => {
       }
     }
     else {
-      if(JSON.stringify(formpayload) !== JSON.stringify(actual_formPayload))
+      if (JSON.stringify(formpayload) !== JSON.stringify(actual_formPayload))
         setIsOpen(true);
       else {
         history.push(
@@ -1195,7 +1221,7 @@ useEffect(() => {
       </div>
       <div className='modalEditCrx'>
         <div className='CrxEditForm'>
-        <Grid container>
+          <Grid container>
             <Grid item xs={12} sm={12} md={12} lg={5} >
               <TextField
                 error={!!formpayloadErr.userNameErr}
@@ -1205,7 +1231,7 @@ useEffect(() => {
                 label={t("User_Name")}
                 className={'users-input ' + isExtUsers}
                 onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
-                disabled = {isADUser}
+                disabled={isADUser}
                 // onBlur={(e: any) => {
                 //   !formpayload.userName
                 //     ? setFormPayloadErr({
@@ -1245,123 +1271,136 @@ useEffect(() => {
                 onChange={(e: any) => setFormPayload({ ...formpayload, lastName: e.target.value })}
                 onBlur={checkLastName}
               />
-          </Grid>
-          <div className='grid_spacer'>
-          </div> 
-          <Grid item xs={12} sm={12} md={12} lg={5}>
-          <TextField
-            error={!!formpayloadErr.emailErr}
-            errorMsg={formpayloadErr.emailErr}
-            required={true}
-            value={formpayload.email}
-            disabled = {isADUser}
-            label={t("Email")}
-            className={'users-input ' + isExtEmail}
-            onChange={(e: any) => setFormPayload({ ...formpayload, email: e.target.value })}
-            onBlur={checkEmail}
-          />
-          <TextField
-            error={!!formpayloadErr.phoneNumberErr}
-            errorMsg={formpayloadErr.phoneNumberErr}
-            value={formpayload.phoneNumber}
-            label={t("Phone_Number")}
-            className='users-input'
-            onChange={(e: any) => setFormPayload({ ...formpayload, phoneNumber: e.target.value })}
-            onBlur={checkPhoneumber}
-          />
-
-          {
-            <div className='crxEditFilter editFilterUi'>
-              {console.log('UserGroups: ',formpayload.userGroups)}
-              <CRXMultiSelectBoxLight
-                className='categortAutocomplete CrxUserEditForm'
-                label={t("User_Group")}
-                multiple={true}
-                CheckBox={true}
+            </Grid>
+            <div className='grid_spacer'>
+            </div>
+            <Grid item xs={12} sm={12} md={12} lg={5}>
+              <TextField
+                error={!!formpayloadErr.emailErr}
+                errorMsg={formpayloadErr.emailErr}
                 required={true}
-                error={!!formpayloadErr.userGroupErr}
-                errorMsg={formpayloadErr.userGroupErr}
-                options={optionList}
-                value={formpayload.userGroups}
-                //value={[{id:'2226',label:'dev23215ds'}]}
-
-                autoComplete={false}
-                isSearchable={true}
-        disabled = {isADUser}
-                onBlur={checkUserGroup}
-                onChange={(_e: React.SyntheticEvent, value: AutoCompleteOptionType[]) => {
-                  setFormPayload({ ...formpayload, userGroups: value });
-                }}
+                value={formpayload.email}
+                disabled={isADUser}
+                label={t("Email")}
+                className={'users-input ' + isExtEmail}
+                onChange={(e: any) => setFormPayload({ ...formpayload, email: e.target.value })}
+                onBlur={checkEmail}
               />
-            </div>
-          }
-
-          <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
-            <label>{t("Deactivation_Date")}</label>
-            <CRXInputDatePicker
-              value={current_date}
-              type='datetime-local'
-              className='users-input'
-              onChange={(e: any) => setFormPayload({ ...formpayload, deactivationDate: e.target.value })}
-              minDate={minStartDate()}
-              disabled = {isADUser}
-              maxDate=''
-            />
-          </div>
-
-          <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" || radioValue == "manual" ? "radioBtnUiSpacer" : ""}`}>
-            <label>{t("User_Password_Setup")}</label>
-            <div className='user-radio-group'>
-              <CRXRadio
-                className='crxEditRadioBtn'
-                disableRipple={true}
-                content={activationLinkPermission}
-                value={radioValue}
-                setValue={setRadioValue}
+              <TextField
+                error={!!formpayloadErr.phoneNumberErr}
+                errorMsg={formpayloadErr.phoneNumberErr}
+                value={formpayload.phoneNumber}
+                label={t("Phone_Number")}
+                className='users-input'
+                onChange={(e: any) => setFormPayload({ ...formpayload, phoneNumber: e.target.value })}
+                onBlur={checkPhoneumber}
               />
-            </div>
-        </div>
+
+              {
+                <div className='crxEditFilter editFilterUi'>
+                  {console.log('UserGroups: ', formpayload.userGroups)}
+                  <CRXMultiSelectBoxLight
+                    className='categortAutocomplete CrxUserEditForm'
+                    label={t("User_Group")}
+                    multiple={true}
+                    CheckBox={true}
+                    required={true}
+                    error={!!formpayloadErr.userGroupErr}
+                    errorMsg={formpayloadErr.userGroupErr}
+                    options={optionList}
+                    value={formpayload.userGroups}
+                    //value={[{id:'2226',label:'dev23215ds'}]}
+                    autoComplete={false}
+                    isSearchable={true}
+                    disabled={isADUser}
+                    onBlur={checkUserGroup}
+                    onChange={(_e: React.SyntheticEvent, value: AutoCompleteOptionType[]) => {
+                      setFormPayload({ ...formpayload, userGroups: value });
+                    }}
+                  />
+                </div>
+              }
+
+              <div className='dataPickerCustom crxCreateEditDate DeactivationDateUi'>
+                <label>{t("Deactivation_Date")}</label>
+                <CRXInputDatePicker
+                  value={current_date}
+                  type='datetime-local'
+                  className='users-input'
+                  onChange={(e: any) => setFormPayload({ ...formpayload, deactivationDate: e.target.value })}
+                  minDate={minStartDate()}
+                  disabled={isADUser}
+                  maxDate=''
+                />
+              </div>
+
+              <div>
+                <TextField
+                  className='crx-gente-field crx-gente-field-confrim '
+                  error={!!formpayloadErr.pinErr}
+                  errorMsg={formpayloadErr.pinErr}
+                  label={t("Pin")}
+                  required={false}
+                  type='password'
+                  value={formpayload.pin}
+                  onChange={(e: any) => setFormPayload({ ...formpayload, pin: e.target.value })}
+                  onBlur={checkPin}
+                />
+              </div>
+
+              <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" || radioValue == "manual" ? "radioBtnUiSpacer" : ""}`}>
+                <label>{t("User_Password_Setup")}</label>
+                <div className='user-radio-group'>
+                  <CRXRadio
+                    className='crxEditRadioBtn'
+                    disableRipple={true}
+                    content={activationLinkPermission}
+                    value={radioValue}
+                    setValue={setRadioValue}
+                  />
+                </div>
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
         </div>
         <div className='crxFooterEditFormBtn'>
           <div className='__crxFooterBtnUser__'>
-          <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
-            {t("Save")}
-          </CRXButton>
-          
-          <Link to={urlList.filter((item:any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
-             {t("Cancel")}
-          </Link>
+            <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
+              {t("Save")}
+            </CRXButton>
+
+            <Link to={urlList.filter((item: any) => item.name === urlNames.adminUsers)[0].url} className="btnCancelAssign">
+              {t("Cancel")}
+            </Link>
           </div>
           <div className='__crxFooterBtnUser__'>
-          <CRXButton
-          onClick={() => redirectPage()}
-          className="groupInfoTabButtons-Close secondary"
-          color="secondary"
-          variant="outlined"
-        >
-         Close
-        </CRXButton>
-        </div>
-        </div>
-        <CRXConfirmDialog
-        setIsOpen={() => setIsOpen(false)}
-        onConfirm={closeDialog}
-        isOpen={isOpen}
-        className="userGroupNameConfirm"
-        buttonPrimary={t("Yes,_close")}
-        buttonSecondary={t("No,_do_not_close")}
-        text="user group form"
-      >
-        <div className="confirmMessage __crx__Please__confirm__modal">
-        {t("You_are_attempting_to")} <strong> {t("close_out_of_this_screen_with_unsaved_changes.")}</strong><strong className='__crx__please_confirm_'>{t(" ")}</strong>{" "}
-          {t("If_you_close_this_screen")}, {t("any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.")}
-          <div className="confirmMessageBottom">
-          {t("Would_you_like_to")} <strong>{t("close")}</strong> {t("this_screen?")}
+            <CRXButton
+              onClick={() => redirectPage()}
+              className="groupInfoTabButtons-Close secondary"
+              color="secondary"
+              variant="outlined"
+            >
+              Close
+            </CRXButton>
           </div>
         </div>
-      </CRXConfirmDialog>
+        <CRXConfirmDialog
+          setIsOpen={() => setIsOpen(false)}
+          onConfirm={closeDialog}
+          isOpen={isOpen}
+          className="userGroupNameConfirm"
+          buttonPrimary={t("Yes,_close")}
+          buttonSecondary={t("No,_do_not_close")}
+          text="user group form"
+        >
+          <div className="confirmMessage __crx__Please__confirm__modal">
+            {t("You_are_attempting_to")} <strong> {t("close_out_of_this_screen_with_unsaved_changes.")}</strong><strong className='__crx__please_confirm_'>{t(" ")}</strong>{" "}
+            {t("If_you_close_this_screen")}, {t("any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+              {t("Would_you_like_to")} <strong>{t("close")}</strong> {t("this_screen?")}
+            </div>
+          </div>
+        </CRXConfirmDialog>
       </div>
     </div>
   );

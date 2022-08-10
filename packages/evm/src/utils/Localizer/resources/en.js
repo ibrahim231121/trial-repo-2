@@ -280,6 +280,9 @@ export const resources = {
         "Edit_user":"Edit user",
         "Unlock_account":"Unlock account",
         "Deactivate_account":"Deactivate account",
+        "Pin_should_be_numeric_value" : "Pin should be numeric value.",
+        "Pin_must_be_4_numbers" : "Pin must be 4 numbers.",
+        "Password_should_be_greater_than_six_characters" : "Password should be greater than six characters.",
         // ------------------------------
 
         // --------- User Group----------
