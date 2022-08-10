@@ -32,7 +32,7 @@ import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
-import { GroupSubModules, Module, UserGroups } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
+import { GroupSubModules, Module, UserGroups, MemberId } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
 import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 export type GroupInfoModel = {
@@ -442,8 +442,8 @@ const Group = () => {
       //groupSubModules: appPermissionSample.map(x=> { return { "subModuleId": x.id}}),
 
       members: {
-        users: userIds.map((x) => {
-          return x;
+        users: userIds.map((x) => {  
+          return { id: x };
         }),
       },
     };

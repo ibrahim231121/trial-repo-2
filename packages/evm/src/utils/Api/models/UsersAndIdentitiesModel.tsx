@@ -22,9 +22,13 @@ export interface UserGroups {
 
 }
 export interface Members{
-    users: Number[]
-
+    users: MemberId[]
 }
+
+export interface MemberId{
+    id: Number
+}
+
 export interface GroupSubModules{
     history?:History,
     id:string,
