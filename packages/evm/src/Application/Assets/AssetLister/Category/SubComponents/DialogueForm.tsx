@@ -3,16 +3,15 @@ import { Formik, Form } from 'formik';
 import { CRXButton, CRXHeading } from '@cb/shared';
 import { Alert } from '@material-ui/lab';
 import { CRXAlert } from '@cb/shared';
-import moment from 'moment';
-import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
+import './DialogueForm.css';
 
 type DialogueFormProps = {
   setremoveClassName: any;
   formCollection: any;
-  evidenceResponse : any;
+  evidenceResponse: any;
   initialValues: any;
   setActiveForm: (param: any) => void;
   setOpenForm: () => void;
@@ -26,6 +25,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const { t } = useTranslation<string>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
+  const [saveBtn, setSaveBtn] = React.useState(true);
   const rowLen: number = props.formCollection?.length;
   const alertIcon = <i className='fas fa-info-circle attentionIcon'></i>;
 
@@ -33,6 +33,13 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
     props.setIndicateTxt(false);
     props.setremoveClassName('CRXDialogForm');
   }, []);
+
+  React.useEffect(() => {
+    if (props.evidenceResponse) {
+      const newlyAddedCategories = getChangedCategories(props.initialValues, props.evidenceResponse);
+      newlyAddedCategories.length > 0 ? setSaveBtn(false) : setSaveBtn(true);
+    }
+  }, [props.initialValues, props.evidenceResponse]);
 
   const backBtn = () => {
     props.setActiveForm((prev: number) => prev - 1);
@@ -43,12 +50,22 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
     props.closeModal(false);
   };
 
+  const getChangedCategories = (initialValue: any, evidenceResponse: any) => {
+    if (evidenceResponse && initialValue.length > 0) {
+      const newlyAddedCategories = props.initialValues.filter((o: any) => {
+        return !props.evidenceResponse?.categories.some((i: any) => i.name === o.label);
+      });
+      return newlyAddedCategories;
+    }
+    return [];
+  }
+
   const submitForm = (values: any[]) => {
     const evidenceId = props.evidenceResponse?.id;
     const Assign_Category_Arr: Category[] = [];
     const Assign_Category_URL = `/Evidences/${evidenceId}/Categories`;
     for (const v of values) {
-      const _body : Category = {
+      const _body: Category = {
         id: v.id,
         formData: [],
         assignedOn: new Date(),
@@ -68,10 +85,10 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       setSuccess(true);
       setTimeout(() => closeModal(), 3000);
     })
-    .catch((ex: any) => {
-      setError(true);
-    })
-  };
+      .catch(() => {
+        setError(true);
+      });
+  }
 
   return (
     <div className='categoryModal'>
@@ -85,8 +102,9 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
         />
       )}
       <Formik
-        initialValues={props.initialValues}
+        initialValues={getChangedCategories(props.initialValues, props.evidenceResponse)}
         onSubmit={(values, actions) => {
+          debugger
           submitForm(values);
           actions.setSubmitting(false);
         }}>
@@ -114,13 +132,13 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
           </Alert>
           <div className='modalFooter nextForm'>
             <div className='nextBtn'>
-              <CRXButton type='submit' className='nextButton' color='primary' variant='contained'>
-              {t("Save")}
+              <CRXButton type='submit' disabled={saveBtn} className='nextButton' color='primary' variant='contained'>
+                {t("Save")}
               </CRXButton>
             </div>
             <div className='cancelBtn'>
               <CRXButton onClick={backBtn} color='secondary' variant='contained' className='cancelButton secondary'>
-              {t("Back")}
+                {t("Back")}
               </CRXButton>
             </div>
           </div>

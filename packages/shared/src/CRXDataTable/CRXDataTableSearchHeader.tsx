@@ -72,7 +72,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
                     position: "sticky", 
                     zIndex: 30 }}
           >
-            {console.log('showHeaderCheckAll', showHeaderCheckAll)}
             {(showHeaderCheckAll || showHeaderCheckAll === undefined) ? 
               <CRXCheckBox
                 onChange={(e:React.ChangeEvent<HTMLInputElement>) => handleCheckAll(e)}
