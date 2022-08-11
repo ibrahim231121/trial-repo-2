@@ -220,16 +220,13 @@ const AddMetadataForm: React.FC<Props> = ({
 
     let checkSubmitType: any = uploadAssetBucket.filter(
       (x: any) => {
-        debugger
-        if (!x.evidence) {
-          // Exception
-        }
-        if (x.evidence.masterAsset.assetName === formpayload.masterAsset) {
-          return;
+        if (x.evidence) {
+          if (x.evidence.masterAsset.assetName === formpayload.masterAsset) {
+            return x;
+          }
         }
       }
     );
-
     if (checkSubmitType.length != 0) {
       var assetName: string = "";
       var station: string = "";

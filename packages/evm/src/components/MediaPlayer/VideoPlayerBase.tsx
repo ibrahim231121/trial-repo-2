@@ -191,6 +191,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
       }
     }
     else {
+      let protocol = 'http://';
       let myData: Timeline =
       {
         recording_start_point: recording_start_point,
@@ -202,7 +203,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         notes: data[x].notes,
         startdiff: startdiff,
         video_duration_in_second: video_duration_in_second,
-        src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        src: `${protocol}commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
         id: "Video-" + x,
         dataId: data[x].id,
         unitId: data[x].unitId,

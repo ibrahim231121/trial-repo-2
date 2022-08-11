@@ -164,7 +164,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
 
   useEffect(() => {
-    
+
     setRows(assetBucketData);
     assetBucketData.forEach((x: any) => {
       isChecked[x.assetId] = false;
@@ -1199,8 +1199,20 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                     </div>
                                     <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
                                     <div className="bucketListTextData">
-                                      <div className="bucketListAssetName">{x.assetName}</div>
-                                      <div className="bucketListRec">{x.assetType}</div>
+                                      {
+                                        x.isMaster ?
+                                          <>
+                                            <div className="bucketListAssetName">{x.assetName}</div>
+                                            <div className="bucketListRec">{x.assetType}</div>
+                                          </>
+                                          :
+                                          x.asset.filter((y: any) => y.assetId === x.selectedAssetId).map((u: any) => (
+                                            <>
+                                              <div className="bucketListAssetName">{u.assetName}</div>
+                                              <div className="bucketListRec">{u.assetType}</div>
+                                            </>
+                                          ))
+                                      }
                                       <div className="bucketListRec">
                                         {x.categories.map((item: any) => item).join(", ")}
                                       </div>

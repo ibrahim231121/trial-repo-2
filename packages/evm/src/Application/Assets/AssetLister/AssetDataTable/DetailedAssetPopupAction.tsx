@@ -45,6 +45,7 @@ export type securityDescriptorType = {
 }
 
 const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, selectedItems }) => {
+
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -151,8 +152,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
           </div>
         }
       </CRXConfirmDialog>
-
-      <ActionMenu row={row} selectedItems={selectedItems} showToastMsg={() => showToastMsg()} setIsOpen = {setIsOpen} IsOpen= {isPrimaryAsset}/>
+      <ActionMenu Asset={asset} row={row} selectedItems={selectedItems} showToastMsg={() => showToastMsg()} setIsOpen = {setIsOpen} IsOpen= {isPrimaryAsset}/>
     </>
   );
 });

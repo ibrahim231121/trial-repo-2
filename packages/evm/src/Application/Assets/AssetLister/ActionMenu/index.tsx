@@ -35,6 +35,7 @@ type Props = {
   showToastMsg(obj: any): any;
   setIsOpen: any
   IsOpen: any
+  Asset? : any;
 };
 
 export interface AssetBucket {
@@ -57,7 +58,7 @@ export type securityDescriptorType = {
   permission: PersmissionModel;
 }
 
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, IsOpen }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, IsOpen, Asset }) => {
 
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -130,17 +131,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       );
 
       const data = find === -1 ? row : selectedItems;
-      // Apply Condition
-      debugger
-      Object.preventExtensions(data);
-      let a = Object.isExtensible(data);
+      // To cater object is not extensible issue,
+      let newObject = {...data};
+      
       if (data.evidence) {
-        data.isMaster = data.evidence.masterAssetId === data.id;
+        newObject.isMaster = data.evidence.masterAssetId === data.id;
       }
       else {
-        data.isMaster = data.masterAssetId === data.id;
+        newObject.isMaster = data.masterAssetId === Asset.assetId;
+        newObject.selectedAssetId = Asset.assetId;
       }
-      dispatch(addAssetToBucketActionCreator(data));
+      dispatch(addAssetToBucketActionCreator(newObject));
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
