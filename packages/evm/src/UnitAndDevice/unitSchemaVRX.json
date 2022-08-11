@@ -76,7 +76,7 @@
       "id": "6",
       "key": "unitSettings/categories/Multiselect",
       "type": "multiselect",
-      "value": [""],
+      "value": ["Add All"],
       "depends": [
         {
           "key": "unitSettings/enableCategories/CheckBox",
@@ -85,14 +85,33 @@
           ]
         }
       ],
+      "validation": [{
+        "key": "required",
+        "msg": "required",
+        "when": {
+          "key": "unitSettings/enableCategories/CheckBox", "value": true
+        }
+      }],
       "options": [
         {
-          "value": "",
-          "label": ""
+          "value": "Add All",
+          "label": "Add All"
         },
         {
-          "value": "add all",
-          "label": "add all"
+          "value": "Category 1",
+          "label": "Category 1"
+        },
+        {
+          "value": "Category 2",
+          "label": "Category 2"
+        },
+        {
+          "value": "Category 3",
+          "label": "Category 3"
+        },
+        {
+          "value": "Category 4",
+          "label": "Category 4"
         }
       ]
     },
@@ -709,12 +728,13 @@
             "type": "text",
             "label": "Blackbox Directory",
             "class":"BlackboxDirectoryIncar",
-            "validation": [
-              {
-                "key": "required",
-                "msg": "required"
+            "validation": [{
+              "key": "required",
+              "msg": "required",
+              "when": {
+                "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio", "value": "Continous"
               }
-            ],
+            }],
             "depends": [
               {
                 "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",

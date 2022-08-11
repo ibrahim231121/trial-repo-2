@@ -7,12 +7,14 @@ import VolumeControlStyle from "./VolumeControlStyle";
 interface VolumecontrolProp {
   setVolumeHandle: (values: number) => void;
   setMuteHandle: (values: boolean) => void;
+  volume: number;
+  setVolume: any;
 }
 
-const VolumeControl = (props: VolumecontrolProp) => {
+  const VolumeControl = (props: VolumecontrolProp) => {
+  const{setVolumeHandle, setMuteHandle, volume, setVolume} = props;
 
-  const [volume, setVolume] = useState(100);
-
+  
   const [isMute, setIsMute] = useState(false);
 
   const [volumeBar, setvolumeBar] = useState("hideVolumeBar");
@@ -26,16 +28,14 @@ const VolumeControl = (props: VolumecontrolProp) => {
   const handleVolumeChange = (event: any, value: any) => {
 
     setVolume(value);
-    props.setVolumeHandle(value);
-
+    setVolumeHandle(value);
     if (volume == 0) {
       setIsMute(true);
-      props.setMuteHandle(true);
-
+      setMuteHandle(true);
     }
     else {
       setIsMute(false);
-      props.setMuteHandle(false);
+      setMuteHandle(false);
     }
   };
 
@@ -52,10 +52,10 @@ const VolumeControl = (props: VolumecontrolProp) => {
   const handleVoumeClick = () => {
    
     setIsMute(!isMute);
-    props.setMuteHandle(!isMute);
+    setMuteHandle(!isMute);
     if (volume == 0 && isMute) {
       setVolume(50);
-      props.setVolumeHandle(50);
+      setVolumeHandle(50);
     }
 
   }

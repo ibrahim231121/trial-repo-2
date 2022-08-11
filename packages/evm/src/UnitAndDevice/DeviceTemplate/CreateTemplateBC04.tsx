@@ -44,22 +44,41 @@ const applyValidation = (arrayOfObj: any) => {
     else if (x.value.type == "select") {
       validationstring = Yup.string();
     }
+    else if (x.value.type == "multiselect") {
+      validationstring = Yup.array();
+    }
     if (validationstring) {
       x.value.validation.map((y: any) => {
-        if (y.key == "required") {
-          validationstring = validationstring.required(y.msg);
+        if (y.when !== undefined) {
+          let keySplittedWhen = y.when.key.split('_');
+          let keyWhen = y.when.key;
+          if(keySplittedWhen.length > 1){
+            let keySplitted = x.key.split('_');
+            keySplittedWhen[1] = keySplitted[1];
+            keyWhen = keySplittedWhen.join('_')
+          }
+          validationstring = validationstring.when( keyWhen, {
+            is: (key: any)=> key === y.when.value, 
+            then: x.value.type == "multiselect" ? validationstring.min(1, y.msg) : validationstring.required(y.msg),
+            otherwise: validationstring,
+          })
         }
-        if (y.key == "min") {
-          validationstring = validationstring.min(y.value, y.msg);
-        }
-        if (y.key == "max") {
-          validationstring = validationstring.max(y.value, y.msg);
+        else{
+          if (y.key == "required") {
+            validationstring = x.value.type == "multiselect" ? validationstring.min(1, y.msg) : validationstring.required(y.msg) ;
+          }
+          if (y.key == "min") {
+            validationstring = validationstring.min(y.value, y.msg);
+          }
+          if (y.key == "max") {
+            validationstring = validationstring.max(y.value, y.msg);
+          }
         }
       })
     }
     initialValuesArrayRequiredField.push({ key: x.key, value: validationstring });
   })
-
+  
   return initialValuesArrayRequiredField;
 }
 
@@ -240,7 +259,7 @@ const CreateTemplate = (props: any) => {
 
 
   React.useEffect(() => {
-
+    
     let Initial_Values_RequiredField: Array<any> = [];
     let Initial_Values: Array<any> = [];
 
@@ -305,36 +324,12 @@ const CreateTemplate = (props: any) => {
 
 
 
-          if ((feildObj.validationChangeFeilds) || (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends"))) {
-            if (feildObj.hasOwnProperty("validation") && !feildObj.hasOwnProperty("depends")) {
-              Initial_Values_RequiredField.push({
-                key: key,
-                type: feildObj.type,
-                validation: t(feildObj.validation)
-              });
-            }
-            if (feildObj.validationChangeFeilds) {
-              feildObj.validationChangeFeilds.filter((x: any) => x.value == feildObj.value && x.todo == "add")?.map((x: any) => {
-
-                if (x.validation) {
-                  var splittedKey = x.key.split('_');
-                  var newKey = splittedKey[0] + "_" + keySplitted[1] + "_" + splittedKey[2];
-                  Initial_Values_RequiredField.push({
-                    key: newKey,
-                    type: x.type,
-                    validation: t(x.validation)
-                  })
-                }
-              })
-
-              let key_value_pairs = Initial_Values_RequiredField.reduce(
-                (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
-                {}
-              );
-
-              setInitial_Values_obj_RequiredField(key_value_pairs);
-            }
-
+          if (feildObj.hasOwnProperty("validation")) {
+            Initial_Values_RequiredField.push({
+              key: key,
+              type: feildObj.type,
+              validation: feildObj.validation
+            });
           }
 
 
@@ -443,7 +438,7 @@ const CreateTemplate = (props: any) => {
             if (!historyState.isedit && !historyState.isclone) {
               field.feilds.map((x: any) =>
                 x.map((y: any) => {
-                  if (y.validation && y.depends == undefined) {
+                  if (y.validation) {
                     Initial_Values_RequiredField.push({
                       key: y.key,
                       type: y.type,
@@ -456,49 +451,25 @@ const CreateTemplate = (props: any) => {
             }
           }
         }
-        // if (field.validationChangeFeilds) {
-        //   if (field.todo == "add") {
-        //     field.validationChangeFeilds.filter((x: any) => x.value == field.value)?.map((x: any) => {
-        //       if (x.validation) {
-        //         var splittedKey = x.key.split('_');
-        //         var parentSplittedKey = field.key.split('_');
-        //         var newKey = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
-        //         Initial_Values_RequiredField.push({
-        //           key: newKey,
-        //           type: x.type,
-        //           validation: x.validation
-        //         })
-        //       }
-        //     })
-        //     let key_value_pairs = Initial_Values_RequiredField.reduce(
-        //       (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
-        //       {}
-        //     );
-        //     setInitial_Values_obj_RequiredField(key_value_pairs);
-        //   }
-        // }
       }
       let key_value_pairs = Initial_Values_RequiredField.reduce(
         (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
         {}
       );
       setInitial_Values_obj_RequiredField(key_value_pairs);
+
+      const arrayOfObj = Object.entries(key_value_pairs).map((e) => ({ key: e[0], value: e[1] }));
+      var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
+      var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
+        (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+        {}
+      );
+      setformSchema(formSchemaTemp);
+
       setCameraFeildArrayCounter(cameraFeildArrayCounterValue);
     }
 
   }, [dataFetched]);
-
-  React.useEffect(() => {
-    const arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
-
-
-    var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
-    var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
-      (obj, item: any) => ({ ...obj, [item.key]: item.value }),
-      {}
-    );
-    setformSchema(formSchemaTemp);
-  }, [Initial_Values_obj_RequiredField])
 
 
   const loadData = async (templateName:string) => {

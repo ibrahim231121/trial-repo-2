@@ -22,6 +22,8 @@ import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
 import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
 import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
 import BookmarkNotePopup from "./BookmarkNotePopup";
+import MaterialMenu from "@material-ui/core/Menu";
+import MaterialMenuItem from "@material-ui/core/MenuItem";
 
 
 var videoElements: any[] = [];
@@ -461,8 +463,42 @@ const VideoPlayerBase = (props: any) => {
   const [isBookmarkNotePopup, setIsBookmarkNotePopup] = useState(false);
   const [bookmarkNotePopupArrObj, setBookmarkNotePopupArrObj] = useState<any>([]);
 
-
+  const [volumPercent, setVolumPercent] = useState<number>();
+  const [mutePercentVol, setMutePercentVol] = useState<number>();
+  const [volume, setVolume] = useState<number>(100);
+  const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
   const volumeIcon = useRef<any>(null)
+
+
+  const keydownListener = (event: any) => {
+    event.preventDefault();
+    const { code, shiftKey } = event;
+    if (code == "Space") {handlePlayPause()} //Space bar
+    if (shiftKey && code == "BracketRight") {onClickFwRw(modeFw + 2, 1)} //shift + ]
+    if (shiftKey && code == "BracketLeft") {onClickFwRw(modeRw + 2, 2)} //shift + [
+    if (shiftKey && code == "Period") {
+      modeSet(mode < 0 ? 2 : (mode + 2))
+    } //Shift + .
+    if (shiftKey && code == "Comma") {modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+    if (code == "Slash") {modeSet(0)} // /
+    if (code == "ArrowRight") {handleforward()} //Shift + ->
+    if (code == "ArrowLeft") {handleReverse()} //Shift + <-
+    if (code == "ArrowDown") {
+      setVolume(volume - 1);
+      setVolumeHandle(volume - 1);
+    } //down arrows
+    if (code == "ArrowUp") {
+      setVolume(volume + 1);
+      setVolumeHandle(volume + 1);
+    } //up arrows
+    if (code == "KeyN") {handleaction("note")} // N
+    if (code == "KeyB") {handleaction("bookmark")} // B
+    if (code == "KeyF") {viewScreenEnter()} // B
+    if (code == "KeyL") {setLayoutMenuEnabled(true);} // B
+    
+
+  };
+
 
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
@@ -920,8 +956,6 @@ const VideoPlayerBase = (props: any) => {
   );
 
 
-  const [volumPercent, setVolumPercent] = useState<number>();
-  const [mutePercentVol, setMutePercentVol] = useState<number>();
 
   const setVolumeHandle = (volume: number) => {
     setVolumPercent(volume);
@@ -936,7 +970,7 @@ const VideoPlayerBase = (props: any) => {
   const setMuteHandle = (isMuted: boolean) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.muted = isMuted;
-      let volumeMute = videoHandle.muted ? 0 : mutePercentVol == undefined ? 100 : mutePercentVol;
+      let volumeMute = videoHandle.muted ? 0 : mutePercentVol == undefined ? volume : mutePercentVol;
       setVolumPercent(volumeMute);
       volumeAnimation()
 
@@ -1153,7 +1187,6 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const getbookmarklocation = (position: any, startdiff: any) => {
-    //debugger;
     var timeLineHover: any = document.querySelector("#SliderControlBar");
     var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
     let timelineposition = position + ((startdiff) * 1000);
@@ -1526,6 +1559,7 @@ const VideoPlayerBase = (props: any) => {
 
   return (
     <>
+      <div onKeyDown={keydownListener}>
       <VideoPlayerViewRequirement
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
@@ -1759,7 +1793,7 @@ const VideoPlayerBase = (props: any) => {
                   </div>
 
                   <div>
-                    <VolumeControl setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
+                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
                   </div>
                 </div>
                 <div className="playerViewMiddle">
@@ -1842,40 +1876,39 @@ const VideoPlayerBase = (props: any) => {
                     />
                   </CRXButton>
                   <div className="MenuListGrid">
-                    <Menu
-                      align="start"
-                      viewScroll="initial"
-                      direction="top"
-                      className="ViewScreenMenu  ViewScreenLayouts"
-                      menuButton={
-                        <i>
-                          <CRXTooltip
-                            iconName={"fas fa-table iconTableClr"}
-                            placement="top"
-                            title={<>Layouts <span className="LayoutsTooltips">L</span></>}
-                            arrow={false}
-                          />
-                        </i>
-                      }
+                  <CRXButton onClick={() => {setLayoutMenuEnabled(true)}}>
+                    <CRXTooltip
+                        iconName={"fas fa-table iconTableClr"}
+                        placement="top"
+                        title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                        arrow={false}
+                      />
+                  </CRXButton>
+                    <MaterialMenu
+                     anchorEl={layoutMenuEnabled}
+                     className="ViewScreenMenu  ViewScreenLayouts"
+                     keepMounted
+                     open={Boolean(layoutMenuEnabled)}
+                     onClose={() => { setLayoutMenuEnabled(false) }}
                     >
 
-                      <MenuItem className="layoutHeader MenuItemLayout_1">
+                      <MaterialMenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
-                      </MenuItem>
-                      {!singleVideoLoad && <MenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
+                      </MaterialMenuItem>
+                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
-                      </MenuItem>}
-                      {!singleVideoLoad && <MenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
+                      </MaterialMenuItem>}
+                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Side by Side </span>
                         <div className="screenViewsSideBySide ViewDiv">
                           <p></p>
                           <p></p>
                         </div>
-                      </MenuItem>}
-                      {!singleVideoLoad && <MenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
+                      </MaterialMenuItem>}
+                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">
@@ -1885,8 +1918,8 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>}
-                      {!singleVideoLoad && <MenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
+                      </MaterialMenuItem>}
+                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 4</span>
                         <div className="screenViewsGrid ViewDiv">
@@ -1899,8 +1932,8 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>}
-                      {!singleVideoLoad && <MenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
+                      </MaterialMenuItem>}
+                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 6</span>
                         <div className="screenViewsGrid6 ViewDiv">
@@ -1917,17 +1950,17 @@ const VideoPlayerBase = (props: any) => {
                             <span></span>
                           </p>
                         </div>
-                      </MenuItem>}
-                      <MenuItem className="SidePanelMenu">
+                      </MaterialMenuItem>}
+                      <MaterialMenuItem className="SidePanelMenu">
                         <div className="sidePanelGrid">
                           <div></div>
                           <p></p>
                         </div>
                         <FormControlLabel className="switchBaseLayout" label="Side Data Panel" control={<Switch disabled={viewReasonControlsDisabled} onChange={(event) => setMapEnabled(event.target.checked)} />} />
                         <span className="switcherBtn">{mapEnabled ? "ON" : "OFF"}</span>
-                      </MenuItem>
+                      </MaterialMenuItem>
 
-                    </Menu >
+                    </MaterialMenu>
                   </div>
                   <div className="playerView">
                     {ViewScreen ?
@@ -2011,6 +2044,7 @@ const VideoPlayerBase = (props: any) => {
 
         </div>
       </div >
+      </div>
     </>);
 }
 

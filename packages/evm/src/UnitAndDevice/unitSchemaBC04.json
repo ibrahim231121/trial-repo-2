@@ -298,38 +298,14 @@
       "required": true,
       "seconds": true,
       "hinttext": true,
-      "hintvalue": "Allows to specify categories for selection after recording",
-      "validationChangeFeilds": [
-        {
-          "key": "device/categories/Select",
-          "value": false,
-          "todo" : "remove"
-        },
-        {
-          "key": "device/categories/Select",
-          "value": true,
-          "todo" : "add",
-          "type": "select",
-          "validation": [
-            {
-              "key": "required",
-              "msg": "required"
-            }
-          ]
-        }
-      ]
+      "hintvalue": "Allows to specify categories for selection after recording"
     },
     {
       "id": "3",
-      "key": "device/categories/Select",
-      "type": "select",
-      "label": "Categories",
-      "value": "",
+      "key": "device/categories/Multiselect",
+      "type": "multiselect",
+      "value": ["Add All"],
       "options": [
-        {
-          "value": "",
-          "label": ""
-        },
         {
           "value": "Add All",
           "label": "Add All"
@@ -337,10 +313,6 @@
         {
           "value": "Category 1",
           "label": "Category 1"
-        },
-        {
-          "value": "Category 2",
-          "label": "Category 2"
         },
         {
           "value": "Category 2",
@@ -355,12 +327,13 @@
           "label": "Category 4"
         }
       ],
-      "validation": [
-        {
-          "key": "required",
-          "msg": "required"
+      "validation": [{
+        "key": "required",
+        "msg": "required",
+        "when": {
+          "key": "device/enableCategorization/CheckBox", "value": true
         }
-      ],
+      }],
       "depends": [
         {
           "key": "device/enableCategorization/CheckBox",

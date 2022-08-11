@@ -24,7 +24,7 @@ let config = {
 
 axios.interceptors.response.use(async response => {
     try {
-      
+        
         return response;
     } catch (ex) {
         return await Promise.reject(ex);

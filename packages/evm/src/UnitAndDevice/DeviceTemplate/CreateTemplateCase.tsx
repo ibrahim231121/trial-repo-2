@@ -33,28 +33,33 @@ const CustomizedSelectForFormik = (props: any) => {
 
 
 const CustomizedMultiSelectForFormik = (props: any) => {
-
-  const { children, name, options } = props;
+  const { children, form, field } = props;
+  const { name, value } = field;
+  const { setFieldValue } = form;
 
   return (
     <>
       <Select
         multiple
-        renderValue={(selected: any) => {
-          var valuesAppend = children.filter((x: any) => x.key != "" && x.key != "add all").map((x: any) => {
-            if (selected.some((y: any) => x.props.value == y) || selected.includes("add all")) {
-              return x.key;
-            }
-          });
-          var definedValues = valuesAppend.filter((y: any) => y !== undefined);
-          if (definedValues.length < valuesAppend.length) {
-            return definedValues.join(', ');
-          }
-          else {
-            return "add all";
-          }
+        onChange={e => {
+          setFieldValue(name, e.target.value);
         }}
-        {...props}
+        renderValue={(selected: any) => {
+          return selected.join(', ');
+          // var valuesAppend = children.filter((x: any) => x.key != "Add All").map((x: any) => {
+          //   if (selected.some((y: any) => x.props.value == y) || selected.includes("Add All")) {
+          //     return x.key;
+          //   }
+          // });
+          // var definedValues = valuesAppend.filter((y: any) => y !== undefined);
+          // if (definedValues.length < valuesAppend.length) {
+          //   return definedValues.join(', ');
+          // }
+          // else {
+          //   return "Add All";
+          // }
+        }}
+        {...field}
       >
         {children}
       </Select>
@@ -97,7 +102,6 @@ const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any
 
   arrayHelpers.push(arr);
 
-
   var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
   var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item.key]: item.value }),
@@ -118,35 +122,16 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
     {}
   );
   setInitial_Values_obj_RequiredField(key_value_pairs);
+
+  var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObjUpdated)
+  var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
+    (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+    {}
+  );
+  setformSchema(formSchemaTemp);
 };
 
 
-const onChange = (e: any, formObj: any, applyValidation: any, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField: any, handleChange: any) => {
-  handleChange(e);
-  if (formObj.validationChangeFeilds !== undefined) {
-    let arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
-    formObj.validationChangeFeilds.filter((x: any) => x.value == e.target.checked)?.map((x: any) => {
-      
-      var splittedKey = x.key.split('_');
-      var parentSplittedKey = formObj.key.split('_');
-      var newKey = splittedKey.length > 1 ? splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2] : x.key;
-      if (x.todo == "add") {
-        if (x.validation) {
-          arrayOfObj.push({ "key": newKey, "value": { "type": x.type, "validation": x.validation } });
-        }
-      }
-      else if (x.todo == "remove") {
-        arrayOfObj = arrayOfObj.filter((x: any) => x.key !== newKey);
-      }
-    })
-    
-    let key_value_pairs = arrayOfObj.reduce(
-      (formObj: any, item: any) => ((formObj[item.key] = { type: item.value.type, validation: item.value.validation }), formObj),
-      {}
-    );
-    setInitial_Values_obj_RequiredField(key_value_pairs);
-  }
-}
 
 const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, handleChange: any, FormSchema: any, index: any) => {
   if (formObj.optionAppendOnChange !== undefined) {
@@ -342,7 +327,6 @@ export const CreateTempelateCase = (props: any) => {
                           type={formObj.type}
                           name={formObj.key}
                           value={formObj.value}
-                          onChange={(e: any) => onChange(e, formObj, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, handleChange)}
                         />
                         <span className="checkmarkRadio"></span>
                       </label>
@@ -398,8 +382,6 @@ export const CreateTempelateCase = (props: any) => {
                     id={formObj.id}
                     component={CustomizedSelectForFormik}
                     // component={"select"}
-                    onChange={(e: any) => formObj.optionAppendOnChange !== undefined ? optionAppendOnChange(e.target.value, formObj, values, setValues, handleChange, FormSchema, index) : handleChange(e)}
-
                   >
                     {formObj.options.filter((x: any) => x.hidden != true).map(
                       (opt: any, key: string) => (
@@ -455,7 +437,7 @@ export const CreateTempelateCase = (props: any) => {
             <Field
               name={formObj.key}
               id={formObj.id}
-              as={CustomizedMultiSelectForFormik}
+              component={CustomizedMultiSelectForFormik}
             // multiple={true}
             >
               {formObj.options.map(
@@ -476,6 +458,14 @@ export const CreateTempelateCase = (props: any) => {
                 )
               )}
             </Field>
+            <ErrorMessage
+                  name={formObj.key}
+                  render={(msg) => (
+                    <div style={{ color: "red" }}>
+                      {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                    </div>
+                  )}
+                />
             {formObj.hinttext == true ? (
               <CRXTooltip
                 iconName="fas fa-info-circle"
@@ -514,10 +504,7 @@ export const CreateTempelateCase = (props: any) => {
                           handleChange(event);
                           if (formObj.dependant != null) {
                             customEvent(event, setFieldValue, formObj.dependant);
-                          }
-                          else if (formObj.validationChangeFeilds != null) {
-                            onChange(event, formObj, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, handleChange)
-                        }}}
+                          }}}
                         validateOnChange
                       />
                       <span className="checkmark" ></span>

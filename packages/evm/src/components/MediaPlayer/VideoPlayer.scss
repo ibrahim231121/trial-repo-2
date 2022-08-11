@@ -210,7 +210,8 @@
 
         .faCogIcon {
           position: absolute;
-          right: 229px;
+          right: 140px;
+          z-index: 8;
         }
       }
 
@@ -462,7 +463,7 @@
     color: white;
     font-size: 28px;
     position: absolute;
-    right: 51px;
+    right: 75px;
     transition: 0.2s all;
 
     &:hover {
@@ -1548,4 +1549,18 @@ span.playBackTooltipUp {
 }
 .faCogIconScale {
   transform: scale(1.3);
+}
+
+
+.main-control-bar {
+  .MuiSlider-track {
+    &::after {
+      position: absolute;
+      content: "";
+      height: 30px;
+      width: 3px;
+      background: red;
+      right: 0;
+    }
+  }
 }

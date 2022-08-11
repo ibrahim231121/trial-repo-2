@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
 import { CRXButton, CRXCheckBox,CBXSwitcher } from "@cb/shared";
+import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
@@ -102,6 +103,10 @@ useEffect(() => {
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
+        <MaterialMenuItem className='multiTimeLine_tab'>
+          <i className="far fa-stream"></i>
+          {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
+        </MaterialMenuItem>
 
         {!singleVideoLoad && isMultiViewEnable &&
           <>
@@ -182,7 +187,7 @@ useEffect(() => {
           />
           <span className="GPS (location + speed)">Speed</span>
         </MaterialMenuItem>
-
+        
       </MaterialMenu>
     </>
   )
