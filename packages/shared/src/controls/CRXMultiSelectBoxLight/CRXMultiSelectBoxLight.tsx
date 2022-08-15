@@ -55,15 +55,16 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       maxHeight: "332px",
       width: "388px",
       minHeight: "165px",
-      overflowY: "auto",
+      overflow: "hidden",
       position: "relative",
       backgroundColor: "#fff",
       top: "2px",
       left: "0px",
       '& > ul': {
         padding: "0px",
-        maxHeight: "100vh",
-        overflow: "hidden",
+        minHeight: "165px",
+        overflowY: "auto",
+        maxHeight: "332px",
       }
     },
     popper: {
@@ -275,7 +276,6 @@ const CRXMultiSelectBoxLight = ({
         disableClearable={isClear}
         disableCloseOnSelect={true}
         freeSolo={freeSolo}
-        forcePopupIcon={true}
         //open={true}
         autoHighlight={true}
         selectOnFocus

@@ -55,6 +55,7 @@ export const urlNames: any = {
     // unitDeviceTemplateCreateBCO3Lte: "unitDeviceTemplateCreateBCO3Lte",
     testVideoPlayer: "videoplayer",
     testEvidence: "Evidence",
+    tenantSettings: "tenantSetting",
     adminStation: 'adminStation',
     adminStationCreate: 'adminStationCreate',
     adminStationEdit: 'adminStationEdit',
@@ -72,6 +73,13 @@ export const urlList: any = [
         url: "/assets",
         details: [
             { type: "text", label: "Assets", }
+        ],
+    }, 
+    {
+        name: urlNames.tenantSettings,
+        url: "/tenantSettings",
+        details: [
+            { type: "text", label: "Tenant Settings", }
         ],
     },
     {

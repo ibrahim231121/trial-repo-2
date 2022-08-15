@@ -33,6 +33,7 @@ import ViewConfigurationTemplateLog from './Application/Admin/UnitConfiguration/
 import UnitCreate from './UnitAndDevice/Detail/UnitDetail'
 import SharedMedia from "./Application/Assets/SharedMedia/SharedMedia";
 import Restricted from "./ApplicationPermission/Restricted";
+import TenantSettings from "./Application/Admin/SetupAndConfiguration/TenantSettings";
 import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplate";
 
@@ -97,6 +98,7 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={(routeProps:any) => <UnitCreate {...routeProps} />} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.tenantSettings)[0].url} exact={true} component={TenantSettings} />
               
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.editUser)[0].url} exact={true}  component={CreateUserForm}  />
