@@ -694,14 +694,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
                 <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Share_Asset")}</div>
                 </div>
-              </SecurityDescriptor>
+              {/* </SecurityDescriptor> */}
             </Restricted>
           </MenuItem>
         ) : null
@@ -712,14 +712,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
                 <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
                 </div>
-              </SecurityDescriptor>
+              {/* </SecurityDescriptor> */}
             </Restricted>
           </MenuItem>
         ) : null

@@ -8,11 +8,13 @@ import IconButton from '@material-ui/core/IconButton';
 import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { SubmitAnalysisModel } from '../../../../utils/Api/models/EvidenceModels';
+import { SubmitAnalysisModel,Project,Job,File } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { CRXTooltip } from '@cb/shared';
 import { number } from 'yup/lib/locale';
 import { CRXMultiSelectBoxLight } from '@cb/shared';
+import { JOBCOORDINATOR_SERVICE_URL } from '../../../../utils/Api/url';
+import moment from 'moment';
 
 type SubmitAnalysisProps = {
     items: any[];
@@ -39,7 +41,7 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
     const [audioSource,setAudioSource] = React.useState<string>("");
     const [notes,setNotes] = React.useState<string>('');
     const anchorRef = React.useRef<HTMLButtonElement>(null);
-
+    const [res, setRes] = React.useState<File>();
     const [responseError, setResponseError] = React.useState<string>('');
     const [alert, setAlert] = React.useState<boolean>(false);
     const [emailError, setEmailError] = React.useState<string>('');
@@ -57,9 +59,6 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
     const [submitAnalysis, setSubmitAnalysis] = React.useState<SubmitAnalysisModel>()
   
     React.useEffect(() => {
-     
-      console.log('props: ' + props)
-      console.log('rowData: ' + props.rowData)
       var masterAudioDevice = props.rowData.evidence.masterAsset.audioDevice;
      var TempAudioSources = [
         { value: 1, displayText: masterAudioDevice }
@@ -80,12 +79,43 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
       }
       setAudioSourceOptions(TempAudioSources);
       setAudioSource("1");
-      // if(submitAnalysis != null && emailError == "")
-      // {
-      //   sendData();
-      // }
+     
     }, []);
-
+    React.useEffect(() => {
+      debugger;
+      if(submitAnalysis != null)
+      {
+        sendData();
+      }
+    },[submitAnalysis])
+    React.useEffect(() => {
+      if(res != null)
+        {
+          let tempProject: Project = {
+            projectName:"Project_202208100648",
+            type:0,
+            notes:notes,
+            assetId:props.rowData.evidence.masterAsset.assetId,
+            assetName:props.rowData.assetName,
+            assetUrl: res ? res.url : "",
+            assetFileSize:res ? res.size : 0,
+            assetDuration: res ? res.duration : 0,
+            recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
+            fileType:res ? res.extension : "",
+            submitBy: parseInt(localStorage.getItem('User Id') ?? "0")
+        };
+        let tempJob: Job = {
+          type:0,
+          priority:0,
+          progress:0
+        };
+        let temp: SubmitAnalysisModel = {
+          project:tempProject,
+          job:tempJob
+        };
+        setSubmitAnalysis(temp);
+      }
+    },[res])
 
   
     const handleAudioSourceCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,37 +133,39 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
       setAudioSource(e.target.value);
   }
     const onSubmitForm = async () => {
+      
+      const url =
+      "/Evidences/" +
+      `${props.rowData.id}` +
+      "/assets/" +
+      `${props.rowData.assetId}` +
+      "/Files";
+      EvidenceAgent.getAssetFile(url).then((response: File[]) =>  {
+        const temp = response;
+        setRes(temp[0]);
+        
+      });
      
-      let temp: SubmitAnalysisModel = {
-        isAudioSource: audioSourceCheck,
-        audioSource: audioSource,
-        videoAnalysis: videoAnalysisCheck,
-        audioAnalysis: audioAnalysisCheck,
-        note: notes
-    }
-  
-    setSubmitAnalysis(temp);
   
     };
     const sendData = async () => {
-      const url = '#';
-    //   EvidenceAgent.shareAsset(url, submitAnalysis).then(() => {
-    //     props.setOnClose();
-    //     props.showToastMsg({
-    //       message: "Analysis submitted successfully",
-    //       variant: "success",
-    //       duration: 7000,
-    //       clearButtton: true,
-    //     });
-    //   })
-    //   .catch(function (error) {
-    //     debugger;
-    //     setAlert(true);
-    //     setResponseError(
-    //       "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-    //     );
-    //     return error;
-    //   });
+      const url = JOBCOORDINATOR_SERVICE_URL;
+      EvidenceAgent.submitAnalysis(url, submitAnalysis).then(() => {
+        props.setOnClose();
+        props.showToastMsg({
+          message: "Analysis submitted for redaction",
+          variant: "success",
+          duration: 7000,
+          clearButtton: true,
+        });
+      })
+      .catch(function (error) {
+        setAlert(true);
+        setResponseError(
+          "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
+        );
+        return error;
+      });
     }
     
   
@@ -149,7 +181,7 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
           initialValues={{}} 
           onSubmit={() => onSubmitForm()}
           >
-            {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
+            {() => (
               <>
               <Form>
                 <br></br>

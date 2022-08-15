@@ -113,7 +113,6 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-    debugger;
     if (getAssetData !== undefined) {
       var categories: string[] = [];
       getAssetData.categories.forEach((x: any) =>
@@ -171,7 +170,7 @@ useEffect(() => {
     }
   }, [getAssetData]);
   const GetAsset = (response : any) => {
-    debugger;
+
     var asd = response;
     EvidenceAgent.getEvidence(response.evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
@@ -194,22 +193,23 @@ const DecryptLink = async () => {
     headers: { 'Content-Type': 'application/json', TenantId: '1' },
   })
   let response = await res.json();
-  var expiry_date = moment(response.shared.on).add(response.shared.expiryDuration, 'hours');
-  let now = moment();
+ 
   if (response != null && response != "Asset not found") 
   {
+    var expiry_date = moment(response.shared.on).add(response.shared.expiryDuration, 'hours');
+    let now = moment();
     if(now.isBefore(expiry_date))
     {
     setlinkStatus("Link is authorized")
     GetAsset(response);
     }
     else{
-      setlinkStatus("The Link has been expired");
+      setlinkStatus("The Link is not valid");
   
     }
   }
   else{
-    setlinkStatus("The Link has been expired");
+    setlinkStatus("The Link is not valid");
 
   }
 }

@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention, Note, TimelinesSync,EvdenceCategoryAssignment } from './models/EvidenceModels';
-import { EVIDENCE_SERVICE_URL,BASE_URL_USER_SERVICE, SETUP_CONFIGURATION_SERVICE_URL ,USER_INFO_GET_URL,GROUP_USER_LIST,USER,GROUP_GET_URL,GROUP_GET_BY_ID_URL,GROUP_USER_COUNT_GET_URL,SAVE_USER_GROUP_URL,BASE_URL_UNIT_SERVICES } from './url';
+import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention,File, Note, TimelinesSync,EvdenceCategoryAssignment, SubmitAnalysisModel } from './models/EvidenceModels';
+import { JOBCOORDINATOR_SERVICE_URL,EVIDENCE_SERVICE_URL,BASE_URL_USER_SERVICE, SETUP_CONFIGURATION_SERVICE_URL ,USER_INFO_GET_URL,GROUP_USER_LIST,USER,GROUP_GET_URL,GROUP_GET_BY_ID_URL,GROUP_USER_COUNT_GET_URL,SAVE_USER_GROUP_URL,BASE_URL_UNIT_SERVICES } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
@@ -41,6 +41,8 @@ const requests = {
     put: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
     patch: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
     delete: <T>(baseUrl: string, url: string) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
+    post_noconfig: <T>(baseUrl: string, url: string, body: {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body).then(responseBody)},
+
 }
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url),
@@ -50,6 +52,8 @@ export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences'),
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url),
+    getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url),
+
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId),
@@ -67,6 +71,8 @@ export const EvidenceAgent = {
     updateRetentionPolicy: (url: string, body: ExtendRetention[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
     changeCategories: (url: string, body: EvdenceCategoryAssignment) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body),
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}),
+    submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post_noconfig<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
+
 }
 
 export const AuthenticationAgent = {

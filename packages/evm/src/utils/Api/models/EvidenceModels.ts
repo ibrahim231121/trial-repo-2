@@ -149,12 +149,37 @@ export interface AssetSharingModel {
     revoked: RevokedModel,
     version: string
 }
+// export interface SubmitAnalysisModel {
+//     isAudioSource: boolean,
+//     audioSource: string,
+//     videoAnalysis: boolean,
+//     audioAnalysis: boolean,
+//     note: string,
+// }
 export interface SubmitAnalysisModel {
-    isAudioSource: boolean,
-    audioSource: string,
-    videoAnalysis: boolean,
-    audioAnalysis: boolean,
-    note: string,
+    project:Project,
+    job:Job
+}
+export interface Project {
+    projectName: string,
+    type: number,
+    notes: string,
+    assetId: number,
+    assetName: string,
+    assetUrl: string,
+    assetFileSize: number,
+    assetDuration: number,
+    recordedBy: string,
+    fileType: string,
+    submitBy: number,
+
+}
+export interface Job {
+    type: number,
+    priority: number,
+    progress: number,
+    
+
 }
 export interface Evidence {
     id: number
