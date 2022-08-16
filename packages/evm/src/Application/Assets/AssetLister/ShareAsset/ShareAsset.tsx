@@ -1,11 +1,12 @@
-import React from 'react';
-import { Formik, Form } from 'formik';
-import { CRXCheckBox, CRXSelectBox,CRXButton } from '@cb/shared';
-import { useDispatch } from 'react-redux';
-import Cookies from 'universal-cookie';
-import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { AssetSharingModel } from '../../../../utils/Api/models/EvidenceModels';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import { Formik, Form } from "formik";
+import { CRXCheckBox, CRXSelectBox, CRXButton, CRXRadio } from "@cb/shared";
+import { useDispatch } from "react-redux";
+import Cookies from "universal-cookie";
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { AssetSharingModel } from "../../../../utils/Api/models/EvidenceModels";
+import { useTranslation } from "react-i18next";
+import "./ShareAsset.scss";
 
 type ShareAssetProps = {
   items: any[];
@@ -23,39 +24,45 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
-  const [metaDataCheck, setMetaDataCheck] = React.useState<boolean>(false)
-  const [downloadable, setDownloadable] = React.useState<boolean>(false)
+  const [metaDataCheck, setMetaDataCheck] = React.useState<boolean>(false);
+  const [downloadable, setDownloadable] = React.useState<boolean>(false);
 
-  const [viewableOnce, setViewableOnce] = React.useState<boolean>(false)
+  const [viewableOnce, setViewableOnce] = React.useState<boolean>(false);
 
-  const [linkExpireType, setLinkExpireType] = React.useState<string>("")
-  const [email, setEmail] = React.useState<string>("")
-  const [comment, setComment] = React.useState<string>("")
-  const [reasonForView, setReasonForView] = React.useState<string>("")
-  
-  const [linkExpire, setLinkExpire] = React.useState<string>("")
-  const [linkExpireDuration, setLinkExpireDuration] = React.useState<string>("")
+  const [linkExpireType, setLinkExpireType] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
+  const [comment, setComment] = React.useState<string>("");
+  const [reasonForView, setReasonForView] = React.useState<string>("");
 
-  const [responseError, setResponseError] = React.useState<string>('');
+  const [linkExpire, setLinkExpire] = React.useState<string>("");
+  const [linkExpireDuration, setLinkExpireDuration] =
+    React.useState<string>("");
+
+  const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
-  const [emailError, setEmailError] = React.useState<string>('');
+  const [emailError, setEmailError] = React.useState<string>("");
   const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
+  const [radioCheck, setRadioCheck] = React.useState<string>("");
+  const [reasonCheck, setreasonCheck] = React.useState<string>("");
+  const [showreasonCheckError, setShowreasonCheckError] =
+    React.useState<boolean>(false);
+  const [meteDataErrMsg, setMetaDataErrMsg] = React.useState({
+    required: "",
+  });
+  const regex =
+    /^(\s?[^\s,]+@[^\s,]+\.[^\s,]+\s?,)*(\s?[^\s,]+@[^\s,]+\.[^\s,]+)$/;
 
-  const regex = /^(\s?[^\s,]+@[^\s,]+\.[^\s,]+\s?,)*(\s?[^\s,]+@[^\s,]+\.[^\s,]+)$/;
-  
   const linkExpireOptions = [
-    { value: 3, displayText: t("Infinite") },
-    { value: 2, displayText: t("Days") },
-    { value: 1, displayText: t("Hours") }
- ];
+    { value: 1, displayText: t("Hour(s)") },
+    { value: 2, displayText: t("Day(s)") },
+    { value: 3, displayText: t("No Expiration") },
+  ];
 
-  const [currentRetention, setCurrentRetention] = React.useState<string>("-")
-  const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel>()
+  const [currentRetention, setCurrentRetention] = React.useState<string>("-");
+  const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel>();
 
   React.useEffect(() => {
-    
-    if(assetSharing != null && emailError == "")
-    {
+    if (assetSharing != null && emailError == "") {
       sendData();
     }
   }, [assetSharing]);
@@ -63,57 +70,58 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     if(linkExpireType == "1")//hour
     {
       setLinkExpireDuration(linkExpire);
-    }
-    else if(linkExpireType == "2")//day
-    {
-      let tmpExpireTime = parseInt(linkExpire)*24
-      setLinkExpireDuration(tmpExpireTime+'');
-    }
-    else if(linkExpireType == "3")//infinite
-    {
+    } else if (linkExpireType == "2") {
+      //day
+      let tmpExpireTime = parseInt(linkExpire) * 24;
+      setLinkExpireDuration(tmpExpireTime + "");
+    } else if (linkExpireType == "3") {
+      //infinite
       setLinkExpireDuration(linkExpire);
     }
   }, [linkExpireType]);
 
   React.useEffect(() => {
-    if (props.items.length <= 1)
-      getRetentionData();
-
+    if (props.items.length <= 1) getRetentionData();
   }, []);
   React.useEffect(() => {
-    
-    
-    if(email == "" || regex.test(email) == true)
-    {
-      setEmailError('');
+    if (email == "" || regex.test(email) == true) {
+      setEmailError("");
       setShowEmailError(false);
-    }
-    else if(regex.test(email) == false)
-    {
-      setEmailError('Invalid format');
+    } else if (regex.test(email) == false) {
+      setEmailError("Invalid format");
       setShowEmailError(true);
     }
-    
-  },[email])
+  }, [email]);
+
+  React.useEffect(() => {
+    if (reasonForView == "" || reasonForView.length > 1) {
+      setreasonCheck("");
+      setShowreasonCheckError(false);
+    } else {
+      setreasonCheck("Invalid format");
+      setShowreasonCheckError(true);
+    }
+  }, [reasonForView]);
+  console.log(reasonForView, "checkreason");
+
+  console.log(reasonForView, "reason");
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMetaDataCheck(e.target.checked)
-  }
+    setMetaDataCheck(e.target.checked);
+  };
   const handleDownloadCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDownloadable(e.target.checked)
-  }
+    setDownloadable(e.target.checked);
+  };
   const handleViewableCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setViewableOnce(e.target.checked)
-  }
-  
-  const getRetentionData = async () => {
-    
-  }
+    setViewableOnce(e.target.checked);
+  };
+
+  const getRetentionData = async () => {};
   const onLinkExpireTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLinkExpireType(e.target.value);
-}
+    setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
+  };
   const onSubmitForm = async () => {
-   
     let temp: AssetSharingModel = {
       message: comment,
       email: email,
@@ -122,24 +130,23 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
         isDownloadable: downloadable,
         isAvailable: true,
         isViewable: true,
-        isMetadataOnly: metaDataCheck
+        isMetadataOnly: metaDataCheck,
       },
       shared: {
         expiryDuration: parseInt(linkExpireDuration), //linkExpireDuration
         by: 1,
         on: new Date(),
-        status: 'InProgress',
-        type: 'Email'
+        status: "InProgress",
+        type: "Email",
       },
       revoked: {
         by: 1,
         on: undefined,
       },
-      version: ''
-    }
+      version: "",
+    };
 
     setAssetSharing(temp);
-
   };
   const sendData = async () => {
     const url = '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
@@ -168,138 +175,212 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const validateMultipleEmails = () => {
     // Get value on emails input as a string
     let emails = email.split(",");
-   
+
     for (let i = 0; i < emails.length; i++) {
       // Trim whitespaces from email address
       emails[i] = emails[i].trim();
-  }
-  }
+    }
+  };
 
+  const RadioBtnValues = [
+    {
+      id: 1,
+      value: "Viewable Once",
+      isDisabled: false,
+      label: "Viewable Once",
+      Comp: () => {},
+    },
+    {
+      id: 2,
+      value: "Downloadable",
+      isDisabled: false,
+      label: "Downloadable",
+      Comp: () => {},
+    },
+  ];
 
   return (
     <>
-      <div style={{ height: "380px" }}>
-        <Formik 
-        initialValues={{email}} 
-        onSubmit={() => onSubmitForm()}
-        >
+      <div className="__Crx__Share__Asset__Modal">
+        <Formik initialValues={{ email }} onSubmit={() => onSubmitForm()}>
           {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
             <>
-            <Form>
-              <div className='categoryTitle'>
-                Email
-              </div>
-              <div >
-                <input type="text"  value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              {showEmailError ? (
-              <div className="errorStationStyle" style={{color: "red"}}>
-                                 <i className="fas fa-exclamation-circle"></i> 
-                                  {emailError}
-                                </div>):null
-              }
-              <div style={{
-                height: "0px", paddingTop: "5px",
-                display: `${props.rowData.evidence.asset.length > 0
-                  ? ""
-                  : "none"
-                  }`
-              }}>
-                <CRXCheckBox
-                  inputProps={"metaDataCheck"}
-                  className="relatedAssetsCheckbox"
-                  lightMode={true}
-                  checked={metaDataCheck}
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => handleCheck(e)}
-                />
-                {t("Include_Metadata")}.
-              </div>
-              <div className='categoryTitle'>
-                {t("Link_Expiry")}
-              </div>
-              <div >
-                <input type="text"  value={linkExpire} onChange={(e) => setLinkExpire(e.target.value)} />
-              
-              <CRXSelectBox
-                    className={`adVSelectBox createUserSelectBox`}
-                    id="selectBoxLinkExpire"
-                    value={linkExpireType}
-                    onChange={(e: any) => onLinkExpireTypeChange(e)}
-                    options={linkExpireOptions}
-                    icon={true}
-                    popover={"crxSelectPermissionGroup"}
-                    defaultOptionText={linkExpireOptions[1].displayText}
-                    defaultValue={linkExpireOptions[1].value} />
-                    <div style={{
-                height: "0px", paddingTop: "5px",
-                display: `${props.rowData.evidence.asset.length > 0
-                  ? ""
-                  : "none"
-                  }`
-              }}>
+              <Form>
+                <div className="CrxCreateUser">
+                  <div className="CrxIndicates">
+                    <sup>*</sup> {t("Indicates_required_field")}
+                  </div>
                 </div>
-                <CRXCheckBox
-                  inputProps={"assignUserCheck"}
-                  className="relatedAssetsCheckbox"
-                  lightMode={true}
-                  checked={viewableOnce}
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => handleViewableCheck(e)}
-                />
-                {t("Viewable_once")}
-              </div>
-              <div style={{
-                height: "0px", paddingTop: "5px",
-                display: `${props.rowData.evidence.asset.length > 0
-                  ? ""
-                  : "none"
-                  }`
-              }}>
-                <CRXCheckBox
-                  inputProps={"assignUserCheck"}
-                  className="relatedAssetsCheckbox"
-                  lightMode={true}
-                  checked={downloadable}
-                  onChange={(
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => handleDownloadCheck(e)}
-                />
-                {t("Downloadable")}
-              </div>
-              <div className='categoryTitle'>
-                Comments
-              </div>
-              <div >
-                <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} ></textarea>
-                {/* <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} /> */}
-              </div>
-              <div className='categoryTitle'>
-              Reason for view
-              </div>
-              <div >
-              <textarea  value={reasonForView} onChange={(e) => setReasonForView(e.target.value)} rows={3} ></textarea>
-                {/* <input type="text" value={reasonForView} onChange={(e) => setReasonForView(e.target.value)} /> */}
-              </div>
-              <br />
-              <br /><br />
-              <br />
+                <div
+                  className={`__CRX__ShareAssets__Layout __CRX__ShareAssets__Layout__Email ${
+                    showEmailError === true ? "__CRX__Share__Error" : ""
+                  }`}
+                >
+                  <div className="categoryTitle">
+                    Email <span>*</span>
+                  </div>
+                  <div className="CBX-input">
+                    <input
+                      type="text"
+                      className="crx-input"
+                      value={email}
+                      required={true}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {showEmailError ? (
+                      <div className="errorStationStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {emailError}
+                        {console.log(emailError, "emailcheck")}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
 
-              <div className='modalFooter CRXFooter'>
-                <div className='nextBtn'>
-                  <CRXButton type='submit' className={'nextButton ' + buttonState && 'primeryBtn'} disabled={buttonState}>
-                    {t("Save")}
-                  </CRXButton>
+                <div className="__CRX__ShareAssets__Layout">
+                  <div className="categoryTitle __CRX__Title__Share">
+                    {t("Link Expiration")}
+                    <span>*</span>
+                  </div>
+                  <div className="CBX-input _Crx_link_ ">
+                    <span className="CRX__Number__Wrapper">
+                    <input
+                      type="number"
+                      min="0"
+                      value={linkExpire}
+                      onChange={(e) => setLinkExpire(e.target.value)}
+                    />
+                
+                  </span>
+         
+                    <CRXSelectBox
+                      className={`adVSelectBox createUserSelectBox`}
+                      id="selectBoxLinkExpire"
+                      value={linkExpireType}
+                      onChange={(e: any) => onLinkExpireTypeChange(e)}
+                      options={linkExpireOptions}
+                      icon={true}
+                      isRequried={true}
+                      error={meteDataErrMsg.required == "" ? true : false}
+                      errorMsg={meteDataErrMsg.required}
+                      popover={"crxSelectPermissionGroup"}
+                      defaultOptionText={linkExpireOptions[1].displayText}
+                      defaultValue={linkExpireOptions[1].value}
+                    />
+                  </div>
                 </div>
-                <div className='cancelBtn'>
-                  <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
-                  {t("Cancel")}
-                  </CRXButton>
+
+                <div className="__Crx_checkbox__Share">
+                  <div className="categoryTitle __CRX__Title__Share __Crx_Radio__Share">
+                    {t("Link Permissions")}
+                  </div>
+                  <div
+                  className="__CRX__CheckBox__Share__Align"
+                    style={{
+                      display: `${
+                        props.rowData.evidence.asset.length > 0 ? "" : "none"
+                      }`,
+                    }}
+                  >
+                    <div>
+                    <CRXCheckBox
+                      inputProps={"metaDataCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={metaDataCheck}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleCheck(e)
+                      }
+                    />
+                    {t("Include Metadata")}
+                    </div>
+                    <div>
+                    <CRXCheckBox
+                      inputProps={"assignUserCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={viewableOnce}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleViewableCheck(e)
+                      }
+                    />
+                    {t("Viewable Once")}
+                    </div>
+                    <div>
+                    <CRXCheckBox
+                      inputProps={"assignUserCheck"}
+                      className="relatedAssetsCheckbox"
+                      lightMode={true}
+                      checked={downloadable}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleDownloadCheck(e)
+                      }
+                    />
+                    {/* <CRXRadio className="usama" value={radioCheck} setValue={setRadioCheck} content={RadioBtnValues} /> */}
+                    {t("Downloadable")}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Form>
+
+                <div className="__CRX__ShareAssets__Layout">
+                  <div className="categoryTitle __CRX__Title__Share">
+                    Comments
+                  </div>
+                  <div className=" CBX-input __CRX__TextArea__Share">
+                    <textarea
+                      className="crx-category-scroll"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    ></textarea>
+                    {/* <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} /> */}
+                  </div>
+                </div>
+
+                <div
+                  className={`__CRX__ShareAssets__Layout ${
+                    showreasonCheckError == true ? "__CRX__Reason__Error" : ""
+                  }`}
+                >
+                  <div className="categoryTitle __CRX__Title__Share __CRX__Title__Reason">
+                    Reason for Sharing<span>*</span>
+                  </div>
+                  <div className="CBX-input __CRX__TextArea__Share">
+                    <textarea
+                      className="crx-category-scroll"
+                      value={reasonForView}
+                      onChange={(e) => setReasonForView(e.target.value)}
+                      required={true}
+                    ></textarea>
+                    {showreasonCheckError ? (
+                      <div className="errorStationStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {reasonCheck}
+                      </div>
+                    ) : null}
+                    {/* <input type="text" value={reasonForView} onChange={(e) => setReasonForView(e.target.value)} /> */}
+                  </div>
+                </div>
+
+                <div className="modalFooter CRXFooter">
+                  <div className="nextBtn">
+                    <CRXButton
+                      type="submit"
+                      className={"nextButton " + buttonState && "primeryBtn"}
+                      disabled={buttonState}
+                    >
+                      {t("Share asset")}
+                    </CRXButton>
+                  </div>
+                  <div className="cancelBtn">
+                    <CRXButton
+                      onClick={cancelBtn}
+                      className="cancelButton secondary"
+                    >
+                      {t("Cancel")}
+                    </CRXButton>
+                  </div>
+                </div>
+              </Form>
             </>
           )}
         </Formik>

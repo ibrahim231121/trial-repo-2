@@ -415,11 +415,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       <CRXModalDialog
         maxWidth='lg'
         title={t("Share_Asset")}
-        className={'CRXModal'}
+        className={'CRXModal __Crx__Share__asset'}
         modelOpen={openAssetShare}
         onClose={() => setOpenAssetShare(false)}
         defaultButton={false}
         indicatesText={true}
+        showSticky={true}
 
       >
         <ShareAsset
@@ -507,30 +508,30 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
 
         {IsOpen ? (
-          <MenuItem>
-            <Restricted moduleId={30}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-                <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-                  <div className="crx-menu-icon"></div>
-                  <div className="crx-menu-list">{t("Set_as_primary_asset")}</div>
-                </div>
-              </SecurityDescriptor>
-            </Restricted>
-          </MenuItem>
-        ) : null
-        }
+        <MenuItem>
+          {/* <Restricted moduleId={30}> 
+             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">{t("Set_as_primary")}</div>
+              </div>
+             {/* </SecurityDescriptor> 
+           </Restricted>  */}
+        </MenuItem>
+): null
+}
 
         <MenuItem>
-          <Restricted moduleId={21}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+          {/* <Restricted moduleId={21}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
               <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Assign_User")}</div>
               </div>
-            </SecurityDescriptor>
-          </Restricted>
+            {/* </SecurityDescriptor>
+          </Restricted> */}
         </MenuItem>
 
         <MenuItem>
@@ -683,7 +684,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            <Restricted moduleId={0}>
+            {/* <Restricted moduleId={0}> */}
               {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
                 <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                   <div className="crx-menu-icon">
@@ -692,7 +693,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-list">{t("Share_Asset")}</div>
                 </div>
               {/* </SecurityDescriptor> */}
-            </Restricted>
+            {/* </Restricted> */}
           </MenuItem>
         ) : null
         }
