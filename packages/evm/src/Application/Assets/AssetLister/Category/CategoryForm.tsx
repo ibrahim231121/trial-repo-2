@@ -258,7 +258,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       };
       categoryBodyArr.push(_categoryBody);
     }
-
     const body : EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: categoryBodyArr,

@@ -13,7 +13,6 @@ import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import usePrevious from './Utility/usePrev';
 
-
 type FormContainerProps = {
   openForm: boolean;
   isCategoryEmpty: boolean;
@@ -47,7 +46,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
       setPreviousValueState(prevActiveForm)
     }
   }, [activeForm]);
- 
+
   React.useEffect(() => {
     if (props.openForm == true) {
       setOpenModal(true);
@@ -68,6 +67,9 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     if (IsformUpdated) {
       setActiveForm(2);
+      if (activeForm === 2) {
+        closeAndResetModal();
+      }
       return;
     }
 
@@ -81,14 +83,19 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
           label: i.name
         };
       })[0];
+
     if (newValue) {
       setFilterValue((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
       setRemovedOption({});
     }
+    closeAndResetModal();
+  }
+
+  const closeAndResetModal = () => {
     setOpenModal(false);
     setActiveForm(0);
     props.setOpenForm();
-  };
+  }
 
   const handleActiveForm = (step: number) => {
     switch (step) {

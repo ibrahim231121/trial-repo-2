@@ -622,16 +622,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-        <MenuItem>
-          <div className="crx-meu-content crx-spac" onClick={handleDownloadMetaDataClick}>
-            <div className="crx-menu-icon">
-              <i className="far fa-user-lock fa-md"></i>
-            </div>
-            <div className="crx-menu-list">For Meta Data Purpose</div>
-          </div>
-        </MenuItem>
-
-
         <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
