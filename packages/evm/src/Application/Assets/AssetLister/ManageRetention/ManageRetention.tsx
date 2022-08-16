@@ -1,6 +1,6 @@
 import React, {  useEffect, useRef } from 'react';
 import { Formik, Form } from 'formik';
-import { CRXRadio,CRXButton,CRXAlert,CRXConfirmDialog } from '@cb/shared';
+import { CRXRadio,CRXButton,CRXAlert,CRXConfirmDialog, TextField } from '@cb/shared';
 import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
@@ -11,7 +11,7 @@ import { Evidence, ExtendRetention } from '../../../../utils/Api/models/Evidence
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory, useParams } from "react-router";
-
+import "./ManageRetention.scss";
 
 type ManageRetentionProps = {
   items: any[];
@@ -50,8 +50,8 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   
   const [retention, setRetention] = React.useState<string>("")
-  const [currentRetention, setCurrentRetention] = React.useState<string>("-")
-  const [originalRetention, setOriginalRetention] = React.useState<string>("-")
+  const [currentRetention, setCurrentRetention] = React.useState<string>("")
+  const [originalRetention, setOriginalRetention] = React.useState<string>("")
   const [isOpen,setIsOpen] = React.useState<boolean>(false);
   
   const [retentionList, setRetentionList] = React.useState<ExtendRetention[]>([])
@@ -91,7 +91,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     }
     if (retention != "1") {
       
-      setRetentionDays(0);
+      setRetentionDays(7);
     }
 
   }, [retention]);
@@ -133,7 +133,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const getRetentionData = async () => {
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
       setResponse(response);
-      setOriginalRetention("Original Retention: " + moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
+      setOriginalRetention("Original Retentions: " + moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
       if (response.extendedRetainUntil != null) {
         console.log('curr_ret_moment ',moment(response.extendedRetainUntil).format('DD-MM-YYYY'));
         if(moment(response.extendedRetainUntil).format('DD-MM-YYYY') == "31-12-9999")
@@ -243,27 +243,45 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         open={alert}
         setShowSucess={() => null}
       />
-      <div style={{ height: "270px" }}>
+      <div className='retention-modal'>
         <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
           {() => (
             <Form>
-              <div >
-                <div>{t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Assets")}</div>
-                <CRXRadio
-                  className='crxEditRadioBtn'
-                  disableRipple={true}
-                  content={retentionOpt}
-                  value={retention}
-                  setValue={setRetention}
-                />
-
-                <input type="number" disabled={retention == "1" ? false : true} value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} />
+              <div className='_rententionModalCotent'>
+                
+                <div className='_rentention_fields'>
+                  
+                  <div className='retention-modal-sub'>
+                  {t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Asset(s)")}
+                  </div>
+                  
+                  <CRXRadio
+                    className='crxEditRadioBtn'
+                    disableRipple={true}
+                    content={retentionOpt}
+                    value={retention}
+                    
+                    setValue={setRetention}
+                  />
+                  <TextField
+                  parentId="_rentention_field_parent"
+                  className=""
+                  type="number"
+                  disabled={retention == "1" ? false : true}
+                  value={retentionDays} 
+                  onChange={(e : any) => setRetentionDays(parseInt(e.target.value))}
+                  name="extendRettionByDay"
+                  
+                  />
+                  <div className="retention-label-days"><span>
+                    days
+                  </span></div>
+                </div>
+                {/* <input className='retention-modal-input' type="number" disabled={retention == "1" ? false : true} value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} /> */}
               </div>
-              <div>
-                <h4>{t("Original_Retention:")} {originalRetention}</h4>
-                <h4>{t("Current_Retention:")} {currentRetention}</h4>
-                <br></br>
-                <br></br>
+              <div className='orginal_current_text'>
+                <div><strong>{t("Original_Retention:")}</strong> {originalRetention}</div>
+                <div><strong>{t("Current_Retention:")}</strong> {currentRetention}</div>
 
               </div>
 

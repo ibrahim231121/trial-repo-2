@@ -1,0 +1,60 @@
+.retention-modal
+{
+    ._rententionModalCotent{
+        ._rentention_fields {
+            display: flex;
+            place-items: baseline;
+            #_rentention_field_parent {
+                position: relative;
+                width: 110px;
+                margin-right: 12px;
+                margin-left: -56px;
+                top: -7px;
+            }
+            .retention-label-days{
+                position: relative;
+                span{
+                    position: absolute;
+                    margin-top: -17px;
+                }
+            }
+            .crx-radio-btn {
+                label {
+                    .MuiFormControlLabel-label {
+                        padding-left: 2px;
+                        white-space: nowrap;
+                        color : var(--color-333333);
+                        font-family: var(--base-font-family);
+                    }
+                } 
+            } 
+        }
+        .retention-modal-sub
+        {
+            margin-top: 42px;
+            // margin-bottom: 20px;
+        }
+        .retention-modal-input
+        {
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--color-74767c);
+            height: 28px !important;
+            padding: 0px !important;
+        }
+        .crxEditRadioBtn{
+            padding: 20px 0px;
+        }
+        label.MuiFormControlLabel-root {
+            padding-bottom: 15px;
+            margin-left: 15px;
+            position: relative;
+            top: 3px;
+        }
+    }
+    
+    .orginal_current_text {
+        margin-bottom: 45px;
+        padding-bottom: 30px;
+    }
+}

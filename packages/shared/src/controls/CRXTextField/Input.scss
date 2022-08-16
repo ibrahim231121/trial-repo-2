@@ -67,7 +67,7 @@
   }
   .Mui-disabled {
     background: var(--color-e5e5e5) !important;
-    border: none;
+    border: none !important;
     outline: 1px solid var(--color-e5e5e5);
     color: var(--color-979797);
     &:hover {

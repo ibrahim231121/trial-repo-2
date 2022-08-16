@@ -22,7 +22,8 @@ interface InputProps {
   placeholder?: string;
   defaultValue?: any;
   regex: RegExp;
-  error? : boolean
+  error? : boolean,
+  parentId? : string
 }
 
 const CRXInput = ({
@@ -36,6 +37,7 @@ const CRXInput = ({
   disabled,
   required = false,
   id,
+  parentId,
   type,
   error,
   label,
@@ -119,7 +121,7 @@ const CRXInput = ({
 
   return (
     <>
-      <span className="gridFilterTextBox">
+      <span id={parentId} className="gridFilterTextBox">
         <Typography variant="subtitle1" className="label">
           {reformatedLabel()}
         </Typography>
