@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  EVIDENCE_ASSET_DATA_URL
-} from "../../../utils/Api/url";
+import { EVIDENCE_ASSET_DATA_URL } from "../../../utils/Api/url";
 import { useDispatch, useSelector } from "react-redux";
 import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
@@ -119,8 +117,8 @@ type retentionPolicyId = {
 };
 let gridFilter: GridFilter = {
   logic: "and",
-  filters: []
-}
+  filters: [],
+};
 
 const AddMetadataForm: React.FC<Props> = ({
   onClose,
@@ -226,7 +224,8 @@ const AddMetadataForm: React.FC<Props> = ({
           }
         }
       }
-    );
+    )
+    
     if (checkSubmitType.length != 0) {
       var assetName: string = "";
       var station: string = "";
@@ -308,8 +307,9 @@ const AddMetadataForm: React.FC<Props> = ({
   }, [uploadFile]);
 
   const fetchStation = async () => {
-
-    var response = await UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => response);
+    var response = await UnitsAndDevicesAgent.getAllStationInfo("").then(
+      (response: Station[]) => response
+    );
     var stationNames = response.map((x: any, i: any) => {
       let j: NameAndValue = {
         id: x.id,
@@ -631,9 +631,8 @@ const AddMetadataForm: React.FC<Props> = ({
     );
     const filterObject = uploadFile.find(
       (x: any) =>
-
-        x.name.substring(0, x.name.lastIndexOf(".")).replaceAll(' ', '_') === displayText
-
+        x.name.substring(0, x.name.lastIndexOf(".")).replaceAll(" ", "_") ===
+        displayText
     );
     var hh = 0;
     var mm = 0;
@@ -651,7 +650,6 @@ const AddMetadataForm: React.FC<Props> = ({
         fileNameExtension === ".webm" ||
         fileNameExtension === ".3gp" ||
         fileNameExtension === ".wav"
-
       ) {
         var myVideos: any = [];
         myVideos.push(filterObject);
@@ -756,7 +754,6 @@ const AddMetadataForm: React.FC<Props> = ({
     let master: any = {};
 
     if (asset != undefined) {
-
       const owners = formpayload.owner.map((x: any) => {
         return {
           CMTFieldValue: x.id,
@@ -863,33 +860,32 @@ const AddMetadataForm: React.FC<Props> = ({
         if (res.ok) {
           onClose();
           setAddEvidence(true);
-          return res.json()
+          return res.json();
         } else if (res.status == 500) {
           setAlert(true);
           setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+            t(
+              "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
+            )
           );
-        }
-        else return res.text()
+        } else return res.text();
       })
       .then((resp) => {
         if (resp != undefined) {
           let error = JSON.parse(resp);
-          if (error.errors['Assets.Master.Files[0].Type'][0] != undefined) {
+          if (error.errors["Assets.Master.Files[0].Type"][0] != undefined) {
             setAlert(true);
-            setResponseError(error.errors['Assets.Master.Files[0].Type'][0]);
+            setResponseError(error.errors["Assets.Master.Files[0].Type"][0]);
           }
-          if (error.errors['Assets.Master.Files[0].Type'][1] != undefined) {
+          if (error.errors["Assets.Master.Files[0].Type"][1] != undefined) {
             setAlert(true);
-            setResponseError(error.errors['Assets.Master.Files[0].Type'][1]);
-          }
-          else {
+            setResponseError(error.errors["Assets.Master.Files[0].Type"][1]);
+          } else {
             setAlert(true);
             setResponseError(error);
           }
         }
-
-      })
+      });
   };
 
   const setEditPayload = () => {
@@ -1214,7 +1210,9 @@ const AddMetadataForm: React.FC<Props> = ({
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
         setResponseError(
-          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+          t(
+            "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
+          )
         );
       }
       if (res.ok) {
@@ -1285,8 +1283,6 @@ const AddMetadataForm: React.FC<Props> = ({
     });
   }, [formpayload.category]);
 
-
-
   const setFormField = (e: any, formId: any, datatype: string) => {
     const { target } = e;
     let newArray = filteredForm.filter((o: any) => {
@@ -1312,7 +1308,11 @@ const AddMetadataForm: React.FC<Props> = ({
           <>
             <CRXAlert
               message={responseError}
-              className="crxAlertUserEditForm"
+              className={`crxAlertUserEditForm ${
+                alert === true
+                  ? "__crx__Set_MetaData_Show"
+                  : "__crx__Set_MetaData_Hide"
+              } }`}
               alertType={alertType}
               type={errorType}
               open={alert}
@@ -1329,8 +1329,9 @@ const AddMetadataForm: React.FC<Props> = ({
                   {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
-                    }`}
+                  className={`metaData-Station-Select ${
+                    formpayload.masterAsset === "" ? "" : "gepAddClass"
+                  }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText={t("Select_Master_Asset")}
                   disabled={
@@ -1354,33 +1355,53 @@ const AddMetadataForm: React.FC<Props> = ({
                 />
               </div>
             </div>
-            <div className="metaData-station">
+            <div
+              className={`metaData-station ${
+                meteDataErrMsg.required == ""
+                  ? ""
+                  : "__Crx_MetaData__Station_Error"
+              }`}
+            >
               <div
-                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
-                  }`}
+                className={`metaData-inner ${
+                  formpayload.station === "" ? "" : "gepAddClass"
+                }`}
               >
                 <label>
                   {t("Station")} <span>*</span>
                 </label>
-                <CRXSelectBox
-                  className="metaData-Station-Select"
-                  id={"select_" + "selectBox"}
-                  value={formpayload.station === "" ? "" : formpayload.station}
-                  disabled={stationDisable ? true : false}
-                  onChange={(e: any) => {
-                    setFormPayload({ ...formpayload, station: e.target.value });
-                  }}
-                  onClose={(e: any) => stationSelectClose(e)}
-                  isRequried={true}
-                  error={meteDataErrMsg.required == "" ? true : false}
-                  errorMsg={meteDataErrMsg.required}
-                  defaultOptionText=""
-                  options={optionList}
-                  defaultValue=""
-                />
+                <div className="__CrX_Station__metaData__">
+                  <CRXSelectBox
+                    className="metaData-Station-Select"
+                    id={"select_" + "selectBox"}
+                    value={
+                      formpayload.station === "" ? "" : formpayload.station
+                    }
+                    disabled={stationDisable ? true : false}
+                    onChange={(e: any) => {
+                      setFormPayload({
+                        ...formpayload,
+                        station: e.target.value,
+                      });
+                    }}
+                    onClose={(e: any) => stationSelectClose(e)}
+                    isRequried={true}
+                    error={meteDataErrMsg.required == "" ? true : false}
+                    errorMsg={meteDataErrMsg.required}
+                    defaultOptionText=""
+                    options={optionList}
+                    defaultValue=""
+                  />
+                </div>
               </div>
             </div>
-            <div className="metaData-category">
+            <div
+              className={`metaData-category ${
+                formpayloadErr.ownerErr == ""
+                  ? ""
+                  : "__Crx_MetaData__Station_Error"
+              }`}
+            >
               <CRXMultiSelectBoxLight
                 className="categortAutocomplete CRXmetaData-owner"
                 label={t("Owner(s)")}
@@ -1401,7 +1422,7 @@ const AddMetadataForm: React.FC<Props> = ({
                 }}
               />
             </div>
-            <div className="metaData-category">
+            <div className="metaData-category __metaData__Category__">
               <CRXMultiSelectBoxLight
                 className="categortAutocomplete CRXmetaData-category"
                 placeHolder=""
@@ -1425,26 +1446,32 @@ const AddMetadataForm: React.FC<Props> = ({
           <>
             <CRXAlert
               message={responseError}
-              className="crxAlertUserEditForm"
+              className={`crxAlertUserEditForm ${
+                alert === true
+                  ? "__crx__Set_MetaData_Show"
+                  : "__crx__Set_MetaData_Hide"
+              } }`}
               alertType={alertType}
               type={errorType}
               open={alert}
               setShowSucess={() => null}
             />
-            {formpayload.category.some((o: any) => o.form.length > 0) ? (
-              formpayload.category.map((obj: any) => (
-                <CategoryFormOFAssetBucket
-                  categoryObject={obj}
-                  setFieldForm={(e: any, formId: any, datatype: string) =>
-                    setFormField(e, formId, datatype)
-                  }
+            <div className="__CRX__Asset_MetaData__Form__">
+              {formpayload.category.some((o: any) => o.form.length > 0) ? (
+                formpayload.category.map((obj: any) => (
+                  <CategoryFormOFAssetBucket
+                    categoryObject={obj}
+                    setFieldForm={(e: any, formId: any, datatype: string) =>
+                      setFormField(e, formId, datatype)
+                    }
+                  />
+                ))
+              ) : (
+                <NoFormAttachedOfAssetBucket
+                  categoryCollection={formpayload.category}
                 />
-              ))
-            ) : (
-              <NoFormAttachedOfAssetBucket
-                categoryCollection={formpayload.category}
-              />
-            )}
+              )}
+            </div>
           </>
         );
     }
@@ -1457,27 +1484,33 @@ const AddMetadataForm: React.FC<Props> = ({
   return (
     <div className="metaData-Station-Parent">
       {handleActiveScreen(activeScreen)}
-      <div className="crxFooterEditFormBtn">
+      <div className="modalFooter CRXFooter">
         {!isNext ? (
-          <CRXButton
-            className="primary"
-            disabled={isDisable}
-            onClick={onSubmit}
-          >
-            {t("Save")}
-          </CRXButton>
+          <div className="nextBtn">
+            <CRXButton
+              className="primary"
+              disabled={isDisable}
+              onClick={onSubmit}
+            >
+              {t("Save")}
+            </CRXButton>
+          </div>
         ) : (
-          <CRXButton
-            className="primary"
-            disabled={isDisable}
-            onClick={nextBtnHandler}
-          >
-            {t("Next")}
-          </CRXButton>
+          <div className="nextBtn">
+            <CRXButton
+              className="primary"
+              disabled={isDisable}
+              onClick={nextBtnHandler}
+            >
+              {t("Next")}
+            </CRXButton>
+          </div>
         )}
-        <CRXButton className="secondary" onClick={onClose}>
-          {t("Cancel")}
-        </CRXButton>
+        <div className="cancelBtn">
+          <CRXButton className="secondary" onClick={onClose}>
+            {t("Cancel")}
+          </CRXButton>
+        </div>
       </div>
     </div>
   );

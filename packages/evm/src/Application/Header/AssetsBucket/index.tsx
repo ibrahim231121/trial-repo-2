@@ -726,7 +726,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     if (onAddEvidence) {
       toasterRef.current.showToaster({
-        message: t("Asset_saved"), variant: "success", duration: 7000, clearButtton: true
+        message: t("Asset(s) saved"), variant: "success", duration: 7000, clearButtton: true
       });
       setIsMetaDataOpen(false);
       setShowUploadAttention(false)
@@ -1088,14 +1088,14 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           </div>
                           }
                         />
-                        : ""
+                       
 
                         <CRXModalDialog
-                          className="add-metadata-window"
+                          className="add-metadata-window __Add__MetaData__Window__"
                           maxWidth="xl"
                           title={t("Choose_asset_metadata")}
                           cancelButtonTxt="Cancel"
-                          showSticky={false}
+                          showSticky={true}
                           modelOpen={isModalOpen}
                           onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
 
@@ -1254,12 +1254,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         secondary={t("No_do_not_remove")}
         maxWidth="sm"
       >
-        <div className="crxUplockContent">
+        <div className="crxUplockContent __CRX__Uploading__Content">
           <div className='uploadCancelText'>
-            {t("You_are_attempting_to")} <strong>{t("remove")}</strong> {t("the_file")} <strong>( {fileToRemove} )</strong> {t("asset_from_this_upload.")}  {t("Once_you_remove_it")}, {t("You_will_not_be_able_to_undo_this_action.")}
+            {t("You are attempting to")} <strong>{t("remove")}</strong> {t("the file")} <strong>({fileToRemove})</strong> {t("asset from this upload.")}  {t("Once you remove it")}, {t("you will not be able to undo this action.")}
           </div>
           <div className='uploadCancelBottom'>
-            {t("Are_you_sure_you_would_like_to")} <strong>{t("remove")}</strong> {t("this_asset_from_this_upload?")}
+            {t("Are you sure you would like to")} <strong>{t("remove")}</strong> {t("this asset from this upload?")}
           </div>
         </div>
 

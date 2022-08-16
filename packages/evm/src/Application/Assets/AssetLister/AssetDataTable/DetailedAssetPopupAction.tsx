@@ -114,9 +114,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   return (
     <>
       <CRXConfirmDialog
-        className={`crx-unblock-modal __set__Primary__Modal__
-        
-        ${alert === true ? "__crx__Set_primary_Show" : "__crx__Set_primary_Hide"} `}
+        className={`crx-unblock-modal __set__Primary__Modal__ ${alert === true ? "__crx__Set_primary_Show" : "__crx__Set_primary_Hide"} `}
         title={t("Please_confirm")}
         setIsOpen={setIsOpen}
         onConfirm={onConfirm}
