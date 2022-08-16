@@ -54,6 +54,7 @@ export const SmallSwitcher = makeStyles({
         opacity : "1 !important"
       }
     },
+    
 });
 
 export const LargeSwitcher = makeStyles({

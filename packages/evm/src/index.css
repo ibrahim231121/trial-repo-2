@@ -374,3 +374,42 @@ a::selection {
   width: auto;
   height: auto;
 }
+
+._CBX_customized_Switcher .small_toggle_button.lightBorder.toggleFocus
+ {
+  outline: 2px solid #888787 !important;
+  border: 1px solid #FFF !important;
+  border-radius: 12px !important;
+  position: relative;
+}
+
+._CBX_customized_Switcher .small_toggle_button.darkBorder.toggleFocus {
+  outline: 2px solid #888787 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  position: relative;
+}
+
+._CBX_customized_Switcher .large_toggle_button.lightBorder.toggleFocus {
+  outline: 2px solid #888787 !important;
+  border: 1px solid #FFF !important;
+  border-radius: 12px !important;
+  position: relative;
+}
+
+._CBX_customized_Switcher .large_toggle_button.darkBorder.toggleFocus {
+  outline: 2px solid #888787 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  position: relative;
+}
+
+/* ._CBX_customized_Switcher .small_toggle_button.darkBorder:focus-visible,
+._CBX_customized_Switcher .small_toggle_button.darkBorder:focus-within,
+._CBX_customized_Switcher .small_toggle_button.darkBorder:focus,
+._CBX_customized_Switcher .large_toggle_button.darkBorder:focus-visible {
+    outline: 2px solid #888787 !important;
+    border: 1px solid #404041 !important;
+    border-radius: 12px !important;
+    position: relative;
+} */

@@ -97,6 +97,7 @@ const TabsDemo = () => {
           <Paper className={classes.paper}>
             
             <CBXSwitcher 
+            tabIndex={1}
           checked={state.checkedC} onChange={handleChange} theme="light" name="checkedC" size="small"
         />
         </Paper>
@@ -105,6 +106,7 @@ const TabsDemo = () => {
         <Paper className={clx.paper}>
           
           <CBXSwitcher 
+          tabIndex={2}
           checked={state.checkedDark} 
           theme="dark" 
           onChange={handleChange} 
@@ -118,7 +120,8 @@ const TabsDemo = () => {
         </Grid>
         <Grid item xs={4}>
         <Paper className={classes.paper}>
-        <CBXSwitcher 
+        <CBXSwitcher
+        tabIndex={3} 
           checked={state.disabledLight} disabled={true} theme="light" onChange={handleChange} name="disabledLight" size="small"
           />
         </Paper>
@@ -127,6 +130,7 @@ const TabsDemo = () => {
         <Grid item xs={4}>
         <Paper className={classes.paper}>
           <CBXSwitcher 
+          tabIndex={4}
           checked={state.checkedD} onChange={handleChange} theme="light" name="checkedD" size="large"
         />
           </Paper>
@@ -135,6 +139,7 @@ const TabsDemo = () => {
         <Grid item xs={4}>
           <Paper className={clx.paper}>
           <CBXSwitcher 
+          tabIndex={5}
           checked={state.checkedBD} onChange={handleChange} theme="dark" name="checkedBD" size="large"
         />
           </Paper>
@@ -142,6 +147,7 @@ const TabsDemo = () => {
         <Grid item xs={4}>
           <Paper className={classes.paper}>
           <CBXSwitcher 
+          tabIndex={6}
             checked={state.disabledBig}  disabled={true} onChange={handleChange} theme="light" name="disabledBig" size="large"
           />
           </Paper>

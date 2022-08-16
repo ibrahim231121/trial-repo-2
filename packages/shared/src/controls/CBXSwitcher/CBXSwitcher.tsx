@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
 import Switch  from '@material-ui/core/Switch';
 import { SmallSwitcher, LargeSwitcher } from './CBXSwitcherStyle'
 import './CBXSwitcher.scss'
@@ -21,10 +21,12 @@ type SwitcherProps = {
     labelWidth : number,
     toggleLabel? : boolean,
     rootClass : string,
-    className : string
+    className : string,
+    tabIndex: number
 }
 const CBXSwitcher = (props : SwitcherProps) => {
-    
+    const inputRef = useRef(null);
+    const togRef = useRef<any>(null)
     const {
         id,
         checked, 
@@ -38,12 +40,34 @@ const CBXSwitcher = (props : SwitcherProps) => {
         toggleLabel = false,
         labelWidth = 32,
         rootClass,
-        className
+        className,
+        tabIndex,
     } : SwitcherProps = props
     const SmallSwitcherStyle = SmallSwitcher(props)
     const LargeSwitcherStyle = LargeSwitcher(props)
+    
+    useEffect(() => {
+        const divPaent =  togRef.current
+        const parent = document.getElementById("_toggle_button_" + name)
+        const toggleClass = document.querySelectorAll(".crxToggle")
+        
+        divPaent && parent?.addEventListener('keyup', () => {
+            
+            toggleClass.forEach(element => {
+                if(element.id === togRef.current.id) {
+                    divPaent.classList.toggle("toggleFocus")
+                }else {
+                    element.classList.remove("toggleFocus")
+                }
+            })
+                
+        })
+       
+    },[])
+   
     return (
         <div className={rootClass + ' _CBX_customized_Switcher'}>
+              
             {toggleLabel &&
                 <div className={
                     `${theme === "dark" ? "_darkSwitcherLabel" : "_LightSwitcherLabel" }
@@ -54,20 +78,27 @@ const CBXSwitcher = (props : SwitcherProps) => {
                 </div>
             }
             {size === "small" ?
-            <div className={`small_toggle_button ${(theme === "light") ? "lightBorder" : "darkBorder" }`}> <Switch 
-            id={id}
-            checked={checked} 
-            onChange={onChange} 
-            className={className}
-            classes={{
-                ...SmallSwitcherStyle
-            }}
-            disabled={disabled}
-            name={name} />
+            <div id={"_toggle_button_" + name}  ref={togRef} className={`small_toggle_button crxToggle ${(theme === "light") ? "lightBorder" : "darkBorder " }`}>
+              
+            <Switch
+                inputRef={inputRef} 
+                tabIndex={tabIndex}
+                id={id}
+                checked={checked} 
+                onChange={onChange} 
+                className={className}
+                classes={{
+                    ...SmallSwitcherStyle
+                }}
+                disabled={disabled}
+                name={name} 
+            />
             </div>
             : 
-            <div className={`large_toggle_button ${(theme === "light") ? "lightBorder" : "darkBorder" }`}>
+            <div id={"_toggle_button_" + name}  ref={togRef}  className={`large_toggle_button crxToggle  ${(theme === "light") ? "lightBorder" : "darkBorder" }`}>
             <Switch 
+                inputRef={inputRef} 
+                tabIndex={tabIndex}
                 id={id}
                 checked={checked} 
                 onChange={onChange} 

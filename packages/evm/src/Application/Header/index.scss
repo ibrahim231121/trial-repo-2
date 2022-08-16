@@ -147,17 +147,17 @@
   }
 
   .active {
-    color: var(--color-C34400);
+    // color: var(--color-C34400);
     font-size: 12px;
     font-family:var(--base-font-family);
 
     &:hover {
-      color: var(--color-C34400);
+      // color: var(--color-C34400);
       text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
     }
     &:focus {
-      color: var(--color-C34400);
+      // color: var(--color-C34400);
       text-decoration: var(--Text-decoration-underline);
       cursor: pointer;
     }
