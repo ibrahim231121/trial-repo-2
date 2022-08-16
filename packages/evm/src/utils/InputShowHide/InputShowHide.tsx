@@ -11,12 +11,12 @@ const InputShowHide: React.FC<any> = ({ field, form }) => {
     return (
         <>
             <input type={showHideInputText ? t("text") : t("password")} {...field} />
-            <i className={"fa fa-key icon"}
+            <i className={ showHideInputText ? "fas fa-eye-slash passEyeIcon" : " fas fa-eye passEyeIcon"  }
                 onClick={() => changeShowHideInputText(!showHideInputText)} style={{ cursor: 'pointer' }}>
-                {showHideInputText ? t("Hide") : t("Show")}
+                <span> {showHideInputText ? t("Hide") : t("Show")}</span> 
             </i>
             {hasError && (
-                <div className="errorStationStyle">
+                <div className="errorStationStyle passErrorStyle">
                     <i className="fas fa-exclamation-circle"></i>
                     {hasError}
                 </div>

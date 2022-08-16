@@ -206,7 +206,7 @@ body {
   text-indent: 0;
 }
 .crx-main-container {
-  min-height: 96vh !important;
+  min-height: 97vh !important;
 }
 
 .divOuter .onDraggingThumb {
@@ -353,9 +353,6 @@ a::selection {
 } */
 
 
-.ManageStation {
-  margin-top: 36px;
-}
 
 .LocationMap {
   width: 100%;

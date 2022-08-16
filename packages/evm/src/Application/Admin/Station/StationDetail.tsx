@@ -682,7 +682,7 @@ const StationDetail: React.FC = () => {
           
           <>
             <Form>
-              <div className="ManageStation  switchLeftComponents">
+              <div className="ManageStation  switchLeftComponents ManageStationUi">
                 {success && (
                   <CRXAlert
                     message={t("Success_You_have_saved_the_Station")}
@@ -701,423 +701,448 @@ const StationDetail: React.FC = () => {
                 )}
 
                 <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
-                <CrxTabPanel value={value} index={0}>
-                  <div className="stationDetailOne">
-                    <div className="stationColumnSet">
-                      <CRXRows
-                        className="crxStationDetail"
-                        container="container"
-                        spacing={0}
-                      >
-                        <CRXColumn
-                          className={
-                            "stationDetailCol " +
-                            ` ${errors.Name && touched.Name == true
-                              ? displayStationErrors
-                              : ""
-                            }`
-                          }
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="name">
-                              {t("Station_Name")} <span>*</span>
-                            </label>
-                            <div className="CrxStationError">
-                              <Field id="name" name="Name" />
-                              {errors.Name !== undefined &&
-                                touched.Name === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {errors.Name}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null}
+                    <CrxTabPanel value={value} index={0} >
+                      <div className="centerGeneralTab">
+                          <div className="itemIndicator">
+                                  <label className="indicates-label"><b>*</b> Indicates required field</label>
+                          </div>
+                          <div className="generalContainer crxStationDetail">
+                            <div className="itemLeft">
+                     
+                          
+                                  <CRXColumn
+                                    className="crxStationDetailBtn stationDetailCol crxLocationBtn"
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <CRXButton
+                                      className="groupInfoTabButtons secondary  "
+                                      onClick={() => setModal(true)}
+                                      color="secondary"
+                                    >
+                                      {t("Map_location")}
+                                    </CRXButton>
+                                  </CRXColumn>
+                                    
+                                  <CRXColumn
+                                    className="stationDetailCol latitudeGeneral"
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input">
+                                      <label htmlFor="latitude">{t("Latitude")}</label>
+                                      <Field id="latitude" name="Location.latitude" />
+                                    </div>
+                                  </CRXColumn>
+
+                                  <CRXColumn
+                                    className="stationDetailCol"
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input">
+                                      <label htmlFor="longitude">{t("Longitude")}</label>
+                                      <Field id="longitude" name="Location.longitude" />
+                                    </div>
+                                  </CRXColumn>
+                              
+                        
+                            </div>
+                            <div className="itemRight">
+                       
+
+                                  <CRXColumn
+                                      className={
+                                        "stationDetailCol " +
+                                        ` ${errors.Name && touched.Name == true
+                                          ? displayStationErrors
+                                          : ""
+                                        }`
+                                      }
+                                      container="container"
+                                      item="item"
+                                      lg={12}
+                                      xs={12}
+                                      spacing={0}
+                                    >
+                                      <div className="CBX-input">
+                                        <label htmlFor="name">
+                                          {t("Station_Name")} <span>*</span>
+                                        </label>
+                                        <div className="CrxStationError">
+                                          <Field id="name" name="Name" />
+                                          {errors.Name !== undefined &&
+                                            touched.Name === true ? (
+                                            <div className="errorStationStyle ">
+                                              <i className="fas fa-exclamation-circle"></i>
+                                              {errors.Name}
+                                              {setDisplayStationError("errorBrdr")}
+                                            </div>
+                                          ) : null}
+                                        </div>
+                                      </div >
+                                  </CRXColumn>
+
+                                  <CRXColumn
+                                    className="stationDetailCol"
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input">
+                                      <label htmlFor="street">{t("Street_Address")}<span>*</span>
+                                      </label>
+                                      {/* <Field id="street" name="StreetAddress" /> */}
+                                      <div className="CrxStationError">
+                                          <Field id="street" name="StreetAddress" />
+                                          {errors.StreetAddress !== undefined &&
+                                            touched.StreetAddress === true ? (
+                                            <div className="errorStationStyle">
+                                              <i className="fas fa-exclamation-circle"></i>
+                                              {errors.StreetAddress}
+                                              {setDisplayStationError("errorBrdr")}
+                                            </div>
+                                          ) : null}
+                                        </div>
+                                    </div>
+                                  </CRXColumn>
+
+                                  <CRXColumn
+                                    className={
+                                      "stationDetailCol " +
+                                      ` ${errors.Phone && touched.Phone == true
+                                        ? displayStationErrors
+                                        : ""
+                                      }`
+                                    }
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input">
+                                      <label htmlFor="phone">{t("Phone_Number")}</label>
+                                      <div className="CrxStationError">
+                                        <Field id="phone" name="Phone" />
+                                      
+                                        {errors.Phone !== undefined &&
+                                          touched.Phone === true ? (
+                                          <div className="errorStationStyle">
+                                            <i className="fas fa-exclamation-circle"></i>
+                                            {errors.Phone}
+                                            {setDisplayStationError("errorBrdr")}
+                                          </div>
+                                        ) : null}
+                                      </div> 
+                                    </div>
+                                  </CRXColumn>
+                                  
+                                  {/* <CRXColumn
+                                    className={
+                                      "stationDetailCol " +
+                                      ` ${errors.Passcode && touched.Passcode == true
+                                        ? displayStationErrors
+                                        : ""
+                                      }`
+                                    }
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input">
+                                      <label htmlFor="passcode">
+                                        {t("Pass_Code")} <span>*</span>
+                                      </label>
+                                      <div className="CrxStationError">
+                                        <Field id="passcode" name="Passcode" component={InputShowHide} /> */}
+                                        {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
+                                        {/* <Field id="passcode" name="Passcode"  />
+                                        {errors.Passcode !== undefined &&
+                                          touched.Passcode === true ? (
+                                          <div className="errorStationStyle">
+                                            <i className="fas fa-exclamation-circle"></i>
+                                            {errors.Passcode}
+                                            {setDisplayStationError("errorBrdr")}
+                                          </div>
+                                        ) : null} */}
+                                      {/* </div>
+                                    </div>
+                                  </CRXColumn> */}
+
+
                             </div>
                           </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="latitude">{t("Latitude")}</label>
-                            <Field id="latitude" name="Location.latitude" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="longitude">{t("Longitude")}</label>
-                            <Field id="longitude" name="Location.longitude" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="crxStationDetailBtn stationDetailCol crxLocationBtn"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <label htmlFor="Location">{t("Location")}</label>
-                          <CRXButton
-                            className="groupInfoTabButtons secondary"
-                            onClick={() => setModal(true)}
-                            color="secondary"
-                          >
-                            {t("Map_location")}
-                          </CRXButton>
-                        </CRXColumn>
-                      </CRXRows>
-                    </div>
-                    <div className="stationColumnSet">
+                      </div>
+
+                    </CrxTabPanel>
+         
+
+                    <CrxTabPanel value={value} index={1}>
+                      <div className="centerSettingTab">
+                        <div className="itemIndicator">
+                            <label className="indicates-label"><b>*</b> Indicates required field</label>
+                        </div>
                       <CRXRows
-                        className="crxStationDetail"
-                        container="container"
-                        spacing={0}
-                      >
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
+                            className="crxStationDetail"
+                            container="container"
+                            spacing={0}
                         >
-                          <div className="CBX-input">
-                            <label htmlFor="street">{t("Street_Address")}</label>
-                            <Field id="street" name="StreetAddress" />
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className={
-                            "stationDetailCol " +
-                            ` ${errors.Phone && touched.Phone == true
-                              ? displayStationErrors
-                              : ""
-                            }`
-                          }
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="phone">{t("Phone_Number")}</label>
-                            <div className="CrxStationError">
-                              <Field id="phone" name="Phone" />
+                            <CRXColumn
+                              className={
+                                "stationDetailCol " +
+                                ` ${errors.SSId && touched.SSId == true
+                                  ? displayStationErrors
+                                  : ""
+                                }`
+                              }
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="CBX-input">
+                                <label htmlFor="SSId">
+                                  {t("SSID")} 
+                                </label>
+                                <div className="CrxStationError">
+                                  <Field id="SSId" name="SSId" />
+                                  {errors.SSId !== undefined &&
+                                    touched.SSId === true ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {errors.SSId}
+                                      {setDisplayStationError("errorBrdr")}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </CRXColumn>
+                                 <CRXColumn
+                              className={
+                                "stationDetailCol " +
+                                ` ${errors.Password && touched.Password == true
+                                  ? displayStationErrors
+                                  : ""
+                                }`
+                              }
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="CBX-input passwordStationField">
+                                <label htmlFor="password">
+                                  {t("Password")}
+                                </label>
+                                <div className="CrxStationError">
+                                  <Field id="password" name="Password" component={InputShowHide} />
+                                  {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
+                                  {/* <Field id="password" name="Password" />
+                                  {errors.Password !== undefined &&
+                                    touched.Password === true ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {errors.Password}
+                                      {setDisplayStationError("errorBrdr")}
+                                    </div>
+                                  ) : null} */}
+                                </div>
+                              </div>
+                            </CRXColumn>
+                            <CRXColumn
+                              className="stationDetailCol"
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("BlackBox_Retention_Policy")}<span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="blackBoxPolicyMultiSelect"
+                                    multiple={false}
+                                    value={blackBoxAutoCompleteValue}
+                                    options={filterData(
+                                      blackBoxAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      blackBoxAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+                                </div>
+                              </div>
+                            </CRXColumn>
+                        
+                            <CRXColumn
+                              className="stationDetailCol Uncategorized_Retention_Policy"
+                              container="container "
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("Data_Retention_Policy")}<span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="retentionPolicyMultiSelect"
+                                    className="getStationField"
+                                    multiple={false}
+                                    value={retentionAutoCompleteValue}
+                                    options={filterData(
+                                      retentionAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      retentionAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+
+                                  {errors.RetentionPolicy !== undefined ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {"Retention_Policy_is_required"}
+                                      {setDisplayStationError("errorBrdr")}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                            </CRXColumn>
+                            <CRXColumn
+                              className="stationDetailCol"
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("Data_Upload_Policy")} <span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="uploadPolicyMultiSelect"
+                                    className="getStationField"
+                                    multiple={false}
+                                    value={uploadAutoCompleteValue}
+                                    options={filterData(
+                                      uploadAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      uploadAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+                                  {errors.UploadPolicy !== undefined ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {t("Upload_Policy_is_required")}
+                                      {setDisplayStationError("errorBrdr")}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </CRXColumn>
                             
-                              {errors.Phone !== undefined &&
-                                touched.Phone === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {errors.Phone}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null}
-                            </div> 
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className={
-                            "stationDetailCol " +
-                            ` ${errors.Passcode && touched.Passcode == true
-                              ? displayStationErrors
-                              : ""
-                            }`
-                          }
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
+                            
+                  
+                     
+                          </CRXRows>
+                      </div>
+                    
+                    </CrxTabPanel>
+
+
+                    <CrxTabPanel value={value} index={2}>
+                      <div>
+                        {deviceTypeCollection.length > 0 &&
+                          UnitTemplatesRender({ setFieldValue, values })
+                        }
+                      </div>
+                    </CrxTabPanel>
+
+
+                  <div className="crxStationDetailBtn stationDetailButton">
+                    <div>
+                      <CRXButton
+                          type="submit"
+                          disabled={!(isValid && dirty)}
+                          variant="contained"
+                          className="groupInfoTabButtons"
                         >
-                          <div className="CBX-input">
-                            <label htmlFor="passcode">
-                              {t("Pass_Code")} <span>*</span>
-                            </label>
-                            <div className="CrxStationError">
-                              <Field id="passcode" name="Passcode" component={InputShowHide} />
-                              {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
-                              {/* <Field id="passcode" name="Passcode"  />
-                              {errors.Passcode !== undefined &&
-                                touched.Passcode === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {errors.Passcode}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null} */}
-                            </div>
-                          </div>
-                        </CRXColumn>
-                      </CRXRows>
+                          {t("Save")}
+                      </CRXButton>
+                      <CRXButton
+                          className="groupInfoTabButtons secondary"
+                          color="secondary"
+                          variant="outlined"
+                          onClick={navigateToStations}
+                        >
+                          {t("Cancel")}
+                      </CRXButton>
                     </div>
-                  </div>
-                </CrxTabPanel>
-                <CrxTabPanel value={value} index={1}>
-                  <div className="stationDetailOne gepStationSetting">
-                    <div className="stationColumnSet">
-                      <CRXRows
-                        className="crxStationDetail"
-                        container="container"
-                        spacing={0}
-                      >
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="colstation">
-                            <label htmlFor="name">{t("Data_Retention_Policy")}</label>
-                            <div className="CrxStationError">
-                              <CRXMultiSelectBoxLight
-                                id="retentionPolicyMultiSelect"
-                                className="getStationField"
-                                multiple={false}
-                                value={retentionAutoCompleteValue}
-                                options={filterData(
-                                  retentionAutoCompleteOptions
-                                )}
-                                onChange={(
-                                  e: React.SyntheticEvent,
-                                  option: AutoCompleteOptionType[],
-                                  reason: any
-                                ) =>
-                                  retentionAutoCompleteonChange(
-                                    e,
-                                    option,
-                                    setFieldValue,
-                                    reason
-                                  )
-                                }
-                                CheckBox={true}
-                                checkSign={false}
-                                required={true}
-                              />
-
-                              {errors.RetentionPolicy !== undefined ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {"Retention_Policy_is_required"}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="colstation">
-                            <label htmlFor="name">{t("Data_Upload_Policy")}</label>
-                            <div className="CrxStationError">
-                              <CRXMultiSelectBoxLight
-                                id="uploadPolicyMultiSelect"
-                                className="getStationField"
-                                multiple={false}
-                                value={uploadAutoCompleteValue}
-                                options={filterData(
-                                  uploadAutoCompleteOptions
-                                )}
-                                onChange={(
-                                  e: React.SyntheticEvent,
-                                  option: AutoCompleteOptionType[],
-                                  reason: any
-                                ) =>
-                                  uploadAutoCompleteonChange(
-                                    e,
-                                    option,
-                                    setFieldValue,
-                                    reason
-                                  )
-                                }
-                                CheckBox={true}
-                                checkSign={false}
-                                required={true}
-                              />
-                              {errors.UploadPolicy !== undefined ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {t("Upload_Policy_is_required")}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className="stationDetailCol"
-                          container="container"
-                          item="item"
-                          lg={12}
-                          xs={12}
-                          spacing={0}
-                        >
-                          <div className="colstation">
-                            <label htmlFor="name">{t("BlackBox_Retention_Policy")}</label>
-                            <div className="CrxStationError">
-                              <CRXMultiSelectBoxLight
-                                id="blackBoxPolicyMultiSelect"
-                                multiple={false}
-                                value={blackBoxAutoCompleteValue}
-                                options={filterData(
-                                  blackBoxAutoCompleteOptions
-                                )}
-                                onChange={(
-                                  e: React.SyntheticEvent,
-                                  option: AutoCompleteOptionType[],
-                                  reason: any
-                                ) =>
-                                  blackBoxAutoCompleteonChange(
-                                    e,
-                                    option,
-                                    setFieldValue,
-                                    reason
-                                  )
-                                }
-                                CheckBox={true}
-                                checkSign={false}
-                                required={true}
-                              />
-                            </div>
-                          </div>
-                        </CRXColumn>
-                      </CRXRows>
-                    </div>
-                    <div className="stationColumnSet">
-                      <CRXRows
-                        className="crxStationDetail"
-                        container="container"
-                        spacing={0}
-                      >
-                        <CRXColumn
-                          className={
-                            "stationDetailCol " +
-                            ` ${errors.SSId && touched.SSId == true
-                              ? displayStationErrors
-                              : ""
-                            }`
-                          }
-                          container="container"
-                          item="item"
-                          lg={10}
-                          xs={10}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="SSId">
-                              {t("SSID")}
-                            </label>
-                            <div className="CrxStationError">
-                              <Field id="SSId" name="SSId" />
-                              {errors.SSId !== undefined &&
-                                touched.SSId === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {errors.SSId}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        </CRXColumn>
-                        <CRXColumn
-                          className={
-                            "stationDetailCol " +
-                            ` ${errors.Password && touched.Password == true
-                              ? displayStationErrors
-                              : ""
-                            }`
-                          }
-                          container="container"
-                          item="item"
-                          lg={10}
-                          xs={10}
-                          spacing={0}
-                        >
-                          <div className="CBX-input">
-                            <label htmlFor="password">
-                              {t("Password")}
-                            </label>
-                            <div className="CrxStationError">
-                              <Field id="password" name="Password" component={InputShowHide} />
-                              {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
-                              {/* <Field id="password" name="Password" />
-                              {errors.Password !== undefined &&
-                                touched.Password === true ? (
-                                <div className="errorStationStyle">
-                                  <i className="fas fa-exclamation-circle"></i>
-                                  {errors.Password}
-                                  {setDisplayStationError("errorBrdr")}
-                                </div>
-                              ) : null} */}
-                            </div>
-                          </div>
-                        </CRXColumn>
-                      </CRXRows>
-                    </div>
-                  </div>
-                </CrxTabPanel>
-                <CrxTabPanel value={value} index={2}>
-                  <div>
-                    {deviceTypeCollection.length > 0 &&
-                      UnitTemplatesRender({ setFieldValue, values })
-                    }
-                  </div>
-                </CrxTabPanel>
-
-
-                  <div className="crxStationDetailBtn">
-                    <CRXButton
-                        type="submit"
-                        disabled={!(isValid && dirty)}
-                        variant="contained"
-                        className="groupInfoTabButtons"
-                      >
-                        {t("Save")}
+                    <div>
+                      <CRXButton
+                      onClick={() => redirectPage(values)}
+                      className="groupInfoTabButtons-Close secondary"
+                      color="secondary"
+                      variant="outlined"
+                    >
+                      {t("Close")}
                     </CRXButton>
-                    <CRXButton
-                        className="groupInfoTabButtons secondary"
-                        color="secondary"
-                        variant="outlined"
-                        onClick={navigateToStations}
-                      >
-                        {t("Cancel")}
-                    </CRXButton>
-                    <CRXButton
-                    onClick={() => redirectPage(values)}
-                    className="groupInfoTabButtons-Close secondary"
-                    color="secondary"
-                    variant="outlined"
-                  >
-                    {t("Close")}
-                  </CRXButton>
+                    </div>
                   </div>
                   
                 </div>
