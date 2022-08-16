@@ -154,7 +154,8 @@ const CreateTemplate = (props: any) => {
     if (data == "CameraSetup") {
       data = "Camera Setup";
     }
-    tabs1.push({ label: data, index: y })
+    let tData = t(data.toString())
+    tabs1.push({ label: tData, index: y })
   })
 
   React.useEffect(() => {

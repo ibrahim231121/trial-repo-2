@@ -167,18 +167,18 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             if (response && response.length > 0) {
                 
                 
-                var stations = response
+                var stationResp = response
                     .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
                     .map((x: StationResponse) => {
                         let StationR: Station = { value: (x.id), label: x.name }
                         return StationR;
                     })
-                stations.push({ value: -2, label: t('All') })
-                stations.push({ value: -1, label: t('No_Station') })
+                stationResp.push({ value: -2, label: t('All') })
+                stationResp.push({ value: -1, label: t('No_Station') })
                 
                 
-                setStations(stations);
-                LoadStationPermissionsByDb(stations);
+                setStations(stationResp);
+                LoadStationPermissionsByDb(stationResp);
             }
         })
         .catch((error: any) => {

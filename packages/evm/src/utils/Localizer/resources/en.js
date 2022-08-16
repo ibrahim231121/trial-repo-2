@@ -741,7 +741,7 @@ export const resources = {
         "Events":"Events",
         "Device_Diagnostic":"Device Diagnostic",
         "Update_History":"Update History",
-
+        "Unit Template":"Unit Template",
 
         // --------------------------------
       }

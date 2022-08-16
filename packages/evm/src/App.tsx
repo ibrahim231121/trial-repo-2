@@ -57,7 +57,7 @@ function App() {
     { value: "fr", displayText: "French (CA)" },
     { value: "pl", displayText: "Polish" },
     { value: "uk", displayText: "English (UK)" },
-    { value: "isr", displayText: "Hebrew" },
+    { value: "hr", displayText: "Hebrew" },
   ];
   let culture: string = useSelector(
     (state: RootState) => state.cultureReducer.value
@@ -153,8 +153,8 @@ function App() {
     } else if (i18n.language === "fr") {
       i18n.changeLanguage("fr");
       setRTL("ltr");
-    } else if (i18n.language === "isr") {
-      i18n.changeLanguage("isr");
+    } else if (i18n.language === "hr") {
+      i18n.changeLanguage("hr");
       setRTL("ltr");
     } else if (i18n.language === "pl") {
       i18n.changeLanguage("pl");

@@ -36,7 +36,7 @@ export const EVIDENCE_GET_CATEGORIES_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Ev
 
 export const SETUP_CONFIGURATION_SERVICE_URL = `${BASE_URL_SETUP_SERVICE}`;
 
-export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=500`
+export const USER_INFO_GET_URL = `${BASE_URL_USER_SERVICE}/Users/GetAllUsersInfo?Page=1&Size=200`
 
 //export const TEMPLATE_CONFIGURATION_DETAIL_GET_URL = `${BASE_URL_UNIT_SERVICE}/ConfigurationTemplates?Size=100&Page=1`;
 
@@ -53,7 +53,7 @@ export const CONTAINERMAPPING_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Containe
 
 export const SAVE_USER_GROUP_URL = `${BASE_URL_USER_SERVICE}/Groups`
 
-export const SAVE_CONTAINER_MAPPINGS_URL = `${BASE_URL_SETUP_SERVICE}/Categories`
+export const SAVE_CONTAINER_MAPPINGS_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=200&Page=1`
 
 export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/UpsertBulk`
 

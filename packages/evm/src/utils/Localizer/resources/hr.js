@@ -1,5 +1,5 @@
 export const resources = {
-    isr: {
+    hr: {
       translation: {
         // --------- Asset Lister ----------
         "Asset_Lister":"hr-Asset Lister",
@@ -39,8 +39,8 @@ export const resources = {
         "Video_Analysis":"hr-Video Analysis",
         "Audio_Analysis":"hrAudio Analysis",
         "Audio_Source":"Audio Source",
-        "Select_Audio_Source":"Select Audio Source",
-        "Submit_For_Analysis":"Submit For Analysis",
+        "Select_Audio_Source":"hr-Select Audio Source",
+        "Submit_For_Analysis":"hr-Submit For Analysis",
         "Add_to_asset_bucket":"hr-Add to asset bucket",
         "Edit_Category_and_Form":"hr-Edit Category and Form",
         "Categorize":"hr-Categorize",
@@ -713,7 +713,7 @@ export const resources = {
         "Events":"hr-Events",
         "Device_Diagnostic":"hr-Device Diagnostic",
         "Update_History":"hr-Update History",
-
+        "Unit Template":"hr-Unit Template",
 
         // --------------------------------
 

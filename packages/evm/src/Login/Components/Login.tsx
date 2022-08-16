@@ -5,11 +5,16 @@ import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
 import { utils } from "../../utils/settings";
 import { AUTHENTICATION_LOGIN_URL } from '../../utils/Api/url'
 import {useTranslation} from 'react-i18next';
+import { useSelector } from "react-redux";
+import { RootState } from "./../../Redux/rootReducer";
+
 export default function Login (){
   const {t} = useTranslation();
-  
+    let culture: string = useSelector(
+      (state: RootState) => state.cultureReducer.value
+    );
     const buttonClick = () => {
-        window.location.href = AUTHENTICATION_LOGIN_URL+`${utils()}`;
+        window.location.href = AUTHENTICATION_LOGIN_URL+`${utils(culture)}`;
       };
         return (
             <div className="login_box" >
