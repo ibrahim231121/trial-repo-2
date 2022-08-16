@@ -32,7 +32,14 @@
     left: -12px;
     padding-left: 15px;
     padding-right: 15px;
-
+    .player_controls_inner {
+      .dummy_audio_image {
+        width: 100%;
+        img{
+          width: 100%;
+        }
+      }
+    }
     .crx_video_graph {
       height: 80px;
     }
@@ -185,7 +192,7 @@
   }
 
   .playerViewFlexTimer {
-    height: 60px;
+    // height: 60px;
 
   }
 
@@ -961,6 +968,11 @@
     width: 100%;
     padding-left: 58px;
     padding-right: 27px;
+    .player_controls_inner {
+      .dummy_audio_image {
+        width: 100%;
+      }
+    }
   }
 
   #timelines {

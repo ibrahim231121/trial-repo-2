@@ -24,7 +24,7 @@ import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-
+import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg"
 
 var videoElements: any[] = [];
 
@@ -1730,6 +1730,10 @@ const VideoPlayerBase = (props: any) => {
                   <div className="V_timeline_end_time">
                     <div id="counter">{finalduration}</div>
                   </div>
+                  
+                </div>
+                <div className="dummy_audio_image">
+                    <img src={AduioImage} />
                 </div>
               </div>
               {/* <div className="crx_video_graph"></div> */}
