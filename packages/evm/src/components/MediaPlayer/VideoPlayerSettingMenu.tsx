@@ -103,10 +103,10 @@ useEffect(() => {
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
-        <MaterialMenuItem className='multiTimeLine_tab'>
+        {/* <MaterialMenuItem className='multiTimeLine_tab'>
           <i className="far fa-stream"></i>
           {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
-        </MaterialMenuItem>
+        </MaterialMenuItem> */}
 
         {!singleVideoLoad && isMultiViewEnable &&
           <>

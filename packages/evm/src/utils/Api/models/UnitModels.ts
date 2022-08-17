@@ -29,7 +29,8 @@ export interface Device {
     publicKey: PublicKey,
     version: DeviceCurrentSoftwareVersion,
     isPrimaryDevice: boolean,
-    history: History
+    history: History,
+    IsCaptureDevice?: boolean
 }
 
 export interface PublicKey {
@@ -81,7 +82,9 @@ export interface DeviceType {
     name?: string,
     description?: string,
     category?: string,
-    history?: History
+    history?: History,
+    isLogicalDevice?: boolean,
+    schema?: string
 }
 
 export interface ConfigurationField {

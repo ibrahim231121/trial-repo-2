@@ -44,7 +44,7 @@ import ApplicationPermissionContext from "../../../../ApplicationPermission/Appl
 type ConfigTemplate = {
   id: number;
   name: string;
-  type: string;
+  deviceTypeCategory: string;
   station: string;
   indicator: string;
   device: any;
@@ -54,13 +54,8 @@ type DeviceType = {
   id: string;
   name: string;
   description: string;
-  category: string;
+  deviceType: string;
   deviceTypeCategory: string;
-  history: {
-    createdOn: string;
-    updateOn: string | null;
-    rowVersion: string;
-  };
 };
 
 type Unit = {
@@ -94,8 +89,8 @@ const configTemplate = (name: string, device: any) => {
             id: device.recId,
             name: name,
             isedit: true,
-            deviceId: device.deviceTypeCategory,
-            deviceType: device.type,
+            deviceId: device.deviceId,
+            deviceType: device.deviceType,
           },
         }}
       />
@@ -111,8 +106,37 @@ const ConfigurationTemplates: React.FC = () => {
   
   React.useEffect(() => {
     dispatch(getConfigurationInfoAsync());
-    dispatch(getDeviceTypeInfoAsync());
-
+    //dispatch(getDeviceTypeInfoAsync());
+    setCreateTemplateDropdown([
+      {
+        "id": "1",
+        "name": "Incar",
+        "description": "This is Incar",
+        "deviceType": "Incar",
+        "deviceTypeCategory": "DVR"
+      },
+      {
+        "id": "6",
+        "name": "BC03",
+        "description": "This is BodyWorn Gen3",
+        "deviceType": "BC03",
+        "deviceTypeCategory": "BodyWorn"
+      },
+      {
+        "id": "7",
+        "name": "BC03 LTE",
+        "description": "This is BodyWorn Gen3 LTE",
+        "deviceType": "BC03LTE",
+        "deviceTypeCategory": "BodyWorn"
+      },
+      {
+        "id": "8",
+        "name": "BC04",
+        "description": "This is BodyWorn Gen4",
+        "deviceType": "BC04",
+        "deviceTypeCategory": "BodyWorn"
+      }
+    ]);
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable"); // will check this
@@ -120,9 +144,6 @@ const ConfigurationTemplates: React.FC = () => {
 
   const UnitConfigurationTemplates: any = useSelector(
     (state: RootState) => state.templateSlice.templateInfo
-  );
-  const DeviceTypes: any = useSelector(
-    (state: RootState) => state.templateSlice.deviceType
   );
 
   const [createTemplateDropdown, setCreateTemplateDropdown] = React.useState<
@@ -148,7 +169,7 @@ const ConfigurationTemplates: React.FC = () => {
           return {
             id: template.recId,
             name: template.name,
-            type: template.type,
+            deviceTypeCategory: template.deviceTypeCategory,
             indicator: template.indicator,
             device: template,
           };
@@ -158,14 +179,6 @@ const ConfigurationTemplates: React.FC = () => {
     setRows(configTemplateRows);
     setReformattedRows(configTemplateRows);
   };
-  const setTemplateDropdown = () => {
-    if (DeviceTypes && DeviceTypes.length > 0) {
-      setCreateTemplateDropdown(DeviceTypes);
-    }
-  };
-  React.useEffect(() => {
-    setTemplateDropdown();
-  }, [DeviceTypes]);
 
   React.useEffect(() => {
     setData();
@@ -337,8 +350,8 @@ const ConfigurationTemplates: React.FC = () => {
       let typelist: any = [];
       if (initialRows !== undefined) {
         if (initialRows.length > 0) {
-          initialRows.map((x: ConfigTemplate) => {
-            typelist.push(x.type);
+          initialRows.forEach((x: ConfigTemplate) => {
+            typelist.push(x.deviceTypeCategory);
           });
         }
       }
@@ -530,7 +543,7 @@ const ConfigurationTemplates: React.FC = () => {
     },
     {
       label: t("Type"),
-      id: "type",
+      id: "deviceTypeCategory",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
@@ -635,7 +648,7 @@ const ConfigurationTemplates: React.FC = () => {
                   {createTemplateDropdown.map((x, y) => {
                     return (
                       <MenuItem >
-                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.category } }}>
+                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.deviceType } }}>
                           <div style={{ backgroundColor: '#FFFFFF' }}>{t("Create")} {x.name}</div>
                         </Link>
                       </MenuItem>

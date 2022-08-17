@@ -22,7 +22,7 @@ import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } fro
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { ConfigurationTemplate, DefaultConfigurationTemplate } from "../../utils/Api/models/UnitModels";
+import { ConfigurationTemplate, DefaultConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
 
 const cookies = new Cookies();
@@ -85,7 +85,7 @@ const applyValidation = (arrayOfObj: any) => {
 const CreateTemplate = (props: any) => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
-  const [_FormSchema, setFormSchema] = React.useState({});
+  const [FormSchema, setFormSchema] = React.useState<any>();
   const [Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField] = React.useState<any>({});
   const [Initial_Values_obj, setInitial_Values_obj] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
@@ -117,48 +117,53 @@ const CreateTemplate = (props: any) => {
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
+  const [templateName] = React.useState<string>(historyState.deviceType);
+  const [tabss, settabss] = React.useState<any>();
+  const [tabss1, settabss1] = React.useState<any>();
 
-  let FormSchema: any = null;
-  let templateName: string = "";
-  const dispatch = useDispatch();
-  if (historyState.deviceType == "BC03") {
-    FormSchema = BC03;
-  }
-  else if (historyState.deviceType == "BC04") {
-    FormSchema = BC04;
-  }
-  else if (historyState.deviceType == "Incar") {
-    FormSchema = VRX;
-
-  }
-  else if (historyState.deviceType == "BC03LTE") {
-    FormSchema = BC03LTE;
-  }
-  else {
-    window.location.replace("/notfound")
-  }
-  React.useEffect(() => {
-    setFormSchema(FormSchema);
-  }, [FormSchema])
-  templateName = historyState.deviceType;
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
   let tabs1: { label: keyof typeof FormSchema, index: number }[] = [];
-
-  Object.keys(FormSchema).forEach((x, y) => {
-    const data = x as keyof typeof FormSchema
-    tabs.push({ label: data, index: y })
-  })
-  Object.keys(FormSchema).forEach((x, y) => {
-    let data = x as keyof typeof FormSchema
-    if (data == "CameraSetup") {
-      data = "Camera Setup";
+  const dispatch = useDispatch();
+  async function setintialschema() {
+    let dType  = historyState.deviceType.replace(/\s/g, '');
+    let deviceId = historyState.deviceId.toString();
+    if (dType == "Incar" || dType == "BC03" || dType == "BC03LTE" || dType == "BC04") {
+      var deviceTypeDataRow = await UnitsAndDevicesAgent.getDeviceType(deviceId).then((response:DeviceType) => response);
+      if(deviceTypeDataRow.schema){
+        setFormSchema(JSON.parse(deviceTypeDataRow.schema));
+      }
     }
-    let tData = t(data.toString())
-    tabs1.push({ label: tData, index: y })
-  })
+    else {
+      window.location.replace("/notfound")
+    }
+  }
 
   React.useEffect(() => {
+    setintialschema();
+  }, [])
+
+  React.useEffect(() => {
+    if(FormSchema){
+      Object.keys(FormSchema).forEach((x, y) => {
+        const data = x as keyof typeof FormSchema
+        tabs.push({ label: data, index: y })
+      })
+      Object.keys(FormSchema).forEach((x, y) => {
+        let data = x as keyof typeof FormSchema
+        if (data == "CameraSetup") {
+          data = "Camera Setup";
+        }
+        let tData = t(data.toString())
+        tabs1.push({ label: tData, index: y })
+      })
+      settabss(tabs);
+      settabss1(tabs1);
+      setintial();
+    }
+  }, [FormSchema])
+  
+  function setintial() {
     if (historyState.deviceType == "Incar") {
       dispatch(getRetentionPolicyInfoAsync());
       dispatch(getCategoriesAsync());
@@ -177,149 +182,143 @@ const CreateTemplate = (props: any) => {
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
     }
-  }, []);
+  }
+
   React.useEffect(() => {
-    if (historyState.deviceType == "Incar") {
+    if (retention && retention.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setRetentionDropdown();
     }
-  }, [retention]);
+  }, [retention,FormSchema]);
+
   React.useEffect(() => {
-    if (historyState.deviceType == "Incar") {
+    if (categories && categories.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setCategoriesDropdown();
     }
-  }, [categories]);
-
+  }, [categories,FormSchema]);
 
   React.useEffect(() => {
-    setStationDropDown();
-  }, [stations]);
+    if (stations && stations.length > 0 && FormSchema) {
+      setStationDropDown();
+    }
+  }, [stations,FormSchema]);
 
 
 
 
   const setRetentionDropdown = () => {
     var retentionOptions: any = [];
-    if (retention && retention.length > 0) {
-      retention.map((x: any, y: number) => {
-        retentionOptions.push({ value: x.id, label: x.name })
+    retention.map((x: any, y: number) => {
+      retentionOptions.push({ value: x.id, label: x.name })
 
-      })
-      FormSchema["Unit Settings"].map((x: any, y: number) => {
-        if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
-          x.options.push(...retentionOptions)
-        }
-      })
-      FormSchema["Primary Device"].map((x: any, y: number) => {
-        if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
-          x.options.push(...retentionOptions)
-        }
-      })
-      setFormSchema(FormSchema);
-    }
+    })
+    FormSchema["Unit Settings"].map((x: any, y: number) => {
+      if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
+        x.options.push(...retentionOptions)
+      }
+    })
+    FormSchema["Primary Device"].map((x: any, y: number) => {
+      if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
+        x.options.push(...retentionOptions)
+      }
+    })
+    setFormSchema(FormSchema);
   }
   const setCategoriesDropdown = () => {
     var categoriesOptions: any = [];
-    if (categories && categories.length > 0) {
-      categories.map((x: any, y: number) => {
-        categoriesOptions.push({ value: x.id, label: x.name })
-      })
-      //  categories.sort((a: any, b: any) => a.label.localeCompare(b.label));
-      FormSchema["Unit Settings"].map((x: any, y: number) => {
-        if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 2) {
-          x.options.push(...categoriesOptions)
-        }
-      })
-      setFormSchema(FormSchema);
-    }
+    categories.map((x: any, y: number) => {
+      categoriesOptions.push({ value: x.id, label: x.name })
+    })
+    //  categories.sort((a: any, b: any) => a.label.localeCompare(b.label));
+    FormSchema["Unit Settings"].map((x: any, y: number) => {
+      if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 2) {
+        x.options.push(...categoriesOptions)
+      }
+    })
+    setFormSchema(FormSchema);
   }
 
   const setStationDropDown = () => {
     var stationOptions: any = [];
-    if (stations && stations.length > 0) {
-      stations.map((x: any, y: number) => {
-        stationOptions.push({ value: x.id, label: x.name })
+    stations.map((x: any, y: number) => {
+      stationOptions.push({ value: x.id, label: x.name })
+    })
+    if (historyState.deviceType == "Incar") {
+      FormSchema["Template Information"].map((x: any, y: number) => {
+        if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
+          x.options.push(...stationOptions)
+        }
       })
-      if (historyState.deviceType == "Incar") {
-        FormSchema["Template Information"].map((x: any, y: number) => {
-          if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
-            x.options.push(...stationOptions)
-          }
-        })
-      }
-      else {
-        FormSchema["Unit Template"].map((x: any, y: number) => {
-          if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
-            x.options.push(...stationOptions)
-          }
-        })
-      }
-      setFormSchema(FormSchema);
-      setStationsLoaded(true);
     }
+    else {
+      FormSchema["Unit Template"].map((x: any, y: number) => {
+        if (x.key == "unittemplate/station/Select" && x.options.length == 0) {
+          x.options.push(...stationOptions)
+        }
+      })
+    }
+    setFormSchema(FormSchema);
+    setStationsLoaded(true);
   }
 
 
   React.useEffect(() => {
-    
-    let Initial_Values_RequiredField: Array<any> = [];
-    let Initial_Values: Array<any> = [];
+    if(dataFetched){
+      let Initial_Values_RequiredField: Array<any> = [];
+      let Initial_Values: Array<any> = [];
 
-    if (historyState.isedit) {
-
-    }
-    // ****************
-    // for loop for unittemplate
-    // ****************
-    // ****************
-    // ****************
+      // ****************
+      // for loop for unittemplate
+      // ****************
+      // ****************
+      // ****************
 
 
-    //#region Tab 1
+      //#region Tab 1
 
-    for (var x of tabs) {
-      var Property = x.label as keyof typeof FormSchema
-      let editT1: Array<any> = [];
-      let cameraFeildArrayCounterValue: number = 1;
-      var counter = 1;
-      for (let e0 of dataOfUnit) {
-        //configGroup/key/fieldType
-        let val: any;
-        if (e0.fieldType == "NumberBox")
-          val = parseInt(e0.value);
-        else if (e0.fieldType == "CheckBox")
-          val = e0.value.toLowerCase() === "true" ? true : false;
-        else if (e0.fieldType == "Multiselect")
-          val = (e0.value ?? "").split(',')
-        else
-          val = e0.value;
+      for (var x of tabss) {
+        var Property = x.label as keyof typeof FormSchema
+        let editT1: Array<any> = [];
+        let cameraFeildArrayCounterValue: number = 1;
+        var counter = 1;
+        for (let e0 of dataOfUnit) {
+          //configGroup/key/fieldType
+          let val: any;
+          if (e0.fieldType == "NumberBox")
+            val = parseInt(e0.value);
+          else if (e0.fieldType == "CheckBox")
+            val = e0.value.toLowerCase() === "true" ? true : false;
+          else if (e0.fieldType == "Multiselect")
+            val = (e0.value ?? "").split(',')
+          else
+            val = e0.value;
 
-        if (historyState.isclone) {
-          if (e0.key == "templateName") {
-            val = templateNameHistory;
-          }
-        }
-
-        var keySplitted = e0.key.split('_');
-        if (keySplitted.length > 1) {
-          var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
-          var findingKey = e0.configGroup + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.fieldType;
-          var parentKey = e0.configGroup + "/" + keySplitted[2] + "/" + "FieldArray";
-
-          var feildObj = FormSchema[e0.configGroup]
-            .find((x: any) => x.key == parentKey)
-          ["feilds"]
-          [0]
-            .find((y: any) => y.key.replace('1', '') == findingKey && (y.type == "radio" ? y.value == val : true));
-
-          var valueToPush = { ...feildObj, key: key, value: val };
-          var valueIsExist = editT1.find((x: any) => x.key == parentKey);
-
-          if (keySplitted[1] > cameraFeildArrayCounterValue) {
-            cameraFeildArrayCounterValue = keySplitted[1];
-            if (valueIsExist !== undefined) {
-              counter++
+          if (historyState.isclone) {
+            if (e0.key == "templateName") {
+              val = templateNameHistory;
             }
           }
+
+          var keySplitted = e0.key.split('_');
+          if (keySplitted.length > 1) {
+            var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
+            var findingKey = e0.configGroup + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.fieldType;
+            var parentKey = e0.configGroup + "/" + keySplitted[2] + "/" + "FieldArray";
+
+            var feildObj = FormSchema[e0.configGroup]
+              .find((x: any) => x.key == parentKey)
+            ["feilds"]
+            [0]
+              .find((y: any) => y.key.replace('1', '') == findingKey && (y.type == "radio" ? y.value == val : true));
+
+            var valueToPush = { ...feildObj, key: key, value: val };
+            var valueIsExist = editT1.find((x: any) => x.key == parentKey);
+
+            if (keySplitted[1] > cameraFeildArrayCounterValue) {
+              cameraFeildArrayCounterValue = keySplitted[1];
+              if (valueIsExist !== undefined) {
+                counter++
+              }
+            }
 
 
 
@@ -334,144 +333,144 @@ const CreateTemplate = (props: any) => {
           }
 
 
-          if (valueIsExist !== undefined) {
-            var feildLength = valueIsExist.value.feilds.length;
-            if (feildLength < counter) {
-              valueIsExist.value.feilds.push([valueToPush]);
-            }
-            else {
-              if (feildObj.type == "radio") {
-                var feildObjArr = FormSchema[e0.configGroup]
-                  .find((x: any) => x.key == parentKey)
-                ["feilds"]
-                [0]
-                  .filter((y: any) => y.key.replace('1', '') == findingKey);
-
-                feildObjArr.map((a: any) => {
-                  var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
-                  arrayToPushIn.push({ ...a, key: key, value: a.value });
-                })
-
+            if (valueIsExist !== undefined) {
+              var feildLength = valueIsExist.value.feilds.length;
+              if (feildLength < counter) {
+                valueIsExist.value.feilds.push([valueToPush]);
               }
               else {
-                var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
-                arrayToPushIn.push(valueToPush);
+                if (feildObj.type == "radio") {
+                  var feildObjArr = FormSchema[e0.configGroup]
+                    .find((x: any) => x.key == parentKey)
+                  ["feilds"]
+                  [0]
+                    .filter((y: any) => y.key.replace('1', '') == findingKey);
+
+                  feildObjArr.map((a: any) => {
+                    var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
+                    arrayToPushIn.push({ ...a, key: key, value: a.value });
+                  })
+
+                }
+                else {
+                  var arrayToPushIn = valueIsExist.value.feilds[counter - 1];
+                  arrayToPushIn.push(valueToPush);
+                }
+              }
+            }
+            else {
+              editT1.push({
+                key: parentKey,
+                value: { value: "", feilds: [[valueToPush]] }
+              })
+            }
+          }
+          editT1.push({
+            key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
+            value: val
+          })
+        }
+        let tab1: any;
+        if (historyState.isedit || historyState.isclone) {
+          tab1 = editT1;
+        }
+        else {
+          tab1 = FormSchema[Property];
+          FormSchema[Property].map((x: any) => {
+            if (x.type == "fieldarray") {
+              x.feilds.map((y: any) => {
+                y.map((z: any) => {
+                  tab1.push({
+                    key: z.key,
+                    value: z.value,
+                  })
+                })
+
+              })
+            }
+          })
+        }
+        for (const field of tab1) {
+          var addItem: boolean = true;
+          var radios = tab1.filter((y: any) => y.key == field.key && y.type == "radio");
+          if (radios?.length > 0) {
+            var radio = radios?.find((y: any) => y.value == field.value && y.selected == true);
+            if (radio == undefined) {
+              addItem = false;
+            }
+          }
+
+          if (field.key == "unitSettings/categories/Multiselect") {
+            Initial_Values.push({
+              key: field.key,
+              value: field.value,
+            });
+          }
+          else if (field.hasOwnProperty("key") && addItem) {
+            Initial_Values.push({
+              key: field.key,
+              value: field.value,
+              feilds: field.value?.feilds !== undefined ? field.value?.feilds : field.feilds,
+            });
+          }
+
+
+          let key_value_pair = Initial_Values.reduce(
+            (formObj, item) => ((formObj[item.key] = item.feilds !== undefined ? { value: item.value, feilds: item.feilds } : item.value), formObj),
+            {}
+          );
+
+          setInitial_Values_obj(key_value_pair);
+        }
+
+
+        for (const field of FormSchema[Property]) {
+
+          if (field.hasOwnProperty("validation") || field.type == "fieldarray" && field.depends == undefined) {
+            if (field.hasOwnProperty("validation")) {
+              Initial_Values_RequiredField.push({
+                key: field.key,
+                type: field.type,
+                validation: field.validation
+              });
+            }
+            else if (field.type == "fieldarray") {
+              if (!historyState.isedit && !historyState.isclone) {
+                field.feilds.map((x: any) =>
+                  x.map((y: any) => {
+                    if (y.validation) {
+                      Initial_Values_RequiredField.push({
+                        key: y.key,
+                        type: y.type,
+                        validation: y.validation
+                      })
+                    }
+                  }
+                  )
+                )
               }
             }
           }
-          else {
-            editT1.push({
-              key: parentKey,
-              value: { value: "", feilds: [[valueToPush]] }
-            })
-          }
         }
-        editT1.push({
-          key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
-          value: val
-        })
-      }
-      let tab1: any;
-      if (historyState.isedit || historyState.isclone) {
-        tab1 = editT1;
-      }
-      else {
-        tab1 = FormSchema[Property];
-        FormSchema[Property].map((x: any) => {
-          if (x.type == "fieldarray") {
-            x.feilds.map((y: any) => {
-              y.map((z: any) => {
-                tab1.push({
-                  key: z.key,
-                  value: z.value,
-                })
-              })
-
-            })
-          }
-        })
-      }
-      for (const field of tab1) {
-        var addItem: boolean = true;
-        var radios = tab1.filter((y: any) => y.key == field.key && y.type == "radio");
-        if (radios?.length > 0) {
-          var radio = radios?.find((y: any) => y.value == field.value && y.selected == true);
-          if (radio == undefined) {
-            addItem = false;
-          }
-        }
-
-        if (field.key == "unitSettings/categories/Multiselect") {
-          Initial_Values.push({
-            key: field.key,
-            value: field.value,
-          });
-        }
-        else if (field.hasOwnProperty("key") && addItem) {
-          Initial_Values.push({
-            key: field.key,
-            value: field.value,
-            feilds: field.value?.feilds !== undefined ? field.value?.feilds : field.feilds,
-          });
-        }
-
-
-        let key_value_pair = Initial_Values.reduce(
-          (formObj, item) => ((formObj[item.key] = item.feilds !== undefined ? { value: item.value, feilds: item.feilds } : item.value), formObj),
+        let key_value_pairs = Initial_Values_RequiredField.reduce(
+          (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
           {}
         );
+        setInitial_Values_obj_RequiredField(key_value_pairs);
 
-        setInitial_Values_obj(key_value_pair);
+        const arrayOfObj = Object.entries(key_value_pairs).map((e) => ({ key: e[0], value: e[1] }));
+        var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
+        var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
+          (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+          {}
+        );
+        setformSchema(formSchemaTemp);
+
+        setCameraFeildArrayCounter(cameraFeildArrayCounterValue);
       }
-
-
-      for (const field of FormSchema[Property]) {
-
-        if (field.hasOwnProperty("validation") || field.type == "fieldarray" && field.depends == undefined) {
-          if (field.hasOwnProperty("validation")) {
-            Initial_Values_RequiredField.push({
-              key: field.key,
-              type: field.type,
-              validation: field.validation
-            });
-          }
-          else if (field.type == "fieldarray") {
-            if (!historyState.isedit && !historyState.isclone) {
-              field.feilds.map((x: any) =>
-                x.map((y: any) => {
-                  if (y.validation) {
-                    Initial_Values_RequiredField.push({
-                      key: y.key,
-                      type: y.type,
-                      validation: y.validation
-                    })
-                  }
-                }
-                )
-              )
-            }
-          }
-        }
-      }
-      let key_value_pairs = Initial_Values_RequiredField.reduce(
-        (formObj, item) => ((formObj[item.key] = { type: item.type, validation: item.validation }), formObj),
-        {}
-      );
-      setInitial_Values_obj_RequiredField(key_value_pairs);
-
-      const arrayOfObj = Object.entries(key_value_pairs).map((e) => ({ key: e[0], value: e[1] }));
-      var initialValuesArrayRequiredField: any[] = applyValidation(arrayOfObj)
-      var formSchemaTemp = initialValuesArrayRequiredField.reduce(                  // Validations Object
-        (obj, item: any) => ({ ...obj, [item.key]: item.value }),
-        {}
-      );
-      setformSchema(formSchemaTemp);
-
-      setCameraFeildArrayCounter(cameraFeildArrayCounterValue);
     }
 
   }, [dataFetched]);
-
 
   const loadData = async (templateName:string) => {
     const url = `/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${templateName}`;
@@ -490,9 +489,6 @@ const CreateTemplate = (props: any) => {
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
   }
-
-
-
 
   const handleChangeCloseButton = (values: boolean) => {
     if (values == false) {
@@ -638,158 +634,160 @@ const CreateTemplate = (props: any) => {
   }
 
   return (
-    <div className="CrxCreateTemplate CrxCreateTemplateUi ">
-      <CRXToaster ref={targetRef} />
-      <CRXAlert
-        ref={alertRef}
-        message={responseError}
-        className='crxAlertUserEditForm'
-        alertType={alertType}
-        type={errorType}
-        open={alert}
-        setShowSucess={() => null}
-      />
-      <CRXConfirmDialog
-        setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-        onConfirm={onConfirmm}
-        title={t("Please_Confirm")}
-        isOpen={open}
-        modelOpen={open}
-        primary={primary}
-        secondary={secondary}
-      >
-        {
-          <div className="crxUplockContent">
-            {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
-            <strong>{t("BC03_Template")}</strong>. {t("If_you_close_the_form")} 
-            {t("any_changes_you_ve_made_will_not_be_saved.")} 
-            {t("You_will_not_be_able_to_undo_this_action.")}
-            <p>
-            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-            </p>
-          </div>
-        }
-      </CRXConfirmDialog>
+    <>
+      {tabss1 && tabss && <div className="CrxCreateTemplate CrxCreateTemplateUi ">
+        <CRXToaster ref={targetRef} />
+        <CRXAlert
+          ref={alertRef}
+          message={responseError}
+          className='crxAlertUserEditForm'
+          alertType={alertType}
+          type={errorType}
+          open={alert}
+          setShowSucess={() => null}
+        />
+        <CRXConfirmDialog
+          setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+          onConfirm={onConfirmm}
+          title={t("Please_Confirm")}
+          isOpen={open}
+          modelOpen={open}
+          primary={primary}
+          secondary={secondary}
+        >
+          {
+            <div className="crxUplockContent">
+              {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
+              <strong>{t("BC03_Template")}</strong>. {t("If_you_close_the_form")} 
+              {t("any_changes_you_ve_made_will_not_be_saved.")} 
+              {t("You_will_not_be_able_to_undo_this_action.")}
+              <p>
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+              </p>
+            </div>
+          }
+        </CRXConfirmDialog>
 
-      <Menu
-        align="start"
-        viewScroll="initial"
-        direction="left"
-        position="auto"
-        arrow
-        menuButton={
-          <MenuButton>
-            <i className="fas fa-ellipsis-h"></i>
-          </MenuButton>
-        }
-      >
-        <MenuItem onClick={cloneTemplate}>
-        <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
+        <Menu
+          align="start"
+          viewScroll="initial"
+          direction="left"
+          position="auto"
+          arrow
+          menuButton={
+            <MenuButton>
+              <i className="fas fa-ellipsis-h"></i>
+            </MenuButton>
+          }
+        >
+          <MenuItem onClick={cloneTemplate}>
+          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
+              <div className="crx-meu-content groupingMenu crx-spac">
+                <div className="crx-menu-icon">
+                  <i className="far fa-copy"></i>
+                </div>
+                <div className="crx-menu-list">{t("Clone_template")}</div>
+              </div>
+            </Link>
+          </MenuItem>
+          <MenuItem>
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
-                <i className="far fa-copy"></i>
+                <i className="far fa-trash-alt"></i>
               </div>
-              <div className="crx-menu-list">{t("Clone_template")}</div>
+              <div className="crx-menu-list">{t("Delete_template")}</div>
             </div>
-          </Link>
-        </MenuItem>
-        <MenuItem>
-          <div className="crx-meu-content groupingMenu crx-spac">
-            <div className="crx-menu-icon">
-              <i className="far fa-trash-alt"></i>
-            </div>
-            <div className="crx-menu-list">{t("Delete_template")}</div>
+          </MenuItem>
+        </Menu>
+        <div className="tabCreateTemplate">
+          <CRXTabs value={value} onChange={handleChange} tabitems={tabss1} />
+          <div className="tctContent">
+            <Formik
+              enableReinitialize={true}
+              initialValues={Initial_Values_obj}
+              onSubmit={(values, { setSubmitting, resetForm, setStatus }) => { }}
+              validationSchema={Yup.object().shape(formSchema)}>
+              {({
+                values,
+                handleChange,
+                handleSubmit,
+                setValues,
+                isSubmitting,
+                dirty,
+                isValid,
+                resetForm,
+                touched,
+                setFieldValue,
+                errors
+              }) => (
+                <Form>
+                  {
+                    <>
+
+                      {tabss.map((x: any) => {
+                        return <CrxTabPanel value={value} index={x.index}>
+                          <p className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</p>
+                          <div>
+
+                          </div>
+                          {FormSchema[x.label].map(
+                            (formObj: any, key: number) => {
+                              <div>
+                                <p>{formObj.labelGroupRecording}</p>
+                              </div>;
+
+                              return (formObj.type !== undefined ? (
+                                <div key={key}>
+                                  {stationsLoaded && <CreateTempelateCase
+                                    formObj={formObj}
+                                    values={values}
+                                    setValues={setValues}
+                                    FormSchema={FormSchema}
+                                    index={0}
+                                    handleChange={handleChange}
+                                    setFieldValue={setFieldValue}
+                                    cameraFeildArrayCounter={cameraFeildArrayCounter}
+                                    setCameraFeildArrayCounter={setCameraFeildArrayCounter}
+                                    applyValidation={applyValidation}
+                                    Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
+                                    setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
+                                    isValid={isValid} setformSchema={setformSchema}
+                                    touched={touched} errors={errors} />}
+                                </div>) : (<></>));
+
+                            }
+                          )}
+                        </CrxTabPanel>
+                      })}
+                    </>
+                  }
+                  <div className="tctButton">
+                    <div className="tctLeft">
+                      <CRXButton
+                        className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
+                        disabled={!isValid || !dirty}
+                        type="submit"
+                        onClick={() => handleSave(values, resetForm)}
+                      >
+                        {t("Save")}
+                      </CRXButton>
+                      <CRXButton onClick={() => history.goBack()}>
+                      {t("Cancel")}
+                      </CRXButton>
+                    </div>
+                    <div className="tctRight">
+                      <CRXButton onClick={() => handleChangeCloseButton(!dirty)}>
+                      {t("Close")}
+                      </CRXButton>
+                    </div>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </div>
-        </MenuItem>
-      </Menu>
-      <div className="tabCreateTemplate">
-        <CRXTabs value={value} onChange={handleChange} tabitems={tabs1} />
-        <div className="tctContent">
-          <Formik
-            enableReinitialize={true}
-            initialValues={Initial_Values_obj}
-            onSubmit={(values, { setSubmitting, resetForm, setStatus }) => { }}
-            validationSchema={Yup.object().shape(formSchema)}>
-            {({
-              values,
-              handleChange,
-              handleSubmit,
-              setValues,
-              isSubmitting,
-              dirty,
-              isValid,
-              resetForm,
-              touched,
-              setFieldValue,
-              errors
-            }) => (
-              <Form>
-                {
-                  <>
-
-                    {tabs.map(x => {
-                      return <CrxTabPanel value={value} index={x.index}>
-                        <p className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</p>
-                        <div>
-
-                        </div>
-                        {FormSchema[x.label].map(
-                          (formObj: any, key: number) => {
-                            <div>
-                              <p>{formObj.labelGroupRecording}</p>
-                            </div>;
-
-                            return (formObj.type !== undefined ? (
-                              <div key={key}>
-                                {stationsLoaded && <CreateTempelateCase
-                                  formObj={formObj}
-                                  values={values}
-                                  setValues={setValues}
-                                  FormSchema={FormSchema}
-                                  index={0}
-                                  handleChange={handleChange}
-                                  setFieldValue={setFieldValue}
-                                  cameraFeildArrayCounter={cameraFeildArrayCounter}
-                                  setCameraFeildArrayCounter={setCameraFeildArrayCounter}
-                                  applyValidation={applyValidation}
-                                  Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
-                                  setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
-                                  isValid={isValid} setformSchema={setformSchema}
-                                  touched={touched} errors={errors} />}
-                              </div>) : (<></>));
-
-                          }
-                        )}
-                      </CrxTabPanel>
-                    })}
-                  </>
-                }
-                <div className="tctButton">
-                  <div className="tctLeft">
-                    <CRXButton
-                      className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
-                      disabled={!isValid || !dirty}
-                      type="submit"
-                      onClick={() => handleSave(values, resetForm)}
-                    >
-                      {t("Save")}
-                    </CRXButton>
-                    <CRXButton onClick={() => history.goBack()}>
-                    {t("Cancel")}
-                    </CRXButton>
-                  </div>
-                  <div className="tctRight">
-                    <CRXButton onClick={() => handleChangeCloseButton(!dirty)}>
-                    {t("Close")}
-                    </CRXButton>
-                  </div>
-                </div>
-              </Form>
-            )}
-          </Formik>
         </div>
-      </div>
-    </div >
+      </div >}
+    </>
   );
 
 

@@ -1900,12 +1900,12 @@ const VideoPlayerBase = (props: any) => {
                       <MaterialMenuItem className="layoutHeader MenuItemLayout_1">
                         Layouts
                       </MaterialMenuItem>
-                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Single</span>
                         <div className="screenViewsSingle  ViewDiv"></div>
                       </MaterialMenuItem>}
-                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Side by Side </span>
                         <div className="screenViewsSideBySide ViewDiv">
@@ -1913,7 +1913,7 @@ const VideoPlayerBase = (props: any) => {
                           <p></p>
                         </div>
                       </MaterialMenuItem>}
-                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout"> Videos on Side </span>
                         <div className="screenViewsVideosOnSide ViewDiv">
@@ -1924,7 +1924,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MaterialMenuItem>}
-                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 4</span>
                         <div className="screenViewsGrid ViewDiv">
@@ -1938,7 +1938,7 @@ const VideoPlayerBase = (props: any) => {
                           </p>
                         </div>
                       </MaterialMenuItem>}
-                      {multiTimelineEnabled && <MaterialMenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
+                      {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
                         {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
                         <span className="textContentLayout">Grid up to 6</span>
                         <div className="screenViewsGrid6 ViewDiv">
