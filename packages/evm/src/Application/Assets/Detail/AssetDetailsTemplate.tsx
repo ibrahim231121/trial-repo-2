@@ -21,7 +21,7 @@ import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { useHistory } from "react-router";
 import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
-import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
+import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
 import http from "../../../http-common";
 import { AxiosError } from "axios";
@@ -173,6 +173,9 @@ const AssetDetailsTemplate = (props: any) => {
   );
 
   const [value, setValue] = React.useState(0);
+  const [fileData, setFileData] = React.useState<any[]>([]);
+  const [childFileData, setChildFileData] = React.useState<any[]>([]);
+
   const [evidence, setEvidence] = React.useState<EvidenceReformated>(evidenceObj);
   //const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
@@ -258,8 +261,10 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
-
-    if (getAssetData !== undefined) {
+   
+  if(fileData.length == getAssetData?.assets.master.files.length)
+  { // temp condition
+    if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
       var categories: string[] = [];
       getAssetData.categories.forEach((x: any) =>
         x.formData.forEach((y: any) =>
@@ -314,7 +319,46 @@ const AssetDetailsTemplate = (props: any) => {
       const data = extract(getAssetData);
       setVideoPlayerData(data);
     }
-  }, [getAssetData]);
+  }
+  else{
+    getMasterAssetFile(getAssetData?.assets.master.files)
+    getChildAssetFile(getAssetData?.assets.children)
+  }
+  }, [getAssetData, fileData,childFileData]);
+
+  function getMasterAssetFile(dt : any)
+  {
+    dt?.map((template: any, i: number) => {
+      FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+      setFileData([...fileData, {
+        filename: template.name,
+        fileurl: template.url,
+        fileduration: template.duration,
+        downloadUri: response
+      }])
+      });
+    })
+  }
+  function getChildAssetFile(dt : any)
+  {
+  
+    dt?.map((ut: any, i: number) => {
+      ut?.files.map((template: any, j: number )=>
+      {
+        FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+          setChildFileData([...childFileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          }])
+          });
+
+      })
+     
+    })
+  }
+
   const searchText = (
     rowsParam: AuditTrail[],
     headCells: HeadCellProps[],
@@ -442,7 +486,7 @@ const AssetDetailsTemplate = (props: any) => {
     const masterduration = row.assets.master.duration;
     const buffering = row.assets.master.buffering;
     const camera = row.assets.master.camera;
-    const file = extractfile(row.assets.master.files);
+    const file = fileData;
     const recording = row.assets.master.recording;
     const bookmarks = row.assets.master.bookMarks ?? [];
     const notes = row.assets.master.notes ?? [];
@@ -454,7 +498,7 @@ const AssetDetailsTemplate = (props: any) => {
     rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
       return {
         id: template.id,
-        files: extractfile(template.files),
+        files: childFileData,
         assetduration: template.duration,
         assetbuffering: template.buffering,
         recording: template.recording,
@@ -470,18 +514,24 @@ const AssetDetailsTemplate = (props: any) => {
     }
     return rowdetail
   }
-  function extractfile(file: any) {
-    let Filedata: assetdata[] = [];
-    Filedata = file.map((template: any, i: number) => {
-      return {
-        filename: template.name,
-        fileurl: template.url,
-        fileduration: template.duration,
-
-      }
-    })
-    return Filedata;
-  }
+  // function  extractfile(file: any) {
+  //   let Filedata: any[] = [];
+     
+  //   var a = file.map((template: any, i: number) => {
+  //     return FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+      
+  //       Filedata.push({
+  //         filename: template.name,
+  //         fileurl: template.url,
+  //         fileduration: template.duration,
+  //         downloadUri: response
+  //       })
+  //       return response
+  //     });
+  //   })
+  //   var b = a[0].then((response:any) => response)
+  //   return b;
+  // }
 
   const tabs = [
     { label: t("Information"), index: 0 },

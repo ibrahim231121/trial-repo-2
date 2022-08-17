@@ -62,7 +62,7 @@ export const DATA_RETENTION_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Polici
 export const DATA_UPLOAD_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataUpload`
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
-export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
+export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project/Job`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
