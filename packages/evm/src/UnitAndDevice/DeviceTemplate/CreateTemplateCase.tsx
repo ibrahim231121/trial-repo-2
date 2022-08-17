@@ -145,7 +145,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
           ?.feilds[index]
           .find((feild: any) => feild.key == key);
 
-        if (x.options.includes("all")) {
+        if (x.options === undefined) {
           select.options.filter((y: any) => y.hidden == true).map((y: any) => {
             y.hidden = false;
           })

@@ -527,37 +527,47 @@
             "key": "CameraSetup/deviceType_1_Camera/Select",
             "type": "select",
             "label": "Device Type",
-            "value": "IP Camera",
+            "value": "USB Camera",
             "class": "DeviceTypeIncar",
             "options": [
               {
-                "value": "IP Camera",
-                "label": "IP Camera"
+                "value": "USB Camera",
+                "label": "USB Camera"
+              },
+              {
+                "value": "RTSP Video Stream (previously IP)",
+                "label": "RTSP Video Stream (previously IP)"
+              },
+              {
+                "value": "Veretos Analog",
+                "label": "Veretos Analog"
               },
               {
                 "value": "Video FC(1-8)",
                 "label": "Video FC(1-8)"
               },
               {
-                "value": "Discovered devices",
-                "label": "Discovered devices"
+                "value": "NF21 Series",
+                "label": "NF21 Series"
+              },
+              {
+                "value": "NF22 Stream 1",
+                "label": "NF22 Stream 1"
+              },
+              {
+                "value": "NF22 Stream 2",
+                "label": "NF22 Stream 2"
+              },
+              {
+                "value": "ZeroDark (Zoom Camera)",
+                "label": "ZeroDark (Zoom Camera)"
               }
             ],
             "optionAppendOnChange":[
               {
-                "value": "IP Camera",
+                "value": "USB Camera1",
                 "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
                 "options": ["1920 x 1080 30fps", "1280 x 720 30fps"]
-              },
-              {
-                "value": "Video FC(1-8)",
-                "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
-                "options": ["all"]
-              },
-              {
-                "value": "Discovered devices",
-                "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
-                "options": ["all"]
               }
             ]
           },
@@ -794,24 +804,245 @@
             ]
           },
           {
+            "key": "CameraSetup/resolution_1_Camera/Select",
+            "type": "select",
+            "label": "Resolution",
+            "value": "",
+            "options": [
+              {"value":"320 X 240 @15FPS, 24 bpf",
+              "label":"320 X 240 @15FPS, 24 bpf"},
+
+              {"value":"320 x 240 @30FPS, 24 bpf",
+              "label":"320 x 240 @30FPS, 24 bpf"},
+
+              {"value":"640 x 480 @15FPS, 24bpf",
+              "label":"640 x 480 @15FPS, 24bpf"},
+
+              {"value":"640 x 480 @20FPS, 24bpf",
+              "label":"640 x 480 @20FPS, 24bpf"},
+
+              {"value":"640 x 480 @30FPS, 24bpf -USB,Veretos",
+              "label":"640 x 480 @30FPS, 24bpf -USB,Veretos"},
+
+              {"value":"720 x 480 @15FPS, 24bpf",
+              "label":"720 x 480 @15FPS, 24bpf"},
+
+              {"value":"720 x 480 @20FPS, 24bpf",
+              "label":"720 x 480 @20FPS, 24bpf"},
+
+              {"value":"720 x 480 @30FPS, 24bpf -USB",
+              "label":"720 x 480 @30FPS, 24bpf -USB"},
+
+              {"value":"768 x 432 @30FPS, 24bpf - NF21",
+              "label":"768 x 432 @30FPS, 24bpf - NF21"},
+
+              {"value":"848 x 480 @15FPS, 24bpf",
+              "label":"848 x 480 @15FPS, 24bpf"},
+
+              {"value":"848 x 480 @20FPS, 24bpf",
+              "label":"848 x 480 @20FPS, 24bpf"},
+
+              {"value":"848 x 480 @30FPS, 24bpf",
+              "label":"848 x 480 @30FPS, 24bpf"},
+
+              {"value":"1024 x 768 @15FPS, 24bpf",
+              "label":"1024 x 768 @15FPS, 24bpf"},
+
+              {"value":"1024 x 768 @20FPS, 24bpf",
+              "label":"1024 x 768 @20FPS, 24bpf"},
+
+              {"value":"1024 x 768 @30FPS, 24bpf",
+              "label":"1024 x 768 @30FPS, 24bpf"},
+
+              {"value":"1280 x 720 @15FPS, 24bpf",
+              "label":"1280 x 720 @15FPS, 24bpf"},
+
+              {"value":"1280 x 720 @20FPS, 24bpf",
+              "label":"1280 x 720 @20FPS, 24bpf"},
+
+              {"value":"1280 x 720 @30FPS, 24bpf - NF21, NF22",
+              "label":"1280 x 720 @30FPS, 24bpf - NF21, NF22"},
+
+              {"value":"1920 x 1080 @15FPS, 24bpf",
+              "label":"1920 x 1080 @15FPS, 24bpf"},
+
+              {"value":"1920 x 1080 @20FPS, 24bpf",
+              "label":"1920 x 1080 @20FPS, 24bpf"},
+
+              {"value":"1920 x 1080 @30FPS, 24bpf - NF21, NF22",
+              "label":"1920 x 1080 @30FPS, 24bpf - NF21, NF22"}
+            ]
+          },
+          {
+            "key": "CameraSetup/powerPin_1_Camera/TextBox",
+            "value": "",
+            "type": "multiselect",
+            "label": "Power Pin",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["A4"]
+              }
+            ],
+            "options": [
+              {
+                "value": "A4",
+                "label": "A4"
+              },
+              {
+                "value": "B4",
+                "label": "B4"
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/index_1_Camera/TextBox",
+            "value": "",
+            "type": "number",
+            "label": "Index",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["Veretos Analog"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/userId_1_Camera/TextBox",
+            "value": "",
+            "type": "number",
+            "label": "User Id",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/password_1_Camera/TextBox",
+            "value": "",
+            "type": "text",
+            "label": "Password",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/url_1_Camera/TextBox",
+            "value": "",
+            "type": "text",
+            "label": "Url",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/streamPort_1_Camera/TextBox",
+            "value": "",
+            "type": "number",
+            "label": "Stream Port",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["RTSP Video Stream (previously IP)"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/bitrate_1_Camera/TextBox",
+            "value": "",
+            "type": "select",
+            "label": "Bit Rate",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["RTSP Video Stream (previously IP)"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/audioEnable_1_Camera/TextBox",
+            "value": "",
+            "type": "checkbox",
+            "label": "Audio Enable",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["USB Camera", "Veretos Analog", "Video FC(1-8)", "NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+              }
+            ]
+          },
+          {
             "key": "CameraSetup/audioDeviceType_1_Camera/Select",
             "type": "select",
             "label": "Audio Device Type",
             "hinttext":true,
             "hintvalue":"Allows to select one or several Audio devices for the primary device",
-            "value": "",
+            "value": "Line",
             "options": [
+              {
+                "value": "Line",
+                "label": "Line"
+              },
+              {
+                "value": "Microphone",
+                "label": "Microphone"
+              },
+              {
+                "value": "OBS-Audio",
+                "label": "OBS-Audio"
+              },
               {
                 "value": "Veretos Analog",
                 "label": "Veretos Analog"
               },
               {
-                "value": "Discovered devices",
-                "label": "Discovered devices"
+                "value": "NF21A",
+                "label": "NF21A"
+              },
+              {
+                "value": "RTSP Audio Stream",
+                "label": "RTSP Audio Stream"
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/channelNumber_1_Camera/TextBox",
+            "value": "1",
+            "type": "number",
+            "label": "Channel Number",
+            "depends": [
+              {
+                "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
+                "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/volume_1_Camera/TextBox",
+            "value": "0",
+            "type": "number",
+            "label": "Volume"
+          },
+          {
+            "key": "CameraSetup/audioPowerPin_1_Camera/TextBox",
+            "value": "",
+            "type": "text",
+            "label": "Power Pin",
+            "depends": [
+              {
+                "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
+                "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
               }
             ]
           }
-          
         ]
       ]
     }
