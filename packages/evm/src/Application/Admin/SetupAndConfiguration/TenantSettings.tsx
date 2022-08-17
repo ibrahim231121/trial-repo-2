@@ -61,7 +61,7 @@ const TenantSettings: React.FC = () => {
   React.useEffect(() => {
     window.onRecvData = new CustomEvent("onUploadLogoUpdate");
     window.addEventListener("onUploadLogoUpdate", UploadLogoUpdate);
-  }, []);
+  }, [mapAllFields]);
   const UploadLogoUpdate = (data: any) => {
     if (
       data.data.percent == 100 &&
@@ -423,18 +423,18 @@ const TenantSettings: React.FC = () => {
     TenantName: Yup.string().required("Tenant Name is required"),
     EmailLinkExpiration: Yup.number().min(1).max(2016),
     AlertEmails: Yup.string().email("Invalid Email"),
-    fileDetails: Yup.mixed()
-      .required("A file is required")
-      .test(
-        "fileDetails",
-        "File too large",
-        (value) => value[0] && value[0].size <= FILE_SIZE
-      )
-      .test(
-        "fileDetails",
-        "Unsupported Format",
-        (value) => value[0] && SUPPORTED_FORMATS.includes(value[0].type)
-      ),
+    // fileDetails: Yup.mixed()
+    //   .required("A file is required")
+    //   .test(
+    //     "fileDetails",
+    //     "File too large",
+    //     (value) => value[0] && value[0].size <= FILE_SIZE
+    //   )
+    //   .test(
+    //     "fileDetails",
+    //     "Unsupported Format",
+    //     (value) => value[0] && SUPPORTED_FORMATS.includes(value[0].type)
+    //   ),
     CustomFromEmail: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string()
