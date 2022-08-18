@@ -12,6 +12,8 @@ import {  Menu, MenuButton , MenuItem } from "@szhsin/react-menu";
 import EvidenceActionMenu from "./EvidenceActionMenu";
 import TextSearch from  "../../GlobalComponents/DataTableSearch/TextSearch";
 import { getEvidenceinfosync } from "../../Redux/AssetConfiguration";
+import "./ConfigEvidence.scss";
+
 import {
     SearchObject,
     ValueString,
@@ -207,7 +209,7 @@ const Evidence = (props: any) => {
     };
 
     return (
-        <div className="switchLeftComponents">
+        <div className="switchLeftComponents CRXEvidencePage">
 
         
           {
