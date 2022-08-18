@@ -145,12 +145,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
-    showToastMsg({
-      message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
-      variant: "success",
-      duration: 7000,
+    // showToastMsg({
+    //   message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
+    //   variant: "success",
+    //   duration: 7000,
 
-    })
+    // })
   };
   const [openAssignUser, setOpenAssignUser] = React.useState(false);
   const [openManageRetention, setOpenManageRetention] = React.useState(false);

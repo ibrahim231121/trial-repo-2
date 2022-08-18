@@ -171,13 +171,20 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     })
     setCheckedAll(false)
     let local_assetBucket: any = localStorage.getItem("assetBucket");
+    let isBucket: any = localStorage.getItem("isBucket") !== null ? localStorage.getItem("isBucket"): "False";
 
-    if (local_assetBucket !== null && JSON.parse(local_assetBucket).length != 0 && prevCount == 0 && assetBucketData.length > prevCount) {
+    if (local_assetBucket !== null && local_assetBucket.length != 0 && prevCount == 0 && assetBucketData.length > prevCount && isBucket == "True") {
+      localStorage.setItem("isBucket", "False");
+      showToastMsg()
     }
     else 
-    if (assetBucketData.length > prevCount) {
+    if (assetBucketData.length > prevCount && isBucket == "True") {
+      localStorage.setItem("isBucket", "False");
+      showToastMsg()
+
     }
-    else if (assetBucketData.length < prevCount) {
+    else 
+    if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
 
       toasterRef.current.showToaster({
@@ -197,9 +204,27 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       };
       dispatch(addNotificationMessages(notificationMessage));
 
-
     }
   }, [assetBucketData]);
+
+  const showToastMsg = () => {
+    toasterRef.current.showToaster({
+      message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
+      variant: "success",
+      duration: 7000,
+      clearButtton: true,
+    });
+
+    let notificationMessage: NotificationMessage = {
+      title: t("Asset_Lister"),
+      message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
+      type: "success",
+      date: moment(moment().toDate())
+        .local()
+        .format("YYYY / MM / DD HH:mm:ss"),
+    };
+    dispatch(addNotificationMessages(notificationMessage));
+  };
 
   useEffect(() => {
     dataArrayBuilder();
