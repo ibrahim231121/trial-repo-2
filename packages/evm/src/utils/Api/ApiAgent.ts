@@ -2,13 +2,47 @@ import axios, { AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import { AddOwner, Asset, AssetSharingModel, AssetViewReason, Bookmark, Evidence, ExtendRetention,File, Note, TimelinesSync,EvdenceCategoryAssignment, SubmitAnalysisModel } from './models/EvidenceModels';
-import { JOBCOORDINATOR_SERVICE_URL,EVIDENCE_SERVICE_URL,BASE_URL_USER_SERVICE, SETUP_CONFIGURATION_SERVICE_URL ,USER_INFO_GET_URL,GROUP_USER_LIST,USER,GROUP_GET_URL,GROUP_GET_BY_ID_URL,GROUP_USER_COUNT_GET_URL,SAVE_USER_GROUP_URL,BASE_URL_UNIT_SERVICES } from './url';
+import { AddOwner, 
+    Asset, 
+    AssetSharingModel, 
+    AssetViewReason, 
+    Bookmark, 
+    Evidence, 
+    ExtendRetention,
+    File, 
+    Note, 
+    TimelinesSync,
+    EvdenceCategoryAssignment, 
+    SubmitAnalysisModel } from './models/EvidenceModels';
+import { 
+    JOBCOORDINATOR_SERVICE_URL,
+    EVIDENCE_SERVICE_URL,
+    BASE_URL_USER_SERVICE, 
+    SETUP_CONFIGURATION_SERVICE_URL ,
+    USER_INFO_GET_URL,
+    GROUP_USER_LIST,
+    USER,GROUP_GET_URL,
+    GROUP_GET_BY_ID_URL,
+    GROUP_USER_COUNT_GET_URL,
+    SAVE_USER_GROUP_URL,
+    BASE_URL_UNIT_SERVICES, 
+    FILE_SERVICE_URL } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
 import {UsersInfo,UserGroups,GroupUserCount, UserList, User, Module, GroupList} from './models/UsersAndIdentitiesModel'
-import { ConfigurationTemplate, ConfigurationTemplateLogs, DefaultConfigurationTemplate, DefaultUnitTemplate, DeviceConfigurationTemplate, DeviceType, GetPrimaryDeviceInfo, Unit, UnitInfo, UnitTemp, UnitTemplateConfigurationInfo } from './models/UnitModels';
+import { 
+    ConfigurationTemplate, 
+    ConfigurationTemplateLogs, 
+    DefaultConfigurationTemplate, 
+    DefaultUnitTemplate, 
+    DeviceConfigurationTemplate, 
+    DeviceType, 
+    GetPrimaryDeviceInfo, 
+    Unit, 
+    UnitInfo, 
+    UnitTemp, 
+    UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { Station } from './models/StationModels';
 const cookies = new Cookies();
 
@@ -77,6 +111,10 @@ export const EvidenceAgent = {
 
 export const AuthenticationAgent = {
     getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'')
+}
+
+export const FileAgent = {
+    getDownloadFileUrl: (fileId:number) => requests.get<string>(FILE_SERVICE_URL,'/Files/download/' + fileId)
 }
 
 export const UsersAndIdentitiesServiceAgent = {

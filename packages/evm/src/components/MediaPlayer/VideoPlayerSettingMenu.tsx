@@ -60,8 +60,9 @@ useEffect(() => {
 
   return (
     <>
-      <MaterialMenu
-        className={`ViewScreenMenu SettingOverlayMenu  ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""}`}
+   
+    <MaterialMenu
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad ? "MultiVideoMenu" : "SettingOverlayMenu"}`}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}
@@ -103,11 +104,6 @@ useEffect(() => {
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
-        {/* <MaterialMenuItem className='multiTimeLine_tab'>
-          <i className="far fa-stream"></i>
-          {!singleVideoLoad && <FormControlLabel control={<Switch checked={multiTimelineEnabled} onChange={(event) => EnableMultipleTimeline(event)} />} label="Multi Timelines" />}
-        </MaterialMenuItem> */}
-
         {!singleVideoLoad && isMultiViewEnable &&
           <>
             <MaterialMenuItem className="settingOverlay">
@@ -124,8 +120,10 @@ useEffect(() => {
 
       </MaterialMenu>
 
+ 
+
       <MaterialMenu
-        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} `}
+        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad ? "MultiBackMenu" : ""}`}
         anchorEl={overlayMenuEnabled}
         keepMounted
         open={Boolean(overlayMenuEnabled)}

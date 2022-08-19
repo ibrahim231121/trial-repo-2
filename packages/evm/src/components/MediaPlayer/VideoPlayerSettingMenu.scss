@@ -120,13 +120,152 @@
             z-index: 2;
         }
 
+  
 
     }
 
-    .settingOverlayPos {
+
+
+    .MultiVideoMenu {
+        position: absolute !important;
 
         .MuiMenu-paper {
-            top: 699px !important;
+            background-color: rgba(64, 64, 65, 0.97);
+            color: #D1D2D4;
+            height: 150px;
+            width: 228px;
+            overflow: hidden;
+            border-radius: 0px;
+            position: relative;
+            top: 600px !important;
+            left: 702px !important;
+
+            &::after {
+                position: absolute;
+                content: "";
+                height: 100%;
+                width: 1px;
+                background: #4C4C4D;
+                top: 0;
+                left: 38px;
+            }
+
+            li {
+                height: 33px;
+                position: relative;
+                z-index: 0;
+                display: flex;
+                align-items: center;
+
+                &:hover {
+                    background-color: #231F20;
+                }
+
+                &:active {
+
+                    background-color: #6E6E6E;
+                    height: 33px;
+                }
+
+
+                &:first-child {
+                    height: 42px;
+                }
+                &:last-child {
+                    height: 42px;
+                }
+
+                &:nth-last-child(2) {
+                    height: 33px;
+
+
+
+                    &::After {
+                        position: absolute;
+                        content: "";
+                        width: 189px;
+                        height: 1px;
+                        background-color: #69696A;
+                        bottom: 32px;
+                        right: 0;
+                        z-index: 3;
+                    }
+                    
+
+                    &::Before {
+                        position: absolute;
+                        content: "";
+                        width: 189px;
+                        height: 1px;
+                        background-color: #69696A;
+                        top: 32px;
+                        right: 0;
+                        z-index: 3;
+                    }
+
+              
+
+                    .toggleBack {
+                        position: absolute;
+                        background: rgba(64, 64, 65, 0.97);
+                        height: 40px;
+                        width: 66px;
+                        right: 0;
+                        top: 1px;
+                        border-left: 1px solid #4C4C4D;
+                    }
+
+
+                }
+
+                .MuiTouchRipple-root {
+                    display: none;
+                }
+
+                &:last-child {
+                    height: 42px !important;
+                }
+            }
+        }
+
+        .MuiFormControlLabel-label {
+            font-size: 14px;
+            font-family: var(--base-font-family);
+            font-weight: 400;
+            margin-left: 49px;
+        }
+
+        .iconsLeft {
+            font-size: 14px;
+            position: absolute;
+            left: 13px;
+        }
+
+        .iconsRight {
+            font-size: 14px;
+            color: #D1D2D4;
+            margin-left: 39px;
+            margin-top: 2px;
+        }
+
+        .overlaySwitcher {
+            z-index: 2;
+        }
+
+
+    }
+
+    .settingOverlayPos + .enabledMultiLine  {
+
+        .MuiMenu-paper {
+            top: 632px !important;
+        }
+
+    }
+    .settingOverlayPos + .disenabledMultiLine   {
+
+        .MuiMenu-paper {
+            top: 599px !important;
         }
 
 
@@ -143,7 +282,7 @@
             height: 216px;
             overflow: hidden;
             border-radius: 0px;
-            top: 600px !important;
+            top: 532px !important;
             left: 702px !important;
 
             .CRXCheckBox {
@@ -172,7 +311,8 @@
                     height: 42px;
 
                     .MuiButton-label {
-                        margin-left: 61px;
+                        margin-left: 45px;
+                        padding-top: 4px;
 
                         &:hover {
                             outline: none;
@@ -181,6 +321,8 @@
                     }
 
                     .CRXButton {
+                        border: none;
+                        color: #D1D2D4 ;
                         &:hover {
                             outline: none;
                             border: none;
@@ -275,7 +417,7 @@
 
     .settingMultiOverlay {
         .MuiPaper-root {
-            top: 704px !important;
+            top: 635px !important;
             left: 703px !important;
         }
     }
@@ -375,4 +517,15 @@
         }
 
     }
+    .MultiBackMenu {
+        .MuiMenu-paper  {
+            top: 533px !important;
+        }
+    }
+    .enabledMultiLine  +     .MultiBackMenu {
+        .MuiMenu-paper  {
+            top: 568px !important;
+        }
+    }  
+    
 }

@@ -26,6 +26,7 @@ const assetBucketSlice = createSlice({
         state.assetBucketData.push(...find)
       }
       //work for local storage.
+      localStorage.setItem("isBucket", "True");
       localStorage.setItem("assetBucket", JSON.stringify(state.assetBucketData));
     },
     remove: (state: any, action: PayloadAction<any>) => {

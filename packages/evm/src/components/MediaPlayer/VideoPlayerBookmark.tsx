@@ -202,7 +202,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     }
 
     const AddSnapshot = async (fileresponse: any) => {
-        debugger;
+        
         const AssetFilebody : EvidenceFile = {
             id:0,
             filesId: 0,

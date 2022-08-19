@@ -1,0 +1,64 @@
+.overlayMenu {
+    position: absolute;
+    top: 25px;
+    left: 24px;
+    width: 847px;
+    height: 61px;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    padding: 0 17px;
+    ul {
+        padding: 0 0;
+        margin: 0 0;
+        list-style: none;
+        display: flex;
+        align-items: center;
+        .OverlayLogoImage {
+            margin-right: 33px;
+            margin-top: 5px;
+            img {
+                width: 98px;
+                height: 29px;
+                object-fit: contain;
+            }
+    
+        }
+        .SensorList {
+            margin-right: 41px;
+      
+        }
+        .LocationList {
+            margin-right: 17px;
+          
+            .LAT {
+                display: inline-block;
+                margin-right: 17px;
+            }
+            .LON {
+                display: inline-block;
+                margin-right: 17px;
+            }
+         
+        }
+        .SpeedList {
+            margin-right: 33px;
+      
+
+        }
+        .TimestampList {
+
+            .date {
+                margin-right: 15px;
+            }
+        }
+        li {
+            color: white;
+            font-size: 14px;
+            &:not(:first-child) {
+                margin-top: 1px;
+            }
+        }
+    }
+}

@@ -1,20 +1,31 @@
-import getacVideoSolution from '../../Assets/Images/getacVideoSolution.png';
-
-
+import "./VideoPlayerOverlayMenu.scss";
 const VideoPlayerOverlayMenu = (props:any)  => {
 
   const {overlayEnabled, overlayCheckedItems} = props;
   
-  
+  let SensorList = overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors");
+  let LocationList = overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)");
+  let SpeedList = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed");
+  let TimestampList = overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp");
+
   return (
     <>
-    {overlayEnabled && <div className="overlayVideo"  style={{height:50, background: "#7a7a7a"}}>
+    {overlayEnabled && <div className="overlayMenu">
       <ul>
-        <li><img src={getacVideoSolution} style={{height:30}}></img></li>
-        {overlayCheckedItems.some((x: any) => x == "All" || x == "Sensors") && <li>Sensors</li>}
-        {overlayCheckedItems.some((x: any) => x == "All" || x == "GPS") && <li>GPS</li>}
-        {overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp") && <li>Timestamp</li>}
-        {overlayCheckedItems.some((x: any) => x == "All" || x == "Speed") && <li>Speed</li>}
+        <li className="OverlayLogoImage"><img src={process.env.PUBLIC_URL + "./assets/images/Getac_logo_overlays_white.png"} /></li>
+        { SensorList && <li className="SensorList">SENSORS: L, B</li>}
+        {  LocationList &&
+           <li className="LocationList">
+              <span className="LAT">LAT: 44.8478</span>
+              <span className="LON">LON: -95.3885</span>
+              <span className="ALT">ALT: 259.7</span>
+          </li>}
+        { SpeedList && <li className="SpeedList">80 MPH</li>}
+        { TimestampList &&
+         <li className="TimestampList">
+           <span className="date">02-28-2022</span>
+           <span className="time">01:27:01 PM</span>
+         </li>}
       </ul>
     </div>}
     </>
