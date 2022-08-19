@@ -77,6 +77,7 @@ type DurationFinderModel = {
   setTimelineSyncHistoryCounter: any
   setBufferingArray: any
   setupdateVideoSelection: any
+  isDetailPageAccess: boolean
 }
 type TimelineGeneratorModel = {
   data: any
@@ -91,6 +92,7 @@ type TimelineGeneratorModel = {
   setTimelineSyncHistoryCounter: any
   setBufferingArray: any
   setupdateVideoSelection: any
+  isDetailPageAccess: boolean
 }
 
 
@@ -148,8 +150,8 @@ function padTo2Digits(num: number) {
 const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
-async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
-  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection } = TimelineGeneratorModel
+async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel,) {
+  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
@@ -178,7 +180,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
           notes: temptimelinedetail.notes,
           startdiff: startdiff,
           video_duration_in_second: video_duration_in_second,
-          src: data[x].files[0].downloadUri,
+          src: temptimelinedetail.src,
           id: temptimelinedetail.id,
           dataId: temptimelinedetail.dataId,
           unitId: temptimelinedetail.unitId,
@@ -203,8 +205,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         notes: data[x].notes,
         startdiff: startdiff,
         video_duration_in_second: video_duration_in_second,
-     //   src: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        src: data[x].files[0].downloadUri,//"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        src: isDetailPageAccess ? data[x].files[0].downloadUri : `${protocol}commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
         id: "Video-" + x,
         dataId: data[x].id,
         unitId: data[x].unitId,
@@ -243,7 +244,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   setupdateVideoSelection(false)
 }
 async function Durationfinder(DurationFinderModel: DurationFinderModel) {
-  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection } = DurationFinderModel
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess } = DurationFinderModel
 
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -280,7 +281,8 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     timelineSyncHistoryCounter,
     setTimelineSyncHistoryCounter,
     setBufferingArray,
-    setupdateVideoSelection
+    setupdateVideoSelection,
+    isDetailPageAccess : isDetailPageAccess
   });
 }
 
@@ -473,30 +475,32 @@ const VideoPlayerBase = (props: any) => {
 
 
   const keydownListener = (event: any) => {
-    event.preventDefault();
     const { code, shiftKey } = event;
-    if (code == "Space") {handlePlayPause()} //Space bar
-    if (shiftKey && code == "BracketRight") {onClickFwRw(modeFw + 2, 1)} //shift + ]
-    if (shiftKey && code == "BracketLeft") {onClickFwRw(modeRw + 2, 2)} //shift + [
+    if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+    if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+    if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
     if (shiftKey && code == "Period") {
+      event.preventDefault(); 
       modeSet(mode < 0 ? 2 : (mode + 2))
     } //Shift + .
-    if (shiftKey && code == "Comma") {modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
-    if (code == "Slash") {modeSet(0)} // /
-    if (code == "ArrowRight") {handleforward()} //Shift + ->
-    if (code == "ArrowLeft") {handleReverse()} //Shift + <-
+    if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+    if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+    if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
+    if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
     if (code == "ArrowDown") {
-      setVolume(volume > 0 ? volume - 10 : volume);
-      setVolumeHandle(volume > 0 ? volume - 10 : volume);
+      event.preventDefault(); 
+      setVolume(volume - 1);
+      setVolumeHandle(volume - 1);
     } //down arrows
     if (code == "ArrowUp") {
-      setVolume(volume < 100 ? volume + 10 : volume);
-      setVolumeHandle(volume < 100 ? volume + 10 : volume);
+      event.preventDefault(); 
+      setVolume(volume + 1);
+      setVolumeHandle(volume + 1);
     } //up arrows
-    if (code == "KeyN") {handleaction("note")} // N
-    if (code == "KeyB") {handleaction("bookmark")} // B
-    if (code == "KeyF") {viewScreenEnter()} // B
-    if (code == "KeyL") {setLayoutMenuEnabled(true);} // B
+    if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
+    if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
+    if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
+    if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
     
 
   };
@@ -574,7 +578,8 @@ const VideoPlayerBase = (props: any) => {
         timelineSyncHistoryCounter,
         setTimelineSyncHistoryCounter,
         setBufferingArray,
-        setupdateVideoSelection
+        setupdateVideoSelection,
+        isDetailPageAccess: props.history !== undefined ? false : true
       });
       setLoading(true)
     }
