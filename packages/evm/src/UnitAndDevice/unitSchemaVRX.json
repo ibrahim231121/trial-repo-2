@@ -569,6 +569,13 @@
                 "selectKey": "CameraSetup/videoProfile_rowId_Camera/Select",
                 "options": ["1920 x 1080 30fps", "1280 x 720 30fps"]
               }
+            ],
+            "valueSetOnChange":[
+              {
+                "value": "NF21 Series",
+                "valueToSetKey": "CameraSetup/audioDeviceType_rowId_Camera/Select",
+                "setValue": "NF21A" 
+              }
             ]
           },
           {
@@ -1011,6 +1018,12 @@
                 "value": "RTSP Audio Stream",
                 "label": "RTSP Audio Stream"
               }
+            ],
+            "depends": [
+              {
+                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "value": [true]
+              }
             ]
           },
           {
@@ -1022,6 +1035,10 @@
               {
                 "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
                 "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
+              },
+              {
+                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "value": [true]
               }
             ]
           },
@@ -1029,7 +1046,13 @@
             "key": "CameraSetup/volume_1_Camera/TextBox",
             "value": "0",
             "type": "number",
-            "label": "Volume"
+            "label": "Volume",
+            "depends": [
+              {
+                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "value": [true]
+              }
+            ]
           },
           {
             "key": "CameraSetup/audioPowerPin_1_Camera/TextBox",
@@ -1040,6 +1063,10 @@
               {
                 "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
                 "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
+              },
+              {
+                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "value": [true]
               }
             ]
           }

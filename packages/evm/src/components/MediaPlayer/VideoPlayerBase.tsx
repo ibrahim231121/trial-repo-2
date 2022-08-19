@@ -486,12 +486,12 @@ const VideoPlayerBase = (props: any) => {
     if (code == "ArrowRight") {handleforward()} //Shift + ->
     if (code == "ArrowLeft") {handleReverse()} //Shift + <-
     if (code == "ArrowDown") {
-      setVolume(volume - 1);
-      setVolumeHandle(volume - 1);
+      setVolume(volume > 0 ? volume - 10 : volume);
+      setVolumeHandle(volume > 0 ? volume - 10 : volume);
     } //down arrows
     if (code == "ArrowUp") {
-      setVolume(volume + 1);
-      setVolumeHandle(volume + 1);
+      setVolume(volume < 100 ? volume + 10 : volume);
+      setVolumeHandle(volume < 100 ? volume + 10 : volume);
     } //up arrows
     if (code == "KeyN") {handleaction("note")} // N
     if (code == "KeyB") {handleaction("bookmark")} // B
@@ -1447,7 +1447,6 @@ const VideoPlayerBase = (props: any) => {
       })
 
       let obj: TimelinesSync = {
-        evidenceId: EvidenceId,
         assetId: x.dataId,
         timeOffset: x.timeOffset
       }

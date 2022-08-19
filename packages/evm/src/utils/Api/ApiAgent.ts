@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
@@ -44,6 +44,7 @@ import {
     UnitTemp, 
     UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { Station } from './models/StationModels';
+import { Paginated } from './models/CommonModels';
 const cookies = new Cookies();
 
 let config = {
@@ -58,15 +59,27 @@ let config = {
 
 axios.interceptors.response.use(async response => {
     try {
-        
         return response;
     } catch (ex) {
         return await Promise.reject(ex);
     }
-}, async error => {
+}, async (error : AxiosError) => {
+    console.log(error.request.responseURL + ", error code: " + error.response?.status);
     return Promise.reject(error);
 })
-const responseBody = <T>(response: AxiosResponse<T>) => response.data;
+
+const responseBody = <T>(response: AxiosResponse<T>) => {
+    // let totalCount = response.headers["x-total-count"];
+    // if(totalCount !== undefined)
+    // {
+    //     let paginatedResponse = {
+    //         data: response.data,
+    //         totalCount: parseInt(totalCount)
+    //     }
+    //     return paginatedResponse;
+    // }
+    return response.data;
+};
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 
 const requests = {
@@ -97,7 +110,7 @@ export const EvidenceAgent = {
     addNote: (url: string, body: Note) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
     updateNote: (url: string, body: Note) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body),
     deleteNote: (url: string) => requests.delete<void>(EVIDENCE_SERVICE_URL, url),
-    timelineSync: (url: string, body: TimelinesSync[]) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body),
+    timelineSync: (url: string, body: TimelinesSync[]) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body),
     addAssetViewReason: (url: string, body: AssetViewReason) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),
     addUsersToMultipleAsset: (url: string, body: AddOwner[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),
     addUsersToAsset: (url: string, body: number[]) => requests.post<number>(EVIDENCE_SERVICE_URL, url, body),

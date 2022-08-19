@@ -100,7 +100,6 @@ export interface Role {
 
 export interface TimelinesSync {
     assetId: number
-    evidenceId: number
     timeOffset: number
 }
 export interface AssetViewReason {

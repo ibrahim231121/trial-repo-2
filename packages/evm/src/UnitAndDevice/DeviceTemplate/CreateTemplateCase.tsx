@@ -10,7 +10,7 @@ var re = /[\/]/;
 
 const CustomizedSelectForFormik = (props: any) => {
 
-  const { children, form, field } = props;
+  const { children, form, field, onChange } = props;
   const { name, value } = field;
   const { setFieldValue } = form;
 
@@ -19,9 +19,7 @@ const CustomizedSelectForFormik = (props: any) => {
       <Select
         {...field}
         value={value ?? ""}
-        onChange={e => {
-          setFieldValue(name, e.target.value);
-        }}
+        onChange={(e:any) => { onChange(e)}}
       >
         {children}
       </Select>
@@ -44,14 +42,22 @@ const CustomizedMultiSelectForFormik = (props: any) => {
         onChange={e => {
           setFieldValue(name, e.target.value);
         }}
-        renderValue={(selected: any) => {
-          return selected.join(', ');
+        renderValue={(selected: any[]) => {
+
+          var addAllSelected = selected.includes("Add All");
+          if(addAllSelected)
+          {
+            return "Add All";
+          }
+          return selected.join(', ')
+          // return selected.join(', ');
           // var valuesAppend = children.filter((x: any) => x.key != "Add All").map((x: any) => {
           //   if (selected.some((y: any) => x.props.value == y) || selected.includes("Add All")) {
           //     return x.key;
           //   }
           // });
           // var definedValues = valuesAppend.filter((y: any) => y !== undefined);
+          // debugger;
           // if (definedValues.length < valuesAppend.length) {
           //   return definedValues.join(', ');
           // }
@@ -133,37 +139,57 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
 
 
 
-const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, handleChange: any, FormSchema: any, index: any) => {
-  if (formObj.optionAppendOnChange !== undefined) {
-    values[formObj.key] = e;
-    var parentSplittedKey = formObj.key.split('_');
-    formObj.optionAppendOnChange?.filter((x: any) => x.value == e)?.map((x: any) => {
-      var splittedKey = x.selectKey.split('_');
+const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any, index: any) => {
+  let parentSplittedKey = formObj.key.split('_');
+
+  let validationOnCurrentValue = formObj.optionAppendOnChange?.filter((x: any) => x.value == e);
+  validationOnCurrentValue?.map((x: any) => {
+    let splittedKey = x.selectKey.split('_');
+    if (splittedKey.length > 0) {
+      let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+      let select = values["CameraSetup/Camera/FieldArray"]
+        ?.feilds[index]
+        .find((feild: any) => feild.key == key);
+
+      if (x.options.length > 0) {
+        select.options.map((y: any) => {
+          if (!x.options.includes(y.value)) {
+            y.hidden = true;
+          }
+        })
+      }
+    }
+  });
+  if(validationOnCurrentValue.length === 0){
+    let x = formObj.optionAppendOnChange?.[0];
+    if(x){
+      let splittedKey = x.selectKey.split('_');
       if (splittedKey.length > 0) {
-        var key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
-        var select = values["CameraSetup/Camera/FieldArray"]
+        let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+        let select = values["CameraSetup/Camera/FieldArray"]
           ?.feilds[index]
           .find((feild: any) => feild.key == key);
 
-        if (x.options === undefined) {
-          select.options.filter((y: any) => y.hidden == true).map((y: any) => {
-            y.hidden = false;
-          })
-        }
-        else if (x.options.length > 0) {
-          select.options.map((y: any) => {
-            if (!x.options.includes(y.value)) {
-              y.hidden = true;
-            }
-          })
-        }
+        select?.options.filter((y: any) => y.hidden == true).map((y: any) => {
+          y.hidden = false;
+        })
       }
-    });
-    setValues(values);
+    }
   }
+  setValues(values);
 }
 
 
+const valueSetOnChange = (e: any, formObj: any, setFieldValue: any) => {
+  let parentSplittedKey = formObj.key.split('_');
+  formObj.valueSetOnChange?.filter((x: any) => x.value == e)?.map((x: any) => {
+    let splittedKey = x.valueToSetKey.split('_');
+    if (splittedKey.length > 0) {
+      let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
+      setFieldValue(key, x.setValue);
+    }
+  });
+}
 
 
 
@@ -211,7 +237,7 @@ export const CreateTempelateCase = (props: any) => {
 
   React.useEffect(() => {
     if (formObj.optionAppendOnChange !== undefined) {
-      optionAppendOnChange(formObj.value, formObj, values, setValues, handleChange, FormSchema, index);
+      optionAppendOnChange(formObj.value, formObj, values, setValues, index);
     }
   }, []);
 
@@ -381,9 +407,17 @@ export const CreateTempelateCase = (props: any) => {
                     name={formObj.key}
                     id={formObj.id}
                     component={CustomizedSelectForFormik}
-                    // component={"select"}
+                    onChange={(e:any) => {
+                      if(formObj.valueSetOnChange){
+                        valueSetOnChange(e.target.value, formObj, setFieldValue);
+                      }
+                      if(formObj.optionAppendOnChange){
+                        optionAppendOnChange(e.target.value, formObj, values, setValues, index);
+                      }
+                      setFieldValue(formObj.key, e.target.value);
+                    }}
                   >
-                    {formObj.options.filter((x: any) => x.hidden != true).map(
+                    {formObj.options?.filter((x: any) => x.hidden != true).map(
                       (opt: any, key: string) => (
                         <MenuItem
                           value={opt.value}

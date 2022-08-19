@@ -19,3 +19,8 @@ export interface History {
     ModifiedOn: string,
     Version: string
 }
+
+export interface Paginated<T> {
+    data: T,
+    totalCount:number
+}
