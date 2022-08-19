@@ -112,4 +112,19 @@ pipeline {
       }
     }
   }
+  post {
+    always {
+      cleanWs(cleanWhenNotBuilt: false,
+              deleteDirs: true,
+              disableDeferredWipeout: true,
+              notFailBuild: true,
+              patterns: [
+                [pattern: '.cache/**', type: 'INCLUDE'],
+                [pattern: '.npm/**', type: 'INCLUDE'],
+                [pattern: '**/node_modules/**', type: 'INCLUDE']
+              ])
+
+    }
+
+  }
 }
