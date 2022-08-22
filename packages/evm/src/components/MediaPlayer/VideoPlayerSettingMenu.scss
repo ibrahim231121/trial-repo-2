@@ -6,12 +6,12 @@
         .MuiMenu-paper {
             background-color: rgba(64, 64, 65, 0.97);
             color: #D1D2D4;
-            height: 170px !important;
+            // height: 170px !important;
             width: 195px;
             overflow: hidden;
             border-radius: 0px;
             position: relative;
-            top: 633px !important;
+            top: 672px !important;
             left: 706px !important;
 
             &::after {
@@ -137,7 +137,7 @@
             overflow: hidden;
             border-radius: 0px;
             position: relative;
-            top: 600px !important;
+            top: 641px !important;
             left: 702px !important;
 
             &::after {
@@ -258,7 +258,7 @@
     .settingOverlayPos + .enabledMultiLine  {
 
         .MuiMenu-paper {
-            top: 632px !important;
+            top: 664px !important;
         }
 
     }
@@ -282,7 +282,7 @@
             height: 216px;
             overflow: hidden;
             border-radius: 0px;
-            top: 532px !important;
+            top: 573px !important;
             left: 702px !important;
 
             .CRXCheckBox {
@@ -410,14 +410,14 @@
 
     .enabledMultiLine {
         .MuiPaper-root {
-            top: 638px !important;
+            top: 664px !important;
             left: 705px !important;
         }
     }
 
     .settingMultiOverlay {
         .MuiPaper-root {
-            top: 635px !important;
+            top: 664px !important;
             left: 703px !important;
         }
     }
@@ -519,12 +519,12 @@
     }
     .MultiBackMenu {
         .MuiMenu-paper  {
-            top: 533px !important;
+            top: 575px !important;
         }
     }
-    .enabledMultiLine  +     .MultiBackMenu {
+    .enabledMultiLine  +   .MultiBackMenu {
         .MuiMenu-paper  {
-            top: 568px !important;
+            top: 598px !important;
         }
     }  
     
