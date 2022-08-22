@@ -47,6 +47,7 @@ export interface Note {
     description: string
     madeBy: string
     version: string
+    userId: CMTEntityRecord
 }
 export interface File {
     id: number

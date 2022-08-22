@@ -6,6 +6,7 @@ import GoogleMap from "../../../map/google/GoogleMap";
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { useTranslation } from "react-i18next";
+import { CMTEntityRecord } from "../../../utils/Api/models/CommonModels";
 
 type propsObject = {
   data:any;
@@ -47,6 +48,11 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updat
   }
 
 const handleNoteEdit = (noteData:Note)=>{
+  const userIdBody: CMTEntityRecord = {
+    id: "",
+    cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+    record: []
+  };
   const noteBody : Note = {
     assetId: noteData.assetId, 
     id: noteData.id,
@@ -54,7 +60,8 @@ const handleNoteEdit = (noteData:Note)=>{
     description: noteData.description,
     version: noteData.version,
     noteTime: noteData.noteTime,
-    madeBy: noteData.madeBy
+    madeBy: noteData.madeBy,
+    userId: userIdBody
   };
   const url = "/Evidences/" + evidenceId + "/Assets/" + noteData.assetId + "/Notes/" + noteData.id;
   EvidenceAgent.updateNote(url, noteBody).then(() => {

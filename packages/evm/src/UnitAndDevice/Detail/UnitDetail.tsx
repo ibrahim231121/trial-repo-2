@@ -564,7 +564,7 @@ const UnitCreate = (props: historyProps) => {
         <CRXTabs
           value={value}
           onChange={handleChange}
-          tabitems={inCarTab === "Incar" ? tabs1 : tabs}
+          tabitems={inCarTab === "Incar" ? tabs : tabs1}
         />
         <CrxTabPanel value={value} index={0}>
           <div className={showMessageError}>

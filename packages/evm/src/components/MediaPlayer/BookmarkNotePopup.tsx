@@ -4,6 +4,7 @@ import { TextField } from "@cb/shared";
 import { red } from "@material-ui/core/colors";
 import React, { useEffect } from "react";
 import { EvidenceAgent } from "../../utils/Api/ApiAgent";
+import { CMTEntityRecord } from "../../utils/Api/models/CommonModels";
 import { Bookmark, Note } from "../../utils/Api/models/EvidenceModels";
 import "./BookmarkNotePopup.scss";
 
@@ -26,9 +27,28 @@ const BookmarkNotePopup = ({bookmarkNotePopupObj, bookmarkNotePopupArrObj, setBo
   const [enableOnSave, setEnableOnSave] = React.useState<boolean>(false);
   const [onSave, setOnSave] = React.useState<boolean>(true);
   const [showButton, setShowButton] = React.useState<boolean>(false);
+  const [objTypeDescription, setObjTypeDescription] = React.useState<string>("");
 
   React.useEffect(() => {
     setDescription(bookmarkNotePopupObj.description);
+    if(bookmarkNotePopupObj.objtype == "Note"){
+      let listOfKeyValue = bookmarkNotePopupObj.userId.record;
+      if(listOfKeyValue.length > 0){
+        listOfKeyValue.forEach((x:any)=>
+          {
+            if(x.key == "UserName"){
+              let username = bookmarkNotePopupObj.objtype + " from: " + x.value;
+              setObjTypeDescription(username);
+            }
+          }
+        )
+      }
+      else{
+        let username = bookmarkNotePopupObj.objtype + " from: ";
+        setObjTypeDescription(username);
+      }
+      
+    }
   }, []);
 
   React.useEffect(() => {
@@ -130,6 +150,11 @@ const BookmarkNotePopup = ({bookmarkNotePopupObj, bookmarkNotePopupArrObj, setBo
 
   const onUpdateNote = () => {
     const url = "/Evidences/"+EvidenceId+"/Assets/"+bookmarkNotePopupObj.assetId+"/Notes/"+bookmarkNotePopupObj.id;
+    const userIdBody: CMTEntityRecord = {
+      id: "",
+      cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+      record: []
+    };
     const body: Note = {
         assetId: bookmarkNotePopupObj.assetId, 
         id: bookmarkNotePopupObj.id,
@@ -138,6 +163,7 @@ const BookmarkNotePopup = ({bookmarkNotePopupObj, bookmarkNotePopupArrObj, setBo
         version: bookmarkNotePopupObj.version,
         noteTime: bookmarkNotePopupObj.noteTime,
         madeBy: bookmarkNotePopupObj.madeBy,
+        userId: userIdBody
     };
     EvidenceAgent.updateNote(url, body).then(() => {
       updateBookmarkNotePopupObjState();
@@ -224,7 +250,7 @@ const BookmarkNotePopup = ({bookmarkNotePopupObj, bookmarkNotePopupArrObj, setBo
       <div id={"BookmarkNote-Popup"}  className="BookmarkNotePopup" onMouseOver={() => mouseInPopup()} onMouseLeave={() => mouseOutPopup()}>
         <div className="Popup-header">
           <div id={"Popup-Icon"}><i className={bookmarkNotePopupObj.objtype == "Bookmark" ? "fas fa-bookmark" : "fas fa-comment-alt-plus"}></i></div>
-          <div>{bookmarkNotePopupObj.objtype}</div>
+          <div>{bookmarkNotePopupObj.objtype == "Bookmark" ? bookmarkNotePopupObj.objtype: objTypeDescription}</div>
           {showButton && <CRXButton id="Popup-Remove" onClick={() => onRemove(false)}>
             X
           </CRXButton>}

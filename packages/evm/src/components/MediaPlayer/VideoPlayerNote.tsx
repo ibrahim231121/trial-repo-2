@@ -10,6 +10,7 @@ import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { Note } from '../../utils/Api/models/EvidenceModels';
+import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
 
 type VideoPlayerNoteProps = {
     openNoteForm: boolean;
@@ -116,6 +117,11 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
 
     const AddNote = async () => {
         const AssetId = AssetData.dataId;
+        const userIdBody: CMTEntityRecord = {
+            id: "",
+            cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+            record: []
+          };
         const body : Note = {
             id: 0,
             assetId: AssetId,
@@ -123,7 +129,8 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             position: NotetimePositon ?? 0,
             description: description,
             madeBy: "User",
-            version: ""
+            version: "",
+            userId: userIdBody
         };
         const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
         EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
@@ -144,6 +151,11 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
 
     const onUpdate = async () => {
         const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+        const userIdBody: CMTEntityRecord = {
+            id: "",
+            cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+            record: []
+          };
         const body: Note = {
             assetId: note.assetId, 
             id: note.id,
@@ -152,6 +164,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             version: note.version,
             noteTime: note.noteTime,
             madeBy: note.madeBy,
+            userId: userIdBody
         };
         EvidenceAgent.updateNote(url, body).then(() => {
             setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
