@@ -171,40 +171,40 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     })
     setCheckedAll(false)
     let local_assetBucket: any = localStorage.getItem("assetBucket");
-    let isBucket: any = localStorage.getItem("isBucket") !== null ? localStorage.getItem("isBucket"): "False";
+    let isBucket: any = localStorage.getItem("isBucket") !== null ? localStorage.getItem("isBucket") : "False";
 
     if (local_assetBucket !== null && local_assetBucket.length != 0 && prevCount == 0 && assetBucketData.length > prevCount && isBucket == "True") {
       localStorage.setItem("isBucket", "False");
       showToastMsg()
     }
-    else 
-    if (assetBucketData.length > prevCount && isBucket == "True") {
-      localStorage.setItem("isBucket", "False");
-      showToastMsg()
+    else
+      if (assetBucketData.length > prevCount && isBucket == "True") {
+        localStorage.setItem("isBucket", "False");
+        showToastMsg()
 
-    }
-    else 
-    if (assetBucketData.length < prevCount) {
-      const totalRemoved = prevCount - assetBucketData.length;
+      }
+      else
+        if (assetBucketData.length < prevCount) {
+          const totalRemoved = prevCount - assetBucketData.length;
 
-      toasterRef.current.showToaster({
-        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-        variant: "success",
-        duration: 7000,
+          toasterRef.current.showToaster({
+            message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+            variant: "success",
+            duration: 7000,
 
-      });
+          });
 
-      let notificationMessage: NotificationMessage = {
-        title: t("Asset_Lister"),
-        message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-        type: "success",
-        date: moment(moment().toDate())
-          .local()
-          .format("YYYY / MM / DD HH:mm:ss"),
-      };
-      dispatch(addNotificationMessages(notificationMessage));
+          let notificationMessage: NotificationMessage = {
+            title: t("Asset_Lister"),
+            message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+            type: "success",
+            date: moment(moment().toDate())
+              .local()
+              .format("YYYY / MM / DD HH:mm:ss"),
+          };
+          dispatch(addNotificationMessages(notificationMessage));
 
-    }
+        }
   }, [assetBucketData]);
 
   const showToastMsg = () => {
@@ -1113,7 +1113,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           </div>
                           }
                         />
-                       
+
 
                         <CRXModalDialog
                           className="add-metadata-window __Add__MetaData__Window__"
@@ -1225,13 +1225,13 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                     <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
                                     <div className="bucketListTextData">
                                       {
-                                        x.isMaster ?
+                                        x?.isMaster ?
                                           <>
                                             <div className="bucketListAssetName">{x.assetName}</div>
                                             <div className="bucketListRec">{x.assetType}</div>
                                           </>
                                           :
-                                          x.asset.filter((y: any) => y.assetId === x.selectedAssetId).map((u: any) => (
+                                          x?.asset?.filter((y: any) => y.assetId === x.selectedAssetId).map((u: any) => (
                                             <>
                                               <div className="bucketListAssetName">{u.assetName}</div>
                                               <div className="bucketListRec">{u.assetType}</div>
