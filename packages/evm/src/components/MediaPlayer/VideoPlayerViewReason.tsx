@@ -109,6 +109,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
 
 
 
+
+
     const onSubmit = async (e: any) => {
         setResponseError('');
         setAlert(false);
@@ -149,18 +151,20 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         setOtherReason(false)
     }
 
+    const errorsReason = alert ? "__CRX__ErrorReason__" : "";
+
     return (
         <div className='videoPlayerNote'>
             <CRXModalDialog
                 maxWidth="gl"
                 title="Asset view reason"
-                className={'CRXModal '}
+                className={'CRXModal __CRX__Reason__Modal__'}
                 modelOpen={openModal}
                 onClose={handleClose}
                 defaultButton={false}
                 showSticky={false}
             >
-                <div className=''>
+                <div className={errorsReason}>
                     <CRXAlert
                         ref={alertRef}
                         message={responseError}
@@ -192,19 +196,22 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                                 onBlur={CheckOtherReason}
                             />}
                         </div>
-                        <div className='crxFooterEditFormBtn'>
+                        <div className='modalFooter CRXFooter'>
+                        <div className="nextBtn">
                             <CRXButton
                                 className='primary'
                                 onClick={handleSave}
                                 disabled={reason == "Other" && descriptionErr.length > 0 ? true : false}>
                                 Save
                             </CRXButton>
-                        </div>
-                        <div className='crxFooterEditFormBtn'>
+                            </div>
+                            <div className="cancelBtn">
                             <CRXButton className='primary' onClick={handleBack}>
                                 Back
                             </CRXButton>
+                            </div>
                         </div>
+                   
                     </div>
                 </div>
 

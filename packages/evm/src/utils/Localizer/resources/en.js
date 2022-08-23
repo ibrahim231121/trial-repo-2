@@ -89,6 +89,7 @@ export const resources = {
         "Open_in_Getac_AI_tools_App":"Open in Getac AI tools App",
         "Users":"Users",
         "Apply_to_all_assets_in_the_group":"Apply to all assets in the group",
+        "(Selected_users_will_replace_all_current_assigned_users)":"(Selected users will replace all current assigned users)",
         "Save":"Save",
         "Cancel":"Cancel",
         "You_are_attempting_to":"You are attempting to",
@@ -148,14 +149,16 @@ export const resources = {
         "Assets":"Assets",
         "Search_assets_by_ID#_case#_CAD#_categories_etc.":"Search assets by ID#, case#, CAD#, categories, etc.",
         "Infinite":"Infinite",
-        "Days":"Days",
-        "Hours":"Hours",
+        "No_Expiration":"No Expiration",
+        "Day(s)":"Day(s)",
+        "Hour(s)":"Hour(s)",
         "Share_email_sent_to_recipients":"Share email sent to recipients",
         "Include_Metadata":"Include Metadata",
         "Link_Expiry":"Link Expiry",
-        "Viewable_once":"Viewable once",
+        "Viewable_Once":"Viewable Once",
         "Downloadable":"Downloadable",
         "Please_Select":"Please Select",
+
         "Search_by":"Search by",
         "Date_and_Time":"Date and Time",
         "Add_search_criteria":"Add search criteria",
@@ -283,6 +286,12 @@ export const resources = {
         "Pin_should_be_numeric_value" : "Pin should be numeric value.",
         "Pin_must_be_4_numbers" : "Pin must be 4 numbers.",
         "Password_should_be_greater_than_six_characters" : "Password should be greater than six characters.",
+        "close_out_of_this_screen_with_unsaved_changes." : "close out of this screen with unsaved changes.",
+        "If_you_close_this_screen": "If you close this screen",
+        "saved_any_changes_will_not_be_saved":"saved any changes will not be saved",
+        "any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.":"any un-saved any changes will not be saved. You will not be able to undo this action.",
+        "Would_you_like_to":"Would you like to",
+        "this_screen?": "this screen?",
         // ------------------------------
 
         // --------- User Group----------
@@ -743,7 +752,12 @@ export const resources = {
         "Update_History":"Update History",
         "Unit Template":"Unit Template",
 
-        // --------------------------------
+           // --------- Share Asset ----------
+        "Link_Expiration":"Link Expiration",
+        "Link_Permissions":"Link Permissions",
+        "Comments":"Comments",
+        "Reason_for_Sharing":"Reason for Sharing",
+
       }
     }
   };

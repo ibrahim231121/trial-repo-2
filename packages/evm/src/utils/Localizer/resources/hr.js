@@ -61,6 +61,7 @@ export const resources = {
         "Open_in_Getac_AI_tools_App":"hr-Open in Getac AI tools App",
         "Users":"hr-Users",
         "Apply_to_all_assets_in_the_group":"hr-Apply to all assets in the group",
+        "(Selected_users_will_replace_all_current_assigned_users)":"(hr-Selected users will replace all current assigned users)",
         "Save":"hr-Save",
         "Cancel":"hr-Cancel",
         "You_are_attempting_to":"hr-You are attempting to",
@@ -120,12 +121,13 @@ export const resources = {
         "Assets":"hr-Assets",
         "Search_assets_by_ID#_case#_CAD#_categories_etc.":"hr-Search assets by ID#, case#, CAD#, categories, etc.",
         "Infinite":"hr-Infinite",
-        "Days":"hr-Days",
-        "Hours":"hr-Hours",
+        "No_Expiration":"hr-No Expiration",
+        "Day(s)":"hr-Day(s)",
+        "Hour(s)":"hr-Hour(s)",
         "Share_email_sent_to_recipients":"hr-Share email sent to recipients",
         "Include_Metadata":"hr-Include Metadata",
         "Link_Expiry":"hr-Link Expiry",
-        "Viewable_once":"hr-Viewable once",
+        "Viewable_Once":"hr-Viewable Once",
         "Downloadable":"hr-Downloadable",
         "Please_Select":"hr-Please Select",
         "Search_by":"hr-Search by",
@@ -252,9 +254,15 @@ export const resources = {
         "Edit_user":"hr-Edit user",
         "Unlock_account":"hr-Unlock account",
         "Deactivate_account":"hr-Deactivate account",
-        "Pin_should_be_numeric_value" : "Pin should be numeric value.",
-        "Pin_must_be_4_numbers" : "Pin must be 4 numbers.",
-        "Password_should_be_greater_than_six_characters" : "Password should be greater than six characters.",
+        "Pin_should_be_numeric_value" : "hr-Pin should be numeric value.",
+        "Pin_must_be_4_numbers" : "hr-Pin must be 4 numbers.",
+        "Password_should_be_greater_than_six_characters" : "hr-Password should be greater than six characters.",
+        "close_out_of_this_screen_with_unsaved_changes." : "hr-close out of this screen with unsaved changes.",
+        "If_you_close_this_screen": "hr-If you close this screen",
+        "saved_any_changes_will_not_be_saved":"hr-saved any changes will not be saved",
+        "any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.":"hr-any un-saved any changes will not be saved. You will not be able to undo this action.",
+        "Would_you_like_to":"hr-Would you like to",
+        "this_screen?": "hr-this screen?",
         // ------------------------------
 
         // --------- User Group----------
@@ -715,7 +723,12 @@ export const resources = {
         "Update_History":"hr-Update History",
         "Unit Template":"hr-Unit Template",
 
-        // --------------------------------
+    
+           // --------- Share Asset ----------
+           "Link_Expiration":"Link Expiration",
+           "Link_Permissions":"Link Permissions",
+           "Comments":"Comments",
+           "Reason_for_Sharing":"Reason for Sharing",
 
       }
     }

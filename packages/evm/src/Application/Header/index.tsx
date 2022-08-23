@@ -71,7 +71,7 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
                 {!isguestUser? (
                     <div className="MasterHeadRight">
                         <ul id="rightMenu">
-                            <li><CRXStation/></li>
+                            {/* <li><CRXStation/></li> */}
                             <li><CRXUserProfile /></li>
                             <li><CRXHelp /></li>
                         </ul>

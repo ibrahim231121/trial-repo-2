@@ -1389,8 +1389,8 @@ const CreateUserForm = () => {
           onConfirm={closeDialog}
           isOpen={isOpen}
           className="userGroupNameConfirm"
-          buttonPrimary={t("Yes,_close")}
-          buttonSecondary={t("No,_do_not_close")}
+          primary={t("Yes,_close")}
+          secondary={t("No,_do_not_close")}
           text="user group form"
         >
           <div className="confirmMessage __crx__Please__confirm__modal">
