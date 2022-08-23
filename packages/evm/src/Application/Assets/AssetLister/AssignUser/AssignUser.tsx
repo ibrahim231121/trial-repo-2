@@ -338,7 +338,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     }}
                   />
                   <div className="fieldAssigSelectT">
-                    (Selected users will replace all current assigned users)
+                  {t("(Selected_users_will_replace_all_current_assigned_users)")}.
+                   
                   </div>
                 </div>
               </div>

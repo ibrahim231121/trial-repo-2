@@ -55,7 +55,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const linkExpireOptions = [
     { value: 1, displayText: t("Hour(s)") },
     { value: 2, displayText: t("Day(s)") },
-    { value: 3, displayText: t("No Expiration") },
+    { value: 3, displayText: t("No_Expiration") },
   ];
 
   const [currentRetention, setCurrentRetention] = React.useState<string>("-");
@@ -239,7 +239,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
                 <div className="__CRX__ShareAssets__Layout">
                   <div className="categoryTitle __CRX__Title__Share">
-                    {t("Link Expiration")}
+                    {t("Link_Expiration")}
                     <span>*</span>
                   </div>
                   <div className="CBX-input _Crx_link_ ">
@@ -272,7 +272,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
                 <div className="__Crx_checkbox__Share">
                   <div className="categoryTitle __CRX__Title__Share __Crx_Radio__Share">
-                    {t("Link Permissions")}
+                    {t("Link_Permissions")}
                   </div>
                   <div
                   className="__CRX__CheckBox__Share__Align"
@@ -292,7 +292,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                         handleCheck(e)
                       }
                     />
-                    {t("Include Metadata")}
+                    {t("Include_Metadata")}
                     </div>
                     <div>
                     <CRXCheckBox
@@ -304,7 +304,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                         handleViewableCheck(e)
                       }
                     />
-                    {t("Viewable Once")}
+                    {t("Viewable_Once")}
                     </div>
                     <div>
                     <CRXCheckBox
@@ -324,7 +324,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
                 <div className="__CRX__ShareAssets__Layout">
                   <div className="categoryTitle __CRX__Title__Share">
-                    Comments
+                    {t("Comments")}
                   </div>
                   <div className=" CBX-input __CRX__TextArea__Share">
                     <textarea
@@ -342,7 +342,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                   }`}
                 >
                   <div className="categoryTitle __CRX__Title__Share __CRX__Title__Reason">
-                    Reason for Sharing<span>*</span>
+                  {t("Reason_for_Sharing")}<span>*</span>
                   </div>
                   <div className="CBX-input __CRX__TextArea__Share">
                     <textarea

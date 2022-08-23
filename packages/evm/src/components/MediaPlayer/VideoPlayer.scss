@@ -1586,3 +1586,30 @@ span.playBackTooltipUp {
     }
   }
 }
+
+
+.__CRX__Reason__Modal__ {
+  .modalEditCrx {
+    .CrxEditForm {
+      margin-bottom: 80px;
+      margin-top: 40px;
+      .wrapper {
+        margin-left: 0;
+      }
+    }
+  }
+  .crx-message-alert {
+    .crxAlertNoteEditForm  {
+      display: none;
+    }
+  } 
+  .__CRX__ErrorReason__ {
+    .crx-message-alert {
+      .crxAlertNoteEditForm  {
+        display: block;
+        margin-top: 45px;
+        margin-bottom: 43px;
+      }
+    } 
+  }
+}

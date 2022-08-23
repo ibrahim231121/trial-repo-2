@@ -95,42 +95,42 @@ const CRXLefNavigation = () => {
       classes: "mapsTab",
       url: urlList.filter((item: any) => item.name === urlNames.avlMap)[0].url,
     },
-    {
-      moduleId: 0,
-      label: t("ALPR"),
-      icon: "fas fa-address-card NaveIcon",
-      classes: "aplrTab",
-      items: [
-        {
-          moduleIds: 0,
-          label: t("Plate_Captures"),
-        },
-        {
-          moduleIds: 0,
-          label: t("Live_ALPR"),
-        },
-        {
-          moduleIds: 0,
-          label: t("Live_ALPR"),
-        },
-        {
-          moduleIds: 0,
-          label: t("Manage_Hot_List"),
-        },
-        {
-          moduleIds: 0,
-          separator: true,
-        },
-        {
-          moduleIds: 0,
-          label: t("Manage_Hot_List_Data_Source"),
-        },
-        {
-          moduleIds: 0,
-          label: t("Manage_License_Plates"),
-        },
-      ],
-    },
+    // {
+    //   moduleId: 0,
+    //   label: t("ALPR"),
+    //   icon: "fas fa-address-card NaveIcon",
+    //   classes: "aplrTab",
+    //   items: [
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Plate_Captures"),
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Live_ALPR"),
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Live_ALPR"),
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Manage_Hot_List"),
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       separator: true,
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Manage_Hot_List_Data_Source"),
+    //     },
+    //     {
+    //       moduleIds: 0,
+    //       label: t("Manage_License_Plates"),
+    //     },
+    //   ],
+    // },
 
     // {
     //   moduleId:0,

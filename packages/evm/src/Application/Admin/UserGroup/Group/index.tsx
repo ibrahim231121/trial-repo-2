@@ -759,7 +759,7 @@ const Group = () => {
         secondary={t("No,_do_not_close")}
         text="user group form"
       >
-        <div className="confirmMessage">
+        <div className="confirmMessage __crx__Please__confirm__modal">
           {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
           <strong>{t("'user_group_form'")}</strong>. {t("If_you_close_the_form")}, 
           {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
