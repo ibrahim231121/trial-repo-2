@@ -104,6 +104,8 @@
     border-image-slice: 7 5;
     border-image-width: 0px;
     border-image-repeat: repeat;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     #lightBgContent {
       background: var(--color-White);
@@ -141,8 +143,8 @@
       }
     }
     .bucketScroll {
-      overflow-y: auto;
-      height: calc(100% - 210px);
+      // overflow-y: auto;
+      // height: calc(100% - 210px);
     }
   }
 
