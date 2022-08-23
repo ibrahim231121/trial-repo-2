@@ -206,7 +206,7 @@ body {
   text-indent: 0;
 }
 .crx-main-container {
-  min-height: 96.9vh !important;
+  min-height: 96.9vh  !important;
 }
 
 .divOuter .onDraggingThumb {
