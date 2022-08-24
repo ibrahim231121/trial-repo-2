@@ -476,7 +476,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         offsetX={25}
         offsetY={12}
         className="menuCss"
-
+        boundingBoxPadding= '1 8 1 1'
+        portal={true}
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
@@ -675,7 +676,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   </div>
                   <div className="crx-menu-list">{t("Restrict_access")}</div>
                 </div>
-                <div className="crx-menu-list">{t("Restrict_access")}</div>
+                
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
