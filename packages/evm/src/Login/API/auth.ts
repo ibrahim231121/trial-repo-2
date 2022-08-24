@@ -1,6 +1,7 @@
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import { codeChallengeRemove } from '../../utils/settings';
+import { setAPIAgentConfig } from '../../utils/Api/ApiAgent';
 
 interface IDecoded{
     RememberMe:string;
@@ -36,12 +37,14 @@ export const authenticate = (accessToken:string,idToken:string,refreshToken:stri
             localStorage.setItem('expiryDate',expireDateLocalStorage);
             const options = { path:'/',expires:expireDate };
             cookies.set('access_token',accessToken,options);
+            setAPIAgentConfig();
         }
         else 
         {
             
             const options = {path:'/'}
             cookies.set('access_token',accessToken,options);
+            setAPIAgentConfig();
         }
         codeChallengeRemove();
     

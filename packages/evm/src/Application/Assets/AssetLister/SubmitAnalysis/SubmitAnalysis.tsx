@@ -42,6 +42,8 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
     const [notes,setNotes] = React.useState<string>('');
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const [res, setRes] = React.useState<File>();
+    const [downloadUrl, setDownloadUrl] = React.useState<string>();
+
     const [responseError, setResponseError] = React.useState<string>('');
     const [alert, setAlert] = React.useState<boolean>(false);
     const [emailError, setEmailError] = React.useState<string>('');
@@ -82,7 +84,6 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
      
     }, []);
     React.useEffect(() => {
-      debugger;
       if(submitAnalysis != null)
       {
         sendData();
@@ -91,31 +92,61 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
     React.useEffect(() => {
       if(res != null)
         {
-          let tempProject: Project = {
-            projectName:"Project_202208100648",
-            type:0,
-            notes:notes,
-            assetId:props.rowData.evidence.masterAsset.assetId,
-            assetName:props.rowData.assetName,
-            assetUrl: res ? res.url : "",
-            assetFileSize:res ? res.size : 0,
-            assetDuration: res ? res.duration : 0,
-            recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
-            fileType:res ? res.extension : "",
-            submitBy: parseInt(localStorage.getItem('User Id') ?? "0")
-        };
-        let tempJob: Job = {
-          type:0,
-          priority:0,
-          progress:0
-        };
-        let temp: SubmitAnalysisModel = {
-          project:tempProject,
-          job:tempJob
-        };
-        setSubmitAnalysis(temp);
+          DownloadUrl();
+        //   let tempProject: Project = {
+        //     projectName:"Project_202208100648",
+        //     type:0,
+        //     notes:notes,
+        //     assetId:props.rowData.evidence.masterAsset.assetId,
+        //     assetName:props.rowData.assetName,
+        //     assetUrl: res ? res.url : "",
+        //     assetFileSize:res ? res.size : 0,
+        //     assetDuration: res ? res.duration : 0,
+        //     recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
+        //     fileType:res ? res.extension : "",
+        //     submitBy: parseInt(localStorage.getItem('User Id') ?? "0")
+        // };
+        // let tempJob: Job = {
+        //   type:0,
+        //   priority:0,
+        //   progress:0
+        // };
+        // let temp: SubmitAnalysisModel = {
+        //   project:tempProject,
+        //   job:tempJob
+        // };
+        //setSubmitAnalysis(temp);
       }
     },[res])
+
+    React.useEffect(() => {
+      if(res != null)
+      {
+        let tempProject: Project = {
+          projectName:"Project_202208100648",
+          type:0,
+          notes:notes,
+          assetId:props.rowData.evidence.masterAsset.assetId,
+          assetName:props.rowData.assetName,
+          assetUrl: downloadUrl ? downloadUrl : "",
+          assetFileSize:res ? res.size : 0,
+          assetDuration: res ? res.duration : 0,
+          recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
+          fileType:res ? res.extension : "",
+          submitBy: parseInt(localStorage.getItem('User Id') ?? "0")
+      };
+      let tempJob: Job = {
+        type:0,
+        priority:0,
+        progress:0
+      };
+      let temp: SubmitAnalysisModel = {
+        project:tempProject,
+        job:tempJob
+      };
+      setSubmitAnalysis(temp);
+    }
+    },[downloadUrl])
 
   
     const handleAudioSourceCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,14 +171,26 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
       "/assets/" +
       `${props.rowData.assetId}` +
       "/Files";
+
+      
       EvidenceAgent.getAssetFile(url).then((response: File[]) =>  {
         const temp = response;
+        
         setRes(temp[0]);
         
       });
      
   
     };
+    const DownloadUrl = async () => {
+      const url =
+      "/Files/download/" +
+      `${res?.url}`;
+      EvidenceAgent.getDownloadUrl(url).then((response: string) =>  {
+        setDownloadUrl(response);
+      });
+      
+    }
     const sendData = async () => {
       const url = JOBCOORDINATOR_SERVICE_URL;
       EvidenceAgent.submitAnalysis(url, submitAnalysis).then(() => {

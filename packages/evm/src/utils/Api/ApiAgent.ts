@@ -46,7 +46,7 @@ import {
 import { Station } from './models/StationModels';
 import { Paginated } from './models/CommonModels';
 const cookies = new Cookies();
-
+debugger;
 let config = {
     
     headers: {
@@ -56,6 +56,16 @@ let config = {
     }
 }
 
+export const setAPIAgentConfig=()=>{
+    config = {
+    
+        headers: {
+            'Content-Type': 'application/json',
+            'TenantId': '1',
+            'Authorization': 'Bearer ' + cookies.get("access_token")
+        }
+    }
+}
 
 axios.interceptors.response.use(async response => {
     try {
@@ -98,6 +108,7 @@ export const EvidenceAgent = {
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url, config),
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
+    getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url),
 
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),

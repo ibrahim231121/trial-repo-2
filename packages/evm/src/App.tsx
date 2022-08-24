@@ -28,6 +28,7 @@ import { getToken } from "./Login/API/auth";
 import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
 import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
+import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
 
 
 interface CounterState {
@@ -114,11 +115,13 @@ function App() {
   var newdateReadable = new Date(newdateInTimeStamp)
   const options:CounterState = { path:'/',expires:newdateReadable };
   cookies.set('access_token', accessToken, options)
+  setAPIAgentConfig();
 }
   else
   {
     const options = {path:'/'}
     cookies.set('access_token',accessToken,options);
+    setAPIAgentConfig();
   }
 }
 

@@ -29,14 +29,15 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [viewableOnce, setViewableOnce] = React.useState<boolean>(false);
 
-  const [linkExpireType, setLinkExpireType] = React.useState<string>("");
-  const [email, setEmail] = React.useState<string>("");
-  const [comment, setComment] = React.useState<string>("");
-  const [reasonForView, setReasonForView] = React.useState<string>("");
+  const [linkExpireType, setLinkExpireType] = React.useState<string>("2")
+  const [email, setEmail] = React.useState<string>("")
+  const [comment, setComment] = React.useState<string>("")
+  const [reasonForView, setReasonForView] = React.useState<string>("")
+  
+  const [linkExpire, setLinkExpire] = React.useState<string>("1")
+  const [linkExpireDuration, setLinkExpireDuration] = React.useState<string>("")
 
-  const [linkExpire, setLinkExpire] = React.useState<string>("");
-  const [linkExpireDuration, setLinkExpireDuration] =
-    React.useState<string>("");
+
 
   const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);

@@ -2,13 +2,15 @@ import React from 'react';
 import { CRXButton } from '@cb/shared';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
 import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
 import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
+import { getAssetSearchInfoAsync } from "../../../../../Redux/AssetSearchReducer";
+
 
 type EditConfirmFormProps = {
   evidenceResponse: any;
@@ -27,6 +29,7 @@ interface FormValues {
 
 const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
+  const dispatch = useDispatch();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
@@ -86,7 +89,10 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
 
       EvidenceAgent.changeCategories(url, body).then((response: any) => {
         setSuccess(true);
-        setTimeout(() => closeModal(), 3000);
+        setTimeout(() => {
+          closeModal();
+          dispatch(getAssetSearchInfoAsync(""));
+        }, 3000);
       })
       .catch((ex: any) => {
         setError(true);

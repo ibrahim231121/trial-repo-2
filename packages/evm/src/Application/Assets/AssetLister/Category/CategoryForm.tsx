@@ -10,6 +10,7 @@ import http from '../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
+import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 
 type CategoryFormProps = {
   filterValue: any[];
@@ -213,6 +214,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     if (isEditCaseExist) {
       dispatch(AddToEditFormStateCreator(categoryBodyArr));
       props.setActiveForm(5);
+      
     } else {
       /** 
        * * Find HighestRetentionId & HoldUntill, from newly added categories. 
@@ -238,7 +240,11 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
         EvidenceAgent.changeCategories(url, body).then((response: any) => {
           setSuccess(true);
-          setTimeout(() => closeModalFunc(), 3000);
+          setTimeout(() => 
+          {
+            closeModalFunc();
+            dispatch(getAssetSearchInfoAsync(""));
+          }, 3000);
         })
         .catch((ex: any) => {
           setError(true);
@@ -269,6 +275,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       setTimeout(() => {
         props.setOpenForm();
         props.setFilterValue(() => []);
+        dispatch(getAssetSearchInfoAsync(""));
         props.closeModal(false);
       }, 3000);
     })
