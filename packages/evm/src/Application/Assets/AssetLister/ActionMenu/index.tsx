@@ -623,7 +623,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-        <MenuItem disabled>
+
+        {/* <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -634,10 +635,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
 
-        <MenuItem>
+        {/* <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -648,9 +649,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuItem disabled>
+        {/* <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
@@ -661,7 +662,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem>
+        </MenuItem> */}
 
         {isLockedAccess ?
           <MenuItem>
