@@ -259,7 +259,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             searchFilter: true,
             searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:User[]) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
             minWidth: "200",
-            maxWidth: "300",
+            maxWidth: "400",
             visible: true,
         },
     ]);

@@ -776,7 +776,7 @@ body {
           border: 0px;
           position: relative;
           top: 1px;
-          right: 55px;
+          right: 33px;
 
           i {
             font-style: normal;
@@ -1005,9 +1005,7 @@ body {
     }
   }
   &.__Add__MetaData__Window__ {
-    .MuiDialog-paperScrollPaper {
-      max-height: calc(100% - 439px) !important;
-    }
+    
     .__crx__Set_MetaData_Hide {
       display: none !important;
     }

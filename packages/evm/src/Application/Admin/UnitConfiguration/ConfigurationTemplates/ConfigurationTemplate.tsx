@@ -506,7 +506,7 @@ const ConfigurationTemplates: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: "",
+      
       maxWidth: "100",
     },
     {
@@ -519,15 +519,14 @@ const ConfigurationTemplates: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "300",
-      maxWidth: "300",
+      maxWidth: "350",
       detailedDataComponentId: "device",
     },
     {
       label: t("Station"),
       id: "Station",
       align: "left",
-      width: "",
+      
       dataComponent: (e: string) => StationDisplay(e, ""),
       sort: true,
       searchFilter: true,
@@ -538,7 +537,7 @@ const ConfigurationTemplates: React.FC = () => {
         initialRows: ConfigTemplate[]
       ) => multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "100",
-      maxWidth: "100",
+      maxWidth: "500",
       detailedDataComponentId: "id",
     },
     {
@@ -555,8 +554,7 @@ const ConfigurationTemplates: React.FC = () => {
         initialRows: ConfigTemplate[]
       ) => multiSelectTypeCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "300",
-      maxWidth: "400",
-      width: "400",
+      maxWidth: "500",
     },
     {
       label: t("Indicator"),
@@ -573,7 +571,7 @@ const ConfigurationTemplates: React.FC = () => {
         initialRows: ConfigTemplate[]
       ) => multiSelectIndicatorCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "250",
-      maxWidth: "300",
+      maxWidth: "400",
     },
   ]);
 

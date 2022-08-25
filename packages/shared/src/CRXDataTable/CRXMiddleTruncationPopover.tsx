@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Popover from '@material-ui/core/Popover';
 import { makeStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 interface popoverProps  {
     content : any,
@@ -50,7 +51,7 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
         return setTruncationBtn(middleElip)
     };
     useEffect(() => {
-        truncate(content, 28)
+        truncate(content, 22)
     },[])
     
     const useGapStyles = makeStyles({
@@ -91,7 +92,8 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             
             </div>
             : <div className='_withoutTruncation _group_truncation_text ' ref={popoverRefs}>{"#" + content}</div> 
-}
+        }
+        <ClickAwayListener onClickAway={truncationPopoverClose}>
         <Popover
             id={id}
             open={open}
@@ -99,6 +101,7 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             onClose={truncationPopoverClose}
             marginThreshold={16}
             disablePortal
+            hideBackdrop={true}
             classes={{
                 ...classespop
             }}
@@ -118,7 +121,7 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             <div className='_middle_popover_content'>{content}</div>
             
         </Popover>
-        
+        </ClickAwayListener>
         </div>
     )
 }

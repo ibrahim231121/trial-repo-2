@@ -1138,22 +1138,19 @@ const CreateUserForm = () => {
     const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
     const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
     const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
-    const optionalSticky: any = document.getElementsByClassName("optionalSticky");
     const altRef = alertRef.current;
 
-    if (alert === false && altRef === null && optionalSticky.length > 0) {
+    if (alert === false && altRef === null) {
 
       alertClx[0].style.display = "none";
       crxIndicate[0].style.top = "42px";
       modalEditCrx[0].style.paddingTop = "42px";
-      optionalSticky[0].style.height = "79px"
+      
     } else {
-      alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
+      alertClx[0].setAttribute("style", "margin-top:42px;margin-bottom:42px");
       crxIndicate[0].style.top = "83px";
       modalEditCrx[0].style.paddingTop = "2px";
-      if (optionalSticky.length > 0) {
-        optionalSticky[0].style.height = "119px"
-      }
+      
     }
   }, [alert]);
 
@@ -1205,7 +1202,7 @@ const CreateUserForm = () => {
 
 
   return (
-    <div className='createUser CrxCreateUser CreateUserUi '>
+    <div className='createUser CrxCreateUser CreateUserUi searchComponents'>
       <CRXToaster ref={userMsgFormRef} />
       <CRXAlert
         ref={alertRef}
@@ -1298,7 +1295,7 @@ const CreateUserForm = () => {
 
               {
                 <div className='crxEditFilter editFilterUi'>
-                  {console.log('UserGroups: ', formpayload.userGroups)}
+                  
                   <CRXMultiSelectBoxLight
                     className='categortAutocomplete CrxUserEditForm'
                     label={t("User_Group")}
@@ -1334,7 +1331,7 @@ const CreateUserForm = () => {
                 />
               </div>
 
-              <div>
+              <div className='_create_user_pin_field'>
                 <TextField
                   className='crx-gente-field crx-gente-field-confrim '
                   error={!!formpayloadErr.pinErr}

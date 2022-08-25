@@ -1,6 +1,7 @@
 import React,{ useRef } from 'react'
 import Popover from '@material-ui/core/Popover';
 import { makeStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 interface popoverProps  {
     content : any,
@@ -80,7 +81,7 @@ const useGapStyles = makeStyles({
             {content}
         </div>
         : content }
-    
+        <ClickAwayListener onClickAway={popoverHandleClose}>
         <Popover
             id={id}
             ref={paperRef}
@@ -89,6 +90,7 @@ const useGapStyles = makeStyles({
             onClose={popoverHandleClose}
             marginThreshold={16}
             disablePortal
+            hideBackdrop={true}
             classes={{
                 ...classesPopover
             }}
@@ -107,6 +109,7 @@ const useGapStyles = makeStyles({
             <div className='popover_content'>{content}</div>
             
         </Popover>
+        </ClickAwayListener>
         </div>
     )
 }

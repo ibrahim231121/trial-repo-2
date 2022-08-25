@@ -314,43 +314,18 @@
   .rc-menu__arrow--dir-right {
     display: none;
   }
-  .col-three {
-    position: initial;
-  }
+  
   .rc-menu {
     left: 45px !important;
   }
 }
 .ManageUsersDataTable {
   table {
-    thead {
-      tr {
-        th {
-          &.TableSearchAbleHead {
-            &:first-child {
-              left: 0px !important;
-            }
-            &:nth-child(2) {
-              left: 58px !important;
-            }
-          }
-          &.CRXDataTableLabelCell {
-            &:first-child {
-              left: 0px !important;
-            }
-            &:nth-child(2) {
-              left: 58px !important;
-            }
-          }
-        }
-      }
-    }
+    
     tbody {
       tr {
         td {
           &.col-two {
-            left: 0px !important;
-
             .fal {
               position: relative;
               &::after {
@@ -374,10 +349,7 @@
               border-bottom: none;
             }
           }
-          &.col-three {
-            left: 58px !important;
-            position: sticky;
-          }
+         
         }
         // &:hover {
         //   .CRXCheckBox {
@@ -418,6 +390,8 @@
   .inputLabelNoReq {
     margin-bottom: 8px;
     display: inline-block;
+    font-size: 14px;
+    color: var(--color-333333);
   }
   .crxEditFilter {
     flex-direction: column;
@@ -448,6 +422,9 @@
     flex-direction: row;
     .requiredLable {
       margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--color-333333);
+      font-family: var(--Arial-font-family);
       > span {
         font-size: 20px;
         padding-left: 2px !important;
@@ -477,9 +454,9 @@
   }
   .crxFooterEditFormBtn {
     padding: 0 28px 0 89px !important;
-    bottom: 55px !important;
-    position: fixed !important;
-    border: none !important;
+    bottom: 55px;
+    position: fixed;
+    border: none;
     place-content: space-between;
     display: flex;
 
@@ -620,6 +597,9 @@
     h6 {
       width: 220.66px !important;
     }
+    ._create_user_pin_field {
+      margin-top: 30px;
+    }
   }
   .inputLabelNoReq {
     margin-top: 7px;
@@ -658,10 +638,12 @@
 
   @media screen and (max-width: 1026px) {
     .crxFooterEditFormBtn {
+      padding-bottom: 60px;
       &::after {
         width: 88.89%;
       }
     }
+    
   }
 
   @media screen and (min-width: 2200px) {
@@ -674,6 +656,7 @@
     .grid_spacer {
       width: 144px;
     }
+ 
   }
 
   @media screen and (max-width: 1786px) {
@@ -687,6 +670,12 @@
           padding-top: 20px;
         }
       }
+    }
+    .CrxEditForm  {
+      padding-bottom: 40px;
+    }
+    .crxFooterEditFormBtn {
+      bottom: 21px;
     }
   }
 
@@ -702,7 +691,7 @@
     }
   }
 
-  @media screen and (max-width: 1500px) {
+  @media screen and (max-width: 1536px) {
     .crxRadioBtn {
       .crx-manually-generate-pass {
         .crx-requird-check {
@@ -711,6 +700,12 @@
           }
         }
       }
+    }
+    .CrxEditForm  {
+      padding-bottom: 40px;
+    }
+    .crxFooterEditFormBtn {
+      bottom: 21px;
     }
   }
 
@@ -723,6 +718,12 @@
           }
         }
       }
+    }
+    .CrxEditForm  {
+      padding-bottom: 60px;
+    }
+    .crxFooterEditFormBtn {
+      bottom: 21px;
     }
   }
 

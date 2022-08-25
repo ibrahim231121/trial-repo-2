@@ -4,7 +4,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Draggable from "react-draggable";
 import { useStyles, DataTableHeaderProps } from "./CRXDataTableTypes";
 import { useTranslation } from "react-i18next";
-import { fixedColumnAlignment } from './FixedColumnAlignment'
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   orderColumn,
   headCells,
@@ -95,12 +94,12 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
           style={{
             width: "80px",
             minWidth: "80px",
-            left: `${fixedColumnAlignment(
-              false,
-              showCheckBoxesCol,
-              2
-            )}`,
-            //left : "58px",
+            // left: `${fixedColumnAlignment(
+            //   false,
+            //   showCheckBoxesCol,
+            //   2
+            // )}`,
+            left : "60px",
             position: "sticky",
             zIndex: 4,
           }}

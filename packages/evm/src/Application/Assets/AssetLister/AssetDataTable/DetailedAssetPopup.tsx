@@ -38,8 +38,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   const { t } = useTranslation<string>();
   const [checkAll, setCheckAll] = useState<boolean>(false);
   const [selected, setSelected] = useState<CheckValue[]>([]);
-  const [selectedActionRow, setSelectedActionRow] =
-    React.useState<any>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<any>();
 
   const widgetStyle = makeStyles({
     CRXArrowStyle: {
@@ -181,10 +180,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                               maxWidth={200}
                               minWidth={150}
                             />
-                              {/* <AssetNameTooltip
-                                key={index}
-                                assetName={asset.assetName}
-                              /> */}
+                             
                               {asset.camera !== undefined &&
                               asset.camera !== null &&
                               asset.camera !== "" ? (

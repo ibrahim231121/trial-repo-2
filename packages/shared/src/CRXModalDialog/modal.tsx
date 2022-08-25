@@ -59,7 +59,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
     showSticky = false,
     saveButtonTxt = "Primery Button", closeWithConfirm, subTitleText } = props;
 
-  const [maxWidthProps, setmaxWidthProps] = React.useState<DialogProps['maxWidth']>('sm');
+  const [maxWidthProps, setmaxWidthProps] = React.useState<DialogProps['maxWidth']>('lg');
   const [primaryBtn , setPlrimary] = React.useState<boolean>(false);
   const [secondaryBtn, setSecondaryBtn] = React.useState<boolean>(false);
   React.useEffect(() => {
@@ -78,6 +78,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
       aria-labelledby="simple-dialog-title"
       open={modelOpen}
       maxWidth={maxWidthProps}
+      
     >
       <div className="CRXPopupCrossButton">
         <Button

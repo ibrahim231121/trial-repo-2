@@ -459,7 +459,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "150",
-      maxWidth: "174",
+      maxWidth: "200",
       visible: true,
     },
     {
@@ -472,7 +472,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "130",
-      maxWidth: "150",
+      maxWidth: "200",
       visible: true,
     },
     {
@@ -485,7 +485,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "130",
-      maxWidth: "150",
+      maxWidth: "200",
       visible: true,
     },
     {
@@ -521,7 +521,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       dataComponent: dateDisplayFormat,
       sort: true,
       minWidth: "130",
-      maxWidth: "161",
+      maxWidth: "200",
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,

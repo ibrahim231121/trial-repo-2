@@ -713,7 +713,7 @@ const MasterMain: React.FC<Props> = ({
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
-            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)}  setIsOpen={setIsOpen} IsOpen= {isOpen} />
+            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)}  setIsOpen={setIsOpen} IsOpen= {isOpen} portal={true} />
           }
           
           getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}

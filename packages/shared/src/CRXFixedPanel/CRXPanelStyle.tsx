@@ -51,7 +51,8 @@ createStyles({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    
+    backgroundColor: "transparent !important", // Please do not remove it.
+    maxWidth : "100% !important", // Please do not remove it.
   },
 
   contentShift: {

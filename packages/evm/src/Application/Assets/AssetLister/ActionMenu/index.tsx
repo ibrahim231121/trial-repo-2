@@ -36,6 +36,7 @@ type Props = {
   setIsOpen: any
   IsOpen: any
   Asset?: any;
+  portal?: boolean
 };
 
 export interface AssetBucket {
@@ -58,7 +59,7 @@ export type securityDescriptorType = {
   permission: PersmissionModel;
 }
 
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, IsOpen, Asset }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, portal, IsOpen, Asset }) => {
 
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -461,7 +462,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         offsetX={25}
         offsetY={12}
         className="menuCss"
-
+        portal={portal}
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>

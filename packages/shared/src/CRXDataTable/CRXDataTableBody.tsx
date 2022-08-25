@@ -6,7 +6,6 @@ import { DataTableBodyProps } from "./CRXDataTableTypes";
 import RootRef from "@material-ui/core/RootRef";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import CRXCheckBox from "../controls/CRXCheckBox/CRXCheckBox";
-import { fixedColumnAlignment } from './FixedColumnAlignment'
 const DataTableBody: React.FC<DataTableBodyProps> = ({
   page,
   rowsPerPage,
@@ -165,12 +164,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                               //   :
                               //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px"
                               // }`,
-                              left: `${fixedColumnAlignment(
-                                dragVisibility,
-                                showCheckBoxesCol,
-                                2
-                              )}`,
-                              //left : "60px"
+                              left: "60px",
                             }}
                             className="DataTableBodyCell col-three"
                             scope="row"

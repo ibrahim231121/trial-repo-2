@@ -321,7 +321,6 @@ a::selection {
   background-color: transparent;
 }
 
-/*After demo sajid will remove it*/
 .progressBar {
   padding-top: 10px;
 }
@@ -331,16 +330,6 @@ a::selection {
   top: 186px;
 }
 
-/* footer {
-  position: relative;
-  bottom: 0px;
-  text-indent: 10px;
-  width: 100%;
-  z-index: 999;
-  background: #fff;
-  padding-bottom: 25px;
-} */
-
 .dragableCellCustomize {
   position: absolute;
   left: 2px;
@@ -348,22 +337,12 @@ a::selection {
   display: block;
 }
 
-/* .draggableCellIcon .grid-grip-icon{
-  display: none;
-} */
-
-
-
 .LocationMap {
   width: 100%;
 }
 
 .data_table_fixedWidth_wrapText {
   word-break: break-all;
-}
-
-.small_checked .Mui-checked {
-  
 }
 
 .DataTableBodyCell .rc-menu-container{
@@ -400,13 +379,3 @@ a::selection {
   border-radius: 12px !important;
   position: relative;
 }
-
-/* ._CBX_customized_Switcher .small_toggle_button.darkBorder:focus-visible,
-._CBX_customized_Switcher .small_toggle_button.darkBorder:focus-within,
-._CBX_customized_Switcher .small_toggle_button.darkBorder:focus,
-._CBX_customized_Switcher .large_toggle_button.darkBorder:focus-visible {
-    outline: 2px solid #888787 !important;
-    border: 1px solid #404041 !important;
-    border-radius: 12px !important;
-    position: relative;
-} */
