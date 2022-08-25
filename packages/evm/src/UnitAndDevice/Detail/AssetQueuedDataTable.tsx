@@ -1,4 +1,7 @@
 import React from "react";
+import { getQueuedAssetInfoAsync } from "../../Redux/UnitReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/rootReducer";
 import { CRXDataTable,CRXProgressBar } from "@cb/shared";
 import {
     HeadCellProps,
@@ -6,27 +9,55 @@ import {
     Order,
     onSetSingleHeadCellVisibility,
     onClearAll,
+    onSetHeadCellVisibility,onSaveHeadCellData
   } from "../../GlobalFunctions/globalDataTableFunctions";
 import textDisplay from "../../GlobalComponents/Display/TextDisplay";
 import { useTranslation } from "react-i18next";
+import { QueuedAssets } from "../../utils/Api/models/UnitModels";
 
-type QueuedAssets = {
-    filename:string;
-    status:string;
-  };
-
-const rows = [
-  {},{}]
-
-const QueuedAsstsDataTable = ()=>{
+type infoProps = {
+  unitId: any;
+}
+const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
+    const queuedAssets: any = useSelector((state: RootState) => state.unitReducer.queuedAssets);
     const { t } = useTranslation<string>();
     const [reformattedRows, setReformattedRows] = React.useState<QueuedAssets[]>();
     const [selectedActionRow, setSelectedActionRow] =React.useState<QueuedAssets>();
     const [order] = React.useState<Order>("asc");
     const [orderBy] = React.useState<string>("name");
     const [open, setOpen] = React.useState<boolean>(false);
+    const [rows, setRows] = React.useState<QueuedAssets[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<QueuedAssets[]>([]);
-
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+      dispatch(getQueuedAssetInfoAsync({unitId: unitId})); // change here
+  
+     let headCellsArray = onSetHeadCellVisibility(headCells);
+     setHeadCells(headCellsArray);
+     onSaveHeadCellData(headCells, "Queued_Assets");  // will check this
+    }, []);
+  
+    const setData = () => {
+       let asset: QueuedAssets[] = [];
+      
+          if (queuedAssets && queuedAssets.length > 0) {
+            asset = queuedAssets.map((dt: any, i:number) => {
+                  return {
+                    filename: dt.fileName,
+                    status:  dt.status
+                    
+                  }
+              })
+          }
+          setRows(asset)
+          setReformattedRows(asset);
+  
+    }
+  
+    React.useEffect(() => {
+      setData();
+    }, [queuedAssets]);
+  
     const resizeQueuedAssets = (e: { colIdx: number; deltaX: number }) => {
         let headCellReset = onResizeRow(e, headCells);
         setHeadCells(headCellReset);
@@ -91,62 +122,67 @@ const QueuedAsstsDataTable = ()=>{
       };
 
       
-
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
        
         {
           label: `${t("File_Name")}`,
           id: "filename",
           align: "right",
-          dataComponent: (e: string) => textDisplay(e, " "),
+          dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
           sort: true,
+          minWidth: "120",
+          maxWidth: "325",
+          visible: true,
         },
         {
           label: `${t("Status")}`,
           id: "status",
-          align: "right",
-          dataComponent: projectStatusProgress,
-          sort: false
+          align: "left",
+          dataComponent:  (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),//projectStatusProgress,
+          sort: false, 
+          minWidth: "200",
+          maxWidth: "325",
+          visible: true,
         }
       
       ]);
 
     return (
-        <div className="">
-        {/* {rows && ( */}
-          <CRXDataTable
-            id={t("Queued_Assets")}
-            getRowOnActionClick={(val: QueuedAssets) =>
-              setSelectedActionRow(val)
-            }
-            showToolbar={true}
-            showCountText={true}
-            columnVisibilityBar={true}
-            showHeaderCheckAll={false}
-            initialRows={reformattedRows}
-            dragVisibility={false}
-            showCheckBoxesCol={false}
-            showActionCol={false}
-            headCells={headCells}
-            dataRows={rows}
-            orderParam={order}
-            orderByParam={orderBy}
-            searchHeader={true}
-            allowDragableToList={true}
-            showTotalSelectedText={false}
-            showActionSearchHeaderCell={true}
-            showCustomizeIcon={true}
-
-            className=""
-            onClearAll={clearAll}
-            getSelectedItems={(v: QueuedAssets[]) => setSelectedItems(v)}
-            onResizeRow={resizeQueuedAssets}
-            onHeadCellChange={onSetHeadCells}
-            setSelectedItems={setSelectedItems}
-            selectedItems={selectedItems}
-            offsetY={190}
+      <div className="userDataTableParent ">
+      {rows && (
+          <CRXDataTable 
+              id="group-userDataTable"
+              actionComponent={() => { }}
+              getRowOnActionClick={() => { }}
+              showToolbar={true}
+              dataRows={rows}
+              initialRows={reformattedRows}
+              headCells={headCells}
+              orderParam={order}
+              orderByParam={orderBy}
+              searchHeader={true}
+              columnVisibilityBar={true}
+              allowDragableToList={false}
+              className="ManageAssetDataTable usersGroupDataTable"
+              onClearAll={clearAll}
+              getSelectedItems={(v: QueuedAssets[]) => setSelectedItems(v)}
+              onResizeRow={resizeQueuedAssets}
+              onHeadCellChange={onSetHeadCells}
+              setSelectedItems={setSelectedItems}
+              selectedItems={selectedItems}
+              dragVisibility={false}
+              showCheckBoxes={false}
+              showActionCol={false}
+              showActionSearchHeaderCell={false}
+              showCountText={false}
+              showCustomizeIcon={false}
+              showTotalSelectedText={false}
+              lightMode={false}
+              offsetY={45}
           />
-        {/* )} */}
+      )
+      }
+
       </div>
     )
 }

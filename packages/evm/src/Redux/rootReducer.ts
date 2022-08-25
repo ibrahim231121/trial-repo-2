@@ -15,8 +15,8 @@ import unitTemplateSlice from './templateDynamicForm';
 import categoriesSlice from './SetupConfigurationReducer';
 import stationsSlice from './StationReducer';
 import assetSearchSlice from './AssetSearchReducer';
-import  configurationTemplatesReducerSlice from './ConfigurationTemplatesReducer';
-
+import configurationTemplatesReducerSlice from './ConfigurationTemplatesReducer';
+import auditLogSlice from './AuditLogReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -36,5 +36,6 @@ export const reducer = combineReducers({
   setupConfigurationReducer : categoriesSlice.reducer,
   assetSearchReducer: assetSearchSlice.reducer,
   configurationTemplatesSlice : configurationTemplatesReducerSlice.reducer,
+  auditLogSlice: auditLogSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { useDispatch } from 'react-redux';
 import Cookies from 'universal-cookie';
-import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
+import { EvidenceAgent, FileAgent } from '../../../../utils/Api/ApiAgent';
 import { SubmitAnalysisModel,Project,Job,File } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { CRXTooltip } from '@cb/shared';
@@ -186,7 +186,7 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
       const url =
       "/Files/download/" +
       `${res?.url}`;
-      EvidenceAgent.getDownloadUrl(url).then((response: string) =>  {
+      FileAgent.getDownloadUrl(url).then((response: string) =>  {
         setDownloadUrl(response);
       });
       

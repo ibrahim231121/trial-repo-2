@@ -9,7 +9,6 @@ import { Asset, Bookmark, File as EvidenceFile } from '../../utils/Api/models/Ev
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
 declare const window: any;
-window.onRecvData = new CustomEvent("onUploadSnapshotStatusUpdate");
 
 type VideoPlayerSnapshotProps = {
     openBookmarkForm: boolean;
@@ -55,6 +54,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     });
 
     useEffect(() => {
+        window.onRecvData = new CustomEvent("onUploadSnapshotStatusUpdate");
         window.addEventListener("onUploadSnapshotStatusUpdate", uploadSnapshotStatusStatusUpdate);
       }, [])
 

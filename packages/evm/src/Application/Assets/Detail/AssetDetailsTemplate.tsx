@@ -341,7 +341,6 @@ const AssetDetailsTemplate = (props: any) => {
   }
   function getChildAssetFile(dt : any)
   {
-  
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number )=>
       {

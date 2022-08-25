@@ -26,7 +26,8 @@ import {
     GROUP_USER_COUNT_GET_URL,
     SAVE_USER_GROUP_URL,
     BASE_URL_UNIT_SERVICES, 
-    FILE_SERVICE_URL } from './url';
+    FILE_SERVICE_URL,
+    AUDITLOG_SERVICE_URL } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
@@ -39,11 +40,13 @@ import {
     DeviceConfigurationTemplate, 
     DeviceType, 
     GetPrimaryDeviceInfo, 
+    QueuedAssets, 
     Unit, 
     UnitInfo, 
     UnitTemp, 
     UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { Station } from './models/StationModels';
+import { AuditLog } from './models/AuditLogModels';
 import { Paginated } from './models/CommonModels';
 const cookies = new Cookies();
 let config = {
@@ -107,8 +110,8 @@ export const EvidenceAgent = {
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url, config),
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
-    getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url),
-
+    getQueuedAssets: (unitId: number) => requests.get<QueuedAssets[]>(EVIDENCE_SERVICE_URL, '/Evidences/QueuedAssets/'+ unitId, config),
+   
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
@@ -133,8 +136,13 @@ export const AuthenticationAgent = {
     getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'', config)
 }
 
+export const AuditLogAgent = {
+    getUnitAuditLogs: (url: string) => requests.get<AuditLog[]>(AUDITLOG_SERVICE_URL, url),
+}
+
 export const FileAgent = {
-    getDownloadFileUrl: (fileId:number) => requests.get<string>(FILE_SERVICE_URL,'/Files/download/' + fileId, config)
+    getDownloadFileUrl: (fileId:number) => requests.get<string>(FILE_SERVICE_URL,'/Files/download/' + fileId, config),
+    getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url)
 }
 
 export const UsersAndIdentitiesServiceAgent = {

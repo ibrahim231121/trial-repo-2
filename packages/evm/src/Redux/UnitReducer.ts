@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
-import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
-import { UnitInfo } from '../utils/Api/models/UnitModels';
+import { UnitsAndDevicesAgent , EvidenceAgent} from '../utils/Api/ApiAgent';
+import { QueuedAssets, UnitInfo } from '../utils/Api/models/UnitModels';
 
 export const getUnitInfoAsync: any = createAsyncThunk(
     'getUnitInfo',
@@ -10,13 +10,27 @@ export const getUnitInfoAsync: any = createAsyncThunk(
     }
 );
 
+
+export const getQueuedAssetInfoAsync: any = createAsyncThunk(
+    'getQueuedAssetInfo',
+    async (args: any) => {
+        return await EvidenceAgent.getQueuedAssets(args.unitId).then((response:QueuedAssets[]) => response);
+
+    }
+);
+
+
+
+
 export const unitSlice = createSlice({
     name: 'unit',
-    initialState: { unitInfo: [] },
+    initialState: { unitInfo: [] , queuedAssets: []},
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getUnitInfoAsync.fulfilled, (state: any, { payload }) => {
             state.unitInfo = payload;
+        }).addCase(getQueuedAssetInfoAsync.fulfilled, (state: any, { payload })=>{
+            state.queuedAssets = payload;
         })
     }
 });

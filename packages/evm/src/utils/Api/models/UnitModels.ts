@@ -167,6 +167,12 @@ export interface UnitInfo {
     Status: string
 }
 
+export interface QueuedAssets 
+{
+    filename:string;
+    status:string;
+}
+
 export interface DefaultUnitTemplate {
     stationId: number,
     stationPolicyId: number,

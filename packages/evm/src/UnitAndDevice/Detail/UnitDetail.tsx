@@ -33,6 +33,8 @@ import QueuedAsstsDataTable from "./AssetQueuedDataTable";
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
 import { GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
 import { Station } from "../../utils/Api/models/StationModels";
+import UnitDeviceEvents from "./UnitDeviceEvents";
+import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -130,7 +132,9 @@ const UnitCreate = (props: historyProps) => {
   const tabs = [
     { label: t("Configurations"), index: 0 },
     { label: t("Devices"), index: 1 },
-    { label: t("Queued_Assets"), index: 2 }
+    { label: t("Queued_Assets"), index: 2 },
+    { label: t("Events"), index: 3 },
+    { label: t("Device_Diagnostic"), index: 4 },
   ];
 
   const [devicesList, setDevicesList] = useState<any>();
@@ -564,7 +568,7 @@ const UnitCreate = (props: historyProps) => {
         <CRXTabs
           value={value}
           onChange={handleChange}
-          tabitems={inCarTab === "Incar" ? tabs : tabs1}
+          tabitems={inCarTab === "DVR" ? tabs : tabs1}
         />
         <CrxTabPanel value={value} index={0}>
           <div className={showMessageError}>
@@ -576,7 +580,8 @@ const UnitCreate = (props: historyProps) => {
           </div>
         </CrxTabPanel>
 
-        {inCarTab === "Incar" ? (
+
+        {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={1}>
             <div className="unitDeviceMain searchComponents unitDeviceMainUii">
               {rows && (
@@ -618,19 +623,35 @@ const UnitCreate = (props: historyProps) => {
             {/* {`station ID == ${stationID}`} <br />
             {`unit ID == ${unitID}`} <br />
             {`template name == ${inCarTab}`} */}
-          </CrxTabPanel>
-        ) : null}
+           </CrxTabPanel>
+        ) : <CrxTabPanel value={value} index={1}>    
+        <QueuedAsstsDataTable unitId={unitID} />       
+      </CrxTabPanel>} 
 
-      {inCarTab === "Incar" ? (
+
+      {inCarTab === "DVR" ? (
         <CrxTabPanel value={value} index={2}>    
-          <QueuedAsstsDataTable/>       
+          <QueuedAsstsDataTable unitId={unitID} />       
         </CrxTabPanel>
+          ) : (<CrxTabPanel value={value} index={2}>    
+            <UnitDeviceEvents id={unitID} />       
+          </CrxTabPanel>)}
+
+          {inCarTab === "DVR" ? (
+      <CrxTabPanel value={value} index={3}>    
+      <UnitDeviceEvents id={unitID} />       
+    </CrxTabPanel>
+          ) : ( <CrxTabPanel value={value} index={3}>    
+            <UnitDeviceDiagnosticLogs id={unitID} />       
+          </CrxTabPanel>)}
+
+
+
+          {inCarTab === "DVR" ? (
+      <CrxTabPanel value={value} index={4}>    
+      <UnitDeviceDiagnosticLogs id={unitID} />       
+    </CrxTabPanel>
           ) : null}
-
-        <CrxTabPanel value={value} index={1}>    
-          <QueuedAsstsDataTable/>       
-        </CrxTabPanel>
-
 
         <div className="tab-bottom-buttons">
           <div className="save-cancel-button-box">

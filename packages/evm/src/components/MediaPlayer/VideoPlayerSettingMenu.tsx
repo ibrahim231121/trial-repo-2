@@ -104,8 +104,7 @@ useEffect(() => {
           </div>
           <i className="fas fa-chevron-right iconsRight"></i>
         </MaterialMenuItem>
-        {/* isMultiViewEnable && */}
-        {!singleVideoLoad &&
+        {!singleVideoLoad && isMultiViewEnable &&
           <>
             <MaterialMenuItem className="settingOverlay">
               <i className="far fa-stream iconsLeft"></i>
