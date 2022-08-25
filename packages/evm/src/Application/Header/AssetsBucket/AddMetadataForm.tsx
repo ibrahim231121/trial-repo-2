@@ -11,9 +11,12 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
 import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
+import { Policy } from "../../../utils/Api/models/PolicyModels";
+import moment from "moment";
 
 interface Props {
   onClose: any;
@@ -49,6 +52,7 @@ type CategoryNameAndValue = {
   categoryId: string;
   categoryName: string;
   categroyForm: string[];
+  categoryRetentionId: number;
 };
 
 interface addMetadata {
@@ -134,7 +138,7 @@ const AddMetadataForm: React.FC<Props> = ({
     station: "",
     masterAsset: "",
     owner: [],
-    category: [],
+    category: []
   });
 
   const [formpayloadErr, setformpayloadErr] = React.useState({
@@ -225,7 +229,7 @@ const AddMetadataForm: React.FC<Props> = ({
         }
       }
     )
-    
+
     if (checkSubmitType.length != 0) {
       var assetName: string = "";
       var station: string = "";
@@ -262,7 +266,6 @@ const AddMetadataForm: React.FC<Props> = ({
           }
         })
       );
-
       const categoryDateOfArry: any = [];
       categoryOption.map((item: any, counter: number) =>
         categoryData.forEach((x: any) => {
@@ -377,6 +380,7 @@ const AddMetadataForm: React.FC<Props> = ({
           categoryId: categories.id,
           categoryName: categories.name,
           categroyForm: categories.forms,
+          categoryRetentionId: categories.policies.retentionPolicyId
         };
         return j;
       });
@@ -406,6 +410,7 @@ const AddMetadataForm: React.FC<Props> = ({
           dateOfArry.push({
             id: item.categoryId,
             label: item.categoryName,
+            retentionId: item.categoryRetentionId,
             form: [
               {
                 id: index.id,
@@ -419,6 +424,7 @@ const AddMetadataForm: React.FC<Props> = ({
         dateOfArry.push({
           id: item.categoryId,
           label: item.categoryName,
+          retentionId: item.categoryRetentionId,
           form: [],
         });
       }
@@ -445,12 +451,15 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".mp3":
       case ".avi":
       case ".mkv":
+      case ".3gp":
+      case ".webm":
         answer = "Video";
         break;
 
       case ".mp3":
       case ".wma":
       case ".aac":
+      case ".wav":
         answer = "Audio";
         break;
 
@@ -569,20 +578,8 @@ const AddMetadataForm: React.FC<Props> = ({
     return typeOfFile;
   };
   const currentStartDate = () => {
-    var currentDate = new Date();
-    var mm = "" + (currentDate.getMonth() + 1);
-    var dd = "" + currentDate.getDate();
-    var yyyy = currentDate.getFullYear();
-    var hh = currentDate.getHours().toString();
-    var m = currentDate.getMinutes().toString();
-    var ss = currentDate.getSeconds().toString();
 
-    if (mm.length < 2) mm = "0" + mm;
-    if (dd.length < 2) dd = "0" + dd;
-    if (hh.length < 2) hh = "0" + hh;
-    if (m.length < 2) m = "0" + m;
-    if (ss.length < 2) ss = "0" + ss;
-    return [yyyy, mm, dd].join("-") + "T" + hh + ":" + m + ":" + ss + ".537Z";
+    return moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSS');
   };
 
   const insertCategory = (payloadCategory: any) => {
@@ -605,6 +602,7 @@ const AddMetadataForm: React.FC<Props> = ({
 
           categoryArrayIndex.push({
             id: catIndexs.id,
+            retentionId: catIndexs.retentionId,
             formData: [
               {
                 formId: formIndex.id,
@@ -614,7 +612,7 @@ const AddMetadataForm: React.FC<Props> = ({
           });
         });
       } else {
-        categoryArrayIndex.push({ id: catIndexs.id, formData: [] });
+        categoryArrayIndex.push({ id: catIndexs.id, retentionId: catIndexs.retentionId, formData: [] });
       }
     });
     return categoryArrayIndex;
@@ -624,16 +622,13 @@ const AddMetadataForm: React.FC<Props> = ({
     return num % 1;
   };
 
-  const recordingEnded = () => {
-    let displayText = formpayload.masterAsset.substring(
-      0,
-      formpayload.masterAsset.lastIndexOf("_")
-    );
+  const recordingEnded = (fileName: string) => {
     const filterObject = uploadFile.find(
       (x: any) =>
-        x.name.substring(0, x.name.lastIndexOf(".")).replaceAll(" ", "_") ===
-        displayText
+        x.uploadedFileName.substring(0, x.uploadedFileName.lastIndexOf(".")).replaceAll(" ", "_") ===
+        fileName
     );
+
     var hh = 0;
     var mm = 0;
     var ss = 0;
@@ -665,19 +660,23 @@ const AddMetadataForm: React.FC<Props> = ({
     mm = Math.trunc(minutes);
     const seconds = getDecimalPart(minutes) * 60;
     ss = Math.trunc(seconds);
+    const milliSecond = getDecimalPart(seconds) * 1000;
     var today = new Date();
-    today.setHours(today.getHours() + hh);
-    today.setMinutes(today.getMinutes() + mm);
-    today.setSeconds(today.getSeconds() + ss);
-    var m = "" + (today.getMonth() + 1);
-    var dd = "" + today.getDate();
-    var yyyy = today.getFullYear();
-    var currentHour = today.getHours().toString();
-    var currentMinute = today.getMinutes().toString();
-    var currentSecond = today.getSeconds().toString();
+    today.setUTCHours(today.getUTCHours() + hh);
+    today.setUTCMinutes(today.getUTCMinutes() + mm);
+    today.setUTCSeconds(today.getUTCSeconds() + ss);
+    today.setUTCMilliseconds(today.getUTCMilliseconds() + milliSecond);
+    var m = "" + (today.getUTCMonth() + 1);
+    var dd = "" + today.getUTCDate();
+    var yyyy = today.getUTCFullYear();
+    var currentHour = today.getUTCHours().toString();
+    var currentMinute = today.getUTCMinutes().toString();
+    var currentSecond = today.getUTCSeconds().toString();
+    var currentMiliSecond = today.getUTCMilliseconds().toString();
     if (currentHour.length < 2) currentHour = "0" + currentHour;
     if (currentMinute.length < 2) currentMinute = "0" + currentMinute;
     if (currentSecond.length < 2) currentSecond = "0" + currentSecond;
+
     return (
       [yyyy, m, dd].join("-") +
       "T" +
@@ -686,12 +685,73 @@ const AddMetadataForm: React.FC<Props> = ({
       currentMinute +
       ":" +
       currentSecond +
-      ".537Z"
+      "." +
+      currentMiliSecond
     );
   };
 
-  const onAddMetaData = () => {
+  const getRetentionByCategories = async (categories: any[]) => {
+
+    let retentionList = '';
+    let count = 0;
+    const retentionDetails: any = [];
+    let distinctIds = categories.map(x => x.retentionId).filter((item, i, ar) => ar.indexOf(item) === i);
+    for (const i of distinctIds) {
+      const retentionId = i;
+      retentionList +=
+        distinctIds.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
+      count++;
+    }
+
+    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
+
+    return new Promise(function (resolve, reject) {
+      SetupConfigurationAgent.getPoliciesAccordingToType(url).then((response: Policy[]) => {
+
+        for (let i = 0; i <= response.length - 1; i++) {
+          retentionDetails.push({
+            retentionId: response[i].id,
+            hours: response[i].detail.limit.hours ?? 0,
+            graceHours: response[i].detail.limit.gracePeriodInHours,
+            totalHours: (response[i].detail.limit.hours ?? 0) + (response[i].detail.limit.gracePeriodInHours ?? 0)
+          });
+        }
+        const rentionByHours = retentionDetails.sort((a: any, b: any) => (a.totalHours > b.totalHours ? 1 : -1)).reverse();
+        const sameRetentionByHours = rentionByHours.filter((x: any) => x.totalHours == rentionByHours[0].totalHours);
+        const finalRetentionByHour = sameRetentionByHours.filter((x: any) => x.hours == Math.max(...sameRetentionByHours.map((o: any) => o.hours)));
+
+        resolve(finalRetentionByHour[0]);
+      });
+    });
+  }
+  const getRetentionByStationId = async (stationId: number) => {
+    const url = `/Stations/${stationId}`;
+    return new Promise(function (resolve, reject) {
+      UnitsAndDevicesAgent.getStation(url).then((response: any) => {
+        const retention = {
+          retentionId: response?.policies[0]?.retentionPolicyId?.cmtFieldValue,
+          totalHours: +(response?.policies[0]?.retentionPolicyId?.record.find((x: any) => x.key == "Hours").value ?? 0)
+            + (+(response?.policies[0]?.retentionPolicyId?.record.find((x: any) => x.key == "GracePeriodHours").value ?? 0))
+        }
+        resolve(retention);
+      });
+    });
+  }
+
+  const onAddMetaData = async () => {
+
+    const station = optionList.find(
+      (x: any) => x.value === formpayload.station
+    );
+
+    let retention: any;
     const categories = insertCategory(formpayload.category);
+    if (categories.length > 0) {
+      retention = await getRetentionByCategories(categories);
+    }
+    else {
+      retention = await getRetentionByStationId(+station.id);
+    }
 
     const uploadedFile = uploadFile.map((index: any) => {
       let masterAssetValueIndex = index.uploadedFileName.lastIndexOf(".");
@@ -709,10 +769,10 @@ const AddMetadataForm: React.FC<Props> = ({
         extension: extension,
         url: index.url,
         size: index.size,
-        duration: index.duration,
+        duration: index.duration != undefined ? (index.duration * 1000) : 0,
         recording: {
           started: currentStartDate(),
-          ended: recordingEnded(),
+          ended: recordingEnded(index.uploadedFileName.substring(0, masterAssetValueIndex)),
         },
         sequence: 0,
         checksum: {
@@ -730,21 +790,21 @@ const AddMetadataForm: React.FC<Props> = ({
         status: "Uploading",
         state: "Normal",
         unitId: 20,
-        isRestrictedView: true,
-        duration: 0,
+        isRestrictedView: false,
+        duration: files.duration,
         recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
+          started: files.recording.started,
+          ended: files.recording.ended,
         },
         buffering: {
           pre: 20,
           post: 20,
         },
         files: [files],
-        audioDevice: "Youraudio",
-        camera: "Yourcam",
+        audioDevice: null,
+        camera: null,
         isOverlaid: true,
-        recordedByCSV: "Alice",
+        recordedByCSV: localStorage.getItem('username'),
       };
     });
 
@@ -770,8 +830,8 @@ const AddMetadataForm: React.FC<Props> = ({
         isRestrictedView: asset.isRestrictedView,
         duration: asset.duration,
         recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
+          started: asset.recording.started,
+          ended: asset.recording.ended,
         },
         buffering: {
           pre: asset.buffering.pre,
@@ -804,8 +864,8 @@ const AddMetadataForm: React.FC<Props> = ({
         isRestrictedView: childAsset.isRestrictedView,
         duration: childAsset.duration,
         recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
+          started: childAsset.recording.started,
+          ended: childAsset.recording.ended,
         },
         buffering: {
           pre: childAsset.buffering.pre,
@@ -821,31 +881,28 @@ const AddMetadataForm: React.FC<Props> = ({
       };
     });
 
-    const station = optionList.find(
-      (x: any) => x.value === formpayload.station
-    );
     const stationId: masterAssetStation = {
-      CMTFieldValue: station ? +station.id : 5,
+      CMTFieldValue: station ? +station.id : 0,
     };
 
     const retentionPolicyId: retentionPolicyId = {
-      CMTFieldValue: 1,
+      CMTFieldValue: retention?.retentionId ?? 0,
     };
 
     return {
       categories,
       assets: { master, children },
-      retainUntil: "2020-07-25T12:35:28.537Z",
+      retainUntil: retention?.totalHours != null ? moment().add(retention?.totalHours ?? 0, 'hours').utc().format('YYYY-MM-DDTHH:mm:ss') : null,
       stationId,
       retentionPolicyId,
-      computerAidedDispatch: "911",
-      tag: "Crime Scene",
+      computerAidedDispatch: null,
+      tag: null,
       version: "",
     };
   };
 
   const onAdd = async () => {
-    const payload = onAddMetaData();
+    const payload = await onAddMetaData();
 
     await fetch(EVIDENCE_ASSET_DATA_URL, {
       method: "POST",
@@ -873,14 +930,18 @@ const AddMetadataForm: React.FC<Props> = ({
       .then((resp) => {
         if (resp != undefined) {
           let error = JSON.parse(resp);
-          if (error.errors["Assets.Master.Files[0].Type"][0] != undefined) {
-            setAlert(true);
-            setResponseError(error.errors["Assets.Master.Files[0].Type"][0]);
+          if (!isNaN(+error)) {
+            console.log("evidence", error)
           }
-          if (error.errors["Assets.Master.Files[0].Type"][1] != undefined) {
-            setAlert(true);
-            setResponseError(error.errors["Assets.Master.Files[0].Type"][1]);
-          } else {
+          // if (error.errors["Assets.Master.Files[0].Type"][0] != undefined) {
+          //   setAlert(true);
+          //   setResponseError(error.errors["Assets.Master.Files[0].Type"][0]);
+          // }
+          // if (error.errors["Assets.Master.Files[0].Type"][1] != undefined) {
+          //   setAlert(true);
+          //   setResponseError(error.errors["Assets.Master.Files[0].Type"][1]);
+          // }
+          else {
             setAlert(true);
             setResponseError(error);
           }
@@ -889,138 +950,6 @@ const AddMetadataForm: React.FC<Props> = ({
   };
 
   const setEditPayload = () => {
-    const masterDataArray: any = [];
-    const ownerDataArray: any = [];
-    const categoryDataArray: any = [];
-    let assetBucketData: any = uploadAssetBucket.filter(
-      (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
-    );
-    assetBucketData.forEach((index: any) => {
-      index.categories.forEach((categoryIndex: any) => {
-        categoryDataArray.push(categoryIndex);
-      });
-      index.evidence.asset.forEach((x: any) => {
-        if (x.assetName === formpayload.masterAsset) {
-          masterDataArray.push(x);
-        }
-        masterDataArray.forEach((o: any) => {
-          o.owners.forEach((ownerIndex: any) => {
-            ownerDataArray.push(ownerIndex);
-          });
-        });
-      });
-    });
-
-    //category that are recently added
-    let formpayloadCategory: any = [];
-    let formpayloadCategoryId: any = [];
-    formpayload.category.forEach((x: any) => {
-      formpayloadCategory.push(x.label);
-      formpayloadCategoryId.push(x.id);
-    });
-
-    const categoriesPayload: any = [];
-    const b = formpayloadCategory.filter(
-      (element: any) => !categoryDataArray.includes(element)
-    );
-    categoryOption.forEach((x: any) => {
-      b.forEach((index: any) => {
-        if (index == x.label) {
-          categoriesPayload.push(x);
-        }
-      });
-    });
-
-    const categoriesId: any = [];
-    const c = categoryDataArray.filter(
-      (element: any) => !formpayloadCategory.includes(element)
-    );
-
-    categoryOption.forEach((x: any) => {
-      c.forEach((index: any) => {
-        if (index == x.label) {
-          categoriesId.push(x.id);
-        }
-      });
-    });
-
-    const owners: any = [];
-    formpayload.owner.forEach((owner: any) => {
-      owners.push({
-        CMTFieldValue: owner.id,
-      });
-    });
-
-    const children = new Array();
-    let master: any = {};
-    let masterAssetType: any = uploadAssetBucket.filter(
-      (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
-    );
-    masterAssetType.forEach((index: any) => {
-      let j = {
-        id: index.evidence.masterAsset.assetId,
-        name: index.evidence.masterAsset.assetName,
-        typeOfAsset: index.evidence.masterAsset.assetType,
-        status: index.evidence.masterAsset.status,
-        state: index.evidence.masterAsset.state,
-        unitId: 20,
-        isRestrictedView: index.evidence.masterAsset.isRestrictedView,
-        duration: index.evidence.masterAsset.duration,
-        recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
-        },
-        buffering: {
-          pre: index.evidence.masterAsset.preBuffer,
-          post: index.evidence.masterAsset.postBuffer,
-        },
-        owners,
-        bookMarks: [],
-        notes: [],
-        audioDevice: index.evidence.masterAsset.audioDevice,
-        camera: index.evidence.masterAsset.camera,
-        isOverlaid: index.evidence.masterAsset.isOverlaid,
-        recordedByCSV: "Alice",
-      };
-      master = j;
-    });
-
-    const asset = masterAssetType.map((index: any) => {
-      return index.evidence.asset.filter(
-        (x: any) => x.assetName != formpayload.masterAsset
-      );
-    });
-    asset.forEach((index: any, counter: any) => {
-      index.forEach((i: any) => {
-        let j = {
-          id: i.assetId,
-          name: i.assetName,
-          typeOfAsset: i.assetType,
-          status: i.status,
-          state: i.state,
-          unitId: 20,
-          isRestrictedView: i.isRestrictedView,
-          duration: i.duration,
-          recording: {
-            started: currentStartDate(),
-            ended: recordingEnded(),
-          },
-          buffering: {
-            pre: i.preBuffer,
-            post: i.postBuffer,
-          },
-
-          bookMarks: [],
-          notes: [],
-          audioDevice: i.audioDevice,
-          camera: i.camera,
-          isOverlaid: i.isOverlaid,
-          recordedByCSV: "Alice",
-        };
-        children[counter] = j;
-        counter++;
-      });
-    });
 
     // newly uploaded file in seprate array
     const uploadedFile = uploadFile.map((index: any) => {
@@ -1031,18 +960,41 @@ const AddMetadataForm: React.FC<Props> = ({
         name.length
       );
 
+      const files: masterAssetFile = {
+        id: 0,
+        assetId: 0,
+        filesId: index.uploadedFileId,
+        name: index.uploadedFileName.substring(0, masterAssetValueIndex),
+        type: checkFileType(extension),
+        extension: extension,
+        url: index.url,
+        size: index.size,
+        duration: index.duration != undefined ? (index.duration * 1000) : 0,
+        recording: {
+          started: currentStartDate(),
+          ended: recordingEnded(index.uploadedFileName.substring(0, masterAssetValueIndex)),
+        },
+        sequence: 0,
+        checksum: {
+          checksum: "bc527343c7ffc103111f3a694b004e2f",
+          status: true,
+          algorithm: "SHA-257",
+        },
+        version: "",
+      };
+
       return {
         id: 0,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
         typeOfAsset: checkAssetType(extension),
-        status: "Available",
+        status: "Uploading",
         state: "Normal",
         unitId: 20,
-        isRestrictedView: true,
-        duration: index.duration,
+        isRestrictedView: false,
+        duration: files.duration,
         recording: {
-          started: currentStartDate(),
-          ended: recordingEnded(),
+          started: files.recording.started,
+          ended: files.recording.ended,
         },
         buffering: {
           pre: 20,
@@ -1052,99 +1004,17 @@ const AddMetadataForm: React.FC<Props> = ({
         notes: [],
         owners: [
           {
-            cmtFieldValue: 1,
+            cmtFieldValue: localStorage.getItem('User Id'),
           },
         ],
-        audioDevice: "Youraudio",
-        camera: "Yourcam",
+        files: [files],
+        audioDevice: null,
+        camera: null,
         isOverlaid: true,
-        recordedByCSV: "Alice",
+        recordedByCSV: localStorage.getItem('username'),
       };
     });
-
-    const station = optionList.find(
-      (x: any) => x.value === formpayload.station
-    );
-    const stationId: masterAssetStation = {
-      CMTFieldValue: station ? +station.id : 5,
-    };
-
-    const retentionPolicyId: retentionPolicyId = {
-      CMTFieldValue: 1,
-    };
-    // category included in formpayload
-    const prevCategoriesPayloads: any = [];
-    const payloadCategory = formpayloadCategory.filter((element: any) =>
-      categoryDataArray.includes(element)
-    );
-
-    categoryOption.forEach((x: any) => {
-      payloadCategory.forEach((index: any) => {
-        if (index == x.label) {
-          prevCategoriesPayloads.push(x);
-        }
-      });
-    });
-
-    const categories = insertCategory(prevCategoriesPayloads);
-    // formatted data for posting the recently added category
-    let formCategory: any = {};
-    let assignedCategories: any = [];
-    if (categoriesPayload.length != 0 && categoriesPayload) {
-      categoriesPayload.forEach((catIndex: any, i: any) => {
-        if (catIndex.form.length != 0) {
-          catIndex.form.forEach((formIndex: any) =>
-            formIndex.fields.forEach((index: any) => {
-              let j = {
-                formId: +index.id,
-                fields: [
-                  {
-                    id: +index.id,
-                    key: "Button",
-                    value: index.name,
-                    datatype: index.type,
-                    version: "",
-                  },
-                ],
-              };
-              assignedCategories.push({
-                id: +catIndex.id,
-                formData: [j],
-              });
-              formCategory = {
-                unAssignCategories: [],
-                assignedCategories,
-                assignedOn: "2022-05-16T08:51:06.608Z",
-                updateCategories: [],
-              };
-            })
-          );
-        } else {
-          assignedCategories.push({
-            id: +catIndex.id,
-            formData: [],
-          });
-          formCategory = {
-            unAssignCategories: [],
-            assignedCategories,
-            assignedOn: "2022-05-16T08:51:06.608Z",
-            updateCategories: [],
-          };
-        }
-      });
-    }
-
-    const payload = {
-      categories,
-      assets: { master, children },
-      retainUntil: "2020-07-25T12:35:28.537Z",
-      stationId,
-      retentionPolicyId,
-      computerAidedDispatch: "911",
-      tag: "Crime Scene",
-      version: "",
-    };
-    return [payload, uploadedFile, owners, formCategory, categoriesId];
+    return uploadedFile;
   };
 
   const onEdit = async (ids: any, assetId: any) => {
@@ -1157,55 +1027,9 @@ const AddMetadataForm: React.FC<Props> = ({
         TenantId: "1",
         Authorization: `Bearer ${cookies.get("access_token")}`,
       },
-      body: JSON.stringify(payload[1]),
+      body: JSON.stringify(payload),
     }).then(function (res) {
       if (res.status == 200) {
-        if (payload[3].length != 0 && Object.keys(payload[3]).length != 0) {
-          let urlAddCategories =
-            EVIDENCE_ASSET_DATA_URL + "/" + ids + "/Categories";
-          fetch(urlAddCategories, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              TenantId: "1",
-              Authorization: `Bearer ${cookies.get("access_token")}`,
-            },
-            body: JSON.stringify(payload[3]),
-          }).then(function (res) {
-            return res.status;
-          });
-        }
-
-        if (payload[4].length != 0) {
-          payload[4].forEach((x: any) => {
-            let urlDeleteCategories =
-              EVIDENCE_ASSET_DATA_URL + "/" + ids + "/Categories" + "/" + +x;
-
-            fetch(urlDeleteCategories, {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                TenantId: "1",
-                Authorization: `Bearer ${cookies.get("access_token")}`,
-              },
-            }).then(function (res) {
-              return res.status;
-            });
-          });
-        }
-
-        let urlUpdate = EVIDENCE_ASSET_DATA_URL + "/" + ids;
-        fetch(urlUpdate, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            TenantId: "1",
-            Authorization: `Bearer ${cookies.get("access_token")}`,
-          },
-          body: JSON.stringify(payload[0]),
-        }).then(function (response) {
-          return response.json();
-        });
       }
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
@@ -1308,11 +1132,10 @@ const AddMetadataForm: React.FC<Props> = ({
           <>
             <CRXAlert
               message={responseError}
-              className={`crxAlertUserEditForm ${
-                alert === true
-                  ? "__crx__Set_MetaData_Show"
-                  : "__crx__Set_MetaData_Hide"
-              } }`}
+              className={`crxAlertUserEditForm ${alert === true
+                ? "__crx__Set_MetaData_Show"
+                : "__crx__Set_MetaData_Hide"
+                } }`}
               alertType={alertType}
               type={errorType}
               open={alert}
@@ -1329,9 +1152,8 @@ const AddMetadataForm: React.FC<Props> = ({
                   {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select ${
-                    formpayload.masterAsset === "" ? "" : "gepAddClass"
-                  }`}
+                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
+                    }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText={t("Select_Master_Asset")}
                   disabled={
@@ -1356,16 +1178,14 @@ const AddMetadataForm: React.FC<Props> = ({
               </div>
             </div>
             <div
-              className={`metaData-station ${
-                meteDataErrMsg.required == ""
-                  ? ""
-                  : "__Crx_MetaData__Station_Error"
-              }`}
+              className={`metaData-station ${meteDataErrMsg.required == ""
+                ? ""
+                : "__Crx_MetaData__Station_Error"
+                }`}
             >
               <div
-                className={`metaData-inner ${
-                  formpayload.station === "" ? "" : "gepAddClass"
-                }`}
+                className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
+                  }`}
               >
                 <label>
                   {t("Station")} <span>*</span>
@@ -1396,11 +1216,10 @@ const AddMetadataForm: React.FC<Props> = ({
               </div>
             </div>
             <div
-              className={`metaData-category ${
-                formpayloadErr.ownerErr == ""
-                  ? ""
-                  : "__Crx_MetaData__Station_Error"
-              }`}
+              className={`metaData-category ${formpayloadErr.ownerErr == ""
+                ? ""
+                : "__Crx_MetaData__Station_Error"
+                }`}
             >
               <CRXMultiSelectBoxLight
                 className="categortAutocomplete CRXmetaData-owner"
@@ -1446,11 +1265,10 @@ const AddMetadataForm: React.FC<Props> = ({
           <>
             <CRXAlert
               message={responseError}
-              className={`crxAlertUserEditForm ${
-                alert === true
-                  ? "__crx__Set_MetaData_Show"
-                  : "__crx__Set_MetaData_Hide"
-              } }`}
+              className={`crxAlertUserEditForm ${alert === true
+                ? "__crx__Set_MetaData_Show"
+                : "__crx__Set_MetaData_Hide"
+                } }`}
               alertType={alertType}
               type={errorType}
               open={alert}
