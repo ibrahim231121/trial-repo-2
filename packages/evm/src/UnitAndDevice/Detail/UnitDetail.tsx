@@ -133,6 +133,7 @@ const UnitCreate = (props: historyProps) => {
     { label: t("Queued_Assets"), index: 2 }
   ];
 
+  const [devicesList, setDevicesList] = useState<any>();
   const [stationList, setStationList] = useState<any>();
   const [configTemplateList, setConfigTemplateList] = useState<any>();
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
@@ -141,19 +142,24 @@ const UnitCreate = (props: historyProps) => {
     UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/GetPrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/GetConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
     UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
-    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "?Page=1&Size=100").then((response:Unit) => {
-      let unitAndDevicesRows: UnitAndDevice[] = [];  
-      if (response != undefined) {
-        unitAndDevicesRows = response.devices.map((data) => {
-          return { id: data.id,deviceNames:"", deviceTypes:data.publicKey.format,deviceSerialNumbers:data.identifier,
-            deviceVersions:data.version.current.major+"."+data.version.current.minor+"."+data.version.current.build+"."+data.version.current.revision
-          };
-        });
-        
-        setRows(unitAndDevicesRows);
-      }
-    });
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "?Page=1&Size=100").then((response:Unit) => setDevicesList(response));
   }, []);
+
+  React.useEffect(() => {
+    let unitAndDevicesRows: UnitAndDevice[] = [];
+    let deviceNames:UnitAndDevice[]=[]
+  
+    if (devicesList != undefined) {
+      deviceNames = devicesList.name
+      unitAndDevicesRows = devicesList.devices.map((data: any) => {
+        return { id: data.id,deviceNames:deviceNames, deviceTypes:data.publicKey.format,deviceSerialNumbers:data.identifier,
+          deviceVersions:data.version.current.major+"."+data.version.current.minor+"."+data.version.current.build+"."+data.version.current.revision
+         };
+      });
+
+      setRows(unitAndDevicesRows);
+    }
+  }, [devicesList]);
 
   React.useEffect(() => {
     showSave();

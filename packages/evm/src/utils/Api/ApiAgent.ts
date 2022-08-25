@@ -46,7 +46,6 @@ import {
 import { Station } from './models/StationModels';
 import { Paginated } from './models/CommonModels';
 const cookies = new Cookies();
-debugger;
 let config = {
     
     headers: {

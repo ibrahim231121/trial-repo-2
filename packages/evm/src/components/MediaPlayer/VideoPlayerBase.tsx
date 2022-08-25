@@ -471,53 +471,38 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const [isMute, setIsMute] = useState(false);
-
   const volumeIcon = useRef<any>(null)
 
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
-    if(!(openNoteForm || openBookmarkForm)){
-      if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
-      if (shiftKey && code == "BracketRight") {
-        event.preventDefault();
-        if(!ismodeFwdisable){
-          onClickFwRw(modeFw + 2, 1)
-        }
-      }
-      if (shiftKey && code == "BracketLeft") {
-        event.preventDefault();
-        if(!ismodeRwdisable)
-        {
-          onClickFwRw(modeRw + 2, 2)
-        }
-      } //shift + [
-      if (shiftKey && code == "Period") {
-        event.preventDefault(); 
-        modeSet(mode < 0 ? 2 : (mode + 2))
-      } //Shift + .
-      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
-      if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
-      if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
-      if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
-      if (code == "ArrowDown") {
-        event.preventDefault();
-        setVolume(volume > 0 ? volume - 10 : volume);
-        setVolumeHandle(volume > 0 ? volume - 10 : volume);
-      } //down arrows
-      if (code == "ArrowUp") {
-        event.preventDefault();
-        setVolume(volume < 100 ? volume + 10 : volume);
-        setVolumeHandle(volume < 100 ? volume + 10 : volume);
-      } //up arrows
-      if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
-      if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
-      if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // F
-      if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // L
-      if (code == "Comma") {event.preventDefault(); setSettingMenuEnabled(true);} // ,
-      if (code == "KeyM") {event.preventDefault(); setMuteHandle(true); setIsMute(true)} // M
-    }
+    if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+    if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+    if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
+    if (shiftKey && code == "Period") {
+      event.preventDefault(); 
+      modeSet(mode < 0 ? 2 : (mode + 2))
+    } //Shift + .
+    if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+    if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+    if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
+    if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
+    if (code == "ArrowDown") {
+      event.preventDefault(); 
+      setVolume(volume - 1);
+      setVolumeHandle(volume - 1);
+    } //down arrows
+    if (code == "ArrowUp") {
+      event.preventDefault(); 
+      setVolume(volume + 1);
+      setVolumeHandle(volume + 1);
+    } //up arrows
+    if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
+    if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
+    if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
+    if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+    
+
   };
 
 
@@ -1818,7 +1803,7 @@ const VideoPlayerBase = (props: any) => {
                   </div>
 
                   <div>
-                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} />
+                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
                   </div>
                 </div>
                 <div className="playerViewMiddle">

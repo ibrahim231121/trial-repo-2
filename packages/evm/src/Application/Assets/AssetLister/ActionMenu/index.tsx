@@ -35,7 +35,7 @@ type Props = {
   showToastMsg(obj: any): any;
   setIsOpen: any
   IsOpen: any
-  Asset? : any;
+  Asset?: any;
 };
 
 export interface AssetBucket {
@@ -107,7 +107,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     } else {
       setIsCategoryEmpty(true);
     }
-
     if (row?.evidence?.masterAsset?.lock != null) {
 
       setIsLockedAccess(false)
@@ -132,8 +131,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
       const data = find === -1 ? row : selectedItems;
       // To cater object is not extensible issue,
-      let newObject = {...data};
-      
+      let newObject = { ...data };
+
       if (data.evidence) {
         newObject.isMaster = data.evidence.masterAssetId === data.id;
       }
@@ -212,8 +211,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const userId = parseInt(localStorage.getItem('User Id') ?? "0")
   const toasterRef = useRef<typeof CRXToaster>(null);
 
-
-
   const confirmCallBackForRestrictModal = () => {
     const _requestBody = [];
     if (isSelectedItem) {
@@ -237,23 +234,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         operation: isLockedAccess ? "Lock" : "UnLock"
       })
     }
-    // }
     const _body = JSON.stringify(_requestBody);
     const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
-    fetch(_url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        TenantId: "1",
-      },
-      body: (_body),
-    }).then(function (res) {
-      if (res.status === 204) {
+    http.patch(_url, _body).then((response) => {
+      if (response.status === 204) {
         toasterRef.current.showToaster({
           message: isLockedAccess ? "Access Restricted" : "Access Unlocked",
           variant: "success",
           duration: 7000,
-
         });
         setSuccess(true);
         setTimeout(() => {
@@ -262,14 +250,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           setSuccess(false);
         }, 3000);
       }
-      return res.status;
     })
-      .catch((errors) => {
-        const err = errors as AxiosError;
+      .catch((error) => {
+        const err = error as AxiosError;
         if (err.request.status === 409) {
-          setErrorMessage(t("The_asset_is_already_locked"));
+          setErrorMessage("The asset is already locked.");
         } else {
-          setErrorMessage(t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"));
+          setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
         }
         setError(true);
       });
@@ -305,7 +292,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      * ! For child asset, extract 'selectedItem' prop.
      */
     if (selectedItems.length != 0) {
-
     }
     const evidenceId = row.evidence.id;
     const assetId = row.assetId;
@@ -319,7 +305,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       responseType: 'blob'
     })
       .then((response) => {
-        downloadFileByFileResponse(response);
+        downloadFileByFileResponse(response, assetId);
       }).catch((error) => {
         const err = error as AxiosError;
         if (err.request.status === 500) {
@@ -329,10 +315,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       });
   }
 
-
-  const downloadFileByFileResponse = (response: AxiosResponse) => {
+  const downloadFileByFileResponse = (response: AxiosResponse, assetId: number) => {
     let fileStream = response.data;
-    const fileName = `Import_Video_${Date.now()}.pdf`;
+    const fileName = `${assetId}_Metadata.pdf`;
     const blob = new Blob([fileStream],
       { type: 'application/pdf' });
     const link = document.createElement('a');
@@ -476,8 +461,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         offsetX={25}
         offsetY={12}
         className="menuCss"
-        boundingBoxPadding= '1 8 1 1'
-        portal={true}
+
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
@@ -509,29 +493,29 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
 
         {IsOpen ? (
-        <MenuItem>
-          {/* <Restricted moduleId={30}> 
+          <MenuItem>
+            {/* <Restricted moduleId={30}> 
              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
-              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Set_as_primary")}</div>
-              </div>
-             {/* </SecurityDescriptor> 
+            <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+              <div className="crx-menu-icon"></div>
+              <div className="crx-menu-list">{t("Set_as_primary")}</div>
+            </div>
+            {/* </SecurityDescriptor> 
            </Restricted>  */}
-        </MenuItem>
-): null
-}
+          </MenuItem>
+        ) : null
+        }
 
         <MenuItem>
           {/* <Restricted moduleId={21}>
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
-              <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-tag fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Assign_User")}</div>
-              </div>
-            {/* </SecurityDescriptor>
+          <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
+            <div className="crx-menu-icon">
+              <i className="far fa-user-tag fa-md"></i>
+            </div>
+            <div className="crx-menu-list">{t("Assign_User")}</div>
+          </div>
+          {/* </SecurityDescriptor>
           </Restricted> */}
         </MenuItem>
 
@@ -574,7 +558,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </MenuItem>
         )}
 
-
+        {console.log('isLockedAccess', isLockedAccess)}
+        {isLockedAccess ?
+          <MenuItem>
+            <Restricted moduleId={0}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+                {/* descriptorId={4} */}
+                <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Restrict_access")}</div>
+                </div>
+                <div className="crx-menu-list">{t("Restrict_access")}</div>
+              </SecurityDescriptor>
+            </Restricted>
+          </MenuItem>
+          :
+          null
+        }
 
 
         <MenuItem>
@@ -602,6 +604,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem> */}
+        
 
         <MenuItem>
           <Restricted moduleId={0}>
@@ -624,8 +627,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </Restricted>
         </MenuItem>
 
-
-        {/* <MenuItem disabled>
+        <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -636,10 +638,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
 
 
-        {/* <MenuItem>
+        <MenuItem>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content">
@@ -650,9 +652,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
 
-        {/* <MenuItem disabled>
+        <MenuItem disabled>
           <Restricted moduleId={0}>
             <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
               <div className="crx-meu-content groupingMenu">
@@ -663,38 +665,21 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
               </div>
             </SecurityDescriptor>
           </Restricted>
-        </MenuItem> */}
+        </MenuItem>
 
-        {isLockedAccess ?
-          <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
-                {/* descriptorId={4} */}
-                <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Restrict_access")}</div>
-                </div>
-                
-              </SecurityDescriptor>
-            </Restricted>
-          </MenuItem>
-          :
-          null
-        }
+
 
         {multiAssetDisabled === false ? (
           <MenuItem>
             {/* <Restricted moduleId={0}> */}
-              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
-                <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Share_Asset")}</div>
-                </div>
-              {/* </SecurityDescriptor> */}
+            {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+            <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
+              <div className="crx-menu-icon">
+                <i className="far fa-user-lock fa-md"></i>
+              </div>
+              <div className="crx-menu-list">{t("Share_Asset")}</div>
+            </div>
+            {/* </SecurityDescriptor> */}
             {/* </Restricted> */}
           </MenuItem>
         ) : null
@@ -706,12 +691,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           <MenuItem>
             <Restricted moduleId={0}>
               {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
-                <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
+              <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
                 </div>
+                <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
+              </div>
               {/* </SecurityDescriptor> */}
             </Restricted>
           </MenuItem>

@@ -329,7 +329,7 @@ const AssetDetailsTemplate = (props: any) => {
   function getMasterAssetFile(dt : any)
   {
     dt?.map((template: any, i: number) => {
-      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+      FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
       setFileData([...fileData, {
         filename: template.name,
         fileurl: template.url,
@@ -345,7 +345,7 @@ const AssetDetailsTemplate = (props: any) => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number )=>
       {
-        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+        FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
           setChildFileData([...childFileData, {
             filename: template.name,
             fileurl: template.url,

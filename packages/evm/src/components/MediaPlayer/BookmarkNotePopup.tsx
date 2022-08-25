@@ -32,8 +32,8 @@ const BookmarkNotePopup = ({bookmarkNotePopupObj, bookmarkNotePopupArrObj, setBo
   React.useEffect(() => {
     setDescription(bookmarkNotePopupObj.description);
     if(bookmarkNotePopupObj.objtype == "Note"){
-      let listOfKeyValue = bookmarkNotePopupObj?.userId?.record;
-      if(listOfKeyValue && listOfKeyValue.length > 0){
+      let listOfKeyValue = bookmarkNotePopupObj.userId.record;
+      if(listOfKeyValue.length > 0){
         listOfKeyValue.forEach((x:any)=>
           {
             if(x.key == "UserName"){

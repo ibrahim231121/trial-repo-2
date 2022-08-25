@@ -14,10 +14,14 @@ const CalculateHoldUntill = (dateTime: string): string => {
     if (now < expiration) {
         const diff = expiration.diff(now);
         const diffDuration = moment.duration(diff);
-        let differenceInHours = diffDuration.asHours();  
-        return (`${ Math.round(differenceInHours / 24) } Days ${ Math.round(differenceInHours % 24)} Hours`).toString();
-    }else{
-        return 'Asset Expired';
+        let DifferenceInString;
+        if (diffDuration.days() > 1) {
+            DifferenceInString = `${diffDuration.days()} Days ${diffDuration.hours()} Hours`;
+        } else {
+            DifferenceInString = `${diffDuration.hours()} Hours`;
+        }
+        return DifferenceInString.toString();
     }
+    return 'Asset Expired';
 };
 export {AssetRetentionFormat, CalculateHoldUntill} ;

@@ -9,14 +9,13 @@ interface VolumecontrolProp {
   setMuteHandle: (values: boolean) => void;
   volume: number;
   setVolume: any;
-  isMute: any;
-  setIsMute: any;
 }
 
   const VolumeControl = (props: VolumecontrolProp) => {
-  const{setVolumeHandle, setMuteHandle, volume, setVolume, isMute, setIsMute} = props;
+  const{setVolumeHandle, setMuteHandle, volume, setVolume} = props;
 
   
+  const [isMute, setIsMute] = useState(false);
 
   const [volumeBar, setvolumeBar] = useState("hideVolumeBar");
 
