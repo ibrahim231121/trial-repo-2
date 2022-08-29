@@ -123,16 +123,15 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
               
               <DetailedAssetPopup asset={assets} row={evidence}/>
             </>
-  return (
-    CRXDataTableTextPopover({
-      content : dataLink,
-      id : "dataAssets",
-      isPopover : true,
-      counts : assetName,
-      title:"Assets ID",
-      minWidth: "130",
-      maxWidth: "263",
-    })
+  return (<CRXDataTableTextPopover
+          content = {dataLink}
+          id = "dataAssets"
+          isPopover = {true}
+          counts = {assetName}
+          title="Assets ID"
+          minWidth= "130"
+          maxWidth= "263"
+        />
   );
 };
 

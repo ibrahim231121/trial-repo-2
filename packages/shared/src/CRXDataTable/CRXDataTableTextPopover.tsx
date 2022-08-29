@@ -30,7 +30,7 @@ const useGapStyles = makeStyles({
     }
 });
 
-  export default function CRXDataTableTextPopover ({content, id, isPopover, counts, minWidth, maxWidth}:popoverProps) {
+  const  CRXDataTableTextPopover = ({content, id, isPopover, counts, minWidth, maxWidth}:popoverProps) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const popoverRefs = useRef(content)
     const paperRef = useRef<HTMLInputElement>(null)
@@ -114,3 +114,4 @@ const useGapStyles = makeStyles({
     )
 }
 
+export default CRXDataTableTextPopover;
