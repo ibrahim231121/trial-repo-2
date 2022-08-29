@@ -43,27 +43,14 @@ const CustomizedMultiSelectForFormik = (props: any) => {
           setFieldValue(name, e.target.value);
         }}
         renderValue={(selected: any[]) => {
-
+          
           var addAllSelected = selected.includes("Add All");
           if(addAllSelected)
           {
-            return "Add All";
+            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value));
+            return children.filter((x: any) => x.key != "Add All").map((x:any) => x.key).join(', ');
           }
-          return selected.join(', ')
-          // return selected.join(', ');
-          // var valuesAppend = children.filter((x: any) => x.key != "Add All").map((x: any) => {
-          //   if (selected.some((y: any) => x.props.value == y) || selected.includes("Add All")) {
-          //     return x.key;
-          //   }
-          // });
-          // var definedValues = valuesAppend.filter((y: any) => y !== undefined);
-          // debugger;
-          // if (definedValues.length < valuesAppend.length) {
-          //   return definedValues.join(', ');
-          // }
-          // else {
-          //   return "Add All";
-          // }
+          return children.filter((x: any) => selected.includes(x.props.value)).map((x:any) => x.key).join(', ');
         }}
         {...field}
       >
@@ -218,10 +205,15 @@ export const CreateTempelateCase = (props: any) => {
 
   const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors } = props;
 
-  const handleRowIdDependency = (key: string) => {
+  const handleRowIdDependency = (key: string, extraFieldDependency?: any) => {
     var parentSplittedKey = formObj.key.split('_');
     key = key.replace("rowId", parentSplittedKey[1])
     var value = values[key]
+    if(extraFieldDependency == "cameraDevice")
+    {
+      var val = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/deviceType_1_Camera/Select").options.find((x:any) => x.value == value)?.deviceType;
+      return val;
+    }
     return value;
   }
 
@@ -247,7 +239,7 @@ export const CreateTempelateCase = (props: any) => {
   switch (formObj.type) {
     case "text":
       return (
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
           {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={`formMainHeading   ${formObj.labelGroupRecording} `}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <span className={formObj.class}>
@@ -293,10 +285,10 @@ export const CreateTempelateCase = (props: any) => {
       );
     case "time":
       return (
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <div className={formObj.class}>
           <div
-            className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'DynamicFormTimeUi DynamicFormTimeUiDepend' : 'DynamicFormTimeUi'}
+            className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'DynamicFormTimeUi DynamicFormTimeUiDepend' : 'DynamicFormTimeUi'}
           >
             <div className='DFTUILeft'>
               <label>{t(formObj.labelMute)}</label>
@@ -335,7 +327,7 @@ export const CreateTempelateCase = (props: any) => {
       return (
         <>
           {
-            (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+            (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
             <>
               {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`} >{t(formObj.labelGroupRecording)}</h1>}
               <div className={formObj.class}>
@@ -390,12 +382,12 @@ export const CreateTempelateCase = (props: any) => {
       );
     case "select":
       return (
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
           {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <div className={formObj.class}>
             <div
-              className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
+              className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
             >
               <div>
                 <label className='UiStationSelectLabel'>{t(formObj.label)}
@@ -456,9 +448,9 @@ export const CreateTempelateCase = (props: any) => {
     case "multiselect":
 
       return (
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <div
-          className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
+          className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
         >
           <div className='multiSelectUiLeft'>
             <label className='multiSelectUiLabel'>{t(formObj.label)}</label>
@@ -512,12 +504,12 @@ export const CreateTempelateCase = (props: any) => {
     case "checkbox":
 
       return (
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
           {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <div className={formObj.class}>
             <div
-              className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'UiCheckbox UiCheckboxDepend ' : 'UiCheckbox'}
+              className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiCheckbox UiCheckboxDepend ' : 'UiCheckbox'}
             >
               <div className="UiCheckboxMain">
                 <div className="UiCheckboxLeft">
@@ -539,7 +531,6 @@ export const CreateTempelateCase = (props: any) => {
                           if (formObj.dependant != null) {
                             customEvent(event, setFieldValue, formObj.dependant);
                           }}}
-                        validateOnChange
                       />
                       <span className="checkmark" ></span>
                       <p className="checkHelperText">{t(formObj.checkHelperText)}</p>
@@ -571,10 +562,10 @@ export const CreateTempelateCase = (props: any) => {
     case "number":
       return (
 
-        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key)))) &&
+        (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <div className={formObj.class}>
           <div className={touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError" : "NumberField"}>
-            <div className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key))) ? 'UiNumberSelectorDepend' : ''}>
+            <div className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiNumberSelectorDepend' : ''}>
               <div
                 className={`${formObj.seconds === false ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
 

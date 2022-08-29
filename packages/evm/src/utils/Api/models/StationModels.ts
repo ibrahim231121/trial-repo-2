@@ -27,3 +27,9 @@ export interface StationPolicy {
     configurationTemplates: ConfigurationTemplate[],
     uploadPolicyId: number
 }
+
+export interface CaptureDevice {
+    id: number,
+    name: string,
+    deviceType: string
+}

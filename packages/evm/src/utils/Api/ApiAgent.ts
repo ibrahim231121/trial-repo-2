@@ -45,7 +45,7 @@ import {
     UnitInfo, 
     UnitTemp, 
     UnitTemplateConfigurationInfo } from './models/UnitModels';
-import { Station } from './models/StationModels';
+import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
 import { Paginated } from './models/CommonModels';
 const cookies = new Cookies();
@@ -182,4 +182,5 @@ export const UnitsAndDevicesAgent = {
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),
     getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/"+url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
+    getAllCaptureDevices: () => requests.get<CaptureDevice[]>(BASE_URL_UNIT_SERVICES, "/CaptureDevices", config),
 }

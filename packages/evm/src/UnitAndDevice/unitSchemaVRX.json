@@ -96,22 +96,6 @@
         {
           "value": "Add All",
           "label": "Add All"
-        },
-        {
-          "value": "Category 1",
-          "label": "Category 1"
-        },
-        {
-          "value": "Category 2",
-          "label": "Category 2"
-        },
-        {
-          "value": "Category 3",
-          "label": "Category 3"
-        },
-        {
-          "value": "Category 4",
-          "label": "Category 4"
         }
       ]
     },
@@ -214,6 +198,91 @@
           ]
         }
       ]
+    },
+    {
+      "id": "13",
+      "key": "unitSettings/groupName/TextBox",
+      "type": "text",
+      "label": "Group Name",
+      "value": ""
+    },
+    {
+      "id": "14",
+      "key": "unitSettings/overideBWGroupName/CheckBox",
+      "type": "checkbox",
+      "label": "Overide BW Group Name",
+      "value": false
+    },
+    {
+      "id": "15",
+      "key": "unitSettings/recordingStartAtSpeed/NumberBox",
+      "type": "number",
+      "label": "Recording Start At Speed",
+      "value": "0"
+    },
+    {
+      "id": "16",
+      "key": "unitSettings/audioVideoDeviceName/TextBox",
+      "type": "text",
+      "label": "Audio/Video Device Name",
+      "value": ""
+    },
+    {
+      "id": "17",
+      "key": "unitSettings/stopCaptureWithMaster/CheckBox",
+      "type": "checkbox",
+      "label": "Stop Capture With Master",
+      "value": false
+    },
+    {
+      "id": "18",
+      "key": "unitSettings/isMetadataMandatory/CheckBox",
+      "type": "checkbox",
+      "label": "Is Meta data Mandatory",
+      "value": false
+    },
+    {
+      "id": "19",
+      "key": "unitSettings/speedAlertsPerXSeconds/NumberBox",
+      "type": "number",
+      "label": "Speed Alerts Per X Seconds",
+      "value": "0"
+    },
+    {
+      "id": "20",
+      "key": "unitSettings/speedEventApplyPolicy/NumberBox",
+      "type": "number",
+      "label": "Speed Event Apply Policy ",
+      "value": "0"
+    },
+    {
+      "id": "21",
+      "key": "unitSettings/speedEventEmailNotification/CheckBox",
+      "type": "checkbox",
+      "label": "Speed Event Email Notification",
+      "value": false
+    },
+    {
+      "id": "22",
+      "key": "unitSettings/blackboxUploadPolicy/Select",
+      "type": "select",
+      "label": "Blackbox Upload Policy",
+      "value": "0",
+      "options": []
+    },
+    {
+      "id": "23",
+      "key": "unitSettings/stationAreaRadius/NumberBox",
+      "type": "number",
+      "label": "Station Area Radius",
+      "value": "0"
+    },
+    {
+      "id": "24",
+      "key": "unitSettings/mdtMode/CheckBox",
+      "type": "checkbox",
+      "label": "MDT Mode",
+      "value": false
     }
   ],
   "Primary Device": [
@@ -265,7 +334,7 @@
     },
     {
       "id": "1",
-      "key": "device/SerialBaudRate/TextBox",
+      "key": "device/SerialBaudRate/NumberBox",
       "type": "number",
       "label": "Serial Baud Rate",
       "value": "",
@@ -389,7 +458,7 @@
     },
     {
       "id": "1",
-      "key": "device/BeepDuringRecordingTrue/TextBox",
+      "key": "device/BeepDuringRecordingTrue/NumberBox",
       "type": "number",
       "label": "",
       "value": "",
@@ -405,7 +474,7 @@
     },
     {
       "id": "1",
-      "key": "device/BeepDuringRecording20True/TextBox",
+      "key": "device/BeepDuringRecording20True/NumberBox",
       "type": "number",
       "label": "",
       "value": "",
@@ -465,7 +534,7 @@
     },
     {
       "id": "1",
-      "key": "device/Diagnosticslogginginterval/TextBox",
+      "key": "device/Diagnosticslogginginterval/NumberBox",
       "type": "number",
       "label": "Diagnostics Logging Interval",
       "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
@@ -486,7 +555,7 @@
     },
     {
       "id": "1",
-      "key": "device/MicrophoneChargeTime/TextBox",
+      "key": "device/MicrophoneChargeTime/NumberBox",
       "type": "number",
       "label": "Microphone Charge Time",
       "value": "200",
@@ -500,7 +569,7 @@
     },
     {
       "id": "1",
-      "key": "device/USBPortChargeTime/TextBox",
+      "key": "device/USBPortChargeTime/NumberBox",
       "type": "number",
       "label": "USB Port Charge Time",
       "value": "15",
@@ -519,7 +588,7 @@
       "key": "CameraSetup/Camera/FieldArray",
       "type": "fieldarray",
       "label": "FieldArray",
-      "value":"",
+      "value":"1",
       "name": "feilds",
       "feilds": [
         [
@@ -529,40 +598,7 @@
             "label": "Device Type",
             "value": "USB Camera",
             "class": "DeviceTypeIncar",
-            "options": [
-              {
-                "value": "USB Camera",
-                "label": "USB Camera"
-              },
-              {
-                "value": "RTSP Video Stream (previously IP)",
-                "label": "RTSP Video Stream (previously IP)"
-              },
-              {
-                "value": "Veretos Analog",
-                "label": "Veretos Analog"
-              },
-              {
-                "value": "Video FC(1-8)",
-                "label": "Video FC(1-8)"
-              },
-              {
-                "value": "NF21 Series",
-                "label": "NF21 Series"
-              },
-              {
-                "value": "NF22 Stream 1",
-                "label": "NF22 Stream 1"
-              },
-              {
-                "value": "NF22 Stream 2",
-                "label": "NF22 Stream 2"
-              },
-              {
-                "value": "ZeroDark (Zoom Camera)",
-                "label": "ZeroDark (Zoom Camera)"
-              }
-            ],
+            "options": [],
             "optionAppendOnChange":[
               {
                 "value": "USB Camera1",
@@ -572,9 +608,9 @@
             ],
             "valueSetOnChange":[
               {
-                "value": "NF21 Series",
+                "value": "5",
                 "valueToSetKey": "CameraSetup/audioDeviceType_rowId_Camera/Select",
-                "setValue": "NF21A" 
+                "setValue": "9"
               }
             ]
           },
@@ -828,8 +864,8 @@
               {"value":"640 x 480 @20FPS, 24bpf",
               "label":"640 x 480 @20FPS, 24bpf"},
 
-              {"value":"640 x 480 @30FPS, 24bpf -USB,Veretos",
-              "label":"640 x 480 @30FPS, 24bpf -USB,Veretos"},
+              {"value":"640 x 480 @30FPS, 24bpf",
+              "label":"640 x 480 @30FPS, 24bpf"},
 
               {"value":"720 x 480 @15FPS, 24bpf",
               "label":"720 x 480 @15FPS, 24bpf"},
@@ -837,11 +873,11 @@
               {"value":"720 x 480 @20FPS, 24bpf",
               "label":"720 x 480 @20FPS, 24bpf"},
 
-              {"value":"720 x 480 @30FPS, 24bpf -USB",
-              "label":"720 x 480 @30FPS, 24bpf -USB"},
+              {"value":"720 x 480 @30FPS, 24bpf",
+              "label":"720 x 480 @30FPS, 24bpf"},
 
-              {"value":"768 x 432 @30FPS, 24bpf - NF21",
-              "label":"768 x 432 @30FPS, 24bpf - NF21"},
+              {"value":"768 x 432 @30FPS, 24bpf",
+              "label":"768 x 432 @30FPS, 24bpf"},
 
               {"value":"848 x 480 @15FPS, 24bpf",
               "label":"848 x 480 @15FPS, 24bpf"},
@@ -867,8 +903,8 @@
               {"value":"1280 x 720 @20FPS, 24bpf",
               "label":"1280 x 720 @20FPS, 24bpf"},
 
-              {"value":"1280 x 720 @30FPS, 24bpf - NF21, NF22",
-              "label":"1280 x 720 @30FPS, 24bpf - NF21, NF22"},
+              {"value":"1280 x 720 @30FPS, 24bpf",
+              "label":"1280 x 720 @30FPS, 24bpf"},
 
               {"value":"1920 x 1080 @15FPS, 24bpf",
               "label":"1920 x 1080 @15FPS, 24bpf"},
@@ -876,19 +912,20 @@
               {"value":"1920 x 1080 @20FPS, 24bpf",
               "label":"1920 x 1080 @20FPS, 24bpf"},
 
-              {"value":"1920 x 1080 @30FPS, 24bpf - NF21, NF22",
-              "label":"1920 x 1080 @30FPS, 24bpf - NF21, NF22"}
+              {"value":"1920 x 1080 @30FPS, 24bpf",
+              "label":"1920 x 1080 @30FPS, 24bpf"}
             ]
           },
           {
-            "key": "CameraSetup/powerPin_1_Camera/TextBox",
-            "value": "",
+            "key": "CameraSetup/powerPin_1_Camera/Multiselect",
+            "value": ["A4"],
             "type": "multiselect",
             "label": "Power Pin",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["A4"]
+                "value": ["VeretosAnalog"],
+                "extraFieldDependency": "cameraDevice"
               }
             ],
             "options": [
@@ -903,26 +940,28 @@
             ]
           },
           {
-            "key": "CameraSetup/index_1_Camera/TextBox",
+            "key": "CameraSetup/index_1_Camera/NumberBox",
             "value": "",
             "type": "number",
             "label": "Index",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["Veretos Analog"]
+                "value": ["VeretosAnalog"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
           {
-            "key": "CameraSetup/userId_1_Camera/TextBox",
+            "key": "CameraSetup/userId_1_Camera/NumberBox",
             "value": "",
             "type": "number",
             "label": "User Id",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
@@ -934,7 +973,8 @@
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
@@ -946,43 +986,73 @@
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
           {
-            "key": "CameraSetup/streamPort_1_Camera/TextBox",
+            "key": "CameraSetup/streamPort_1_Camera/NumberBox",
             "value": "",
             "type": "number",
             "label": "Stream Port",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["RTSP Video Stream (previously IP)"]
+                "value": ["IPCamera"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
           {
-            "key": "CameraSetup/bitrate_1_Camera/TextBox",
+            "key": "CameraSetup/secondaryCameraPosition_1_Camera/TextBox",
             "value": "",
-            "type": "select",
+            "type": "text",
+            "label": "Secondary Camera Position",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["USB", "VeretosAnalog"],
+                "extraFieldDependency": "cameraDevice"
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/bitrate_1_Camera/NumberBox",
+            "value": "",
+            "type": "number",
             "label": "Bit Rate",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["RTSP Video Stream (previously IP)"]
+                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
           {
-            "key": "CameraSetup/audioEnable_1_Camera/TextBox",
+            "key": "CameraSetup/serverHostName_1_Camera/TextBox",
+            "value": "",
+            "type": "text",
+            "label": "Server Host Name",
+            "depends": [
+              {
+                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "value": ["IPCamera"],
+                "extraFieldDependency": "cameraDevice"
+              }
+            ]
+          },
+          {
+            "key": "CameraSetup/audioEnable_1_Camera/CheckBox",
             "value": "",
             "type": "checkbox",
             "label": "Audio Enable",
             "depends": [
               {
                 "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["USB Camera", "Veretos Analog", "Video FC(1-8)", "NF21 Series","NF22 Stream 1","NF22 Stream 2","ZeroDark (Zoom Camera)"]
+                "value": ["USB", "IPCamera", "VeretosAnalog", "NF21", "NF22", "ZeroDarkZ"],
+                "extraFieldDependency": "cameraDevice"
               }
             ]
           },
@@ -992,33 +1062,8 @@
             "label": "Audio Device Type",
             "hinttext":true,
             "hintvalue":"Allows to select one or several Audio devices for the primary device",
-            "value": "Line",
-            "options": [
-              {
-                "value": "Line",
-                "label": "Line"
-              },
-              {
-                "value": "Microphone",
-                "label": "Microphone"
-              },
-              {
-                "value": "OBS-Audio",
-                "label": "OBS-Audio"
-              },
-              {
-                "value": "Veretos Analog",
-                "label": "Veretos Analog"
-              },
-              {
-                "value": "NF21A",
-                "label": "NF21A"
-              },
-              {
-                "value": "RTSP Audio Stream",
-                "label": "RTSP Audio Stream"
-              }
-            ],
+            "value": "1",
+            "options": [],
             "depends": [
               {
                 "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
@@ -1027,23 +1072,19 @@
             ]
           },
           {
-            "key": "CameraSetup/channelNumber_1_Camera/TextBox",
+            "key": "CameraSetup/channelNumber_1_Camera/NumberBox",
             "value": "1",
             "type": "number",
             "label": "Channel Number",
             "depends": [
               {
-                "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
-                "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
-              },
-              {
                 "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
                 "value": [true]
               }
             ]
           },
           {
-            "key": "CameraSetup/volume_1_Camera/TextBox",
+            "key": "CameraSetup/volume_1_Camera/NumberBox",
             "value": "0",
             "type": "number",
             "label": "Volume",
@@ -1060,10 +1101,6 @@
             "type": "text",
             "label": "Power Pin",
             "depends": [
-              {
-                "key": "CameraSetup/audioDeviceType_rowId_Camera/Select",
-                "value": ["Line", "Microphone", "OBS-Audio", "Veretos Analog", "NF21A"]
-              },
               {
                 "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
                 "value": [true]

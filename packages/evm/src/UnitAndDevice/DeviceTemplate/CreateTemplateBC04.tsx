@@ -18,12 +18,13 @@ import { CRXTitle } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync } from "../../Redux/templateDynamicForm";
+import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync, getCaptureDevicesAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
 import { ConfigurationTemplate, DefaultConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
+import { CaptureDevice } from "../../utils/Api/models/StationModels";
 
 const cookies = new Cookies();
 
@@ -107,6 +108,7 @@ const CreateTemplate = (props: any) => {
   const [editCase, setEditCase] = React.useState<boolean>(false);
   const retention: any = useSelector((state: RootState) => state.unitTemplateSlice.retentionPolicy);
   const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
+  const captureDevices: any = useSelector((state: RootState) => state.unitTemplateSlice.captureDevices);
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
   const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
   const formikProps = useFormikContext()
@@ -166,9 +168,9 @@ const CreateTemplate = (props: any) => {
   function setintial() {
     if (historyState.deviceType == "Incar") {
       dispatch(getRetentionPolicyInfoAsync());
-      dispatch(getCategoriesAsync());
+      dispatch(getCaptureDevicesAsync());
     }
-
+    dispatch(getCategoriesAsync());
     dispatch(getStationsAsync());
     if (historyState.isedit || historyState.isclone) {
       dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
@@ -191,10 +193,16 @@ const CreateTemplate = (props: any) => {
   }, [retention,FormSchema]);
 
   React.useEffect(() => {
-    if (categories && categories.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if (categories && categories.length > 0 && FormSchema) {
       setCategoriesDropdown();
     }
   }, [categories,FormSchema]);
+
+  React.useEffect(() => {
+    if (captureDevices && captureDevices.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+      setCameraDeviceDropdown();
+    }
+  }, [captureDevices,FormSchema]);
 
   React.useEffect(() => {
     if (stations && stations.length > 0 && FormSchema) {
@@ -215,6 +223,10 @@ const CreateTemplate = (props: any) => {
       if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
         x.options.push(...retentionOptions)
       }
+      if (x.key == "unitSettings/blackboxUploadPolicy/Select") {
+        x.options = [];
+        x.options.push(...retentionOptions)
+      }
     })
     FormSchema["Primary Device"].map((x: any, y: number) => {
       if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
@@ -228,12 +240,37 @@ const CreateTemplate = (props: any) => {
     categories.map((x: any, y: number) => {
       categoriesOptions.push({ value: x.id, label: x.name })
     })
-    //  categories.sort((a: any, b: any) => a.label.localeCompare(b.label));
-    FormSchema["Unit Settings"].map((x: any, y: number) => {
-      if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 2) {
+    if(historyState.deviceType == "Incar"){
+      FormSchema["Unit Settings"].map((x: any, y: number) => {
+        if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 1) {
+          x.options.push(...categoriesOptions)
+        }
+      })
+    }
+    else{
+      let x = FormSchema["Device"].find((x:any) => x.key == "device/categories/Multiselect" && x.options.length == 1)
+      if(x)
+      {
         x.options.push(...categoriesOptions)
       }
+    }
+    setFormSchema(FormSchema);
+  }
+
+  const setCameraDeviceDropdown = () => {
+    var captureDevicesOptions: any = [];
+    captureDevices.map((x: CaptureDevice, y: number) => {
+      captureDevicesOptions.push({ value: x.id, label: x.name, deviceType: x.deviceType })
     })
+    if (historyState.deviceType == "Incar") {
+      let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/deviceType_1_Camera/Select")
+      cameraDevice.options = [];
+      cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.deviceType !== "Audio"))
+
+      let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
+      audioDevice.options = [];
+      audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.deviceType == "Audio"))
+    }
     setFormSchema(FormSchema);
   }
 
@@ -521,19 +558,6 @@ const CreateTemplate = (props: any) => {
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
         }
         if (valueToSave) {
-          if (split[2] == "Multiselect") {
-            if (valueRaw.includes("add all")) {
-              valueRaw = "";
-              FormSchema["Unit Settings"].find((y: any) => y.key == key).options.map((x: any) => {
-                if (x.value != "" && x.value != "add all") {
-                  valueRaw = valueRaw + x.value + ",";
-                }
-              })
-              if (valueRaw[valueRaw.length - 1] == ',') {
-                valueRaw = valueRaw.substring(0, valueRaw.length - 1);
-              }
-            }
-          }
           Initial_Values.push({
             key: split[1],
             value: valueRaw,

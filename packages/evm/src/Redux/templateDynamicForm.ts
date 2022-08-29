@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
-import { Station } from '../utils/Api/models/StationModels';
+import { CaptureDevice, Station } from '../utils/Api/models/StationModels';
 import { CATEGORIES_GET_ALL, DATA_RETENTION_POLICIES_GET_ALL} from '../utils/Api/url'
 
 
@@ -37,6 +37,17 @@ export const getCategoriesAsync: any = createAsyncThunk(
     }
 );
 
+export const getCaptureDevicesAsync: any = createAsyncThunk(
+    'getAllCaptureDevicesAsync',
+    async () => {
+        return await UnitsAndDevicesAgent.getAllCaptureDevices()
+        .then((response:CaptureDevice[]) => response)
+        .catch((error: any) => {
+            console.error(error.response.data);
+        });
+    }
+);
+
 
 export const getStationsAsync: any = createAsyncThunk(
     'getAllStations',
@@ -51,13 +62,15 @@ export const getStationsAsync: any = createAsyncThunk(
 
 export const unitTemplateSlice = createSlice({
     name: 'unitTemplateForm',
-    initialState: { retentionPolicy: [], categories: [], stations: [] },
+    initialState: { retentionPolicy: [], categories: [], stations: [], captureDevices: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getRetentionPolicyInfoAsync.fulfilled, (state: any, { payload }) => {
             state.retentionPolicy = payload;
         }).addCase(getCategoriesAsync.fulfilled, (state: any, { payload }) => {
             state.categories = payload;
+        }).addCase(getCaptureDevicesAsync.fulfilled, (state: any, { payload }) => {
+            state.captureDevices = payload;
         }).addCase(getStationsAsync.fulfilled, (state: any, { payload }) => {
             state.stations = payload;
         })
