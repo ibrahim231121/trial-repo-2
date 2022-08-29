@@ -1,0 +1,213 @@
+.textRef {
+    position: relative;
+    .refBtnText {
+        position: absolute;
+        right: 0;
+        top:0;
+    }
+}
+
+.ReadMoreHide{
+    textarea {
+        white-space: nowrap; 
+        height:200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0px 10px; 
+    }
+}
+.detailDropdownMain {
+    .inner-detailDropdownMain{
+        // display:inline-flex;
+        padding: 15px;
+        overflow-y: auto;
+        max-height: 740px;
+    }
+    .item-detailDropdownMain{
+        
+        border: 1px solid #eee;
+        margin: 15px 0px;
+        font-size: 13px;
+        
+        li{
+            display:flex;
+            align-items: flex-start !important;
+            // padding: 15px 5px;
+            padding-top: 15px;
+            padding-bottom: 40px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+
+    .readMore .fa-angle-down{
+        position: absolute;
+        top: 60px;
+        left: 10px;
+    }
+    .readMore .fa-angle-up{
+        position: absolute;
+        bottom: -35px;
+        left: 10px;
+    }
+
+    .MuiInputBase-multiline{
+        padding: 0px 5px;
+    }
+    .MuiListItem-gutters{
+        padding: 0px;
+    }
+    .rc-menu-button{
+        background: none;
+        border: none
+    }
+    
+}
+
+
+._video_Player_Right_Panel {
+    width: 24.2%;
+    background-color: transparent;
+    display: inline-block;
+    position: relative;
+    z-index: 99;
+    border:1px solid var(--color-333333);
+    height: calc(100vh - (327px + 191px));
+    ._bookMark_list_items {
+        height: calc(100vh - (238px + 400px));
+        overflow-y: auto;
+    }
+    .detailDropdownMain {
+        .Video_Side_Panel_DropDown {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            ._dropDown_wrapper_side_panel {
+                width: 150px;
+                ._video_panel_dropdown_btn {
+                    background: #fff;
+                    width: 100%;
+                    color: var(--color-333333);
+                    border-radius: 0px;
+                    justify-content: left;
+                    padding-left: 10px;
+                    border: 1px solid var(--color-707070);
+                    outline: 2px solid transparent;
+                    font-family: var(--Arial-font-family);
+                    margin-bottom: 2px;
+                    .MuiButton-label {
+                        text-align: left;
+                        .menuLabel {
+                            width: 83%;
+                        }
+                    }
+                    &.active {
+                        background: #fff !important;
+                        color: var(--color-333333);
+                        outline: 2px solid var(--color-707070);
+                        border: 1px solid transparent;
+                    }
+                }
+            }
+        }
+
+        ._asset_detail_bookmarks {
+            .inner_asset_detail_bookmarks {
+                padding: 24px;
+                ._video_right_panel_item_heading{
+                    font-size: 20px;
+                    color: #fff;
+                    font-family: var(--Arial-font-family);
+                }
+                ._bookMark_list_items {
+                    
+                    .item_asset_detail_bookmarks {
+                        border:1px solid var(--color-404041) ;
+                        background-color: var(--color-d1d2d4);
+                        padding: 0 10px;
+                        margin-bottom: 10px;
+                        position: relative;
+                        a {
+                            ._bookmark_time_user_flex {
+                                display: flex;
+                                padding: 8px 0px;
+                                ._bookmark_time {
+                                    font-size: 14px;
+                                    color: var(--color-333333);
+                                    font-family: var(--Arial-font-family);
+                                    padding-right: 30px;
+                                }
+
+                                ._bookmark_users {
+                                    font-size: 14px;
+                                    color: var(--color-333333);
+                                    font-family: var(--Arial-font-family);
+                                }
+                            }
+                            .textToggler {
+                                position: relative;
+                                left: 56px;
+                                width: 78%;
+                                textarea{
+                                    font-size: 14px;
+                                    color: var(--color-333333);
+                                    font-family: var(--Arial-font-family);
+                                    line-height: 12px;
+                                    min-height: auto;
+                                    margin-bottom: 9px;
+                                    width: 100%;
+                                    
+                                }
+                                .removeOutLine {
+                                    
+                                    textarea {
+                                        background: transparent;
+                                        border: 0px;
+                                        outline: 0px;
+                                    }
+                                }
+                                ._field_action_container {
+                                    display: flex;
+                                    align-items: flex-end;
+                                    place-content: flex-end;
+                                    ._field_action_button {
+                                        padding: 5px 10px
+                                    }
+                                }
+                            }
+                        }
+                        ._side_panel_bookmark_menu {
+                            position: absolute;
+                            top: 10px;
+                            right: 7px;
+                            .menu{
+                                .rc-menu-button {
+                                    i{
+                                        font-size: 20px;
+                                        color: var(--color-333333);
+                                    }
+                                    
+                                }
+                                .rc-menu-container {
+                                    ul {
+                                        li {
+                                            .crx-meu-content {
+                                                ._NB_menu_item {
+                                                    padding-left: 11px;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                ._BN_Search_field {
+                    padding: 15px 0px;
+                }
+            }
+        }
+    }
+  }

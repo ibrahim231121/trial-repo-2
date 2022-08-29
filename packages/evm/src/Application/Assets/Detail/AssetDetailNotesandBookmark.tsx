@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { CRXButton } from "@cb/shared";
+import { CRXButton, TextField } from "@cb/shared";
 import moment from "moment";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import TextField from "@material-ui/core/TextField";
-import "./AssetDetailsDropdown.scss";
+
+import "./AssetDetailsPanel.scss";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { CRXTooltip,CRXConfirmDialog } from "@cb/shared";
 import { useTranslation } from "react-i18next";
@@ -125,9 +125,16 @@ const onConfirmm = () => {
   onDeleteNotes(id,assetId)   
 };
 
+// const createTextFieldIsEditCondition = (x : any, isEditId : any) => {
+//   if(x.id === isEditId) {
+//     console.log("des", x.description)
+//   }
+//   return (
+//    )
+// }
   return (
     
-    <div className="detailDropdownMain">
+    <div className="_asset_detail_bookmarks">
      <CRXConfirmDialog
         setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         onConfirm={onConfirmm}
@@ -149,18 +156,20 @@ const onConfirmm = () => {
         }
       </CRXConfirmDialog>
 
-        <div className="inner-detailDropdownMain">    
+        <div className="inner_asset_detail_bookmarks">    
         <List onMouseLeave={onEditEnd}>
-          <h2>{searchFieldHeading}</h2>
-          <TextField
-           type="text" 
-           placeholder={searchFieldPlaceholder} 
-           onChange={handleFilter}
-           value={searchTerm} 
-           variant={"outlined"} 
-           fullWidth 
+          <div className="_video_right_panel_item_heading">{searchFieldHeading}</div>
+          <div className="_BN_Search_field">
+             <TextField
+              type="text" 
+              placeholder={searchFieldPlaceholder} 
+              onChange={ handleFilter }
+              value={searchTerm} 
+              name="bookmarkSearch" 
             />
-
+          </div>
+         
+          <div className="_bookMark_list_items">
                 {URL.filter  ((x: any) => {
                         if (searchTerm == ""){
                         return x
@@ -172,15 +181,61 @@ const onConfirmm = () => {
                     
                         
               return (
-                <div className="item-detailDropdownMain">
-                  
+                <div className="item_asset_detail_bookmarks">
 
-
-                    <ListItem onClick={()=>handleNoteClicked(x)} >
-                    {condition ==true ?  moment(x.noteTime).format("HH:MM:SS"):moment(x.bookmarkTime).format("HH:MM:SS")}
-                    {` ${t("Form")} : ${x.madeBy}`}
-                    <br />
-                    <div >
+                    <a onClick={()=>handleNoteClicked(x)} >
+                    <div className="_bookmark_time_user_flex">
+                      <div className="_bookmark_time">
+                        {condition ==true ?  moment(x.noteTime).format("HH:MM:SS"):moment(x.bookmarkTime).format("HH:MM:SS")}
+                      </div>
+                      <div className="_bookmark_users">
+                        {` ${t("Form")} : ${x.madeBy}`}
+                      </div>
+                    </div>
+                    <div className="textToggler">
+                    {x.description.length >= 0 && x.description.length < 50 &&  
+                      
+                      <TextField
+                        name={String(x.id)}
+                        value={x.description}
+                        color="primary"
+                        className={isEditing.includes(x.id) == true ? " " : "removeOutLine"}
+                        multiline={true}
+                        rows={2}
+                        onChange={condition == true ? (event : any) => handleSetNotes(event,x):(event : any) => handleSetBookmarks(event,x)}
+                      />
+                        
+                    }
+            
+                     {x.description.length  >= 50 && x.description.length < 10000 &&  
+                      <div className={isReadMore.find((y:any) => y.id == x.id)?.value ? " ReadMoreShow" :  "ReadMoreHide" }>
+                          <div className="readMore">
+                            <TextField
+                            name={String(x.id)}
+                            value={x.description}
+                            InputProps={{endAdornment: <div onClick={(e) => handleReadMore(e, x.id) }>{isReadMore.find((y:any) => y.id == x.id)?.value ?
+                            <i className="fas fa-angle-up"> {t("Showless")} </i> : <i className="fas fa-angle-down"> {t("Read_More")} </i>  }</div> }}
+                            variant={isEditing.includes(x.id)  ?"outlined":"standard"} 
+                            color="primary"
+                            multiline
+                            rows={2}
+                            fullWidth 
+                            rowsMax={12}
+                            onChange={condition == true ? (event : any) => handleSetNotes(event,x):(event : any) => handleSetBookmarks(event,x)}
+                              
+                             /> 
+                           </div>
+                      </div>
+                      }
+                      
+                      {isEditing.includes(x.id) && x.madeBy.includes("User") && (
+                      <div className="_field_action_container">
+                        <a onClick={()=>handleEdit(x)} className="_field_action_button"><i className="fas fa-check"></i></a>
+                        <a onClick={() => handleCancel(x.id)} className="_field_action_button"><i className="fas fa-times"></i></a>
+                      </div>
+                    )}
+                    </div>
+                  <div className="_side_panel_bookmark_menu">
                   {x.madeBy.includes("User") && 
                   <div className="menu">
                   <Menu
@@ -200,80 +255,43 @@ const onConfirmm = () => {
                     </MenuButton>}>
                     <MenuItem>
                     
-                        <div onClick={()=>{handleNoteDelete(x.id,x.assetId)}}
-                            className="crx-meu-content groupingMenu crx-spac">
-                            <div className="crx-menu-icon"></div>
-                            <div >
-                            {t("Delete")}
-                            </div>
+                    <div onClick={()=>{handleNoteDelete(x.id,x.assetId)}}
+                        className="crx-meu-content groupingMenu crx-spac">
+                        <div className="crx-menu-icon">
+                          <i className="fas fa-trash"></i>
                         </div>
-
-
-                        
-                        <div onClick={() => onFocusFunction(x.id)}
-                            className="crx-meu-content groupingMenu crx-spac">
-                            <div className="crx-menu-icon"></div>
-                            <div >
-                            {t("Edit")}
-                            </div>
+                        <div className="_NB_menu_item">
+                        {t("Delete")}
                         </div>
+                    </div>
+                    </MenuItem>
+                    <MenuItem>     
+                    <div onClick={() => onFocusFunction(x.id)}
+                        className="crx-meu-content groupingMenu crx-spac">
+                        <div className="crx-menu-icon">
+                          <i className="fas fa-edit"></i>
+                        </div>
+                        <div className="_NB_menu_item">
+                        {t("Edit")}
+                        </div>
+                    </div>
                        
                     </MenuItem>
                     </Menu>
                     </div>
                 }
-                      <div className="textToggler">
-                        {x.description.length >= 0 && x.description.length < 50 &&  
-  
-                     <TextField
-                       name={String(x.id)}
-                       value={x.description}
-                       variant={isEditing.includes(x.id) ?"outlined":"standard"} 
-                       color="primary"
-                       multiline={true}
-                       rows={2}
-                       fullWidth 
-                       onChange={condition == true ? (event) => handleSetNotes(event,x):(event) => handleSetBookmarks(event,x)}
-                       />
-
-                       }
-            
-                     {x.description.length  >= 50 && x.description.length < 10000 &&  
-                      <div className={isReadMore.find((y:any) => y.id == x.id)?.value ? " ReadMoreShow" :  "ReadMoreHide" }>
-                          <div className="readMore">
-                            <TextField
-                            name={String(x.id)}
-                            value={x.description}
-                            InputProps={{endAdornment: <div onClick={(e) => handleReadMore(e, x.id) }>{isReadMore.find((y:any) => y.id == x.id)?.value ?
-                            <i className="fas fa-angle-up"> {t("Showless")} </i> : <i className="fas fa-angle-down"> {t("Read_More")} </i>  }</div> }}
-                            variant={isEditing.includes(x.id)  ?"outlined":"standard"} 
-                            color="primary"
-                            multiline
-                            rows={2}
-                            fullWidth 
-                            rowsMax={12}
-                            onChange={condition == true ? (event) => handleSetNotes(event,x):(event) => handleSetBookmarks(event,x)}
-                              
-                             /> 
-                           </div>
-                      </div>
-                      }
-                      </div>
+                </div>
+                  
                     
-                    {isEditing.includes(x.id) && x.madeBy.includes("User") && (
-                      <div >
-                        <CRXButton onClick={()=>handleEdit(x)}><i className="fas fa-check"></i></CRXButton>
-                        <CRXButton onClick={() => handleCancel(x.id)}><i className="fas fa-times"></i></CRXButton>
-                      </div>
-                    )}
-                  </div>
-                </ListItem>
+                  
+                </a>
                 </div>
               )}
             )} 
+            </div>
         </List>
         </div>
-     
+        
     </div>
   );
 };

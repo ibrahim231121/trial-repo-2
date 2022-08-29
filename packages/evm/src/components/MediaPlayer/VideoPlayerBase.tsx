@@ -24,7 +24,8 @@ import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg"
+import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg";
+import "./VideoPlayerResponsive.scss";
 
 var videoElements: any[] = [];
 
@@ -985,16 +986,17 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const volumeAnimation = () => {
+    volumeIcon.current.style.zIndex = 1;
     volumeIcon.current.style.opacity = 1
     volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomOut"))
     volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomIn"));
     volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("fontSizeIn"));
 
     setTimeout(() => {
+      
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
-
     }, 1200)
   }
   useEffect(() => {
@@ -1562,7 +1564,25 @@ const VideoPlayerBase = (props: any) => {
     // Speed in milliseconds or null to stop it
     isBookmarkNotePopup ? 5000 : null,
   );
+  const [minWidth, setMinWidth] = useState<string | number>("1920");
+  const [isShowPanel, setIsShowPanel] = useState<boolean>(false)
+  const videoPlayerResponsiveRightButton = () => {
+      const winWidth:string | number = window.innerWidth;
+      setMinWidth(winWidth)
+  }
 
+  useEffect(() => {
+    window.addEventListener('resize', videoPlayerResponsiveRightButton)
+    window.addEventListener('load', videoPlayerResponsiveRightButton)
+
+    if(minWidth && minWidth <= 1024) {
+      setIsShowPanel(true)
+    }
+  },[minWidth, isShowPanel])
+
+  const openSettingMenu = (e : React.MouseEvent<HTMLElement>) => {
+    setSettingMenuEnabled(e.currentTarget)
+  }
   return (
     <>
       <div onKeyDown={keydownListener}>
@@ -1580,6 +1600,7 @@ const VideoPlayerBase = (props: any) => {
       />}
 
       <div className="searchComponents">
+        <div className="_video_player_container">
         <div id="crx_video_player" >
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
@@ -1744,7 +1765,7 @@ const VideoPlayerBase = (props: any) => {
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
                 <div className="playerViewLeft">
-                  <div className="PlayPause-container">
+                
                     <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         content={<SVGImage
@@ -1760,7 +1781,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn" disabled={ismodeRwdisable || viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn backwardBtn" disabled={ismodeRwdisable || viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={"icon icon-backward2 backward2Icon"}
                         placement="top"
@@ -1769,7 +1790,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className={`videoPlayerBtn ${isPlaying ? "pauseBtn" : "playBtn"}`} disabled={viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
                         placement="top"
@@ -1777,7 +1798,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn" disabled={ismodeFwdisable || viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn backwardRightBtn" disabled={ismodeFwdisable || viewReasonControlsDisabled}>
                       <CRXTooltip
                         iconName={"icon icon-forward3 backward3Icon"}
                         placement="top"
@@ -1800,11 +1821,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                  </div>
-
-                  <div>
                     <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
-                  </div>
                 </div>
                 <div className="playerViewMiddle">
                   <div className="playBackMode">
@@ -1836,7 +1853,7 @@ const VideoPlayerBase = (props: any) => {
                     </button>
                   </div>
                 </div>
-                <div className="player_right_responsive">
+                {isShowPanel && <div className="player_right_responsive">
                   <CRXButton color="primary" onClick={() => expandButton()} variant="contained" className="videoPlayerBtn">
                     <CRXTooltip
                       iconName={`${iconChanger ? "fas fa-chevron-up" : "fas fa-chevron-down"} CrxchevronDown`}
@@ -1845,10 +1862,13 @@ const VideoPlayerBase = (props: any) => {
                       arrow={false}
                     />
                   </CRXButton>
-                </div>
-                <div className={` playerViewRight ${iconChanger ? 'clickViewRightBtn' : ""}`}>
+                </div>}
+                <div 
+                className={` playerViewRight ${isShowPanel ? 'clickViewRightBtn' : ""}`}
+                style={isShowPanel == true ? iconChanger ? { display:'flex' } : {display:'none'} : undefined}
+                >
                   <div className="SettingGrid">
-                    <div onClick={(e: any) => { setSettingMenuEnabled(e.currentTarget) }}>
+                    <div onClick={(e: React.MouseEvent<HTMLElement>) => { openSettingMenu(e) }}>
                       <CRXTooltip
                         iconName={`fas fa-cog faCogIcon ${settingMenuEnabled}`}
                         placement="top"
@@ -1868,7 +1888,7 @@ const VideoPlayerBase = (props: any) => {
                       isMultiViewEnable={isMultiViewEnable}
                     />
                   </div>
-                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
+                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
@@ -1877,7 +1897,7 @@ const VideoPlayerBase = (props: any) => {
                     />
                   </CRXButton>
 
-                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn" disabled={viewReasonControlsDisabled}>
+                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
@@ -2053,6 +2073,7 @@ const VideoPlayerBase = (props: any) => {
           </div>
 
         </div>
+        </div>{/** Video player container close div */}
       </div >
       </div>
     </>);

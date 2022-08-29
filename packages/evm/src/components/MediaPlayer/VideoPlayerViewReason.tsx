@@ -158,14 +158,14 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             <CRXModalDialog
                 maxWidth="gl"
                 title="Asset view reason"
-                className={'CRXModal __CRX__Reason__Modal__'}
+                className={'CRXModal __CRX__Reason__Modal_ Asset_View_Reason_Modal_'}
                 modelOpen={openModal}
                 onClose={handleClose}
                 defaultButton={false}
                 showSticky={false}
             >
                 <div className={errorsReason}>
-                    <CRXAlert
+                {alert &&   <CRXAlert
                         ref={alertRef}
                         message={responseError}
                         className='crxAlertNoteEditForm'
@@ -174,6 +174,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                         open={alert}
                         setShowSucess={() => null}
                     />
+                }
                     <div className='modalEditCrx'>
                         <div className='CrxEditForm'>
 
@@ -206,7 +207,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                             </CRXButton>
                             </div>
                             <div className="cancelBtn">
-                            <CRXButton className='primary' onClick={handleBack}>
+                            <CRXButton className='secondary' onClick={handleBack}>
                                 Back
                             </CRXButton>
                             </div>

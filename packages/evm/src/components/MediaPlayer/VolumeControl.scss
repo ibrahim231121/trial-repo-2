@@ -1,8 +1,6 @@
 #volume-controls {
-  width: 41px;
-  margin-top: 10px;
   position: relative;
-  margin-left: auto;
+
 
   .volume-slider {
     position: absolute;
@@ -54,11 +52,12 @@
 #volumePercentage {
   width: 100%;
   position: absolute;
-  height: 75%;
+  height: calc(100vh - 492px);
   margin: auto;
   display: flex;
   top: 0px;
   left: 0px;
+  z-index: -1;
 
   .volume_video_icon {
     display: flex;

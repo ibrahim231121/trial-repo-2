@@ -1,6 +1,6 @@
 import React,{useRef,useState} from "react";
-import { CRXSelectBox,CRXToaster,CRXAlert } from "@cb/shared";
-import "./AssetDetailsDropdown.scss";
+import { CRXToaster,CRXAlert, CRXMenu } from "@cb/shared";
+import "./AssetDetailsPanel.scss";
 import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 import GoogleMap from "../../../map/google/GoogleMap";
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
@@ -20,7 +20,10 @@ type propsObject = {
   setOnMarkerClickTimeData:any
 }
 
-const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData}:propsObject) => {
+interface MouseClicEventType {
+  cf : React.BaseSyntheticEvent<MouseEvent, EventTarget & HTMLDivElement, EventTarget>
+}
+const AssetDetailsPanel = ({data,evidenceId,setData,onClickBookmarkNote,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData}:propsObject) => {
   const { t } = useTranslation<string>();
   const [selectDropDown, setSelectDropDown] = React.useState("map");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -29,19 +32,16 @@ const AssetDetailsDropdown = ({data,evidenceId,setData,onClickBookmarkNote,updat
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
-  
-  const options = [
-    { value: "map", displayText: t("Map") },
-    { value: "bookmarks", displayText: t("Bookmarks") },
-    { value: "notes", displayText: t("Notes") },
-  ];
 
-  const handleChangeDropDown = (event: any) => {
-    setSelectDropDown(event.target.value);
+  const listOFMenu = [
+    { label: "map", route: t("Map"), onClick: (e : any) => handleChangeDropDown(e) },
+    { label: "bookmarks", route: t("Bookmarks"), onClick: (e :  any) => handleChangeDropDown(e) },
+    { label: "notes", route: t("Notes"), onClick: (e :  any) => handleChangeDropDown(e) },
+  ]
+  const handleChangeDropDown = (event:any) => {
+    
+    setSelectDropDown(event.target.textContent);
   };
-
-
-
 
   const handleEdit = (x:any)=>{
     {selectDropDown == "notes" ? handleNoteEdit(x):handleBookmarkEdit(x)}
@@ -123,12 +123,13 @@ const callBackOnMarkerClick=(logtime:any)=>{
 }
 
 
+
   return (
   
     <div className="detailDropdownMain">
   
       <CRXToaster ref={targetRef} />
-        <CRXAlert
+      {alert && <CRXAlert
         ref={alertRef}
         message={responseError}
         className='crxAlertUserEditForm'
@@ -136,13 +137,18 @@ const callBackOnMarkerClick=(logtime:any)=>{
         type={errorType}
         open={alert}
         setShowSucess={() => null}
-      />
-      <CRXSelectBox
-        options={options}
-        id="simpleSelectBox"
-        onChange={handleChangeDropDown}
-        value={selectDropDown}
-      />
+      />}
+      <div className="Video_Side_Panel_DropDown">
+        <CRXMenu
+            id="Video_Side_Panel_DropDown"
+            name={t(selectDropDown)}
+            wrapper="_dropDown_wrapper_side_panel"
+            className="LightTheme _video_panel_dropdown_paper"
+            btnClass="_video_panel_dropdown_btn"
+            MenuList = {listOFMenu}
+        />
+      </div>
+  
       
       {selectDropDown == "map" &&  openMap &&
         <GoogleMap
@@ -186,5 +192,5 @@ const callBackOnMarkerClick=(logtime:any)=>{
   );
 };
 
-export default AssetDetailsDropdown;
+export default AssetDetailsPanel;
 

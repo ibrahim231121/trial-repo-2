@@ -1,0 +1,49 @@
+@media only screen and (min-width:1024px){
+    .player_right_responsive {
+        display: block ;
+        margin-left: -14px;
+    }
+    .PVR_Expand {
+        position: absolute;
+        bottom: -60px;
+        right: -2px;
+        background-color: var(--color-Black);
+        padding-left: 17px;
+
+        
+    }  
+    .PVR_Collapse {
+        position: absolute;
+        bottom: -60px;
+        right: -2px;
+        background-color: var(--color-Black);
+        padding-left: 17px;
+        display: none !important;
+    }
+    
+   
+    ._video_player_container{
+        #crx_video_player{
+            #video-player-screens  {
+                height: calc(100vh - 425px);
+            }
+        } 
+    } 
+    ._video_Player_Right_Panel {
+        height: calc(100vh - 450px);
+    }
+}
+
+@media only screen and (min-width:1366px) { 
+    ._video_player_container{
+        #crx_video_player{
+            #video-player-screens  {
+                height: calc(100vh - 452px);
+            }
+        } 
+    }
+    
+    ._video_Player_Right_Panel {
+        height: calc(100vh - 450px);
+    }
+}

@@ -62,12 +62,20 @@ useEffect(() => {
     <>
    
     <MaterialMenu
-        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad ? "MultiVideoMenu" : "SettingOverlayMenu"}`}
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""} `}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}
         onClose={() => { setSettingMenuEnabled(null) }}
-
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
       >
         
 

@@ -21,7 +21,7 @@ interface InputProps {
   errorMsg?: errorMessageType | string;
   placeholder?: string;
   defaultValue?: any;
-  regex: RegExp;
+  regex ?: RegExp;
   error? : boolean,
   parentId? : string
 }
@@ -73,7 +73,7 @@ const CRXInput = ({
   };
 
   const validateRegex = (value: string) => {
-    return regex.test(String(value).toLowerCase());
+    return regex?.test(String(value).toLowerCase());
   };
 
   const checkError = (val: string) => {

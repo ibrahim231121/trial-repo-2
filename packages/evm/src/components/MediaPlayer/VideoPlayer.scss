@@ -1,13 +1,19 @@
-#crx_video_player {
-  // width: 91%;
-  background-color: var(--color-Black);
+._video_player_container{
   position: relative;
-  border: 2px solid var(--color-333333);
-  max-width: 899px;
-  max-height: 810px;
-  min-width: 507px;
-  min-height: 538px;
-  padding: 25px 10px 10px 10px;
+  #crx_video_player {
+    // width: 91%;
+    background-color: var(--color-Black);
+    position: relative;
+    border: 2px solid var(--color-333333);
+    width: 100%;
+    //height:calc(100% - 148px);
+    // min-width: 507px;
+    // min-height: 538px;
+    padding: 25px 10px 10px 10px;
+
+  #screens {
+    position: relative;
+  }
 
   video {
     margin-top: 0px;
@@ -15,304 +21,269 @@
 
   }
 
-  .videoPlayerBtn {
-    color: var(--color-White) !important;
-    margin: 0 5px !important;
-    background-color: transparent !important;
+    .videoPlayerBtn {
+      color: var(--color-White) !important;
+      background-color: transparent !important;
 
-    svg {
-      circle {
-        display: none;
+      svg {
+        circle {
+          display: none;
+        }
       }
     }
-  }
 
-  #CRX_Video_Player_Controls {
-    margin: 0px;
-    bottom: 12px;
-    left: -12px;
-    padding-left: 15px;
-    padding-right: 15px;
-    .player_controls_inner {
-      .dummy_audio_image {
-        width: 100%;
-        img{
+    #CRX_Video_Player_Controls {
+      margin: 0px;
+      bottom: 12px;
+      left: -12px;
+      padding-left: 15px;
+      padding-right: 15px;
+      .player_controls_inner {
+        .dummy_audio_image {
           width: 100%;
+          img{
+            width: 100%;
+          }
         }
       }
+      .crx_video_graph {
+        height: 80px;
+      }
+
+      .videoPlayer_Timeline_Time {
+        display: flex;
+        justify-content: space-between;
+        flex: 1;
+        padding-top: 5px;
+        color: #ffffff;
+        font-size: 14px;
+        font-family: var(--base-font-family);
+      }
+
+      .V_timeline_end_time {
+        .V_timeline_end_time {}
+      }
     }
-    .crx_video_graph {
-      height: 80px;
+
+    .MuiGrid-grid-xs-1 {
+      display: none;
     }
 
-    .videoPlayer_Timeline_Time {
-      display: flex;
-      justify-content: space-between;
-      flex: 1;
-      padding-top: 5px;
-      color: #ffffff;
-      font-size: 14px;
-      font-family: var(--base-font-family);
-    }
-
-    .V_timeline_end_time {
-      .V_timeline_end_time {}
-    }
-  }
-
-  .MuiGrid-grid-xs-1 {
-    display: none;
-  }
-
-  .videoContainer {
-    padding: 0 14px;
-    position: relative;
-
-    .videoFrontLayer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      margin: auto;
-      display: flex;
+    .videoContainer {
+      padding: 0 14px;
+      position: relative;
       height: 100%;
-      width: 100%;
-      place-content: center;
-      align-items: center;
+      .videoFrontLayer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        height: calc(100vh - 492px);
+        width: 100%;
+        place-content: center;
+        align-items: center;
 
-      ._video_button_size {
-        width: 134px;
-        height: 134px;
-        border-radius: 100%;
-        text-align: center;
-        background: rgba($color: #ffffff, $alpha: 0.15);
-        font-size: 92px;
-        color: var(--color-White);
-        transition: transform 1s ease-in-out;
-
-        .video_PauseButton,
-        .video_playButton {
-          line-height: 150px;
+        ._video_button_size {
+          width: 134px;
+          height: 134px;
+          border-radius: 100%;
+          text-align: center;
+          background: rgba($color: #ffffff, $alpha: 0.15);
+          font-size: 92px;
+          color: var(--color-White);
           transition: transform 1s ease-in-out;
+
+          .video_PauseButton,
+          .video_playButton {
+            line-height: 150px;
+            transition: transform 1s ease-in-out;
+          }
         }
-      }
 
-      #_video_play {
-        // transform: scale(1.2,1.2);
-        // font-size: 92px;
-        transition: transform 1s ease-in-out;
-        opacity: 1;
-        //animation: fadeinout 1s ease-in-out;
-      }
-
-      #_video_pause {
-        // transform: scale(1.2,1.2);
-        // font-size: 92px;
-        transition: transform 1s ease-in-out;
-        opacity: 1;
-        //animation: fadeinout 1s ease-in-out;
-      }
-
-      .showAnimation {
-        animation: fadein 1s ease-in-out;
-      }
-
-      .hideAnimation {
-        animation: fadeOut 1s ease-in-out;
-      }
-
-      @keyframes fadein {
-        0% {
+        #_video_play {
+          // transform: scale(1.2,1.2);
+          // font-size: 92px;
+          transition: transform 1s ease-in-out;
           opacity: 1;
-          transform: scale(1, 1);
-          font-size: 80px;
+          //animation: fadeinout 1s ease-in-out;
         }
 
-        50% {
+        #_video_pause {
+          // transform: scale(1.2,1.2);
+          // font-size: 92px;
+          transition: transform 1s ease-in-out;
           opacity: 1;
-          transform: scale(1.2, 1.2);
-          font-size: 92px;
+          //animation: fadeinout 1s ease-in-out;
         }
 
-        100% {
-          opacity: 0;
-          transform: scale(1, 1);
-          font-size: 80px;
-        }
-      }
-
-      @keyframes fadeOut {
-        0% {
-          opacity: 1;
-          transform: scale(1, 1);
-          font-size: 80px;
+        .showAnimation {
+          animation: fadein 1s ease-in-out;
         }
 
-        50% {
-          opacity: 1;
-          transform: scale(1.2, 1.2);
-          font-size: 92px;
+        .hideAnimation {
+          animation: fadeOut 1s ease-in-out;
         }
 
-        100% {
-          opacity: 0;
-          transform: scale(1, 1);
-          font-size: 80px;
+        @keyframes fadein {
+          0% {
+            opacity: 1;
+            transform: scale(1, 1);
+            font-size: 80px;
+          }
+
+          50% {
+            opacity: 1;
+            transform: scale(1.2, 1.2);
+            font-size: 92px;
+          }
+
+          100% {
+            opacity: 0;
+            transform: scale(1, 1);
+            font-size: 80px;
+          }
+        }
+
+        @keyframes fadeOut {
+          0% {
+            opacity: 1;
+            transform: scale(1, 1);
+            font-size: 80px;
+          }
+
+          50% {
+            opacity: 1;
+            transform: scale(1.2, 1.2);
+            font-size: 92px;
+          }
+
+          100% {
+            opacity: 0;
+            transform: scale(1, 1);
+            font-size: 80px;
+          }
         }
       }
     }
-  }
 
-  .MuiGrid-grid-xs-3 {
-    margin-bottom: 12px;
-  }
+    .MuiGrid-grid-xs-3 {
+      margin-bottom: 12px;
+    }
 
-  .GridCointainerBlock {
-    display: block;
-  }
+    .GridCointainerBlock {
+      display: block;
+    }
 
-  .GridCointainerHide {
-    display: none;
-  }
+    .GridCointainerHide {
+      display: none;
+    }
 
-  .videoTransformApply {
-    margin-top: -162px;
-  }
+    .videoTransformApply {
+      margin-top: -162px;
+    }
 
-  .pictureViewGrid {
-    margin-left: auto;
-    margin-top: -126px;
-  }
+    .pictureViewGrid {
+      margin-left: auto;
+      margin-top: -126px;
+    }
 
-  #video-player-screens {
-    background-color: var(--color-black-11);
-  }
+    #video-player-screens {
+      background-color: var(--color-black-11);
+      height: calc(100vh - (317px + 197px));
+      ._videoPlayer_grid_customize {
+        height: 100%;
+      }
+    }
 
-  .PlayPause-container {
-    margin-top: 8px;
-  }
+    .PlayPause-container {
+      margin-top: 8px;
+    }
 
-  .playerViewFlexTimer {
-    // height: 60px;
+    .playerViewFlexTimer {
+      // height: 60px;
 
-  }
+    }
 
   .playerViewFlex {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 17px;
     height: 60px;
  
-
+    .player_right_responsive {
+      position: relative;
+      left: 2px;
+      top: 2px;
+    }
     .playerViewRight {
       display: flex;
-      margin-top: 5px;
-      margin-right: -1px;
+      justify-content: space-between;
       align-items: center;
-      position: relative;
 
-      .SettingGrid {
-        width: 30px;
+      height: 60px;
 
-        .faCogIcon {
-          position: absolute;
-          right: 226px;
+        .SettingGrid {
+          width: 30px;
+          margin-right: -11px;
+          margin-top: 9px;
+
+          .faCogIcon {
+            position: relative;
+            z-index: 8;
+          }
+        }
+
+        .playerView {
+          position: relative;
           z-index: 8;
-          top: -2px;
+          margin-right: 20px;
+          top: 2px;
+        }
+    
+
+      &.clickViewRightBtn {
+        position: absolute;
+        bottom: -4px;
+        right: 0px;
+        z-index: 24;
+        border-top: 1px solid var(--color-333333);
+        &::before {
+          position: absolute;
+          content: "";
+          background: black;
+          width: 315px;
+          height: 55px;
+          right: 0px;
+          z-index: 0;
+          top: 0px;
         }
       }
 
-      .playerView {
-        position: absolute;
-        right: 2px;
-        top: -4px;
-      }
-    }
 
-    .player_right_responsive {
-      display: none;
 
-      .CrxchevronDown {
-        color: white;
-        font-size: 32px;
-        top: -3px;
-        transition: 0.1s all linear;
-
-        &:hover {
-          transform: scale(1.3);
-        }
-      }
-    }
-
-    @media only screen and (max-width: 900px) and (min-height: 500px) {
-      .playerViewRight {
-        display: none;
-      }
-
-      .player_right_responsive {
-        display: block;
-        position: relative;
-        right: -25px;
-        top: -3px;
-      }
 
       .playerView {
-        top: -2px !important;
-      }
-    }
+        div {
+          i {
+            color: var(--color-White);
+            font-size: 32px;
+            transition: 0.1s all;
 
-    .clickViewRightBtn {
-      position: absolute;
-      bottom: -46px;
-      right: 43px;
-      z-index: 24;
-      display: flex !important;
-    }
-
-    .clickViewRightBtn {
-      &::before {
-        position: absolute;
-        content: "";
-        background: black;
-        width: 315px;
-        height: 55px;
-        right: -44px;
-        z-index: 0;
-        top: -14px;
-      }
-    }
-
-    .MenuListGrid {
-      margin-bottom: -4px;
-      margin-right: -24px;
-    }
-
-    #volume-controls {
-      top: 29px;
-      left: 196px;
-    }
-
-    .playerView {
-      div {
-        i {
-          color: var(--color-White);
-          font-size: 32px;
-          transition: 0.1s all;
-
-          &:hover {
-            // font-size: 36px;
-            transform: scale(1.3);
-            cursor: pointer;
+            &:hover {
+              // font-size: 36px;
+              transform: scale(1.3);
+              cursor: pointer;
+            }
           }
         }
       }
-    }
 
     .MenuListGrid {
       border: 1px solid transparent;
+      margin-top: -7px;
+      margin-right: 2px;
       button {
       border: 1px solid transparent;
 
@@ -327,651 +298,462 @@
         padding: 7px 7px;
       }
 
-      .rc-menu__item {
-        color: var(--color-White);
-        padding: 9px 8px !important;
+        .rc-menu__item {
+          color: var(--color-White);
+          padding: 9px 8px !important;
+        }
+
+        .rc-menu-container {
+          top: 0;
+        }
       }
 
-      .rc-menu-container {
-        top: 0;
-      }
     }
 
-    .playerViewMiddle {
-      position: relative;
-      top: -5px;
-      left: 58px;
+    .timeLineBar {
+      margin-top: 15px;
 
-      @media only screen and (max-width:1025px) {
-        left: 26px;
+      .MuiLinearProgress-root {
+        margin-bottom: 15px;
       }
 
-      @media only screen and (max-width:800px) {
-        left: 80px;
+      .linearbarThird {
+        div {
+          background-color: var(--color-olive);
+        }
       }
 
-      @media only screen and (max-width:730px) {
-        left: 87px;
-      }
-
-      .UndoIconPosition {
-        position: absolute;
-        left: -31px;
-        top: -4px;
-      }
-
-      .RedoIconPosition {
-        position: absolute;
-        left: 55px;
-        top: -4px;
-      }
-
-      .MinusIconPosition {
-        position: absolute;
-        top: -7px;
-        left: 10px;
-        transition: 0.1s all linear;
-
-        &:hover {
-          transform: scale(1.3);
+      .linearbarfourth {
+        div {
+          background-color: var(--color-coral);
         }
       }
     }
-  }
 
-  .timeLineBar {
-    margin-top: 15px;
-
-    .MuiLinearProgress-root {
-      margin-bottom: 15px;
+    .hideControllerBar {
+      display: none;
     }
 
-    .linearbarThird {
-      div {
-        background-color: var(--color-olive);
-      }
+    .trueshow {
+      display: block !important;
     }
 
-    .linearbarfourth {
-      div {
-        background-color: var(--color-coral);
-      }
-    }
-  }
-
-  .hideControllerBar {
-    display: none;
-  }
-
-  .trueshow {
-    display: block !important;
-  }
-
-  .notShowFRicon {
-    display: none;
-  }
-
-  .showFRicon {
-    display: block;
-    position: absolute;
-  }
-
-  .ClickerIcons {
-    position: absolute;
-    z-index: 6;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    margin-top: 109px;
-
-    @media screen and (max-width:1000px) {
-      margin-top: 96px;
+    .notShowFRicon {
+      display: none;
     }
 
-    @media screen and (max-width:975px) {
-      margin-top: 88px;
+    .showFRicon {
+      display: block;
+      position: absolute;
     }
 
-    @media screen and (max-width:940px) {
-      margin-top: 79px;
-    }
 
-    @media screen and (max-width:900px) {
-      margin-top: 66px;
-    }
-
-    @media screen and (max-width:860px) {
-      margin-top: 50px;
-
-    }
-
-    @media screen and (max-width:780px) {
-      margin-top: -17px;
-
-    }
-
-    p {
-      color: white;
-    }
-
-    i {
-      font-size: 34px;
-      position: relative;
-      top: 8px;
-
-      @media screen and (max-width:1000px) {
-        font-size: 30px;
-      }
-    }
-
-    .iconFSSpan {
-      font-size: 16px;
-      margin-left: 4px;
-
-      @media screen and (max-width:1000px) {
-        position: relative;
-        top: 0px;
-      }
-    }
-  }
-
-  .iconTableClr {
-    color: white;
-    font-size: 28px;
-    position: absolute;
-    right: 75px;
-    transition: 0.2s all;
-    top: -5px;
-
-    &:hover {
-      // font-size: 36px;
-      transform: scale(1.3);
-      cursor: pointer;
-    }
-  }
-
-  .caretLeftIcon {
-    font-size: 42px;
-    transition: 0.1s all;
-    position: absolute;
-
-    &:hover {
-      // font-size: 48px;
-      transform: scale(1.3);
-      cursor: pointer;
-    }
-  }
-
-  .caretRightIcon {
-    position: absolute;
-    left: 118px;
-    font-size: 42px;
-    transition: 0.1s all;
-
-    &:hover {
-      // font-size: 48px;
-      transform: scale(1.3);
-    }
-  }
-
-  .backward3Icon {
-    font-size: 34px;
-    transition: 0.1s all;
-    position: absolute;
-    left: 85px;
-    top: 4px;
-
-    &:hover {
-      // font-size: 42px;
-      transform: scale(1.4);
-    }
-  }
-
-  .backward2Icon {
-    font-size: 34px;
-    transition: 0.1s all;
-    position: absolute;
-    left: 18px;
-    top: 3px;
-
-    &:hover {
-      // font-size: 42px;
-      transform: scale(1.4);
-    }
-  }
-
-  .iconPlay4 {
-    font-size: 34px;
-    position: absolute;
-    left: 53px;
-    top: 4px;
-    transition: 0.1s all;
-
-    &:hover {
-      // font-size: 42px;
-      transform: scale(1.3);
-    }
-  }
-
-  .iconPause2 {
-    font-size: 30px;
-    transition: 0.1s all;
-    left: 53px;
-    top: 5px;
-    position: absolute;
-
-    &:hover {
-      // font-size: 42px;
-      transform: scale(1.3);
-    }
-  }
-
-  .volume-icon {
-    span {
+    .iconTableClr {
       color: white;
       font-size: 28px;
       transition: 0.2s all;
 
       &:hover {
+        // font-size: 36px;
+        transform: scale(1.3);
+        cursor: pointer;
+      }
+    }
+
+    .caretLeftIcon {
+      font-size: 42px;
+      transition: 0.1s all;
+      position: absolute;
+
+      &:hover {
+        // font-size: 48px;
+        transform: scale(1.3);
+        cursor: pointer;
+      }
+    }
+
+    .caretRightIcon {
+      position: absolute;
+      left: 118px;
+      font-size: 42px;
+      transition: 0.1s all;
+
+      &:hover {
+        // font-size: 48px;
+        transform: scale(1.3);
+      }
+    }
+
+    .backwardRightBtn {
+      left: 36px;
+      top: -3px;
+      .backward3Icon {
+        font-size: 34px;
+        transition: 0.1s all;
+  
+  
+        &:hover {
+          // font-size: 42px;
+          transform: scale(1.4);
+        }
+      }
+    }
+ 
+    .backwardBtn  {
+      left: 20px;
+      top: -2px;
+      .backward2Icon {
+        font-size: 34px;
+        transition: 0.1s all;
+  
+        &:hover {
+          // font-size: 42px;
+          transform: scale(1.4);
+        }
+      }
+    }
+  
+    .playBtn {
+      top: -2px;
+      left: 29px;
+    }
+    .pauseBtn {
+      top: 0px;
+      left: 29px;
+      margin-left: 3px !important;
+      margin-right: 3px !important;
+    }
+    .iconPlay4 {
+      font-size: 34px;
+      transition: 0.1s all;
+
+      &:hover {
+        // font-size: 42px;
+        transform: scale(1.3);
+      }
+    }
+
+    .iconPause2 {
+      font-size: 30px;
+      transition: 0.1s all;  
+      &:hover {
+        // font-size: 42px;
+        transform: scale(1.3);
+      }
+    }
+
+    .volume-icon {
+      span {
+        color: white;
+        font-size: 28px;
+        transition: 0.2s all;
+
+        &:hover {
+          // font-size: 34px;
+          transform: scale(1.3);
+          margin-top: -7px;
+        }
+      }
+    }
+
+
+    .commentAltBtn {
+      right: -26px;
+      .commentAltpPlus {
+        font-size: 26px;
+        transition: 0.1s all;
+        }
+    }
+
+
+    .faCogIcon {
+      font-size: 28px;
+      color: white;
+      transition: 0.1s all;
+
+      &:hover {
+        cursor: pointer;
+        // font-size: 36px;
+        transform: scale(1.3);
+      }
+      &:active , &:focus , &:visited {
+        transform: scale(1.3);
+      }
+    }
+
+    .bookmarkBtn  {
+      right: -5px;
+      top: -2px;
+      .faBookmarkIcon {
+        font-size: 26px;
+        transition: 0.1s all;
+  
+        &:hover {
+          // font-size: 34px;
+          transform: scale(1.3);
+        }
+      }
+    }
+
+
+    .commentAltpPlus {
+      font-size: 26px;
+      transition: 0.1s all;
+
+      &:hover {
         // font-size: 34px;
         transform: scale(1.3);
-        margin-top: -7px;
       }
     }
-  }
 
-  .iconMinusUndo {
-    font-size: 28px;
-    transition: 0.1s all linear;
 
-    &:hover {
-      // font-size: 36px;
-      transform: scale(1.3);
+    .playerViewLeft {
+      margin-top: -10px;
+      width: 273px;
+      button {
+        min-width: auto;
+        padding: 0 0;
+        margin: 0 0;
+      }
+      .videoControleBFButton {
+        width: 30px;
+        top: 9px;
     }
-  }
-
-  .undoAltIcon,
-  .undoRedoIcon {
-    font-size: 25px;
-    transition: .1s all;
-
-  }
-
-  .faCogIcon {
-    font-size: 28px;
-    color: white;
-    margin-right: -15px;
-    transition: 0.1s all;
-
-    &:hover {
-      cursor: pointer;
-      // font-size: 36px;
-      transform: scale(1.3);
+    #volume-controls {
+      left: 228px;
+       top: 39px;
     }
-    &:active , &:focus , &:visited {
-      transform: scale(1.3);
-    }
-  }
-
-  .faBookmarkIcon {
-    font-size: 26px;
-    position: absolute;
-    right: 69px ;
-    transition: 0.1s all;
-
-    &:hover {
-      // font-size: 34px;
-      transform: scale(1.3);
-    }
-  }
-
-  .commentAltpPlus {
-    font-size: 26px;
-    position: absolute;
-    right: 33px;
-    transition: 0.1s all;
-
-    &:hover {
-      // font-size: 34px;
-      transform: scale(1.3);
-    }
-  }
-
-  .modeButton {
-    position: absolute;
-    left: 48%;
-    top: 49%;
-    margin-top: 94px;
-    margin-left: 3px;
-
-    @media (max-width: 780px) {
-      margin-top: -11px;
     }
 
-    i {
-      color: white;
-      transition: 0.5s all linear;
-      font-size: 33px;
-    }
-  }
-
-  .modeNumCount {
-    font-size: 16px;
-  }
-
-  .modeBtnIconLeft {
-    transform: rotate(330deg);
-    font-size: 28px;
-    display: block;
-
-    &::before {
-      position: absolute;
-      content: "";
-      background: #ffff;
-      height: 50px;
-      width: 50px;
-      z-index: -1;
-      opacity: 15%;
-      left: -9px;
-      top: -9px;
-      border-radius: 207px;
-      transform: rotate(30deg);
-    }
-
-    .circleRedo {
-      position: absolute;
-      font-size: 8px;
-      left: -4px;
-      top: 4px;
-      background: white;
-      color: black;
-      border-radius: 31px;
-      padding: 5px 4px;
-      border: 1px solid #3333;
-      transform: rotate(28deg);
-
-      span {
-        font-size: 12px;
+    .videoFR_Screen {
+      video {
+        border: 10px solid black;
       }
     }
-  }
 
-  .modeBtnIconRight {
-    transform: rotate(54deg);
-    font-size: 28px;
-    display: block;
-
-    &::before {
-      position: absolute;
-      content: "";
-      background: #ffff;
-      height: 50px;
-      width: 50px;
-      z-index: -1;
-      opacity: 15%;
-      left: -9px;
-      top: -9px;
-      border-radius: 207px;
-      transform: rotate(30deg);
-    }
-
-    .circleRedo {
-      position: absolute;
-      font-size: 8px;
-      left: 11px;
-      top: 3px;
-      background: white;
-      color: black;
-      border-radius: 31px;
-      padding: 5px 4px;
-      border: 1px solid #3333;
-      transform: rotate(303deg);
-
-      span {
-        font-size: 12px;
+    .overlayVideo {
+      ul {
+        li {
+          display: inline-block;
+          margin: 0 20px;
+          padding: 10px 0;
+        }
       }
     }
-  }
 
-  .playerViewLeft {
-    margin-left: -5px;
-    margin-top: -10px;
+    .ViewScreenLayouts {
+      background-color: #404041;
+      left: -434px !important;
+      top: -363px !important;
+      width: 366px;
 
-    button {
-      min-width: auto;
-      padding: 0 0;
-      margin: 0 0;
-    }
-  }
-
-  .videoFR_Screen {
-    video {
-      border: 10px solid black;
-    }
-  }
-
-  .overlayVideo {
-    ul {
       li {
-        display: inline-block;
-        margin: 0 20px;
-        padding: 10px 0;
+        color: #D1D2D4;
+        font-size: 14px;
+        position: relative;
+        height: 50px !important;
       }
-    }
-  }
 
-  .ViewScreenLayouts {
-    background-color: #404041;
-    left: -434px !important;
-    top: -363px !important;
-    width: 366px;
-
-    li {
-      color: #D1D2D4;
-      font-size: 14px;
-      position: relative;
-      height: 50px !important;
-    }
-
-    .MenuItemLayout_1 {
-      height: 34px !important;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-bottom: 1px solid #69696A;
-
-      &:hover,
-      &:active {
-        background-color: transparent;
-
-      }
-    }
-
-    .faCheckLayout {
-      position: absolute;
-      left: 15px;
-      font-size: 14px;
-    }
-
-    .textContentLayout {
-      position: absolute;
-      left: 44px;
-      font-family: var(--base-font-family);
-      font-weight: normal;
-      font-size: 14px;
-    }
-
-    .ViewDiv {
-      position: absolute;
-      left: 161px;
-    }
-
-    .SidePanelMenu {
-      position: relative;
-      border-top: 1px solid #69696A;
-
-      .sidePanelGrid {
+      .MenuItemLayout_1 {
+        height: 34px !important;
         display: flex;
+        justify-content: center;
         align-items: center;
-        position: absolute;
-        left: 161px;
+        border-bottom: 1px solid #69696A;
 
-        div {
-          background-color: #D1D2D4;
-          height: 30px;
-          border: 1px solid #707070;
-          width: 61px;
-        }
+        &:hover,
+        &:active {
+          background-color: transparent;
 
-        p {
-          background-color: #A7A9AC;
-          height: 30px;
-          border: 1px solid #707070;
-          width: 18px;
         }
       }
 
-      .MuiSwitch-root {
+      .faCheckLayout {
         position: absolute;
-        right: 5px;
-      }
-
-      .MuiFormControlLabel-label {
-        position: absolute;
-        left: 44px;
+        left: 15px;
         font-size: 14px;
       }
 
-    }
-
-    .switchBaseLayout {
-      .MuiSwitch-switchBase {
-        width: 16px;
-        height: 16px;
-        background-color: #FFFFFF;
-        top: 13px;
-        left: 13px;
+      .textContentLayout {
+        position: absolute;
+        left: 44px;
+        font-family: var(--base-font-family);
+        font-weight: normal;
+        font-size: 14px;
       }
 
-      .MuiButtonBase-root {
-        padding: 8px !important;
+      .ViewDiv {
+        position: absolute;
+        left: 161px;
       }
 
-      .MuiSwitch-track {
-        height: 18px;
-        width: 30px;
-        background-color: #E5E5E5 !important;
-        opacity: 1;
-        border-radius: 8px;
+      .SidePanelMenu {
+        position: relative;
+        border-top: 1px solid #69696A;
+
+        .sidePanelGrid {
+          display: flex;
+          align-items: center;
+          position: absolute;
+          left: 161px;
+
+          div {
+            background-color: #D1D2D4;
+            height: 30px;
+            border: 1px solid #707070;
+            width: 61px;
+          }
+
+          p {
+            background-color: #A7A9AC;
+            height: 30px;
+            border: 1px solid #707070;
+            width: 18px;
+          }
+        }
+
+        .MuiSwitch-root {
+          position: absolute;
+          right: 5px;
+        }
+
+        .MuiFormControlLabel-label {
+          position: absolute;
+          left: 44px;
+          font-size: 14px;
+        }
+
       }
 
-      .Mui-checked {
-        left: 4px;
-        top: 13px;
+      .switchBaseLayout {
+        .MuiSwitch-switchBase {
+          width: 16px;
+          height: 16px;
+          background-color: #FFFFFF;
+          top: 13px;
+          left: 13px;
+        }
 
-        +.MuiSwitch-track {
-          background-color: #003A5D !important;
+        .MuiButtonBase-root {
+          padding: 8px !important;
+        }
+
+        .MuiSwitch-track {
+          height: 18px;
+          width: 30px;
+          background-color: #E5E5E5 !important;
           opacity: 1;
           border-radius: 8px;
         }
 
+        .Mui-checked {
+          left: 4px;
+          top: 13px;
+
+          +.MuiSwitch-track {
+            background-color: #003A5D !important;
+            opacity: 1;
+            border-radius: 8px;
+          }
+
+        }
+      }
+
+      .switcherBtn {
+        font-size: 14PX;
+        position: absolute;
+        right: 65px;
+        top: 16px;
+      }
+
+      .activeLayout {
+        background-color: #231F20;
+
+        &:hover {
+          background-color: #6E6E6E;
+        }
       }
     }
 
-    .switcherBtn {
-      font-size: 14PX;
-      position: absolute;
-      right: 65px;
-      top: 16px;
-    }
-
-    .activeLayout {
-      background-color: #231F20;
-
-      &:hover {
-        background-color: #6E6E6E;
-      }
-    }
-  }
-
-  .screenViewsSingle {
-    background: #D1D2D4;
-    height: 32px;
-    width: 54px;
-    border: 1px solid #707070;
-  }
-
-  .screenViewsSideBySide {
-    display: flex;
-
-    p {
+    .screenViewsSingle {
       background: #D1D2D4;
-      height: 30px;
-      width: 53px;
-      border: 1px solid #707070;
-
-    }
-  }
-
-  .screenViewsVideosOnSide {
-    display: flex;
-    align-items: center;
-
-    .first {
-      background: #D1D2D4;
-      height: 30px;
-      width: 53px;
+      height: 32px;
+      width: 54px;
       border: 1px solid #707070;
     }
 
-    .second {
-      span {
+    .screenViewsSideBySide {
+      display: flex;
+
+      p {
         background: #D1D2D4;
-        height: 15px;
-        width: 26px;
-        display: block;
+        height: 30px;
+        width: 53px;
         border: 1px solid #707070;
 
       }
     }
-  }
 
-  .screenViewsGrid {
-    display: flex;
-    align-items: center;
+    .screenViewsVideosOnSide {
+      display: flex;
+      align-items: center;
 
-    p {
-      span {
-        width: 26px;
-        height: 15px;
-        display: block;
+      .first {
         background: #D1D2D4;
-        border: 1px solid #707070;
-
-      }
-    }
-  }
-
-  .screenViewsGrid6 {
-    display: flex;
-    align-items: center;
-
-    p {
-      span {
-        width: 26px;
-        height: 15px;
-        display: block;
-        background: #D1D2D4;
+        height: 30px;
+        width: 53px;
         border: 1px solid #707070;
       }
+
+      .second {
+        span {
+          background: #D1D2D4;
+          height: 15px;
+          width: 26px;
+          display: block;
+          border: 1px solid #707070;
+
+        }
+      }
+    }
+
+    .screenViewsGrid {
+      display: flex;
+      align-items: center;
+
+      p {
+        span {
+          width: 26px;
+          height: 15px;
+          display: block;
+          background: #D1D2D4;
+          border: 1px solid #707070;
+
+        }
+      }
+    }
+
+    .screenViewsGrid6 {
+      display: flex;
+      align-items: center;
+
+      p {
+        span {
+          width: 26px;
+          height: 15px;
+          display: block;
+          background: #D1D2D4;
+          border: 1px solid #707070;
+        }
+      }
+    }
+    .assetTimelineSync {
+      min-width: 161px;
+      margin-left: 14px;
     }
   }
-  .assetTimelineSync {
-    min-width: 161px;
-    margin-left: 14px;
-  }
+}/*_video_player_container close */
 }
-
 .mainFullView {
   #CRX_Video_Player_Controls {
     position: absolute;
@@ -1021,10 +803,8 @@
 }
 
 .handleforwardIcon {
-  position: relative;
-  left: 133px;
-  top: 10px;
-
+  left: 58px;
+  top: 9px;
   svg {
     transition: 0.1s all linear;
   }
@@ -1036,152 +816,159 @@
   }
 }
 
-.playBackMode {
-  button {
-    margin: 0 4px;
-    background: var(--color-transparent);
-    border: none;
-
-    &:disabled {
+.playerViewMiddle {
+  margin-top: 5px;
+  .playBackMode {
+    .MinusIconPosition {
+      margin-left: -1px;
+      margin-right: 1px;
+      transition: 0.1s all ;
+      &:hover {
+        transform: scale(1.3);
+      }
+    }
+    button {
+      margin: 0 4px;
+      background: var(--color-transparent);
+      border: none;
+  
+      &:disabled {
+        i {
+          color: #979797;
+        }
+      }
+  
       i {
-        color: #979797;
-      }
-    }
-
-    i {
-      color: var(--color-White);
-      font-size: 37px;
-      position: relative;
-
-      &:hover {
-        cursor: pointer;
-      }
-
-      span {
-        top: 10px;
-        position: absolute;
-        left: -3px;
-        font-size: 8px;
-        background: white;
-        padding: 5px 3px;
-        border-radius: 28px;
-        color: black;
-        border: 1px solid black;
-      }
-    }
-
-    .undoRedoIcon {
-      span {
-        top: 5px;
-        left: -3px;
-      }
-
-      &:hover {
+        color: var(--color-White);
+        font-size: 28px;
+        position: relative;
+  
+        &:hover {
+          cursor: pointer;
+          
+        }
+  
         span {
-          font-size: 10px;
+          top: 10px;
+          position: absolute;
+          left: -3px;
+          font-size: 8px;
+          background: white;
+          padding: 5px 3px;
+          border-radius: 28px;
+          color: black;
+          border: 1px solid black;
         }
       }
-    }
-
-    .undoAltIcon {
-      span {
-        top: 3px !important;
-        transform: rotate(306deg) !important;
-        left: 13px !important;
-      }
-
-      &:hover {
-        span {
-          font-size: 10px;
-        }
-      }
-    }
-
-    .fa-undo-alt {
-      transform: rotate(55deg);
-
-      span {
-        transform: rotate(-50deg);
-      }
-    }
-
-    .fa-redo-alt {
-      transform: rotate(-38deg);
-
-      span {
-        transform: rotate(42deg);
-      }
-    }
-  }
-
-  .modeIconUndoLinker {
-    background: white;
-    position: absolute;
-    color: black;
-    border-radius: 31px;
-    padding: 2px 3px;
-    border: 1px solid #333;
-    z-index: 1;
-    font-weight: 700;
-    font-size: 10px;
-    margin-left: 5px;
-    margin-top: 5px;
-
-    span {
-      font-size: 12px;
-    }
-  }
-
-  .modeIconRedoLinker {
-    background: white;
-    position: absolute;
-    color: black;
-    border-radius: 31px;
-    padding: 2px 3px;
-    border: 1px solid #3333;
-    z-index: 1;
-    font-weight: 700;
-    font-size: 10px;
-    margin-top: 6px;
-    margin-left: 2px;
-
-    span {
-      font-size: 12px;
-    }
-  }
-
-  .UndoIconHover {
-    transition: 0.1s all linear;
-
-    &:hover {
-      .modeIconUndoLinker {
-        // font-size: 13px;
-        cursor: pointer;
-      }
-
-      .modeIconRedoLinker {
-        // font-size: 13px;
-        cursor: pointer;
-      }
-
-      .undoAltIcon,
+  
       .undoRedoIcon {
-        // font-size: 30px !important;
-        cursor: pointer !important;
+        span {
+          top: 5px;
+          left: -3px;
+        }
+  
+        &:hover {
+          span {
+            font-size: 10px;
+          }
+        }
       }
-
-      transform: scale(1.3);
+  
+      .undoAltIcon {
+        span {
+          top: 3px !important;
+          transform: rotate(306deg) !important;
+          left: 13px !important;
+        }
+  
+        &:hover {
+          span {
+            font-size: 10px;
+          }
+        }
+      }
+  
+      .fa-undo-alt {
+        transform: rotate(55deg);
+  
+        span {
+          transform: rotate(-50deg);
+        }
+      }
+  
+      .fa-redo-alt {
+        transform: rotate(-38deg);
+  
+        span {
+          transform: rotate(42deg);
+        }
+      }
+    }
+  
+    .modeIconUndoLinker {
+      background: white;
+      position: absolute;
+      color: black;
+      border-radius: 31px;
+      padding: 2px 3px;
+      border: 1px solid #333;
+      z-index: 1;
+      font-weight: 700;
+      font-size: 10px;
+      margin-left: 5px;
+      margin-top: 5px;
+  
+      span {
+        font-size: 12px;
+      }
+    }
+  
+    .modeIconRedoLinker {
+      background: white;
+      position: absolute;
+      color: black;
+      border-radius: 31px;
+      padding: 2px 3px;
+      border: 1px solid #3333;
+      z-index: 1;
+      font-weight: 700;
+      font-size: 10px;
+      margin-top: 6px;
+      margin-left: 2px;
+  
+      span {
+        font-size: 12px;
+      }
+    }
+  
+    .UndoIconHover {
+      transition: 0.1s all linear;
+  
+      &:hover {
+        .modeIconUndoLinker {
+          // font-size: 13px;
+          cursor: pointer;
+        }
+  
+        .modeIconRedoLinker {
+          // font-size: 13px;
+          cursor: pointer;
+        }
+  
+        .undoAltIcon,
+        .undoRedoIcon {
+          // font-size: 30px !important;
+          cursor: pointer !important;
+        }
+  
+        transform: scale(1.3);
+      }
     }
   }
+  
 }
 
-@media (max-width: 1890px) {
-  #crx_video_player {
-    .pictureViewGrid {
-      margin-top: -157px;
-    }
-  }
-}
+
 
 .custom-class {
   display: inline-flex !important;
@@ -1191,12 +978,6 @@
 .custom-class img {
   margin-left: 48px !important;
   margin-bottom: 15px;
-}
-
-.mapContainerhh {
-  width: 200px;
-  background-color: red;
-  display: inline-block;
 }
 
 .videoMenuCss {
@@ -1311,9 +1092,8 @@ span.playBackTooltipUp {
   font-size: 42px;
   position: absolute;
   left: 50%;
-  top: 50%;
-  margin-top: 5%;
   transition: 0.1s all;
+  bottom: 4px;
 
   svg {
     circle {
@@ -1483,63 +1263,9 @@ span.playBackTooltipUp {
   }
 }
 
-.multiTimelineEnabled {
-  .faBookmarkIcon {
-    right: 54px !important;
-  }
 
-  .commentAltpPlus {
-    right: 19px !important;
-  }
 
-  .faCogIcon {
-    right: 165px !important;
-  }
 
-  @media(min-width:900px) {
-    .playerViewMiddle {
-      left: 65px !important;
-    }
-  }
-
-  @media screen and (max-width:900px) {
-    .clickViewRightBtn {
-      &::before {
-        width: 250px !important;
-      }
-    }
-  }
-}
-
-.disabledViewFlex {
-  .faBookmarkIcon {
-    right: 60px !important;
-  }
-
-  .commentAltpPlus {
-    right: 26px !important;
-  }
-
-  .faCogIcon {
-    right: 182px !important;
-  }
-
-  .playerViewMiddle {
-    left: 56px !important;
-  }
-
-  @media(max-width:900px) {
-    .clickViewRightBtn {
-      &::before {
-        width: 269px !important;
-      }
-    }
-
-    .playerViewMiddle {
-      left: 87px !important;
-    }
-  }
-}
 
 
 .cursorAdded {
@@ -1585,8 +1311,152 @@ span.playBackTooltipUp {
       right: 0;
     }
   }
+  
 }
 
+
+.player_right_responsive {
+  display: none;
+  .CrxchevronDown  {
+    font-size: 28px;
+    top: -6px;
+  }
+}
+
+
+.ClickerIcons {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  bottom: 0px;
+  p {
+    color: white;
+  }
+
+  i {
+    font-size: 34px;
+    position: relative;
+    top: 8px;
+
+  
+  }
+
+  .iconFSSpan {
+    font-size: 16px;
+    margin-left: 4px;
+
+
+  }
+}
+
+.modeButton {
+  position: absolute;
+  left: 48%;
+  margin-left: 3px;
+  bottom: 23px;
+
+  @media (max-width: 780px) {
+    margin-top: -11px;
+  }
+
+  i {
+    color: white;
+    transition: 0.5s all linear;
+    font-size: 33px;
+  }
+}
+
+.modeNumCount {
+  font-size: 16px;
+}
+
+.modeBtnIconLeft {
+  transform: rotate(330deg);
+  font-size: 28px;
+  display: block;
+
+  &::before {
+    position: absolute;
+    content: "";
+    background: #ffff;
+    height: 50px;
+    width: 50px;
+    z-index: -1;
+    opacity: 15%;
+    left: -9px;
+    top: -9px;
+    border-radius: 207px;
+    transform: rotate(30deg);
+  }
+
+  .circleRedo {
+    position: absolute;
+    font-size: 8px;
+    left: -4px;
+    top: 4px;
+    background: white;
+    color: black;
+    border-radius: 31px;
+    padding: 5px 4px;
+    border: 1px solid #3333;
+    transform: rotate(28deg);
+
+    span {
+      font-size: 12px;
+    }
+  }
+}
+
+.modeBtnIconRight {
+  transform: rotate(54deg);
+  font-size: 28px;
+  display: block;
+
+  &::before {
+    position: absolute;
+    content: "";
+    background: #ffff;
+    height: 50px;
+    width: 50px;
+    z-index: -1;
+    opacity: 15%;
+    left: -9px;
+    top: -9px;
+    border-radius: 207px;
+    transform: rotate(30deg);
+  }
+
+  .circleRedo {
+    position: absolute;
+    font-size: 8px;
+    left: 11px;
+    top: 3px;
+    background: white;
+    color: black;
+    border-radius: 31px;
+    padding: 5px 4px;
+    border: 1px solid #3333;
+    transform: rotate(303deg);
+
+    span {
+      font-size: 12px;
+    }
+  }
+}
+
+._Asset_View_Reason_Modal {
+  .wrapper {
+    margin: 0 0 0 0;
+  } 
+  ._Footer_Edit_Form_Main_Btn {
+    margin-top: 20px;
+    display: flex;
+    button {
+      margin-right: 18px;
+    }
+  }
+}
 
 .__CRX__Reason__Modal__ {
   .modalEditCrx {

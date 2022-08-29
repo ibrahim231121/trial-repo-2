@@ -3,9 +3,9 @@ import Grid from "@material-ui/core/Grid";
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
-import { Switch } from "@material-ui/core";
+import { GridList, Switch } from "@material-ui/core";
 import "../../Assets/css/animate.min.css"
-import AssetDetailsDropdown from "../../../src/Application/Assets/Detail/AssetDetailsDropdown";
+import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
 
 
 interface VideoScreenProp {
@@ -209,20 +209,23 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
 
   return (
     <div id="video-player-screens">
-      <Grid container>
-        <Grid container xs={mapEnabled ? 9 : 12}>
+      <Grid container className="_videoPlayer_grid_customize">
+        <Grid  className="_videoPlayer_grid_customize" container xs={mapEnabled ? 9 : 12}>
           <Grid
             item
             spacing={3}
             xs={
               viewNumber == 1
-                ? 12 : viewNumber == 2 ? 6: viewNumber == 3 ? 8: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1} >
-                  {getVideoTag(1)}
+                ? 12 : viewNumber == 2 ? 6: viewNumber == 3 ? 8: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1} 
+            className="_videoPlayer_grid_customize"
+          >
+            {getVideoTag(1)}
           </Grid>
 
           <Grid
             item
             spacing={3}
+            className="_videoPlayer_grid_customize"
             xs={
               viewNumber == 1
                 ? 1
@@ -241,27 +244,28 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
           </Grid>
           <Grid
             item
+            
             xs={
               viewNumber == 3
                 ? 4: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1
             }
-            className={`${viewNumber == 2 ? "pictureViewGrid" : ""}`}
+            className={`_videoPlayer_grid_customize ${viewNumber == 2 ? "pictureViewGrid" : ""}`}
           >
             {getVideoTag(3)}
           </Grid>
-          <Grid item xs={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}>
+          <Grid className="_videoPlayer_grid_customize" item xs={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}>
             {getVideoTag(4)}
           </Grid>
-          <Grid item xs={viewNumber == 6 ? 4 : 1}>
+          <Grid  className="_videoPlayer_grid_customize" item xs={viewNumber == 6 ? 4 : 1}>
             {getVideoTag(5)}
           </Grid>
-          <Grid item xs={viewNumber == 6 ? 4 : 1}>
+          <Grid className="_videoPlayer_grid_customize" item xs={viewNumber == 6 ? 4 : 1}>
             {getVideoTag(6)}
           </Grid>
         </Grid>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
-        {mapEnabled && <div className="mapContainerhh" >
-          <AssetDetailsDropdown data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} />
+        {mapEnabled && <div className="_video_Player_Right_Panel">
+          <AssetDetailsPanel data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} />
         </div>}
       </Grid>
       <VideosSelection
