@@ -2080,7 +2080,7 @@ const VideoPlayerBase = (props: any) => {
             setOpenTimelineSyncConfirmation={setOpenTimelineSyncConfirmation}
             openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
 
-          <div className="BookmarkNotePopupMain">
+          <div className="BookmarkNotePopupMain __CRX_BookMark_Note__">
             {bookmarkNotePopupArrObj.map((bookmarkNotePopupObj:any) =>
               {return (
                 <BookmarkNotePopup

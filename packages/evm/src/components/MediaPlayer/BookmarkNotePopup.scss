@@ -1,17 +1,187 @@
-.BookmarkNotePopup {
-    background-color: grey;
-    width: 300px;
-    height: 180px;
-    margin-top: 140px;
+.__CRX_BookMark_Note__ {
+  font-family: var(--base-font-family);
+  top: 52px;
+  right: 49px;
 
-    span.gridFilterTextBox {
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
+  .BookmarkNotePopup {
+    width: 230px;
+    min-height: 118px;
+    max-height: 302px;
+    margin-bottom: 20px;
+    position: relative;
+    border: 1px solid var(--color-404041);
+    background-color: var(--color-d1d2d4);
     .Popup-header {
-    background-color: #0F0F0FCC;
-    color: white;
-    text-align: center;
-
+      display: flex;
+      background-color: var(--color-404041);
+      color: var(--color-d1d2d4);
+      position: relative;
+      padding-left: 13px;
+      align-items: center;
+      height: 35px;
+      .__bookmark_Note_Title__ {
+        position: absolute;
+        top: 0;
+        left: 0;
+        text-align: center;
+        height: 100%;
+        right: 0;
+        font-size: 14px;
+        margin: auto;
+        display: flex;
+        place-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-family: var(--Arial-font-family);
+      }
+      .__CRX_Remore_Popup__ {
+        min-width: 20px;
+        height: 20px;
+        color: var(--color-d1d2d4);
+        position: absolute;
+        right: 10px;
+        padding: 0;
+        font-size: 20px;
+        font-family: var(--Arial-font-family);
+        border: none;
+        font-weight: bold;
+      }
+      #Popup-Icon {
+        font-size: 20px;
+      }
     }
+    .Popup-body {
+      height: 100%;
+      padding: 6px 12px 0;
+      .__CRX_Delete_Edit_Btn__ {
+        display: flex;
+        place-content: space-between;
+        margin-bottom: 15px;
+        position: relative;
+        #Popup-Timer {
+          background: var(--color-Black);
+          color: var(--color-White);
+          margin: 4px auto 0;
+          font-size: 14px;
+          text-align: center;
+          padding: 5px;
+          place-content: center;
+          display: flex;
+          font-weight: bold;
+          // width: 58px;
+          height: 18px;
+          align-items: center;
+          font-family: var(--Arial-font-family);
+        }
+        button {
+          border: none;
+          font-size: 20px;
+          padding: 0;
+          min-width: 20px;
+          color: var(--color-404041);
+          position: absolute;
+          top: -4px;
+          &:first-child {
+            left: 0;
+          }
+          &:last-child {
+            right: 0;
+          }
+        }
+      }
+      .gridFilterTextBox {
+        padding-left: 0;
+        textarea {
+          background: transparent;
+          border: none;
+          outline: none;
+          min-height: 10px;
+          max-height: 129px;
+          margin-bottom: 25px;
+          line-height: 16px;
+          padding: 0 4px;
+		  text-transform: capitalize;
+          color: var(--color-333333);
+          text-indent: 0;
+          font-size: 14px;
+          font-family: var(--Arial-font-family);
+
+          text-overflow: ellipsis;
+          // display: -webkit-box;
+          -webkit-line-clamp: 8;
+          line-clamp: 8;
+          -webkit-box-orient: vertical;
+          // &::placeholder {
+          //   color: #F5F5F5;
+          //    background:#000;
+          // }
+        }
+        fieldset {
+          border: none;
+          outline: none;
+        }
+        .MuiInputBase-multiline {
+          padding: 0;
+        }
+      }
+      .btnCheck {
+        display: flex;
+        place-content: flex-end;
+        button {
+          background: var(--color-transparent) !important;
+          min-width: 20px;
+          width: 20px;
+          height: 20px;
+          margin-right: -2px;
+          font-size: 20px;
+          padding: 0;
+          border: none;
+          margin-bottom: 5px;
+          margin-top: 13px;
+          color: var(--color-404041) !important;
+          &:last-child {
+            margin-left: 30px;
+          }
+        }
+      }
+    }
+    &.__CRX_Note_Popup__ {
+      .Popup-header {
+        .__bookmark_Note_Title__ {
+          right: auto;
+          left: 44px;
+          text-align: left;
+          font-size: 12px;
+          display: block;
+          top: 6px;
+          overflow: hidden;
+          width: 150px;
+          line-height: 12px;
+          height: 25px;
+          span {
+            width: 100%;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+        #Popup-Icon {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+.__CRX_BookMarkNote_Delete_Modal__ {
+  .crxUplockContent {
+    margin-top: 12px;
+  }
+}
+
+.__CRX_BookNote_Tooltip__ {
+  &.crxTooltipAll {
+    margin-top: 15px;
+    margin-left: 15px;
+  }
 }

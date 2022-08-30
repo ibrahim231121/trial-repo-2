@@ -35,6 +35,7 @@ import {
   CRXColumn,
   CRXDataTable,
   CRXConfirmDialog,
+  CRXTooltip,
 } from "@cb/shared";
 
 import {
@@ -779,11 +780,11 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           <div className="touchPoint_bar">
             {detailContent == false ? 
             <button  id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-              <i className="fas fa-angle-down"></i>
+              <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
             </button>
             :
             <button id="lessMoreButton"  data-target="#v_asset_detail_view_idx" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "_asset_detail_view_idx")}>
-              <i className="fas fa-angle-up"></i>
+              <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
             </button>
             }
           </div>
@@ -946,8 +947,6 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
                   showTotalSelectedText={false}
                   showActionSearchHeaderCell={true}
                   showCustomizeIcon={false}
-
-
                   className=""
                   onClearAll={clearAll}
                   getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
