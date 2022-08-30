@@ -20,7 +20,7 @@ import { EvidenceAgent } from "../../utils/Api/ApiAgent";
 import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
 import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
-import { CRXButton, CRXTooltip, SVGImage, CRXToaster } from "@cb/shared";
+import { CRXButton, CRXTooltip, SVGImage, CRXToaster , CBXSwitcher} from "@cb/shared";
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
@@ -1583,6 +1583,23 @@ const VideoPlayerBase = (props: any) => {
   const openSettingMenu = (e : React.MouseEvent<HTMLElement>) => {
     setSettingMenuEnabled(e.currentTarget)
   }
+
+  const sideDataPanel = (event:any) => {
+    if(event.target.checked) {
+      setMapEnabled(true)
+    } else {
+      setMapEnabled(false)
+
+    }
+  }
+
+  useEffect(() => {
+    let layoutContent = document?.querySelector("._Player_Layout_Menu_");
+    let PlayerRight = document?.getElementById("crx_video_player");
+    layoutContent ? PlayerRight?.appendChild(layoutContent) : null;
+   
+  })
+
   return (
     <>
       <div onKeyDown={keydownListener}>
@@ -1913,84 +1930,90 @@ const VideoPlayerBase = (props: any) => {
                         title={<>Layouts <span className="LayoutsTooltips">L</span></>}
                         arrow={false}
                       />
-                  </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className="ViewScreenMenu  ViewScreenLayouts"
+                     className="_Player_Layout_Menu_"
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
                     >
 
-                      <MaterialMenuItem className="layoutHeader MenuItemLayout_1">
-                        Layouts
+                      <MaterialMenuItem className="layoutHeader">
+                        <span>Layouts</span> 
                       </MaterialMenuItem>
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 1 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Single)} disabled={viewReasonControlsDisabled}>
-                        {viewNumber == 1 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout">Single</span>
-                        <div className="screenViewsSingle  ViewDiv"></div>
+                        {viewNumber == 1 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
+                        <span className="_layout_text_content_">Single</span>
+                        <div className="screenViewsSingle  _view_box_">
+                          <p></p>
+                        </div>
                       </MaterialMenuItem>}
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 2 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.SideBySide)} disabled={viewReasonControlsDisabled}>
-                        {viewNumber == 2 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout">Side by Side </span>
-                        <div className="screenViewsSideBySide ViewDiv">
+                        {viewNumber == 2 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
+                        <span className="_layout_text_content_">Side by Side </span>
+                        <div className="screenViewsSideBySide _view_box_">
                           <p></p>
                           <p></p>
                         </div>
                       </MaterialMenuItem>}
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 3 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.VideosOnSide)} disabled={viewReasonControlsDisabled}>
-                        {viewNumber == 3 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout"> Videos on Side </span>
-                        <div className="screenViewsVideosOnSide ViewDiv">
-                          <p className="first"></p>
-                          <p className="second">
+                        {viewNumber == 3 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
+                        <span className="_layout_text_content_"> Videos on Side </span>
+                        <div className="screenViewsVideosOnSide _view_box_">
+                          <p></p>
+                          <div>
                             <span></span>
                             <span></span>
-                          </p>
+                          </div>
+                       
                         </div>
                       </MaterialMenuItem>}
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 4 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid)} disabled={viewReasonControlsDisabled}>
-                        {viewNumber == 4 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout">Grid up to 4</span>
-                        <div className="screenViewsGrid ViewDiv">
-                          <p>
+                        {viewNumber == 4 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
+                        <span className="_layout_text_content_">Grid up to 4</span>
+                        <div className="screenViewsGrid _view_box_">
+                           <div>
                             <span></span>
                             <span></span>
-                          </p>
-                          <p>
+                          </div>
+                          <div>
                             <span></span>
                             <span></span>
-                          </p>
+                          </div>
                         </div>
                       </MaterialMenuItem>}
                       {!singleVideoLoad && <MaterialMenuItem className={viewNumber == 6 ? "activeLayout" : "noActiveLayout"} onClick={screenClick.bind(this, screenViews.Grid6)} disabled={viewReasonControlsDisabled}>
-                        {viewNumber == 6 ? <i className="fas fa-check faCheckLayout"></i> : null}
-                        <span className="textContentLayout">Grid up to 6</span>
-                        <div className="screenViewsGrid6 ViewDiv">
-                          <p>
+                        {viewNumber == 6 ? <i className="fas fa-check _layout_check_icon_"></i> : null}
+                        <span className="_layout_text_content_">Grid up to 6</span>
+                        <div className="screenViewsGrid6 _view_box_">
+                          <div>
                             <span></span>
                             <span></span>
-                          </p>
-                          <p>
+                          </div>
+                          <div>
                             <span></span>
                             <span></span>
-                          </p>
-                          <p>
+                          </div>
+                          <div>
                             <span></span>
                             <span></span>
-                          </p>
+                          </div>
                         </div>
                       </MaterialMenuItem>}
-                      <MaterialMenuItem className="SidePanelMenu">
-                        <div className="sidePanelGrid">
+                      <MaterialMenuItem className="_Side_panel_menu_">
+                
+                        <span className="_layout_text_content_">Side Data Panel</span>
+                        <div className="_side_panel_grid_">
                           <div></div>
                           <p></p>
                         </div>
-                        <FormControlLabel className="switchBaseLayout" label="Side Data Panel" control={<Switch disabled={viewReasonControlsDisabled} onChange={(event) => setMapEnabled(event.target.checked)} />} />
-                        <span className="switcherBtn">{mapEnabled ? "ON" : "OFF"}</span>
+                      <CBXSwitcher  rootClass="_layout_menu_switcher_" toggleLabel={true} theme="dark" checked={mapEnabled} size="small" onChange={(event: any) => sideDataPanel(event)} name="Side Data Panel" />
+
                       </MaterialMenuItem>
 
                     </MaterialMenu>
+                  </CRXButton>
+               
                   </div>
                   <div className="playerView">
                     {ViewScreen ?

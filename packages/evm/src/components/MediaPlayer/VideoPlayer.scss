@@ -541,139 +541,7 @@
       }
     }
 
-    .ViewScreenLayouts {
-      background-color: #404041;
-      left: -434px !important;
-      top: -363px !important;
-      width: 366px;
-
-      li {
-        color: #D1D2D4;
-        font-size: 14px;
-        position: relative;
-        height: 50px !important;
-      }
-
-      .MenuItemLayout_1 {
-        height: 34px !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-bottom: 1px solid #69696A;
-
-        &:hover,
-        &:active {
-          background-color: transparent;
-
-        }
-      }
-
-      .faCheckLayout {
-        position: absolute;
-        left: 15px;
-        font-size: 14px;
-      }
-
-      .textContentLayout {
-        position: absolute;
-        left: 44px;
-        font-family: var(--base-font-family);
-        font-weight: normal;
-        font-size: 14px;
-      }
-
-      .ViewDiv {
-        position: absolute;
-        left: 161px;
-      }
-
-      .SidePanelMenu {
-        position: relative;
-        border-top: 1px solid #69696A;
-
-        .sidePanelGrid {
-          display: flex;
-          align-items: center;
-          position: absolute;
-          left: 161px;
-
-          div {
-            background-color: #D1D2D4;
-            height: 30px;
-            border: 1px solid #707070;
-            width: 61px;
-          }
-
-          p {
-            background-color: #A7A9AC;
-            height: 30px;
-            border: 1px solid #707070;
-            width: 18px;
-          }
-        }
-
-        .MuiSwitch-root {
-          position: absolute;
-          right: 5px;
-        }
-
-        .MuiFormControlLabel-label {
-          position: absolute;
-          left: 44px;
-          font-size: 14px;
-        }
-
-      }
-
-      .switchBaseLayout {
-        .MuiSwitch-switchBase {
-          width: 16px;
-          height: 16px;
-          background-color: #FFFFFF;
-          top: 13px;
-          left: 13px;
-        }
-
-        .MuiButtonBase-root {
-          padding: 8px !important;
-        }
-
-        .MuiSwitch-track {
-          height: 18px;
-          width: 30px;
-          background-color: #E5E5E5 !important;
-          opacity: 1;
-          border-radius: 8px;
-        }
-
-        .Mui-checked {
-          left: 4px;
-          top: 13px;
-
-          +.MuiSwitch-track {
-            background-color: #003A5D !important;
-            opacity: 1;
-            border-radius: 8px;
-          }
-
-        }
-      }
-
-      .switcherBtn {
-        font-size: 14PX;
-        position: absolute;
-        right: 65px;
-        top: 16px;
-      }
-
-      .activeLayout {
-        background-color: #231F20;
-
-        &:hover {
-          background-color: #6E6E6E;
-        }
-      }
-    }
+  
 
     .screenViewsSingle {
       background: #D1D2D4;
@@ -1483,3 +1351,115 @@ span.playBackTooltipUp {
     } 
   }
 }
+
+._Player_Layout_Menu_ {
+  position: absolute !important;
+  .MuiMenu-paper {
+    width: 360px;
+    height: 341px;
+    border-radius: 0px;
+    background-color: #404041;
+    color: #D1D2D4;
+    font-size: 14px;
+    font-family: var(--base-font-family);
+    overflow: hidden;
+    position: absolute !important;
+    bottom: 109px !important;
+    right: 98px !important;
+    top: auto !important;
+    left: auto !important;
+
+    ul {
+      li {
+        height: 51px;
+        position: relative;
+        font-size: 14px;
+         font-family: var(--base-font-family);
+       
+        &:first-child {
+          text-align: center;
+          height: 35px;
+          width: 100%;
+          display: block;
+          font-size: 14px;
+          font-family: var(--base-font-family);
+          padding: 8px 0;
+          border-bottom: 1px solid #69696A;
+        }
+        &:last-child {
+          border-top: 1px solid #69696A;
+        }
+        ._side_panel_grid_ {
+          display: flex;
+          align-items: center;
+          position: absolute;
+          left: 166px;
+          div{
+            background: #D1D2D4;
+            height: 30px;
+            width: 61px;
+            border: 1px solid #707070;
+          }
+          p {
+            background: #A7A9AC;
+            height: 30px;
+            width: 18px;
+            border: 1px solid #611d1d;
+          }
+  
+    
+        }
+        ._layout_check_icon_ {
+          font-size: 14px;
+          margin-left: -1px;
+        }
+        ._layout_text_content_ {
+          position: absolute;
+          left: 44px;
+        }
+        ._view_box_ {
+          position: absolute;
+          left: 166px;
+          display: flex;
+          align-items: center;
+          p { 
+            background: #D1D2D4;
+            height: 30px;
+            width: 53px;
+            border: 1px solid #707070;
+         
+          }
+          div {
+            span {
+              background: #D1D2D4;
+              height: 15px;
+              width: 26px;
+              border: 1px solid #707070;
+              display: block;
+            }
+          }
+       }
+       &:not(:first-child) , &:not(:last-child) {
+        &:hover , &:focus {
+          background-color: #231F20;
+        }
+        &:active {
+          background-color: #6e6e6e;
+        }
+       }
+   
+
+      }
+      ._Side_panel_menu_ {
+        ._layout_menu_switcher_ {
+          position: absolute;
+          right: 18px;
+         }
+      }
+      .activeLayout {
+        background-color: #231F20;
+        
+      }  
+    }
+  }
+} 
