@@ -3,6 +3,7 @@ import { getQueuedAssetInfoAsync } from "../../Redux/UnitReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
 import { CRXDataTable,CRXProgressBar } from "@cb/shared";
+import { useInterval } from 'usehooks-ts'
 import {
     HeadCellProps,
     onResizeRow,
@@ -29,14 +30,19 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
     const [rows, setRows] = React.useState<QueuedAssets[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<QueuedAssets[]>([]);
     const dispatch = useDispatch();
-    React.useEffect(() => {
-      dispatch(getQueuedAssetInfoAsync({unitId: unitId})); // change here
-  
-     let headCellsArray = onSetHeadCellVisibility(headCells);
-     setHeadCells(headCellsArray);
-     onSaveHeadCellData(headCells, "Queued_Assets");  // will check this
-    }, []);
-  
+ 
+  useInterval(
+    () => {
+      dispatch(getQueuedAssetInfoAsync({unitId: unitId}));
+      let headCellsArray = onSetHeadCellVisibility(headCells);
+      setHeadCells(headCellsArray);
+      onSaveHeadCellData(headCells, "Queued_Assets");  
+    },
+    // Speed in milliseconds or null to stop it
+   10000,
+  );
+
+
     const setData = () => {
        let asset: QueuedAssets[] = [];
       
@@ -69,7 +75,6 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
         )[0];
         clearButton && clearButton.click();
         setOpen(false);
-        // setSearchData([]);
         let headCellReset = onClearAll(headCells);
         setHeadCells(headCellReset);
       };
@@ -80,44 +85,21 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
       };
 
 
-      const projectStatusProgress = (
-      ) => {
-        return (    
-          
-              <>
-                {textDisplay("completed","")}
-                {statusProgressIndicator("jobs")}
-              </>
-           
-        );
-      };
-
-      const statusProgressIndicator = (projectJobs:string) => {
-
-        return (
-          <>
-       
-                {jobProgressBar(projectJobs)}
-              
-          </>
-        );
-      };
-
-
-
-      const jobProgressBar = ( jobProgress: string) => {
-        return (
-          <>
+      const projectStatusProgress = (e:any) => {
+      
+        return (            
+            <>
             <CRXProgressBar
-              loadingText=""
-              className="crxJobProgressBar"
-              value={100}
-              error=""
-              width={118}
-              maxDataSize={true}
-              loadingCompleted=""
-            />
+            id="raw"
+            loadingText='File'
+            value={e}
+            error={false}
+            width={280}
+           
+            maxDataSize={true}
+          />
           </>
+           
         );
       };
 
@@ -138,7 +120,7 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
           label: `${t("Status")}`,
           id: "status",
           align: "left",
-          dataComponent:  (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),//projectStatusProgress,
+          dataComponent:  (e: any) => projectStatusProgress(e),
           sort: false, 
           minWidth: "200",
           maxWidth: "325",
