@@ -9,7 +9,7 @@ import {
 } from "@cb/shared";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
-import { getUsersInfoAsync } from "../../../../Redux/UserReducer";
+import { getAllUsersAsync } from "../../../../Redux/UserReducer";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import Cookies from "universal-cookie";
@@ -19,7 +19,7 @@ import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 import { AddOwner } from "../../../../utils/Api/models/EvidenceModels";
 import { CMTEntityRecord } from "../../../../utils/Api/models/CommonModels";
 import { useTranslation } from "react-i18next";
-import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
 
@@ -35,11 +35,6 @@ type AssignUserProps = {
 
 const cookies = new Cookies();
 
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: [],
-};
-
 const AssignUser: React.FC<AssignUserProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -54,17 +49,24 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const alertRef = useRef(null);
   const users: any = useSelector(
-    (state: RootState) => state.userReducer.usersInfo
+    (state: RootState) => state.userReducer.users
   );
   const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 1,
+    size: 25
+})
 
   React.useEffect(() => {
-    dispatch(getUsersInfoAsync(gridFilter));
+    dispatch(getAllUsersAsync(pageiGrid));
     getData();
     //getMasterAsset();
   }, []);
   React.useEffect(() => {
-    console.log("assetOwners", assetOwners);
     if (assetOwners.length > 0) {
       sendData();
     }
@@ -196,8 +198,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     if (arr.length > 0) {
       for (const element of arr) {
         sortedArray.push({
-          id: element.recId,
-          label: element.userName,
+          id: element.id,
+          label: element.account.userName,
         });
       }
     }
@@ -319,7 +321,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   <b>*</b>
                 </div>
                 <div className="fieldAssigInput">
-                  <MultiSelectBoxCategory
+                {users && <MultiSelectBoxCategory
                     className="categortAutocomplete"
                     multiple={true}
                     CheckBox={true}
@@ -336,7 +338,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     ) => {
                       return handleChange(event, 1, newValue, reason, detail);
                     }}
-                  />
+                  />}
                   <div className="fieldAssigSelectT">
                   {t("(Selected_users_will_replace_all_current_assigned_users)")}.
                    

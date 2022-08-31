@@ -50,6 +50,12 @@ export type GridFilter = {
   filters?: GridFilter[];
 }
 
+export type PageiGrid = {
+  gridFilter: GridFilter,
+  page: number,
+  size: number
+}
+
 export function DateFormat(value: string) {
   const stillUtc = moment.utc(value).toDate();
   const localDate = moment(stillUtc).local().format("YYYY-MM-DD");

@@ -36,7 +36,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   checkAllPageWise,
   initialRows,
   offsetY,
-  showHeaderCheckAll
+  showHeaderCheckAll,
+  selfPaging
 }) => {
 
   //NOTE : Sticky Header code block please dont do the any changes on this block 
@@ -197,6 +198,7 @@ useEffect(()=> {
             dragVisibility={dragVisibility}
 			      showCheckBoxesCol={showCheckBoxesCol}
             showActionCol={showActionCol}
+            selfPaging={selfPaging}
           />
       </Table>
       

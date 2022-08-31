@@ -751,6 +751,12 @@ export const resources = {
         "Device_Diagnostic":"Device Diagnostic",
         "Update_History":"Update History",
         "Unit Template":"Unit Template",
+        "LTE Settings":"LTE Settings",
+        "Template Information":"Template Information",
+        "Unit Settings":"Unit Settings",
+        "Primary Device":"Primary Device",
+        "CameraSetup":"CameraSetup",
+        "Camera Setup":"Camera Setup",
 
            // --------- Share Asset ----------
         "Link_Expiration":"Link Expiration",

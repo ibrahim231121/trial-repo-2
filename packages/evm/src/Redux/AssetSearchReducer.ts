@@ -11,8 +11,6 @@ const cookies = new Cookies();
 export const getAssetSearchInfoAsync: any = createAsyncThunk(
     'getAssetSearchInfo',
     async (QUERRY: any) => {
-        if(QUERRY !== undefined && QUERRY.filters == undefined) {
-            // let local_assetSearchQuerry = localStorage.getItem("assetSearchQuerry");
             if (QUERRY === "") {
                 let assetSearchQueeryGet = localStorage.getItem("assetSearchQuerry");
                 if (assetSearchQueeryGet !== null) {
@@ -22,11 +20,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
             else {
                 localStorage.setItem("assetSearchQuerry", JSON.stringify(QUERRY));
             }
-            // const [postDataForSearch, responseForSearch] = usePostFetch<any>(EVIDENCE_GET_URL);
-            // postDataForSearch(QUERRY, {
-            //     'Authorization': `Bearer ${getToken()}`,
-            //     'Content-Type': 'application/json',
-            // });
+
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${getToken()}` },
@@ -38,21 +32,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
                 
                 return response;
             }
-        }
-        else {
-           
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'TenantId': '1','Authorization': `Bearer ${getToken()}`},
-                body: JSON.stringify(QUERRY),
-            };
-            const resp = await fetch( EVIDENCE_GET_CATEGORIES_URL + "/filter?Size=100&Page=1",requestOptions);
-            if (resp.ok) {
-                const response = await resp.json();
-               
-                return response;
-            }
-        }
+
     }
 );
 

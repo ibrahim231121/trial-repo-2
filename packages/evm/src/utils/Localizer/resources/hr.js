@@ -722,6 +722,12 @@ export const resources = {
         "Device_Diagnostic":"hr-Device Diagnostic",
         "Update_History":"hr-Update History",
         "Unit Template":"hr-Unit Template",
+        "LTE Settings":"hr-LTE Settings",
+        "Template Information":"hr-Template Information",
+        "Unit Settings":"hr-Unit Settings",
+        "Primary Device":"hr-Primary Device",
+        "CameraSetup":"hr-CameraSetup",
+        "Camera Setup":"hr-Camera Setup",
 
     
            // --------- Share Asset ----------

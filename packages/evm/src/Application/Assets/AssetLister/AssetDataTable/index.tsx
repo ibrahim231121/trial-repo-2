@@ -18,7 +18,8 @@ import {
   onSaveHeadCellData,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
-  GridFilter
+  GridFilter,
+  PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import "./index.scss";
 import { useTranslation } from "react-i18next";
@@ -106,7 +107,8 @@ const thumbTemplate = (assetType: string) => {
 const assetNameTemplate = (assetName: string, evidence: Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
-  const dataLink = <>
+  
+  let dataLink = <>
               <Link
               className="linkColor"
                 to={{
@@ -122,7 +124,7 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
               </Link>
               
               <DetailedAssetPopup asset={assets} row={evidence}/>
-            </>
+            </> 
   return (<CRXDataTableTextPopover
           content = {dataLink}
           id = "dataAssets"
@@ -163,16 +165,23 @@ const MasterMain: React.FC<Props> = ({
     reformattedRows.push(evidence);
   });
 
+  useEffect(() => {
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "assetDataTable");
+  }, []);
+
   const { t } = useTranslation<string>();
+  const dispatch = useDispatch();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [rows, setRows] = React.useState<EvidenceReformated[]>(reformattedRows);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
   const [isOpen, setIsOpen] = React.useState<any>(undefined)
-  const [selectedActionRow, setSelectedActionRow] =
-    React.useState<EvidenceReformated>();
-    const dispatch = useDispatch();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<EvidenceReformated>();
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -183,6 +192,41 @@ const MasterMain: React.FC<Props> = ({
     colIdx: 0,
   });
 
+  useEffect(() => {
+    if(searchData.length > 0)
+      dataArrayBuilder();
+  }, [searchData]);
+
+  useEffect(() => {
+    if (dateTime.colIdx !== 0) {
+      if (
+        dateTime.dateTimeObj.startDate !== "" &&
+        dateTime.dateTimeObj.startDate !== undefined &&
+        dateTime.dateTimeObj.startDate != null &&
+        dateTime.dateTimeObj.endDate !== "" &&
+        dateTime.dateTimeObj.endDate !== undefined &&
+        dateTime.dateTimeObj.endDate != null
+      ) {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate],
+        };
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, newItem]);
+      } else
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
+          )
+        );
+    }
+  }, [dateTime]);
+  
   const searchText = (
     _: EvidenceReformated[],
     headCells: HeadCellProps[],
@@ -321,7 +365,6 @@ const MasterMain: React.FC<Props> = ({
     );
   };
 
-
   const retentionSpanText = (_: string, evidence: Evidence): JSX.Element => {
     if (evidence.extendedHoldUntil != null) {
       if (moment(evidence.extendedHoldUntil).format('DD-MM-YYYY') == "31-12-9999") {
@@ -343,6 +386,7 @@ const MasterMain: React.FC<Props> = ({
       <p>{AssetRetentionFormat(_)}</p>
     );
   }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -379,8 +423,6 @@ const MasterMain: React.FC<Props> = ({
       maxWidth: "263",
       detailedDataComponentId: "evidence",
       isPopover: true,
-      attributeName: "Assets.Master.AssetName",
-      attributeType: "String"
     },
     {
       label: `${t("Category")}`,
@@ -397,8 +439,6 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "230",
       maxWidth: "250",
       visible: false,
-      attributeName: "Categories.Record",
-      attributeType: "CMTEntityRecordList"
     },
     {
       label: t("Description"),
@@ -410,8 +450,6 @@ const MasterMain: React.FC<Props> = ({
       searchComponent: searchText,
       minWidth: "210",
       maxWidth: "338",
-      attributeName: "Description",
-      attributeType: "String"
     },
     {
       label: t("Retention_Span"),
@@ -436,8 +474,6 @@ const MasterMain: React.FC<Props> = ({
       maxWidth: "250",
       searchFilter: true,
       searchComponent: searchDate,
-      attributeName: "Assets.Master.Recording.Started",
-      attributeType: "DateTime"
     },
     {
       label: `${t("Asset_Type")}`,
@@ -454,8 +490,6 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "230",
       maxWidth: "250",
       visible: false,
-      attributeName: "Assets.Master.TypeOfAsset",
-      attributeType: "List"
     },
     {
       label: t("Device"),
@@ -472,8 +506,6 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "230",
       maxWidth: "250",
       visible: false,
-      attributeName: "Assets.Master.Unit",
-      attributeType: "CMTEntityRecord"
     },
     {
       label: t("Station"),
@@ -490,8 +522,6 @@ const MasterMain: React.FC<Props> = ({
       minWidth: "230",
       maxWidth: "250",
       visible: false,
-      attributeName: 'StationName',
-      attributeType: "CMTEntityRecord"
     },
     {
       label: t("User_Name"),
@@ -507,8 +537,6 @@ const MasterMain: React.FC<Props> = ({
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "210",
       maxWidth: "230",
-      attributeName: "Assets.Master.Owners",
-      attributeType: "List"
     },
     {
       label: `${t("File_Status")}`,
@@ -524,8 +552,6 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
-      attributeName: "MasterAsset.Status",
-      attributeType: "List"
     },
   ]);
 
@@ -547,46 +573,6 @@ const MasterMain: React.FC<Props> = ({
       );
     }
   };
-
-  useEffect(() => {
-    if (dateTime.colIdx !== 0) {
-      if (
-        dateTime.dateTimeObj.startDate !== "" &&
-        dateTime.dateTimeObj.startDate !== undefined &&
-        dateTime.dateTimeObj.startDate != null &&
-        dateTime.dateTimeObj.endDate !== "" &&
-        dateTime.dateTimeObj.endDate !== undefined &&
-        dateTime.dateTimeObj.endDate != null
-      ) {
-        let newItem = {
-          columnName: headCells[dateTime.colIdx].id.toString(),
-          colIdx: dateTime.colIdx,
-          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate],
-        };
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
-          )
-        );
-        setSearchData((prevArr) => [...prevArr, newItem]);
-      } else
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[dateTime.colIdx].id.toString()
-          )
-        );
-    }
-  }, [dateTime]);
-
-  useEffect(() => {
-    //dataArrayBuilder();
-  }, [searchData]);
-
-  useEffect(() => {
-    let headCellsArray = onSetHeadCellVisibility(headCells);
-    setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "assetDataTable");
-  }, []);
 
   const dataArrayBuilder = () => {
     let dataRows: EvidenceReformated[] = reformattedRows;
@@ -640,68 +626,6 @@ const MasterMain: React.FC<Props> = ({
       dispatch(addNotificationMessages(notificationMessage));
     }
   };
-
-  const getFilteredEvidenceData = () => {
-    
-    let gridFilter: GridFilter = {
-      logic: "and",
-      filters: []
-    }
-
-    searchData.forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: item.value.length > 1 ? "between" : "contains",
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          field: headCells[item.colIdx].attributeName,
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-          fieldType: headCells[item.colIdx].attributeType,
-        }
-        gridFilter.filters?.push(x)
-    })
-
-    dispatch(getAssetSearchInfoAsync(gridFilter));
-
-    // gridFilter = {
-    //   filters: [
-    //     // {
-    //     //   operator: "contains",
-    //     //   field: "assets.master.camera",
-    //     //   value: "YourCam"
-    //     // },
-    //     {
-    //       operator: "contains",
-    //       field: "UserName",
-    //       value: "faisal"
-    //     },
-    //     // {
-    //     //   operator: "contains",
-    //     //   field: "fName",
-    //     //   value: "Faisal"
-    //     // },
-    //     {
-    //         operator: "between",
-    //         field: "LastLogin",
-    //         //value: "2022-06-01T00:00:00+05:00"
-    //         value: "2022-05-01T00:00:00+05:00@2022-06-30T23:59:00+05:00"
-    //     }
-    //   ]
-    // }
-
-    // console.log("grifFilter ", gridFilter)
-
-    // const requestOptions = {
-    //   method: 'Post',
-    //   headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
-    //   body: JSON.stringify(gridFilter),
-    // };
-    // const resp = fetch("http://127.0.0.1:8085/Users/filter?Size=100&Page=1",requestOptions);
-    // //const resp = fetch("http://127.0.0.1:8080/Evidences/filter?Size=100&Page=1",requestOptions);
-    // if (resp) {
-    //   const response = resp
-    //   console.log("Resp", response)
-    //   return response;
-    // }
-  }
   
   return (
     <>
@@ -737,7 +661,14 @@ const MasterMain: React.FC<Props> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           offsetY={179}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setPage= {(page:any) => setPage(page)}
+          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          totalRecords={rows.length}
+          selfPaging={true}
         />
+        
       )}
     </>
   );

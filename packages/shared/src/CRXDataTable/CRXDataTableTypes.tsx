@@ -218,10 +218,12 @@ export type DataTableProps = {
   toolBarButton? : React.ReactNode,
   offsetY? : number,
   headerOffSetY? : number,
-  // page: number
-  // rowsPerPage: number;
-  // setPage: (e: any) => void;
-  // setRowsPerPage: (e: any) => void;
+  page: number
+  rowsPerPage: number;
+  setPage: (e: any) => void;
+  setRowsPerPage: (e: any) => void;
+  totalRecords: number;
+  selfPaging?: boolean;
 };
 
 export type OrderData = {
@@ -260,8 +262,9 @@ export type DataTableContainerProps = {
   checkAllPageWise: CheckAllPageWise[];
   lightMode?: boolean;
   initialRows?: any[];
-  offsetY? : number,
-  headerOffSetY? : number
+  offsetY? : number;
+  headerOffSetY? : number;
+  selfPaging?: boolean;
 };
 
 export type DataTableStickyHeadersProps = {
@@ -309,6 +312,7 @@ export type DataTableBodyProps = {
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
   lightMode?: boolean;
+  selfPaging?: boolean;
   
 };
 

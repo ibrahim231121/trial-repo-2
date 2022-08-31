@@ -6,8 +6,8 @@ import { Station } from '../utils/Api/models/StationModels';
 
 const cookies = new Cookies();
 
-export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', async () => {
-  return await UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`)
+export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
+  return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`)
     .then((response:Station[]) => response)
     .catch((error: any) => {
         console.error(error.response.data);

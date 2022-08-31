@@ -20,6 +20,7 @@ import {
     onClearAll,
     onSetHeadCellVisibility,
     onSaveHeadCellData,
+    PageiGrid
   } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useTranslation } from "react-i18next";  
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +46,18 @@ const ViewConfigurationTemplateLog= (props: any) => {
     const [selectedItems, setSelectedItems] = React.useState<ConfigTemplateLogs[]>(
         []
       );
-      const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [paging, setPaging] = React.useState<boolean>();
+    const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+      gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: page,
+      size: rowsPerPage
+    })
      // const history = useHistory();
       console.log(props)
       let historyState = props.location.state;
@@ -72,6 +84,14 @@ const ViewConfigurationTemplateLog= (props: any) => {
         setData();
       //  dispatch(enterPathActionCreator({ val: ""}));
       }, [configTemplateLogs]);
+
+      React.useEffect(() => {
+        if(paging){
+          dispatch(enterPathActionCreator({ val: t("Change_Log") + historyState.name}));
+          dispatch(getTemplateConfigurationLogsAsync(historyState.id)); 
+        }
+        setPaging(false)
+      },[pageiGrid])
 
       const setData = () => {
  
@@ -164,6 +184,12 @@ const ViewConfigurationTemplateLog= (props: any) => {
           setHeadCells(headCellReset);
       };
 
+      React.useEffect(() => {
+        setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+        setPaging(true)
+        
+      },[page, rowsPerPage])
+
   return (
     <div className="CrxConfigTemplate switchLeftComponents">
      
@@ -203,6 +229,11 @@ const ViewConfigurationTemplateLog= (props: any) => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
             offsetY={192}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            setPage= {(page:any) => setPage(page)}
+            setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+            totalRecords={500}
           />
         )
       }

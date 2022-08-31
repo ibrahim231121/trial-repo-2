@@ -1,3 +1,4 @@
+import { responsiveFontSizes } from '@material-ui/core';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
 import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
@@ -1061,9 +1062,49 @@ const Users = [
 
 export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
-    async (filter?: any) => {
+    async (pageiFilter?: any) => {
+        const url = USER + `/GetAllUsersInfo?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
+             return await UsersAndIdentitiesServiceAgent
+             .getUsersInfo(url, pageiFilter.gridFilter)
+             .then((response) => {
+                return response
+            })
+
+});
+
+export const getUsersIdsAsync: any = createAsyncThunk(
+    'getUsersIds',
+    async () => {
         const url = USER + `/GetAllUsersInfo?Page=1&Size=1000`
-             return await UsersAndIdentitiesServiceAgent.getUsersInfo(url, filter).then((response:UsersInfo[]) => response)
+        const pageiFilter = {
+            gridFilter: {
+              logic: "and",
+              filters: []
+            },
+            page: 1,
+            size: 1000
+          }
+             return await UsersAndIdentitiesServiceAgent
+             .getUsersInfo(url, pageiFilter)
+             .then((response) => {
+                return response
+            })
+
+});
+
+
+export const getAllUsersAsync: any = createAsyncThunk(
+    'getAllUsers',
+    async () => {
+        const url = USER + `/?Page=1&Size=10000`
+
+            return await UsersAndIdentitiesServiceAgent
+            .getAllUsers(url)
+            .then((response) => {
+                console.log("Users All", response)
+            return response
+        })
+
 });
 
 // export const getUsersInfoAsync: any = createAsyncThunk(
@@ -1090,14 +1131,14 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
         //     body: JSON.stringify(body)
         // };
         const url = '/Users?userId='+ args.userId;
-        
+
         // const resp = await fetch(USER_INFO_UPDATE_URL + `?userId=` + args.userId, requestOptions);
          await UsersAndIdentitiesServiceAgent.updateUserInfoURL(url, JSON.stringify(body)).then(()=> {
             args.dispatchNewCommand(true);
-        }).catch((e: any) =>{ 
+        }).catch((e: any) =>{
             args.dispatchNewCommand(false);
         })
-        
+
         // if (resp.ok) {
         //     args.dispatchNewCommand(true);
         // }
@@ -1109,11 +1150,17 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
 
 export const userSlice = createSlice({
     name: 'user',
-    initialState: { usersInfo: [] },
+    initialState: { usersInfo: [], userIds: [], users: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getUsersInfoAsync.fulfilled, (state: any, { payload }) => {
             state.usersInfo = payload;
+        })
+        .addCase(getUsersIdsAsync.fulfilled, (state: any, { payload }) => {
+            state.userIds = payload;
+        })
+        .addCase(getAllUsersAsync.fulfilled, (state: any, { payload }) => {
+            state.users = payload;
         })
     }
 });

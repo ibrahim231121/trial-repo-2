@@ -10,6 +10,7 @@ export interface UsersInfo {
     status: string
     userGroups: string,
     userName: string,
+    headers: any
 }
 
 export interface UserGroups {

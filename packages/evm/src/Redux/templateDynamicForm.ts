@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
-import { CaptureDevice, Station } from '../utils/Api/models/StationModels';
+import { CaptureDevice,Station } from '../utils/Api/models/StationModels';
 import { CATEGORIES_GET_ALL, DATA_RETENTION_POLICIES_GET_ALL} from '../utils/Api/url'
 
 

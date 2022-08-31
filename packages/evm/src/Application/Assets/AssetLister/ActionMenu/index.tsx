@@ -559,7 +559,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </MenuItem>
         )}
 
-        {console.log('isLockedAccess', isLockedAccess)}
         {isLockedAccess ?
           <MenuItem>
             <Restricted moduleId={0}>

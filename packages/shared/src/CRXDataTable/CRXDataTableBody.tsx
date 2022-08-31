@@ -21,6 +21,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   showCheckBoxesCol,
   showActionCol,
   lightMode,
+  selfPaging,
 }) => {
   const isSelected = (id: string) => {
     const findIndex = selectedItems.findIndex((val: any) => val.id == id);
@@ -69,6 +70,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   });
+
+  let containerRows = selfPaging ? container.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : container.rows
+
   return (
     <>
       <Droppable
@@ -76,11 +80,14 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
         key={container.id}
         isDropDisabled={true}
       >
+        
         {(provided: any) => (
           <RootRef rootRef={provided.innerRef}>
             <TableBody>
-              {container.rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              {
+                //container.rows
+                //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                containerRows
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `checkbox with default color-${index}`;

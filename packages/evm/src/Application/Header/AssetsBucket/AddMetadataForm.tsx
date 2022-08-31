@@ -13,7 +13,7 @@ import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
-import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
 import { Policy } from "../../../utils/Api/models/PolicyModels";
 import moment from "moment";
@@ -119,10 +119,6 @@ type masterAssetStation = {
 type retentionPolicyId = {
   CMTFieldValue: number;
 };
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: [],
-};
 
 const AddMetadataForm: React.FC<Props> = ({
   onClose,
@@ -176,11 +172,19 @@ const AddMetadataForm: React.FC<Props> = ({
   );
   const dispatch = useDispatch();
   const cookies = new Cookies();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 1,
+    size: 1000
+  })
 
   React.useEffect(() => {
     fetchStation();
     masterAssets();
-    dispatch(getUsersInfoAsync(gridFilter));
+    dispatch(getUsersInfoAsync(pageiGrid));
     dispatch(getAllCategories());
   }, []);
 

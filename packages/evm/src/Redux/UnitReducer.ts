@@ -5,8 +5,8 @@ import { QueuedAssets, UnitInfo } from '../utils/Api/models/UnitModels';
 
 export const getUnitInfoAsync: any = createAsyncThunk(
     'getUnitInfo',
-    async () => {
-        return await UnitsAndDevicesAgent.getUnitInfo().then((response:UnitInfo[]) => response);
+    async (pageiFilter?: any) => {
+        return await UnitsAndDevicesAgent.getUnitInfo(`/Stations/0/Units/getunitInfo?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`).then((response:UnitInfo[]) => response);
     }
 );
 

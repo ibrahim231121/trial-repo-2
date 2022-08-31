@@ -1,7 +1,7 @@
 import React from 'react';
 import { CRXDataTable, CRXButton, CRXConfirmDialog } from '@cb/shared';
 import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
-import { HeadCellProps } from '../../../../GlobalFunctions/globalDataTableFunctions';
+import { HeadCellProps, PageiGrid } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import DropdownComponent from './DropdownComponent';
 import http from '../../../../http-common';
 import { StationInfo, TypeOfDevice } from './DefaultUnitTemplateModel';
@@ -29,6 +29,17 @@ const DefaultUnitTemplate: React.FC = () => {
     const [error, setError] = React.useState<boolean>(false);
 
     const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
+    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [paging, setPaging] = React.useState<boolean>();
+    const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+        gridFilter: {
+        logic: "and",
+        filters: []
+        },
+        page: page,
+        size: rowsPerPage
+    })
 
     React.useEffect(() => {
         getDeviceTypeRecord();
@@ -91,6 +102,12 @@ const DefaultUnitTemplate: React.FC = () => {
         if ((stationCollection.length > 0) && (selectBoxValues.length === 0)) //  Second Condtion Make It Run Only Once.
             createInitialStateOfSelectBox();
     }, [deviceTypeCollection, selectBoxValues, stationCollection]);
+
+    React.useEffect(() => {
+        if(paging)
+          console.log("page Grid ", pageiGrid)
+        setPaging(false)
+      },[pageiGrid])
 
     const getDeviceTypeRecord = () => {
         UnitsAndDevicesAgent.getAllDeviceTypes()
@@ -198,6 +215,12 @@ const DefaultUnitTemplate: React.FC = () => {
         );
     }
 
+    React.useEffect(() => {
+        setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+        setPaging(true)
+    
+    },[page, rowsPerPage])
+
     return (
         <>
             {success && (
@@ -241,6 +264,11 @@ const DefaultUnitTemplate: React.FC = () => {
                         showHeaderCheckAll={false}
                         showTotalSelectedText={false}
                         showToolbar={false}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        setPage= {(page:any) => setPage(page)}
+                        setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                        totalRecords={configurationTemplatesFromStore.length}
                     />
                 }
 

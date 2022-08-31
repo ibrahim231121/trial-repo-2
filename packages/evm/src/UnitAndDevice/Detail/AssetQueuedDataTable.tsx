@@ -10,7 +10,8 @@ import {
     Order,
     onSetSingleHeadCellVisibility,
     onClearAll,
-    onSetHeadCellVisibility,onSaveHeadCellData
+    onSetHeadCellVisibility,onSaveHeadCellData,
+    PageiGrid,
   } from "../../GlobalFunctions/globalDataTableFunctions";
 import textDisplay from "../../GlobalComponents/Display/TextDisplay";
 import { useTranslation } from "react-i18next";
@@ -29,6 +30,18 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
     const [open, setOpen] = React.useState<boolean>(false);
     const [rows, setRows] = React.useState<QueuedAssets[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<QueuedAssets[]>([]);
+    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [paging, setPaging] = React.useState<boolean>();
+    const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+        gridFilter: {
+        logic: "and",
+        filters: []
+        },
+        page: page,
+        size: rowsPerPage
+    })
+
     const dispatch = useDispatch();
  
   useInterval(
@@ -129,6 +142,11 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
       
       ]);
 
+    React.useEffect(() => {
+      setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+      setPaging(true)
+    },[page, rowsPerPage])
+
     return (
       <div className="userDataTableParent ">
       {rows && (
@@ -161,10 +179,13 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
               showTotalSelectedText={false}
               lightMode={false}
               offsetY={45}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              setPage= {(page:any) => setPage(page)}
+              setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+              totalRecords={500}
           />
-      )
-      }
-
+      )}
       </div>
     )
 }

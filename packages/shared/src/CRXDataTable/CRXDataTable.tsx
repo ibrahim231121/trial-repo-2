@@ -99,14 +99,15 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   offsetY,
   headerOffSetY,
   showHeaderCheckAll,
-  // page,
-  // rowsPerPage,
-  // setPage,
-  // setRowsPerPage
+  page,
+  rowsPerPage,
+  setPage,
+  setRowsPerPage,
+  totalRecords,
+  selfPaging,
 }) => {
   const classes = useStyles();
-  const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  
   const [open, setOpen] = React.useState<boolean>(false);
   const [orderData, setOrderData] = React.useState<OrderData>({
     order: orderParam,
@@ -232,7 +233,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
       unCheckCurrentPage();
     }
 
-    const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+    const newSelecteds = selfPaging ? containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage) : containers.tableId.rows
     if (event) {
       // if commented then it will maintain old state
       //setSelectedItems([]); //remove previous selected item, then add new items from select all checkbox.
@@ -272,7 +273,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
 
   useEffect(() => {
     getSelectedItems(selectedItems);
-    const newSelecteds = containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage)
+    const newSelecteds = selfPaging ? containers.tableId.rows.slice(page * rowsPerPage, (page * rowsPerPage) + rowsPerPage) : containers.tableId.rows
     const newSelected = newSelecteds.map((item: any) => {
       if (selectedItems.map((x: any) => x.id).includes(item.id))
         return item.id
@@ -392,8 +393,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       checkAllPageWise={checkAllPageWise}
                       offsetY={offsetY}
                       headerOffSetY={headerOffSetY}
+                      selfPaging={selfPaging}
                     />
-                    {(rowsPerPage  >= 25) ?
+                    {/* {(rowsPerPage  >= 25) ? */}
                       <TablePagination
                         className="dataTablePages"
                         //classes = {clxFooter.root}  
@@ -409,14 +411,14 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         }}
                         rowsPerPageOptions={[10, 20, 25]}
                         component="div"
-                        count={container.rows.length}
+                        count={totalRecords}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                       />
-                    : null
-                    }
+                    {/* : null
+                    } */}
                    
                   </div>
                 </ThemeProvider>

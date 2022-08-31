@@ -4,7 +4,7 @@ import { CRXDataTable, CRXColumn, CRXGlobalSelectFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersInfoAsync } from "../../../../../Redux/UserReducer";
+import { getUsersInfoAsync, getUsersIdsAsync } from "../../../../../Redux/UserReducer";
 import { RootState } from "../../../../../Redux/rootReducer";
 import {
     SearchObject,
@@ -20,7 +20,7 @@ import {
     onSaveHeadCellData,
     onSetHeadCellVisibility,
     onMultiToMultiCompare,
-    GridFilter
+    PageiGrid
 } from "../../../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
@@ -43,18 +43,14 @@ interface renderCheckMultiselect {
     id?: string,
 
 }
-let gridFilter: GridFilter = {
-    logic: "and",
-    filters: []
-  }
+
 
 const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const { t } = useTranslation<string>();
     const dispatch = useDispatch();
-
     const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
-    
-
+    const userIds: any = useSelector((state: RootState) => state.userReducer.userIds);
+    // const [idValue, setIdValue] = React.useState<Number[]>(ids);
     const [rows, setRows] = React.useState<User[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -62,17 +58,28 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
     const [reformattedRows, setReformattedRows] = React.useState<User[]>([]);
     const [open, setOpen] = React.useState<boolean>(false)
+    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [paging, setPaging] = React.useState<boolean>();
+    const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+        gridFilter: {
+        logic: "and",
+        filters: []
+        },
+        page: page,
+        size: rowsPerPage
+    })
 
     React.useEffect(() => {
         
-        dispatch(getUsersInfoAsync(gridFilter));
-
+        dispatch(getUsersInfoAsync(pageiGrid));
+        dispatch(getUsersIdsAsync());
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);
         onSaveHeadCellData(headCells, "group-userDataTable");
     }, []);
 
-    const getUserRows = () => {
+    const getUserRows = (users: User[]) => {
         let userRows: User[] = [];
         if (users && users.length > 0) {
             userRows = users.map((user: any) => {
@@ -91,26 +98,36 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     }
 
     const setData = () => {
-        let userRows = getUserRows()
-        //set selected users in edit case
-        let selectedUsers = userRows.filter(x => {
+        let userRows = getUserRows(users.data)
+        let userIdsRows = getUserRows(userIds.data)
+
+        let selectedUsers = userIdsRows.filter(x => {
             if (ids.indexOf(x.id) > -1)
                 return x;
         });
+
         setSelectedItems(selectedUsers);
         setRows(userRows)
         setReformattedRows(userRows);
     }
 
     React.useEffect(() => {
-        if (rows.length > 0) {
+        if (rows.length > 0) 
             onChangeUserIds(selectedItems.map(x => x.id));
-        }
     }, [selectedItems]);
 
     React.useEffect(() => { 
-        setData()
-    }, [users]);
+        if(userIds.data && userIds.data.length > 0)
+            setData()
+    }, [users.data, userIds.data]);
+
+    useEffect(() => {
+        if(paging){
+          dispatch(getUsersInfoAsync(pageiGrid));
+          dispatch(getUsersIdsAsync());
+        }
+        setPaging(false)
+    },[pageiGrid])
 
     const searchText = (
         rowsParam: User[],
@@ -285,7 +302,6 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     useEffect(() => {
         if(searchData.length > 0)
             dataArrayBuilder();
-            console.log("searching")
     }, [searchData]);
 
     const dataArrayBuilder = () => {
@@ -330,6 +346,12 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         setHeadCells(headCellsArray);
     };
 
+    useEffect(() => {
+        setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+        setPaging(true)
+    
+    },[page, rowsPerPage])
+
     return (
         <div className="userDataTableParent ">
             {rows && (
@@ -362,6 +384,11 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     showTotalSelectedText={true}
                     lightMode={false}
                     offsetY={45}
+                    page={page}
+                    rowsPerPage={rowsPerPage}
+                    setPage= {(page:any) => setPage(page)}
+                    setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                    totalRecords={500}
                 />
             )
             }

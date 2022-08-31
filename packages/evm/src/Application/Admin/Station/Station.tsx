@@ -17,8 +17,10 @@ import {
   onSetSearchDataValue,
   onClearAll,
   onSaveHeadCellData,
-  onSetHeadCellVisibility
+  onSetHeadCellVisibility,
+  PageiGrid
 } from '../../../GlobalFunctions/globalDataTableFunctions';
+import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 
 import TextSearch from '../../../GlobalComponents/DataTableSearch/TextSearch';
 import { CRXButton } from '@cb/shared';
@@ -34,6 +36,8 @@ import { urlList, urlNames } from '../../../utils/urlList';
 import { useHistory } from 'react-router-dom';
 import './station.scss';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
+import moment from "moment";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 
 type Station = {
   id: string;
@@ -59,9 +63,20 @@ type DateTimeObject = {
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage
+  })
 
   React.useEffect(() => {
-    dispatch(getStationsInfoAsync());
+    dispatch(getStationsInfoAsync(pageiGrid));
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'stationDataTable');
@@ -79,6 +94,7 @@ const Station: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] = React.useState<Station>();
   const history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+  
 
   const setData = () => {
     let stationRows: Station[] = [];
@@ -101,6 +117,12 @@ const Station: React.FC = () => {
   React.useEffect(() => {
     setData();
   }, [stations]);
+
+  useEffect(() => {
+    if(paging)
+      dispatch(getStationsInfoAsync(pageiGrid));
+    setPaging(false)
+  },[pageiGrid])
 
   const searchText = (rowsParam: Station[], headCells: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
@@ -336,12 +358,29 @@ const Station: React.FC = () => {
       variant: obj.variant,
       duration: obj.duration
     });
+    if (obj.message !== undefined && obj.message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("Station"),
+        message: obj.message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
   };
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getStationsInfoAsync());
+    dispatch(getStationsInfoAsync(pageiGrid));
   };
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPaging(true)
+    
+  },[page, rowsPerPage])
 
   return (
     <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
@@ -393,6 +432,11 @@ const Station: React.FC = () => {
           showCustomizeIcon={false}
           showTotalSelectedText={false}
           offsetY={205}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setPage= {(page:any) => setPage(page)}
+          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          totalRecords={500}
         />
       )}
     </div>

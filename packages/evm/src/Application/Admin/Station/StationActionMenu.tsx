@@ -15,7 +15,7 @@ import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
 import { UnitsAndDevicesAgent } from '../../../utils/Api/ApiAgent';
 import { Unit } from '../../../utils/Api/models/UnitModels';
-import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { GridFilter, PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { EvidenceAgent } from '../../../utils/Api/ApiAgent';
 
 type Props = {
@@ -46,6 +46,14 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   const [message, setMessage] = React.useState<string>('');
   const toasterRef = useRef<typeof CRXToaster>(null);
   const [stationName, setStationName] = useState<string>('')
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 1,
+    size: 25
+})
 
   const unlockUser = () => {
     setTitle(t("Unlock_user_account"));
@@ -176,7 +184,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync(gridFilter));
+    //dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const setStationNameProcess = (text: string) => {

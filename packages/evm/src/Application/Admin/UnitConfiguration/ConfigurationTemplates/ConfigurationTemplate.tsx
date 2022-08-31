@@ -35,6 +35,7 @@ import {
   onClearAll,
   onSetHeadCellVisibility,
   onSaveHeadCellData,
+  PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { CRXGlobalSelectFilter } from "@cb/shared";
 import { PausePresentation } from "@material-ui/icons";
@@ -103,9 +104,20 @@ const ConfigurationTemplates: React.FC = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage
+  })
   
   React.useEffect(() => {
-    dispatch(getConfigurationInfoAsync());
+    dispatch(getConfigurationInfoAsync(pageiGrid));
     //dispatch(getDeviceTypeInfoAsync());
     setCreateTemplateDropdown([
       {
@@ -161,6 +173,7 @@ const ConfigurationTemplates: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false);
+  
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
     if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
@@ -183,6 +196,12 @@ const ConfigurationTemplates: React.FC = () => {
   React.useEffect(() => {
     setData();
   }, [UnitConfigurationTemplates]);
+
+  useEffect(() => {
+    if(paging)
+      dispatch(getConfigurationInfoAsync(pageiGrid));
+    setPaging(false)
+  },[pageiGrid])
 
   const searchText = (
     rowsParam: ConfigTemplate[],
@@ -615,6 +634,13 @@ const ConfigurationTemplates: React.FC = () => {
       ?.closest(".MuiMenu-paper")
       ?.classList.add("MuiMenu_Modal_Ui");
   });
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPaging(true)
+    
+  },[page, rowsPerPage])
+
   return (
     <div className="CrxConfigTemplate switchLeftComponents">
      
@@ -680,6 +706,11 @@ const ConfigurationTemplates: React.FC = () => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
             offsetY={206}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            setPage= {(page:any) => setPage(page)}
+            setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+            totalRecords={500}
           />
         )
       }

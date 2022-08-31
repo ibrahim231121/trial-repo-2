@@ -23,7 +23,8 @@ import {
   onSaveHeadCellData,
   onSetHeadCellVisibility,
   onMultipleCompare,
-  GridFilter
+  GridFilter,
+  PageiGrid,
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
@@ -69,35 +70,24 @@ interface renderCheckMultiselect {
 
 }
 
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: []
-}
-
-// type PageiGrid = {
-//   gridFilter: GridFilter,
-//   page: number,
-//   size: number
-// }
-
 const User: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  // const [page, setPage] = React.useState<number>(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  // const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-  //     gridFilter: {
-  //       logic: "and",
-  //       filters: []
-  //     },
-  //     page: page,
-  //     size: rowsPerPage
-  // })
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+      gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: page,
+      size: rowsPerPage
+  })
   
   
   
   React.useEffect(() => {
-    dispatch(getUsersInfoAsync(gridFilter));
+    dispatch(getUsersInfoAsync(pageiGrid));
 
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
@@ -116,11 +106,12 @@ const User: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
+  const [paging, setPaging] = React.useState<boolean>();
 
   const setData = () => {
     let userRows: User[] = [];
-    if (users && users.length > 0) {
-      userRows = users.map((user: any) => {
+    if (users.data && users.data.length > 0) {
+      userRows = users.data.map((user: any) => {
         return {
           id: user.recId,
           userName: user.userName,
@@ -147,74 +138,17 @@ const User: React.FC = () => {
     setData();
   }, [users]);
 
-  const getFilteredUserData = () => {
-
-    searchData.forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: item.value.length > 1 ? "between" : "contains",
-          field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0]
-        }
-        gridFilter.filters?.push(x)
-    })
-
-    dispatch(getUsersInfoAsync(gridFilter));
-
-    // gridFilter = {
-    //   filters: [
-    //     // {
-    //     //   operator: "contains",
-    //     //   field: "assets.master.camera",
-    //     //   value: "YourCam"
-    //     // },
-    //     {
-    //       operator: "contains",
-    //       field: "UserName",
-    //       value: "faisal"
-    //     },
-    //     // {
-    //     //   operator: "contains",
-    //     //   field: "fName",
-    //     //   value: "Faisal"
-    //     // },
-    //     {
-    //         operator: "between",
-    //         field: "LastLogin",
-    //         //value: "2022-06-01T00:00:00+05:00"
-    //         value: "2022-05-01T00:00:00+05:00@2022-06-30T23:59:00+05:00"
-    //     }
-    //   ]
-    // }
-
-    // console.log("grifFilter ", gridFilter)
-
-    // const requestOptions = {
-    //   method: 'Post',
-    //   headers: { 'Content-Type': 'application/json', 'TenantId': '1'},
-    //   body: JSON.stringify(gridFilter),
-    // };
-    // const resp = fetch("http://127.0.0.1:8085/Users/filter?Size=100&Page=1",requestOptions);
-    // //const resp = fetch("http://127.0.0.1:8080/Evidences/filter?Size=100&Page=1",requestOptions);
-    // if (resp) {
-    //   const response = resp
-    //   console.log("Resp", response)
-    //   return response;
-    // }
-  }
-
-  // useEffect(() => {
-  //   console.log("Row per Page ")
-  //   setPageiGrid({...pageiGrid, size:rowsPerPage}); 
-  // },[rowsPerPage])
-
   // useEffect(() => {
   //   console.log("page ")
   //   setPageiGrid({...pageiGrid, page:page}); 
   // },[page])
 
-  // useEffect(() => {
-  //   console.log("pageiGrid ", pageiGrid)
-  // },[pageiGrid])
+  useEffect(() => {
+    if(paging){
+      dispatch(getUsersInfoAsync(pageiGrid));
+    }
+    setPaging(false)
+  },[pageiGrid])
 
   const searchText = (
     rowsParam: User[],
@@ -461,6 +395,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "150",
       maxWidth: "200",
       visible: true,
+      attributeName: "UserName",
+      attributeType: "String"
     },
     {
       label: `${t("First_Name")}`,
@@ -474,6 +410,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "130",
       maxWidth: "200",
       visible: true,
+      attributeName: "FName",
+      attributeType: "String"
     },
     {
       label: `${t("Last_Name")}`,
@@ -487,6 +425,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "130",
       maxWidth: "200",
       visible: true,
+      attributeName: "LName",
+      attributeType: "String"
     },
     {
       label: `${t("Email")}`,
@@ -500,6 +440,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "200",
       maxWidth: "263",
       visible: true,
+      attributeName: "Email",
+      attributeType: "String"
     },
     {
       label: `${t("Status")}`,
@@ -511,8 +453,10 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: User[]) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       
       minWidth: "112",
-      maxWidth: "120",
+      maxWidth: "150",
       visible: true,
+      attributeName: "Status",
+      attributeType: "List"
     },
     {
       label: `${t("Last_Login")}`,
@@ -525,6 +469,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,
+      attributeName: "LastLogin",
+      attributeType: "DateTime"
     },
     // {
     //     label: `${t("Groups")}`,
@@ -551,12 +497,13 @@ const openHandler = (_: React.SyntheticEvent) => {
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "430",
-      maxWidth : "430"
+      maxWidth : "430",
+      attributeName: "UserGroups",
+      attributeType: "List"
      
     },
   ]);
   const searchAndNonSearchMultiDropDown = (
-    
     rowsParam: User[],
     headCells: HeadCellProps[],
     colIdx: number,
@@ -691,8 +638,8 @@ const openHandler = (_: React.SyntheticEvent) => {
   };
 
   const clearAll = () => {
-    gridFilter.filters = []
-    dispatch(getUsersInfoAsync(gridFilter));
+    pageiGrid.gridFilter.filters = []
+    dispatch(getUsersInfoAsync(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -732,7 +679,7 @@ const openHandler = (_: React.SyntheticEvent) => {
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync(gridFilter));
+    dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const history = useHistory();
@@ -740,6 +687,34 @@ const openHandler = (_: React.SyntheticEvent) => {
   const CreateUserForm = () => {
     history.push(urlList.filter((item:any) => item.name === urlNames.createUser)[0].url);
   }
+
+  const getFilteredUserData = () => {
+
+    pageiGrid.gridFilter.filters = []
+
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeType == "DateTime" ? "between" : "contains",
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = page
+        pageiGrid.size = rowsPerPage
+    })
+
+    console.log("Pagei Filter ",pageiGrid)
+
+    dispatch(getUsersInfoAsync(pageiGrid));
+  }
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPaging(true)
+    
+  },[page, rowsPerPage])
 
   return (
     <div className="crxManageUsers switchLeftComponents manageUsersIndex">
@@ -794,11 +769,11 @@ const openHandler = (_: React.SyntheticEvent) => {
           showCustomizeIcon={true}
           showTotalSelectedText={false}
           offsetY={209}
-          showHeaderCheckAll={true}
-          // page={page}
-          // rowsPerPage={rowsPerPage}
-          // setPage= {(e:any) => setPage(e)}
-          // setRowsPerPage= {(e:any) => setRowsPerPage(e)}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setPage= {(page:any) => setPage(page)}
+          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          totalRecords={users.totalCount}
         />
       )}
     </div>

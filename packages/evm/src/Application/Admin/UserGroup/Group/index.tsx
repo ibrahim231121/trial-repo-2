@@ -33,7 +33,7 @@ import { getToken } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { UsersAndIdentitiesServiceAgent } from "../../../../utils/Api/ApiAgent";
 import { GroupSubModules, Module, UserGroups, MemberId } from "../../../../utils/Api/models/UsersAndIdentitiesModel";
-import { GridFilter } from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 export type GroupInfoModel = {
   name: string;
@@ -57,10 +57,7 @@ export type ApplicationPermission = {
   levelType?: string;
   children?: ApplicationPermission[];
 };
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: []
-}
+
 const Group = () => {
   const { t } = useTranslation<string>();
   const [value, setValue] = React.useState(0);
@@ -113,6 +110,14 @@ const Group = () => {
   const [res,setRes] = React.useState<UserGroups>() 
   const [resAppPermission,setResponseAppPermission] = React.useState<Module>()
   const groupMsgRef = useRef<typeof CRXToaster>(null);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 0,
+    size: 25
+  })
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -177,7 +182,7 @@ const Group = () => {
       setResponseAppPermission(response)
    });
     //getResponseAppPermission();
-    dispatch(getUsersInfoAsync(gridFilter));
+    dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
@@ -416,6 +421,17 @@ const Group = () => {
       duration: 7000,
       clearButtton: true,
     });
+    if (message[0].message !== undefined && message[0].message !== "") {
+      let notificationMessage: NotificationMessage = {
+        title: t("User_Group"),
+        message: message[0].message,
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
  };
 
   const onSave = (e: React.MouseEventHandler<HTMLInputElement>) => {

@@ -26,7 +26,7 @@ import {
 import Cookies from 'universal-cookie';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import { useTranslation } from "react-i18next";
-import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { REACT_APP_CLIENT_ID } from '../../../../../evm/src/utils/Api/url'
 import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
@@ -52,21 +52,6 @@ interface userStateProps {
   userGroups: AutoCompleteOptionType[];
   deactivationDate: string;
   pin: string | null;
-}
-
-// type account = {
-//   isAdministrator: number;
-//   lastLogin: Date;
-//   passwordDetail: any;
-//   status: number;
-//   userName: string;
-//   password: string;
-//   isPasswordResetRequired: boolean;
-// };
-
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: []
 }
 
 const CreateUserForm = () => {
@@ -135,6 +120,14 @@ const CreateUserForm = () => {
     });
   }
   const [actual_formPayload, setactual_formPayload] = useState<userStateProps>(formpayload);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 1,
+    size: 25
+  })
 
   React.useEffect(() => {
     if (id) { fetchUser(); }
@@ -553,7 +546,7 @@ const CreateUserForm = () => {
             variant: 'success',
             duration: 7000
           });
-          dispatch(getUsersInfoAsync(gridFilter));
+          dispatch(getUsersInfoAsync(pageiGrid));
           setDisableSave(true)
 
         } else {
@@ -738,11 +731,11 @@ const CreateUserForm = () => {
           variant: 'success',
           duration: 7000
         });
-        dispatch(getUsersInfoAsync(gridFilter));
+        dispatch(getUsersInfoAsync(pageiGrid));
         setDisableSave(true)
       }
       userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
-      dispatch(getUsersInfoAsync());
+      dispatch(getUsersInfoAsync(pageiGrid));
       setDisableSave(true)
 
       functionalityAfterRequest()

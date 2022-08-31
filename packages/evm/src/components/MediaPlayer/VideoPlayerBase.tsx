@@ -1453,7 +1453,7 @@ const VideoPlayerBase = (props: any) => {
         recording_end_point: x.recording_end_point,
       })
 
-      let obj: TimelinesSync = {
+      let obj: TimelinesSync = { 
         assetId: x.dataId,
         timeOffset: x.timeOffset
       }
@@ -1596,7 +1596,7 @@ const VideoPlayerBase = (props: any) => {
   useEffect(() => {
     let layoutContent = document?.querySelector("._Player_Layout_Menu_");
     let PlayerRight = document?.getElementById("crx_video_player");
-    layoutContent ? PlayerRight?.appendChild(layoutContent) : null;
+    let x = layoutContent ? PlayerRight?.appendChild(layoutContent) : null;
    
   })
 

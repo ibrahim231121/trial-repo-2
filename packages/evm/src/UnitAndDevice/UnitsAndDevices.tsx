@@ -32,7 +32,8 @@ import {
   onSetSearchDataValue,
   onClearAll,
   onSaveHeadCellData,
-  onSetHeadCellVisibility
+  onSetHeadCellVisibility,
+  PageiGrid
 } from "../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
 import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
@@ -76,10 +77,21 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage
+  })
 
 
   React.useEffect(() => {
-    dispatch(getUnitInfoAsync()); // getunitInfo 
+    dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
 
    let headCellsArray = onSetHeadCellVisibility(headCells);
    setHeadCells(headCellsArray);
@@ -102,6 +114,7 @@ const UnitAndDevices: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false)
 
   const {getModuleIds} = useContext(ApplicationPermissionContext);
+  
 
   const setData = () => {
  
@@ -137,6 +150,12 @@ const UnitAndDevices: React.FC = () => {
     setData();
     dispatch(enterPathActionCreator({ val: ""}));
   }, [units]);
+
+  useEffect(() => {
+    if(paging)
+      dispatch(getUnitInfoAsync(pageiGrid));
+    setPaging(false)
+  },[pageiGrid])
 
   const searchText = (
     rowsParam: Unit[],
@@ -760,6 +779,12 @@ useEffect(()=>{
   headAssigned?.parentElement?.classList.add("UDAssignedClass");
  })
 
+ useEffect(() => {
+  setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+  setPaging(true)
+  
+},[page, rowsPerPage])
+
 
   return (
  
@@ -801,6 +826,11 @@ useEffect(()=>{
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
           offsetY={190}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          setPage= {(page:any) => setPage(page)}
+          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          totalRecords={500}
           />
           )
         }

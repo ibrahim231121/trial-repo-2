@@ -6,8 +6,8 @@ import { ConfigurationTemplateLogs, DeviceConfigurationTemplate, DeviceType } fr
 const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
     'GetAllConfiguration',
-    async () => {
-        return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate().then((response:DeviceConfigurationTemplate[]) => response);
+    async (pageiFilter?: any) => {
+        return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate(`/ConfigurationTemplates/GetAllConfiguration?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`).then((response:DeviceConfigurationTemplate[]) => response);
     }
 );
 

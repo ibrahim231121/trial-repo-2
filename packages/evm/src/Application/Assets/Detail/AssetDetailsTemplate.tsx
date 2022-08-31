@@ -47,6 +47,7 @@ import {
   SearchObject,
   onSetSingleHeadCellVisibility,
   onClearAll,
+  PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 const AssetDetailsTemplate = (props: any) => {
@@ -202,6 +203,17 @@ const AssetDetailsTemplate = (props: any) => {
   const [selectedActionRow, setSelectedActionRow] =React.useState<AuditTrail>();
   const [selectedItems, setSelectedItems] = React.useState<AuditTrail[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<AuditTrail[]>();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+      gridFilter: {
+      logic: "and",
+      filters: []
+      },
+      page: page,
+      size: rowsPerPage
+  })
   const handleChange = () => {
     setOpenForm(true);
   };
@@ -955,6 +967,11 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
                   offsetY={190}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  setPage= {(page:any) => setPage(page)}
+                  setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                  totalRecords={500}
                 />
               )}
             </div>

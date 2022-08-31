@@ -17,18 +17,13 @@ import Restricted from "../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { GridFilter } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 
 type Props = {
   selectedItems?: any;
   row?: any;
   showToastMsg(obj: any): any;
 };
-
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: []
-}
 
 const UserActionMenu: React.FC<Props> = ({
   selectedItems,
@@ -47,6 +42,14 @@ const UserActionMenu: React.FC<Props> = ({
   const [responseError, setResponseError] = React.useState<string>("");
   const [showAlert, setShowAlert] = React.useState<boolean>(false);
   const history = useHistory()
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: 1,
+    size: 25
+})
   const unlockUser = () => {
     setTitle(t("Unlock_user_account"));
     setPrimary(t("Yes_unlock_user_account"));  
@@ -70,7 +73,7 @@ const UserActionMenu: React.FC<Props> = ({
             variant: "success",
             duration: 7000,
           });
-          dispatch(getUsersInfoAsync(gridFilter));
+          dispatch(getUsersInfoAsync(pageiGrid));
           setIsOpen(false);
         } else {
           setShowAlert(true);
@@ -87,7 +90,7 @@ const UserActionMenu: React.FC<Props> = ({
             variant: "success",
             duration: 7000,
           });
-          dispatch(getUsersInfoAsync(gridFilter));
+          dispatch(getUsersInfoAsync(pageiGrid));
           setIsOpen(false);
         } else {
           setShowAlert(true);

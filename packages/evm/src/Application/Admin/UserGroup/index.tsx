@@ -22,7 +22,8 @@ import {
   onMultiToMultiCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
-  onClearAll
+  onClearAll,
+  PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import UserGroupActionMenu from "./UserGroupActionMenu";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
@@ -41,9 +42,20 @@ const UserGroup: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let history = useHistory();
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage
+  })
 
   React.useEffect(() => {
-    dispatch(getGroupAsync());
+    dispatch(getGroupAsync(pageiGrid));
     dispatch(getGroupUserCountAsync());
   }, []);
 
@@ -61,6 +73,7 @@ const UserGroup: React.FC = () => {
   const {
     getModuleIds
   } = useContext(ApplicationPermissionContext);
+  
 
 
   const setData = () => {
@@ -88,6 +101,14 @@ const UserGroup: React.FC = () => {
   React.useEffect(() => {
     setData();
   }, [groups, groupUsersCount]);
+
+  React.useEffect(() => {
+    if(paging){
+      dispatch(getGroupAsync(pageiGrid));
+      dispatch(getGroupUserCountAsync());
+    }
+    setPaging(false)
+  },[pageiGrid])
 
   const searchText = (
     rowsParam: GroupUser[],
@@ -219,8 +240,7 @@ const UserGroup: React.FC = () => {
       searchData.forEach((el: SearchObject) => {
         if (el.columnName === "name" || el.columnName === "description" || el.columnName === "userCount")
           dataRows = onTextCompare(dataRows, headCells, el);
-      }
-      );
+      });
       setRows(dataRows);
     }
   };
@@ -240,6 +260,12 @@ const UserGroup: React.FC = () => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPaging(true)
+    
+  },[page, rowsPerPage])
 
   return (
     <div className="managePermissionTable switchLeftComponents">
@@ -278,6 +304,11 @@ const UserGroup: React.FC = () => {
             showActionCol={true}
             showTotalSelectedText={false}
             offsetY={192}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            setPage= {(page:any) => setPage(page)}
+            setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+            totalRecords={500}
    
           />
         )

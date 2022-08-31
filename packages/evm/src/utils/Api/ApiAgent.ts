@@ -79,27 +79,32 @@ axios.interceptors.response.use(async response => {
     console.log(error.request.responseURL + ", error code: " + error.response?.status);
     return Promise.reject(error);
 })
-
 const responseBody = <T>(response: AxiosResponse<T>) => {
-    // let totalCount = response.headers["x-total-count"];
-    // if(totalCount !== undefined)
-    // {
-    //     let paginatedResponse = {
-    //         data: response.data,
-    //         totalCount: parseInt(totalCount)
-    //     }
-    //     return paginatedResponse;
-    // }
     return response.data;
+};
+const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
+    let totalCount = response.headers["x-total-count"];
+    if(totalCount !== undefined)
+    {
+        let paginatedResponse = {
+            data: response.data,
+            totalCount: parseInt(totalCount)
+        }
+        return paginatedResponse;
+    }
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 
 const requests = {
     get: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBody)},
+    getAll: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBodyPaginated)},
     post: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody)},
+    postPaginated: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBodyPaginated)},
     put: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
     patch: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
     delete: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
+    post_noconfig: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body).then(responseBody)},
+
 }
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -146,7 +151,8 @@ export const FileAgent = {
 }
 
 export const UsersAndIdentitiesServiceAgent = {
-    getUsersInfo: (url:string, body: any) => requests.post<UsersInfo[]>(USER_INFO_GET_URL,'',body, config),
+    getAllUsers: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getUsersInfo: (url:string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL,url,body,config),
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL,'', config),
     getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL,'', config),
     getUser:(userId: string) => requests.get<UserList>(USER , `/${userId}`, config),
@@ -166,7 +172,7 @@ export const UnitsAndDevicesAgent = {
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
-    getUnitInfo: () => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, "/Stations/0/Units/getunitInfo?Page=1&Size=100", config),
+    getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStations: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url, config),
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo"+url, config),
@@ -176,7 +182,7 @@ export const UnitsAndDevicesAgent = {
     getAllTemplate: () => requests.get<ConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates?Size=100&Page=1", config),
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
-    getAllDeviceConfigurationTemplate: () => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetAllConfiguration?Page=1&Size=100", config),
+    getAllDeviceConfigurationTemplate: (url: string) => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, url, config),
     getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetTemplateConfigurationLogs/"+url, config),
     deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/"+url, config),
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),

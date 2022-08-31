@@ -26,6 +26,7 @@ import {
   Order,
   onSetSingleHeadCellVisibility,
   onClearAll,
+  PageiGrid
 } from "../../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
@@ -110,6 +111,17 @@ const UnitCreate = (props: historyProps) => {
 
 
   const [stationName, SetStationName] = React.useState<string>('');
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+      gridFilter: {
+      logic: "and",
+      filters: []
+      },
+      page: page,
+      size: rowsPerPage
+  })
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -146,7 +158,7 @@ const UnitCreate = (props: historyProps) => {
     UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/GetPrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/GetConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
     UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
-    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "?Page=1&Size=100").then((response:Unit) => setDevicesList(response));
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + `?Page=${page+1}&Size=${size}`).then((response:Unit) => setDevicesList(response));
   }, []);
 
   React.useEffect(() => {
@@ -617,6 +629,11 @@ const UnitCreate = (props: historyProps) => {
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
                   offsetY={190}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  setPage= {(page:any) => setPage(page)}
+                  setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                  totalRecords={500}
                 />
               )}
             </div>

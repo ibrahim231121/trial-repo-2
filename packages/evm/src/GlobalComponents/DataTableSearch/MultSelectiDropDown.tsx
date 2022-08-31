@@ -76,7 +76,8 @@ const MultSelectiDropDown: React.FC<Props> = ({
     headCells[colIdx].id.toString() === "categories" ||
     headCells[colIdx].id.toString() === "recordedBy" ||
     headCells[colIdx].id.toString() === "groups" ||
-    headCells[colIdx].id.toString() === "assignedTo" 
+    headCells[colIdx].id.toString() === "assignedTo" ||
+    headCells[colIdx].id.toString() === "userGroups"
   ) {
     let moreOptions: any = [];
 
