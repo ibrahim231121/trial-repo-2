@@ -119,7 +119,7 @@ export const resources = {
         "Current_Retention:":"hr-Current_Retention:",
         "Extend":"hr-Extend",
         "Assets":"hr-Assets",
-        "Search_assets_by_ID#_case#_CAD#_categories_etc.":"hr-Search assets by ID#, case#, CAD#, categories, etc.",
+        "Search_assets_by_ID#_case#_CAD#_categories_owners_etc":"hr-Search assets by ID#, case#, CAD#, categories, owners etc.",
         "Infinite":"hr-Infinite",
         "No_Expiration":"hr-No Expiration",
         "Day(s)":"hr-Day(s)",

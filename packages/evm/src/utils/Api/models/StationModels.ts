@@ -21,7 +21,7 @@ export interface Address {
 
 export interface StationPolicy {
     id?: number,
-    retentionPolicyId: number,
+    retentionPolicyId: RetentionPolicyId,
     blackboxRetentionPolicyId: number,
     history?: History,
     configurationTemplates: ConfigurationTemplate[],
@@ -33,3 +33,7 @@ export interface CaptureDevice {
     name: string,
     deviceType: string
 }
+
+export interface RetentionPolicyId  {
+    CMTFieldValue: number;
+  };
