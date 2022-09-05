@@ -21,6 +21,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   showCheckBoxesCol,
   showActionCol,
   lightMode,
+  bodyCellWidth,
   selfPaging,
 }) => {
   const isSelected = (id: string) => {
@@ -71,10 +72,25 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     };
   });
 
+  const OnResizeHeader = (headCellId : any) => {
+    let width = bodyCellWidth != undefined && 
+    bodyCellWidth.resizeWidth != undefined &&
+    bodyCellWidth.finalWidth != undefined &&
+    headCellId == bodyCellWidth?.resizeWidth.colID ? 
+    bodyCellWidth?.finalWidth : "0px";
+    
+    const removePx = width.slice(0, 3);
+    let cellFinalWidth = parseInt(removePx) + 20 + "px";
+    
+    return cellFinalWidth;
+
+  }
+
   let containerRows = selfPaging ? container.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : container.rows
 
   return (
     <>
+    
       <Droppable
         droppableId={container.id}
         key={container.id}
@@ -223,17 +239,10 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                       row[headCells[colIdx].id], row[keyId]
                                     )
                               }
-                            {/* <CRXDataTablePopover
-                              isPopover={headCells[colIdx].isPopover !== undefined || headCells[colIdx].visible === true ? headCells[colIdx].isPopover: false}
-                              id={i}
-                              title={headCells[colIdx].label}
-                              minWidth={headCells[colIdx].minWidth}
-                              rows={row.id}
-                              headCellColIdx = {row[headCells[colIdx].id] }
-                              content= 
-                            /> */}
-                            
-                            
+                              
+                           <div style={{
+                            width:`${OnResizeHeader(headCells[colIdx].id)}`,
+                           }}></div>
                           </TableCell>
                         ))}
                       </TableRow>

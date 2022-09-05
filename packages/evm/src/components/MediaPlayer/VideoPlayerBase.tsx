@@ -1612,10 +1612,11 @@ const VideoPlayerBase = (props: any) => {
   useEffect(() => {
     let layoutContent = document?.querySelector("._Player_Layout_Menu_");
     let PlayerRight = document?.getElementById("crx_video_player");
-    if(layoutContent){
-      PlayerRight?.appendChild(layoutContent);
+    if(layoutContent) {
+       PlayerRight?.appendChild(layoutContent)
     }
-  })
+   
+  },[])
 
   return (
     <>

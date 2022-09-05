@@ -19,6 +19,7 @@ import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
 import { Asset } from "../../../../GlobalFunctions/globalDataTableFunctions"
 import DetailedAssetPopupAction from "./DetailedAssetPopupAction"
+import { Link } from "react-router-dom";
 
 type CheckValue = {
   isChecked: boolean;
@@ -104,6 +105,28 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
     if (checkValues.length === countCheck) setCheckAll(true);
     else setCheckAll(false);
   };
+
+  const createLink = (asset : any, strLen : number) => {
+      const dataLength = asset.toString().length;
+      if (dataLength <= strLen) {
+        return dataLength
+      } else {
+        var separator:any = separator || '...';
+        var separator:any = separator || '...';
+        var sepLen = separator.length,
+            charsToShow = strLen - sepLen,
+            frontChars = Math.ceil(charsToShow/2),
+            backChars = Math.floor(charsToShow/2);
+            
+            const middleElip =  asset.substr(1, frontChars) + 
+            separator + 
+            asset.substr(dataLength - backChars);
+            
+        return middleElip
+      }
+
+      
+  }
   return (
     <div className="CRXPopupOuterDiv">
       <span
@@ -153,6 +176,20 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                   ? groupedAsset.map((asset: Asset, index: number) => {
                       const id = `checkBox'+${index}`;
 
+                      const links = <Link
+                      className="linkColor"
+                        to={{
+                          pathname: "/assetdetail",
+                          state: {
+                            evidenceId: row.id,
+                            assetId: asset.assetId,
+                            assetName: asset.assetName,
+                          },
+                        }}
+                      >
+                        
+                        <div className="assetName">{createLink(asset.assetName, 18)}</div>
+                      </Link>
                       return (
                         <>
                           <tr key={index}>
@@ -175,10 +212,13 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                             <td>
                             
                             <CRXMiddleTruncationPopover
+                              id={asset.assetId}
                               content={asset.assetName}
                               isPopover={true}
                               maxWidth={200}
                               minWidth={150}
+                              link={links}
+                              middle={false}
                             />
                              
                               {asset.camera !== undefined &&

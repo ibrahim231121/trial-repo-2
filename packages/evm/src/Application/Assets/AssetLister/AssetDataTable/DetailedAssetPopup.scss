@@ -80,7 +80,7 @@
         text-align: left;
         width: 509px;
         padding-left: 0px;
-        overflow-y: visible;
+        overflow-y: auto;
         max-height: 420px;
 
         table {
@@ -273,7 +273,7 @@
 
   &::-webkit-scrollbar-thumb {
     border-radius: 0px;
-    background: var(--color-C8C8C8) 0% 0% no-repeat content-box;
+    background: var(--color-c8c8c8) 0% 0% no-repeat content-box;
     outline: 0px solid var(--color-slategrey);
     border: 2px solid var(--color-black-3);
     background-clip: content-box;
