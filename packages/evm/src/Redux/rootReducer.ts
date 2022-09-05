@@ -17,6 +17,7 @@ import stationsSlice from './StationReducer';
 import assetSearchSlice from './AssetSearchReducer';
 import configurationTemplatesReducerSlice from './ConfigurationTemplatesReducer';
 import auditLogSlice from './AuditLogReducer';
+import timelineDetailSlice from './VideoPlayerTimelineDetailReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -32,6 +33,7 @@ export const reducer = combineReducers({
   unitTemplateSlice: unitTemplateSlice.reducer,
   templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
+  timelineDetailReducer: timelineDetailSlice.reducer,
   unitReducer: unitSlice.reducer,
   setupConfigurationReducer : categoriesSlice.reducer,
   assetSearchReducer: assetSearchSlice.reducer,

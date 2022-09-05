@@ -11,6 +11,8 @@ import { CRXConfirmDialog } from '@cb/shared';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { Note } from '../../utils/Api/models/EvidenceModels';
 import { CMTEntityRecord } from '../../utils/Api/models/CommonModels';
+import { useDispatch } from 'react-redux';
+import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
 
 type VideoPlayerNoteProps = {
     openNoteForm: boolean;
@@ -24,11 +26,10 @@ type VideoPlayerNoteProps = {
     noteAssetId?: number;
     toasterMsgRef: any;
     timelinedetail: any;
-    settimelinedetail: any;
 };
 
 const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
-    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail,settimelinedetail} = props;
+    const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -43,6 +44,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
         SuccessType: "",
     });
     const [description, setdescription] = React.useState(editNoteForm ? note.description : "");
+    const dispatch = useDispatch();
 
     const [noteobj, setnoteobj] = React.useState<any>({
         assetId: editNoteForm ? noteAssetId : AssetData.dataId,
@@ -62,13 +64,13 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
 
     React.useEffect(() => {
         if(isSuccess.success){
-            let tempData = [...timelinedetail];
+            let tempData = JSON.parse(JSON.stringify(timelinedetail));
             if(isSuccess.SuccessType == "Add"){
                 tempData.forEach((x:any)=> 
                             {if(x.dataId == noteobj.assetId){
                                 x.notes = [...x.notes, noteobj]
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
                 setopenNoteForm(false);
                 setIsSuccess({...isSuccess, success: false, SuccessType: ""});
@@ -79,7 +81,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                                 x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
                                 x.notes = [...x.notes, noteobj];
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
                 setopenNoteForm(false);
                 seteditNoteForm(false);
@@ -90,7 +92,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                             {if(x.dataId == noteobj.assetId){
                                 x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
                 setopenNoteForm(false);
                 seteditNoteForm(false);

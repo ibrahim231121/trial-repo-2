@@ -8,10 +8,11 @@ import { CRXCheckBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { CRXRadio } from "@cb/shared";
 import { Radio } from "@material-ui/core";
+import { useDispatch } from "react-redux";
+import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 
 interface VideosSelectionProp {
   timelinedetail: any[],
-  settimelinedetail: any,
   setAnchorEl: any,
   anchorEl: any,
   indexNumber: any,
@@ -23,14 +24,15 @@ type CheckValue = {
   assetId: string;
 };
 
-const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, anchorEl, indexNumber, setupdateVideoSelection }: VideosSelectionProp) => {
+const VideosSelection = ({ timelinedetail, setAnchorEl, anchorEl, indexNumber, setupdateVideoSelection }: VideosSelectionProp) => {
 
   const open = Boolean(anchorEl);
   const [checkedVideo, setCheckedVideo] = React.useState<string>("");
+  const dispatch = useDispatch();
 
-  const confirmEvent = () => {
+  const confirmEvent = async () => {
     if (checkedVideo !== "") {
-      var tempArray = [...timelinedetail];
+      var tempArray = JSON.parse(JSON.stringify(timelinedetail));
       var tempItemToRemove = tempArray.find((x: any) => x.indexNumberToDisplay == indexNumber);
       if (tempItemToRemove !== undefined) {
         tempItemToRemove.enableDisplay = false;
@@ -41,7 +43,7 @@ const VideosSelection = ({ timelinedetail, settimelinedetail, setAnchorEl, ancho
         tempItem.enableDisplay = true;
         tempItem.indexNumberToDisplay = indexNumber;
       }
-      settimelinedetail(tempArray);
+      await dispatch(addTimelineDetailActionCreator(tempArray));
       setCheckedVideo("");
       setupdateVideoSelection(true);
     }
