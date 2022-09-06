@@ -412,6 +412,13 @@ const StationDetail: React.FC = () => {
   const stationValidationSchema = Yup.object().shape({
 
     Name: Yup.string().required(t("Station_Name_is_required")),
+    StreetAddress: Yup.string()
+      .test(
+        'len',
+        t("Minimum_3_characters_are_allowed."),
+        (val) => val != undefined && (val.length == 0 || (val.length >= 3 && val.length <= 128))
+      )
+      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Street_Address_is_required")),
     Passcode: Yup.string()
       .test(
         'len',
@@ -421,17 +428,19 @@ const StationDetail: React.FC = () => {
       .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Pass_Code_is_required")),
     Phone: Yup.string()
       .trim().matches(regex_PhoneNumber, t("Phone_Number_is_not_valid!")).notRequired(),
-    SSId: Yup.string().test(
-      'len',
-      t("Minimum_5_characters_are_allowed."),
-      (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-    )
+    SSId: Yup.string()
+      .test(
+        'len',
+        t("Minimum_5_characters_are_allowed."),
+        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
+      )
       .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
-    Password: Yup.string().test(
-      'len',
-      t("Minimum_5_characters_are_allowed."),
-      (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-    )
+    Password: Yup.string()
+      .test(
+        'len',
+        t("Minimum_5_characters_are_allowed."),
+        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
+      )
       .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
     //RetentionPolicy: Yup.string().required("Retention policy is required"),
   });
@@ -565,7 +574,7 @@ const StationDetail: React.FC = () => {
               container="container"
               spacing={0}
             >
-              {deviceTypeCollection.slice(0, NoOFColumnInFirstRow).map((deviceTypeObj: any) => (
+              {deviceTypeCollection.filter(x => x.showDevice == true).slice(0, NoOFColumnInFirstRow).map((deviceTypeObj: any) => (
                 <CRXColumn
                   className="stationDetailCol"
                   container="container"
@@ -604,7 +613,7 @@ const StationDetail: React.FC = () => {
               container="container"
               spacing={0}
             >
-              {deviceTypeCollection.slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
+              {deviceTypeCollection.filter(x => x.showDevice == true).slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
                 <CRXColumn
                   className="stationDetailCol"
                   container="container"
@@ -852,39 +861,7 @@ const StationDetail: React.FC = () => {
                                     </div>
                                   </CRXColumn>
                                   
-                                  <CRXColumn
-                                    className={
-                                      "stationDetailCol " +
-                                      ` ${errors.Passcode && touched.Passcode == true
-                                        ? displayStationErrors
-                                        : ""
-                                      }`
-                                    }
-                                    container="container"
-                                    item="item"
-                                    lg={12}
-                                    xs={12}
-                                    spacing={0}
-                                  >
-                                    <div className="CBX-input">
-                                      <label htmlFor="passcode">
-                                        {t("Pass_Code")} <span>*</span>
-                                      </label>
-                                      <div className="CrxStationError">
-                                        <Field id="passcode" name="Passcode" component={InputShowHide} /> 
-                                        {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
-                                        {/* <Field id="passcode" name="Passcode"  />
-                                        {errors.Passcode !== undefined &&
-                                          touched.Passcode === true ? (
-                                          <div className="errorStationStyle">
-                                            <i className="fas fa-exclamation-circle"></i>
-                                            {errors.Passcode}
-                                            {setDisplayStationError("errorBrdr")}
-                                          </div>
-                                        ) : null}  */}
-                                      </div>
-                                    </div>
-                                  </CRXColumn>
+                                  
 
 
                             </div>
@@ -904,6 +881,29 @@ const StationDetail: React.FC = () => {
                             container="container"
                             spacing={0}
                         >
+                          <CRXColumn
+                                    className={
+                                      "stationDetailCol " +
+                                      ` ${errors.Passcode && touched.Passcode == true
+                                        ? displayStationErrors
+                                        : ""
+                                      }`
+                                    }
+                                    container="container"
+                                    item="item"
+                                    lg={12}
+                                    xs={12}
+                                    spacing={0}
+                                  >
+                                    <div className="CBX-input passwordStationField">
+                                      <label htmlFor="passcode">
+                                        {t("Registration_Pass_Code")} <span>*</span>
+                                      </label>
+                                      <div className="CrxStationError">
+                                        <Field id="passcode" name="Passcode" component={InputShowHide} /> 
+                                      </div>
+                                    </div>
+                            </CRXColumn>
                             <CRXColumn
                               className={
                                 "stationDetailCol " +
@@ -935,7 +935,7 @@ const StationDetail: React.FC = () => {
                                 </div>
                               </div>
                             </CRXColumn>
-                                 <CRXColumn
+                            <CRXColumn
                               className={
                                 "stationDetailCol " +
                                 ` ${errors.Password && touched.Password == true
@@ -955,16 +955,6 @@ const StationDetail: React.FC = () => {
                                 </label>
                                 <div className="CrxStationError">
                                   <Field id="password" name="Password" component={InputShowHide} />
-                                  {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
-                                  {/* <Field id="password" name="Password" />
-                                  {errors.Password !== undefined &&
-                                    touched.Password === true ? (
-                                    <div className="errorStationStyle">
-                                      <i className="fas fa-exclamation-circle"></i>
-                                      {errors.Password}
-                                      {setDisplayStationError("errorBrdr")}
-                                    </div>
-                                  ) : null} */}
                                 </div>
                               </div>
                             </CRXColumn>

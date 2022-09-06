@@ -429,7 +429,7 @@ const Station: React.FC = () => {
           showActionCol={true}
           showActionSearchHeaderCell={true}
           showCountText={false}
-          showCustomizeIcon={false}
+          showCustomizeIcon={true}
           showTotalSelectedText={false}
           offsetY={205}
           page={page}

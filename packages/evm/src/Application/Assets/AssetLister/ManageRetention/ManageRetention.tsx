@@ -49,14 +49,14 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   
-  const [retention, setRetention] = React.useState<string>("")
+  const [retention, setRetention] = React.useState<string>("1")
   const [currentRetention, setCurrentRetention] = React.useState<string>("")
   const [originalRetention, setOriginalRetention] = React.useState<string>("")
   const [isOpen,setIsOpen] = React.useState<boolean>(false);
   
   const [retentionList, setRetentionList] = React.useState<ExtendRetention[]>([])
   
-  const [retentionDays, setRetentionDays] = React.useState<number>(0)
+  const [retentionDays, setRetentionDays] = React.useState<number>(7)
   const [responseError,setResponseError] = React.useState<string>('');
   const [response,setResponse] = React.useState<Evidence>();
   const [alert,setAlert] = React.useState<boolean>(false);
@@ -80,21 +80,21 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }, [retentionList]);
 
   React.useEffect(() => {
-    
     if (props.items.length <= 1)
       getRetentionData();
 
   }, []);
   React.useEffect(() => {
-    if (retention != "") {
+    if ((retention == "1" && retentionDays != 0) || retention != "1")
       setButtonState(false);
-    }
+    else
+      setButtonState(true);
+
     if (retention != "1") {
-      
       setRetentionDays(7);
     }
 
-  }, [retention]);
+  }, [retention, retentionDays]);
 
   useEffect(() => {
     if (responseError !== undefined && responseError !== '') {
@@ -150,7 +150,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
   const history  = useHistory();
   const onSubmitForm = async () => {
-    console.log('Props_Items', props.items[0]);
 
     if (props.filterValue?.length !== 0) {
     }
@@ -223,7 +222,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   const cancelBtn = () => {
-    if(retention != "" || retentionDays > 0){
+    if(retention != "1" || (retention == "1" && retentionDays != 0 && retentionDays != 7) ){
       setIsOpen(true);
     }
     else
@@ -296,23 +295,23 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                     {t("Cancel")}
                   </CRXButton>
                   <CRXConfirmDialog
-        setIsOpen={() => setIsOpen(false)}
-        onConfirm={closeDialog}
-        isOpen={isOpen}
-        className="userGroupNameConfirm"
-        primary={t("Yes_close")}
-        secondary={t("No,_do_not_close")}
-        text="user group form"
-      >
-        <div className="confirmMessage">
-          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
-          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-          <div className="confirmMessageBottom">
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-          </div>
-        </div>
-      </CRXConfirmDialog>
+                    setIsOpen={() => setIsOpen(false)}
+                    onConfirm={closeDialog}
+                    isOpen={isOpen}
+                    className="userGroupNameConfirm"
+                    primary={t("Yes_close")}
+                    secondary={t("No,_do_not_close")}
+                    text="user group form"
+                  >
+                    <div className="confirmMessage">
+                      {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+                      <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+                      {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+                      <div className="confirmMessageBottom">
+                      {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+                      </div>
+                    </div>
+                  </CRXConfirmDialog>
                 </div>
               </div>
             </Form>
