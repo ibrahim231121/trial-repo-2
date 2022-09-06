@@ -18,7 +18,7 @@ import { CRXTitle } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync, getCaptureDevicesAsync } from "../../Redux/templateDynamicForm";
+import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync, getDeviceTypesAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
@@ -108,7 +108,7 @@ const CreateTemplate = (props: any) => {
   const [editCase, setEditCase] = React.useState<boolean>(false);
   const retention: any = useSelector((state: RootState) => state.unitTemplateSlice.retentionPolicy);
   const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
-  const captureDevices: any = useSelector((state: RootState) => state.unitTemplateSlice.captureDevices);
+  const deviceTypes: any = useSelector((state: RootState) => state.unitTemplateSlice.deviceTypes);
   const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
   const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
   const formikProps = useFormikContext()
@@ -168,7 +168,7 @@ const CreateTemplate = (props: any) => {
   function setintial() {
     if (historyState.deviceType == "Incar") {
       dispatch(getRetentionPolicyInfoAsync());
-      dispatch(getCaptureDevicesAsync());
+      dispatch(getDeviceTypesAsync());
     }
     dispatch(getCategoriesAsync());
     dispatch(getStationsAsync());
@@ -199,10 +199,10 @@ const CreateTemplate = (props: any) => {
   }, [categories,FormSchema]);
 
   React.useEffect(() => {
-    if (captureDevices && captureDevices.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if (deviceTypes && deviceTypes.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setCameraDeviceDropdown();
     }
-  }, [captureDevices,FormSchema]);
+  }, [deviceTypes,FormSchema]);
 
   React.useEffect(() => {
     if (stations && stations.length > 0 && FormSchema) {
@@ -259,17 +259,17 @@ const CreateTemplate = (props: any) => {
 
   const setCameraDeviceDropdown = () => {
     var captureDevicesOptions: any = [];
-    captureDevices.map((x: CaptureDevice, y: number) => {
-      captureDevicesOptions.push({ value: x.id, label: x.name, deviceType: x.deviceType })
+    deviceTypes.filter((x:DeviceType) => !x.isLogicalDevice && (x.category == "IPCamera" || x.category == "Video" || x.category == "Audio")).map((x: DeviceType) => {
+      captureDevicesOptions.push({ value: x.id, label: x.name, category: x.category })
     })
     if (historyState.deviceType == "Incar") {
-      let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/deviceType_1_Camera/Select")
+      let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
       cameraDevice.options = [];
-      cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.deviceType !== "Audio"))
+      cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio"))
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
-      audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.deviceType == "Audio"))
+      audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
     }
     setFormSchema(FormSchema);
   }
@@ -359,7 +359,8 @@ const CreateTemplate = (props: any) => {
 
 
 
-
+        if(feildObj)
+        {
 
           if (feildObj.hasOwnProperty("validation")) {
             Initial_Values_RequiredField.push({
@@ -401,6 +402,7 @@ const CreateTemplate = (props: any) => {
                 value: { value: "", feilds: [[valueToPush]] }
               })
             }
+          }
           }
           editT1.push({
             key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
@@ -556,6 +558,28 @@ const CreateTemplate = (props: any) => {
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+
+          if(keySubSplit[0] == "deviceType" && valueToSave)
+          {
+            let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
+            if(deviceType)
+            {
+              Initial_Values.push({
+                key: "deviceTypeCategory_" + keySubSplit[1] + "_" + keySubSplit[2],
+                value: deviceType.category,
+                group: split[0],
+                valueType: split[2],
+                sequence: 1,
+              });
+              Initial_Values.push({
+                key: "deviceTypeName_" + keySubSplit[1] + "_" + keySubSplit[2],
+                value: deviceType.name,
+                group: split[0],
+                valueType: split[2],
+                sequence: 1,
+              });
+            }
+          }
         }
         if (valueToSave) {
           Initial_Values.push({

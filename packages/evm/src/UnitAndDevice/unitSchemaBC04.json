@@ -11,6 +11,16 @@
         {
           "key": "required",
           "msg": "required"
+        },
+        {
+          "key": "max",
+          "value": 128,
+          "msg": "Greater than 128 characters"
+        },
+        {
+          "key": "min",
+          "value": 3,
+          "msg": "Less than 3 characters"
         }
       ]
     },

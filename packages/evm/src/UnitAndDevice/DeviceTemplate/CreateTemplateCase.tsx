@@ -211,8 +211,7 @@ export const CreateTempelateCase = (props: any) => {
     var value = values[key]
     if(extraFieldDependency == "cameraDevice")
     {
-      var val = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/deviceType_1_Camera/Select").options.find((x:any) => x.value == value)?.deviceType;
-      return val;
+      return FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select").options.find((x:any) => x.value == value)?.label;
     }
     return value;
   }
