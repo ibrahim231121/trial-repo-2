@@ -24,3 +24,7 @@ export interface Paginated<T> {
     data: T,
     totalCount:number
 }
+export interface Headers {
+    key: string,
+    value:string
+}

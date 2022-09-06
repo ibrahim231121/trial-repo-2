@@ -47,7 +47,7 @@ import {
     UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
-import { Paginated } from './models/CommonModels';
+import { Paginated, Headers } from './models/CommonModels';
 const cookies = new Cookies();
 let config = {
     
@@ -94,6 +94,22 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
     }
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
+const addHeaders = (headers: Headers[]) => {
+    if(config)
+    {
+        let config2 : any = config;
+        if(config2["headers"])
+        {
+            let ConfigHeader : any[] = Object.entries(config2["headers"]);
+            headers.forEach((x:Headers) => {
+                let a = [x.key, x.value];
+                ConfigHeader.push(a)
+            })
+            var obj = ConfigHeader.reduce((obj, cur) => ({...obj, [cur[0]]: cur[1]}), {})
+            config["headers"] = obj;
+        }
+    }
+};
 
 const requests = {
     get: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBody)},
@@ -103,8 +119,6 @@ const requests = {
     put: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
     patch: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
     delete: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
-    post_noconfig: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body).then(responseBody)},
-
 }
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
