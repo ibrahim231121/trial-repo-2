@@ -85,7 +85,8 @@ export interface DeviceType {
     history?: History,
     isLogicalDevice?: boolean,
     schema?: string,
-    typeCategory?: string
+    typeCategory?: string,
+    showDevice?:boolean
 }
 
 export interface ConfigurationField {
