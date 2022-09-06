@@ -119,7 +119,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     headerStickness: {
       top: "0px",
       left: 0,
-      zIndex: 2,
+      zIndex: 3,
       position: "sticky",
       backgroundColor: "#333333 !important",
       color: "#d1d2d4 !important",
@@ -294,7 +294,7 @@ export type DataTableStickyHeadersProps = {
   checkAllPageWise: CheckAllPageWise[];
   lightMode?: boolean;
   initialRows?: any[];
-
+  setBodyCellWidth? : any
 };
 
 export type DataTableBodyProps = {
@@ -312,6 +312,7 @@ export type DataTableBodyProps = {
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
   lightMode?: boolean;
+  bodyCellWidth?: any;
   selfPaging?: boolean;
   
 };
@@ -345,6 +346,7 @@ export type DataTableHeaderProps = {
   dragVisibility?: boolean;
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
+  setBodyCellWidth? : any
 };
 
 export type DataTableClearFilterProps = {

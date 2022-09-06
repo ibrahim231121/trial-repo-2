@@ -15,7 +15,6 @@ import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
 import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
-import { makeStyles } from "@material-ui/core/styles";
 import Popper from '@material-ui/core/Popper';
 
 
@@ -280,21 +279,6 @@ const UnitAndDevices: React.FC = () => {
     return self.indexOf(value) === index;
 }
 
-const useStyles = makeStyles({
-  paper: {
-    backgroundColor: "blue !important",
-    paddingBottom: 16,
-    paddingRight: 16,
-    marginTop: 16,
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: 500
-  },
-
-});
-
-const classes = useStyles();
-
 const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
  
 
@@ -334,11 +318,6 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
               CheckBox={true}
               checkSign={false}
               open={open}
-              classes={{
-                paper: classes.paper
-
-              }
-              }
               theme="dark"
               clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
               getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}

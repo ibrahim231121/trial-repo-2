@@ -83,8 +83,8 @@ const SearchComponent = (props: any) => {
               'masterAsset.assetName',
               'categories',
               'cADId',
-              'asset.recordedBy',
-              'asset.unit'
+              'asset.unit',
+              'asset.owners'
             ],
           },
         },
@@ -300,7 +300,7 @@ const SearchComponent = (props: any) => {
         if (o != undefined && o.key == 'username') {
           const val = {
             bool: {
-              should: [{ match: { 'asset.recordedBy': `${o.inputValue}` } }],
+              should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
             },
           };
           AdvancedSearchQuerry.bool.must.push(val);

@@ -3,19 +3,20 @@ import { CRXConfirmDialog } from "@cb/shared";
 import { TextField, CRXTooltip } from "@cb/shared";
 import { red } from "@material-ui/core/colors";
 import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import { EvidenceAgent } from "../../utils/Api/ApiAgent";
 import { CMTEntityRecord } from "../../utils/Api/models/CommonModels";
 import { Bookmark, Note } from "../../utils/Api/models/EvidenceModels";
 import "./BookmarkNotePopup.scss";
 
 interface BookmarkNotePopupprops {
-  bookmarkNotePopupObj: any;
-  bookmarkNotePopupArrObj: any;
-  setBookmarkNotePopupArrObj: any;
-  EvidenceId: any;
-  timelinedetail: any;
-  settimelinedetail: any;
-  toasterMsgRef: any;
+  bookmarkNotePopupObj: any
+  bookmarkNotePopupArrObj: any
+  setBookmarkNotePopupArrObj: any
+  EvidenceId: any
+  timelinedetail: any
+  toasterMsgRef: any
 }
 
 const BookmarkNotePopup = ({
@@ -24,7 +25,6 @@ const BookmarkNotePopup = ({
   setBookmarkNotePopupArrObj,
   EvidenceId,
   timelinedetail,
-  settimelinedetail,
   toasterMsgRef,
 }: BookmarkNotePopupprops) => {
   const [description, setDescription] = React.useState<string>("");
@@ -33,9 +33,9 @@ const BookmarkNotePopup = ({
   const [enableOnSave, setEnableOnSave] = React.useState<boolean>(false);
   const [onSave, setOnSave] = React.useState<boolean>(false);
   const [showButton, setShowButton] = React.useState<boolean>(false);
-  const [objTypeDescription, setObjTypeDescription] =
-    React.useState<string>("");
+  const [objTypeDescription, setObjTypeDescription] = React.useState<string>("");
   const [noteUserName, setNoteUserName] = React.useState<string>("");
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     setDescription(bookmarkNotePopupObj.description);
@@ -71,27 +71,22 @@ const BookmarkNotePopup = ({
     }
   }, [editDescription]);
 
-  const onRemove = (del: boolean) => {
-    if (del) {
-      let tempData = [...timelinedetail];
-      if (bookmarkNotePopupObj.objtype == "Note") {
-        tempData.forEach((x: any) => {
-          if (x.dataId == bookmarkNotePopupObj.assetId) {
-            x.notes = x.notes.filter(
-              (y: any) => y.id !== bookmarkNotePopupObj.id
-            );
-          }
-        });
-        settimelinedetail([...tempData]);
-      } else if (bookmarkNotePopupObj.objtype == "Bookmark") {
-        tempData.forEach((x: any) => {
-          if (x.dataId == bookmarkNotePopupObj.assetId) {
-            x.bookmarks = x.bookmarks.filter(
-              (y: any) => y.id !== bookmarkNotePopupObj.id
-            );
-          }
-        });
-        settimelinedetail([...tempData]);
+  const onRemove = (del : boolean) => {
+    if(del){
+      let tempData = JSON.parse(JSON.stringify(timelinedetail));
+      if(bookmarkNotePopupObj.objtype == "Note"){
+        tempData.forEach((x:any)=> 
+          {if(x.dataId == bookmarkNotePopupObj.assetId){
+              x.notes = x.notes.filter((y:any)=> y.id !== bookmarkNotePopupObj.id);
+          }})
+        dispatch(addTimelineDetailActionCreator(tempData));
+      }
+      else if(bookmarkNotePopupObj.objtype == "Bookmark"){
+        tempData.forEach((x:any)=> 
+          {if(x.dataId == bookmarkNotePopupObj.assetId){
+              x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkNotePopupObj.id);
+          }})
+        dispatch(addTimelineDetailActionCreator(tempData));
       }
     }
     let temp: any[] = [...bookmarkNotePopupArrObj];
@@ -227,29 +222,26 @@ const BookmarkNotePopup = ({
   };
 
   const updateBookmarkNotePopupObjState = () => {
-    let tempData = [...timelinedetail];
-    if (bookmarkNotePopupObj.objtype == "Note") {
-      tempData.forEach((x: any) => {
-        if (x.dataId == bookmarkNotePopupObj.assetId) {
-          x.notes.forEach((y: any) => {
-            if (y.id == bookmarkNotePopupObj.id) {
+    let tempData = JSON.parse(JSON.stringify(timelinedetail));
+    if(bookmarkNotePopupObj.objtype == "Note"){
+      tempData.forEach((x:any)=> 
+        {if(x.dataId == bookmarkNotePopupObj.assetId){
+          x.notes.forEach((y:any)=> 
+            {if(y.id == bookmarkNotePopupObj.id){
               y.description = description;
-            }
-          });
-        }
-      });
-      settimelinedetail([...tempData]);
-    } else if (bookmarkNotePopupObj.objtype == "Bookmark") {
-      tempData.forEach((x: any) => {
-        if (x.dataId == bookmarkNotePopupObj.assetId) {
-          x.bookmarks.forEach((y: any) => {
-            if (y.id == bookmarkNotePopupObj.id) {
+            }});
+        }})
+      dispatch(addTimelineDetailActionCreator(tempData));
+    }
+    else if(bookmarkNotePopupObj.objtype == "Bookmark"){
+      tempData.forEach((x:any)=> 
+        {if(x.dataId == bookmarkNotePopupObj.assetId){
+          x.bookmarks.forEach((y:any)=> 
+            {if(y.id == bookmarkNotePopupObj.id){
               y.description = description;
-            }
-          });
-        }
-      });
-      settimelinedetail([...tempData]);
+            }});
+        }})
+      dispatch(addTimelineDetailActionCreator(tempData));
     }
     let tempData1 = [...bookmarkNotePopupArrObj];
     tempData1.forEach((x: any) => {

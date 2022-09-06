@@ -69,6 +69,8 @@ createStyles({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor : "transparent !important",
+    marginTop: "-4px !important"
   },
   bradCrumscontentShift: {
     transition: theme.transitions.create('margin', {

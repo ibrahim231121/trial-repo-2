@@ -27,7 +27,7 @@ import ActionMenu from "../ActionMenu";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
-import { AssetRetentionFormat, CalculateHoldUntill } from "../../../../GlobalFunctions/AssetRetentionFormat";
+import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { AssetThumbnail } from "./AssetThumbnail";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";

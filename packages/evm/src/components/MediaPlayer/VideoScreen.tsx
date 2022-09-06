@@ -6,12 +6,13 @@ import VideosSelection from "./VideosSelection";
 import { GridList, Switch } from "@material-ui/core";
 import "../../Assets/css/animate.min.css"
 import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
+import { useDispatch } from "react-redux";
+import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 
 
 interface VideoScreenProp {
   viewNumber?: number,
   timelinedetail: any[],
-  settimelinedetail: any,
   mapEnabled: boolean,
   videoHandlers: any,
   setVideoHandlersFwRw: any,
@@ -30,13 +31,14 @@ interface VideoScreenProp {
   gpsJson: any
   openMap:boolean
   setOnMarkerClickTimeData:any
+  toasterMsgRef: any
 }
 
-const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, settimelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData,isMultiTimelineEnabled  }: VideoScreenProp) => {
+const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData,isMultiTimelineEnabled,toasterMsgRef  }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
-  const [adjustSoundEnabled, setAdjustSoundEnabled] =
-    React.useState<boolean>(true);
+  const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
+  const dispatch = useDispatch();
   
   const getVideo = (camIndexVideoData: any) => {
     if (camIndexVideoData !== undefined) {
@@ -74,7 +76,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
   };
 
   const removeVideo = (indexNumber: any) => {
-    var tempArray = [...timelinedetail];
+    var tempArray = JSON.parse(JSON.stringify(timelinedetail));
     var tempItemToRemove = tempArray.find(
       (x: any) => x.indexNumberToDisplay == indexNumber
     );
@@ -83,7 +85,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
       tempItemToRemove.indexNumberToDisplay = 0;
       setupdateVideoSelection(true);
     }
-    settimelinedetail(tempArray);
+    dispatch(addTimelineDetailActionCreator(tempArray));
     setIndexNumber(0);
   };
 
@@ -265,12 +267,11 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
         </Grid>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
         {mapEnabled && <div className="_video_Player_Right_Panel">
-          <AssetDetailsPanel data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} />
+          <AssetDetailsPanel data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} toasterMsgRef={toasterMsgRef}/>
         </div>}
       </Grid>
       <VideosSelection
         timelinedetail={timelinedetail}
-        settimelinedetail={settimelinedetail}
         anchorEl={anchorEl}
         setAnchorEl={setAnchorEl}
         indexNumber={indexNumber}

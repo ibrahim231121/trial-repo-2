@@ -45,9 +45,9 @@ import ApplicationPermissionContext from "../../../../ApplicationPermission/Appl
 type ConfigTemplate = {
   id: number;
   name: string;
-  deviceTypeCategory: string;
+  deviceType: string;
   station: string;
-  indicator: string;
+  defaultTemplate: string;
   device: any;
 };
 
@@ -182,8 +182,9 @@ const ConfigurationTemplates: React.FC = () => {
           return {
             id: template.recId,
             name: template.name,
-            deviceTypeCategory: template.deviceTypeCategory,
-            indicator: template.indicator,
+            deviceType: template.deviceType,
+            stationName: template.stationName,
+            defaultTemplate: template.isDefaultTemplate ? "Default" : "",
             device: template,
           };
         }
@@ -370,7 +371,7 @@ const ConfigurationTemplates: React.FC = () => {
       if (initialRows !== undefined) {
         if (initialRows.length > 0) {
           initialRows.forEach((x: ConfigTemplate) => {
-            typelist.push(x.deviceTypeCategory);
+            typelist.push(x.deviceType);
           });
         }
       }
@@ -443,15 +444,15 @@ const ConfigurationTemplates: React.FC = () => {
       let indicatorlist: any = [];
       if (initialRows !== undefined) {
         if (initialRows.length > 0) {
-          initialRows.map((x: ConfigTemplate) => {
-            indicatorlist.push(x.indicator);
+          initialRows.forEach((x: ConfigTemplate) => {
+            indicatorlist.push(x.defaultTemplate);
           });
         }
       }
       indicatorlist = indicatorlist.filter(findUniqueValue);
 
       let indicator: any = [{ label: t("Default") }];
-      indicatorlist.map((x: string) => {
+      indicatorlist.forEach((x: string) => {
         indicator.push({ label: x });
       });
 
@@ -503,14 +504,6 @@ const ConfigurationTemplates: React.FC = () => {
     }
   };
 
-  const IndicatorDisplay = (text: string, classes: string | undefined) => {
-    return <div>{t("Default")}</div>;
-  };
-
-  const StationDisplay = (text: string, classes: string | undefined) => {
-    return <div>Station 1</div>;
-  };
-
   // ------------------INDICATOR DROP DOWN END
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -543,10 +536,10 @@ const ConfigurationTemplates: React.FC = () => {
     },
     {
       label: t("Station"),
-      id: "Station",
+      id: "stationName",
       align: "left",
       
-      dataComponent: (e: string) => StationDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -561,7 +554,7 @@ const ConfigurationTemplates: React.FC = () => {
     },
     {
       label: t("Type"),
-      id: "deviceTypeCategory",
+      id: "deviceType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
@@ -577,10 +570,10 @@ const ConfigurationTemplates: React.FC = () => {
     },
     {
       label: t("Indicator"),
-      id: "indicator",
+      id: "defaultTemplate",
       width: "",
       align: "left",
-      dataComponent: (e: string) => IndicatorDisplay(e, ""),
+      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -705,6 +698,7 @@ const ConfigurationTemplates: React.FC = () => {
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
             showCustomizeIcon={true}
+            initialRows = {reformattedRows}
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}

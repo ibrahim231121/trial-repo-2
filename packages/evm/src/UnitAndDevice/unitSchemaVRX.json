@@ -10,6 +10,16 @@
         {
           "key": "required",
           "msg": "required"
+        },
+        {
+          "key": "max",
+          "value": 128,
+          "msg": "Greater than 128 characters"
+        },
+        {
+          "key": "min",
+          "value": 3,
+          "msg": "Less than 3 characters"
         }
       ]
     },
@@ -337,7 +347,7 @@
       "key": "device/SerialBaudRate/NumberBox",
       "type": "number",
       "label": "Serial Baud Rate",
-      "value": "",
+      "value": "0",
       "class":"SerialBaudRateIncar",
       "checkHelperText":"(Minimum allowed is 0 and maximum allowed is 10000)",
       "hinttext":true,
@@ -559,7 +569,6 @@
       "type": "number",
       "label": "Microphone Charge Time",
       "value": "200",
-      "hidefromUI": true,
       "validation": [
         {
           "key": "required",
@@ -574,7 +583,6 @@
       "label": "USB Port Charge Time",
       "value": "15",
       "class":"USBPortChargeIncar",
-      "hidefromUI": true,
       "validation": [
         {
           "key": "required",
@@ -593,11 +601,11 @@
       "feilds": [
         [
           {
-            "key": "CameraSetup/deviceType_1_Camera/Select",
+            "key": "CameraSetup/device_1_Camera/Select",
             "type": "select",
-            "label": "Device Type",
-            "value": "USB Camera",
-            "class": "DeviceTypeIncar",
+            "label": "Device",
+            "value": "",
+            "class": "DeviceIncar",
             "options": [],
             "optionAppendOnChange":[
               {
@@ -615,54 +623,24 @@
             ]
           },
           {
-            "key": "CameraSetup/deviceName_1_Camera/TextBox",
+            "key": "CameraSetup/cameraName_1_Camera/TextBox",
             "value": "",
             "type": "text",
-            "label": "Device Name",
+            "label": "Camera Name",
             "validation": [
               {
                 "key": "required",
                 "msg": "required"
-              }
-            ]
-          },
-          {
-            "key": "CameraSetup/videoProfile_1_Camera/Select",
-            "type": "select",
-            "label": "Video Profile",
-            "value": "",
-            "options": [
-              {
-                "value": "3840 x 2160 30fps",
-                "label": "3840 x 2160 30fps"
               },
               {
-                "value": "2688 x 1512 30fps",
-                "label": "2688 x 1512 30fps"
+                "key": "max",
+                "value": 128,
+                "msg": "Greater than 128 characters"
               },
               {
-                "value": "1920 x 1080 120fps",
-                "label": "1920 x 1080 120fps"
-              },
-              {
-                "value": "1920 x 1080 60fps",
-                "label": "1920 x 1080 60fps"
-              },
-              {
-                "value": "1920 x 1080 30fps",
-                "label": "1920 x 1080 30fps"
-              },
-              {
-                "value": "1280 x 720 120fps",
-                "label": "1280 x 720 120fps"
-              },
-              {
-                "value": "1280 x 720 60fps",
-                "label": "1280 x 720 60fps"
-              },
-              {
-                "value": "1280 x 720 30fps",
-                "label": "1280 x 720 30fps"
+                "key": "min",
+                "value": 3,
+                "msg": "Less than 3 characters"
               }
             ]
           },
@@ -727,14 +705,7 @@
             "label": "Off",
             "value": "Off",
             "class": "BlackboxRecordingIncar",
-            "selected": true,
-            "validationChangeFeilds": [
-              {
-                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
-                "value": "Off",
-                "todo" : "remove"
-              }
-            ]
+            "selected": true
           },
           {
 
@@ -744,21 +715,7 @@
             "value": "Continous",
             "hinttext": true,
             "hintvalue": "(As long as DVR is on, it is recording.)",
-            "selected": false,
-            "validationChangeFeilds": [
-              {
-                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
-                "type": "text",
-                "value": "Continous",
-                "todo" : "add",
-                "validation": [
-                  {
-                    "key": "required",
-                    "msg": "required"
-                  }
-                ]
-              }
-            ]
+            "selected": false
           },
           {
             
@@ -766,14 +723,7 @@
             "type": "radio",
             "label": "Only when recording in-car video to in-car disk",
             "value": "Only when recording in-car video to in-car disk",
-            "selected": false,
-            "validationChangeFeilds": [
-              {
-                "key": "CameraSetup/blackboxDirectory_rowId_Camera/TextBox",
-                "value": "Only when recording in-car video to in-car disk",
-                "todo" : "remove"
-              }
-            ]
+            "selected": false
           },
           {
             "key": "CameraSetup/blackboxDirectory_1_Camera/TextBox",
@@ -852,68 +802,68 @@
             "label": "Resolution",
             "value": "",
             "options": [
-              {"value":"320 X 240 @15FPS, 24 bpf",
-              "label":"320 X 240 @15FPS, 24 bpf"},
+              {"value":"320 X 240",
+              "label":"320 X 240"},
 
-              {"value":"320 x 240 @30FPS, 24 bpf",
-              "label":"320 x 240 @30FPS, 24 bpf"},
+              {"value":"320 x 240",
+              "label":"320 x 240"},
 
-              {"value":"640 x 480 @15FPS, 24bpf",
-              "label":"640 x 480 @15FPS, 24bpf"},
+              {"value":"640 x 480",
+              "label":"640 x 480"},
 
-              {"value":"640 x 480 @20FPS, 24bpf",
-              "label":"640 x 480 @20FPS, 24bpf"},
+              {"value":"640 x 480",
+              "label":"640 x 480"},
 
-              {"value":"640 x 480 @30FPS, 24bpf",
-              "label":"640 x 480 @30FPS, 24bpf"},
+              {"value":"640 x 480",
+              "label":"640 x 480"},
 
-              {"value":"720 x 480 @15FPS, 24bpf",
-              "label":"720 x 480 @15FPS, 24bpf"},
+              {"value":"720 x 480",
+              "label":"720 x 480"},
 
-              {"value":"720 x 480 @20FPS, 24bpf",
-              "label":"720 x 480 @20FPS, 24bpf"},
+              {"value":"720 x 480",
+              "label":"720 x 480"},
 
-              {"value":"720 x 480 @30FPS, 24bpf",
-              "label":"720 x 480 @30FPS, 24bpf"},
+              {"value":"720 x 480",
+              "label":"720 x 480"},
 
-              {"value":"768 x 432 @30FPS, 24bpf",
-              "label":"768 x 432 @30FPS, 24bpf"},
+              {"value":"768 x 432",
+              "label":"768 x 432"},
 
-              {"value":"848 x 480 @15FPS, 24bpf",
-              "label":"848 x 480 @15FPS, 24bpf"},
+              {"value":"848 x 480",
+              "label":"848 x 480"},
 
-              {"value":"848 x 480 @20FPS, 24bpf",
-              "label":"848 x 480 @20FPS, 24bpf"},
+              {"value":"848 x 480",
+              "label":"848 x 480"},
 
-              {"value":"848 x 480 @30FPS, 24bpf",
-              "label":"848 x 480 @30FPS, 24bpf"},
+              {"value":"848 x 480",
+              "label":"848 x 480"},
 
-              {"value":"1024 x 768 @15FPS, 24bpf",
-              "label":"1024 x 768 @15FPS, 24bpf"},
+              {"value":"1024 x 768",
+              "label":"1024 x 768"},
 
-              {"value":"1024 x 768 @20FPS, 24bpf",
-              "label":"1024 x 768 @20FPS, 24bpf"},
+              {"value":"1024 x 768",
+              "label":"1024 x 768"},
 
-              {"value":"1024 x 768 @30FPS, 24bpf",
-              "label":"1024 x 768 @30FPS, 24bpf"},
+              {"value":"1024 x 768",
+              "label":"1024 x 768"},
 
-              {"value":"1280 x 720 @15FPS, 24bpf",
-              "label":"1280 x 720 @15FPS, 24bpf"},
+              {"value":"1280 x 720",
+              "label":"1280 x 720"},
 
-              {"value":"1280 x 720 @20FPS, 24bpf",
-              "label":"1280 x 720 @20FPS, 24bpf"},
+              {"value":"1280 x 720",
+              "label":"1280 x 720"},
 
-              {"value":"1280 x 720 @30FPS, 24bpf",
-              "label":"1280 x 720 @30FPS, 24bpf"},
+              {"value":"1280 x 720",
+              "label":"1280 x 720"},
 
-              {"value":"1920 x 1080 @15FPS, 24bpf",
-              "label":"1920 x 1080 @15FPS, 24bpf"},
+              {"value":"1920 x 1080",
+              "label":"1920 x 1080"},
 
-              {"value":"1920 x 1080 @20FPS, 24bpf",
-              "label":"1920 x 1080 @20FPS, 24bpf"},
+              {"value":"1920 x 1080",
+              "label":"1920 x 1080"},
 
-              {"value":"1920 x 1080 @30FPS, 24bpf",
-              "label":"1920 x 1080 @30FPS, 24bpf"}
+              {"value":"1920 x 1080",
+              "label":"1920 x 1080"}
             ]
           },
           {
@@ -923,7 +873,7 @@
             "label": "Power Pin",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "key": "CameraSetup/device_rowId_Camera/Select",
                 "value": ["VeretosAnalog"],
                 "extraFieldDependency": "cameraDevice"
               }
@@ -946,7 +896,7 @@
             "label": "Index",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "key": "CameraSetup/device_rowId_Camera/Select",
                 "value": ["VeretosAnalog"],
                 "extraFieldDependency": "cameraDevice"
               }
@@ -959,8 +909,8 @@
             "label": "User Id",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "key": "CameraSetup/device_rowId_Camera/Select",
+                "value": ["IPCamera", "NF-21", "NF-22", "ZeroDarkZ"],
                 "extraFieldDependency": "cameraDevice"
               }
             ]
@@ -972,8 +922,8 @@
             "label": "Password",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "key": "CameraSetup/device_rowId_Camera/Select",
+                "value": ["IPCamera", "NF-21", "NF-22", "ZeroDarkZ"],
                 "extraFieldDependency": "cameraDevice"
               }
             ]
@@ -985,8 +935,8 @@
             "label": "Url",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "key": "CameraSetup/device_rowId_Camera/Select",
+                "value": ["IPCamera", "NF-21", "NF-22", "ZeroDarkZ"],
                 "extraFieldDependency": "cameraDevice"
               }
             ]
@@ -998,7 +948,7 @@
             "label": "Stream Port",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "key": "CameraSetup/device_rowId_Camera/Select",
                 "value": ["IPCamera"],
                 "extraFieldDependency": "cameraDevice"
               }
@@ -1011,7 +961,7 @@
             "label": "Secondary Camera Position",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "key": "CameraSetup/device_rowId_Camera/Select",
                 "value": ["USB", "VeretosAnalog"],
                 "extraFieldDependency": "cameraDevice"
               }
@@ -1024,8 +974,8 @@
             "label": "Bit Rate",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["IPCamera", "NF21", "NF22", "ZeroDarkZ"],
+                "key": "CameraSetup/device_rowId_Camera/Select",
+                "value": ["IPCamera", "NF-21", "NF-22", "ZeroDarkZ"],
                 "extraFieldDependency": "cameraDevice"
               }
             ]
@@ -1037,7 +987,7 @@
             "label": "Server Host Name",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
+                "key": "CameraSetup/device_rowId_Camera/Select",
                 "value": ["IPCamera"],
                 "extraFieldDependency": "cameraDevice"
               }
@@ -1050,8 +1000,8 @@
             "label": "Audio Enable",
             "depends": [
               {
-                "key": "CameraSetup/deviceType_rowId_Camera/Select",
-                "value": ["USB", "IPCamera", "VeretosAnalog", "NF21", "NF22", "ZeroDarkZ"],
+                "key": "CameraSetup/device_rowId_Camera/Select",
+                "value": ["USB", "IPCamera", "VeretosAnalog", "NF-21", "NF-22", "ZeroDarkZ"],
                 "extraFieldDependency": "cameraDevice"
               }
             ]
@@ -1066,7 +1016,7 @@
             "options": [],
             "depends": [
               {
-                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "key": "CameraSetup/audioEnable_rowId_Camera/CheckBox",
                 "value": [true]
               }
             ]
@@ -1078,7 +1028,7 @@
             "label": "Channel Number",
             "depends": [
               {
-                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "key": "CameraSetup/audioEnable_rowId_Camera/CheckBox",
                 "value": [true]
               }
             ]
@@ -1090,7 +1040,7 @@
             "label": "Volume",
             "depends": [
               {
-                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "key": "CameraSetup/audioEnable_rowId_Camera/CheckBox",
                 "value": [true]
               }
             ]
@@ -1102,7 +1052,7 @@
             "label": "Power Pin",
             "depends": [
               {
-                "key": "CameraSetup/audioEnable_rowId_Camera/TextBox",
+                "key": "CameraSetup/audioEnable_rowId_Camera/CheckBox",
                 "value": [true]
               }
             ]

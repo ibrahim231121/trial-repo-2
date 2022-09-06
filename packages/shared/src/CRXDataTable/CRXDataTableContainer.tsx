@@ -43,7 +43,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   //NOTE : Sticky Header code block please dont do the any changes on this block 
   const classes = useStyles();
   const [stickeyStickyScroll, setStickeyStickyScroll] = React.useState(0)
-
+  const [bodyCellWidth, setBodyCellWidth] = React.useState<any>()
   const scrolled50Ref:any = React.useRef();
   
   useEffect(() => {
@@ -99,6 +99,7 @@ useEffect(()=> {
 },[stickeyStickyScroll])
   return (
     <>
+    
    <TableContainer
       id="customizedStickyHeader"
       ref={tableHeader}
@@ -139,6 +140,7 @@ useEffect(()=> {
           showActionSearchHeaderCell={showActionSearchHeaderCell}
           showHeaderCheckAll={showHeaderCheckAll}
           checkAllPageWise={checkAllPageWise}
+          setBodyCellWidth={setBodyCellWidth}
         />
 
         </Table>
@@ -182,6 +184,7 @@ useEffect(()=> {
           showActionSearchHeaderCell={showActionSearchHeaderCell}
           showHeaderCheckAll={showHeaderCheckAll}
           checkAllPageWise={checkAllPageWise}
+          setBodyCellWidth={setBodyCellWidth}
         />
 
         <DataTableBody
@@ -198,6 +201,7 @@ useEffect(()=> {
             dragVisibility={dragVisibility}
 			      showCheckBoxesCol={showCheckBoxesCol}
             showActionCol={showActionCol}
+            bodyCellWidth={bodyCellWidth}
             selfPaging={selfPaging}
           />
       </Table>

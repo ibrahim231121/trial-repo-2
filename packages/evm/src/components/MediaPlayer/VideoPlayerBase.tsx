@@ -24,7 +24,10 @@ import { CRXButton, CRXTooltip, SVGImage, CRXToaster , CBXSwitcher} from "@cb/sh
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg";
+import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg"
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/rootReducer";
+import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import "./VideoPlayerResponsive.scss";
 
 var videoElements: any[] = [];
@@ -71,7 +74,6 @@ type DurationFinderModel = {
   setmaxminendpoint: any
   updateVideoSelection: boolean
   timelinedetail: Timeline[]
-  settimelinedetail: any
   timelineSyncHistory: TimelineSyncHistoryMain[]
   setTimelineSyncHistory: any
   timelineSyncHistoryCounter: number
@@ -79,6 +81,7 @@ type DurationFinderModel = {
   setBufferingArray: any
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
+  dispatch: any
 }
 type TimelineGeneratorModel = {
   data: any
@@ -86,7 +89,6 @@ type TimelineGeneratorModel = {
   duration: number
   updateVideoSelection: boolean
   timelinedetail: Timeline[]
-  settimelinedetail: any
   timelineSyncHistory: TimelineSyncHistoryMain[]
   setTimelineSyncHistory: any
   timelineSyncHistoryCounter: number
@@ -94,6 +96,7 @@ type TimelineGeneratorModel = {
   setBufferingArray: any
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
+  dispatch: any
 }
 
 
@@ -134,6 +137,7 @@ const videoSpeed = [
     "speed": 250,
   }
 ]
+
 function secondsToHms(d: number) {
   d = Number(d);
   let h = Math.floor(d / 3600);
@@ -152,7 +156,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
 async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel,) {
-  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess } = TimelineGeneratorModel
+  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
@@ -241,11 +245,11 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   if (!updateVideoSelection) {
     await setBufferingArray(bufferingArr)
   }
-  await settimelinedetail(rowdetail)
-  setupdateVideoSelection(false)
+  await dispatch(addTimelineDetailActionCreator(rowdetail));
+  setupdateVideoSelection(false);
 }
 async function Durationfinder(DurationFinderModel: DurationFinderModel) {
-  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, settimelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess } = DurationFinderModel
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch } = DurationFinderModel
 
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -276,14 +280,14 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     duration: finalduration,
     updateVideoSelection,
     timelinedetail,
-    settimelinedetail,
     timelineSyncHistory,
     setTimelineSyncHistory,
     timelineSyncHistoryCounter,
     setTimelineSyncHistoryCounter,
     setBufferingArray,
     setupdateVideoSelection,
-    isDetailPageAccess : isDetailPageAccess
+    isDetailPageAccess : isDetailPageAccess,
+    dispatch
   });
 }
 
@@ -318,7 +322,7 @@ const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?:
     negativeHandler: negativeHandler
   };
 }
-const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number, setfinalduration: any, settimelineduration: any, settimelinedetail: any) => {
+const updateTimelinesMaxDurations = async (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number, setfinalduration: any, settimelineduration: any, dispatch: any) => {
   let durationinformat = secondsToHms(maxTimelineDuration);
   setfinalduration(durationinformat.toString())
   settimelineduration(maxTimelineDuration);
@@ -332,7 +336,7 @@ const updateTimelinesMaxDurations = (maxTimelineDuration: number, tempTimelines:
     x.recording_end_point_ratio = recording_end_point_ratio;
     x.recordingratio = recordingratio;
   })
-  settimelinedetail(tempTimelines)
+  await dispatch(addTimelineDetailActionCreator(tempTimelines));
 }
 
 const VideoPlayerBase = (props: any) => {
@@ -372,7 +376,7 @@ const VideoPlayerBase = (props: any) => {
   ];
 
 
-
+  const dispatch = useDispatch();
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
   const [bufferingArrayFwRw, setBufferingArrayFwRw] = React.useState<any[]>([]);
   const [visibleThumbnail, setVisibleThumbnail] = useState<number[]>([]);
@@ -381,7 +385,6 @@ const VideoPlayerBase = (props: any) => {
   const [bookmarktime, setbookmarktime] = useState<number>();
   const [finalduration, setfinalduration] = useState<string>();
   const [timelineduration, settimelineduration] = useState(0);
-  const [timelinedetail, settimelinedetail] = React.useState<Timeline[]>([]);
 
 
   const [viewNumber, setViewNumber] = useState(1);
@@ -474,7 +477,6 @@ const VideoPlayerBase = (props: any) => {
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
   const volumeIcon = useRef<any>(null)
 
-
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
     if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
@@ -564,6 +566,7 @@ const VideoPlayerBase = (props: any) => {
   ///Data Array contain all detaill about File Url id we can use it as VideoData.
   //Delay need to created upto Start point of recording point of each video given in timelinedetail
   //video size max upto net duration
+  
   React.useEffect(() => {
     if (data.length > 0) {
       Durationfinder({
@@ -573,18 +576,22 @@ const VideoPlayerBase = (props: any) => {
         setmaxminendpoint,
         updateVideoSelection,
         timelinedetail,
-        settimelinedetail,
         timelineSyncHistory,
         setTimelineSyncHistory,
         timelineSyncHistoryCounter,
         setTimelineSyncHistoryCounter,
         setBufferingArray,
         setupdateVideoSelection,
-        isDetailPageAccess: props.history !== undefined ? false : true
+        isDetailPageAccess: props.history !== undefined ? false : true,
+        dispatch: dispatch
       });
       setLoading(true)
     }
   }, [data]);
+
+  const timelinedetail: Timeline[] = useSelector(
+    (state: RootState) => state.timelineDetailReducer.data
+  );
 
   React.useEffect(() => {
     if (editBookmarkForm) {
@@ -639,7 +646,7 @@ const VideoPlayerBase = (props: any) => {
   }, [updateVideoSelection]);
 
   React.useEffect(() => {
-    if (timelinedetail) {
+    if (timelinedetail && timelinedetail.length>0) {
       // work for multiview timeline
       let count =0;
       timelinedetail.forEach((x: any) => {
@@ -658,14 +665,20 @@ const VideoPlayerBase = (props: any) => {
       var tempbookmarksnotesarray: any[] = [];
       timelinedetail.forEach((x:Timeline) => 
         {x.enableDisplay && x.bookmarks.forEach((y:any)=>
-          {y.timerValue = x.recording_start_point + (y.position/1000);
-          y.objtype = "Bookmark";
-          tempbookmarksnotesarray.push(y);}
+          {
+            let tempData: any = JSON.parse(JSON.stringify(y));
+            tempData.timerValue = x.recording_start_point + (y.position/1000);
+            tempData.objtype = "Bookmark";
+            tempbookmarksnotesarray.push(tempData);
+          }
         )
         x.enableDisplay && x.notes.forEach((y:any)=> 
-          {y.timerValue = x.recording_start_point + (y.position/1000);
-          y.objtype = "Note";
-          tempbookmarksnotesarray.push(y);}
+          {
+            let tempData: any = JSON.parse(JSON.stringify(y));
+            tempData.timerValue = x.recording_start_point + (y.position/1000);
+            tempData.objtype = "Note";
+            tempbookmarksnotesarray.push(tempData);
+          }
         )}
       )
       setBookmarksNotesPopup(tempbookmarksnotesarray);
@@ -694,14 +707,17 @@ const VideoPlayerBase = (props: any) => {
     })
   };
 
-  const screenClick = (view: number, event: any) => {
-    var tempTimelines = [...timelinedetail];
+  const screenClick = async (view: number, event: any) => {
+    var tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
     var disableTimline = tempTimelines.filter((x: any) => x.indexNumberToDisplay > view);
     disableTimline.forEach((x: any) => {
       x.indexNumberToDisplay = 0;
       x.enableDisplay = false;
     })
-    setupdateVideoSelection(true);
+    if(disableTimline.length>0){
+      await dispatch(addTimelineDetailActionCreator(tempTimelines));
+      setupdateVideoSelection(true);
+    }
     return setViewNumber(view);
   }
 
@@ -1283,7 +1299,7 @@ const VideoPlayerBase = (props: any) => {
 
 
 
-  const AdjustTimeline = (event: any, timeline: any, mode: number) => {
+  const AdjustTimeline = async (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
 
     var timeLineHover: any = document.querySelector("#SliderControlBar");
@@ -1329,7 +1345,7 @@ const VideoPlayerBase = (props: any) => {
       tempTimeline.startdiff = startdiff;
       tempTimeline.recordingratio = recordingratio;
       tempTimeline.timeOffset += ttt * 1000;
-      settimelinedetail(tempTimelines);
+      await dispatch(addTimelineDetailActionCreator(tempTimelines));
 
       let timelineSyncHistoryTemp = [...timelineSyncHistory];
       timelineSyncHistoryTemp = timelineSyncHistoryTemp.slice(0, timelineSyncHistoryCounter + 1);
@@ -1350,12 +1366,12 @@ const VideoPlayerBase = (props: any) => {
       setTimelineSyncHistoryCounter(timelineSyncHistoryTemp.length - 1);
 
       if (maxTimelineDuration !== timelineduration) {
-        updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay, setfinalduration, settimelineduration, settimelinedetail)
+        await updateTimelinesMaxDurations(maxTimelineDuration, tempTimelines, tempTimeline.indexNumberToDisplay, setfinalduration, settimelineduration, dispatch)
       }
     }
   }
 
-  const RevertToOriginal = () => {
+  const RevertToOriginal = async () => {
     var tempTimelines = [...timelinedetail];
     var maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
     var maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
@@ -1378,7 +1394,7 @@ const VideoPlayerBase = (props: any) => {
       x.recordingratio = recordingratio;
       x.timeOffset -= x.timeOffset;
     })
-    settimelinedetail(tempTimelines);
+    await dispatch(addTimelineDetailActionCreator(tempTimelines));
     setTimelineSyncHistoryCounter(0);
     toasterMsgRef.current.showToaster({
       message: "Times reverted to original", variant: "Success", duration: 5000, clearButtton: true
@@ -1596,9 +1612,11 @@ const VideoPlayerBase = (props: any) => {
   useEffect(() => {
     let layoutContent = document?.querySelector("._Player_Layout_Menu_");
     let PlayerRight = document?.getElementById("crx_video_player");
-    let x = layoutContent ? PlayerRight?.appendChild(layoutContent) : null;
+    if(layoutContent) {
+       PlayerRight?.appendChild(layoutContent)
+    }
    
-  })
+  },[])
 
   return (
     <>
@@ -1632,7 +1650,6 @@ const VideoPlayerBase = (props: any) => {
                 data={data}
                 isPlaying={isPlaying}
                 timelinedetail={timelinedetail}
-                settimelinedetail={settimelinedetail}
                 viewNumber={viewNumber}
                 mapEnabled={mapEnabled}
                 videoHandlers={videoHandlers}
@@ -1648,6 +1665,7 @@ const VideoPlayerBase = (props: any) => {
                 gpsJson={gpsJson}
                 openMap={props.openMap}
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
+                toasterMsgRef={toasterMsgRef}
               />
 
               <div className="ClickerIcons">
@@ -2055,7 +2073,6 @@ const VideoPlayerBase = (props: any) => {
             bookmarkAssetId={bookmarkAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
-            settimelinedetail={settimelinedetail}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
@@ -2069,7 +2086,6 @@ const VideoPlayerBase = (props: any) => {
             noteAssetId={noteAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
-            settimelinedetail={settimelinedetail}
           />}
 
           <TimelineSyncInstructionsModal
@@ -2089,7 +2105,6 @@ const VideoPlayerBase = (props: any) => {
                 setBookmarkNotePopupArrObj={setBookmarkNotePopupArrObj}
                 EvidenceId={EvidenceId}
                 timelinedetail={timelinedetail}
-                settimelinedetail={settimelinedetail}
                 toasterMsgRef={toasterMsgRef} />
               )}
             )}

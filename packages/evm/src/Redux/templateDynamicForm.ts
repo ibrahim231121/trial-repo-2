@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
-import { CaptureDevice,Station } from '../utils/Api/models/StationModels';
+import { Station } from '../utils/Api/models/StationModels';
+import { DeviceType } from '../utils/Api/models/UnitModels';
 import { CATEGORIES_GET_ALL, DATA_RETENTION_POLICIES_GET_ALL} from '../utils/Api/url'
 
 
@@ -37,11 +38,11 @@ export const getCategoriesAsync: any = createAsyncThunk(
     }
 );
 
-export const getCaptureDevicesAsync: any = createAsyncThunk(
-    'getAllCaptureDevicesAsync',
+export const getDeviceTypesAsync: any = createAsyncThunk(
+    'getDeviceTypesAsync',
     async () => {
-        return await UnitsAndDevicesAgent.getAllCaptureDevices()
-        .then((response:CaptureDevice[]) => response)
+        return UnitsAndDevicesAgent.getAllDeviceTypes()
+        .then((response:DeviceType[]) => response)
         .catch((error: any) => {
             console.error(error.response.data);
         });
@@ -62,15 +63,15 @@ export const getStationsAsync: any = createAsyncThunk(
 
 export const unitTemplateSlice = createSlice({
     name: 'unitTemplateForm',
-    initialState: { retentionPolicy: [], categories: [], stations: [], captureDevices: [] },
+    initialState: { retentionPolicy: [], categories: [], stations: [], deviceTypes: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getRetentionPolicyInfoAsync.fulfilled, (state: any, { payload }) => {
             state.retentionPolicy = payload;
         }).addCase(getCategoriesAsync.fulfilled, (state: any, { payload }) => {
             state.categories = payload;
-        }).addCase(getCaptureDevicesAsync.fulfilled, (state: any, { payload }) => {
-            state.captureDevices = payload;
+        }).addCase(getDeviceTypesAsync.fulfilled, (state: any, { payload }) => {
+            state.deviceTypes = payload;
         }).addCase(getStationsAsync.fulfilled, (state: any, { payload }) => {
             state.stations = payload;
         })

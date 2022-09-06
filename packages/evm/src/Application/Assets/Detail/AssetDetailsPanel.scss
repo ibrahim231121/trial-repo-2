@@ -157,6 +157,7 @@
                                     min-height: auto;
                                     margin-bottom: 9px;
                                     width: 100%;
+                                    background: transparent;
                                     
                                 }
                                 .removeOutLine {
@@ -175,6 +176,14 @@
                                         padding: 5px 10px
                                     }
                                 }
+                                button {
+                                    border: none;
+                                    color: #333333;
+                                }
+                            }
+                            fieldset {
+                                outline: none;
+                                border: none;
                             }
                         }
                         ._side_panel_bookmark_menu {

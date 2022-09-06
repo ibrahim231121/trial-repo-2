@@ -353,7 +353,9 @@ const StationDetail: React.FC = () => {
       policies: [
         {
           id: values.PolicyId,
-          retentionPolicyId: Number(values.RetentionPolicy?.id),
+          retentionPolicyId:{
+            CMTFieldValue: Number(values.RetentionPolicy?.id)
+          },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
           configurationTemplates: configurationTemplates?? []
@@ -678,8 +680,9 @@ const StationDetail: React.FC = () => {
         validationSchema={stationValidationSchema}
         onSubmit={onSubmit}
       >
+        
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
-          
+
           <>
             <Form>
               <div className="ManageStation  switchLeftComponents ManageStationUi">
@@ -849,7 +852,7 @@ const StationDetail: React.FC = () => {
                                     </div>
                                   </CRXColumn>
                                   
-                                  {/* <CRXColumn
+                                  <CRXColumn
                                     className={
                                       "stationDetailCol " +
                                       ` ${errors.Passcode && touched.Passcode == true
@@ -868,7 +871,7 @@ const StationDetail: React.FC = () => {
                                         {t("Pass_Code")} <span>*</span>
                                       </label>
                                       <div className="CrxStationError">
-                                        <Field id="passcode" name="Passcode" component={InputShowHide} /> */}
+                                        <Field id="passcode" name="Passcode" component={InputShowHide} /> 
                                         {/* TODO: Remove Below Commented Code, Leaving It For Visual Design */}
                                         {/* <Field id="passcode" name="Passcode"  />
                                         {errors.Passcode !== undefined &&
@@ -878,10 +881,10 @@ const StationDetail: React.FC = () => {
                                             {errors.Passcode}
                                             {setDisplayStationError("errorBrdr")}
                                           </div>
-                                        ) : null} */}
-                                      {/* </div>
+                                        ) : null}  */}
+                                      </div>
                                     </div>
-                                  </CRXColumn> */}
+                                  </CRXColumn>
 
 
                             </div>

@@ -10,34 +10,50 @@ interface popoverProps  {
     minWidth? : any, 
     title? : string,
     maxWidth? : any
-    
+    link? : any,
+    middle? : boolean
 }
 
 
-const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth} : popoverProps) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
+const CRXMiddleTruncationPopover = ({content, id, link, middle, isPopover, minWidth, maxWidth} : popoverProps) => {
+    const [anchorEl, setAnchorEl] = React.useState(false);
+    let open = Boolean(anchorEl);
     const middleText = content.toString().length;
     const [truncationButton, setTruncationBtn] = useState();
     const popoverRefs = useRef(content)
+    
+    const truncationPopoverClose = (e : any) => {
+       
+        if (popoverRefs.current && popoverRefs.current.contains(e.target as HTMLElement)) {
+            return;
+          }
+          setAnchorEl(false);
+    };
 
-    const truncationPopoverOpen = (e : any) => {
-        
-        setAnchorEl(e.currentTarget)
-        
+    const truncationPopoverOpen = (_ : any) => {
+        setAnchorEl((prevOpen) => !prevOpen)
     }
 
-    const truncationPopoverClose = () => {
-        setAnchorEl(null);
-        
-    };
     
+    const prevOpen = React.useRef(anchorEl);
+
+    React.useEffect(() => {
+        if (prevOpen.current === true && anchorEl === false) {
+            
+            popoverRefs.current!.focus();
+        }
+
+        prevOpen.current = anchorEl;
+        
+    }, [anchorEl]);
+
     const truncate = (fullStr:any, strLen:any) => {
         
         const dataLength = fullStr.toString().length;
 
-        if (dataLength <= strLen) return fullStr;
-        
+        if (dataLength <= strLen) return  setTruncationBtn(fullStr);
+       
+       
         var separator:any = separator || '...';
         var sepLen = separator.length,
             charsToShow = strLen - sepLen,
@@ -50,8 +66,12 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             
         return setTruncationBtn(middleElip)
     };
+
     useEffect(() => {
-        truncate(content, 22)
+        if(middle === true) {
+            truncate(content, 25)
+        }
+       
     },[])
     
     const useGapStyles = makeStyles({
@@ -62,8 +82,9 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             marginBottom: "2rem",
             overflowY: "auto",
             position: "absolute",
-            top: "-152px!important" as any,
-            minHeight: "118px",
+            top: "-73px !important" as any,
+            minHeight: "auto",
+            maxHeight: "118px",
             left: "-20px!important" as any,
             
         }
@@ -72,7 +93,7 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
     const classespop = useGapStyles()
     return (
         <div className='_truncation_Popover'>
-        {isPopover &&  (isPopover == true && middleText > 20) ?   
+        {isPopover &&  (isPopover == true && middleText > 25 && middle === true) ?   
             <div className='dataMidTruncation _group_truncation_text '>
             <div className='_truncation_text' 
                 onMouseEnter={(e : any) => truncationPopoverOpen(e)} 
@@ -88,17 +109,24 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
             {"#" + truncationButton}
 
             </div>
-            
-            
             </div>
-            : <div className='_withoutTruncation _group_truncation_text ' ref={popoverRefs}>{"#" + content}</div> 
+            : <div
+            onMouseEnter={(e : any) => truncationPopoverOpen(e)}  
+            style={{
+                minWidth :  minWidth + "px", 
+                maxWidth : maxWidth + "px",
+                textDecoration : `${open === true ?  "underline" : "" }`,
+                color : `${open === true ? "#FF6E20" : "#C34400"}`,
+                cursor : "pointer"
+            }}
+            className='_withoutTruncation _group_truncation_text ' ref={popoverRefs}>{ link && link}</div> 
         }
         <ClickAwayListener onClickAway={truncationPopoverClose}>
         <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={truncationPopoverClose}
+            id={"popover_" + id}
+            open={anchorEl}
+            anchorEl={popoverRefs.current}
+            onClose={(e : any) => truncationPopoverClose(e)}
             marginThreshold={16}
             disablePortal
             hideBackdrop={true}
@@ -106,12 +134,13 @@ const CRXMiddleTruncationPopover = ({content, id, isPopover, minWidth, maxWidth}
                 ...classespop
             }}
             container={document.body}
+            anchorPosition={{top : 0, left : 0}}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
               }}
               transformOrigin={{
-                vertical: "bottom",
+                vertical: "top",
                 horizontal: 'center',
               }}
             className="crx_middle_popover"

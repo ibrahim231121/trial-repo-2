@@ -12,6 +12,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   //   onResizeRow,
   showCheckBoxesCol,
   showActionCol,
+  setBodyCellWidth
 }) => {
   const classes = useStyles();
   const { t } = useTranslation<string>();
@@ -21,27 +22,26 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 
   React.useEffect(() => {
     const divWidth = document.getElementsByClassName("getWidth");
-   
-
-    setClientWidth(divWidth);
+      setClientWidth(divWidth);
   }, []);
 
-  // React.useEffect(() => {
-  //  
-  // });
 
-  //
-  //
+  
+  
 
   let finalWidth =
     resizeWidth &&
     resizeWidth.deltaX + clientWidth[resizeWidth.colIdx + 3].clientWidth + "px";
 
- 
+    React.useEffect(() => {
+      
+      setBodyCellWidth({finalWidth, resizeWidth })
+    },[resizeWidth]);
+  
 
   //
 
-  const resizeRow = (e: { colIdx: number; deltaX: number }) => {
+  const resizeRow = (e: { colIdx: number; deltaX: number, colID : any }) => {
    
     setResizeWidth(e);
   };
@@ -196,6 +196,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                     //Using deltax.x because of consistant value in x direction (drag) divide by 3 because of react dragable doc says.
                     colIdx,
                     deltaX: deltaX.x / 2,
+                    colID : headCells[colIdx].id
                   });
                 }}
                 onStop={() => {

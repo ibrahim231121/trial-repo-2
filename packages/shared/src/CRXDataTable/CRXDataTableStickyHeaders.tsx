@@ -32,7 +32,7 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
     onSetCheckAll,
     checkAllPageWise,
     initialRows,
-   
+    setBodyCellWidth
 }) => {
     return (
         <>
@@ -54,6 +54,7 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
              dragVisibility={dragVisibility}
              showCheckBoxesCol={showCheckBoxesCol}
              showActionCol={showActionCol}
+             setBodyCellWidth={setBodyCellWidth}
            />
    
          

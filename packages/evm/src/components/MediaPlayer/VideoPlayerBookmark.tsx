@@ -8,6 +8,8 @@ import { CRXConfirmDialog } from '@cb/shared';
 import { Asset, Bookmark, File as EvidenceFile } from '../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { AddFilesToFileService } from '../../GlobalFunctions/FileUpload';
+import { useDispatch } from 'react-redux';
+import { addTimelineDetailActionCreator } from '../../Redux/VideoPlayerTimelineDetailReducer';
 declare const window: any;
 
 type VideoPlayerSnapshotProps = {
@@ -23,11 +25,10 @@ type VideoPlayerSnapshotProps = {
     bookmarkAssetId?: number;
     toasterMsgRef: any;
     timelinedetail: any;
-    settimelinedetail: any;
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,settimelinedetail} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -40,6 +41,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         SuccessType: "",
     });
     const [formpayloadDescription, setFormPayloadDescription] = React.useState<string>(editBookmarkForm ? bookmark.description:"");
+    const dispatch = useDispatch();
 
     const [bookmarkobj, setbookmarkobj] = React.useState<any>({
         assetId: editBookmarkForm ? bookmarkAssetId : AssetData.dataId,
@@ -64,13 +66,13 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
 
     React.useEffect(() => {
         if(isSuccess.success){
-            var tempData = [...timelinedetail];
+            var tempData = JSON.parse(JSON.stringify(timelinedetail));
             if(isSuccess.SuccessType == "Add"){
                 tempData.forEach((x:any)=> 
                             {if(x.dataId == bookmarkobj.assetId){
                                 x.bookmarks = [...x.bookmarks, bookmarkobj]
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setIsSuccess({...isSuccess, success: false, SuccessType: ""});
                 if(!isSnapshotRequired){
                     setOpenModal(false);
@@ -83,7 +85,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                                 x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
                                 x.bookmarks = [...x.bookmarks, bookmarkobj];
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
                 setopenBookmarkForm(false);
                 seteditBookmarkForm(false);
@@ -94,7 +96,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                             {if(x.dataId == bookmarkobj.assetId){
                                 x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkobj.id);
                             }})
-                settimelinedetail([...tempData]);
+                dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
                 setopenBookmarkForm(false);
                 seteditBookmarkForm(false);

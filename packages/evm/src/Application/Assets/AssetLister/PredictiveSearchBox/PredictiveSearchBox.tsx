@@ -71,8 +71,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
                 "masterAsset.assetName",
                 "categories",
                 "cADId",
-                "asset.recordedBy",
-                "asset.unit"
+                "asset.unit",
+                "asset.owners"
               ],
             },
           },
@@ -115,7 +115,7 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
       <EditableSelect
         id="combo-box-demo"
         options={outCome}
-        placeHolder={t("Search_assets_by_ID#_case#_CAD#_categories_etc.")}
+        placeHolder={t("Search_assets_by_ID#_case#_CAD#_categories_owners_etc")}
         onChange={onChangeAutoComplete}
         onInputChange={handleOnChange}
         clearText={() => setInputValue("")}
