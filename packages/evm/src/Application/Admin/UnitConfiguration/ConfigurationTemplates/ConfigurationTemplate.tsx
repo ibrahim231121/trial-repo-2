@@ -672,7 +672,14 @@ const ConfigurationTemplates: React.FC = () => {
                   {createTemplateDropdown.map((x, y) => {
                     return (
                       <MenuItem >
-                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, state: { id: y, isedit: false, type: x.name, deviceId: x.id, deviceType: x.deviceType } }}>
+                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, 
+                                    state: { id: y, 
+                                             isedit: false, 
+                                             type: x.name, 
+                                             deviceId: x.id, 
+                                             deviceType: x.deviceType 
+                                           } 
+                                  }}>
                           <div style={{ backgroundColor: '#FFFFFF' }}>{t("Create")} {x.name}</div>
                         </Link>
                       </MenuItem>
