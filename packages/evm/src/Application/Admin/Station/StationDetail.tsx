@@ -951,7 +951,7 @@ const StationDetail: React.FC = () => {
                             >
                               <div className="CBX-input passwordStationField">
                                 <label htmlFor="password">
-                                  {t("Password")}
+                                  {t("SSID_Password")}
                                 </label>
                                 <div className="CrxStationError">
                                   <Field id="password" name="Password" component={InputShowHide} />

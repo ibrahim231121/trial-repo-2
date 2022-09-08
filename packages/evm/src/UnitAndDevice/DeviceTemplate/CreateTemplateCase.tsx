@@ -143,6 +143,9 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
           if (!x.options.includes(y.value)) {
             y.hidden = true;
           }
+          else{
+            y.hidden = false;
+          }
         })
       }
     }
@@ -267,11 +270,11 @@ export const CreateTempelateCase = (props: any) => {
                   </div>
 
 
-                  {formObj.hinttext == true ? (
+                  {formObj.hintText ? (
                     <CRXTooltip
                       className="CRXTooltip_form"
                       iconName="fas fa-info-circle"
-                      title={t(formObj.hintvalue)}
+                      title={t(formObj.hintText)}
                       placement="right"
                     />
                   ) : null}
@@ -302,10 +305,10 @@ export const CreateTempelateCase = (props: any) => {
                 id={formObj.id}
                 type={"time"}
               />
-              {formObj.hinttext == true ? (
+              {formObj.hintText ? (
                 <CRXTooltip
                   iconName="fas fa-info-circle"
-                  title={t(formObj.hintvalue)}
+                  title={t(formObj.hintText)}
                   placement="right"
                 />
               ) : null}
@@ -355,10 +358,10 @@ export const CreateTempelateCase = (props: any) => {
 
                       </label>
 
-                      {formObj.hinttext == true ? (
+                      {formObj.hintText ? (
                         <CRXTooltip
                           iconName="fas fa-info-circle"
-                          title={t(formObj.hintvalue)}
+                          title={t(formObj.hintText)}
                           placement="right"
                         />
                       ) : null}
@@ -419,10 +422,10 @@ export const CreateTempelateCase = (props: any) => {
                   </Field>
 
                   <span className='UicustomMultiHint'>
-                    {formObj.hinttext == true ? (
+                    {formObj.hintText ? (
                       <CRXTooltip
                         iconName="fas fa-info-circle"
-                        title={t(formObj.hintvalue)}
+                        title={t(formObj.hintText)}
                         placement="right"
                       />
                     ) : null}
@@ -491,10 +494,10 @@ export const CreateTempelateCase = (props: any) => {
                     </div>
                   )}
                 />
-            {formObj.hinttext == true ? (
+            {formObj.hintText ? (
               <CRXTooltip
                 iconName="fas fa-info-circle"
-                title={t(formObj.hintvalue)}
+                title={t(formObj.hintText)}
                 placement="right"
               />) : (<></>)}
           </div>
@@ -532,13 +535,13 @@ export const CreateTempelateCase = (props: any) => {
                           }}}
                       />
                       <span className="checkmark" ></span>
-                      <p className="checkHelperText">{t(formObj.checkHelperText)}</p>
+                      <p className="checkHelperText">{t(formObj.belowFieldText)}</p>
                     </label>
                     <div>{formObj.checkBoxText ? <p>{t(formObj.checkBoxText)}</p> : ''}</div>
-                    {formObj.hinttext == true ? (
+                    {formObj.hintText ? (
                       <CRXTooltip
                         iconName="fas fa-info-circle"
-                        title={t(formObj.hintvalue)}
+                        title={t(formObj.hintText)}
                         placement="right"
                       />
                     ) : null}
@@ -566,11 +569,11 @@ export const CreateTempelateCase = (props: any) => {
           <div className={touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError" : "NumberField"}>
             <div className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiNumberSelectorDepend' : ''}>
               <div
-                className={`${formObj.seconds === false ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
+                className={`${(formObj.postFieldText && formObj.postFieldText == "minutes") ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
 
               >
                 {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1>}
-                <div className={formObj.checkHelperText ? 'UiNumberSelectorMain checkHelperTextMain ' : 'UiNumberSelectorMain'}>
+                <div className={formObj.belowFieldText ? 'UiNumberSelectorMain checkHelperTextMain ' : 'UiNumberSelectorMain'}>
                   <div className="UiNumberSelectorLeft ">
                     <label>{t(formObj.label)}
                       <label>
@@ -578,30 +581,28 @@ export const CreateTempelateCase = (props: any) => {
                       </label>
                     </label>
                   </div>
-                  <div className={` ${formObj.hinttext === true ? 'UiNumberSelectorRight ' : "UiNumberSelectorRight UiNumberSelectorNoHint"}`}>
-                    <span className={formObj.volts ? "voltsDepended" : ""} >
+                  <div className={` ${formObj.hintText ? 'UiNumberSelectorRight ' : "UiNumberSelectorRight UiNumberSelectorNoHint"}`}>
+                    <span className={(formObj.postFieldText && formObj.postFieldText == "volts") ? "voltsDepended" : ""} >
                       <Field
                         name={formObj.key}
                         id={formObj.id}
                         type={formObj.type}
                       />
                       <label className="timeShow">
-                        {formObj.seconds === true
-                          ? t("seconds")
-                          : formObj.volts ? t("volts") : t("minutes")}
+                        {formObj.postFieldText ? t(formObj.postFieldText) : ""}
                       </label>
-                      <p className="checkSelectorText">{t(formObj.checkHelperText)}</p>
-                      {formObj.hinttext == true ? (
+                      <p className="checkSelectorText">{t(formObj.belowFieldText)}</p>
+                      {formObj.hintText ? (
                         <CRXTooltip
                           iconName="fas fa-info-circle"
-                          title={t(formObj.hintvalue)}
+                          title={t(formObj.hintText)}
                           placement="right"
                         />
                       ) : null}
                       <ErrorMessage
                         name={formObj.key}
                         render={(msg) => (
-                          <div className={formObj.checkHelperText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
+                          <div className={formObj.belowFieldText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
                             <i className="fas fa-exclamation-circle numberIconCircle"></i> {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
 
                           </div>

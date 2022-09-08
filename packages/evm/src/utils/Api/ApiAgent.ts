@@ -34,8 +34,7 @@ import Cookies from 'universal-cookie';
 import {UsersInfo,UserGroups,GroupUserCount, UserList, User, Module, GroupList} from './models/UsersAndIdentitiesModel'
 import { 
     ConfigurationTemplate, 
-    ConfigurationTemplateLogs, 
-    DefaultConfigurationTemplate, 
+    ConfigurationTemplateLogs,
     DefaultUnitTemplate, 
     DeviceConfigurationTemplate, 
     DeviceType, 
@@ -192,7 +191,7 @@ export const UnitsAndDevicesAgent = {
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo"+url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
     updateStation: (url: string, body: Station) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
-    getTemplateConfiguration: (url: string) => requests.get<DefaultConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url, config),
+    getTemplateConfiguration: (url: string) => requests.get<ConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url, config),
     getAllTemplate: () => requests.get<ConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates?Size=100&Page=1", config),
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),

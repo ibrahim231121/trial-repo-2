@@ -288,7 +288,7 @@ const CreateUserForm = () => {
           className='crx-gente-field crx-gente-field-pass'
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
-          label={t("Password")}
+          label={t("SSID_Password")}
           type='password'
           required={true}
           value={password}

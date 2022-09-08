@@ -127,19 +127,6 @@ export interface UnitTemp {
     stationId: string
 }
 
-export interface DefaultConfigurationTemplate {
-    templateName: string,
-    templateData: TemplateData[]
-}
-
-export interface TemplateData {
-    key: string,
-    value: string,
-    fieldType: string,
-    configGroup: string,
-    sequence: number
-}
-
 export interface DeviceConfigurationTemplate {
     recId: number,
     name: string,

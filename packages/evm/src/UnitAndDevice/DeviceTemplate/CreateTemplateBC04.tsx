@@ -22,7 +22,7 @@ import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync, getD
 import { CreateTempelateCase } from "./CreateTemplateCase";
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { ConfigurationTemplate, DefaultConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
+import { ConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
 import { CaptureDevice } from "../../utils/Api/models/StationModels";
 
@@ -174,7 +174,7 @@ const CreateTemplate = (props: any) => {
     dispatch(getStationsAsync());
     if (historyState.isedit || historyState.isclone) {
       dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
-      loadData(historyState.name);
+      loadData(historyState.id);
     }
     else {
       setDataFetched(true);
@@ -223,13 +223,7 @@ const CreateTemplate = (props: any) => {
       if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
         x.options.push(...retentionOptions)
       }
-      if (x.key == "unitSettings/blackboxUploadPolicy/Select") {
-        x.options = [];
-        x.options.push(...retentionOptions)
-      }
-    })
-    FormSchema["Primary Device"].map((x: any, y: number) => {
-      if (x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1) {
+      if (x.key == "unitSettings/blackboxRetentionPolicy/Select" && x.options.length == 1) {
         x.options.push(...retentionOptions)
       }
     })
@@ -259,17 +253,21 @@ const CreateTemplate = (props: any) => {
 
   const setCameraDeviceDropdown = () => {
     var captureDevicesOptions: any = [];
-    deviceTypes.filter((x:DeviceType) => !x.isLogicalDevice && (x.category == "IPCamera" || x.category == "Video" || x.category == "Audio")).map((x: DeviceType) => {
+    deviceTypes.filter((x:DeviceType) => x.name !== "Incar" && (x.category == "IPCamera" || x.category == "Video" || x.category == "Audio" || x.category == "DVR")).map((x: DeviceType) => {
       captureDevicesOptions.push({ value: x.id, label: x.name, category: x.category })
     })
     if (historyState.deviceType == "Incar") {
       let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
       cameraDevice.options = [];
-      cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio"))
+      cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
       audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+
+      let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/Device/Select")
+      devicePrimaryDevice.options = [];
+      devicePrimaryDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "DVR"))
     }
     setFormSchema(FormSchema);
   }
@@ -318,13 +316,13 @@ const CreateTemplate = (props: any) => {
         let cameraFeildArrayCounterValue: number = 1;
         var counter = 1;
         for (let e0 of dataOfUnit) {
-          //configGroup/key/fieldType
+          //group/key/valueType
           let val: any;
-          if (e0.fieldType == "NumberBox")
+          if (e0.valueType == "NumberBox")
             val = parseInt(e0.value);
-          else if (e0.fieldType == "CheckBox")
+          else if (e0.valueType == "CheckBox")
             val = e0.value.toLowerCase() === "true" ? true : false;
-          else if (e0.fieldType == "Multiselect")
+          else if (e0.valueType == "Multiselect")
             val = (e0.value ?? "").split(',')
           else
             val = e0.value;
@@ -337,11 +335,11 @@ const CreateTemplate = (props: any) => {
 
           var keySplitted = e0.key.split('_');
           if (keySplitted.length > 1) {
-            var key = e0.configGroup + "/" + e0.key + "/" + e0.fieldType;
-            var findingKey = e0.configGroup + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.fieldType;
-            var parentKey = e0.configGroup + "/" + keySplitted[2] + "/" + "FieldArray";
+            var key = e0.group + "/" + e0.key + "/" + e0.valueType;
+            var findingKey = e0.group + "/" + keySplitted[0] + "__" + keySplitted[2] + "/" + e0.valueType;
+            var parentKey = e0.group + "/" + keySplitted[2] + "/" + "FieldArray";
 
-            var feildObj = FormSchema[e0.configGroup]
+            var feildObj = FormSchema[e0.group]
               .find((x: any) => x.key == parentKey)
             ["feilds"]
             [0]
@@ -378,7 +376,7 @@ const CreateTemplate = (props: any) => {
               }
               else {
                 if (feildObj.type == "radio") {
-                  var feildObjArr = FormSchema[e0.configGroup]
+                  var feildObjArr = FormSchema[e0.group]
                     .find((x: any) => x.key == parentKey)
                   ["feilds"]
                   [0]
@@ -405,7 +403,7 @@ const CreateTemplate = (props: any) => {
           }
           }
           editT1.push({
-            key: e0.configGroup + "/" + e0.key + "/" + e0.fieldType,
+            key: e0.group + "/" + e0.key + "/" + e0.valueType,
             value: val
           })
         }
@@ -511,12 +509,12 @@ const CreateTemplate = (props: any) => {
 
   }, [dataFetched]);
 
-  const loadData = async (templateName:string) => {
-    const url = `/ConfigurationTemplates/GetTemplateConfigurationTemplate?configurationTemplateName=${templateName}`;
+  const loadData = async (id:number) => {
+    const url = `/ConfigurationTemplates/${id}`;
     UnitsAndDevicesAgent.getTemplateConfiguration(url)
-    .then((response:DefaultConfigurationTemplate) => 
+    .then((response:ConfigurationTemplate) => 
     {
-      setUnitData(response.templateData) // If we get this it puts in the values for the forms !!!!
+      setUnitData(response.fields) // If we get this it puts in the values for the forms !!!!
       setDataFetched(true)
       if (historyState.isclone !== true) {
         setEditCase(true)
@@ -656,7 +654,7 @@ const CreateTemplate = (props: any) => {
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
         targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
-        loadData(templateNames);
+        loadData(historyState.id);
         dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNames }));
         resetForm();
       })
@@ -729,14 +727,12 @@ const CreateTemplate = (props: any) => {
           }
         >
           <MenuItem onClick={cloneTemplate}>
-          <Link to={{ pathname: '/admin/unitanddevices/createtemplate/template', state: { id: historyState.id, isclone: true, type: historyState.name, deviceId: historyState.deviceId, deviceType: historyState.deviceType } }}>
-              <div className="crx-meu-content groupingMenu crx-spac">
-                <div className="crx-menu-icon">
-                  <i className="far fa-copy"></i>
-                </div>
-                <div className="crx-menu-list">{t("Clone_template")}</div>
+            <div className="crx-meu-content groupingMenu crx-spac">
+              <div className="crx-menu-icon">
+                <i className="far fa-copy"></i>
               </div>
-            </Link>
+              <div className="crx-menu-list">{t("Clone_template")}</div>
+            </div>
           </MenuItem>
           <MenuItem>
             <div className="crx-meu-content groupingMenu crx-spac">
