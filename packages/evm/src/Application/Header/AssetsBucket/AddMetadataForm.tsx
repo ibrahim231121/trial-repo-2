@@ -177,7 +177,7 @@ const AddMetadataForm: React.FC<Props> = ({
       logic: "and",
       filters: []
     },
-    page: 1,
+    page: 0,
     size: 1000
   })
 
@@ -191,7 +191,7 @@ const AddMetadataForm: React.FC<Props> = ({
   React.useEffect(() => {
     fetchUser();
     fetchCategory();
-  }, [users, categories, stations]);
+  }, [users.data, categories, stations]);
 
   React.useEffect(() => {
     if (formpayload.category.length == 0) {
@@ -353,8 +353,8 @@ const AddMetadataForm: React.FC<Props> = ({
   };
 
   const fetchUser = () => {
-    if (users && users.length > 0) {
-      var userNames = users.map((user: any) => {
+    if (users.data && users.data.length > 0) {
+      var userNames = users.data.map((user: any) => {
         let j: UserNameAndValue = {
           userid: user.recId,
           userName: user.userName,
