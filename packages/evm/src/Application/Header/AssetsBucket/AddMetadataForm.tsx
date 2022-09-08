@@ -896,7 +896,7 @@ const AddMetadataForm: React.FC<Props> = ({
     return {
       categories,
       assets: { master, children },
-      retainUntil: retention?.totalHours != null ? moment().add(retention?.totalHours ?? 0, 'hours').utc().format('YYYY-MM-DDTHH:mm:ss') : null,
+      retainUntil: retention?.totalHours != null ? moment().add(retention?.totalHours ?? 0, 'hours').utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') : null,
       stationId,
       retentionPolicyId,
       computerAidedDispatch: null,
