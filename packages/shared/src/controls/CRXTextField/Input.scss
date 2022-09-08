@@ -108,6 +108,12 @@
       }
     }
   }
+  &.inputNumberIsActive {
+    input{
+      outline: 3px solid var(--color-888787);
+      transition: all 0.25s ease-in-out;
+    }
+  }
 }
 
 .errorStateContent {
@@ -202,3 +208,4 @@
   font-weight: var(--Font-style-normal);
   font-family:var(--Arial-font-family);
 }
+

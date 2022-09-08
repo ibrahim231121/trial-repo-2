@@ -22,11 +22,11 @@ const CRXMiddleTruncationPopover = ({content, id, link, middle, isPopover, minWi
     const [truncationButton, setTruncationBtn] = useState();
     const popoverRefs = useRef(content)
     
-    const truncationPopoverClose = (e : any) => {
+    const truncationPopoverClose = (_ : any) => {
        
-        if (popoverRefs.current && popoverRefs.current.contains(e.target as HTMLElement)) {
-            return;
-          }
+        // if (popoverRefs.current && popoverRefs.current.contains(e.target as HTMLElement)) {
+        //     return;
+        //   }
           setAnchorEl(false);
     };
 
@@ -97,6 +97,7 @@ const CRXMiddleTruncationPopover = ({content, id, link, middle, isPopover, minWi
             <div className='dataMidTruncation _group_truncation_text '>
             <div className='_truncation_text' 
                 onMouseEnter={(e : any) => truncationPopoverOpen(e)} 
+                onMouseLeave={(e : any) => truncationPopoverClose(e)}
                 ref={popoverRefs} 
                 style={{
                     minWidth :  minWidth + "px", 
@@ -112,6 +113,7 @@ const CRXMiddleTruncationPopover = ({content, id, link, middle, isPopover, minWi
             </div>
             : <div
             onMouseEnter={(e : any) => truncationPopoverOpen(e)}  
+            onMouseLeave={(e : any) => truncationPopoverClose(e)}
             style={{
                 minWidth :  minWidth + "px", 
                 maxWidth : maxWidth + "px",

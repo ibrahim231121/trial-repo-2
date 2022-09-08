@@ -75,7 +75,7 @@ const useGapStyles = makeStyles({
             cursor : "pointer"
         }}
         onMouseEnter={(e : any) => popoverHandleClick(e)}
-        onMouseLeave={(e : any) => popoverHandleClick(e)}
+        onMouseLeave={popoverHandleClose}
         
         >
             {content}

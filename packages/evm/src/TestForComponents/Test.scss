@@ -1,0 +1,78 @@
+
+
+.input_number_field {
+    position: relative;
+
+    input[type = 'number']::-webkit-outer-spin-button,
+    input[type = 'number']::-webkit-inner-spin-button {
+        opacity: 0;
+    }
+
+    ._number_field_btn {
+        position: absolute;
+        top: -3px;
+        right: 0px;
+        display: none;
+        height: auto;
+        
+        button {
+            border: 0px;
+            background: transparent;
+            outline: 0px;
+            padding: 0px 6px;
+            margin: 0px 11px 0px 0px;
+            height: 15px;
+            display: flex;
+            font-size: 14px;
+            cursor: pointer;
+            &:focus {
+                outline: 0px;
+                border: 0px;
+                box-shadow: none;
+            }
+            &._number_increment {
+                color: #333;
+                i{
+                    position: relative;
+                    top: 8px;
+                    
+                }
+                
+            }
+            &._number_decrement {
+                color: #333;
+                i{
+                    position: relative;
+                    bottom: 7px;
+                   
+                }
+                
+            }
+        }
+    }
+    &:hover {
+        ._number_field_btn {
+            display: block;
+            cursor: pointer;
+        }
+    }
+    &:focus-within {
+        ._number_field_btn {
+            display: block;
+            cursor: pointer;
+        }
+    }
+}
+
+.isEyeIconClass {
+    position: relative;
+    .eyeIconOptional {
+        position: absolute;
+        top: 0px;
+        right: 18px;
+        i{
+            font-size: 14px;
+            color: #74767c;
+        }
+    }
+}
