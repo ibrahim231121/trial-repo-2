@@ -33,6 +33,8 @@ const TenantSettings: React.FC = () => {
     PasswordRules: "",
     TimeFormat: "",
     Timezone: "",
+    Culture: "",
+    DateTimeFormat : "",
     WaterMarkLogo: "",
     LogoName: "",
     MailServer: "",
@@ -57,6 +59,13 @@ const TenantSettings: React.FC = () => {
     AlertEmails: "",
     fileDetails: [],
   });
+
+  const cultures = [
+    { label: 'en-US', value: 'en-US'},
+    { label: 'en-GB', value: 'en-GB'},
+    { label: 'de-DE', value: 'de-DE'},
+    { label: 'ar-EG', value: 'ar-EG'},
+  ];
 
   React.useEffect(() => {
     window.onRecvData = new CustomEvent("onUploadLogoUpdate");
@@ -98,7 +107,7 @@ const TenantSettings: React.FC = () => {
                 mapAllFields[x.key] = temp.map((x: any) => {
                   return { label: x, inputValue: x };
                 });
-              } else if (x.key == "Timezone") {
+              } else if (x.key == "Timezone" || x.key == "Culture") {
                 mapAllFields[x.key] = { label: x.value, value: x.value };
               } else {
                 mapAllFields[x.key] = x.value;
@@ -189,6 +198,9 @@ const TenantSettings: React.FC = () => {
     }
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
+    }
+    if (values.Culture == "") {
+      values.Culture = navigator.languages;
     }
     if (values.AssetViewReasonRequired == "false") {
       values.Reasons = [];
@@ -337,6 +349,16 @@ const TenantSettings: React.FC = () => {
         },
         {
           TenantTypeId: 4,
+          key: "Culture",
+          value: values.Culture.value,
+        },
+        {
+          TenantTypeId: 4,
+          key: "DateTimeFormat",
+          value: new Date().toLocaleDateString(values.Culture.value),
+        },
+        {
+          TenantTypeId: 4,
           key: "MesaurementUnit",
           value: values.MesaurementUnit,
         },
@@ -384,7 +406,6 @@ const TenantSettings: React.FC = () => {
         value: values.Timezone.value,
       });
     }
-
     //console.log("BODY :" + body);
     const SETUP_CONFIGURATION_TENANTSETTINGS_POST_URL = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings`;
     tenantSettingService(
@@ -799,6 +820,24 @@ const TenantSettings: React.FC = () => {
                             value: string
                           ) => {
                             setFieldValue("Timezone", value, true);
+                          }}
+                        />
+                      </CRXRows>
+                      <CRXRows>
+                        <CRXMultiSelectBoxLight
+                          className="DateTimeFormatAutocomplete"
+                          label="Cultures"
+                          multiple={false}
+                          CheckBox={true}
+                          required={false}
+                          options={cultures}
+                          value={values.Culture}
+                          isSearchable={true}
+                          onChange={(
+                            e: React.SyntheticEvent,
+                            value: string
+                          ) => {
+                            setFieldValue("Culture", value, true);
                           }}
                         />
                       </CRXRows>
