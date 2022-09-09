@@ -27,7 +27,8 @@ import {
     SAVE_USER_GROUP_URL,
     BASE_URL_UNIT_SERVICES, 
     FILE_SERVICE_URL,
-    AUDITLOG_SERVICE_URL } from './url';
+    AUDITLOG_SERVICE_URL, 
+    CountryStateApiUrl} from './url';
 import { getVerificationURL } from "../../utils/settings";
 import {Token} from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
@@ -49,7 +50,6 @@ import { AuditLog } from './models/AuditLogModels';
 import { Paginated, Headers } from './models/CommonModels';
 const cookies = new Cookies();
 let config = {
-    
     headers: {
         'Content-Type': 'application/json',
         'TenantId': '1',
@@ -59,7 +59,6 @@ let config = {
 
 export const setAPIAgentConfig=()=>{
     config = {
-    
         headers: {
             'Content-Type': 'application/json',
             'TenantId': '1',
@@ -129,7 +128,6 @@ export const EvidenceAgent = {
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url, config),
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
     getQueuedAssets: (unitId: number) => requests.get<QueuedAssets[]>(EVIDENCE_SERVICE_URL, '/Evidences/QueuedAssets/'+ unitId, config),
-   
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
@@ -148,6 +146,7 @@ export const EvidenceAgent = {
     changeCategories: (url: string, body: EvdenceCategoryAssignment) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body, config),
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
     submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
+    LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
 }
 
 export const AuthenticationAgent = {
@@ -186,7 +185,10 @@ export const UnitsAndDevicesAgent = {
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStations: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url, config),
+    getAllStations: (url: string, headers? : Headers[]) => {
+        (headers && headers.length > 0) && addHeaders(headers);
+        return requests.get<Station[]>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, config);
+    },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo"+url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
@@ -202,4 +204,7 @@ export const UnitsAndDevicesAgent = {
     getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/"+url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
     getAllCaptureDevices: () => requests.get<CaptureDevice[]>(BASE_URL_UNIT_SERVICES, "/CaptureDevices", config),
+}
+export const CommonAgent = {
+    getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }

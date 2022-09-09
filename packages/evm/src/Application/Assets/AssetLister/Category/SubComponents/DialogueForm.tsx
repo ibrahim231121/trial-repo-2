@@ -104,7 +104,6 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       <Formik
         initialValues={getChangedCategories(props.initialValues, props.evidenceResponse)}
         onSubmit={(values, actions) => {
-          debugger
           submitForm(values);
           actions.setSubmitting(false);
         }}>

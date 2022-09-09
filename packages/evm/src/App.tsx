@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import "../../evm/src/utils/Localizer/i18n";
 import { addAssetToBucketActionCreator } from "../src/Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
-import { getCategoryAsync } from "./Redux/categoryReducer";
 import { getConfigurationTemplatesAsync } from './Redux/ConfigurationTemplatesReducer';
 import { useSelector } from "react-redux";
 import { cultureActionCreator } from "./Redux/languageSlice";
@@ -138,8 +137,6 @@ function App() {
   useEffect(() => {
     import(`../../evm/src/utils/Localizer/resources/${culture}`).then((res) => {
       setResources(res.resources);
-      dispatch(getCategoryAsync());
-      dispatch(getConfigurationTemplatesAsync());
     });
 
     i18n.init({

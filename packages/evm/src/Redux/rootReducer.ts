@@ -12,7 +12,6 @@ import templateSlice from './TemplateConfiguration';
 import cultureSlice from './languageSlice';
 import templateSlice1 from './AssetConfiguration';
 import unitTemplateSlice from './templateDynamicForm';
-import categoriesSlice from './SetupConfigurationReducer';
 import stationsSlice from './StationReducer';
 import assetSearchSlice from './AssetSearchReducer';
 import configurationTemplatesReducerSlice from './ConfigurationTemplatesReducer';
@@ -35,7 +34,6 @@ export const reducer = combineReducers({
   cultureReducer: cultureSlice.reducer,
   timelineDetailReducer: timelineDetailSlice.reducer,
   unitReducer: unitSlice.reducer,
-  setupConfigurationReducer : categoriesSlice.reducer,
   assetSearchReducer: assetSearchSlice.reducer,
   configurationTemplatesSlice : configurationTemplatesReducerSlice.reducer,
   auditLogSlice: auditLogSlice.reducer

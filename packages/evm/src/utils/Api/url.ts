@@ -48,26 +48,23 @@ export const APPLICATION_PERMISSION_URL = `${BASE_URL_USER_SERVICE}/Modules?Page
 
 export const USER_INFO_UPDATE_URL = `${BASE_URL_USER_SERVICE}/Users`
 
-export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=10&Page=1`
+export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Page=1&Size=100`
 
 export const CONTAINERMAPPING_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/GetAllByGroup`
 
 export const SAVE_USER_GROUP_URL = `${BASE_URL_USER_SERVICE}/Groups`
 
-export const SAVE_CONTAINER_MAPPINGS_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Size=200&Page=1`
 
 export const UPSERT_CONTAINER_MAPPING_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/UpsertBulk`
 
 export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
-export const DATA_RETENTION_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataRetention`
-export const DATA_UPLOAD_POLICIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Policies/DataUpload`
+
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
 export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
-export const EVIDENCE_PATCH_LOCK_UNLOCK_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/LockUnlock`;
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID

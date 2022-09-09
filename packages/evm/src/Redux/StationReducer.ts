@@ -1,12 +1,10 @@
+import { SetupConfigurationAgent } from './../utils/Api/ApiAgent';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { CountryStateApiUrl, DATA_RETENTION_POLICIES_GET_ALL, DATA_UPLOAD_POLICIES_GET_ALL } from '../utils/Api/url';
-import Cookies from 'universal-cookie';
-import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
+import { CommonAgent, UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
 import { Station } from '../utils/Api/models/StationModels';
 
-const cookies = new Cookies();
-
-export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
+export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
+  
   return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`)
     .then((response:Station[]) => response)
     .catch((error: any) => {
@@ -15,66 +13,51 @@ export const getStationsInfoAsync: any = createAsyncThunk('getStationsInfo', asy
 });
 
 export const getStationsInfoAllAsync: any = createAsyncThunk('getStationsInfoAll', async () => {
-  return await UnitsAndDevicesAgent.getAllStationInfo("")
+  return await UnitsAndDevicesAgent.getAllStationInfo(`?Size=100&Page=1`)
     .then((response:Station[]) => response)
     .catch((error: any) => {
         console.error(error.response.data);
     });
 });
 
-export const getCountryStateAsync: any = createAsyncThunk('getCountryStateAsync', async () => {
-  const requestOptions = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  };
-  const resp = await fetch(CountryStateApiUrl, requestOptions);
-  if (resp.ok) {
-    const response = await resp.json();
-    return response.data;
-  }
+export const getCountryRelatedStatesAsync: any = createAsyncThunk('getCountryStateAsync', async () => {
+  return await CommonAgent.getCoutriesAlongWithStates()
+    .then((response : any) => response)
+    .catch((error: any) => {
+        console.error(error.response.data);
+    });
 });
 
 export const getRetentionStateAsync: any = createAsyncThunk('getRetentionStateAsync', async () => {
-  const requestOptions = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json', TenantId: '1' }
-  };
-  const resp = await fetch(DATA_RETENTION_POLICIES_GET_ALL, requestOptions);
-  if (resp.ok) {
-    const response = await resp.json();
-    return response;
-  }
-  
+  return await SetupConfigurationAgent.getPoliciesAccordingToType('/Policies/DataRetention')
+    .then((response : any) => response)
+    .catch((error: any) => {
+        console.error(error.response.data);
+    });
 });
 
 export const getUploadStateAsync: any = createAsyncThunk('getUploadStateAsync', async () => {
-  const requestOptions = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json', TenantId: '1' }
-  };
-  const resp = await fetch(DATA_UPLOAD_POLICIES_GET_ALL, requestOptions);
-  if (resp.ok) {
-    const response = await resp.json();
-    return response;
-  }
-  
+  return await SetupConfigurationAgent.getPoliciesAccordingToType('/Policies/DataUpload')
+  .then((response : any) => response)
+  .catch((error: any) => {
+      console.error(error.response.data);
+  });
 });
-
 
 export const stationsSlice = createSlice({
   name: 'station',
-  initialState: { stationInfo: [], countryStates: [], retentionState: [], uploadState: [] },
+  initialState: { stationInfo: [], countryStates: [], retentionState: [], uploadState: [], stations: [] },
   reducers: {},
 
   extraReducers: {
     [getStationsInfoAllAsync.fulfilled]: (state, { payload }) => {
       state.stationInfo = payload;
     },
-    [getStationsInfoAsync.fulfilled]: (state, { payload }) => {
-      state.stationInfo = payload;
+    [getStationsAsync.fulfilled]: (state, { payload }) => {
+      state.stations = payload;
     },
 
-    [getCountryStateAsync.fulfilled]: (state, { payload }) => {
+    [getCountryRelatedStatesAsync.fulfilled]: (state, { payload }) => {
       state.countryStates = payload;
     },
     [getRetentionStateAsync.fulfilled]: (state, { payload }) => {

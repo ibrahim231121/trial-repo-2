@@ -1,11 +1,11 @@
 import moment from 'moment';
 
-let GetAssetsBySatus = (status : string) =>{
+let GetAssetsByState = (status : string) =>{
     return {
         bool:{
             must:[
                 {
-                    match:{"asset.status": status}
+                    match:{"asset.state": status}
                 }  
             ]
         }
@@ -71,7 +71,7 @@ let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
 }
 
 export default {
-    GetAssetsBySatus,
+    GetAssetsByState,
     GetAssetsUnCategorized,
     GetAssetsApproachingDeletion
 }

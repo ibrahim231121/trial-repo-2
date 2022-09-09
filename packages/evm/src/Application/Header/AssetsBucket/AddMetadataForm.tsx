@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
-import { getAllCategories } from "../../../Redux/SetupConfigurationReducer";
 import { CRXButton } from "@cb/shared";
 import CategoryFormOFAssetBucket from "./SubComponents/CategoryFormOFAssetBucket";
 import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBucket";
@@ -17,6 +16,7 @@ import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
 import { Policy } from "../../../utils/Api/models/PolicyModels";
 import moment from "moment";
+import { getCategoryAsync } from "../../../Redux/categoryReducer";
 
 interface Props {
   onClose: any;
@@ -165,8 +165,9 @@ const AddMetadataForm: React.FC<Props> = ({
     (state: RootState) => state.userReducer.usersInfo
   );
   const categories: any = useSelector(
-    (state: RootState) => state.setupConfigurationReducer.categoryInfo
+    (state: RootState) => state.assetCategory.category
   );
+
   const stations: any = useSelector(
     (state: RootState) => state.stationReducer.stationInfo
   );
@@ -185,7 +186,7 @@ const AddMetadataForm: React.FC<Props> = ({
     fetchStation();
     masterAssets();
     dispatch(getUsersInfoAsync(pageiGrid));
-    dispatch(getAllCategories());
+    dispatch(getCategoryAsync());
   }, []);
 
   React.useEffect(() => {

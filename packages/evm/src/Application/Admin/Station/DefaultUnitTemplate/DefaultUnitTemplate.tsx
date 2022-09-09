@@ -120,7 +120,7 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`)
+        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{key : 'InquireDepth', value : 'narrow'}])
         .then((response:Station[]) => {
             setStationCollection(response);
             let stationInfo = response.map((x: any) => {

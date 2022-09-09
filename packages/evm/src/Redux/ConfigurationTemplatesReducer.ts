@@ -1,15 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ConfigurationTemplates } from '../Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplateModel';
 import axios from 'axios';
-import http from '../http-common';
-import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
 import { ConfigurationTemplate } from '../utils/Api/models/UnitModels';
 
 export const getConfigurationTemplatesAsync: any = createAsyncThunk(
     'configurationTemplate/getConfigurationTemplatesAsync',
     async () => {
-        const cookies = new Cookies();
         try {
             return await UnitsAndDevicesAgent.getAllTemplate().then((response:ConfigurationTemplate[]) => response);
         } catch (error) {

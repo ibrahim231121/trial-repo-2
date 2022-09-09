@@ -9,7 +9,6 @@ import { RootState } from "../../../Redux/rootReducer";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
 import FormContainer from "../AssetLister/Category/FormContainer";
 import { dateOptionsTypes } from '../../../utils/constant';
-import { EVIDENCE_PATCH_LOCK_UNLOCK_URL, EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import { useTranslation } from "react-i18next";
@@ -49,6 +48,8 @@ import {
   onClearAll,
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
+import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
+import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
@@ -193,6 +194,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
   const [res, setRes] = React.useState<Asset>();
   const [success, setSuccess] = React.useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [error, setError] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [order] = React.useState<Order>("asc");
@@ -213,7 +215,11 @@ const AssetDetailsTemplate = (props: any) => {
       },
       page: page,
       size: rowsPerPage
-  })
+  });
+  const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
+    isError: false,
+    errorMessage: ''
+  });
   const handleChange = () => {
     setOpenForm(true);
   };
@@ -636,28 +642,31 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
     _requestBody.push({
       evidenceId: getAssetData?.id,
       assetId: getAssetData?.assets?.master?.id,
-      userRecId: localStorage.getItem('User Id'),
+      userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
       operation: "Lock"
     });
     const _body = JSON.stringify(_requestBody);
-    const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
-    http.patch(_url, _body).then((response) => {
-      if (response.status === 204) {
+    EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
+        setSuccessMessage(t('The_asset_are_locked'));
         setSuccess(true);
         setTimeout(() => {
+          dispatch(getAssetSearchInfoAsync(""));
           setOpenRestrictAccessDialogue(false);
           setSuccess(false);
-        }, 3000);
-      }
+        }, 2000);
     })
       .catch((error) => {
+        let errorMessage = '';
         const err = error as AxiosError;
         if (err.request.status === 409) {
-          setErrorMessage("The asset is already locked.");
+          errorMessage = t('The_asset_is_already_locked');
         } else {
-          setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
+          errorMessage = t('We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator');
         }
-        setError(true);
+        setAssetLockUnLockError({
+          errorMessage: errorMessage,
+          isError: true
+        });
       });
   }
 
@@ -754,7 +763,7 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
 
         {/* <CBXLink  children = "Exit"   onClick={() => history.goBack()} /> */}
       </div>
-      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
+      {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           message={errorMessage}
@@ -768,6 +777,8 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
         openOrCloseModal={openRestrictAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
         onConfirmBtnHandler={confirmCallBackForRestrictModal}
+        isError = {assetLockUnLockError.isError}
+        errorMessage = {assetLockUnLockError.errorMessage}
       />
 
       <CRXRows

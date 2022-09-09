@@ -19,9 +19,10 @@ dateOptionsTypes,
   dateOptions
 } from '../../../utils/constant';
 import usePostFetch from '../../../utils/Api/usePostFetch';
-import { EVIDENCE_GET_URL } from '../../../utils/Api/url'
 import { getToken } from "../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
+import { getCategoryAsync } from '../../../Redux/categoryReducer';
+import { getStationsInfoAllAsync } from '../../../Redux/StationReducer';
 
 const AssetSearchType = {
   basicSearch: "BasicSearch",
@@ -214,7 +215,7 @@ const SearchComponent = (props: any) => {
     },
     {
       text: t("Trash"),
-      query: () => queries.GetAssetsBySatus(t("Trash")),
+      query: () => queries.GetAssetsByState(t("Trash")),
       renderData: function () {
         setPredictiveText(t("Trash"));
         setQuerryString(t("Trash"));
@@ -281,6 +282,8 @@ const SearchComponent = (props: any) => {
 
 
   React.useEffect(() => {
+    dispatch(getCategoryAsync());
+    dispatch(getStationsInfoAllAsync());
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
     } 

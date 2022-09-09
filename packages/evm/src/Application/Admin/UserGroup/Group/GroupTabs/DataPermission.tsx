@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from "react";
 import { CRXMultiSelectBoxAutocomplete, CRXRows, CRXColumn, CRXSelectBox, CRXButton } from "@cb/shared";
-import { CATEGORY_INFO_GET_URL } from '../../../../../utils/Api/url'
 import {
     defaultPermissionType,
     defaultPermissionValue,
@@ -14,7 +13,7 @@ import "./dataPermission.scss"
 import { DataPermissionModel } from "..";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useTranslation } from "react-i18next";
-import { UnitsAndDevicesAgent } from "../../../../../utils/Api/ApiAgent";
+import { useSelector } from "react-redux";
 
 
 type infoProps = {
@@ -32,7 +31,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     let [isdisable, setisDisable] = useState<Boolean>(true);
     let [crxDatapermissionClass, setCrxDatapermissionClass] = useState<string>("");
 
-    var flag = true;
+    const categoryFromReducer =  useSelector((state: any) => state.assetCategory.category);
+    const stationsFromReducer = useSelector((state: any) => state.stationReducer.stationInfo);
 
     const defaultPermission = {
         id: 0,
@@ -41,21 +41,20 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         permissionLevel: { value: 0, label: "" }
     }
 
-   const disableAddPermission = () => {
-       dataPermissions.map((obj) => {
-           
-           if((obj.permissionValue.value > 0 || obj.permissionValue.value < 0)  && obj.permissionLevel.value > 0){
+    const disableAddPermission = () => {
+        dataPermissions.map((obj) => {
+            
+            if((obj.permissionValue.value > 0 || obj.permissionValue.value < 0)  && obj.permissionLevel.value > 0){
             setisDisable(false);
-           }
-           else{
-               setisDisable(true)
-           }
-       })
-   }
+            }
+            else{
+                setisDisable(true)
+            }
+        })
+    }
 
    useEffect(() => {
        disableAddPermission();
-       
    }, [dataPermissions])
 
    useEffect(() => {
@@ -124,7 +123,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }
 
     useEffect(() => {
-
+        
         loadCateogories();
         loadStations();
         if (dataPermissionsInfo !== undefined && dataPermissionsInfo.length > 0) {
@@ -135,55 +134,34 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         }
     }, []);
 
-    const loadCateogories = async () => {
-
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1' },
-        };
-
-        const categoryResponse = await fetch(CATEGORY_INFO_GET_URL, requestOptions);
-        if (categoryResponse.ok) {
-            const response = await categoryResponse.json();
-            if (response && response.length > 0) {
-                var categories = response
-                    .sort((a: Category, b: Category) => a.name.localeCompare(b.name))
-                    .map((x: Category) => {
-                        return { value: x.id, label: x.name }
-                    })
-                categories.push({ value: -2, label: t('All') })
-                categories.push({ value: -1, label: t('Uncategorized') })
-                
-                
-                setCategories(categories);
-                LoadCategoryPermissionsByDb(categories);
-            }
+    const loadCateogories = () => {
+        if (categoryFromReducer && categoryFromReducer.length > 0) {
+            let categoryList = [...categoryFromReducer];
+            let categories = categoryList
+            .sort((a: Category, b: Category) => a.name.localeCompare(b.name))
+            .map((x: Category) => {
+                return { value: x.id, label: x.name }
+            });
+            categories.push({ value: -2, label: t('All') })
+            categories.push({ value: -1, label: t('Uncategorized') })
+            setCategories(categories);
+            LoadCategoryPermissionsByDb(categories);
         }
     }
 
-    const loadStations = async () => {
-        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`)
-        .then((response) => {
-            if (response && response.length > 0) {
-                
-                
-                var stationResp = response
-                    .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
-                    .map((x: StationResponse) => {
-                        let StationR: Station = { value: (x.id), label: x.name }
-                        return StationR;
-                    })
-                stationResp.push({ value: -2, label: t('All') })
-                stationResp.push({ value: -1, label: t('No_Station') })
-                
-                
-                setStations(stationResp);
-                LoadStationPermissionsByDb(stationResp);
-            }
-        })
-        .catch((error: any) => {
-            console.error(error.response.data);
-        });
+    const loadStations = () => {
+        if (stationsFromReducer && stationsFromReducer.length > 0) {
+            let stationList = [...stationsFromReducer];
+            const stationResp = stationList
+            .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
+            .map((x: StationResponse) => {
+                return { value: (x.id), label: x.name };
+            });
+            stationResp.push({ value: -2, label: t('All') })
+            stationResp.push({ value: -1, label: t('No_Station') })
+            setStations(stationResp);
+            LoadStationPermissionsByDb(stationResp);
+        }
     }
 
     const addDefaultPermission = () => {

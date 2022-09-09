@@ -1,3 +1,4 @@
+import { PersmissionModel } from "./AssetListerEnum";
 export type assetRow = {
     id: number;
     assetId: number;
@@ -34,3 +35,14 @@ export type asset = {
     isOverlaid: boolean;
     segmentCount: number;
 }
+
+export type securityDescriptorType = {
+    groupId: number;
+    permission: PersmissionModel;
+  }
+
+
+  export type AssetLockUnLockErrorType = {
+    isError: boolean,
+    errorMessage: string
+  }

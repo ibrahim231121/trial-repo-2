@@ -18,7 +18,7 @@ const InputShowHide: React.FC<any> = ({ field, form }) => {
             {hasError && (
                 <div className="errorStationStyle passErrorStyle">
                     <i className="fas fa-exclamation-circle"></i>
-                    {hasError}
+                    {t(hasError)}
                 </div>
             )}
         </>

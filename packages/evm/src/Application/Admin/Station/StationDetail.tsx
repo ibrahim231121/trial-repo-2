@@ -1,11 +1,10 @@
 import React from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
-import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
-import { getCountryStateAsync, getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
+import { getCountryRelatedStatesAsync, getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
 import {
   CRXTabs,
   CrxTabPanel,
@@ -20,43 +19,21 @@ import {
 } from "@cb/shared";
 import "./station.scss";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import Cookies from 'universal-cookie';
 import { TypeOfDevice } from "./DefaultUnitTemplate/DefaultUnitTemplateModel";
 import { useTranslation } from 'react-i18next';
 import InputShowHide from "../../../utils/InputShowHide/InputShowHide";
 import { UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { ConfigurationTemplate, DeviceType } from "../../../utils/Api/models/UnitModels";
 import { Station } from "../../../utils/Api/models/StationModels";
+import { getConfigurationTemplatesAsync } from "../../../Redux/ConfigurationTemplatesReducer";
+import { AutoCompleteOptionType, IlatLong, StationFormType } from "./StationTypes";
+import * as Yup from "yup";
+import { stationValidationSchema } from "./StationValidation";
 
-type StationFormType = {
-  Name: string;
-  StreetAddress?: string;
-  Phone?:string;
-  Passcode?: string;
-  Location?: any;
-  PolicyId?: number;
-  RetentionPolicy?: AutoCompleteOptionType;
-  UploadPolicy?: AutoCompleteOptionType;
-  BlackboxRetentionPolicy?: AutoCompleteOptionType;
-  SSId?: string;
-  Password?: string;
-  ConfigurationTemplate: ConfigurationTemplate[] | any[];
-};
-
-interface AutoCompleteOptionType {
-  label?: string;
-  id?: string;
-}
-
-const cookies = new Cookies();
 const StationDetail: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  React.useEffect(() => {
-    dispatch(getCountryStateAsync());
-    dispatch(getRetentionStateAsync());
-    dispatch(getUploadStateAsync());
-  }, []);
+ 
   const [value, setValue] = React.useState(0);
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
@@ -67,6 +44,11 @@ const StationDetail: React.FC = () => {
   const uploadResponse: any = useSelector(
     (state: RootState) => state.stationReducer.uploadState
   );
+
+  const configurationTemplatesFromStore = useSelector(
+    (state: any) => state.configurationTemplatesSlice.configurationTemplates
+  );
+
   const [retentionAutoCompleteOptions, setRetentionAutoCompleteOptions] =
     React.useState<AutoCompleteOptionType[]>([]);
   const [uploadAutoCompleteOptions, setUploadAutoCompleteOptions] =
@@ -79,7 +61,7 @@ const StationDetail: React.FC = () => {
     );
   const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<DeviceType[]>([]);
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
-  const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
+ 
   const stationInitialState: StationFormType = {
     Name: "",
     StreetAddress: "",
@@ -105,10 +87,7 @@ const StationDetail: React.FC = () => {
     Password: "",
     ConfigurationTemplate: []
   };
-  interface IlatLong {
-    lat: number;
-    long: number;
-  }
+
   const [stationPayload, setStationPayload] =
     React.useState<StationFormType>(stationInitialState);
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -122,18 +101,19 @@ const StationDetail: React.FC = () => {
     React.useState<AutoCompleteOptionType[]>([]);
   const [reset, setReset] = React.useState<boolean>(false);
 
-  const [displayStationErrors, setDisplayStationError] =
-    React.useState<string>("");
-
   const [latLong, setLatLong] = React.useState<IlatLong>();
   const [disableSaveButton, setDisableSaveButton] =
     React.useState<boolean>(true);
-  const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
-  const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
+
   const [isOpen, setIsOpen] = React.useState(false);
 
+  
+
   React.useEffect(() => {
+    dispatch(getRetentionStateAsync());
+    dispatch(getUploadStateAsync());
     getDeviceTypeRecord();
+    dispatch(getConfigurationTemplatesAsync());
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
     }
@@ -153,8 +133,8 @@ const StationDetail: React.FC = () => {
 
   React.useEffect(() => {
     if (!isAddCase) {
-      const url1 = `/Stations/${id}`;
-      UnitsAndDevicesAgent.getStation(url1)
+      const url = `/Stations/${id}`;
+      UnitsAndDevicesAgent.getStation(url)
       .then((response:Station) => {
         return response
       })
@@ -243,29 +223,6 @@ const StationDetail: React.FC = () => {
     setFieldValue("UploadPolicy", val, false);
     setReset(!reset);
     setUploadAutoCompleteValue(val);
-  };
-
-  const stationService = async (url: string, type: string, body?: any) => {
-    let requestOptions: any;
-    if (type === "GET") {
-      requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${cookies.get('access_token')}` },
-      };
-    } else if (type === "PUT") {
-      requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${cookies.get('access_token')}` },
-        body: JSON.stringify(body),
-      };
-    } else {
-      requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json", TenantId: "1", 'Authorization': `Bearer ${cookies.get('access_token')}` },
-        body: JSON.stringify(body),
-      };
-    }
-    return fetch(url, requestOptions);
   };
 
   const errorHandler = (param: any) => {
@@ -408,42 +365,6 @@ const StationDetail: React.FC = () => {
     setModal(false);
     setDisableSaveButton(true);
   };
-
-  const stationValidationSchema = Yup.object().shape({
-
-    Name: Yup.string().required(t("Station_Name_is_required")),
-    StreetAddress: Yup.string()
-      .test(
-        'len',
-        t("Minimum_3_characters_are_allowed."),
-        (val) => val != undefined && (val.length == 0 || (val.length >= 3 && val.length <= 128))
-      )
-      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Street_Address_is_required")),
-    Passcode: Yup.string()
-      .test(
-        'len',
-        t("Minimum_5_characters_are_allowed."),
-        (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-      )
-      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).required(t("Pass_Code_is_required")),
-    Phone: Yup.string()
-      .trim().matches(regex_PhoneNumber, t("Phone_Number_is_not_valid!")).notRequired(),
-    SSId: Yup.string()
-      .test(
-        'len',
-        t("Minimum_5_characters_are_allowed."),
-        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-      )
-      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
-    Password: Yup.string()
-      .test(
-        'len',
-        t("Minimum_5_characters_are_allowed."),
-        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-      )
-      .trim().matches(regex, t("Only_alphabets_and_digits_are_allowed.")).notRequired(),
-    //RetentionPolicy: Yup.string().required("Retention policy is required"),
-  });
 
   const getDeviceTypeRecord = () => {
     UnitsAndDevicesAgent.getAllDeviceTypes()
@@ -650,9 +571,9 @@ const StationDetail: React.FC = () => {
       </>
     );
   }
-  function handleChange(event: any, newValue: number) {
-    setValue(newValue);
-  }
+
+  const handleChange = (event: any, newValue: number) => setValue(newValue);
+  
   const tabs = [
     { label: t("General"), index: 0 },
     { label: t("Station_Settings"), index: 1 },
@@ -689,9 +610,7 @@ const StationDetail: React.FC = () => {
         validationSchema={stationValidationSchema}
         onSubmit={onSubmit}
       >
-        
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
-
           <>
             <Form>
               <div className="ManageStation  switchLeftComponents ManageStationUi">
@@ -720,8 +639,6 @@ const StationDetail: React.FC = () => {
                           </div>
                           <div className="generalContainer crxStationDetail">
                             <div className="itemLeft">
-                     
-                          
                                   <CRXColumn
                                     className="crxStationDetailBtn stationDetailCol crxLocationBtn"
                                     container="container"
@@ -776,7 +693,7 @@ const StationDetail: React.FC = () => {
                                       className={
                                         "stationDetailCol " +
                                         ` ${errors.Name && touched.Name == true
-                                          ? displayStationErrors
+                                          ? "errorBrdr"
                                           : ""
                                         }`
                                       }
@@ -796,8 +713,7 @@ const StationDetail: React.FC = () => {
                                             touched.Name === true ? (
                                             <div className="errorStationStyle ">
                                               <i className="fas fa-exclamation-circle"></i>
-                                              {errors.Name}
-                                              {setDisplayStationError("errorBrdr")}
+                                              {t(errors.Name)}
                                             </div>
                                           ) : null}
                                         </div>
@@ -815,15 +731,13 @@ const StationDetail: React.FC = () => {
                                     <div className="CBX-input">
                                       <label htmlFor="street">{t("Street_Address")}<span>*</span>
                                       </label>
-                                      {/* <Field id="street" name="StreetAddress" /> */}
                                       <div className="CrxStationError">
                                           <Field id="street" name="StreetAddress" />
                                           {errors.StreetAddress !== undefined &&
                                             touched.StreetAddress === true ? (
                                             <div className="errorStationStyle">
                                               <i className="fas fa-exclamation-circle"></i>
-                                              {errors.StreetAddress}
-                                              {setDisplayStationError("errorBrdr")}
+                                              {t(errors.StreetAddress)}
                                             </div>
                                           ) : null}
                                         </div>
@@ -834,7 +748,7 @@ const StationDetail: React.FC = () => {
                                     className={
                                       "stationDetailCol " +
                                       ` ${errors.Phone && touched.Phone == true
-                                        ? displayStationErrors
+                                        ? "errorBrdr"
                                         : ""
                                       }`
                                     }
@@ -853,8 +767,7 @@ const StationDetail: React.FC = () => {
                                           touched.Phone === true ? (
                                           <div className="errorStationStyle">
                                             <i className="fas fa-exclamation-circle"></i>
-                                            {errors.Phone}
-                                            {setDisplayStationError("errorBrdr")}
+                                            {t(errors.Phone)}
                                           </div>
                                         ) : null}
                                       </div> 
@@ -885,7 +798,7 @@ const StationDetail: React.FC = () => {
                                     className={
                                       "stationDetailCol " +
                                       ` ${errors.Passcode && touched.Passcode == true
-                                        ? displayStationErrors
+                                        ? "errorBrdr"
                                         : ""
                                       }`
                                     }
@@ -908,7 +821,7 @@ const StationDetail: React.FC = () => {
                               className={
                                 "stationDetailCol " +
                                 ` ${errors.SSId && touched.SSId == true
-                                  ? displayStationErrors
+                                  ? "errorBrdr"
                                   : ""
                                 }`
                               }
@@ -928,8 +841,7 @@ const StationDetail: React.FC = () => {
                                     touched.SSId === true ? (
                                     <div className="errorStationStyle">
                                       <i className="fas fa-exclamation-circle"></i>
-                                      {errors.SSId}
-                                      {setDisplayStationError("errorBrdr")}
+                                      {t(errors.SSId)}
                                     </div>
                                   ) : null}
                                 </div>
@@ -939,7 +851,7 @@ const StationDetail: React.FC = () => {
                               className={
                                 "stationDetailCol " +
                                 ` ${errors.Password && touched.Password == true
-                                  ? displayStationErrors
+                                  ? "errorBrdr"
                                   : ""
                                 }`
                               }
@@ -1035,8 +947,7 @@ const StationDetail: React.FC = () => {
                                   {errors.RetentionPolicy !== undefined ? (
                                     <div className="errorStationStyle">
                                       <i className="fas fa-exclamation-circle"></i>
-                                      {"Retention_Policy_is_required"}
-                                      {setDisplayStationError("errorBrdr")}
+                                      {t("Retention_Policy_is_required")}
                                     </div>
                                   ) : null}
                                 </div>
@@ -1082,21 +993,210 @@ const StationDetail: React.FC = () => {
                                     <div className="errorStationStyle">
                                       <i className="fas fa-exclamation-circle"></i>
                                       {t("Upload_Policy_is_required")}
-                                      {setDisplayStationError("errorBrdr")}
                                     </div>
                                   ) : null}
                                 </div>
                               </div>
                             </CRXColumn>
-                            
-                            
-                  
-                     
                           </CRXRows>
                       </div>
-                    
                     </CrxTabPanel>
+         
 
+                    <CrxTabPanel value={value} index={1}>
+                      <div className="centerSettingTab">
+                        <div className="itemIndicator">
+                            <label className="indicates-label"><b>*</b> Indicates required field</label>
+                        </div>
+                      <CRXRows
+                            className="crxStationDetail"
+                            container="container"
+                            spacing={0}
+                        >
+                            <CRXColumn
+                              className={
+                                "stationDetailCol " +
+                                ` ${errors.SSId && touched.SSId == true
+                                  ? "errorBrdr"
+                                  : ""
+                                }`
+                              }
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="CBX-input">
+                                <label htmlFor="SSId">
+                                  {t("SSID")} 
+                                </label>
+                                <div className="CrxStationError">
+                                  <Field id="SSId" name="SSId" />
+                                  {errors.SSId !== undefined &&
+                                    touched.SSId === true ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {t(errors.SSId)}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </CRXColumn>
+                            <CRXColumn
+                              className={
+                                "stationDetailCol " +
+                                ` ${errors.Password && touched.Password == true
+                                  ? "errorBrdr"
+                                  : ""
+                                }`
+                              }
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="CBX-input passwordStationField">
+                                <label htmlFor="password">
+                                  {t("Password")}
+                                </label>
+                                <div className="CrxStationError">
+                                  <Field id="password" name="Password" component={InputShowHide} />
+                                </div>
+                              </div>
+                            </CRXColumn>
+                            <CRXColumn
+                              className="stationDetailCol"
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("BlackBox_Retention_Policy")}<span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="blackBoxPolicyMultiSelect"
+                                    multiple={false}
+                                    value={blackBoxAutoCompleteValue}
+                                    options={filterData(
+                                      blackBoxAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      blackBoxAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+                                </div>
+                              </div>
+                            </CRXColumn>
+                        
+                            <CRXColumn
+                              className="stationDetailCol Uncategorized_Retention_Policy"
+                              container="container "
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("Data_Retention_Policy")}<span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="retentionPolicyMultiSelect"
+                                    className="getStationField"
+                                    multiple={false}
+                                    value={retentionAutoCompleteValue}
+                                    options={filterData(
+                                      retentionAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      retentionAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+
+                                  {errors.RetentionPolicy !== undefined ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {t("Retention_Policy_is_required")}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+
+                            </CRXColumn>
+                            <CRXColumn
+                              className="stationDetailCol"
+                              container="container"
+                              item="item"
+                              lg={12}
+                              xs={12}
+                              spacing={0}
+                            >
+                              <div className="colstation">
+                                <label htmlFor="name">{t("Data_Upload_Policy")} <span>*</span></label>
+                                <div className="CrxStationError">
+                                  <CRXMultiSelectBoxLight
+                                    id="uploadPolicyMultiSelect"
+                                    className="getStationField"
+                                    multiple={false}
+                                    value={uploadAutoCompleteValue}
+                                    options={filterData(
+                                      uploadAutoCompleteOptions
+                                    )}
+                                    onChange={(
+                                      e: React.SyntheticEvent,
+                                      option: AutoCompleteOptionType[],
+                                      reason: any
+                                    ) =>
+                                      uploadAutoCompleteonChange(
+                                        e,
+                                        option,
+                                        setFieldValue,
+                                        reason
+                                      )
+                                    }
+                                    CheckBox={true}
+                                    checkSign={false}
+                                    required={true}
+                                  />
+                                  {errors.UploadPolicy !== undefined ? (
+                                    <div className="errorStationStyle">
+                                      <i className="fas fa-exclamation-circle"></i>
+                                      {t("Upload_Policy_is_required")}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </CRXColumn>
+                          </CRXRows>
+                      </div>
+                    </CrxTabPanel>
 
                     <CrxTabPanel value={value} index={2}>
                       <div>

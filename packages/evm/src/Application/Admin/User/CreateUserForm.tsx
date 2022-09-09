@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from '../../../utils/Api/url';
 import moment from 'moment';
 import './createUserForm.scss';
@@ -30,32 +30,11 @@ import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { REACT_APP_CLIENT_ID } from '../../../../../evm/src/utils/Api/url'
 import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
-
+import { UserStatus } from './UserEnum';
+import {NameAndValue, AutoCompleteOptionType, userStateProps } from './UserTypes';
 let USER_DATA = {};
 
-type NameAndValue = {
-  groupId: string;
-  groupName: string;
-};
-interface AutoCompleteOptionType {
-  label?: string;
-  id?: string;
-}
-
-interface userStateProps {
-  userName: string;
-  firstName: string;
-  middleInitial: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  userGroups: AutoCompleteOptionType[];
-  deactivationDate: string;
-  pin: string | null;
-}
-
 const CreateUserForm = () => {
-
   const { t } = useTranslation<string>();
   const { id } = useParams<{ id: string }>();
 
@@ -130,9 +109,15 @@ const CreateUserForm = () => {
   })
 
   React.useEffect(() => {
+    fetchGroups();
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (id) { fetchUser(); }
   }, [id]);
-
 
   React.useEffect(() => {
     if (userPayload && id) {
@@ -195,7 +180,56 @@ const CreateUserForm = () => {
     }
   }, [userPayload]);
 
-  const cookiesBiscuit = new Cookies();
+  React.useEffect(() => {
+    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, phoneNumber } =
+      formpayload;
+    if (userGroups.length > 0) {
+      setError(false);
+    }
+    if (userName || firstName || lastName || email || userGroups.length || deactivationDate) {
+
+    }
+    if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
+      setDisableSave(true);
+
+    } else if (userName && firstName && lastName && email) {
+      setDisableSave(false);
+    } else {
+      setDisableSave(true);
+    }
+  }, [formpayload]);
+
+  React.useEffect(() => {
+    if (responseError !== undefined && responseError !== '') {
+      let notificationMessage: NotificationMessage = {
+        title: t('User'),
+        message: responseError,
+        type: errorType,
+        date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
+      };
+      dispatch(addNotificationMessages(notificationMessage));
+    }
+  }, [responseError]);
+
+  React.useEffect(() => {
+    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
+    const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
+    const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
+    const altRef = alertRef.current;
+
+    if (alert === false && altRef === null) {
+
+      alertClx[0].style.display = "none";
+      crxIndicate[0].style.top = "42px";
+      modalEditCrx[0].style.paddingTop = "42px";
+      
+    } else {
+      alertClx[0].setAttribute("style", "margin-top:42px;margin-bottom:42px");
+      crxIndicate[0].style.top = "83px";
+      modalEditCrx[0].style.paddingTop = "2px";
+      
+    }
+  }, [alert]);
 
   var current_date;
   if (formpayload.deactivationDate != null) {
@@ -228,12 +262,6 @@ const CreateUserForm = () => {
     // setUserPayload(response);
 
   };
-
-  React.useEffect(() => {
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
-    }
-  }, []);
 
   const generateTempPassComp = () => {
     const onClickPass = () => {
@@ -379,42 +407,6 @@ const CreateUserForm = () => {
     return setOptionList(dateOfArry);
   };
 
-  React.useEffect(() => {
-
-    fetchGroups();
-  }, []);
-
-  React.useEffect(() => {
-    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, phoneNumber } =
-      formpayload;
-    if (userGroups.length > 0) {
-      setError(false);
-    }
-    if (userName || firstName || lastName || email || userGroups.length || deactivationDate) {
-
-    }
-    if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
-      setDisableSave(true);
-
-    } else if (userName && firstName && lastName && email) {
-      setDisableSave(false);
-    } else {
-      setDisableSave(true);
-    }
-  }, [formpayload]);
-
-  useEffect(() => {
-    if (responseError !== undefined && responseError !== '') {
-      let notificationMessage: NotificationMessage = {
-        title: t('User'),
-        message: responseError,
-        type: errorType,
-        date: moment(moment().toDate()).local().format('YYYY / MM / DD HH:mm:ss')
-      };
-      dispatch(addNotificationMessages(notificationMessage));
-    }
-  }, [responseError]);
-
   const onSelectEditPasswordType = () => {
     if (radioValue === "genTemp") return generatePassword;
     else if (radioValue === "manual") return password;
@@ -456,21 +448,12 @@ const CreateUserForm = () => {
     * * setting status to pending if user enable change password on next login checkbox 
     */
     if (isPasswordResetRequired) {
-      account.status = 3;
+      account.status = UserStatus.Active;
     }
     if (radioValue == 'sendAct') {
-      account.status = 3;
+      account.status = UserStatus.Pending;
     }
 
-    // const payload = {
-    //   email: formpayload.email,
-    //   deactivationDate: formpayload.deactivationDate,
-    //   name,
-    //   account,
-    //   contacts,
-    //   assignedGroupIds: userGroupsListIDs,
-    //   timeZone: 'America/Chicago'
-    // };
     const payload: User = {
       email: formpayload.email,
       deactivationDate: formpayload.deactivationDate,
@@ -481,8 +464,6 @@ const CreateUserForm = () => {
       timeZone: 'America/Chicago',
       pin : formpayload.pin
     };
-
-
     return payload;
   };
 
@@ -491,82 +472,74 @@ const CreateUserForm = () => {
       setError(true);
       return;
     }
-
     const payload = setAddPayload();
     const AddUser = "/Users";
     UsersAndIdentitiesServiceAgent.addUser(AddUser, payload).then(function (res: number) {
       if (res)
         return res;
-      //   else if (res.status == 500) {
-      //     setAlert(true);
-      //     setResponseError(
-      //       t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-      //     );
-      //   } else return res.text();
-      // })
+      })
+      .then((resp: any) => {
+        if (resp !== undefined) {
+          let error = JSON.parse(resp);
+          if (error.errors !== undefined) {
+            if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.UserName[0]);
+            }
+            if (error.errors.First !== undefined && error.errors.First.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.First[0]);
+            }
+            if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.Last[0]);
+            }
+            if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.Middle[0]);
+            }
+            if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.Email[0]);
+            }
+            if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.Number[0]);
+            }
 
-    }).then((resp: any) => {
-      if (resp !== undefined) {
-        let error = JSON.parse(resp);
-        if (error.errors !== undefined) {
-          if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.UserName[0]);
-          }
-          if (error.errors.First !== undefined && error.errors.First.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.First[0]);
-          }
-          if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Last[0]);
-          }
-          if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Middle[0]);
-          }
-          if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Email[0]);
-          }
-          if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Number[0]);
-          }
+            if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+              setAlert(true);
+              setResponseError(error.errors.Password[0]);
+            }
+          } else if (!isNaN(+error)) {
+            const userName = formpayload.firstName + ' ' + formpayload.lastName;
+            sendEmail(formpayload.email, '', userName);
+            userFormMessages({
+              message: t('You_have_created_the_user_account.'),
+              variant: 'success',
+              duration: 7000
+            });
+            dispatch(getUsersInfoAsync(pageiGrid));
+            setDisableSave(true)
 
-          if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Password[0]);
-          }
-        } else if (!isNaN(+error)) {
-          const userName = formpayload.firstName + ' ' + formpayload.lastName;
-          sendEmail(formpayload.email, '', userName);
-          userFormMessages({
-            message: t('You_have_created_the_user_account.'),
-            variant: 'success',
-            duration: 7000
-          });
-          dispatch(getUsersInfoAsync(pageiGrid));
-          setDisableSave(true)
-
-        } else {
-          setAlert(true);
-          setResponseError(error);
-          const errorString = error;
-          if (errorString.includes('email') === true) {
-            setIsExtEmail('isExtEmail');
           } else {
-            setIsExtEmail('');
-          }
+            setAlert(true);
+            setResponseError(error);
+            const errorString = error;
+            if (errorString.includes('email') === true) {
+              setIsExtEmail('isExtEmail');
+            } else {
+              setIsExtEmail('');
+            }
 
-          if (errorString.includes('username') === true) {
-            setIsExtUsers('isExtUserName');
-          } else {
-            setIsExtUsers('');
+            if (errorString.includes('username') === true) {
+              setIsExtUsers('isExtUserName');
+            } else {
+              setIsExtUsers('');
+            }
           }
         }
-      }
-    })
+      })
       .catch(function (e: any) {
         if (e.request.status == 500) {
           setAlert(true);
@@ -574,88 +547,8 @@ const CreateUserForm = () => {
             t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
         }
-
         return e;
       });
-    // await fetch(USER, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
-    //   body: JSON.stringify(payload)
-    // })
-    //   .then(function (res) {
-    //     if (res.ok) return res.json();
-    //     else if (res.status == 500) {
-    //       setAlert(true);
-    //       setResponseError(
-    //         t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-    //       );
-    //     } else return res.text();
-    //   })
-    //   .then((resp) => {
-    //     if (resp !== undefined) {
-    //       let error = JSON.parse(resp);
-    //       if (error.errors !== undefined) {
-    //         if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.UserName[0]);
-    //         }
-    //         if (error.errors.First !== undefined && error.errors.First.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.First[0]);
-    //         }
-    //         if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.Last[0]);
-    //         }
-    //         if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.Middle[0]);
-    //         }
-    //         if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.Email[0]);
-    //         }
-    //         if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.Number[0]);
-    //         }
-
-    //         if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-    //           setAlert(true);
-    //           setResponseError(error.errors.Password[0]);
-    //         }
-    //       } else if (!isNaN(+error)) {
-    //         const userName = formpayload.firstName + ' ' + formpayload.lastName;
-    //         sendEmail(formpayload.email, '', userName);
-    //         userFormMessages({
-    //           message: t('You_have_created_the_user_account.'),
-    //           variant: 'success',
-    //           duration: 7000
-    //         });
-    //         dispatch(getUsersInfoAsync());
-    //         setDisableSave(true)
-
-    //       } else {
-    //         setAlert(true);
-    //         setResponseError(error);
-    //         const errorString = error;
-    //         if (errorString.includes('email') === true) {
-    //           setIsExtEmail('isExtEmail');
-    //         } else {
-    //           setIsExtEmail('');
-    //         }
-
-    //         if (errorString.includes('username') === true) {
-    //           setIsExtUsers('isExtUserName');
-    //         } else {
-    //           setIsExtUsers('');
-    //         }
-    //       }
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     return error;
-    //   });
   };
 
   const onSelectPasswordType = () => {
@@ -1127,26 +1020,6 @@ const CreateUserForm = () => {
     }
   };
 
-  useEffect(() => {
-    const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
-    const crxIndicate: any = document.getElementsByClassName("CrxIndicates");
-    const modalEditCrx: any = document.getElementsByClassName("modalEditCrx");
-    const altRef = alertRef.current;
-
-    if (alert === false && altRef === null) {
-
-      alertClx[0].style.display = "none";
-      crxIndicate[0].style.top = "42px";
-      modalEditCrx[0].style.paddingTop = "42px";
-      
-    } else {
-      alertClx[0].setAttribute("style", "margin-top:42px;margin-bottom:42px");
-      crxIndicate[0].style.top = "83px";
-      modalEditCrx[0].style.paddingTop = "2px";
-      
-    }
-  }, [alert]);
-
   const redirectPage = () => {
 
     if (id) {
@@ -1192,7 +1065,6 @@ const CreateUserForm = () => {
         .url
     );
   };
-
 
   return (
     <div className='createUser CrxCreateUser CreateUserUi searchComponents'>
@@ -1325,8 +1197,9 @@ const CreateUserForm = () => {
               </div>
 
               <div className='_create_user_pin_field'>
+                {/* NOTE: Class removed, due to styling issue in displaying error message */}
                 <TextField
-                  className='crx-gente-field crx-gente-field-confrim '
+                  // className='crx-gente-field crx-gente-field-confrim '
                   error={!!formpayloadErr.pinErr}
                   errorMsg={formpayloadErr.pinErr}
                   label={t("Pin")}

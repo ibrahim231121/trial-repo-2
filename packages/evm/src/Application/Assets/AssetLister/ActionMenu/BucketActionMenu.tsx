@@ -10,15 +10,15 @@ import "@szhsin/react-menu/dist/index.css";
 import './index.scss'
 import { removeAssetFromBucketActionCreator } from "../../../../Redux/AssetActionReducer";
 import { useDispatch } from "react-redux";
-import { assetRow } from "./types";
+import { AssetLockUnLockErrorType, assetRow } from "./types";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
-import { EVIDENCE_PATCH_LOCK_UNLOCK_URL } from "../../../../utils/Api/url";
-import http from "../../../../http-common";
 import { CRXAlert } from "@cb/shared";
 import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 
 type Props = {
   selectedItems: assetRow[];
@@ -30,9 +30,12 @@ type Props = {
 const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelectedItems, isChecked }) => {
   const dispatch = useDispatch();
   const [success, setSuccess] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
+  const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
+    isError: false,
+    errorMessage: ''
+  });
 
   const { t } = useTranslation<string>();
   const removeFromAssetBucket = () => {
@@ -62,7 +65,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
       _requestBody.push({
         evidenceId: row?.id,
         assetId: row?.assetId,
-        userRecId: localStorage.getItem('User Id'),
+        userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
         operation: "Lock"
       });
     }
@@ -72,46 +75,40 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
           _requestBody.push({
             evidenceId: row?.id,
             assetId: selectedItem.assetId,
-            userRecId: localStorage.getItem('User Id'),
+            userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
             operation: "Lock"
           });
         }
       }
       const _body = JSON.stringify(_requestBody);
-      const _url = `${EVIDENCE_PATCH_LOCK_UNLOCK_URL}`;
-      http.patch(_url, _body).then((response) => {
-        if (response.status === 204) {
-          setSuccess(true);
-          setTimeout(() => {
-            setOpenRestrictAccessDialogue(false);
-            setSuccess(false);
-          }, 3000);
-        }
+      EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
+        setSuccessMessage(t('The_asset_are_locked'));
+        setSuccess(true);
+        setTimeout(() => {
+          dispatch(getAssetSearchInfoAsync(""));
+          setOpenRestrictAccessDialogue(false);
+          setSuccess(false);
+        }, 2000);
       })
         .catch((error) => {
+          let errorMessage = '';
           const err = error as AxiosError;
           if (err.request.status === 409) {
-            setErrorMessage("The asset is already locked.");
+            errorMessage = t('The_asset_is_already_locked');
           } else {
-            setErrorMessage("We 're sorry. The asset can't be locked. Please retry or  contact your Systems Administrator");
+            errorMessage = t('We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator');
           }
-          setError(true);
+          setAssetLockUnLockError({
+            errorMessage: errorMessage,
+            isError: true
+          });
         });
     }
   }
 
   return (
     <>
-      {success && <CRXAlert message='Success: The assets are locked.' alertType='toast' open={true} />}
-      {error && (
-        <CRXAlert
-          message={errorMessage}
-          type='error'
-          alertType='inline'
-          open={true}
-        />
-      )}
-
+      {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       <Menu
         align="start"
         viewScroll="initial"
@@ -126,7 +123,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         }
       >
 
-        <MenuItem >
+        <MenuItem>
           <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket} >
             <div className="crx-menu-icon"></div>
             <div className="crx-menu-list">
@@ -177,7 +174,6 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         <MenuItem>
           <div className="crx-meu-content ">
             <div className="crx-menu-icon">
-
             </div>
             <div className="crx-menu-list">
               {`${t("Modify_Retention")}`}
@@ -187,7 +183,6 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         <MenuItem>
           <div className="crx-meu-content groupingMenu">
             <div className="crx-menu-icon">
-
             </div>
             <div className="crx-menu-list">
               {`${t("TBD")}`}
@@ -242,7 +237,6 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         <MenuItem disabled>
           <div className="crx-meu-content">
             <div className="crx-menu-icon">
-
             </div>
             <div className="crx-menu-list disabledItem">
               {`${t("Link_to_this_group")}`}
@@ -285,6 +279,8 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         openOrCloseModal={openRestrictAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
         onConfirmBtnHandler={confirmCallBackForRestrictModal}
+        isError = {assetLockUnLockError.isError}
+        errorMessage = {assetLockUnLockError.errorMessage}
       />
     </>
   );

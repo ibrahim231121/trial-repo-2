@@ -121,7 +121,6 @@ const UnitAndDevices: React.FC = () => {
     
         if (units && units.length > 0) {
           unitRows = units.map((unit: any, i:number) => {
-            // <a href={`unitsanddevices/detail/${unit.recId +"_"+ unit.stationRecId}`}>{unit.station}</a>,
                 return {
                     id: unit.recId,
                     unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId+"_"+unit.template,

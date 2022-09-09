@@ -18,15 +18,15 @@ import { CRXTitle } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { getRetentionPolicyInfoAsync, getCategoriesAsync, getStationsAsync, getDeviceTypesAsync } from "../../Redux/templateDynamicForm";
+import { getDeviceTypesAsync } from "../../Redux/templateDynamicForm";
 import { CreateTempelateCase } from "./CreateTemplateCase";
-import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
 import { ConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
 import { CaptureDevice } from "../../utils/Api/models/StationModels";
+import { getCategoryAsync } from "../../Redux/categoryReducer";
+import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 
-const cookies = new Cookies();
 
 
 var re = /[\/]/;
@@ -106,10 +106,10 @@ const CreateTemplate = (props: any) => {
   const [dataOfUnit, setUnitData] = React.useState<any>([]);
   const [dataFetched, setDataFetched] = React.useState<boolean>(false);
   const [editCase, setEditCase] = React.useState<boolean>(false);
-  const retention: any = useSelector((state: RootState) => state.unitTemplateSlice.retentionPolicy);
-  const categories: any = useSelector((state: RootState) => state.unitTemplateSlice.categories);
+  const retention: any = useSelector((state: RootState) => state.stationReducer.retentionState);
+  const categories: any = useSelector((state: RootState) => state.assetCategory.category);
   const deviceTypes: any = useSelector((state: RootState) => state.unitTemplateSlice.deviceTypes);
-  const stations: any = useSelector((state: RootState) => state.unitTemplateSlice.stations);
+  const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
   const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
   const formikProps = useFormikContext()
   const [errCkher, seterrChker] = React.useState<string>("");
@@ -167,11 +167,11 @@ const CreateTemplate = (props: any) => {
   
   function setintial() {
     if (historyState.deviceType == "Incar") {
-      dispatch(getRetentionPolicyInfoAsync());
+      dispatch(getRetentionStateAsync());
       dispatch(getDeviceTypesAsync());
     }
-    dispatch(getCategoriesAsync());
-    dispatch(getStationsAsync());
+    dispatch(getCategoryAsync());
+    dispatch(getStationsInfoAllAsync());
     if (historyState.isedit || historyState.isclone) {
       dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNameHistory }));
       loadData(historyState.id);

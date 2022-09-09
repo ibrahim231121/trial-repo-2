@@ -188,6 +188,15 @@ export const resources = {
         "Download_metadata_info":"hr-Download metadata info",
         "Download_audit_trail":"hr-Download audit trail",
         "Select_to_show_a_column_Drag_and_drop_to_recorder.":"hr-Select to show a column. Drag and drop to recorder.",
+        "Are_you_sure_want_to_unlock_access_to_the_selected_asset(s)?" : "Are you sure want to unlock access to the selected asset(s)?.",
+        "Access_Unlocked" : "Access Unlocked",
+        "Access_Restricted" : "Access Restricted",
+        "The_asset_is_already_locked." : "The asset(s) is already locked.",
+        "The_asset_is_already_unlocked." : "The asset(s) is already unlocked.",
+        "We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be locked. Please retry or contact your Systems Administrator.",
+        "We_re_sorry_The_asset_cant_be_unlocked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be unlocked. Please retry or contact your Systems Administrator.",
+        "The_asset_are_locked" : "Success: The asset(s) are locked.",
+        "The_asset_are_unlocked" : "Success: The asset(s) are unlocked.",
         // -------------------------
 
         // --------- User ----------
@@ -318,6 +327,7 @@ export const resources = {
         "Pass_Code_is_required":"hr-Pass Code is required",
         "Street_Address_is_required":"hr-Street Address is required",
         "Only_alphabets_and_digits_are_allowed.":"hr-Only alphabets and digits are allowed.",
+        "Only_digits_are_allowed.":"hr-Only digits are allowed.",
         "Success_You_have_saved_the_Station":"hr-Success: You have saved the Station",
         "Station_Name":"hr-Station Name",
         "Name":"hr-Name",

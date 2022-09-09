@@ -28,8 +28,7 @@ import { dateOptionsTypes } from './../../../../src/utils/constant';
 
 import MultSelectiDropDown from '../../../GlobalComponents/DataTableSearch/MultSelectiDropDown';
 import { CRXModalDialog } from '@cb/shared';
-import { userInfo } from 'os';
-import { getStationsInfoAsync } from '../../../Redux/StationReducer';
+import { getStationsAsync } from '../../../Redux/StationReducer';
 import StationActionMenu from './StationActionMenu';
 import AnchorDisplay from '../../../utils/AnchorDisplay';
 import { urlList, urlNames } from '../../../utils/urlList';
@@ -38,27 +37,8 @@ import './station.scss';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
-
-type Station = {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-};
-
-type DateTimeProps = {
-  dateTimeObj: DateTimeObject;
-  colIdx: number;
-};
-type DateTimeObject = {
-  startDate: string;
-  endDate: string;
-  value: string;
-  displayText: string;
-};
+import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemplatesReducer';
+import { StationType, DateTimeProps, DateTimeObject } from './StationTypes';
 
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -76,29 +56,28 @@ const Station: React.FC = () => {
   })
 
   React.useEffect(() => {
-    dispatch(getStationsInfoAsync(pageiGrid));
+    dispatch(getStationsAsync(pageiGrid));
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'stationDataTable');
+    dispatch(getConfigurationTemplatesAsync());
   }, []);
 
-  const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
-  const [rows, setRows] = React.useState<Station[]>([]);
+  const stations: any = useSelector((state: RootState) => state.stationReducer.stations);
+  const [rows, setRows] = React.useState<StationType[]>([]);
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string>('recordingStarted');
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [selectedItems, setSelectedItems] = React.useState<Station[]>([]);
-  const [reformattedRows, setReformattedRows] = React.useState<Station[]>();
+  const [selectedItems, setSelectedItems] = React.useState<StationType[]>([]);
+  const [reformattedRows, setReformattedRows] = React.useState<StationType[]>();
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-  const [selectedActionRow, setSelectedActionRow] = React.useState<Station>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<StationType>();
   const history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
   
-
   const setData = () => {
-    let stationRows: Station[] = [];
-
+    let stationRows: StationType[] = [];
     if (stations && stations.length > 0) {
       stationRows = stations.map((station: any) => {
         return {
@@ -111,7 +90,6 @@ const Station: React.FC = () => {
     }
     setRows(stationRows);
     setReformattedRows(stationRows);
-
   };
 
   React.useEffect(() => {
@@ -120,11 +98,11 @@ const Station: React.FC = () => {
 
   useEffect(() => {
     if(paging)
-      dispatch(getStationsInfoAsync(pageiGrid));
+      dispatch(getStationsAsync(pageiGrid));
     setPaging(false)
   },[pageiGrid])
 
-  const searchText = (rowsParam: Station[], headCells: HeadCellProps[], colIdx: number) => {
+  const searchText = (rowsParam: StationType[], headCells: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
       headCells[colIdx].headerArray = valuesObject;
       onSelection(valuesObject, colIdx);
@@ -155,7 +133,7 @@ const Station: React.FC = () => {
     colIdx: 0
   });
 
-  const searchDate = (rowsParam: Station[], headCells: HeadCellProps[], colIdx: number) => {
+  const searchDate = (rowsParam: StationType[], headCells: HeadCellProps[], colIdx: number) => {
     let reset: boolean = false;
 
     let dateTimeObject: DateTimeProps = {
@@ -249,7 +227,7 @@ const Station: React.FC = () => {
   ]);
 
   const searchAndNonSearchMultiDropDown = (
-    rowsParam: Station[],
+    rowsParam: StationType[],
     headCells: HeadCellProps[],
     colIdx: number,
     isSearchable: boolean
@@ -314,7 +292,7 @@ const Station: React.FC = () => {
 
   const dataArrayBuilder = () => {
     if (reformattedRows !== undefined) {
-      let dataRows: Station[] = reformattedRows;
+      let dataRows: StationType[] = reformattedRows;
       searchData.forEach((el: SearchObject) => {
         if (
           el.columnName === 'name' ||
@@ -373,7 +351,7 @@ const Station: React.FC = () => {
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getStationsInfoAsync(pageiGrid));
+    dispatch(getStationsAsync(pageiGrid));
   };
 
   useEffect(() => {
@@ -408,7 +386,7 @@ const Station: React.FC = () => {
               {t('Create_Station')}
             </CRXButton>
           }
-          getRowOnActionClick={(val: Station) => setSelectedActionRow(val)}
+          getRowOnActionClick={(val: StationType) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
           headCells={headCells}
@@ -419,7 +397,7 @@ const Station: React.FC = () => {
           allowDragableToList={false}
           className='ManageAssetDataTable crxStationDataTable'
           onClearAll={clearAll}
-          getSelectedItems={(v: Station[]) => setSelectedItems(v)}
+          getSelectedItems={(v: StationType[]) => setSelectedItems(v)}
           onResizeRow={resizeRowStation}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}

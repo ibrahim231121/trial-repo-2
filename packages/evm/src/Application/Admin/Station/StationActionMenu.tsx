@@ -7,9 +7,7 @@ import { useDispatch } from 'react-redux';
 import './StationActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
-
-import { EVIDENCE_SERVICE_URL } from '../../../utils/Api/url'
-import { getStationsInfoAsync } from '../../../Redux/StationReducer';
+import { getStationsAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
 import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
@@ -108,7 +106,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
       toasterRef.current.showToaster({
         message: t("Station_deleted"), variant: "success", duration: 7000, clearButtton: true
       });
-      dispatch(getStationsInfoAsync());
+      dispatch(getStationsAsync());
     })
     .catch(function (error) {
       setAlert(true);
