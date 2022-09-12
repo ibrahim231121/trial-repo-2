@@ -1,823 +1,729 @@
 {
-  "Template Information": [
-      {
-          "id": "1",
-          "key": "unittemplate/templateName/TextBox",
-          "type": "text",
-          "label": "Template Name",
-          "value": "",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required"
-              },
-              {
-                  "key": "max",
-                  "value": 128,
-                  "msg": "Greater than 128 characters"
-              },
-              {
-                  "key": "min",
-                  "value": 3,
-                  "msg": "Less than 3 characters"
-              }
-          ]
-      },
-      {
-          "id": "2",
-          "required": true,
-          "key": "unittemplate/station/Select",
-          "type": "select",
-          "label": "Station",
-          "options": []
-      }
-  ],
-  "Unit Settings": [
-      {
-          "id": "3",
-          "key": "unitSettings/mode/Select",
-          "type": "select",
-          "label": "Mode",
-          "value": "PC",
-          "options": [
-              {
-                  "value": "PC",
-                  "label": "PC"
-              },
-              {
-                  "value": "DVR",
-                  "label": "DVR"
-              }
-          ]
-      },
-      {
-          "id": "4",
-          "key": "unitSettings/loginMethod/Select",
-          "type": "select",
-          "label": "Getac Login Mode",
-          "value": "Getac Auth",
-          "options": [
-              {
-                  "value": "Getac Auth",
-                  "label": "Getac Auth"
-              },
-              {
-                  "value": "Active Directory",
-                  "label": "Active Directory"
-              },
-              {
-                  "value": "CAD",
-                  "label": "CAD"
-              }
-          ]
-      },
-      {
-          "id": "5",
-          "key": "unitSettings/enableCategories/CheckBox",
-          "type": "checkbox",
-          "label": "Categories",
-          "value": true,
-          "hinttext": true,
-          "hintvalue": "Allows to specify categories for selection after recording",
-          "checkBoxText": "Enable Categorization",
-          "class": "CategoriesIncar"
-      },
-      {
-          "id": "6",
-          "key": "unitSettings/categories/Multiselect",
-          "type": "multiselect",
-          "value": [
-              "Add All"
-          ],
-          "depends": [
-              {
-                  "key": "unitSettings/enableCategories/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ],
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required",
-                  "when": {
-                      "key": "unitSettings/enableCategories/CheckBox",
-                      "value": true
-                  }
-              }
-          ],
-          "options": [
-              {
-                  "value": "Add All",
-                  "label": "Add All"
-              }
-          ]
-      },
-      {
-          "id": "7",
-          "key": "unitSettings/configUpdateInterval/NumberBox",
-          "type": "number",
-          "label": "Config Update Interval",
-          "requiredField": "true",
-          "value": 10,
-          "seconds": false,
-          "hinttext": true,
-          "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
-          "required": true,
-          "class": "UpdateIntervalIncar",
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "Required"
-              }
-          ]
-      },
-      {
-          "id": "8",
-          "required": true,
-          "key": "unitSettings/mediaRetentionPolicy/Select",
-          "type": "select",
-          "label": "Media Retention Policy",
-          "value": "",
-          "class": "RetentionPolicyIncar ",
-          "options": [
-              {
-                  "value": "",
-                  "label": "none"
-              }
-          ]
-      },
-      {
-          "id": "8",
-          "required": true,
-          "key": "unitSettings/blackboxRetentionPolicy/Select",
-          "type": "select",
-          "label": "Blackbox Retention Policy",
-          "value": "",
-          "options": [
-              {
-                  "value": "",
-                  "label": "none"
-              }
-          ]
-      },
-      {
-          "id": "9",
-          "key": "unitSettings/maximumVideoLength/NumberBox",
-          "type": "number",
-          "label": "Maximum Video Length",
-          "value": 60,
-          "class": "MaximumVideoLengthIncar",
-          "seconds": false,
-          "required": true,
-          "checkHelperText": "(Minimum allowed is 5 and maximum allowed is 120)",
-          "requiredField": "true",
-          "hinttext": true,
-          "hintvalue": "Allows to specify maximum video chunk to record for continuous video",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "Required"
-              }
-          ]
-      },
-      {
-          "id": "10",
-          "key": "unitSettings/gpsFrequency/NumberBox",
-          "type": "number",
-          "label": "GPS Frequency",
-          "value": 15,
-          "seconds": true,
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 3600)",
-          "required": true,
-          "class": "GPSFrequencyIncar",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "Required"
-              }
-          ]
-      },
-      {
-          "id": "11",
-          "key": "unitSettings/rebootEveryDay/CheckBox",
-          "type": "checkbox",
-          "label": "Reboot",
-          "checkBoxText": "Reboot Every Day",
-          "class": "RebootIncar",
-          "value": true,
-          "hinttext": true,
-          "hintvalue": "Allows to specify time to reboot the unit"
-      },
-      {
-          "id": "12",
-          "key": "unitSettings/rebootTime/Timepicker",
-          "type": "time",
-          "class": "timeUnitIncar",
-          "value": "",
-          "required": true,
-          "depends": [
-              {
-                  "key": "unitSettings/rebootEveryDay/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ]
-      },
-      {
-          "id": "13",
-          "key": "unitSettings/groupName/TextBox",
-          "type": "text",
-          "label": "Group Name",
-          "value": ""
-      },
-      {
-          "id": "14",
-          "key": "unitSettings/overideBWGroupName/CheckBox",
-          "type": "checkbox",
-          "label": "Overide BW Group Name",
-          "value": false
-      },
-      {
-          "id": "15",
-          "key": "unitSettings/recordingStartAtSpeed/NumberBox",
-          "type": "number",
-          "label": "Recording Start At Speed",
-          "value": "80",
-          "class": "HideField"
-      },
-      {
-          "id": "19",
-          "key": "unitSettings/speedAlertsPerXSeconds/NumberBox",
-          "type": "number",
-          "label": "Speed Alerts Per X Seconds",
-          "value": "60",
-          "class": "HideField"
-      },
-      {
-          "id": "21",
-          "key": "unitSettings/speedEventEmailNotification/CheckBox",
-          "type": "checkbox",
-          "label": "Speed Event Email Notification",
-          "value": false,
-          "class": "HideField"
-      }
-  ],
-  "Primary Device": [
-      {
-          "id": "3",
-          "key": "device/Device/Select",
-          "type": "select",
-          "label": "Device",
-          "value": "VR-X10",
-          "options": []
-      },
-      {
-          "id": "4",
-          "labelGroupRecording": "GPS",
-          "key": "device/USBGPS/CheckBox",
-          "type": "checkbox",
-          "label": "USB GPS",
-          "checkBoxText": "Enable USB GPS",
-          "class": "USBGPSIncar",
-          "value": true
-      },
-      {
-          "id": "1",
-          "key": "device/PortName/NumberBox",
-          "type": "number",
-          "label": "Port Name",
-          "value": "",
-          "hintvalue": "Serial or UDP for GPS",
-          "hinttext": true,
-          "seconds": true,
-          "class": "PortNameIncar",
-          "depends": [
-              {
-                  "key": "device/USBGPS/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ]
-      },
-      {
-          "id": "1",
-          "key": "device/SerialBaudRate/NumberBox",
-          "type": "number",
-          "label": "Serial Baud Rate",
-          "value": "0",
-          "class": "SerialBaudRateIncar",
-          "hinttext": true,
-          "hintvalue": "Baud rate for serial port or UDP port for network GPS device",
-          "seconds": true,
-          "depends": [
-              {
-                  "key": "device/USBGPS/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ],
-          "validation": [
-              {
-                  "key": "max",
-                  "value": 10000,
-                  "msg": "Two High"
-              }
-          ]
-      },
-      {
-          "id": "4",
-          "key": "device/HardwareMonitoringWhenOffline/CheckBox",
-          "labelGroupRecording": "Hardware Interface",
-          "type": "checkbox",
-          "label": "Hardware Monitoring When Offline",
-          "checkBoxText": "Enable Hardware Monitoring When Offline",
-          "class": "HardwareMonitoringIncar",
-          "value": true
-      },
-      {
-          "id": "4",
-          "key": "device/RecordingStopWhenLightsOn/CheckBox",
-          "type": "checkbox",
-          "label": "Recording Stop When Lights On",
-          "class": "RecordingStopIncar",
-          "checkBoxText": "Enable Recording Stop When Lights On",
-          "value": true
-      },
-      {
-          "id": "8",
-          "key": "device/ShutdownAfterIgnitionOff/NumberBox",
-          "type": "number",
-          "label": "Shutdown After Ignition Off",
-          "value": 15,
-          "class": "ShutdownIgnitionIncar",
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-          "seconds": false,
-          "required": true,
-          "hinttext": true,
-          "hintvalue": "Shutdown the unit after specified number of minutes if the ignition turned off",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required"
-              }
-          ]
-      },
-      {
-          "id": "8",
-          "key": "device/ShutdownAfterIgnitionOffWhenUploading/NumberBox",
-          "type": "number",
-          "label": "Shutdown After Ignition Off When Uploading",
-          "value": 30,
-          "seconds": false,
-          "hinttext": true,
-          "hintvalue": "Shutdown the unit after specified number of minutes when unit is uploading if the ignition turned off",
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required"
-              }
-          ]
-      },
-      {
-          "id": "8",
-          "key": "device/ShutdownOnVehicleBatteryVoltage/NumberBox",
-          "type": "number",
-          "label": "Shutdown On Vehicle Battery Voltage",
-          "value": 11,
-          "volts": true,
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-          "hinttext": true,
-          "hintvalue": "Shutdown the unit if the battery voltage is sensed at the specific number",
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required"
-              }
-          ]
-      },
-      {
-          "id": "4",
-          "key": "device/BeepDuringRecording/CheckBox",
-          "type": "checkbox",
-          "label": "Beep During Recording",
-          "class": "BeepDuringIncar",
-          "checkBoxText": "Enable Beep",
-          "hinttext": true,
-          "hintvalue": "Allows to specify interval for the beep during recording",
-          "value": false
-      },
-      {
-          "id": "1",
-          "key": "device/BeepDuringRecordingTrue/NumberBox",
-          "type": "number",
-          "label": "",
-          "value": "",
-          "seconds": true,
-          "depends": [
-              {
-                  "key": "device/BeepDuringRecording/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ]
-      },
-      {
-          "id": "1",
-          "key": "device/BeepDuringRecording20True/NumberBox",
-          "type": "number",
-          "label": "",
-          "value": "",
-          "seconds": true,
-          "depends": [
-              {
-                  "key": "device/BeepDuringRecording20/CheckBox",
-                  "value": [
-                      true
-                  ]
-              }
-          ]
-      },
-      {
-          "id": "8",
-          "key": "device/SensorRecordingStartDelay/NumberBox",
-          "type": "number",
-          "label": "Sensor Recording Start Delay",
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 60)",
-          "value": 8,
-          "class": "SensorRecordingIncar",
-          "hinttext": true,
-          "hintvalue": "Allows to specify delay for recording to start on hardware event",
-          "seconds": true,
-          "validation": [
-              {
-                  "key": "required",
-                  "msg": "required"
-              },
-              {
-                  "key": "max",
-                  "value": 60,
-                  "msg": "Two High"
-              }
-          ]
-      },
-      {
-          "id": "4",
-          "key": "device/EnableLogoutfromUnit/CheckBox",
-          "type": "checkbox",
-          "label": "Logout",
-          "class": "LogoutIncar",
-          "checkBoxText": "Force Logout On Shutdown",
-          "value": false,
-          "hinttext": true,
-          "hintvalue": "Logout users on closing/shutdown application"
-      },
-      {
-          "id": "4",
-          "key": "device/ForceLogoutonShutdown/CheckBox",
-          "type": "checkbox",
-          "class": "LogoutTwoIncar",
-          "checkBoxText": "Enable Logout From Unit",
-          "value": false,
-          "hinttext": true,
-          "hintvalue": "Enable logout from the unit. At least one user has to be logged in to the system if disabled"
-      },
-      {
-          "id": "1",
-          "key": "device/Diagnosticslogginginterval/NumberBox",
-          "type": "number",
-          "label": "Diagnostics Logging Interval",
-          "checkHelperText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-          "value": "129",
-          "hinttext": true,
-          "hintvalue": "Allows to specify logging interval for diagnostic logs",
-          "class": "HideField"
-      },
-      {
-          "id": "1",
-          "key": "device/MicrophoneChargeTime/NumberBox",
-          "type": "number",
-          "label": "Microphone Charge Time",
-          "value": "200",
-          "class": "HideField"
-      },
-      {
-          "id": "1",
-          "key": "device/USBPortChargeTime/NumberBox",
-          "type": "number",
-          "label": "USB Port Charge Time",
-          "value": "15",
-          "class": "USBPortChargeIncar HideField"
-      }
-  ],
-  "CameraSetup": [
-      {
-          "key": "CameraSetup/Camera/FieldArray",
-          "type": "fieldarray",
-          "label": "FieldArray",
-          "value": "1",
-          "name": "feilds",
-          "feilds": [
-              [
-                  {
-                      "key": "CameraSetup/device_1_Camera/Select",
-                      "type": "select",
-                      "label": "Device",
-                      "value": "",
-                      "class": "DeviceIncar",
-                      "options": [],
-                      "sequence": 0,
-                      "optionAppendOnChange": [
-                          {
-                              "value": "11",
-                              "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
-                              "options": [
-                                  "768 x 432",
-                                  "1280 x 720",
-                                  "1920 x 1080"
-                              ]
-                          },
-                          {
-                              "value": "12",
-                              "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
-                              "options": [
-                                  "1280 x 720",
-                                  "1920 x 1080"
-                              ]
-                          },
-                          {
-                              "value": "13",
-                              "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
-                              "options": [
-                                "1280 x 720",
-                                "1920 x 1080"
-                            ]
-                          },
-                          {
-                              "value": "14",
-                              "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
-                              "options": [
-                                  "640 x 480",
-                                  "720 x 480"
-                              ]
-                          },
-                          {
-                              "value": "18",
-                              "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
-                              "options": [
-                                  "640 x 480"
-                              ]
-                          }
-                      ],
-                      "valueSetOnChange": [
-                          {
-                              "value": "5",
-                              "valueToSetKey": "CameraSetup/audioDeviceType_rowId_Camera/Select",
-                              "setValue": "9"
-                          }
-                      ]
-                  },
-                  {
-                      "key": "CameraSetup/cameraName_1_Camera/TextBox",
-                      "value": "",
-                      "type": "text",
-                      "label": "Camera Name",
-                      "sequence": 3,
-                      "validation": [
-                          {
-                              "key": "required",
-                              "msg": "required"
-                          },
-                          {
-                              "key": "max",
-                              "value": 128,
-                              "msg": "Greater than 128 characters"
-                          },
-                          {
-                              "key": "min",
-                              "value": 3,
-                              "msg": "Less than 3 characters"
-                          }
-                      ]
-                  },
-                  {
-                      "key": "CameraSetup/preRecordingDuration_1_Camera/NumberBox",
-                      "type": "number",
-                      "label": "Pre-Recording Duration",
-                      "sequence": 3,
-                      "value": 5,
-                      "class": "PreRecordingDurationIncar",
-                      "checkHelperText": "(Minimum allowed is 1 and maximum allowed is 1000)",
-                      "hinttext": true,
-                      "hintvalue": "Allows to specify the time period for the camera to capture before Start Recording button is pressed",
-                      "seconds": true,
-                      "validation": [
-                          {
-                              "key": "required",
-                              "msg": "required"
-                          },
-                          {
-                              "key": "max",
-                              "value": 1000,
-                              "msg": "Greater than 1000"
-                          },
-                          {
-                              "key": "min",
-                              "value": 1,
-                              "msg": "Less than 1"
-                          }
-                      ]
-                  },
-                  {
-                      "key": "CameraSetup/postRecordingDuration_1_Camera/NumberBox",
-                      "type": "number",
-                      "label": "Post-Recording Duration",
-                      "sequence": 3,
-                      "value": 1,
-                      "class": "PostRecordingDurationIncar",
-                      "checkHelperText": "(Minimum allowed is 1 and maximum allowed is 1000)",
-                      "hinttext": true,
-                      "hintvalue": "Allows to specify the time period for the camera to capture after Stop Recording button is pressed",
-                      "validation": [
-                          {
-                              "key": "required",
-                              "msg": "required"
-                          },
-                          {
-                              "key": "max",
-                              "value": 1000,
-                              "msg": "Greater than 1000"
-                          },
-                          {
-                              "key": "min",
-                              "value": 1,
-                              "msg": "Less than 1"
-                          }
-                      ]
-                  },
-                  {
-                      "labelMute": "Blackbox Recording",
-                      "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
-                      "type": "radio",
-                      "label": "Off",
-                      "sequence": 3,
-                      "value": "Off",
-                      "class": "BlackboxRecordingIncar",
-                      "selected": true
-                  },
-                  {
-                      "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
-                      "type": "radio",
-                      "label": "Continous",
-                      "sequence": 3,
-                      "value": "Continous",
-                      "hinttext": true,
-                      "hintvalue": "(As long as DVR is on, it is recording.)",
-                      "selected": false
-                  },
-                  {
-                      "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
-                      "type": "radio",
-                      "label": "Only when recording in-car video to in-car disk",
-                      "sequence": 3,
-                      "value": "Only when recording in-car video to in-car disk",
-                      "selected": false
-                  },
-                  {
-                      "key": "CameraSetup/blackboxDirectory_1_Camera/TextBox",
-                      "value": "",
-                      "type": "text",
-                      "label": "Blackbox Directory",
-                      "sequence": 3,
-                      "class": "BlackboxDirectoryIncar",
-                      "validation": [
-                          {
-                              "key": "required",
-                              "msg": "required",
-                              "when": {
-                                  "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",
-                                  "value": "Continous"
-                              }
-                          }
-                      ],
-                      "depends": [
-                          {
-                              "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",
-                              "value": [
-                                  "Continous"
-                              ]
-                          }
-                      ]
-                  },
-                  {
-                      "key": "CameraSetup/micOffWhenNotRecording_1_Camera/CheckBox",
-                      "type": "checkbox",
-                      "label": "Mic Off When Not Recording",
-                      "sequence": 3,
-                      "checkBoxText": "Mic Off When Not Recording",
-                      "class": "MicOffIncar",
-                      "value": false
-                  },
-                  {
-                      "key": "CameraSetup/overlayMetadataOnVideo_1_Camera/CheckBox",
-                      "type": "checkbox",
-                      "label": "Overlay Metadata On Video",
-                      "sequence": 3,
-                      "checkBoxText": "Overlay Metadata On Video",
-                      "hinttext": true,
-                      "hintvalue": "Includes GPS/Date and time overlays in the video stream",
-                      "value": false
-                  },
-                  {
-                      "key": "CameraSetup/captureWithMasterButton_1_Camera/CheckBox",
-                      "type": "checkbox",
-                      "label": "Capture With Master Button",
-                      "sequence": 3,
-                      "class": "CaptureMasterButtonIncar",
-                      "checkBoxText": "Start/Stop Capture With Master Button",
-                      "value": false
-                  },
-                  {
-                      "key": "CameraSetup/cameraMode_1_Camera/Select",
-                      "type": "select",
-                      "label": "Camera Mode",
-                      "sequence": 3,
-                      "hinttext": true,
-                      "hintvalue": "Allows to select Camera Mode for the screen on startup",
-                      "value": "",
-                      "options": [
-                          {
-                              "value": "Auto",
-                              "label": "Auto"
-                          },
-                          {
-                              "value": "Day",
-                              "label": "Day"
-                          },
-                          {
-                              "value": "Night",
-                              "label": "Night"
-                          },
-                          {
-                              "value": "IR",
-                              "label": "IR"
-                          }
-                      ]
-                  },
-                  {
-                      "key": "CameraSetup/resolution_1_Camera/Select",
-                      "type": "select",
-                      "label": "Resolution",
-                      "sequence": 3,
-                      "value": "",
-                      "options": [
-                          {
-                              "value": "320 x 240",
-                              "label": "320 x 240"
-                          },
-                          {
-                              "value": "640 x 480",
-                              "label": "640 x 480"
-                          },
-                          {
-                              "value": "720 x 480",
-                              "label": "720 x 480"
-                          },
-                          {
-                              "value": "768 x 432",
-                              "label": "768 x 432"
-                          },
-                          {
-                              "value": "848 x 480",
-                              "label": "848 x 480"
-                          },
-                          {
-                              "value": "1024 x 768",
-                              "label": "1024 x 768"
-                          },
-                          {
-                              "value": "1280 x 720",
-                              "label": "1280 x 720"
-                          },
-                          {
-                              "value": "1920 x 1080",
-                              "label": "1920 x 1080"
-                          },
-                          {
-                              "value": "2560 × 1440",
-                              "label": "2560 × 1440"
-                          }
-                      ]
-                  }
-              ]
-          ]
-      }
-  ]
+    "Template Information": [{
+            "id": "1",
+            "key": "unittemplate/templateName/TextBox",
+            "type": "text",
+            "label": "Template Name",
+            "value": "",
+            "validation": [{
+                    "key": "required",
+                    "msg": "required"
+                }, {
+                    "key": "max",
+                    "value": 128,
+                    "msg": "Greater than 128 characters"
+                }, {
+                    "key": "min",
+                    "value": 3,
+                    "msg": "Less than 3 characters"
+                }
+            ]
+        }, {
+            "id": "2",
+            "required": true,
+            "key": "unittemplate/station/Select",
+            "type": "select",
+            "label": "Station",
+            "options": []
+        }
+    ],
+    "Unit Settings": [{
+            "id": "3",
+            "key": "unitSettings/mode/Select",
+            "type": "select",
+            "label": "Mode",
+            "value": "PC",
+            "options": [{
+                    "value": "PC",
+                    "label": "PC"
+                }, {
+                    "value": "DVR",
+                    "label": "DVR"
+                }
+            ]
+        }, {
+            "id": "4",
+            "key": "unitSettings/loginMethod/Select",
+            "type": "select",
+            "label": "Getac Login Mode",
+            "value": "Getac Auth",
+            "options": [{
+                    "value": "Getac Auth",
+                    "label": "Getac Auth"
+                }, {
+                    "value": "Active Directory",
+                    "label": "Active Directory"
+                }, {
+                    "value": "CAD",
+                    "label": "CAD"
+                }
+            ]
+        }, {
+            "id": "5",
+            "key": "unitSettings/enableCategories/CheckBox",
+            "type": "checkbox",
+            "label": "Categories",
+            "value": true,
+            "hintText": "Allows to specify categories for selection after recording",
+            "checkBoxText": "Enable Categorization",
+            "class": "CategoriesIncar"
+        }, {
+            "id": "6",
+            "key": "unitSettings/categories/Multiselect",
+            "type": "multiselect",
+            "value": [
+                "Add All"
+            ],
+            "depends": [{
+                    "key": "unitSettings/enableCategories/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ],
+            "validation": [{
+                    "key": "required",
+                    "msg": "required",
+                    "when": {
+                        "key": "unitSettings/enableCategories/CheckBox",
+                        "value": true
+                    }
+                }
+            ],
+            "options": [{
+                    "value": "Add All",
+                    "label": "Add All"
+                }
+            ]
+        }, {
+            "id": "7",
+            "key": "unitSettings/configUpdateInterval/NumberBox",
+            "type": "number",
+            "label": "Config Update Interval",
+            "requiredField": "true",
+            "value": 10,
+            "postFieldText": "minutes",
+            "hintText": "Keeps synchronizing unit configuration at the specified minutes",
+            "required": true,
+            "class": "UpdateIntervalIncar",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+            "validation": [{
+                    "key": "required",
+                    "msg": "Required"
+                }
+            ]
+        }, {
+            "id": "8",
+            "required": true,
+            "key": "unitSettings/mediaRetentionPolicy/Select",
+            "type": "select",
+            "label": "Media Retention Policy",
+            "value": "",
+            "class": "RetentionPolicyIncar ",
+            "options": [{
+                    "value": "",
+                    "label": "none"
+                }
+            ]
+        }, {
+            "id": "8",
+            "required": true,
+            "key": "unitSettings/blackboxRetentionPolicy/Select",
+            "type": "select",
+            "label": "Blackbox Retention Policy",
+            "value": "",
+            "options": [{
+                    "value": "",
+                    "label": "none"
+                }
+            ]
+        }, {
+            "id": "9",
+            "key": "unitSettings/maximumVideoLength/NumberBox",
+            "type": "number",
+            "label": "Maximum Video Length",
+            "value": 60,
+            "class": "MaximumVideoLengthIncar",
+            "postFieldText": "minutes",
+            "required": true,
+            "belowFieldText": "(Minimum allowed is 5 and maximum allowed is 120)",
+            "requiredField": "true",
+            "hintText": "Allows to specify maximum video chunk to record for continuous video",
+            "validation": [{
+                    "key": "required",
+                    "msg": "Required"
+                }
+            ]
+        }, {
+            "id": "10",
+            "key": "unitSettings/gpsFrequency/NumberBox",
+            "type": "number",
+            "label": "GPS Frequency",
+            "value": 15,
+            "postFieldText": "seconds",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 3600)",
+            "required": true,
+            "class": "GPSFrequencyIncar",
+            "validation": [{
+                    "key": "required",
+                    "msg": "Required"
+                }
+            ]
+        }, {
+            "id": "11",
+            "key": "unitSettings/rebootEveryDay/CheckBox",
+            "type": "checkbox",
+            "label": "Reboot",
+            "checkBoxText": "Reboot Every Day",
+            "class": "RebootIncar",
+            "value": true,
+            "hintText": "Allows to specify time to reboot the unit"
+        }, {
+            "id": "12",
+            "key": "unitSettings/rebootTime/Timepicker",
+            "type": "time",
+            "class": "timeUnitIncar",
+            "value": "",
+            "required": true,
+            "depends": [{
+                    "key": "unitSettings/rebootEveryDay/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ]
+        }, {
+            "id": "4",
+            "key": "unitSettings/EnableLogoutfromUnit/CheckBox",
+            "type": "checkbox",
+            "label": "Logout",
+            "class": "LogoutIncar",
+            "checkBoxText": "Force Logout On Shutdown",
+            "value": false,
+            "hintText": "Logout users on closing/shutdown application"
+        }, {
+            "id": "4",
+            "key": "unitSettings/ForceLogoutonShutdown/CheckBox",
+            "type": "checkbox",
+            "class": "LogoutTwoIncar",
+            "checkBoxText": "Enable Logout From Unit",
+            "value": false,
+            "hintText": "Enable logout from the unit. At least one user has to be logged in to the system if disabled"
+        }, {
+            "id": "13",
+            "key": "unitSettings/groupName/TextBox",
+            "type": "text",
+            "label": "BodyWorn Group Name",
+            "value": ""
+        }, {
+            "id": "14",
+            "key": "unitSettings/overideBWGroupName/CheckBox",
+            "type": "checkbox",
+            "label": "Overide BodyWorn Group Name",
+            "value": false
+        }, {
+            "id": "15",
+            "key": "unitSettings/recordingStartAtSpeed/NumberBox",
+            "type": "number",
+            "label": "Recording Start At Speed",
+            "value": "80",
+            "class": "HideField"
+        }, {
+            "id": "19",
+            "key": "unitSettings/speedAlertsPerXSeconds/NumberBox",
+            "type": "number",
+            "label": "Speed Alerts Per X Seconds",
+            "value": "60",
+            "class": "HideField"
+        }, {
+            "id": "21",
+            "key": "unitSettings/speedEventEmailNotification/CheckBox",
+            "type": "checkbox",
+            "label": "Speed Event Email Notification",
+            "value": false,
+            "class": "HideField"
+        }
+    ],
+    "Primary Device": [{
+            "id": "3",
+            "key": "device/PrimaryDevice/Select",
+            "type": "select",
+            "label": "Device",
+            "value": "VRX-20",
+            "options": []
+        }, {
+            "id": "4",
+            "labelGroupRecording": "GPS",
+            "key": "device/USBGPS/CheckBox",
+            "type": "checkbox",
+            "label": "USB GPS",
+            "checkBoxText": "Enable USB GPS",
+            "class": "USBGPSIncar",
+            "value": true
+        }, {
+            "id": "1",
+            "key": "device/PortName/NumberBox",
+            "type": "number",
+            "label": "Port Name",
+            "value": "",
+            "hintText": "Serial or UDP for GPS",
+            "class": "PortNameIncar",
+            "postFieldText": "seconds",
+            "depends": [{
+                    "key": "device/USBGPS/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ]
+        }, {
+            "id": "1",
+            "key": "device/SerialBaudRate/NumberBox",
+            "type": "number",
+            "label": "Serial Baud Rate",
+            "value": "0",
+            "class": "SerialBaudRateIncar",
+            "hintText": "Baud rate for serial port or UDP port for network GPS device",
+            "postFieldText": "seconds",
+            "depends": [{
+                    "key": "device/USBGPS/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ],
+            "validation": [{
+                    "key": "max",
+                    "value": 10000,
+                    "msg": "Two High"
+                }
+            ]
+        }, {
+            "id": "4",
+            "key": "device/HardwareMonitoringWhenOffline/CheckBox",
+            "labelGroupRecording": "Hardware Interface",
+            "type": "checkbox",
+            "label": "Hardware Monitoring When Offline",
+            "checkBoxText": "Enable Hardware Monitoring When Offline",
+            "class": "HardwareMonitoringIncar",
+            "value": true
+        }, {
+            "id": "4",
+            "key": "device/RecordingStopWhenLightsOn/CheckBox",
+            "type": "checkbox",
+            "label": "Recording Stop When Lights On",
+            "class": "RecordingStopIncar",
+            "checkBoxText": "Enable Recording Stop When Lights On",
+            "value": true
+        }, {
+            "id": "8",
+            "key": "device/ShutdownAfterIgnitionOff/NumberBox",
+            "type": "number",
+            "label": "Shutdown After Ignition Off",
+            "value": 15,
+            "class": "ShutdownIgnitionIncar",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+            "postFieldText": "minutes",
+            "required": true,
+            "hintText": "Shutdown the unit after specified number of minutes if the ignition turned off",
+            "validation": [{
+                    "key": "required",
+                    "msg": "required"
+                }
+            ]
+        }, {
+            "id": "8",
+            "key": "device/ShutdownAfterIgnitionOffWhenUploading/NumberBox",
+            "type": "number",
+            "label": "Shutdown After Ignition Off When Uploading",
+            "value": 30,
+            "postFieldText": "minutes",
+            "hintText": "Shutdown the unit after specified number of minutes when unit is uploading if the ignition turned off",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+            "validation": [{
+                    "key": "required",
+                    "msg": "required"
+                }
+            ]
+        }, {
+            "id": "8",
+            "key": "device/ShutdownOnVehicleBatteryVoltage/NumberBox",
+            "type": "number",
+            "label": "Shutdown On Vehicle Battery Voltage",
+            "value": 11,
+            "postFieldText": "volts",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+            "hintText": "Shutdown the unit if the battery voltage is sensed at the specific number",
+            "validation": [{
+                    "key": "required",
+                    "msg": "required"
+                }
+            ]
+        }, {
+            "id": "4",
+            "key": "device/BeepDuringRecording/CheckBox",
+            "type": "checkbox",
+            "label": "Beep During Recording",
+            "class": "BeepDuringIncar",
+            "checkBoxText": "Enable Beep",
+            "hintText": "Allows to specify interval for the beep during recording",
+            "value": false
+        }, {
+            "id": "1",
+            "key": "device/BeepDuringRecordingTrue/NumberBox",
+            "type": "number",
+            "label": "",
+            "value": "",
+            "postFieldText": "seconds",
+            "depends": [{
+                    "key": "device/BeepDuringRecording/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ]
+        }, {
+            "id": "1",
+            "key": "device/BeepDuringRecording20True/NumberBox",
+            "type": "number",
+            "label": "",
+            "value": "",
+            "postFieldText": "seconds",
+            "depends": [{
+                    "key": "device/BeepDuringRecording20/CheckBox",
+                    "value": [
+                        true
+                    ]
+                }
+            ]
+        }, {
+            "id": "8",
+            "key": "device/SensorRecordingStartDelay/NumberBox",
+            "type": "number",
+            "label": "Sensor Recording Start Delay",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 60)",
+            "value": 8,
+            "class": "SensorRecordingIncar",
+            "hintText": "Allows to specify delay for recording to start on hardware event",
+            "postFieldText": "seconds",
+            "validation": [{
+                    "key": "required",
+                    "msg": "required"
+                }, {
+                    "key": "max",
+                    "value": 60,
+                    "msg": "Two High"
+                }
+            ]
+        }, {
+            "id": "1",
+            "key": "device/Diagnosticslogginginterval/NumberBox",
+            "type": "number",
+            "label": "Diagnostics Logging Interval",
+            "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
+            "value": "129",
+            "hintText": "Allows to specify logging interval for diagnostic logs",
+            "class": "HideField"
+        }, {
+            "id": "1",
+            "key": "device/MicrophoneChargeTime/NumberBox",
+            "type": "number",
+            "label": "Microphone Charge Time",
+            "value": "200",
+            "class": "HideField"
+        }, {
+            "id": "1",
+            "key": "device/USBPortChargeTime/NumberBox",
+            "type": "number",
+            "label": "USB Port Charge Time",
+            "value": "15",
+            "class": "HideField USBPortChargeIncar"
+        }
+    ],
+    "CameraSetup": [{
+            "key": "CameraSetup/Camera/FieldArray",
+            "type": "fieldarray",
+            "label": "FieldArray",
+            "value": "1",
+            "name": "feilds",
+            "feilds": [
+                [{
+                        "key": "CameraSetup/cameraName_1_Camera/TextBox",
+                        "value": "",
+                        "type": "text",
+                        "label": "Camera Name",
+                        "sequence": 0,
+                        "validation": [{
+                                "key": "required",
+                                "msg": "required"
+                            }, {
+                                "key": "max",
+                                "value": 128,
+                                "msg": "Greater than 128 characters"
+                            }, {
+                                "key": "min",
+                                "value": 3,
+                                "msg": "Less than 3 characters"
+                            }
+                        ]
+                    }, {
+                        "key": "CameraSetup/device_1_Camera/Select",
+                        "type": "select",
+                        "label": "Device",
+                        "value": "",
+                        "class": "DeviceIncar",
+                        "options": [],
+                        "sequence": 0,
+                        "optionAppendOnChange": [{
+                                "value": "11",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "768 x 432",
+                                    "1280 x 720",
+                                    "1920 x 1080"
+                                ]
+                            }, {
+                                "value": "12",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "1280 x 720",
+                                    "1920 x 1080"
+                                ]
+                            }, {
+                                "value": "19",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "1280 x 720",
+                                    "1920 x 1080"
+                                ]
+                            }, {
+                                "value": "13",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "1280 x 720"
+                                ]
+                            }, {
+                                "value": "14",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "640 x 480",
+									"720 x 480"
+                                ]
+                            }, {
+                                "value": "18",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+                                    "640 x 480"
+                                ]
+                            }, {
+                                "value": "20",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+									"720 x 400",
+									"768 x 216",
+                                    "1280 x 720",
+                                    "1920 x 1080",
+                                    "2560 × 1440",
+									"3840 × 1080",
+                                    "3840 × 2160"
+                                ]
+                            }, {
+                                "value": "21",
+                                "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
+                                "options": [
+								    "720 x 400",
+									"768 x 216",
+                                    "1280 x 720",
+                                    "1920 x 1080",
+                                    "2560 × 1440",
+									"3840 × 1080",
+                                    "3840 × 2160"
+                                ]
+                            }, {
+                                "value": "20",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps", "12Mbps", "24Mbps"
+                                ]
+                            }, {
+                                "value": "21",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps", "12Mbps", "24Mbps"
+                                ]
+                            }, {
+                                "value": "11",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps"
+                                ]
+                            }, {
+                                "value": "12",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps"
+                                ]
+                            }, {
+                                "value": "13",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps"
+                                ]
+                            }, {
+                                "value": "19",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps", "6Mbps"
+                                ]
+                            }
+                        ],
+                        "valueSetOnChange": [{
+                                "value": "5",
+                                "valueToSetKey": "CameraSetup/audioDeviceType_rowId_Camera/Select",
+                                "setValue": "9"
+                            }
+                        ]
+                    }, {
+                        "key": "CameraSetup/preRecordingDuration_1_Camera/NumberBox",
+                        "type": "number",
+                        "label": "Pre-Recording Duration",
+                        "sequence": 3,
+                        "value": 5,
+                        "class": "PreRecordingDurationIncar",
+                        "belowFieldText": "(Minimum allowed is 1 and maximum allowed is 1000)",
+                        "hintText": "Allows to specify the time period for the camera to capture before Start Recording button is pressed",
+                        "postFieldText": "seconds",
+                        "validation": [{
+                                "key": "required",
+                                "msg": "required"
+                            }, {
+                                "key": "max",
+                                "value": 1000,
+                                "msg": "Greater than 1000"
+                            }, {
+                                "key": "min",
+                                "value": 1,
+                                "msg": "Less than 1"
+                            }
+                        ]
+                    }, {
+                        "key": "CameraSetup/postRecordingDuration_1_Camera/NumberBox",
+                        "type": "number",
+                        "label": "Post-Recording Duration",
+                        "sequence": 3,
+                        "value": 1,
+                        "class": "PostRecordingDurationIncar",
+                        "belowFieldText": "(Minimum allowed is 1 and maximum allowed is 1000)",
+                        "hintText": "Allows to specify the time period for the camera to capture after Stop Recording button is pressed",
+                        "postFieldText": "seconds",
+                        "validation": [{
+                                "key": "required",
+                                "msg": "required"
+                            }, {
+                                "key": "max",
+                                "value": 1000,
+                                "msg": "Greater than 1000"
+                            }, {
+                                "key": "min",
+                                "value": 1,
+                                "msg": "Less than 1"
+                            }
+                        ]
+                    }, {
+                        "labelMute": "Blackbox Recording",
+                        "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
+                        "type": "radio",
+                        "label": "Off",
+                        "sequence": 3,
+                        "value": "Off",
+                        "class": "BlackboxRecordingIncar",
+                        "selected": true
+                    }, {
+                        "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
+                        "type": "radio",
+                        "label": "Continous",
+                        "sequence": 3,
+                        "value": "Continous",
+                        "hintText": "(As long as DVR is on, it is recording.)",
+                        "selected": false
+                    }, {
+                        "key": "CameraSetup/blackBoxRecording_1_Camera/Radio",
+                        "type": "radio",
+                        "label": "Only when recording in-car video to in-car disk",
+                        "sequence": 3,
+                        "value": "Only when recording in-car video to in-car disk",
+                        "selected": false
+                    }, {
+                        "key": "CameraSetup/blackboxDirectory_1_Camera/TextBox",
+                        "value": "",
+                        "type": "text",
+                        "label": "Blackbox Directory",
+                        "sequence": 3,
+                        "class": "BlackboxDirectoryIncar",
+                        "validation": [{
+                                "key": "required",
+                                "msg": "required",
+                                "when": {
+                                    "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",
+                                    "value": "Continous"
+                                }
+                            }
+                        ],
+                        "depends": [{
+                                "key": "CameraSetup/blackBoxRecording_rowId_Camera/Radio",
+                                "value": [
+                                    "Continous"
+                                ]
+                            }
+                        ]
+                    }, {
+                        "key": "CameraSetup/micOffWhenNotRecording_1_Camera/CheckBox",
+                        "type": "checkbox",
+                        "label": "Mic Off When Not Recording",
+                        "sequence": 3,
+                        "checkBoxText": "Mic Off When Not Recording",
+                        "class": "MicOffIncar",
+                        "value": false
+                    }, {
+                        "key": "CameraSetup/overlayMetadataOnVideo_1_Camera/CheckBox",
+                        "type": "checkbox",
+                        "label": "Overlay Metadata On Video",
+                        "sequence": 3,
+                        "checkBoxText": "Overlay Metadata On Video",
+                        "hintText": "Includes GPS/Date and time overlays in the video stream",
+                        "value": false
+                    }, {
+                        "key": "CameraSetup/captureWithMasterButton_1_Camera/CheckBox",
+                        "type": "checkbox",
+                        "label": "Capture With Master Button",
+                        "sequence": 3,
+                        "class": "CaptureMasterButtonIncar",
+                        "checkBoxText": "Start/Stop Capture With Master Button",
+                        "value": false
+                    }, {
+                        "key": "CameraSetup/cameraMode_1_Camera/Select",
+                        "type": "select",
+                        "label": "Camera Mode",
+                        "sequence": 3,
+                        "hintText": "Allows to select Camera Mode for the screen on startup",
+                        "value": "",
+                        "options": [{
+                                "value": "Auto",
+                                "label": "Auto"
+                            }, {
+                                "value": "Day",
+                                "label": "Day"
+                            }, {
+                                "value": "Night",
+                                "label": "Night"
+                            }, {
+                                "value": "IR",
+                                "label": "IR"
+                            }
+                        ]
+                    }
+                ]
+            ]
+        }
+    ]
 }

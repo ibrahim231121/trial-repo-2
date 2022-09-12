@@ -111,6 +111,7 @@ const CreateTemplate = (props: any) => {
   const deviceTypes: any = useSelector((state: RootState) => state.unitTemplateSlice.deviceTypes);
   const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
   const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
+  const [deviceTypeLoaded, setDeviceTypeLoaded] = React.useState<boolean>(false);
   const formikProps = useFormikContext()
   const [errCkher, seterrChker] = React.useState<string>("");
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -257,19 +258,28 @@ const CreateTemplate = (props: any) => {
       captureDevicesOptions.push({ value: x.id, label: x.name, category: x.category })
     })
     if (historyState.deviceType == "Incar") {
+      console.log(Initial_Values_obj);
       let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
+      let cameraDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
       cameraDevice.options = [];
+      cameraDevice1.options = [];
       cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+      cameraDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
+      let audioDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
+      audioDevice1.options = [];
       audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+      audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
 
-      let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/Device/Select")
+      let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/PrimaryDevice/Select")
       devicePrimaryDevice.options = [];
       devicePrimaryDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "DVR"))
     }
     setFormSchema(FormSchema);
+    setInitial_Values_obj(Initial_Values_obj);
+    setDeviceTypeLoaded(true);
   }
 
   const setStationDropDown = () => {
@@ -553,11 +563,24 @@ const CreateTemplate = (props: any) => {
       if (!(valueRaw?.feilds !== undefined)) {
         var valueToSave = true;
         var keySubSplit = split[1].split('_');
+        if(split[1] == "PrimaryDevice" && valueToSave)
+        {
+          let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
+          if(deviceType)
+          {
+            Initial_Values.push({
+              key: "PrimaryDeviceName",
+              value: deviceType.name,
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
+        }
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
-
-          if(keySubSplit[0] == "deviceType" && valueToSave)
+          if(keySubSplit[0] == "device" && valueToSave)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
@@ -571,6 +594,19 @@ const CreateTemplate = (props: any) => {
               });
               Initial_Values.push({
                 key: "deviceTypeName_" + keySubSplit[1] + "_" + keySubSplit[2],
+                value: deviceType.name,
+                group: split[0],
+                valueType: split[2],
+                sequence: 1,
+              });
+            }
+          }
+          else if(keySubSplit[0] == "audioDeviceType" && valueToSave){
+            let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
+            if(deviceType)
+            {
+              Initial_Values.push({
+                key: "audioDeviceTypeName" + "_" + keySubSplit[1] + "_" + keySubSplit[2],
                 value: deviceType.name,
                 group: split[0],
                 valueType: split[2],
