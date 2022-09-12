@@ -9,7 +9,8 @@ i18n
     keySeparator: false, // we do not use keys in form messages.welcome
     interpolation: {
       escapeValue: false // react already safes from xss
-    }
+    },
+    components:{ italic: <i />, bold: <strong /> }
   });
 
 export default i18n;
