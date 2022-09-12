@@ -183,9 +183,9 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   React.useEffect(() => {
     props.setFilterValue(() => props.filterValue);
-    props.filterValue?.length > 0
-      ? setButtonState(false)
-      : setButtonState(true);
+    // props.filterValue?.length > 0
+    //   ? setButtonState(false)
+    //   : setButtonState(true);
     // Dropdown is updated, so x button will redirect to cancel confirmation.
     // Check either new value added.
     const changeInValues = props.filterValue.filter((o: any) => {
@@ -216,6 +216,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     reason: any,
     detail: any
   ) => {
+    setButtonState(false);
     props.setFilterValue(() => [...v]);
     if (reason === "remove-option") {
       // Show "Remove Category Reason" Modal Here.
@@ -297,6 +298,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setButtonState(false);
     setAssignUserCheck(e.target.checked);
   };
 
@@ -368,7 +370,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                 <div className="nextBtn">
                   <CRXButton
                     type="submit"
-                    className={"nextButton " + buttonState && "primeryBtn"}
+                    className='primeryBtn'
                     disabled={buttonState}
                   >
                     {t("Save")}

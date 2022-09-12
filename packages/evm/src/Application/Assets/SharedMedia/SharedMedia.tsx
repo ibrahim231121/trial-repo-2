@@ -85,6 +85,8 @@ const SharedMedia = () => {
     camera: string;
   }
   const [LinkStatus, setlinkStatus] = React.useState<string>("Validating...")
+  const [downloadLink, setDownloadLink] = React.useState<string>("")
+
   const [getAssetData, setGetAssetData] = React.useState<Evidence>();
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
   const [res, setRes] = React.useState<Asset>();
@@ -250,6 +252,7 @@ function extract(row: any) {
 function extractfile(file: any) {
   let Filedata: assetdata[] = [];
   Filedata = file.map((template: any, i: number) => {
+    setDownloadLink(template.url);
     return {
       filename: template.name,
       fileurl: template.url,
@@ -257,6 +260,7 @@ function extractfile(file: any) {
 
     }
   })
+  
   return Filedata;
 }
 
@@ -266,6 +270,7 @@ function extractfile(file: any) {
       <span style={{fontSize:"28px",fontWeight:"900"}}>Shared Media</span><br></br>
       <span style={{fontSize:"16px",fontWeight:"400"}}>{LinkStatus}</span>
       </div>
+      <div><a href="{downloadLink}">Download</a></div>
       {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
       <div className='categoryTitle'>
       
