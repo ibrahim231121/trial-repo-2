@@ -705,8 +705,6 @@ const openHandler = (_: React.SyntheticEvent) => {
         pageiGrid.size = rowsPerPage
     })
 
-    console.log("Pagei Filter ",pageiGrid)
-
     dispatch(getUsersInfoAsync(pageiGrid));
   }
 
