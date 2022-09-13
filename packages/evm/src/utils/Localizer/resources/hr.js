@@ -612,7 +612,7 @@ export const resources = {
         "3 hour":"hr-3 hour",
         "Video Pre-Buffer":"hr-Video Pre-Buffer",
         "Enable Video Pre-Buffer":"hr-Enable Video Pre-Buffer",
-        "10 sec":"hr-20 sec",
+        "10 sec":"hr-10 sec",
         "20 sec":"hr-20 sec",
         "30 sec":"hr-30 sec",
         "60 sec":"hr-60 sec",
