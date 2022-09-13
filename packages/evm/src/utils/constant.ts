@@ -83,11 +83,17 @@ var dateOptions = {
     ]
 }
 
+const MAX_REQUEST_SIZE_FOR = {
+  CATEGORY : 1000,
+  STATION: 100
+}
+
 export {
   dateOptions,
   basicDateDefaultValue,
   approachingDateDefaultValue,
-  dateOptionsTypes
+  dateOptionsTypes,
+  MAX_REQUEST_SIZE_FOR
 }
 
 
