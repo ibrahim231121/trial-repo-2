@@ -290,17 +290,18 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
-
-    if (fileData.length == getAssetData?.assets.master.files.length) { // temp condition
-      if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
-        var categories: string[] = [];
-        getAssetData.categories.forEach((x: any) =>
-          x.formData.forEach((y: any) =>
-            y.fields.forEach((z: any) => {
-              categories.push(z.key);
-            })
-          )
-        );
+ 
+  if(fileData.length == getAssetData?.assets.master.files.length)
+  { // temp condition
+    if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
+      var categories: string[] = [];
+      getAssetData.categories.forEach((x: any) =>
+        x.formData.forEach((y: any) =>
+          y.fields.forEach((z: any) => {
+            categories.push(z.key);
+          })
+        )
+      );
 
         var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
 
@@ -352,11 +353,11 @@ const AssetDetailsTemplate = (props: any) => {
       getMasterAssetFile(getAssetData?.assets.master.files)
       getChildAssetFile(getAssetData?.assets.children)
     }
-  }, [getAssetData, fileData, childFileData]);
+  },[getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
-      FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
         setFileData([...fileData, {
           filename: template.name,
           fileurl: template.url,
@@ -369,7 +370,7 @@ const AssetDetailsTemplate = (props: any) => {
   function getChildAssetFile(dt: any) {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
-        FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
           setChildFileData([...childFileData, {
             filename: template.name,
             fileurl: template.url,

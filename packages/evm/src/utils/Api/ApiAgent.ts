@@ -39,16 +39,16 @@ import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupLis
 import {
     ConfigurationTemplate,
     ConfigurationTemplateLogs,
-    DefaultUnitTemplate,
-    DeviceConfigurationTemplate,
-    DeviceType,
-    GetPrimaryDeviceInfo,
-    QueuedAssets,
-    Unit,
-    UnitInfo,
-    UnitTemp,
-    UnitTemplateConfigurationInfo
-} from './models/UnitModels';
+    DefaultUnitTemplate, 
+    Device, 
+    DeviceConfigurationTemplate, 
+    DeviceType, 
+    GetPrimaryDeviceInfo, 
+    QueuedAssets, 
+    Unit, 
+    UnitInfo, 
+    UnitTemp, 
+    UnitTemplateConfigurationInfo } from './models/UnitModels';
 import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
 import { Paginated, Headers } from './models/CommonModels';
@@ -95,12 +95,15 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
     }
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
-const addHeaders = (headers: Headers[]) => {
-    if (config) {
-        let config2: any = config;
-        if (config2["headers"]) {
-            let ConfigHeader: any[] = Object.entries(config2["headers"]);
-            headers.forEach((x: Headers) => {
+const addHeaders = (headers?: Headers[]) => {
+    
+    if(config && headers)
+    {
+        let config2 : any = config;
+        if(config2["headers"])
+        {
+            let ConfigHeader : any[] = Object.entries(config2["headers"]);
+            headers.forEach((x:Headers) => {
                 let a = [x.key, x.value];
                 ConfigHeader.push(a)
             })
@@ -180,19 +183,23 @@ export const UsersAndIdentitiesServiceAgent = {
     editUserGroup: (url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL, url, body, config)
 }
 export const UnitsAndDevicesAgent = {
-    getAllUnits: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config),
+    getAllUnits: (url: string, extraHeader?: Headers[]) => {
+        addHeaders(extraHeader);
+        return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config)
+    },
+    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config), 
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStations: (url: string, headers?: Headers[]) => {
-        (headers && headers.length > 0) && addHeaders(headers);
-        return requests.get<Station[]>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, config);
+    getAllStations: (url: string, extraHeader?: Headers[]) => 
+    {  
+         addHeaders(extraHeader);
+         return  requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url, config)
     },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo" + url, config),
+    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo"+url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
     updateStation: (url: string, body: Station) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getTemplateConfiguration: (url: string) => requests.get<ConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url, config),
@@ -200,8 +207,8 @@ export const UnitsAndDevicesAgent = {
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getAllDeviceConfigurationTemplate: (url: string) => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetTemplateConfigurationLogs/" + url, config),
-    deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/" + url, config),
+    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/"+url, config),
+    deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/"+url, config),
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),
     getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/" + url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),

@@ -5,7 +5,7 @@ import { Station } from '../utils/Api/models/StationModels';
 import { MAX_REQUEST_SIZE_FOR} from '../utils/constant'
 export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
   
-  return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`)
+  return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`,[{key: "InquireDepth", value:"shallow"}] )
     .then((response:Station[]) => response)
     .catch((error: any) => {
         console.error(error.response.data);
