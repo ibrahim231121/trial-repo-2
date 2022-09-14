@@ -13,7 +13,7 @@ export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (
 });
 
 export const getStationsInfoAllAsync: any = createAsyncThunk('getStationsInfoAll', async () => {
-  return await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1$Size=${MAX_REQUEST_SIZE_FOR.STATION}`)
+  return await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1&Size=${MAX_REQUEST_SIZE_FOR.STATION}`)
     .then((response:Station[]) => response)
     .catch((error: any) => {
         console.error(error.response.data);

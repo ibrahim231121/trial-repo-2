@@ -2,13 +2,14 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import {
-    AddOwner,
-    Asset,
-    AssetSharingModel,
-    AssetViewReason,
-    Bookmark,
-    Evidence,
+import {CRXLoader} from "@cb/shared"
+
+import { AddOwner, 
+    Asset, 
+    AssetSharingModel, 
+    AssetViewReason, 
+    Bookmark, 
+    Evidence, 
     ExtendRetention,
     File,
     Note,
@@ -52,6 +53,10 @@ import {
 import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
 import { Paginated, Headers } from './models/CommonModels';
+import { useState, useEffect } from 'react';
+import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 const cookies = new Cookies();
 let config = {
     headers: {
@@ -81,9 +86,12 @@ axios.interceptors.response.use(async response => {
     console.log(error.request.responseURL + ", error code: " + error.response?.status);
     return Promise.reject(error);
 })
+
 const responseBody = <T>(response: AxiosResponse<T>) => {
     return response.data;
 };
+
+
 const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
     let totalCount = response.headers["x-total-count"];
     if (totalCount !== undefined) {
@@ -217,3 +225,24 @@ export const UnitsAndDevicesAgent = {
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }
+
+export const useApiAgent = <T>(request: Promise<T>): [T | undefined]  => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState<T | undefined>(undefined);
+    const dispatch = useDispatch();
+
+    const fetchApi = () => {
+        dispatch(setLoaderValue({isLoading: true}))
+        request.then((response:T) => {
+            dispatch(setLoaderValue({isLoading: false, message: "" }))
+            setIsLoading(false);
+            setData(response);
+        }).catch((ex) => {
+            dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+        })
+    };
+    useEffect(() => {
+        fetchApi();
+    }, []);
+    return [data];
+};
