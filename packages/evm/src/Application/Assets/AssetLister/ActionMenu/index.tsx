@@ -26,6 +26,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import { CRXToaster } from "@cb/shared";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
+import { CRXConfirmDialog } from "@cb/shared";
+import { useHistory, useParams } from "react-router";
+import { urlList, urlNames } from "../../../../utils/urlList";
 import { AssetRestriction, PersmissionModel } from "./AssetListerEnum";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 import { AssetLockUnLockErrorType, securityDescriptorType } from "./types";
@@ -67,6 +70,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
+  const [isModalOpen,setIsModalOpen] = React.useState<boolean>(false);
   const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
     isError: false,
     errorMessage: ''
@@ -141,7 +145,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
-
+  const [IsformUpdated, setIsformUpdated] = React.useState(false);
+  const history  = useHistory();
   const handleOpenAssignUserChange = () => {
     setOpenAssignUser(true);
   };
@@ -327,9 +332,43 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       link.parentNode.removeChild(link);
     }
   }
-
+  const closeDialog = () => {
+    setIsModalOpen(false);
+    history.push(
+      urlList.filter((item: any) => item.name === urlNames.assets)[0]
+        .url
+    );
+  };
+  const handleCloseRetention = () => {
+    debugger;
+    if (IsformUpdated) {
+      setIsModalOpen(true);
+    }
+    else{
+      setOpenManageRetention(false);
+    }
+    
+  };
   return (
     <>
+    <CRXConfirmDialog
+        setIsOpen={() => setIsModalOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isModalOpen}
+        className="userGroupNameConfirm"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
+        text="user group form"
+      >
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          </div>
+        </div>
+      </CRXConfirmDialog>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <FormContainer
         setOpenForm={() => setOpenForm(false)}
@@ -364,7 +403,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         title={t("Modify_Retention")}
         className={'CRXModal'}
         modelOpen={openManageRetention}
-        onClose={() => setOpenManageRetention(false)}
+        onClose={() => handleCloseRetention()}
         defaultButton={false}
         indicatesText={true}
 
@@ -377,6 +416,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenManageRetention(false)}
           showToastMsg={(obj: any) => showToastMsg(obj)}
+          setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
         />
       </CRXModalDialog>
       <CRXModalDialog

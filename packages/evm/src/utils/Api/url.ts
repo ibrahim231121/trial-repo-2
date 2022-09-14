@@ -1,4 +1,5 @@
 import { env } from "../../env";
+import { MAX_REQUEST_SIZE_FOR } from '../constant'
 
 const BASE_URL_SEARCH_SERVICE = env.REACT_APP_SEARCH_SERVICE_URL;
 const BASE_URL_AUTHENTICATION_SERVICE = env.REACT_APP_AUTHENTICATION_SERVICE_URL;
@@ -48,7 +49,7 @@ export const APPLICATION_PERMISSION_URL = `${BASE_URL_USER_SERVICE}/Modules?Page
 
 export const USER_INFO_UPDATE_URL = `${BASE_URL_USER_SERVICE}/Users`
 
-export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Page=1&Size=100`
+export const CATEGORY_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/Categories?Page=1&Size=${MAX_REQUEST_SIZE_FOR.CATEGORY}`
 
 export const CONTAINERMAPPING_INFO_GET_URL = `${BASE_URL_SETUP_SERVICE}/ContainerMapping/GetAllByGroup`
 
@@ -68,3 +69,5 @@ export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID
+
+

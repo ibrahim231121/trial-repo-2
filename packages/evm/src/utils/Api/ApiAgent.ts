@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
+import {CRXLoader} from "@cb/shared"
+
 import { AddOwner, 
     Asset, 
     AssetSharingModel, 
@@ -9,34 +11,37 @@ import { AddOwner,
     Bookmark, 
     Evidence, 
     ExtendRetention,
-    File, 
-    Note, 
+    File,
+    Note,
     TimelinesSync,
-    EvdenceCategoryAssignment, 
-    SubmitAnalysisModel } from './models/EvidenceModels';
-import { 
+    EvdenceCategoryAssignment,
+    SubmitAnalysisModel
+} from './models/EvidenceModels';
+import {
     JOBCOORDINATOR_SERVICE_URL,
     EVIDENCE_SERVICE_URL,
-    BASE_URL_USER_SERVICE, 
-    SETUP_CONFIGURATION_SERVICE_URL ,
+    BASE_URL_USER_SERVICE,
+    SETUP_CONFIGURATION_SERVICE_URL,
     USER_INFO_GET_URL,
     GROUP_USER_LIST,
-    USER,GROUP_GET_URL,
+    USER, GROUP_GET_URL,
     GROUP_GET_BY_ID_URL,
     GROUP_USER_COUNT_GET_URL,
     SAVE_USER_GROUP_URL,
-    BASE_URL_UNIT_SERVICES, 
+    BASE_URL_UNIT_SERVICES,
     FILE_SERVICE_URL,
-    AUDITLOG_SERVICE_URL, 
-    CountryStateApiUrl} from './url';
+    AUDITLOG_SERVICE_URL,
+    CountryStateApiUrl
+} from './url';
 import { getVerificationURL } from "../../utils/settings";
-import {Token} from './models/AuthenticationModels';
+import { Token } from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
-import {UsersInfo,UserGroups,GroupUserCount, UserList, User, Module, GroupList} from './models/UsersAndIdentitiesModel'
-import { 
-    ConfigurationTemplate, 
+import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupList } from './models/UsersAndIdentitiesModel'
+import {
+    ConfigurationTemplate,
     ConfigurationTemplateLogs,
     DefaultUnitTemplate, 
+    Device, 
     DeviceConfigurationTemplate, 
     DeviceType, 
     GetPrimaryDeviceInfo, 
@@ -48,6 +53,10 @@ import {
 import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
 import { Paginated, Headers } from './models/CommonModels';
+import { useState, useEffect } from 'react';
+import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 const cookies = new Cookies();
 let config = {
     headers: {
@@ -57,7 +66,7 @@ let config = {
     }
 }
 
-export const setAPIAgentConfig=()=>{
+export const setAPIAgentConfig = () => {
     config = {
         headers: {
             'Content-Type': 'application/json',
@@ -73,17 +82,19 @@ axios.interceptors.response.use(async response => {
     } catch (ex) {
         return await Promise.reject(ex);
     }
-}, async (error : AxiosError) => {
+}, async (error: AxiosError) => {
     console.log(error.request.responseURL + ", error code: " + error.response?.status);
     return Promise.reject(error);
 })
+
 const responseBody = <T>(response: AxiosResponse<T>) => {
     return response.data;
 };
+
+
 const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
     let totalCount = response.headers["x-total-count"];
-    if(totalCount !== undefined)
-    {
+    if (totalCount !== undefined) {
         let paginatedResponse = {
             data: response.data,
             totalCount: parseInt(totalCount)
@@ -92,8 +103,9 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
     }
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
-const addHeaders = (headers: Headers[]) => {
-    if(config)
+const addHeaders = (headers?: Headers[]) => {
+    
+    if(config && headers)
     {
         let config2 : any = config;
         if(config2["headers"])
@@ -103,20 +115,20 @@ const addHeaders = (headers: Headers[]) => {
                 let a = [x.key, x.value];
                 ConfigHeader.push(a)
             })
-            var obj = ConfigHeader.reduce((obj, cur) => ({...obj, [cur[0]]: cur[1]}), {})
+            var obj = ConfigHeader.reduce((obj, cur) => ({ ...obj, [cur[0]]: cur[1] }), {})
             config["headers"] = obj;
         }
     }
 };
 
 const requests = {
-    get: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBody)},
-    getAll: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.get<T>(url,config).then(responseBodyPaginated)},
-    post: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody)},
-    postPaginated: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBodyPaginated)},
-    put: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody)},
-    patch: <T>(baseUrl: string, url: string, body: {}, config? : {}) => {setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody)},
-    delete: <T>(baseUrl: string, url: string, config? : {}) => {setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody)},
+    get: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBody) },
+    getAll: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBodyPaginated) },
+    post: <T>(baseUrl: string, url: string, body: {}, config?: {}) => { setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBody) },
+    postPaginated: <T>(baseUrl: string, url: string, body: {}, config?: {}) => { setBaseUrl(baseUrl); return axios.post<T>(url, body, config).then(responseBodyPaginated) },
+    put: <T>(baseUrl: string, url: string, body: {}, config?: {}) => { setBaseUrl(baseUrl); return axios.put<T>(url, body, config).then(responseBody) },
+    patch: <T>(baseUrl: string, url: string, body: {}, config?: {}) => { setBaseUrl(baseUrl); return axios.patch<T>(url, body, config).then(responseBody) },
+    delete: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody) },
 }
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -124,10 +136,11 @@ export const SetupConfigurationAgent = {
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
+    getAssetTrail: (url: string) => requests.get<Evidence[]>("http://127.0.0.1:8080/", url, config),
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url, config),
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
-    getQueuedAssets: (unitId: number) => requests.get<QueuedAssets[]>(EVIDENCE_SERVICE_URL, '/Evidences/QueuedAssets/'+ unitId, config),
+    getQueuedAssets: (unitId: number) => requests.get<QueuedAssets[]>(EVIDENCE_SERVICE_URL, '/Evidences/QueuedAssets/' + unitId, config),
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
@@ -150,7 +163,7 @@ export const EvidenceAgent = {
 }
 
 export const AuthenticationAgent = {
-    getAccessToken: (url:string) => requests.get<Token>(getVerificationURL(url),'', config)
+    getAccessToken: (url: string) => requests.get<Token>(getVerificationURL(url), '', config)
 }
 
 export const AuditLogAgent = {
@@ -158,39 +171,43 @@ export const AuditLogAgent = {
 }
 
 export const FileAgent = {
-    getDownloadFileUrl: (fileId:number) => requests.get<string>(FILE_SERVICE_URL,'/Files/download/' + fileId, config),
+    getDownloadFileUrl: (fileId: number) => requests.get<string>(FILE_SERVICE_URL, '/Files/download/' + fileId, config),
     getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url)
 }
 
 export const UsersAndIdentitiesServiceAgent = {
     getAllUsers: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getUsersInfo: (url:string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL,url,body,config),
-    getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL,'', config),
-    getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL,'', config),
-    getUser:(userId: string) => requests.get<UserList>(USER , `/${userId}`, config),
-    addUser: (url: string, body: User) => requests.post<number>(BASE_URL_USER_SERVICE,url, body, config),
-    editUser: (url: string, body: User) => requests.put<number>(BASE_URL_USER_SERVICE,url, body, config),
+    getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
+    getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
+    getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL, '', config),
+    getUser: (userId: string) => requests.get<UserList>(USER, `/${userId}`, config),
+    addUser: (url: string, body: User) => requests.post<number>(BASE_URL_USER_SERVICE, url, body, config),
+    editUser: (url: string, body: User) => requests.put<number>(BASE_URL_USER_SERVICE, url, body, config),
     getResponseAppPermission: (url: string) => requests.get<Module>(BASE_URL_USER_SERVICE, url, config),
     updateUserInfoURL: (url: string, body: any) => requests.patch<void>(BASE_URL_USER_SERVICE, url, body, config),
-    getUserGroupsById:(id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL , `/${id}`, config),
-    getSelectedUserGroups:(id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL , `/${id}`, config),
-    addUserGroup:(url: string, body: UserGroups) => requests.post<number>(GROUP_GET_BY_ID_URL , url, body, config),
-    editUserGroup:(url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL , url, body, config)
+    getUserGroupsById: (id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL, `/${id}`, config),
+    getSelectedUserGroups: (id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL, `/${id}`, config),
+    addUserGroup: (url: string, body: UserGroups) => requests.post<number>(GROUP_GET_BY_ID_URL, url, body, config),
+    editUserGroup: (url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL, url, body, config)
 }
 export const UnitsAndDevicesAgent = {
-    getAllUnits: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config),
+    getAllUnits: (url: string, extraHeader?: Headers[]) => {
+        addHeaders(extraHeader);
+        return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config)
+    },
+    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config), 
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStations: (url: string, headers? : Headers[]) => {
-        (headers && headers.length > 0) && addHeaders(headers);
-        return requests.get<Station[]>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, config);
+    getAllStations: (url: string, extraHeader?: Headers[]) => 
+    {  
+         addHeaders(extraHeader);
+         return  requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url, config)
     },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/GetAllStationInfo"+url, config),
+    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo"+url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
     updateStation: (url: string, body: Station) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getTemplateConfiguration: (url: string) => requests.get<ConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url, config),
@@ -198,13 +215,34 @@ export const UnitsAndDevicesAgent = {
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getAllDeviceConfigurationTemplate: (url: string) => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/GetTemplateConfigurationLogs/"+url, config),
+    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/"+url, config),
     deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/"+url, config),
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),
-    getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/"+url, config),
+    getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/" + url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
     getAllCaptureDevices: () => requests.get<CaptureDevice[]>(BASE_URL_UNIT_SERVICES, "/CaptureDevices", config),
 }
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }
+
+export const useApiAgent = <T>(request: Promise<T>): [T | undefined]  => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState<T | undefined>(undefined);
+    const dispatch = useDispatch();
+
+    const fetchApi = () => {
+        dispatch(setLoaderValue({isLoading: true}))
+        request.then((response:T) => {
+            dispatch(setLoaderValue({isLoading: false, message: "" }))
+            setIsLoading(false);
+            setData(response);
+        }).catch((ex) => {
+            dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+        })
+    };
+    useEffect(() => {
+        fetchApi();
+    }, []);
+    return [data];
+};

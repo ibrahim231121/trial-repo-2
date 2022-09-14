@@ -40,10 +40,9 @@
       "label": "Config Update Interval",
       "value": 6,
       "required": true,
-      "seconds": false,
+      "postFieldText": "minutes",
       "requiredField": "true",
-      "hinttext": true,
-      "hintvalue": "Keeps synchronizing unit configuration at the specified minutes",
+      "hintText": "Keeps synchronizing unit configuration at the specified minutes",
       "validation": [
         {
           "key": "required",
@@ -62,36 +61,36 @@
       "value": "3480 * 2160 p 30",
       "options": [
         {
-          "value": "3480 * 2160 p 30",
-          "label": "3480 * 2160 p 30"
+          "value": "3480 * 2160 p30",
+          "label": "3480 * 2160 p30"
         },
         {
-          "value": "2688 * 1521 p 30",
-          "label": "2688 * 1521 p 30"
+          "value": "2688 * 1440 p30",
+          "label": "2688 * 1440 p30"
         },
         {
-          "value": "1920 * 1080 p 120",
-          "label": "1920 * 1080 p 120"
+          "value": "1920 * 1080 p30",
+          "label": "1920 * 1080 p30"
         },
         {
-          "value": "1920 * 1080 p 60",
-          "label": "1920 * 1080 p 60"
+          "value": "1920 * 1080 p60",
+          "label": "1920 * 1080 p60"
         },
         {
-          "value": "1920 * 1080 p 30",
-          "label": "1920 * 1080 p 30"
+          "value": "1920 * 1080 p120",
+          "label": "1920 * 1080 p120"
         },
         {
-          "value": "1280 * 720 p 120",
-          "label": "1280 * 720 p 120"
+          "value": "1280 * 720 p30",
+          "label": "1280 * 720 p30"
         },
         {
-          "value": "1280 * 720 p 60",
-          "label": "1280 * 720 p 60"
+          "value": "1280 * 720 p60",
+          "label": "1280 * 720 p60"
         },
         {
-          "value": "1280 * 720 p 30",
-          "label": "1280 * 720 p 30"
+          "value": "1280 * 720 p120",
+          "label": "1280 * 720 p120"
         }
       ]
     },
@@ -100,19 +99,23 @@
       "key": "device/bitRate/Select",
       "type": "select",
       "label": "Bit Rate",
-      "value": "High",
+      "value": "HD: 1Mbps-4Mbps",
       "options": [
         {
-          "value": "High",
-          "label": "High"
+          "value": "4K: 13Mbps-16Mbps",
+          "label": "4K: 13Mbps-16Mbps"
         },
         {
-          "value": "Low",
-          "label": "Low"
+          "value": "2K: 9Mbps-12Mbps",
+          "label": "4K: 9Mbps-12Mbps"
         },
         {
-          "value": "Medium",
-          "label": "Medium"
+          "value": "FHD: 5Mbps-8Mbps",
+          "label": "FHD: 5Mbps-8Mbps"
+        },
+        {
+          "value": "HD: 1Mbps-4Mbps",
+          "label": "HD: 1Mbps-4Mbps"
         }
       ]
     },
@@ -120,21 +123,21 @@
       "id": "3",
       "key": "device/videoCutSize/Select",
       "type": "select",
-      "label": "Video Cut Size",
-      "value": "1 hour",
+      "label": "Video Cut Size (hr)",
+      "value": "1",
       "disabled": false,
       "options": [
         {
-          "value": "1 hour",
-          "label": "1 hour"
+          "value": "1",
+          "label": "1"
         },
         {
-          "value": "2 hour",
-          "label": "2 hour"
+          "value": "2",
+          "label": "2"
         },
         {
-          "value": "3 hour",
-          "label": "3 hour"
+          "value": "3",
+          "label": "3"
         }
       ]
     },
@@ -151,7 +154,7 @@
       "id": "3",
       "key": "device/videoPreBuffer/Select",
       "type": "select",
-      "value": "20 sec",
+      "value": "10 sec",
       "options": [
         {
           "value": "10 sec",
@@ -223,19 +226,45 @@
       "value": true
     },
     {
+      "id": "3",
+      "key": "device/mutebutton/Select",
+      "type": "select",
+      "label": "Mute",
+      "value": "Enable Mute Button",
+      "options": [
+        {
+          "value": "Enable Mute Button",
+          "label": "Enable Mute Button"
+        },
+        {
+          "value": "Enable Mute Always On",
+          "label": "Enable Mute Always On"
+        },
+        {
+          "value": "Disable Mute Function",
+          "label": "Disable Mute Function"
+        }
+      ]
+    },
+    {
       "id": "4",
-      "key": "device/enableVideoOverlay/CheckBox",
+      "key": "device/enableVoiceIndication/CheckBox",
       "type": "checkbox",
-      "label": "Video Overlay",
-      "checkBoxText": "Enable Video Overlay",
+      "label": "Voice Indication",
+      "checkBoxText": "Enable Voice Indication",
       "value": true
     },
     {
       "id": "3",
       "key": "device/videoOverlay/Select",
       "type": "select",
-      "value": "Unit , Date and Time",
+      "label": "Video Overlay",
+      "value": "Off",
       "options": [
+        {
+          "value": "Off",
+          "label": "Off"
+        },
         {
           "value": "Date and Time",
           "label": "Date and Time"
@@ -252,40 +281,23 @@
           "value": "User , Unit , Date and Time",
           "label": "User , Unit , Date and Time"
         }
-      ],
-      "depends": [
-        {
-          "key": "device/enableVideoOverlay/CheckBox",
-          "value": [
-            true
-          ]
-        }
       ]
     },
     {
       "id": "4",
       "key": "device/enableRecordingBeep/CheckBox",
       "type": "checkbox",
-      "label": "Recording Beep Interval",
+      "label": "Recording Beep",
       "checkBoxText": "Enable Recording Beep",
-      "value": true,
-      "required": true
+      "value": false
     },
     {
       "id": "4",
-      "key": "device/recordingBeepInterval/NumberBox",
-      "type": "number",
-      "value": 10,
-      "seconds": true,
-      "requiredField": "true",
-      "depends": [
-        {
-          "key": "device/enableRecordingBeep/CheckBox",
-          "value": [
-            true
-          ]
-        }
-      ]
+      "key": "device/enableBeepOnPlugOut/CheckBox",
+      "type": "checkbox",
+      "label": "Beep On Plug Out",
+      "checkBoxText": "Enable Beep On Plug Out",
+      "value": true
     },
     {
       "id": "4",
@@ -294,7 +306,7 @@
       "label": "Vibration",
       "checkBoxText": "Recording Vibration",
       "value": true,
-      "seconds": true
+      "postFieldText": "seconds"
     },
     {
       "labelDeviceControls": "Device Controls",
@@ -306,22 +318,26 @@
       "checkBoxText": "Enable Categorization",
       "value": true,
       "required": true,
-      "seconds": true,
-      "hinttext": true,
-      "hintvalue": "Allows to specify categories for selection after recording"
+      "postFieldText": "seconds",
+      "hintText": "Allows to specify categories for selection after recording"
     },
     {
       "id": "3",
       "key": "device/categories/Multiselect",
       "type": "multiselect",
-      "value": ["Add All"],
-      "validation": [{
-        "key": "required",
-        "msg": "required",
-        "when": {
-          "key": "device/enableCategorization/CheckBox", "value": true
+      "value": [
+        "Add All"
+      ],
+      "validation": [
+        {
+          "key": "required",
+          "msg": "required",
+          "when": {
+            "key": "device/enableCategorization/CheckBox",
+            "value": true
+          }
         }
-      }],
+      ],
       "depends": [
         {
           "key": "device/enableCategorization/CheckBox",
@@ -394,7 +410,7 @@
       "type": "checkbox",
       "labelGroupRecording": "Location",
       "checkBoxText": "Disable Wi-Fi and Bluetooth",
-      "checkHelperText": "(If selected will disable �Enable GPS� checkbox section)",
+      "belowFieldText": "(If selected will disable “Enable GPS” checkbox section)",
       "labelLocation": "Location",
       "value": false,
       "dependant": {
@@ -423,13 +439,11 @@
       "id": "34",
       "key": "device/gpsHeartbeat/NumberBox",
       "type": "number",
-      "hinttext": true,
-      "hintvalue": "How often BC04 sends heartbeats",
-      "hintvalue1": "How often <Body Worn Type> sends heartbeats",
+      "hintText": "How often BC04 sends heartbeats",
       "label": "GPS Heartbeat",
       "value": 60,
-      "checkHelperText": "(Minimum allowed is 30 and maximum allowed is 3600)",
-      "seconds": true,
+      "belowFieldText": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "postFieldText": "seconds",
       "validation": [
         {
           "key": "required",
@@ -454,11 +468,9 @@
       "label": "GPS Heartbeat While Recording",
       "value": 60,
       "class": "HeartbeatRecordingBco4",
-      "checkHelperText": "(Minimum allowed is 30 and maximum allowed is 3600)",
-      "hinttext": true,
-      "hintvalue": "Interval between heartbeats when recording",
-      "hintvalue1": "Interval between heartbeats when recording",
-      "seconds": true,
+      "belowFieldText": "(Minimum allowed is 30 and maximum allowed is 3600)",
+      "hintText": "Interval between heartbeats when recording",
+      "postFieldText": "seconds",
       "validation": [
         {
           "key": "required",
@@ -475,6 +487,142 @@
           "msg": "Too High"
         }
       ]
+    },
+    {
+      "id": "4",
+      "key": "device/enableGPSHeartbeatOnlyWhileRecording/CheckBox",
+      "type": "checkbox",
+      "label": "GPS Heartbeat Only While Recording",
+      "checkBoxText": "Enable GPS Heartbeat Only While Recording",
+      "value": false
+    }
+  ],
+  "Live Stream(RTMP)": [
+    {
+      "id": "4",
+      "key": "device/enablelivestream/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Live Stream",
+      "value": true
+    },
+    {
+      "id": "3",
+      "key": "device/videoResolutionLiveStream/Select",
+      "type": "select",
+      "label": "Video Resolution",
+      "value": "HD 720 * 428 p30",
+      "options": [
+        {
+          "value": "4K 720 * 428 p30",
+          "label": "4K 720 * 428 p30"
+        },
+        {
+          "value": "2K 2560 * 1440 p30",
+          "label": "2K 2560 * 1440 p30"
+        },
+        {
+          "value": "2K 1920 * 1080 p30",
+          "label": "2K 1920 * 1080 p30"
+        },
+        {
+          "value": "2K 1280 * 720 p30",
+          "label": "2K 1280 * 720 p30"
+        },
+        {
+          "value": "2K 720 * 428 p30",
+          "label": "2K 720 * 428 p30"
+        },
+        {
+          "value": "FHD 1920 * 1080 p30",
+          "label": "FHD 1920 * 1080 p30"
+        },
+        {
+          "value": "FHD 1280 * 720 p30",
+          "label": "FHD 1280 * 720 p30"
+        },
+        {
+          "value": "FHD 720 * 428 p30",
+          "label": "FHD 720 * 428 p30"
+        },
+        {
+          "value": "HD 1280 * 720 p30",
+          "label": "HD 1280 * 720 p30"
+        },
+        {
+          "value": "HD 720 * 428 p30",
+          "label": "HD 720 * 428 p30"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/bitRateLiveStream/Select",
+      "type": "select",
+      "label": "Bit Rate",
+      "value": "720 * 428 1Mbps",
+      "options": [
+        {
+          "value": "2K 9Mbps-12Mbps",
+          "label": "2K 9Mbps-12Mbps"
+        },
+        {
+          "value": "FHD 5Mbps-8Mbps",
+          "label": "FHD 5Mbps-8Mbps"
+        },
+        {
+          "value": "HD 1Mbps-4Mbps",
+          "label": "HD 1Mbps-4Mbps"
+        },
+        {
+          "value": "720 * 428 1Mbps",
+          "label": "720 * 428 1Mbps"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "key": "device/frameRateLiveStream/Select",
+      "type": "select",
+      "label": "Frame Rate",
+      "value": "none",
+      "options": [
+        {
+          "value": "120",
+          "label": "120"
+        },
+        {
+          "value": "60",
+          "label": "60"
+        },
+        {
+          "value": "30",
+          "label": "30"
+        },
+        {
+          "value": "25",
+          "label": "25"
+        },
+        {
+          "value": "none",
+          "label": "none"
+        }
+      ]
+    }
+  ],
+  "LTE Setting": [
+    {
+      "id": "4",
+      "key": "device/enableEnableLTE/CheckBox",
+      "type": "checkbox",
+      "label": "Enable LTE",
+      "value": true
+    },
+    {
+      "id": "4",
+      "key": "device/enablePrivateAPN/CheckBox",
+      "type": "checkbox",
+      "label": "Enable Private APN",
+      "value": false
     }
   ]
 }

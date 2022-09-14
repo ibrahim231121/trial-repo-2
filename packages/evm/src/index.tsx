@@ -12,6 +12,7 @@ import {
   persistStore,
 } from 'redux-persist'
 let persistor = persistStore(store)
+console.log("persistor", persistor)
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
