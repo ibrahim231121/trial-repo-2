@@ -774,7 +774,7 @@ useEffect(()=>{
         rows && (
         <CRXDataTable
           id={t("Units_&_Devices")}
-          actionComponent={<UnitAndDevicesActionMenu />}
+          actionComponent={<UnitAndDevicesActionMenu row={selectedActionRow} />}
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }
