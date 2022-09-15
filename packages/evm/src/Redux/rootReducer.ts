@@ -17,6 +17,8 @@ import assetSearchSlice from './AssetSearchReducer';
 import configurationTemplatesReducerSlice from './ConfigurationTemplatesReducer';
 import auditLogSlice from './AuditLogReducer';
 import timelineDetailSlice from './VideoPlayerTimelineDetailReducer';
+import assetDetailSlice from './AssetDetailsReducer';
+import loaderSlice from './loaderSlice';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -28,6 +30,7 @@ export const reducer = combineReducers({
   stationReducer: stationsSlice.reducer,
   notificationReducer: notificationMessages.reducer,
   timerReducers: timerSlice.reducer,
+  loaderSlice: loaderSlice.reducer,
   templateSlice: templateSlice.reducer,
   unitTemplateSlice: unitTemplateSlice.reducer,
   templateSlice1: templateSlice1.reducer,
@@ -35,7 +38,8 @@ export const reducer = combineReducers({
   timelineDetailReducer: timelineDetailSlice.reducer,
   unitReducer: unitSlice.reducer,
   assetSearchReducer: assetSearchSlice.reducer,
-  configurationTemplatesSlice : configurationTemplatesReducerSlice.reducer,
+  assetDetailReducer: assetDetailSlice.reducer,
+  configurationTemplatesSlice: configurationTemplatesReducerSlice.reducer,
   auditLogSlice: auditLogSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

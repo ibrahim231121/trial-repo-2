@@ -14,7 +14,7 @@ import { DataPermissionModel } from "..";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-
+import { MAX_REQUEST_SIZE_FOR } from '../../../../../utils/constant'
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],

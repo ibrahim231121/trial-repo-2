@@ -47,6 +47,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isShowInfo, setIsShowInfo] = React.useState<boolean>(false);
+
   const alertRef = useRef(null);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.users
@@ -148,9 +150,11 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         }
       }
       if (notSame == 0) {
+        setIsShowInfo(true);
         getMasterAsset();
       }
     } else {
+      setIsShowInfo(true);
       getMasterAsset();
     }
   };
@@ -183,9 +187,9 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   React.useEffect(() => {
     props.setFilterValue(() => props.filterValue);
-    props.filterValue?.length > 0
-      ? setButtonState(false)
-      : setButtonState(true);
+    // props.filterValue?.length > 0
+    //   ? setButtonState(false)
+    //   : setButtonState(true);
     // Dropdown is updated, so x button will redirect to cancel confirmation.
     // Check either new value added.
     const changeInValues = props.filterValue.filter((o: any) => {
@@ -216,6 +220,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     reason: any,
     detail: any
   ) => {
+    setButtonState(false);
     props.setFilterValue(() => [...v]);
     if (reason === "remove-option") {
       // Show "Remove Category Reason" Modal Here.
@@ -297,6 +302,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setButtonState(false);
     setAssignUserCheck(e.target.checked);
   };
 
@@ -340,8 +346,12 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     }}
                   />}
                   <div className="fieldAssigSelectT">
-                  {t("(Selected_users_will_replace_all_current_assigned_users)")}.
-                   
+                  
+                  
+                  {isShowInfo === true ? (
+                    t("(Selected_users_will_replace_all_current_assigned_users)")
+                  ):null}  
+                  
                   </div>
                 </div>
               </div>
@@ -368,7 +378,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                 <div className="nextBtn">
                   <CRXButton
                     type="submit"
-                    className={"nextButton " + buttonState && "primeryBtn"}
+                    className='primeryBtn'
                     disabled={buttonState}
                   >
                     {t("Save")}

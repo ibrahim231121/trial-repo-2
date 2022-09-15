@@ -21,6 +21,7 @@ type ManageRetentionProps = {
   setOnClose: () => void;
   setRemovedOption: (param: any) => void;
   showToastMsg:(obj: any) => any;
+  setIsformUpdated: (param: boolean) => void;
 };
 
 const cookies = new Cookies();
@@ -86,10 +87,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }, []);
   React.useEffect(() => {
     if ((retention == "1" && retentionDays != 0) || retention != "1")
-      setButtonState(false);
-    else
-      setButtonState(true);
-
+    {
+       setButtonState(false);
+      props.setIsformUpdated(true);
+    }
     if (retention != "1") {
       setRetentionDays(7);
     }
@@ -222,13 +223,9 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   const cancelBtn = () => {
-    if(retention != "1" || (retention == "1" && retentionDays != 0 && retentionDays != 7) ){
-      setIsOpen(true);
-    }
-    else
-    {
+    
       props.setOnClose();
-    }
+    
   };
 
   return (

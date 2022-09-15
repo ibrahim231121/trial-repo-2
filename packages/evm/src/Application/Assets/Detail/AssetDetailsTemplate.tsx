@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
 import { AssetBucket } from "../AssetLister/ActionMenu";
 import Restricted from "../../../ApplicationPermission/Restricted";
-import {DateTimeComponent } from '../../../GlobalComponents/DateTime';
+import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
@@ -49,6 +49,7 @@ import {
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
+import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 
 const AssetDetailsTemplate = (props: any) => {
@@ -95,9 +96,9 @@ const AssetDetailsTemplate = (props: any) => {
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
-  const [detailContent , setDetailContent] = useState<boolean>(false);
+  const [detailContent, setDetailContent] = useState<boolean>(false);
   const detail_view = React.useRef(null);
-  
+
   type DateTimeProps = {
     dateTimeObj: DateTimeObject;
     colIdx: number;
@@ -121,10 +122,10 @@ const AssetDetailsTemplate = (props: any) => {
     camera: string;
   }
   type AuditTrail = {
-    sequenceNumber:string;
-    captured:any;
-    username:string;
-    activity:string
+    sequenceNumber: string;
+    captured: any;
+    username: string;
+    activity: string
   }
 
   type EvidenceReformated = {
@@ -202,19 +203,19 @@ const AssetDetailsTemplate = (props: any) => {
   const [orderBy] = React.useState<string>("name");
   const [open, setOpen] = React.useState<boolean>(false);
   const [rows, setRows] = React.useState<AuditTrail[]>([]);
-  const [selectedActionRow, setSelectedActionRow] =React.useState<AuditTrail>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<AuditTrail>();
   const [selectedItems, setSelectedItems] = React.useState<AuditTrail[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<AuditTrail[]>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-      gridFilter: {
+    gridFilter: {
       logic: "and",
       filters: []
-      },
-      page: page,
-      size: rowsPerPage
+    },
+    page: page,
+    size: rowsPerPage
   });
   const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
     isError: false,
@@ -223,7 +224,9 @@ const AssetDetailsTemplate = (props: any) => {
   const handleChange = () => {
     setOpenForm(true);
   };
-
+  const AssetTrail: any = useSelector(
+    (state: RootState) => state.assetDetailReducer.assetTrailInfo
+  );
   useEffect(() => {
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
@@ -233,9 +236,16 @@ const AssetDetailsTemplate = (props: any) => {
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
 
     dispatch(enterPathActionCreator({ val: t("Asset_Detail:_") + assetName }));
+    dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
   }, []);
+
+
+  useEffect(() => {
+    setRows(AssetTrail)
+  }, [AssetTrail]);
+
 
   useEffect(() => {
     if (gpsJson && gpsJson.length > 0) {
@@ -280,7 +290,7 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
-   
+ 
   if(fileData.length == getAssetData?.assets.master.files.length)
   { // temp condition
     if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
@@ -293,87 +303,85 @@ const AssetDetailsTemplate = (props: any) => {
         )
       );
 
-      var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
+        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
 
-      var unit: number[] = [];
-      unit.push(getAssetData.assets.master.unitId);
+        var unit: number[] = [];
+        unit.push(getAssetData.assets.master.unitId);
 
-      var checksum: number[] = [];
-      getAssetData.assets.master.files.forEach((x: any) => {
-        checksum.push(x.checksum.checksum);
-      });
+        var checksum: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          checksum.push(x.checksum.checksum);
+        });
 
-      var duration: number[] = [];
-      duration.push(getAssetData.assets.master.duration);
+        var duration: number[] = [];
+        duration.push(getAssetData.assets.master.duration);
 
-      var size: number[] = [];
-      getAssetData.assets.master.files.forEach((x: any) => {
-        size.push(x.size);
-      });
+        var size: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          size.push(x.size);
+        });
 
 
-      var categoriesForm: string[] = [];
-      getAssetData.categories.forEach((x: any) => {
-        categoriesForm.push(x.record.cmtFieldName);
-      });
+        var categoriesForm: string[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          categoriesForm.push(x.record.cmtFieldName);
+        });
 
-      setAssetData({
-        ...assetInfo,
-        owners: owners,
-        unit: unit,
-        capturedDate: moment(getAssetData.createdOn).format(
-          "YYYY / MM / DD HH:mm:ss"
-        ),
-        checksum: checksum,
-        duration: moment
-          .utc(getAssetData.assets.master.duration)
-          .format("h:mm"),
-        size: size,
-        retention: moment(getAssetData.retainUntil).format(
-          "YYYY / MM / DD HH:mm:ss"
-        ),
-        categories: categories,
-        categoriesForm: categoriesForm,
-      });
-      const data = extract(getAssetData);
-      setVideoPlayerData(data);
+        setAssetData({
+          ...assetInfo,
+          owners: owners,
+          unit: unit,
+          capturedDate: moment(getAssetData.createdOn).format(
+            "YYYY / MM / DD HH:mm:ss"
+          ),
+          checksum: checksum,
+          duration: moment
+            .utc(getAssetData.assets.master.duration)
+            .format("h:mm"),
+          size: size,
+          retention: moment(getAssetData.retainUntil).format(
+            "YYYY / MM / DD HH:mm:ss"
+          ),
+          categories: categories,
+          categoriesForm: categoriesForm,
+        });
+        const data = extract(getAssetData);
+        setVideoPlayerData(data);
+      }
     }
-  }
-  else{
-    getMasterAssetFile(getAssetData?.assets.master.files)
-    getChildAssetFile(getAssetData?.assets.children)
-  }
-  }, [getAssetData, fileData,childFileData]);
+    else {
+      debugger;
+      getMasterAssetFile(getAssetData?.assets.master.files)
+      getChildAssetFile(getAssetData?.assets.children)
+    }
+  },[getAssetData, fileData, childFileData]);
 
-  function getMasterAssetFile(dt : any)
-  {
+  function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
-      FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
-      setFileData([...fileData, {
-        filename: template.name,
-        fileurl: template.url,
-        fileduration: template.duration,
-        downloadUri: response
-      }])
+      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+        setFileData([...fileData, {
+          filename: template.name,
+          fileurl: template.url,
+          fileduration: template.duration,
+          downloadUri: response
+        }])
       });
     })
   }
-  function getChildAssetFile(dt : any)
-  {
+  function getChildAssetFile(dt: any) {
     dt?.map((ut: any, i: number) => {
-      ut?.files.map((template: any, j: number )=>
-      {
-        FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
+      ut?.files.map((template: any, j: number) => {
+        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
           setChildFileData([...childFileData, {
             filename: template.name,
             fileurl: template.url,
             fileduration: template.duration,
             downloadUri: response
           }])
-          });
+        });
 
       })
-     
+
     })
   }
 
@@ -389,7 +397,7 @@ const AssetDetailsTemplate = (props: any) => {
     };
 
     const onSelection = (v: ValueString[], colIdx: number) => {
-   
+
       if (v.length > 0) {
         for (var i = 0; i < v.length; i++) {
           let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
@@ -399,7 +407,7 @@ const AssetDetailsTemplate = (props: any) => {
             )
           );
           setSearchData((prevArr) => [...prevArr, searchDataValue]);
-         
+
         }
       } else {
         setSearchData((prevArr) =>
@@ -407,97 +415,97 @@ const AssetDetailsTemplate = (props: any) => {
         );
       }
     };
-  
+
 
     return (
       <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
-      );
-    };
+    );
+  };
 
-    const [dateTime, setDateTime] = React.useState<DateTimeProps>({
-      dateTimeObj: {
-          startDate: "",
-          endDate: "",
-          value: "",
-          displayText: "",
-      },
-      colIdx: 0,
+  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+    dateTimeObj: {
+      startDate: "",
+      endDate: "",
+      value: "",
+      displayText: "",
+    },
+    colIdx: 0,
   });
 
-    const searchDate = (
-      rowsParam: AuditTrail[],
-      headCells: HeadCellProps[],
-      colIdx: number
+  const searchDate = (
+    rowsParam: AuditTrail[],
+    headCells: HeadCellProps[],
+    colIdx: number
   ) => {
-      let reset: boolean = false;
+    let reset: boolean = false;
 
-      let dateTimeObject: DateTimeProps = {
-          dateTimeObj: {
-              startDate: "",
-              endDate: "",
-              value: "",
-              displayText: "",
-          },
-          colIdx: 0,
+    let dateTimeObject: DateTimeProps = {
+      dateTimeObj: {
+        startDate: "",
+        endDate: "",
+        value: "",
+        displayText: "",
+      },
+      colIdx: 0,
+    };
+
+    if (
+      headCells[colIdx].headerObject !== null ||
+      headCells[colIdx].headerObject === undefined
+    )
+      reset = false;
+    else reset = true;
+
+    if (
+      headCells[colIdx].headerObject === undefined ||
+      headCells[colIdx].headerObject === null
+    ) {
+      dateTimeObject = {
+        dateTimeObj: {
+          startDate: reformattedRows !== undefined ? reformattedRows[0].captured : "",
+          endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].captured : "",
+          value: "custom",
+          displayText: "custom range",
+        },
+        colIdx: 0,
       };
+    } else {
+      dateTimeObject = {
+        dateTimeObj: {
+          ...headCells[colIdx].headerObject
+        },
+        colIdx: 0,
+      };
+    }
 
-      if (
-          headCells[colIdx].headerObject !== null ||
-          headCells[colIdx].headerObject === undefined
-      )
-          reset = false;
-      else reset = true;
+    function onSelection(dateTime: DateTimeObject) {
+      dateTimeObject = {
+        dateTimeObj: {
+          ...dateTime
+        },
+        colIdx: colIdx,
+      };
+      setDateTime(dateTimeObject);
+      headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
+    }
 
-      if (
-          headCells[colIdx].headerObject === undefined ||
-          headCells[colIdx].headerObject === null
-      ) {
-          dateTimeObject = {
-              dateTimeObj: {
-                  startDate: reformattedRows !== undefined ? reformattedRows[0].captured : "",
-                  endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].captured : "",
-                  value: "custom",
-                  displayText: "custom range",
-              },
-              colIdx: 0,
-          };
-      } else {
-          dateTimeObject = {
-              dateTimeObj: {
-                  ...headCells[colIdx].headerObject
-              },
-              colIdx: 0,
-          };
-      }
-
-      function onSelection(dateTime: DateTimeObject) {
-          dateTimeObject = {
-              dateTimeObj: {
-                  ...dateTime
-              },
-              colIdx: colIdx,
-          };
-          setDateTime(dateTimeObject);
-          headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
-      }
-
-      return (
-          <CRXColumn item xs={11}>
-              <DateTimeComponent
-                  showCompact={false}
-                  reset={reset}
-                  dateTimeDetail={dateTimeObject.dateTimeObj}
-                  getDateTimeDropDown={(dateTime: DateTimeObject) => {
-                      onSelection(dateTime);
-                  }}
-                  dateOptionType={dateOptionsTypes.basicoptions}
-              />
-          </CRXColumn>
-      );
+    return (
+      <CRXColumn item xs={11}>
+        <DateTimeComponent
+          showCompact={false}
+          reset={reset}
+          dateTimeDetail={dateTimeObject.dateTimeObj}
+          getDateTimeDropDown={(dateTime: DateTimeObject) => {
+            onSelection(dateTime);
+          }}
+          dateOptionType={dateOptionsTypes.basicoptions}
+        />
+      </CRXColumn>
+    );
 
   };
 
- 
+
   function extract(row: any) {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
@@ -534,10 +542,10 @@ const AssetDetailsTemplate = (props: any) => {
   }
   // function  extractfile(file: any) {
   //   let Filedata: any[] = [];
-     
+
   //   var a = file.map((template: any, i: number) => {
   //     return FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
-      
+
   //       Filedata.push({
   //         filename: template.name,
   //         fileurl: template.url,
@@ -568,62 +576,71 @@ const AssetDetailsTemplate = (props: any) => {
     })
     history.go(0)
   }
-const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
-  
-  {
-    label: `${t("Seq No")}`,
-    id: "sequenceNumber",
-    align: "right",
-    dataComponent: (e: string) => textDisplay(e, " "),
-    sort: true,
-  },
-  {
-    label: `${t("Captured")}`,
-    id: "captured",
-    align: "right",
-    dataComponent: dateDisplayFormat,
-  //  dataComponent: (e: string) => textDisplay(e, " "),
-    searchFilter: true,
-    searchComponent: searchDate,
-    sort: false,
-  },
-  {
-    label: `${t("Username")}`,
-    id: "username",
-    align: "right",
-    searchFilter: true,
-    searchComponent: searchText,
-    dataComponent: (e: string) => textDisplay(e, " "),
-    sort: true
-  },
-  {
-    label: `${t("Activity")}`,
-    id: "activity",
-    align: "right",
-    searchFilter: true,
-    searchComponent: searchText,
-    dataComponent: (e: string) => textDisplay(e, " "),
-    sort: true
-  }
-]);
-const clearAll = () => {
-  const clearButton: any = document.getElementsByClassName(
-    "MuiAutocomplete-clearIndicator"
-  )[0];
-  clearButton && clearButton.click();
-  setOpen(false);
-  // setSearchData([]);
-  let headCellReset = onClearAll(headCells);
-  setHeadCells(headCellReset);
-};
-const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
-  let headCellReset = onResizeRow(e, headCells);
-  setHeadCells(headCellReset);
-};
-const onSetHeadCells = (e: HeadCellProps[]) => {
-  let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
-  setHeadCells(headCellsArray);
-};
+  const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
+
+    {
+      label: `${t("Seq No")}`,
+      id: "recId",
+      align: "right",
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: true,
+    },
+    {
+      label: `${t("Captured")}`,
+      id: "performedOn",
+      align: "right",
+      dataComponent: dateDisplayFormat,
+      //  dataComponent: (e: string) => textDisplay(e, " "),
+      searchFilter: true,
+      searchComponent: searchDate,
+      sort: false,
+    },
+    {
+      label: `${t("Username")}`,
+      id: "userName",
+      align: "right",
+      searchFilter: true,
+      searchComponent: searchText,
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: true
+    },
+    {
+      label: `${t("Activity")}`,
+      id: "notes",
+      align: "right",
+      searchFilter: true,
+      searchComponent: searchText,
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: true
+    },
+    {
+      label: `${t("Action")}`,
+      id: "action",
+      align: "right",
+      searchFilter: true,
+      searchComponent: searchText,
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: true
+    }
+  ]);
+  const clearAll = () => {
+    const clearButton: any = document.getElementsByClassName(
+      "MuiAutocomplete-clearIndicator"
+    )[0];
+    clearButton && clearButton.click();
+    setOpen(false);
+    // setSearchData([]);
+    let headCellReset = onClearAll(headCells);
+    setHeadCells(headCellReset);
+  };
+  const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
+    let headCellReset = onResizeRow(e, headCells);
+    setHeadCells(headCellReset);
+  };
+  const onSetHeadCells = (e: HeadCellProps[]) => {
+    let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
+    setHeadCells(headCellsArray);
+  };
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
     if (evidence !== undefined && evidence !== null) {
@@ -647,13 +664,13 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
     });
     const _body = JSON.stringify(_requestBody);
     EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
-        setSuccessMessage(t('The_asset_are_locked'));
-        setSuccess(true);
-        setTimeout(() => {
-          dispatch(getAssetSearchInfoAsync(""));
-          setOpenRestrictAccessDialogue(false);
-          setSuccess(false);
-        }, 2000);
+      setSuccessMessage(t('The_asset_are_locked'));
+      setSuccess(true);
+      setTimeout(() => {
+        dispatch(getAssetSearchInfoAsync(""));
+        setOpenRestrictAccessDialogue(false);
+        setSuccess(false);
+      }, 2000);
     })
       .catch((error) => {
         let errorMessage = '';
@@ -672,8 +689,8 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
 
   const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
 
- 
-  const gotoSeeMoreView = (e : any, targetId:any) => {
+
+  const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);
     document.getElementById(targetId)?.scrollIntoView({
       behavior: 'smooth'
@@ -683,10 +700,10 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
-      <div className="asset_date_categories">
-        <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
-        <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
-      </div>
+        <div className="asset_date_categories">
+          <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
+          <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
+        </div>
         <FormContainer
           setOpenForm={() => setOpenForm(false)}
           openForm={openForm}
@@ -777,14 +794,14 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
         openOrCloseModal={openRestrictAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
         onConfirmBtnHandler={confirmCallBackForRestrictModal}
-        isError = {assetLockUnLockError.isError}
-        errorMessage = {assetLockUnLockError.errorMessage}
+        isError={assetLockUnLockError.isError}
+        errorMessage={assetLockUnLockError.errorMessage}
       />
 
       <CRXRows
         container
         spacing={0}
-       
+
       >
         <CRXColumn item xs={12}>
           {/* <div
@@ -801,17 +818,17 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
           {/* </div> */}
           {detailContent && <div className="topBorderForDetail"></div>}
           <div className="touchPoint_bar">
-            {detailContent == false ? 
-            <button  id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-              <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
-            </button>
-            :
-            <button id="lessMoreButton"  data-target="#v_asset_detail_view_idx" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e:any) => gotoSeeMoreView(e, "_asset_detail_view_idx")}>
-              <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
-            </button>
+            {detailContent == false ?
+              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
+              </button>
+              :
+              <button id="lessMoreButton" data-target="#v_asset_detail_view_idx" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "_asset_detail_view_idx")}>
+                <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
+              </button>
             }
           </div>
-          
+
         </CRXColumn>
         <CRXColumn item xs={12} className="topColumn">
           <div className="tabCreateTemplate crxTabsPermission" id="detail_view" ref={detail_view}>
@@ -939,55 +956,55 @@ const onSetHeadCells = (e: HeadCellProps[]) => {
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={3}>
-            <div className="">
-              {rows && (
-                <CRXDataTable
-                  id="Audit Trail"
-                  getRowOnActionClick={(val: AuditTrail) =>
-                    setSelectedActionRow(val)
-                  }
-                  toolBarButton = {
-           
-                      <CRXButton  >
-                        Export
-                      </CRXButton>
-                  
-                  }
-                  showToolbar={true}
-                  showCountText={false}
-                  columnVisibilityBar={true}
-                  showHeaderCheckAll={false}
-                  initialRows={reformattedRows}
-                  dragVisibility={false}
-                  showCheckBoxesCol={false}
-                  showActionCol={false}
-                  headCells={headCells}
-                  dataRows={rows}
-                  orderParam={order}
-                  orderByParam={orderBy}
-                  searchHeader={true}
-                  allowDragableToList={true}
-                  showTotalSelectedText={false}
-                  showActionSearchHeaderCell={true}
-                  showCustomizeIcon={false}
-                  className=""
-                  onClearAll={clearAll}
-                  getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
-                  onResizeRow={resizeRowUnitDetail}
-                  onHeadCellChange={onSetHeadCells}
-                  setSelectedItems={setSelectedItems}
-                  selectedItems={selectedItems}
-                  offsetY={190}
-                  page={page}
-                  rowsPerPage={rowsPerPage}
-                  setPage= {(page:any) => setPage(page)}
-                  setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-                  totalRecords={500}
-                />
-              )}
-            </div>
- 
-          </CrxTabPanel>
+                <div className="">
+                  {rows && (
+                    <CRXDataTable
+                      id="Audit Trail"
+                      getRowOnActionClick={(val: AuditTrail) =>
+                        setSelectedActionRow(val)
+                      }
+                      toolBarButton={
+
+                        <CRXButton  >
+                          Export
+                        </CRXButton>
+
+                      }
+                      showToolbar={true}
+                      showCountText={false}
+                      columnVisibilityBar={true}
+                      showHeaderCheckAll={false}
+                      initialRows={reformattedRows}
+                      dragVisibility={false}
+                      showCheckBoxesCol={false}
+                      showActionCol={false}
+                      headCells={headCells}
+                      dataRows={rows}
+                      orderParam={order}
+                      orderByParam={orderBy}
+                      searchHeader={true}
+                      allowDragableToList={true}
+                      showTotalSelectedText={false}
+                      showActionSearchHeaderCell={true}
+                      showCustomizeIcon={false}
+                      className=""
+                      onClearAll={clearAll}
+                      getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
+                      onResizeRow={resizeRowUnitDetail}
+                      onHeadCellChange={onSetHeadCells}
+                      setSelectedItems={setSelectedItems}
+                      selectedItems={selectedItems}
+                      offsetY={190}
+                      page={page}
+                      rowsPerPage={rowsPerPage}
+                      setPage={(page: any) => setPage(page)}
+                      setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
+                      totalRecords={500}
+                    />
+                  )}
+                </div>
+
+              </CrxTabPanel>
 
 
             </div>

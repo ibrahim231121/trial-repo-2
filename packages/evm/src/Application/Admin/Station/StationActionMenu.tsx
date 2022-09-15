@@ -87,7 +87,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   const isStationExistsInUnits = async () => {
     const url = '/Stations/' + `${row.id}` + '/Units'
 
-    var response = await UnitsAndDevicesAgent.getAllUnits(url).then((response:Unit[]) => response);
+    var response = await UnitsAndDevicesAgent.getAllUnits(url, [{key: "InquireDepth", value:"shallow"}]).then((response:Unit[]) => response);
     if (response != null && response.length > 0)
       return response.length
     else

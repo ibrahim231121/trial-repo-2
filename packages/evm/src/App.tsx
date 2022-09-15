@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
 import Fade from '@material-ui/core/Fade';
-import { CRXPanelStyle } from "@cb/shared";
+import { CRXPanelStyle, CRXLoader } from "@cb/shared";
 import { DragDropContext } from "react-beautiful-dnd";
 
 import { AssetThumbnail } from "./Application/Assets/AssetLister/AssetDataTable/AssetThumbnail";
@@ -28,7 +28,7 @@ import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
 import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
 import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
-
+import { getLoaderValue } from "./Redux/loaderSlice";
 
 interface CounterState {
   path: string,
@@ -49,6 +49,11 @@ const cookies = new Cookies();
 
 
 function App() {
+  const loadingValue = useSelector((state: any) => state.loaderSlice.loadingValue);
+  useEffect(() => {
+    dispatch(getLoaderValue())
+  }, [])
+
   const value: string = useSelector(
     (state: RootState) => state.cultureReducer.value
   );
@@ -388,6 +393,7 @@ function App() {
     error: <i className="fas fa-exclamation-circle errorIcon"></i>,
   };
 
+  
   return (
     <ApplicationPermissionProvider  setModuleIds={
                                           (moduleIds:number[]) =>{
@@ -406,6 +412,10 @@ function App() {
                                     }}
                                     >
         <div dir={rtl}>
+          <CRXLoader 
+            show={loadingValue > 0}
+            loadingText="Please wait"
+          />
           <SnackbarProvider
           maxSnack={100}
           anchorOrigin={{

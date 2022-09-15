@@ -32,7 +32,7 @@ import UnitAndDevicesActionMenu from "../UnitAndDevicesActionMenu";
 import Cookies from 'universal-cookie';
 import QueuedAsstsDataTable from "./AssetQueuedDataTable";
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
-import { GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
+import { Device, GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
 import { Station } from "../../utils/Api/models/StationModels";
 import UnitDeviceEvents from "./UnitDeviceEvents";
 import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
@@ -155,10 +155,10 @@ const UnitCreate = (props: historyProps) => {
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
 
   React.useEffect(() => {
-    UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/GetPrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
-    UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/GetConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
+    UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
+    UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
     UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
-    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + `?Page=${page+1}&Size=${size}`).then((response:Unit) => setDevicesList(response));
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response:Unit) => setDevicesList(response));
   }, []);
 
   React.useEffect(() => {
