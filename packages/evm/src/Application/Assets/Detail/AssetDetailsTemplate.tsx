@@ -350,6 +350,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
     }
     else {
+      debugger;
       getMasterAssetFile(getAssetData?.assets.master.files)
       getChildAssetFile(getAssetData?.assets.children)
     }

@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { EVIDENCE_SERVICE_URL } from "../../../utils/Api/url";
-import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
+import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
 import DateTime from "../../../GlobalComponents/DateTime/DateTime";
 import moment from "moment";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
+import { Link } from "react-router-dom";
 
 
 
@@ -96,6 +97,9 @@ const SharedMedia = () => {
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [evidenceId, setEvidenceId] = React.useState<number>(0);
   const [openMap, setOpenMap] = React.useState(false);
+  const [fileData, setFileData] = React.useState<any[]>([]);
+  const [childFileData, setChildFileData] = React.useState<any[]>([]);
+  const [assetId, setAssetId] = React.useState<number>();
 
 
 
@@ -113,68 +117,162 @@ useEffect(() => {
   
   
   }, []);
+  useEffect(() => {
+    debugger;
+    if(videoPlayerData != null){
+     videoPlayerData.forEach((el) => {
+      var temp: string = el.files[0].fileurl;
+      GetdownloadUrl(temp);
+     })
+     
+    }
+  },[videoPlayerData])
 
   useEffect(() => {
-    if (getAssetData !== undefined) {
-      var categories: string[] = [];
-      getAssetData.categories.forEach((x: any) =>
-        x.formData.forEach((y: any) =>
-          y.fields.forEach((z: any) => {
-            categories.push(z.key);
-          })
-        )
-      );
+debugger;
+    if (fileData.length == getAssetData?.assets.master.files.length) { // temp condition
+      debugger;
+      if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
+        debugger;
+        
+        var categories: string[] = [];
+        getAssetData.categories.forEach((x: any) =>
+          x.formData.forEach((y: any) =>
+            y.fields.forEach((z: any) => {
+              categories.push(z.key);
+            })
+          )
+        );
 
-      var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
+        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
 
-      var unit: number[] = [];
-      unit.push(getAssetData.assets.master.unitId);
+        var unit: number[] = [];
+        unit.push(getAssetData.assets.master.unitId);
 
-      var checksum: number[] = [];
-      getAssetData.assets.master.files.forEach((x: any) => {
-        checksum.push(x.checksum.checksum);
-      });
+        var checksum: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          checksum.push(x.checksum.checksum);
+        });
 
-      var duration: number[] = [];
-      duration.push(getAssetData.assets.master.duration);
+        var duration: number[] = [];
+        duration.push(getAssetData.assets.master.duration);
 
-      var size: number[] = [];
-      getAssetData.assets.master.files.forEach((x: any) => {
-        size.push(x.size);
-      });
+        var size: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          size.push(x.size);
+        });
 
 
-      var categoriesForm: string[] = [];
-      getAssetData.categories.forEach((x: any) => {
-        categoriesForm.push(x.record.cmtFieldName);
-      });
+        var categoriesForm: string[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          categoriesForm.push(x.record.cmtFieldName);
+        });
 
-      setAssetData({
-        ...assetInfo,
-        owners: owners,
-        unit: unit,
-        capturedDate: moment(getAssetData.createdOn).format(
-          "YYYY / MM / DD HH:mm:ss"
-        ),
-        checksum: checksum,
-        duration: moment
-          .utc(getAssetData.assets.master.duration)
-          .format("h:mm"),
-        size: size,
-        retention: moment(getAssetData.retainUntil).format(
-          "YYYY / MM / DD HH:mm:ss"
-        ),
-        categories: categories,
-        categoriesForm: categoriesForm,
-      });
-      const data = extract(getAssetData);
-      setVideoPlayerData(data);
+        setAssetData({
+          ...assetInfo,
+          owners: owners,
+          unit: unit,
+          capturedDate: moment(getAssetData.createdOn).format(
+            "YYYY / MM / DD HH:mm:ss"
+          ),
+          checksum: checksum,
+          duration: moment
+            .utc(getAssetData.assets.master.duration)
+            .format("h:mm"),
+          size: size,
+          retention: moment(getAssetData.retainUntil).format(
+            "YYYY / MM / DD HH:mm:ss"
+          ),
+          categories: categories,
+          categoriesForm: categoriesForm,
+        });
+        const data = extract(getAssetData);
+
+        debugger;
+        setVideoPlayerData(data);
+      }
     }
-  }, [getAssetData]);
-  const GetAsset = (response : any) => {
+    else {
+      getMasterAssetFile(getAssetData?.assets.master.files)
+      getChildAssetFile(getAssetData?.assets.children)
+    }
+  }, [getAssetData, fileData, childFileData]);
 
+  function getMasterAssetFile(dt: any) {
+    debugger;
+    dt?.map((template: any, i: number) => {
+      debugger;
+      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+        debugger;
+        setFileData([...fileData, {
+          filename: template.name,
+          fileurl: template.url,
+          fileduration: template.duration,
+          downloadUri: response
+        }])
+      });
+    })
+  }
+  function getChildAssetFile(dt: any) {
+    debugger;
+    dt?.map((ut: any, i: number) => {
+      ut?.files.map((template: any, j: number) => {
+        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+          setChildFileData([...childFileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          }])
+        });
+
+      })
+
+    })
+  }
+ 
+ 
+  function extract(row: any) {
+    let rowdetail: assetdata[] = [];
+    let rowdetail1: assetdata[] = [];
+    const masterduration = row.assets.master.duration;
+    const buffering = row.assets.master.buffering;
+    const camera = row.assets.master.camera;
+    const file = fileData;
+    const recording = row.assets.master.recording;
+    const bookmarks = row.assets.master.bookMarks ?? [];
+    const notes = row.assets.master.notes ?? [];
+    const id = row.assets.master.id;
+    const unitId = row.assets.master.unitId;
+    const typeOfAsset = row.assets.master.typeOfAsset;
+    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
+    rowdetail.push(myData);
+    rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+      return {
+        id: template.id,
+        files: childFileData,
+        assetduration: template.duration,
+        assetbuffering: template.buffering,
+        recording: template.recording,
+        bookmarks: template.bookMarks ?? [],
+        unitId: template.unitId,
+        typeOfAsset: template.typeOfAsset,
+        notes: template.notes ?? [],
+        camera: camera
+      }
+    })
+    for (let x = 0; x < rowdetail1.length; x++) {
+      rowdetail.push(rowdetail1[x])
+    }
+    return rowdetail
+  }
+
+
+  const GetAsset = (response : any) => {
+    debugger;
     var asd = response;
     EvidenceAgent.getEvidence(response.evidenceId).then((response: Evidence) => {
+      debugger;
       setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
       setEvidenceId(response.id);
@@ -183,9 +281,19 @@ useEffect(() => {
     const getAssetUrl = "/Evidences/" + response.evidenceId + "/Assets/" + response.assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
   
-     dispatch(enterPathActionCreator({ val: t("Asset_Detail:_") + "" })); //replace assetName with "" 
+     //dispatch(enterPathActionCreator({ val: t("Asset_Detail:_") + "" })); //replace assetName with "" 
      setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
      setGpsJson(tempgpsjson);
+  }
+  const GetdownloadUrl = async (fileurl : string) => {
+    debugger;
+    const endpointurl =
+    "/Files/download/" +
+    `${fileurl}`;
+    FileAgent.getDownloadUrl(endpointurl).then((response: string) =>  {
+      debugger;
+      setDownloadLink(response);
+    });
   }
 const DecryptLink = async () => {
   const url = EVIDENCE_SERVICE_URL + '/OpenSharedMedia?E=' + `${token}`
@@ -198,6 +306,7 @@ const DecryptLink = async () => {
  
   if (response != null && response != "Asset not found") 
   {
+    setAssetId(response.assetId);
     var expiry_date = moment(response.shared.on).add(response.shared.expiryDuration, 'hours');
     let now = moment();
     if(now.isBefore(expiry_date))
@@ -215,54 +324,7 @@ const DecryptLink = async () => {
 
   }
 }
-function extract(row: any) {
-  let rowdetail: assetdata[] = [];
-  let rowdetail1: assetdata[] = [];
-  const masterduration = row.assets.master.duration;
-  const buffering = row.assets.master.buffering;
-  const camera = row.assets.master.camera;
-  const file = extractfile(row.assets.master.files);
-  const recording = row.assets.master.recording;
-  const bookmarks = row.assets.master.bookMarks ?? [];
-  const notes = row.assets.master.notes ?? [];
-  const id = row.assets.master.id;
-  const unitId = row.assets.master.unitId;
-  const typeOfAsset = row.assets.master.typeOfAsset;
-  let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
-  rowdetail.push(myData);
-  rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
-    return {
-      id: template.id,
-      files: extractfile(template.files),
-      assetduration: template.duration,
-      assetbuffering: template.buffering,
-      recording: template.recording,
-      bookmarks: template.bookMarks ?? [],
-      unitId: template.unitId,
-      typeOfAsset: template.typeOfAsset,
-      notes: template.notes ?? [],
-      camera: camera
-    }
-  })
-  for (let x = 0; x < rowdetail1.length; x++) {
-    rowdetail.push(rowdetail1[x])
-  }
-  return rowdetail
-}
-function extractfile(file: any) {
-  let Filedata: assetdata[] = [];
-  Filedata = file.map((template: any, i: number) => {
-    setDownloadLink(template.url);
-    return {
-      filename: template.name,
-      fileurl: template.url,
-      fileduration: template.duration,
 
-    }
-  })
-  
-  return Filedata;
-}
 
     return (
         <div className="crxManageUsers switchLeftComponents manageUsersIndex">
@@ -270,7 +332,9 @@ function extractfile(file: any) {
       <span style={{fontSize:"28px",fontWeight:"900"}}>Shared Media</span><br></br>
       <span style={{fontSize:"16px",fontWeight:"400"}}>{LinkStatus}</span>
       </div>
-      <div><a href="{downloadLink}">Download</a></div>
+      <div>
+        {/* <Link to={location => `${downloadLink}`}>Download</Link> */}
+      <a href={downloadLink}>Download</a></div>
       {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
       <div className='categoryTitle'>
       

@@ -47,6 +47,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const [responseError, setResponseError] = React.useState<string>("");
   const [alert, setAlert] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isShowInfo, setIsShowInfo] = React.useState<boolean>(false);
+
   const alertRef = useRef(null);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.users
@@ -148,9 +150,11 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         }
       }
       if (notSame == 0) {
+        setIsShowInfo(true);
         getMasterAsset();
       }
     } else {
+      setIsShowInfo(true);
       getMasterAsset();
     }
   };
@@ -342,8 +346,12 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     }}
                   />}
                   <div className="fieldAssigSelectT">
-                  {t("(Selected_users_will_replace_all_current_assigned_users)")}.
-                   
+                  
+                  
+                  {isShowInfo === true ? (
+                    t("(Selected_users_will_replace_all_current_assigned_users)")
+                  ):null}  
+                  
                   </div>
                 </div>
               </div>

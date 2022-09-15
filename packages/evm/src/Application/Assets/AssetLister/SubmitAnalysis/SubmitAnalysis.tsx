@@ -134,8 +134,8 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
           recordedBy:props.rowData.evidence.masterAsset.recordedBy[0],
           fileType:res ? res.extension : "",
           submitBy: parseInt(localStorage.getItem('User Id') ?? "0"),
-          //evidenceId: 1,//props.rowData.evidence,
-          // tenantId:1
+          evidenceId: props.rowData.evidence.Id,
+          tenantId:1
       };
       let tempJob: Job = {
         type:0,

@@ -172,8 +172,8 @@ export interface Project {
     recordedBy: string,
     fileType: string,
     submitBy: number,
-    //tenantId: number,
-    //evidenceId: number
+    tenantId: number,
+    evidenceId: number
 
 }
 export interface Job {

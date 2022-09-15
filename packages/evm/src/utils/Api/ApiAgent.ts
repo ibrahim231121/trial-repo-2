@@ -172,7 +172,7 @@ export const AuditLogAgent = {
 
 export const FileAgent = {
     getDownloadFileUrl: (fileId: number) => requests.get<string>(FILE_SERVICE_URL, '/Files/download/' + fileId, config),
-    getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url)
+    getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL, url,config)
 }
 
 export const UsersAndIdentitiesServiceAgent = {
