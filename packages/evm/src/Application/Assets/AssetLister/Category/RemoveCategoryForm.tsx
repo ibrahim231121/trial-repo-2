@@ -1,43 +1,15 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { CRXButton } from '@cb/shared';
-import { CRXHeading } from '@cb/shared';
+import { CRXButton, CRXHeading } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { CRXAlert } from '@cb/shared';
 import { useTranslation } from "react-i18next";
-
-type RemoveCategoryFormProps = {
-  filterValue: [];
-  setremoveClassName: any;
-  removedOption: any;
-  evidenceResponse: any;
-  setActiveForm: (param: any) => void;
-  setOpenForm: () => void;
-  setFilterValue: (param: any) => void;
-  closeModal: (param: boolean) => void;
-  setDifferenceOfDays: (param: number) => void;
-  setRemovedOption: (param: any) => void;
-  setIsformUpdated: (param: boolean) => void;
-  setModalTitle: (param: string) => void;
-  setRemovalType: (param: number) => void;
-  setRemoveMessage: (param: string) => void;
-  setRetentionId: (param: number) => void;
-  setHoldUntill: (param: string) => void;
-  setIndicateTxt: (param: boolean) => void;
-};
-
-interface FormValues { }
+import { FormValues, RemoveCategoryFormProps } from './Model/RemoveCategoryFormModel';
 
 const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
-  const [error, setError] = React.useState<boolean>(false);
-  const [Message, setMessageLenght] = React.useState('');
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
-  const filtered = categoryOptions.filter((o: any) => {
-    return props.evidenceResponse?.categories.some((e: any) => e === o.name);
-  });
   const initialValues: FormValues = {
     reason: ''
   };
@@ -47,11 +19,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
     props.setremoveClassName('crx-remove-category-form');
     props.setIndicateTxt(false);
   }, []);
-
-  React.useEffect(() => {
-    if (Message.length === 0) props.setIsformUpdated(false);
-    else props.setIsformUpdated(true);
-  }, [Message]);
 
   const cancelBtn = () => {
     let newValue = categoryOptions
@@ -72,7 +39,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   };
 
   const getPolicyAsync = (message: string) => {
-    
     const removedCategory = props.removedOption;
     const categoryObject = props.evidenceResponse.categories;
     const retentionDetails: any = [];
@@ -133,14 +99,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
 
   return (
     <>
-      {error && (
-        <CRXAlert
-          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
-          type='error'
-          alertType='inline'
-          open={true}
-        />
-      )}
       <Formik
         initialValues={initialValues}
         onSubmit={({ reason }: any, actions) => {
@@ -171,7 +129,8 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
               as='textarea'
               onChange={(event: any) => {
                 handleChange(event);
-                setMessageLenght(event.target.value);
+                // setMessageLenght(event.target.value);
+                props.setIsformUpdated(true)
               }}
             />
             <ErrorMessage name='reason' render={(msg) => <div style={{ color: 'red' }}>{msg}</div>} />

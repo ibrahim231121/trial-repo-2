@@ -3,13 +3,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { CRXHeading } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-
-type DisplayCategoryFormProps = {
-  isCategoryEmpty: boolean;
-  categoryObject: any;
-  initialValueObjects: Array<any>;
-  setFieldsFunction: (param: any) => void;
-};
+import { DisplayCategoryFormProps } from "../Model/DisplayCategoryForm";
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();

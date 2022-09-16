@@ -5,34 +5,15 @@ import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import './categoryForm.scss';
 import ApplicationPermissionContext from '../../../../ApplicationPermission/ApplicationPermissionContext';
-import { Visibility } from '@material-ui/icons';
 import { filterCategory } from './Utility/UtilityFunctions';
 import { useTranslation } from "react-i18next";
-
-type DropdownFormProps = {
-  filterValue: any[];
-  setremoveClassName: any;
-  activeForm: number;
-  evidenceResponse: any;
-  isCategoryEmpty: boolean;
-  setFilterValue: (param: any) => void;
-  setOpenForm: () => void;
-  closeModal: (param: boolean) => void;
-  setActiveForm: (param: any) => void;
-  setRemovedOption: (param: any) => void;
-  setModalTitle: (param: string) => void;
-  setIsformUpdated: (param: boolean) => void;
-  setIndicateTxt: (param: boolean) => void;
-};
+import { DropdownFormProps } from './Model/DropdownFormModel';
 
 const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const { t } = useTranslation<string>();
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
-  const {
-    getModuleIds
-  } = useContext(ApplicationPermissionContext);
-
+  const { getModuleIds } = useContext(ApplicationPermissionContext);
   const isCancelable = getModuleIds().includes(4) ? true : false
   React.useEffect(() => {
     const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_Category");
