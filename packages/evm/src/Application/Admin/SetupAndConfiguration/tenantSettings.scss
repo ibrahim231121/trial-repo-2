@@ -79,3 +79,20 @@
 .timeformat-radio{
     flex-direction: row !important;
 }
+.TenantSettingsUpdate {
+    .crxStationDetail {
+        margin: 20px 0;
+        label {
+            width:190px;
+        }
+        input {
+            min-width: auto;
+        }
+    }
+   .stationDetailCol1 {
+    .MuiGrid-root {
+        margin: 20px 0;
+    }
+   }
+  
+}
