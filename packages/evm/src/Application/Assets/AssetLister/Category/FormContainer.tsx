@@ -7,20 +7,10 @@ import CancelConfirmForm from './Confirmation/CancelConfirmForm';
 import SaveConfirmForm from './Confirmation/SaveConfirmForm';
 import EditConfirmForm from './Confirmation/EditConfirmForm';
 import { filterCategory } from './Utility/UtilityFunctions';
-import { AssetCategory } from './Model/Evidence';
-import http from '../../../../http-common'
 import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import usePrevious from './Utility/usePrev';
-
-type FormContainerProps = {
-  openForm: boolean;
-  isCategoryEmpty: boolean;
-  rowData: any;
-  setOpenForm: () => void;
-  setIsCategoryEmpty: (param: boolean) => void;
-  formActionButton?: React.ReactNode;
-};
+import { FormContainerProps } from './Model/FormContainerModel';
 
 const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [openModal, setOpenModal] = React.useState(false);

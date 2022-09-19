@@ -339,7 +339,7 @@ const AssetDetailsTemplate = (props: any) => {
             .utc(getAssetData.assets.master.duration)
             .format("h:mm"),
           size: size,
-          retention: moment(getAssetData.retainUntil).format(
+          retention: moment(getAssetData.holdUntil).format(
             "YYYY / MM / DD HH:mm:ss"
           ),
           categories: categories,
@@ -350,6 +350,7 @@ const AssetDetailsTemplate = (props: any) => {
       }
     }
     else {
+      debugger;
       getMasterAssetFile(getAssetData?.assets.master.files)
       getChildAssetFile(getAssetData?.assets.children)
     }

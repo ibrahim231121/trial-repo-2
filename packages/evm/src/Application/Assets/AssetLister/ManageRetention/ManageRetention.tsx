@@ -1,103 +1,55 @@
-import React, {  useEffect, useRef } from 'react';
-import { Formik, Form } from 'formik';
-import { CRXRadio,CRXButton,CRXAlert,CRXConfirmDialog, TextField } from '@cb/shared';
+import React from 'react';
+import { Formik, Form, FormikHelpers } from 'formik';
+import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog, TextField } from '@cb/shared';
 import { useDispatch } from 'react-redux';
-import Cookies from 'universal-cookie';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
 import moment from "moment";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
-import { Evidence, ExtendRetention } from '../../../../utils/Api/models/EvidenceModels';
+import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory, useParams } from "react-router";
 import "./ManageRetention.scss";
-
-type ManageRetentionProps = {
-  items: any[];
-  filterValue: any[];
-  //setFilterValue: (param: any) => void;
-  rowData: any;
-  setOnClose: () => void;
-  setRemovedOption: (param: any) => void;
-  showToastMsg:(obj: any) => any;
-  setIsformUpdated: (param: boolean) => void;
-};
-
-const cookies = new Cookies();
+import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
+import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
+import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();
+  const history = useHistory();
   const dispatch = useDispatch();
-  const [buttonState, setButtonState] = React.useState(true);
-  
-  
-  
-  type Retentionmodel = {
-    value: string;
-    label: string;
-    Comp: any;
-  };
-  type assetModel = {
-    master: any,
-    children: any
-  }
-  type stationModel = {
-    CMTFieldValue: number
-  }
-  type RetentionPolicyModel = {
-    CMTFieldValue: number
-  }
-
-  
-  const [retention, setRetention] = React.useState<string>("1")
-  const [currentRetention, setCurrentRetention] = React.useState<string>("")
-  const [originalRetention, setOriginalRetention] = React.useState<string>("")
-  const [isOpen,setIsOpen] = React.useState<boolean>(false);
-  
-  const [retentionList, setRetentionList] = React.useState<ExtendRetention[]>([])
-  
-  const [retentionDays, setRetentionDays] = React.useState<number>(7)
-  const [responseError,setResponseError] = React.useState<string>('');
-  const [response,setResponse] = React.useState<Evidence>();
-  const [alert,setAlert] = React.useState<boolean>(false);
-  const alertRef = useRef(null);
-  let retentionRadio = [
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [responseError, setResponseError] = React.useState<string>('');
+  const [alert, setAlert] = React.useState<boolean>(false);
+  const alertRef = React.useRef(null);
+  const retentionRadioDefaultOptions = [
     {
       value: "1", label: `${t("Extend_retention_by_days")}`, Comp: () => { }
     },
     {
       value: "2", label: `${t("Extend_retention_Indefinitely")}`, Comp: () => { }
     }
-  ]
+  ];
 
-  const [retentionOpt, setRetentionOpt] = React.useState<Retentionmodel[]>(retentionRadio)
+  const initialValues: RetentionFormType = {
+    RetentionStatus: RetentionStatusEnum.CustomExtention,
+    CurrentRetention: '',
+    OriginalRetention: '',
+    RetentionList: [],
+    RetentionDays: 7,
+    RetentionOptions: retentionRadioDefaultOptions,
+    SaveButtonIsDisable: true
+  };
 
-  React.useEffect(() => {
-    
-    if (retentionList.length > 0) {
-      sendData();
-    }
-  }, [retentionList]);
+  const [formPayload, setFormPayload] = React.useState<RetentionFormType>(initialValues);
 
   React.useEffect(() => {
     if (props.items.length <= 1)
       getRetentionData();
-
   }, []);
+
   React.useEffect(() => {
-    if ((retention == "1" && retentionDays != 0) || retention != "1")
-    {
-       setButtonState(false);
-      props.setIsformUpdated(true);
-    }
-    if (retention != "1") {
-      setRetentionDays(7);
-    }
-
-  }, [retention, retentionDays]);
-
-  useEffect(() => {
     if (responseError !== undefined && responseError !== '') {
       let notificationMessage: NotificationMessage = {
         title: `${t("User")}`,
@@ -108,129 +60,104 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       dispatch(addNotificationMessages(notificationMessage));
     }
   }, [responseError]);
-  useEffect(() => {
+
+  React.useEffect(() => {
     const alertClx: any = document.getElementsByClassName("crxAlertUserEditForm");
     const optionalSticky: any = document.getElementsByClassName("optionalSticky");
     const altRef = alertRef.current;
-
     if (alert === false && altRef === null) {
-
       alertClx[0].style.display = "none";
-    } else {
+    }
+    else {
       alertClx[0].setAttribute("style", "display:flex;margin-top:42px;margin-bottom:42px");
       if (optionalSticky.length > 0) {
         optionalSticky[0].style.height = "119px"
       }
     }
   }, [alert]);
+
+
   const closeDialog = () => {
     setIsOpen(false);
     history.push(
       urlList.filter((item: any) => item.name === urlNames.assets)[0]
         .url
     );
-    
   };
-  const getRetentionData = async () => {
+
+  const getRetentionData = () => {
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
-      setResponse(response);
-      setOriginalRetention("Original Retentions: " + moment(response.retainUntil).format('DD-MM-YYYY HH:MM:ss'));
-      if (response.extendedRetainUntil != null) {
-        console.log('curr_ret_moment ',moment(response.extendedRetainUntil).format('DD-MM-YYYY'));
-        if(moment(response.extendedRetainUntil).format('DD-MM-YYYY') == "31-12-9999")
-        {
-          setCurrentRetention("Current Retention: Indefinite");
+      if (response.holdUntil != null) {
+        formPayload.OriginalRetention = `Original Retentions: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
+        formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
+        const newObj: RetentionFormType = {
+          ...formPayload,
+          RetentionOptions: formPayload.RetentionOptions
+        };
+        setFormPayload(newObj);
+        if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
+          formPayload.CurrentRetention = 'Current Retention: Indefinite';
         }
-        else
-        {
-        setCurrentRetention("Current Retention: " + moment(response.extendedRetainUntil).format('DD-MM-YYYY HH:MM:ss'));
+        else {
+          formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
         }
-        setRetentionOpt((prev: any) => [...prev, { value: "3", label: `${t("Revert_to_original_retention")}`, Comp: () => { } }])
       }
     });
   }
-  const history  = useHistory();
-  const onSubmitForm = async () => {
 
-    if (props.filterValue?.length !== 0) {
-    }
-    var sdaasd = [...retentionList];
-    if (props.items.length > 1) {
-      props.items.forEach((el) => {
-        var evidenceData: ExtendRetention = {
-          id: el.evidence.id,
-          extendedDays: retentionDays
-        }
-        sdaasd.push(evidenceData)
-      })
-    }
-    else
-    {
-      var evidenceData: ExtendRetention = {
+  const cancelBtn = () => props.setOnClose();
+
+  const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+    const status = e.target.value;
+    setFieldValue('RetentionStatus', status, false);
+    if (status === RetentionStatusEnum.IndefiniteExtention) {
+      setFieldValue('SaveButtonIsDisable', false, false);
+      setFieldValue('RetentionList', [{
         id: props.rowData.id,
-        extendedDays: retentionDays
-      }
-      sdaasd.push(evidenceData)
+        extendedDays: null
+      }], false);
+      props.setIsformUpdated(true);
     }
-    setRetentionList(sdaasd)
+    setFieldValue('SaveButtonIsDisable', false, false);
+  }
 
 
-  };
-  const sendData = async () => {
-    const url = '/Evidences/Retention/' + `${retention}`
-    EvidenceAgent.updateRetentionPolicy(url, retentionList).then(() => {
+  const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+    const retentionDays = e.target.value;
+    setFieldValue('RetentionDays', retentionDays, false);
+    setFieldValue('RetentionList', [{
+      id: props.rowData.id,
+      extendedDays: parseInt(retentionDays)
+    }], false);
+    setFieldValue('SaveButtonIsDisable', false, false);
+    props.setIsformUpdated(true);
+  }
+
+  const onSubmitForm = (values: RetentionFormType, actions: FormikHelpers<RetentionFormType>) => {
+    const url = '/Evidences/Retention/' + `${values.RetentionStatus}`
+    EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
       props.showToastMsg({
-        message: (retention == "1" || retention == "2") ? "Retention Extended":"Retention Reverted",
+        message: (values.RetentionStatus == RetentionStatusEnum.CustomExtention || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),
         variant: "success",
         duration: 7000,
         clearButtton: true,
       });
+      dispatch(getAssetSearchInfoAsync(""));
     })
-    .catch(function (error) {
-      setAlert(true);
-      setResponseError(
-        "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-      );
-      return error;
-    })
-    await fetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
-      body: JSON.stringify(retentionList)
-    })
-      .then(function (res) {
-        
-        if (res.ok) {
-          props.setOnClose();
-          props.showToastMsg({
-            message: (retention == "1" || retention == "2") ? t("Retention_Extended"): t("Retention_Reverted"),
-            variant: "success",
-            duration: 7000,
-            clearButtton: true,
-          });
-          
-        } else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        }
-      })
-      .catch(function (error) {
+      .catch((error) => {
+        setAlert(true);
+        setResponseError(
+          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+        );
         return error;
-      })
+      });
+    actions.setSubmitting(false);
   }
-
-  const cancelBtn = () => {
-    
-      props.setOnClose();
-    
-  };
 
   return (
     <>
-    <CRXAlert
+      <CRXAlert
         ref={alertRef}
         message={responseError}
         className='crxAlertUserEditForm'
@@ -240,80 +167,86 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         setShowSucess={() => null}
       />
       <div className='retention-modal'>
-        <Formik initialValues={{}} onSubmit={() => onSubmitForm()}>
-          {() => (
+        <Formik initialValues={formPayload} onSubmit={onSubmitForm} enableReinitialize={true}>
+          {({ setFieldValue, values }) => (
             <Form>
+              {console.log('Form Values In Formik =>', values)}
               <div className='_rententionModalCotent'>
-                
                 <div className='_rentention_fields'>
-                  
                   <div className='retention-modal-sub'>
-                  {t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Asset(s)")}
+                    {t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Asset(s)")}
                   </div>
-                  
-                  <CRXRadio
-                    className='crxEditRadioBtn'
-                    disableRipple={true}
-                    content={retentionOpt}
-                    value={retention}
-                    
-                    setValue={setRetention}
-                  />
+                  <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue="female"
+                    name="RetentionStatus"
+                    value={values.RetentionStatus}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      RadioButtonOnChange(e, setFieldValue)}
+                  >
+                    {values.RetentionOptions.map((x) => (
+                      <>
+                        <FormControlLabel
+                          key={x.value}
+                          value={x.value}
+                          control={<Radio />}
+                          label={x.label}
+                        />
+                      </>
+                    ))}
+                  </RadioGroup>
                   <TextField
-                  parentId="_rentention_field_parent"
-                  className=""
-                  type="number"
-                  disabled={retention == "1" ? false : true}
-                  value={retentionDays} 
-                  onChange={(e : any) => setRetentionDays(parseInt(e.target.value))}
-                  name="extendRettionByDay"
-                  
+                    parentId="_rentention_field_parent"
+                    className=""
+                    type="number"
+                    disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
+                    value={values.RetentionDays}
+                    name="RetentionDays"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      onChangeEvent(e, setFieldValue)}
                   />
                   <div className="retention-label-days"><span>
                     days
                   </span></div>
                 </div>
-                {/* <input className='retention-modal-input' type="number" disabled={retention == "1" ? false : true} value={retentionDays} onChange={(e) => setRetentionDays(parseInt(e.target.value))} /> */}
               </div>
               <div className='orginal_current_text'>
-                <div><strong>{t("Original_Retention:")}</strong> {originalRetention}</div>
-                <div><strong>{t("Current_Retention:")}</strong> {currentRetention}</div>
-
+                <div><strong>{t("Original_Retention:")}</strong> {values.OriginalRetention}</div>
+                <div><strong>{t("Current_Retention:")}</strong> {values.CurrentRetention}</div>
               </div>
-
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
-                  <CRXButton type='submit' className='primeryBtn' disabled={buttonState}>
-                  {t("Save")}
+                  <CRXButton type='submit' className='primeryBtn' disabled={values.SaveButtonIsDisable}>
+                    {t("Save")}
                   </CRXButton>
                 </div>
                 <div className='cancelBtn'>
                   <CRXButton onClick={cancelBtn} className='cancelButton secondary'>
                     {t("Cancel")}
                   </CRXButton>
-                  <CRXConfirmDialog
-                    setIsOpen={() => setIsOpen(false)}
-                    onConfirm={closeDialog}
-                    isOpen={isOpen}
-                    className="userGroupNameConfirm"
-                    primary={t("Yes_close")}
-                    secondary={t("No,_do_not_close")}
-                    text="user group form"
-                  >
-                    <div className="confirmMessage">
-                      {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                      <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
-                      {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-                      <div className="confirmMessageBottom">
-                      {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-                      </div>
-                    </div>
-                  </CRXConfirmDialog>
                 </div>
               </div>
             </Form>
           )}
         </Formik>
+        <CRXConfirmDialog
+          setIsOpen={() => setIsOpen(false)}
+          onConfirm={closeDialog}
+          isOpen={isOpen}
+          className="userGroupNameConfirm"
+          primary={t("Yes_close")}
+          secondary={t("No,_do_not_close")}
+          text="user group form"
+        >
+          <div className="confirmMessage">
+            {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+            <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")},
+            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+            </div>
+          </div>
+        </CRXConfirmDialog>
       </div>
     </>
   );

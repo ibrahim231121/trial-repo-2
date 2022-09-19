@@ -1,27 +1,26 @@
 import moment from 'moment';
-
-const AssetRetentionFormat = (dateTime: string) => {
-    const stillUtc = moment.utc(dateTime).toDate();
+const AssetRetentionFormat = (dateTime: Date) => {
+    const dateTimeObj = moment(dateTime).local();
     if (dateTime === null) return 'Error retrieving login data';
-
-    const localDateTime = moment(stillUtc).local().format('YYYY / MM / DD HH:mm:ss');
-    return CalculateHoldUntill(localDateTime);
+    return CalculateRetentionSpan(dateTimeObj);
 };
 
-const CalculateHoldUntill = (dateTime: string): string => {
-    const now = moment();
-    const expiration = moment(dateTime).utc();
+const CalculateRetentionSpan = (expiration: moment.Moment): string => {
+    const now = moment().local();
     if (now < expiration) {
         const diff = expiration.diff(now);
         const diffDuration = moment.duration(diff);
-        let DifferenceInString;
-        if (diffDuration.days() > 1) {
-            DifferenceInString = `${diffDuration.days()} Days ${diffDuration.hours()} Hours`;
+        let differenceInString;
+        if (diffDuration.asDays() > 1) {
+            let hours = diffDuration.asHours();
+            let days = hours / 24;
+            let remainingHours = days % 24;
+            differenceInString = `${Math.round(days)} Days ${Math.round(remainingHours)} Hours`;
         } else {
-            DifferenceInString = `${diffDuration.hours()} Hours`;
+            differenceInString = `${diffDuration.asHours()} Hours`;
         }
-        return DifferenceInString.toString();
+        return differenceInString.toString();
     }
     return 'Asset Expired';
 };
-export {AssetRetentionFormat, CalculateHoldUntill} ;
+export {AssetRetentionFormat, CalculateRetentionSpan} ;

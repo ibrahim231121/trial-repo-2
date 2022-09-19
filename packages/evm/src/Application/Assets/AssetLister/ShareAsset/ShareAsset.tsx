@@ -43,6 +43,8 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const [alert, setAlert] = React.useState<boolean>(false);
   const [emailError, setEmailError] = React.useState<string>("");
   const [showEmailError, setShowEmailError] = React.useState<boolean>(false);
+  const [showReasonError, setShowReasonError] = React.useState<boolean>(false);
+
   const [radioCheck, setRadioCheck] = React.useState<string>("");
   const [reasonCheck, setreasonCheck] = React.useState<string>("");
   const [showreasonCheckError, setShowreasonCheckError] =
@@ -61,6 +63,11 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [currentRetention, setCurrentRetention] = React.useState<string>("-");
   const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel>();
+  const [error, setError] = React.useState({
+    emailErr: "",
+    
+  });
+
 
   React.useEffect(() => {
     if (assetSharing != null && emailError == "") {
@@ -95,7 +102,11 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   }, [email]);
 
   React.useEffect(() => {
-    if (reasonForView == "" || reasonForView.length > 1) {
+    if (reasonForView == "") {
+      setreasonCheck("Reason of sharing is required");
+      setShowreasonCheckError(false);
+    }
+    else if (reasonForView.length > 1) {
       setreasonCheck("");
       setShowreasonCheckError(false);
     } else {
@@ -106,7 +117,27 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   console.log(reasonForView, "checkreason");
 
   console.log(reasonForView, "reason");
-
+  const checkEmail = () => {
+    if (email == "") {
+      setEmailError("Email is required");
+      setShowEmailError(true);
+    } else {
+      setEmailError("W");
+      setShowEmailError(false);
+    }
+  };
+  const checkSharingReason = () => {
+    if (reasonForView == "") {
+      setreasonCheck("Reason of sharing is required");
+      //setShowReasonError(true);
+      setShowreasonCheckError(true);
+    } else {
+      setreasonCheck("W");
+      //setShowReasonError(false);
+      setShowreasonCheckError(false);
+    }
+  };
+  
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMetaDataCheck(e.target.checked);
   };
@@ -227,6 +258,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       value={email}
                       required={true}
                       onChange={(e) => setEmail(e.target.value)}
+                      onBlur={checkEmail}
                     />
                     {showEmailError ? (
                       <div className="errorStationStyle">
@@ -350,6 +382,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       className="crx-category-scroll"
                       value={reasonForView}
                       onChange={(e) => setReasonForView(e.target.value)}
+                      onBlur={checkSharingReason}
                       required={true}
                     ></textarea>
                     {showreasonCheckError ? (

@@ -475,39 +475,61 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const volumeIcon = useRef<any>(null)
+  const volumeIcon = useRef<any>(null);
+  const last_media_time = useRef(0);
+  const last_frame_num = useRef(0);
+  const fps_rounder = useRef<any>([]);
+  const frame_not_seeked = useRef<boolean>(true);
+  const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
+
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
-    if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
-    if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
-    if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
-    if (shiftKey && code == "Period") {
-      event.preventDefault(); 
-      modeSet(mode < 0 ? 2 : (mode + 2))
-    } //Shift + .
-    if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
-    if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
-    if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
-    if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
-    if (code == "ArrowDown") {
-      event.preventDefault(); 
-      setVolume(volume - 1);
-      setVolumeHandle(volume - 1);
-    } //down arrows
-    if (code == "ArrowUp") {
-      event.preventDefault(); 
-      setVolume(volume + 1);
-      setVolumeHandle(volume + 1);
-    } //up arrows
-    if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
-    if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
-    if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
-    if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
-    
+    if(!(openBookmarkForm || openNoteForm || reasonForViewing))
+    {
+      if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+      if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+      if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
+      if (shiftKey && code == "Period") {
+        event.preventDefault(); 
+        modeSet(mode < 0 ? 2 : (mode + 2))
+      } //Shift + .
+      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+      if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+      if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
+      if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
+      if (code == "ArrowDown") {
+        event.preventDefault(); 
+        setVolume(volume - 1);
+        setVolumeHandle(volume - 1);
+      } //down arrows
+      if (code == "ArrowUp") {
+        event.preventDefault(); 
+        setVolume(volume + 1);
+        setVolumeHandle(volume + 1);
+      } //up arrows
+      if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
+      if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
+      if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
+      if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+    }
 
   };
 
+  React.useEffect(() => {
+    if(fps && videoHandlers.length>0){
+      // stop Eventlister to get Fps
+      let vid = videoHandlers[0];
+      vid.removeEventListener("seeked", function () {});
+    }
+  }, [fps]);
+
+  React.useEffect(() => {
+    if(videoHandlers.length>0){
+      // Getting Video Fps
+      getFps(videoHandlers[0])
+    }
+  }, [videoHandlers]);
 
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
@@ -696,6 +718,46 @@ const VideoPlayerBase = (props: any) => {
     }
   }, [bookmarkNotePopupArrObj]);
 
+  const getFps = (videoHandle: any) => {
+    videoHandle.requestVideoFrameCallback(ticker);
+    videoHandle.addEventListener("seeked", function () {
+      let fps_rounder1 = fps_rounder.current;
+      fps_rounder1.pop();
+      fps_rounder.current = fps_rounder1;
+      frame_not_seeked.current = false;
+    });
+  };
+
+  const ticker = (useless: any, metadata: any) => { // GetFps Work
+    let fps;
+    let vid = videoHandlers[0];
+    const fps_rounder1 = fps_rounder.current;
+    
+    const media_time_diff = Math.abs(metadata.mediaTime - last_media_time.current);
+    const frame_num_diff = Math.abs(metadata.presentedFrames - last_frame_num.current);
+    const diff = media_time_diff / frame_num_diff;
+    if (diff && diff < 1 && fps_rounder1.length < 50 && frame_not_seeked.current && vid.playbackRate === 1) {
+      fps_rounder1.push(diff);
+      fps_rounder.current = fps_rounder1;
+      fps = Math.round(1 / get_fps_average());
+      console.log("FPS: " + fps + ", certainty: " + fps_rounder1.length * 2 + "%");
+      if(fps_rounder1.length * 2 == 100){
+        setFps(fps);
+      }
+    }
+    frame_not_seeked.current = true;
+    last_media_time.current = metadata.mediaTime;
+    last_frame_num.current = metadata.presentedFrames;
+    if(fps_rounder1.length * 2 != 100){
+      vid.requestVideoFrameCallback(ticker);
+    }
+  }
+
+  function get_fps_average() { // GetFps Work
+    let fps_rounder1 = fps_rounder.current;
+    return fps_rounder1.reduce((a: any, b: any) => a + b) / fps_rounder.current.length;
+  }
+
 
   const handleControlBarChange = (event: any, newValue: any) => {
 
@@ -742,9 +804,12 @@ const VideoPlayerBase = (props: any) => {
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
-      hanldeVideoStartStop(Math.round(videoHandle.currentTime - 1), videoHandle, false);
+      videoHandle.currentTime = videoHandle.currentTime - (1/fps);
+      hanldeVideoStartStop(Math.round(videoHandle.currentTime), videoHandle, false);
     });
-    handleControlBarChange(null, timer - 1);
+    if(timer > timelineduration){
+      handleControlBarChange(null, timer - (1/fps));
+    }
     setFrameReverse(true);
     setFrameForward(false);
   };
@@ -752,9 +817,12 @@ const VideoPlayerBase = (props: any) => {
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
-      hanldeVideoStartStop(Math.round(videoHandle.currentTime + 1), videoHandle, false);
+      videoHandle.currentTime = videoHandle.currentTime + (1/fps);
+      hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
-    handleControlBarChange(null, timer + 1);
+    if(timer < timelineduration){
+      handleControlBarChange(null, timer + (1/fps));
+    }
     setFrameForward(true);
     setFrameReverse(false);
   };
@@ -826,37 +894,47 @@ const VideoPlayerBase = (props: any) => {
 
   useEffect(() => {
     timelinedetail.filter((y: any) => y.enableDisplay).forEach((x: any) => {
-      var videoElement = document.querySelector("#" + x.id);
+      let videoElement = document.querySelector("#" + x.id);
       videoElements.push(videoElement);
-
       videoElement?.addEventListener("canplay", function () {
-        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        bufferingArrayObj.buffering = true;
-        setBufferingArray(bufferingArray);
+        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        if(bufferingArrayObj){
+          bufferingArrayObj.buffering = true;
+          setBufferingArray(bufferingArray);
+        }
       }, true);
 
       videoElement?.addEventListener("waiting", function () {
-        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        bufferingArrayObj.buffering = false;
-        setBufferingArray(bufferingArray);
+        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        if(bufferingArrayObj){
+          bufferingArrayObj.buffering = false;
+          setBufferingArray(bufferingArray);
+        }
       }, true);
     })
-    setVideoHandlers(videoElements);
+    if(videoElements.length>0)
+    {
+      setVideoHandlers(videoElements);
+    }
   }, [timelinedetail]);
 
   useEffect(() => {
     if (videoHandlersFwRw.length > 0) {
       videoHandlersFwRw.forEach((videoHandle: any) => {
         videoHandle?.addEventListener("canplay", function () {
-          var bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
-          bufferingArrayObj.buffering = true;
-          setBufferingArrayFwRw(bufferingArrayFwRw);
+          let bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
+          if(bufferingArrayObj){
+            bufferingArrayObj.buffering = true;
+            setBufferingArrayFwRw(bufferingArrayFwRw);
+          }
         }, true);
 
         videoHandle?.addEventListener("waiting", function () {
-          var bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
-          bufferingArrayObj.buffering = false;
-          setBufferingArrayFwRw(bufferingArrayFwRw);
+          let bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
+          if(bufferingArrayObj){
+            bufferingArrayObj.buffering = false;
+            setBufferingArrayFwRw(bufferingArrayFwRw);
+          }
         }, true);
       });
       setisvideoHandlersFwRw(true);
@@ -878,7 +956,12 @@ const VideoPlayerBase = (props: any) => {
     var video: any = timelinedetail.find((x: any) => x.id == videoHandle.id);
     var difference = timer - (video.recording_start_point);
     var endPointDifference = (video.recording_end_point) - timer;
-    videoHandle.currentTime = difference > 0 && endPointDifference > 0 ? difference : 0;
+    let currenttime = difference > 0 && endPointDifference > 0 ? difference : 0;
+    let currenttimediff = Math.abs(videoHandle.currentTime - currenttime);
+
+    if(currenttimediff >= 0.5){
+      videoHandle.currentTime = currenttime;
+    }
     if (applyAction) {
       if (videoHandle.currentTime > 0 && bufferingArray.filter((y: any) => timelinedetail.find((z: any) => z.id == y.id && z.enableDisplay) !== undefined).every((y: any) => y.buffering == true)) {
         videoHandle.play();
