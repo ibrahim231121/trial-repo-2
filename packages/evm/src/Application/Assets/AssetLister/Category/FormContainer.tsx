@@ -24,7 +24,6 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
   const [removalType, setRemovalType] = React.useState(0);
   const [removeMessage, setRemoveMessage] = React.useState<string>('');
-  const [retentionId, setRetentionId] = React.useState<number>(0);
   const [holdUntill, setHoldUntill] = React.useState<string>('');
   const [indicateTxt, setIndicateTxt] = React.useState<boolean>(true);
   const [evidenceResponse, setEvidenceResponse] = React.useState<Evidence>();
@@ -159,7 +158,6 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setRemovalType={(e: number) => setRemovalType(e)}
             setRemoveMessage={(e: string) => setRemoveMessage(e)}
-            setRetentionId={(e: number) => setRetentionId(e)}
             setHoldUntill={(e: string) => setHoldUntill(e)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
           />
@@ -180,7 +178,6 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
             removalType={removalType}
             removeMessage={removeMessage}
-            retentionId={retentionId}
             holdUntill={holdUntill}
           />
         );

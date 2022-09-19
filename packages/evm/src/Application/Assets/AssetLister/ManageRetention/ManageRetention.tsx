@@ -134,16 +134,18 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   }
 
   const onSubmitForm = (values: RetentionFormType, actions: FormikHelpers<RetentionFormType>) => {
-    const url = '/Evidences/Retention/' + `${values.RetentionStatus}`
+    const url = '/Evidences/Retention';
     EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
+      setTimeout(() => {
+        dispatch(getAssetSearchInfoAsync(""));
+      }, 2000);
       props.showToastMsg({
         message: (values.RetentionStatus == RetentionStatusEnum.CustomExtention || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),
         variant: "success",
         duration: 7000,
         clearButtton: true,
       });
-      dispatch(getAssetSearchInfoAsync(""));
     })
       .catch((error) => {
         setAlert(true);

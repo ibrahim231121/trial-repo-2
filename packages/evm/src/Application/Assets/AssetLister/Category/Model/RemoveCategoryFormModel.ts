@@ -13,7 +13,6 @@ export type RemoveCategoryFormProps = {
     setModalTitle: (param: string) => void;
     setRemovalType: (param: number) => void;
     setRemoveMessage: (param: string) => void;
-    setRetentionId: (param: number) => void;
     setHoldUntill: (param: string) => void;
     setIndicateTxt: (param: boolean) => void;
 };

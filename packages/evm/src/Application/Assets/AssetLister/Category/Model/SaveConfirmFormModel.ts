@@ -5,7 +5,6 @@ export type SaveConfirmFormProps = {
     differenceOfDays: number;
     removalType: number;
     removeMessage: string;
-    retentionId: number;
     holdUntill: string;
     setActiveForm: (param: any) => void;
     setOpenForm: () => void;

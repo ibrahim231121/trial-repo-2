@@ -196,5 +196,4 @@ export interface EvdenceCategoryAssignment {
     unAssignCategories: Category[];
     assignedCategories: Category[];
     updateCategories: Category[];
-    retentionId: number | null;
 }

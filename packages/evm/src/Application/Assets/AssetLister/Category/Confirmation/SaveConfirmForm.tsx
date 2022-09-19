@@ -61,7 +61,6 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const message = props.removeMessage;
     const evidenceId = props.evidenceResponse?.id;
     const categoryId = props.removedOption.id;
-    const retentionId = props.retentionId !== 0 ? props.retentionId : null;
     const unAssignCategory : Category = {
       id: categoryId,
       formData: [],
@@ -72,8 +71,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const body : EvdenceCategoryAssignment = {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
-      updateCategories: [],
-      retentionId: retentionId,
+      updateCategories: []
     }
     const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
     EvidenceAgent.changeCategories(url, body).then(() => {

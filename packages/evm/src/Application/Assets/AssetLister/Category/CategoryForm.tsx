@@ -5,12 +5,11 @@ import { AddToEditFormStateCreator } from '../../../../Redux/CategoryFormSlice';
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
-import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-import { CategoryFormProps } from './Model/CategoryForm';
+import { CategoryFormProps } from './Model/CategoryFormModel';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -203,10 +202,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       props.setActiveForm(5);
       
     } else {
-      /** 
-       * * Find HighestRetentionId & HoldUntill, from newly added categories. 
-       * */
-      const retentionPromise = findRetentionAndHoldUntill(categoryBodyArr);
       /**
        * * Remove type key from body.
        * */
@@ -214,27 +209,25 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         delete v.type;
       });
 
-      Promise.resolve(retentionPromise).then((retention) => {
-        const body : EvdenceCategoryAssignment = {
-          unAssignCategories: [],
-          assignedCategories: categoryBodyArr,
-          updateCategories: [],
-          retentionId: retention.maxRetentionId ?? null
-        };
+      const body : EvdenceCategoryAssignment = {
+        unAssignCategories: [],
+        assignedCategories: categoryBodyArr,
+        updateCategories: []
+      };
 
-        const url = `/Evidences/${evidenceId}/Categories`;
-        EvidenceAgent.changeCategories(url, body).then(() => {
-          setSuccess(true);
-          setTimeout(() => 
-          {
-            closeModalFunc();
-            dispatch(getAssetSearchInfoAsync(""));
-          }, 3000);
-        })
-        .catch(() => {
-          setError(true);
-        });
+      const url = `/Evidences/${evidenceId}/Categories`;
+      EvidenceAgent.changeCategories(url, body).then(() => {
+        setSuccess(true);
+        setTimeout(() => 
+        {
+          closeModalFunc();
+          dispatch(getAssetSearchInfoAsync(""));
+        }, 3000);
       })
+      .catch(() => {
+        setError(true);
+      });
+      
     }
   };
 
@@ -249,28 +242,24 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       categoryBodyArr.push(_categoryBody);
     }
 
-    const retentionPromise = findRetentionAndHoldUntill(categoryBodyArr);
-    Promise.resolve(retentionPromise).then((retention) => {
-      const body : EvdenceCategoryAssignment = {
-        unAssignCategories: [],
-        assignedCategories: categoryBodyArr,
-        updateCategories: [],
-        retentionId: retention.maxRetentionId ?? null,
-      };
-      const url = `/Evidences/${evidenceId}/Categories`;
-      EvidenceAgent.changeCategories(url, body).then(() => {
-        setSuccess(true);
-        setTimeout(() => {
-          props.setOpenForm();
-          props.setFilterValue(() => []);
-          dispatch(getAssetSearchInfoAsync(""));
-          props.closeModal(false);
-        }, 3000);
-      })
-      .catch(() => {
-        setError(true);
-      });
+    const body : EvdenceCategoryAssignment = {
+      unAssignCategories: [],
+      assignedCategories: categoryBodyArr,
+      updateCategories: []
+    };
+    const url = `/Evidences/${evidenceId}/Categories`;
+    EvidenceAgent.changeCategories(url, body).then(() => {
+      setSuccess(true);
+      setTimeout(() => {
+        props.setOpenForm();
+        props.setFilterValue(() => []);
+        dispatch(getAssetSearchInfoAsync(""));
+        props.closeModal(false);
+      }, 3000);
     })
+    .catch(() => {
+      setError(true);
+    });
   }
 
   return (

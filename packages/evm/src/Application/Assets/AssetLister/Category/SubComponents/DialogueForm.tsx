@@ -8,7 +8,6 @@ import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/mo
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import './DialogueForm.css';
 import { useSelector } from 'react-redux';
-import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
 import { DialogueFormProps } from '../Model/DialogueFormModel';
 
 const DialogueForm: React.FC<DialogueFormProps> = (props) => {
@@ -65,24 +64,20 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
       Assign_Category_Arr.push(_body);
     }
 
-    const retentionPromise = findRetentionAndHoldUntill(Assign_Category_Arr);
-    Promise.resolve(retentionPromise).then((retention) => {
-      const body: EvdenceCategoryAssignment = {
-        unAssignCategories: [],
-        assignedCategories: Assign_Category_Arr,
-        updateCategories: [],
-        retentionId: retention.maxRetentionId ?? null,
-      };
+    const body: EvdenceCategoryAssignment = {
+      unAssignCategories: [],
+      assignedCategories: Assign_Category_Arr,
+      updateCategories: []
+    };
 
-      EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
-        props.setFilterValue((val: []) => []);
-        setSuccess(true);
-        setTimeout(() => closeModal(), 3000);
-      })
-        .catch(() => {
-          setError(true);
-        });
-    });
+    EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
+      props.setFilterValue((val: []) => []);
+      setSuccess(true);
+      setTimeout(() => closeModal(), 3000);
+    })
+      .catch(() => {
+        setError(true);
+      });
   }
 
   return (

@@ -76,7 +76,6 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
         .add(highestRetention.hours, 'hours').utc();
       const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
       const duration = Math.floor(moment.duration(newExpiryDate.diff(expiryDate)).asHours());
-      props.setRetentionId(SecondHighestRetention.retentionId);
       props.setHoldUntill(newExpiryDate.format('YYYY-MM-DDTHH:mm:ss'));
       props.setDifferenceOfDays(duration);
       /** Incase Retention is effected */

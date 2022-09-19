@@ -4,7 +4,6 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
-import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
@@ -56,28 +55,22 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       };
     });
 
-    /** 
-     * * Find HighestRetentionId, from newly added categories. 
-     * */
-    const retentionPromise = findRetentionAndHoldUntill(CategoryFormFields);
-    Promise.resolve(retentionPromise).then((retention) => {
-      const body: EvdenceCategoryAssignment = {
-        unAssignCategories: [],
-        assignedCategories: assignedCategories,
-        updateCategories: updateCategories,
-        retentionId: retention.maxRetentionId ?? null
-      }
-      EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {
-        setSuccess(true);
-        setTimeout(() => {
-          closeModal();
-          dispatch(getAssetSearchInfoAsync(""));
-        }, 3000);
+    const body: EvdenceCategoryAssignment = {
+      unAssignCategories: [],
+      assignedCategories: assignedCategories,
+      updateCategories: updateCategories
+    };
+    
+    EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {
+      setSuccess(true);
+      setTimeout(() => {
+        closeModal();
+        dispatch(getAssetSearchInfoAsync(""));
+      }, 3000);
+    })
+      .catch((ex: any) => {
+        setError(true);
       })
-        .catch((ex: any) => {
-          setError(true);
-        })
-    });
   }
 
   const cancelBtn = () => {

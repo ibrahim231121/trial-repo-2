@@ -33,7 +33,8 @@ import {
     BASE_URL_UNIT_SERVICES,
     FILE_SERVICE_URL,
     AUDITLOG_SERVICE_URL,
-    CountryStateApiUrl
+    CountryStateApiUrl,
+    EVIDENCE_GET_URL
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -225,6 +226,9 @@ export const UnitsAndDevicesAgent = {
 }
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
+}
+export const SearchAgent = {
+    getAssetBySearch: (body : any) => requests.post<any>(EVIDENCE_GET_URL, '', body, config),
 }
 
 export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
