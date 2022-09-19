@@ -62,6 +62,7 @@ export const resources = {
         "Select_All":"Select all",
         "Grouped_Assets":"Grouped Assets",
         "Assign_User":"Assign User",
+        "View_Live_Video":"View Live Video",
         "Modify_Retention":"Modify Retention",
         "Share_Asset":"Share Asset",
         "Video_Analysis":"Video Analysis",

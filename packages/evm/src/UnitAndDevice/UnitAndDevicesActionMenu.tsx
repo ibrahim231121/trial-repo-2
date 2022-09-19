@@ -1,4 +1,7 @@
 import React from "react";
+import { Link, useHistory } from 'react-router-dom';
+import { urlList, urlNames } from '../utils/urlList';
+
 import {
     Menu,
     MenuItem,
@@ -16,8 +19,15 @@ type Props = {
     row?: any;
 };
 
-const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
+const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
     const { t } = useTranslation<string>();
+    const history = useHistory();
+
+
+    const GetSingleLiveView = () => {
+        const path = `${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&unitId=${row?.id}`;
+       return path;
+      };
     return (
         <Menu
             align="start"
@@ -56,7 +66,15 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
                 </div>
             </div>
         </MenuItem>
-
+        <MenuItem  href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&unitId=${row?.id}`}>
+            <div className="crx-meu-content crx-spac">
+                <div className="crx-menu-icon">
+                </div>
+                <div className="crx-menu-list">
+                {t("View_Live_Video")}
+                </div>
+            </div>
+        </MenuItem>
         </Menu>
     );
 };
