@@ -30,7 +30,7 @@ export interface Device {
     version: DeviceCurrentSoftwareVersion,
     isPrimaryDevice: boolean,
     history: History,
-    IsCaptureDevice?: boolean
+    IsCaptureDevice?: boolean,
 }
 
 export interface PublicKey {
