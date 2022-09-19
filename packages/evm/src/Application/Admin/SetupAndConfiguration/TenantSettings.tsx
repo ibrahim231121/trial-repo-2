@@ -989,7 +989,7 @@ const TenantSettings: React.FC = () => {
                         spacing={0}
                       >
                         <div className="CBX-input">
-                          <label htmlFor="LiveStreamURL">url</label>
+                          <label htmlFor="LiveStreamURL">Server</label>
                           <Field id="url" name="LiveStreamURL" />
                         </div>
                       </CRXRows>
