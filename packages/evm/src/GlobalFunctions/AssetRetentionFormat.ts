@@ -9,18 +9,16 @@ const CalculateRetentionSpan = (expiration: moment.Moment): string => {
     const now = moment().local();
     if (now < expiration) {
         const diff = expiration.diff(now);
-        const diffDuration = moment.duration(diff);
-        let differenceInString;
-        if (diffDuration.asDays() > 1) {
-            let hours = diffDuration.asHours();
-            let days = hours / 24;
-            let remainingHours = days % 24;
-            differenceInString = `${Math.round(days)} Days ${Math.round(remainingHours)} Hours`;
-        } else {
-            differenceInString = `${diffDuration.asHours()} Hours`;
-        }
-        return differenceInString.toString();
+        const diffDuration: any = moment.duration(diff);
+        let differenceInString = "";
+        if (diffDuration._data.days != 0)
+            differenceInString = diffDuration._data.days + " Day(s) ";
+        if (diffDuration._data.hours != 0)
+            differenceInString = differenceInString + diffDuration._data.hours + " Hour(s) ";
+        if (diffDuration._data.minutes != 0)
+            differenceInString = differenceInString + diffDuration._data.minutes + " Minute(s)"
+        return differenceInString;
     }
     return 'Asset Expired';
 };
-export {AssetRetentionFormat, CalculateRetentionSpan} ;
+export { AssetRetentionFormat, CalculateRetentionSpan };
