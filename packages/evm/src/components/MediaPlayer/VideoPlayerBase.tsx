@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import VideoScreen from "./VideoScreen";
 import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
@@ -475,7 +475,7 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const volumeIcon = useRef<any>(null);
+  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(true);  const volumeIcon = useRef<any>(null);
   const last_media_time = useRef(0);
   const last_frame_num = useRef(0);
   const fps_rounder = useRef<any>([]);
@@ -1749,6 +1749,7 @@ const VideoPlayerBase = (props: any) => {
                 openMap={props.openMap}
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
                 toasterMsgRef={toasterMsgRef}
+                isAudioGraph={isAudioGraph}
               />
 
               <div className="ClickerIcons">
@@ -1876,9 +1877,10 @@ const VideoPlayerBase = (props: any) => {
                   </div>
                   
                 </div>
-                <div className="dummy_audio_image">
+              {isAudioGraph && <div className="dummy_audio_image">
                     <img src={AduioImage} />
                 </div>
+              } 
               </div>
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
@@ -2004,6 +2006,7 @@ const VideoPlayerBase = (props: any) => {
                       overlayCheckedItems={overlayCheckedItems}
                       setOverlayCheckedItems={setOverlayCheckedItems}
                       isMultiViewEnable={isMultiViewEnable}
+                      setIsAudioGraph={setIsAudioGraph}
                     />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>

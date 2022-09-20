@@ -385,3 +385,17 @@ input:-webkit-autofill {
   background-color: transparent !important;
   -webkit-box-shadow: 0 0 0 50px white inset;
 }
+
+.DataTableBodyCell .row_anchor_point  .rc-menu-button {
+  width: 80px;
+  height: 100%;
+  cursor: pointer;
+} 
+
+.row_anchor_point {
+  display: flex;
+  min-height: 43px;
+  cursor: pointer;
+  justify-content: center;
+  place-items: center;
+}

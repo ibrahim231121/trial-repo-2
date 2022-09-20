@@ -80,6 +80,7 @@
     }
     tbody {
       tr {
+        height: 1px;
         td.MuiTableCell-root {
           color: var(--color-333333);
         }
@@ -91,6 +92,7 @@
           vertical-align: top;
           line-height: 21px;
           text-indent: 0px;
+          height: inherit;
           .MuiListItemSecondaryAction-root {
             z-index: -1 !important;
           }

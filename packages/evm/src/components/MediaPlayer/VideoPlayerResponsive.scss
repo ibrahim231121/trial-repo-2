@@ -25,12 +25,12 @@
     ._video_player_container{
         #crx_video_player{
             #video-player-screens  {
-                height: calc(100vh - 425px);
+                min-height: calc(100vh - 540px);
             }
         } 
     } 
     ._video_Player_Right_Panel {
-        height: calc(100vh - 450px);
+        height: 100%;
     }
 }
 
@@ -38,12 +38,12 @@
     ._video_player_container{
         #crx_video_player{
             #video-player-screens  {
-                height: calc(100vh - 452px);
+                height: calc(100vh - 540px);
             }
         } 
     }
     
     ._video_Player_Right_Panel {
-        height: calc(100vh - 450px);
+        height: 100%;
     }
 }

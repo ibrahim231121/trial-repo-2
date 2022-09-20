@@ -66,13 +66,14 @@
 
 
 ._video_Player_Right_Panel {
-    width: 24.2%;
+    width: 24%;
     background-color: transparent;
     display: inline-block;
     position: relative;
     z-index: 99;
     border:1px solid var(--color-333333);
     height: calc(100vh - (327px + 191px));
+    margin-left: 5px;
     ._bookMark_list_items {
         height: calc(100vh - (238px + 400px));
         overflow-y: auto;

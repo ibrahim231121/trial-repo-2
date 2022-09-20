@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
@@ -8,7 +8,7 @@ import "../../Assets/css/animate.min.css"
 import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
 import { useDispatch } from "react-redux";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
-
+import VideoColumn from "./VideoColumn"
 
 interface VideoScreenProp {
   viewNumber?: number,
@@ -31,13 +31,16 @@ interface VideoScreenProp {
   gpsJson: any
   openMap:boolean
   setOnMarkerClickTimeData:any
-  toasterMsgRef: any
+  toasterMsgRef: any,
+  isAudioGraph : any
 }
 
-const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData,isMultiTimelineEnabled,toasterMsgRef  }: VideoScreenProp) => {
+const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail, mapEnabled, videoHandlers, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, isOpenWindowFwRw,data, evidenceId,setData,setupdateVideoSelection,updateSeekMarker,gMapApiKey,gpsJson,openMap,setOnMarkerClickTimeData,isMultiTimelineEnabled,toasterMsgRef, isAudioGraph  }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexNumber, setIndexNumber] = React.useState<number>(0);
   const [adjustSoundEnabled, setAdjustSoundEnabled] = React.useState<boolean>(true);
+  const [layoutBaseClass, setLayoutBaseClass] = useState<string>("");
+  const [videoLayoutResetHeight, setVideoLayoutResetHeight] = useState<string>("")
   const dispatch = useDispatch();
   
   const getVideo = (camIndexVideoData: any) => {
@@ -59,7 +62,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
         </>
       );
     } else {
-      return <div />;
+      return <div className="_empty_video">  </div>;
     }
   };
 
@@ -89,7 +92,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
     setIndexNumber(0);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const playBtn = document.getElementById("_video_play");
     const pauseBtn = document.getElementById("_video_pause")
 
@@ -149,7 +152,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
           
         </div>
         {getVideo(camIndexVideoData)}
-
+            
         <div
           className="videoMenuCss"
           style={{ display: camIndex == 1 ? "none" : "block" }}
@@ -159,9 +162,9 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
             viewScroll="initial"
             direction="right"
             position="auto"
-            arrow
+            arrow = {false}
             menuButton={
-              <MenuButton>
+              <MenuButton className="_select_video_button">
                 <i className="far fa-ellipsis-v"></i>
               </MenuButton>
             }
@@ -208,68 +211,86 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
       </div>
     );
   };
+  
+  
+  const CrateLayoutbaseClass = () => {
+    
+      if(viewNumber == 3) {
+        setLayoutBaseClass(" _container_column_dir")
+        setVideoLayoutResetHeight("")
+      }else if(viewNumber == 4) {
+        setLayoutBaseClass("_container_column_video_4")
+        setVideoLayoutResetHeight("")
+      }else if (viewNumber == 6) {
+        setLayoutBaseClass("_container_column_video_6")
+        setVideoLayoutResetHeight("_reset_player_height")
+      }else {
+        setLayoutBaseClass("")
+        setVideoLayoutResetHeight("")
+      }
+  }
+  useLayoutEffect(() => {
+    CrateLayoutbaseClass()
+  },[viewNumber])
+
 
   return (
-    <div id="video-player-screens">
-      <Grid container className="_videoPlayer_grid_customize">
-        <Grid  className="_videoPlayer_grid_customize" container xs={mapEnabled ? 9 : 12}>
-          <Grid
-            item
-            spacing={3}
-            xs={
-              viewNumber == 1
-                ? 12 : viewNumber == 2 ? 6: viewNumber == 3 ? 8: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1} 
-            className="_videoPlayer_grid_customize"
-          >
-            {getVideoTag(1)}
-          </Grid>
-
-          <Grid
-            item
-            spacing={3}
-            className="_videoPlayer_grid_customize"
-            xs={
-              viewNumber == 1
-                ? 1
-                : viewNumber == 2
-                ? 6
-                : viewNumber == 3
-                ? 4
-                : viewNumber == 4
-                ? 6
-                : viewNumber == 6
-                ? 4
-                : 1
-            }
-          >
-            {getVideoTag(2)}
-          </Grid>
-          <Grid
-            item
-            
-            xs={
-              viewNumber == 3
-                ? 4: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1
-            }
-            className={`_videoPlayer_grid_customize ${viewNumber == 2 ? "pictureViewGrid" : ""}`}
-          >
-            {getVideoTag(3)}
-          </Grid>
-          <Grid className="_videoPlayer_grid_customize" item xs={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}>
-            {getVideoTag(4)}
-          </Grid>
-          <Grid  className="_videoPlayer_grid_customize" item xs={viewNumber == 6 ? 4 : 1}>
-            {getVideoTag(5)}
-          </Grid>
-          <Grid className="_videoPlayer_grid_customize" item xs={viewNumber == 6 ? 4 : 1}>
-            {getVideoTag(6)}
-          </Grid>
-        </Grid>
+    <div id="video-player-screens" className={`${videoLayoutResetHeight} ${!isAudioGraph ? "_videPlayer_height_AU" : "" } ${mapEnabled ? " _contaoner_flex" : ""}`}>
+     
+     <div className={ `_video_player_grid _videoPlayer_grid_customize ${mapEnabled ? " _contaoner_75 " : ""} ${layoutBaseClass}`}>
+        <VideoColumn 
+        className=""
+        sx={
+          viewNumber == 1
+          ? 12 : viewNumber == 2 ? 6: viewNumber == 3 ? 8: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1
+        }
+        >
+          {getVideoTag(1)}
+        </VideoColumn>
+        
+        
+        <VideoColumn className=""
+        sx={
+          viewNumber == 1
+            ? 1
+            : viewNumber == 2
+            ? 6
+            : viewNumber == 3
+            ? 4
+            : viewNumber == 4
+            ? 6
+            : viewNumber == 6
+            ? 4
+            : 1
+        }
+        >
+          {getVideoTag(2)}
+        </VideoColumn>
+        
+        <VideoColumn className="" 
+          sx={ viewNumber == 3 ? 4: viewNumber == 4 ? 6: viewNumber == 6 ? 4: 1}>
+          {getVideoTag(3)}
+        </VideoColumn>
+        
+        
+        <VideoColumn className="" sx={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}>
+          {getVideoTag(4)}
+        </VideoColumn>
+        
+        <VideoColumn className="" sx={viewNumber == 6 ? 4 : 1}>
+          {getVideoTag(5)}
+        </VideoColumn>
+        
+        <VideoColumn className="" sx={viewNumber == 6 ? 4 : 1}>
+          {getVideoTag(6)}
+        </VideoColumn>
+        </div>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
         {mapEnabled && <div className="_video_Player_Right_Panel">
           <AssetDetailsPanel data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} toasterMsgRef={toasterMsgRef}/>
         </div>}
-      </Grid>
+
+      
       <VideosSelection
         timelinedetail={timelinedetail}
         anchorEl={anchorEl}
