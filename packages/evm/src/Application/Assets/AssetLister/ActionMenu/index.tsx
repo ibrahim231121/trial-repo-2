@@ -501,17 +501,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {IsOpen ? (
           <MenuItem>
-            {/* <Restricted moduleId={30}> 
-             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+            <Restricted moduleId={30}> 
+             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
             <div className="crx-meu-content" onClick={handlePrimaryAsset}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">{t("Set_as_primary")}</div>
             </div>
-            {/* </SecurityDescriptor> 
-           </Restricted>  */}
+            </SecurityDescriptor> 
+           </Restricted> 
           </MenuItem>
-        ) : null
-        }
+         ) : null
+        } 
 
         <MenuItem>
           {/* <Restricted moduleId={21}>

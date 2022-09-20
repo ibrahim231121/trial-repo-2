@@ -80,7 +80,7 @@ const SubmitAnalysis: React.FC<SubmitAnalysisProps> = (props) => {
         }
       }
       setAudioSourceOptions(TempAudioSources);
-      setAudioSource("1");
+      setAudioSource(TempAudioSources[0].displayText);
      
     }, []);
     React.useEffect(() => {
