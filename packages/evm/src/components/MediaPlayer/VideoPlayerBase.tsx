@@ -24,7 +24,8 @@ import { CRXButton, CRXTooltip, SVGImage, CRXToaster , CBXSwitcher} from "@cb/sh
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg"
+import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg";
+import AduioImageZoomInZoomOut  from "../../Assets/Images/dummy-audio-zoom.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
@@ -481,7 +482,8 @@ const VideoPlayerBase = (props: any) => {
   const fps_rounder = useRef<any>([]);
   const frame_not_seeked = useRef<boolean>(true);
   const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
-
+  const [detailContent, setDetailContent] = useState<boolean>(false);
+  const demoRef = useRef(null)
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
@@ -1713,9 +1715,17 @@ const VideoPlayerBase = (props: any) => {
     if(layoutContent) {
        PlayerRight?.appendChild(layoutContent)
     }
-   
+
+    document.documentElement.style.overflow = "hidden";
   },[])
 
+ 
+  const gotoSeeMoreView = (e: any, targetId: any) => {
+    detailContent == false ? setDetailContent(true) : setDetailContent(false);
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
   return (
     <>
       <div onKeyDown={keydownListener}>
@@ -1733,7 +1743,7 @@ const VideoPlayerBase = (props: any) => {
       />}
 
       <div className="searchComponents">
-        <div className="_video_player_container">
+        <div className="_video_player_container" id="_asset_detail_view_idx">
         <div id="crx_video_player" >
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
@@ -1897,6 +1907,9 @@ const VideoPlayerBase = (props: any) => {
                     <img src={AduioImage} />
                 </div>
               } 
+              <div className="dummy_audio_zoomIn_zoomOut">
+              <img src={AduioImageZoomInZoomOut} />
+              </div>
               </div>
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
@@ -2213,8 +2226,21 @@ const VideoPlayerBase = (props: any) => {
           </div>
 
         </div>
+        <div className="_bottom_arrow_seeMore">
+        {detailContent == false ?
+              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
+              </button>
+              :
+              <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
+              </button>
+            }
+        </div>
+        <div className="demo-div" ref={demoRef} id="detail_view">Video Detail Tabs and content here</div>
         </div>{/** Video player container close div */}
-      </div >
+      </div>
+        
       </div>
     </>);
 }

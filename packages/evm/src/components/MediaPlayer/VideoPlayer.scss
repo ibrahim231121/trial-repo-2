@@ -4,12 +4,13 @@
     // width: 91%;
     background-color: var(--color-Black);
     position: relative;
-    border: 2px solid var(--color-333333);
+    border: 0px solid var(--color-333333);
+    border-bottom: 0px;
     width: 100%;
     //height:calc(100% - 148px);
     // min-width: 507px;
     // min-height: 538px;
-    padding: 25px 10px 10px 16px;
+    padding: 19px 10px 10px 16px;
 
   #screens {
     position: relative;
@@ -38,12 +39,18 @@
       left: -12px;
       padding-left: 15px;
       padding-right: 15px;
+      padding-top: 8px;
       .player_controls_inner {
         .dummy_audio_image {
           width: 100%;
+          height: 75px;
           img{
             width: 100%;
+            height: 100%;
           }
+        }
+        .dummy_audio_zoomIn_zoomOut{
+          padding-top: 11px;
         }
       }
       .crx_video_graph {
@@ -191,7 +198,7 @@
 
     #video-player-screens {
       background-color: var(--color-black-11);
-      height: calc(100vh - (340px + 200px));
+      height: calc(100vh - (262px + 200px));
       ._videoPlayer_grid_customize {
         height: 100%;
         padding-right: 4px;
@@ -634,6 +641,33 @@
     }
   }
 }/*_video_player_container close */
+
+  ._bottom_arrow_seeMore{
+    background-color: var(--color-Black);
+    height: 30px;
+    text-align: center;
+    ._angle_down_up_icon_btn {
+      border: 0px;
+      background: transparent;
+      font-size: 30px;
+      color: var(--color-White);
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      place-items: center;
+      align-items: center;
+      cursor: pointer;
+      i {
+        height: auto;
+      }
+    }
+    a {
+      font-size: 28px;
+      color: var(--color-White);
+    }
+  }
 }
 .mainFullView {
   #CRX_Video_Player_Controls {
