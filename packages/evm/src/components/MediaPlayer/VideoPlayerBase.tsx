@@ -30,7 +30,6 @@ import { RootState } from "../../Redux/rootReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import "./VideoPlayerResponsive.scss";
 
-var videoElements: any[] = [];
 
 type Timeline = {
   recording_start_point: number;
@@ -399,6 +398,7 @@ const VideoPlayerBase = (props: any) => {
   const [mode, setMode] = useState<number>(0);
   const [modeFw, setModeFw] = useState<number>(0);
   const [modeRw, setModeRw] = useState<number>(0);
+  const [markerFwRw, setMarkerFwRw] = useState<boolean>(false);
   const [ismodeFwdisable, setismodeFwdisable] = useState<boolean>(false);
   const [ismodeRwdisable, setisModeRwdisable] = useState<boolean>(false);
   const [curractionFwRw, setcurractionFwRw] = useState({
@@ -762,6 +762,7 @@ const VideoPlayerBase = (props: any) => {
   const handleControlBarChange = (event: any, newValue: any) => {
 
     setTimer(newValue);
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     setControlBar(newValue);
     videoHandlers.forEach((videoHandle: any) => {
@@ -785,6 +786,7 @@ const VideoPlayerBase = (props: any) => {
 
   const handlePlayPause = () => {
     setPlaying(!isPlaying);
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     setShowFRicon({ showFRCon: false, caseNum: 0 })
     if (!isPlaying) {
@@ -805,9 +807,9 @@ const VideoPlayerBase = (props: any) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
       videoHandle.currentTime = videoHandle.currentTime - (1/fps);
-      hanldeVideoStartStop(Math.round(videoHandle.currentTime), videoHandle, false);
+      hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
-    if(timer > timelineduration){
+    if(timer > 0){
       handleControlBarChange(null, timer - (1/fps));
     }
     setFrameReverse(true);
@@ -831,6 +833,7 @@ const VideoPlayerBase = (props: any) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
     });
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     const playerCurrentTime = Math.round(timer * 1000);
     let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -893,6 +896,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   useEffect(() => {
+    let videoElements: any[] = [];
     timelinedetail.filter((y: any) => y.enableDisplay).forEach((x: any) => {
       let videoElement = document.querySelector("#" + x.id);
       videoElements.push(videoElement);
@@ -1028,17 +1032,26 @@ const VideoPlayerBase = (props: any) => {
         if (isPlayingFwRw === true) {
           if (timer < timelineduration) {
             var timerValue: any[] = [];
+            let TimeLinePipe: any = document.querySelector("#_fwrw_timeLine_pipeRed");
             if (modeFw > 0) {
               timerFwRw.forEach((x: any) => {
                 timerValue.push(x + 0.25);
               })
+              if(!(timerValue[2]>timelinedetail[0].recording_end_point))
+              {
+                TimeLinePipe.style.left = (timerValue[2]/timelineduration)*100 + "%";
+              }
             }
             else if (modeRw > 0) {
               timerFwRw.forEach((x: any) => {
                 timerValue.push(x - 0.25);
               })
+              if(!(timerValue[2]<timelinedetail[0].recording_start_point))
+              {
+                TimeLinePipe.style.left = (timerValue[2]/timelineduration)*100 + "%";
+              }
             }
-
+            
             setTimerFwRw(timerValue);
             videoHandlersFwRw.forEach((videoHandle: any, index: number) => {
               hanldeVideoStartStopFwRw(timerValue[index], videoHandle, true, index);
@@ -1179,6 +1192,7 @@ const VideoPlayerBase = (props: any) => {
 
     setSpeedFwRw(250);
     setisPlayingFwRw(true);
+    setMarkerFwRw(true);
     switch (CaseNo) {
       case 1: //Forward
         if (modeRw > 0) {
@@ -1219,6 +1233,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickVideoFwRw = (event: any) => {
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     var video: any = timelinedetail[0];
     let currTime = Math.floor(event.target.currentTime);
@@ -1866,7 +1881,8 @@ const VideoPlayerBase = (props: any) => {
                     viewReasonControlsDisabled={viewReasonControlsDisabled}
                     timelinedetail={timelinedetail}
                     displayThumbnail={displayThumbnail}
-                    setVisibleThumbnail={setVisibleThumbnail} />
+                    setVisibleThumbnail={setVisibleThumbnail}
+                    markerFwRw={markerFwRw} />
                 </div>
                 <div className="videoPlayer_Timeline_Time">
                   <div className="playerViewFlexTimer">
