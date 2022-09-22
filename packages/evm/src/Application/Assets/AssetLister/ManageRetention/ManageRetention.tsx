@@ -123,6 +123,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
 
   const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+    e.preventDefault();
     const retentionDays = e.target.value;
     setFieldValue('RetentionDays', retentionDays, false);
     setFieldValue('RetentionList', [{
@@ -172,7 +173,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         <Formik initialValues={formPayload} onSubmit={onSubmitForm} enableReinitialize={true}>
           {({ setFieldValue, values }) => (
             <Form>
-              {console.log('Form Values In Formik =>', values)}
               <div className='_rententionModalCotent'>
                 <div className='_rentention_fields'>
                   <div className='retention-modal-sub'>

@@ -3,15 +3,15 @@ import { CRXDataTable, CRXButton, CRXConfirmDialog } from '@cb/shared';
 import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
 import { HeadCellProps, PageiGrid } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import DropdownComponent from './DropdownComponent';
-import http from '../../../../http-common';
 import { StationInfo, TypeOfDevice } from './DefaultUnitTemplateModel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { CRXAlert } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
 import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { DeviceType } from '../../../../utils/Api/models/UnitModels';
 import { Station } from '../../../../utils/Api/models/StationModels';
+import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -27,23 +27,26 @@ const DefaultUnitTemplate: React.FC = () => {
     const [confirmModalDisplay, setConfirmModalDisplay] = React.useState<boolean>(false);
     const [success, setSuccess] = React.useState<boolean>(false);
     const [error, setError] = React.useState<boolean>(false);
-
+     
     const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
     const [paging, setPaging] = React.useState<boolean>();
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
         gridFilter: {
-        logic: "and",
-        filters: []
+            logic: "and",
+            filters: []
         },
         page: page,
         size: rowsPerPage
     })
-
+    const dispatch = useDispatch();
     React.useEffect(() => {
         getDeviceTypeRecord();
         getAllStationRecord();
+        if(!(configurationTemplatesFromStore) || Object.keys(configurationTemplatesFromStore).length === 0){
+            dispatch(getConfigurationTemplatesAsync());
+        }
     }, []);
 
     React.useEffect(() => {
@@ -70,7 +73,7 @@ const DefaultUnitTemplate: React.FC = () => {
             }
             for (const headerColObj of headerColumnCollection) {
                 const headCellObject: HeadCellProps = {
-                    label: headerColObj.name?? "",
+                    label: headerColObj.name ?? "",
                     id: headerColObj.dropdown_policy_id,
                     align: 'center',
                     dataComponent: (e: any, rowId: any) => headerColObj.type === 'text' ? textDisplay(e, "") : dropdownDataComponent(e, rowId, headerColObj.dropdown_policy_id, configurationTemplatesFromStore, selectBoxValues),
@@ -104,36 +107,41 @@ const DefaultUnitTemplate: React.FC = () => {
     }, [deviceTypeCollection, selectBoxValues, stationCollection]);
 
     React.useEffect(() => {
-        if(paging)
-          console.log("page Grid ", pageiGrid)
-        setPaging(false)
-      },[pageiGrid])
+        if (paging)
+            setPaging(false);
+    }, [pageiGrid]);
+
+    React.useEffect(() => {
+        setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
+        setPaging(true)
+    }, [page, rowsPerPage]);
 
     const getDeviceTypeRecord = () => {
         UnitsAndDevicesAgent.getAllDeviceTypes()
-        .then((response:DeviceType[]) => {
-            setDeviceType(response)
-        })
-        .catch((error: any) => {
-            console.error(error.response.data);
-        });
+            .then((response: DeviceType[]) => {
+                const shownDevices = response.filter(x => x.showDevice === true);
+                setDeviceType(shownDevices);
+            })
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
     }
 
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{key : 'InquireDepth', value : 'narrow'}])
-        .then((response:Station[]) => {
-            setStationCollection(response);
-            let stationInfo = response.map((x: any) => {
-                return {
-                    id: x.id,
-                    name: x.name
-                } as StationInfo
-            }) as StationInfo[];
-            setStationDataTableRow(stationInfo)
-        })
-        .catch((error: any) => {
-            console.error(error.response.data);
-        });
+        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{ key: 'InquireDepth', value: 'narrow' }])
+            .then((response: Station[]) => {
+                setStationCollection(response);
+                let stationInfo = response.map((x: any) => {
+                    return {
+                        id: x.id,
+                        name: x.name
+                    } as StationInfo
+                }) as StationInfo[];
+                setStationDataTableRow(stationInfo);
+            })
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
     }
 
     const manipulateSelectBoxValueResponse = (e: any, _stationId: number) => {
@@ -175,17 +183,18 @@ const DefaultUnitTemplate: React.FC = () => {
             });
             tempArrayToHoldState.push(...tempObjectForState);
         }
-        setSelectBoxValues(tempArrayToHoldState);
+        if(tempArrayToHoldState.length > 0)
+           setSelectBoxValues(tempArrayToHoldState);
     }
 
     const saveBtnClickHandler = () => {
-        UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(()=>{
+        UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(() => {
             setSuccess(true);
         })
-        .catch((error:any) => {
-            setError(true);
-            console.error(error.response.data);
-        });
+            .catch((error: any) => {
+                setError(true);
+                console.error(error.response.data);
+            });
     }
 
     const cancelBtnHandler = () => {
@@ -214,12 +223,6 @@ const DefaultUnitTemplate: React.FC = () => {
                 setSelectBoxValueIntoParent={(eventFromChild: any) => manipulateSelectBoxValueResponse(eventFromChild, parseInt(_rowId))} />
         );
     }
-
-    React.useEffect(() => {
-        setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
-        setPaging(true)
-    
-    },[page, rowsPerPage])
 
     return (
         <>
@@ -266,8 +269,8 @@ const DefaultUnitTemplate: React.FC = () => {
                         showToolbar={false}
                         page={page}
                         rowsPerPage={rowsPerPage}
-                        setPage= {(page:any) => setPage(page)}
-                        setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                        setPage={(page: any) => setPage(page)}
+                        setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                         totalRecords={configurationTemplatesFromStore.length}
                     />
                 }
@@ -303,12 +306,12 @@ const DefaultUnitTemplate: React.FC = () => {
                 >
                     <div className='modalContentText'>
                         <div className='cancelConfrimText'>
-                        {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")} {t("Manage_Default_Unit_Template")} {t("If_you_close_the_form")}, 
-                        {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}{' '}
+                            {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")} {t("Manage_Default_Unit_Template")} {t("If_you_close_the_form")},
+                            {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}{' '}
                         </div>
                     </div>
                     <div className='modalBottomText modalBottomTextClose'>
-                    {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("Manage_Default_Unit_Template")}?
+                        {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("Manage_Default_Unit_Template")}?
                     </div>
                 </CRXConfirmDialog>
             </div>

@@ -231,6 +231,7 @@ export const resources = {
         "We_re_sorry_The_asset_cant_be_unlocked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be unlocked. Please retry or contact your Systems Administrator.",
         "The_asset_are_locked" : "Success: The asset(s) are locked.",
         "The_asset_are_unlocked" : "Success: The asset(s) are unlocked.",
+        "Unlock_Access" : "Unlock Access",
         // -------------------------
 
         // --------- User ----------

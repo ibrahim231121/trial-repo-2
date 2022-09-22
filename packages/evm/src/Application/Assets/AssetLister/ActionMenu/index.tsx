@@ -574,7 +574,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">UnLock Access</div>
+                  <div className="crx-menu-list">{t('Unlock_Access')}</div>
                 </div>
               </SecurityDescriptor>
             </Restricted>

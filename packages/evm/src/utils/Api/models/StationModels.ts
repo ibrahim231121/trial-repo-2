@@ -10,7 +10,7 @@ export interface Station {
     policies: StationPolicy[],
     history?: History,
     passcode: string,
-    sSID: string,
+    ssid: string,
     password?: string
 }
 
@@ -35,5 +35,5 @@ export interface CaptureDevice {
 }
 
 export interface RetentionPolicyId  {
-    CMTFieldValue: number;
+    cmtFieldValue: number;
   };

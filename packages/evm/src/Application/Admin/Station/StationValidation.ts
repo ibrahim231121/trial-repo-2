@@ -11,7 +11,7 @@ export const stationValidationSchema = Yup.object().shape({
         "Minimum_3_characters_are_allowed.",
         (val) => val != undefined && (val.length == 0 || (val.length >= 3 && val.length <= 128))
       )
-      .trim().matches(regex, "Only_alphabets_and_digits_are_allowed.").required("Street_Address_is_required"),
+      .trim().required("Street_Address_is_required"),
     Passcode: Yup.string()
       .test(
         'len',
@@ -19,22 +19,12 @@ export const stationValidationSchema = Yup.object().shape({
         (val) => val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
       )
       .trim().matches(regexForNumberOnly, "Only_digits_are_allowed.").required("Pass_Code_is_required"),
-    Phone: Yup.string()
-      .trim().matches(regex_PhoneNumber, "Phone_Number_is_not_valid!").notRequired(),
-    SSId: Yup.string()
-      .test(
-        'len',
-        "Minimum_5_characters_are_allowed.",
-        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-      )
-      .trim().matches(regex, "Only_alphabets_and_digits_are_allowed.").notRequired(),
-    Password: Yup.string()
-      .test(
-        'len',
-        "Minimum_5_characters_are_allowed.",
-        (val) => val === undefined || val != undefined && (val.length == 0 || (val.length >= 5 && val.length <= 64))
-      )
-      .trim().matches(regex, "Only_alphabets_and_digits_are_allowed.").notRequired(),
-    //RetentionPolicy: Yup.string().required("Retention policy is required"),
+    Phone: Yup.string().matches(regex_PhoneNumber, "Phone_Number_is_not_valid!").nullable().notRequired(),
+    SSId: Yup.string().min(5).matches(regex, "Only_alphabets_and_digits_are_allowed.").nullable().notRequired(),
+    Password: Yup.string().min(5).trim().matches(regex, "Only_alphabets_and_digits_are_allowed.").nullable().notRequired(),
+    RetentionPolicy: Yup.object()
+      .shape({
+        id: Yup.string().required('Retention_Policy_is_required'),
+      })
   });
   
