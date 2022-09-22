@@ -66,7 +66,8 @@ let config = {
     headers: {
         'Content-Type': 'application/json',
         'TenantId': '1',
-        'Authorization': 'Bearer ' + cookies.get("access_token")
+        'Authorization': 'Bearer ' + cookies.get("access_token"),
+        'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
     }
 }
 
@@ -75,7 +76,8 @@ export const setAPIAgentConfig = () => {
         headers: {
             'Content-Type': 'application/json',
             'TenantId': '1',
-            'Authorization': 'Bearer ' + cookies.get("access_token")
+            'Authorization': 'Bearer ' + cookies.get("access_token"),
+            'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
         }
     }
 }

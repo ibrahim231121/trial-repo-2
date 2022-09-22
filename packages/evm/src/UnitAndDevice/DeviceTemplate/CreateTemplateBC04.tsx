@@ -28,9 +28,8 @@ import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 
 
-
 var re = /[\/]/;
-const username = localStorage.getItem('username')
+
 
 const applyValidation = (arrayOfObj: any) => {
   var initialValuesArrayRequiredField: any = [];
@@ -692,7 +691,7 @@ const CreateTemplate = (props: any) => {
 
     else {
       body.id = historyState.id;
-      const url = `/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
+      const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
         targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
