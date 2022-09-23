@@ -323,6 +323,7 @@ const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?:
   };
 }
 const updateTimelinesMaxDurations = async (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number, setfinalduration: any, settimelineduration: any, dispatch: any) => {
+  tempTimelines = JSON.parse(JSON.stringify(tempTimelines));
   let durationinformat = secondsToHms(maxTimelineDuration);
   setfinalduration(durationinformat.toString())
   settimelineduration(maxTimelineDuration);
@@ -1402,14 +1403,14 @@ const VideoPlayerBase = (props: any) => {
   const AdjustTimeline = async (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
 
-    var timeLineHover: any = document.querySelector("#SliderControlBar");
-    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
-    var leftPadding = timeLineHover.getBoundingClientRect().left;
+    let timeLineHover: any = document.querySelector("#SliderControlBar");
+    let timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+    let leftPadding = timeLineHover.getBoundingClientRect().left;
 
-    var pxPerSecond = timelineWidth / timelineduration;
-    var ttt: number = 0;
+    let pxPerSecond = timelineWidth / timelineduration;
+    let ttt: number = 0;
     if (mode === 0) {
-      var positionInSeconds = ((event.pageX - leftPadding) / pxPerSecond)
+      let positionInSeconds = ((event.pageX - leftPadding) / pxPerSecond)
       ttt = positionInSeconds - timeline.recording_start_point;
     }
     else {
@@ -1417,9 +1418,9 @@ const VideoPlayerBase = (props: any) => {
     }
     ttt = (timeline.recording_start_point + ttt) < 0 ? 0 : ttt;
 
-    var newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
-    var tempTimelines = [...timelinedetail];
-    var tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
+    let newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
 
 
 
@@ -1472,11 +1473,11 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const RevertToOriginal = async () => {
-    var tempTimelines = [...timelinedetail];
-    var maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
-    var maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
-    var negativeHandler = maxTimelineCalculationResponse?.negativeHandler;
-    var durationinformat = secondsToHms(maxTimelineDuration);
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
+    let maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
+    let negativeHandler = maxTimelineCalculationResponse?.negativeHandler;
+    let durationinformat = secondsToHms(maxTimelineDuration);
     setfinalduration(durationinformat.toString())
     settimelineduration(maxTimelineDuration);
 
@@ -1497,20 +1498,20 @@ const VideoPlayerBase = (props: any) => {
     await dispatch(addTimelineDetailActionCreator(tempTimelines));
     setTimelineSyncHistoryCounter(0);
     toasterMsgRef.current.showToaster({
-      message: "Times reverted to original", variant: "Success", duration: 5000, clearButtton: true
+      message: "Times reverted to original", letiant: "Success", duration: 5000, clearButtton: true
     });
   }
-  const UndoRedo = (indexOperation: number) => {
-    var tempTimelines = [...timelinedetail];
-    var undoObj = timelineSyncHistory[indexOperation == 0 ? 0 : timelineSyncHistoryCounter + indexOperation];
+  const UndoRedo = async (indexOperation: number) => {
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let undoObj = timelineSyncHistory[indexOperation == 0 ? 0 : timelineSyncHistoryCounter + indexOperation];
     if (undoObj) {
-      var maxTimelineDuration = undoObj.maxTimelineDuration;
-      var durationinformat = secondsToHms(maxTimelineDuration);
+      let maxTimelineDuration = undoObj.maxTimelineDuration;
+      let durationinformat = secondsToHms(maxTimelineDuration);
       setfinalduration(durationinformat.toString())
       settimelineduration(maxTimelineDuration);
 
       tempTimelines.forEach((x: any) => {
-        var timelineHistoryObj: any = undoObj.timelinesHistory.find((y: any) => y.assetId == x.dataId);
+        let timelineHistoryObj: any = undoObj.timelinesHistory.find((y: any) => y.assetId == x.dataId);
         let recording_start_point = timelineHistoryObj.recording_start_point;
         let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
         let recording_end_point = timelineHistoryObj.recording_end_point;
@@ -1525,7 +1526,8 @@ const VideoPlayerBase = (props: any) => {
         x.recordingratio = recordingratio;
         x.timeOffset = timeOffset;
       })
-      var index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
+      await dispatch(addTimelineDetailActionCreator(tempTimelines));
+      let index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
       setTimelineSyncHistoryCounter(indexOperation == 0 ? 0 : index);
     }
     if (indexOperation == 0) {

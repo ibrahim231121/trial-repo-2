@@ -118,37 +118,37 @@ const ConfigurationTemplates: React.FC = () => {
   
   React.useEffect(() => {
     dispatch(getConfigurationInfoAsync(pageiGrid));
-    //dispatch(getDeviceTypeInfoAsync());
-    setCreateTemplateDropdown([
-      {
-        "id": "1",
-        "name": "Incar",
-        "description": "This is Incar",
-        "deviceType": "Incar",
-        "deviceTypeCategory": "DVR"
-      },
-      {
-        "id": "6",
-        "name": "BC03",
-        "description": "This is BodyWorn Gen3",
-        "deviceType": "BC03",
-        "deviceTypeCategory": "BodyWorn"
-      },
-      {
-        "id": "7",
-        "name": "BC03 LTE",
-        "description": "This is BodyWorn Gen3 LTE",
-        "deviceType": "BC03LTE",
-        "deviceTypeCategory": "BodyWorn"
-      },
-      {
-        "id": "8",
-        "name": "BC04",
-        "description": "This is BodyWorn Gen4",
-        "deviceType": "BC04",
-        "deviceTypeCategory": "BodyWorn"
-      }
-    ]);
+    dispatch(getDeviceTypeInfoAsync());
+    // setCreateTemplateDropdown([
+    //   {
+    //     "id": "1",
+    //     "name": "Incar",
+    //     "description": "This is Incar",
+    //     "deviceType": "Incar",
+    //     "deviceTypeCategory": "DVR"
+    //   },
+    //   {
+    //     "id": "6",
+    //     "name": "BC03",
+    //     "description": "This is BodyWorn Gen3",
+    //     "deviceType": "BC03",
+    //     "deviceTypeCategory": "BodyWorn"
+    //   },
+    //   {
+    //     "id": "7",
+    //     "name": "BC03 LTE",
+    //     "description": "This is BodyWorn Gen3 LTE",
+    //     "deviceType": "BC03LTE",
+    //     "deviceTypeCategory": "BodyWorn"
+    //   },
+    //   {
+    //     "id": "8",
+    //     "name": "BC04",
+    //     "description": "This is BodyWorn Gen4",
+    //     "deviceType": "BC04",
+    //     "deviceTypeCategory": "BodyWorn"
+    //   }
+    // ]);
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable"); // will check this
@@ -158,9 +158,21 @@ const ConfigurationTemplates: React.FC = () => {
     (state: RootState) => state.templateSlice.templateInfo
   );
 
-  const [createTemplateDropdown, setCreateTemplateDropdown] = React.useState<
-    DeviceType[]
-  >([]);
+  const createTemplateDropdown: DeviceType[] = useSelector(
+    (state: RootState) => state.templateSlice.deviceType
+  ).filter((x: any) => x.showDevice == true).map((x: any) => {
+    return {
+      id: x.id,
+      name: x.name,
+      description: x.description,
+      deviceType: x.name,
+      deviceTypeCategory: x.category
+    }
+  });
+
+  // const [createTemplateDropdown, setCreateTemplateDropdown] = React.useState<
+  //   DeviceType[]
+  // >([]);
   const [rows, setRows] = React.useState<ConfigTemplate[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
