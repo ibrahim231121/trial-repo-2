@@ -12,7 +12,22 @@ let GetAssetsByState = (status: string) => {
     }
 };
 
-let GetAssetsUnCategorized = (startDate: string, endDate: string) => {
+let GetAssetsByUserName = (userName : string) =>{
+    return {
+        
+            bool:{
+                should:[
+                    {
+                        match:{"asset.owners": userName}
+                    }  
+                ]
+            }
+        
+        
+    }
+}    
+
+let GetAssetsUnCategorized = (startDate : string, endDate :string) =>{
     return {
         bool: {
             must: [
@@ -85,5 +100,6 @@ let GetAssetsApproachingDeletion = (startDate: string, endDate: string) => {
 export default {
     GetAssetsByState,
     GetAssetsUnCategorized,
-    GetAssetsApproachingDeletion
+    GetAssetsApproachingDeletion,
+    GetAssetsByUserName
 }

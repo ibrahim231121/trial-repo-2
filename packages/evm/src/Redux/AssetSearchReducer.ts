@@ -1,7 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import { SearchAgent } from '../utils/Api/ApiAgent';
 
-export const getAssetSearchInfoAsync: any = createAsyncThunk('getAssetSearchInfo', async (QUERRY: string) => {
+interface assetSearchType{
+    QUERRY:any,
+    searchType:string
+}
+export const getAssetSearchInfoAsync: any = createAsyncThunk(
+    'getAssetSearchInfo',
+    async ({QUERRY, searchType}:assetSearchType) => {
+    const isViewAsset = searchType === 'ViewOwnAssets' ? 'true':'false';   
     if (QUERRY === '') {
         let assetSearchQueeryGet = localStorage.getItem('assetSearchQuerry');
         if (assetSearchQueeryGet !== null) {
@@ -10,7 +18,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk('getAssetSearchInfo
     } else {
         localStorage.setItem('assetSearchQuerry', JSON.stringify(QUERRY));
     }
-    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY)).then((response: any) => response);
+    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "IsViewAsset", value:isViewAsset}] ).then((response: any) => response);
 });
 
 export const assetSearchSlice = createSlice({

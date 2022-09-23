@@ -28,6 +28,7 @@ import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
 import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
 import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
+import { setgroups } from "process";
 import { getLoaderValue } from "./Redux/loaderSlice";
 
 interface CounterState {
@@ -72,6 +73,7 @@ function App() {
   const [rtl, setRTL] = useState<string>();
   const dispatch = useDispatch();
   const [moduleIds, setModuleIds] = React.useState<number[]>([]);
+  const [groupIds, setGroupIds] = React.useState<number[]>([]);
   const [open, setOpen] = useState(true);
   const [tokenexpiry , setExpiry] = useState<number>(0)
  
@@ -177,12 +179,16 @@ function App() {
     var token = getToken();
     if(token){
             setupSignalRConnection("https://localhost:54321/crossbone");
-            var moduleIds = getModuleIds();
+            let moduleIds = getModuleIds();
+            let groupIds = getGroupIds();
             if(moduleIds){
 
              setModuleIds(moduleIds);            
             }
-        
+            if(groupIds){
+
+              setGroupIds(groupIds);            
+             }
     }
   }, []);
 
@@ -206,6 +212,31 @@ function App() {
       }
       if (moduleIds.length > 0) {
         return moduleIds;
+      }
+    } else {
+      return [];
+    }
+  };
+
+
+  const getGroupIds = () => {
+    var token = getToken();
+    if (token) {
+      if (groupIds.length <= 0) {
+        var accessTokenDecode: TokenType = jwt_decode(token);
+        if (
+          accessTokenDecode  && accessTokenDecode.AssignedGroups 
+        ) {
+          var groupIdsAssigned = accessTokenDecode.AssignedGroups.split(
+            ","
+          ).map((x) => parseInt(x));
+          return groupIdsAssigned;
+        } else {
+          return [];
+        }
+      }
+      if (groupIds.length > 0) {
+        return groupIds;
       }
     } else {
       return [];
@@ -410,6 +441,8 @@ function App() {
                                             return []
                                           }
                                     }}
+                                    groupIds={groupIds}
+
                                     >
         <div dir={rtl}>
           <CRXLoader 

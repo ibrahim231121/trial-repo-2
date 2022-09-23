@@ -3,6 +3,7 @@ import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
 import AdvanceOption from './AdvanceOption';
 import MasterMain from './AssetDataTable';
+import jwt_decode from "jwt-decode";
 import './AssetLister.scss';
 import SelectedAsset from './SelectedAsset';
 import queries from '../QueryManagement/queries';
@@ -18,13 +19,18 @@ import {
   approachingDateDefaultValue,
   dateOptions
 } from '../../../utils/constant';
+import usePostFetch from '../../../utils/Api/usePostFetch';
+import { getToken, IDecoded } from "../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { getCategoryAsync } from '../../../Redux/categoryReducer';
 import { getStationsInfoAllAsync } from '../../../Redux/StationReducer';
-
+import Cookies from 'universal-cookie';
 const SearchComponent = (props: any) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+  const cookies = new Cookies();
+  let decoded: IDecoded = jwt_decode(cookies.get("access_token"));
+  const [username, SetUsername] = React.useState("");
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showAdvanceSearch, setAdvanceSearch] = React.useState(true); //showShortCutSearch
   const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
@@ -81,6 +87,7 @@ const SearchComponent = (props: any) => {
       must: [],
     },
   };
+
   const shortcutData = [
     {
       text: t("Not_Categorized"),
@@ -149,6 +156,13 @@ const SearchComponent = (props: any) => {
           })
         }
         setShowAssetDateCompact(false);
+      },
+    },
+    {
+      text: 'View Own Assets',
+      query: () => queries.GetAssetsByUserName(decoded.UserName),
+      renderData: function () {
+        fetchData(this.query(), 'ViewOwnAssets');
       },
     },
   ];
@@ -299,7 +313,7 @@ const SearchComponent = (props: any) => {
   }
 
   const fetchData = (querry: any, searchType: any) => {
-    dispatch(getAssetSearchInfoAsync(querry || QUERRY));
+    dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchType }));
     if (searchType === "SimpleSearch" || searchType === "ShortcutSearch") {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);

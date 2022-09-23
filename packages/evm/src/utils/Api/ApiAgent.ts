@@ -230,7 +230,10 @@ export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }
 export const SearchAgent = {
-    getAssetBySearch: (body : any) => requests.post<any>(EVIDENCE_GET_URL, '', body, config),
+    getAssetBySearch: (body : any, extraHeader?: Headers[]) => {
+        addHeaders(extraHeader);
+        return  requests.post<any>(EVIDENCE_GET_URL, '', body, config)
+    },
 }
 
 export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
