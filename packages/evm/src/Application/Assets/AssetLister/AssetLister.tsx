@@ -68,7 +68,8 @@ const SearchComponent = (props: any) => {
               'categories',
               'cADId',
               'asset.unit',
-              'asset.owners'
+              'asset.owners',
+              'description'
             ],
           },
         },
@@ -138,7 +139,7 @@ const SearchComponent = (props: any) => {
           fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate), t("ShortcutSearch"))
         }
 
-        var approachingMaxDateValue = dateOptions.approachingDeletion.find(x => x.value === t("next_30_days"));
+        let approachingMaxDateValue = dateOptions.approachingDeletion.find(x => x.value === t("next_30_days"));
         if (approachingMaxDateValue) {
 
           setCompactDateRange({
@@ -162,7 +163,6 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     let obj: any = {};
-
     if (addvancedOptions && addvancedOptions.options) {
       obj = addvancedOptions.options.map((x: any) => {
         if (x.inputValue) {
@@ -235,51 +235,13 @@ const SearchComponent = (props: any) => {
       setIsSearchBtnDisable(false);
   }, [querryString]);
 
-  const fetchData = (querry: any, searchType: any) => {
-    dispatch(getAssetSearchInfoAsync(querry || QUERRY));
-    if (searchType === "SimpleSearch" || searchType === "ShortcutSearch") {
-      setShowShortCutSearch(false);
-      setAdvanceSearch(false);
-    }
-    dispatch(enterPathActionCreator({ val: t('Search_Results') }));
-    const titleCOnt = document.getElementsByClassName('titlePage');
-    var appendClass = document.getElementsByClassName('bottomLine');
-    if (appendClass.length === 0) {
-      titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
-    }
-  }
+  React.useEffect(() => {
+      if (dateTimeDropDown.value === 'anytime' && querryString.length === 0)
+        setIsSearchBtnDisable(true);
+      else
+        setIsSearchBtnDisable(false);
+  }, [dateTimeDropDown]);
 
-  const NormalSearch = () => {
-    setDateTimeAsset(dateTimeDropDown);
-    if (dateTimeDropDown.startDate) {
-      QUERRY.bool.must.push({
-        range: {
-          'asset.recordingStarted': {
-            gte: `${moment(dateTimeDropDown.startDate).toISOString()}`,
-          },
-        },
-      });
-    }
-
-    if (dateTimeDropDown.endDate) {
-      QUERRY.bool.must.push({
-        range: {
-          'asset.recordingEnded': {
-            lte: `${moment(dateTimeDropDown.endDate).toISOString()}`,
-          },
-        },
-      });
-    }
-
-    if (predictiveText === t("Approaching_Deletion")) {
-      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate), t("ShortcutSearch"));
-    }
-    else {
-      fetchData(QUERRY, "SimpleSearch");
-    }
-    setAdvanceSearch(false);
-    setShowAssetDateCompact(true);
-  }
 
   const Search = () => {
     if (querryString && querryString.length > 0 && querryString.startsWith("#")) {
@@ -296,6 +258,57 @@ const SearchComponent = (props: any) => {
       }
     } else {
       NormalSearch();
+    }
+  }
+
+  const NormalSearch = () => {
+    if (dateTimeDropDown.value !== 'anytime') {
+      setDateTimeAsset(dateTimeDropDown);
+      if (dateTimeDropDown.startDate) {
+        QUERRY.bool.must.push({
+          range: {
+            'asset.recordingStarted': {
+              gte: `${moment(dateTimeDropDown.startDate).toISOString()}`,
+            },
+          },
+        });
+      }
+      if (dateTimeDropDown.endDate) {
+        QUERRY.bool.must.push({
+          range: {
+            'asset.recordingEnded': {
+              lte: `${moment(dateTimeDropDown.endDate).toISOString()}`,
+            },
+          },
+        });
+      }
+    }
+    if (predictiveText === t("Approaching_Deletion")) {
+      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate), t("ShortcutSearch"));
+    }
+    else {
+      if (querryString.length === 0) {
+        const modifiedQuery = removeQueryStringObjectFromQuery(QUERRY);
+        fetchData(modifiedQuery, "SimpleSearch");
+      } else {
+        fetchData(QUERRY, "SimpleSearch");
+      }
+    }
+    setAdvanceSearch(false);
+    setShowAssetDateCompact(true);
+  }
+
+  const fetchData = (querry: any, searchType: any) => {
+    dispatch(getAssetSearchInfoAsync(querry || QUERRY));
+    if (searchType === "SimpleSearch" || searchType === "ShortcutSearch") {
+      setShowShortCutSearch(false);
+      setAdvanceSearch(false);
+    }
+    dispatch(enterPathActionCreator({ val: t('Search_Results') }));
+    const titleCOnt = document.getElementsByClassName('titlePage');
+    var appendClass = document.getElementsByClassName('bottomLine');
+    if (appendClass.length === 0) {
+      titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
     }
   }
 
@@ -322,6 +335,14 @@ const SearchComponent = (props: any) => {
       value: e.dateTimeDropDown.value,
       displayText: e.dateTimeDropDown.displayText
     })
+  }
+
+  const removeQueryStringObjectFromQuery = (queryToModify: any) => {
+    let modifiedQuery = JSON.parse(JSON.stringify(queryToModify)); // Copy object without reference.
+    let must = modifiedQuery.bool.must;
+    must.splice(0, 1);
+    modifiedQuery.bool.must = must;
+    return modifiedQuery;
   }
 
   return (

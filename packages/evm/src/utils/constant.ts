@@ -1,17 +1,12 @@
 import moment from "moment";
-
-const basicDateDefaultValue ="last 30 days";
-const approachingDateDefaultValue = "tomorrow"
-
-const dateOptionsTypes ={
-  basicoptions : "basicoptions",
-  approachingDeletion : "approachingDeletion"
-}
-
-
-var dateOptions = {
-
-   "basicoptions":[ 
+const dateOptions = {
+   "basicoptions":[
+        { 
+          value: "anytime", 
+          displayText: "anytime",  
+          startDate : () => moment().format(), 
+          endDate : () => moment().format()
+        }, 
         { 
           value: "today", 
           displayText: "today",  
@@ -57,7 +52,6 @@ var dateOptions = {
         },
     ],
     "approachingDeletion":[
-  
       { 
         value: "tomorrow", 
         displayText: "tomorrow", 
@@ -87,6 +81,16 @@ const MAX_REQUEST_SIZE_FOR = {
   CATEGORY : 1000,
   STATION: 100
 }
+
+const basicDateDefaultValue = dateOptions.basicoptions[0].value;
+// const basicDateDefaultValue ="last 30 days";
+const approachingDateDefaultValue = "tomorrow"
+
+const dateOptionsTypes ={
+  basicoptions : "basicoptions",
+  approachingDeletion : "approachingDeletion"
+}
+
 
 export {
   dateOptions,
