@@ -8,16 +8,24 @@ const cookies = new Cookies();
 export const getGroupAsync: any = createAsyncThunk(
     'getGroups',
     async (pageiFilter?: any) => {
-        const url = GROUP_GET_BY_ID_URL + `?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}`},
-        };
-        const resp = await fetch(url, requestOptions);
-        if (resp.ok) {
-            const response = await resp.json();
-            return response;
-        }
+        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        return await UsersAndIdentitiesServiceAgent.getGroups(`/filterUserGroup?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
+            .then((response: any) => response)
+        
+        // const url = GROUP_GET_BY_ID_URL + `/filterUserGroup?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
+        // const requestOptions = {
+        //     method: 'GET',
+        //     headers: { 'Content-Type': 'application/json', 'TenantId': '1',  'Authorization': `Bearer ${cookies.get('access_token')}`,
+        //                'GridFilter': JSON.stringify(pageiFilter.gridFilter)
+        //              },
+        // };
+        // const resp = await fetch(url, requestOptions);
+        // if (resp.ok) {
+        //     const response = await resp.json();
+        //     console.log("response Screen 2: ",response)
+        //     //let groups = {data: response, count: count}
+        //     return response;
+        // }
     }
 );
 export const getGroupUserCountAsync: any = createAsyncThunk(

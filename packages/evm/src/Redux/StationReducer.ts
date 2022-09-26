@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { CommonAgent, UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
 import { Station } from '../utils/Api/models/StationModels';
 import { MAX_REQUEST_SIZE_FOR} from '../utils/constant'
+
 export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
   let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
   return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)

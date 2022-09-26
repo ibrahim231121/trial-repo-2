@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter  } from "@cb/shared";
+import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CRXButton  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {DateTimeComponent } from '../GlobalComponents/DateTime';
@@ -32,6 +32,7 @@ import {
   onClearAll,
   onSaveHeadCellData,
   onSetHeadCellVisibility,
+  GridFilter,
   PageiGrid
 } from "../GlobalFunctions/globalDataTableFunctions";
 import UnitAndDevicesActionMenu from "./UnitAndDevicesActionMenu";
@@ -90,7 +91,7 @@ const UnitAndDevices: React.FC = () => {
 
 
   React.useEffect(() => {
-    dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
+    //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
 
    let headCellsArray = onSetHeadCellVisibility(headCells);
    setHeadCells(headCellsArray);
@@ -119,8 +120,8 @@ const UnitAndDevices: React.FC = () => {
  
     let unitRows: Unit[] = [];
     
-        if (units && units.length > 0) {
-          unitRows = units.map((unit: any, i:number) => {
+        if (units.data && units.data.length > 0) {
+          unitRows = units.data.map((unit: any, i:number) => {
                 return {
                     id: unit.recId,
                     unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId+"_"+unit.template,
@@ -147,7 +148,7 @@ const UnitAndDevices: React.FC = () => {
   React.useEffect(() => {
     setData();
     dispatch(enterPathActionCreator({ val: ""}));
-  }, [units]);
+  }, [units.data]);
 
   useEffect(() => {
     if(paging)
@@ -504,6 +505,9 @@ const AnchorDisplay = (e: string) => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "120",
+      attributeName: "UnitId",
+      attributeType: "String",
+      attributeOperator: "contains"
       
     }, 
     {
@@ -513,13 +517,13 @@ const AnchorDisplay = (e: string) => {
       dataComponent: (e: string) => textDisplayStatus(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
-    //  searchComponent: searchText,
-      
-     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-         
-     minWidth: "100",
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      multiSelectCheckbox(rowData, columns, colIdx, initialRows),      
+      minWidth: "100",
       maxWidth: "100",
+      attributeName: "Status",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Description")}`,
@@ -531,6 +535,9 @@ const AnchorDisplay = (e: string) => {
       searchComponent: searchText,
       minWidth: "265",
       maxWidth: "265",
+      attributeName: "Description",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Assigned_To")}`,
@@ -539,11 +546,12 @@ const AnchorDisplay = (e: string) => {
       dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
-    //  searchComponent: searchText,
-       searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
-           
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true), 
       minWidth: "20",
       maxWidth: "20",
+      attributeName: "AssignedTo",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Serial_Number")}`,
@@ -555,6 +563,9 @@ const AnchorDisplay = (e: string) => {
       searchComponent: searchText,
       minWidth: "160",
       maxWidth: "160",
+      attributeName: "SerialNumber",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Version")}`,
@@ -563,11 +574,14 @@ const AnchorDisplay = (e: string) => {
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
-        
-       minWidth: "80",
-       maxWidth: "100",
+      // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true), 
+      minWidth: "80",
+      maxWidth: "100",
+      attributeName: "Version",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Station")}`,
@@ -579,6 +593,9 @@ const AnchorDisplay = (e: string) => {
       searchComponent: searchText,
       minWidth: "185",
       maxWidth: "185",
+      attributeName: "Station",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Last_Checked_In")}`,
@@ -588,7 +605,10 @@ const AnchorDisplay = (e: string) => {
       sort: true,
       searchFilter: true,
       searchComponent: searchDate,
-      minWidth: "190"
+      minWidth: "190",
+      attributeName: "LastCheckedIn",
+      attributeType: "DateTime",
+      attributeOperator: "between"
     },
     {
       label: `${t("Template")}`, 
@@ -597,11 +617,12 @@ const AnchorDisplay = (e: string) => {
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
-     // searchComponent: searchText,
-      
-     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-         multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "100",
+      attributeName: "Template",
+      attributeType: "List",
+      attributeOperator: "contains"
       
     }, 
   ]);
@@ -654,7 +675,7 @@ const onSelection = (v: ValueString[], colIdx: number) => {
 
 
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
 }, [searchData]);
 
 useEffect(() => {
@@ -742,9 +763,11 @@ const clearAll = () => {
   const clearButton:any = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]
   clearButton && clearButton.click()
   setOpen(false)
-    setSearchData([]);
-    let headCellReset = onClearAll(headCells);
-    setHeadCells(headCellReset);
+  pageiGrid.gridFilter.filters = []
+  dispatch(getUnitInfoAsync(pageiGrid));
+  setSearchData([]);
+  let headCellReset = onClearAll(headCells);
+  setHeadCells(headCellReset);
 };
 
 const onSetHeadCells = (e: HeadCellProps[]) => {
@@ -756,6 +779,29 @@ useEffect(()=>{
   var headAssigned = document.getElementById("UDAssigned");
   headAssigned?.parentElement?.classList.add("UDAssignedClass");
  })
+
+ const getFilteredUnitData = () => {
+
+  pageiGrid.gridFilter.filters = []
+
+  searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+      let x: GridFilter = {
+        operator: headCells[item.colIdx].attributeOperator,
+        field: headCells[item.colIdx].attributeName,
+        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+        fieldType: headCells[item.colIdx].attributeType,
+      }
+      pageiGrid.gridFilter.filters?.push(x)
+      pageiGrid.page = 0
+      pageiGrid.size = rowsPerPage
+  })
+
+  if(page !== 0)
+    setPage(0)
+  else{
+    dispatch(getUnitInfoAsync(pageiGrid));
+  }
+}
 
  useEffect(() => {
   setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
@@ -777,6 +823,9 @@ useEffect(()=>{
           actionComponent={<UnitAndDevicesActionMenu row={selectedActionRow} />}
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
+          }
+          toolBarButton={
+            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUnitData()}> {t("Filter")} </CRXButton>
           }
           showToolbar={true}
           showCountText={true}
@@ -808,7 +857,7 @@ useEffect(()=>{
           rowsPerPage={rowsPerPage}
           setPage= {(page:any) => setPage(page)}
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-          totalRecords={500}
+          totalRecords={units.totalCount}
           />
           )
         }

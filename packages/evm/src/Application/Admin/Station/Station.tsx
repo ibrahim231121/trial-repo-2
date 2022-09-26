@@ -18,6 +18,7 @@ import {
   onClearAll,
   onSaveHeadCellData,
   onSetHeadCellVisibility,
+  GridFilter,
   PageiGrid
 } from '../../../GlobalFunctions/globalDataTableFunctions';
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
@@ -56,7 +57,7 @@ const Station: React.FC = () => {
   })
 
   React.useEffect(() => {
-    dispatch(getStationsAsync(pageiGrid));
+    //dispatch(getStationsAsync(pageiGrid));
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, 'stationDataTable');
@@ -78,8 +79,8 @@ const Station: React.FC = () => {
   
   const setData = () => {
     let stationRows: StationType[] = [];
-    if (stations && stations.length > 0) {
-      stationRows = stations.map((station: any) => {
+    if (stations.data && stations.data.length > 0) {
+      stationRows = stations.data.map((station: any) => {
         return {
           id: station.id,
           name: station.name + '_' + station.id,
@@ -94,7 +95,7 @@ const Station: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [stations]);
+  }, [stations.data]);
 
   useEffect(() => {
     if(paging)
@@ -200,7 +201,10 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '350',
-      maxWidth: '600'
+      maxWidth: '600',
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: t('Address'),
@@ -211,7 +215,10 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '250',
-      maxWidth: '600'
+      maxWidth: '600',
+      attributeName: "Address.Street",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: t('Phone_Number'),
@@ -222,7 +229,10 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '100',
-      maxWidth: '520'
+      maxWidth: '520',
+      attributeName: "Address.Phone",
+      attributeType: "String",
+      attributeOperator: "contains"
     }
   ]);
 
@@ -265,7 +275,7 @@ const Station: React.FC = () => {
     }
   };
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
 
   useEffect(() => {
@@ -311,6 +321,8 @@ const Station: React.FC = () => {
   };
 
   const clearAll = () => {
+    pageiGrid.gridFilter.filters = []
+    dispatch(getStationsAsync(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -354,6 +366,29 @@ const Station: React.FC = () => {
     dispatch(getStationsAsync(pageiGrid));
   };
 
+  const getFilteredUserData = () => {
+
+    pageiGrid.gridFilter.filters = []
+
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+    })
+    
+    if(page !== 0)
+      setPage(0)
+    else
+      dispatch(getStationsAsync(pageiGrid));
+  }
+
   useEffect(() => {
     setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
     setPaging(true)
@@ -382,9 +417,12 @@ const Station: React.FC = () => {
             />
           }
           toolBarButton={
+            <>
             <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
               {t('Create_Station')}
             </CRXButton>
+            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+            </>
           }
           getRowOnActionClick={(val: StationType) => setSelectedActionRow(val)}
           showToolbar={true}
@@ -414,7 +452,7 @@ const Station: React.FC = () => {
           rowsPerPage={rowsPerPage}
           setPage= {(page:any) => setPage(page)}
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-          totalRecords={500}
+          totalRecords={stations.totalCount}
         />
       )}
     </div>

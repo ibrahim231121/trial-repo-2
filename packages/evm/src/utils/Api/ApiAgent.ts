@@ -184,6 +184,10 @@ export const UsersAndIdentitiesServiceAgent = {
     getAllUsers: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
     getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
+    getGroups: (url: string, extraHeader? : Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL , url, config);
+    },
     getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL, '', config),
     getUser: (userId: string) => requests.get<UserList>(USER, `/${userId}`, config),
     addUser: (url: string, body: User) => requests.post<number>(BASE_URL_USER_SERVICE, url, body, config),
@@ -205,10 +209,13 @@ export const UnitsAndDevicesAgent = {
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
-    getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStations: (url: string, extraHeader?: Headers[]) => {
-        addHeaders(extraHeader);
-        return requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations" + url, config)
+    getUnitInfo: (url: string, extraHeader? : Headers[]) => { 
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<UnitInfo[]>>(BASE_URL_UNIT_SERVICES, url, config)
+    },
+    getAllStations: (url: string, extraHeader? : Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, config);
     },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo" + url, config),
@@ -218,7 +225,10 @@ export const UnitsAndDevicesAgent = {
     getAllTemplate: () => requests.get<ConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates?Size=100&Page=1", config),
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
-    getAllDeviceConfigurationTemplate: (url: string) => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getAllDeviceConfigurationTemplate: (url: string, extraHeader? : Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<DeviceConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, url, config)
+    },
     getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/" + url, config),
     deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/" + url, config),
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),

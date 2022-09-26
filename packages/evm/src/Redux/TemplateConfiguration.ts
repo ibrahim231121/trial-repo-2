@@ -7,7 +7,9 @@ const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
     'GetAllConfiguration',
     async (pageiFilter?: any) => {
-        return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate(`/ConfigurationTemplates/AllConfiguration?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`).then((response:DeviceConfigurationTemplate[]) => response);
+        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate(`/ConfigurationTemplates/filterUnitDeviceTemplate?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
+            .then((response:any) => response);
     }
 );
 

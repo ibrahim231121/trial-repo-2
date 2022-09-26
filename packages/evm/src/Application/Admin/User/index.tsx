@@ -396,7 +396,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "200",
       visible: true,
       attributeName: "UserName",
-      attributeType: "String"
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("First_Name")}`,
@@ -411,7 +412,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "200",
       visible: true,
       attributeName: "FName",
-      attributeType: "String"
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Last_Name")}`,
@@ -426,7 +428,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "200",
       visible: true,
       attributeName: "LName",
-      attributeType: "String"
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Email")}`,
@@ -441,7 +444,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "263",
       visible: true,
       attributeName: "Email",
-      attributeType: "String"
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Status")}`,
@@ -456,7 +460,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       maxWidth: "150",
       visible: true,
       attributeName: "Status",
-      attributeType: "List"
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Last_Login")}`,
@@ -470,7 +475,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchComponent: searchDate,
       visible: true,
       attributeName: "LastLogin",
-      attributeType: "DateTime"
+      attributeType: "DateTime",
+      attributeOperator: "between"
     },
     // {
     //     label: `${t("Groups")}`,
@@ -499,7 +505,8 @@ const openHandler = (_: React.SyntheticEvent) => {
       minWidth: "430",
       maxWidth : "430",
       attributeName: "UserGroups",
-      attributeType: "List"
+      attributeType: "List",
+      attributeOperator: "contains"
      
     },
   ]);
@@ -694,18 +701,22 @@ const openHandler = (_: React.SyntheticEvent) => {
 
     searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
         let x: GridFilter = {
-          operator: headCells[item.colIdx].attributeType == "DateTime" ? "between" : "contains",
+          operator: headCells[item.colIdx].attributeOperator,
           //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
           field: headCells[item.colIdx].attributeName,
           value: item.value.length > 1 ? item.value.join('@') : item.value[0],
           fieldType: headCells[item.colIdx].attributeType,
         }
         pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = page
+        pageiGrid.page = 0
         pageiGrid.size = rowsPerPage
     })
 
-    dispatch(getUsersInfoAsync(pageiGrid));
+    if(page !== 0)
+      setPage(0)
+    else
+      dispatch(getUsersInfoAsync(pageiGrid));
+      
   }
 
   useEffect(() => {

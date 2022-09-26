@@ -514,16 +514,16 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         } 
 
         <MenuItem>
-          {/* <Restricted moduleId={21}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+          <Restricted moduleId={21}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
           <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
             <div className="crx-menu-icon">
               <i className="far fa-user-tag fa-md"></i>
             </div>
             <div className="crx-menu-list">{t("Assign_User")}</div>
           </div>
-          {/* </SecurityDescriptor>
-          </Restricted> */}
+          </SecurityDescriptor>
+          </Restricted>
         </MenuItem>
 
         <MenuItem>
