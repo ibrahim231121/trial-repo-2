@@ -4,12 +4,13 @@
     // width: 91%;
     background-color: var(--color-Black);
     position: relative;
-    border: 2px solid var(--color-333333);
+    border: 0px solid var(--color-333333);
+    border-bottom: 0px;
     width: 100%;
     //height:calc(100% - 148px);
     // min-width: 507px;
     // min-height: 538px;
-    padding: 25px 10px 10px 10px;
+    padding: 19px 10px 10px 16px;
 
   #screens {
     position: relative;
@@ -18,7 +19,7 @@
   video {
     margin-top: 0px;
     margin-bottom: 0px;
-
+    // object-fit: cover;
   }
 
     .videoPlayerBtn {
@@ -38,12 +39,18 @@
       left: -12px;
       padding-left: 15px;
       padding-right: 15px;
+      padding-top: 8px;
       .player_controls_inner {
         .dummy_audio_image {
           width: 100%;
+          height: 75px;
           img{
             width: 100%;
+            height: 100%;
           }
+        }
+        .dummy_audio_zoomIn_zoomOut{
+          padding-top: 11px;
         }
       }
       .crx_video_graph {
@@ -70,7 +77,7 @@
     }
 
     .videoContainer {
-      padding: 0 14px;
+      padding: 0 8px;
       position: relative;
       height: 100%;
       .videoFrontLayer {
@@ -106,6 +113,7 @@
           // font-size: 92px;
           transition: transform 1s ease-in-out;
           opacity: 1;
+          display: none !important;
           //animation: fadeinout 1s ease-in-out;
         }
 
@@ -190,19 +198,31 @@
 
     #video-player-screens {
       background-color: var(--color-black-11);
-      height: calc(100vh - (317px + 197px));
+      height: calc(100vh - (262px + 200px));
       ._videoPlayer_grid_customize {
         height: 100%;
+        padding-right: 4px;
+        // background-color: #611d1d;
+      }
+      // &._reset_player_height {
+      //   height: auto !important;
+      // }
+      &._videPlayer_height_AU {
+        height: calc(100vh - 371px); 
+      }
+      ._video_player_grid {
+        ._video_grid_col {
+          ._empty_video{
+            background: var(--color-333333);
+            width: 100%;
+            height: 100%;
+          }
+        }
       }
     }
 
     .PlayPause-container {
       margin-top: 8px;
-    }
-
-    .playerViewFlexTimer {
-      // height: 60px;
-
     }
 
   .playerViewFlex {
@@ -621,6 +641,33 @@
     }
   }
 }/*_video_player_container close */
+
+  ._bottom_arrow_seeMore{
+    background-color: var(--color-Black);
+    height: 30px;
+    text-align: center;
+    ._angle_down_up_icon_btn {
+      border: 0px;
+      background: transparent;
+      font-size: 30px;
+      color: var(--color-White);
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      place-items: center;
+      align-items: center;
+      cursor: pointer;
+      i {
+        height: auto;
+      }
+    }
+    a {
+      font-size: 28px;
+      color: var(--color-White);
+    }
+  }
 }
 .mainFullView {
   #CRX_Video_Player_Controls {
@@ -837,7 +884,6 @@
 }
 
 
-
 .custom-class {
   display: inline-flex !important;
   padding-left: 6px;
@@ -850,8 +896,22 @@
 
 .videoMenuCss {
   position: absolute;
-  top: 34px;
-  right: 42px;
+  right: 10px;
+  top: 9px;
+  color: var(--color-ffffff) !important;
+  ._select_video_button{
+    background: transparent;
+    color: var(--color-White) !important;
+    border:0px;
+    &:hover, &:focus {
+      border:0px;
+    }
+    i{
+      font-size: 20px;
+      color: var(--color-White) !important;
+    }
+    
+  }
 }
 
 .longArrowLeftUi {
@@ -1463,3 +1523,152 @@ span.playBackTooltipUp {
     }
   }
 } 
+._contaoner_flex {
+  display: flex;
+  }
+
+._video_player_grid {
+  display: flex;
+
+  &._container_column_dir {
+    flex-direction: column;
+    flex-wrap: wrap;
+    .vid_col_4:nth-child(2) {
+      padding-bottom: 8px;
+    }
+    .vid_col_4:nth-child(3) {
+      padding-top: 8px;
+    }
+    .vid_col_4{
+      width: 30%;
+      flex: 1 1 80px;
+      height: calc(100% / 2);
+    }
+    ._video_grid_col {
+      .videoContainer {
+        video {
+          object-fit: cover;
+        }
+      }
+    }
+  }
+  
+  &._container_column_video_4 {
+      flex-wrap: wrap;
+      width: 42%;
+      margin: 0 auto;
+      .vid_col_6{
+        height: calc(100% / 2);
+        &:nth-child(1) {
+          padding-bottom: 8px;
+        }
+        &:nth-child(2) {
+          padding-bottom: 8px;
+        }
+        &:nth-child(3) {
+          padding-top: 8px;
+        }
+        &:nth-child(4) {
+          padding-top: 8px;
+        }
+      }
+      &._contaoner_75 {
+        width: 43%;
+      }
+  }
+  &._container_column_video_6 {
+    flex-wrap: wrap;
+    .vid_col_4 {
+      flex-basis: 33.33%;
+      height: 50%;
+      //min-height: 320px;
+      // .videoContainer {
+      //   height: auto !important;
+      // }
+      &:nth-child(1) {
+        padding-bottom: 8px;
+      }
+      &:nth-child(2) {
+        padding-bottom: 8px;
+      }
+      &:nth-child(3) {
+        padding-bottom: 8px;
+      }
+      &:nth-child(4) {
+        padding-top: 8px;
+      }
+      &:nth-child(5) {
+        padding-top: 8px;
+      }
+      &:nth-child(6) {
+        padding-top: 8px;
+      }
+
+      video {
+        object-fit: cover;
+        // width: auto;
+        // height: 100%;
+        // aspect-ratio: 16 / 9;
+      }
+    }
+  }
+  ._video_grid_col{
+    height: 100%;
+    .videoContainer{
+      .videoFrontLayer{
+        height:  auto !important;
+      }
+    }
+  }
+  
+  .vid_col_12 {
+    width: 100%;
+  }
+  .vid_col_1{
+    width: 0px;
+    display: none;
+  }
+  .vid_col_2{
+    width: 12%;
+  }
+  .vid_col_3{
+    width: 25%;
+  }
+  
+  .vid_col_5{
+    width: 40%;
+  }
+  .vid_col_6{
+    width: 50%;
+  }
+  .vid_col_7{
+    width: 25%;
+  }
+  .vid_col_8{
+    width: 70%;
+  }
+
+  .vid_col_9{
+    width: 75%;
+  }
+  &._contaoner_75 {
+    width: 75%;
+  }
+ 
+}
+
+.pathVideoPlayer {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+  .crx-main-container {
+    padding: 24px 0px 0px;
+    &.makeStyles-content-9, &.jss9{
+      &.makeStyles-contentShift-10, &.jss10 {
+        .searchComponents {
+          padding-right: 0px;
+          padding-left: 63px;
+        }
+      }
+    }
+  }
+}

@@ -28,9 +28,8 @@ import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 
 
-
 var re = /[\/]/;
-const username = localStorage.getItem('username')
+
 
 const applyValidation = (arrayOfObj: any) => {
   var initialValuesArrayRequiredField: any = [];
@@ -203,7 +202,7 @@ const CreateTemplate = (props: any) => {
     if (deviceTypes && deviceTypes.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setCameraDeviceDropdown();
     }
-  }, [deviceTypes,FormSchema]);
+  }, [deviceTypes,FormSchema, Initial_Values_obj]);
 
   React.useEffect(() => {
     if (stations && stations.length > 0 && FormSchema) {
@@ -260,18 +259,24 @@ const CreateTemplate = (props: any) => {
     if (historyState.deviceType == "Incar") {
       console.log(Initial_Values_obj);
       let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
-      let cameraDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
       cameraDevice.options = [];
-      cameraDevice1.options = [];
       cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
-      cameraDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+      if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
+      {
+        let cameraDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
+        cameraDevice1.options = [];
+        cameraDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+      }
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
-      let audioDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
-      audioDevice1.options = [];
       audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
-      audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+      if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
+      {
+        let audioDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
+        audioDevice1.options = [];
+        audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+      }
 
       let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/PrimaryDevice/Select")
       devicePrimaryDevice.options = [];
@@ -686,7 +691,7 @@ const CreateTemplate = (props: any) => {
 
     else {
       body.id = historyState.id;
-      const url = `/ConfigurationTemplates/${historyState.id}/${username}/KeyValue`;
+      const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
         targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });

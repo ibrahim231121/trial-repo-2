@@ -1,15 +1,17 @@
+import { MaxRetentionPolicyDetail } from './../../Application/Assets/AssetLister/Category/Model/MaxRetentionPolicyDetail';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
-import {CRXLoader} from "@cb/shared"
+import { CRXLoader } from "@cb/shared"
 
-import { AddOwner, 
-    Asset, 
-    AssetSharingModel, 
-    AssetViewReason, 
-    Bookmark, 
-    Evidence, 
+import {
+    AddOwner,
+    Asset,
+    AssetSharingModel,
+    AssetViewReason,
+    Bookmark,
+    Evidence,
     ExtendRetention,
     File,
     Note,
@@ -31,7 +33,8 @@ import {
     BASE_URL_UNIT_SERVICES,
     FILE_SERVICE_URL,
     AUDITLOG_SERVICE_URL,
-    CountryStateApiUrl
+    CountryStateApiUrl,
+    EVIDENCE_GET_URL
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -40,16 +43,17 @@ import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupLis
 import {
     ConfigurationTemplate,
     ConfigurationTemplateLogs,
-    DefaultUnitTemplate, 
-    Device, 
-    DeviceConfigurationTemplate, 
-    DeviceType, 
-    GetPrimaryDeviceInfo, 
-    QueuedAssets, 
-    Unit, 
-    UnitInfo, 
-    UnitTemp, 
-    UnitTemplateConfigurationInfo } from './models/UnitModels';
+    DefaultUnitTemplate,
+    Device,
+    DeviceConfigurationTemplate,
+    DeviceType,
+    GetPrimaryDeviceInfo,
+    QueuedAssets,
+    Unit,
+    UnitInfo,
+    UnitTemp,
+    UnitTemplateConfigurationInfo
+} from './models/UnitModels';
 import { CaptureDevice, Station } from './models/StationModels';
 import { AuditLog } from './models/AuditLogModels';
 import { Paginated, Headers } from './models/CommonModels';
@@ -62,7 +66,8 @@ let config = {
     headers: {
         'Content-Type': 'application/json',
         'TenantId': '1',
-        'Authorization': 'Bearer ' + cookies.get("access_token")
+        'Authorization': 'Bearer ' + cookies.get("access_token"),
+        'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
     }
 }
 
@@ -71,7 +76,8 @@ export const setAPIAgentConfig = () => {
         headers: {
             'Content-Type': 'application/json',
             'TenantId': '1',
-            'Authorization': 'Bearer ' + cookies.get("access_token")
+            'Authorization': 'Bearer ' + cookies.get("access_token"),
+            'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
         }
     }
 }
@@ -104,14 +110,12 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 const addHeaders = (headers?: Headers[]) => {
-    
-    if(config && headers)
-    {
-        let config2 : any = config;
-        if(config2["headers"])
-        {
-            let ConfigHeader : any[] = Object.entries(config2["headers"]);
-            headers.forEach((x:Headers) => {
+
+    if (config && headers) {
+        let config2: any = config;
+        if (config2["headers"]) {
+            let ConfigHeader: any[] = Object.entries(config2["headers"]);
+            headers.forEach((x: Headers) => {
                 let a = [x.key, x.value];
                 ConfigHeader.push(a)
             })
@@ -133,10 +137,11 @@ const requests = {
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
-    getAssetTrail: (url: string) => requests.get<Evidence[]>("http://127.0.0.1:8080/", url, config),
+    getAssetTrail: (url: string) => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, url, config),
     getEvidence: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     getAsset: (url: string) => requests.get<Asset>(EVIDENCE_SERVICE_URL, url, config),
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
@@ -195,19 +200,18 @@ export const UnitsAndDevicesAgent = {
         addHeaders(extraHeader);
         return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config)
     },
-    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config), 
+    getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config),
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getPrimaryDeviceInfo: (url: string) => requests.get<GetPrimaryDeviceInfo>(BASE_URL_UNIT_SERVICES, url, config),
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitInfo: (url: string) => requests.get<UnitInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStations: (url: string, extraHeader?: Headers[]) => 
-    {  
-         addHeaders(extraHeader);
-         return  requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations"+url, config)
+    getAllStations: (url: string, extraHeader?: Headers[]) => {
+        addHeaders(extraHeader);
+        return requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations" + url, config)
     },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo"+url, config),
+    getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo" + url, config),
     addStation: (body: Station) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/Stations", body, config),
     updateStation: (url: string, body: Station) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getTemplateConfiguration: (url: string) => requests.get<ConfigurationTemplate>(BASE_URL_UNIT_SERVICES, url, config),
@@ -215,8 +219,8 @@ export const UnitsAndDevicesAgent = {
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getAllDeviceConfigurationTemplate: (url: string) => requests.get<DeviceConfigurationTemplate[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/"+url, config),
-    deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/"+url, config),
+    getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/" + url, config),
+    deleteConfigurationTemplate: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/" + url, config),
     getAllDeviceTypes: () => requests.get<DeviceType[]>(BASE_URL_UNIT_SERVICES, "/DeviceTypes?Page=1&Size=100", config),
     getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/" + url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
@@ -225,20 +229,23 @@ export const UnitsAndDevicesAgent = {
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }
+export const SearchAgent = {
+    getAssetBySearch: (body : any) => requests.post<any>(EVIDENCE_GET_URL, '', body, config),
+}
 
-export const useApiAgent = <T>(request: Promise<T>): [T | undefined]  => {
+export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState<T | undefined>(undefined);
     const dispatch = useDispatch();
 
     const fetchApi = () => {
-        dispatch(setLoaderValue({isLoading: true}))
-        request.then((response:T) => {
-            dispatch(setLoaderValue({isLoading: false, message: "" }))
+        dispatch(setLoaderValue({ isLoading: true }))
+        request.then((response: T) => {
+            dispatch(setLoaderValue({ isLoading: false, message: "" }))
             setIsLoading(false);
             setData(response);
         }).catch((ex) => {
-            dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+            dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
         })
     };
     useEffect(() => {

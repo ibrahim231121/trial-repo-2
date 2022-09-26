@@ -9,3 +9,11 @@ export enum PersmissionModel {
     Update = 3,
     Exclusive = 4
   }
+
+
+  export enum MetadataFileType {
+    XML = 1,
+    PDF = 2,
+    CSV = 3
+  }
+

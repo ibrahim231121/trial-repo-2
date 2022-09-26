@@ -7,19 +7,8 @@ import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import './DialogueForm.css';
-
-type DialogueFormProps = {
-  setremoveClassName: any;
-  formCollection: any;
-  evidenceResponse: any;
-  initialValues: any;
-  setActiveForm: (param: any) => void;
-  setOpenForm: () => void;
-  setFilterValue: (param: any) => void;
-  closeModal: (param: boolean) => void;
-  setModalTitle: (param: string) => void;
-  setIndicateTxt: (param: boolean) => void;
-};
+import { useSelector } from 'react-redux';
+import { DialogueFormProps } from '../Model/DialogueFormModel';
 
 const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -28,6 +17,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const [saveBtn, setSaveBtn] = React.useState(true);
   const rowLen: number = props.formCollection?.length;
   const alertIcon = <i className='fas fa-info-circle attentionIcon'></i>;
+  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
 
   React.useEffect(() => {
     props.setIndicateTxt(false);
@@ -92,7 +82,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   return (
     <div className='categoryModal'>
-      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}

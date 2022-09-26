@@ -1,71 +1,83 @@
 import moment from 'moment';
 
-let GetAssetsByState = (status : string) =>{
+let GetAssetsByState = (status: string) => {
     return {
-        bool:{
-            must:[
+        bool: {
+            must: [
                 {
-                    match:{"asset.state": status}
-                }  
+                    match: { "asset.state": status }
+                }
             ]
         }
     }
-}
+};
 
-           
-
-let GetAssetsUnCategorized = (startDate : string, endDate :string) =>{
+let GetAssetsUnCategorized = (startDate: string, endDate: string) => {
     return {
-            bool: {
-                must: [
-                    {
-                        range: {
-                            "asset.recordingStarted": {
-                            gte: `${moment(startDate).toISOString()}`,
-                            },
-                        },
-                    },
-                    {
-                        range: {
-                            "asset.recordingStarted": {
-                            lte: `${moment(endDate).toISOString()}`,
-                            },
-                        },
-                    },
-                    {
-                        script: {
-                            script: 
-                            {
-                                source: "doc['categories.keyword'].length == 0"
-                            }
-                        }
-                    }
-                ]
-            }           
-    }
-}
-
-let GetAssetsApproachingDeletion = (startDate : string, endDate :string) => {
-
-    var approachingDeletion =  {
         bool: {
             must: [
                 {
                     range: {
-                        "asset.expiryDate": {
-                        gte: `${moment(startDate).toISOString()}`,
+                        "masterAsset.recordingStarted": {
+                            gte: `${moment(startDate).toISOString()}`,
                         },
                     },
-                }, 
+                },
                 {
                     range: {
-                        "asset.expiryDate": {
-                        lte: `${moment(endDate).toISOString()}`,
+                        "masterAsset.recordingStarted": {
+                            lte: `${moment(endDate).toISOString()}`,
+                        },
+                    },
+                }
+            ],
+            "filter": {
+                "bool": {
+                    "should": [
+                        {
+                            "bool": {
+                                "must_not": {
+                                    "exists": {
+                                        "field": "categories"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "script": {
+                                "script": {
+                                    "source": "doc['categories.keyword'].length == 0"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+};
+
+let GetAssetsApproachingDeletion = (startDate: string, endDate: string) => {
+
+    var approachingDeletion = {
+        bool: {
+            must: [
+                {
+                    range: {
+                        "expireOn": {
+                            gte: `${moment(startDate).toISOString()}`,
+                        },
+                    },
+                },
+                {
+                    range: {
+                        "expireOn": {
+                            lte: `${moment(endDate).toISOString()}`,
                         },
                     },
                 }
             ]
-        }           
+        }
     }
     return approachingDeletion;
 }

@@ -4,28 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { CRXAlert } from '@cb/shared';
-import { findRetentionAndHoldUntill } from '../Utility/UtilityFunctions';
-import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../../Redux/AssetSearchReducer";
-
-
-type EditConfirmFormProps = {
-  evidenceResponse: any;
-  filterValue: any[];
-  setremoveClassName: any;
-  setOpenForm: () => void;
-  closeModal: (param: boolean) => void;
-  setIsformUpdated: (param: boolean) => void;
-  setModalTitle: (param: string) => void;
-  setActiveForm: (param: number) => void;
-};
-
-interface FormValues {
-  reason: string;
-}
+import { EditConfirmFormProps, FormValues } from '../Model/EditConfirmFormModel';
 
 const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -33,7 +16,6 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
   const evidenceId = props.evidenceResponse?.id;
   const initialValues: FormValues = {
     reason: ''
@@ -52,7 +34,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
 
 
   const submitForm = (message: string) => {
-    const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
+    
     let assignedCategories = CategoryFormFields.filter((e: any) => e.type === 'add');
     let updateCategories = CategoryFormFields.filter((e: any) => e.type === 'update');
 
@@ -73,32 +55,23 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       };
     });
 
-    /** 
-     * * Find HighestRetentionId & HoldUntill, from newly added categories. 
-     * */
-    const retentionPromise = findRetentionAndHoldUntill(assignedCategories, categoryOptions, props.filterValue, props.evidenceResponse);
-    Promise.resolve(retentionPromise).then((retention: any) => {
-      
-      const body : EvdenceCategoryAssignment = {
-        unAssignCategories: [],
-        assignedCategories: assignedCategories,
-        updateCategories: updateCategories,
-        retentionId: retention !== undefined ? [retention.retentionId] : null,
-        holdUntill: retention !== undefined ? retention.expiryDate : null
-      };
-
-      EvidenceAgent.changeCategories(url, body).then((response: any) => {
-        setSuccess(true);
-        setTimeout(() => {
-          closeModal();
-          dispatch(getAssetSearchInfoAsync(""));
-        }, 3000);
-      })
+    const body: EvdenceCategoryAssignment = {
+      unAssignCategories: [],
+      assignedCategories: assignedCategories,
+      updateCategories: updateCategories
+    };
+    
+    EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {
+      setSuccess(true);
+      setTimeout(() => {
+        closeModal();
+        dispatch(getAssetSearchInfoAsync(""));
+      }, 3000);
+    })
       .catch((ex: any) => {
         setError(true);
       })
-    })
-  };
+  }
 
   const cancelBtn = () => {
     props.setActiveForm(1);
@@ -114,7 +87,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       {success && (
         <CRXAlert
           className='cateoryAlert-Success'
-          message={t("Success:_You_have_saved_the_asset_categorization")}
+          message={t("You_have_saved_the_asset_categorization")}
           alertType='toast'
           open={true}
         />
@@ -122,7 +95,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       {error && (
         <CRXAlert
           className='cateoryAlert-Error errorMessageCategory'
-          message={t("Error_We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
+          message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
           type='error'
           alertType='inline'
           open={true}
@@ -144,7 +117,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
           <Form>
             <div className='categoryDescription'>{t("Please_enter_the_reason_for_editing_the_form.")}</div>
             <div className='CRXCategory categoryTitle'>
-            {t("Category_form_edit_reason")} <b className='formStaric'>*</b>
+              {t("Category_form_edit_reason")} <b className='formStaric'>*</b>
             </div>
             <Field
               id='reaon'
@@ -164,7 +137,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
                   className={!(isValid && dirty) ? 'primeryBtnDisable' : 'primeryBtn boxshNone'}
                   color='primary'
                   variant='contained'>
-                    {t("Save")}
+                  {t("Save")}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>

@@ -64,7 +64,8 @@ export const urlNames: any = {
     sharedMedia : 'sharedMedia',    
     manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
     liveVideo : 'liveVideo',
-    avlMap: 'avlMap'
+    avlMap: 'avlMap',
+    singleLiveView:'singleLiveView'
 };
 
 export const urlList: any = [
@@ -218,6 +219,13 @@ export const urlList: any = [
         url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=1`,  //Avl Map Live View URL
         details: [
             { type: "text", label: "Avl Map", }
+        ],
+    },
+    {
+        name: urlNames.singleLiveView,
+        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=2`,  //Single Live View URL
+        details: [
+            { type: "link", label: "Single Live View", }
         ],
     },
     {

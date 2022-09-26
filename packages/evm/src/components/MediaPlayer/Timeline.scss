@@ -341,6 +341,26 @@
     }
   }
 
+  ._fwrw_timeLine_pipeRed {
+    width: 2px;
+    height: 140px;
+    background: var(--color-red);
+    position: absolute;
+    top: -12px;
+    cursor: pointer;
+    z-index: 0;
+
+    &::before {
+      width: inherit;
+      height: 8px;
+      background: #FFFFFF;
+      position: absolute;
+      content: " ";
+      top: 11px;
+      z-index: 4;
+    }
+  }
+
   &:hover {
     ._hover_timeLine_pipeGray {
       display: block;

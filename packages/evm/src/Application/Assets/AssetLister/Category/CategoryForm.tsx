@@ -5,28 +5,11 @@ import { AddToEditFormStateCreator } from '../../../../Redux/CategoryFormSlice';
 import DialogueForm from './SubComponents/DialogueForm';
 import DisplayCategoryForm from './SubComponents/DisplayCategoryForm';
 import moment from 'moment';
-import { findRetentionAndHoldUntill } from './Utility/UtilityFunctions';
-import http from '../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-
-type CategoryFormProps = {
-  filterValue: any[];
-  setremoveClassName: any;
-  activeForm: number;
-  isCategoryEmpty: boolean;
-  evidenceResponse: any;
-  setFilterValue: (param: any) => void;
-  closeModal: (param: boolean) => void;
-  setActiveForm: (param: any) => void;
-  setOpenForm: () => void;
-  setModalTitle: (param: string) => void;
-  setIsformUpdated: (param: boolean) => void;
-  setIndicateTxt: (param: boolean) => void;
-  setshowSSticky: (param: boolean) => void;
-};
+import { CategoryFormProps } from './Model/CategoryFormModel';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -59,7 +42,10 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     // Check how many categories are added recently,
     const previousAttachedCategories = evidenceResponse?.categories;
     const newSelectedCategories = allCategories.filter((x: any) => {
-      return !previousAttachedCategories.some((o: any) => o.name == x.label);
+      if(previousAttachedCategories.length > 0)
+         return !previousAttachedCategories.some((o: any) => o.name == x.label);
+      else
+         return x;   
     });
 
     // If user selected addtional categories, then cross icon click should be a update case.
@@ -216,11 +202,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       props.setActiveForm(5);
       
     } else {
-      /** 
-       * * Find HighestRetentionId & HoldUntill, from newly added categories. 
-       * */
-      const retentionPromise = findRetentionAndHoldUntill(categoryBodyArr, categoryOptions, props.filterValue, props.evidenceResponse);
-
       /**
        * * Remove type key from body.
        * */
@@ -228,29 +209,25 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         delete v.type;
       });
 
-      Promise.resolve(retentionPromise).then((retention: any) => {
-        const body : EvdenceCategoryAssignment = {
-          unAssignCategories: [],
-          assignedCategories: categoryBodyArr,
-          updateCategories: [],
-          retentionId: retention !== undefined ? [retention.retentionId] : null,
-          holdUntill: retention !== undefined ? retention.expiryDate : null
-        };
-        const url = `/Evidences/${evidenceId}/Categories`;
+      const body : EvdenceCategoryAssignment = {
+        unAssignCategories: [],
+        assignedCategories: categoryBodyArr,
+        updateCategories: []
+      };
 
-        EvidenceAgent.changeCategories(url, body).then((response: any) => {
-          setSuccess(true);
-          setTimeout(() => 
-          {
-            closeModalFunc();
-            dispatch(getAssetSearchInfoAsync(""));
-          }, 3000);
-        })
-        .catch((ex: any) => {
-          setError(true);
-        })
-
+      const url = `/Evidences/${evidenceId}/Categories`;
+      EvidenceAgent.changeCategories(url, body).then(() => {
+        setSuccess(true);
+        setTimeout(() => 
+        {
+          closeModalFunc();
+          dispatch(getAssetSearchInfoAsync(""));
+        }, 3000);
       })
+      .catch(() => {
+        setError(true);
+      });
+      
     }
   };
 
@@ -264,13 +241,14 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       };
       categoryBodyArr.push(_categoryBody);
     }
+
     const body : EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: categoryBodyArr,
-      updateCategories: [],
+      updateCategories: []
     };
     const url = `/Evidences/${evidenceId}/Categories`;
-    EvidenceAgent.changeCategories(url, body).then((response: any) => {
+    EvidenceAgent.changeCategories(url, body).then(() => {
       setSuccess(true);
       setTimeout(() => {
         props.setOpenForm();
@@ -279,14 +257,14 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         props.closeModal(false);
       }, 3000);
     })
-    .catch((ex: any) => {
+    .catch(() => {
       setError(true);
-    })
-  };
+    });
+  }
 
   return (
     <>
-      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           className='errorMessageCategory'
@@ -335,6 +313,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             initialValues={props.filterValue}
             evidenceResponse={evidenceResponse}
             formCollection={filteredFormArray}
+            filterValue={props.filterValue}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: boolean) => props.closeModal(v)}
             setremoveClassName={(v: any) => props.setremoveClassName(v)}

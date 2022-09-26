@@ -70,7 +70,7 @@ type Evidence = {
   asset: Asset[];
   masterAsset: MasterAsset;
   holdUntill: string;
-  extendedHoldUntil?: string;
+  expireOn: Date;
 };
 
 type EvidenceReformated = {
@@ -87,8 +87,8 @@ type EvidenceReformated = {
   recordedBy: string[];
   recordingStarted: string;
   status: string;
-  holdUntill: string;
-  extendedHoldUntil?: string;
+  holdUntill?: string;
+  expireOn: Date;
 };
 
 type Props = {
@@ -160,7 +160,7 @@ const MasterMain: React.FC<Props> = ({
       status: row.masterAsset.status,
       evidence: row,
       holdUntill: row.holdUntill,
-      extendedHoldUntil: row.extendedHoldUntil
+      expireOn: row.expireOn
     };
     reformattedRows.push(evidence);
   });
@@ -366,9 +366,13 @@ const MasterMain: React.FC<Props> = ({
   };
 
   const retentionSpanText = (_: string, evidence: Evidence): JSX.Element => {
-    if (evidence.extendedHoldUntil != null) {
-      if (moment(evidence.extendedHoldUntil).format('DD-MM-YYYY') == "31-12-9999") {
-        //display just a infinity icon
+      let date : Date;
+      if(evidence.holdUntill != null)
+      date = moment(evidence.holdUntill).toDate();
+      else 
+        date = moment(evidence.expireOn).toDate();
+
+      if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
         return (
           <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
         );
@@ -376,15 +380,11 @@ const MasterMain: React.FC<Props> = ({
       //show a horizontal arrow beneath the retention span number.
       return (
         <p>
-          {AssetRetentionFormat(_)}
+          {AssetRetentionFormat(date)}
           <br />
           <CRXIcon className=""><i className="fas fa-angle-right "></i></CRXIcon>
         </p>
       );
-    }
-    return (
-      <p>{AssetRetentionFormat(_)}</p>
-    );
   }
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -453,7 +453,7 @@ const MasterMain: React.FC<Props> = ({
     },
     {
       label: t("Retention_Span"),
-      id: "holdUntill",
+      id: "expireOn",
       align: "left",
       dataComponent: retentionSpanText,
       sort: true,

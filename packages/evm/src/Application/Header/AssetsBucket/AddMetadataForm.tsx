@@ -87,6 +87,7 @@ type masterAsset = {
   bookMarks: any;
   notes: any;
   files: any;
+  lock: any;
 };
 
 type masterAssetFile = {
@@ -450,7 +451,7 @@ const AddMetadataForm: React.FC<Props> = ({
   };
 
   const checkAssetType = (assetType: string) => {
-    var answer: string = "";
+    var typeOfAsset: string = "";
     switch (assetType) {
       case ".mp4":
       case ".mp3":
@@ -458,14 +459,15 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".mkv":
       case ".3gp":
       case ".webm":
-        answer = "Video";
+      case ".wmv":
+        typeOfAsset = "Video";
         break;
 
       case ".mp3":
       case ".wma":
       case ".aac":
       case ".wav":
-        answer = "Audio";
+        typeOfAsset = "Audio";
         break;
 
       case ".jpeg":
@@ -475,28 +477,7 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".psd":
       case ".ai":
       case ".jpg":
-        answer = "Image";
-        break;
-
-      case ".wmv":
-        answer = "WMV_Video";
-        break;
-
-      case ".doc":
-        answer = "WordDoc";
-        break;
-
-      case ".pdf":
-        answer = "PDFDoc";
-        break;
-
-      case ".txt":
-        answer = "Text";
-        break;
-
-      case ".zip":
-      case ".rar":
-        answer = "Zip";
+        typeOfAsset = "Image";
         break;
 
       case ".xlsx":
@@ -505,56 +486,51 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".xltx":
       case ".xltm":
       case ".xml":
-        answer = "ExcelDoc";
-        break;
-
+      case ".doc":
+      case ".docx":
+      case ".pdf":
+      case ".txt":
       case ".ppt":
-        answer = "PowerPointDoc";
-        break;
-
-      case ".icm":
-        answer = "AvenueSource";
+        typeOfAsset = "Doc";
         break;
 
       case ".dll":
-        answer = "DLL";
-        break;
-
       case ".exe":
-        answer = "Exe";
+      case ".msi":
+      case ".bin":
+        typeOfAsset = "Executable";
         break;
 
-      case ".msi":
-        answer = "Msi";
-        break;
-      case ".bin":
-        answer = "bin";
+      case ".zip":
+      case ".rar":
+      case ".icm":
+        typeOfAsset = "Other";
         break;
 
       default:
-        answer = "Others";
+        typeOfAsset = "Others";
     }
-    return answer;
+    return typeOfAsset;
   };
 
   const checkFileType = (fileType: string) => {
     var typeOfFile: string = "";
     switch (fileType) {
+
       case ".mp4":
       case ".mp3":
       case ".avi":
       case ".mkv":
+      case ".3gp":
+      case ".webm":
         typeOfFile = "Video";
         break;
 
       case ".mp3":
       case ".wma":
       case ".aac":
+      case ".wav":
         typeOfFile = "Audio";
-        break;
-
-      case ".pdf":
-        typeOfFile = "PdfDocument";
         break;
 
       case ".jpeg":
@@ -565,6 +541,68 @@ const AddMetadataForm: React.FC<Props> = ({
       case ".ai":
       case ".jpg":
         typeOfFile = "Image";
+        break;
+
+      case ".wmv":
+        typeOfFile = "WMVVideo";
+        break;
+
+      case ".icm":
+        typeOfFile = "AvenueSource";
+        break;
+
+      case ".doc":
+      case ".docx":
+        typeOfFile = "WordDoc";
+        break;
+
+      case ".pdf":
+        typeOfFile = "PDFDoc";
+        break;
+
+      case ".txt":
+        typeOfFile = "Text";
+        break;
+
+      case ".xlsx":
+      case ".xlsm":
+      case ".xlsb":
+      case ".xltx":
+      case ".xltm":
+        typeOfFile = "ExcelDoc";
+        break;
+
+      case ".ppt":
+      case ".pptx":
+        typeOfFile = "PowerPointDoc";
+        break;
+
+      case ".dll":
+        typeOfFile = "DLL";
+        break;
+      case ".exe":
+        typeOfFile = "Exe";
+        break;
+      case ".msi":
+        typeOfFile = "Msi";
+        break;
+      case ".bin":
+        typeOfFile = "bin";
+        break;
+
+      case ".crt":
+      case ".cer":
+      case ".ca-bundle":
+      case ".p7b":
+      case ".p7c":
+      case ".p7s":
+      case ".pem":
+        typeOfFile = "BW2Certificate";
+        break;
+
+      case ".zip":
+      case ".rar":
+        typeOfFile = "Zip";
         break;
 
       case ".xml":
@@ -695,68 +733,13 @@ const AddMetadataForm: React.FC<Props> = ({
     );
   };
 
-  const getRetentionByCategories = async (categories: any[]) => {
-
-    let retentionList = '';
-    let count = 0;
-    const retentionDetails: any = [];
-    let distinctIds = categories.map(x => x.retentionId).filter((item, i, ar) => ar.indexOf(item) === i);
-    for (const i of distinctIds) {
-      const retentionId = i;
-      retentionList +=
-        distinctIds.length !== count + 1 ? `PolicyIDList=${retentionId}&` : `PolicyIDList=${retentionId}`;
-      count++;
-    }
-
-    const url = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/DataRetention?${retentionList}`;
-
-    return new Promise(function (resolve, reject) {
-      SetupConfigurationAgent.getPoliciesAccordingToType(url).then((response: Policy[]) => {
-
-        for (let i = 0; i <= response.length - 1; i++) {
-          retentionDetails.push({
-            retentionId: response[i].id,
-            hours: response[i].detail.limit.hours ?? 0,
-            graceHours: response[i].detail.limit.gracePeriodInHours,
-            totalHours: (response[i].detail.limit.hours ?? 0) + (response[i].detail.limit.gracePeriodInHours ?? 0)
-          });
-        }
-        const rentionByHours = retentionDetails.sort((a: any, b: any) => (a.totalHours > b.totalHours ? 1 : -1)).reverse();
-        const sameRetentionByHours = rentionByHours.filter((x: any) => x.totalHours == rentionByHours[0].totalHours);
-        const finalRetentionByHour = sameRetentionByHours.filter((x: any) => x.hours == Math.max(...sameRetentionByHours.map((o: any) => o.hours)));
-
-        resolve(finalRetentionByHour[0]);
-      });
-    });
-  }
-  const getRetentionByStationId = async (stationId: number) => {
-    const url = `/Stations/${stationId}`;
-    return new Promise(function (resolve, reject) {
-      UnitsAndDevicesAgent.getStation(url).then((response: any) => {
-        const retention = {
-          retentionId: response?.policies[0]?.retentionPolicyId?.cmtFieldValue,
-          totalHours: +(response?.policies[0]?.retentionPolicyId?.record.find((x: any) => x.key == "Hours").value ?? 0)
-            + (+(response?.policies[0]?.retentionPolicyId?.record.find((x: any) => x.key == "GracePeriodHours").value ?? 0))
-        }
-        resolve(retention);
-      });
-    });
-  }
-
   const onAddMetaData = async () => {
 
     const station = optionList.find(
       (x: any) => x.value === formpayload.station
     );
 
-    let retention: any;
     const categories = insertCategory(formpayload.category);
-    if (categories.length > 0) {
-      retention = await getRetentionByCategories(categories);
-    }
-    else {
-      retention = await getRetentionByStationId(+station.id);
-    }
 
     const uploadedFile = uploadFile.map((index: any) => {
       let masterAssetValueIndex = index.uploadedFileName.lastIndexOf(".");
@@ -850,6 +833,7 @@ const AddMetadataForm: React.FC<Props> = ({
         isOverlaid: asset.isOverlaid,
         recordedByCSV: asset.recordedByCSV,
         files: asset.files,
+        lock: null,
       };
       master = masterAssetData;
     }
@@ -883,6 +867,7 @@ const AddMetadataForm: React.FC<Props> = ({
         camera: childAsset.camera,
         isOverlaid: childAsset.isOverlaid,
         recordedByCSV: childAsset.recordedByCSV,
+        lock: null
       };
     });
 
@@ -890,16 +875,10 @@ const AddMetadataForm: React.FC<Props> = ({
       CMTFieldValue: station ? +station.id : 0,
     };
 
-    const retentionPolicyId: retentionPolicyId = {
-      CMTFieldValue: retention?.retentionId ?? 0,
-    };
-
     return {
       categories,
       assets: { master, children },
-      retainUntil: retention?.totalHours != null ? moment().add(retention?.totalHours ?? 0, 'hours').utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') : null,
       stationId,
-      retentionPolicyId,
       computerAidedDispatch: null,
       tag: null,
       version: "",
@@ -922,6 +901,7 @@ const AddMetadataForm: React.FC<Props> = ({
         if (res.ok) {
           onClose();
           setAddEvidence(true);
+          setActiveScreen(0);
           return res.json();
         } else if (res.status == 500) {
           setAlert(true);
@@ -1047,6 +1027,7 @@ const AddMetadataForm: React.FC<Props> = ({
       if (res.ok) {
         onClose();
         setAddEvidence(true);
+        setActiveScreen(0);
       }
     });
   };

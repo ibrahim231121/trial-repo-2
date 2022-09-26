@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import VideoScreen from "./VideoScreen";
 import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
@@ -24,13 +24,13 @@ import { CRXButton, CRXTooltip, SVGImage, CRXToaster , CBXSwitcher} from "@cb/sh
 import BookmarkNotePopup from "./BookmarkNotePopup";
 import MaterialMenu from "@material-ui/core/Menu";
 import MaterialMenuItem from "@material-ui/core/MenuItem";
-import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg"
+import AduioImage from "../../Assets/Images/dummy_audio_img2.jpg";
+import AduioImageZoomInZoomOut  from "../../Assets/Images/dummy-audio-zoom.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import "./VideoPlayerResponsive.scss";
 
-var videoElements: any[] = [];
 
 type Timeline = {
   recording_start_point: number;
@@ -323,6 +323,7 @@ const MaxTimelineCalculation = (tempTimelines: Timeline[], newTimelineDuration?:
   };
 }
 const updateTimelinesMaxDurations = async (maxTimelineDuration: number, tempTimelines: Timeline[], indexNumberToDisplay: number, setfinalduration: any, settimelineduration: any, dispatch: any) => {
+  tempTimelines = JSON.parse(JSON.stringify(tempTimelines));
   let durationinformat = secondsToHms(maxTimelineDuration);
   setfinalduration(durationinformat.toString())
   settimelineduration(maxTimelineDuration);
@@ -399,6 +400,7 @@ const VideoPlayerBase = (props: any) => {
   const [mode, setMode] = useState<number>(0);
   const [modeFw, setModeFw] = useState<number>(0);
   const [modeRw, setModeRw] = useState<number>(0);
+  const [markerFwRw, setMarkerFwRw] = useState<boolean>(false);
   const [ismodeFwdisable, setismodeFwdisable] = useState<boolean>(false);
   const [ismodeRwdisable, setisModeRwdisable] = useState<boolean>(false);
   const [curractionFwRw, setcurractionFwRw] = useState({
@@ -475,39 +477,62 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const volumeIcon = useRef<any>(null)
+  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(true);  const volumeIcon = useRef<any>(null);
+  const last_media_time = useRef(0);
+  const last_frame_num = useRef(0);
+  const fps_rounder = useRef<any>([]);
+  const frame_not_seeked = useRef<boolean>(true);
+  const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
+  const [detailContent, setDetailContent] = useState<boolean>(false);
+  const demoRef = useRef(null)
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
-    if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
-    if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
-    if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
-    if (shiftKey && code == "Period") {
-      event.preventDefault(); 
-      modeSet(mode < 0 ? 2 : (mode + 2))
-    } //Shift + .
-    if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
-    if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
-    if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
-    if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
-    if (code == "ArrowDown") {
-      event.preventDefault(); 
-      setVolume(volume - 1);
-      setVolumeHandle(volume - 1);
-    } //down arrows
-    if (code == "ArrowUp") {
-      event.preventDefault(); 
-      setVolume(volume + 1);
-      setVolumeHandle(volume + 1);
-    } //up arrows
-    if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
-    if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
-    if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
-    if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
-    
+    if(!(openBookmarkForm || openNoteForm || reasonForViewing))
+    {
+      if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+      if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+      if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
+      if (shiftKey && code == "Period") {
+        event.preventDefault(); 
+        modeSet(mode < 0 ? 2 : (mode + 2))
+      } //Shift + .
+      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+      if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+      if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
+      if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
+      if (code == "ArrowDown") {
+        event.preventDefault(); 
+        setVolume(volume - 1);
+        setVolumeHandle(volume - 1);
+      } //down arrows
+      if (code == "ArrowUp") {
+        event.preventDefault(); 
+        setVolume(volume + 1);
+        setVolumeHandle(volume + 1);
+      } //up arrows
+      if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
+      if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
+      if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
+      if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+    }
 
   };
 
+  React.useEffect(() => {
+    if(fps && videoHandlers.length>0){
+      // stop Eventlister to get Fps
+      let vid = videoHandlers[0];
+      vid.removeEventListener("seeked", function () {});
+    }
+  }, [fps]);
+
+  React.useEffect(() => {
+    if(videoHandlers.length>0){
+      // Getting Video Fps
+      getFps(videoHandlers[0])
+    }
+  }, [videoHandlers]);
 
   React.useEffect(() => {
     if (onMarkerClickTimeData) {
@@ -696,10 +721,51 @@ const VideoPlayerBase = (props: any) => {
     }
   }, [bookmarkNotePopupArrObj]);
 
+  const getFps = (videoHandle: any) => {
+    videoHandle.requestVideoFrameCallback(ticker);
+    videoHandle.addEventListener("seeked", function () {
+      let fps_rounder1 = fps_rounder.current;
+      fps_rounder1.pop();
+      fps_rounder.current = fps_rounder1;
+      frame_not_seeked.current = false;
+    });
+  };
+
+  const ticker = (useless: any, metadata: any) => { // GetFps Work
+    let fps;
+    let vid = videoHandlers[0];
+    const fps_rounder1 = fps_rounder.current;
+    
+    const media_time_diff = Math.abs(metadata.mediaTime - last_media_time.current);
+    const frame_num_diff = Math.abs(metadata.presentedFrames - last_frame_num.current);
+    const diff = media_time_diff / frame_num_diff;
+    if (diff && diff < 1 && fps_rounder1.length < 50 && frame_not_seeked.current && vid.playbackRate === 1) {
+      fps_rounder1.push(diff);
+      fps_rounder.current = fps_rounder1;
+      fps = Math.round(1 / get_fps_average());
+      console.log("FPS: " + fps + ", certainty: " + fps_rounder1.length * 2 + "%");
+      if(fps_rounder1.length * 2 == 100){
+        setFps(fps);
+      }
+    }
+    frame_not_seeked.current = true;
+    last_media_time.current = metadata.mediaTime;
+    last_frame_num.current = metadata.presentedFrames;
+    if(fps_rounder1.length * 2 != 100){
+      vid.requestVideoFrameCallback(ticker);
+    }
+  }
+
+  function get_fps_average() { // GetFps Work
+    let fps_rounder1 = fps_rounder.current;
+    return fps_rounder1.reduce((a: any, b: any) => a + b) / fps_rounder.current.length;
+  }
+
 
   const handleControlBarChange = (event: any, newValue: any) => {
 
     setTimer(newValue);
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     setControlBar(newValue);
     videoHandlers.forEach((videoHandle: any) => {
@@ -723,6 +789,7 @@ const VideoPlayerBase = (props: any) => {
 
   const handlePlayPause = () => {
     setPlaying(!isPlaying);
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     setShowFRicon({ showFRCon: false, caseNum: 0 })
     if (!isPlaying) {
@@ -742,9 +809,12 @@ const VideoPlayerBase = (props: any) => {
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
-      hanldeVideoStartStop(Math.round(videoHandle.currentTime - 1), videoHandle, false);
+      videoHandle.currentTime = videoHandle.currentTime - (1/fps);
+      hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
-    handleControlBarChange(null, timer - 1);
+    if(timer > 0){
+      handleControlBarChange(null, timer - (1/fps));
+    }
     setFrameReverse(true);
     setFrameForward(false);
   };
@@ -752,9 +822,12 @@ const VideoPlayerBase = (props: any) => {
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
-      hanldeVideoStartStop(Math.round(videoHandle.currentTime + 1), videoHandle, false);
+      videoHandle.currentTime = videoHandle.currentTime + (1/fps);
+      hanldeVideoStartStop(videoHandle.currentTime, videoHandle, false);
     });
-    handleControlBarChange(null, timer + 1);
+    if(timer < timelineduration){
+      handleControlBarChange(null, timer + (1/fps));
+    }
     setFrameForward(true);
     setFrameReverse(false);
   };
@@ -763,6 +836,7 @@ const VideoPlayerBase = (props: any) => {
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
     });
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     const playerCurrentTime = Math.round(timer * 1000);
     let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -825,38 +899,49 @@ const VideoPlayerBase = (props: any) => {
   }
 
   useEffect(() => {
+    let videoElements: any[] = [];
     timelinedetail.filter((y: any) => y.enableDisplay).forEach((x: any) => {
-      var videoElement = document.querySelector("#" + x.id);
+      let videoElement = document.querySelector("#" + x.id);
       videoElements.push(videoElement);
-
       videoElement?.addEventListener("canplay", function () {
-        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        bufferingArrayObj.buffering = true;
-        setBufferingArray(bufferingArray);
+        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        if(bufferingArrayObj){
+          bufferingArrayObj.buffering = true;
+          setBufferingArray(bufferingArray);
+        }
       }, true);
 
       videoElement?.addEventListener("waiting", function () {
-        var bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
-        bufferingArrayObj.buffering = false;
-        setBufferingArray(bufferingArray);
+        let bufferingArrayObj = bufferingArray.find((y: any) => y.id == x.id);
+        if(bufferingArrayObj){
+          bufferingArrayObj.buffering = false;
+          setBufferingArray(bufferingArray);
+        }
       }, true);
     })
-    setVideoHandlers(videoElements);
+    if(videoElements.length>0)
+    {
+      setVideoHandlers(videoElements);
+    }
   }, [timelinedetail]);
 
   useEffect(() => {
     if (videoHandlersFwRw.length > 0) {
       videoHandlersFwRw.forEach((videoHandle: any) => {
         videoHandle?.addEventListener("canplay", function () {
-          var bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
-          bufferingArrayObj.buffering = true;
-          setBufferingArrayFwRw(bufferingArrayFwRw);
+          let bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
+          if(bufferingArrayObj){
+            bufferingArrayObj.buffering = true;
+            setBufferingArrayFwRw(bufferingArrayFwRw);
+          }
         }, true);
 
         videoHandle?.addEventListener("waiting", function () {
-          var bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
-          bufferingArrayObj.buffering = false;
-          setBufferingArrayFwRw(bufferingArrayFwRw);
+          let bufferingArrayObj = bufferingArrayFwRw.find((y: any) => y.id == videoHandle.id);
+          if(bufferingArrayObj){
+            bufferingArrayObj.buffering = false;
+            setBufferingArrayFwRw(bufferingArrayFwRw);
+          }
         }, true);
       });
       setisvideoHandlersFwRw(true);
@@ -878,7 +963,12 @@ const VideoPlayerBase = (props: any) => {
     var video: any = timelinedetail.find((x: any) => x.id == videoHandle.id);
     var difference = timer - (video.recording_start_point);
     var endPointDifference = (video.recording_end_point) - timer;
-    videoHandle.currentTime = difference > 0 && endPointDifference > 0 ? difference : 0;
+    let currenttime = difference > 0 && endPointDifference > 0 ? difference : 0;
+    let currenttimediff = Math.abs(videoHandle.currentTime - currenttime);
+
+    if(currenttimediff >= 0.5){
+      videoHandle.currentTime = currenttime;
+    }
     if (applyAction) {
       if (videoHandle.currentTime > 0 && bufferingArray.filter((y: any) => timelinedetail.find((z: any) => z.id == y.id && z.enableDisplay) !== undefined).every((y: any) => y.buffering == true)) {
         videoHandle.play();
@@ -945,17 +1035,26 @@ const VideoPlayerBase = (props: any) => {
         if (isPlayingFwRw === true) {
           if (timer < timelineduration) {
             var timerValue: any[] = [];
+            let TimeLinePipe: any = document.querySelector("#_fwrw_timeLine_pipeRed");
             if (modeFw > 0) {
               timerFwRw.forEach((x: any) => {
                 timerValue.push(x + 0.25);
               })
+              if(!(timerValue[2]>timelinedetail[0].recording_end_point))
+              {
+                TimeLinePipe.style.left = (timerValue[2]/timelineduration)*100 + "%";
+              }
             }
             else if (modeRw > 0) {
               timerFwRw.forEach((x: any) => {
                 timerValue.push(x - 0.25);
               })
+              if(!(timerValue[2]<timelinedetail[0].recording_start_point))
+              {
+                TimeLinePipe.style.left = (timerValue[2]/timelineduration)*100 + "%";
+              }
             }
-
+            
             setTimerFwRw(timerValue);
             videoHandlersFwRw.forEach((videoHandle: any, index: number) => {
               hanldeVideoStartStopFwRw(timerValue[index], videoHandle, true, index);
@@ -1096,6 +1195,7 @@ const VideoPlayerBase = (props: any) => {
 
     setSpeedFwRw(250);
     setisPlayingFwRw(true);
+    setMarkerFwRw(true);
     switch (CaseNo) {
       case 1: //Forward
         if (modeRw > 0) {
@@ -1136,6 +1236,7 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickVideoFwRw = (event: any) => {
+    setMarkerFwRw(false);
     setisPlayingFwRw(false);
     var video: any = timelinedetail[0];
     let currTime = Math.floor(event.target.currentTime);
@@ -1302,14 +1403,14 @@ const VideoPlayerBase = (props: any) => {
   const AdjustTimeline = async (event: any, timeline: any, mode: number) => {
     mode = mode / 1000;
 
-    var timeLineHover: any = document.querySelector("#SliderControlBar");
-    var timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
-    var leftPadding = timeLineHover.getBoundingClientRect().left;
+    let timeLineHover: any = document.querySelector("#SliderControlBar");
+    let timelineWidth = timeLineHover?.scrollWidth < 0 ? 0 : timeLineHover?.scrollWidth;
+    let leftPadding = timeLineHover.getBoundingClientRect().left;
 
-    var pxPerSecond = timelineWidth / timelineduration;
-    var ttt: number = 0;
+    let pxPerSecond = timelineWidth / timelineduration;
+    let ttt: number = 0;
     if (mode === 0) {
-      var positionInSeconds = ((event.pageX - leftPadding) / pxPerSecond)
+      let positionInSeconds = ((event.pageX - leftPadding) / pxPerSecond)
       ttt = positionInSeconds - timeline.recording_start_point;
     }
     else {
@@ -1317,9 +1418,9 @@ const VideoPlayerBase = (props: any) => {
     }
     ttt = (timeline.recording_start_point + ttt) < 0 ? 0 : ttt;
 
-    var newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
-    var tempTimelines = [...timelinedetail];
-    var tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
+    let newTimelineDuration = timeline.recording_start_point + ttt + timeline.video_duration_in_second;
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let tempTimeline: any = tempTimelines.find((x: any) => x.indexNumberToDisplay == timeline.indexNumberToDisplay);
 
 
 
@@ -1372,11 +1473,11 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const RevertToOriginal = async () => {
-    var tempTimelines = [...timelinedetail];
-    var maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
-    var maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
-    var negativeHandler = maxTimelineCalculationResponse?.negativeHandler;
-    var durationinformat = secondsToHms(maxTimelineDuration);
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let maxTimelineCalculationResponse = MaxTimelineCalculation(tempTimelines, undefined, true)
+    let maxTimelineDuration = maxTimelineCalculationResponse?.maxTimelineDuration;
+    let negativeHandler = maxTimelineCalculationResponse?.negativeHandler;
+    let durationinformat = secondsToHms(maxTimelineDuration);
     setfinalduration(durationinformat.toString())
     settimelineduration(maxTimelineDuration);
 
@@ -1397,20 +1498,20 @@ const VideoPlayerBase = (props: any) => {
     await dispatch(addTimelineDetailActionCreator(tempTimelines));
     setTimelineSyncHistoryCounter(0);
     toasterMsgRef.current.showToaster({
-      message: "Times reverted to original", variant: "Success", duration: 5000, clearButtton: true
+      message: "Times reverted to original", letiant: "Success", duration: 5000, clearButtton: true
     });
   }
-  const UndoRedo = (indexOperation: number) => {
-    var tempTimelines = [...timelinedetail];
-    var undoObj = timelineSyncHistory[indexOperation == 0 ? 0 : timelineSyncHistoryCounter + indexOperation];
+  const UndoRedo = async (indexOperation: number) => {
+    let tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
+    let undoObj = timelineSyncHistory[indexOperation == 0 ? 0 : timelineSyncHistoryCounter + indexOperation];
     if (undoObj) {
-      var maxTimelineDuration = undoObj.maxTimelineDuration;
-      var durationinformat = secondsToHms(maxTimelineDuration);
+      let maxTimelineDuration = undoObj.maxTimelineDuration;
+      let durationinformat = secondsToHms(maxTimelineDuration);
       setfinalduration(durationinformat.toString())
       settimelineduration(maxTimelineDuration);
 
       tempTimelines.forEach((x: any) => {
-        var timelineHistoryObj: any = undoObj.timelinesHistory.find((y: any) => y.assetId == x.dataId);
+        let timelineHistoryObj: any = undoObj.timelinesHistory.find((y: any) => y.assetId == x.dataId);
         let recording_start_point = timelineHistoryObj.recording_start_point;
         let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
         let recording_end_point = timelineHistoryObj.recording_end_point;
@@ -1425,7 +1526,8 @@ const VideoPlayerBase = (props: any) => {
         x.recordingratio = recordingratio;
         x.timeOffset = timeOffset;
       })
-      var index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
+      await dispatch(addTimelineDetailActionCreator(tempTimelines));
+      let index = timelineSyncHistoryCounter + indexOperation < 0 ? 0 : timelineSyncHistoryCounter + indexOperation
       setTimelineSyncHistoryCounter(indexOperation == 0 ? 0 : index);
     }
     if (indexOperation == 0) {
@@ -1615,9 +1717,17 @@ const VideoPlayerBase = (props: any) => {
     if(layoutContent) {
        PlayerRight?.appendChild(layoutContent)
     }
-   
+
+    document.documentElement.style.overflow = "hidden";
   },[])
 
+ 
+  const gotoSeeMoreView = (e: any, targetId: any) => {
+    detailContent == false ? setDetailContent(true) : setDetailContent(false);
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
   return (
     <>
       <div onKeyDown={keydownListener}>
@@ -1635,7 +1745,7 @@ const VideoPlayerBase = (props: any) => {
       />}
 
       <div className="searchComponents">
-        <div className="_video_player_container">
+        <div className="_video_player_container" id="_asset_detail_view_idx">
         <div id="crx_video_player" >
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
@@ -1666,6 +1776,7 @@ const VideoPlayerBase = (props: any) => {
                 openMap={props.openMap}
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
                 toasterMsgRef={toasterMsgRef}
+                isAudioGraph={isAudioGraph}
               />
 
               <div className="ClickerIcons">
@@ -1782,7 +1893,8 @@ const VideoPlayerBase = (props: any) => {
                     viewReasonControlsDisabled={viewReasonControlsDisabled}
                     timelinedetail={timelinedetail}
                     displayThumbnail={displayThumbnail}
-                    setVisibleThumbnail={setVisibleThumbnail} />
+                    setVisibleThumbnail={setVisibleThumbnail}
+                    markerFwRw={markerFwRw} />
                 </div>
                 <div className="videoPlayer_Timeline_Time">
                   <div className="playerViewFlexTimer">
@@ -1793,9 +1905,13 @@ const VideoPlayerBase = (props: any) => {
                   </div>
                   
                 </div>
-                <div className="dummy_audio_image">
+              {isAudioGraph && <div className="dummy_audio_image">
                     <img src={AduioImage} />
                 </div>
+              } 
+              <div className="dummy_audio_zoomIn_zoomOut">
+              <img src={AduioImageZoomInZoomOut} />
+              </div>
               </div>
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
@@ -1921,6 +2037,7 @@ const VideoPlayerBase = (props: any) => {
                       overlayCheckedItems={overlayCheckedItems}
                       setOverlayCheckedItems={setOverlayCheckedItems}
                       isMultiViewEnable={isMultiViewEnable}
+                      setIsAudioGraph={setIsAudioGraph}
                     />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
@@ -2111,8 +2228,21 @@ const VideoPlayerBase = (props: any) => {
           </div>
 
         </div>
+        <div className="_bottom_arrow_seeMore">
+        {detailContent == false ?
+              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
+              </button>
+              :
+              <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
+              </button>
+            }
+        </div>
+        <div className="demo-div" ref={demoRef} id="detail_view">Video Detail Tabs and content here</div>
         </div>{/** Video player container close div */}
-      </div >
+      </div>
+        
       </div>
     </>);
 }

@@ -131,7 +131,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   //   return timelinepositionpercentage;
   // }
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     let ThumbnailDesc = document.getElementById("Thumbnail-Desc");
     if (ThumbnailDesc) {
       document.getElementById("thumbnailHeaderBar")?.classList.add("showHeaderBar")

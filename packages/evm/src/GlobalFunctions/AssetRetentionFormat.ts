@@ -1,27 +1,24 @@
 import moment from 'moment';
-
-const AssetRetentionFormat = (dateTime: string) => {
-    const stillUtc = moment.utc(dateTime).toDate();
+const AssetRetentionFormat = (dateTime: Date) => {
+    const dateTimeObj = moment(dateTime).local();
     if (dateTime === null) return 'Error retrieving login data';
-
-    const localDateTime = moment(stillUtc).local().format('YYYY / MM / DD HH:mm:ss');
-    return CalculateHoldUntill(localDateTime);
+    return CalculateRetentionSpan(dateTimeObj);
 };
 
-const CalculateHoldUntill = (dateTime: string): string => {
-    const now = moment();
-    const expiration = moment(dateTime).utc();
+const CalculateRetentionSpan = (expiration: moment.Moment): string => {
+    const now = moment().local();
     if (now < expiration) {
         const diff = expiration.diff(now);
-        const diffDuration = moment.duration(diff);
-        let DifferenceInString;
-        if (diffDuration.days() > 1) {
-            DifferenceInString = `${diffDuration.days()} Days ${diffDuration.hours()} Hours`;
-        } else {
-            DifferenceInString = `${diffDuration.hours()} Hours`;
-        }
-        return DifferenceInString.toString();
+        const diffDuration: any = moment.duration(diff);
+        let differenceInString = "";
+        if (diffDuration._data.days != 0)
+            differenceInString = diffDuration._data.days + " Day(s) ";
+        if (diffDuration._data.hours != 0)
+            differenceInString = differenceInString + diffDuration._data.hours + " Hour(s) ";
+        if (diffDuration._data.minutes != 0)
+            differenceInString = differenceInString + diffDuration._data.minutes + " Minute(s)"
+        return differenceInString;
     }
     return 'Asset Expired';
 };
-export {AssetRetentionFormat, CalculateHoldUntill} ;
+export { AssetRetentionFormat, CalculateRetentionSpan };

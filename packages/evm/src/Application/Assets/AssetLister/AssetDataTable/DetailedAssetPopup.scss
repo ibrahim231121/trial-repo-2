@@ -5,7 +5,7 @@
     align-items: flex-end;
     position: absolute;
     right: 3px;
-    bottom: 1px;
+    bottom: -17px;
   span {
     font-size: 16px;
     .getac-clone-icon {
@@ -23,9 +23,10 @@
 }
 
 .CRXPopoverCss {
+  position: absolute !important;
   .CRXPopOverArrow {
     margin-left: -15px;
-    margin-top: -22px;
+    margin-top: 0px;
     .CRXPopupInnerDiv {
       text-align: center;
       width: 525px;
@@ -39,7 +40,7 @@
         text-align: right;
 
         padding-left: 0px;
-        height: 20px;
+        height: 10px;
 
         .CRXCloseButton {
           border: none !important;

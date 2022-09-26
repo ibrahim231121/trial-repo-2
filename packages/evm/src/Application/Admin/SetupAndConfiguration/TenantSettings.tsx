@@ -45,6 +45,8 @@ const TenantSettings: React.FC = () => {
     LiveStreamURL: "",
     LiveStreamPassword: "",
     LiveStreamUser: "",
+    LiveStreamType:"",
+    LiveStreamUrlForWeb:"",
     AssetViewReasonRequired: "false",
     NTPServer: "",
     AuthServer: "",
@@ -377,6 +379,16 @@ const TenantSettings: React.FC = () => {
           key: "LiveStreamPassword",
           value: values.LiveStreamPassword,
         },
+        {
+          TenantTypeId: 5,
+          key: "LiveStreamType",
+          value: values.LiveStreamType,
+        },
+        {
+          TenantTypeId: 5,
+          key: "LiveStreamUrlForWeb",
+          value: values.LiveStreamUrlForWeb,
+        }
       ],
     };
     if (values.Reasons?.length > 0) {
@@ -639,7 +651,7 @@ const TenantSettings: React.FC = () => {
                     </CRXColumn>
 
                     <CRXColumn
-                      className="stationDetailCol"
+                      className="stationDetailCol stationDetailCol1"
                       container="container"
                       item="item"
                       lg={10}
@@ -786,7 +798,7 @@ const TenantSettings: React.FC = () => {
                     </CRXColumn>
                   </CRXColumn>
                   <CRXColumn
-                    className="stationDetailCol"
+                    className="stationDetailCol "
                     container="container"
                     item="item"
                     lg={6}
@@ -794,11 +806,11 @@ const TenantSettings: React.FC = () => {
                     spacing={0}
                   >
                     <CRXColumn
-                      className="stationDetailCol"
+                      className="stationDetailCol stationDetailCol1"
                       container="container"
                       item="item"
-                      lg={2}
-                      xs={2}
+                      lg={12}
+                      xs={12}
                       spacing={0}
                     >
                       <CRXRows>
@@ -977,7 +989,7 @@ const TenantSettings: React.FC = () => {
                         spacing={0}
                       >
                         <div className="CBX-input">
-                          <label htmlFor="LiveStreamURL">url</label>
+                          <label htmlFor="LiveStreamURL">Server</label>
                           <Field id="url" name="LiveStreamURL" />
                         </div>
                       </CRXRows>
@@ -1006,6 +1018,39 @@ const TenantSettings: React.FC = () => {
                         </div>
                       </CRXRows>
                     </CRXColumn>
+                    <CRXColumn>
+                    <CRXRows
+                        className="crxStationDetail"
+                        container="container"
+                        spacing={0}
+                      >
+                        <div className="CBX-input">
+                          <label htmlFor="name">Live Stream URL For Web</label>
+                          <Field id="urlforweb" name="LiveStreamUrlForWeb" />
+                        </div>
+                      </CRXRows>
+
+
+                      <CRXRows>
+                        <div role="group" aria-labelledby="my-radio-group">
+                          <label>
+                            <Field
+                              type="radio"
+                              name="LiveStreamType"
+                              value="HLS"
+                            /> HLS
+                          </label>
+                          <label>
+                            <Field
+                              type="radio"
+                              name="LiveStreamType"
+                              value="WebRTC"
+                            /> WebRTC
+                          </label>
+                        </div>
+                      </CRXRows>
+                    </CRXColumn>
+
                     <CRXColumn
                       className="stationDetailCol"
                       container="container"

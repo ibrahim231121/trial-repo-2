@@ -1,9 +1,12 @@
 import Slider from "@material-ui/core/Slider";
+import React from "react";
+import { useState } from "react";
 import CRXVideoPlayerStyle from './CRXVideoPlayerStyle';
+
 
 const VideoPlayerSeekbar = (props:any)  => {
   const classes = CRXVideoPlayerStyle()
-  const {controlBar, handleControlBarChange, timelineduration, viewReasonControlsDisabled, timelinedetail, displayThumbnail, setVisibleThumbnail} = props;
+  const {controlBar, handleControlBarChange, timelineduration, viewReasonControlsDisabled, timelinedetail, displayThumbnail, setVisibleThumbnail, markerFwRw} = props;
   
   const displaySeekBarThumbail = (event: any) => {
     let Indexes: number[] = [];
@@ -36,6 +39,7 @@ const VideoPlayerSeekbar = (props:any)  => {
                     }}
                   />
                    <div className="_hover_timeLine_pipeGray" id="_hover_timeLine_pipeGray"></div>
+                   {markerFwRw && <div className={`_fwrw_timeLine_pipeRed`} id="_fwrw_timeLine_pipeRed" style={{left: ((controlBar/timelineduration)*100)+"%" }}></div>}
                   </>
   )
 }

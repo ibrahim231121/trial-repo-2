@@ -3,23 +3,7 @@ import { Formik, Form } from 'formik';
 import { CRXButton } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
-
-type CancelConfirmFormProps = {
-  isCategoryEmpty: boolean;
-  setremoveClassName: any;
-  removedOption: any;
-  previousActive: number;
-  setActiveForm: (param: any) => void;
-  setOpenForm: () => void;
-  setFilterValue: (param: any) => void;
-  closeModal: (param: boolean) => void;
-  setRemovedOption: (param: any) => void;
-  setIsformUpdated: (param: boolean) => void;
-  setIndicateTxt: (param: boolean) => void;
-  setModalTitle: (param: string) => void;
-};
-
-interface FormValues {}
+import { CancelConfirmFormProps, FormValues } from '../Model/CancelConfirmFormModel';
 
 const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);

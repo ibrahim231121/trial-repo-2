@@ -193,9 +193,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                             scope="row"
                             ref={node}
                           >
-                            <span onClick={() => getRowOnActionClick(row)}>
+                            <a className="row_anchor_point" onClick={() => getRowOnActionClick(row)}>
                               {actionComponent}
-                            </span>
+                            </a>
                           </TableCell>
                         ) : null}
                         {orderColumn.map((colIdx, i) => (

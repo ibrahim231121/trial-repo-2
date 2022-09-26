@@ -6,17 +6,22 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable } = props;
+  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
-
+  const [isAudioGraphEnabled, setIsAudioGraphEnabled] = useState<boolean>(true)
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
   }
 
+  const IsShowAudioGraphChangeEvent = (event : any) => {
+    
+    setIsAudioGraphEnabled(event.target.checked)
+    setIsAudioGraph(event.target.checked)
+  }
   const OverlayChangeEvent = (event: any) => {
     if (event.target.checked) {
       setOverlayMenuEnabled(event.currentTarget)
@@ -100,7 +105,17 @@ useEffect(() => {
             </label>
           </div>
         </MaterialMenuItem>
-
+        <MaterialMenuItem className="settingOverlay">
+          <span className="icon icon-stack3 iconsLeft"></span>
+          <span className="toggleBack"></span>
+          <div className="SwitcherControl"  >
+            <label>
+              <span>Audio graph</span>
+              <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={isAudioGraphEnabled} size="small" onChange={(event: any) => IsShowAudioGraphChangeEvent(event)} name="audioGraph" />
+            </label>
+          </div>
+          <i className="fas fa-chevron-right iconsRight"></i>
+        </MaterialMenuItem>
         <MaterialMenuItem className="settingOverlay">
           <span className="icon icon-stack3 iconsLeft"></span>
           <span className="toggleBack"></span>

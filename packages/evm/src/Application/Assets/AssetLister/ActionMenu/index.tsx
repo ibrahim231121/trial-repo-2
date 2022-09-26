@@ -8,7 +8,7 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
-import { CRXModalDialog, CRXAlert } from '@cb/shared';
+import { CRXModalDialog, CRXAlert, CRXConfirmDialog, CRXToaster } from '@cb/shared';
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
 import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
@@ -24,13 +24,9 @@ import http from "../../../../http-common";
 import { FILE_SERVICE_URL, EVIDENCE_EXPORT_META_DATA_URL } from "../../../../utils/Api/url";
 import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
-import { CRXToaster } from "@cb/shared";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
-import { CRXConfirmDialog } from "@cb/shared";
-import { useHistory, useParams } from "react-router";
-import { urlList, urlNames } from "../../../../utils/urlList";
-import { AssetRestriction, PersmissionModel } from "./AssetListerEnum";
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { AssetRestriction, MetadataFileType, PersmissionModel } from "./AssetListerEnum";
+import { useHistory, useParams } from "react-router";import { urlList, urlNames } from "../../../../utils/urlList";import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 import { AssetLockUnLockErrorType, securityDescriptorType } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 
@@ -282,7 +278,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     }
     const evidenceId = row.evidence.id;
     const assetId = row.assetId;
-    const fileType = 2;
+    const fileType = MetadataFileType.PDF;
     const url = `${EVIDENCE_EXPORT_META_DATA_URL}/${evidenceId}/${assetId}/${fileType}`;
     http.get(url, {
       headers: {
@@ -340,15 +336,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     );
   };
   const handleCloseRetention = () => {
-    debugger;
-    if (IsformUpdated) {
+    if (IsformUpdated)
       setIsModalOpen(true);
-    }
-    else{
+    else
       setOpenManageRetention(false);
-    }
-    
-  };
+  }
   return (
     <>
     <CRXConfirmDialog
@@ -406,7 +398,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         onClose={() => handleCloseRetention()}
         defaultButton={false}
         indicatesText={true}
-
       >
         <ManageRetention
           items={selectedItems}
@@ -510,17 +501,17 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {IsOpen ? (
           <MenuItem>
-            {/* <Restricted moduleId={30}> 
-             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+            <Restricted moduleId={30}> 
+             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
             <div className="crx-meu-content" onClick={handlePrimaryAsset}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">{t("Set_as_primary")}</div>
             </div>
-            {/* </SecurityDescriptor> 
-           </Restricted>  */}
+            </SecurityDescriptor> 
+           </Restricted> 
           </MenuItem>
-        ) : null
-        }
+         ) : null
+        } 
 
         <MenuItem>
           {/* <Restricted moduleId={21}>
@@ -583,7 +574,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">UnLock Access</div>
+                  <div className="crx-menu-list">{t('Unlock_Access')}</div>
                 </div>
               </SecurityDescriptor>
             </Restricted>

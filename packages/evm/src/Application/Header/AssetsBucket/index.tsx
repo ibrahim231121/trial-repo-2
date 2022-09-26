@@ -638,6 +638,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     var eCount = 0;
     if (totalFilePer === 100 && files.length == 0) {
       setUploadInfo([])
+      setTotalFilePer(0)
     }
 
     uploadInfo.forEach((x) => {

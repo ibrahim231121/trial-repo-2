@@ -1,37 +1,13 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
-import { CRXButton } from '@cb/shared';
+import { CRXButton, CRXAlert } from '@cb/shared';
 import { useSelector } from 'react-redux';
-import { CRXAlert } from '@cb/shared';
-import moment from 'moment';
-import http from '../../../../../http-common';
 import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
-
-type SaveConfirmFormProps = {
-  removedOption: any;
-  setremoveClassName: any;
-  // rowData: any;
-  evidenceResponse : any;
-  differenceOfDays: number;
-  removalType: number;
-  removeMessage: string;
-  retentionId: number;
-  holdUntill: string;
-  setActiveForm: (param: any) => void;
-  setOpenForm: () => void;
-  setFilterValue: (param: any) => void;
-  closeModal: (param: boolean) => void;
-  setRemovedOption: (param: any) => void;
-  setModalTitle: (param: string) => void;
-  setIndicateTxt: (param: boolean) => void;
-};
-
-interface FormValues { }
+import { FormValues, SaveConfirmFormProps } from '../Model/SaveConfirmFormModel';
 
 const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
-
   const { t } = useTranslation<string>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
@@ -83,11 +59,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
 
   const deleteRequest = () => {
     const message = props.removeMessage;
-    // const evidenceId = props.rowData.id;
     const evidenceId = props.evidenceResponse?.id;
     const categoryId = props.removedOption.id;
-    const retentionId = props.retentionId !== 0 ? [props.retentionId] : null;
-    const holdUntill = props.holdUntill;
     const unAssignCategory : Category = {
       id: categoryId,
       formData: [],
@@ -98,23 +71,21 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const body : EvdenceCategoryAssignment = {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
-      updateCategories: [],
-      retentionId: retentionId,
-      holdUntill: holdUntill
-    };
+      updateCategories: []
+    }
     const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
-    EvidenceAgent.changeCategories(url, body).then((response: any) => {
+    EvidenceAgent.changeCategories(url, body).then(() => {
       setSuccess(true);
       setTimeout(() => closeModal(), 3000);
     })
-    .catch((ex: any) => {
+    .catch(() => {
       setError(true);
-    })
-  };
+    });
+  }
 
   return (
     <>
-      {success && <CRXAlert message={t("Success_You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
+      {success && <CRXAlert message={t("You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
       {error && (
         <CRXAlert
           message={t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")}
