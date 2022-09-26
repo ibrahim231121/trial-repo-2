@@ -2071,6 +2071,7 @@ const VideoPlayerBase = (props: any) => {
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
+                     onBlur={() => { setLayoutMenuEnabled(false) }}
                     >
 
                       <MaterialMenuItem className="layoutHeader">

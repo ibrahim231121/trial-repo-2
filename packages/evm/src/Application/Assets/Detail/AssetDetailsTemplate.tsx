@@ -227,6 +227,7 @@ const AssetDetailsTemplate = (props: any) => {
   const AssetTrail: any = useSelector(
     (state: RootState) => state.assetDetailReducer.assetTrailInfo
   );
+
   useEffect(() => {
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
@@ -234,8 +235,7 @@ const AssetDetailsTemplate = (props: any) => {
     });
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
-
-    dispatch(enterPathActionCreator({ val: t("Asset_Detail:_") + assetName }));
+    dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
