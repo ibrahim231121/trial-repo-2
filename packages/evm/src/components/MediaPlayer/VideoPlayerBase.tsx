@@ -1732,6 +1732,7 @@ const VideoPlayerBase = (props: any) => {
     <>
       <div onKeyDown={keydownListener}>
       <VideoPlayerViewRequirement
+        
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
         setReasonForViewing={setReasonForViewing}
