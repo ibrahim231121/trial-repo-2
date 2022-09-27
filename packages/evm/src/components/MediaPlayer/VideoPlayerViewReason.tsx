@@ -22,7 +22,8 @@ type VideoPlayerViewReasonProps = {
     EvidenceId: any;
     setOpenViewReason: any;
     AssetData: any;
-    setViewReasonControlsDisabled: any
+    setViewReasonControlsDisabled: any;
+    setReasonForViewing: any
 };
 
 type ViewReason = {
@@ -31,7 +32,7 @@ type ViewReason = {
 }
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled } = props;
+    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled, setReasonForViewing } = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -88,6 +89,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         const AssetViewReasonURL = "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
         EvidenceAgent.addAssetViewReason(AssetViewReasonURL, body).then(()=>{
             setViewReasonControlsDisabled(false);
+            setReasonForViewing(false);
         })
         .catch((e:any) => {
             console.log(e);

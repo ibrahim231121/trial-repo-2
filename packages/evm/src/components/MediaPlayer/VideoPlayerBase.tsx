@@ -1742,6 +1742,7 @@ const VideoPlayerBase = (props: any) => {
         EvidenceId={EvidenceId}
         AssetData={data[0]}
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
+        setReasonForViewing={setReasonForViewing}
       />}
 
       <div className="searchComponents">
