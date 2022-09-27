@@ -118,7 +118,7 @@ useEffect(() => {
   
   }, []);
   useEffect(() => {
-    debugger;
+ 
     if(videoPlayerData != null){
      videoPlayerData.forEach((el) => {
       var temp: string = el.files[0].fileurl;
@@ -129,11 +129,11 @@ useEffect(() => {
   },[videoPlayerData])
 
   useEffect(() => {
-debugger;
+
     if (fileData.length == getAssetData?.assets.master.files.length) { // temp condition
-      debugger;
+  
       if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
-        debugger;
+   
         
         var categories: string[] = [];
         getAssetData.categories.forEach((x: any) =>
@@ -188,7 +188,7 @@ debugger;
         });
         const data = extract(getAssetData);
 
-        debugger;
+       
         setVideoPlayerData(data);
       }
     }
@@ -199,11 +199,11 @@ debugger;
   }, [getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
-    debugger;
+   
     dt?.map((template: any, i: number) => {
-      debugger;
+     
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-        debugger;
+      
         setFileData([...fileData, {
           filename: template.name,
           fileurl: template.url,
@@ -214,22 +214,24 @@ debugger;
     })
   }
   function getChildAssetFile(dt: any) {
-    debugger;
+    let fileDownloadUrls : any = [];  
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          setChildFileData([...childFileData, {
+          fileDownloadUrls.push({
             filename: template.name,
             fileurl: template.url,
             fileduration: template.duration,
             downloadUri: response
-          }])
-        });
-
+          })
+          setChildFileData([...fileDownloadUrls])
+        })
       })
-
     })
+
   }
+
+
  
  
   function extract(row: any) {
@@ -269,10 +271,10 @@ debugger;
 
 
   const GetAsset = (response : any) => {
-    debugger;
+   
     var asd = response;
     EvidenceAgent.getEvidence(response.evidenceId).then((response: Evidence) => {
-      debugger;
+     
       setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
       setEvidenceId(response.id);
@@ -286,12 +288,12 @@ debugger;
      setGpsJson(tempgpsjson);
   }
   const GetdownloadUrl = async (fileurl : string) => {
-    debugger;
+  
     const endpointurl =
     "/Files/download/" +
     `${fileurl}`;
     FileAgent.getDownloadUrl(endpointurl).then((response: string) =>  {
-      debugger;
+     
       setDownloadLink(response);
     });
   }

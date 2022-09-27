@@ -32,26 +32,20 @@ export const logOutUser = (next:()=>void) =>{
 
 
 
-export const logOutUserSessionExpired = () =>{
+export const logOutUserSessionExpired = (next:()=>void) =>{
 
     logoutChannel.postMessage({logoutMessage:"im logout"})
-     sessionStorage.removeItem('code_challenge_string');
-     var opt;
-     const options = { path:'/' };
-     opt = cookies.remove('access_token',options)
-     opt = localStorage.removeItem('username')
-     opt = localStorage.removeItem('remember me')
-     localStorage.removeItem('User Id')
-  
-} 
-
-
-export const logoutAlltabs = ()=>{
-    logoutChannel.onmessage = event=>{
-        logOutUserSessionExpired();
-        logoutChannel.close();
-       
-    }
+    sessionStorage.removeItem('code_challenge_string');
+    var opt;
+    const options = { path:'/' };
+    opt = cookies.remove('access_token',options)
+    opt = localStorage.removeItem('username')
+    opt = localStorage.removeItem('remember me')
+    opt = localStorage.removeItem('refreshToken')
+    opt = localStorage.removeItem('User Id')
+    opt = localStorage.removeItem('expirytime_token')
+    opt = localStorage.removeItem('expiryDate')
+    next()
 }
 
 export const SessionRouteT = ()=>{

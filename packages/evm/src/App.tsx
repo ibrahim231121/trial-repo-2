@@ -30,6 +30,10 @@ import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
 import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
 import { setgroups } from "process";
 import { getLoaderValue } from "./Redux/loaderSlice";
+import { getAccessAndRefreshTokenAsync } from "./Redux/AccessAndRefreshTokenReducer";
+import { useInterval } from "usehooks-ts";
+import { logOutUser } from "./Logout/API/auth";
+import { useHistory } from "react-router-dom";
 
 interface CounterState {
   path: string,
@@ -42,8 +46,6 @@ interface IDecoded{
 
 let decoded:IDecoded;
 
-var currentData:any=new Date();
-currentData = Math.floor(currentData.getTime()/1000)
 
 const refreshToken = localStorage.getItem('refreshToken')
 const cookies = new Cookies();
@@ -75,64 +77,33 @@ function App() {
   const [moduleIds, setModuleIds] = React.useState<number[]>([]);
   const [groupIds, setGroupIds] = React.useState<number[]>([]);
   const [open, setOpen] = useState(true);
-  const [tokenexpiry , setExpiry] = useState<number>(0)
+  const isRefreshTokeSuccess: boolean = useSelector((state: RootState) => state.accessAndRefreshTokenSlice.success);
+  const history = useHistory();
+
  
   const classes = CRXPanelStyle();
 
+  useInterval(
+    async () => {
+      let accessToken = cookies.get('access_token');
+      if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        let UserIdExist = decodedAccessToken.UserId ? true : false;
+        if(UserIdExist){
+          await dispatch(getAccessAndRefreshTokenAsync());
+        }
+      }
+    },
+    // Speed in milliseconds or null to stop it
+    true ? 60000 : null,
+  );
 
-
-  useEffect(()=>{
-    if(tokenexpiry == 0)
-    {
-      var tokenexpirydatetime:any = localStorage.getItem('expirytime_token')
-      tokenexpirydatetime= tokenexpirydatetime - 600
-      setExpiry(tokenexpirydatetime)
-    }
-    if ( tokenexpiry < currentData && tokenexpiry > 0)
-    {
-    
-      fetch(AUTHENTICATION_NewAccessToken_URL+`?refreshToken=${refreshToken}`)
-      
-             .then(response  => response.json())
-              .then(response => updatetokens(response.refreshToken, response.accessToken) );
-    }
-  },[tokenexpiry])
-
-
- 
-
-
-  const updatetokens = (refreshToken : string, accessToken: string)=>
-{
-
-  decoded = jwt_decode(accessToken)
-  localStorage.setItem("expirytime_token",decoded.exp)
-  var newexpireTime = parseInt(decoded.exp) - 600;
-  setExpiry(newexpireTime)
-  localStorage.setItem("refreshToken", refreshToken)      
-  const condition = localStorage.getItem('remember me')   
-  if (condition == "True")
-  {
-  const date:any = localStorage.getItem('expiryDate')
-  const dateToTimeStamp = new Date(date).getTime()
-  const currentDate = new Date().getTime()
-  const difference = dateToTimeStamp - currentDate
-  var newdateInTimeStamp = difference + currentDate
-  var newdateReadable = new Date(newdateInTimeStamp)
-  const options:CounterState = { path:'/',expires:newdateReadable };
-  cookies.set('access_token', accessToken, options)
-  setAPIAgentConfig();
-}
-  else
-  {
-    const options = {path:'/'}
-    cookies.set('access_token',accessToken,options);
-    setAPIAgentConfig();
+  if(!isRefreshTokeSuccess){
+    logOutUser(()=>{
+      history.push('/logout')
+    })
   }
-}
-
-
-
+  
   const handleDrawerToggle = () => {
     setOpen(!open);
   };

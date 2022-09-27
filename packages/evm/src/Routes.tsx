@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import clsx from 'clsx';
 import { CRXAppBar, CRXContainer, CRXPanelStyle, } from "@cb/shared";
 import AppHeader from './Application/Header/index'
@@ -45,6 +45,7 @@ const Routes = () => {
 
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
+  const history = useHistory();
 
 
 
@@ -56,8 +57,9 @@ const Routes = () => {
  //session expiration method
  const handleOnIdle = () => {
   localStorage.setItem("sessionRoute","sessionRoute")
-  logOutUserSessionExpired();
-  window.location.replace("/sessionExpiration");
+  logOutUserSessionExpired(()=>{
+    history.push('/sessionExpiration')
+  })
 }
 
   return (

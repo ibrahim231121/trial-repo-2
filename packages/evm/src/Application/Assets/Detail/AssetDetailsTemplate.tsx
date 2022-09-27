@@ -369,20 +369,21 @@ const AssetDetailsTemplate = (props: any) => {
     })
   }
   function getChildAssetFile(dt: any) {
+    let fileDownloadUrls : any = [];  
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          setChildFileData([...childFileData, {
+          fileDownloadUrls.push({
             filename: template.name,
             fileurl: template.url,
             fileduration: template.duration,
             downloadUri: response
-          }])
-        });
-
+          })
+          setChildFileData([...fileDownloadUrls])
+        })
       })
-
     })
+
   }
 
   const searchText = (
@@ -532,7 +533,7 @@ const AssetDetailsTemplate = (props: any) => {
         unitId: template.unitId,
         typeOfAsset: template.typeOfAsset,
         notes: template.notes ?? [],
-        camera: camera
+        camera: template.camera
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {

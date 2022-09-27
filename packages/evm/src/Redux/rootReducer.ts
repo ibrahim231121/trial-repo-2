@@ -19,6 +19,7 @@ import auditLogSlice from './AuditLogReducer';
 import timelineDetailSlice from './VideoPlayerTimelineDetailReducer';
 import assetDetailSlice from './AssetDetailsReducer';
 import loaderSlice from './loaderSlice';
+import accessAndRefreshTokenSlice from './AccessAndRefreshTokenReducer';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -33,6 +34,7 @@ export const reducer = combineReducers({
   loaderSlice: loaderSlice.reducer,
   templateSlice: templateSlice.reducer,
   unitTemplateSlice: unitTemplateSlice.reducer,
+  accessAndRefreshTokenSlice: accessAndRefreshTokenSlice.reducer,
   templateSlice1: templateSlice1.reducer,
   cultureReducer: cultureSlice.reducer,
   timelineDetailReducer: timelineDetailSlice.reducer,

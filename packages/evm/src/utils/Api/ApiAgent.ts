@@ -34,7 +34,8 @@ import {
     FILE_SERVICE_URL,
     AUDITLOG_SERVICE_URL,
     CountryStateApiUrl,
-    EVIDENCE_GET_URL
+    EVIDENCE_GET_URL,
+    BASE_URL_AUTHENTICATION_SERVICE
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -168,7 +169,8 @@ export const EvidenceAgent = {
 }
 
 export const AuthenticationAgent = {
-    getAccessToken: (url: string) => requests.get<Token>(getVerificationURL(url), '', config)
+    getAccessToken: (url: string) => requests.get<Token>(getVerificationURL(url), '', config),
+    getAccessAndRefreshToken: (url: string) => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, url, config)
 }
 
 export const AuditLogAgent = {
