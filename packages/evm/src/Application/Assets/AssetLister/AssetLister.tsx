@@ -32,7 +32,7 @@ const SearchComponent = (props: any) => {
   let decoded: IDecoded = jwt_decode(cookies.get("access_token"));
   const [username, SetUsername] = React.useState("");
   const [showAdvance, setShowAdvance] = React.useState(false);
-  const [showAdvanceSearch, setAdvanceSearch] = React.useState(true); //showShortCutSearch
+  const [showAdvanceSearch, setAdvanceSearch] = React.useState(true);
   const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState('');
@@ -62,6 +62,13 @@ const SearchComponent = (props: any) => {
     (state: RootState) => state.assetSearchReducer.assetSearchInfo
   );
   const [isSearchBtnDisable, setIsSearchBtnDisable] = React.useState<boolean>(true);
+
+  const searchType ={
+    SimpleSearch: "SimpleSearch",
+    AdvanceSearch: "AdvanceSearch",
+    ShortcutSearch:"ShortcutSearch",
+    ViewOwnAssets: "ViewOwnAssets"
+  }
   const QUERRY: any = {
     bool: {
       must: [
@@ -94,7 +101,7 @@ const SearchComponent = (props: any) => {
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
       renderData: function () {
         setPredictiveText(t("Not_Categorized"));
-        fetchData(this.query(), t("ShortcutSearch"));
+        fetchData(this.query(), searchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
@@ -105,7 +112,7 @@ const SearchComponent = (props: any) => {
       query: () => queries.GetAssetsByState(t("Trash")),
       renderData: function () {
         setPredictiveText(t("Trash"));
-        fetchData(this.query(), t("ShortcutSearch"));
+        fetchData(this.query(), searchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
@@ -122,7 +129,7 @@ const SearchComponent = (props: any) => {
         if (!dateTimeObject) {
           let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === approachingDateDefaultValue);
           if (approachingdateValue != null) {
-            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate()), t("ShortcutSearch"))
+            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate()), searchType.ShortcutSearch)
             let defaultDateValue = dateOptions.basicoptions.find(x => x.value === basicDateDefaultValue);
             if (defaultDateValue !== undefined) {
               let approachingDefaultDateValue: DateTimeObject = {
@@ -143,7 +150,7 @@ const SearchComponent = (props: any) => {
           }
         }
         else {
-          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate), t("ShortcutSearch"))
+          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate), searchType.ShortcutSearch)
         }
 
         let approachingMaxDateValue = dateOptions.approachingDeletion.find(x => x.value === t("next_30_days"));
@@ -162,7 +169,7 @@ const SearchComponent = (props: any) => {
       text: 'View Own Assets',
       query: () => queries.GetAssetsByUserName(decoded.UserName),
       renderData: function () {
-        fetchData(this.query(), 'ViewOwnAssets');
+        fetchData(this.query(), searchType.ViewOwnAssets);
       },
     },
   ];
@@ -229,7 +236,7 @@ const SearchComponent = (props: any) => {
         });
       }
 
-      fetchData(AdvancedSearchQuerry, t("AdvanceSearch"));
+      fetchData(AdvancedSearchQuerry, searchType.AdvanceSearch);
     }
   }, [addvancedOptions]);
 
@@ -298,23 +305,23 @@ const SearchComponent = (props: any) => {
       }
     }
     if (predictiveText === t("Approaching_Deletion")) {
-      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate), t("ShortcutSearch"));
+      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate), searchType.ShortcutSearch);
     }
     else {
       if (querryString.length === 0) {
         const modifiedQuery = removeQueryStringObjectFromQuery(QUERRY);
-        fetchData(modifiedQuery, "SimpleSearch");
+        fetchData(modifiedQuery, searchType.SimpleSearch);
       } else {
-        fetchData(QUERRY, "SimpleSearch");
+        fetchData(QUERRY, searchType.SimpleSearch);
       }
     }
     setAdvanceSearch(false);
     setShowAssetDateCompact(true);
   }
 
-  const fetchData = (querry: any, searchType: any) => {
-    dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchType }));
-    if (searchType === "SimpleSearch" || searchType === "ShortcutSearch") {
+  const fetchData = (querry: any, searchValue: any) => {
+    dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchValue }));
+    if (searchValue === searchType.SimpleSearch || searchValue === searchType.ShortcutSearch) {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);
     }
