@@ -108,17 +108,6 @@ const SearchComponent = (props: any) => {
       },
     },
     {
-      text: t("Trash"),
-      query: () => queries.GetAssetsByState(t("Trash")),
-      renderData: function () {
-        setPredictiveText(t("Trash"));
-        fetchData(this.query(), searchType.ShortcutSearch);
-        setDateTimeAsset(dateTimeDropDown);
-        setShowAssetDateCompact(true);
-        setIsSearchBtnDisable(false);
-      },
-    },
-    {
       text: t("Approaching_Deletion"),
       query: () =>
         queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
@@ -411,6 +400,7 @@ const SearchComponent = (props: any) => {
             </div>
           </>
         )}
+        
         {showAdvanceSearch && (
           <>
             <div className='advanceSearchContet'>
