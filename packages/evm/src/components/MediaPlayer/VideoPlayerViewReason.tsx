@@ -8,7 +8,7 @@ import "./VideoPlayer.scss";
 import { CRXCheckBox } from '@cb/shared';
 import moment from 'moment';
 import { CRXConfirmDialog } from '@cb/shared';
-import { CRXDropDown } from '@cb/shared';
+import { CRXSelectBox } from '@cb/shared';
 import CRXAppDropdown from '../../Application/Header/AppBarMenu/AppBarLinks';
 import axios from 'axios';
 
@@ -22,16 +22,16 @@ type VideoPlayerViewReasonProps = {
     EvidenceId: any;
     setOpenViewReason: any;
     AssetData: any;
-    setViewReasonControlsDisabled: any
+    setViewReasonControlsDisabled: any;
+    setReasonForViewing: any
 };
 
 type ViewReason = {
     displayText: string;
     value: string;
 }
-
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled } = props;
+    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled, setReasonForViewing } = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -41,8 +41,9 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     const alertRef = useRef(null);
     const [onSave, setOnSave] = useState(true);
     const [descriptionErr, setdescriptionErr] = React.useState("");
-    const [reason, setReason] = React.useState<string>("Reason 1");
+    const [reason, setReason] = React.useState<string>("");
     const [description, setdescription] = React.useState("");
+    const [abc, setAbc] = React.useState<boolean>(true);
     const [otherReason, setOtherReason] = React.useState(false);
     const [ip, setIP] = useState('');
     const [isSuccess, setIsSuccess] = React.useState({
@@ -88,6 +89,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         const AssetViewReasonURL = "/Evidences/" + EvidenceId + "/Assets/" + AssetId + "/AssetViewReasons";
         EvidenceAgent.addAssetViewReason(AssetViewReasonURL, body).then(()=>{
             setViewReasonControlsDisabled(false);
+            setReasonForViewing(false);
         })
         .catch((e:any) => {
             console.log(e);
@@ -130,7 +132,6 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         // await onDelete();
     };
     const CheckOtherReason = () => {
-
         if (description.length == 0) {
             setdescriptionErr('Description is required');
             return;
@@ -151,18 +152,18 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         setOtherReason(false)
     }
 
-    const errorsReason = alert ? "__CRX__ErrorReason__" : "";
-
+const errorsReason = reason == "Other" && descriptionErr.length > 0  ? "__CRX__ErrorReason__" : "";
+console.log(descriptionErr, "check")
     return (
         <div className='videoPlayerNote'>
             <CRXModalDialog
                 maxWidth="gl"
                 title="Asset view reason"
-                className={'CRXModal __CRX__Reason__Modal_ Asset_View_Reason_Modal_'}
+                className={'CRXModal CRXAssetReason'}
                 modelOpen={openModal}
                 onClose={handleClose}
                 defaultButton={false}
-                showSticky={false}
+                showSticky={true}
             >
                 <div className={errorsReason}>
                 {alert &&   <CRXAlert
@@ -177,21 +178,29 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                 }
                     <div className='modalEditCrx'>
                         <div className='CrxEditForm'>
-
-                            <p>Please select a reason for viewing this asset. Reason for viewing asset * </p>
-                            <CRXDropDown
+                        <div className="CrxCreateUser">
+                            <div className="CrxIndicates">
+                                <sup>*</sup> Indicates required field
+                            </div>
+                            </div>
+                            <p>Please select a reason for viewing this asset.</p>
+                            <label>Reason for viewing asset <sup>*</sup></label>
+                            <CRXSelectBox
+                                className="CRXViewReasonDropdown"
                                 options={Reasons}
                                 disabled={false}
+                                defaultOption={false}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { ReasonChange(e) }}
                             >
 
-                            </CRXDropDown>
+                            </CRXSelectBox>
                             {otherReason && <TextField
                                 error={descriptionErr.length > 0 ? true : false}
                                 errorMsg={descriptionErr}
                                 value={description}
+                                multiline
                                 label='Other Description'
-                                className='description-input'
+                                className='description-input crx-category-scroll'
                                 required={true}
                                 onChange={(e: any) => setdescription(e.target.value)}
                                 onBlur={CheckOtherReason}
@@ -202,8 +211,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
                             <CRXButton
                                 className='primary'
                                 onClick={handleSave}
-                                disabled={reason == "Other" && descriptionErr.length > 0 ? true : false}>
-                                Save
+                                disabled={reason.length == 0 || (reason == "Other" && descriptionErr.length > 0 ? true : false)}>
+                                Submit asset view reason
                             </CRXButton>
                             </div>
                             <div className="cancelBtn">

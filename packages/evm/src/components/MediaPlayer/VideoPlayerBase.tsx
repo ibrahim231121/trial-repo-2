@@ -1732,6 +1732,7 @@ const VideoPlayerBase = (props: any) => {
     <>
       <div onKeyDown={keydownListener}>
       <VideoPlayerViewRequirement
+        
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
         setReasonForViewing={setReasonForViewing}
@@ -1742,6 +1743,7 @@ const VideoPlayerBase = (props: any) => {
         EvidenceId={EvidenceId}
         AssetData={data[0]}
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
+        setReasonForViewing={setReasonForViewing}
       />}
 
       <div className="searchComponents">
@@ -2071,6 +2073,7 @@ const VideoPlayerBase = (props: any) => {
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
+                     onBlur={() => { setLayoutMenuEnabled(false) }}
                     >
 
                       <MaterialMenuItem className="layoutHeader">

@@ -70,7 +70,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
 
   React.useEffect(() => {
-    if (assetSharing != null && emailError == "") {
+    if (assetSharing != null && emailError == "W") {
       sendData();
     }
   }, [assetSharing]);
@@ -399,8 +399,8 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                   <div className="nextBtn">
                     <CRXButton
                       type="submit"
-                      className={"nextButton " + buttonState && "primeryBtn"}
-                      disabled={buttonState}
+                      className={"primeryBtn"}
+                     
                     >
                       {t("Share asset")}
                     </CRXButton>

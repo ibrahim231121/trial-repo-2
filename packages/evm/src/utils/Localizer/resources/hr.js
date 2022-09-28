@@ -169,7 +169,7 @@ export const resources = {
         "Search_Bookmark":"hr-Search Bookmark",
         "Search_by_Name_keyword_etc.":"hr-Search by Name, keyword, etc.",
         "Search_Notes":"hr-Search Notes",
-        "Asset_Detail:_":"hr-Asset Detail: ",
+        "Asset_Detail":"hr-Asset Detail",
         "Information":"hr-Information",
         "GROUPED_AND_RELATED_ASSETS":"hr-GROUPED AND RELATED ASSETS",
         "Captured_Date":"hr-Captured Date",

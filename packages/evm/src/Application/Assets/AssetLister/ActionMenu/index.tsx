@@ -94,7 +94,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      * ! Comment For 'Category'.
      */
     if (row?.evidence?.securityDescriptors?.length > 0)
+    {
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
+    }
+    else{
+      setMaximumDescriptor(0);
+    }
     if (row?.securityDescriptors?.length > 0)
       setMaximumDescriptor(findMaximumDescriptorId(row?.securityDescriptors));
     if (row?.categories?.length == 0)
@@ -461,7 +466,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         />
       )}
 
-      <Menu
+      {< Menu
         key="right"
         align="center"
         viewScroll="auto"
@@ -479,7 +484,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       >
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
               <div
                 className="crx-meu-content groupingMenu crx-spac"
                 onClick={addToAssetBucket}
@@ -502,33 +507,33 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {IsOpen ? (
           <MenuItem>
             <Restricted moduleId={30}> 
-             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
             <div className="crx-meu-content" onClick={handlePrimaryAsset}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">{t("Set_as_primary")}</div>
             </div>
-            </SecurityDescriptor> 
-           </Restricted> 
+             </SecurityDescriptor> 
+          </Restricted> 
           </MenuItem>
          ) : null
         } 
 
         <MenuItem>
           <Restricted moduleId={21}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
           <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
             <div className="crx-menu-icon">
               <i className="far fa-user-tag fa-md"></i>
             </div>
             <div className="crx-menu-list">{t("Assign_User")}</div>
           </div>
-          </SecurityDescriptor>
+           </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
         <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
               <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Modify_Retention")}</div>
@@ -540,7 +545,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {isCategoryEmpty ? (
           <MenuItem>
             <Restricted moduleId={2}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
@@ -553,7 +558,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         ) : (
           <MenuItem>
             <Restricted moduleId={3}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
@@ -568,7 +573,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {isLockedAccess ?
           <MenuItem>
             <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
                 {/* descriptorId={4} */}
                 <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
                   <div className="crx-menu-icon">
@@ -582,7 +587,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           :
           <MenuItem>
             <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
                 {/* descriptorId={4} */}
                 <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
                   <div className="crx-menu-icon">
@@ -599,7 +604,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {/* Remove this menu against this ticket GEP-2612 */}
         {/* <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-envelope fa-md"></i>
@@ -612,7 +617,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {/* <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-link fa-md"></i>
@@ -627,7 +632,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         <MenuItem>
           <Restricted moduleId={0}>
             {/* descriptorId={4} */}
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
@@ -649,7 +654,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {/* Remove this menu against this ticket GEP-2612 */}
         {/* <MenuItem disabled>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
@@ -663,7 +668,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {/* <MenuItem>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
               <div className="crx-meu-content">
                 <div className="crx-menu-icon">
                   <i className="far fa-external-link-square fa-md"></i>
@@ -676,7 +681,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {/* <MenuItem disabled>
           <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor}>
+            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list disabledItem">
@@ -691,16 +696,16 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            {/* <Restricted moduleId={0}> */}
-            {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+            <Restricted moduleId={0}>
+            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
             <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
               <div className="crx-menu-icon">
                 <i className="far fa-user-lock fa-md"></i>
               </div>
               <div className="crx-menu-list">{t("Share_Asset")}</div>
             </div>
-            {/* </SecurityDescriptor> */}
-            {/* </Restricted> */}
+            </SecurityDescriptor> 
+            </Restricted>
           </MenuItem>
         ) : null
         }
@@ -708,19 +713,19 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-              {/* <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor}> */}
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}> 
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
               </div>
-              {/* </SecurityDescriptor> */}
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : null
         }
-      </Menu>
+      </Menu>}
 
       <RestrictAccessDialogue
         openOrCloseModal={openRestrictAccessDialogue}

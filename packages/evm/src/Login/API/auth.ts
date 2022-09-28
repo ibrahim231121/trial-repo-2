@@ -3,7 +3,7 @@ import jwt_decode from "jwt-decode";
 import { codeChallengeRemove } from '../../utils/settings';
 import { setAPIAgentConfig } from '../../utils/Api/ApiAgent';
 
-interface IDecoded{
+export interface IDecoded{
     RememberMe:string;
     UserName:string;
     UserId: string;

@@ -227,6 +227,7 @@ const AssetDetailsTemplate = (props: any) => {
   const AssetTrail: any = useSelector(
     (state: RootState) => state.assetDetailReducer.assetTrailInfo
   );
+
   useEffect(() => {
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
@@ -234,8 +235,7 @@ const AssetDetailsTemplate = (props: any) => {
     });
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
-
-    dispatch(enterPathActionCreator({ val: t("Asset_Detail:_") + assetName }));
+    dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
@@ -288,6 +288,13 @@ const AssetDetailsTemplate = (props: any) => {
 
     }
   }, [evidenceCategoriesResponse]);
+
+  useEffect(() => {
+    if(getAssetData){
+      getMasterAssetFile(getAssetData?.assets.master.files)
+      getChildAssetFile(getAssetData?.assets.children)
+    }
+  }, [getAssetData]);
 
   useEffect(() => {
  
@@ -349,11 +356,6 @@ const AssetDetailsTemplate = (props: any) => {
         setVideoPlayerData(data);
       }
     }
-    else {
-      debugger;
-      getMasterAssetFile(getAssetData?.assets.master.files)
-      getChildAssetFile(getAssetData?.assets.children)
-    }
   },[getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
@@ -369,20 +371,21 @@ const AssetDetailsTemplate = (props: any) => {
     })
   }
   function getChildAssetFile(dt: any) {
+    let fileDownloadUrls : any = [];  
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          setChildFileData([...childFileData, {
+          fileDownloadUrls.push({
             filename: template.name,
             fileurl: template.url,
             fileduration: template.duration,
             downloadUri: response
-          }])
-        });
-
+          })
+          setChildFileData([...fileDownloadUrls])
+        })
       })
-
     })
+
   }
 
   const searchText = (
@@ -532,7 +535,7 @@ const AssetDetailsTemplate = (props: any) => {
         unitId: template.unitId,
         typeOfAsset: template.typeOfAsset,
         notes: template.notes ?? [],
-        camera: camera
+        camera: template.camera
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {

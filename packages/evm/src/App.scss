@@ -29,9 +29,12 @@
             font-family:var(--base-font-family);
         }
         .MuiSelect-icon {
-            color: var(--color-White);
+  
             right: 23px;
             top: 2px;
+            &::before {
+                color: var(--color-White);
+            }
         }
         .MuiPopover-paper  {
             top: 33px !important;

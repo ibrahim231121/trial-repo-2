@@ -213,7 +213,6 @@ const StationDetail: React.FC = () => {
 
   const errorHandler = (param: any) => {
     if (param !== undefined) {
-      debugger
       let error = param;
       console.error("Error ", error)
       if (error.errors !== undefined) {
