@@ -93,7 +93,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      * ! So we need to reset the form index, so that it starts from start. 
      * ! Comment For 'Category'.
      */
-    debugger;
     if (row?.evidence?.securityDescriptors?.length > 0)
     {
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));

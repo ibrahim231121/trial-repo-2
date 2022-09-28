@@ -290,6 +290,13 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
+    if(getAssetData){
+      getMasterAssetFile(getAssetData?.assets.master.files)
+      getChildAssetFile(getAssetData?.assets.children)
+    }
+  }, [getAssetData]);
+
+  useEffect(() => {
  
   if(fileData.length == getAssetData?.assets.master.files.length)
   { // temp condition
@@ -348,11 +355,6 @@ const AssetDetailsTemplate = (props: any) => {
         const data = extract(getAssetData);
         setVideoPlayerData(data);
       }
-    }
-    else {
-      debugger;
-      getMasterAssetFile(getAssetData?.assets.master.files)
-      getChildAssetFile(getAssetData?.assets.children)
     }
   },[getAssetData, fileData, childFileData]);
 
