@@ -4,10 +4,6 @@ import { useTranslation } from "react-i18next";
 import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getGroupAsync,
-  getGroupUserCountAsync,
-} from "../../../../Redux/GroupReducer";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import anchorDisplay from "../../../../GlobalComponents/Display//AnchorDisplay";
 import { RootState } from "../../../../Redux/rootReducer";
@@ -35,6 +31,7 @@ import {
   onClearAll,
   onSetHeadCellVisibility,
   onSaveHeadCellData,
+  GridFilter,
   PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { CRXGlobalSelectFilter } from "@cb/shared";
@@ -115,9 +112,9 @@ const ConfigurationTemplates: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
-  
+
   React.useEffect(() => {
-    dispatch(getConfigurationInfoAsync(pageiGrid));
+    //dispatch(getConfigurationInfoAsync(pageiGrid));
     dispatch(getDeviceTypeInfoAsync());
     // setCreateTemplateDropdown([
     //   {
@@ -185,17 +182,17 @@ const ConfigurationTemplates: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false);
-  
+
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
-    if (UnitConfigurationTemplates && UnitConfigurationTemplates.length > 0) {
-      configTemplateRows = UnitConfigurationTemplates.map(
+    if (UnitConfigurationTemplates.data && UnitConfigurationTemplates.data.length > 0) {
+      configTemplateRows = UnitConfigurationTemplates.data.map(
         (template: any, i: number) => {
           return {
             id: template.recId,
             name: template.name,
             deviceType: template.deviceType,
-            stationName: template.stationName,
+            station: template.stationName,
             defaultTemplate: template.isDefaultTemplate ? "Default" : "",
             device: template,
           };
@@ -208,7 +205,7 @@ const ConfigurationTemplates: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [UnitConfigurationTemplates]);
+  }, [UnitConfigurationTemplates.data]);
 
   useEffect(() => {
     if(paging)
@@ -530,7 +527,6 @@ const ConfigurationTemplates: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      
       maxWidth: "100",
     },
     {
@@ -545,12 +541,14 @@ const ConfigurationTemplates: React.FC = () => {
       minWidth: "300",
       maxWidth: "350",
       detailedDataComponentId: "device",
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: t("Station"),
-      id: "stationName",
+      id: "station",
       align: "left",
-      
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
@@ -563,6 +561,9 @@ const ConfigurationTemplates: React.FC = () => {
       minWidth: "100",
       maxWidth: "500",
       detailedDataComponentId: "id",
+      attributeName: "StationName",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: t("Type"),
@@ -579,6 +580,9 @@ const ConfigurationTemplates: React.FC = () => {
       ) => multiSelectTypeCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "300",
       maxWidth: "500",
+      attributeName: "DeviceType",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
     {
       label: t("Indicator"),
@@ -596,22 +600,21 @@ const ConfigurationTemplates: React.FC = () => {
       ) => multiSelectIndicatorCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "250",
       maxWidth: "400",
+      attributeName: "IsDefaultTemplate",
+      attributeType: "List",
+      attributeOperator: "contains"
     },
   ]);
 
   useEffect(() => {
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
 
   const dataArrayBuilder = () => {
     if (reformattedRows !== undefined) {
       let dataRows: ConfigTemplate[] = reformattedRows;
       searchData.forEach((el: SearchObject) => {
-        if (
-          el.columnName === "name" ||
-          el.columnName === "type" ||
-          el.columnName === "indicator"
-        )
+        if(el.columnName === "name")
           dataRows = onTextCompare(dataRows, headCells, el);
       });
       setRows(dataRows);
@@ -624,6 +627,8 @@ const ConfigurationTemplates: React.FC = () => {
   };
 
   const clearAll = () => {
+    pageiGrid.gridFilter.filters = []
+    dispatch(getConfigurationInfoAsync(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -640,15 +645,38 @@ const ConfigurationTemplates: React.FC = () => {
       ?.classList.add("MuiMenu_Modal_Ui");
   });
 
+  const getFilteredConfigurationTemplateData = () => {
+
+    pageiGrid.gridFilter.filters = []
+
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+    })
+
+    if(page !== 0)
+      setPage(0)
+    else{
+      dispatch(getConfigurationInfoAsync(pageiGrid));
+      //dispatch(getGroupUserCountAsync());
+    }
+  }
+
   useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage});
     setPaging(true)
-    
   },[page, rowsPerPage])
 
   return (
     <div className="CrxConfigTemplate switchLeftComponents">
-     
 
       {
         rows && (
@@ -659,8 +687,8 @@ const ConfigurationTemplates: React.FC = () => {
               selectedItems={selectedItems}
             />}
             toolBarButton={
-             
-          <div className="menu_List_Button">
+            <>
+              <div className="menu_List_Button">
                 <Menu
                   style={{ backgroundColor: '#FFFFFF' }}
                   align="start"
@@ -677,13 +705,13 @@ const ConfigurationTemplates: React.FC = () => {
                   {createTemplateDropdown.map((x, y) => {
                     return (
                       <MenuItem >
-                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, 
-                                    state: { id: y, 
-                                             isedit: false, 
-                                             type: x.name, 
-                                             deviceId: x.id, 
-                                             deviceType: x.deviceType 
-                                           } 
+                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url,
+                                    state: { id: y,
+                                             isedit: false,
+                                             type: x.name,
+                                             deviceId: x.id,
+                                             deviceType: x.deviceType
+                                           }
                                   }}>
                           <div style={{ backgroundColor: '#FFFFFF' }}>{t("Create")} {x.name}</div>
                         </Link>
@@ -692,7 +720,8 @@ const ConfigurationTemplates: React.FC = () => {
                   })}
                 </Menu >
               </div>
-         
+              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredConfigurationTemplateData()}> {t("Filter")} </CRXButton>
+            </>
           }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
@@ -723,7 +752,7 @@ const ConfigurationTemplates: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={500}
+            totalRecords={UnitConfigurationTemplates.totalCount}
           />
         )
       }

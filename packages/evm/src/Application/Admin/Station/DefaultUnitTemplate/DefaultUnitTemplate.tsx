@@ -12,6 +12,8 @@ import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { DeviceType } from '../../../../utils/Api/models/UnitModels';
 import { Station } from '../../../../utils/Api/models/StationModels';
 import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
+import { Paginated } from '../../../../utils/Api/models/CommonModels';
+
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -128,20 +130,20 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{ key: 'InquireDepth', value: 'narrow' }])
-            .then((response: Station[]) => {
-                setStationCollection(response);
-                let stationInfo = response.map((x: any) => {
-                    return {
-                        id: x.id,
-                        name: x.name
-                    } as StationInfo
-                }) as StationInfo[];
-                setStationDataTableRow(stationInfo);
-            })
-            .catch((error: any) => {
-                console.error(error.response.data);
-            });
+        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{key : 'InquireDepth', value : 'narrow'}])
+        .then((response:any) => {
+            setStationCollection(response.data);
+            let stationInfo = response.data.map((x: any) => {
+                return {
+                    id: x.id,
+                    name: x.name
+                } as StationInfo 
+            }) as StationInfo[];
+            setStationDataTableRow(stationInfo)
+        })
+        .catch((error: any) => {
+            console.error(error.response.data);
+        }); 
     }
 
     const manipulateSelectBoxValueResponse = (e: any, _stationId: number) => {

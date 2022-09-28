@@ -39,6 +39,7 @@ export interface HeadCellProps {
   isPopover?: boolean;
   attributeName? : string;
   attributeType? : string;
+  attributeOperator? : string;
 }
 
 export type GridFilter = {

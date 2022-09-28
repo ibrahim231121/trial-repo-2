@@ -59,7 +59,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       logic: "and",
       filters: []
     },
-    page: 1,
+    page: 0,
     size: 25
 })
 

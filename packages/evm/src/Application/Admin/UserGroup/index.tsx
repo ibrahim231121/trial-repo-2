@@ -23,6 +23,7 @@ import {
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
   onClearAll,
+  GridFilter,
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import UserGroupActionMenu from "./UserGroupActionMenu";
@@ -55,14 +56,14 @@ const UserGroup: React.FC = () => {
   })
 
   React.useEffect(() => {
-    dispatch(getGroupAsync(pageiGrid));
-    dispatch(getGroupUserCountAsync());
+    // dispatch(getGroupAsync(pageiGrid));
+    // dispatch(getGroupUserCountAsync());
   }, []);
 
 
 
   const groups: any = useSelector((state: RootState) => state.groupReducer.groups);
-  const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
+  //const groupUsersCount: any = useSelector((state: RootState) => state.groupReducer.groupUserCounts);
   const [rows, setRows] = React.useState<GroupUser[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
@@ -77,19 +78,24 @@ const UserGroup: React.FC = () => {
 
 
   const setData = () => {
-
     let groupRows: GroupUser[] = []
-    if (groups && groups.length > 0) {
-      groupRows = groups.map((group: any) => {
-        const index = groupUsersCount && groupUsersCount.findIndex((c: any) => group.id == c.group)
-        if (index !== -1) {
-          let count = groupUsersCount && groupUsersCount[index].userCount
-          count = count ? count : 0
-          return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: count }
+    if (groups.data && groups.data.length > 0) {
+      groupRows = groups.data.map((item: any) => {
+        return { 
+            id: item.id, 
+            name: item.name + "_" + item.id, 
+            description: item.description, 
+            userCount: item.userCount
         }
-        else {
-          return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: 0 }
-        }
+        // const index = groups.count && groups.count.findIndex((c: any) => group.id == c.group)
+        // if (index !== -1) {
+        //   let count = groups.count && groups.count[index].userCount
+        //   count = count ? count : 0
+        //   return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: count }
+        // }
+        // else {
+        //   return { id: group.id, name: group.name + "_" + group.id, description: group.description, userCount: 0 }
+        // }
       })
 
     }
@@ -100,12 +106,12 @@ const UserGroup: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [groups, groupUsersCount]);
+  }, [groups.data]);
 
   React.useEffect(() => {
     if(paging){
       dispatch(getGroupAsync(pageiGrid));
-      dispatch(getGroupUserCountAsync());
+      //dispatch(getGroupUserCountAsync());
     }
     setPaging(false)
   },[pageiGrid])
@@ -204,6 +210,9 @@ const UserGroup: React.FC = () => {
       searchComponent: searchText,
       minWidth: "250",
       maxWidth: "600",
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: t("Description"),
@@ -215,6 +224,9 @@ const UserGroup: React.FC = () => {
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
       minWidth: "300",
       maxWidth: "600",
+      attributeName: "Description",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: t("Total Users Assigned"),
@@ -226,12 +238,14 @@ const UserGroup: React.FC = () => {
       searchComponent: searchText,
       minWidth: "250",
       maxWidth: "500",
+      attributeName: "UserCount",
+      attributeType: "Int",
+      attributeOperator: "eq"
     }
   ]);
 
   useEffect(() => {
-    //setData();
-    dataArrayBuilder();
+    //dataArrayBuilder();
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -251,6 +265,8 @@ const UserGroup: React.FC = () => {
   };
 
   const clearAll = () => {
+    pageiGrid.gridFilter.filters = []
+    dispatch(getGroupAsync(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -260,6 +276,31 @@ const UserGroup: React.FC = () => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
+
+  const getFilteredGroupData = () => {
+
+    pageiGrid.gridFilter.filters = []
+
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+    })
+    
+    if(page !== 0)
+      setPage(0)
+    else{
+      dispatch(getGroupAsync(pageiGrid));
+      //dispatch(getGroupUserCountAsync());
+    }
+  }
 
   useEffect(() => {
     setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
@@ -276,11 +317,14 @@ const UserGroup: React.FC = () => {
             id="userGroupDataTable"
             actionComponent={<UserGroupActionMenu />}
             toolBarButton = {
+              <>
               <Restricted moduleId={6}>
                 <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
+              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
+              </>
             }
             showToolbar={true}
             dataRows={rows}
@@ -308,7 +352,7 @@ const UserGroup: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={500}
+            totalRecords={groups.totalCount}
    
           />
         )

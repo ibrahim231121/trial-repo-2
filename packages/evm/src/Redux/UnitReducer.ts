@@ -2,11 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent , EvidenceAgent} from '../utils/Api/ApiAgent';
 import { QueuedAssets, UnitInfo } from '../utils/Api/models/UnitModels';
+import { Paginated, Headers } from '../utils/Api/models/CommonModels';
 
 export const getUnitInfoAsync: any = createAsyncThunk(
     'getUnitInfo',
     async (pageiFilter?: any) => {
-        return await UnitsAndDevicesAgent.getUnitInfo(`/Stations/0/Units/UnitsInfo?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`).then((response:UnitInfo[]) => response);
+        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        return await UnitsAndDevicesAgent.getUnitInfo(`/Stations/0/Units/filterUnit?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
+            .then((response:any) => response);
     }
 );
 
