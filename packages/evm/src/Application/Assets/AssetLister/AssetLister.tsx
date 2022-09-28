@@ -233,7 +233,15 @@ const SearchComponent = (props: any) => {
     if (responseForSearch.length > 0) {
       setSearchData(responseForSearch);
     }
+    else
+    {
+      setSearchData([]);
+    }
   }, [responseForSearch]);
+
+  React.useEffect(() => {
+    setSearchData(null);
+  }, []);
 
   React.useEffect(() => {
     window.scrollTo({ top: 186, behavior: "smooth" });
