@@ -110,6 +110,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
   const handleChange = () => setOpenForm(true);
   const addToAssetBucket = () => {
+
     //if undefined it means header is clicked
     if (row !== undefined && row !== null) {
       const find = selectedItems.findIndex(
@@ -117,17 +118,33 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       );
 
       const data = find === -1 ? row : selectedItems;
-      // To cater object is not extensible issue,
-      let newObject = { ...data };
 
-      if (data.evidence) {
-        newObject.isMaster = data.evidence.masterAssetId === data.id;
+      let newObject: any = []
+
+      if(find === -1) {
+        newObject = {...data}
+        if (data.evidence) {
+          newObject.isMaster = data.evidence.masterAssetId === data.id;
+        }
+        else {
+          newObject.isMaster = data.masterAssetId === Asset.assetId;
+          newObject.selectedAssetId = Asset.assetId;
+        }
       }
       else {
-        newObject.isMaster = data.masterAssetId === Asset.assetId;
-        newObject.selectedAssetId = Asset.assetId;
+        newObject = data.map((d:any, i:number) => {
+          newObject[i] = {...d}
+          if (d.evidence) {
+            newObject[i].isMaster = d.evidence.masterAssetId === d.id;
+          }
+          else {
+            newObject[i].isMaster = d.masterAssetId === Asset.assetId;
+            newObject[i].selectedAssetId = Asset.assetId;
+          }
+          return newObject[i];
+        })
       }
-      dispatch(addAssetToBucketActionCreator(newObject));
+    dispatch(addAssetToBucketActionCreator(newObject));
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
