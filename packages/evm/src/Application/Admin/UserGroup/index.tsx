@@ -237,7 +237,7 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "250",
-      maxWidth: "500",
+      maxWidth: "600",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"

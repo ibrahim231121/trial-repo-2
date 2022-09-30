@@ -229,7 +229,7 @@ const Station: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: '100',
-      maxWidth: '520',
+      maxWidth: '600',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"

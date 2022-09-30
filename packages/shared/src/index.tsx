@@ -25,6 +25,7 @@ export { default as CBXLink } from "./controls/CBXLink/CBXLink";
 export { default as CRXFixedPanel } from "./CRXFixedPanel/CRXPanel";
 export { default as CRXPanelStyle } from "./CRXFixedPanel/CRXPanelStyle";
 export { default as CRXModal } from "./CRXModal/CRXModal";
+export { default as CRXModalAssetViewReason } from "./CRXModalAssetViewReason/CRXModalAssetViewReason";
 export { default as CRXDropContainer } from './CRXDropContainer'
 export { default as CRXTitle } from './controls/CRXPageTitle/'
 export { default as CRXTooltip } from './controls/CRXTooltip/CRXTooltip'

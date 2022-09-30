@@ -4,7 +4,6 @@ import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
 import { GridList, Switch } from "@material-ui/core";
-import "../../Assets/css/animate.min.css"
 import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
 import { useDispatch } from "react-redux";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";

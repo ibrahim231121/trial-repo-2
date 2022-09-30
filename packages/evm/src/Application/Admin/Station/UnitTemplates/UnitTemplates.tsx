@@ -101,7 +101,7 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
 
   return (
     <>
-      <div className="stationDetailOne gepStationSetting">
+      <div className="stationDetailOne gepStationSetting CRXUnitTemplate">
         <div className="stationColumnSet">
           <CRXRows
             className="crxStationDetail"

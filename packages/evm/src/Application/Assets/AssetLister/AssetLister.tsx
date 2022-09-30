@@ -97,6 +97,13 @@ const SearchComponent = (props: any) => {
 
   const shortcutData = [
     {
+      text: 'My Assets',
+      query: () => queries.GetAssetsByUserName(decoded.UserName),
+      renderData: function () {
+        fetchData(this.query(), searchType.ViewOwnAssets);
+      },
+    },
+    {
       text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
       renderData: function () {
@@ -154,13 +161,7 @@ const SearchComponent = (props: any) => {
         setShowAssetDateCompact(false);
       },
     },
-    {
-      text: 'View Own Assets',
-      query: () => queries.GetAssetsByUserName(decoded.UserName),
-      renderData: function () {
-        fetchData(this.query(), searchType.ViewOwnAssets);
-      },
-    },
+    
   ];
 
   React.useEffect(() => {
@@ -366,7 +367,7 @@ const SearchComponent = (props: any) => {
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents'>
-        <div className='predictiveSearch'>
+        <div className={`predictiveSearch ${searchData ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
               <label className='searchLabel'>{t("Search_Assets")}</label>
@@ -393,7 +394,6 @@ const SearchComponent = (props: any) => {
           <CRXButton
             className='PreSearchButton'
             onClick={Search}
-            disabled={isSearchBtnDisable}
             color='primary'
             variant='contained'
           >

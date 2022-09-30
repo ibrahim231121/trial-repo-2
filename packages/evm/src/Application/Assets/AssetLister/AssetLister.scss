@@ -37,6 +37,24 @@
   .MuiGrid-container {
     width: 65%;
   }
+  &.CRXPredictiveDisable {
+    .combo-box-Search {
+      .MuiAutocomplete-endAdornment {
+        display: flex;
+         height: 100%;
+         right: 15px;
+        button {
+          visibility: visible;
+          background: transparent;
+         &:hover , &:focus {
+          .MuiTouchRipple-root {
+            display: none;
+          }
+         }
+        }
+      }
+    }
+  }
 }
 
 .makeStyles-content-9 {

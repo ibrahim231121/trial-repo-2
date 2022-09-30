@@ -18,15 +18,15 @@ const SelectedAsset : React.FC<Props> =  ({shortcutData}) => {
     <>
      {
        shortcutData.map((data : any,index:number) =>{
-         return <div key={index} className="listOfContent" onClick={() => data.renderData()} >
-                  <div className="listButton">
+         return <button key={index} className="listOfContent" onClick={() => data.renderData()} >
+                  {/* <div className="listButton">
                     <CRXButton className="listParentBtn">
                     <span className="listIcon"></span>            
                     </CRXButton>
                     <CRXBadge color="secondary" className="count-badge">{15}</CRXBadge>
-                  </div>
+                  </div> */}
                   <div className="iconBtnLabel">{data.text}</div>
-                </div>
+                </button>
        })
      }
     </>

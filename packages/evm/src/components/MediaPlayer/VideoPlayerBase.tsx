@@ -1731,7 +1731,12 @@ const VideoPlayerBase = (props: any) => {
   return (
     <>
       <div onKeyDown={keydownListener}>
-      <VideoPlayerViewRequirement
+      
+
+      <div className="searchComponents">
+        <div className="_video_player_container" id="_asset_detail_view_idx">
+        <div id="crx_video_player" >
+        <VideoPlayerViewRequirement
         
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
@@ -1745,10 +1750,6 @@ const VideoPlayerBase = (props: any) => {
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
         setReasonForViewing={setReasonForViewing}
       />}
-
-      <div className="searchComponents">
-        <div className="_video_player_container" id="_asset_detail_view_idx">
-        <div id="crx_video_player" >
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
             <div id="screens">

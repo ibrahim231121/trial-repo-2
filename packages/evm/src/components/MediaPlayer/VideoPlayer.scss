@@ -1601,6 +1601,7 @@ span.playBackTooltipUp {
 }
 
 .CRXAssetViewRequirement {
+  z-index: 8 !important;
   .crx-message-alert {
     margin-top: 47px;
     margin-bottom: 39px;
@@ -1634,6 +1635,7 @@ span.playBackTooltipUp {
   }
 }
 .CRXAssetReason {
+  z-index: 8 !important;
   .CRXContent_user {
     .modalEditCrx {
       .CrxEditForm {

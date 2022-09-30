@@ -315,6 +315,8 @@ const AdvancedSearch: React.FC<Props> = ({
               onChange={(e: any) => onSelectInputChange(e, i)}
               options={newOptions}
               defaultValue={t("Please_Select")}
+              defaultOption={false}
+              popover={"CRXDaySelection"}
             />
           </CRXColumn>
           {select?.isUsed && (
@@ -341,7 +343,7 @@ const AdvancedSearch: React.FC<Props> = ({
     );
   });
   return (
-    <div className="advanceSerachContainer">
+    <div className="advanceSerachContainer CRXAdvanceSearchBox">
       <CRXRows container spacing={2}>
         <CRXColumn item xs={3}>
           <label className="dateTimeLabel">{t("Date_and_Time")}</label>

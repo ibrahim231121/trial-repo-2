@@ -81,6 +81,13 @@
       }
     }
   }
+  .predictiveSearchCloseIcon {
+    font-size: 14px;
+  }
+  .MuiAutocomplete-endAdornment {
+    top:2px;
+    right: 21px !important;
+  }
 }
 .error {
   border: 2px solid var(--color-aa1d1d);

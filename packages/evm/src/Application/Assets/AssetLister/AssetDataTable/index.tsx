@@ -452,19 +452,6 @@ const MasterMain: React.FC<Props> = ({
       maxWidth: "338",
     },
     {
-      label: t("Retention_Span"),
-      id: "expireOn",
-      align: "left",
-      dataComponent: retentionSpanText,
-      sort: true,
-      searchFilter: true,
-      searchComponent: () => null,
-      minWidth: "210",
-      maxWidth: "230",
-      detailedDataComponentId: "evidence",
-      visible: true
-    },
-    {
       label: t("Captured"),
       id: "recordingStarted",
       align: "center",
@@ -552,6 +539,19 @@ const MasterMain: React.FC<Props> = ({
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+    },
+    {
+      label: t("Retention_Span"),
+      id: "expireOn",
+      align: "left",
+      dataComponent: retentionSpanText,
+      sort: true,
+      searchFilter: true,
+      searchComponent: () => null,
+      minWidth: "210",
+      maxWidth: "230",
+      detailedDataComponentId: "evidence",
+      visible: true
     },
   ]);
 

@@ -147,7 +147,7 @@ export const resources = {
         "Current_Retention:":"Current_Retention:",
         "Extend":"Extend",
         "Assets":"Assets",
-        "Search_assets_by_ID#_case#_CAD#_categories_owners_etc":"Search assets by ID#, case#, CAD#, categories, owners etc.",
+        "Search_assets_by_ID#_case#_CAD#_categories_owners_etc":"Search assets by ID#, case#, CAD#, categories, owners, etc.",
         "Infinite":"Infinite",
         "No_Expiration":"No Expiration",
         "Day(s)":"Day(s)",
