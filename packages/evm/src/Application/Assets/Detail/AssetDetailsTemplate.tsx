@@ -51,6 +51,7 @@ import {
 import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
+import { CBXLink } from "@cb/shared";
 
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
@@ -239,6 +240,9 @@ const AssetDetailsTemplate = (props: any) => {
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, []);
 
 
@@ -781,7 +785,7 @@ const AssetDetailsTemplate = (props: any) => {
           </MenuItem>
         </Menu>
 
-        {/* <CBXLink  children = "Exit"   onClick={() => history.goBack()} /> */}
+        <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
       </div>
       {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       {error && (
