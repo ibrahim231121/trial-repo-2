@@ -182,49 +182,55 @@ const SearchComponent = (props: any) => {
       });
 
       obj.map((o: any) => {
-        if (o != undefined && o.key == 'username') {
-          const val = {
-            bool: {
-              should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == 'unit') {
-          const val = {
-            bool: {
-              should: [{ match: { 'asset.unit': `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == 'category') {
-          const val = {
-            bool: {
-              should: [{ match: { categories: `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
+        if(o)
+        {
+          if (o.key == 'username') {
+            const val = {
+              bool: {
+                should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          } else if (o.key == 'unit') {
+            const val = {
+              bool: {
+                should: [{ match: { 'asset.unit': `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          } else if (o.key == 'category') {
+            const val = {
+              bool: {
+                should: [{ match: { categories: `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          }
         }
+        
       });
 
-      if (addvancedOptions.dateTimeDropDown.startDate) {
-        AdvancedSearchQuerry.bool.must.push({
-          range: {
-            'asset.recordingStarted': {
-              gte: `${moment(addvancedOptions.dateTimeDropDown.startDate).toISOString()}`,
+      if (dateTimeDropDown.displayText != "anytime") {
+        if (addvancedOptions.dateTimeDropDown.startDate) {
+          AdvancedSearchQuerry.bool.must.push({
+            range: {
+              'asset.recordingStarted': {
+                gte: `${moment(addvancedOptions.dateTimeDropDown.startDate).toISOString()}`,
+              },
             },
-          },
-        });
-      }
+          });
+        }
 
-      if (addvancedOptions.dateTimeDropDown.endDate) {
-        AdvancedSearchQuerry.bool.must.push({
-          range: {
-            'asset.recordingEnded': {
-              lte: `${moment(addvancedOptions.dateTimeDropDown.endDate).toISOString()}`,
+        if (addvancedOptions.dateTimeDropDown.endDate) {
+          AdvancedSearchQuerry.bool.must.push({
+            range: {
+              'asset.recordingEnded': {
+                lte: `${moment(addvancedOptions.dateTimeDropDown.endDate).toISOString()}`,
+              },
             },
-          },
-        });
-      }
+          });
+        }
+      } 
 
       fetchData(AdvancedSearchQuerry, searchType.AdvanceSearch);
     }
@@ -234,8 +240,7 @@ const SearchComponent = (props: any) => {
     if (responseForSearch.length > 0) {
       setSearchData(responseForSearch);
     }
-    else
-    {
+    else {
       setSearchData([]);
     }
   }, [responseForSearch]);
@@ -255,10 +260,10 @@ const SearchComponent = (props: any) => {
   }, [querryString]);
 
   React.useEffect(() => {
-      if (dateTimeDropDown.value === 'anytime' && querryString.length === 0)
-        setIsSearchBtnDisable(true);
-      else
-        setIsSearchBtnDisable(false);
+    if (dateTimeDropDown.value === 'anytime' && querryString.length === 0)
+      setIsSearchBtnDisable(true);
+    else
+      setIsSearchBtnDisable(false);
   }, [dateTimeDropDown]);
 
 
@@ -408,7 +413,7 @@ const SearchComponent = (props: any) => {
             </div>
           </>
         )}
-        
+
         {showAdvanceSearch && (
           <>
             <div className='advanceSearchContet'>
