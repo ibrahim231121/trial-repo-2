@@ -144,12 +144,12 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   }, [visibleThumbnail])
 
   return (
-    <div className="beforelineMain">
+    <div className="_beforeline_Main"  >
       {timelinedetail.filter((x: any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
         <div className="time_line_container">
-          <div className="beforeline">
-            {/* <p>{x.camera}</p> */}
+          <div className="_before_line">
             <div className="line" style={{ position: "relative", display: 'flex' }}>
+             {multiTimelineEnabled && <p className="camraName_timeline">{x.camera}</p> }  
               <div className="video_player_hover_thumb" id={"video_player_hover_thumb" + x.indexNumberToDisplay}
                 style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform: "translate(-50px, 0px)" }}>
 
@@ -193,11 +193,11 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 )}
               </div>
 
-              {isMultiViewEnable && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: multiTimelineEnabled ? '12px' : "0", display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
+              {isMultiViewEnable && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
               ></div>}
               {isMultiViewEnable && <><div className="canvas-width"
-                style={{ backgroundColor: 'green', width: x.recordingratio + '%', height: multiTimelineEnabled ? '12px' : "0", display: 'flex'}}
+                style={{ backgroundColor: '#D1D2D4', width: x.recordingratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex'}}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
                 onMouseOver={(e: any) => displayThumbail(e, x.id)}
@@ -214,7 +214,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
               </>
               }
               {isMultiViewEnable &&
-                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%', height: multiTimelineEnabled ? '12px' : "0", display: 'flex'}} id={"timeLine-hover-after" + x.indexNumberToDisplay}
+                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex'}} id={"timeLine-hover-after" + x.indexNumberToDisplay}
                   onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
                 ></div>
               }

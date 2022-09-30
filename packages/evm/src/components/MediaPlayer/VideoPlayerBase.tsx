@@ -30,7 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import "./VideoPlayerResponsive.scss";
-
+import "./overRide_video_player_style.scss"
 
 type Timeline = {
   recording_start_point: number;
@@ -477,7 +477,9 @@ const VideoPlayerBase = (props: any) => {
   const [mutePercentVol, setMutePercentVol] = useState<number>();
   const [volume, setVolume] = useState<number>(100);
   const [layoutMenuEnabled, setLayoutMenuEnabled] = useState<any>(null);
-  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(true);  const volumeIcon = useRef<any>(null);
+  const [isAudioGraphAnimate, setIsAudioGraphAnimate] = useState<boolean>(false);  
+  const [isAudioGraph, setIsAudioGraph] = useState<boolean>(false);  
+  const volumeIcon = useRef<any>(null);
   const last_media_time = useRef(0);
   const last_frame_num = useRef(0);
   const fps_rounder = useRef<any>([]);
@@ -684,6 +686,7 @@ const VideoPlayerBase = (props: any) => {
       }
       else{
         setIsMultiViewEnable(false);
+        setMultiTimelineEnabled(false);
       }
 
       // work for BookmarkNotePopup Component
@@ -712,12 +715,12 @@ const VideoPlayerBase = (props: any) => {
 
   React.useEffect(() => {
     if (bookmarkNotePopupArrObj.length>0) { // work for BookmarkNotePopup Component
-      console.log("Jamil",bookmarkNotePopupArrObj);
+      
       setIsBookmarkNotePopup(true);
     }
     else{
       setIsBookmarkNotePopup(false);
-      console.log("Jamil",bookmarkNotePopupArrObj);
+      
     }
   }, [bookmarkNotePopupArrObj]);
 
@@ -1741,20 +1744,71 @@ const VideoPlayerBase = (props: any) => {
     if(layoutContent) {
        PlayerRight?.appendChild(layoutContent)
     }
+    if(multiTimelineEnabled) {
+    document.documentElement.style.overflow = "auto";
+    document.documentElement.style.scrollBehavior = "smooth" ;
 
+
+    } else {
     document.documentElement.style.overflow = "hidden";
-  },[])
+    document.body.scrollTop = 0; 
+    document.documentElement.scrollTop = 0;
+    }
+  },[multiTimelineEnabled,layoutMenuEnabled])
 
- 
+  // if(viewNumber === 1 ) {
+  //   document.documentElement.style.overflow = "hidden";
+  //   document.body.scrollTop = 0; 
+  //   document.documentElement.scrollTop = 0;
+
+  // }
+
   const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);
     document.getElementById(targetId)?.scrollIntoView({
       behavior: 'smooth'
     });
+
+    const MainLayoutElement : undefined | any = document.querySelector("._bottom_arrow_seeMore");
+    const _video_player_main_containers : any = document.querySelector("._video_player_layout_main")
+    if(targetId === "detail_view") {
+      
+      MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
+      MainLayoutElement.style.top = "73px";
+      _video_player_main_containers.style.background = "#fff"
+     
+    }else {
+      MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
+      MainLayoutElement.style.top = "-21px";
+    }
   }
+
+  const [isShowAudioGraph , setIsShowAudioGraph] = useState<boolean>(false)
+  useLayoutEffect(() => {
+    const _playerRedLine : any = document.querySelector("._play_timeLine_pipeRed");
+    const _seakBarHoverGray : any = document.querySelector("._hover_timeLine_pipeGray")
+    const _fwfSeakBarRedLine : any = document.querySelector("._fwrw_timeLine_pipeRed")
+    const _video_player_main_container : any = document.querySelector("._video_player_layout_main")
+    setTimeout(() => {
+      if(isAudioGraph === true) {
+        setIsShowAudioGraph(true)
+        _playerRedLine.style.height = "123px";
+        _seakBarHoverGray.style.height = "123px";
+        _fwfSeakBarRedLine.style.height = "123px";
+        _video_player_main_container.style.background = "#000"
+      }else {
+        setIsShowAudioGraph(false)
+        _playerRedLine.style.height = "35px";
+        _seakBarHoverGray.style.height = "35px";
+        _fwfSeakBarRedLine.style.height = "35px";
+        _video_player_main_container.style.background = "#fff"
+      }
+    },300)
+    
+  },[isAudioGraph])
   return (
-    <>
-      <div onKeyDown={keydownListener}>
+    
+      <div className="_video_player_layout_main" onKeyDown={keydownListener}>
       
 
       <div className="searchComponents">
@@ -1774,6 +1828,12 @@ const VideoPlayerBase = (props: any) => {
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
         setReasonForViewing={setReasonForViewing}
       />}
+      
+
+      <div className="searchComponents">
+        <div className="_video_player_container">
+        <div id="crx_video_player" className={( multiTimelineEnabled  && `_Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
+         
           <CRXToaster ref={toasterMsgRef} />
           <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
             <div id="screens">
@@ -1932,14 +1992,19 @@ const VideoPlayerBase = (props: any) => {
                   </div>
                   
                 </div>
-              {isAudioGraph && <div className="dummy_audio_image">
+              {isShowAudioGraph && <div className="_audio_graph_container">
+              <div className={`dummy_audio_image animated ${isAudioGraph == true ? "slideInUp" : "slideOutDown"}`}>
                     <img src={AduioImage} />
                 </div>
-              } 
-              <div className="dummy_audio_zoomIn_zoomOut">
+              
+              <div className={`dummy_audio_zoomIn_zoomOut animated  ${isAudioGraph == true ? "slideInUp" : "slideOutDown"} `}>
               <img src={AduioImageZoomInZoomOut} />
               </div>
+              
               </div>
+              }
+              </div>
+              
               {/* <div className="crx_video_graph"></div> */}
               <div className={`playerViewFlex enablebViewFlex`}>
                 <div className="playerViewLeft">
@@ -2065,6 +2130,7 @@ const VideoPlayerBase = (props: any) => {
                       setOverlayCheckedItems={setOverlayCheckedItems}
                       isMultiViewEnable={isMultiViewEnable}
                       setIsAudioGraph={setIsAudioGraph}
+                      setIsAudioGraphAnimate={setIsAudioGraphAnimate}
                     />
                   </div>
                   <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
@@ -2094,7 +2160,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className="_Player_Layout_Menu_"
+                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"}`}
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
@@ -2201,9 +2267,9 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
             </div>
-            {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
+            {/* {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>}
+            {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>} */}
           </FullScreen>
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
@@ -2256,23 +2322,26 @@ const VideoPlayerBase = (props: any) => {
           </div>
 
         </div>
-        <div className="_bottom_arrow_seeMore">
+       
+        
+        </div>{/** Video player container close div */}
+      </div>
+      <div className="_bottom_arrow_seeMore">
         {detailContent == false ?
               <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
+                <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
               </button>
               :
               <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
+                <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
               </button>
             }
         </div>
-        <div className="demo-div" ref={demoRef} id="detail_view">Video Detail Tabs and content here</div>
-        </div>{/** Video player container close div */}
       </div>
-        
       </div>
-    </>);
+      </div>
+      </div>
+    );
 }
 
 export default VideoPlayerBase

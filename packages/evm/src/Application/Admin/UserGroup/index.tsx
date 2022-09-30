@@ -323,7 +323,7 @@ const UserGroup: React.FC = () => {
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
+              <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
               </>
             }
             showToolbar={true}

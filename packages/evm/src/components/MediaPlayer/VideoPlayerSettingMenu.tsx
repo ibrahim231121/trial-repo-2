@@ -6,12 +6,12 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph } = props;
+  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
-  const [isAudioGraphEnabled, setIsAudioGraphEnabled] = useState<boolean>(true)
+  const [isAudioGraphEnabled, setIsAudioGraphEnabled] = useState<boolean>(false)
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
@@ -21,6 +21,8 @@ const VideoPlayerSettingMenu = (props: any) => {
     
     setIsAudioGraphEnabled(event.target.checked)
     setIsAudioGraph(event.target.checked)
+    setIsAudioGraphAnimate(event.target.checked)
+    
   }
   const OverlayChangeEvent = (event: any) => {
     if (event.target.checked) {
@@ -67,7 +69,7 @@ useEffect(() => {
     <>
    
     <MaterialMenu
-        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""} `}
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""} `}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}
@@ -106,15 +108,15 @@ useEffect(() => {
           </div>
         </MaterialMenuItem>
         <MaterialMenuItem className="settingOverlay">
-          <span className="icon icon-stack3 iconsLeft"></span>
-          <span className="toggleBack"></span>
+          <span className="fa-solid fa-chart-simple iconsLeft"></span>
+          {/* <span className="toggleBack"></span> */}
           <div className="SwitcherControl"  >
             <label>
-              <span>Audio graph</span>
+              <span>Audio Graph</span>
               <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={isAudioGraphEnabled} size="small" onChange={(event: any) => IsShowAudioGraphChangeEvent(event)} name="audioGraph" />
             </label>
           </div>
-          <i className="fas fa-chevron-right iconsRight"></i>
+          {/* <i className="fas fa-chevron-right iconsRight"></i> */}
         </MaterialMenuItem>
         <MaterialMenuItem className="settingOverlay">
           <span className="icon icon-stack3 iconsLeft"></span>
@@ -143,10 +145,9 @@ useEffect(() => {
 
       </MaterialMenu>
 
- 
 
       <MaterialMenu
-        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad ? "MultiBackMenu" : ""}`}
+        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad  ? "MultiBackMenu" : ""}  ` }
         anchorEl={overlayMenuEnabled}
         keepMounted
         open={Boolean(overlayMenuEnabled)}

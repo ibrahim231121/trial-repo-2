@@ -345,13 +345,7 @@
   border-radius: 100px;
   vertical-align: middle;
   position: relative;
-  &::before {
-    content: "\10f056";
-    font-family: "Font Awesome 5 Duotone";
-    position: relative;
-    right: 0px;
-    top: 0px;
-  }
+
   .MuiSvgIcon-root {
     fill: var(--color-White);
     position: relative;

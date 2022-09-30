@@ -56,4 +56,6 @@ export { default as SVGImage } from './controls/SVGImages/SVGImg'
 export { default as CRXDataTableTextPopover} from './CRXDataTable/CRXDataTableTextPopover'
 export { default as CRXMiddleTruncationPopover } from './CRXDataTable/CRXMiddleTruncationPopover'
 export { default as CBXSwitcher } from './controls/CBXSwitcher/CBXSwitcher'
+export {default as CRXVideoPlayerStyle } from "./JssStyles/VideoPlayerStyle/CRXVideoPlayerStyle"
+export { default as VolumeControlStyle } from "./JssStyles/VideoPlayerStyle/VolumeControlStyle"
 

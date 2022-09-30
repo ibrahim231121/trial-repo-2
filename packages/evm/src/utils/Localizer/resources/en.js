@@ -202,6 +202,8 @@ export const resources = {
         "Search_Notes":"Search Notes",
         "Asset_Detail":"Asset Detail",
         "Information":"Information",
+        "Asset_Metadata_Info": "ASSET METADATA INFO",
+        "Audit_Trail":"AUDIT TRAIL",
         "GROUPED_AND_RELATED_ASSETS":"GROUPED AND RELATED ASSETS",
         "Captured_Date":"Captured Date",
         "Owners":"Owners",

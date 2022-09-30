@@ -1,11 +1,11 @@
 import Slider from "@material-ui/core/Slider";
 import React from "react";
 import { useState } from "react";
-import CRXVideoPlayerStyle from './CRXVideoPlayerStyle';
+import { CRXVideoPlayerStyle } from '@cb/shared';
 
 
 const VideoPlayerSeekbar = (props:any)  => {
-  const classes = CRXVideoPlayerStyle()
+  const videoPlayerJssStyle = CRXVideoPlayerStyle()
   const {controlBar, handleControlBarChange, timelineduration, viewReasonControlsDisabled, timelinedetail, displayThumbnail, setVisibleThumbnail, markerFwRw} = props;
   
   const displaySeekBarThumbail = (event: any) => {
@@ -35,9 +35,11 @@ const VideoPlayerSeekbar = (props:any)  => {
                     max={timelineduration}
                     disabled={viewReasonControlsDisabled}
                     classes={{
-                      ...classes
+                      ...videoPlayerJssStyle
                     }}
                   />
+                  {console.log("controlBar", timelineduration)}
+                  <div className="_play_timeLine_pipeRed" id="_hover_timeLine_pipeRed" style={{left : ((controlBar/timelineduration)*100)+"%"}}></div>
                    <div className="_hover_timeLine_pipeGray" id="_hover_timeLine_pipeGray"></div>
                    {markerFwRw && <div className={`_fwrw_timeLine_pipeRed`} id="_fwrw_timeLine_pipeRed" style={{left: ((controlBar/timelineduration)*100)+"%" }}></div>}
                   </>

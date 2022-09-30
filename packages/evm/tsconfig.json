@@ -16,6 +16,6 @@
         "noEmit": true,
         "jsx": "react-jsx"
     },
-    "include": ["src"],
+    "include": ["src", "../shared/src/JssStyles/VideoPlayerStyle/VolumeControlStyle.tsx"],
     "exclude": [".gitignore", "config-overrides.js", "node_modules"]
 }

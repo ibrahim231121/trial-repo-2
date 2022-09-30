@@ -66,41 +66,58 @@
 
 
 ._video_Player_Right_Panel {
-    width: 24%;
-    background-color: transparent;
-    display: inline-block;
+    width: 33.33%;
+    
+    display: flex;
     position: relative;
     z-index: 99;
+    background: #282828;
     border:1px solid var(--color-333333);
     height: calc(100vh - (327px + 191px));
     margin-left: 5px;
+    ._panel_resize_bar {
+        background: #282828;
+        width: 25px;
+        height: 100%;
+       
+    }
     ._bookMark_list_items {
         height: calc(100vh - (238px + 400px));
         overflow-y: auto;
     }
     .detailDropdownMain {
+        width: calc(100% - 25px);
         .Video_Side_Panel_DropDown {
             padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            position: absolute;
+            right: 3px;
+            z-index: 999;
+            top: 3px;
             ._dropDown_wrapper_side_panel {
                 width: 150px;
+                height: 30px;
                 ._video_panel_dropdown_btn {
                     background: #fff;
                     width: 100%;
                     color: var(--color-333333);
                     border-radius: 0px;
                     justify-content: left;
-                    padding-left: 10px;
-                    border: 1px solid var(--color-707070);
+                    padding-left: 16px;
+                    border: 1px solid #D1D2D4;
                     outline: 2px solid transparent;
                     font-family: var(--Arial-font-family);
                     margin-bottom: 2px;
+                    &::first-letter {
+                        text-transform: capitalize;
+                    }
                     .MuiButton-label {
                         text-align: left;
                         .menuLabel {
                             width: 83%;
+                            text-transform: capitalize;
                         }
                     }
                     &.active {

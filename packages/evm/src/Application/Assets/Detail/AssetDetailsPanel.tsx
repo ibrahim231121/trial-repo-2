@@ -88,9 +88,10 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   }, [timelinedetail]);
 
   const listOFMenu = [
-    { label: "map", route: t("Map"), onClick: (e: any) => handleChangeDropDown(e) },
-    { label: "bookmarks", route: t("Bookmarks"), onClick: (e: any) => handleChangeDropDown(e) },
-    { label: "notes", route: t("Notes"), onClick: (e: any) => handleChangeDropDown(e) },
+    { label: "Map", route: t("Map"), onClick: (e: any) => handleChangeDropDown(e) },
+    { label: "Transcription", route: t("Transcription"), onClick: (e: any) => handleChangeDropDown(e) },
+    { label: "Notes", route: t("Notes"), onClick: (e: any) => handleChangeDropDown(e) },
+    { label: "Bookmarks", route: t("Bookmarks"), onClick: (e: any) => handleChangeDropDown(e) },
   ]
   const handleChangeDropDown = (event: any) => {
 
@@ -112,7 +113,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   return (
 
     <div className="detailDropdownMain">
-
+      
       <CRXToaster ref={targetRef} />
       {alert && <CRXAlert
         ref={alertRef}
@@ -131,11 +132,12 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
           className="LightTheme _video_panel_dropdown_paper"
           btnClass="_video_panel_dropdown_btn"
           MenuList={listOFMenu}
+          selectedItem={0}
         />
       </div>
 
 
-      {selectDropDown == "map" && openMap &&
+      {selectDropDown == "Map" && openMap &&
         <GoogleMap
           apiKey={gMapApiKey}
           zoomLevel={15}
