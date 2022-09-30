@@ -788,6 +788,14 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const handlePlayPause = () => {
+    
+    if(isPlayingFwRw){
+      var video: any = timelinedetail[0];
+      let event: any = document.querySelector("#vid-2");
+      let currTime = Math.floor(event.currentTime);
+      var currTimeTotal = currTime + (video.recording_start_point);
+      handleControlBarChange(null, currTimeTotal);
+    }
     setPlaying(!isPlaying);
     setMarkerFwRw(false);
     setisPlayingFwRw(false);
@@ -1054,8 +1062,12 @@ const VideoPlayerBase = (props: any) => {
                 TimeLinePipe.style.left = (timerValue[2]/timelineduration)*100 + "%";
               }
             }
+            if((timerValue[2]<=timelinedetail[0].recording_end_point) && (timerValue[2]>=timelinedetail[0].recording_start_point))
+            {
+              setTimerFwRw(timerValue);
+            }
             
-            setTimerFwRw(timerValue);
+            
             videoHandlersFwRw.forEach((videoHandle: any, index: number) => {
               hanldeVideoStartStopFwRw(timerValue[index], videoHandle, true, index);
             });
@@ -1321,31 +1333,43 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickFwRw = (Currmode: number, CaseNo: number) => {
-    setShowFRicon({ showFRCon: true, caseNum: CaseNo });
-    if (Currmode >= 6) {
-      switch (CaseNo) {
-        case 1: //Forward
-          setismodeFwdisable(true);
-          break;
-        case 2: //Rewind
-          setisModeRwdisable(true);
-          break;
-        default:
-          break;
+    let video: any = timelinedetail[0];
+    let currVideoStartTime = video.recording_start_point;
+    let currVideoEndTime = video.recording_end_point;
+    if(controlBar>=currVideoStartTime && controlBar <=currVideoEndTime){
+      setShowFRicon({ showFRCon: true, caseNum: CaseNo });
+      if (Currmode >= 6) {
+        switch (CaseNo) {
+          case 1: //Forward
+            setismodeFwdisable(true);
+            break;
+          case 2: //Rewind
+            setisModeRwdisable(true);
+            break;
+          default:
+            break;
+        }
+      }
+      else {
+        setismodeFwdisable(false);
+        setisModeRwdisable(false);
+      }
+      if (isOpenWindowFwRw && isvideoHandlersFwRw) {
+        modeSetFwRw(Currmode, CaseNo)
+      }
+      else {
+        setcurractionFwRw({ currmode: Currmode, currcase: CaseNo })
+        setisOpenWindowFwRw(true);
       }
     }
-    else {
-      setismodeFwdisable(false);
-      setisModeRwdisable(false);
+    else{
+      toasterMsgRef.current.showToaster({
+        message: "Seek To Appropiate Time",
+        variant: "error",
+        duration: 5000,
+        clearButtton: true,
+      });
     }
-    if (isOpenWindowFwRw && isvideoHandlersFwRw) {
-      modeSetFwRw(Currmode, CaseNo)
-    }
-    else {
-      setcurractionFwRw({ currmode: Currmode, currcase: CaseNo })
-      setisOpenWindowFwRw(true);
-    }
-
   }
 
 
