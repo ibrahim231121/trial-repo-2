@@ -35,15 +35,12 @@ const RestrictAccessDialogue: React.FC<RestrictAccessDialogueProps> = (props) =>
                         />
                     }
                     <div className='modalBottomText modalBottomTextClose'>
-                    {/* {t("Access_to_the_selected_asset(s)_will_be_restricted_to_user_groups_with_the_view_locked_asset_permission.")} */}
-                    You are attempting to restrict access to the selected asset(s). Access to the selected asset(s) will be restricted to user groups with the view locked asset permission.
+                        {t("You_are_attempting_to_restrict_access_to_the_selected_asset(s)._Access_to_the_selected_asset(s)_will_be_restricted_to_user_groups_with_the_view_locked_asset_permission.")}
                     </div>
                     <div className='cancelConfrimText'>
-                    Are you sure you want to restrict access to the selected asset(s)?
-                        {/* {t("Are_you_sure_want_to_restrict_access_to_the_selected_asset(s)?")} */}
+                        {t("Are_you_sure_you_want_to_restrict_access_to_the_selected_asset(s)?")}
                     </div>
                 </div>
-              
             </CRXConfirmDialog>
         </div >
     );

@@ -14,7 +14,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
   }
 
   const validationSchema = initialValueArray.reduce(
-    (obj, item) => ({ ...obj, [item]: Yup.string().required(t("Required")) }),
+    (obj, item) => ({ ...obj, [item]: Yup.string().max(1024, t("Maximum_lenght_is_1024")).required(t("required")) }),
     {}
   );
   
@@ -64,7 +64,8 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                       {errors[field.name === undefined ? field.value : field.name] !== undefined ? (
                         <div className="errorStyle">
                           <i className="fas fa-exclamation-circle"></i>
-                          <span>{field.name === undefined ? field.value : field.name}</span> {t("is_required")}
+                          {/* <span>{field.name === undefined ? field.value : field.name}</span> {t("is_required")} */}
+                          {errors[field.name === undefined ? field.value : field.name]}
                           {setDisplayCategoryForm("errorBrdr")}
                         </div>
                       ) : null}

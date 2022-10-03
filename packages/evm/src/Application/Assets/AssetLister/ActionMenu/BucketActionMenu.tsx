@@ -19,6 +19,7 @@ import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import { SearchType } from "../../utils/constants";
 
 type Props = {
   selectedItems: assetRow[];
@@ -85,7 +86,7 @@ const BucketActionMenu: React.FC<Props> = ({ selectedItems = [], row, setSelecte
         setSuccessMessage(t('The_asset_are_locked'));
         setSuccess(true);
         setTimeout(() => {
-          dispatch(getAssetSearchInfoAsync(""));
+          dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
           setOpenRestrictAccessDialogue(false);
           setSuccess(false);
         }, 2000);

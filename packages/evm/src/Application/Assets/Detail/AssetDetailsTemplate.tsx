@@ -36,6 +36,7 @@ import {
   CRXDataTable,
   CRXConfirmDialog,
   CRXTooltip,
+  CBXLink
 } from "@cb/shared";
 
 import {
@@ -52,7 +53,7 @@ import {
 import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
-import { CBXLink } from "@cb/shared";
+import { SearchType } from "../utils/constants";
 
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
@@ -683,7 +684,7 @@ const AssetDetailsTemplate = (props: any) => {
       setSuccessMessage(t('The_asset_are_locked'));
       setSuccess(true);
       setTimeout(() => {
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         setOpenRestrictAccessDialogue(false);
         setSuccess(false);
       }, 2000);

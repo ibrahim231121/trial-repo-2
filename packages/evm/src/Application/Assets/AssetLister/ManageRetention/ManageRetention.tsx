@@ -14,6 +14,7 @@ import "./ManageRetention.scss";
 import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
+import { SearchType } from '../../utils/constants';
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -153,7 +154,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
       setTimeout(() => {
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
       }, 2000);
       props.showToastMsg({
         message: (values.RetentionStatus == RetentionStatusEnum.CustomExtention || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),

@@ -201,13 +201,13 @@ const StationDetail: React.FC = () => {
 
   const blackBoxAutoCompleteonChange = (e: React.SyntheticEvent, val: AutoCompleteOptionType, setFieldValue: any, reason: string) => {
     e.preventDefault();
-    setFieldValue("BlackboxRetentionPolicy", val, false);
+    setFieldValue("BlackboxRetentionPolicy", val, true);
     setBlackBoxAutoCompleteValue(val);
   }
 
   const uploadAutoCompleteonChange = (e: React.SyntheticEvent, val: AutoCompleteOptionType, setFieldValue: any, reason: string) => {
     e.preventDefault();
-    setFieldValue("UploadPolicy", val, false);
+    setFieldValue("UploadPolicy", val, true);
     setUploadAutoCompleteValue(val);
   }
 
@@ -687,6 +687,12 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
+                            {errors.BlackboxRetentionPolicy ? (
+                              <div className="errorStationStyle">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {t("Blackbox_Retention_Policy_is_required")}
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       </CRXColumn>

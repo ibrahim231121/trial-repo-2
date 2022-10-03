@@ -10,6 +10,7 @@ import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { CategoryFormProps } from './Model/CategoryFormModel';
+import { SearchType } from '../../utils/constants';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -42,10 +43,10 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     // Check how many categories are added recently,
     const previousAttachedCategories = evidenceResponse?.categories;
     const newSelectedCategories = allCategories.filter((x: any) => {
-      if(previousAttachedCategories.length > 0)
-         return !previousAttachedCategories.some((o: any) => o.name == x.label);
+      if (previousAttachedCategories.length > 0)
+        return !previousAttachedCategories.some((o: any) => o.name == x.label);
       else
-         return x;   
+        return x;
     });
 
     // If user selected addtional categories, then cross icon click should be a update case.
@@ -68,7 +69,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
     // It means category was attacehd from the backend
     if (previousAttachedCategories.length > 0) {
-      props.setModalTitle(t('Edit_category'));  
+      props.setModalTitle(t('Edit_category'));
       let changingResponse = evidenceResponse.categories.map((o: any) => {
         return {
           id: o.id,
@@ -120,12 +121,12 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
   React.useEffect(() => {
     if (formFields.length > 0) {
-      let isFormCompleteFilled: boolean = formFields.some((ele: any) => ele.value.length === 0);
-      if (!isFormCompleteFilled) {
+      // NOTE : Submit Button Disable State, on the basis of Form Input.
+      const isFormValidated: boolean = formFields.some((ele: any) => (ele.value.length === 0 || ele.value.length > 1024));
+      if (!isFormValidated)
         setSaveBtn(false);
-      } else {
+      else
         setSaveBtn(true);
-      }
     }
   }, [formFields]);
 
@@ -200,7 +201,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     if (isEditCaseExist) {
       dispatch(AddToEditFormStateCreator(categoryBodyArr));
       props.setActiveForm(5);
-      
+
     } else {
       /**
        * * Remove type key from body.
@@ -209,7 +210,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         delete v.type;
       });
 
-      const body : EvdenceCategoryAssignment = {
+      const body: EvdenceCategoryAssignment = {
         unAssignCategories: [],
         assignedCategories: categoryBodyArr,
         updateCategories: []
@@ -218,16 +219,15 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       const url = `/Evidences/${evidenceId}/Categories`;
       EvidenceAgent.changeCategories(url, body).then(() => {
         setSuccess(true);
-        setTimeout(() => 
-        {
+        setTimeout(() => {
           closeModalFunc();
-          dispatch(getAssetSearchInfoAsync(""));
+          dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         }, 3000);
       })
-      .catch(() => {
-        setError(true);
-      });
-      
+        .catch(() => {
+          setError(true);
+        });
+
     }
   };
 
@@ -242,7 +242,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       categoryBodyArr.push(_categoryBody);
     }
 
-    const body : EvdenceCategoryAssignment = {
+    const body: EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: categoryBodyArr,
       updateCategories: []
@@ -253,13 +253,13 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       setTimeout(() => {
         props.setOpenForm();
         props.setFilterValue(() => []);
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         props.closeModal(false);
       }, 3000);
     })
-    .catch(() => {
-      setError(true);
-    });
+      .catch(() => {
+        setError(true);
+      });
   }
 
   return (

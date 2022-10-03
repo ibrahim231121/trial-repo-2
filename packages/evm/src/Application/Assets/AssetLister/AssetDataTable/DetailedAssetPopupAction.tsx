@@ -16,6 +16,7 @@ import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import ActionMenu from "../ActionMenu";
+import { SearchType } from "../../utils/constants";
 
 
 type Props = {
@@ -96,7 +97,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
     const url = '/Evidences/' + `${row.id}` + '/setAsPrimaryAsset/' + `${asset.assetId}`
     EvidenceAgent.setPrimaryAsset(url).then(() => {
       setIsOpen(false);
-      setTimeout( async() => { dispatch(await getAssetSearchInfoAsync("")) }, 1000);
+      setTimeout( async() => {  dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch })) }, 1000);
       showToastMsg();
     })
     .catch(function (error) {

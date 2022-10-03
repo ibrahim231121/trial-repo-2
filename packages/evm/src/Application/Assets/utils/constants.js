@@ -56,4 +56,43 @@
 //const AssetUnCategorized  = i18n.t("UnCategorized");
 
 
+const SearchType = {
+    SimpleSearch: "SimpleSearch",
+    AdvanceSearch: "AdvanceSearch",
+    ShortcutSearch:"ShortcutSearch",
+    ViewOwnAssets: "ViewOwnAssets"
+  }
+
+  const GenerateLockFilterQuery = (groupId) => {
+    let groupIds = groupId.split(',');
+    const shouldGroup = [];
+    shouldGroup.push({
+        "bool": {
+            "must_not": {
+                "exists": {
+                    "field": "masterAsset.lock"
+                }
+            }
+        }
+    });
+    for (const id of groupIds) {
+        shouldGroup.push({
+            "bool": {
+                "must": {
+                    "match": {
+                        "masterAsset.lock.groupRecId": id
+                    }
+                }
+            }
+        });
+    }
+    return {
+        "bool": {
+            "should": shouldGroup
+        }
+    }
+}
+
+export  { SearchType, GenerateLockFilterQuery}
+
 //export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}

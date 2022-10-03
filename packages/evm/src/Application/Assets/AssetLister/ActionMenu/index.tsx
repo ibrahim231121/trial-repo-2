@@ -26,9 +26,13 @@ import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
 import { AssetRestriction, MetadataFileType, PersmissionModel } from "./AssetListerEnum";
-import { useHistory, useParams } from "react-router";import { urlList, urlNames } from "../../../../utils/urlList";import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { useHistory, useParams } from "react-router"; import { urlList, urlNames } from "../../../../utils/urlList"; import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
 import { AssetLockUnLockErrorType, securityDescriptorType } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
+import { SearchType } from "../../utils/constants";
+import Cookies from "universal-cookie";
+import { IDecoded } from "../../../../Login/API/auth";
+import jwt_decode from "jwt-decode";
 
 type Props = {
   selectedItems?: any;
@@ -66,11 +70,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
-  const [isModalOpen,setIsModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
     isError: false,
     errorMessage: ''
   });
+  const cookies = new Cookies();
+  const { AssignedGroups }: IDecoded = jwt_decode(cookies.get("access_token"));
 
   React.useEffect(() => {
     if (selectedItems.length > 1) {
@@ -93,11 +99,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
      * ! So we need to reset the form index, so that it starts from start. 
      * ! Comment For 'Category'.
      */
-    if (row?.evidence?.securityDescriptors?.length > 0)
-    {
+    if (row?.evidence?.securityDescriptors?.length > 0) {
       setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
     }
-    else{
+    else {
       setMaximumDescriptor(0);
     }
     if (row?.securityDescriptors?.length > 0)
@@ -147,7 +152,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
-  const history  = useHistory();
+  const history = useHistory();
   const handleOpenAssignUserChange = () => {
     setOpenAssignUser(true);
   };
@@ -199,15 +204,18 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
   const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
     const _requestBody = [];
+    let groupRecIdArray = AssignedGroups.split(',').map((item) => {
+      return parseInt(item, 10);
+    });
     if (isSelectedItem) {
       selectedItems.map((x: any) => {
         if (x.evidence.masterAsset.lock) {
           _requestBody.push({
             evidenceId: x.id,
             assetId: x.assetId,
-            userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
+            groupRecIdList: groupRecIdArray,
             operation: operation
-          })
+          });
         }
       })
     }
@@ -215,9 +223,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       _requestBody.push({
         evidenceId: row?.id,
         assetId: row.assetId,
-        userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
+        groupRecIdList: groupRecIdArray,
         operation: operation
-      })
+      });
     }
     const _body = JSON.stringify(_requestBody);
     EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
@@ -230,7 +238,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       setSuccessMessage(successMessage);
       setSuccess(true);
       setTimeout(() => {
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         setOpenRestrictAccessDialogue(false);
         setOpenUnlockAccessDialogue(false);
         setSuccess(false);
@@ -348,7 +356,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   }
   return (
     <>
-    <CRXConfirmDialog
+      <CRXConfirmDialog
         setIsOpen={() => setIsModalOpen(false)}
         onConfirm={closeDialog}
         isOpen={isModalOpen}
@@ -359,10 +367,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       >
         <div className="confirmMessage">
           {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")}, 
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")},
           {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
           <div className="confirmMessageBottom">
-          {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
           </div>
         </div>
       </CRXConfirmDialog>
@@ -506,28 +514,28 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
         {IsOpen ? (
           <MenuItem>
-            <Restricted moduleId={30}> 
-             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-            <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-              <div className="crx-menu-icon"></div>
-              <div className="crx-menu-list">{t("Set_as_primary")}</div>
-            </div>
-             </SecurityDescriptor> 
-          </Restricted> 
+            <Restricted moduleId={30}>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+                <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+                  <div className="crx-menu-icon"></div>
+                  <div className="crx-menu-list">{t("Set_as_primary")}</div>
+                </div>
+              </SecurityDescriptor>
+            </Restricted>
           </MenuItem>
-         ) : null
-        } 
+        ) : null
+        }
 
         <MenuItem>
           <Restricted moduleId={21}>
             <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-          <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
-            <div className="crx-menu-icon">
-              <i className="far fa-user-tag fa-md"></i>
-            </div>
-            <div className="crx-menu-list">{t("Assign_User")}</div>
-          </div>
-           </SecurityDescriptor>
+              <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-tag fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Assign_User")}</div>
+              </div>
+            </SecurityDescriptor>
           </Restricted>
         </MenuItem>
 
@@ -595,7 +603,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   </div>
                   <div className="crx-menu-list">{t("Restrict_access")}</div>
                 </div>
-                
+
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
@@ -697,14 +705,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-            <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
-              <div className="crx-menu-icon">
-                <i className="far fa-user-lock fa-md"></i>
-              </div>
-              <div className="crx-menu-list">{t("Share_Asset")}</div>
-            </div>
-            </SecurityDescriptor> 
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+                <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Share_Asset")}</div>
+                </div>
+              </SecurityDescriptor>
             </Restricted>
           </MenuItem>
         ) : null
@@ -713,13 +721,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         {multiAssetDisabled === false ? (
           <MenuItem>
             <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}> 
-              <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
+              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+                <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+                  <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
                 </div>
-                <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
-              </div>
               </SecurityDescriptor>
             </Restricted>
           </MenuItem>
@@ -731,15 +739,15 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         openOrCloseModal={openRestrictAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
         onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.Lock)}
-        isError = {assetLockUnLockError.isError}
-        errorMessage = {assetLockUnLockError.errorMessage}
+        isError={assetLockUnLockError.isError}
+        errorMessage={assetLockUnLockError.errorMessage}
       />
       <UnlockAccessDialogue
         openOrCloseModal={openUnlockAccessDialogue}
         setOpenOrCloseModal={(e) => setOpenUnlockAccessDialogue(e)}
         onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.UnLock)}
-        isError = {assetLockUnLockError.isError}
-        errorMessage = {assetLockUnLockError.errorMessage}
+        isError={assetLockUnLockError.isError}
+        errorMessage={assetLockUnLockError.errorMessage}
       />
 
     </>

@@ -1204,7 +1204,7 @@ const CreateUserForm = () => {
                   errorMsg={formpayloadErr.pinErr}
                   label={t("Pin")}
                   required={false}
-                  type='password'
+                  type='text'
                   value={formpayload.pin}
                   onChange={(e: any) => setFormPayload({ ...formpayload, pin: e.target.value })}
                   onBlur={checkPin}

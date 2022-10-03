@@ -175,7 +175,7 @@ export const resources = {
         "Yes_restrict_access" : "Yes, restrict access",
         "No_do_not_restrict_access" : "No, do not restrict access",
         "Are_you_sure_want_to_restrict_access_to_the_selected_asset(s)?":"You are attempting the restrict access to the selected asset(s)?",
-        "Access_to_the_selected_asset(s)_will_be_restricted_to_user_groups_with_the_view_locked_asset_permission.":"Access to the selected asset(s) will be restricted to user groups with the view locked asset permission.",
+        "Access_to_the_selected_asset(s)_will_be_restricted_to_user_groups_with_the_view_locked_asset_permission.":"You are attempting to restrict access to the selected asset(s). Access to the selected asset(s) will be restricted to user groups with the view locked asset permission.",
         "You_are_attempting_to_restrict_access_to_the_selected_asset(s)._Access_to_the_selected_asset(s)_will_be_restricted_to_user_groups_with_the_view_locked_asset_permission.":"You are attempting to restrict access to the selected asset(s). Access to the selected asset(s) will be restricted to user groups with the view locked asset permission.",
         "Are_you_sure_you_want_to_restrict_access_to_the_selected_asset(s)?":"Are you sure you want to restrict access to the selected asset(s)?",
         "Yes,_restrict_access":"Yes, restrict access",
@@ -383,6 +383,7 @@ export const resources = {
         "Data_Upload_Policy":"Uncategorized Upload Policy",
         "Upload_Policy_is_required":"Upload Policy is required",
         "BlackBox_Retention_Policy":"BlackBox Retention Policy",
+        "Blackbox_Retention_Policy_is_required" : "Blackbox Retention Policy is required",
         "SSID":"SSID",
         "Unit_Templates":"Unit Templates",
         "Select_location_on_the_map":"Select location on the map",
@@ -479,6 +480,7 @@ export const resources = {
         "Category_Title_Placeholder_Here":"Category Title Placeholder Here",
         "There_is_no_form_response_for_the_category_named":"There is no form response for the category named",
         "Please_save_to_continue":"Please save to continue",
+        "Maximum_lenght_is_1024" : "Maximum lenght is 1024",
         // ---------------------------------
         
         // --------- Global Search ----------
@@ -558,7 +560,7 @@ export const resources = {
         "Blackbox Retention Policy":"Blackbox Retention Policy",
         "Beep During Recording":"Beep During Recording",
         "Sensor Recording Start Delay":"Sensor Recording Start Delay",
-        "required":"required",
+        "required":"Required",
         "Two High":"Two High",
         "Force Logout On Shutdown":"Force Logout On Shutdown",
         "Logout users on closing/shutdown application":"Logout users on closing/shutdown application",

@@ -348,6 +348,7 @@ export const resources = {
         "Retention_Policy_is_required":"hr-Retention Policy is required",
         "Data_Upload_Policy":"hr-Data Upload Policy",
         "Upload_Policy_is_required":"hr-Upload Policy is required",
+        "Blackbox_Retention_Policy_is_required" : "hr-Blackbox Retention Policy is required",
         "BlackBox_Retention_Policy":"hr-BlackBox Retention Policy",
         "SSID":"hr-SSID",
         "Unit_Templates":"hr-Unit Templates",
@@ -445,6 +446,7 @@ export const resources = {
         "Category_Title_Placeholder_Here":"hr-Category Title Placeholder Here",
         "There_is_no_form_response_for_the_category_named":"hr-There is no form response for the category named",
         "Please_save_to_continue":"hr-Please save to continue",
+        "Maximum_lenght_is_1024" : "Maximum lenght is 1024",
         // ---------------------------------
         
         // --------- Global Search ----------
