@@ -93,6 +93,7 @@ type Props = {
         <CRXSelectBox
           value={dateTimeDetail.value}
           defaultOption={false}
+          popover={"CRXDaySelection"}
           onChange={onOptionChange}
           options={dateOptionsValues}
           className="daysSelection"
@@ -100,7 +101,7 @@ type Props = {
         <CRXTooltip className="crxTooltipdate" iconName="fas fa-info-circle" title="Select from pre-selection" placement="right" />
       </div>
 
-      <div className="paperFooter" style={{marginTop:"25%"}}>
+      <div className="paperFooter">
         <CRXButton className="clearButton" color="primary" variant="contained" onClick={onReset}>
           Reset to default
         </CRXButton>

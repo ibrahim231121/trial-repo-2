@@ -114,9 +114,17 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       setFieldValue('SaveButtonIsDisable', false, false);
       setFieldValue('RetentionList', [{
         id: props.rowData.id,
-        extendedDays: null
+        extendedDays: null,
+        holdUntil : 0
       }], false);
       props.setIsformUpdated(true);
+    }
+    else if(status === RetentionStatusEnum.RevertToOriginal)
+    {
+      setFieldValue('RetentionList', [{
+        id: props.rowData.id,
+        holdUntil : null
+      }], false);
     }
     setFieldValue('SaveButtonIsDisable', false, false);
   }

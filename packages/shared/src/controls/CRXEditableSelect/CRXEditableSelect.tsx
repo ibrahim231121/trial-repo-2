@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useLayoutEffect} from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {makeStyles, createStyles} from '@material-ui/core/styles'
 import "./EditableSelect.scss";
 import { Typography } from "@material-ui/core";
+import CRXTooltip from "../CRXTooltip/CRXTooltip"
 import ClearSharpIcon from "@material-ui/icons/ClearSharp";
 interface selectBoxProps {
   multiple?: boolean;
@@ -72,6 +73,16 @@ createStyles({
     }
   },
  
+  clearIndicator : {
+    visibility: "hidden",
+    '&:hover' : {
+      backgroundColor : "transparent",
+      visibility: "hidden",
+    },
+    '&:focus' : {
+      backgroundColor : "transparent"
+    }
+  }
 }))
 
 const CRXAutocomplete = ({
@@ -93,6 +104,7 @@ const CRXAutocomplete = ({
 
   const data = options;
   // const errors = error ? "errors" : " "; 
+  
   const errorMsgIcon = (
     <i className="fas fa-exclamation-circle">
       <span className="crxErrorMsg"> {errorMsg}</span>
@@ -129,6 +141,8 @@ const CRXAutocomplete = ({
       id={id}
       freeSolo={freeSolo}
       popupIcon={opupOpenCret}
+      clearText=""
+      closeIcon={<CRXTooltip iconName="fal fa-times" arrow={false} title="clear" placement="bottom" id="clearIconSelectBox_search" className="predictiveSearchCloseIcon"/>}
        ChipProps={{
           deleteIcon: <ClearSharpIcon fontSize="large" fontWeight="bold" />,
         }}
@@ -137,10 +151,12 @@ const CRXAutocomplete = ({
       value={value}
       getOptionLabel={(option: any) => option
       }
+      
       onInputChange={onInputChange}
       classes={{
         option: classes.option,
-        paper : classes.paper
+        paper : classes.paper,
+        clearIndicator : classes.clearIndicator
       }}
       onChange={(e,value) => {
         return onChange(e,value);
@@ -162,6 +178,7 @@ const CRXAutocomplete = ({
 
       )}
     />
+    
     {error && (
             <Typography
               className="errorStateContent"

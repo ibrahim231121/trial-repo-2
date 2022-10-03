@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
 import Slider from "@material-ui/core/Slider";
 import "./VolumeControl.scss";
-import { CRXTooltip } from "@cb/shared";
-import VolumeControlStyle from "./VolumeControlStyle";
+import { CRXTooltip, VolumeControlStyle } from "@cb/shared";
 
 interface VolumecontrolProp {
   setVolumeHandle: (values: number) => void;

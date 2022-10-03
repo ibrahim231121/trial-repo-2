@@ -503,7 +503,7 @@ const openHandler = (_: React.SyntheticEvent) => {
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
       minWidth: "430",
-      maxWidth : "430",
+      maxWidth : "489px",
       attributeName: "UserGroups",
       attributeType: "List",
       attributeOperator: "contains"

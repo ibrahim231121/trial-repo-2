@@ -5,6 +5,7 @@ const CRXPanelStyle = makeStyles((theme: Theme) =>
 createStyles({
   root: {
     display: 'flex',
+    transform: "none"
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -27,9 +28,10 @@ createStyles({
     display: 'none',
   },
   drawer: {
-    
+    transform : "unset",
     flexShrink: 0,
-    backGround:"#333"
+    background:"#333",
+    backgroundColor:"#333"
   },
   drawerPaper: {
     width: drawerWidth,
@@ -44,7 +46,7 @@ createStyles({
   },
   content: {
     height:"100%",
-    
+    transform: "unset",
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
@@ -64,7 +66,7 @@ createStyles({
   },
   bradCrumscontent: {
     flexGrow: 1,
-    padding: "3px 40px 7px 24px",
+    padding: "0px 40px 0px 24px",
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

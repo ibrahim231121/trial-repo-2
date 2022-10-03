@@ -30,5 +30,6 @@ export type RetentionFormType = {
 
 export enum RetentionStatusEnum {
     CustomExtention = '1',
-    IndefiniteExtention = '2'
+    IndefiniteExtention = '2',
+    RevertToOriginal = '3'
   }

@@ -97,21 +97,17 @@ const SearchComponent = (props: any) => {
 
   const shortcutData = [
     {
+      text: 'My Assets',
+      query: () => queries.GetAssetsByUserName(decoded.UserName),
+      renderData: function () {
+        fetchData(this.query(), searchType.ViewOwnAssets);
+      },
+    },
+    {
       text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
       renderData: function () {
         setPredictiveText(t("Not_Categorized"));
-        fetchData(this.query(), searchType.ShortcutSearch);
-        setDateTimeAsset(dateTimeDropDown);
-        setShowAssetDateCompact(true);
-        setIsSearchBtnDisable(false);
-      },
-    },
-    {
-      text: t("Trash"),
-      query: () => queries.GetAssetsByState(t("Trash")),
-      renderData: function () {
-        setPredictiveText(t("Trash"));
         fetchData(this.query(), searchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
@@ -165,13 +161,7 @@ const SearchComponent = (props: any) => {
         setShowAssetDateCompact(false);
       },
     },
-    {
-      text: 'View Own Assets',
-      query: () => queries.GetAssetsByUserName(decoded.UserName),
-      renderData: function () {
-        fetchData(this.query(), searchType.ViewOwnAssets);
-      },
-    },
+    
   ];
 
   React.useEffect(() => {
@@ -192,49 +182,55 @@ const SearchComponent = (props: any) => {
       });
 
       obj.map((o: any) => {
-        if (o != undefined && o.key == 'username') {
-          const val = {
-            bool: {
-              should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == 'unit') {
-          const val = {
-            bool: {
-              should: [{ match: { 'asset.unit': `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
-        } else if (o != undefined && o.key == 'category') {
-          const val = {
-            bool: {
-              should: [{ match: { categories: `${o.inputValue}` } }],
-            },
-          };
-          AdvancedSearchQuerry.bool.must.push(val);
+        if(o)
+        {
+          if (o.key == 'username') {
+            const val = {
+              bool: {
+                should: [{ match: { 'asset.owners': `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          } else if (o.key == 'unit') {
+            const val = {
+              bool: {
+                should: [{ match: { 'asset.unit': `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          } else if (o.key == 'category') {
+            const val = {
+              bool: {
+                should: [{ match: { categories: `${o.inputValue}` } }],
+              },
+            };
+            AdvancedSearchQuerry.bool.must.push(val);
+          }
         }
+        
       });
 
-      if (addvancedOptions.dateTimeDropDown.startDate) {
-        AdvancedSearchQuerry.bool.must.push({
-          range: {
-            'asset.recordingStarted': {
-              gte: `${moment(addvancedOptions.dateTimeDropDown.startDate).toISOString()}`,
+      if (dateTimeDropDown.displayText != "anytime") {
+        if (addvancedOptions.dateTimeDropDown.startDate) {
+          AdvancedSearchQuerry.bool.must.push({
+            range: {
+              'asset.recordingStarted': {
+                gte: `${moment(addvancedOptions.dateTimeDropDown.startDate).toISOString()}`,
+              },
             },
-          },
-        });
-      }
+          });
+        }
 
-      if (addvancedOptions.dateTimeDropDown.endDate) {
-        AdvancedSearchQuerry.bool.must.push({
-          range: {
-            'asset.recordingEnded': {
-              lte: `${moment(addvancedOptions.dateTimeDropDown.endDate).toISOString()}`,
+        if (addvancedOptions.dateTimeDropDown.endDate) {
+          AdvancedSearchQuerry.bool.must.push({
+            range: {
+              'asset.recordingEnded': {
+                lte: `${moment(addvancedOptions.dateTimeDropDown.endDate).toISOString()}`,
+              },
             },
-          },
-        });
-      }
+          });
+        }
+      } 
 
       fetchData(AdvancedSearchQuerry, searchType.AdvanceSearch);
     }
@@ -244,7 +240,14 @@ const SearchComponent = (props: any) => {
     if (responseForSearch.length > 0) {
       setSearchData(responseForSearch);
     }
+    else {
+      setSearchData([]);
+    }
   }, [responseForSearch]);
+
+  React.useEffect(() => {
+    setSearchData(null);
+  }, []);
 
   React.useEffect(() => {
     window.scrollTo({ top: 186, behavior: "smooth" });
@@ -257,10 +260,10 @@ const SearchComponent = (props: any) => {
   }, [querryString]);
 
   React.useEffect(() => {
-      if (dateTimeDropDown.value === 'anytime' && querryString.length === 0)
-        setIsSearchBtnDisable(true);
-      else
-        setIsSearchBtnDisable(false);
+    if (dateTimeDropDown.value === 'anytime' && querryString.length === 0)
+      setIsSearchBtnDisable(true);
+    else
+      setIsSearchBtnDisable(false);
   }, [dateTimeDropDown]);
 
 
@@ -369,7 +372,7 @@ const SearchComponent = (props: any) => {
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents'>
-        <div className='predictiveSearch'>
+        <div className={`predictiveSearch ${searchData ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
               <label className='searchLabel'>{t("Search_Assets")}</label>
@@ -396,7 +399,6 @@ const SearchComponent = (props: any) => {
           <CRXButton
             className='PreSearchButton'
             onClick={Search}
-            disabled={isSearchBtnDisable}
             color='primary'
             variant='contained'
           >
@@ -411,6 +413,7 @@ const SearchComponent = (props: any) => {
             </div>
           </>
         )}
+
         {showAdvanceSearch && (
           <>
             <div className='advanceSearchContet'>

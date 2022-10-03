@@ -1,47 +1,68 @@
 .dateTimeLabel {
-    font-size: 14px;
-    color:var(--color-333333);
-    padding:0px 0 0 14px;
-    margin:0px;
-    padding-bottom:11px;
-    display: block;
-    font-family:var(--Arial-font-family);
+  font-size: 14px;
+  color: var(--color-333333);
+  padding: 0px 0 0 14px;
+  margin: 0px;
+  padding-bottom: 11px;
+  display: block;
+  font-family: var(--Arial-font-family);
+}
+
+.iconContent {
+  position: absolute;
+  top: 0;
+  right: 16px;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+
+  .dateRangeButton {
+    font-size: 18px;
   }
 
-  
-  .iconContent {
+  .CRXDateRange {
     position: absolute;
-    top: 1px;
-    right: 14px;
-
-    .dateRangeButton {
-      font-size: 18px;
-    }
-
-    .CRXDateRange {
-      position: absolute;
-      right: 3px;
-      z-index: 9;
-      top: 32px;
-      height: 350px;
-      padding: 0px;
-    }
-
-    .paperFooter {
-      position: absolute;
-      bottom: 0px;
-      border-top:1px solid var(--color-dedede);
-      padding: 15px 25px;
-      width: 100%;
-    }
+    right: 3px;
+    z-index: 9;
+    top: 32px;
+    height: 350px;
+    padding: 0px;
   }
-  
-.calenderContent{
+
+  .paperFooter {
+    position: absolute;
+    bottom: 0px;
+    border-top: 1px solid var(--color-dedede);
+    padding: 15px 25px;
+    width: 100%;
+  }
+}
+
+.calenderContent {
   .calenderDTP {
     display: flex;
     padding: 25px;
     .centerContent {
       padding: 0px 15px;
+      display: flex;
+      align-items: center;
+    }
+    .CBX-inputDatePicker {
+      height: 30px;
+      input {
+        padding: 0 16px;
+        border: 1px solid var(--color-d1d2d4);
+        outline: 3px solid var(--color-transparent);
+        height: 28px;
+        &:hover {
+          border: 1px solid var(--color-888787);
+        }
+        &:focus {
+          outline: 3px solid var(--color-888787);
+          border: 1px var(--color-transparent);
+          padding: 0px 17px;
+        }
+      }
     }
   }
   .selectBoxContent {
@@ -51,31 +72,56 @@
     .daysSelection {
       margin-right: 15px;
       width: 247px;
+      text-transform: capitalize;
+     &.Mui-focused {
+      outline: 3px solid var(--color-888787);
+      border: none;
+     }
     }
     i {
-      top: 6px;
+      top: 0;
+      &.MuiSelect-iconOpen {
+        transform: rotate(0deg);
+      }
+      &.crxTooltipdate {
+        top: 6px;
+      }
+    }
+  }
+  .paperFooter {
+    margin-top: 20%;
+    padding: 21px 24px 21px;
+    border-top: 1px solid var(--color-d1d2d4);
+    button {
+      height: 30px;
     }
   }
 }
-  .calenderInput {
-    .MuiOutlinedInput-notchedOutline {
-      border-radius: 0px;
-    }
+.calenderInput {
+  .MuiOutlinedInput-notchedOutline {
+    border-radius: 0px;
   }
-  i{
-    &.dateTimeTooltip {
-      top:8px;
-    }
+}
+i {
+  &.dateTimeTooltip {
+    top: 8px;
   }
+}
 
-  div[class*='makeStyles-menuT-']
-  {
-    min-width: 246px !important;
-    margin-left: 1px;
-    margin-top: 5px;
+div[class*="makeStyles-menuT-"] {
+  min-width: 246px !important;
+  margin-left: 1px;
+  margin-top: 5px;
+}
+.crxTooltipdate {
+  &.crxTooltipAll {
+    padding: 8px 16px;
   }
-  .crxTooltipdate {
-    &.crxTooltipAll {
-      padding: 8px 16px;
-    }
-  }
+}
+.CRXDaySelection {
+  margin-top: 10px;
+  min-width: 247px !important;
+&.MuiPaper-rounded {
+  border-radius: 0;
+}
+}

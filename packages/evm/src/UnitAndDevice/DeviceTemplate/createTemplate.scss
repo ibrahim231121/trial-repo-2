@@ -1,6 +1,4 @@
 .CrxCreateTemplate {
-  margin-top: 161px;
-  margin-left: 67px;
   position: relative;
 
   div[role='tabpanel'] {
@@ -418,7 +416,7 @@
               border: solid white;
               border-radius: 1px;
               border-width: 0 2px 2px 0;
-              transform: rotate(45deg);
+              // transform: rotate(45deg);
             }
           }
           .checkHelperText {

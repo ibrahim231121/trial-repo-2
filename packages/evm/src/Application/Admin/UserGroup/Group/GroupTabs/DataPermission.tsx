@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { CRXMultiSelectBoxAutocomplete, CRXRows, CRXColumn, CRXSelectBox, CRXButton } from "@cb/shared";
+import { CRXMultiSelectBoxAutocomplete, CRXRows, CRXColumn, CRXSelectBox, CRXButton, CRXTooltip } from "@cb/shared";
 import {
     defaultPermissionType,
     defaultPermissionValue,
@@ -324,7 +324,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemovePermission(i)}
-                                                ></button>
+                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon"/></button>
                                             }
                                         </CRXColumn>
                                     </CRXRows>

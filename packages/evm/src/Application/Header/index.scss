@@ -97,6 +97,14 @@
       color: var(--color-d1d2d4);
     }
   }
+  button {
+    span {
+      i.crxTooltipMenuIcon{
+        color: var(--color-d1d2d4) !important;
+      }
+    }
+    color: var(--color-d1d2d4) !important;
+  }
 }
 
 .MasterHeadRight {
@@ -175,7 +183,7 @@
 }
 
 .applicationsMenu {
-  margin-top: 14px;
+  margin-top: 15px;
   margin-right: 9px;
   .MuiSvgIcon-root {
     font-size: 24px;
@@ -196,7 +204,7 @@
 
 .titlePage {
   position: relative;
-  top: -11px;
+  top: -6px;
   h2 {
     padding: 2px 0 0 0;
     margin: 0px;
@@ -216,7 +224,13 @@
     height: 1px;
     box-shadow: var(--color-black-10) 0px 0px 15px 0px;
   }
+  &:after {
+    position: absolute;
+    content: "";
+    left: 0px;
+    bottom: -25px;
+    height: 19px;
+    width: 100%;
+    background: #fff;
+  }
 }
-// .GlobalSearchIconButton {
-//   display: none !important;
-// }

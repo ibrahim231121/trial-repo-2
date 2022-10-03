@@ -9,6 +9,7 @@ type tooltipProps = {
   iconName?: string;
   content?: any;
   arrow?: boolean;
+  id? : string
 };
 const CRXUseStyles = makeStyles(() => ({
   arrow: {
@@ -40,6 +41,7 @@ function CRXCustomizedTooltip(props: any) {
 
   return (
     <Tooltip
+      
       arrow
       classes={{
         arrow:
@@ -60,6 +62,7 @@ const CRXTooltip = ({
   iconName,
   content,
   arrow = true,
+  id
 }: tooltipProps) => {
   const clsxs = CRXIconStyle();
 
@@ -77,6 +80,7 @@ const CRXTooltip = ({
   return (
     <>
       <CRXCustomizedTooltip
+        id={id}
         arrow={arrow}
         placement={placement}
         title={addTooltipTitle}

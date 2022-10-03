@@ -72,7 +72,6 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                             }})
                 dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
-                setopenNoteForm(false);
                 setIsSuccess({...isSuccess, success: false, SuccessType: ""});
             }
             else if(isSuccess.SuccessType == "Update"){
@@ -83,7 +82,6 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                             }})
                 dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
-                setopenNoteForm(false);
                 seteditNoteForm(false);
                 setIsSuccess({...isSuccess, success: false, SuccessType: ""});
             }
@@ -94,7 +92,6 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                             }})
                 dispatch(addTimelineDetailActionCreator([...tempData]));
                 setOpenModal(false);
-                setopenNoteForm(false);
                 seteditNoteForm(false);
                 setIsSuccess({...isSuccess, success: false, SuccessType: ""});
             }
@@ -134,6 +131,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             version: "",
             userId: userIdBody
         };
+        setopenNoteForm(false);
         const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
         EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
             setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
@@ -168,6 +166,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             madeBy: note.madeBy,
             userId: userIdBody
         };
+        setopenNoteForm(false);
         EvidenceAgent.updateNote(url, body).then(() => {
             setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
             setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
@@ -184,6 +183,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
 
     const onDelete = async () => {
         const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+        setopenNoteForm(false);
         EvidenceAgent.deleteNote(url).then(() => {
             setnoteobj({ ...noteobj, id: note.id })
             setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})

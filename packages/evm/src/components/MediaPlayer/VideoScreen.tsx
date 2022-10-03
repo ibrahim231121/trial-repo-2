@@ -4,9 +4,9 @@ import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
 import { GridList, Switch } from "@material-ui/core";
-import "../../Assets/css/animate.min.css"
 import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
 import { useDispatch } from "react-redux";
+import "../../Assets/css/animate.min.css"
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import VideoColumn from "./VideoColumn"
 
@@ -58,7 +58,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
             Your browser does not support the video tag.
           </video>
 
-        { isMultiTimelineEnabled && <div style={{backgroundColor:"black", color:"white", paddingLeft:"45%"}}>{camIndexVideoData.camera}</div> }
+        {/* { isMultiTimelineEnabled && <div style={{backgroundColor:"black", color:"white", paddingLeft:"45%"}}>{camIndexVideoData.camera}</div> } */}
         </>
       );
     } else {
@@ -286,7 +286,7 @@ const VideoScreen = ({onClickBookmarkNote,isPlaying, viewNumber, timelinedetail,
         </VideoColumn>
         </div>
         {isOpenWindowFwRw && <VideoPlayerFastFwRw videoData={timelinedetail} setVideoHandlersFwRw={setVideoHandlersFwRw} setvideoTimerFwRw={setvideoTimerFwRw} onClickVideoFwRw={onClickVideoFwRw}/>}
-        {mapEnabled && <div className="_video_Player_Right_Panel">
+        {mapEnabled && <div className="_video_Player_Right_Panel"><div className="_panel_resize_bar"></div>
           <AssetDetailsPanel data={data} evidenceId={evidenceId} setData={setData}  onClickBookmarkNote={onClickBookmarkNote} updateSeekMarker={updateSeekMarker} gMapApiKey={gMapApiKey} gpsJson={gpsJson} openMap={openMap} setOnMarkerClickTimeData={setOnMarkerClickTimeData} toasterMsgRef={toasterMsgRef}/>
         </div>}
 

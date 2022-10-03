@@ -45,7 +45,7 @@
 
 .assetThumb {
   width: 110px;
-  height:100% ;//61px;
+  height: 100%; //61px;
   margin: 0px auto;
   position: relative;
   display: flex;
@@ -54,7 +54,6 @@
   text-indent: 0px !important;
   img {
     width: 100%;
-    height: 100%;
     object-fit: cover;
   }
 
@@ -148,12 +147,10 @@
   width: 100%;
 }
 
-
-.AssetsDataGrid{
+.AssetsDataGrid {
   &::-webkit-scrollbar {
     width: 1em;
     height: 15px;
-    
   }
 
   &::-webkit-scrollbar-track {
@@ -263,7 +260,6 @@
   padding: 0 6px 0 2px;
 }
 
-
 .overlayScroll {
   width: calc(100% - 260px);
   height: 16px;
@@ -273,65 +269,42 @@
   bottom: 5px;
 
   .table-scroll {
-    -webkit-appearance: none;  
+    -webkit-appearance: none;
     appearance: none;
-    width: 100%; 
-    height: 15px; 
+    width: 100%;
+    height: 15px;
     background-color: var(--color-f1f1f1);
     border: 1px solid var(--color-d1d2d4);
-    outline: none; 
-    opacity: 1; 
-    -webkit-transition: .2s; 
-    transition: opacity .2s;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
 
     &::-webkit-scrollbar {
       width: 1em;
       height: 15px;
-      
     }
     &::-webkit-slider-thumb {
-        -webkit-appearance: none; 
-        appearance: none;
-        width: 500px; 
-        height: 15px; 
-        background-color: var(--color-c8c8c8);
-        outline: 0px solid var(--color-slategrey);
-        border: 2px solid var(--color-black-3);
-        background-clip: content-box; 
-        cursor: pointer; 
-      }
+      -webkit-appearance: none;
+      appearance: none;
+      width: 500px;
+      height: 15px;
+      background-color: var(--color-c8c8c8);
+      outline: 0px solid var(--color-slategrey);
+      border: 2px solid var(--color-black-3);
+      background-clip: content-box;
+      cursor: pointer;
+    }
   }
 
-  // &::before {
-  //   position: absolute;
-  //   height: 13px;
-  //   background-color: var(--color-f1f1f1);
-  //   border: 1px solid var(--color-d1d2d4);
-  //   content: " ";
-  //   left: -240px;
-  //   top: 2px;
-  //   width: 241px;
-  // }
-  // &::after {
-  //   position: absolute;
-  //   height: 55px;
-  //   background-color: #fff;
-  //   /* border: 1px solid var(--color-d1d2d4); */
-  //   content: " ";
-  //   left: -240px;
-  //   top: 2px;
-  //   width: 100%;
-  //   z-index: -1;
-  // }
 }
 
-.overlayPanel {
-  position: fixed;
-  height: 25px;
-  background-color: #fff;
-  left: 0px;
-  bottom: 0px;
-  width: 100%;
-  z-index: 5;
-}
-
+// .overlayPanel {
+//   position: fixed;
+//   height: 25px;
+//   background-color: #fff;
+//   left: 0px;
+//   bottom: 0px;
+//   width: 100%;
+//   z-index: 5;
+// }

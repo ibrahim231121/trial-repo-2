@@ -7,7 +7,6 @@
   font-size: 14px !important;
   color: var(--color-333333);
 
-
   .crxArrowDownSelect {
     right: 12px;
     top: 0;
@@ -18,8 +17,11 @@
       font-size: 21px !important;
       color: var(--color-333333);
     }
+    &.MuiSelect-iconOpen {
+      transform: rotate(0deg);
+    }
   }
-  
+
   .MuiInputBase-input {
     padding: 0px;
   }
@@ -61,8 +63,6 @@
 
   .MuiInputBase-root {
     padding: 0px !important;
-
-    
   }
 
   .selectBoxTextField {
@@ -110,9 +110,9 @@
   margin-top: 8px !important;
 }
 
-.MuiInputBase-root.Mui-disabled{
-  background-color : #e5e5e5;
-  color:#979797;
-  font-size :14px;
-  border:1px solid transparent
+.MuiInputBase-root.Mui-disabled {
+  background-color: #e5e5e5;
+  color: #979797;
+  font-size: 14px;
+  border: 1px solid transparent;
 }

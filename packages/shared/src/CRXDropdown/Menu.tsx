@@ -18,6 +18,7 @@ const DropdownStyle = makeStyles({
             color: "#fff",
             boxShadow: "none",
         },
+        transform: "none"
     },
     paper : {
         maxHeight : "300px",
@@ -46,6 +47,7 @@ type propsTypes = {
     iconHtml? : React.ReactNode,
     MenuList : RefType[],
     onClick:any //needs to be corrected
+    
 }
 
 
@@ -54,6 +56,7 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapp
     const customClass = DropdownStyle()
     const [open, setAnchorOpen] = useState(null);
     const [active , setActive] = useState<boolean>(false);
+    
     const handleOpenMenu = (event : any) => {
         
         setAnchorOpen(event.currentTarget);
@@ -70,7 +73,8 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapp
     const buttonChild = iconButton ? iconHtml : name;
 
     const ListOfMenu = MenuList.map((item:any, index:number) => {
-        return <Link to={item.router}><MenuItem key={index}  onClick={item.onClick}>{item.label}</MenuItem></Link>
+        console.log("dssad", item)
+        return <Link to={item.router}><MenuItem selected={index === 0} key={index}  onClick={item.onClick}>{item.label}</MenuItem></Link>
     });
     return (
         <div className={"GetacMenu " + wrapper}>
@@ -94,6 +98,7 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapp
                 open={Boolean(open)}
                 onClick={handleCloseMenu}
                 onClose={handleCloseMenu}
+                
                 classes = {{
                     paper : customClass.paper + " " +  className
                 }}

@@ -722,7 +722,7 @@ const CreateTemplate = (props: any) => {
 
   return (
     <>
-      {tabss1 && tabss && <div className="CrxCreateTemplate CrxCreateTemplateUi ">
+      {tabss1 && tabss && <div className="CrxCreateTemplate switchLeftComponents CrxCreateTemplateUi ">
         <CRXToaster ref={targetRef} />
         <CRXAlert
           ref={alertRef}

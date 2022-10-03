@@ -59,7 +59,7 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
       id: "2",
       align: "right",
       minWidth: "300",
-      maxWidth: "100%",
+      maxWidth: "330",
     },
     // {
     //   label: `${t("")}`,
@@ -74,21 +74,21 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
       id: "4",
       align: "center",
       minWidth: "270",
-      maxWidth: "100%",
+      maxWidth: "300",
     },
     {
       label: t("Advanced_level"),
       id: "5",
       align: "center",
       minWidth: "270",
-      maxWidth: "100%",
+      maxWidth: "300",
     },
     {
       label: t("Restricted_level"),
       id: "6",
       align: "center",
       minWidth: "270",
-      maxWidth: "100%",
+      maxWidth: "300",
     }
   ]);
 

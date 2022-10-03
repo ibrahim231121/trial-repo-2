@@ -107,19 +107,9 @@
   position: relative;
   margin: 0 81px;
   .application-Permission-DataTable {
-    // &::before {
-    //     position: fixed;
-    //     background-color: var(--color-White);
-    //     top: 211px;
-    //     left: 168px;
-    //     content: " ";
-    //     width: 85%;
-    //     height: 110px;
-    //     z-index: 99;
-    //     display: block;
-    //     margin: 0 auto;
-    //     z-index: 1;
-    // }
+    table {
+      width: 100%;
+    }
   }
   .application-permission-menu {
     position: sticky;

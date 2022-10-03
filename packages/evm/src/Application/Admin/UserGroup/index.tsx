@@ -237,7 +237,10 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "250",
-      maxWidth: "500",
+      maxWidth: "600",
+      attributeName: "UserCount",
+      attributeType: "Int",
+      attributeOperator: "eq"
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -323,7 +326,7 @@ const UserGroup: React.FC = () => {
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
+              <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
               </>
             }
             showToolbar={true}

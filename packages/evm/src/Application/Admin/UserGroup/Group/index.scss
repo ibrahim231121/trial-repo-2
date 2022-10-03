@@ -21,17 +21,6 @@
       margin-top: -25px;
       margin-left: 69px;
     }
-    &::after {
-      // width: 1152px;
-      // height: 17px;
-      // background: var(--color-White);
-      // position: fixed;
-      // content: " ";
-      // z-index: 9999;
-      // /* margin-top: -25px; */
-      // margin-left: 100px;
-      // bottom: 115px;
-    }
   }
   div[aria-labelledby="crx-tab-3"] {
     &::before {
@@ -121,6 +110,9 @@
   .hideMessageGroup {
     margin: 0;
     display: none;
+  }
+  div[id*="crx-tabpanel-"] {
+    height: calc(100vh - 303px);
   }
 }
 

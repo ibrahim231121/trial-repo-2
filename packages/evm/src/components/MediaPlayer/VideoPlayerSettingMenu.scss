@@ -7,7 +7,7 @@
             background-color: rgba(64, 64, 65, 0.97);
             color: #D1D2D4;
             // height: 170px !important;
-            width: 195px;
+            width: 200px;
             overflow: hidden;
             border-radius: 0px;
             position: relative;
@@ -131,7 +131,6 @@
         .MuiMenu-paper {
             background-color: rgba(64, 64, 65, 0.97);
             color: #D1D2D4;
-            height: 150px;
             width: 228px;
             overflow: hidden;
             border-radius: 0px;
@@ -324,7 +323,7 @@
                     }
                 }
 
-                &:nth-child(2) {
+                &:nth-child(3) {
                     border-top: 1px solid #69696A;
                     border-bottom: 1px solid #69696A;
                 }

@@ -23,6 +23,7 @@ import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
 import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
 import http from "../../../http-common";
+import "./AssetDetailTabsMenu.scss";
 import { AxiosError } from "axios";
 import {
   CRXMultiSelectBoxLight,
@@ -51,6 +52,7 @@ import {
 import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
+import { CBXLink } from "@cb/shared";
 
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
@@ -239,6 +241,9 @@ const AssetDetailsTemplate = (props: any) => {
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
     setGpsJson(tempgpsjson);
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, []);
 
 
@@ -563,10 +568,9 @@ const AssetDetailsTemplate = (props: any) => {
   // }
 
   const tabs = [
-    { label: t("Information"), index: 0 },
-    { label: t("Map"), index: 1 },
-    { label: t("GROUPED_AND_RELATED_ASSETS"), index: 2 },
-    { label: "AUDIT TRAIL", index: 3 },
+    { label: t("Asset_Metadata_Info"), index: 0 },
+    { label: t("GROUPED_AND_RELATED_ASSETS"), index: 1 },
+    { label: t("Audit_Trail"), index: 2 },
   ];
   const refresh = () => {
     window.location.reload();
@@ -585,8 +589,11 @@ const AssetDetailsTemplate = (props: any) => {
       label: `${t("Seq No")}`,
       id: "recId",
       align: "right",
+      searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
+      minWidth: '211',
+      maxWidth: '211'
     },
     {
       label: `${t("Captured")}`,
@@ -597,6 +604,8 @@ const AssetDetailsTemplate = (props: any) => {
       searchFilter: true,
       searchComponent: searchDate,
       sort: false,
+      minWidth: '313',
+      maxWidth: '313'
     },
     {
       label: `${t("Username")}`,
@@ -605,7 +614,9 @@ const AssetDetailsTemplate = (props: any) => {
       searchFilter: true,
       searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: true
+      sort: true,
+      minWidth: '314',
+      maxWidth: '314'
     },
     {
       label: `${t("Activity")}`,
@@ -614,17 +625,19 @@ const AssetDetailsTemplate = (props: any) => {
       searchFilter: true,
       searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: true
+      sort: true,
+      minWidth: '415',
+      maxWidth: '415'
     },
-    {
-      label: `${t("Action")}`,
-      id: "action",
-      align: "right",
-      searchFilter: true,
-      searchComponent: searchText,
-      dataComponent: (e: string) => textDisplay(e, " "),
-      sort: true
-    }
+    // {
+    //   label: `${t("Action")}`,
+    //   id: "action",
+    //   align: "right",
+    //   searchFilter: true,
+    //   searchComponent: searchText,
+    //   dataComponent: (e: string) => textDisplay(e, " "),
+    //   sort: true
+    // }
   ]);
   const clearAll = () => {
     const clearButton: any = document.getElementsByClassName(
@@ -703,10 +716,10 @@ const AssetDetailsTemplate = (props: any) => {
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
-        <div className="asset_date_categories">
+        {/* <div className="asset_date_categories">
           <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
           <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
-        </div>
+        </div> */} {/** maria told me the its not showing here its should be come in meta data see panel */}
         <FormContainer
           setOpenForm={() => setOpenForm(false)}
           openForm={openForm}
@@ -714,7 +727,7 @@ const AssetDetailsTemplate = (props: any) => {
           isCategoryEmpty={isCategoryEmpty}
           setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
         />
-
+        
         <Menu
           align="start"
           viewScroll="initial"
@@ -780,8 +793,8 @@ const AssetDetailsTemplate = (props: any) => {
             </Restricted>
           </MenuItem>
         </Menu>
-
-        {/* <CBXLink  children = "Exit"   onClick={() => history.goBack()} /> */}
+        <a href="#" className="">Exit</a>
+        <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
       </div>
       {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       {error && (
@@ -801,71 +814,46 @@ const AssetDetailsTemplate = (props: any) => {
         errorMessage={assetLockUnLockError.errorMessage}
       />
 
-      <CRXRows
-        container
-        spacing={0}
-
-      >
-        <CRXColumn item xs={12}>
-          {/* <div
-            style={{
-              marginLeft: "80px",
-              marginRight: "80px",
-              backgroundColor: "black",
-              height: "70vh",
-              color: "white",
-              textAlign: "center",
-            }}
-          > */}
+      
+      
           {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
           {detailContent && <div className="topBorderForDetail"></div>}
-          <div className="touchPoint_bar">
-            {detailContent == false ?
-              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                <CRXTooltip iconName="fas fa-angle-down" placement="bottom" arrow={false} title="see more" />
-              </button>
-              :
-              <button id="lessMoreButton" data-target="#v_asset_detail_view_idx" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "_asset_detail_view_idx")}>
-                <CRXTooltip iconName="fas fa-angle-up" placement="bottom" arrow={false} title="less more" />
-              </button>
-            }
-          </div>
 
-        </CRXColumn>
-        <CRXColumn item xs={12} className="topColumn">
-          <div className="tabCreateTemplate crxTabsPermission" id="detail_view" ref={detail_view}>
+       
+          <div className="asset_detail_tabs" id="detail_view" ref={detail_view}>
+            
             <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
-            <div className="tctContent">
+            <div className="list_data_main">
               <CrxTabPanel value={value} index={0}>
-                <div className="tctown">
-                  <h1>{t("Owners")} :</h1> <span>{assetInfo.owners.join(',')}</span>
+                <div className="list_data_li">
+                    <div className="list_data_categories list_data_categories_first ">
+                      <h1>{t("Owners")}</h1> <span>{assetInfo.owners.join(',')}</span>
+                    </div>
+                    <div className="list_data_categories">
+                      <h1>{t("Unit")}</h1> <span>{assetInfo.unit}</span>
+                    </div>
+                    <div className="list_data_categories list_data_categories_checksum">
+                      <h1>{t("CheckSum")}</h1> <span>{assetInfo.checksum}</span>{" "}
+                    </div>
+                    <div className="list_data_categories">
+                      <h1>{t("Video_Duration")}</h1> <span>{assetInfo.duration}</span>{" "}
+                    </div>
+                    <div className="list_data_categories">
+                      <h1>{t("Size")}</h1> <span>{assetInfo.size} MB</span>
+                    </div>
+                    <div className="list_data_categories">
+                      <h1>{t("Retention")} :</h1>
+                      <span>{assetInfo?.retention}</span>{" "}
+                    </div>
+                    <div className="list_data_categories">
+                      <h1>{t("Categories")}</h1> <span>{assetInfo.categories}</span>
+                    </div>
                 </div>
-                <div className="tctown">
-                  <h1>{t("Unit")} :</h1> <span>{assetInfo.unit}</span>
-                </div>
-                <div className="tctown">
-                  <h1>{t("CheckSum")} :</h1> <span>{assetInfo.checksum}</span>{" "}
-                </div>
-                <div className="tctown">
-                  <h1>{t("Video_Duration")} :</h1> <span>{assetInfo.duration}</span>{" "}
-                </div>
-                <div className="tctown">
-                  <h1>{t("Size")} : </h1> <span>{assetInfo.size} MB</span>
-                </div>
-                <div className="tctown">
-                  <h1>{t("Retention")} :</h1>
-                  <span>{assetInfo?.retention}</span>{" "}
-                </div>
-                <div className="tctown">
-                  <h1>{t("Categories")} :</h1> <span>{assetInfo.categories}</span>
-                </div>
-              </CrxTabPanel>
-              <CrxTabPanel value={value} index={1}>
-                <div>{t("Map")}</div>
+              
               </CrxTabPanel>
 
-              <CrxTabPanel value={value} index={2}>
+              <CrxTabPanel value={value} index={1}>
 
                 <CrxAccordion
                   title={t("Grouped_Assets")}
@@ -958,8 +946,8 @@ const AssetDetailsTemplate = (props: any) => {
                 </CrxAccordion>
               </CrxTabPanel>
 
-              <CrxTabPanel value={value} index={3}>
-                <div className="">
+              <CrxTabPanel value={value} index={2}>
+                <div className="asset_detail_tab_third">
                   {rows && (
                     <CRXDataTable
                       id="Audit Trail"
@@ -967,11 +955,10 @@ const AssetDetailsTemplate = (props: any) => {
                         setSelectedActionRow(val)
                       }
                       toolBarButton={
-
-                        <CRXButton  >
+                        <CRXButton className="asset_export_button">
+                          <i className="far fa-download"></i>
                           Export
                         </CRXButton>
-
                       }
                       showToolbar={true}
                       showCountText={false}
@@ -997,7 +984,7 @@ const AssetDetailsTemplate = (props: any) => {
                       onHeadCellChange={onSetHeadCells}
                       setSelectedItems={setSelectedItems}
                       selectedItems={selectedItems}
-                      offsetY={190}
+                      offsetY={0}
                       page={page}
                       rowsPerPage={rowsPerPage}
                       setPage={(page: any) => setPage(page)}
@@ -1012,8 +999,7 @@ const AssetDetailsTemplate = (props: any) => {
 
             </div>
           </div>
-        </CRXColumn>
-      </CRXRows>
+        
     </div>
   );
 };

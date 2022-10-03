@@ -1,0 +1,257 @@
+.CRXModalViewReason {
+    .MuiDialog-scrollPaper {
+      align-items: flex-start;
+      place-content: center !important;
+      width: 70%;
+      margin-left: 63px;
+      .MuiDialog-paperScrollPaper {
+        overflow-x: hidden !important;
+        overflow-y: auto;
+        max-height: calc(100% - 260px);
+        max-width: calc(75% - 102px);
+        min-height: 230px;
+        top: 124px;
+        padding-top: 20px;
+        margin-right: 0;
+        margin-left: 0;
+        min-width: 522px;
+      }
+    }
+    .MuiBackdrop-root {
+      background-color: var(--color-Black) !important;
+      opacity: 0.8 !important;
+      top: 139px !important;
+      left: 62px
+    }
+    .MuiDialog-paper {
+      padding: 16px 0 0 0;
+      border-radius: 0;
+      max-width: 600px;
+      box-shadow: var(--Box-shadow-2);
+      -webkit-box-shadow: var(--Box-shadow-2);
+      -moz-box-shadow: var(--Box-shadow-2);
+      -o-box-shadow: var(--Box-shadow-2);
+      -ms-box-shadow: var(--Box-shadow-2);
+    }
+  
+    .modelTitle {
+      padding: 0 25px 0 25px;
+      position: relative;
+      z-index: 999999;
+      h2 {
+        font-size:18px;
+        color: var(--color-333333);
+        font-family:var(--base-font-family);
+        font-weight: var(--Font-style-normal);
+        line-height: 20px;
+      }
+      // &::after {
+      //   background: var(--color-White);
+      //   position: absolute;
+      //   height: 85px;
+      //   content: " ";
+      //   z-index: 9999;
+      //   width: 100%;
+      // }
+    }
+  
+    .indicatestext{
+      color: var(--color-333333);
+      font-size: 14px;
+      font-style: italic;
+      padding-bottom: 28px;
+      padding-top: 40px;
+      padding-left: 25px;
+      z-index: 99999;
+      b {
+        font-size: 20px;
+        margin-right: 5px;
+      }
+    }
+  
+    .CRXContent {
+      padding: 0px 26px 43px;
+      font-size: 0.875em;
+      color: var(--color-333333);
+      height: calc(100% - 97px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      .overlayClx {
+        background: var(--color-White);
+        position: absolute;
+        height: 85px;
+        content: " ";
+        z-index: 10;
+        width: 100%;
+        top: 40px;
+        left: 0;
+      }
+    }
+    .CRXFooter {
+      padding: 0 25px;
+      justify-content: flex-start;
+      height: 74px;
+  
+      .modalPrimeryBtn {
+        background-color: var(--color-333333);
+        border-radius: 0;
+        border:1px solid var(--color-transparent);
+        padding: 2px 15px;
+        text-transform: none !important;
+  
+        .MuiButton-label {
+          font-size: 14px;
+          color: var(--color-d1d2d4);
+          font-weight: 100;
+        }
+        &:hover {
+          background-color: var(--color-6e6e6e);
+          .MuiButton-label {
+            color: var(--color-f5f5f5);
+          }
+        }
+        &:focus {
+          background-color: var(--color-231f20);
+          .MuiButton-label {
+            color: var(--color-f5f5f5);
+          }
+        }
+      }
+  
+      .modalSecrndoryBtn {
+        background-color: var(--color-White);
+        border-radius: 0;
+        border:1px solid var(--color-878787);
+        padding: 2px 15px;
+        margin-left: 31px;
+        text-transform: none !important;
+  
+        .MuiButton-label {
+          font-size: 14px;
+          color: var(--color-333333);
+          font-weight: 100;
+        }
+        &:hover {
+          background-color: var(--color-f5f5f5);
+          border:1px solid var(--color-333333);
+          .MuiButton-label {
+            color: var(--color-333333);
+          }
+        }
+        &:focus {
+          background-color: var(--color-231f20);
+          .MuiButton-label {
+            color: var(--color-f5f5f5);
+          }
+        }
+      }
+  
+     
+    }
+    .CRXDivider {
+      border-color: var(--color-d1d2d4);
+    }
+  
+    .CRXPopupCrossButton {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 46px;
+  
+      i {
+        font-size: 16px;
+        color: var(--color-d1d2d4);
+        &:hover {
+          color: var(--color-333333);
+        }
+        &:focus {
+          color: var(--color-333333);
+        }
+      }
+    }
+  
+    .dailogBottonText {
+      position: absolute;
+      bottom: 115px;
+      color: var(--color-333333);
+      font-size: 14px;
+    }
+    .modalContentText {
+      font-size: 14px !important;
+      color: var(--color-333333);
+      padding: 28px 0px;
+    }
+    .modalBottomText {
+      font-size: 14px;
+      color: var(--color-333333);
+      padding-top: 5px;
+    }
+  }
+
+
+    
+  @media only screen and (max-width: 1920px) {
+    .CRXModalViewReason {
+      .MuiDialog-scrollPaper {
+        width: 72.5%;
+        margin-left: 62px;
+        .MuiDialog-paperScrollPaper {
+          //overflow: hidden !important;
+          // height: calc(100% - 262px) !important;
+    
+        }
+      }
+    }
+ 
+  }
+  
+  @media only screen and (max-width: 1024px) {
+    .CRXModalViewReason {
+      .MuiDialog-scrollPaper {
+        width: 70%;
+        margin-left: 62px;
+        .MuiDialog-paperScrollPaper {
+          //overflow: hidden !important;
+          // height: calc(100% - 262px) !important;
+          // top: 29px;
+  
+        }
+      }
+    }
+ 
+  }
+  
+  @media only screen and (max-width: 1366px) {
+    .CRXModalViewReason {
+      .MuiDialog-scrollPaper {
+        width: 70%;
+        margin-left: 62px;
+        .MuiDialog-paperScrollPaper {
+          //overflow: hidden !important;
+          // height: calc(100% - 64px) !important;
+          // height: calc(100% - 262px) !important;
+          // top: 29px;
+   
+        }
+      }
+    }
+
+  }
+  
+  @media only screen and (max-width : 1536px){
+    .CRXModalViewReason {
+      .MuiDialog-scrollPaper {
+        .MuiDialog-paperScrollPaper {
+          overflow: hidden !important;
+          // height: calc(100% - 64px) !important;
+          // height: calc(100% - 262px) !important;
+          // top: 29px;
+        }
+      }
+      
+    }
+    .CRXSecList {
+      max-height: calc(100% - 52px) !important;
+    }
+  }
+  

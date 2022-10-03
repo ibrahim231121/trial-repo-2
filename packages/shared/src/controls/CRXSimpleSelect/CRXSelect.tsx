@@ -44,6 +44,7 @@ const StyledMenuItem = withStyles(() => ({
     color: "#333333",
     height: "30px",
     borderRadius: "0px",
+    textTransform : "capitalize",
     "&:hover": {
       backgroundColor: "#f5f5f5",
       color: "#333333",

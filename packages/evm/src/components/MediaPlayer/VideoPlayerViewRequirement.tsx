@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CRXModalDialog } from "@cb/shared";
+import { CRXModalAssetViewReason } from "@cb/shared";
 import { CRXButton, CRXAlert } from "@cb/shared";
 import "./VideoPlayer.scss";
 
@@ -20,7 +20,7 @@ const VideoPlayerViewRequirement: React.FC<VideoPlayerViewRequirementProps> =
 
     return (
       <div className="videoPlayerNote">
-        <CRXModalDialog
+        <CRXModalAssetViewReason
           maxWidth="lg"
           title="Asset view requirement"
           className={"CRXModal CRXAssetViewRequirement"}
@@ -57,7 +57,7 @@ const VideoPlayerViewRequirement: React.FC<VideoPlayerViewRequirementProps> =
               </div>
             </div>
           </div>
-        </CRXModalDialog>
+        </CRXModalAssetViewReason>
       </div>
     );
   });

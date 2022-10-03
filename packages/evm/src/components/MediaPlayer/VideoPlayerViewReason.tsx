@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { CRXModalDialog } from '@cb/shared';
+import { CRXModalAssetViewReason } from '@cb/shared';
 import { CRXButton } from '@cb/shared';
 import { CRXAlert } from '@cb/shared';
 import { TextField } from '@cb/shared';
@@ -156,7 +156,7 @@ const errorsReason = reason == "Other" && descriptionErr.length > 0  ? "__CRX__E
 console.log(descriptionErr, "check")
     return (
         <div className='videoPlayerNote'>
-            <CRXModalDialog
+            <CRXModalAssetViewReason
                 maxWidth="gl"
                 title="Asset view reason"
                 className={'CRXModal CRXAssetReason'}
@@ -188,6 +188,7 @@ console.log(descriptionErr, "check")
                             <CRXSelectBox
                                 className="CRXViewReasonDropdown"
                                 options={Reasons}
+                                defaultOptionText={"-- Please select one --"}
                                 disabled={false}
                                 defaultOption={false}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { ReasonChange(e) }}
@@ -226,7 +227,7 @@ console.log(descriptionErr, "check")
                 </div>
 
 
-            </CRXModalDialog >
+            </CRXModalAssetViewReason >
         </div >
     );
 });
