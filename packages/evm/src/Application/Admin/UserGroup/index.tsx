@@ -241,9 +241,6 @@ const UserGroup: React.FC = () => {
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
-      attributeName: "UserCount",
-      attributeType: "Int",
-      attributeOperator: "eq"
     }
   ]);
 
