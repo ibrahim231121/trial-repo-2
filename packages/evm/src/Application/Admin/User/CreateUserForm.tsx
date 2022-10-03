@@ -448,7 +448,7 @@ const CreateUserForm = () => {
     * * setting status to pending if user enable change password on next login checkbox 
     */
     if (isPasswordResetRequired) {
-      account.status = UserStatus.Active;
+      account.status = UserStatus.Pending;
     }
     if (radioValue == 'sendAct') {
       account.status = UserStatus.Pending;

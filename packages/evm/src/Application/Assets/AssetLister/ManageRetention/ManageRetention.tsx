@@ -21,6 +21,8 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
+  const [prevRecord, setPrevRecord] = React.useState<Evidence>();
+
   const [alert, setAlert] = React.useState<boolean>(false);
   const alertRef = React.useRef(null);
   const retentionRadioDefaultOptions = [
@@ -86,7 +88,9 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   };
 
   const getRetentionData = () => {
+    props.setIsformUpdated(false);
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
+      setPrevRecord(response);
       if (response.holdUntil != null) {
         formPayload.OriginalRetention = `Original Retentions: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
         formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
@@ -118,6 +122,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         holdUntil : 0
       }], false);
       props.setIsformUpdated(true);
+      
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
@@ -139,6 +144,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       extendedDays: parseInt(retentionDays)
     }], false);
     setFieldValue('SaveButtonIsDisable', false, false);
+    
     props.setIsformUpdated(true);
   }
 

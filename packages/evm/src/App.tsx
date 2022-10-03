@@ -431,7 +431,7 @@ function App() {
             error: icons.error,
             warning: icons.warning,
             info: icons.attention,
-          }}
+          }} 
           className="toasterMsg"
           classes={{
             variantSuccess: "success",
