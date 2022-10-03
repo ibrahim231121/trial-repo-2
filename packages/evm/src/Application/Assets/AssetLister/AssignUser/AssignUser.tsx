@@ -9,7 +9,7 @@ import {
 } from "@cb/shared";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
-import { getAllUsersAsync } from "../../../../Redux/UserReducer";
+import { getAllUsersAsync, getUsersIdsAsync } from "../../../../Redux/UserReducer";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import Cookies from "universal-cookie";
@@ -51,7 +51,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 
   const alertRef = useRef(null);
   const users: any = useSelector(
-    (state: RootState) => state.userReducer.users
+    (state: RootState) => state.userReducer.userIds
   );
   const [assignUserCheck, setAssignUserCheck] = React.useState<boolean>(false);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
@@ -64,7 +64,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
 })
 
   React.useEffect(() => {
-    dispatch(getAllUsersAsync(pageiGrid));
+    dispatch(getUsersIdsAsync(pageiGrid));
     getData();
     //getMasterAsset();
   }, []);
@@ -202,8 +202,8 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     if (arr.length > 0) {
       for (const element of arr) {
         sortedArray.push({
-          id: element.id,
-          label: element.account.userName,
+          id: element.recId,
+          label: element.userName,
         });
       }
     }
@@ -327,12 +327,12 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   <b>*</b>
                 </div>
                 <div className="fieldAssigInput">
-                {users && <MultiSelectBoxCategory
+                {users.data && <MultiSelectBoxCategory
                     className="categortAutocomplete"
                     multiple={true}
                     CheckBox={true}
                     visibility={true}
-                    options={filterUser(users)}
+                    options={filterUser(users.data)}
                     value={props.filterValue}
                     autoComplete={true}
                     isSearchable={true}
