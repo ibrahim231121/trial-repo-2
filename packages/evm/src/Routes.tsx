@@ -93,7 +93,7 @@ const Routes = () => {
               <PrivateRoute moduleId={13} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevices)[0].url} exact={true} component={UnitAndDevices} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfiguration)[0].url} exact={true} component={UnitConfiguration} />
               <PrivateRoute moduleId={22} path={urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url} exact={true} component={UnitConfigurationTemplate} />     
-              <PrivateRoute moduleId={23} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={(routeProps:any) => <CreateUnitAndDevicesTemplateBC04 {...routeProps} />} />
+              <PrivateRoute moduleId={23} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url} exact={true}  component={CreateUnitAndDevicesTemplateBC04} />
               
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateViewLog)[0].url} exact={true}  component={(routeProps:any) => <ViewConfigurationTemplateLog {...routeProps} />} />
 
