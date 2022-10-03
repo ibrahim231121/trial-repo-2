@@ -36,6 +36,7 @@ import { Device, GetPrimaryDeviceInfo, Unit, UnitTemp, UnitTemplateConfiguration
 import { Station } from "../../utils/Api/models/StationModels";
 import UnitDeviceEvents from "./UnitDeviceEvents";
 import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
+import { CBXLink } from "@cb/shared";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -422,9 +423,7 @@ const UnitCreate = (props: historyProps) => {
             </MenuItem>
           </Menu>
         </div>
-        <div className="unitExit">
-          <p onClick={history.goBack}>{t("Exit")}</p>
-        </div>
+        <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
       </div>
 
       <div className="crxTabsPermission CrxUnitDetailId">

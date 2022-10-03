@@ -222,18 +222,24 @@ iframe {
   }
   .unitDetailAction {
     margin-right: 3px;
-    position: absolute;
     z-index: 99999999;
-    top: -33px;
     right:30px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     height: 27px;
+    position: absolute;
+    top: 87px;
+    a {
+      color: #D74B00;
+     font-size: 14px;
+     }
     .menuUnitDetail {
       button {
         background: transparent;
         border: none;
+        color: var(--color-333333);
+        font-size: 18px;
         &:hover {
           cursor: pointer;
         }
