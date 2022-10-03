@@ -7,16 +7,27 @@ type VideoPlayerViewRequirementProps = {
   openViewRequirement: boolean;
   setOpenViewRequirement: any;
   setReasonForViewing: any;
+  setViewReasonRequired: any;
 };
 
 const VideoPlayerViewRequirement: React.FC<VideoPlayerViewRequirementProps> =
   React.memo((props) => {
-    const { openViewRequirement, setOpenViewRequirement, setReasonForViewing } =
+    const { openViewRequirement, setOpenViewRequirement, setReasonForViewing, setViewReasonRequired } =
       props;
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+      setReasonForViewing(false);
       setOpenViewRequirement(false);
-      setReasonForViewing(true);
+      setViewReasonRequired(false);
     };
+
+    const handleNext = (e: React.MouseEvent<HTMLElement>) => {
+      setReasonForViewing(true);
+      setOpenViewRequirement(false);
+    };
+
+    React.useEffect(() => {
+      setOpenViewRequirement(true);
+    }, [])
 
     return (
       <div className="videoPlayerNote">
@@ -49,7 +60,7 @@ const VideoPlayerViewRequirement: React.FC<VideoPlayerViewRequirementProps> =
 
               <div className="modalFooter CRXFooter">
                 <div className="nextBtn">
-                  <CRXButton className="primary" onClick={handleClose}>
+                  <CRXButton className="primary" onClick={handleNext}>
                     Enter a reason for viewing
                   </CRXButton>
                   

@@ -11,27 +11,37 @@ import { CRXConfirmDialog } from '@cb/shared';
 import { CRXSelectBox } from '@cb/shared';
 import CRXAppDropdown from '../../Application/Header/AppBarMenu/AppBarLinks';
 import axios from 'axios';
-
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router";
-import { EvidenceAgent } from '../../utils/Api/ApiAgent';
+import { EvidenceAgent, SetupConfigurationAgent } from '../../utils/Api/ApiAgent';
 import { AssetViewReason } from '../../utils/Api/models/EvidenceModels';
+import { GlobalAssetViewReason } from '../../utils/Api/models/SetupConfigurations';
 
 
 type VideoPlayerViewReasonProps = {
     openViewReason: boolean;
     EvidenceId: any;
-    setOpenViewReason: any;
     AssetData: any;
     setViewReasonControlsDisabled: any;
     setReasonForViewing: any
+    setViewReasonRequired: any
+    setOnRefreshViewReasonOpen: any
 };
 
 type ViewReason = {
     displayText: string;
     value: string;
 }
+
+type ViewReasonTimerObject = {
+    evidenceId: number;
+    userId: number;
+    time: number;
+}
+
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, setOpenViewReason, AssetData, setViewReasonControlsDisabled, setReasonForViewing } = props;
+    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen } = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -50,6 +60,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         success: false,
         SuccessType: "",
     });
+    const [viewReason, setViewReason] = React.useState<ViewReason[]>([]);
+    const cookies = new Cookies();
     const Reasons: ViewReason[] = [
         { displayText: "Reason 1", value: "Reason 1" },
         { displayText: "Reason 2", value: "Reason 2" },
@@ -57,11 +69,79 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         { displayText: "Reason 4", value: "Reason 4" },
         { displayText: "Other", value: "Other" },
     ]
+    React.useEffect(() => {
+        SetupConfigurationAgent.getGlobalAssetViewReason('/TenantSettings/getassetviewreasons')
+            .then((response : GlobalAssetViewReason[]) =>
+            {
+                let tempViewReason: ViewReason[]= response.map((x:GlobalAssetViewReason)=> {
+                    return {
+                        "displayText": x.label,
+                        "value": x.inputValue
+                    }
+                })
+                tempViewReason.push({displayText: "Other", value: "Other"})
+                setViewReason(tempViewReason)
+            })
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
+    }, []);
     const history = useHistory();
     React.useEffect(() => {
         setOpenModal(openViewReason);
         getData();
     }, []);
+
+    const setLocalStorage = async () => {
+        let obj:ViewReasonTimerObject | undefined;
+        let accessToken = cookies.get('access_token');
+        if(accessToken){
+            let decodedAccessToken : any = jwt_decode(accessToken);
+            let UserIdExist = decodedAccessToken.UserId ? true : false;
+            let currentData:any=new Date();
+            currentData = Math.floor(currentData.getTime()/1000);
+            if(UserIdExist){
+                obj = {
+                    userId: decodedAccessToken.UserId,
+                    evidenceId : EvidenceId,
+                    time: currentData
+                };
+            }
+        }
+        let ViewReasonTimer = localStorage.getItem("ViewReasonTimer");
+        if(ViewReasonTimer)
+        {
+            let tempViewReasonTimerArrObj:ViewReasonTimerObject[] = JSON.parse(ViewReasonTimer)
+            if(tempViewReasonTimerArrObj && tempViewReasonTimerArrObj?.length>0 && obj){
+                containsObject(obj,tempViewReasonTimerArrObj);
+            }
+        }
+        else{
+            if(obj){
+                let tempViewReasonTimerArrObj:ViewReasonTimerObject[] = [];
+                tempViewReasonTimerArrObj.push(obj);
+                localStorage.setItem("ViewReasonTimer", JSON.stringify(tempViewReasonTimerArrObj));
+            }
+        }
+    }
+
+    const containsObject = (obj: ViewReasonTimerObject, list:ViewReasonTimerObject[]) => {
+        let i;
+        let isObjExist = false;
+        for (i = 0; i < list.length; i++) {
+            if (list[i].evidenceId === obj.evidenceId && list[i].userId === obj.userId) {
+                list[i].time = obj.time;
+                isObjExist = true;
+            }
+        }
+        list = list.filter((item:ViewReasonTimerObject) => (item.time+600) >= obj.time);
+        if(!isObjExist){
+            list.push(obj);
+            localStorage.setItem("ViewReasonTimer", JSON.stringify(list));
+        }else{
+            localStorage.setItem("ViewReasonTimer", JSON.stringify(list));
+        }
+    }
 
     const getData = async () => {
         const res = await axios.get('https://geolocation-db.com/json/')
@@ -73,7 +153,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     const handleClose = async (e: React.MouseEvent<HTMLElement>) => {
 
         setOpenModal(false);
-        setOpenViewReason(false);
+        setReasonForViewing(false);
+        setViewReasonRequired(false);
     };
 
     const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
@@ -90,6 +171,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         EvidenceAgent.addAssetViewReason(AssetViewReasonURL, body).then(()=>{
             setViewReasonControlsDisabled(false);
             setReasonForViewing(false);
+            setLocalStorage();
+            setOnRefreshViewReasonOpen(false);
         })
         .catch((e:any) => {
             console.log(e);
@@ -99,7 +182,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             );
         })
         setOpenModal(false);
-        setOpenViewReason(false);
+        setReasonForViewing(false);
     };
 
 
@@ -187,7 +270,7 @@ console.log(descriptionErr, "check")
                             <label>Reason for viewing asset <sup>*</sup></label>
                             <CRXSelectBox
                                 className="CRXViewReasonDropdown"
-                                options={Reasons}
+                                options={viewReason}
                                 defaultOptionText={"-- Please select one --"}
                                 disabled={false}
                                 defaultOption={false}

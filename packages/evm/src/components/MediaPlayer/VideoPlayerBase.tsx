@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/rootReducer";
 import { addTimelineDetailActionCreator } from "../../Redux/VideoPlayerTimelineDetailReducer";
 import "./VideoPlayerResponsive.scss";
+import jwt_decode from "jwt-decode";
+import Cookies from "universal-cookie";
 import "./overRide_video_player_style.scss"
 
 type Timeline = {
@@ -97,6 +99,11 @@ type TimelineGeneratorModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   dispatch: any
+}
+type ViewReasonTimerObject = {
+  evidenceId: number;
+  userId: number;
+  time: number;
 }
 
 
@@ -378,6 +385,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const dispatch = useDispatch();
+  const cookies = new Cookies();
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
   const [bufferingArrayFwRw, setBufferingArrayFwRw] = React.useState<any[]>([]);
   const [visibleThumbnail, setVisibleThumbnail] = useState<number[]>([]);
@@ -462,11 +470,13 @@ const VideoPlayerBase = (props: any) => {
   const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
-  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(false);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
-  const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(true);
+  const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
+  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(false);
+  const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
   const [isMultiViewEnable, setIsMultiViewEnable] = React.useState<boolean>(false);
   const [bookmarksNotesPopup, setBookmarksNotesPopup] = useState<any[]>([]);
@@ -791,6 +801,12 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const handlePlayPause = () => {
+    if(onRefreshViewReasonOpen){
+      if(viewReasonControlsDisabled && !CheckAssetViewReason()){
+        setViewReasonRequired(true);
+        return true;
+      }
+    }
     
     if(isPlayingFwRw){
       var video: any = timelinedetail[0];
@@ -817,6 +833,12 @@ const VideoPlayerBase = (props: any) => {
     }
   };
   const handleReverse = () => {
+    if(onRefreshViewReasonOpen){
+      if(viewReasonControlsDisabled && !CheckAssetViewReason()){
+        setViewReasonRequired(true);
+        return true;
+      }
+    }
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
@@ -830,6 +852,12 @@ const VideoPlayerBase = (props: any) => {
     setFrameForward(false);
   };
   const handleforward = () => {
+    if(onRefreshViewReasonOpen){
+      if(viewReasonControlsDisabled && !CheckAssetViewReason()){
+        setViewReasonRequired(true);
+        return true;
+      }
+    }
     setPlaying(false);
     videoHandlers.forEach((videoHandle: any) => {
       videoHandle.pause();
@@ -1336,6 +1364,12 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickFwRw = (Currmode: number, CaseNo: number) => {
+    if(onRefreshViewReasonOpen){
+      if(viewReasonControlsDisabled && !CheckAssetViewReason()){
+        setViewReasonRequired(true);
+        return true;
+      }
+    }
     let video: any = timelinedetail[0];
     let currVideoStartTime = video.recording_start_point;
     let currVideoEndTime = video.recording_end_point;
@@ -1783,6 +1817,46 @@ const VideoPlayerBase = (props: any) => {
     }
   }
 
+  const CheckAssetViewReason = () => {
+    let returnvalue = false;
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+      let decodedAccessToken : any = jwt_decode(accessToken);
+      let UserIdExist = decodedAccessToken.UserId ? true : false;
+      let currentData:any=new Date();
+      currentData = Math.floor(currentData.getTime()/1000);
+      if(UserIdExist){
+        let obj:ViewReasonTimerObject = {
+          evidenceId: EvidenceId,
+          userId: decodedAccessToken.UserId,
+          time: currentData
+        };
+        let ViewReasonTimer = localStorage.getItem("ViewReasonTimer");
+        if(ViewReasonTimer)
+        {
+          let tempViewReasonTimerArrObj:ViewReasonTimerObject[] = JSON.parse(ViewReasonTimer)
+          if(tempViewReasonTimerArrObj && tempViewReasonTimerArrObj?.length>0){
+            returnvalue = containsObject(obj,tempViewReasonTimerArrObj)
+          }
+        }
+      }
+    }
+    return returnvalue;
+  }
+  const containsObject = (obj: ViewReasonTimerObject, list:ViewReasonTimerObject[]) => {
+    let i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].evidenceId === obj.evidenceId && list[i].userId === obj.userId) {
+          if((obj.time-600) < list[i].time){
+            setOnRefreshViewReasonOpen(false);
+            return true;
+          }
+      }
+    }
+    return false;
+  }
+
+
   const [isShowAudioGraph , setIsShowAudioGraph] = useState<boolean>(false)
   useLayoutEffect(() => {
     const _playerRedLine : any = document.querySelector("._play_timeLine_pipeRed");
@@ -1814,19 +1888,21 @@ const VideoPlayerBase = (props: any) => {
       <div className="searchComponents">
         <div className="_video_player_container" id="_asset_detail_view_idx">
         <div id="crx_video_player" >
-        <VideoPlayerViewRequirement
+        {viewReasonRequired && <VideoPlayerViewRequirement
         
         openViewRequirement={openViewRequirement}
         setOpenViewRequirement={setOpenViewRequirement}
         setReasonForViewing={setReasonForViewing}
-      />
-      {reasonForViewing && <VideoPlayerViewReason
-        setOpenViewReason={setopenNoteForm}
+        setViewReasonRequired={setViewReasonRequired}
+      />}
+      {viewReasonRequired && reasonForViewing && <VideoPlayerViewReason
         openViewReason={true}
         EvidenceId={EvidenceId}
         AssetData={data[0]}
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
         setReasonForViewing={setReasonForViewing}
+        setViewReasonRequired ={setViewReasonRequired}
+        setOnRefreshViewReasonOpen={setOnRefreshViewReasonOpen}
       />}
       
 
@@ -2009,7 +2085,7 @@ const VideoPlayerBase = (props: any) => {
               <div className={`playerViewFlex enablebViewFlex`}>
                 <div className="playerViewLeft">
                 
-                    <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" disabled={viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={handleReverse} variant="contained" className="videoPlayerBtn videoControleBFButton handleReverseIcon" >
                       <CRXTooltip
                         content={<SVGImage
                           width={12}
@@ -2024,7 +2100,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn backwardBtn" disabled={ismodeRwdisable || viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeRw + 2, 2)} variant="contained" className="videoPlayerBtn backwardBtn" disabled={ismodeRwdisable}>
                       <CRXTooltip
                         iconName={"icon icon-backward2 backward2Icon"}
                         placement="top"
@@ -2033,7 +2109,7 @@ const VideoPlayerBase = (props: any) => {
                       />
                     </CRXButton>
 
-                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className={`videoPlayerBtn ${isPlaying ? "pauseBtn" : "playBtn"}`} disabled={viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={handlePlayPause} variant="contained" className={`videoPlayerBtn ${isPlaying ? "pauseBtn" : "playBtn"}`} >
                       <CRXTooltip
                         iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
                         placement="top"
@@ -2041,7 +2117,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn backwardRightBtn" disabled={ismodeFwdisable || viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={() => onClickFwRw(modeFw + 2, 1)} variant="contained" className="videoPlayerBtn backwardRightBtn" disabled={ismodeFwdisable}>
                       <CRXTooltip
                         iconName={"icon icon-forward3 backward3Icon"}
                         placement="top"
@@ -2049,7 +2125,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" disabled={viewReasonControlsDisabled}>
+                    <CRXButton color="primary" onClick={handleforward} variant="contained" className="videoPlayerBtn handleforwardIcon" >
                       <CRXTooltip
                         content={<SVGImage
                           width={12}
