@@ -53,7 +53,6 @@ export interface AssetBucket {
 }
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, portal, IsOpen, Asset }) => {
-
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
