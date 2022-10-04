@@ -36,6 +36,9 @@
 
 // };
 
+import {BASE_URL_COMMAND_SERVICE} from './Api/url';
+
+
 export const urlNames: any = {
     assets: "assets",
     adminUserGroups: "adminUserGroups",
@@ -209,21 +212,21 @@ export const urlList: any = [
     },
     {
         name: urlNames.liveVideo,
-        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=3`,  //Multi Live View URL
+        url: `${BASE_URL_COMMAND_SERVICE}?tmplId=3`,  //Multi Live View URL
         details: [
             { type: "text", label: "Live Video", }
         ],
     },
     {
         name: urlNames.avlMap,
-        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=1`,  //Avl Map Live View URL
+        url: `${BASE_URL_COMMAND_SERVICE}?tmplId=1`,  //Avl Map Live View URL
         details: [
             { type: "text", label: "Avl Map", }
         ],
     },
     {
         name: urlNames.singleLiveView,
-        url: `${process.env.REACT_APP_COMMAND_URL}?tmplId=2`,  //Single Live View URL
+        url: `${BASE_URL_COMMAND_SERVICE}?tmplId=2`,  //Single Live View URL
         details: [
             { type: "link", label: "Single Live View", }
         ],
