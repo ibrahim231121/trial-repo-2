@@ -6,6 +6,11 @@ export type ValueString = {
   value: string;
 };
 
+export type KeyValue = {
+  id: number;
+  value: string;
+};
+
 export type SearchObject = {
   columnName: string;
   colIdx: number;

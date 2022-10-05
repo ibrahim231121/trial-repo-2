@@ -9,7 +9,7 @@ import {
 } from "@cb/shared";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../Redux/rootReducer";
-import { getAllUsersAsync, getUsersIdsAsync } from "../../../../Redux/UserReducer";
+import { getUsersIdsAsync } from "../../../../Redux/UserReducer";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import Cookies from "universal-cookie";
