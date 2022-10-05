@@ -62,10 +62,10 @@ function App() {
   );
   const options = [
     { value: "en", displayText: "English" },
-    { value: "fr", displayText: "French (CA)" },
-    { value: "pl", displayText: "Polish" },
     { value: "uk", displayText: "English (UK)" },
+    { value: "fr", displayText: "French (CA)" },
     { value: "hr", displayText: "Hebrew" },
+    { value: "pl", displayText: "Polish" }
   ];
   let culture: string = useSelector(
     (state: RootState) => state.cultureReducer.value
@@ -441,9 +441,11 @@ function App() {
           }}
           TransitionComponent={Fade as React.ComponentType}
         >
-          <div className="language_selector_app">
+          <div className={`language_selector_app Language_type_${value}`}>
             <CRXSelectBox
               options={options}
+              defaultOption = {false}
+              popover={`language_selector_dropDown language_dropDown_${value}`}
               id="simpleSelectBox"
               onChange={handleChange}
               value={value}
