@@ -36,6 +36,9 @@
         position: relative;
         .MuiChip-deleteIcon {
             opacity: 0;
+            position: relative;
+            left: 5px;
+            z-index: 9;
             &:hover {
                 cursor: pointer;
             }

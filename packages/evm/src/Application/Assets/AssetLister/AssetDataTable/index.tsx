@@ -381,8 +381,7 @@ const MasterMain: React.FC<Props> = ({
       return (
         <p>
           {AssetRetentionFormat(date)}
-          <br />
-          <CRXIcon className=""><i className="fas fa-angle-right "></i></CRXIcon>
+          
         </p>
       );
   }

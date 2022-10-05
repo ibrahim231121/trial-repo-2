@@ -7,7 +7,7 @@ import { Button, Fade } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
 import "./CRXAlert.scss";
 
-const useStyles = makeStyles(() =>
+const notificationStyle = makeStyles(() =>
   createStyles({
     root: {
       width: "100%",
@@ -21,7 +21,7 @@ const useStyles = makeStyles(() =>
       // maxHeight: "50px",
       paddingLeft: "14px",
       paddingRight: "18px",
-      paddingTop: "8px",
+      paddingTop: "14px",
       paddingBottom: "8px",
       display: "flex",
       placeItems: "center",
@@ -51,7 +51,7 @@ const CRXAlert: React.FC<Props> = ({
   className,
   open, setShowSucess, persist, children
 }) => {
-  const classes = useStyles();
+  const classes = notificationStyle();
   const [openState, setOpenState] = React.useState(open);
   const [openSnack, setOpenSnack] = React.useState(true);
 
@@ -126,7 +126,7 @@ const CRXAlert: React.FC<Props> = ({
                 </IconButton>
               }
             >
-              <span>
+              <span className="message_alert_icon_text">
                 <span>{messageType[type]}: </span>
                 {children ?? message}
               </span>
