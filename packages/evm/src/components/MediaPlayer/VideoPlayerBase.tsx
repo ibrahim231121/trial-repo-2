@@ -496,7 +496,7 @@ const VideoPlayerBase = (props: any) => {
   const frame_not_seeked = useRef<boolean>(true);
   const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
   const [detailContent, setDetailContent] = useState<boolean>(false);
-  const demoRef = useRef(null)
+  const [notesEnabled, setnotesEnabled] = useState(false);
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
@@ -733,6 +733,12 @@ const VideoPlayerBase = (props: any) => {
       
     }
   }, [bookmarkNotePopupArrObj]);
+
+  React.useEffect(() => { // work Asset View Reason
+    if(CheckAssetViewReason()){
+      setViewReasonControlsDisabled(false);
+    }
+  }, []);
 
   const getFps = (videoHandle: any) => {
     videoHandle.requestVideoFrameCallback(ticker);
@@ -1716,7 +1722,14 @@ const VideoPlayerBase = (props: any) => {
 
   const renderBookmarkNotePopupOnSeek = (timerValue: number) => {
     let temparray: any[] = [];
-    bookmarksNotesPopup.forEach((x:any)=> 
+    let tempbookmarksNotesPopup: any[] = [];
+    if(!notesEnabled){
+      tempbookmarksNotesPopup = bookmarksNotesPopup.filter((x:any)=>x.objtype!="Note");
+    }
+    else{
+      tempbookmarksNotesPopup = bookmarksNotesPopup;
+    }
+    tempbookmarksNotesPopup.forEach((x:any)=> 
       {
         if(timerValue==x.timerValue)
         {
@@ -1971,18 +1984,10 @@ const VideoPlayerBase = (props: any) => {
               {loading ? (
                 <Timelines
                   timelinedetail={timelinedetail}
-                  duration={timelineduration}
-                  seteditBookmarkForm={seteditBookmarkForm}
-                  seteditNoteForm={seteditNoteForm}
-                  bookmark={bookmark}
-                  note={note}
-                  setbookmarkAssetId={setbookmarkAssetId}
-                  setnoteAssetId={setnoteAssetId}
                   visibleThumbnail={visibleThumbnail}
                   setVisibleThumbnail={setVisibleThumbnail}
                   isMultiViewEnable={isMultiViewEnable}
                   displayThumbnail={displayThumbnail}
-                  toasterMsgRef={toasterMsgRef}
                   onClickBookmarkNote={onClickBookmarkNote}
                   openThumbnail={openThumbnail}
                   mouseovertype={mouseovertype}
@@ -1995,6 +2000,7 @@ const VideoPlayerBase = (props: any) => {
                   AdjustTimeline={AdjustTimeline}
                   startTimelineSync={startTimelineSync}
                   multiTimelineEnabled={multiTimelineEnabled}
+                  notesEnabled={notesEnabled}
                 />
               ) : (<></>)}
 
@@ -2037,7 +2043,7 @@ const VideoPlayerBase = (props: any) => {
                             }
                           }
                           )}
-                          {x.enableDisplay && x.notes.map((y: any, index: any) =>
+                          {notesEnabled && x.enableDisplay && x.notes.map((y: any) =>
                             <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
                               <span className="pip_icon" style={{ backgroundColor: "#7D03D7" }} aria-hidden="true"
                                 onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
@@ -2207,16 +2213,18 @@ const VideoPlayerBase = (props: any) => {
                       isMultiViewEnable={isMultiViewEnable}
                       setIsAudioGraph={setIsAudioGraph}
                       setIsAudioGraphAnimate={setIsAudioGraphAnimate}
+                      notesEnabled={notesEnabled}
+                      setnotesEnabled={setnotesEnabled}
                     />
                   </div>
-                  <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
+                  {notesEnabled && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
                       title={<>Notes <span className="notesTooltip">N</span></>}
                       arrow={false}
                     />
-                  </CRXButton>
+                  </CRXButton>}
 
                   <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
