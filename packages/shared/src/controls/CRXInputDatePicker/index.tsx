@@ -25,6 +25,7 @@ const CRXInputDatePicker = ({
   maxDate,
   disabled
 }: InputProps) => {
+  console.log("maxEndDate", maxDate)
   return (
       <Input
         value={value}

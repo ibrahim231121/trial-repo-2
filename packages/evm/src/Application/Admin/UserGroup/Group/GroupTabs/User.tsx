@@ -251,8 +251,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "325",
+            minWidth: "180",
+            maxWidth: "381",
             visible: true,
         },
         {
@@ -263,8 +263,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "180",
+            maxWidth: "381",
             visible: true,
         },
         {
@@ -383,7 +383,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     showCustomizeIcon={false}
                     showTotalSelectedText={true}
                     lightMode={false}
-                    offsetY={45}
+                    offsetY={44}
                     page={page}
                     rowsPerPage={rowsPerPage}
                     setPage= {(page:any) => setPage(page)}

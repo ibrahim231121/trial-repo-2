@@ -6,6 +6,7 @@
   color: var(--color-d1d2d4) !important;
   background-color: var(--color-333333) !important;
   height: 30px !important;
+  z-index: 99999;
   .MuiButton-label {
     font-family: var(--base-font-family);
     font-size: 14px !important;
@@ -27,16 +28,9 @@
 }
 
 .managePermissionTable {  
-  .managePermissionBtn {
-    position: sticky;
-    top: 151px;
-    z-index: 99999;
-  }
+
   .crxClearfilter {
     position: sticky;
-    // top: 144px;
-    // margin-top: -78px;
-    // z-index: 6;
   }
   .stickyPos {
     z-index: 9999;

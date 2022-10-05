@@ -1098,6 +1098,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                           setShowSucess={setShowUploadAttention}
                           alertType="inline"
                           persist={true}
+                          showCloseButton={false}
                           children={<div className="check"><div className="attentionPera">Please add metadata to finish saving your uploaded files</div>
                             <div className="btn-center">
                               <CRXButton

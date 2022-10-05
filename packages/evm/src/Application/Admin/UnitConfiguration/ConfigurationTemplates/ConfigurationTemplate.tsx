@@ -687,7 +687,6 @@ const ConfigurationTemplates: React.FC = () => {
               selectedItems={selectedItems}
             />}
             toolBarButton={
-            <>
               <div className="menu_List_Button">
                 <Menu
                   style={{ backgroundColor: '#FFFFFF' }}
@@ -719,9 +718,9 @@ const ConfigurationTemplates: React.FC = () => {
                     )
                   })}
                 </Menu >
+                <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredConfigurationTemplateData()}> {t("Filter")} </CRXButton>
               </div>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredConfigurationTemplateData()}> {t("Filter")} </CRXButton>
-            </>
+            
           }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
