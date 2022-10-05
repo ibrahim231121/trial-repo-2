@@ -630,11 +630,11 @@ const CreateTemplate = (props: any) => {
           });
         }
       }
-
       // Pretty straightforward - use key for the key and value for the value.
       // Just to clarify: unlike object destructuring, the parameter names don't matter here.
     });
 
+    
     let templateName = Initial_Values.filter((o: any) => {
       return o.key == "templateName";
     });
@@ -763,7 +763,14 @@ const CreateTemplate = (props: any) => {
           arrow
           menuButton={
             <MenuButton>
-              <i className="fas fa-ellipsis-h"></i>
+                      <CRXTooltip 
+                      className="assetsGroupPopupTootip"
+                      placement="bottom-left"
+                      arrow={false}
+                      title={"action"}
+                      content={<i className="fas fa-ellipsis-h"></i>}
+
+                      />
             </MenuButton>
           }
         >

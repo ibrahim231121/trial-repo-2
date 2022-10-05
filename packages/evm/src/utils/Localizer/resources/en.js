@@ -790,6 +790,8 @@ export const resources = {
         "Comments":"Comments",
         "Reason_for_Sharing":"Reason for Sharing",
 
+        //---------------- Incar template page ----
+        "Create_TemplateIncar" : "Create Template : Incar"
       }
     }
   };
