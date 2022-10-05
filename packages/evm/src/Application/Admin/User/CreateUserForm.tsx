@@ -535,8 +535,21 @@ const CreateUserForm = () => {
         }
       })
       .catch(function (e: any) {
-        if (e.request.status == 500) {
+        if(e.request.status == 409) {
+          userFormMessages({
+            message: e.response.data,
+            variant: 'error',
+            duration: 7000
+          });
+
+        }
+        else if (e.request.status == 500) {
           setAlert(true);
+          userFormMessages({
+            message: t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.'),
+            variant: 'error',
+            duration: 7000
+          });
           setResponseError(
             t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );

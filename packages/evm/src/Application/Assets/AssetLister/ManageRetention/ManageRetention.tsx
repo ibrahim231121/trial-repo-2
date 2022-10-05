@@ -91,21 +91,23 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const getRetentionData = () => {
     props.setIsformUpdated(false);
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
-      setPrevRecord(response);
-      if (response.holdUntil != null) {
-        formPayload.OriginalRetention = `Original Retentions: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
+      if (response.expireOn != null) {
+        formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
         formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
+        if(response.holdUntil !=null)
+        {
+          if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
+            formPayload.CurrentRetention = 'Current Retention: Indefinite';
+          }
+          else {
+            formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
+          }
+        }
         const newObj: RetentionFormType = {
           ...formPayload,
           RetentionOptions: formPayload.RetentionOptions
         };
         setFormPayload(newObj);
-        if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
-          formPayload.CurrentRetention = 'Current Retention: Indefinite';
-        }
-        else {
-          formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
-        }
       }
     });
   }
@@ -187,6 +189,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       <div className='retention-modal'>
         <Formik initialValues={formPayload} onSubmit={onSubmitForm} enableReinitialize={true}>
           {({ setFieldValue, values }) => (
+            
             <Form>
               <div className='_rententionModalCotent'>
                 <div className='_rentention_fields'>
@@ -228,8 +231,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                 </div>
               </div>
               <div className='orginal_current_text'>
-                <div><strong>{t("Original_Retention:")}</strong> {values.OriginalRetention}</div>
-                <div><strong>{t("Current_Retention:")}</strong> {values.CurrentRetention}</div>
+                <div>{values.OriginalRetention}</div>
+                
+                <div>{values.CurrentRetention}</div>
+                
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>
