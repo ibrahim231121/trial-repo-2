@@ -33,7 +33,7 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
 
   return (
 
-    <Toolbar className={clsx("crxClearfilter stickyPos " + classes.root)}>
+    <Toolbar className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
       
       <div className='toolbar-button'>
         {toolBarButton}

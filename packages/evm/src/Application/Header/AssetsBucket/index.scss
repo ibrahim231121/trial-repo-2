@@ -56,7 +56,7 @@
 
   .bucketContent {
     text-align: center;
-    padding-top: 51%;
+    padding-top: 49%;
     color: var(--color-333333);
     font-size: 14px;
   }
@@ -804,14 +804,10 @@ body {
   display: block !important;
   .file-upload {
     place-items: initial;
-    padding: 10px 0px 10px 15px;
+    padding: 10px 14px 10px 15px;
     max-height: 100%;
   }
-  .file-upload {
-    .MuiAlert-icon {
-      margin-top: 0px;
-    }
-  }
+
 
   .MuiAlert-message {
     span {

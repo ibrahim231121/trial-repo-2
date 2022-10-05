@@ -25,7 +25,10 @@ export const AssetThumbnailIcon = (data: any): any => {
     case "Video":
       return <i className="tumbPlayIcon icon icon-play4"></i>;
     default:
-      return <img src={thumb} />;
+      return <div className="asset_lister_thumb">
+              <div className="_video_play_icon"><span className="icon icon-play4"></span></div>
+              <i className="fas fa-solid fa-file-video"></i>
+            </div>;
   }
 };
 
@@ -39,11 +42,17 @@ export const AssetThumbnail: React.FC<Props> = ({
       <div className={"assetThumb " + className} onClick={onClick}>
         {AssetThumbnailIcon(assetType)}
         {assetType === "Video" && (
-          <img src={thumbImg} alt="Asset Thumb" className="assetsThumbGetac" />
+          // <img src={thumbImg} alt="Asset Thumb" className="assetsThumbGetac" />
+          <div className="asset_lister_thumb">
+            <i className="fas fa-solid fa-file-video"></i>
+          </div>
         )}
         {assetType === "Audio" && (
-          <div className="audioBackground">
-            <img src={audioIcon} />
+          // <div className="audioBackground">
+          //   <img src={audioIcon} />
+          // </div>
+          <div className="asset_lister_thumb">
+            <i className="fas fa-solid fa-file-video"></i>
           </div>
         )}
       </div>
