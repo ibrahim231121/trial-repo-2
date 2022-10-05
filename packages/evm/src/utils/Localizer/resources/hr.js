@@ -234,7 +234,7 @@ export const resources = {
         "Confirm_Password_is_required":"hr-Confirm Password is required",
         "Passwords_are_not_same":"hr-Passwords are not same",
         "(Link_will_be_sent_after_saving_this_form.)":"hr-(Link will be sent after saving this form.)",
-        "Please_provide_a_valid_phone_number.":"hr-Please provide a valid phone number.",
+        "Please_provide_a_valid_mobile_number.":"hr-Please provide a valid mobile number.",
         "Number_must_not_exceed_15_characters.":"hr-Number must not exceed 15 characters.",
         "User_group_is_required":"hr-User group is required",
         "Middle_Initial":"hr-Middle Initial",

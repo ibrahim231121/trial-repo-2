@@ -14,7 +14,7 @@ export interface userStateProps {
     middleInitial: string;
     lastName: string;
     email: string;
-    phoneNumber: string;
+    mobileNumber: string;
     userGroups: AutoCompleteOptionType[];
     deactivationDate: string;
     pin: string | null;
