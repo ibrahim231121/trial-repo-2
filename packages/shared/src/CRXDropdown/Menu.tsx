@@ -73,7 +73,6 @@ const Menus = ({id, iconHtml, iconButton, className, disableRipple = true, wrapp
     const buttonChild = iconButton ? iconHtml : name;
 
     const ListOfMenu = MenuList.map((item:any, index:number) => {
-        console.log("dssad", item)
         return <Link to={item.router}><MenuItem selected={index === 0} key={index}  onClick={item.onClick}>{item.label}</MenuItem></Link>
     });
     return (

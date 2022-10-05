@@ -52,6 +52,11 @@ export interface UserList {
     userGroups: UserGroupsDetail[],   
 }
 
+export interface UserStatus{
+    id: Number,
+    name: string
+}
+
 export interface AccountBase {
     status: string,
     userName: string,

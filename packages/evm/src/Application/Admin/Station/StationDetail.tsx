@@ -395,9 +395,8 @@ const StationDetail: React.FC = () => {
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
-          {console.log('errors', errors)}
             <Form>
-              {console.log('values', values)}
+              {console.log('values of Form', values)}
               <div className="ManageStation  switchLeftComponents ManageStationUi">
                 {success && (
                   <CRXAlert

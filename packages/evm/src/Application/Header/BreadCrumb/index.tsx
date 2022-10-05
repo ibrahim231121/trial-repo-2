@@ -81,7 +81,7 @@ const Breadcrumb: React.FC<any> = (props) => {
   const getTitle = () => {
     const paths = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (paths) {
-      const pathName = (otherLabels ?  otherLabels : paths[paths.length - 1].label)
+      const pathName = (otherLabels && otherLabels !== t("Search_Results")  ?  otherLabels : paths[paths.length - 1].label)
       return pathName
     }
     else
@@ -109,6 +109,7 @@ const Breadcrumb: React.FC<any> = (props) => {
     let paths: BreadCrumbItem[] = urlList.filter((item:any) => item.url === urlPath)[0].details;
     let Pathurl =  urlList.filter((item:any) => item.url === urlPath)[0].url;
     if (breadCrumbValueRedux) {
+      
       paths = updatePathDetails(paths, Pathurl)
     }
     return (
@@ -160,7 +161,7 @@ const Breadcrumb: React.FC<any> = (props) => {
             {getPaths()} 
             {otherLabels && <label>{otherLabels}</label>}
           </CRXBreadcrumb>
-          <CRXTitle text={getTitle()} className="titlePage" />
+          <CRXTitle key={otherLabels} text={getTitle()} className="titlePage" />
         </>
       }
     </div>

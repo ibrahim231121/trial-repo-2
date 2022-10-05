@@ -169,20 +169,20 @@ const Group = () => {
     };
   }, []);
 
-  const functionInitialized = () => {
+  const functionInitialized = async () => {
     //this work is done for edit, if id available then retrive data from url
     if (!isNaN(+id)) {
-      UsersAndIdentitiesServiceAgent.getUserGroupsById(ids).then((response: UserGroups) => {
+      await UsersAndIdentitiesServiceAgent.getUserGroupsById(ids).then((response: UserGroups) => {
         setRes(response)
      });
-      //getResponse();
+      //getResponse();s
       getContainerMappingRes();
     }
-    UsersAndIdentitiesServiceAgent.getResponseAppPermission(APPLICATION_PERMISSION_URL).then((response:Module ) => {
+    await UsersAndIdentitiesServiceAgent.getResponseAppPermission(APPLICATION_PERMISSION_URL).then((response:Module ) => {
       setResponseAppPermission(response)
    });
     //getResponseAppPermission();
-    dispatch(getUsersInfoAsync(pageiGrid));
+    await dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const moduleAllCheck = (response: any, subModulesIdes: Number[]) => {
@@ -438,7 +438,7 @@ const Group = () => {
     let editCase = !isNaN(+id);
     var groupURL = SAVE_USER_GROUP_URL;
 
-    
+
     let subModules : GroupSubModules[] = applicationPermissions
     .map((x) => x.children)
     .flat(1)
