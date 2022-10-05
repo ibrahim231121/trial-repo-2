@@ -430,7 +430,7 @@ const CreateUserForm = () => {
 
     let contacts = [];
     if (contacts.length === 0) {
-      contacts.push({ contactType: 1, number: formpayload.phoneNumber });
+      contacts.push({ contactType: "Mobile", number: formpayload.phoneNumber });
     }
 
 
@@ -585,7 +585,7 @@ const CreateUserForm = () => {
     }
     const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
     if (contacts.length === 0) {
-      contacts.push({ contactType: 1, number: formpayload.phoneNumber });
+      contacts.push({ contactType: "Mobile", number: formpayload.phoneNumber });
     }
 
     const payload: User = {
@@ -599,6 +599,7 @@ const CreateUserForm = () => {
       timeZone: 'America/Chicago',
       pin : formpayload.pin
     };
+
 
     return payload;
   };

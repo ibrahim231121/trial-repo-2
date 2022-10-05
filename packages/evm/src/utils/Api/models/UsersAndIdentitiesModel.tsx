@@ -81,7 +81,7 @@ export interface User {
     };
     account: Account;
     contacts: {
-        contactType: number;
+        contactType: string;
         number: string;
     }[];
     assignedGroupIds: any[] | undefined;
