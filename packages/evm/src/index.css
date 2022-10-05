@@ -207,8 +207,6 @@ body {
 }
 .crx-main-container {
   min-height:calc(100vh - 30px) !important;
-  max-height:calc(100vh - 30px) !important;
-  display: table;
   width: 100%;
 }
 
