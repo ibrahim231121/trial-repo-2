@@ -14,7 +14,7 @@ import "./ManageRetention.scss";
 import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
-import { SearchType } from '../../utils/constants';
+import { SearchType } from '../../utils/constants';  
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();

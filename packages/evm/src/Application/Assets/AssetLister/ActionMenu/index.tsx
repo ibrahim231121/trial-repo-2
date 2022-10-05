@@ -608,34 +608,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           </MenuItem>
         }
 
-        {/* Remove this menu against this ticket GEP-2612 */}
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-envelope fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Email")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-link fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Link_asset")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
         <MenuItem>
           <Restricted moduleId={0}>
             {/* descriptorId={4} */}
@@ -657,49 +629,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
             </SecurityDescriptor>
           </Restricted>
         </MenuItem>
-
-        {/* Remove this menu against this ticket GEP-2612 */}
-        {/* <MenuItem disabled>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list disabledItem">
-                  {t("Link_to_this_group")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-external-link-square fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Move_asset")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-        {/* <MenuItem disabled>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list disabledItem">
-                  {t("Move_to_this_group")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
 
         {multiAssetDisabled === false ? (
           <MenuItem>
