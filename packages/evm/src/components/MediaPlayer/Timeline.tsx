@@ -10,18 +10,10 @@ import moment from "moment";
 
 interface Timelineprops {
   timelinedetail: any[]
-  duration: any
-  seteditBookmarkForm: any
-  seteditNoteForm: any
-  bookmark: any
-  note: any
-  setbookmarkAssetId: any
-  setnoteAssetId: any
   visibleThumbnail: any
   setVisibleThumbnail: any
   isMultiViewEnable: boolean
   displayThumbnail: any
-  toasterMsgRef: any
   onClickBookmarkNote: any
   openThumbnail: boolean
   mouseovertype: any
@@ -34,10 +26,11 @@ interface Timelineprops {
   AdjustTimeline: any
   startTimelineSync: any
   multiTimelineEnabled: boolean
+  notesEnabled: boolean
 }
 
 
-const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, setbookmarkAssetId, visibleThumbnail, setVisibleThumbnail, isMultiViewEnable, displayThumbnail, seteditNoteForm, setnoteAssetId, note, toasterMsgRef, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync, multiTimelineEnabled }: Timelineprops,) => {
+const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMultiViewEnable, displayThumbnail, onClickBookmarkNote, openThumbnail, mouseovertype, timelinedetail1, mouseOverBookmark, mouseOverNote, mouseOut, Event, getbookmarklocation, AdjustTimeline, startTimelineSync, multiTimelineEnabled, notesEnabled }: Timelineprops,) => {
 
 
 
@@ -64,27 +57,6 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   }, [openThumbnail]);
 
 
-  // const mouseOut = () => {
-  //   setopenThumbnail(false);
-  // }
-
-  // const mouseOverBookmark = (event: any, y: any, x: any) => {
-  //   setmouseovertype("bookmark");
-  //   setbookmark(y);
-  //   //setbookmarklocation(getbookmarklocation(y.position, x.startdiff));
-  //   settimelinedetail1(x);
-  //   setEvent(event);
-  //   setopenThumbnail(true);
-  // }
-  // const mouseOverNote = (event: any, y: any, x: any) => {
-  //   setmouseovertype("note");
-  //   setnote(y);
-  //   settimelinedetail1(x);
-  //   setEvent(event);
-  //   setopenThumbnail(true);
-  // }
-
-
   const displayThumbail = (event: any, id: any, withdescription?: string) => {
     var x = timelinedetail.find((x: any) => x.id == id)
     var index = x?.indexNumberToDisplay ?? 0;
@@ -101,35 +73,6 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
   const removeThumbnail = () => {
     setVisibleThumbnail([]);
   }
-
-
-  // const onClickBookmark = (y: any) => {
-    // if(y.madeBy == "System"){
-    //   toasterMsgRef.current.showToaster({message: "Cannot Edit System Generated Bookmark", variant: "error", duration: 5000, clearButtton: true});
-    // }
-    // else{
-    //   setopenThumbnail(false);
-    //   seteditBookmarkForm(true);
-    //   setbookmarkAssetId(y.assetId);
-    // }
-  // }
-  // else{
-  //   setopenThumbnail(false);
-  //   seteditBookmarkForm(true);
-  //   setbookmarkAssetId(y.assetId);
-  // }
-  // }
-  // const onClickNote = (y: any) => {
-  // setopenThumbnail(false);
-  // seteditNoteForm(true);
-  // setnoteAssetId(y.assetId);
-  // }
-
-  // const getbookmarklocation = (position: any, startdiff: any) => {
-  //   let timelineposition = position + startdiff;
-  //   let timelinepositionpercentage = Math.round((Math.round(timelineposition / 1000) / duration) * 100)
-  //   return timelinepositionpercentage;
-  // }
 
   React.useLayoutEffect(() => {
     let ThumbnailDesc = document.getElementById("Thumbnail-Desc");
@@ -183,7 +126,7 @@ const Timelines = ({ timelinedetail, duration, seteditBookmarkForm, bookmark, se
                 )}
               </div>
               <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
-                {x.notes && multiTimelineEnabled && x.notes.map((y: any, index: any) =>
+                {notesEnabled && x.notes && multiTimelineEnabled && x.notes.map((y: any) =>
                   <div>
                     <i className="fas fa-sticky-note"
                       style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point), height: "15px", width: "0px" }}

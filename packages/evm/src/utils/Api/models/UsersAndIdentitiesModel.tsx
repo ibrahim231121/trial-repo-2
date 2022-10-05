@@ -85,10 +85,7 @@ export interface User {
         middle: string;
     };
     account: Account;
-    contacts: {
-        contactType: number;
-        number: string;
-    }[];
+    mobileNumber: string;
     assignedGroupIds: any[] | undefined;
     timeZone: string;
     pin? : string | null;

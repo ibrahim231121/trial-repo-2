@@ -14,6 +14,7 @@ import "./ManageRetention.scss";
 import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
+import { SearchType } from '../../utils/constants';  
 
 const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -21,6 +22,8 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
+  const [prevRecord, setPrevRecord] = React.useState<Evidence>();
+
   const [alert, setAlert] = React.useState<boolean>(false);
   const alertRef = React.useRef(null);
   const retentionRadioDefaultOptions = [
@@ -86,21 +89,25 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   };
 
   const getRetentionData = () => {
+    props.setIsformUpdated(false);
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
-      if (response.holdUntil != null) {
-        formPayload.OriginalRetention = `Original Retentions: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
+      if (response.expireOn != null) {
+        formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
         formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
+        if(response.holdUntil !=null)
+        {
+          if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
+            formPayload.CurrentRetention = 'Current Retention: Indefinite';
+          }
+          else {
+            formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
+          }
+        }
         const newObj: RetentionFormType = {
           ...formPayload,
           RetentionOptions: formPayload.RetentionOptions
         };
         setFormPayload(newObj);
-        if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
-          formPayload.CurrentRetention = 'Current Retention: Indefinite';
-        }
-        else {
-          formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
-        }
       }
     });
   }
@@ -118,6 +125,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
         holdUntil : 0
       }], false);
       props.setIsformUpdated(true);
+      
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
@@ -139,6 +147,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       extendedDays: parseInt(retentionDays)
     }], false);
     setFieldValue('SaveButtonIsDisable', false, false);
+    
     props.setIsformUpdated(true);
   }
 
@@ -147,7 +156,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
       setTimeout(() => {
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
       }, 2000);
       props.showToastMsg({
         message: (values.RetentionStatus == RetentionStatusEnum.CustomExtention || values.RetentionStatus == RetentionStatusEnum.IndefiniteExtention) ? t("Retention_Extended") : t("Retention_Reverted"),
@@ -180,6 +189,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
       <div className='retention-modal'>
         <Formik initialValues={formPayload} onSubmit={onSubmitForm} enableReinitialize={true}>
           {({ setFieldValue, values }) => (
+            
             <Form>
               <div className='_rententionModalCotent'>
                 <div className='_rentention_fields'>
@@ -221,8 +231,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                 </div>
               </div>
               <div className='orginal_current_text'>
-                <div><strong>{t("Original_Retention:")}</strong> {values.OriginalRetention}</div>
-                <div><strong>{t("Current_Retention:")}</strong> {values.CurrentRetention}</div>
+                <div>{values.OriginalRetention}</div>
+                
+                <div>{values.CurrentRetention}</div>
+                
               </div>
               <div className='modalFooter CRXFooter'>
                 <div className='nextBtn'>

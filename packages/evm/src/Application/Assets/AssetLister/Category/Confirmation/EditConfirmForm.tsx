@@ -9,6 +9,7 @@ import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../../Redux/AssetSearchReducer";
 import { EditConfirmFormProps, FormValues } from '../Model/EditConfirmFormModel';
+import { SearchType } from '../../../utils/constants';
 
 const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -22,6 +23,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   };
   const [Message, setMessage] = React.useState('');
 
+
   React.useEffect(() => {
     props.setModalTitle(t("Editing_the_category_form_requires_a_reason"));
     props.setremoveClassName('crx-remove-category-form');
@@ -34,7 +36,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
 
 
   const submitForm = (message: string) => {
-    
+
     let assignedCategories = CategoryFormFields.filter((e: any) => e.type === 'add');
     let updateCategories = CategoryFormFields.filter((e: any) => e.type === 'update');
 
@@ -60,12 +62,12 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
       assignedCategories: assignedCategories,
       updateCategories: updateCategories
     };
-    
+
     EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {
       setSuccess(true);
       setTimeout(() => {
         closeModal();
-        dispatch(getAssetSearchInfoAsync(""));
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
       }, 3000);
     })
       .catch((ex: any) => {

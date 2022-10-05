@@ -217,10 +217,10 @@ const CRXInput = ({
           }
           {type === "number" && 
             <div className="_number_field_btn">
-              <button id={"increment_" + name} className="_number_increment" onClick={(e : any) => Increment(e, "increment_" + name)}>
+              <button type="button" id={"increment_" + name} className="_number_increment" onClick={(e : any) => Increment(e, "increment_" + name)}>
                 <i className="fas fa-sort-up"></i>
               </button>
-              <button id={"decrement_" + name} className="_number_decrement" onClick={(e : any) => Decrement(e, "decrement_" + name)}>
+              <button type="button" id={"decrement_" + name} className="_number_decrement" onClick={(e : any) => Decrement(e, "decrement_" + name)}>
                 <i className="fas fa-sort-down"></i>
               </button>
             </div>

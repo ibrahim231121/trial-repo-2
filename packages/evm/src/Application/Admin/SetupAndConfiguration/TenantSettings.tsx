@@ -12,8 +12,10 @@ import {
 import { CRXRows } from "@cb/shared";
 import { Field, Form, Formik } from "formik";
 import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload";
+import Cookies from 'universal-cookie';
 declare const window: any;
 
+const cookies = new Cookies();
 const regex =
   /smtp\.[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const TenantSettings: React.FC = () => {
@@ -169,7 +171,12 @@ const TenantSettings: React.FC = () => {
     } else {
       requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: 
+                { 
+                  "Content-Type": "application/json", 
+                  TenantId: "1",
+                  'Authorization': 'Bearer ' + cookies.get("access_token"),
+                 },
         body: JSON.stringify(body),
       };
     }

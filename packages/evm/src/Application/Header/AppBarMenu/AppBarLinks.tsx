@@ -2,6 +2,8 @@ import React from 'react'
 import { CRXItem, CRXMenu,CRXTooltip,SVGImage } from "@cb/shared";
 import AppsIcon from '@material-ui/icons/Apps';
 import { useTranslation } from 'react-i18next';
+import {BASE_URL_COMMAND_SERVICE} from '../../../utils/Api/url';
+
 
 
 
@@ -13,7 +15,7 @@ const CRXAppDropdown = () => {
         {
             label : t('Getac_Command'),
             router : "",
-            onClick: () => {window.location.href = process.env.REACT_APP_COMMAND_URL as string }
+            onClick: () => {window.location.href = BASE_URL_COMMAND_SERVICE as string }
         },
         {
             label : t('Getac_Enterprise'),

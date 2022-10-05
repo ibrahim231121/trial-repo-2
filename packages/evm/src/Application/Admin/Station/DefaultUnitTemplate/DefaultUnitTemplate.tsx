@@ -55,7 +55,7 @@ const DefaultUnitTemplate: React.FC = () => {
         /**
         * * Create HeaderCell For DataTable.
         * */
-        if ((deviceTypeCollection.length > 0) && (selectBoxValues.length > 0)) {
+        if ((deviceTypeCollection.length > 0)) {
             const headCellArray: HeadCellProps[] = [];
             const headerColumnCollection = [];
             headerColumnCollection.push({
@@ -228,6 +228,7 @@ const DefaultUnitTemplate: React.FC = () => {
 
     return (
         <>
+            {console.log('configurationTemplatesFromStore', configurationTemplatesFromStore)}
             {success && (
                 <CRXAlert
                     message={t("Success_You_have_saved_the_Default_Unit_Template")}

@@ -1,6 +1,8 @@
 import { env } from "../../env";
 import { MAX_REQUEST_SIZE_FOR } from '../constant'
 
+
+export const BASE_URL_COMMAND_SERVICE = env.REACT_APP_COMMAND_SERVICE_URL;
 const BASE_URL_SEARCH_SERVICE = env.REACT_APP_SEARCH_SERVICE_URL;
 export const BASE_URL_AUTHENTICATION_SERVICE = env.REACT_APP_AUTHENTICATION_SERVICE_URL;
 export const BASE_URL_USER_SERVICE = env.REACT_APP_USER_SERVICE_URL;
@@ -62,12 +64,10 @@ export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
-export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
+export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID
-
-

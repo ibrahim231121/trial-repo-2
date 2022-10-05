@@ -61,6 +61,7 @@ import { Paginated, Headers } from './models/CommonModels';
 import { useState, useEffect } from 'react';
 import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { GlobalAssetViewReason } from './models/SetupConfigurations';
 
 const cookies = new Cookies();
 let config = {
@@ -139,6 +140,7 @@ export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    getGlobalAssetViewReason: (url: string) => requests.get<GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),

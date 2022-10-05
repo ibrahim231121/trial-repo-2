@@ -13,6 +13,7 @@ import { RootState } from "../../../Redux/rootReducer";
 import { useDispatch, useSelector } from 'react-redux';
 import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
 import moment from 'moment';
+import { SearchType } from '../utils/constants'
 import {
   dateOptionsTypes,
   basicDateDefaultValue,
@@ -30,7 +31,6 @@ const SearchComponent = (props: any) => {
   const dispatch = useDispatch();
   const cookies = new Cookies();
   let decoded: IDecoded = jwt_decode(cookies.get("access_token"));
-  const [username, SetUsername] = React.useState("");
   const [showAdvance, setShowAdvance] = React.useState(false);
   const [showAdvanceSearch, setAdvanceSearch] = React.useState(true);
   const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
@@ -62,19 +62,12 @@ const SearchComponent = (props: any) => {
     (state: RootState) => state.assetSearchReducer.assetSearchInfo
   );
   const [isSearchBtnDisable, setIsSearchBtnDisable] = React.useState<boolean>(true);
-
-  const searchType ={
-    SimpleSearch: "SimpleSearch",
-    AdvanceSearch: "AdvanceSearch",
-    ShortcutSearch:"ShortcutSearch",
-    ViewOwnAssets: "ViewOwnAssets"
-  }
   const QUERRY: any = {
     bool: {
       must: [
         {
           query_string: {
-            query: `${querryString}`,
+            query: `${querryString}*`,
             fields: [
               'asset.assetName',
               'masterAsset.assetName',
@@ -82,7 +75,8 @@ const SearchComponent = (props: any) => {
               'cADId',
               'asset.unit',
               'asset.owners',
-              'description'
+              'formData.key',
+              'formData.value'
             ],
           },
         },
@@ -98,17 +92,17 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: 'My Assets',
-      query: () => queries.GetAssetsByUserName(decoded.UserName),
+      query: () => queries.GetAssetsByUserName(decoded.UserName, decoded.AssignedGroups),
       renderData: function () {
-        fetchData(this.query(), searchType.ViewOwnAssets);
+        fetchData(this.query(), SearchType.ViewOwnAssets);
       },
     },
     {
       text: t("Not_Categorized"),
-      query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
+      query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function () {
         setPredictiveText(t("Not_Categorized"));
-        fetchData(this.query(), searchType.ShortcutSearch);
+        fetchData(this.query(), SearchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
@@ -117,7 +111,7 @@ const SearchComponent = (props: any) => {
     {
       text: t("Approaching_Deletion"),
       query: () =>
-        queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate),
+        queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function (dateTimeObject: DateTimeObject | undefined = undefined) {
         setDateOptionType(dateOptionsTypes.approachingDeletion);
         setPredictiveText(t("Approaching_Deletion"));
@@ -125,7 +119,7 @@ const SearchComponent = (props: any) => {
         if (!dateTimeObject) {
           let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === approachingDateDefaultValue);
           if (approachingdateValue != null) {
-            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate()), searchType.ShortcutSearch)
+            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate(), decoded.AssignedGroups), SearchType.ShortcutSearch)
             let defaultDateValue = dateOptions.basicoptions.find(x => x.value === basicDateDefaultValue);
             if (defaultDateValue !== undefined) {
               let approachingDefaultDateValue: DateTimeObject = {
@@ -146,7 +140,7 @@ const SearchComponent = (props: any) => {
           }
         }
         else {
-          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate), searchType.ShortcutSearch)
+          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate, decoded.AssignedGroups), SearchType.ShortcutSearch)
         }
 
         let approachingMaxDateValue = dateOptions.approachingDeletion.find(x => x.value === t("next_30_days"));
@@ -161,7 +155,6 @@ const SearchComponent = (props: any) => {
         setShowAssetDateCompact(false);
       },
     },
-    
   ];
 
   React.useEffect(() => {
@@ -232,7 +225,7 @@ const SearchComponent = (props: any) => {
         }
       } 
 
-      fetchData(AdvancedSearchQuerry, searchType.AdvanceSearch);
+      fetchData(AdvancedSearchQuerry, SearchType.AdvanceSearch);
     }
   }, [addvancedOptions]);
 
@@ -308,14 +301,14 @@ const SearchComponent = (props: any) => {
       }
     }
     if (predictiveText === t("Approaching_Deletion")) {
-      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate), searchType.ShortcutSearch);
+      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups), SearchType.ShortcutSearch);
     }
     else {
       if (querryString.length === 0) {
         const modifiedQuery = removeQueryStringObjectFromQuery(QUERRY);
-        fetchData(modifiedQuery, searchType.SimpleSearch);
+        fetchData(modifiedQuery, SearchType.SimpleSearch);
       } else {
-        fetchData(QUERRY, searchType.SimpleSearch);
+        fetchData(QUERRY, SearchType.SimpleSearch);
       }
     }
     setAdvanceSearch(false);
@@ -324,7 +317,7 @@ const SearchComponent = (props: any) => {
 
   const fetchData = (querry: any, searchValue: any) => {
     dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchValue }));
-    if (searchValue === searchType.SimpleSearch || searchValue === searchType.ShortcutSearch) {
+    if (searchValue === SearchType.SimpleSearch || searchValue === SearchType.ShortcutSearch) {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);
     }
@@ -418,9 +411,7 @@ const SearchComponent = (props: any) => {
           <>
             <div className='advanceSearchContet'>
               <CRXButton
-                onClick={() => {
-                  setShowAdvance(!showAdvance);
-                }}
+                onClick={() => setShowAdvance(!showAdvance)}
                 className='PreSearchButton'
               >
                 <i className={'fas fa-sort-down ' + iconRotate}></i> {t("Advanced")}

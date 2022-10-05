@@ -100,6 +100,8 @@ const SharedMedia = () => {
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [childFileData, setChildFileData] = React.useState<any[]>([]);
   const [assetId, setAssetId] = React.useState<number>();
+  const [isdownloadable, setIsdownloadable] = React.useState<boolean>(false);
+
 
 
 
@@ -293,7 +295,6 @@ useEffect(() => {
     "/Files/download/" +
     `${fileurl}`;
     FileAgent.getDownloadUrl(endpointurl).then((response: string) =>  {
-     
       setDownloadLink(response);
     });
   }
@@ -305,7 +306,7 @@ const DecryptLink = async () => {
     headers: { 'Content-Type': 'application/json', TenantId: '1' },
   })
   let response = await res.json();
- 
+  setIsdownloadable(response.permissons.isDownloadable);
   if (response != null && response != "Asset not found") 
   {
     setAssetId(response.assetId);
@@ -334,9 +335,14 @@ const DecryptLink = async () => {
       <span style={{fontSize:"28px",fontWeight:"900"}}>Shared Media</span><br></br>
       <span style={{fontSize:"16px",fontWeight:"400"}}>{LinkStatus}</span>
       </div>
+      { isdownloadable ? (
       <div>
         {/* <Link to={location => `${downloadLink}`}>Download</Link> */}
-      <a href={downloadLink}>Download</a></div>
+        
+        
+      <a href={downloadLink}>Download</a>
+      </div>
+        ):null}
       {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
       <div className='categoryTitle'>
       

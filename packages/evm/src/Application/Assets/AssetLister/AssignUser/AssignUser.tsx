@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import { SearchType } from "../../utils/constants";
 
 type AssignUserProps = {
   selectedItems: any[];
@@ -115,7 +116,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     EvidenceAgent.addUsersToMultipleAsset(url, assetOwners)
       .then(() => {
         setTimeout(() => {
-          dispatch(getAssetSearchInfoAsync(""));
+          dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         }, 1500);
         props.setOnClose();
         props.showToastMsg({
@@ -270,7 +271,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       )
         .then(() => {
           setTimeout(() => {
-            dispatch(getAssetSearchInfoAsync(""));
+            dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
           }, 1510);
           props.setOnClose();
           props.showToastMsg({

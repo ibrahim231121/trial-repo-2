@@ -9,7 +9,8 @@ type Props = {
 };
 
 const SecurityDescriptor: React.FunctionComponent<Props> = ({ maximumDescriptor, descriptorId, securityDescriptors, children }) => {
-    const {groupIds} = useContext(ApplicationPermissionContext);
+    const {getGroupIds} = useContext(ApplicationPermissionContext);
+    let groupIds  = getGroupIds();
     let evidenceGroupIds = securityDescriptors.map((x: any) => x.groupId);
     if(maximumDescriptor != 0 && groupIds.some((x: any) => evidenceGroupIds?.includes(x))){
         if (maximumDescriptor >= descriptorId) {

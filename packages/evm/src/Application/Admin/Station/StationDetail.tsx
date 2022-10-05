@@ -201,13 +201,13 @@ const StationDetail: React.FC = () => {
 
   const blackBoxAutoCompleteonChange = (e: React.SyntheticEvent, val: AutoCompleteOptionType, setFieldValue: any, reason: string) => {
     e.preventDefault();
-    setFieldValue("BlackboxRetentionPolicy", val, false);
+    setFieldValue("BlackboxRetentionPolicy", val, true);
     setBlackBoxAutoCompleteValue(val);
   }
 
   const uploadAutoCompleteonChange = (e: React.SyntheticEvent, val: AutoCompleteOptionType, setFieldValue: any, reason: string) => {
     e.preventDefault();
-    setFieldValue("UploadPolicy", val, false);
+    setFieldValue("UploadPolicy", val, true);
     setUploadAutoCompleteValue(val);
   }
 
@@ -513,7 +513,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="CBX-input">
-                            <label htmlFor="street">{t("Street_Address")}<span>*</span>
+                            <label htmlFor="street">{t("Street_Address")}
                             </label>
                             <div className="CrxStationError">
                               <Field id="street" name="StreetAddress" />
@@ -663,7 +663,7 @@ const StationDetail: React.FC = () => {
                         spacing={0}
                       >
                         <div className="colstation">
-                          <label htmlFor="name">{t("BlackBox_Retention_Policy")}</label>
+                          <label htmlFor="name">{t("BlackBox_Retention_Policy")}<span>*</span></label>
                           <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
                               id="blackBoxPolicyMultiSelect"
@@ -686,6 +686,12 @@ const StationDetail: React.FC = () => {
                               checkSign={false}
                               required={true}
                             />
+                            {errors.BlackboxRetentionPolicy ? (
+                              <div className="errorStationStyle">
+                                <i className="fas fa-exclamation-circle"></i>
+                                {t("Blackbox_Retention_Policy_is_required")}
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       </CRXColumn>
@@ -742,7 +748,7 @@ const StationDetail: React.FC = () => {
                         spacing={0}
                       >
                         <div className="colstation">
-                          <label htmlFor="name">{t("Data_Upload_Policy")}</label>
+                          <label htmlFor="name">{t("Data_Upload_Policy")}<span>*</span></label>
                           <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
                               id="uploadPolicyMultiSelect"
