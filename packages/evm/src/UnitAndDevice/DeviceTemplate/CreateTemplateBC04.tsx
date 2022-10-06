@@ -170,10 +170,10 @@ const CreateTemplate = (props: any) => {
   
   function setintial() {
     if (historyState.deviceType == "Incar") {
-      dispatch(getRetentionStateAsync());
       dispatch(getDeviceTypesAsync());
       dispatch(getAllSensorsEvents());
     }
+    dispatch(getRetentionStateAsync());
     dispatch(getCategoryAsync());
     dispatch(getStationsInfoAllAsync());
     if (historyState.isedit || historyState.isclone) {
@@ -191,7 +191,7 @@ const CreateTemplate = (props: any) => {
   }
 
   React.useEffect(() => {
-    if (retention && retention.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if (retention && retention.length > 0 && FormSchema) {
       setRetentionDropdown();
     }
   }, [retention,FormSchema]);
@@ -234,14 +234,24 @@ const CreateTemplate = (props: any) => {
       retentionOptions.push({ value: x.id, label: x.name })
 
     })
-    FormSchema["Unit Settings"].map((x: any, y: number) => {
-      if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
-        x.options.push(...retentionOptions)
-      }
-      if (x.key == "unitSettings/blackboxRetentionPolicy/Select" && x.options.length == 1) {
-        x.options.push(...retentionOptions)
-      }
-    })
+    if(historyState.deviceType == "Incar")
+    {
+      FormSchema["Unit Settings"].map((x: any, y: number) => {
+        if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+        if (x.key == "unitSettings/blackboxRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+      })
+    }
+    else
+    {
+      let mediaRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/mediaRetentionPolicy/Select" && x.options.length == 1)
+      let blackboxRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1)
+      mediaRetentionPolicy?.options.push(...retentionOptions)
+      blackboxRetentionPolicy?.options.push(...retentionOptions)
+    }
     setFormSchema(FormSchema);
   }
   const setCategoriesDropdown = () => {

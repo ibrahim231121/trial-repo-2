@@ -24,7 +24,12 @@
             "key": "unittemplate/station/Select",
             "type": "select",
             "label": "Station",
-            "options": []
+            "options": [],
+            "validation": [{
+                "key": "required",
+                "msg": "required"
+            }
+        ]
         }
     ],
     "Unit Settings": [{
@@ -71,6 +76,7 @@
             "id": "6",
             "key": "unitSettings/categories/Multiselect",
             "type": "multiselect",
+            "class": "EnableCategorizationDepended",
             "value": [
                 "Add All"
             ],
@@ -81,7 +87,7 @@
                     ]
                 }
             ],
-            "validation": [{
+			"validation": [{
                     "key": "required",
                     "msg": "required",
                     "when": {
@@ -107,10 +113,20 @@
             "required": true,
             "class": "UpdateIntervalIncar",
             "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
                     "msg": "Required"
-                }
+                },
+				{
+					"key": "max",
+					"value": 10000,
+					"msg": "Greater than 10000 not allowed"
+				}, {
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "8",
@@ -149,10 +165,20 @@
             "belowFieldText": "(Minimum allowed is 5 and maximum allowed is 120)",
             "requiredField": "true",
             "hintText": "Allows to specify maximum video chunk to record for continuous video",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
                     "msg": "Required"
-                }
+                },
+				{
+					"key": "max",
+					"value": 120,
+					"msg": "Greater than 120 not allowed"
+				}, {
+					"key": "min",
+					"value": 5,
+					"msg": "Less than 5 not allowed"
+				}
             ]
         }, {
             "id": "10",
@@ -164,10 +190,20 @@
             "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 3600)",
             "required": true,
             "class": "GPSFrequencyIncar",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
                     "msg": "Required"
-                }
+                },
+				{
+					"key": "max",
+					"value": 3600,
+					"msg": "Greater than 3600 not allowed"
+				}, {
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "11",
@@ -213,6 +249,7 @@
             "id": "13",
             "key": "unitSettings/groupName/TextBox",
             "type": "text",
+			"class": "incarBodywornGroup",
             "label": "BodyWorn Group Name",
             "value": ""
         }, {
@@ -249,7 +286,7 @@
             "key": "device/PrimaryDevice/Select",
             "type": "select",
             "label": "Device",
-            "value": "VRX-20",
+            "value": "3",
             "options": []
         }, {
             "id": "4",
@@ -262,8 +299,8 @@
             "value": true
         }, {
             "id": "1",
-            "key": "device/PortName/NumberBox",
-            "type": "number",
+            "key": "device/PortName/TextBox",
+            "type": "text",
             "label": "Port Name",
             "value": "",
             "hintText": "Serial or UDP for GPS",
@@ -281,6 +318,7 @@
             "key": "device/SerialBaudRate/NumberBox",
             "type": "number",
             "label": "Serial Baud Rate",
+			"belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
             "value": "0",
             "class": "SerialBaudRateIncar",
             "hintText": "Baud rate for serial port or UDP port for network GPS device",
@@ -326,10 +364,20 @@
             "postFieldText": "minutes",
             "required": true,
             "hintText": "Shutdown the unit after specified number of minutes if the ignition turned off",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
-                    "msg": "required"
-                }
+                    "msg": "Required"
+                },
+				{
+					"key": "max",
+					"value": 10000,
+					"msg": "Greater than 10000 not allowed"
+				}, {
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "8",
@@ -340,10 +388,20 @@
             "postFieldText": "minutes",
             "hintText": "Shutdown the unit after specified number of minutes when unit is uploading if the ignition turned off",
             "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
-                    "msg": "required"
-                }
+                    "msg": "Required"
+                },
+				{
+					"key": "max",
+					"value": 10000,
+					"msg": "Greater than 10000 not allowed"
+				}, {
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "8",
@@ -354,10 +412,20 @@
             "postFieldText": "volts",
             "belowFieldText": "(Minimum allowed is 0 and maximum allowed is 10000)",
             "hintText": "Shutdown the unit if the battery voltage is sensed at the specific number",
-            "validation": [{
+            "validation": [
+				{
                     "key": "required",
-                    "msg": "required"
-                }
+                    "msg": "Required"
+                },
+				{
+					"key": "max",
+					"value": 10000,
+					"msg": "Greater than 10000 not allowed"
+				}, {
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "4",
@@ -372,6 +440,7 @@
             "id": "1",
             "key": "device/BeepDuringRecordingTrue/NumberBox",
             "type": "number",
+            "class": "BeepDuringRecordingSpaceBox",
             "label": "",
             "value": "",
             "postFieldText": "seconds",
@@ -413,7 +482,12 @@
                     "key": "max",
                     "value": 60,
                     "msg": "Two High"
-                }
+                },
+				{
+					"key": "min",
+					"value": 0,
+					"msg": "Less than 0 not allowed"
+				}
             ]
         }, {
             "id": "1",
@@ -469,13 +543,19 @@
                     }, {
                         "key": "CameraSetup/device_1_Camera/Select",
                         "type": "select",
-                        "label": "Device",
+                        "label": "Device Type",
                         "value": "",
                         "class": "DeviceIncar",
                         "options": [],
                         "sequence": 0,
+						"validation": [{
+                                "key": "required",
+                                "msg": "required"
+                            }
+                        ],
                         "optionAppendOnChange": [{
                                 "value": "11",
+                                "class": "deviceTypeUserId",
                                 "selectKey": "CameraSetup/resolution_rowId_Camera/Select",
                                 "options": [
                                     "768 x 432",
@@ -574,6 +654,12 @@
                                 "selectKey": "CameraSetup/bitrate_1_Camera/Select",
                                 "options": [
 								    "1Mbps", "2Mbps", "3Mbps", "6Mbps"
+                                ]
+                            }, {
+                                "value": "18",
+                                "selectKey": "CameraSetup/bitrate_1_Camera/Select",
+                                "options": [
+								    "1Mbps", "2Mbps", "3Mbps"
                                 ]
                             }
                         ],

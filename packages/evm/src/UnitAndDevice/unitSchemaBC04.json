@@ -354,6 +354,33 @@
       ]
     },
     {
+      "id": "8",
+      "required": true,
+      "key": "device/mediaRetentionPolicy/Select",
+      "type": "select",
+      "label": "Media Retention Policy",
+      "value": "",
+      "class": "RetentionPolicyIncar ",
+      "options": [{
+              "value": "",
+              "label": "none"
+          }
+      ]
+    }, 
+    {
+      "id": "8",
+      "required": true,
+      "key": "device/blackboxRetentionPolicy/Select",
+      "type": "select",
+      "label": "Blackbox Retention Policy",
+      "value": "",
+      "options": [{
+              "value": "",
+              "label": "none"
+          }
+      ]
+    },
+    {
       "labelMute": "Mute",
       "id": "1",
       "class": "muteRadioDevice",
