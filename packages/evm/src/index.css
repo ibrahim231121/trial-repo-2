@@ -206,7 +206,8 @@ body {
   text-indent: 0;
 }
 .crx-main-container {
-  min-height: 96.9vh  !important;
+  min-height:calc(100vh - 30px) !important;
+  width: 100%;
 }
 
 .divOuter .onDraggingThumb {
@@ -394,7 +395,7 @@ input:-webkit-autofill {
 
 .row_anchor_point {
   display: flex;
-  min-height: 43px;
+  height: 100%;
   cursor: pointer;
   justify-content: center;
   place-items: center;

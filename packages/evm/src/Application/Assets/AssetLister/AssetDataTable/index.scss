@@ -101,6 +101,29 @@
   &.CRXPopupTableImage {
     color: var(--color-333333);
   }
+  .asset_lister_thumb {
+    width: 110px;
+    height: 61px;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 31pt;
+    color: #d1d2d4;
+    position: relative;
+    ._video_play_icon {
+      display: none;
+      position: absolute;
+      span{
+        color: var(--color-White);
+        font-size: 30pt;
+        cursor: pointer;
+        &:hover {
+          font-size: 36pt;
+        }
+      }
+    }
+  }
 }
 
 .CRXDataTableCustom {
@@ -115,6 +138,16 @@
               img {
                 filter: invert(0%) sepia(100%) saturate(500%) hue-rotate(130deg)
                   brightness(70%) contrast(70%);
+              }
+            }
+            .asset_lister_thumb {
+              background: var(--color-d1d2d4);
+              color: var(--color-333333);
+              &:hover {
+                ._video_play_icon{
+                  display: block;
+                  
+                }
               }
             }
           }
@@ -138,6 +171,12 @@
             }
           }
         }
+      }
+    }
+    &.Mui-selected {
+      .asset_lister_thumb {
+        background: var(--color-d1d2d4);
+        color: var(--color-333333);
       }
     }
   }

@@ -1,8 +1,10 @@
-import React,{useRef} from 'react';
+import React,{useEffect, useLayoutEffect, useRef, useState} from 'react';
 import { Field, FieldArray, ErrorMessage } from 'formik';
 import { CRXTooltip } from '@cb/shared';
 import { Select, MenuItem, ListItemText } from '@material-ui/core';
-import { CRXButton, CRXConfirmDialog } from '@cb/shared';
+import Menu from '@material-ui/core/Menu';
+import { makeStyles } from '@material-ui/core/styles';
+import { CRXButton, CRXConfirmDialog  } from '@cb/shared';
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -14,12 +16,15 @@ const CustomizedSelectForFormik = (props: any) => {
   const { name, value } = field;
   const { setFieldValue } = form;
 
+
   return (
-    <>
+    <>  
       <Select
         {...field}
         value={value ?? ""}
-        onChange={(e:any) => { onChange(e)}}
+        onChange={(e:any) => { onChange(e) }}
+        MenuProps={{ classes: { paper: `selectFormikIncar ` }  }}
+        
       >
         {children}
       </Select>
@@ -30,20 +35,32 @@ const CustomizedSelectForFormik = (props: any) => {
 
 
 
+
 const CustomizedMultiSelectForFormik = (props: any) => {
   const { children, form, field } = props;
   const { name, value } = field;
   const { setFieldValue } = form;
+  const [allSelected,setAllSelected] = useState(true)
 
   return (
     <>
+
       <Select
         multiple
         onChange={e => {
           setFieldValue(name, e.target.value);
         }}
+        MenuProps={{ classes: { paper: `multiSelectFormikIncar ${allSelected === true ? "AllDataSelectedList" : "NotAllSelectedList"}` } }}
+  
         renderValue={(selected: any[]) => {
-          
+          if(children.filter((x: any) => x.key != "Add All").length === selected.length)
+          {
+            setAllSelected(true) ;
+          }
+          else
+          {
+            setAllSelected(false);
+          }
           var addAllSelected = selected.includes("Add All");
           if(addAllSelected)
           {
@@ -196,13 +213,17 @@ let customEvent = (event: any, y: any, z: any) => {
 
 export const CreateTempelateCase = (props: any) => {
   const { t } = useTranslation<string>();
+
   let LocationPath: any = useLocation();
 
-  if (LocationPath?.state?.deviceType === "Incar") {
-    document.querySelector("body")?.classList.add("IncarTemplatePage")
-  } else {
-    document.querySelector("body")?.classList.remove("IncarTemplatePage")
-  }
+    if (LocationPath?.state?.deviceType === "Incar") {
+      document.querySelector("main")?.classList.add("IncarTemplatePage")
+    }  else {
+      document.querySelector("main")?.classList.remove("IncarTemplatePage")
+    }
+ 
+
+
 
 
 
@@ -238,6 +259,7 @@ export const CreateTempelateCase = (props: any) => {
 
 
 
+
   switch (formObj.type) {
     case "text":
       return (
@@ -255,16 +277,19 @@ export const CreateTempelateCase = (props: any) => {
                   </label>
                   <div className="UiLabelTextboxRight">
                     <Field
-                      name={formObj.key}
+                      name={formObj.key }
                       id={formObj.id}
                       type={formObj.type}
                     />
                     <ErrorMessage
                       name={formObj.key}
                       render={(msg) => (
+                        <>
                         <div className="UiLabelTextboxError">
                           <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
                         </div>
+                        </>
+                 
                       )}
                     />
                   </div>
@@ -386,7 +411,8 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
+        <div className={touched[formObj.key] == true && errors[formObj.key] ? "selectFieldError" : "selectField"} >
+        {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
           <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
@@ -396,7 +422,7 @@ export const CreateTempelateCase = (props: any) => {
                   <label>
                     {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                   </label></label>
-                <div className="UicustomMulti">
+                <div className="UicustomMulti" id="ghk">
                   <Field
                     name={formObj.key}
                     id={formObj.id}
@@ -409,16 +435,22 @@ export const CreateTempelateCase = (props: any) => {
                         optionAppendOnChange(e.target.value, formObj, values, setValues, index);
                       }
                       setFieldValue(formObj.key, e.target.value);
+
                     }}
                   >
-                    {formObj.options?.filter((x: any) => x.hidden != true).map(
+                 
+                   {formObj.options?.filter((x: any) => x.hidden != true).map(
                       (opt: any, key: string) => (
                         <MenuItem
+                          className={"selectFieldIncar"}
                           value={opt.value}
                           key={key}
                         >{t(opt.label)}{" "}</MenuItem>
                       )
                     )}
+                
+              
+                          
                   </Field>
 
                   <span className='UicustomMultiHint'>
@@ -436,14 +468,18 @@ export const CreateTempelateCase = (props: any) => {
                 <ErrorMessage
                   name={formObj.key}
                   render={(msg) => (
-                    <div style={{ color: "red" }}>
-                      {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                    <>
+                    <div   className='UiStationSelectErrorField'>
+                      <i className='fas fa-exclamation-circle'></i>{formObj.key.split(re)[1].split('_')[0] + " is " + msg}
                     </div>
+                    </>
+                
                   )}
                 />
               </div>
             </div>
           </div>
+        </div>
           <div className="UiColumnSpacer"></div>
         </>
       );
@@ -451,7 +487,10 @@ export const CreateTempelateCase = (props: any) => {
 
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
-        <div
+        
+        <div className={touched[formObj.key] == true && errors[formObj.key] ? " multiSelectFieldError" : "multiSelectField"}>
+        <div className={formObj.class}>
+               <div
           className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
         >
           <div className='multiSelectUiLeft'>
@@ -468,10 +507,11 @@ export const CreateTempelateCase = (props: any) => {
               component={CustomizedMultiSelectForFormik}
             // multiple={true}
             >
+             
               {formObj.options.map(
                 (opt: any, key: string) => (
 
-                  <MenuItem key={opt.label} value={opt.value}>
+                  <MenuItem  key={opt.label} value={opt.value}  >
                     {/* <Checkbox checked={name.indexOf(opt.value) > -1} /> */}
                     <ListItemText primary={t(opt.label)} />
                   </MenuItem>
@@ -485,6 +525,8 @@ export const CreateTempelateCase = (props: any) => {
                   // </option>
                 )
               )}
+              
+        
             </Field>
             <ErrorMessage
                   name={formObj.key}
@@ -502,6 +544,9 @@ export const CreateTempelateCase = (props: any) => {
               />) : (<></>)}
           </div>
         </div>
+        </div>
+        </div>
+     
       );
     case "checkbox":
 
@@ -635,7 +680,16 @@ export const CreateTempelateCase = (props: any) => {
                         <>
                           <div className='cameraSetup'>
                             <h1>{t("Camera")} {(index + 1)}</h1>
-                            <i className="fas fa-minus-circle" onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}></i>
+                               <div onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}>
+                                    <CRXTooltip 
+                                      className="assetsGroupPopupTootip"
+                                      placement="bottom-left"
+                                      arrow={false}
+                                      title={"remove camera"}
+                                      content={<i className="fas fa-minus-circle"></i>}
+                                      />
+                               </div>
+                        
                           </div>
                           <div key={formObj.key + "_DIV" + key}>
                             <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />

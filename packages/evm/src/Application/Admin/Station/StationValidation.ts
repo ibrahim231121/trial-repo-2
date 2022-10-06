@@ -5,11 +5,6 @@ const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9]
 const regexForNumberOnly = new RegExp('^[0-9]+$');
 export const stationValidationSchema = Yup.object().shape({
     Name: Yup.string().required('Station_Name_is_required'),
-    StreetAddress: Yup.string().test(
-        'len',
-        'Minimum_3_characters_are_allowed.',
-        (val) => val != undefined && (val.length == 0 || (val.length >= 3 && val.length <= 128))
-    ),
     Passcode: Yup.string()
         .test(
             'len',

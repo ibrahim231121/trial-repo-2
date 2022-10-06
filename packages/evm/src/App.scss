@@ -18,6 +18,7 @@
     .CRXSimpleSelect  {
         background-color: var(--color-transparent);
         border: none;
+        padding-right: 28px;
         &:hover {
                 border: none;
                 transition: none;
@@ -32,9 +33,7 @@
   
             right: 23px;
             top: 2px;
-            &::before {
-                color: var(--color-White);
-            }
+            position: unset !important;
         }
         .MuiPopover-paper  {
             top: 33px !important;
@@ -42,8 +41,8 @@
             width: 139px !important;
         }
         .MuiSelect-select {
-            padding-right: 30px;
-            width: 53px;
+            padding-right: 7px;
+            width: auto;
         } 
     }
     .world_language_icon {
@@ -58,8 +57,55 @@
             background: var(--color-antiquewhite);
         }
     }
+    .crxArrowDownSelect {
+        &::before {
+          color: white !important;
+          font-size: 20px !important;
+        }
+      }
+      .MuiSelect-iconOpen {
+          transform: rotate(0deg) !important;
+      }
 }
+.language_dropDown_en  {
+    margin-left: -29px;
+}
+.language_dropDown_fr  {
+    margin-left: -52px;
+}
+.language_dropDown_pl  {
+    margin-left: -29px;
+}
+.language_dropDown_uk  {
+    margin-left: -53px;
+}
+.language_dropDown_hr  {
+    margin-left: -31px;
+}
+.language_selector_dropDown {
+    background: #404041 !important ;
+    margin-top: 12px !important;
+    border-radius: 0px !important;
+    ul { 
+         border-radius: 0px;
 
+        li {
+            color: #d1d2d4;
+            height: 33px ;
+            &:hover {
+                color: #f5f5f5 !important;
+                background-color: #231f20 !important;
+            }
+            &:active , &:focus {
+                color: #d1d2d4 !important;
+                background-color: #6e6e6e !important;
+            }
+            .MuiTouchRipple-root {
+                display: none;
+            }
+        }
+    }   
+}
 
  .paperStyle {
     background-color:var(--color-404041) !important;

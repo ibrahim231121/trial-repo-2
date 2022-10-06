@@ -6,7 +6,7 @@ type Props = {
     setModuleIds:(moduleIds:number[])=> void,
     getModuleIds:()=> number[],
     moduleIds:  number[],
-    groupIds: number[]
+    getGroupIds: () => number[]
 }
 
 type PermissionCache = {
@@ -14,14 +14,14 @@ type PermissionCache = {
 }
 
 
-const ApplicationPermissionProvider: React.FunctionComponent<Props> = ({setModuleIds, getModuleIds, moduleIds, groupIds, children}) => {
+const ApplicationPermissionProvider: React.FunctionComponent<Props> = ({setModuleIds, getModuleIds, moduleIds, getGroupIds, children}) => {
 
     return  <ApplicationPermissionContext.Provider
                 value={{
                     setModuleIds,
                     getModuleIds,
                     moduleIds,
-                    groupIds   
+                    getGroupIds   
                 }} >
                 {children}
             </ApplicationPermissionContext.Provider>;

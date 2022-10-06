@@ -129,7 +129,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           })
         );
         break;
-      }
+      } 
       case 'deactivate': {
         dispatch(
           updateUsersInfoAsync({
@@ -137,7 +137,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             userId: row?.id,
             columnToUpdate: '/account/status',
             valueToUpdate: 'Deactivated'
-          })
+          })  
         );
         break;
       }

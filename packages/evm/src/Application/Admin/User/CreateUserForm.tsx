@@ -47,7 +47,7 @@ const CreateUserForm = () => {
     middleInitial: '',
     lastName: '',
     email: '',
-    phoneNumber: '',
+    mobileNumber: '',
     userGroups: [],
     deactivationDate: '',
     pin: null
@@ -125,17 +125,14 @@ const CreateUserForm = () => {
         email,
         name: { first: firstName, last: lastName, middle: middleInitial },
         account: { userName, password },
-        contacts,
+        mobileNumber,
         userGroups,
         deactivationDate,
         isADUser,
         pin
       } = userPayload;
 
-      const phoneNumber =
-        userPayload.contacts.length > 0
-          ? userPayload.contacts.find((x: any) => x.contactType === 1).number
-          : '';
+      const phoneNumber = userPayload.mobileNumber;
 
       let userGroupNames: any = [];
       for (const elem of userGroups) {
@@ -159,7 +156,7 @@ const CreateUserForm = () => {
         middleInitial,
         lastName,
         email,
-        phoneNumber: '',
+        mobileNumber: '',
         userGroups: [],
         deactivationDate: ''
       };
@@ -170,7 +167,7 @@ const CreateUserForm = () => {
         firstName,
         middleInitial,
         lastName,
-        phoneNumber,
+        mobileNumber,
         deactivationDate,
         userGroups: userGroupNames,
         pin
@@ -181,7 +178,7 @@ const CreateUserForm = () => {
   }, [userPayload]);
 
   React.useEffect(() => {
-    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, phoneNumber } =
+    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber } =
       formpayload;
     if (userGroups.length > 0) {
       setError(false);
@@ -428,10 +425,7 @@ const CreateUserForm = () => {
       middle: formpayload.middleInitial
     };
 
-    let contacts = [];
-    if (contacts.length === 0) {
-      contacts.push({ contactType: 1, number: formpayload.phoneNumber });
-    }
+  
 
 
     const account: Account = {
@@ -459,7 +453,7 @@ const CreateUserForm = () => {
       deactivationDate: formpayload.deactivationDate,
       name,
       account,
-      contacts,
+      mobileNumber: formpayload.mobileNumber,
       assignedGroupIds: userGroupsListIDs,
       timeZone: 'America/Chicago',
       pin : formpayload.pin
@@ -541,8 +535,21 @@ const CreateUserForm = () => {
         }
       })
       .catch(function (e: any) {
-        if (e.request.status == 500) {
+        if(e.request.status == 409) {
+          userFormMessages({
+            message: e.response.data,
+            variant: 'error',
+            duration: 7000
+          });
+
+        }
+        else if (e.request.status == 500) {
           setAlert(true);
+          userFormMessages({
+            message: t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.'),
+            variant: 'error',
+            duration: 7000
+          });
           setResponseError(
             t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
           );
@@ -570,12 +577,7 @@ const CreateUserForm = () => {
       middle: formpayload.middleInitial
     };
 
-    let contacts = userPayload.contacts.map((x: any) => {
-      if (x.contactType === 1) {
-        x.number = formpayload.phoneNumber;
-      }
-      return x;
-    });
+ 
 
     /*
      * * setting status to pending if user check Resend Activation Link radio button or enable change password on next login checkbox 
@@ -584,9 +586,7 @@ const CreateUserForm = () => {
       userPayload.account.status = 3;
     }
     const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
-    if (contacts.length === 0) {
-      contacts.push({ contactType: 1, number: formpayload.phoneNumber });
-    }
+    
 
     const payload: User = {
       ...userPayload,
@@ -594,11 +594,12 @@ const CreateUserForm = () => {
       deactivationDate: formpayload.deactivationDate,
       name,
       account,
-      contacts,
+      mobileNumber: formpayload.mobileNumber,
       assignedGroupIds: userGroupsListIDs,
       timeZone: 'America/Chicago',
       pin : formpayload.pin
     };
+
 
     return payload;
   };
@@ -616,6 +617,7 @@ const CreateUserForm = () => {
 
     const payload = setEditPayload();
     UsersAndIdentitiesServiceAgent.editUser(urlEdit, payload).then(() => {
+      dispatch(enterPathActionCreator({ val: payload.name.first }));
       if (disableLink) {
         const userName = userPayload.name.first + ' ' + userPayload.name.last;
         sendEmail(payload.email, userPayload.id, userName);
@@ -979,7 +981,7 @@ const CreateUserForm = () => {
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {
     const phoneCharacter = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/.test(String(phoneNumber));
     if (!phoneCharacter) {
-      return { error: true, errorMessage: t("Please_provide_a_valid_phone_number.") };
+      return { error: true, errorMessage: t("Please_provide_a_valid_mobile_number.") };
     } else if (phoneNumber.length > 15) {
       return { error: true, errorMessage: t("Number_must_not_exceed_15_characters.") };
     }
@@ -987,8 +989,8 @@ const CreateUserForm = () => {
   }
 
   const checkPhoneumber = () => {
-    const isPhoneValidate = validatePhone(formpayload.phoneNumber);
-    if (!formpayload.phoneNumber) {
+    const isPhoneValidate = validatePhone(formpayload.mobileNumber);
+    if (!formpayload.mobileNumber) {
       setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: '' });
     } else if (isPhoneValidate.error) {
       setFormPayloadErr({
@@ -1023,18 +1025,15 @@ const CreateUserForm = () => {
   const redirectPage = () => {
 
     if (id) {
-      const phoneNumber =
-        userPayload.contacts.length > 0
-          ? userPayload.contacts.find((x: any) => x.contactType === 1).number
-          : '';
-      const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
-      const user_temp = {
+      const phoneNumber = userPayload.mobileNumber;
+        const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
+        const user_temp = {
         userName: userPayload.account.userName,
         firstName: userPayload.name.first,
         middleInitial: userPayload.name.middle,
         lastName: userPayload.name.last,
         email: userPayload.email,
-        phoneNumber: phoneNumber,
+        mobileNumber: phoneNumber,
         userGroups: userGroupNames,
         deactivationDate: userPayload.deactivationDate,
       }
@@ -1151,10 +1150,10 @@ const CreateUserForm = () => {
               <TextField
                 error={!!formpayloadErr.phoneNumberErr}
                 errorMsg={formpayloadErr.phoneNumberErr}
-                value={formpayload.phoneNumber}
-                label={t("Phone_Number")}
+                value={formpayload.mobileNumber}
+                label={t("Mobile_Number")}
                 className='users-input'
-                onChange={(e: any) => setFormPayload({ ...formpayload, phoneNumber: e.target.value })}
+                onChange={(e: any) => setFormPayload({ ...formpayload, mobileNumber: e.target.value })}
                 onBlur={checkPhoneumber}
               />
 

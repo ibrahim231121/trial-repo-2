@@ -62,10 +62,10 @@ function App() {
   );
   const options = [
     { value: "en", displayText: "English" },
-    { value: "fr", displayText: "French (CA)" },
-    { value: "pl", displayText: "Polish" },
     { value: "uk", displayText: "English (UK)" },
+    { value: "fr", displayText: "French (CA)" },
     { value: "hr", displayText: "Hebrew" },
+    { value: "pl", displayText: "Polish" }
   ];
   let culture: string = useSelector(
     (state: RootState) => state.cultureReducer.value
@@ -405,15 +405,20 @@ function App() {
                                     moduleIds={moduleIds}  
                                     getModuleIds={()=>{ 
                                           var moduleIds =  getModuleIds()
-                                          // var moduleIds = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,19,30]
                                           if(moduleIds){
                                             return moduleIds
                                           }else{
                                             return []
                                           }
                                     }}
-                                    groupIds={groupIds}
-
+                                    getGroupIds={()=>{ 
+                                      var groupIds =  getGroupIds()
+                                      if(groupIds){
+                                        return groupIds
+                                      }else{
+                                        return []
+                                      }
+                                    }}
                                     >
         <div dir={rtl}>
           <CRXLoader 
@@ -441,9 +446,11 @@ function App() {
           }}
           TransitionComponent={Fade as React.ComponentType}
         >
-          <div className="language_selector_app">
+          <div className={`language_selector_app Language_type_${value}`}>
             <CRXSelectBox
               options={options}
+              defaultOption = {false}
+              popover={`language_selector_dropDown language_dropDown_${value}`}
               id="simpleSelectBox"
               onChange={handleChange}
               value={value}

@@ -395,9 +395,8 @@ const StationDetail: React.FC = () => {
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
-          {console.log('errors', errors)}
             <Form>
-              {console.log('values', values)}
+              {console.log('values of Form', values)}
               <div className="ManageStation  switchLeftComponents ManageStationUi">
                 {success && (
                   <CRXAlert
@@ -514,7 +513,7 @@ const StationDetail: React.FC = () => {
                           spacing={0}
                         >
                           <div className="CBX-input">
-                            <label htmlFor="street">{t("Street_Address")}<span>*</span>
+                            <label htmlFor="street">{t("Street_Address")}
                             </label>
                             <div className="CrxStationError">
                               <Field id="street" name="StreetAddress" />
@@ -664,7 +663,7 @@ const StationDetail: React.FC = () => {
                         spacing={0}
                       >
                         <div className="colstation">
-                          <label htmlFor="name">{t("BlackBox_Retention_Policy")}</label>
+                          <label htmlFor="name">{t("BlackBox_Retention_Policy")}<span>*</span></label>
                           <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
                               id="blackBoxPolicyMultiSelect"
@@ -749,7 +748,7 @@ const StationDetail: React.FC = () => {
                         spacing={0}
                       >
                         <div className="colstation">
-                          <label htmlFor="name">{t("Data_Upload_Policy")}</label>
+                          <label htmlFor="name">{t("Data_Upload_Policy")}<span>*</span></label>
                           <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
                               id="uploadPolicyMultiSelect"

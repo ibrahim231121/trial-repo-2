@@ -28,11 +28,9 @@ iframe {
     margin-left: -3px;
   }
   .menu_List_Button {
+    display: flex;
     .rc-menu-button {
-      position: absolute;
       z-index: 90000;
-      // position: relative;
-      // z-index: 50000;
       background: #333333;
       color: #d1d2d4;
       border: none;
@@ -40,7 +38,6 @@ iframe {
       height: 30px;
       font-size: 14px;
       line-height: 16px;
-      margin-top: -18px;
       font-family: Arial, Helvetica, sans-serif;
       transition: 0.2s all;
       // top: -40px;

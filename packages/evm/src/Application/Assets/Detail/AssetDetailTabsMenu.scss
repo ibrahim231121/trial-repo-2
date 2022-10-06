@@ -2,129 +2,28 @@
     button[index="1"] {
         min-width: 297px;
     }
-    .list_data_main {
-        margin-top: -1px;
-        > div {
-            border-top: 1px solid #878787;
-        }
-        .list_data_categories {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+
+
+    .list_data {
+            margin-left: 85px;
+        .list_head {
             h1 {
-                color: #333333;
+                color:#333333;
                 font-size: 14px;
-                font-weight: 700;
-            }
-            span {
-                display: inline-block;
-                color: #333333;
-                font-size: 14px;
-                font-weight: 400;
-                position: absolute;
-                left: 327px;
             }
         }
-        .list_data_categories_first {
-            margin-top: -8px;
-        }
-        .list_data_li {
-            padding-left: 77px;
-        }
-        .list_data_categories_checksum {
-            span {
-            font-weight: 700;
-
-            }
-        }
-        .asset_detail_tab_third {
-            position: relative;
-            padding-left: 8px;
-            padding-right: 5px;
-            .crxClearfilter  {
-                top: 0px;
-                // position: absolute !important;
-                // top: 0px;
-                // margin-left: -17px;
-                .crxTooltipFilter {
-                    left: 8px;
-                }
-            }
-           
-            .CRXDataTableCustom   {
-                width: 100% !important;
-            }
-            .AssetsDataGrid  {
-                thead {
-                    &:nth-child(2) {
-                        th {
-                            &:nth-child(2) {
-                                .dateRangeContainer {
-                                    margin-right: -31px;
-                                    i {
-                                        padding-right: 18px; 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                tbody {
-                    tr {
-                        &:hover {
-                            &:nth-child(odd) {
-                                td {
-                                    &:nth-child(1) , &:nth-child(2) {
-                                        background-color: #333333;
-                                    } 
-                                }
-                            }
-                            &:nth-child(even) {
-                                td {
-                                    &:nth-child(1) , &:nth-child(2), &:nth-child(3) {
-                                        background-color: #333333;
-                                    } 
-                                }
-                            }
-                        }
-                        td {
-                            text-align: left;
-                            padding-left: 14px;
-                        }
-                    }
-                }
-            }
-            .asset_export_button  {
-                border: 1px solid transparent;
-                padding: 0 18px;
-                height: 30px;
+        .list_para {
+            margin-left: -235px;
                 span {
+                    color: #333333;
+                    display: inline-block;
                     font-size: 14px;
-                    color: #333333;
-                }
-                i {
-                    font-size: 20px;
-                    color: #333333;
-                    margin-right: 18px;
-                }
-                &:hover {
-                    border: 1px solid #333333;
-                    padding: 0 18px;
-                    background-color: #F5F5F5;
-                }
-                &:active, &:focus {
-                    background-color: #231F20 !important;
-                    border: 1px solid #231F20 !important;
-                    span , i{
-                    color: #F5F5F5;
 
-                    }
                 }
-            }
-            .overlayPanel {
-                display: none;
-            }
         }
-
+        .list_head_dark {
+            font-weight: 700;
+        }
     }
+ 
 }

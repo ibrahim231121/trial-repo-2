@@ -252,7 +252,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       setSuccess(true);
       setTimeout(() => {
         props.setOpenForm();
-        props.setFilterValue(() => []);
+        props.setFilterValue(() => []); 
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         props.closeModal(false);
       }, 3000);

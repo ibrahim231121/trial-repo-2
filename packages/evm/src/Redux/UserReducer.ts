@@ -1093,15 +1093,15 @@ export const getUsersIdsAsync: any = createAsyncThunk(
 });
 
 
-export const getAllUsersAsync: any = createAsyncThunk(
-    'getAllUsers',
+export const getUserStatusAsync: any = createAsyncThunk(
+    'getUserStatus',
     async () => {
-        const url = USER + `/?Page=1&Size=10000`
+        const url = USER + `/GetUserStatus`
 
             return await UsersAndIdentitiesServiceAgent
-            .getAllUsers(url)
+            .getUserStatus(url)
             .then((response) => {
-                console.log("Users All", response)
+                
             return response
         })
 
@@ -1150,7 +1150,7 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
 
 export const userSlice = createSlice({
     name: 'user',
-    initialState: { usersInfo: [], userIds: [], users: [] },
+    initialState: { usersInfo: [], userIds: [], userStatus: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getUsersInfoAsync.fulfilled, (state: any, { payload }) => {
@@ -1159,8 +1159,8 @@ export const userSlice = createSlice({
         .addCase(getUsersIdsAsync.fulfilled, (state: any, { payload }) => {
             state.userIds = payload;
         })
-        .addCase(getAllUsersAsync.fulfilled, (state: any, { payload }) => {
-            state.users = payload;
+        .addCase(getUserStatusAsync.fulfilled, (state: any, { payload }) => {
+            state.userStatus = payload;
         })
     }
 });

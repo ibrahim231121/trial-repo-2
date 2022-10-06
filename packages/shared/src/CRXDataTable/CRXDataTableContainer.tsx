@@ -49,10 +49,12 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   useEffect(() => {
     const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
     
+    const userTabId = document.querySelector("#crx-tabpanel-1");
     const scrollFun = () => {
       const tbl : any = document.getElementsByClassName('tableHeaderVisibility')[0];
       const tbl2 : any = document.getElementsByClassName("visibleTable")[0];
-      if (offsetY && window.pageYOffset > 40) {
+      if (offsetY && window.pageYOffset > 40 || userTabId && userTabId?.scrollTop > 100) {
+        
         if (!scrolled50Ref.current) {
           
           scrolled50Ref.current = true;
@@ -78,7 +80,8 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
       setStickeyStickyScroll(tableScrollValue.scrollLeft);
       
     };
-
+    
+      userTabId?.addEventListener("scroll", scrollFun)
       window.addEventListener("scroll", scrollFun);
       tableScrollValue.addEventListener("scroll", scrollFun);
 
@@ -86,6 +89,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
 
       window.removeEventListener("scroll", scrollFun);
       tableScrollValue.removeEventListener("scroll", scrollFun);
+      userTabId?.removeEventListener("scroll", scrollFun)
 
     };
 

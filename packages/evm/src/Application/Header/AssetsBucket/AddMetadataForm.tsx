@@ -1223,7 +1223,8 @@ const AddMetadataForm: React.FC<Props> = ({
                 errorMsg={formpayloadErr.ownerErr}
                 onBlur={checkOwners}
                 onChange={(e: React.SyntheticEvent, value: string[]) => {
-                  setFormPayload({ ...formpayload, owner: value });
+                  let filteredValues = value.filter((x: any) => x.inputValue !== x.label);
+                  setFormPayload({ ...formpayload, owner: filteredValues });
                 }}
               />
             </div>

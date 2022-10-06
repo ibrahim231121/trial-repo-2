@@ -40,7 +40,7 @@ import {
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
 import Cookies from 'universal-cookie';
-import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupList } from './models/UsersAndIdentitiesModel'
+import { UsersInfo, UserGroups, GroupUserCount, UserList, User, Module, GroupList, UserStatus } from './models/UsersAndIdentitiesModel'
 import {
     ConfigurationTemplate,
     ConfigurationTemplateLogs,
@@ -185,13 +185,15 @@ export const FileAgent = {
 }
 
 export const UsersAndIdentitiesServiceAgent = {
-    getAllUsers: (url: string) => requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getAllUsers: (url: string) => requests.get<UserList[]>(USER_INFO_GET_URL, url, config),
+    
     getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
     getGroups: (url: string, extraHeader? : Headers[]) => {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
         return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL , url, config);
     },
+    getUserStatus: (url: string) => requests.get<UserStatus[]>('', url, config),
     getUserGroupCount: () => requests.get<GroupUserCount[]>(GROUP_USER_COUNT_GET_URL, '', config),
     getUser: (userId: string) => requests.get<UserList>(USER, `/${userId}`, config),
     addUser: (url: string, body: User) => requests.post<number>(BASE_URL_USER_SERVICE, url, body, config),

@@ -53,6 +53,7 @@ import {
 import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
+import { Grid } from "@material-ui/core";
 import { SearchType } from "../utils/constants";
 
 const AssetDetailsTemplate = (props: any) => {
@@ -161,6 +162,11 @@ const AssetDetailsTemplate = (props: any) => {
     size: number[];
     retention: string;
     categoriesForm: string[];
+    id?: number;
+    typeOfAsset: string;
+    status: string;
+    captured: string;
+    camera: string;
   };
   let assetObj: AssetReformated = {
     categories: [],
@@ -172,6 +178,10 @@ const AssetDetailsTemplate = (props: any) => {
     size: [],
     retention: "",
     categoriesForm: [],
+    typeOfAsset: "",
+    status: "",
+    captured: "",
+    camera: ""
   };
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
@@ -316,7 +326,7 @@ const AssetDetailsTemplate = (props: any) => {
         )
       );
 
-        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => x.cmtFieldValue);
+        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
         var unit: number[] = [];
         unit.push(getAssetData.assets.master.unitId);
@@ -357,6 +367,13 @@ const AssetDetailsTemplate = (props: any) => {
           ),
           categories: categories,
           categoriesForm: categoriesForm,
+          id: getAssetData?.assets?.master?.id,
+          typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
+          status: getAssetData?.assets?.master?.status,
+          captured: moment(getAssetData?.assets?.master?.recording?.started).format(
+            "YYYY / MM / DD HH:mm:ss"
+          ),
+          camera: getAssetData?.assets?.master?.camera ?? ""
         });
         const data = extract(getAssetData);
         setVideoPlayerData(data);
@@ -373,6 +390,13 @@ const AssetDetailsTemplate = (props: any) => {
           fileduration: template.duration,
           downloadUri: response
         }])
+      }).catch(e => {
+        setFileData([...fileData, {
+          filename: template.name,
+          fileurl: template.url,
+          fileduration: template.duration,
+          downloadUri: ""
+        }])
       });
     })
   }
@@ -386,6 +410,14 @@ const AssetDetailsTemplate = (props: any) => {
             fileurl: template.url,
             fileduration: template.duration,
             downloadUri: response
+          })
+          setChildFileData([...fileDownloadUrls])
+        }).catch(e => {
+          fileDownloadUrls.push({
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: ""
           })
           setChildFileData([...fileDownloadUrls])
         })
@@ -794,7 +826,6 @@ const AssetDetailsTemplate = (props: any) => {
             </Restricted>
           </MenuItem>
         </Menu>
-        <a href="#" className="">Exit</a>
         <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
       </div>
       {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
@@ -827,30 +858,101 @@ const AssetDetailsTemplate = (props: any) => {
             <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
             <div className="list_data_main">
               <CrxTabPanel value={value} index={0}>
-                <div className="list_data_li">
-                    <div className="list_data_categories list_data_categories_first ">
-                      <h1>{t("Owners")}</h1> <span>{assetInfo.owners.join(',')}</span>
-                    </div>
-                    <div className="list_data_categories">
-                      <h1>{t("Unit")}</h1> <span>{assetInfo.unit}</span>
-                    </div>
-                    <div className="list_data_categories list_data_categories_checksum">
-                      <h1>{t("CheckSum")}</h1> <span>{assetInfo.checksum}</span>{" "}
-                    </div>
-                    <div className="list_data_categories">
-                      <h1>{t("Video_Duration")}</h1> <span>{assetInfo.duration}</span>{" "}
-                    </div>
-                    <div className="list_data_categories">
-                      <h1>{t("Size")}</h1> <span>{assetInfo.size} MB</span>
-                    </div>
-                    <div className="list_data_categories">
-                      <h1>{t("Retention")} :</h1>
-                      <span>{assetInfo?.retention}</span>{" "}
-                    </div>
-                    <div className="list_data_categories">
-                      <h1>{t("Categories")}</h1> <span>{assetInfo.categories}</span>
-                    </div>
-                </div>
+                
+           
+              <div className="list_data">
+                <Grid container spacing={2}>
+                    <Grid item xs={4} className="list_head list_head_dark " >
+                        <h1>{t("CheckSum")}:</h1>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.checksum}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                        <h1>{t("Asset Id")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.id}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                        <h1>{t("Asset Type")}:</h1>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.typeOfAsset}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                    <h1>{t("Asset Status")}:</h1> 
+                        
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.status}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                      <h1>{t("Username")}:</h1>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.owners.join(', ')}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                        <h1>{t("Categories")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.categories}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                      <h1>{t("Camera")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                          <span>{assetInfo.camera}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                      <h1>{t("Captured")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                          <span>{assetInfo.captured}</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                      <h1>{t("Duration")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                          <span>{assetInfo.duration}</span>
+                    </Grid>
+
+
+
+                    <Grid item xs={4} className="list_head">
+                          <h1>{t("Size")}:</h1> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo.size} MB</span>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_head">
+                          <h1>{t("Retention")}:</h1>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <span>{assetInfo?.retention}</span>
+                    </Grid>
+
+                </Grid>
+              </div>
               
               </CrxTabPanel>
 

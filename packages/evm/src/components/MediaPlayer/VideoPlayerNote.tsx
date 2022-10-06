@@ -32,8 +32,6 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
-    const [alert, setAlert] = React.useState<boolean>(false);
-    const [responseError, setResponseError] = React.useState<string>('');
     const [alertType, setAlertType] = useState<string>('inline');
     const [errorType, setErrorType] = useState<string>('error');
     const alertRef = useRef(null);
@@ -115,91 +113,104 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     };
 
     const AddNote = async () => {
-        const AssetId = AssetData.dataId;
-        const userIdBody: CMTEntityRecord = {
-            id: "",
-            cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
-            record: []
-          };
-        const body : Note = {
-            id: 0,
-            assetId: AssetId,
-            noteTime: new Date(),
-            position: NotetimePositon ?? 0,
-            description: description,
-            madeBy: "User",
-            version: "",
-            userId: userIdBody
-        };
-        setopenNoteForm(false);
-        const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
-        EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
-            setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
-            setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
-            toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
-        })
-        .catch((e:any) =>{
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-            setResponseError(e);
-        })
+        if((NotetimePositon ?? 0) > 0)
+        {
+            const AssetId = AssetData.dataId;
+            const userIdBody: CMTEntityRecord = {
+                id: "",
+                cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+                record: []
+            };
+            const body : Note = {
+                id: 0,
+                assetId: AssetId,
+                noteTime: new Date(),
+                position: NotetimePositon ?? 0,
+                description: description,
+                madeBy: "User",
+                version: "",
+                userId: userIdBody
+            };
+            setopenNoteForm(false);
+            const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
+            EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
+                setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
+                setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+            })
+            .catch((e:any) =>{
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+            })
+        }
+        else
+        {
+            setopenNoteForm(false);
+            toasterMsgRef.current.showToaster({message: "Current time should be greater than 0", variant: "error", duration: 5000, clearButtton: true});
+        }
     }
 
     
 
     const onUpdate = async () => {
-        const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
-        const userIdBody: CMTEntityRecord = {
-            id: "",
-            cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
-            record: []
-          };
-        const body: Note = {
-            assetId: note.assetId, 
-            id: note.id,
-            position: note.position,
-            description: description,
-            version: note.version,
-            noteTime: note.noteTime,
-            madeBy: note.madeBy,
-            userId: userIdBody
-        };
-        setopenNoteForm(false);
-        EvidenceAgent.updateNote(url, body).then(() => {
-            setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
-            setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
-            toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
-        })
-        .catch((err: any) => {
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-            console.error(err);
-        });
+        if((NotetimePositon ?? 0) > 0)
+        {
+            const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+            const userIdBody: CMTEntityRecord = {
+                id: "",
+                cmtFieldValue: parseInt(localStorage.getItem('User Id') ?? "0"),
+                record: []
+            };
+            const body: Note = {
+                assetId: note.assetId, 
+                id: note.id,
+                position: note.position,
+                description: description,
+                version: note.version,
+                noteTime: note.noteTime,
+                madeBy: note.madeBy,
+                userId: userIdBody
+            };
+            setopenNoteForm(false);
+            EvidenceAgent.updateNote(url, body).then(() => {
+                setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
+                setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
+            })
+            .catch((err: any) => {
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+
+            });
+        }
+        else
+        {
+            setopenNoteForm(false);
+            toasterMsgRef.current.showToaster({message: "Current time should be greater than 0", variant: "error", duration: 5000, clearButtton: true});
+        }
     };
 
     const onDelete = async () => {
-        const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
-        setopenNoteForm(false);
-        EvidenceAgent.deleteNote(url).then(() => {
-            setnoteobj({ ...noteobj, id: note.id })
-            setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
-            toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
-        })
-        .catch(() => {
-            setAlert(true);
-            setResponseError(
-                "We're sorry. The form was unable to be saved. Please retry or contact your System Administrator."
-            );
-        });
+        if((NotetimePositon ?? 0) > 0)
+        {
+            const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
+            setopenNoteForm(false);
+            EvidenceAgent.deleteNote(url).then(() => {
+                setnoteobj({ ...noteobj, id: note.id })
+                setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
+                toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
+            })
+            .catch(() => {
+                toasterMsgRef.current.showToaster({message: "Some error occured", variant: "Error", duration: 5000, clearButtton: true});
+
+            });
+        }
+        else
+        {
+            setopenNoteForm(false);
+            toasterMsgRef.current.showToaster({message: "Current time should be greater than 0", variant: "error", duration: 5000, clearButtton: true});
+        }
     };
 
     const onSubmit = async (e: any) => {
-        setResponseError('');
-        setAlert(false);
         if(editNoteForm){
             await onUpdate();
         }else{
@@ -211,8 +222,6 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
         setIsOpenConfirmDailog(true);
     };
     const onDeleteConfirm = async () => {
-        setResponseError('');
-        setAlert(false);
         await onDelete();
     };
 
@@ -258,16 +267,7 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
                 defaultButton={false}
                 showSticky={false}
             >
-                <div className={` ${alert == true ? "__CRXAlertDes__" : ""}`}>
-                    <CRXAlert
-                        ref={alertRef}
-                        message={responseError}
-                        className='crxAlertNoteEditForm'
-                        alertType={alertType}
-                        type={errorType}
-                        open={alert}
-                        setShowSucess={() => null}
-                    />
+                <div>
                     <div className='modalEditCrx'>
                         <div className='CrxEditForm'>
                             <TextField

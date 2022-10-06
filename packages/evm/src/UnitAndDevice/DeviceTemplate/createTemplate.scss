@@ -1,9 +1,9 @@
 .CrxCreateTemplate {
   position: relative;
 
-  div[role='tabpanel'] {
-    border-top: 1px solid #333;
-    margin-top: -2px;
+  .incarBodywornGroup {
+    display: block;
+    margin-bottom: -3px;
   }
 
   .MuiTab-root {
@@ -28,7 +28,7 @@
     position: absolute;
     color: #333333;
     right: 0;
-    top: -82px;
+    top: 65px;
     border: none;
     z-index: 60000;
     height: 34px;
@@ -110,7 +110,7 @@
           color: #333333;
           font-size: 14px;
           font-family: Arial, Helvetica, sans-serif;
-          padding-left: 12px;
+          padding-left: 18px;
         }
       }
       .UiLabelTextboxRight {
@@ -149,8 +149,25 @@
       }
       .UicustomMulti {
         position: relative;
-        width: 427px;
-        border: 1px solid #d1d2d4;
+        width: 430px;
+        height: 30px;
+
+        .MuiInputBase-root {
+          padding-left: 18px;
+          border: 1px solid #d1d2d4;
+          height: 30px;
+        }
+        
+        .Mui-focused {
+          border: 3px solid #888787;
+          outline: none;
+        }
+        .MuiSelect-root {
+            background-color: transparent;   
+            color: #333333;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
         i {
           position: absolute;
           right: 4px;
@@ -160,13 +177,24 @@
           top: 3px;
         }
         .UicustomMultiHint {
-          position: relative;
+          position: absolute;
+          right: 0px;
+          top: 7px;
           i {
             position: absolute;
             font-size: 14px;
             color: #333333;
             right: -32px;
           }
+        }
+        .MuiSelect-icon {
+          color: #333333;
+          font-size: 27px;
+          margin-top: -1px;
+          margin-right: 11px;
+        }
+        .MuiSelect-iconOpen {
+          transform: rotate(0);
         }
       }
 
@@ -204,6 +232,13 @@
           @extend input;
           border: 3px solid #888787;
           outline: none;
+        }
+      }
+    }
+    .selectFieldError {
+      .UicustomMulti {
+        .MuiInputBase-root {
+          border: 2px solid #aa1d1d !important ;
         }
       }
     }
@@ -279,12 +314,12 @@
       }
       .checkSelectorText {
         position: absolute;
-        top: 15px;
+        top: 19px;
         width: 500px;
         left: 1px;
         font-size: 14px;
         font-family: Arial, Helvetica, sans-serif;
-        color: #74767c;
+        color: var(--color-74767c);
         font-style: italic;
       }
     }
@@ -292,7 +327,7 @@
       height: 34px;
     }
     .UiColumnSpacerCheckBox {
-      height: 54px;
+      height: 57px;
     }
     .UiStationSelectDepended {
       margin-top: -32px;
@@ -323,20 +358,14 @@
           }
         }
       }
-      // .UiNumberSelectorNoHint {
-      //   // left: -14px;
-      //   left: -11px;
-      // }
     }
     .UiCheckbox {
-      // width: 678px;
       width: 756px;
       margin-left: auto;
       margin-right: auto;
     }
     .UiCheckboxDepend {
       margin-top: -21px;
-      // margin-bottom: 22px;
     }
     .UiCheckboxMain {
       display: flex;
@@ -363,9 +392,7 @@
       .UiCheckboxRight {
         position: relative;
         width: 400px;
-        .UiCheckboxRightPosition {
-          // position: absolute;
-        }
+     
         div {
           display: inline-block;
           p {
@@ -416,7 +443,7 @@
               border: solid white;
               border-radius: 1px;
               border-width: 0 2px 2px 0;
-              // transform: rotate(45deg);
+              transform: rotate(45deg);
             }
           }
           .checkHelperText {
@@ -601,7 +628,7 @@
   .tctButton {
     display: flex;
     justify-content: space-between;
-    margin-top: 35px;
+    margin-top: 24px;
     .tctLeft {
       button {
         margin-right: 30px;
@@ -661,11 +688,35 @@
       border: 1px solid #d1d2d4;
       margin-right: 4px;
     }
+    .multiSelectUiRight {
+      .MuiInputBase-root {
+        border: 1px solid #d1d2d4;
+      }
+      .Mui-focused {
+        border: 3px solid #888787;
+      }
+    }
+  }
+  .multiSelectFieldError {
+    .MuiInputBase-root {
+      border: 2px solid #aa1d1d !important;
+    }
   }
   .multiSelectUiDepend {
-    margin-top: -32px;
+    margin-top: -35px;
+    margin-bottom: 64px;
+  }
+  .tctContent {
+    form {
+      div[id*="crx-tabpanel-"] {
+        height: calc(100vh - 282px);
+        border-top: 1px solid #333;
+        margin-top: -2px;
+      }
+    }
   }
 }
+
 .MainHeadingDevices {
   .Controls {
     margin-top: 9px;
@@ -696,7 +747,8 @@
   margin-top: 28px;
 }
 .NumberFieldError {
-  margin-bottom: 19px;
+  // margin-bottom: 19px;
+  margin-bottom: 46px;
   input {
     border: 2px solid #aa1d1d !important;
   }
@@ -745,7 +797,8 @@
       margin-top: 28px;
     }
     .UpdateIntervalIncar {
-      margin-top: 60px;
+      // margin-top: 60px;
+      margin-top: 8px;
       .NumberFieldError {
         margin-bottom: 48px;
       }
@@ -805,11 +858,14 @@
       margin-top: -32px;
     }
     .timeUnitIncar {
-      margin-bottom: 101px;
+      margin-bottom: 62px;
     }
   }
   .USBGPSIncar {
     margin-top: -12px;
+    .UiCheckbox {
+      margin-bottom: -2px;
+    }
   }
   .PortNameIncar {
     margin-top: 16px;
@@ -839,22 +895,23 @@
     margin-top: -15px;
   }
   .ShutdownIgnitionIncar {
-    margin-top: 5px;
+    margin-top: 2px;
   }
   .voltsDepended {
     margin-right: 23px;
   }
   .BeepDuringIncar {
-    margin-top: 26px;
+    margin-top: 28px;
   }
   .SensorRecordingIncar {
     margin-top: 4px;
   }
   .LogoutIncar {
-    margin-top: 27px;
+    margin-top: 3px;
   }
   .LogoutTwoIncar {
-    margin-top: -29px;
+    margin-top: -31px;
+    margin-bottom: 2px;
   }
   .USBPortChargeIncar {
     margin-bottom: 45px;
@@ -873,6 +930,9 @@
     }
     i {
       color: #333333;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
   .GPSHeadingSpacer {
@@ -885,7 +945,27 @@
     margin-top: 26px;
   }
   .PreRecordingDurationIncar {
-    margin-top: 29px;
+    margin-top: -1px;
+    .NumberFieldError {
+      margin-bottom: 19px;
+    }
+  }
+  .PostRecordingDurationIncar {
+    .NumberField {
+      margin-bottom: 30px;
+    }
+    .NumberFieldError {
+      margin-bottom: 48px;
+    }
+  }
+  .BlackboxRecordingIncar {
+    .UiRadioMain {  
+       margin-bottom: -18px ;
+
+    }
+  }
+  .CaptureMasterButtonIncar {
+    margin-bottom: 3px;
   }
   .BlackboxDirectoryIncar {
     margin-top: 40px !important;
@@ -932,6 +1012,94 @@
     height: 1px;
     margin-top: 45px;
   }
+  .EnableCategorizationDepended {
+    .multiSelectUiRight {
+      margin-right: 5px;
+        .MuiSelect-select {
+          width: 386px;
+          padding-left: 18px;
+        }
+    }
+  }
+
+.BeepDuringRecordingSpaceBox {
+  margin-top: -33px !important;
+  margin-bottom: 29px;
+}
+
+.nf_21_bitRate {
+  margin-top: 31px;
+  margin-bottom: 4px;
+} 
+.nf_21_resolution {
+  margin-top: 31px;
+  margin-bottom: 2px;
+}
+.nf_21_audioEnable {
+  margin-top: 50px;
+  margin-bottom: 3px;
+}
+.audio_audioDeviceType {
+  margin-top: -36px;
+}
+
+.audio_audioName {
+  margin-top: 3px;
+  display: block;
+}
+.audio_channelNumber {
+  margin-top: 30px;
+  .timeShow {
+    opacity: 0;
+  }
+}
+.audio_Volume {
+  margin-top: 29px;
+  .timeShow {
+    opacity: 0;
+  }
+}
+.audio_powerPin {
+  margin-top: 33px;
+  margin-bottom: 35px;
+}
+.UiStationSelectErrorField {
+  color: #aa1d1d;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  flex-direction: row;
+  justify-content: normal !important;
+  margin-left: 316px;
+  margin-top: 3px;
+  margin-bottom: -7px;
+  i {
+    margin-right: 5px;
+  }
+}
+.RTSP_streamPort {
+  margin-top: 29px;
+  margin-bottom: 31px;
+  .timeShow {
+    opacity: 0;
+  }
+}
+ 
+.Veretos_powerPin {
+  margin-top: 31px;
+}
+.Veretos_Index {
+  margin-top: 32px;
+  .timeShow {
+    opacity: 0;
+  }
+}
+
+.USB_secondaryCameraPosition {
+  margin-top: 2px;
+  display: block;
+  margin-bottom: -2px;
+}
+
 }
 // incar modal
 .incarMOdalOpen {
@@ -977,6 +1145,106 @@
 .multiSelectUiRight {
   .MuiSelect-select {
     width: 400px;
-    border: 1px solid #d1d2d4;
+    background-color: transparent !important;
+  }
+}
+
+
+  .selectFormikIncar  {
+    margin-top: 33px;
+    margin-left: -22px;
+    border-radius: 0px !important;
+    max-height: 297px !important;
+    height: auto;
+    box-shadow: 0 0 0 0;
+    ul {
+    background: white;
+    width: 414px !important;
+    padding-right: 0px !important;
+    .MuiTouchRipple-root {
+      display: none;
+    }
+    li {
+      color: #333333;
+      height: 33px;
+      padding-left: 17px;
+      font-size: 14px;
+      font-family: var(--base-font-family); 
+        &:hover {
+            background-color: #F5F5F5;
+            color: #333333;
+        }
+        &:active   {
+          color: #333;
+          background-color: rgba(0, 0, 0, 0.08);
+        }
+    }
+    .Mui-selected {
+     background-color: #6E6E6E !important;   
+     color: #F5F5F5 !important;
+    }
+
+    }
+  }
+
+  .multiSelectFormikIncar  {
+    border-radius: 0px !important;
+    background-color: transparent;
+    ul {
+
+      li {
+        height: 33px;
+        font-size: 14px;
+        font-family: var(--base-font-family);
+      }
+    }
+    .MuiTouchRipple-root {
+      display: none;
+    }
+  }
+   .AllDataSelectedList {
+    ul {
+      li {
+        background-color: #6E6E6E !important;
+         color: #F5F5F5 !important;
+       }
+    }
+  }
+  .NotAllSelectedList  {
+    ul {
+      li {
+
+        background-color: white;
+        color: #333333;
+      &:hover {
+        background-color: #F5F5F5;
+        color: #333333;
+    }
+        &:active   {
+          color: #333;
+          background-color: rgba(0, 0, 0, 0.08);
+        }
+    
+      }
+      .Mui-selected {
+        background-color: #6E6E6E !important;
+        color: #F5F5F5 !important;
+        &:hover {
+          color: #F5F5F5 !important;
+        background-color: #6E6E6E !important;
+         }
+      }
+
+    }
+  }
+.multiSelectField {
+  svg {
+    color: #333333;
+    font-size: 27px;
+    margin-top: -1px;
+    margin-right: 11px;
+  }
+  .MuiSelect-iconOpen {
+    transform: rotate(0);
   }
 }

@@ -33,6 +33,7 @@ import { SearchType } from "../../utils/constants";
 import Cookies from "universal-cookie";
 import { IDecoded } from "../../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
+import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
 
 type Props = {
   selectedItems?: any;
@@ -53,7 +54,6 @@ export interface AssetBucket {
 }
 
 const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, portal, IsOpen, Asset }) => {
-
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
@@ -115,6 +115,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
 
   const handleChange = () => setOpenForm(true);
   const addToAssetBucket = () => {
+
     //if undefined it means header is clicked
     if (row !== undefined && row !== null) {
       const find = selectedItems.findIndex(
@@ -122,17 +123,33 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       );
 
       const data = find === -1 ? row : selectedItems;
-      // To cater object is not extensible issue,
-      let newObject = { ...data };
 
-      if (data.evidence) {
-        newObject.isMaster = data.evidence.masterAssetId === data.id;
+      let newObject: any = []
+
+      if(find === -1) {
+        newObject = {...data}
+        if (data.evidence) {
+          newObject.isMaster = data.evidence.masterAssetId === data.id;
+        }
+        else {
+          newObject.isMaster = data.masterAssetId === Asset.assetId;
+          newObject.selectedAssetId = Asset.assetId;
+        }
       }
       else {
-        newObject.isMaster = data.masterAssetId === Asset.assetId;
-        newObject.selectedAssetId = Asset.assetId;
+        newObject = data.map((d:any, i:number) => {
+          newObject[i] = {...d}
+          if (d.evidence) {
+            newObject[i].isMaster = d.evidence.masterAssetId === d.id;
+          }
+          else {
+            newObject[i].isMaster = d.masterAssetId === Asset.assetId;
+            newObject[i].selectedAssetId = Asset.assetId;
+          }
+          return newObject[i];
+        })
       }
-      dispatch(addAssetToBucketActionCreator(newObject));
+    dispatch(addAssetToBucketActionCreator(newObject));
     } else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
@@ -491,9 +508,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         }
       >
         <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-              <div
+         <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")}>
+          <div
                 className="crx-meu-content groupingMenu crx-spac"
                 onClick={addToAssetBucket}
               >
@@ -508,95 +524,79 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   {t("Add_to_asset_bucket")}
                 </div>
               </div>
-            </SecurityDescriptor>
-          </Restricted>
+          </ActionMenuCheckList>
         </MenuItem>
 
         {IsOpen ? (
           <MenuItem>
-            <Restricted moduleId={30}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-                <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+         <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")}>
+            <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                   <div className="crx-menu-icon"></div>
                   <div className="crx-menu-list">{t("Set_as_primary")}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+              </ActionMenuCheckList>
           </MenuItem>
         ) : null
         }
 
         <MenuItem>
-          <Restricted moduleId={21}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+          <ActionMenuCheckList moduleId={21} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Assign_User")}>
               <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-tag fa-md"></i>
                 </div>
                 <div className="crx-menu-list">{t("Assign_User")}</div>
               </div>
-            </SecurityDescriptor>
-          </Restricted>
+          </ActionMenuCheckList>
         </MenuItem>
 
         <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-              <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+          <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Modify_Retention")}>
+            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Modify_Retention")}</div>
               </div>
-            </SecurityDescriptor>
-          </Restricted>
+          </ActionMenuCheckList>
         </MenuItem>
 
         {isCategoryEmpty ? (
           <MenuItem>
-            <Restricted moduleId={2}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+           <ActionMenuCheckList moduleId={2} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Categorize")}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Categorize")}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+            </ActionMenuCheckList>
           </MenuItem>
         ) : (
           <MenuItem>
-            <Restricted moduleId={3}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+           <ActionMenuCheckList moduleId={3} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")}>
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
                     <i className="far fa-clipboard-list fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+            </ActionMenuCheckList>
           </MenuItem>
         )}
 
         {isLockedAccess ?
           <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-                {/* descriptorId={4} */}
+           <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Unlock_Access")}>
                 <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t('Unlock_Access')}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+            </ActionMenuCheckList>
           </MenuItem>
           :
           <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
-                {/* descriptorId={4} */}
+           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")}>
                 <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
@@ -604,43 +604,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   <div className="crx-menu-list">{t("Restrict_access")}</div>
                 </div>
 
-              </SecurityDescriptor>
-            </Restricted>
+            </ActionMenuCheckList>
           </MenuItem>
         }
 
-        {/* Remove this menu against this ticket GEP-2612 */}
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-envelope fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Email")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={1} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-link fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Link_asset")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
         <MenuItem>
-          <Restricted moduleId={0}>
-            {/* descriptorId={4} */}
-            <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+        
+        <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}>
               <div className="crx-meu-content groupingMenu">
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
@@ -655,81 +625,33 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
                   </SubMenu>
                 </div>
               </div>
-            </SecurityDescriptor>
-          </Restricted>
+            </ActionMenuCheckList>
         </MenuItem>
-
-        {/* Remove this menu against this ticket GEP-2612 */}
-        {/* <MenuItem disabled>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list disabledItem">
-                  {t("Link_to_this_group")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
-        {/* <MenuItem>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-external-link-square fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Move_asset")}</div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-        {/* <MenuItem disabled>
-          <Restricted moduleId={0}>
-            <SecurityDescriptor descriptorId={2} maximumDescriptor={maximumDescriptor} evidenceGroupIds={row?.evidence?.securityDescriptors.map((x: any) => x.groupId)}>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list disabledItem">
-                  {t("Move_to_this_group")}
-                </div>
-              </div>
-            </SecurityDescriptor>
-          </Restricted>
-        </MenuItem> */}
-
-
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Share_Asset")}>
                 <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Share_Asset")}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+            </ActionMenuCheckList>
           </MenuItem>
         ) : null
         }
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            <Restricted moduleId={0}>
-              <SecurityDescriptor descriptorId={3} maximumDescriptor={maximumDescriptor} securityDescriptors={row?.evidence?.securityDescriptors}>
+        <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")}>
                 <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
                   <div className="crx-menu-icon">
                     <i className="far fa-user-lock fa-md"></i>
                   </div>
                   <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
                 </div>
-              </SecurityDescriptor>
-            </Restricted>
+              </ActionMenuCheckList>
           </MenuItem>
         ) : null
         }
