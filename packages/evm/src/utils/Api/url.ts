@@ -64,7 +64,8 @@ export const MODULES = `${BASE_URL_USER_SERVICE}/Modules`;
 
 export const CATEGORIES_GET_ALL = `${BASE_URL_SETUP_SERVICE}/Categories`
 export const EVIDENCE_ASSET_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences`
-export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}/Files`
+//Please dont append controller with File service url
+export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}` 
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;

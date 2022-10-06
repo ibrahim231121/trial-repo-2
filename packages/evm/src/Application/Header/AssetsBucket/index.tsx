@@ -575,7 +575,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       },
       body: JSON.stringify(body)
     };
-    fetch(FILE_SERVICE_URL + `?id=` + id, requestOptions)
+    fetch(FILE_SERVICE_URL + `/Files?id=` + id, requestOptions)
       .then((resp: any) => {
         console.info(resp);
       }).catch((err: any) => {
@@ -946,7 +946,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       },
       body: JSON.stringify(body)
     };
-    const resp = await fetch(FILE_SERVICE_URL + `?id=` + file.uploadedFileId, requestOptions);
+    const resp = await fetch(FILE_SERVICE_URL + `/Files?id=` + file.uploadedFileId, requestOptions);
     if (resp.ok) {
       toasterRef.current.showToaster({
         message: t("File_has_been_removed_successfully"), variant: "success", duration: 7000, clearButtton: true

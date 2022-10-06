@@ -285,7 +285,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       return;
     }
 
-    const url = `${FILE_SERVICE_URL}/download/${assetFileId}`;
+    const url = `${FILE_SERVICE_URL}/Files/download/${assetFileId}`;
     http.get(url)
       .then((response) => {
         downloadFileByURLResponse(response.data);
