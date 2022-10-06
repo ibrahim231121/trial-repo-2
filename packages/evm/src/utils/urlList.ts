@@ -68,6 +68,9 @@ export const urlNames: any = {
     manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
     liveVideo : 'liveVideo',
     avlMap: 'avlMap',
+    sensorsAndTriggers: 'sensorsAndTriggers',
+    sensorsAndTriggersCreate: 'sensorsAndTriggersCreate',
+    sensorsAndTriggersEdit: "sensorsAndTriggersEdit",
     singleLiveView:'singleLiveView'
 };
 
@@ -315,5 +318,30 @@ export const urlList: any = [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/defaultUnitTemplate', type: 'text', label: 'Manage Default Unit Template' }
         ],
-    }
+    },
+    {
+        name: urlNames.sensorsAndTriggers,
+        url: "/admin/sensorsAndTriggers",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/sensorsAndTriggers', type: 'text', label: 'Sensors & Triggers' }
+        ],
+    },
+    {
+        name: urlNames.sensorsAndTriggersCreate,
+        url: "/admin/sensorsAndTriggers/sensorsAndTriggersCreate",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/sensorsAndTriggers', type: 'link', label: 'Sensors & Triggers' },
+            { type: "text", label: "Create Sensors & Triggers", }
+        ],
+    },
+    {
+        name: urlNames.sensorsAndTriggersEdit,
+        url: "/admin/sensorsAndTriggers/sensorsAndTriggersEdit/:id",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/sensorsAndTriggers', type: 'link', label: 'Sensors & Triggers' },
+        ],
+    },
 ];

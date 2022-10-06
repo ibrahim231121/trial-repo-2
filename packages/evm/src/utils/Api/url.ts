@@ -70,4 +70,13 @@ export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_UR
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
+
+export const SENSOR_AND_TRIGGERS_GET_ALL = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
+
+export const SENSOR_AND_TRIGGERS = `${BASE_URL_SETUP_SERVICE}/SensorEvents/UpsertEvent`;
+
+export const SENSOR_AND_TRIGGERS_GET_ALL_EVENTS = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAllEvents`;
+
+export const SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/SensorEvents/GetAllEvents`;
+
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID

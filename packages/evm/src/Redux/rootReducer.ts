@@ -20,6 +20,7 @@ import timelineDetailSlice from './VideoPlayerTimelineDetailReducer';
 import assetDetailSlice from './AssetDetailsReducer';
 import loaderSlice from './loaderSlice';
 import accessAndRefreshTokenSlice from './AccessAndRefreshTokenReducer';
+import sensorEventsSlice from './SensorEvents';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -42,6 +43,7 @@ export const reducer = combineReducers({
   assetSearchReducer: assetSearchSlice.reducer,
   assetDetailReducer: assetDetailSlice.reducer,
   configurationTemplatesSlice: configurationTemplatesReducerSlice.reducer,
-  auditLogSlice: auditLogSlice.reducer
+  auditLogSlice: auditLogSlice.reducer,
+  sensorEventsSlice : sensorEventsSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>

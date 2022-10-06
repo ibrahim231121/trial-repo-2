@@ -406,6 +406,12 @@ export const resources = {
         "Manage_Device_Unit_Templates":"hr-Manage Device & Unit Templates",
         "Evidence(Dev)":"hr-Evidence(Dev)",
         "Manage_Station":"hr-Manage Station",
+        "Create_Sensor_&_Trigger" : "Create Sensor & Trigger",
+        "Edit_sensor_and_trigger": "hr-Edit sensor and trigger",
+        "Delete_sensor_and_trigger": "hr-Delete sensor and trigger",
+        "Sensors_And_Triggers": "hr-Sensors And Triggers",
+        "Sensors_And_Triggers_Form": "hr-Sensors And Triggers Form",
+        "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"hr-Are you sure you would like to delete sensors and triggers?",
         // ---------------------------------
         
         // --------- Asset buctet ----------

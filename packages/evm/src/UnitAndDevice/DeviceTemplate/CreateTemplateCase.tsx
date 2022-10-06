@@ -62,10 +62,14 @@ const CustomizedMultiSelectForFormik = (props: any) => {
             setAllSelected(false);
           }
           var addAllSelected = selected.includes("Add All");
+          var listToExclude = "list of all sensors and triggers";
           if(addAllSelected)
           {
-            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value));
+            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value).filter((x: any) => (!listToExclude.includes(x))));
             return children.filter((x: any) => x.key != "Add All").map((x:any) => x.key).join(', ');
+          }
+          if((selected.length > 1) && (selected.includes("list of all sensors and triggers"))) {
+            return children.filter((x:any) =>(!listToExclude.includes(x.props.value)) && selected.includes(x.props.value)).map((x:any) => x.key).join(', ')
           }
           return children.filter((x: any) => selected.includes(x.props.value)).map((x:any) => x.key).join(', ');
         }}
@@ -225,9 +229,8 @@ export const CreateTempelateCase = (props: any) => {
 
 
 
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors,sensorsEvent } = props;
 
-
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors } = props;
 
   const handleRowIdDependency = (key: string, extraFieldDependency?: any) => {
     var parentSplittedKey = formObj.key.split('_');
@@ -543,6 +546,11 @@ export const CreateTempelateCase = (props: any) => {
                 placement="right"
               />) : (<></>)}
           </div>
+          {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
+                <CRXButton onClick={sensorsEvent}>
+                    {t("Create Sensor & Trigger")}
+                </CRXButton>
+          </div>) :(<></>)}
         </div>
         </div>
         </div>

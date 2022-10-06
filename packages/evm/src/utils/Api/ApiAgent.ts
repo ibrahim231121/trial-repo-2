@@ -62,6 +62,7 @@ import { useState, useEffect } from 'react';
 import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { GlobalAssetViewReason } from './models/SetupConfigurations';
+import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/SensorsAndTriggers';
 
 const cookies = new Cookies();
 let config = {
@@ -141,6 +142,10 @@ export const SetupConfigurationAgent = {
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    putSensorsAndTriggersTemplate: (url: string, body:any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body,config),
+    getAllSensorsAndTriggersEvents: (url:any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    getSensorsAndTriggersEvents: (url : string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" +url, config),
+    deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
