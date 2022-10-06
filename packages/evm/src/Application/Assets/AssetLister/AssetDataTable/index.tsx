@@ -659,7 +659,7 @@ const MasterMain: React.FC<Props> = ({
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
-          offsetY={179}
+          offsetY={177}
           page={page}
           rowsPerPage={rowsPerPage}
           setPage= {(page:any) => setPage(page)}
