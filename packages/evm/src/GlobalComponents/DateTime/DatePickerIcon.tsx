@@ -52,7 +52,7 @@ type Props = {
    var endDate  : string  = dateTimeDetail.endDate.split("+")[0];
 
    var minStartDate : string = "";
-   var maxEndDate : string = "";
+   var maxEndDate : string = "9999-12-31T23:59";
 
    if(showCompact && ( minDate && minDate !== "") && ( maxDate &&  maxDate !== "") ){
 
@@ -62,7 +62,7 @@ type Props = {
    }
    else if(showCompact){
     minStartDate = startDate;
-    maxEndDate = endDate;
+    maxEndDate = endDate ;
    }
 
 
