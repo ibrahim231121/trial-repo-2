@@ -1957,3 +1957,10 @@ span.playBackTooltipUp {
   }
   
 }
+.CrxAssetSelectModal {
+  margin-top: 7px;
+  width: calc(522px - 52px);
+  &.MuiPaper-rounded {
+    border-radius: 0;
+  }
+}

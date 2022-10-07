@@ -21,8 +21,8 @@ const useGapStyles = makeStyles({
         marginBottom: "2rem",
         overflowY: "auto",
         position: "absolute",
-        top: "-191px!important" as any,
-        minHeight: "118px",
+        top: "-165px!important" as any,
+        minHeight: "95px",
         left: "-12px!important" as any,
         '@media screen and (min-width:1024px)': {
             left: "-63px!important" as any,
@@ -49,7 +49,7 @@ const useGapStyles = makeStyles({
         
         setAnchorEl(e.currentTarget)
         
-        const tableRow:HTMLElement | null = popoverRefs.current.parentElement.parentElement.parentElement;
+        const tableRow:HTMLElement | null = popoverRefs.current.parentElement;
         tableRow && (tableRow.style.background = "#333");
         tableRow?.childNodes.forEach(x => {
             (x as HTMLElement).style.color = "#d1d2d4"

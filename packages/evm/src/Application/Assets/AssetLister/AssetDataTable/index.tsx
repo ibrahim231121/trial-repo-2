@@ -120,7 +120,7 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
                   },
                 }}
               >
-                <div className="assetName">{"#" + assetName}</div>
+                <div className="assetName">{assetName}</div>
               </Link>
               
               <DetailedAssetPopup asset={assets} row={evidence}/>

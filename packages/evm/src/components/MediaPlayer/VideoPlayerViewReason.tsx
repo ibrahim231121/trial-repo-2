@@ -273,6 +273,7 @@ console.log(descriptionErr, "check")
                                 options={viewReason}
                                 defaultOptionText={"-- Please select one --"}
                                 disabled={false}
+                                popover={"CrxAssetSelectModal"}
                                 defaultOption={false}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { ReasonChange(e) }}
                             >

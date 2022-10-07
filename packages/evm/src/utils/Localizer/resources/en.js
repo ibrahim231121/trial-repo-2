@@ -796,6 +796,9 @@ export const resources = {
         "Comments":"Comments",
         "Reason_for_Sharing":"Reason for Sharing",
 
+        // --------- Manage User ----------
+        "Yes,_close":"Yes, close",
+        
         //---------------- Incar template page ----
         "Create_TemplateIncar" : "Create Template : Incar"
       }
