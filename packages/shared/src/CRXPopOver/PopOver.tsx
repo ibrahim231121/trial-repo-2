@@ -1,5 +1,5 @@
-import React from 'react'
-import Popover from '@material-ui/core/Popover';
+import React  from 'react'
+import Popper  from '@material-ui/core/Popper';
 import { makeStyles } from '@material-ui/core/styles';
 import "./popOver.scss";
 
@@ -12,50 +12,84 @@ type typoProps = {
     placement : string,
     className? : string,
     onSetAnchorE1: (v: HTMLElement | null) => void;
+    arrowRef? : any,
+    title : string,
+    arrowDown : boolean
 }
 
 
-const useStyles = makeStyles(() => ({
+const cbxPopoverStyle = makeStyles(() => ({
   paper: {
     overflowX: "unset",
     overflowY: "unset",
-    backgroundColor: "#333333",
-    boxShadow : "none",
-    "&::before": {
+    backgroundColor: "#F2F2F2",
+    border: "1px solid #707070",
+    width: "505px",
+    padding : "20px 0px 13px 22px",
+    boxShadow : "0px 0px 5px #00000033",
+    '&[data-popper-placement*="top"] .arrowPopper': {
+        bottom: 0,
+        left: 0,
+        marginBottom: '-0.9em',
+        width: '3em',
+        height: '1em',
+        '&::before': {
+          borderWidth: '1em 1em 0 1em',
+          borderColor: `#fff transparent transparent transparent`,
+        },
       },
+
     },
   })
 )
 
 
-const CRXPopOver: React.FC<typoProps> = ({children, open, anchorEl, id, className, onSetAnchorE1}) => {
-
-  const classes = useStyles();
-
+const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl, id, className, onSetAnchorE1}) => {
+  const classes = cbxPopoverStyle();
     const handlePopoverClose = () => {
       onSetAnchorE1(null);
     };
-
+    const arrow = document.querySelector('#arrow');
     return (
-        <Popover
-          classes={{ paper: classes.paper + ' CRXPopOverArrow' }}
+      <>
+      
+        <Popper
+          className={ classes.paper + ' CBX_PopOver ' + className }
           id={id}
           open={open}
           anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
+          placement="top-start"
+          modifiers={{
+            flip: {
+              enabled: true,
+            },
+            preventOverflow: {
+              enabled: true,
+              boundariesElement: 'scrollParent',
+            },
+            arrow: {
+              enabled: false,
+              element: arrow,
+            },
+            
           }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-          className={className}
+          transition
         >
+          <div className='_popover_content'>
+          <div className='_popover_title'>
+            <div className='title_text'>{title}</div>
+            <button onClick={() => handlePopoverClose()} className="_cbx_PopupCloseIcon">
+              <span className='icon icon-cross2'></span>
+            </button>
+          </div>
           { children }
-        </Popover>
+
+          
+          </div>
+         {arrowDown && <div id="arrow" className='arrowPopper' data-popper-arrow></div> } 
+        </Popper>
+        
+        </>
     )
 }
 
