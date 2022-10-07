@@ -135,6 +135,8 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   return (
     <ClickAwayListener onClickAway={() => onClose()}>
     <div className="CRXPopupOuterDiv">
+
+      { asset && asset.filter(x=> x.assetId !== row.masterAsset.assetId).length > 0 &&
       <span
         aria-owns={open ? "mouse-over-popover" : undefined}
         aria-haspopup="true"
@@ -144,7 +146,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
       >
         <i className="fal fa-clone"></i>
       </span>
-      
+      }
       <CRXPopOver
         open={open}
         anchorEl={anchorEl}
