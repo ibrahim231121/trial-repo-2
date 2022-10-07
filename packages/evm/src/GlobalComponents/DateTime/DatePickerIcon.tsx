@@ -48,7 +48,6 @@ type Props = {
     }
 };
 
-
    var startDate : string = dateTimeDetail.startDate.split("+")[0];
    var endDate  : string  = dateTimeDetail.endDate.split("+")[0];
 
@@ -76,7 +75,7 @@ type Props = {
           type="datetime-local"
           onChange={(e: any) => { onOptionChange(e,e.target.value, dateTimeDetail.endDate,true)}}
           minDate={minStartDate}
-          maxDate="9999-12-31T23:59"
+          maxDate={maxEndDate}
           
         />
 

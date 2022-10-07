@@ -40,8 +40,8 @@ const SearchComponent = (props: any) => {
   const [searchData, setSearchData] = React.useState<any>();
   const [predictiveText, setPredictiveText] = React.useState('');
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
-    startDate: moment().startOf(t("day")).subtract(29, t("days")).set(t("second"), 0).format(),
-    endDate: moment().endOf(t("day")).set(t("second"), 0).format(),
+    startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
+    endDate: moment().endOf("day").set("second", 0).format(),
     value: basicDateDefaultValue,
     displayText: basicDateDefaultValue
   });
@@ -135,7 +135,7 @@ const SearchComponent = (props: any) => {
                 displayText: defaultDateValue.displayText
               }
               setDateTimeDropDown(approachingDefaultDateValue);
-              setDateTimeAsset(dateValueObj);
+              setDateTimeAsset(approachingDefaultDateValue);
             }
           }
         }
@@ -152,7 +152,8 @@ const SearchComponent = (props: any) => {
             maxDate: approachingMaxDateValue.endDate()
           })
         }
-        setShowAssetDateCompact(false);
+        
+        setShowAssetDateCompact(true);
       },
     },
   ];
@@ -279,8 +280,10 @@ const SearchComponent = (props: any) => {
   }
 
   const NormalSearch = () => {
+
+    setDateTimeAsset(dateTimeDropDown);
     if (dateTimeDropDown.value !== 'anytime') {
-      setDateTimeAsset(dateTimeDropDown);
+      
       if (dateTimeDropDown.startDate) {
         QUERRY.bool.must.push({
           range: {
@@ -376,6 +379,7 @@ const SearchComponent = (props: any) => {
             </CRXColumn>
             <CRXColumn item xs={6}>
               <label className='dateTimeLabel'>{t("Date_and_Time")}</label>
+              
               <DateTimeComponent
                 showCompact={compactDateRange.showCompact}
                 minDate={compactDateRange.minDate}
