@@ -1,3 +1,4 @@
+import { duration } from 'moment';
 import { AbortController } from "@azure/abort-controller";
 import { BlobServiceClient, BlockBlobStageBlockOptions, BlockBlobCommitBlockListOptions, BlockBlobClient } from "@azure/storage-blob";
 import { v4 as uuidv4 } from "uuid";
@@ -42,7 +43,7 @@ const uploadFiles = async (file: any, resolve: any, reject: any) => {
     window.tasks[fileName] = {}
     window.tasks[fileName].abortSignal = new AbortController(allTasksController.signal);
 
-    let maxBlockSize = 50 * 1024 * 1024;
+    let maxBlockSize = 5 * 1024 * 1024;
     if (maxBlockSize > file.size) {
         maxBlockSize = file.size;
     }
@@ -64,6 +65,35 @@ const uploadFiles = async (file: any, resolve: any, reject: any) => {
     await uploadStageBlock(usb)
 };
 
+const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
+
+    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+    var index = uploadItem.findIndex((x: any) => x.fileName == usb.fileName);
+
+    var selectedItem = {
+        fileName: usb.fileName,
+        blockIds: window.tasks[usb.fileName].blockIds,
+        //abortSignal: Object.assign({}, window.tasks[usb.fileName].abortSignal),
+        file: {
+            duration: usb.file.duration,
+            uploadUri: usb.file.uploadUri,
+            uploadedFileId: usb.file.uploadedFileId,
+            uploadedFileName: usb.file.uploadedFileName,
+            url: usb.file.url,
+            lastModified: usb.file.lastModified,
+            lastModifiedDate: usb.file.lastModifiedDate,
+            name: usb.file.name,
+            size: usb.file.size,
+            type: usb.file.type
+        }
+    };
+    if (index == -1)
+        uploadItem.push(selectedItem);
+    else
+        uploadItem[index] = selectedItem;
+
+    localStorage.setItem("uploadedFiles", JSON.stringify(uploadItem));
+}
 
 const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
 
@@ -74,6 +104,8 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
         usb.blockBlobClient.commitBlockList(window.tasks[usb.fileName].blockIds.map((x: any) => x.blockId), blockBlobCommitBlockListOptions)
             .then((response) => {
                 console.log("response", response)
+                //this is the case when user uploaded the file and refresh the page wihout add metadata
+                saveFileToLocalStorage(usb);
             }).catch(e => {
                 console.log("error", e)
             })
@@ -149,32 +181,40 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
 
 export const resumeFile = async (fileName: string) => {
     const allTasksController = new AbortController();
-    window.tasks[fileName].abortSignal = new AbortController(allTasksController.signal);
-    const blockBlobInfo = await getBlockBlobInfo(window.tasks[fileName].file.uploadUri);
+    let fileObject = window.tasks[fileName];
+    fileObject.abortSignal = new AbortController(allTasksController.signal);
+    const blockBlobInfo = await getBlockBlobInfo(fileObject.file.uploadUri);
     const blockBlobClient = blockBlobInfo.blockBlobClient;
     let currentFilePointer: number = 0;
-    window.tasks[fileName].blockIds.map(async (x: any) => {
+    let file: any = fileObject.file;
+    fileObject.blockIds.map(async (x: any) => {
         if (x.maxBlockSize == x.loadedBytes) {
+
+            if (fileObject.blockIds[fileObject.blockIds.length - 1].blockId == x.blockId) {
+                resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName)
+            }
             currentFilePointer = currentFilePointer + x.loadedBytes;
         }
         else {
-            let file: any = window.tasks[fileName].file;
-            let remainingBytes = file.size - currentFilePointer;
-            window.tasks[fileName].blockIds.pop();//remove last not complete block
-            let usb: UploadStageBlockInfo = {
-                blockBlobClient: blockBlobClient,
-                file,
-                remainingBytes,
-                maxBlockSize: x.maxBlockSize,
-                fileName,
-                currentFilePointer,
-                reject: () => { console.log("reject") },
-                resolve: () => { console.log("resolve") }
-            }
-            await uploadStageBlock(usb);
+            resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName)
         }
     });
 };
+const resumeFileStage = async (currentFilePointer: number, fileObject: any, maxBlockSize: number, blockBlobClient: any, fileName: string) => {
+    let remainingBytes = fileObject.file.size - currentFilePointer;
+    fileObject.blockIds.pop();//remove last not complete block
+    let usb: UploadStageBlockInfo = {
+        blockBlobClient: blockBlobClient,
+        file: fileObject.file,
+        remainingBytes,
+        maxBlockSize: maxBlockSize,
+        fileName,
+        currentFilePointer,
+        reject: () => { console.log("reject") },
+        resolve: () => { console.log("resolve") }
+    }
+    await uploadStageBlock(usb);
+}
 export default uploadFiles;
 
 

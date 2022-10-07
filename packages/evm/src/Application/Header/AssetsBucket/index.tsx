@@ -48,6 +48,7 @@ import AddMetadataForm from "./AddMetadataForm";
 import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../../utils/Api/url'
 import Restricted from "../../../ApplicationPermission/Restricted";
+import { FileAgent } from "../../../utils/Api/ApiAgent";
 import "./overrideMainBucket.scss";
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
@@ -94,6 +95,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setIsOpen(isOpenBucket)
   }, [isOpenBucket])
 
+
+
   const isDuplicateFound: boolean = useSelector(
     (state: RootState) => state.assetBucket.isDuplicateFound
   );
@@ -128,7 +131,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const fileCountRef = React.useRef(fileCount);
   const [files, setFiles] = React.useState<any[]>([]);
   const [totalFileSize, setTotalFileSize] = React.useState<string>("");
-
+  const [showWifiIcon, setShowWifiIcon] = React.useState<boolean>(false);
 
   const [uploadInfo, setUploadInfo] = useState<FileUploadInfo[]>([]);
   const [totalFilePer, setTotalFilePer] = React.useState<any>(0);
@@ -147,8 +150,60 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
     setCheckedAll(false)
+    uploadInfoFromLocalStorage();
   }, []);
 
+  window.onbeforeunload = () => {
+    if (totalFilePer < 100 && fileCount > 0) {
+      return "";
+    }
+  }
+  const uploadInfoFromLocalStorage = () => {
+
+    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+
+    if (uploadItem.length > 0) {
+
+      let totalPercentage = 0;
+      let files: any[] = [];
+      window.tasks = window.tasks || [];
+      let uploadInfo: FileUploadInfo[] = [];
+
+      uploadItem.map((x: any) => {
+
+        let loadedBytes = x.blockIds.map((y: any) => y.loadedBytes).reduce((partialSum: number, a: number) => partialSum + a, 0);
+
+        let _uploadInfo: FileUploadInfo;
+        _uploadInfo = {
+          fileName: x.fileName,
+          fileId: x.file.uploadedFileId,
+          isCompleted: loadedBytes == x.file.size,
+          uploadInfo: {
+            uploadValue: Math.round((Math.ceil(loadedBytes) / x.file.size) * 100),
+            uploadText: x.fileName,
+            uploadFileSize: getFileSize(loadedBytes) + " of " + getFileSize(x.file.size),
+            error: false,
+            removed: false,
+          },
+          isPause: false
+        };
+        uploadInfo.push(_uploadInfo);
+        totalPercentage = totalPercentage + Math.round((Math.ceil(loadedBytes) / x.fileSize) * 100);
+        files.push(x.file);
+
+        window.tasks[x.fileName] = {};
+        //window.tasks[x.fileName].abortSignal = x.abortSignal;
+        window.tasks[x.fileName].file = x.file;
+        window.tasks[x.fileName].blockIds = x.blockIds;
+
+      });
+      setUploadInfo(uploadInfo);
+      setFileCount(uploadItem.length);
+      fileCountRef.current = uploadItem.length;
+      setTotalFilePer(Math.round(totalPercentage / uploadItem.length));
+      setFiles(files);
+    }
+  }
 
   useEffect(() => {
     if (isDuplicateFound != prevIsDuplicate && prevIsDuplicate != undefined && isDuplicateFound !== false) {
@@ -436,6 +491,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }, [attention])
 
   //--for asset upload
+  const emptyfileOnClick = async (e: any) => {
+    e.target.value = null;
+  }
   const handleOnUpload = async (e: any) => {
 
     var av = [];
@@ -512,9 +570,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     return promise;
   }
 
-
-
-
   const uploadStatusUpdate = (data: any) => {
     let _uploadInfo: FileUploadInfo;
     setUploadInfo(prevState => {
@@ -551,9 +606,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     rec.fileId = data.data.fileId;
     rec.isCompleted = data.data.loadedBytes == data.data.fileSize
     rec.uploadInfo = {
-      uploadValue: data.data.percent,
+      uploadValue: data.data.percent > rec.uploadInfo.uploadValue ? data.data.percent : rec.uploadInfo.uploadValue,
       uploadText: data.data.fileName,
-      uploadFileSize: data.data.loadedBytes + " of " + data.data.fileSize,
+      uploadFileSize: data.data.percent > rec.uploadInfo.uploadValue ? (data.data.loadedBytes + " of " + data.data.fileSize) : rec.uploadInfo.uploadFileSize,
       error: false,
       removed: false,
     };
@@ -628,6 +683,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setIsModalOpen(true);
   }
   const handleClose = (e: any) => {
+    setActiveScreen(0);
     setIsModalOpen(false);
   }
 
@@ -655,9 +711,15 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       }
     });
 
+    if (totalPercentage == 0 && fileCountRef.current == 0) {
+      setIsMetaDataOpen(false);
+      setShowUploadAttention(false);
+    }
+
     if (totalPercentage != 0 && fileCountRef.current != 0) {
 
       setTotalFilePer(Math.round(totalPercentage / fileCountRef.current));
+      totalPercentage = Math.round(totalPercentage / fileCountRef.current);
     }
 
     if (eCount == fileCount && (eCount != 0 && fileCount != 0)) {
@@ -685,8 +747,35 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         // setFileCount(files.length)
 
       }
+      //this is the case of auto retry if any error occur
+      if (eCount > 0 && window.Timer == null) {
+        window.Timer = setInterval(function () {
+          FileAgent.getHealthCheck().then((response: any) => {
+            if (response == true) {
+              setShowWifiIcon(true);
+              uploadInfo.forEach((x) => {
+                if (x.uploadInfo.error == true) {
+                  resumeFile(x);
+                }
+              });
+              window.clearInterval(window.Timer);
+            }
+          }).catch((ex: any) => {
+          });
+        }, 5000)
+      }
+      else if (eCount == 0) {
+        window.clearInterval(window.Timer);
+        window.Timer = null;
+      }
     }
 
+    if (uploadInfo.length > 0 && totalPercentage == 100) {
+      if (!isCheckTrue) {
+        setIsMetaDataOpen(true)
+        setShowUploadAttention(true);
+      }
+    }
 
   }, [uploadInfo])
 
@@ -774,6 +863,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       else {
         setIsCheckTrue(true);
       }
+      //if evidence added then remove entry from local storage
+      localStorage.removeItem("uploadedFiles");
     }
   }, [onAddEvidence])
 
@@ -830,7 +921,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }, [])
 
   const uploadProgressStatus = () => {
-
     const prog = uploadInfo.map((item: FileUploadInfo, i: number) => {
       if (item.uploadInfo.removed != true) {
 
@@ -849,7 +939,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
                 {item.isPause && !item.uploadInfo.error &&
                   <button onClick={() => resumeFile(item)}><i className="fa fa-play" aria-hidden="true"></i></button>}
-                {item.uploadInfo.error && <button onClick={() => retryFile(item)}><i className="fa fa-repeat" aria-hidden="true"></i></button>}
+                {/* {item.uploadInfo.error && <button onClick={() => retryFile(item)}><i className="fa fa-repeat" aria-hidden="true"></i></button>} */}
               </div>
             }
             maxDataSize={true}
@@ -903,7 +993,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   }
   const onConfirm = () => {
-    window.tasks[fileToRemove].abortSignal.abort();
+    window.tasks[fileToRemove]?.abortSignal?.abort();
     setFileCount(prev => {
 
       fileCountRef.current = prev - 1;
@@ -930,6 +1020,18 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     updateFileStatus(files.find(x => x.uploadedFileName == fileToRemove))
 
     setIsOpenConfirm(false);
+
+    //if the file stored in local storage, then remove it
+    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+    var index = uploadItem.findIndex((x: any) => x.fileName == fileToRemove);
+    if (index > -1) {
+      uploadItem.splice(index, 1);
+      localStorage.setItem("uploadedFiles", JSON.stringify(uploadItem));
+    }
+    if (fileCountRef.current == 0) {
+      setIsMetaDataOpen(false);
+      setShowUploadAttention(false);
+    }
   }
 
   const updateFileStatus = async (file: any) => {
@@ -1017,6 +1119,21 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
     isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
   }, [isCheckedAll]);
+
+  const OfflineOnlineStatus = () => {
+
+    if (errorCount > 0) {
+      return <div className="offline"><i className="fa-solid fa-wifi-slash"></i></div>
+    }
+    else if (errorCount == 0 && showWifiIcon == true)
+      return <div className="online"><i className="fa-solid fa-wifi "></i></div>
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowWifiIcon(false);
+    }, 10000)
+  }, [showWifiIcon == true])
 
   return (
     <>
@@ -1155,7 +1272,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                   multiple
                                   type="file"
                                   onChange={handleOnUpload}
-
+                                  onClick={emptyfileOnClick}
                                 />
                                 <label htmlFor="upload-Button-file">
                                   <a className="textFileBrowser">{t("file_browser")}</a>
@@ -1169,7 +1286,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
                       {
                         isMainProgressBarOpen && !onAddEvidence && <>
-                          <div className="uploading-text">{totalFilePer == 100 ? "Uploaded:" : "Uploading:"} </div>
+                          <div className="uploading-text">{totalFilePer == 100 ? "Uploaded:" : "Uploading:"}
+                            {OfflineOnlineStatus()}
+                          </div>
                           <div className="crxProgressbarBucket mainProgressBar">
                             <CRXProgressBar
                               id="raw"
