@@ -85,7 +85,7 @@ const DateTime = () => {
     }else{
       dateValues = dateOptions.basicoptions;
     }
-
+    
     if(!showCompact){
       setDateOptions(dateValues);
     }
@@ -102,7 +102,7 @@ const DateTime = () => {
         }
       });
 
-      if(dateTimeDetail.displayText === "tomorrow")
+      if(dateTimeDetail.displayText === "tomorrow" || dateTimeDetail.displayText === "next 7 days" || dateTimeDetail.displayText === "next 30 days")
       {
           requiredDateOptions = dateOptions.approachingDeletion.filter((x, i) => {
           

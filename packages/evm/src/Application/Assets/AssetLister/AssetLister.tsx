@@ -57,10 +57,17 @@ const SearchComponent = (props: any) => {
     minDate: "",
     maxDate: ""
   });
+  const evidenceSearchType = {
+    MyAsstes: "#My Assets",
+    NotCategorized:"#Not Categorized",
+    ApproachingDeletion: "#Approaching Deletion"
+  }
   const iconRotate = showAdvance ? ' ' : 'rotate90';
   const responseForSearch: any = useSelector(
     (state: RootState) => state.assetSearchReducer.assetSearchInfo
   );
+
+  
   const [isSearchBtnDisable, setIsSearchBtnDisable] = React.useState<boolean>(true);
   const QUERRY: any = {
     bool: {
@@ -94,14 +101,19 @@ const SearchComponent = (props: any) => {
       text: 'My Assets',
       query: () => queries.GetAssetsByUserName(decoded.UserName, decoded.AssignedGroups),
       renderData: function () {
+        setDateTimeAsset(dateTimeDropDown);
         fetchData(this.query(), SearchType.ViewOwnAssets);
+        setPredictiveText(evidenceSearchType.MyAsstes);
+        setShowAssetDateCompact(true);
+        setShowShortCutSearch(false);
+        
       },
     },
     {
       text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function () {
-        setPredictiveText(t("Not_Categorized"));
+        setPredictiveText(evidenceSearchType.NotCategorized);
         fetchData(this.query(), SearchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
@@ -114,10 +126,10 @@ const SearchComponent = (props: any) => {
         queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function (dateTimeObject: DateTimeObject | undefined = undefined) {
         setDateOptionType(dateOptionsTypes.approachingDeletion);
-        setPredictiveText(t("Approaching_Deletion"));
+        setPredictiveText(evidenceSearchType.ApproachingDeletion);
         setIsSearchBtnDisable(false);
         if (!dateTimeObject) {
-          let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === approachingDateDefaultValue);
+          let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === (dateTimeDropDown.displayText != "anytime" ? dateTimeDropDown.displayText : approachingDateDefaultValue));
           if (approachingdateValue != null) {
             fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate(), decoded.AssignedGroups), SearchType.ShortcutSearch)
             let defaultDateValue = dateOptions.basicoptions.find(x => x.value === basicDateDefaultValue);
@@ -262,17 +274,16 @@ const SearchComponent = (props: any) => {
 
 
   const Search = () => {
-    if (querryString && querryString.length > 0 && querryString.startsWith("#")) {
-      let exactShortCutName = querryString.substring(1);
-      let shortCut = shortcutData.find(x => x.text === exactShortCutName);
-      if (shortCut) {
-        if (shortCut.text === t("Approaching_Deletion")) {
-          shortCut.renderData(dateTimeDropDown);
+    if (querryString && querryString.length > 0 && querryString.includes("#")) {
+      if(querryString.startsWith("#"))
+      {
+        let exactShortCutName = querryString.substring(1);
+        let shortCut = shortcutData.find(x => x.text === exactShortCutName);
+        if (shortCut) {
+          shortCut.renderData(undefined);
         } else {
-          shortCut.renderData(undefined) // For Trash and Not Categorized
+          setSearchData([]);
         }
-      } else {
-        NormalSearch();
       }
     } else {
       NormalSearch();
@@ -280,7 +291,6 @@ const SearchComponent = (props: any) => {
   }
 
   const NormalSearch = () => {
-
     setDateTimeAsset(dateTimeDropDown);
     if (dateTimeDropDown.value !== 'anytime') {
       
@@ -334,11 +344,20 @@ const SearchComponent = (props: any) => {
 
   const onChangePredictiveSearch = (e: any) => {
     setQuerryString(e);
-    if (e.startsWith('#') && e === t("Approaching_Deletion")) {
-      setDateOptionType(dateOptionsTypes.approachingDeletion);
+    let dateOptionType = dateOptionsTypes.basicoptions;
+    if (e === evidenceSearchType.ApproachingDeletion) {
+      dateOptionType = dateOptionsTypes.approachingDeletion;
     } else {
-      setDateOptionType(dateOptionsTypes.basicoptions);
+      dateOptionType = dateOptionsTypes.basicoptions;
+      setDateTimeDropDown({
+        startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
+        endDate: moment().endOf("day").set("second", 0).format(),
+        value: basicDateDefaultValue,
+        displayText: basicDateDefaultValue
+      });
+      setDateTimeAsset(dateTimeDropDown);
     }
+      setDateOptionType(dateOptionType);
   }
 
   const getAllOptions = (e: any) => {
