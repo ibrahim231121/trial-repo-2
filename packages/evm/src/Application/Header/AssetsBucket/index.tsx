@@ -48,6 +48,7 @@ import AddMetadataForm from "./AddMetadataForm";
 import Cookies from 'universal-cookie';
 import { FILE_SERVICE_URL } from '../../../utils/Api/url'
 import Restricted from "../../../ApplicationPermission/Restricted";
+import "./overrideMainBucket.scss";
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 // window.onRecvError = new CustomEvent("onUploadError");
