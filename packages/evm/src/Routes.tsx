@@ -36,6 +36,8 @@ import Restricted from "./ApplicationPermission/Restricted";
 import TenantSettings from "./Application/Admin/SetupAndConfiguration/TenantSettings";
 import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplate";
+import SensorsAndTriggersDetail from "./Application/Admin/SensorsAndTriggers/SensorsAndTriggersDetail/SensorsAndTriggersDetail";
+import SensorAndTriggersList from './Application/Admin/SensorsAndTriggers/SensorsAndTriggersLister/SensorsAndTriggersList';
 
 
 
@@ -113,6 +115,10 @@ const Routes = () => {
               <PrivateRoute moduleId={18} path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />
               <PrivateRoute moduleId={19} path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.manageUnitDeviceTemplate)[0].url}  exact={true} component={DefaultUnitTemplate} />
+
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggers)[0].url}  exact={true} component={SensorAndTriggersList} />
               
               <Route path="/token/:token" exact={true} component={Token} />
 

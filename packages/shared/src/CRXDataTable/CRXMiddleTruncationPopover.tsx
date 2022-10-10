@@ -148,7 +148,6 @@ const CRXMiddleTruncationPopover = ({content, id, link, middle, isPopover, minWi
             className="crx_middle_popover"
             
         >
-            
             <div className='_middle_popover_content'>{content}</div>
             
         </Popover>

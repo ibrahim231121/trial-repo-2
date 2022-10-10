@@ -45,27 +45,28 @@ let GetAssetsUnCategorized = (startDate: string, endDate: string, groupIds: stri
                     lte: `${moment(endDate).toISOString()}`,
                 },
             },
+        },
+        {
+            "bool": {
+                "must_not": {
+                    "exists": {
+                        "field": "categories"
+                    }
+                }
+            }
+        },
+        {
+            "script": {
+                "script": {
+                    "source": "doc['categories.keyword'].length == 0"
+                }
+            }
         }
     ];
     let filterQuery : any = {
         "bool": {
             "should": [
-                {
-                    "bool": {
-                        "must_not": {
-                            "exists": {
-                                "field": "categories"
-                            }
-                        }
-                    }
-                },
-                {
-                    "script": {
-                        "script": {
-                            "source": "doc['categories.keyword'].length == 0"
-                        }
-                    }
-                }
+               
             ]
         }
     };

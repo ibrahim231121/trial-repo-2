@@ -120,7 +120,7 @@ const assetNameTemplate = (assetName: string, evidence: Evidence) => {
                   },
                 }}
               >
-                <div className="assetName">{"#" + assetName}</div>
+                <div className="assetName">{assetName}</div>
               </Link>
               
               <DetailedAssetPopup asset={assets} row={evidence}/>
@@ -659,7 +659,7 @@ const MasterMain: React.FC<Props> = ({
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
-          offsetY={179}
+          offsetY={177}
           page={page}
           rowsPerPage={rowsPerPage}
           setPage= {(page:any) => setPage(page)}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   CRXPopOver,
   CRXHeading,
@@ -19,6 +19,7 @@ import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
 import { Asset } from "../../../../GlobalFunctions/globalDataTableFunctions"
 import DetailedAssetPopupAction from "./DetailedAssetPopupAction"
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { Link } from "react-router-dom";
 
 type CheckValue = {
@@ -34,6 +35,7 @@ type Props = {
 const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
+  const popOverRef:any = useRef(null)
   const [groupedAsset, setGroupedAsset] = useState<Asset[]>();
 
   const { t } = useTranslation<string>();
@@ -54,11 +56,16 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   useEffect(() => {
     controlSelection(false)
   }, [groupedAsset]);
+
+  const onClose = () => {
+    setAnchorEl(null);
+  };
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
+    
     setGroupedAsset(asset);
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(popOverRef.current);
   };
 
   const controlSelection = (check: boolean) => {
@@ -74,9 +81,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
     }
   };
 
-  const onClose = () => {
-    setAnchorEl(null);
-  };
+
 
   const handleCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCheckAll(event.target.checked);
@@ -128,50 +133,40 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
       
   }
   return (
+    <ClickAwayListener onClickAway={() => onClose()}>
     <div className="CRXPopupOuterDiv">
+
+      { asset && asset.filter(x=> x.assetId !== row.masterAsset.assetId).length > 0 &&
       <span
         aria-owns={open ? "mouse-over-popover" : undefined}
         aria-haspopup="true"
         onClick={handlePopoverOpen}
+        ref={popOverRef}
+        id="pop"
       >
         <i className="fal fa-clone"></i>
       </span>
+      }
       <CRXPopOver
         open={open}
         anchorEl={anchorEl}
         onSetAnchorE1={(v: HTMLElement) => setAnchorEl(v)}
         className={"CRXPopoverCss"}
+        title={t("Grouped_Assets")}
+        arrowDown={false}
       >
-        <div className="CRXPopupInnerDiv">
-          <div className="CRXPopupCrossButton">
-            <CRXButton
-              className={classes.CRXArrowStyle + " CRXCloseButton"}
-              disableRipple={true}
-              onClick={onClose}
-            >
-              <div className="icon icon-cross2 detailPopupCloseIcon"></div>
-            </CRXButton>
-          </div>
-          <div className="CRXPopupHeader">
-            <CRXHeading className="DRPTitle" variant="h3">
-              {t("Grouped_Assets")}
-            </CRXHeading>
-          </div>
-          <div className="CRXPopupTableDiv">
-            <table>
-              <tbody>
-                <tr className="CRXPopupTableRow">
-                  <td className="CRXPopupTableCellOne">
-                    <CRXCheckBox
-                      className="relatedAssetsCheckbox"
-                      checked={checkAll}
-                      onChange={(e:React.ChangeEvent<HTMLInputElement>) =>handleCheckAll(e)}
-                    />
-                  </td>
-                  <td className="CRXPopupTableCellTwo">{t("Select_All")}</td>
-                  <td className="CRXPopupTableCellThree"></td>
-                  <td className="CRXPopupTableCellFour"></td>
-                </tr>
+        
+            <div className="_asset_group_popover_list">
+              <div className="_checked_all_list">
+              <CRXCheckBox
+                  className="relatedAssetsCheckbox"
+                  checked={checkAll}
+                  onChange={(e:React.ChangeEvent<HTMLInputElement>) =>handleCheckAll(e)}
+                  lightMode={true}
+                />
+                <span className="checked_all_text">{t("Select_All")}</span>
+              </div>
+               
                 {(selected.length > 0 && groupedAsset !== undefined)
                   ? groupedAsset.map((asset: Asset, index: number) => {
                       const id = `checkBox'+${index}`;
@@ -188,12 +183,12 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                         }}
                       >
                         
-                        <div className="assetName">{createLink(asset.assetName, 18)}</div>
+                        <div className="assetName">{asset.assetName}</div>
                       </Link>
                       return (
                         <>
-                          <tr key={index}>
-                            <td>
+                          <div className="_asset_group_list_row" key={index}>
+                            <div className="_asset_group_single_check">
                               <CRXCheckBox
                                 inputProps={id}
                                 className="relatedAssetsCheckbox"
@@ -201,17 +196,21 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                                 onChange={(
                                   e: React.ChangeEvent<HTMLInputElement>
                                 ) => handleCheck(e, selected[index].assetId)}
+                                lightMode={true}
                               />
-                            </td>
-                            <td>
+                            </div>
+                            <div className="_asset_group_list_thumb">
                               <AssetThumbnail
                                 assetType={asset.assetType}
                                 className={"CRXPopupTableImage"}
                               />
-                            </td>
-                            <td>
+                            </div>
+                            <div className="_asset_group_list_detail">
                             
-                            <CRXMiddleTruncationPopover
+                            <div className="_asset_group_list_link">
+                            {links}
+                            </div>
+                            {/* <CRXMiddleTruncationPopover
                               id={asset.assetId}
                               content={asset.assetName}
                               isPopover={true}
@@ -219,28 +218,24 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                               minWidth={150}
                               link={links}
                               middle={false}
-                            />
+                            /> */}
                              
                               {asset.camera !== undefined &&
                               asset.camera !== null &&
                               asset.camera !== "" ? (
-                                <div>
-                                  <label className="CRXPopupDetailFontSize">
-                                    {asset.camera}
-                                  </label>
+                                <div className="_asset_group_list_cam_name">
+                                  {asset.camera}
                                 </div>
                               ) : (
-                                <div>
-                                  <label className="CRXPopupDetailFontSize">
+                                <div className="_asset_group_list_asset_type">
                                     {asset.assetType}
-                                  </label>
                                 </div>
                               )}
-                              <label className="CRXPopupDetailFontSize">
+                              <div className="_asset_group_list_recordingStarted">
                                 {dateDisplayFormat(asset.recordingStarted)}
-                              </label>
-                            </td>
-                            <td className="CRXPopupActionIcon">
+                              </div>
+                            </div>
+                            <div className="CRXPopupActionIcon">
                               
                                 {/* <i className="far fa-ellipsis-v actionIcon"> */}
                                 <span onClick={() => setSelectedActionRow(asset)}>
@@ -248,19 +243,20 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                                 </span>
                                 {/* </i> */}
                               
-                            </td>
-                          </tr>
+                            </div>
+                          </div>
                           
                         </>
                       );
                     })
                   : null}
-              </tbody>
-            </table>
-          </div>
-        </div>
+              
+            </div>
+          
       </CRXPopOver>
+      
     </div>
+    </ClickAwayListener>
   );
 };
 

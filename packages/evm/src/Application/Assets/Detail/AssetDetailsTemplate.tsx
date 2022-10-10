@@ -55,6 +55,7 @@ import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 import { Grid } from "@material-ui/core";
 import { SearchType } from "../utils/constants";
+import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 const AssetDetailsTemplate = (props: any) => {
   let tempgpsjson: any = [
@@ -242,9 +243,12 @@ const AssetDetailsTemplate = (props: any) => {
   );
 
   useEffect(() => {
+    dispatch(setLoaderValue({isLoading: true}))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
+    }).catch(() => {
+      dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
     });
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
@@ -317,6 +321,7 @@ const AssetDetailsTemplate = (props: any) => {
   if(fileData.length == getAssetData?.assets.master.files.length)
   { // temp condition
     if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
+      dispatch(setLoaderValue({isLoading: false, message: "" }))
       var categories: string[] = [];
       getAssetData.categories.forEach((x: any) =>
         x.formData.forEach((y: any) =>
@@ -395,7 +400,7 @@ const AssetDetailsTemplate = (props: any) => {
           filename: template.name,
           fileurl: template.url,
           fileduration: template.duration,
-          downloadUri: ""
+          downloadUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         }])
       });
     })
@@ -417,7 +422,7 @@ const AssetDetailsTemplate = (props: any) => {
             filename: template.name,
             fileurl: template.url,
             fileduration: template.duration,
-            downloadUri: ""
+            downloadUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
           })
           setChildFileData([...fileDownloadUrls])
         })
@@ -912,7 +917,7 @@ const AssetDetailsTemplate = (props: any) => {
 
 
                     <Grid item xs={4} className="list_head">
-                      <h1>{t("Camera")}:</h1> 
+                      <h1>{t("Camera Name")}:</h1> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
                           <span>{assetInfo.camera}</span>

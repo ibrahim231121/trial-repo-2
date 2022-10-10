@@ -25,6 +25,11 @@ body {
   padding-top: 44px;
 }
 
+.jss9 .searchComponents {
+  padding-top: 118px;
+  transition: 1s padding ease-out;
+}
+
 .mainContainer {
   padding-top: 70px !important;
 }
@@ -207,8 +212,6 @@ body {
 }
 .crx-main-container {
   min-height:calc(100vh - 30px) !important;
-  max-height:calc(100vh - 30px) !important;
-  display: table;
   width: 100%;
 }
 
@@ -258,7 +261,7 @@ body {
 .stickyPos {
   position: sticky !important;
   top: 127px;
-  background: var(--color-White);
+  background: var(--color-White) !important;
   padding-top: 5px;
   padding-bottom: 0px !important;
   height: 53px;
@@ -267,6 +270,9 @@ body {
   z-index: 101;
 }
 
+.stickyPos:hover {
+  background: var(--color-White) !important;
+}
 .stickyTableHeader {
   overflow-x: 'hidden';
   position: 'sticky';

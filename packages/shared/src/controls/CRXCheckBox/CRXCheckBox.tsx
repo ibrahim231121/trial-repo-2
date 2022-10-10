@@ -56,12 +56,13 @@ const CRXCheckBox: React.FC<Props> = ({
   const disable = disabled && "disabled";
   const error = isError && "error";
   const checkStyle = lightMode ? "checkBoxLightTheme" : "checkBoxDarkTheme";
+  
   useEffect(() => {
     if(selectedRow === true && checkBoxSelected == "crxSelectedDark" && checked === true) {
-      console.log("Dark 1")
+     
       setCheckBoxIconClass("far fa-check-square crxCheckForDarBg");
     } else if(selectedRow === true && checkBoxSelected == "crxSelectedLight" && checked === true) {
-      console.log("Dark 2")
+      
         setCheckBoxIconClass("fas fa-check-square");
     }else {
       setCheckBoxIconClass("fas fa-check-square")

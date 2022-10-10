@@ -668,6 +668,7 @@
     width: 756px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
     .multiSelectUiLabel {
@@ -1146,6 +1147,28 @@
   .MuiSelect-select {
     width: 400px;
     background-color: transparent !important;
+  }
+}
+.CreateSensorsEventForm {
+  button {
+    height: 37px;
+    width: 214px;
+    color: #333333;
+    border: 1px solid #878787;
+    background-color: white;
+    left: 68px;
+    &:hover {
+      background-color: #f5f5f5 !important;
+      color: #333333 !important;
+    }
+    &:active {
+      background-color: #231f20 !important;
+      border: 1px solid #231f20 !important;
+      color: #f5f5f5 !important;
+      i {
+        color: #f5f5f5 !important;
+      }
+    }
   }
 }
 

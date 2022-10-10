@@ -49,6 +49,7 @@
     }
     .CBX-inputDatePicker {
       height: 30px;
+      width: 247px;
       input {
         padding: 0 16px;
         border: 1px solid var(--color-d1d2d4);
@@ -94,6 +95,7 @@
     border-top: 1px solid var(--color-d1d2d4);
     button {
       height: 30px;
+      background: var(--color-333333) !important;
     }
   }
 }

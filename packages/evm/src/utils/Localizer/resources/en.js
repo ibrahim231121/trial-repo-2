@@ -441,6 +441,12 @@ export const resources = {
         "Manage_Device_Unit_Templates":"Manage Device & Unit Templates",
         "Evidence(Dev)":"Evidence(Dev)",
         "Manage_Station":"Manage Station",
+        "Create_Sensor_&_Trigger" : "Create Sensor & Trigger",
+        "Edit_sensor_and_trigger": "Edit sensor and trigger",
+        "Delete_sensor_and_trigger": "Delete sensor and trigger",
+        "Sensors_And_Triggers": "Sensors And Triggers",
+        "Sensors_And_Triggers_Form": "Sensors And Triggers Form",
+        "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"Are you sure you would like to delete sensors and triggers?",
         // ---------------------------------
         
         // --------- Asset buctet ----------
@@ -790,6 +796,9 @@ export const resources = {
         "Comments":"Comments",
         "Reason_for_Sharing":"Reason for Sharing",
 
+        // --------- Manage User ----------
+        "Yes,_close":"Yes, close",
+        
         //---------------- Incar template page ----
         "Create_TemplateIncar" : "Create Template : Incar"
       }

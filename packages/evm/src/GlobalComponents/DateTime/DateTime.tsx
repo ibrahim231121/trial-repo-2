@@ -85,7 +85,7 @@ const DateTime = () => {
     }else{
       dateValues = dateOptions.basicoptions;
     }
-
+    
     if(!showCompact){
       setDateOptions(dateValues);
     }
@@ -101,6 +101,17 @@ const DateTime = () => {
             return x;       
         }
       });
+
+      if(dateTimeDetail.displayText === "tomorrow" || dateTimeDetail.displayText === "next 7 days" || dateTimeDetail.displayText === "next 30 days")
+      {
+          requiredDateOptions = dateOptions.approachingDeletion.filter((x, i) => {
+          
+          if (x && moment(x.startDate()) >=  moment(dateTimeDetail.startDate) &&
+            moment(x.endDate()) <= moment(dateTimeDetail.endDate)) { // add this check because by default it is showing DateTimeProp or undefined . 
+              return x;       
+          }
+      });
+    }
   
       if(requiredDateOptions != null && requiredDateOptions.length > 0 ){
         setDateOptions(requiredDateOptions);
@@ -122,7 +133,6 @@ const DateTime = () => {
 
 
   const onOptionChange = (e: any, startDate : string = "", endDate : string = "", isCustomRange : boolean = false) => {
-    
     const { value } = e.target;
     if (value === "custom" && !openContainerState ) {
       setOpenContainerState(true);

@@ -176,6 +176,11 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 0,
+          label: t('Sensors_And_Triggers'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggers)[0].url) },
+        },
+        {
+          moduleIds: 0,
           label: t('Evidence(Dev)'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.testEvidence)[0].url) },
         },

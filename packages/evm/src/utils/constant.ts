@@ -4,8 +4,8 @@ const dateOptions = {
         { 
           value: "anytime", 
           displayText: "anytime",  
-          startDate : () => moment().format(), 
-          endDate : () => moment().format()
+          startDate : function() { return moment().startOf("day").subtract(10000, "days").set("second", 0).format() }, 
+          endDate : function(){ return   moment().endOf("day").set("second", 0).format() } 
         }, 
         { 
           value: "today", 
@@ -61,7 +61,7 @@ const dateOptions = {
       },
       { 
         value: "next 7 days", 
-        displayText: " next 7 day" ,
+        displayText: "next 7 days" ,
         current:  moment() , 
         startDate : function(){ return moment().startOf("day").add(1, "days").set("second", 0).format()  }, 
         endDate : function(){ return moment().endOf("day").add(7, "days").set("second",0).format()  } 

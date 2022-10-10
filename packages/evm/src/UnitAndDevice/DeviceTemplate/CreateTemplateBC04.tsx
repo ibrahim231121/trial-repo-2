@@ -26,6 +26,8 @@ import { useTranslation } from "react-i18next";
 import { CaptureDevice } from "../../utils/Api/models/StationModels";
 import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
+import {getAllSensorsEvents} from '../../Redux/SensorEvents';
+
 
 
 var re = /[\/]/;
@@ -122,6 +124,7 @@ const CreateTemplate = (props: any) => {
   const [templateName] = React.useState<string>(historyState.deviceType);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
+  const sensorsEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
@@ -167,9 +170,10 @@ const CreateTemplate = (props: any) => {
   
   function setintial() {
     if (historyState.deviceType == "Incar") {
-      dispatch(getRetentionStateAsync());
       dispatch(getDeviceTypesAsync());
+      dispatch(getAllSensorsEvents());
     }
+    dispatch(getRetentionStateAsync());
     dispatch(getCategoryAsync());
     dispatch(getStationsInfoAllAsync());
     if (historyState.isedit || historyState.isclone) {
@@ -187,7 +191,7 @@ const CreateTemplate = (props: any) => {
   }
 
   React.useEffect(() => {
-    if (retention && retention.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if (retention && retention.length > 0 && FormSchema) {
       setRetentionDropdown();
     }
   }, [retention,FormSchema]);
@@ -210,6 +214,17 @@ const CreateTemplate = (props: any) => {
     }
   }, [stations,FormSchema]);
 
+  React.useEffect(() => {
+    if(sensorsEvents && sensorsEvents.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+      setSensorsAndTriggersDropDown();
+    }
+  },[sensorsEvents,FormSchema])
+
+  const openCreateSensorsAndTriggersTemplate = () => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}`;
+    history.push(path);
+  };
+
 
 
 
@@ -219,14 +234,24 @@ const CreateTemplate = (props: any) => {
       retentionOptions.push({ value: x.id, label: x.name })
 
     })
-    FormSchema["Unit Settings"].map((x: any, y: number) => {
-      if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
-        x.options.push(...retentionOptions)
-      }
-      if (x.key == "unitSettings/blackboxRetentionPolicy/Select" && x.options.length == 1) {
-        x.options.push(...retentionOptions)
-      }
-    })
+    if(historyState.deviceType == "Incar")
+    {
+      FormSchema["Unit Settings"].map((x: any, y: number) => {
+        if (x.key == "unitSettings/mediaRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+        if (x.key == "unitSettings/blackboxRetentionPolicy/Select" && x.options.length == 1) {
+          x.options.push(...retentionOptions)
+        }
+      })
+    }
+    else
+    {
+      let mediaRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/mediaRetentionPolicy/Select" && x.options.length == 1)
+      let blackboxRetentionPolicy = FormSchema["Device"].find((x:any) => x.key == "device/blackboxRetentionPolicy/Select" && x.options.length == 1)
+      mediaRetentionPolicy?.options.push(...retentionOptions)
+      blackboxRetentionPolicy?.options.push(...retentionOptions)
+    }
     setFormSchema(FormSchema);
   }
   const setCategoriesDropdown = () => {
@@ -308,6 +333,26 @@ const CreateTemplate = (props: any) => {
     }
     setFormSchema(FormSchema);
     setStationsLoaded(true);
+  }
+
+  const setSensorsAndTriggersDropDown = () => {
+    let sensorsAndTriggersOptions: any = [];
+    sensorsAndTriggersOptions.push({value : "list of all sensors and triggers", label: "list of all sensors and triggers"})
+    sensorsAndTriggersOptions.push({value : "Add All", label: "Add All"})
+    sensorsEvents.map((x:any) => {
+      sensorsAndTriggersOptions.push({value : x.id, label: x.description})
+    })
+    SensorsAndTriggersHandler(sensorsEvents ,sensorsAndTriggersOptions);
+  }
+  
+  const SensorsAndTriggersHandler =(sensorsEvents: any,sensorsAndTriggersOptions: any) => {
+    if (historyState.deviceType == "Incar" && sensorsEvents.length > 0) {
+      let sensorEvents = FormSchema["Sensors & Triggers"].find((x: any) => x.key == "Sensors&Triggers/SensorEvents/Multiselect");
+      if (Array.isArray(sensorsAndTriggersOptions)) {
+        sensorEvents.options = [...sensorsAndTriggersOptions];
+        setFormSchema(FormSchema);
+      }
+    }
   }
 
 
@@ -582,6 +627,12 @@ const CreateTemplate = (props: any) => {
             });
           }
         }
+        if(split[1] === "SensorEvents") {
+          valueRaw = valueRaw.filter((a: any) => a != "list of all sensors and triggers");
+          if(valueRaw === undefined || valueRaw.length === 0){
+            valueRaw = "";
+          }
+        }
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
@@ -844,7 +895,8 @@ const CreateTemplate = (props: any) => {
                                     Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
                                     setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
                                     isValid={isValid} setformSchema={setformSchema}
-                                    touched={touched} errors={errors} />}
+                                    touched={touched} errors={errors} 
+                                    sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
                                 </div>) : (<></>));
 
                             }
@@ -887,3 +939,5 @@ const CreateTemplate = (props: any) => {
 };
 
 export default CreateTemplate;
+
+
