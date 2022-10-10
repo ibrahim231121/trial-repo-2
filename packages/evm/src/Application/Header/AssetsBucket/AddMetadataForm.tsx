@@ -435,8 +435,13 @@ const AddMetadataForm: React.FC<Props> = ({
         });
       }
     });
+    var distinctCategoryList = dateOfArry.filter((value : any, index: any, self: any) =>
+    index === self.findIndex((t: any) => (
+      t.id === value.id
+    ))
+  )
+    return setCategoryOption(distinctCategoryList);
 
-    return setCategoryOption(dateOfArry);
   };
 
   const checkOwners = () => {

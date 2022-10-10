@@ -617,7 +617,7 @@ const CreateUserForm = () => {
 
     const payload = setEditPayload();
     UsersAndIdentitiesServiceAgent.editUser(urlEdit, payload).then(() => {
-      dispatch(enterPathActionCreator({ val: payload.name.first }));
+      dispatch(enterPathActionCreator({ val: payload.account.userName }));
       if (disableLink) {
         const userName = userPayload.name.first + ' ' + userPayload.name.last;
         sendEmail(payload.email, userPayload.id, userName);
