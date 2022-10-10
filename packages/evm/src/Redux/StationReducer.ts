@@ -6,7 +6,7 @@ import { MAX_REQUEST_SIZE_FOR} from '../utils/constant'
 import { setLoaderValue } from './loaderSlice';
 
 export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
-  let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+  let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}, {key: "InquireDepth", value:"shallow"}]
   return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
     .then((response:any) => response)
     .catch((error: any) => {

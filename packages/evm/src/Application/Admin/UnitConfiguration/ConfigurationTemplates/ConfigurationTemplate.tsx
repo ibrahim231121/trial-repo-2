@@ -15,6 +15,7 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import {
   getConfigurationInfoAsync,
   getDeviceTypeInfoAsync,
+  getAllConfigurationValuesAsync
 } from "../../../../Redux/TemplateConfiguration";
 import { Link } from "react-router-dom";
 import { urlList, urlNames } from "../../../../utils/urlList";
@@ -116,6 +117,7 @@ const ConfigurationTemplates: React.FC = () => {
   React.useEffect(() => {
     //dispatch(getConfigurationInfoAsync(pageiGrid));
     dispatch(getDeviceTypeInfoAsync());
+    dispatch(getAllConfigurationValuesAsync());
     // setCreateTemplateDropdown([
     //   {
     //     "id": "1",
@@ -155,6 +157,10 @@ const ConfigurationTemplates: React.FC = () => {
     (state: RootState) => state.templateSlice.templateInfo
   );
 
+  const UnitConfigurationTemplateValues: any = useSelector(
+    (state: RootState) => state.templateSlice.configTemplateValues
+  );
+
   const createTemplateDropdown: DeviceType[] = useSelector(
     (state: RootState) => state.templateSlice.deviceType
   ).filter((x: any) => x.showDevice == true).map((x: any) => {
@@ -178,7 +184,7 @@ const ConfigurationTemplates: React.FC = () => {
     []
   );
   const [reformattedRows, setReformattedRows] =
-    React.useState<ConfigTemplate[]>();
+    React.useState<any>();
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false);
@@ -199,13 +205,37 @@ const ConfigurationTemplates: React.FC = () => {
         }
       );
     }
+
     setRows(configTemplateRows);
-    setReformattedRows(configTemplateRows);
+
+    let stations = UnitConfigurationTemplateValues.map((item:any, i:number) => {
+      let element: any = {
+        id: item.stationId,
+        name: item.stationName
+      }
+      return element
+    })
+
+    let deviceType = UnitConfigurationTemplateValues.map((item:any, i:number) => {
+      let element: any = {
+        id: item.deviceId,
+        name: item.deviceType
+      }
+      return element
+    })
+
+    let indicator = UnitConfigurationTemplateValues.map((item:any, i:number) => {
+      let element: any = {
+        name: item.isDefaultTemplate ? "Default" : "",
+      }
+      return element
+    })
+    setReformattedRows({...reformattedRows, rows: configTemplateRows, stations: stations, deviceType: deviceType, indicator: indicator });
   };
 
   React.useEffect(() => {
     setData();
-  }, [UnitConfigurationTemplates.data]);
+  }, [UnitConfigurationTemplates.data, UnitConfigurationTemplateValues]);
 
   useEffect(() => {
     if(paging)
@@ -252,6 +282,23 @@ const ConfigurationTemplates: React.FC = () => {
     return self.indexOf(value) === index;
   }
 
+  function findUniqueOptions(options: any) {
+    let unique: any = options.map((x: any) => x);
+      if (options.length > 0) {
+        unique = [];
+        unique[0] = options[0];
+        for (var i = 0; i < options.length; i++) {
+          if (!unique.some((item: any) => item.label === options[i].label)) {
+            let value: any = {};
+            value["id"] = options[i].id;
+            value["label"] = options[i].label;
+            unique.push(value);
+          }
+        }
+      }
+      return unique;
+  }
+
   const openHandler = (_: React.SyntheticEvent) => {
    
     setOpen(true);
@@ -296,27 +343,22 @@ const ConfigurationTemplates: React.FC = () => {
       );
     }
   };
-  // ------------------SATION DROP DOWN START
+  // ------------------STATION DROP DOWN START
   const multiSelectVersionCheckbox = (
     rowParam: ConfigTemplate[],
     headCells: HeadCellProps[],
     colIdx: number,
-    initialRows: ConfigTemplate[]
+    initialRows: any
   ) => {
-    if (colIdx === 2) {
-      let stationlist: any = [];
-      if (initialRows !== undefined) {
-        if (initialRows.length > 0) {
-          initialRows.map((x: ConfigTemplate) => {
-            stationlist.push(x.station);
-          });
-        }
-      }
-      stationlist = stationlist.filter(findUniqueValue);
-      let station: any = [{ label: t("No_Station") }];
-      stationlist.map((x: string) => {
-        station.push({ label: x });
+
+    if (colIdx === 2 && initialRows) {
+
+      let station: any = [{id: 0,  label: t("No_Station") }];
+      initialRows.stations.map((x: any) => {
+        station.push({id: x.id, label: x.name });
       });
+
+      station = findUniqueOptions(station);
 
       const settingValues = (headCell: HeadCellProps) => {
         let val: any = [];
@@ -366,30 +408,23 @@ const ConfigurationTemplates: React.FC = () => {
     }
   };
 
-  // ------------------SATION DROP DOWN END
+  // ------------------STATION DROP DOWN END
 
   // ------------------TYPE DROP DOWN START
   const multiSelectTypeCheckbox = (
     rowParam: ConfigTemplate[],
     headCells: HeadCellProps[],
     colIdx: number,
-    initialRows: ConfigTemplate[]
+    initialRows: any
   ) => {
-    if (colIdx === 3) {
-      let typelist: any = [];
-      if (initialRows !== undefined) {
-        if (initialRows.length > 0) {
-          initialRows.forEach((x: ConfigTemplate) => {
-            typelist.push(x.deviceType);
-          });
-        }
-      }
-      typelist = typelist.filter(findUniqueValue);
+    if (colIdx === 3 && initialRows) {
 
-      let type: any = [{ label: t("No_type") }];
-      typelist.map((x: string) => {
-        type.push({ label: x });
+      let type: any = [{id: 0,  label: t("No_type") }];
+      initialRows.deviceType.map((x: any) => {
+        type.push({id: x.id, label: x.name });
       });
+
+      type = findUniqueOptions(type);
 
       const settingValues = (headCell: HeadCellProps) => {
         let val: any = [];
@@ -447,23 +482,16 @@ const ConfigurationTemplates: React.FC = () => {
     rowParam: ConfigTemplate[],
     headCells: HeadCellProps[],
     colIdx: number,
-    initialRows: ConfigTemplate[]
+    initialRows: any
   ) => {
-    if (colIdx === 4) {
-      let indicatorlist: any = [];
-      if (initialRows !== undefined) {
-        if (initialRows.length > 0) {
-          initialRows.forEach((x: ConfigTemplate) => {
-            indicatorlist.push(x.defaultTemplate);
-          });
-        }
-      }
-      indicatorlist = indicatorlist.filter(findUniqueValue);
+    if (colIdx === 4 && initialRows) {
 
-      let indicator: any = [{ label: t("Default") }];
-      indicatorlist.forEach((x: string) => {
-        indicator.push({ label: x });
+      let indicator: any = [{id: 0,  label: t("Default") }];
+      initialRows.indicator.map((x: any) => {
+        indicator.push({id: x.id, label: x.name });
       });
+
+      indicator = findUniqueOptions(indicator);
 
       const settingValues = (headCell: HeadCellProps) => {
         let val: any = [];
