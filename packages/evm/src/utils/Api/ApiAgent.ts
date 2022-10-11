@@ -35,7 +35,8 @@ import {
     AUDITLOG_SERVICE_URL,
     CountryStateApiUrl,
     EVIDENCE_GET_URL,
-    BASE_URL_AUTHENTICATION_SERVICE
+    BASE_URL_AUTHENTICATION_SERVICE,
+    SENSOR_AND_TRIGGERS_GET_BY_ID_URL
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -143,9 +144,17 @@ export const SetupConfigurationAgent = {
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     putSensorsAndTriggersTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-    getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    // getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getSensorsAndTriggersEvents: (url: string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" + url, config),
     deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),
+    // getAllSensorsAndTriggersEvents: (url: string, extraHeader? : Headers[]) => {
+    //     (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+    //     return requests.getAll<Paginated<any>>(SENSOR_AND_TRIGGERS_GET_BY_ID_URL , url, config);
+    // },
+    getAllSensorsAndTriggersEvents: (url: string, extraHeader?: Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, config);
+    },
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),

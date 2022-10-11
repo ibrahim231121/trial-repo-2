@@ -3,14 +3,17 @@ import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { Menu, MenuButton } from "@szhsin/react-menu";
+import { useDispatch, useSelector } from "react-redux";
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import SensorsAndTriggersTemplateActionMenu from './SensorsAndTriggersTemplateActionMenu';
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './sensorsAndTriggersList.scss'
 import anchorDisplay from '../../../../utils/AnchorDisplay';
 import { urlList, urlNames } from "../../../../utils/urlList"
-import { Link } from "react-router-dom";
-import {SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA} from '../../../../../src/utils/Api/url';
+import { useHistory } from "react-router-dom";
+import { RootState } from "../../../../Redux/rootReducer";
+import { CRXButton } from "@cb/shared";
+
 import {
   SearchObject,
   ValueString,
@@ -23,9 +26,12 @@ import {
   onClearAll,
   onSetHeadCellVisibility,
   onSaveHeadCellData,
-  PageiGrid
+  PageiGrid,
+  GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import {CRXAlert} from "@cb/shared";
+import {getAllSensorsEvents} from '../../../../Redux/SensorEvents';
+
 
 type SensorAndTriggersTemplate = {
   id : number;
@@ -54,19 +60,22 @@ const SensorsAndTriggersList: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
+  const dispatch = useDispatch();
+  let history = useHistory();
 
   const isFirstRenderRef = useRef<boolean>(true);
   const reformattedRowsRef = useRef<SensorAndTriggersTemplate[]>();
+  const sensorsEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
   useEffect(() => {
     if(!isFirstRenderRef.current) {
-    dataArrayBuilder();
+    // dataArrayBuilder();
     }
   }, [searchData]);
 
   useEffect(() => {
     if(paging)
-      getSensorAndTriggerEvents()
+      setSensorsEventsData()
     setPaging(false)
   },[pageiGrid])
 
@@ -77,7 +86,7 @@ const SensorsAndTriggersList: React.FC = () => {
   },[page, rowsPerPage])
 
   useEffect(() => {
-    getSensorAndTriggerEvents();
+    setSensorsEventsData();
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
@@ -161,22 +170,28 @@ const SensorsAndTriggersList: React.FC = () => {
     },
   ]);
 
-  const getSensorAndTriggerEvents = () => {
-    const url = SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA + `?Page=${pageiGrid.page+1}&Size=${pageiGrid.size}`
-    SetupConfigurationAgent.getAllSensorsAndTriggersEvents(url).then((res :any) => {
-      let sensorAndTriggersTemplateRows: SensorAndTriggersTemplate[] = [];
-      if (res && res.length > 0) {
-        sensorAndTriggersTemplateRows = res.map((template: any) => {
-              return {
-                  id: template.id,
-                  description: template.description + '_' + template.id,
-              }
-          })
-      }
-      setRows(sensorAndTriggersTemplateRows);
-      reformattedRowsRef.current = sensorAndTriggersTemplateRows;
-    });
+  const setSensorsEventsData = () => {
+    let sensorAndTriggersTemplateRows: SensorAndTriggersTemplate[] = []
+    if (sensorsEvents && sensorsEvents.length > 0) {
+      sensorAndTriggersTemplateRows = sensorsEvents.map((template: any) => {
+        return { 
+            id: template.id, 
+            description: template.description + "_" + template.id, 
+        }
+      })
+    }
+    setRows(sensorAndTriggersTemplateRows);
+    reformattedRowsRef.current = sensorAndTriggersTemplateRows;
   }
+
+
+  React.useEffect(() => {
+    setSensorsEventsData();
+  }, [sensorsEvents]);
+
+  React.useEffect (() => {
+    dispatch(getAllSensorsEvents(pageiGrid));
+  },[])
 
   const getSelectedItemsUpdate = () => {
     setSelectedItems([]);
@@ -205,16 +220,39 @@ const SensorsAndTriggersList: React.FC = () => {
   };
 
   const clearAll = () => {
+    pageiGrid.gridFilter.filters = []
+    dispatch(getAllSensorsEvents(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
   };
 
+  const getFilteredSensorsEventsData = () => {
+    pageiGrid.gridFilter.filters = []
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+    })
+    
+    if(page !== 0)
+      setPage(0)
+    else{
+      dispatch(getAllSensorsEvents(pageiGrid));
+    }
+  }
+
 
   const onSetHeadCells = (e: HeadCellProps[]) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
-    
+
   };
   return (
     <div className="CrxSensorsAndTriggersTable switchLeftComponents">
@@ -232,30 +270,20 @@ const SensorsAndTriggersList: React.FC = () => {
             actionComponent={<SensorsAndTriggersTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
-              getRowData={getSensorAndTriggerEvents}
+              getRowData={setSensorsEventsData}
               getSelectedData= {getSelectedItemsUpdate}
               getSuccess = {getSuccessUpdate}
             />}
-            toolBarButton={
-          <div className="menu_List_Button">
-                <Menu
-                  style={{ backgroundColor: '#FFFFFF' }}
-                  align="start"
-                  viewScroll="initial"
-                  direction="bottom"
-                  position="auto"
-                  arrow
-                  menuButton={
-                    <MenuButton>
-                      <Link to={{ pathname: '/admin/sensorsAndTriggers/sensorsAndTriggersCreate' }}>
-                              <div style={{ color: '#FFFFFF'}}>{t("Create_Sensor_&_Trigger")} </div>
-                        </Link>
-                    </MenuButton>
-                  }
-                >
-                </Menu >
-            </div>
-          }
+            toolBarButton = {
+              <>
+              {/* <Restricted moduleId={6}> */}
+                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url) }}>
+                  {t("Create_Sensor_&_Trigger")}
+                </CRXButton>
+              {/* </Restricted> */}
+              <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton>
+              </>
+            }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}

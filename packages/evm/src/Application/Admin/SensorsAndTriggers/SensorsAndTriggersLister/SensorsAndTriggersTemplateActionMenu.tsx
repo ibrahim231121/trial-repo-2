@@ -11,6 +11,9 @@ import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from '../../../../utils/urlList';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
+import { getAllSensorsEvents } from "../../../../Redux/SensorEvents";
+import { useDispatch } from "react-redux";
+
 
 
 
@@ -25,6 +28,7 @@ type Props = {
 const SensorsAndTriggersTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,getSuccess}) => {
 const { t } = useTranslation<string>();
 const history = useHistory();
+const dispatch = useDispatch();
 
 const [nondefault, setnondefault] = useState(false);
 
@@ -39,6 +43,7 @@ const deleteSensorAndTrigger = () => {
       getSuccess();
       getRowData();
       getSelectedData();
+      dispatch(getAllSensorsEvents());
     })
     .catch(function(error) {
       return error;
