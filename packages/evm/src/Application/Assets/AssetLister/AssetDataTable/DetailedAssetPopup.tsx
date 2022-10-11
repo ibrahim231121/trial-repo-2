@@ -17,18 +17,18 @@ import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
 import { makeStyles } from "@material-ui/core/styles";
 import AssetNameTooltip from "./AssetNameTooltip";
 import { AssetThumbnail } from "./AssetThumbnail"
-import { Asset } from "../../../../GlobalFunctions/globalDataTableFunctions"
 import DetailedAssetPopupAction from "./DetailedAssetPopupAction"
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { Link } from "react-router-dom";
+import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
 type CheckValue = {
   isChecked: boolean;
-  assetId: string;
+  assetId: number;
 };
 
 type Props = {
-  asset: Asset[]
+  asset: SearchModel.Asset[]
   row?: any;
 }
 
@@ -36,7 +36,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const popOverRef:any = useRef(null)
-  const [groupedAsset, setGroupedAsset] = useState<Asset[]>();
+  const [groupedAsset, setGroupedAsset] = useState<SearchModel.Asset[]>();
 
   const { t } = useTranslation<string>();
   const [checkAll, setCheckAll] = useState<boolean>(false);
@@ -70,7 +70,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
 
   const controlSelection = (check: boolean) => {
     if (groupedAsset !== undefined) {
-      let checkValues = groupedAsset.map((select: Asset, i: number) => {
+      let checkValues = groupedAsset.map((select: SearchModel.Asset, i: number) => {
         let obj: CheckValue = {
           isChecked: check,
           assetId: select.assetId
@@ -89,7 +89,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   }
   
 
-  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, assetId: string) => {
+  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, assetId: number) => {
     let countCheck: number = 0;
     let checkValues = selected.map((select: CheckValue, i: number) => {
       if (select.assetId === assetId) {
@@ -153,7 +153,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
         onSetAnchorE1={(v: HTMLElement) => setAnchorEl(v)}
         className={"CRXPopoverCss"}
         title={t("Grouped_Assets")}
-        arrowDown={false}
+        arrowDown={true}
       >
         
             <div className="_asset_group_popover_list">
@@ -168,7 +168,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
               </div>
                
                 {(selected.length > 0 && groupedAsset !== undefined)
-                  ? groupedAsset.map((asset: Asset, index: number) => {
+                  ? groupedAsset.map((asset: SearchModel.Asset, index: number) => {
                       const id = `checkBox'+${index}`;
 
                       const links = <Link

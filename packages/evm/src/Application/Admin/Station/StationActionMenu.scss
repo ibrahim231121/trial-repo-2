@@ -428,3 +428,14 @@
     font-weight: normal;
   }
 }
+
+.crxStationDataUser {
+  .DataTableBodyCell {
+    .rc-menu-container {
+      position: relative;
+ .menuCss {
+  left: 13px  !important;
+ }
+    }
+  } 
+}

@@ -113,10 +113,10 @@ const Breadcrumb: React.FC<any> = (props) => {
       paths = updatePathDetails(paths, Pathurl)
     }
     return (
-      paths && paths.map((path: BreadCrumbItem) => {
+      paths && paths.map((path: BreadCrumbItem, index: number) => {
           if (path.type === "link") {
             return (
-              <Link className="brdLinks breadCrumbItem" to={path.routeTo}>
+              <Link key={index} className="brdLinks breadCrumbItem" to={path.routeTo}>
                 {path.label}
               </Link>
             );

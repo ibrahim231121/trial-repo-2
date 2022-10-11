@@ -1,19 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
-import { CRXConfirmDialog, CRXToaster } from '@cb/shared';
-import { updateUsersInfoAsync, getUsersInfoAsync } from '../../../Redux/UserReducer';
+import { CRXConfirmDialog } from '@cb/shared';
+import { updateUsersInfoAsync } from '../../../Redux/UserReducer';
 import { useDispatch } from 'react-redux';
 import './StationActionMenu.scss';
 import { useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../../../utils/urlList';
 import { getStationsAsync } from '../../../Redux/StationReducer';
 import Restricted from "../../../ApplicationPermission/Restricted";
-import Cookies from 'universal-cookie';
 import { useTranslation } from 'react-i18next';
 import { UnitsAndDevicesAgent } from '../../../utils/Api/ApiAgent';
 import { Unit } from '../../../utils/Api/models/UnitModels';
-import { GridFilter, PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { EvidenceAgent } from '../../../utils/Api/ApiAgent';
 
 type Props = {
@@ -22,16 +20,8 @@ type Props = {
   showToastMsg(obj: any): any;
 };
 
-const cookies = new Cookies();
-
-let gridFilter: GridFilter = {
-  logic: "and",
-  filters: []
-}
-
 const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
-  const [open, setOpen] = React.useState(false);
-  const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
+  console.log('Station Action Menu Row', row)
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -40,33 +30,14 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   const [primary, setPrimary] = React.useState<string>('');
   const [secondary, setSecondary] = React.useState<string>('');
   const [modalType, setModalType] = React.useState<string>('');
-  const [alert, setAlert] = React.useState<boolean>(false);
-  const [message, setMessage] = React.useState<string>('');
-  const toasterRef = useRef<typeof CRXToaster>(null);
   const [stationName, setStationName] = useState<string>('')
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-    gridFilter: {
-      logic: "and",
-      filters: []
-    },
-    page: 1,
-    size: 25
-})
+  const history = useHistory();
 
-  const unlockUser = () => {
-    setTitle(t("Unlock_user_account"));
-    setPrimary(t("Yes_unlock_user_account"));  
-    setSecondary(t("No_do_not_unlock"));
-    setIsOpen(true);
-    setModalType(t("unlock"));
-  };
-  const deactivateUser = () => {
-    setTitle(t("Deactivate_user_account"));
-    setPrimary(t("Yes_deactivate_user_account"));
-    setSecondary(t("No_do_not_deactivate"));
-    setIsOpen(true);
-    setModalType(t("deactivate"));
-  };
+  useEffect(() => {
+    if (row?.name.length > 0)
+      setStationNameProcess(row?.name);
+  }, [row]);
+
   const dispatchNewCommand = (e: any) => {
     switch (modalType) {
       case 'unlock': {
@@ -87,7 +58,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
   const isStationExistsInUnits = async () => {
     const url = '/Stations/' + `${row.id}` + '/Units'
 
-    var response = await UnitsAndDevicesAgent.getAllUnits(url, [{key: "InquireDepth", value:"shallow"}]).then((response:Unit[]) => response);
+    var response = await UnitsAndDevicesAgent.getAllUnits(url, [{ key: "InquireDepth", value: "shallow" }]).then((response: Unit[]) => response);
     if (response != null && response.length > 0)
       return response.length
     else
@@ -96,25 +67,30 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
   const isStationExistsInAssets = async () => {
     const url = '/Evidences/' + `${row.id}` + '/isStationExistsinEvidence?Page=1&Size=100'
-    return await EvidenceAgent.isStationExistsinEvidence(url).then((response:number) => response);
+    return await EvidenceAgent.isStationExistsinEvidence(url).then((response: number) => response);
   }
 
   const deleteStation = async () => {
     const url = '/Stations/' + `${row.id}`
     UnitsAndDevicesAgent.deleteUnit(url).then(() => {
       setIsOpenDelete(false);
-      toasterRef.current.showToaster({
-        message: t("Station_deleted"), variant: "success", duration: 7000, clearButtton: true
+      showToastMsg?.({
+        message: t("Station_deleted"),
+        variant: "success",
+        duration: 7000,
+        clearButtton: true
       });
       dispatch(getStationsAsync());
     })
-    .catch(function (error) {
-      setAlert(true);
-      setMessage(
-        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-      );
-      return error;
-    });
+      .catch(function (error) {
+        showToastMsg?.({
+          message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"),
+          variant: "error",
+          duration: 5000,
+          clearButtton: true
+        });
+        return error;
+      });
   }
 
   const onConfirm = async () => {
@@ -129,7 +105,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           })
         );
         break;
-      } 
+      }
       case 'deactivate': {
         dispatch(
           updateUsersInfoAsync({
@@ -137,7 +113,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
             userId: row?.id,
             columnToUpdate: '/account/status',
             valueToUpdate: 'Deactivated'
-          })  
+          })
         );
         break;
       }
@@ -145,8 +121,12 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         let units = await isStationExistsInUnits();
         let assets = await isStationExistsInAssets();
         if (units > 0 || assets > 0) {
-          setAlert(true);
-          setMessage(t("The_station_cant_be_deleted__please_check_for_dependent_units_and_assets"))
+          showToastMsg?.({
+            message: t("The_station_cant_be_deleted__please_check_for_dependent_units_and_assets"),
+            variant: "error",
+            duration: 5000,
+            clearButtton: true
+          });
         }
         else {
           await deleteStation();
@@ -158,8 +138,6 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
       }
     }
   };
-
-  const history = useHistory();
 
   const openStationDetailForm = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationCreate)[0].url}/${row?.id}`;
@@ -177,12 +155,6 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
     setIsOpenDelete(true);
     setPrimary(t("Yes"));
     setSecondary(t("No"));
-    setAlert(false);
-  };
-
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    setOpen(false);
-    //dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const setStationNameProcess = (text: string) => {
@@ -190,14 +162,8 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
     setStationName(txt[0]);
   }
 
-  useEffect(() => {
-    if (row?.name.length > 0)
-      setStationNameProcess(row?.name)
-  }, [row])
-
   return (
     <>
-      <CRXToaster ref={toasterRef} />
       <CRXConfirmDialog
         className='crx-unblock-modal'
         title={title}
@@ -209,7 +175,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         {
           <div className='crxUplockContent'>
             <p>
-            {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}:
+              {t("You_are_attempting_to")} <b>{modalType}</b> {t("the_following_user_account")}:
             </p>
             <p>
               {row?.firstName} {row?.lastName}: <b>{row?.userName}</b>
@@ -226,24 +192,11 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         isOpen={isOpenDelete}
         primary="Yes, delete"
         secondary="No, do not delete"
-        >
-        {
-          <>
-          {/* <CRXAlert
-            message={message}
-            alertType="inline"
-            type="error"
-            open={alert}
-            setShowSucess={() => null}
-          /> */}
-          <div className='stationDeleteBody'>
-            <div className="_station_delete_pera _station_delete_body_style">You are attempting to <strong>delete</strong> the station <strong>`{stationName}`</strong>. {t("You_will_not_be_able_to_undo_this_action.")}</div>
-            
-            <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to <strong>delete</strong> the station?</div>
-          </div>
-          </>
-
-        }
+      >
+        <div className='stationDeleteBody'>
+          <div className="_station_delete_pera _station_delete_body_style">You are attempting to <strong>delete</strong> the station <strong>`{stationName}`</strong>. {t("You_will_not_be_able_to_undo_this_action.")}</div>
+          <div className="_station_delete_note _station_delete_body_style">Are you sure you would like to <strong>delete</strong> the station?</div>
+        </div>
       </CRXConfirmDialog>
       
 
@@ -262,7 +215,7 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           }>
           <MenuItem onClick={openStationDetailForm}>
             <Restricted moduleId={19}>
-              <div className='crx-meu-content groupingMenu crx-spac'>
+              <div className='crx-meu-content groupingMenu crx-spac osama'>
                 <div className='crx-menu-icon'>
                   <i className='fas fa-pen'></i>
                 </div>
@@ -273,14 +226,12 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
           </MenuItem>
           <MenuItem onClick={openStationDeleteForm}>
             <Restricted moduleId={20}>
-
-              <div className='crx-meu-content groupingMenu crx-spac'>
+              <div className='crx-meu-content groupingMenu crx-spac osama'>
                 <div className='crx-menu-icon'>
                   <i className='fas fa-trash-alt'></i>
                 </div>
                 <div className='crx-menu-list'>{t("Delete_station")}</div>
               </div>
-
             </Restricted>
           </MenuItem>
         </Menu>

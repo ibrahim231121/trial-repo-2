@@ -7,8 +7,10 @@ import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import './DialogueForm.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DialogueFormProps } from '../Model/DialogueFormModel';
+import { getAssetSearchInfoAsync } from '../../../../../Redux/AssetSearchReducer';
+import { SearchType } from '../../../utils/constants';
 
 const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -17,7 +19,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   const [saveBtn, setSaveBtn] = React.useState(true);
   const rowLen: number = props.formCollection?.length;
   const alertIcon = <i className='fas fa-info-circle attentionIcon'></i>;
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     props.setIndicateTxt(false);
@@ -73,7 +75,10 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
     EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
       props.setFilterValue((val: []) => []);
       setSuccess(true);
-      setTimeout(() => closeModal(), 3000);
+      setTimeout(() => {
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
+        closeModal();
+      }, 3000);
     })
       .catch(() => {
         setError(true);

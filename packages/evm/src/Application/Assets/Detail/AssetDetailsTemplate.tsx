@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
-import { AssetBucket } from "../AssetLister/ActionMenu";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +49,7 @@ import {
   onClearAll,
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
-import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
+import { AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 import { Grid } from "@material-ui/core";

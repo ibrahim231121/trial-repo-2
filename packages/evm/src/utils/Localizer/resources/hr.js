@@ -199,9 +199,12 @@ export const resources = {
         "The_asset_is_already_unlocked." : "The asset(s) is already unlocked.",
         "We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be locked. Please retry or contact your Systems Administrator.",
         "We_re_sorry_The_asset_cant_be_unlocked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be unlocked. Please retry or contact your Systems Administrator.",
-        "The_asset_are_locked" : "Success: The asset(s) are locked.",
-        "The_asset_are_unlocked" : "Success: The asset(s) are unlocked.",
-        "Unlock_Access" : "Unlock Access",
+        "The_asset_are_locked" : "hr-Success: The asset(s) are locked.",
+        "The_asset_are_unlocked" : "hr-Success: The asset(s) are unlocked.",
+        "Unlock_Access" : "hr-Unlock Access",
+        "There_is_no_File_against_this_Asset." : "hr-There is no File against this Asset. Please contact your Systems Administrator",
+        "Unable_to_download_file." : "hr-We 're sorry. The asset(s) can't be download. Please retry or contact your Systems Administrator.",
+        "Unable_to_download_response." : "hr-We 're sorry. The asset(s) Meta Data can't be download. Please retry or contact your Systems Administrator.",
         // -------------------------
 
         // --------- User ----------
