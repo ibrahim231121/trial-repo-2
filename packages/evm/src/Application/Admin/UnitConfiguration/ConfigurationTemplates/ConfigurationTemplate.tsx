@@ -148,7 +148,7 @@ const ConfigurationTemplates: React.FC = () => {
     //     "deviceTypeCategory": "BodyWorn"
     //   }
     // ]);
-    let headCellsArray = onSetHeadCellVisibility(headCells);
+    let headCellsArray = onSetHeadCellVisibility(headCells); 
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable"); // will check this
   }, []);
