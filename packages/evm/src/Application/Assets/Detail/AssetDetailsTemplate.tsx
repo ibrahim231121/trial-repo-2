@@ -55,6 +55,7 @@ import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 import { Grid } from "@material-ui/core";
 import { SearchType } from "../utils/constants";
+import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 const AssetDetailsTemplate = (props: any) => {
@@ -160,7 +161,7 @@ const AssetDetailsTemplate = (props: any) => {
     capturedDate: string;
     checksum: number[];
     duration: string;
-    size: number[];
+    size: string;
     retention: string;
     categoriesForm: string[];
     id?: number;
@@ -176,7 +177,7 @@ const AssetDetailsTemplate = (props: any) => {
     capturedDate: "",
     checksum: [],
     duration: "",
-    size: [],
+    size: "",
     retention: "",
     categoriesForm: [],
     typeOfAsset: "",
@@ -316,6 +317,41 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [getAssetData]);
 
+  const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
+    if(holdUntil)
+    {
+      return AssetRetentionFormat(holdUntil);
+    }
+    else if(expireOn)
+    {
+      return AssetRetentionFormat(expireOn);
+    }
+  }
+
+  const formatBytes = (bytes: number, decimals: number = 2) => {
+    if (!+bytes) return '0 Bytes'
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+
+function padTo2Digits(num: number) {
+  return num.toString().padStart(2, '0');
+}
+
+const milliSecondsToTimeFormat = (date: Date) => {
+  let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+  let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+  let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+  let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+  let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+  return numberFormatting + " (" + nameFormatting + ")";
+}
+
   useEffect(() => {
  
   if(fileData.length == getAssetData?.assets.master.files.length)
@@ -341,13 +377,8 @@ const AssetDetailsTemplate = (props: any) => {
           checksum.push(x.checksum.checksum);
         });
 
-        var duration: number[] = [];
-        duration.push(getAssetData.assets.master.duration);
 
-        var size: number[] = [];
-        getAssetData.assets.master.files.forEach((x: any) => {
-          size.push(x.size);
-        });
+        let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
 
 
         var categoriesForm: string[] = [];
@@ -363,13 +394,9 @@ const AssetDetailsTemplate = (props: any) => {
             "YYYY / MM / DD HH:mm:ss"
           ),
           checksum: checksum,
-          duration: moment
-            .utc(getAssetData.assets.master.duration)
-            .format("h:mm"),
-          size: size,
-          retention: moment(getAssetData.holdUntil).format(
-            "YYYY / MM / DD HH:mm:ss"
-          ),
+          duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
+          size: formatBytes(size* 1024 * 1024, 2),
+          retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
           categories: categories,
           categoriesForm: categoriesForm,
           id: getAssetData?.assets?.master?.id,
@@ -945,7 +972,7 @@ const AssetDetailsTemplate = (props: any) => {
                           <h1>{t("Size")}:</h1> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.size} MB</span>
+                        <span>{assetInfo.size}</span>
                     </Grid>
 
 
