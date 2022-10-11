@@ -87,10 +87,13 @@ export interface Asset {
     files: File[];
     owners: CMTEntityRecord[] | number[];
     lock: Lock;
+    version? : string;
+    createdOn? : Date;
+    modifiedOn? : Date;
 }
 
 export interface Lock {
-    roles: Role[];
+    groupRecId? : Array<number>;
 }
 
 export interface Role {
@@ -148,32 +151,24 @@ export interface AssetSharingModel {
     revoked: RevokedModel;
     version: string;
 }
-// export interface SubmitAnalysisModel {
-//     isAudioSource: boolean,
-//     audioSource: string,
-//     videoAnalysis: boolean,
-//     audioAnalysis: boolean,
-//     note: string,
-// }
 export interface SubmitAnalysisModel {
     project: Project;
     job: Job;
 }
 export interface Project {
-    projectName: string,
-    type: number,
-    notes: string,
-    assetId: number,
-    assetName: string,
-    assetUrl: string,
-    assetFileSize: number,
-    assetDuration: number,
-    recordedBy: string,
-    fileType: string,
-    submitBy: number,
-    tenantId: number,
-    evidenceId: number
-
+    projectName: string;
+    type: number;
+    notes: string;
+    assetId: number;
+    assetName: string;
+    assetUrl: string;
+    assetFileSize: number;
+    assetDuration: number;
+    recordedBy: string;
+    fileType: string;
+    submitBy: number;
+    tenantId: number;
+    evidenceId: number;
 }
 export interface Job {
     type: number;
@@ -184,16 +179,45 @@ export interface Job {
 export interface Evidence {
     id: number;
     categories: Category[];
+    securityDescriptors: securityDescriptorType[];
     assets: Assets;
+    holdUntil?: Date;
+    expireOn: Date;
     stationId: CMTEntityRecord;
     retentionPolicyId: CMTEntityRecord;
-    holdUntil?: Date;
+    computerAidedDispatch: string;
+    tag: string;
+    version: string;
     createdOn: Date;
-    expireOn: Date;
+    modifiedOn?: Date;
+    masterAssetRecId?: number;
 }
 
 export interface EvdenceCategoryAssignment {
     unAssignCategories: Category[];
     assignedCategories: Category[];
     updateCategories: Category[];
+}
+
+export type securityDescriptorType = {
+    groupId: number;
+    permission: PersmissionModel;
+};
+
+export enum AssetRestriction {
+    Lock = 'Lock',
+    UnLock = 'UnLock'
+}
+
+export enum PersmissionModel {
+    View = 1,
+    Share = 2,
+    Update = 3,
+    Exclusive = 4
+}
+
+export enum MetadataFileType {
+    XML = 1,
+    PDF = 2,
+    CSV = 3
 }

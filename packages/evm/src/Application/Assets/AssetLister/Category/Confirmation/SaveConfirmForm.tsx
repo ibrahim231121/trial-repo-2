@@ -1,11 +1,13 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import { CRXButton, CRXAlert } from '@cb/shared';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import { FormValues, SaveConfirmFormProps } from '../Model/SaveConfirmFormModel';
+import { getAssetSearchInfoAsync } from '../../../../../Redux/AssetSearchReducer';
+import { SearchType } from '../../../utils/constants';
 
 const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -14,7 +16,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
   const [WarningMessage, setWarningMessage] = React.useState<string>('');
   const initialValues: FormValues = {};
   const categoryOptions = useSelector((state: any) => state.assetCategory.category);
-
+  const dispatch = useDispatch();
+  
   React.useEffect(() => {
     props.setModalTitle(t("Please_confirm"));
     props.setIndicateTxt(false);
@@ -76,7 +79,10 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
     EvidenceAgent.changeCategories(url, body).then(() => {
       setSuccess(true);
-      setTimeout(() => closeModal(), 3000);
+      setTimeout(() => {
+        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
+        closeModal();
+      }, 3000);
     })
     .catch(() => {
       setError(true);

@@ -235,6 +235,9 @@ export const resources = {
         "The_asset_are_locked" : "Success: The asset(s) are locked.",
         "The_asset_are_unlocked" : "Success: The asset(s) are unlocked.",
         "Unlock_Access" : "Unlock Access",
+        "There_is_no_File_against_this_Asset." : "There is no File against this Asset. Please contact your Systems Administrator",
+        "Unable_to_download_file." : "We 're sorry. The asset(s) can't be download. Please retry or contact your Systems Administrator.",
+        "Unable_to_download_response." : "We 're sorry. The asset(s) Meta Data can't be download. Please retry or contact your Systems Administrator.",
         // -------------------------
 
         // --------- User ----------

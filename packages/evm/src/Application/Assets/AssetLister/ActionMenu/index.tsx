@@ -1,23 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   Menu,
   MenuItem,
   MenuButton,
-  SubMenu,
-  MenuDivider,
+  SubMenu
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
 import { CRXModalDialog, CRXAlert, CRXConfirmDialog, CRXToaster } from '@cb/shared';
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../Category/FormContainer";
-import { addAssetToBucketActionCreator } from "../../../../Redux/AssetActionReducer";
+import { addAssetToBucketActionCreator, removeAssetFromBucketActionCreator } from "../../../../Redux/AssetActionReducer";
 import AssignUser from '../AssignUser/AssignUser';
 import ManageRetention from '../ManageRetention/ManageRetention';
 import ShareAsset from '../ShareAsset/ShareAsset';
 import { RootState } from "../../../../Redux/rootReducer";
-import Restricted from "../../../../ApplicationPermission/Restricted";
-import SecurityDescriptor from "../../../../ApplicationPermission/SecurityDescriptor";
 import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
 import http from "../../../../http-common";
@@ -25,35 +22,33 @@ import { FILE_SERVICE_URL, EVIDENCE_EXPORT_META_DATA_URL } from "../../../../uti
 import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
-import { AssetRestriction, MetadataFileType, PersmissionModel } from "./AssetListerEnum";
-import { useHistory, useParams } from "react-router"; import { urlList, urlNames } from "../../../../utils/urlList"; import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
-import { AssetLockUnLockErrorType, securityDescriptorType } from "./types";
+import { useHistory, useParams } from "react-router";
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
 import Cookies from "universal-cookie";
 import { IDecoded } from "../../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
+import { SearchModel } from "../../../../utils/Api/models/SearchModel";
+import { AssetRestriction, MetadataFileType, PersmissionModel, securityDescriptorType } from "../../../../utils/Api/models/EvidenceModels";
 
 type Props = {
+  row: any;
   selectedItems?: any;
-  row?: any;
-  showToastMsg(obj: any): any;
-  setIsOpen: any
-  IsOpen: any
-  Asset?: any;
-  portal?: boolean
+  isPrimaryOptionOpen?: boolean
+  asset?: any;
+  portal?: boolean;
+  showToastMsg?: (obj: any) => void;
+  setIsPrimaryOptionOpen?: (obj: boolean) => void;
+  actionMenuPlacement: ActionMenuPlacement;
 };
 
-export interface AssetBucket {
-  id: number;
-  assetId: number;
-  assetName: string;
-  recordingStarted: string;
-  categories: string[];
-}
-
-const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastMsg, setIsOpen, portal, IsOpen, Asset }) => {
+const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPrimaryOptionOpen = false, asset, portal, showToastMsg, setIsPrimaryOptionOpen, actionMenuPlacement }) => {
+  const cookies = new Cookies();
+  const history = useHistory();
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let addToAssetBucketDisabled: boolean = false;
@@ -65,20 +60,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
   const [isLockedAccess, setIsLockedAccess] = React.useState<boolean>(false);
   const [maximumDescriptor, setMaximumDescriptor] = React.useState(0);
   const [openForm, setOpenForm] = React.useState(false);
-  const [success, setSuccess] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = React.useState<string>('');
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
     isError: false,
     errorMessage: ''
   });
-  const cookies = new Cookies();
   const { AssignedGroups }: IDecoded = jwt_decode(cookies.get("access_token"));
+  const [securityDescriptorsArray, setSecurityDescriptorsArray] = React.useState<Array<SearchModel.SecurityDescriptor>>([]);
+  const [openAssignUser, setOpenAssignUser] = React.useState(false);
+  const [openManageRetention, setOpenManageRetention] = React.useState(false);
+  const [openAssetShare, setOpenAssetShare] = React.useState(false);
+  const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
+  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
+  const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
+  const [filterValue, setFilterValue] = React.useState<any>([]);
+  const [IsformUpdated, setIsformUpdated] = React.useState(false);
 
   React.useEffect(() => {
+    calculateSecurityDescriptor();
     if (selectedItems.length > 1) {
       setMultiAssetDisabled(true);
     }
@@ -91,105 +91,25 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     else {
       setIsSelectedItem(false);
     }
-  }, [selectedItems]);
 
-  React.useEffect(() => {
-    /**
-     * ! This rerenders if row is updated, it means user clicked the menu from parent component.
-     * ! So we need to reset the form index, so that it starts from start. 
-     * ! Comment For 'Category'.
-     */
-    if (row?.evidence?.securityDescriptors?.length > 0) {
-      setMaximumDescriptor(findMaximumDescriptorId(row?.evidence?.securityDescriptors));
-    }
-    else {
-      setMaximumDescriptor(0);
-    }
-    if (row?.securityDescriptors?.length > 0)
-      setMaximumDescriptor(findMaximumDescriptorId(row?.securityDescriptors));
-    if (row?.categories?.length == 0)
+    if (row?.categories?.length == 0) {
       setIsCategoryEmpty(true);
-    if (row?.evidence?.masterAsset?.lock)
-      setIsLockedAccess(true);
-  }, [row]);
-
-  const handleChange = () => setOpenForm(true);
-  const addToAssetBucket = () => {
-
-    //if undefined it means header is clicked
-    if (row !== undefined && row !== null) {
-      const find = selectedItems.findIndex(
-        (selected: any) => selected.id === row.id
-      );
-
-      const data = find === -1 ? row : selectedItems;
-
-      let newObject: any = []
-
-      if(find === -1) {
-        newObject = {...data}
-        if (data.evidence) {
-          newObject.isMaster = data.evidence.masterAssetId === data.id;
-        }
-        else {
-          newObject.isMaster = data.masterAssetId === Asset.assetId;
-          newObject.selectedAssetId = Asset.assetId;
-        }
-      }
-      else {
-        newObject = data.map((d:any, i:number) => {
-          newObject[i] = {...d}
-          if (d.evidence) {
-            newObject[i].isMaster = d.evidence.masterAssetId === d.id;
-          }
-          else {
-            newObject[i].isMaster = d.masterAssetId === Asset.assetId;
-            newObject[i].selectedAssetId = Asset.assetId;
-          }
-          return newObject[i];
-        })
-      }
-    dispatch(addAssetToBucketActionCreator(newObject));
-    } else {
-      dispatch(addAssetToBucketActionCreator(selectedItems));
     }
-    // showToastMsg({
-    //   message: t("You_have_added_the_selected_assets_to_the_asset_bucket."),
-    //   variant: "success",
-    //   duration: 7000,
-    // })
-  };
-  const [openAssignUser, setOpenAssignUser] = React.useState(false);
-  const [openManageRetention, setOpenManageRetention] = React.useState(false);
-  const [openAssetShare, setOpenAssetShare] = React.useState(false);
-  const [openAssignSubmission, setOpenAssignSubmission] = React.useState(false);
+    if (row?.evidence?.masterAsset?.lock) {
+      setIsLockedAccess(true);
+    }
+  }, [row, selectedItems]);
 
-  const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
-  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
-  const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
-  const [filterValue, setFilterValue] = React.useState<any>([]);
-  const [IsformUpdated, setIsformUpdated] = React.useState(false);
-  const history = useHistory();
-  const handleOpenAssignUserChange = () => {
-    setOpenAssignUser(true);
-  };
-  const handleOpenManageRetention = () => {
-    setOpenManageRetention(true);
-  }
-  const handleOpenAssetShare = () => {
-    setOpenAssetShare(true);
-  }
-  const handleOpenAssignSubmission = () => {
-    setOpenSubmitAnalysis(true);
-  }
+  const handleOpenAssignUserChange = () => setOpenAssignUser(true);
+  const handleOpenManageRetention = () => setOpenManageRetention(true);
+  const handleOpenAssetShare = () => setOpenAssetShare(true);
+  const handleOpenAssignSubmission = () => setOpenSubmitAnalysis(true);
+  const handlePrimaryAsset = () => setIsPrimaryOptionOpen?.(true);
+  const handleChange = () => setOpenForm(true);
+  const restrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
+  const unlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
 
-  const handlePrimaryAsset = () => {
-    setIsOpen(true);
-  };
-  const MultiCompareAssetBucketData = (
-    assetBucketData: AssetBucket[],
-    selectedItems: any[]
-  ) => {
+  const multiCompareAssetBucketData = (assetBucketData: AssetBucket[], selectedItems: any[]) => {
     let assetBucketIds = assetBucketData.map((x: AssetBucket) => x.id);
     let selectedItemIds = selectedItems.map((x: any) => x.id);
     let value = selectedItemIds.map((x: number) => {
@@ -197,16 +117,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       else return false;
     });
     return value;
-  };
-
-  if (row !== undefined && row !== null) {
-    assetBucketData.forEach((data) => {
-      if (data.id === row.id) addToAssetBucketDisabled = true;
-    });
-  } else if (selectedItems !== undefined && selectedItems.length > 0) {
-    let value = MultiCompareAssetBucketData(assetBucketData, selectedItems);
-    if (value.includes(false)) addToAssetBucketDisabled = false;
-    else addToAssetBucketDisabled = true;
   }
 
   const findMaximumDescriptorId = (securityDescriptors: Array<securityDescriptorType>): number => {
@@ -214,10 +124,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       return parseInt(PersmissionModel[o.permission], 10);
     }));
   }
-
-  const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
-  const UnlockAccessClickHandler = () => setOpenUnlockAccessDialogue(true);
-  const toasterRef = useRef<typeof CRXToaster>(null);
 
   const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
     const _requestBody = [];
@@ -246,19 +152,16 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     }
     const _body = JSON.stringify(_requestBody);
     EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
-      toasterRef.current.showToaster({
+      showToastMsg?.({
         message: operation === AssetRestriction.Lock ? t('Access_Restricted') : t('Access_Unlocked'),
         variant: "success",
         duration: 7000,
       });
-      const successMessage = operation === AssetRestriction.Lock ? t('The_asset_are_locked') : t('The_asset_are_unlocked');
-      setSuccessMessage(successMessage);
-      setSuccess(true);
+
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
         setOpenRestrictAccessDialogue(false);
         setOpenUnlockAccessDialogue(false);
-        setSuccess(false);
       }, 2000);
     })
       .catch((error) => {
@@ -280,8 +183,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     const masterAsset = row.evidence.masterAsset;
     const assetFileId = masterAsset.files && masterAsset.files[0].filesId;
     if (!assetFileId) {
-      setErrorMessage("There is no File against this Asset. Please contact your Systems Administrator");
-      setError(true);
+      showToastMsg?.({
+        message: t("There_is_no_File_against_this_Asset"),
+        variant: "error",
+        duration: 5000,
+      });
       return;
     }
 
@@ -289,12 +195,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     http.get(url)
       .then((response) => {
         downloadFileByURLResponse(response.data);
-      }).catch((error) => {
-        const err = error as AxiosError;
-        if (err.request.status === 500) {
-          setErrorMessage("We 're sorry. Please retry or contact your Systems Administrator");
-        }
-        setError(true);
+      }).catch(() => {
+        showToastMsg?.({
+          message: t("Unable_to_download_file"),
+          variant: "error",
+          duration: 5000,
+        });
       });
   }
 
@@ -319,12 +225,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
     })
       .then((response) => {
         downloadFileByFileResponse(response, assetId);
-      }).catch((error) => {
-        const err = error as AxiosError;
-        if (err.request.status === 500) {
-          setErrorMessage("We 're sorry. Please retry or contact your Systems Administrator");
-        }
-        setError(true);
+      }).catch(() => {
+        showToastMsg?.({
+          message: t("Unable_to_download_response"),
+          variant: "error",
+          duration: 5000,
+        });
       });
   }
 
@@ -358,46 +264,302 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
       link.parentNode.removeChild(link);
     }
   }
+
   const closeDialog = () => {
     setIsModalOpen(false);
     history.push(
       urlList.filter((item: any) => item.name === urlNames.assets)[0]
         .url
     );
-  };
+  }
+
   const handleCloseRetention = () => {
     if (IsformUpdated)
       setIsModalOpen(true);
     else
       setOpenManageRetention(false);
   }
+
+  const addToAssetBucket = () => {
+    //if undefined it means header is clicked
+    if (row !== undefined && row !== null) {
+      const find = selectedItems.findIndex(
+        (selected: any) => selected.id === row.id
+      );
+
+      const data = find === -1 ? row : selectedItems;
+      // To cater object is not extensible issue,
+      let newObject = { ...data };
+
+      if (data.evidence) {
+        newObject.isMaster = data.evidence.masterAssetId === data.id;
+      }
+      else {
+        newObject.isMaster = data.masterAssetId === asset.assetId;
+        newObject.selectedAssetId = asset.assetId;
+      }
+      dispatch(addAssetToBucketActionCreator(newObject));
+    } else {
+      dispatch(addAssetToBucketActionCreator(selectedItems));
+    }
+  }
+
+  const removeFromAssetBucket = () => {
+    //if (row) {
+    const find = selectedItems.findIndex((selected: SearchModel.Asset) => selected.assetId === row.id)
+    const data = find === -1 ? row : selectedItems
+    dispatch(removeAssetFromBucketActionCreator(data));
+    if (find !== -1) {
+      // setSelectedItems([])
+    }
+    // }
+    // else {
+    //   dispatch(removeAssetFromBucketActionCreator(selectedItems))
+    //   setSelectedItems([])
+    // }
+  }
+
+  const calculateSecurityDescriptor = (): void => {
+    //NOTE: Multiple Assets selected.
+    if (selectedItems.length > 0) {
+      //NOTE : Multiple Assets are selected, but did n't clicked on specific row.
+      const assetIdSecurityDescriptorCollection: any[] = [];
+      for (const asset of selectedItems) {
+        assetIdSecurityDescriptorCollection.push({
+          'assetId': asset.assetId,
+          'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors)
+        });
+      }
+      const lowestSecurityDescriptorAssetIdAndDescriptor = assetIdSecurityDescriptorCollection.sort((a: any, b: any) => (a.securityDescriptorMaxId > b.securityDescriptorMaxId ? 1 : -1))[0];
+      setMaximumDescriptor(lowestSecurityDescriptorAssetIdAndDescriptor.securityDescriptorMaxId);
+      const lowestSecurityDescriptorAssetObject = selectedItems.find((x: any) => x.assetId === lowestSecurityDescriptorAssetIdAndDescriptor.assetId);
+      setSecurityDescriptorsArray(lowestSecurityDescriptorAssetObject.evidence.securityDescriptors);
+      return;
+    }
+    //NOTE : Clicked on row.
+    else {
+      if (row) {
+        setMaximumDescriptor(findMaximumDescriptorId(row.evidence.securityDescriptors));
+        setSecurityDescriptorsArray(row.evidence.securityDescriptors);
+        return;
+      }
+    }
+  }
+
+  if (row !== undefined && row !== null) {
+    assetBucketData.forEach((data) => {
+      if (data.id === row.id) addToAssetBucketDisabled = true;
+    });
+  } else if (selectedItems !== undefined && selectedItems.length > 0) {
+    let value = multiCompareAssetBucketData(assetBucketData, selectedItems);
+    if (value.includes(false)) addToAssetBucketDisabled = false;
+    else addToAssetBucketDisabled = true;
+  }
+
   return (
     <>
-      <CRXConfirmDialog
-        setIsOpen={() => setIsModalOpen(false)}
-        onConfirm={closeDialog}
-        isOpen={isModalOpen}
-        className="userGroupNameConfirm"
-        primary={t("Yes_close")}
-        secondary={t("No,_do_not_close")}
-        text="user group form"
-      >
-        <div className="confirmMessage">
-          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")},
-          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-          <div className="confirmMessageBottom">
-            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
-          </div>
-        </div>
-      </CRXConfirmDialog>
-      <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <FormContainer
         setOpenForm={() => setOpenForm(false)}
         openForm={openForm}
         rowData={row}
         isCategoryEmpty={isCategoryEmpty}
         setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
+      />
+
+      <Menu
+        key="right"
+        align="center"
+        viewScroll="auto"
+        direction="right"
+        position="auto"
+        offsetX={25}
+        offsetY={12}
+        className="menuCss"
+        portal={portal}
+        menuButton={
+          <MenuButton>
+            <i className="far fa-ellipsis-v"></i>
+          </MenuButton>
+        }
+      >
+        <MenuItem>
+          <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
+            <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
+              <div className="crx-menu-icon"></div>
+              <div
+                className={
+                  addToAssetBucketDisabled === false
+                    ? "crx-menu-list"
+                    : "crx-menu-list disabledItem"
+                }
+              >
+                {t("Add_to_asset_bucket")}
+              </div>
+            </div>
+          </ActionMenuCheckList>
+        </MenuItem>
+
+        {actionMenuPlacement == ActionMenuPlacement.AssetBucket && (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Remove_from_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">
+                  {`${t("Remove_from_asset_bucket")}`}
+                </div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        )}
+
+        {isPrimaryOptionOpen && (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")} securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content" onClick={handlePrimaryAsset}>
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">{t("Set_as_primary")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        )}
+
+        <MenuItem>
+          <ActionMenuCheckList moduleId={21} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Assign_User")}
+            securityDescriptors={securityDescriptorsArray}>
+            <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
+              <div className="crx-menu-icon">
+                <i className="far fa-user-tag fa-md"></i>
+              </div>
+              <div className="crx-menu-list">{t("Assign_User")}</div>
+            </div>
+          </ActionMenuCheckList>
+        </MenuItem>
+
+        <MenuItem>
+          <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Modify_Retention")}
+            securityDescriptors={securityDescriptorsArray}>
+            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
+              <div className="crx-menu-icon"></div>
+              <div className="crx-menu-list">{t("Modify_Retention")}</div>
+            </div>
+          </ActionMenuCheckList>
+        </MenuItem>
+
+        {isCategoryEmpty ? (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={2} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Categorize")}
+              securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content" onClick={handleChange}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-clipboard-list fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Categorize")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        ) : (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={3} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")} securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content" onClick={handleChange}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-clipboard-list fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        )}
+
+        {isLockedAccess ?
+          <MenuItem>
+            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Unlock_Access")}
+              securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content crx-spac" onClick={unlockAccessClickHandler}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t('Unlock_Access')}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+          :
+          <MenuItem>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")} securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content crx-spac" onClick={restrictAccessClickHandler}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Restrict_access")}</div>
+              </div>
+
+            </ActionMenuCheckList>
+          </MenuItem>
+        }
+
+        <MenuItem>
+
+          <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}
+            securityDescriptors={securityDescriptorsArray}>
+            <div className="crx-meu-content groupingMenu">
+              <div className="crx-menu-icon"></div>
+              <div className="crx-menu-list">
+                <SubMenu label={t("Export")}>
+                  <MenuItem onClick={handleDownloadAssetClick}>
+                    {t("Download_asset(s)")}
+                  </MenuItem>
+                  <MenuItem onClick={handleDownloadMetaDataClick}>
+                    {t("Download_metadata_info")}
+                  </MenuItem>
+                  <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                </SubMenu>
+              </div>
+            </div>
+          </ActionMenuCheckList>
+        </MenuItem>
+
+        {multiAssetDisabled === false ? (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Share_Asset")}
+              securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Share_Asset")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        ) : null
+        }
+
+        {multiAssetDisabled === false ? (
+          <MenuItem>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")} securityDescriptors={securityDescriptorsArray}>
+              <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
+                <div className="crx-menu-icon">
+                  <i className="far fa-user-lock fa-md"></i>
+                </div>
+                <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+        ) : null
+        }
+      </Menu>
+
+      <RestrictAccessDialogue
+        openOrCloseModal={openRestrictAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
+        onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.Lock)}
+        isError={assetLockUnLockError.isError}
+        errorMessage={assetLockUnLockError.errorMessage}
+      />
+      <UnlockAccessDialogue
+        openOrCloseModal={openUnlockAccessDialogue}
+        setOpenOrCloseModal={(e) => setOpenUnlockAccessDialogue(e)}
+        onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.UnLock)}
+        isError={assetLockUnLockError.isError}
+        errorMessage={assetLockUnLockError.errorMessage}
       />
 
       <CRXModalDialog
@@ -416,10 +578,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
           rowData={row}
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenAssignUser(false)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
-
+          showToastMsg={(obj: any) => showToastMsg?.(obj)}
         />
       </CRXModalDialog>
+
       <CRXModalDialog
         maxWidth='lg'
         title={t("Modify_Retention")}
@@ -432,14 +594,14 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         <ManageRetention
           items={selectedItems}
           filterValue={filterValue}
-          //setFilterValue={(v: any) => setFilterValue(v)}
           rowData={row}
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenManageRetention(false)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
+          showToastMsg={(obj: any) => showToastMsg?.(obj)}
           setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
         />
       </CRXModalDialog>
+
       <CRXModalDialog
         maxWidth='lg'
         title={t("Share_Asset")}
@@ -454,13 +616,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         <ShareAsset
           items={selectedItems}
           filterValue={filterValue}
-          //setFilterValue={(v: any) => setFilterValue(v)}
           rowData={row}
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenAssetShare(false)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
+          showToastMsg={(obj: any) => showToastMsg?.(obj)}
         />
       </CRXModalDialog>
+
       <CRXModalDialog
         maxWidth='lg'
         title={t("Submit_For_Analysis")}
@@ -473,207 +635,34 @@ const ActionMenu: React.FC<Props> = React.memo(({ selectedItems, row, showToastM
         <SubmitAnalysis
           items={selectedItems}
           filterValue={filterValue}
-          //setFilterValue={(v: any) => setFilterValue(v)}
           rowData={row}
           setRemovedOption={(e: any) => { }}
           setOnClose={() => setOpenSubmitAnalysis(false)}
-          showToastMsg={(obj: any) => showToastMsg(obj)}
+          showToastMsg={(obj: any) => showToastMsg?.(obj)}
         />
       </CRXModalDialog>
 
-      {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
-      {error && (
-        <CRXAlert
-          message={errorMessage}
-          type='error'
-          alertType='inline'
-          open={true}
-        />
-      )}
-
-      {< Menu
-        key="right"
-        align="center"
-        viewScroll="auto"
-        direction="right"
-        position="auto"
-        offsetX={25}
-        offsetY={12}
-        className="menuCss"
-        portal={portal}
-        menuButton={
-          <MenuButton>
-            <i className="far fa-ellipsis-v"></i>
-          </MenuButton>
-        }
+      <CRXConfirmDialog
+        setIsOpen={() => setIsModalOpen(false)}
+        onConfirm={closeDialog}
+        isOpen={isModalOpen}
+        className="userGroupNameConfirm"
+        primary={t("Yes_close")}
+        secondary={t("No,_do_not_close")}
+        text="user group form"
       >
-        <MenuItem>
-         <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")}>
-          <div
-                className="crx-meu-content groupingMenu crx-spac"
-                onClick={addToAssetBucket}
-              >
-                <div className="crx-menu-icon"></div>
-                <div
-                  className={
-                    addToAssetBucketDisabled === false
-                      ? "crx-menu-list"
-                      : "crx-menu-list disabledItem"
-                  }
-                >
-                  {t("Add_to_asset_bucket")}
-                </div>
-              </div>
-          </ActionMenuCheckList>
-        </MenuItem>
-
-        {IsOpen ? (
-          <MenuItem>
-         <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")}>
-            <div className="crx-meu-content" onClick={handlePrimaryAsset}>
-                  <div className="crx-menu-icon"></div>
-                  <div className="crx-menu-list">{t("Set_as_primary")}</div>
-                </div>
-              </ActionMenuCheckList>
-          </MenuItem>
-        ) : null
-        }
-
-        <MenuItem>
-          <ActionMenuCheckList moduleId={21} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Assign_User")}>
-              <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-tag fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Assign_User")}</div>
-              </div>
-          </ActionMenuCheckList>
-        </MenuItem>
-
-        <MenuItem>
-          <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Modify_Retention")}>
-            <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("Modify_Retention")}</div>
-              </div>
-          </ActionMenuCheckList>
-        </MenuItem>
-
-        {isCategoryEmpty ? (
-          <MenuItem>
-           <ActionMenuCheckList moduleId={2} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Categorize")}>
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-clipboard-list fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Categorize")}</div>
-                </div>
-            </ActionMenuCheckList>
-          </MenuItem>
-        ) : (
-          <MenuItem>
-           <ActionMenuCheckList moduleId={3} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")}>
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-clipboard-list fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
-                </div>
-            </ActionMenuCheckList>
-          </MenuItem>
-        )}
-
-        {isLockedAccess ?
-          <MenuItem>
-           <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Unlock_Access")}>
-                <div className="crx-meu-content crx-spac" onClick={UnlockAccessClickHandler}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t('Unlock_Access')}</div>
-                </div>
-            </ActionMenuCheckList>
-          </MenuItem>
-          :
-          <MenuItem>
-           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")}>
-                <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Restrict_access")}</div>
-                </div>
-
-            </ActionMenuCheckList>
-          </MenuItem>
-        }
-
-        <MenuItem>
-        
-        <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">
-                  <SubMenu label={t("Export")}>
-                    <MenuItem onClick={handleDownloadAssetClick}>
-                      {t("Download_asset(s)")}
-                    </MenuItem>
-                    <MenuItem onClick={handleDownloadMetaDataClick}>
-                      {t("Download_metadata_info")}
-                    </MenuItem>
-                    <MenuItem>{t("Download_audit_trail")}</MenuItem>
-                  </SubMenu>
-                </div>
-              </div>
-            </ActionMenuCheckList>
-        </MenuItem>
-
-        {multiAssetDisabled === false ? (
-          <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Share_Asset")}>
-                <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Share_Asset")}</div>
-                </div>
-            </ActionMenuCheckList>
-          </MenuItem>
-        ) : null
-        }
-
-        {multiAssetDisabled === false ? (
-          <MenuItem>
-        <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")}>
-                <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-user-lock fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Submit_For_Analysis")}</div>
-                </div>
-              </ActionMenuCheckList>
-          </MenuItem>
-        ) : null
-        }
-      </Menu>}
-
-      <RestrictAccessDialogue
-        openOrCloseModal={openRestrictAccessDialogue}
-        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
-        onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.Lock)}
-        isError={assetLockUnLockError.isError}
-        errorMessage={assetLockUnLockError.errorMessage}
-      />
-      <UnlockAccessDialogue
-        openOrCloseModal={openUnlockAccessDialogue}
-        setOpenOrCloseModal={(e) => setOpenUnlockAccessDialogue(e)}
-        onConfirmBtnHandler={() => confirmCallBackForRestrictAndUnLockModal(AssetRestriction.UnLock)}
-        isError={assetLockUnLockError.isError}
-        errorMessage={assetLockUnLockError.errorMessage}
-      />
-
+        <div className="confirmMessage">
+          {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
+          <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")},
+          {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
+          <div className="confirmMessageBottom">
+            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+          </div>
+        </div>
+      </CRXConfirmDialog>
     </>
   );
 });
 
 export default ActionMenu;
+

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import { CRXDataTable, CRXColumn, CRXToaster } from '@cb/shared';
+import { CRXDataTable, CRXToaster } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
 import textDisplay from '../../../GlobalComponents/Display/TextDisplay';
-import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/rootReducer';
 import {
@@ -11,8 +10,6 @@ import {
   HeadCellProps,
   onResizeRow,
   Order,
-  onTextCompare,
-  onDateCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
   onClearAll,
@@ -22,12 +19,8 @@ import {
   PageiGrid
 } from '../../../GlobalFunctions/globalDataTableFunctions';
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
-
 import TextSearch from '../../../GlobalComponents/DataTableSearch/TextSearch';
 import { CRXButton } from '@cb/shared';
-import { dateOptionsTypes } from './../../../../src/utils/constant';
-
-import MultSelectiDropDown from '../../../GlobalComponents/DataTableSearch/MultSelectiDropDown';
 import { CRXModalDialog } from '@cb/shared';
 import { getStationsAsync } from '../../../Redux/StationReducer';
 import StationActionMenu from './StationActionMenu';
@@ -39,7 +32,7 @@ import ApplicationPermissionContext from "../../../ApplicationPermission/Applica
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemplatesReducer';
-import { StationType, DateTimeProps, DateTimeObject } from './StationTypes';
+import { StationType, DateTimeProps } from './StationTypes';
 
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -54,16 +47,7 @@ const Station: React.FC = () => {
     },
     page: page,
     size: rowsPerPage
-  })
-
-  React.useEffect(() => {
-    //dispatch(getStationsAsync(pageiGrid));
-    let headCellsArray = onSetHeadCellVisibility(headCells);
-    setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, 'stationDataTable');
-    dispatch(getConfigurationTemplatesAsync());
-  }, []);
-
+  });
   const stations: any = useSelector((state: RootState) => state.stationReducer.stations);
   const [rows, setRows] = React.useState<StationType[]>([]);
   const [order, setOrder] = React.useState<Order>('asc');
@@ -76,7 +60,16 @@ const Station: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] = React.useState<StationType>();
   const history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-  
+  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+    dateTimeObj: {
+      startDate: '',
+      endDate: '',
+      value: '',
+      displayText: ''
+    },
+    colIdx: 0
+  });
+  const toasterRef = useRef<typeof CRXToaster>(null);
   const setData = () => {
     let stationRows: StationType[] = [];
     if (stations.data && stations.data.length > 0) {
@@ -93,15 +86,51 @@ const Station: React.FC = () => {
     setReformattedRows(stationRows);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    //dispatch(getStationsAsync(pageiGrid));
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, 'stationDataTable');
+    dispatch(getConfigurationTemplatesAsync());
+  }, []);
+
+
+  useEffect(() => {
     setData();
   }, [stations.data]);
 
   useEffect(() => {
-    if(paging)
+    if (paging)
       dispatch(getStationsAsync(pageiGrid));
     setPaging(false)
-  },[pageiGrid])
+  }, [pageiGrid]);
+
+  useEffect(() => {
+    if (dateTime.colIdx !== 0) {
+      if (
+        dateTime.dateTimeObj.startDate !== '' &&
+        dateTime.dateTimeObj.startDate !== undefined &&
+        dateTime.dateTimeObj.startDate != null &&
+        dateTime.dateTimeObj.endDate !== '' &&
+        dateTime.dateTimeObj.endDate !== undefined &&
+        dateTime.dateTimeObj.endDate != null
+      ) {
+        let newItem = {
+          columnName: headCells[dateTime.colIdx].id.toString(),
+          colIdx: dateTime.colIdx,
+          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate]
+        };
+        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[dateTime.colIdx].id.toString()));
+        setSearchData((prevArr) => [...prevArr, newItem]);
+      } else
+        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[dateTime.colIdx].id.toString()));
+    }
+  }, [dateTime]);
+
+  useEffect(() => {
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
+    setPaging(true);
+  }, [page, rowsPerPage])
 
   const searchText = (rowsParam: StationType[], headCells: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
@@ -122,58 +151,6 @@ const Station: React.FC = () => {
     };
 
     return <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />;
-  };
-
-  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
-    dateTimeObj: {
-      startDate: '',
-      endDate: '',
-      value: '',
-      displayText: ''
-    },
-    colIdx: 0
-  });
-
-  const searchDate = (rowsParam: StationType[], headCells: HeadCellProps[], colIdx: number) => {
-    let reset: boolean = false;
-
-    let dateTimeObject: DateTimeProps = {
-      dateTimeObj: {
-        startDate: '',
-        endDate: '',
-        value: '',
-        displayText: ''
-      },
-      colIdx: 0
-    };
-
-    if (headCells[colIdx].headerObject !== null || headCells[colIdx].headerObject === undefined) reset = false;
-    else reset = true;
-
-    function onSelection(dateTime: DateTimeObject) {
-      dateTimeObject = {
-        dateTimeObj: {
-          ...dateTime
-        },
-        colIdx: colIdx
-      };
-      setDateTime(dateTimeObject);
-      headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
-    }
-
-    return (
-      <CRXColumn item xs={11}>
-        <DateTimeComponent
-          showCompact={false}
-          reset={reset}
-          dateTimeDetail={dateTimeObject.dateTimeObj}
-          getDateTimeDropDown={(dateTime: DateTimeObject) => {
-            onSelection(dateTime);
-          }}
-          dateOptionType={dateOptionsTypes.basicoptions}
-        />
-      </CRXColumn>
-    );
   };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -236,85 +213,6 @@ const Station: React.FC = () => {
     }
   ]);
 
-  const searchAndNonSearchMultiDropDown = (
-    rowsParam: StationType[],
-    headCells: HeadCellProps[],
-    colIdx: number,
-    isSearchable: boolean
-  ) => {
-    const onSetSearchData = () => {
-      setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
-    };
-
-    const onSetHeaderArray = (v: ValueString[]) => {
-      headCells[colIdx].headerArray = v;
-    };
-
-    return (
-      <MultSelectiDropDown
-        headCells={headCells}
-        colIdx={colIdx}
-        reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
-        // reformattedRows={reformattedRows}
-        isSearchable={isSearchable}
-        onMultiSelectChange={onSelection}
-        onSetSearchData={onSetSearchData}
-        onSetHeaderArray={onSetHeaderArray}
-      />
-    );
-  };
-  const onSelection = (v: ValueString[], colIdx: number) => {
-    if (v.length > 0) {
-      for (var i = 0; i < v.length; i++) {
-        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
-        setSearchData((prevArr) => [...prevArr, searchDataValue]);
-      }
-    } else {
-      setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
-    }
-  };
-  useEffect(() => {
-    //dataArrayBuilder();
-  }, [searchData]);
-
-  useEffect(() => {
-    if (dateTime.colIdx !== 0) {
-      if (
-        dateTime.dateTimeObj.startDate !== '' &&
-        dateTime.dateTimeObj.startDate !== undefined &&
-        dateTime.dateTimeObj.startDate != null &&
-        dateTime.dateTimeObj.endDate !== '' &&
-        dateTime.dateTimeObj.endDate !== undefined &&
-        dateTime.dateTimeObj.endDate != null
-      ) {
-        let newItem = {
-          columnName: headCells[dateTime.colIdx].id.toString(),
-          colIdx: dateTime.colIdx,
-          value: [dateTime.dateTimeObj.startDate, dateTime.dateTimeObj.endDate]
-        };
-        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[dateTime.colIdx].id.toString()));
-        setSearchData((prevArr) => [...prevArr, newItem]);
-      } else
-        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[dateTime.colIdx].id.toString()));
-    }
-  }, [dateTime]);
-
-  const dataArrayBuilder = () => {
-    if (reformattedRows !== undefined) {
-      let dataRows: StationType[] = reformattedRows;
-      searchData.forEach((el: SearchObject) => {
-        if (
-          el.columnName === 'name' ||
-          el.columnName === 'address' ||
-          el.columnName === 'phone'
-        )
-          dataRows = onTextCompare(dataRows, headCells, el);
-      });
-      setRows(dataRows);
-    }
-  };
-
   const resizeRowStation = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
@@ -332,9 +230,6 @@ const Station: React.FC = () => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
-
-  const toasterRef = useRef<typeof CRXToaster>(null);
-
 
   const handleClickOpen = () => {
     // setOpen(true);
@@ -370,42 +265,28 @@ const Station: React.FC = () => {
 
     pageiGrid.gridFilter.filters = []
 
-    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: headCells[item.colIdx].attributeOperator,
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          field: headCells[item.colIdx].attributeName,
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-          fieldType: headCells[item.colIdx].attributeType,
-        }
-        pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
+    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
+      let x: GridFilter = {
+        operator: headCells[item.colIdx].attributeOperator,
+        //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+        field: headCells[item.colIdx].attributeName,
+        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+        fieldType: headCells[item.colIdx].attributeType,
+      }
+      pageiGrid.gridFilter.filters?.push(x)
+      pageiGrid.page = 0
+      pageiGrid.size = rowsPerPage
     })
-    
-    if(page !== 0)
+
+    if (page !== 0)
       setPage(0)
     else
       dispatch(getStationsAsync(pageiGrid));
   }
 
-  useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
-    setPaging(true)
-    
-  },[page, rowsPerPage])
-
   return (
     <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
       <CRXToaster ref={toasterRef} />
-      <CRXModalDialog
-        className='createUser CrxCreateUser'
-        style={{ minWidth: '680px' }}
-        maxWidth='xl'
-        title={t('Create Station')}
-        modelOpen={open}
-        onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
-        closeWithConfirm={closeWithConfirm}></CRXModalDialog>
       {rows && (
         <CRXDataTable
           id='stationDataTable'
@@ -418,10 +299,10 @@ const Station: React.FC = () => {
           }
           toolBarButton={
             <>
-            <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
-              {t('Create_Station')}
-            </CRXButton>
-            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+              <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
+                {t('Create_Station')}
+              </CRXButton>
+              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
             </>
           }
           getRowOnActionClick={(val: StationType) => setSelectedActionRow(val)}
@@ -440,21 +321,31 @@ const Station: React.FC = () => {
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
+          showActionSearchHeaderCell={true}
           dragVisibility={false}
           showCheckBoxesCol={false}
           showActionCol={true}
-          showActionSearchHeaderCell={true}
+          showHeaderCheckAll={false}
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}
           offsetY={205}
           page={page}
           rowsPerPage={rowsPerPage}
-          setPage= {(page:any) => setPage(page)}
-          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          setPage={(page: any) => setPage(page)}
+          setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={stations.totalCount}
         />
       )}
+      
+      <CRXModalDialog
+        className='createUser CrxCreateUser'
+        style={{ minWidth: '680px' }}
+        maxWidth='xl'
+        title={t('Create Station')}
+        modelOpen={open}
+        onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
+        closeWithConfirm={closeWithConfirm}></CRXModalDialog>
     </div>
   );
 };
