@@ -281,7 +281,7 @@ const SearchComponent = (props: any) => {
         let exactShortCutName = querryString.substring(1);
         let shortCut = shortcutData.find(x => x.text === exactShortCutName);
         if (shortCut) {
-          shortCut.renderData(undefined);
+          shortCut.renderData();
         } else {
           setSearchData([]);
         }

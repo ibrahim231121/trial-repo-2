@@ -23,7 +23,7 @@ const isAssetExpired = (evidence?: any) => {
     return false;
 }
 
-const CheckAssetExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, children }) => {
+const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, children }) => {
 
     if(!isAssetExpired(evidence)  || actionMenuName === "Assign User" )
     {
@@ -33,4 +33,4 @@ const CheckAssetExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenu
     return null;
 };
 
-export default CheckAssetExpiry;
+export default CheckEvidenceExpiry;
