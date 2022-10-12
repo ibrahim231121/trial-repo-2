@@ -32,7 +32,17 @@ import { UsersAndIdentitiesServiceAgent } from '../../../utils/Api/ApiAgent';
 import { Account, User, UserGroups, UserList } from '../../../utils/Api/models/UsersAndIdentitiesModel';
 import { UserStatus } from './UserEnum';
 import {NameAndValue, AutoCompleteOptionType, userStateProps } from './UserTypes';
-let USER_DATA = {};
+let USER_DATA : userStateProps = {
+  userName: '',
+  firstName: '',
+  middleInitial: '',
+  lastName: '',
+  email: '',
+  mobileNumber: '',
+  userGroups: [],
+  deactivationDate: '',
+  pin: null
+}
 
 const CreateUserForm = () => {
   const { t } = useTranslation<string>();
@@ -150,18 +160,17 @@ const CreateUserForm = () => {
       }
 
       USER_DATA = {
+        email,
         userName,
-        password,
         firstName,
         middleInitial,
         lastName,
-        email,
-        mobileNumber: '',
-        userGroups: [],
-        deactivationDate: ''
+        mobileNumber,
+        deactivationDate,
+        userGroups: userGroupNames,
+        pin
       };
       setFormPayload({
-        ...formpayload,
         email,
         userName,
         firstName,
@@ -178,18 +187,16 @@ const CreateUserForm = () => {
   }, [userPayload]);
 
   React.useEffect(() => {
-    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber } =
+    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber, pin } =
       formpayload;
     if (userGroups.length > 0) {
       setError(false);
     }
-    if (userName || firstName || lastName || email || userGroups.length || deactivationDate) {
 
-    }
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
 
-    } else if (userName && firstName && lastName && email) {
+    } else if (!validateUserName(userName).error && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateEmail(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -351,7 +358,6 @@ const CreateUserForm = () => {
       moduleIds: 11,
       label: ActivationLinkLabel,
       isDisabled: isADUser,
-      // label: "Send Activation Link",
       value: 'sendAct',
       Comp: () => sendActivationLink()
     },
@@ -515,6 +521,9 @@ const CreateUserForm = () => {
             });
             dispatch(getUsersInfoAsync(pageiGrid));
             setDisableSave(true)
+            const path = `${urlList.filter((item: any) => item.name === urlNames.editUser)[0].url}`;
+            history.push(path.substring(0, path.lastIndexOf("/")) + "/" + resp);
+            history.go(0)
 
           } else {
             setAlert(true);
@@ -533,6 +542,7 @@ const CreateUserForm = () => {
             }
           }
         }
+        
       })
       .catch(function (e: any) {
         if(e.request.status == 409) {
@@ -612,7 +622,6 @@ const CreateUserForm = () => {
       setError(true);
       return;
     }
-
     const urlEdit = USER + '/' + `${id}`;
 
     const payload = setEditPayload();
@@ -851,13 +860,18 @@ const CreateUserForm = () => {
     }
   }
 
-  const validatePin = (pin: string): { error: boolean, errorMessage: string } => {
-    const characterReg = /^[0-9 ]+$/.test(String(pin));
-    if (!characterReg) {
-      return { error: true, errorMessage: `${t("Pin_should_be_numeric_value")}.` };
-    } else if (pin.length !== 4) {
-      return { error: true, errorMessage: `${t("Pin_must_be_4_numbers")}` };
+  const validatePin = (pin: string | null): { error: boolean, errorMessage: string } => {
+    if (pin != null) {
+      const characterReg = /^[0-9 ]+$/.test(String(pin));
+      if (pin.length === 0)
+        return { error: false, errorMessage: '' };
+      else if (!characterReg) {
+        return { error: true, errorMessage: `${t("Pin_should_be_numeric_value")}.` };
+      } else if (pin.length !== 4) {
+        return { error: true, errorMessage: `${t("Pin_must_be_4_numbers")}` };
+      }
     }
+
     return { error: false, errorMessage: '' };
   }
 
@@ -892,7 +906,6 @@ const CreateUserForm = () => {
 
   const checkEmail = () => {
     const isEmailValid = validateEmail(formpayload.email);
-
     if (!formpayload.email) {
       setFormPayloadErr({
         ...formpayloadErr,
@@ -920,12 +933,15 @@ const CreateUserForm = () => {
         ...formpayloadErr,
         passwordErr: t("Password_is_required")
       });
+      setDisableSave(true)
     }
     else if (password.length < 6) {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_six_characters")}` });
+      setDisableSave(true)
     }
     else {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
+      setDisableSave(false)
     }
   };
 
@@ -935,13 +951,19 @@ const CreateUserForm = () => {
         ...formpayloadErr,
         confirmPasswordErr: t("Confirm_Password_is_required")
       });
+      setDisableSave(true)
     } else if (password !== confirmPassword) {
       setFormPayloadErr({
         ...formpayloadErr,
         confirmPasswordErr: t("Passwords_are_not_same")
       });
+      setDisableSave(true)
+    }else if (confirmPassword.length < 6) {
+      setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: `${t("Confirm_Password_should_be_greater_than_six_characters")}` });
+      setDisableSave(true)
     } else {
       setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: '' });
+      setDisableSave(false)
     }
   };
 
@@ -979,11 +1001,13 @@ const CreateUserForm = () => {
   };
 
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {
-    const phoneCharacter = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/.test(String(phoneNumber));
-    if (!phoneCharacter) {
-      return { error: true, errorMessage: t("Please_provide_a_valid_mobile_number.") };
-    } else if (phoneNumber.length > 15) {
-      return { error: true, errorMessage: t("Number_must_not_exceed_15_characters.") };
+    if (phoneNumber) {
+      const phoneCharacter = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{1,4})[-. ]*(\d{4})?(?: *x(\d+))?\s*$/.test(String(phoneNumber));
+      if (!phoneCharacter) {
+        return { error: true, errorMessage: t("Please_provide_a_valid_mobile_number.") };
+      } else if (phoneNumber.length > 15) {
+        return { error: true, errorMessage: t("Number_must_not_exceed_15_characters.") };
+      }
     }
     return { error: false, errorMessage: '' };
   }
