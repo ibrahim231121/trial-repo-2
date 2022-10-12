@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CRXDataTable, CRXColumn, CRXToaster, CRXGlobalSelectFilter } from "@cb/shared";
+import { CRXDataTable, CRXColumn, CRXToaster, CRXGlobalSelectFilter, CRXButton} from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersInfoAsync } from "../../../Redux/UserReducer";
+import { getUsersInfoAsync, getUserStatusKeyValuesAsync, getAllUserGroupKeyValuesAsync } from "../../../Redux/UserReducer";
 import { RootState } from "../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
-
 import {
   SearchObject,
   ValueString,
@@ -28,12 +27,11 @@ import {
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
-import { CRXButton } from "@cb/shared";
 import UserActionMenu from "./UserActionMenu";
 import { dateOptionsTypes } from "../../../utils/constant";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
+import MultSelectiDropDownValues from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDownValues";
 import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
-import { CRXModalDialog } from "@cb/shared";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
@@ -84,29 +82,35 @@ const User: React.FC = () => {
       size: rowsPerPage
   })
   
-  
-  
-  React.useEffect(() => {
-    dispatch(getUsersInfoAsync(pageiGrid));
-
-    let headCellsArray = onSetHeadCellVisibility(headCells);
-    setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "userDataTable");
-  }, []);
-
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
+  );
+  const userStatus : any = useSelector(
+    (state: RootState) => state.userReducer.userStatus
+  );
+  const userGroups : any = useSelector(
+    (state: RootState) => state.userReducer.userGroups
   );
   const [rows, setRows] = React.useState<User[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
-  const [reformattedRows, setReformattedRows] = React.useState<User[]>();
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
   const [open, setOpen] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
   const [paging, setPaging] = React.useState<boolean>();
+
+  React.useEffect(() => {
+    //dispatch(getUsersInfoAsync(pageiGrid));
+    dispatch(getUserStatusKeyValuesAsync());
+    dispatch(getAllUserGroupKeyValuesAsync());
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "userDataTable");
+    
+  }, []);
 
   const setData = () => {
     let userRows: User[] = [];
@@ -131,17 +135,12 @@ const User: React.FC = () => {
       });
     }
     setRows(userRows);
-    setReformattedRows(userRows);
+    setReformattedRows({...reformattedRows, rows: userRows, userStatus: userStatus, userGroups: userGroups});
   };
 
   React.useEffect(() => {
     setData();
-  }, [users]);
-
-  // useEffect(() => {
-  //   console.log("page ")
-  //   setPageiGrid({...pageiGrid, page:page}); 
-  // },[page])
+  }, [users, userStatus, userGroups]);
 
   useEffect(() => {
     if(paging){
@@ -226,10 +225,10 @@ const User: React.FC = () => {
       dateTimeObject = {
         dateTimeObj: {
           startDate:
-            reformattedRows !== undefined ? reformattedRows[0].lastLogin : "",
+            reformattedRows !== undefined ? reformattedRows.rows[0].lastLogin : "",
           endDate:
             reformattedRows !== undefined
-              ? reformattedRows[reformattedRows.length - 1].lastLogin
+              ? reformattedRows.rows[reformattedRows.length - 1].lastLogin
               : "",
           value: "custom",
           displayText: t("custom_range"),
@@ -274,26 +273,15 @@ const User: React.FC = () => {
     
     return self.indexOf(value) === index;
 }
-  const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:User[]) => {
-
-    if(colIdx === 5) {
-      
-       
-        let statuslist: any = [];
-
-        if (initialRows !== undefined) {
-          if (initialRows.length > 0) {
-            initialRows.map((x: User) => {
-              statuslist.push(x.status);
-            });
-          }
-        }
-       
-        statuslist = statuslist.filter(findUniqueValue);
-        let status: any = [{ label: t("No_Status") }];
-        statuslist.map((x: string) => {
-          status.push({ label: x });
+  const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
+    
+    if(colIdx === 5 && initialRows) {      
+        
+        let status: any = [{id: 0, label: t("No_Status") }];
+        initialRows.userStatus.map((x: any) => {
+          status.push({id : x.id, label: x.name });
         });
+
         const settingValues = (headCell: HeadCellProps) => {
           let val: any = [];
           if (headCell.headerArray !== undefined)
@@ -347,8 +335,10 @@ const changeMultiselect = (
   val: renderCheckMultiselect[],
   colIdx: number
 ) => {
+  
   let value: any[] = val.map((x) => {
     let item = {
+      //id : x.id,
       value: x.label,
     };
     return item;
@@ -454,7 +444,7 @@ const openHandler = (_: React.SyntheticEvent) => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: User[]) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
+      searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       
       minWidth: "112",
       maxWidth: "150",
@@ -500,8 +490,9 @@ const openHandler = (_: React.SyntheticEvent) => {
       searchComponent: (
         rowData: User[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "430",
       maxWidth : "489px",
       attributeName: "UserGroups",
@@ -510,54 +501,60 @@ const openHandler = (_: React.SyntheticEvent) => {
      
     },
   ]);
+
   const searchAndNonSearchMultiDropDown = (
     rowsParam: User[],
     headCells: HeadCellProps[],
     colIdx: number,
+    initialRows: any,
     isSearchable: boolean
   ) => {
-    const onSetSearchData = () => {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+
+    if(colIdx === 7 && initialRows) {   
+
+      const onSetSearchData = () => {
+        setSearchData((prevArr) =>
+          prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+        );
+      };
+      const onSetHeaderArray = (value: ValueString[]) => {
+        headCells[colIdx].headerArray = value;
+      };
+
+      const multiselectProps = {
+        marginLeft: "4px",
+        paddingRight: "7px",
+        marginRight: "7px",
+        paddingLeft: "7px",
+      };
+      const parentStye = {
+        width: "281px",
+        margin: "0px 0px 0px 4px",
+      };
+
+      const listwidth = {
+        width: "279px",
+        marginTop: "-4px",
+      };
+      return (
+        <MultSelectiDropDownValues
+          headCells={headCells}
+          colIdx={colIdx}
+          reformattedRows={
+            initialRows.userGroups
+          }
+          isSearchable={isSearchable}
+          onMultiSelectChange={onSelection}
+          onSetSearchData={onSetSearchData}
+          onSetHeaderArray={onSetHeaderArray}
+          checkedStyle={multiselectProps}
+          parentStye={parentStye}
+          widthNoOption={listwidth}
+        />
       );
-    };
-    const onSetHeaderArray = (v: ValueString[]) => {
-      headCells[colIdx].headerArray = v;
-    };
-
-    const multiselectProps = {
-      marginLeft: "4px",
-      paddingRight: "7px",
-      marginRight: "7px",
-      paddingLeft: "7px",
-    };
-    const parentStye = {
-      width: "281px",
-      margin: "0px 0px 0px 4px",
-    };
-
-    const listwidth = {
-      width: "279px",
-      marginTop: "-4px",
-    };
-    return (
-      <MultSelectiDropDown
-        headCells={headCells}
-        colIdx={colIdx}
-        reformattedRows={
-          reformattedRows !== undefined ? reformattedRows : rowsParam
-        }
-        // reformattedRows={reformattedRows}
-        isSearchable={isSearchable}
-        onMultiSelectChange={onSelection}
-        onSetSearchData={onSetSearchData}
-        onSetHeaderArray={onSetHeaderArray}
-        checkedStyle={multiselectProps}
-        parentStye={parentStye}
-        widthNoOption={listwidth}
-      />
-    );
+    }
   };
+
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
       for (var i = 0; i < v.length; i++) {
@@ -575,8 +572,10 @@ const openHandler = (_: React.SyntheticEvent) => {
       );
     }
   };
+
   useEffect(() => {
     //dataArrayBuilder();
+    //console.log("searchData", searchData)
   }, [searchData]);
 
   useEffect(() => {
@@ -611,7 +610,7 @@ const openHandler = (_: React.SyntheticEvent) => {
 
   const dataArrayBuilder = () => {
     if (reformattedRows !== undefined) {
-      let dataRows: User[] = reformattedRows;
+      let dataRows: User[] = reformattedRows.rows;
       searchData.forEach((el: SearchObject) => {
         if (
           el.columnName === "userName" ||
@@ -627,8 +626,8 @@ const openHandler = (_: React.SyntheticEvent) => {
         if (el.columnName === "status") {
             dataRows = onMultipleCompare(dataRows, headCells, el);
             if (el.value.includes("No Status")) {
-              reformattedRows
-                .filter((i) => i.status.length === 0)
+              reformattedRows.rows
+                .filter((i:any) => i.status.length === 0)
                 .map((x: User) => {
                   dataRows.push(x);
                 });

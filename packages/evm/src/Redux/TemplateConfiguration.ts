@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
 import { ConfigurationTemplateLogs, DeviceConfigurationTemplate, DeviceType } from '../utils/Api/models/UnitModels';
+import { BASE_URL_UNIT_SERVICES} from '../utils/Api/url'
 
 const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
@@ -21,7 +22,14 @@ export const getTemplateConfigurationLogsAsync: any = createAsyncThunk(
     }
 );
 
-
+export const getAllConfigurationValuesAsync: any = createAsyncThunk(
+    'GetAllConfigurationValues',
+    async () => {
+        const url = BASE_URL_UNIT_SERVICES + `/GetAllConfigurationTemplatesMappingValues`
+        return await UnitsAndDevicesAgent.getAllConfigurationValues(`/ConfigurationTemplates/GetAllConfigurationTemplatesMappingValues`)
+            .then((response:any) => response);
+    }
+);
 
 export const getDeviceTypeInfoAsync: any = createAsyncThunk(
     'GetAllDeviceConfiguration',
@@ -46,17 +54,18 @@ export const deletetemplate: any = createAsyncThunk(
 
 export const templateSlice = createSlice({
     name: 'template',
-    initialState: { templateInfo: [], deviceType: [], configTemplateLogs: [] },
+    initialState: { templateInfo: [], deviceType: [], configTemplateLogs: [], configTemplateValues: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getConfigurationInfoAsync.fulfilled, (state: any, { payload }) => {
             state.templateInfo = payload;
+        }).addCase(getDeviceTypeInfoAsync.fulfilled, (state: any, { payload }) => {
+            state.deviceType = payload;
+        }).addCase(getTemplateConfigurationLogsAsync.fulfilled, (state: any, { payload }) => {
+            state.configTemplateLogs = payload;
+        }).addCase(getAllConfigurationValuesAsync.fulfilled, (state: any, { payload }) => {
+            state.configTemplateValues = payload;
         })
-            .addCase(getDeviceTypeInfoAsync.fulfilled, (state: any, { payload }) => {
-                state.deviceType = payload;
-            }). addCase(getTemplateConfigurationLogsAsync.fulfilled, (state: any, { payload }) => {
-                state.configTemplateLogs = payload;
-            })
     }
 });
 
