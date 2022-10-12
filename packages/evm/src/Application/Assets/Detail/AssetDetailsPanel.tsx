@@ -48,7 +48,7 @@ type Timeline = {
 
 const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, toasterMsgRef }: propsObject) => {
   const { t } = useTranslation<string>();
-  const [selectDropDown, setSelectDropDown] = React.useState("map");
+  const [selectDropDown, setSelectDropDown] = React.useState(openMap? "Map" : "");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
   const [alertType] = useState<string>('inline');
@@ -87,20 +87,26 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
     }
   }, [timelinedetail]);
 
-  const listOFMenu = [
-    { label: "Map", route: t("Map"), onClick: (e: any) => handleChangeDropDown(e) },
+  
+
+  const [listOFMenu, setListOFMenu] = React.useState([
     { label: "Transcription", route: t("Transcription"), onClick: (e: any) => handleChangeDropDown(e) },
     { label: "Notes", route: t("Notes"), onClick: (e: any) => handleChangeDropDown(e) },
-    { label: "Bookmarks", route: t("Bookmarks"), onClick: (e: any) => handleChangeDropDown(e) },
-  ]
+    { label: "Bookmarks", route: t("Bookmarks"), onClick: (e: any) => handleChangeDropDown(e) }
+  ]);
+
+  React.useEffect(() => {
+    if (openMap && gpsJson.length > 0) {
+      setListOFMenu( [...listOFMenu ,{ label: "Map", route: t("Map"), onClick: (e: any) => handleChangeDropDown(e) }])
+    }
+  }, [gpsJson]);
   const handleChangeDropDown = (event: any) => {
 
     setSelectDropDown(event.target.textContent);
   };
 
   const callBackOnMarkerClick = (logtime: any) => {
-    const milliseconds = logtime * 1000
-    const dateObject = new Date(milliseconds);
+    const dateObject = new Date(logtime);
     setOnMarkerClickTimeData(dateObject);
   }
 
