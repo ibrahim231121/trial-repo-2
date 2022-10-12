@@ -381,12 +381,11 @@ const Group = () => {
     if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp) && errorMessage.length == 0 ) {
       setIsSaveButtonDisabled(false);
     } else if (
-      JSON.stringify(userIds.length === 0 ? [] : userIds) !==
+      JSON.stringify(userIds.length === 0 ? [] : userIds.sort()) !==
       JSON.stringify(
         res === undefined || res.members === undefined
           ? []
-          : res.members.users.map((x: any) => x.id)
-      )
+          : res.members.users?.map((x: any) => x.id)?.sort())
     ) {
       setIsSaveButtonDisabled(false);
     } else if (isAppPermissionsChange) {
