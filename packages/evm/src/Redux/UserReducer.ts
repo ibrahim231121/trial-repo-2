@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'universal-cookie';
 import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
 import { UsersInfo } from '../utils/Api/models/UsersAndIdentitiesModel';
-import { USER_INFO_GET_URL, USER_INFO_UPDATE_URL, USER } from '../utils/Api/url'
+import { GROUP_GET_BY_ID_URL, USER } from '../utils/Api/url'
 
 const cookies = new Cookies();
 const Users = [
@@ -1093,16 +1093,28 @@ export const getUsersIdsAsync: any = createAsyncThunk(
 });
 
 
-export const getUserStatusAsync: any = createAsyncThunk(
-    'getUserStatus',
+export const getUserStatusKeyValuesAsync: any = createAsyncThunk(
+    'getUserStatusKeyValues',
     async () => {
-        const url = USER + `/GetUserStatus`
+        const url = USER + `/GetUserStatusKeyValues`
 
             return await UsersAndIdentitiesServiceAgent
-            .getUserStatus(url)
+            .getUserStatusKeyValues(url)
+            .then((response) => {           
+                return response
+        })
+
+});
+
+export const getAllUserGroupKeyValuesAsync: any = createAsyncThunk(
+    'getAllUserGroupKeyValues',
+    async () => {
+        const url = GROUP_GET_BY_ID_URL + `/GetAllUserGroupKeyValues`
+
+            return await UsersAndIdentitiesServiceAgent
+            .getAllUserGroupKeyValues(url)
             .then((response) => {
-                
-            return response
+                return response
         })
 
 });
@@ -1150,7 +1162,7 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
 
 export const userSlice = createSlice({
     name: 'user',
-    initialState: { usersInfo: [], userIds: [], userStatus: [] },
+    initialState: { usersInfo: [], userIds: [], userStatus: [], userGroups: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getUsersInfoAsync.fulfilled, (state: any, { payload }) => {
@@ -1159,8 +1171,11 @@ export const userSlice = createSlice({
         .addCase(getUsersIdsAsync.fulfilled, (state: any, { payload }) => {
             state.userIds = payload;
         })
-        .addCase(getUserStatusAsync.fulfilled, (state: any, { payload }) => {
+        .addCase(getUserStatusKeyValuesAsync.fulfilled, (state: any, { payload }) => {
             state.userStatus = payload;
+        })
+        .addCase(getAllUserGroupKeyValuesAsync.fulfilled, (state: any, { payload }) => {
+            state.userGroups = payload;
         })
     }
 });

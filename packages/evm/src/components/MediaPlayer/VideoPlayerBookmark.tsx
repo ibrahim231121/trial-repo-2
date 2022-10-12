@@ -257,7 +257,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     cmtFieldValue: 1,
                     record: []
                 }],
-                lock: { roles: [] },
+                lock: { groupRecId: [] },
                 recording: {
                     started: new Date(),
                     ended: new Date(),

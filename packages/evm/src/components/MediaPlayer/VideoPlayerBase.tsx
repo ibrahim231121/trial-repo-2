@@ -473,6 +473,8 @@ const VideoPlayerBase = (props: any) => {
   const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
+  const [updatedGpsDataOverlay, setUpdatedGpsDataOverlay] = React.useState<any>();
+  const [updatedSensorsDataOverlay, setUpdatedSensorsDataOverlay] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
   const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(false);
@@ -497,6 +499,7 @@ const VideoPlayerBase = (props: any) => {
   const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
+  const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
@@ -556,7 +559,10 @@ const VideoPlayerBase = (props: any) => {
     if (props.gpsJson && props.gpsJson.length > 0) {
       setGpsJson(props.gpsJson);
     }
-  }, [props.gpsJson]);
+    if (props.sensorsDataJson && props.sensorsDataJson.length > 0) {
+      setSensorsDataJson(props.sensorsDataJson);
+    }
+  }, [props.gpsJson, props.sensorsDataJson]);
 
 
   React.useEffect(() => {
@@ -1053,20 +1059,20 @@ const VideoPlayerBase = (props: any) => {
             videoHandlers.forEach((videoHandle: any) => {
               hanldeVideoStartStop(timerValue, videoHandle, true);
             });
-            renderMarkerOnSeek(timerValue);
+            renderOnSeek(timerValue);
             renderBookmarkNotePopupOnSeek(timerValue);
           }
           else {
             setPlaying(false);
             videoHandlers.forEach((videoHandle: any) => {
-              videoHandle.stop();
+              videoHandle.pause();
             });
           }
         }
       }
       else {
         videoHandlers.forEach((videoHandle: any) => {
-          videoHandle.stop()
+          videoHandle.pause();
         });
       }
     },
@@ -1664,40 +1670,62 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const seekSliderOnMarkerClick = (logtime: Date) => {
-    let video: any = timelinedetail[0];
+    let video: Timeline = timelinedetail[0];
     let datavideo: any = data[0];
     if (video && datavideo) {
       let timeOffset = datavideo.recording.timeOffset;
       let video_start = new Date(datavideo.recording.started).getTime() + timeOffset;
       let duration = logtime.getTime() - video_start;
       let durationInDateFormat = (new Date(duration).getTime()) / 1000;
+      if(durationInDateFormat<0){ durationInDateFormat = 0; } // handel undervalue time
       let recording_start_point = video.recording_start_point + durationInDateFormat;
+      if(recording_start_point>=video.recording_end_point){ recording_start_point = video.recording_end_point; } // handel exceed time
       setTimer(recording_start_point);
       setControlBar(recording_start_point);
     }
   }
 
-  const renderMarkerOnSeek = (timerValue: number) => {
-    if (gpsJson) {
-      if (gpsJson.length > 0) {
-        renderMarkerOnSeekTimelime(timerValue, data[0])
+  const renderOnSeek = (timerValue: number) => {
+    if (gpsJson && gpsJson.length > 0) {
+      renderMarkerOnSeek(timerValue, data[0])
+      if (sensorsDataJson && sensorsDataJson.length > 0 && overlayEnabled) {
+        renderOverlayOnSeek(timerValue, data[0])
       }
     }
   }
 
-  const renderMarkerOnSeekTimelime = (timerValue: number, firstdataobj: any) => {
+  const renderMarkerOnSeek = (timerValue: number, firstdataobj: any) => {
     let timeOffset = firstdataobj.recording.timeOffset;
     let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
-    let duration = ((timerValue * 1000) + video_time) / 1000;
-    let ObjLatLog: any = []
-    gpsJson.forEach((e: any) => {
-      if (e.LOGTIME == duration) {
-        ObjLatLog.push(e);
-      }
-    });
+    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + video_time);
+    let ObjLatLog = gpsJson.filter((x:any)=> x.logTime == duration);
     if (ObjLatLog.length > 0) {
       setUpdateSeekMarker(ObjLatLog);
     }
+  }
+
+  const renderOverlayOnSeek = (timerValue: number, firstdataobj: any) => {
+    let timeOffset = firstdataobj.recording.timeOffset;
+    let video_time = new Date(firstdataobj.recording.started).getTime() + timeOffset;
+    let duration = getUnixTimewithZeroinMillisecond((timerValue * 1000) + video_time);
+    let ObjLatLog = gpsJson.filter((x:any)=> x.logTime == duration);
+    let Objsensor = sensorsDataJson.filter((x:any)=> x.logTime == duration);
+    if (ObjLatLog && ObjLatLog.length > 0) {
+      setUpdatedGpsDataOverlay(ObjLatLog[0]);
+    }
+    if (Objsensor && Objsensor.length > 0) {
+      setUpdatedSensorsDataOverlay(Objsensor[0]);
+    }
+  }
+
+  const getUnixTimewithZeroinMillisecond = (time: number) => {
+    let firsthalf = time.toString().substring(0,10);
+    let last3digits = time.toString().substring(10);
+    if(Number(last3digits)>0){
+      let Nlast3digits = "000";
+      return Number(firsthalf+Nlast3digits);
+    }
+    return time;
   }
 
   let volumePer = volumPercent !== undefined ? volumPercent == 0 ? "icon-volume-mute1" : volumPercent >= 1 && volumPercent <= 33 ? "icon-volume-low1" : volumPercent >= 34 && volumPercent <= 66 ? "icon-volume-medium1" : "icon-volume-high1" : "";
@@ -1929,6 +1957,8 @@ const VideoPlayerBase = (props: any) => {
               <VideoPlayerOverlayMenu
                 overlayEnabled={overlayEnabled}
                 overlayCheckedItems={overlayCheckedItems}
+                updatedSensorsDataOverlay={updatedSensorsDataOverlay}
+                updatedGpsDataOverlay={updatedGpsDataOverlay}
               />
               <VideoScreen
                 setData={setdata}
@@ -2235,20 +2265,20 @@ const VideoPlayerBase = (props: any) => {
                     />
                   </CRXButton>
                   <div className="MenuListGrid">
-                  <CRXButton onClick={() => {setLayoutMenuEnabled(true)}}>
-                    <CRXTooltip
-                        iconName={"fas fa-table iconTableClr"}
-                        placement="top"
-                        title={<>Layouts <span className="LayoutsTooltips">L</span></>}
-                        arrow={false}
-                      />
+                    <CRXButton onClick={() => {setLayoutMenuEnabled(true)}}>
+                      <CRXTooltip
+                          iconName={"fas fa-table iconTableClr"}
+                          placement="top"
+                          title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                          arrow={false}
+                        />
+                    </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
                      className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"}`}
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
-                     onBlur={() => { setLayoutMenuEnabled(false) }}
                     >
 
                       <MaterialMenuItem className="layoutHeader">
@@ -2325,8 +2355,6 @@ const VideoPlayerBase = (props: any) => {
                       </MaterialMenuItem>
 
                     </MaterialMenu>
-                  </CRXButton>
-               
                   </div>
                   <div className="playerView">
                     {ViewScreen ?

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { SearchAgent } from '../utils/Api/ApiAgent';
+import { SearchModel } from '../utils/Api/models/SearchModel';
 
 interface assetSearchType{
     QUERRY:any,
@@ -17,7 +18,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
     } else {
         localStorage.setItem('assetSearchQuerry', JSON.stringify(QUERRY));
     }
-    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}] ).then((response: any) => response);
+    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}]).then((response: SearchModel.Evidence[]) => response);
 });
 
 export const assetSearchSlice = createSlice({

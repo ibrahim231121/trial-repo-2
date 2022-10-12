@@ -154,6 +154,7 @@ const Group = () => {
     CONTAINERMAPPING_INFO_GET_URL + "?groupId=" + id,
     { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` }
   );
+  const [errorMessage, setErrorMessage]= React.useState<string>("");
 
   // const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
   //   APPLICATION_PERMISSION_URL,
@@ -377,7 +378,7 @@ const Group = () => {
       description: res === undefined ? "" : res.description,
     };
     
-    if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp)) {
+    if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp) && errorMessage.length == 0 ) {
       setIsSaveButtonDisabled(false);
     } else if (
       JSON.stringify(userIds.length === 0 ? [] : userIds) !==
@@ -688,7 +689,7 @@ const Group = () => {
             alertType == "inline" ? "" : "errorGroupInfo"
           }`}
         >
-          <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} />
+          <GroupInfo info={groupInfo} onChangeGroupInfo={onChangeGroupInfo} setIsSaveButtonDisabled={setIsSaveButtonDisabled} errorMessage={errorMessage} setErrorMessage={setErrorMessage}/>
         </div>
       </CrxTabPanel>
 

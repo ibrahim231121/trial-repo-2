@@ -26,6 +26,7 @@ import { useTranslation } from "react-i18next";
 import { getCategoryAsync } from '../../../Redux/categoryReducer';
 import { getStationsInfoAllAsync } from '../../../Redux/StationReducer';
 import Cookies from 'universal-cookie';
+import { SearchModel } from '../../../utils/Api/models/SearchModel';
 const SearchComponent = (props: any) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const SearchComponent = (props: any) => {
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [querryString, setQuerryString] = React.useState('');
   const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
-  const [searchData, setSearchData] = React.useState<any>();
+  const [searchData, setSearchData] = React.useState<SearchModel.Evidence[]>([]);
   const [predictiveText, setPredictiveText] = React.useState('');
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
     startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
@@ -63,7 +64,7 @@ const SearchComponent = (props: any) => {
     ApproachingDeletion: "#Approaching Deletion"
   }
   const iconRotate = showAdvance ? ' ' : 'rotate90';
-  const responseForSearch: any = useSelector(
+  const responseForSearch: SearchModel.Evidence[] = useSelector(
     (state: RootState) => state.assetSearchReducer.assetSearchInfo
   );
 
@@ -247,12 +248,12 @@ const SearchComponent = (props: any) => {
       setSearchData(responseForSearch);
     }
     else {
-      setSearchData([]);
+     setSearchData([]);
     }
   }, [responseForSearch]);
 
   React.useEffect(() => {
-    setSearchData(null);
+    setSearchData([]);
   }, []);
 
   React.useEffect(() => {
@@ -280,7 +281,7 @@ const SearchComponent = (props: any) => {
         let exactShortCutName = querryString.substring(1);
         let shortCut = shortcutData.find(x => x.text === exactShortCutName);
         if (shortCut) {
-          shortCut.renderData(undefined);
+          shortCut.renderData();
         } else {
           setSearchData([]);
         }
@@ -452,7 +453,7 @@ const SearchComponent = (props: any) => {
             </div>
           </>
         )}
-        {searchData && (
+        {(searchData.length > 0) && (
           <div className='dataTabAssets dataTabAssets_table'>
             <MasterMain
               key={Math.random()}

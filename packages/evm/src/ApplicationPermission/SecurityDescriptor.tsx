@@ -4,7 +4,7 @@ import { Permission } from "./types";
 
 type Props = {
     descriptorId: Permission;
-    maximumDescriptor : Permission;
+    maximumDescriptor: Permission;
     securityDescriptors?: any;
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import CheckAssetExpiry from './CheckAssetExpiry';
+import { SearchModel } from '../utils/Api/models/SearchModel';
+import CheckEvidenceExpiry from './CheckEvidenceExpiry';
 import Restricted from './Restricted';
 import SecurityDescriptor from './SecurityDescriptor';
 
@@ -8,17 +9,19 @@ type Props = {
     moduleId: number,
     descriptorId: number,
     maximumDescriptor: number,
-    actionMenuName : string
+    actionMenuName: string;
+    securityDescriptors: Array<SearchModel.SecurityDescriptor>;
+
 };
 
-const ActionMenuCheckList: React.FunctionComponent<Props> = ({ evidence, moduleId, descriptorId, maximumDescriptor, actionMenuName, children }) => {
-    return (<CheckAssetExpiry evidence={evidence} actionMenuName={actionMenuName}>
+const ActionMenuCheckList: React.FunctionComponent<Props> = ({ evidence, moduleId, descriptorId, maximumDescriptor, actionMenuName, securityDescriptors, children }) => {
+    return (<CheckEvidenceExpiry evidence={evidence} actionMenuName={actionMenuName}>
         <Restricted moduleId={moduleId}>
-            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={evidence?.securityDescriptors}>
+            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={securityDescriptors}>
                 <>{children}</>
             </SecurityDescriptor>
         </Restricted>
-    </CheckAssetExpiry>)
+    </CheckEvidenceExpiry>)
 };
 
 export default ActionMenuCheckList;

@@ -1,11 +1,10 @@
-import React, { useEffect ,useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import {CRXDataTable, CRXToaster,CRXIcon,CRXDataTableTextPopover } from "@cb/shared";
+import { CRXDataTable, CRXToaster, CRXIcon, CRXDataTableTextPopover } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
   Order,
-  Asset,
   ValueString,
   HeadCellProps,
   onResizeRow,
@@ -37,115 +36,58 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
-
-type DateTimeProps = {
-  dateTimeObj: DateTimeObject;
-  colIdx: number;
-};
-
-type DateTimeObject = {
-  startDate: string;
-  endDate: string;
-  value: string;
-  displayText: string;
-};
-
-type MasterAsset = {
-  assetId: string;
-  assetName: string;
-  assetType: string;
-  unit: string;
-  owners: string[];
-  recordingStarted: string;
-  status: string;
-};
-
-type Evidence = {
-  id: number;
-  masterAssetId: string;
-  description: string;
-  categories: string[];
-  devices: string;
-  station: string;
-  asset: Asset[];
-  masterAsset: MasterAsset;
-  holdUntill: string;
-  expireOn: Date;
-};
-
-type EvidenceReformated = {
-  id: number;
-  evidence: Evidence;
-  assetId: string;
-  assetName: string;
-  assetType: string;
-  description: string;
-  categories: string[];
-  devices: string;
-  station: string;
-  unit: string;
-  recordedBy: string[];
-  recordingStarted: string;
-  status: string;
-  holdUntill?: string;
-  expireOn: Date;
-};
-
-type Props = {
-  rowsData: Evidence[];
-  dateOptionType: string;
-  dateTimeDetail: DateTimeObject;
-  showDateCompact: boolean;
-};
-
-//-----------------
+import { ActionMenuPlacement } from "../ActionMenu/types";
+import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
+import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
 const thumbTemplate = (assetType: string) => {
   return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
 };
 
-const assetNameTemplate = (assetName: string, evidence: Evidence) => {
+const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
-  
+
   let dataLink = <>
-              <Link
-              className="linkColor"
-                to={{
-                  pathname: "/assetdetail",
-                  state: {
-                    evidenceId: evidence.id,
-                    assetId: masterAsset.assetId,
-                    assetName: assetName,
-                  },
-                }}
-              >
-                <div className="assetName">{assetName}</div>
-              </Link>
-              
-              <DetailedAssetPopup asset={assets} row={evidence}/>
-            </> 
+    <Link
+      className="linkColor"
+      to={{
+        pathname: "/assetdetail",
+        state: {
+          evidenceId: evidence.id,
+          assetId: masterAsset.assetId,
+          assetName: assetName,
+        },
+      }}
+    >
+      <div className="assetName">{assetName}</div>
+    </Link>
+
+    <DetailedAssetPopup asset={assets} row={evidence} />
+  </>
   return (<CRXDataTableTextPopover
-          content = {dataLink}
-          id = "dataAssets"
-          isPopover = {true}
-          counts = {assetName}
-          title="Assets ID"
-          minWidth= "130"
-          maxWidth= "263"
-        />
+    content={dataLink}
+    id="dataAssets"
+    isPopover={true}
+    counts={assetName}
+    title="Assets ID"
+    minWidth="130"
+    maxWidth="263"
+  />
   );
 };
 
-const MasterMain: React.FC<Props> = ({
+const MasterMain: React.FC<MasterMainProps> = ({
   rowsData,
   dateOptionType,
   dateTimeDetail,
   showDateCompact,
 }) => {
-  let reformattedRows: EvidenceReformated[] = [];
-  rowsData.forEach((row: Evidence, i: number) => {
-    let evidence: EvidenceReformated = {
+  const toasterRef = useRef<typeof CRXToaster>(null);
+  const { t } = useTranslation<string>();
+  let reformattedRows: SearchModel.Evidence[] = [];
+  rowsData.forEach((row: SearchModel.Evidence, i: number) => {
+    let evidence: any = {
       id: row.id,
       assetId: row.masterAsset.assetId,
       assetName: row.masterAsset.assetName,
@@ -171,17 +113,16 @@ const MasterMain: React.FC<Props> = ({
     onSaveHeadCellData(headCells, "assetDataTable");
   }, []);
 
-  const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  const [rows, setRows] = React.useState<EvidenceReformated[]>(reformattedRows);
+  const [rows, setRows] = React.useState<SearchModel.Evidence[]>(reformattedRows);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
-  const [isOpen, setIsOpen] = React.useState<any>(undefined)
-  const [selectedActionRow, setSelectedActionRow] = React.useState<EvidenceReformated>();
+  const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
+  // const [isOpen, setIsOpen] = React.useState<any>(undefined)
+  const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -193,7 +134,7 @@ const MasterMain: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    if(searchData.length > 0)
+    if (searchData.length > 0)
       dataArrayBuilder();
   }, [searchData]);
 
@@ -226,9 +167,9 @@ const MasterMain: React.FC<Props> = ({
         );
     }
   }, [dateTime]);
-  
+
   const searchText = (
-    _: EvidenceReformated[],
+    _: SearchModel.Evidence[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
@@ -243,7 +184,7 @@ const MasterMain: React.FC<Props> = ({
   };
 
   const searchDate = (
-    _: EvidenceReformated[],
+    _: SearchModel.Evidence[],
     headCells: HeadCellProps[],
     colIdx: number
   ) => {
@@ -314,7 +255,7 @@ const MasterMain: React.FC<Props> = ({
   };
 
   const searchAndNonSearchMultiDropDown = (
-    rowsParam: EvidenceReformated[],
+    rowsParam: SearchModel.Evidence[],
     headCells: HeadCellProps[],
     colIdx: number,
     isSearchable: boolean
@@ -365,25 +306,23 @@ const MasterMain: React.FC<Props> = ({
     );
   };
 
-  const retentionSpanText = (_: string, evidence: Evidence): JSX.Element => {
-      let date : Date;
-      if(evidence.holdUntill != null)
+  const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
+    let date: Date;
+    if (evidence.holdUntill != null)
       date = moment(evidence.holdUntill).toDate();
-      else 
-        date = moment(evidence.expireOn).toDate();
+    else
+      date = moment(evidence.expireOn).toDate();
 
-      if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
-        return (
-          <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
-        );
-      }
-      //show a horizontal arrow beneath the retention span number.
+    if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
       return (
-        <p>
-          {AssetRetentionFormat(date)}
-          
-        </p>
+        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
       );
+    }
+    return (
+      <p>
+        {AssetRetentionFormat(date)}
+      </p>
+    );
   }
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -399,7 +338,7 @@ const MasterMain: React.FC<Props> = ({
       visible: false,
       width: "",
       minWidth: "250",
-      
+
     },
     {
       label: `${t("Asset_Thumbnail")}`,
@@ -414,7 +353,7 @@ const MasterMain: React.FC<Props> = ({
       label: `${t("Asset_ID")}`,
       id: "assetName",
       align: "left",
-      dataComponent: (e : any, d:any) => assetNameTemplate(e, d),
+      dataComponent: (e: any, d: any) => assetNameTemplate(e, d),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -431,7 +370,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
@@ -469,7 +408,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
@@ -485,7 +424,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
@@ -501,7 +440,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
@@ -517,7 +456,7 @@ const MasterMain: React.FC<Props> = ({
       sort: true,
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
@@ -534,7 +473,7 @@ const MasterMain: React.FC<Props> = ({
       maxWidth: "250",
       searchFilter: true,
       searchComponent: (
-        rowData: EvidenceReformated[],
+        rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
         colIdx: number
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
@@ -554,7 +493,6 @@ const MasterMain: React.FC<Props> = ({
     },
   ]);
 
-  // Remane required
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
       for (var i = 0; i < v.length; i++) {
@@ -574,7 +512,7 @@ const MasterMain: React.FC<Props> = ({
   };
 
   const dataArrayBuilder = () => {
-    let dataRows: EvidenceReformated[] = reformattedRows;
+    let dataRows: SearchModel.Evidence[] = reformattedRows;
     searchData.forEach((el: SearchObject) => {
       if (el.columnName === "assetName" || el.columnName === "description")
         dataRows = onTextCompare(dataRows, headCells, el);
@@ -604,7 +542,6 @@ const MasterMain: React.FC<Props> = ({
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
   };
-  const toasterRef = useRef<typeof CRXToaster>(null);
 
   const showToastMsg = (obj: any) => {
     toasterRef.current.showToaster({
@@ -625,20 +562,25 @@ const MasterMain: React.FC<Props> = ({
       dispatch(addNotificationMessages(notificationMessage));
     }
   };
-  
+
+
+
   return (
     <>
       <CRXToaster ref={toasterRef} />
-      
-      
       {rows && (
         <CRXDataTable
           id="assetDataTable"
           actionComponent={
-            <ActionMenu row={selectedActionRow} selectedItems={selectedItems} showToastMsg={(obj: any) => showToastMsg(obj)}  setIsOpen={setIsOpen} IsOpen= {isOpen} portal={true} />
+            <ActionMenu
+              row={selectedActionRow}
+              selectedItems={selectedItems}
+              showToastMsg={(obj: any) => showToastMsg(obj)}
+              portal={true}
+              actionMenuPlacement={ActionMenuPlacement.AssetLister}
+            />
           }
-          
-          getRowOnActionClick={(val: EvidenceReformated) => setSelectedActionRow(val)}
+          getRowOnActionClick={(val: SearchModel.Evidence) => setSelectedActionRow(val)}
           showToolbar={true}
           dataRows={rows}
           headCells={headCells}
@@ -648,7 +590,7 @@ const MasterMain: React.FC<Props> = ({
           columnVisibilityBar={true}
           className="ManageAssetDataTable"
           onClearAll={clearAll}
-          getSelectedItems={(v: string[]) => setSelectedItems(v)}
+          getSelectedItems={(v: any[]) => setSelectedItems(v)}
           onResizeRow={resizeRowAssetsDataTable}
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
@@ -662,12 +604,12 @@ const MasterMain: React.FC<Props> = ({
           offsetY={177}
           page={page}
           rowsPerPage={rowsPerPage}
-          setPage= {(page:any) => setPage(page)}
-          setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+          setPage={(page: any) => setPage(page)}
+          setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={rows.length}
           selfPaging={true}
         />
-        
+
       )}
     </>
   );

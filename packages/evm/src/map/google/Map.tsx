@@ -73,8 +73,8 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
 
     const getLatLon = (gpsInfo: any) => {
         return {
-            latitude: gpsInfo.LAT ? gpsInfo.LAT : null,
-            longitude: gpsInfo.LON ? gpsInfo.LON : null
+            latitude: gpsInfo.lat ? gpsInfo.lat : gpsInfo.LAT ? gpsInfo.LAT : null,
+            longitude: gpsInfo.lon ? gpsInfo.lon : gpsInfo.LON ? gpsInfo.LON : null
         }
     }
 
@@ -169,7 +169,7 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
     }
 
     const onMarkerClick = (data:any): void => {
-        let logtime=data.LOGTIME;
+        let logtime=data.logTime ? data.logTime : data.LOGTIME ? data.LOGTIME : null;
         callBackOnMarkerClick(logtime);
     }
 

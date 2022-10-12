@@ -6,7 +6,7 @@ import {
   CRXColumn,
   CRXRows,
 } from "@cb/shared";
-import { ValueString } from "../../GlobalFunctions/globalDataTableFunctions"
+import { ValueString, KeyValue } from "../../GlobalFunctions/globalDataTableFunctions"
 
 interface noOptionprops {
   width? : string,
@@ -38,15 +38,32 @@ type Props = {
   reformattedRows: any[],
   isSearchable: boolean,
   parentStye? : parentStyleProps,
-  onMultiSelectChange: (value: ValueString[], colIdx: number) => void
+  onMultiSelectChange: (value: KeyValue[], colIdx: number) => void
   onSetSearchData: () => void
   onSetHeaderArray: (e: any) => void,
   widthNoOption?:noOptionprops,
   checkedStyle?: paddingLeftprops,
 }
 
+function findUniqueOptions(options: any) {
+  let unique: any = options.map((x: any) => x);
+    if (options.length > 0) {
+      unique = [];
+      unique[0] = options[0];
+      for (var i = 0; i < options.length; i++) {
+        if (!unique.some((item: any) => item.name === options[i].name)) {
+          let value: any = {};
+          value["id"] = options[i].id;
+          value["name"] = options[i].name;
+          unique.push(value);
+        }
+      }
+    }
+    return unique;
+}
 
-const MultSelectiDropDown: React.FC<Props> = ({
+
+const MultSelectiDropDownValues: React.FC<Props> = ({
   headCells,
   colIdx,
   reformattedRows,
@@ -60,55 +77,27 @@ const MultSelectiDropDown: React.FC<Props> = ({
     
 }
 ) => {
+
+  
+
+  let options  = findUniqueOptions(reformattedRows);
+
+  options = options.map((row: any, _: any) => {
+    let option: any = {};
+    option["id"] = row.id
+    option["value"] = row.name
+    return option;
+  });
+
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [openState, setOpenState] = React.useState<boolean>(false);
   const [buttonState, setButtonState] = React.useState<boolean>(false);
   const [filterClick, setFilterClick] = React.useState<boolean>(false);
 
-  let options = reformattedRows.map((row: any, _: any) => {
-    let option: any = {};
-    option["value"] = row[headCells[colIdx].id];
-    return option;
-  });
-
-  // For those properties which contains an array
-  if (
-    headCells[colIdx].id.toString() === "categories" ||
-    headCells[colIdx].id.toString() === "recordedBy" ||
-    headCells[colIdx].id.toString() === "groups" ||
-    headCells[colIdx].id.toString() === "assignedTo" ||
-    headCells[colIdx].id.toString() === "userGroups"
-  ) {
-    let moreOptions: any = [];
-
-    reformattedRows.map((row: any, _: any) => {
-      let x = headCells[colIdx].id;
-      row[x]?.forEach((element: any) => {
-        let moreOption: any = {};
-        moreOption["value"] = element;
-        moreOptions.push(moreOption);
-      });
-    });
-    options = moreOptions;
-  }
-  //------------------
-
-  let unique: any = options.map((x: any) => x);
-  if (options.length > 0) {
-    unique = [];
-    unique[0] = options[0];
-    for (var i = 0; i < options.length; i++) {
-      if (!unique.some((item: any) => item.value === options[i].value)) {
-        let value: any = {};
-        value["value"] = options[i].value;
-        unique.push(value);
-      }
-    }
-  }
-  function handleChange(e: any, colIdx: number, v: any) {
-    setFilterValue((val: []) => [...v]);
-    onMultiSelectChange(v, colIdx);
-    onSetHeaderArray(v)
+  function handleChange(e: any, colIdx: number, value: any) {
+    setFilterValue((val: []) => [...value]);
+    onMultiSelectChange(value, colIdx);
+    onSetHeaderArray(value)
   }
 
   function GetClassName() {
@@ -152,6 +141,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
 
   useEffect(() => {
     if (filterValue.length === 0) {
+      
       onSetSearchData()
     }
   }, [filterValue]);
@@ -201,7 +191,7 @@ const MultSelectiDropDown: React.FC<Props> = ({
                 // name={"AssetType"}
                 multiple={true}
                 CheckBox={true}
-                options={unique}
+                options={options}
                 value={
                   headCells[colIdx].headerArray === undefined
                     ? (headCells[colIdx].headerArray = [])
@@ -221,4 +211,4 @@ const MultSelectiDropDown: React.FC<Props> = ({
     );
   };
 
-export default MultSelectiDropDown;
+export default MultSelectiDropDownValues;

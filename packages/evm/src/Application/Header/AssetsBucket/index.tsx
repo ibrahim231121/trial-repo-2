@@ -14,7 +14,6 @@ import {
   CRXButton,
   CRXCheckBox
 } from "@cb/shared";
-import BucketActionMenu from "../../Assets/AssetLister/ActionMenu/BucketActionMenu";
 import "./index.scss";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,7 +33,7 @@ import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay
 import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { assetRow } from "../../Assets/AssetLister/ActionMenu/types";
+import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
 import { updateDuplicateFound, loadFromLocalStorage } from "../../../Redux/AssetActionReducer";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
@@ -50,6 +49,9 @@ import { FILE_SERVICE_URL } from '../../../utils/Api/url'
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { FileAgent } from "../../../utils/Api/ApiAgent";
 import "./overrideMainBucket.scss";
+import ActionMenu from "../../Assets/AssetLister/ActionMenu";
+import { Asset } from "../../../utils/Api/models/EvidenceModels";
+import { SearchModel } from "../../../utils/Api/models/SearchModel";
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 // window.onRecvError = new CustomEvent("onUploadError");
@@ -100,7 +102,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const isDuplicateFound: boolean = useSelector(
     (state: RootState) => state.assetBucket.isDuplicateFound
   );
-  const [selectedItems, setSelectedItems] = React.useState<assetRow[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<SearchModel.Asset[]>([]);
   const [rows, setRows] = React.useState<AssetBucket[]>(assetBucketData);
   const { t } = useTranslation<string>();
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
@@ -1086,7 +1088,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   const [activeScreen, setActiveScreen] = useState<number>(0);
   const checkBoxRef = useRef(null);
-  const selectAssetFromList = (e: any, row: assetRow) => {
+  const selectAssetFromList = (e: any, row: SearchModel.Asset) => {
     if (!e.target.checked)
       setCheckedAll(false)
     setChecked({ ...isChecked, [row.assetId]: e.target.checked });
@@ -1097,7 +1099,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     if (e.target.checked)
       setSelectedItems((prevArr) => [...prevArr, row]);
     else
-      setSelectedItems((prevArr) => prevArr.filter((e) => e.id !== row.id));
+      setSelectedItems((prevArr) => prevArr.filter((e) => e.assetId !== row.assetId));
   }
 
   const selectAllAssetFromList = (e: any) => {
@@ -1364,10 +1366,16 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                         {x.categories.map((item: any) => item).join(", ")}
                                       </div>
                                     </div>
-                                    <div className="bucketActionMenu">{<BucketActionMenu
-                                      row={x}
-                                      setSelectedItems={setSelectedItems}
-                                      selectedItems={selectedItems} />
+                                    <div className="bucketActionMenu">{
+                                      // <BucketActionMenu
+                                      // row={x}
+                                      // setSelectedItems={setSelectedItems}
+                                      // selectedItems={selectedItems} />
+                                      <ActionMenu 
+                                        row={x}
+                                        selectedItems={selectedItems}
+                                        actionMenuPlacement={ActionMenuPlacement.AssetBucket}
+                                      />
                                     }
                                     </div>
                                   </div>

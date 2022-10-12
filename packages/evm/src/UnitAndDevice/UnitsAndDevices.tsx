@@ -9,12 +9,12 @@ import textDisplay from "../GlobalComponents/Display/TextDisplay";
 
 import anchorDisplayUnit from "../GlobalComponents/Display/AnchorDisplayUnit";
 import './index.scss'
-import { getUnitInfoAsync } from "../Redux/UnitReducer";
+import { getUnitInfoAsync, getAllUnitVersionKeyValuesAsync, getAllUnitStatusKeyValuesAsync, getAllUnitTemplateKeyValuesAsync, getAllUnitAssignmentKeyValuesAsync } from "../Redux/UnitReducer";
 import dateDisplayFormat from "../GlobalFunctions/DateFormat";
 import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
-import MultSelectiDropDown from "../GlobalComponents/DataTableSearch/MultSelectiDropDown";
+import MultSelectiDropDownValues from "../GlobalComponents/DataTableSearch/MultSelectiDropDownValues";
 import Popper from '@material-ui/core/Popper';
 
 
@@ -92,23 +92,31 @@ const UnitAndDevices: React.FC = () => {
 
   React.useEffect(() => {
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
-
-   let headCellsArray = onSetHeadCellVisibility(headCells);
-   setHeadCells(headCellsArray);
-   onSaveHeadCellData(headCells, "Units & Devices");  // will check this
-   document.getElementById("UDAssigned")?.parentElement?.classList.add("UDAssignedClass");
+    
+    dispatch(getAllUnitStatusKeyValuesAsync());
+    dispatch(getAllUnitAssignmentKeyValuesAsync());
+    dispatch(getAllUnitVersionKeyValuesAsync());
+    dispatch(getAllUnitTemplateKeyValuesAsync());
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "Units & Devices");  // will check this
+    document.getElementById("UDAssigned")?.parentElement?.classList.add("UDAssignedClass");
   }, []);
 
   
 
 
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
+  const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
+  const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);
+  const unitVersions: any = useSelector((state: RootState) => state.unitReducer.unitVersionKeyValues);
+  const unitAssignments: any = useSelector((state: RootState) => state.unitReducer.UnitAssignmentKeyValues);
   const [rows, setRows] = React.useState<Unit[]>([]);
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
-  const [reformattedRows, setReformattedRows] = React.useState<Unit[]>();
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
   const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
 
   const [open, setOpen] = React.useState<boolean>(false)
@@ -141,14 +149,27 @@ const UnitAndDevices: React.FC = () => {
             })
         }
         setRows(unitRows)
-        setReformattedRows(unitRows);
+        
+        setReformattedRows({...reformattedRows, 
+            rows: unitRows, 
+            unitStatus: unitStatus, 
+            unitTemplates: unitTemplates, 
+            unitVersions: unitVersions,
+            unitAssignments: unitAssignments
+        });
+
+        //setReformattedRows(unitRows);
 
   }
 
   React.useEffect(() => {
+    //console.log("reformattedRows : ", reformattedRows)
+  }, [reformattedRows]);
+
+  React.useEffect(() => {
     setData();
     dispatch(enterPathActionCreator({ val: ""}));
-  }, [units.data]);
+  }, [units.data, unitStatus, unitTemplates, unitVersions, unitAssignments]);
 
   useEffect(() => {
     if(paging)
@@ -233,8 +254,8 @@ const UnitAndDevices: React.FC = () => {
       ) {
           dateTimeObject = {
               dateTimeObj: {
-                  startDate: reformattedRows !== undefined ? reformattedRows[0].lastCheckedIn : "",
-                  endDate: reformattedRows !== undefined ? reformattedRows[reformattedRows.length - 1].lastCheckedIn : "",
+                  startDate: reformattedRows !== undefined ? reformattedRows.rows[0].lastCheckedIn : "",
+                  endDate: reformattedRows !== undefined ? reformattedRows.rows[reformattedRows.rows.length - 1].lastCheckedIn : "",
                   value: "custom",
                   displayText: t("custom_range"),
               },
@@ -333,25 +354,16 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
 }
 
 
-  const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
+const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
 
-    if(colIdx === 2) {
-       
+  if(colIdx === 2 && initialRows) {
 
-    let statuslist: any = [];
-
-    if(initialRows !== undefined){
-    if(initialRows.length > 0) {
-        initialRows.map((x: Unit) => {
-          statuslist.push(x.status);
-        });
-    }
-  }
-    statuslist = statuslist.filter(findUniqueValue);
-    let status: any = [{ label: t("No_Status")}];
-    statuslist.map((x: string) => { status.push({ label: x}) })
+    let status: any = [{id: 0, label: t("No_Status") }];
+    initialRows.unitStatus.map((x: any) => {
+      status.push({id : x.id, label: x.name });
+    });
+    
     const settingValues = (headCell: HeadCellProps) => {
-  
         let val: any = []
         if(headCell.headerArray !== undefined) 
             val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
@@ -360,88 +372,75 @@ const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[],
         return val
     }
 
-  
-  
     return (
-        <div>
-            
-            <CRXGlobalSelectFilter
-                id="multiSelect"
-                multiple={true}
-                value={settingValues(headCells[colIdx])}
-                onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-                options={status}
-                CheckBox={true}
-                className="unitStatusMultiSelect"
-                checkSign={false}
-                statusIcon={true}
-                open={open}
-                theme="dark"
-                clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-                getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-                getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-                onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-                noOptionsText={t("No_Status")}
-            />
-        </div>
+      <div>
+        <CRXGlobalSelectFilter
+            id="multiSelect"
+            multiple={true}
+            value={settingValues(headCells[colIdx])}
+            onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+            options={status}
+            CheckBox={true}
+            className="unitStatusMultiSelect"
+            checkSign={false}
+            statusIcon={true}
+            open={open}
+            theme="dark"
+            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+            getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
+            onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+            noOptionsText={t("No_Status")}
+        />
+      </div>
     )
+  }
+
+
+  if(colIdx === 9 && initialRows) {
+     
+    let template: any = [{id: 0, label: t("No_Status") }];
+    initialRows.unitTemplates.map((x: any) => {
+      template.push({id : x.id, label: x.name });
+    });
+
+    const settingValues = (headCell: HeadCellProps) => {
+        let val: any = []
+        if(headCell.headerArray !== undefined) 
+            val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
+        else 
+            val = []
+        return val
     }
 
+    const PopperTemplate = function (props: any) {
+      return (<Popper {...props}  className="PopperTemplate" placement="left-start"/>)
+    }
 
-    if(colIdx === 9) {
-     
-  let templatelist: any = [];
-
-  if(initialRows !== undefined){
-  if(initialRows.length > 0) {
-      initialRows.map((x: Unit) => {
-        templatelist.push(x.template);
-      });
-  }
-}
-  templatelist = templatelist.filter(findUniqueValue);
-  let template: any = [{ label: t("No_Template")}];
-  templatelist.map((x: string) => { template.push({ label: x}) })
-  const settingValues = (headCell: HeadCellProps) => {
-
-      let val: any = []
-      if(headCell.headerArray !== undefined) 
-          val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-      else 
-          val = []
-      return val
-  }
-
-  const PopperTemplate = function (props: any) {
-    return (<Popper {...props}  className="PopperTemplate" placement="left-start"/>)
-  }
-
-  return (
+    return (
       <div>
-          
-          <CRXGlobalSelectFilter
-              id="multiSelect"
-              multiple={true}
-              value={settingValues(headCells[colIdx])}
-              onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-              options={template}
-              CheckBox={true}
-              PopperComponent={PopperTemplate}
-              className="unitTemplateMultiSelect"
-              checkSign={false}
-              statusIcon={false}
-              open={open}
-              theme="dark"
-              clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-              getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-              getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-              onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-              noOptionsText={t("No_Template")}
+        <CRXGlobalSelectFilter
+            id="multiSelect"
+            multiple={true}
+            value={settingValues(headCells[colIdx])}
+            onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
+            options={template}
+            CheckBox={true}
+            PopperComponent={PopperTemplate}
+            className="unitTemplateMultiSelect"
+            checkSign={false}
+            statusIcon={false}
+            open={open}
+            theme="dark"
+            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
+            getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
+            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
+            onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+            noOptionsText={t("No_Template")}
           />
       </div>
-  )
+    )
   }
-
 
 }
 
@@ -546,7 +545,7 @@ const AnchorDisplay = (e: string) => {
       dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true), 
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
       minWidth: "20",
       maxWidth: "20",
       attributeName: "AssignedTo",
@@ -576,7 +575,7 @@ const AnchorDisplay = (e: string) => {
       searchFilter: true,
       // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
       // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true), 
+      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
       minWidth: "80",
       maxWidth: "100",
       attributeName: "Version",
@@ -631,8 +630,11 @@ const AnchorDisplay = (e: string) => {
     rowsParam: Unit[],
     headCells: HeadCellProps[],
     colIdx: number,  
+    initialRows: any,
     isSearchable: boolean,
 ) => {
+
+  if(initialRows) { 
     const onSetSearchData = () => {
         setSearchData((prevArr) =>
             prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
@@ -641,19 +643,38 @@ const AnchorDisplay = (e: string) => {
     const onSetHeaderArray = (v: ValueString[]) => {
         headCells[colIdx].headerArray = v;
     };
-  
-   return (
-        <MultSelectiDropDown
+
+    if(colIdx === 6) { 
+      return (
+        <MultSelectiDropDownValues
             headCells={headCells}
             colIdx={colIdx}
-            reformattedRows={reformattedRows !== undefined ? reformattedRows : rowsParam}
+            reformattedRows={
+              initialRows.unitVersions
+            }
             isSearchable={isSearchable}
             onMultiSelectChange={onSelection}
             onSetSearchData={onSetSearchData}
             onSetHeaderArray={onSetHeaderArray}
-          
-        />
-    );
+          />
+      );
+    }
+    else if(colIdx === 4) { 
+      return (
+        <MultSelectiDropDownValues
+            headCells={headCells}
+            colIdx={colIdx}
+            reformattedRows={
+              initialRows.unitAssignments
+            }
+            isSearchable={isSearchable}
+            onMultiSelectChange={onSelection}
+            onSetSearchData={onSetSearchData}
+            onSetHeaderArray={onSetHeaderArray}
+          />
+      );
+    }
+  }
 };
 const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -709,9 +730,9 @@ useEffect(() => {
 }, [dateTime]);
 
 const dataArrayBuilder = () => {
-    if (reformattedRows !== undefined) {
+    if (reformattedRows.rows !== undefined) {
     
-        let dataRows: Unit[] = reformattedRows;
+        let dataRows: Unit[] = reformattedRows.rows;
         searchData.forEach((el: SearchObject) => {
           if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber")
                 dataRows = onTextCompare(dataRows, headCells, el);
@@ -720,7 +741,7 @@ const dataArrayBuilder = () => {
                 if (el.columnName === "status") {
                   dataRows = onMultipleCompare(dataRows, headCells, el);
                   if(el.value.includes("No Status")) {
-                      reformattedRows.filter(i => i.status.length === 0).map((x:Unit) => {
+                      reformattedRows.rows.filter((i:any) => i.status.length === 0).map((x:Unit) => {
                           dataRows.push(x)
                       })
                       
@@ -729,7 +750,7 @@ const dataArrayBuilder = () => {
               if (el.columnName === "version") {
                 dataRows = onMultipleCompare(dataRows, headCells, el);
                 if(el.value.includes("No Version")) {
-                    reformattedRows.filter(i => i.version.length === 0).map((x:Unit) => {
+                    reformattedRows.rows.filter((i:any) => i.version.length === 0).map((x:Unit) => {
                         dataRows.push(x)
                     })
                     
@@ -739,7 +760,7 @@ const dataArrayBuilder = () => {
             if (el.columnName === "template") {
               dataRows = onMultipleCompare(dataRows, headCells, el);
               if(el.value.includes("No Template")) {
-                  reformattedRows.filter(i => i.template.length === 0).map((x:Unit) => {
+                  reformattedRows.rows.filter((i:any) => i.template.length === 0).map((x:Unit) => {
                       dataRows.push(x)
                   })
                   

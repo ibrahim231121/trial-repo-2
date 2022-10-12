@@ -17,13 +17,13 @@ export type SearchObject = {
   value: any;
 };
 
-export type Asset = {
-  assetId: string;
-  assetName: string;
-  camera: string;
-  assetType: string;
-  recordingStarted: string;
-};
+// export type Asset = {
+//   assetId: string;
+//   assetName: string;
+//   camera: string;
+//   assetType: string;
+//   recordingStarted: string;
+// };
 
 export interface HeadCellProps {
   id: any;

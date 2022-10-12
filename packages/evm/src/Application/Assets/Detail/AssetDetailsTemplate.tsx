@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import "./assetDetailTemplate.scss";
-import { AssetBucket } from "../AssetLister/ActionMenu";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import { useDispatch, useSelector } from "react-redux";
@@ -50,52 +49,17 @@ import {
   onClearAll,
   PageiGrid
 } from "../../../GlobalFunctions/globalDataTableFunctions";
-import { AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
+import { AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
 import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
 import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
 import { Grid } from "@material-ui/core";
 import { SearchType } from "../utils/constants";
+import { BlobServiceClient } from "@azure/storage-blob";
 import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
 
 const AssetDetailsTemplate = (props: any) => {
-  let tempgpsjson: any = [
-    {
-      "LAT": "24.813632",
-      "LON": "67.027721",
-      "LOGTIME": "1652857260"
-    },
-    {
-      "LAT": "24.814917",
-      "LON": "67.028923",
-      "LOGTIME": "1652857262"
-    },
-    {
-      "LAT": "24.818851",
-      "LON": "67.032187",
-      "LOGTIME": "1652857264"
-    },
-    {
-      "LAT": "24.823019",
-      "LON": "67.034721",
-      "LOGTIME": "1652857266"
-    },
-    {
-      "LAT": "24.827381",
-      "LON": "67.034574",
-      "LOGTIME": "1652857268"
-    },
-    {
-      "LAT": "24.832951",
-      "LON": "67.033673",
-      "LOGTIME": "1652857270"
-    },
-    {
-      "LAT": "24.839260",
-      "LON": "67.032900",
-      "LOGTIME": "1652857272"
-    }
-  ]
+  
   const historyState = props.location.state;
   const history = useHistory();
   let evidenceId: number = historyState.evidenceId;
@@ -193,6 +157,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   const [value, setValue] = React.useState(0);
   const [fileData, setFileData] = React.useState<any[]>([]);
+  const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
   const [childFileData, setChildFileData] = React.useState<any[]>([]);
 
   const [evidence, setEvidence] = React.useState<EvidenceReformated>(evidenceObj);
@@ -205,6 +170,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [openMap, setOpenMap] = React.useState(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
+  const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
   const [getAssetData, setGetAssetData] = React.useState<Evidence>();
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
@@ -256,11 +222,84 @@ const AssetDetailsTemplate = (props: any) => {
     dispatch(enterPathActionCreator({ val: t("Asset_Detail") + ": " + assetName }));
     dispatch(getAssetTrailInfoAsync({ evidenceId: evidenceId, assetId: assetId }));
     setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY ? process.env.REACT_APP_GOOGLE_MAPS_API_KEY : "");  //put this in env.dev REACT_APP_GOOGLE_MAPS_API_KEY = AIzaSyAA1XYqnjsDHcdXGNHPaUgOLn85kFaq6es
-    setGpsJson(tempgpsjson);
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
     }
   }, []);
+
+  useEffect(() => {
+    if(gpsFileData && gpsFileData.length>0){
+      const blobSasUrl = gpsFileData[0].downloadUri;
+      const containerWithFile = blobSasUrl.substring(blobSasUrl.indexOf('.net') + 5, blobSasUrl.indexOf('?'));
+      const sasurl = blobSasUrl.replace(containerWithFile, '')
+      const blobServiceClient = new BlobServiceClient(sasurl);
+
+      const fc = containerWithFile.replaceAll('%2F', '/');
+      const containerName = fc.replace(fc.substring(fc.lastIndexOf('/')), '');//get container name only
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+
+      const fileName = fc.substring(fc.lastIndexOf('/') + 1);
+      const blobClient = containerClient.getBlobClient(fileName);
+      gpsAndOverlayData(blobClient);
+    }
+  }, [gpsFileData]);
+
+  const gpsAndOverlayData = async (blobClient : any) => {
+    const downloadBlockBlobResponse = await blobClient.download();
+    const downloaded : any = await blobToString(await downloadBlockBlobResponse.blobBody);
+    if(downloaded){
+      let downloadedData = downloaded.replace(/'/g, '"')
+      let gpsdata = JSON.parse(downloadedData).GPS;
+      let sensorsData = JSON.parse(downloadedData).Sensors;
+      debugger;
+      gpsdata.forEach((x:any)=>
+        {
+          x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+        }
+      );
+      sensorsData.forEach((x:any)=>
+        {
+          x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+        }
+      );
+      let distinctgpsdata = gpsdata.filter((value : any, index: any, self: any) =>
+        index === self.findIndex((t: any) => (
+        t.logTime === value.logTime
+      )));
+      let distinctsensorsData = sensorsData.filter((value : any, index: any, self: any) =>
+        index === self.findIndex((t: any) => (
+        t.logTime === value.logTime
+      )));
+
+      if(gpsdata.length>0){setGpsJson(distinctgpsdata);}
+      if(sensorsData.length>0){setSensorsDataJson(distinctsensorsData)}
+      console.log("Downloaded blob content", gpsdata);
+    }
+  
+    // [Browsers only] A helper method used to convert a browser Blob into string.
+    async function blobToString(blob: any) {
+      const fileReader = new FileReader();
+      return new Promise((resolve, reject) => {
+        fileReader.onloadend = (ev) => {
+          if(ev){
+            resolve(ev.target?.result);
+          }
+        };
+        fileReader.onerror = reject;
+        fileReader.readAsText(blob);
+      });
+    }
+  }
+
+  const getUnixTimewithZeroinMillisecond = (time: number) => {
+    let firsthalf = time.toString().substring(0,10);
+    let last3digits = time.toString().substring(10);
+    if(Number(last3digits)>0){
+      let Nlast3digits = "000";
+      return Number(firsthalf+Nlast3digits);
+    }
+    return time;
+  }
 
 
   useEffect(() => {
@@ -353,19 +392,18 @@ const milliSecondsToTimeFormat = (date: Date) => {
 }
 
   useEffect(() => {
- 
-  if(fileData.length == getAssetData?.assets.master.files.length)
-  { // temp condition
-    if ((getAssetData !== undefined) && getAssetData?.assets.children.length == childFileData.length) {
-      dispatch(setLoaderValue({isLoading: false, message: "" }))
-      var categories: string[] = [];
-      getAssetData.categories.forEach((x: any) =>
-        x.formData.forEach((y: any) =>
-          y.fields.forEach((z: any) => {
-            categories.push(z.key);
-          })
-        )
-      );
+    let masterasset = getAssetData?.assets.master.files.filter((x:any)=> x.type == "Video");
+    if(getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length)
+    { // temp condition
+        dispatch(setLoaderValue({isLoading: false, message: "" }))
+        var categories: string[] = [];
+        getAssetData.categories.forEach((x: any) =>
+          x.formData.forEach((y: any) =>
+            y.fields.forEach((z: any) => {
+              categories.push(z.key);
+            })
+          )
+        );
 
         var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
@@ -409,19 +447,28 @@ const milliSecondsToTimeFormat = (date: Date) => {
         });
         const data = extract(getAssetData);
         setVideoPlayerData(data);
-      }
     }
   },[getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-        setFileData([...fileData, {
-          filename: template.name,
-          fileurl: template.url,
-          fileduration: template.duration,
-          downloadUri: response
-        }])
+        if(template.type == "GPS"){
+          setGpsFileData([...gpsFileData, {
+            filename: template.name,
+            fileurl: template.url,
+            type: template.type,
+            downloadUri: response
+          }])
+        }
+        else if(template.type == "Video"){
+          setFileData([...fileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          }])
+        }
       }).catch(e => {
         setFileData([...fileData, {
           filename: template.name,
@@ -437,13 +484,15 @@ const milliSecondsToTimeFormat = (date: Date) => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          fileDownloadUrls.push({
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          })
-          setChildFileData([...fileDownloadUrls])
+          if(template.type == "Video"){
+            fileDownloadUrls.push({
+              filename: template.name,
+              fileurl: template.url,
+              fileduration: template.duration,
+              downloadUri: response
+            })
+            setChildFileData([...fileDownloadUrls])
+          }
         }).catch(e => {
           fileDownloadUrls.push({
             filename: template.name,
@@ -880,7 +929,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
 
       
       
-          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} openMap={openMap} apiKey={apiKey} />}
+          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />}
           {/* </div> */}
           {detailContent && <div className="topBorderForDetail"></div>}
 
