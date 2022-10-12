@@ -27,7 +27,7 @@ import {
   GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import {CRXAlert} from "@cb/shared";
-import {getAllSensorsEvents} from '../../../../Redux/SensorEvents';
+import {getAllSensorsFilterEvents} from '../../../../Redux/SensorEvents';
 
 
 type SensorAndTriggersTemplate = {
@@ -62,7 +62,7 @@ const SensorsAndTriggersList: React.FC = () => {
 
   const isFirstRenderRef = useRef<boolean>(true);
   const reformattedRowsRef = useRef<SensorAndTriggersTemplate[]>();
-  const sensorsEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
+  const filterSensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.filterSensorEvents);
 
   useEffect(() => {
     if(paging)
@@ -81,7 +81,7 @@ const SensorsAndTriggersList: React.FC = () => {
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
-    onSaveHeadCellData(headCells, "sensorsAndTriggersTemplateDataTable"); // will check this
+    onSaveHeadCellData(headCells, "sensorsAndTriggersTemplateDataTable");
 }, []);
 
 
@@ -166,8 +166,8 @@ const SensorsAndTriggersList: React.FC = () => {
 
   const setSensorsEventsData = () => {
     let sensorAndTriggersTemplateRows: SensorAndTriggersTemplate[] = []
-    if (sensorsEvents.data && sensorsEvents.data.length > 0) {
-      sensorAndTriggersTemplateRows = sensorsEvents?.data.map((template: any) => {
+    if (filterSensorEvents?.data && filterSensorEvents?.data.length > 0) {
+      sensorAndTriggersTemplateRows = filterSensorEvents?.data.map((template: any) => {
         return { 
             id: template.id, 
             description: template.description + "_" + template.id, 
@@ -180,10 +180,10 @@ const SensorsAndTriggersList: React.FC = () => {
 
   React.useEffect(() => {
     setSensorsEventsData();
-  }, [sensorsEvents.data]);
+  }, [filterSensorEvents?.data]);
 
   React.useEffect (() => {
-    dispatch(getAllSensorsEvents(pageiGrid));
+    dispatch(getAllSensorsFilterEvents(pageiGrid));
   },[])
 
   const getSelectedItemsUpdate = () => {
@@ -194,6 +194,10 @@ const SensorsAndTriggersList: React.FC = () => {
     setSuccess(true);
   }
 
+  const SensorsEventAction = () => {
+    dispatch(getAllSensorsFilterEvents(pageiGrid));
+  }
+
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
@@ -201,7 +205,7 @@ const SensorsAndTriggersList: React.FC = () => {
 
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    dispatch(getAllSensorsEvents(pageiGrid));
+    dispatch(getAllSensorsFilterEvents(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -224,7 +228,7 @@ const SensorsAndTriggersList: React.FC = () => {
     if(page !== 0)
       setPage(0)
     else{
-      dispatch(getAllSensorsEvents(pageiGrid));
+      dispatch(getAllSensorsFilterEvents(pageiGrid));
     }
   }
 
@@ -249,7 +253,7 @@ const SensorsAndTriggersList: React.FC = () => {
             actionComponent={<SensorsAndTriggersTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
-              getRowData={setSensorsEventsData}
+              getRowData={SensorsEventAction}
               getSelectedData= {getSelectedItemsUpdate}
               getSuccess = {getSuccessUpdate}
             />}
@@ -289,7 +293,7 @@ const SensorsAndTriggersList: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
-            totalRecords={sensorsEvents?.totalCount}
+            totalRecords={filterSensorEvents?.totalCount}
           />
         )
       }

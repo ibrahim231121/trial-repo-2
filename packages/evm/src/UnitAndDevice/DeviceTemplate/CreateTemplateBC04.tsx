@@ -124,7 +124,7 @@ const CreateTemplate = (props: any) => {
   const [templateName] = React.useState<string>(historyState.deviceType);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
-  const sensorsEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
+  const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
@@ -215,10 +215,10 @@ const CreateTemplate = (props: any) => {
   }, [stations,FormSchema]);
 
   React.useEffect(() => {
-    if(sensorsEvents?.data && sensorsEvents?.data.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if(sensorEvents && sensorEvents.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setSensorsAndTriggersDropDown();
     }
-  },[sensorsEvents?.data,FormSchema])
+  },[sensorEvents,FormSchema])
 
   const openCreateSensorsAndTriggersTemplate = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}`;
@@ -339,10 +339,10 @@ const CreateTemplate = (props: any) => {
     let sensorsAndTriggersOptions: any = [];
     sensorsAndTriggersOptions.push({value : "list of all sensors and triggers", label: "list of all sensors and triggers"})
     sensorsAndTriggersOptions.push({value : "Add All", label: "Add All"})
-    sensorsEvents?.data.map((x:any) => {
+    sensorEvents.map((x:any) => {
       sensorsAndTriggersOptions.push({value : x.id, label: x.description})
     })
-    SensorsAndTriggersHandler(sensorsEvents?.data ,sensorsAndTriggersOptions);
+    SensorsAndTriggersHandler(sensorEvents,sensorsAndTriggersOptions);
   }
   
   const SensorsAndTriggersHandler =(sensorsEvents: any,sensorsAndTriggersOptions: any) => {

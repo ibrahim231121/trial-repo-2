@@ -43,7 +43,6 @@ const deleteSensorAndTrigger = () => {
       getSuccess();
       getRowData();
       getSelectedData();
-      dispatch(getAllSensorsEvents());
     })
     .catch(function(error) {
       return error;
