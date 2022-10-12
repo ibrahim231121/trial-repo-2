@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { CRXCheckBox, CRXSelectBox, CRXButton, CRXRadio } from "@cb/shared";
+import { CRXCheckBox, CRXSelectBox, CRXButton, CRXRadio,CRXInput } from "@cb/shared";
 import { useDispatch } from "react-redux";
 import Cookies from "universal-cookie";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
@@ -47,7 +47,11 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [radioCheck, setRadioCheck] = React.useState<string>("");
   const [reasonCheck, setreasonCheck] = React.useState<string>("");
+  const [linkExpireCheck, setlinkExpireCheck] = React.useState<string>("");
+
   const [showreasonCheckError, setShowreasonCheckError] =
+    React.useState<boolean>(false);
+  const [showLinkExpirationError, setShowLinkExpirationError] =
     React.useState<boolean>(false);
   const [meteDataErrMsg, setMetaDataErrMsg] = React.useState({
     required: "",
@@ -114,6 +118,20 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setShowreasonCheckError(true);
     }
   }, [reasonForView]);
+  React.useEffect(() => {
+    if (linkExpire == "") {
+      setlinkExpireCheck("Link Expiration is required");
+      setShowLinkExpirationError(false);
+    }
+    else if (linkExpire.length >= 1) {
+      setlinkExpireCheck("");
+      setShowLinkExpirationError(false);
+    } 
+    // else {
+    //   setlinkExpireCheck("Invalid format");
+    //   setShowLinkExpirationError(true);
+    // }
+  }, [linkExpire]);
   console.log(reasonForView, "checkreason");
 
   console.log(reasonForView, "reason");
@@ -135,6 +153,17 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
       setreasonCheck("W");
       //setShowReasonError(false);
       setShowreasonCheckError(false);
+    }
+  };
+  const checkExpirationLink = () => {
+    if (linkExpire == "" || linkExpire == "0") {
+      setlinkExpireCheck("Link Expiration is required");
+      //setShowReasonError(true);
+      setShowLinkExpirationError(true);
+    } else {
+      setlinkExpireCheck("W");
+      //setShowReasonError(false);
+      setShowLinkExpirationError(false);
     }
   };
   
@@ -271,21 +300,36 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                 </div>
 
                 <div className="__CRX__ShareAssets__Layout">
+                <div
+                  className={`__CRX__ShareAssets__Layout ${
+                    showLinkExpirationError == true ? "__CRX__Share__Error" : ""
+                  }`}
+                >
                   <div className="categoryTitle __CRX__Title__Share">
                     {t("Link_Expiration")}
                     <span>*</span>
                   </div>
                   <div className="CBX-input _Crx_link_ ">
-                    <span className="CRX__Number__Wrapper">
+                    <span className="">
                     <input
                       type="number"
+                      className="crx-input"
                       min="0"
+                      onBlur={checkExpirationLink}
+                      required={true}
                       value={linkExpire}
                       onChange={(e) => setLinkExpire(e.target.value)}
                     />
-                
+                       <div>{showLinkExpirationError ? (
+                      <div className="errorStationStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {linkExpireCheck}
+                      </div>
+                    ) : null}</div>
                   </span>
-         
+                  
+                 
+                  
                     <CRXSelectBox
                       className={`adVSelectBox createUserSelectBox`}
                       id="selectBoxLinkExpire"
@@ -300,9 +344,10 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       defaultOptionText={linkExpireOptions[1].displayText}
                       defaultValue={linkExpireOptions[1].value}
                     />
+                     </div>
                   </div>
                 </div>
-
+         
                 <div className="__Crx_checkbox__Share">
                   <div className="categoryTitle __CRX__Title__Share __Crx_Radio__Share">
                     {t("Link_Permissions")}

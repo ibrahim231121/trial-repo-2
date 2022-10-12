@@ -71,6 +71,15 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
     newObj.evidence = row;
     return newObj;
   }
+  const reformatSelectedAsset = (selectedAssets: any[]) => {
+    const filteredArray = selectedAssets.filter(x => x.isChecked == true);
+    if (filteredArray.length > 0) {
+      filteredArray.forEach(element => {
+        element.evidence = row;
+      });
+    }
+    return filteredArray;
+  }
 
   return (
     <>
@@ -104,7 +113,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
       </CRXConfirmDialog>
       <ActionMenu
         row={reformatRowPropData(row, asset)}
-        selectedItems={selectedItems}
+        selectedItems={reformatSelectedAsset(selectedItems)}
         asset={asset}
         showToastMsg={() => showToastMsg()}
         setIsPrimaryOptionOpen={setIsOpen}

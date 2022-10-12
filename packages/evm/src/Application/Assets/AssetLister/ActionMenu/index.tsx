@@ -282,7 +282,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
+    
     if (row !== undefined && row !== null) {
+      if(selectedItems.length > 0){
+        dispatch(addAssetToBucketActionCreator(selectedItems));
+      }
+      else
+      {
       const find = selectedItems.findIndex(
         (selected: any) => selected.id === row.id
       );
@@ -299,7 +305,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         newObject.selectedAssetId = asset.assetId;
       }
       dispatch(addAssetToBucketActionCreator(newObject));
-    } else {
+    }
+    } 
+    else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
   }

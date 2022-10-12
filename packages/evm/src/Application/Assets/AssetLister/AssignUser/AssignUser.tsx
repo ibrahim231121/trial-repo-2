@@ -150,12 +150,11 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
           notSame++;
         }
       }
+      setIsShowInfo(true);
       if (notSame == 0) {
-        setIsShowInfo(true);
         getMasterAsset();
       }
     } else {
-      setIsShowInfo(true);
       getMasterAsset();
     }
   };
@@ -184,6 +183,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       });
       props.setFilterValue(() => result);
     });
+    setIsShowInfo(false);
   };
 
   React.useEffect(() => {
@@ -193,9 +193,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     //   : setButtonState(true);
     // Dropdown is updated, so x button will redirect to cancel confirmation.
     // Check either new value added.
-    const changeInValues = props.filterValue.filter((o: any) => {
-      return !props.rowData.categories.some((i: string) => i === o.value);
-    });
+
   }, [props.filterValue]);
 
   const filterUser = (arr: Array<any>): Array<any> => {
@@ -358,11 +356,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
               </div>
               <div
                 className="checkBoxAssign"
-                style={{
-                  display: `${
-                    props.rowData.evidence.asset.length > 0 ? "" : "none"
-                  }`,
-                }}
+                
               >
                 <CRXCheckBox
                   inputProps={"assignUserCheck"}
