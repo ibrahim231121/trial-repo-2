@@ -15,9 +15,10 @@ type ProgressTypes = {
   id: string;
   removeIcon?: any,
   width?: any,
+  widthInPercentage? : boolean,
 };
 const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
-  const { value, loadingText, loadingCompleted, error, maxDataSize, id, removeIcon, width } =
+  const { value, loadingText, loadingCompleted, error, maxDataSize, id, removeIcon, width, widthInPercentage } =
     props;
   const progreesRefs = useRef((id: any) => {
     return id;
@@ -94,7 +95,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
     <div className="crx-progress-br">
       <div className={clx}>{loadingText}</div>
       <div className="loader">
-        <div className="linerLoader" style={{ width: width + "px" }}>
+        <div className="linerLoader" style={{ width: widthInPercentage ? width + "%" : (width + "px") }}>
 
 
           <LinearProgress
@@ -114,7 +115,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
           />
           <div
             className="progressPercentage"
-            style={{ left: perc / 2 + "px" }}
+            style={{ left: (perc / 2) + (widthInPercentage ? "%" : "px") }}
           >
             {progressBar + percentageText}
           </div>

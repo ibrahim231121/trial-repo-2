@@ -226,14 +226,12 @@
 }
 .crxStationDetailBtn {
   padding: 23px 0;
-  position: fixed;
   background: #fff;
   bottom: 30px;
   border-top: 1px solid #d1d2d4;
   width: 100%;
   left: 0px;
-  padding-left: 89px;
-  padding-right: 29px;
+ 
   .groupInfoTabButtons {
     min-width: 80px !important;
     height: 30px;
@@ -343,13 +341,10 @@
   .crx-message-alert {
     display: none;
   }
-  div[role=tabpanel] {
+  div[id*="crx-tabpanel-"] {
     margin-top: -1px;
     border-top: 1px solid #878787;
-    height: 68.3vh;
-    @media only screen and (max-width:1800px) {
-      height: 72vh;
-    }
+   height: calc(100vh - 317px);
   }
   
     .indicates-label {
@@ -494,23 +489,6 @@
     position: static;
   }
 }
-
-// @media screen and (max-width: 1600px) {
-//   .crxStationDetailBtn {
-//     bottom: 20px;
-//   }
-//   .crxStationDetail {
-//   }
-//   .stationDetailOne {
-//     .stationColumnSet {
-//       &:last-child {
-//         .crxStationDetail {
-//           margin: 0 193px !important;
-//         }
-//       }
-//     }
-//   }
-// }
 
 @media screen and (max-width: 1366px) {
   .crx-d-h {

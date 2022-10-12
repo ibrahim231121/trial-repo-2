@@ -1,3 +1,32 @@
+
+  .CrxUnitDetailId {
+    padding: 0px;
+    transition: 1s padding ease-out;
+    .unitDeviceDetail {
+      margin-top: 0 !important;
+      margin-left: 0 !important;
+    }
+    .tab-bottom-buttons {
+      width: 100%;
+      display: flex;
+      padding-top: 23px;
+      .save-cancel-button-box {
+        width: 100%;
+        .groupInfoTabButtons {
+          height: 30px;
+          margin-right: 33px;
+        }
+      }
+    }
+    div[id*="crx-tabpanel"] {
+      height: calc(100vh - 423px);
+      overflow-y: auto;
+    }
+    .crxMainTab {
+      border-bottom: 1px solid #878787 !important;
+    }
+  }
+
 .anchorStyle {
   text-decoration: none;
 }
@@ -14,7 +43,7 @@ iframe {
     height: 130px;
     padding: 0 50px 0 49px;
     position: relative;
-    top: -13px;
+    top: 0px;
     padding-left: 43px;
     overflow-x: hidden;
   }
@@ -27,12 +56,7 @@ iframe {
       }
     }
   }
-  // .LeftBoard div:first-child{
-  //   padding-left: 0px;
-  // }
-  // .LeftBoardMove {
-  //   margin-left: -128px;
-  // }
+
   .RightBoard {
     display: flex;
     flex: 0 30%;
@@ -200,14 +224,7 @@ iframe {
     min-width: 192px;
     text-transform: uppercase;
   }
-  .CrxUnitDetailId {
-    padding: 0px;
-    transition: 1s padding ease-out;
-    .unitDeviceDetail {
-      margin-top: 0 !important;
-      margin-left: 0 !important;
-    }
-  }
+
   .save-cancel-button-box {
     .CRXButton {
       &:nth-child(1) {

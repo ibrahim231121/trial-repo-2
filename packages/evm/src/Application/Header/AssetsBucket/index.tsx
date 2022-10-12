@@ -1298,7 +1298,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                               value={totalFilePer}
                               error={mainProgressError}
                               maxDataSize={true}
-                              width={410}
+                              width={100}
+                              widthInPercentage = {true}
                             // loadingCompleted={"uploadFileSize"}//"5.0Mb"
                             />
                           </div>

@@ -426,7 +426,7 @@ const UnitCreate = (props: historyProps) => {
         <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
       </div>
 
-      <div className="crxTabsPermission CrxUnitDetailId">
+      <div className="CrxUnitDetailId">
         {primaryDeviceInfo != undefined ? (
           <div className="unitDeviceDetail">
             <div className="uddDashboard">

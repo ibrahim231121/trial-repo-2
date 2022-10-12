@@ -129,7 +129,7 @@
 .middleContent {
   display: flex;
   justify-content: center;
-  padding-top:39px;
+  padding-top:21px;
   gap: 40px;
   .listOfContent {
     width: 110px;
@@ -196,7 +196,7 @@
   }
   #combo-box-demo {
     padding-right: 45px !important;
-    padding-left: 45px !important;
+    padding-left: 40px !important;
     text-overflow: clip !important;
     color: var(--color-333333);
   }

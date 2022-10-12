@@ -49,11 +49,11 @@ const useGapStyles = makeStyles({
         
         setAnchorEl(e.currentTarget)
         
-        const tableRow:HTMLElement | null = popoverRefs.current.parentElement;
-        tableRow && (tableRow.style.background = "#333");
-        tableRow?.childNodes.forEach(x => {
-            (x as HTMLElement).style.color = "#d1d2d4"
-        });
+        // const tableRow:HTMLElement | null = popoverRefs.current.parentElement;
+        // tableRow && (tableRow.style.background = "#333");
+        // tableRow?.childNodes.forEach(x => {
+        //     (x as HTMLElement).style.color = "#d1d2d4"
+        // });
         
     }
 
