@@ -215,10 +215,10 @@ const CreateTemplate = (props: any) => {
   }, [stations,FormSchema]);
 
   React.useEffect(() => {
-    if(sensorsEvents && sensorsEvents.length > 0 && FormSchema && historyState.deviceType == "Incar") {
+    if(sensorsEvents?.data && sensorsEvents?.data.length > 0 && FormSchema && historyState.deviceType == "Incar") {
       setSensorsAndTriggersDropDown();
     }
-  },[sensorsEvents,FormSchema])
+  },[sensorsEvents?.data,FormSchema])
 
   const openCreateSensorsAndTriggersTemplate = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}`;
@@ -339,15 +339,15 @@ const CreateTemplate = (props: any) => {
     let sensorsAndTriggersOptions: any = [];
     sensorsAndTriggersOptions.push({value : "list of all sensors and triggers", label: "list of all sensors and triggers"})
     sensorsAndTriggersOptions.push({value : "Add All", label: "Add All"})
-    sensorsEvents.map((x:any) => {
+    sensorsEvents?.data.map((x:any) => {
       sensorsAndTriggersOptions.push({value : x.id, label: x.description})
     })
-    SensorsAndTriggersHandler(sensorsEvents ,sensorsAndTriggersOptions);
+    SensorsAndTriggersHandler(sensorsEvents?.data ,sensorsAndTriggersOptions);
   }
   
   const SensorsAndTriggersHandler =(sensorsEvents: any,sensorsAndTriggersOptions: any) => {
     if (historyState.deviceType == "Incar" && sensorsEvents.length > 0) {
-      let sensorEvents = FormSchema["Sensors & Triggers"].find((x: any) => x.key == "Sensors&Triggers/SensorEvents/Multiselect");
+      let sensorEvents = FormSchema["Sensors & Triggers"].find((x: any) => x.key == "SensorsAndTriggers/SensorEvents/Multiselect");
       if (Array.isArray(sensorsAndTriggersOptions)) {
         sensorEvents.options = [...sensorsAndTriggersOptions];
         setFormSchema(FormSchema);

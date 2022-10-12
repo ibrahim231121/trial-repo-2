@@ -1,10 +1,8 @@
-import React, { useEffect,useRef,useState, useContext} from "react";
+import React, { useEffect,useRef,useState} from "react";
 import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
-import { Menu, MenuButton } from "@szhsin/react-menu";
 import { useDispatch, useSelector } from "react-redux";
-import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import SensorsAndTriggersTemplateActionMenu from './SensorsAndTriggersTemplateActionMenu';
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './sensorsAndTriggersList.scss'
@@ -20,7 +18,6 @@ import {
   HeadCellProps,
   onResizeRow,
   Order,
-  onTextCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
   onClearAll,
@@ -66,12 +63,6 @@ const SensorsAndTriggersList: React.FC = () => {
   const isFirstRenderRef = useRef<boolean>(true);
   const reformattedRowsRef = useRef<SensorAndTriggersTemplate[]>();
   const sensorsEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
-
-  useEffect(() => {
-    if(!isFirstRenderRef.current) {
-    // dataArrayBuilder();
-    }
-  }, [searchData]);
 
   useEffect(() => {
     if(paging)
@@ -167,13 +158,16 @@ const SensorsAndTriggersList: React.FC = () => {
       width: "2094",
       maxWidth: "300",
       detailedDataComponentId: "device",
+      attributeName: "Description",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
   ]);
 
   const setSensorsEventsData = () => {
     let sensorAndTriggersTemplateRows: SensorAndTriggersTemplate[] = []
-    if (sensorsEvents && sensorsEvents.length > 0) {
-      sensorAndTriggersTemplateRows = sensorsEvents.map((template: any) => {
+    if (sensorsEvents.data && sensorsEvents.data.length > 0) {
+      sensorAndTriggersTemplateRows = sensorsEvents?.data.map((template: any) => {
         return { 
             id: template.id, 
             description: template.description + "_" + template.id, 
@@ -184,10 +178,9 @@ const SensorsAndTriggersList: React.FC = () => {
     reformattedRowsRef.current = sensorAndTriggersTemplateRows;
   }
 
-
   React.useEffect(() => {
     setSensorsEventsData();
-  }, [sensorsEvents]);
+  }, [sensorsEvents.data]);
 
   React.useEffect (() => {
     dispatch(getAllSensorsEvents(pageiGrid));
@@ -200,19 +193,6 @@ const SensorsAndTriggersList: React.FC = () => {
   const getSuccessUpdate = () => {
     setSuccess(true);
   }
-
-  const dataArrayBuilder = () => {
-    if (reformattedRowsRef.current !== undefined) {
-      let dataRows: SensorAndTriggersTemplate[] = reformattedRowsRef.current;
-      searchData.forEach((el: SearchObject) => {
-        if (
-          el.columnName === "description"
-        )
-          dataRows = onTextCompare(dataRows, headCells, el);
-      });
-      setRows(dataRows);
-    }
-  };
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -248,7 +228,6 @@ const SensorsAndTriggersList: React.FC = () => {
     }
   }
 
-
   const onSetHeadCells = (e: HeadCellProps[]) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
@@ -256,14 +235,14 @@ const SensorsAndTriggersList: React.FC = () => {
   };
   return (
     <div className="CrxSensorsAndTriggersTable switchLeftComponents">
-              {success && (
-                  <CRXAlert
-                    message={t("Success_You_have_deleted_the_Sensors_And_Triggers")}
-                    alertType="toast"
-                    open={true}
-                  />
-              )}
-          {
+          {success && (
+              <CRXAlert
+                message={t("Success_You_have_deleted_the_Sensors_And_Triggers")}
+                alertType="toast"
+                open={true}
+              />
+          )}
+        {
         rows && (
           <CRXDataTable
             id="sensorsAndTriggersTemplateDataTable"
@@ -276,12 +255,10 @@ const SensorsAndTriggersList: React.FC = () => {
             />}
             toolBarButton = {
               <>
-              {/* <Restricted moduleId={6}> */}
-                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url) }}>
+                <CRXButton className="SensorsEventsBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url) }}>
                   {t("Create_Sensor_&_Trigger")}
                 </CRXButton>
-              {/* </Restricted> */}
-              <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton>
+              <CRXButton className="secondary SensorsFilterBtn filterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton>
               </>
             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
@@ -312,7 +289,7 @@ const SensorsAndTriggersList: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
-            totalRecords={500}
+            totalRecords={sensorsEvents?.totalCount}
           />
         )
       }
