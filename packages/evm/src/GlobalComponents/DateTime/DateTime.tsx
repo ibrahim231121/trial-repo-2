@@ -157,9 +157,14 @@ const DateTime = () => {
     }
     else {
       const dateOption = dateOptionsValues.find((x: DateTimeProp|undefined) => x?.value === value);
+      
+      if (dateOption) {
+        dateOption.startDate = dateOptions.basicoptions[0].startDate;
+        dateOption.endDate = dateOptions.basicoptions[0].endDate;
+      }
+      
       onSelectionChange(dateOption);
     }
-
   };
 
   const data = ( 
