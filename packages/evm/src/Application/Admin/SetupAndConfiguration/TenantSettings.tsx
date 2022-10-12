@@ -147,7 +147,6 @@ const TenantSettings: React.FC = () => {
           return { label: x.DisplayName, value: x.DisplayName };
         });
         setTimezoneValue(temp);
-        console.log("Timez : " + temp);
       })
       .catch(() => {});
   }, []);
@@ -183,7 +182,7 @@ const TenantSettings: React.FC = () => {
     console.log(requestOptions);
     return await fetch(url, requestOptions);
   };
-  const submitTenantSettings = async (values: any) => {
+  const validatingFields = (values: any) => {
     if (values.MailServer != "Custom") {
       values.MailServer = "Default";
       values.CustomURL = "";
@@ -208,8 +207,9 @@ const TenantSettings: React.FC = () => {
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
     }
-    if (values.Culture == "") {
-      values.Culture = navigator.languages;
+    if (values.Culture.value == null) {
+      values.Culture.label = navigator.languages[0];
+      values.Culture.value = navigator.languages[0];
     }
     if (values.AssetViewReasonRequired == "false") {
       values.Reasons = [];
@@ -231,6 +231,9 @@ const TenantSettings: React.FC = () => {
       values.ClientSecretId = "";
       values.RedirectingURL = "";
     }
+  };
+  const submitTenantSettings = async (values: any) => {
+    validatingFields(values);
     const body = {
       settingEntries: null,
       tenantSettingEntries: [
