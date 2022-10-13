@@ -60,7 +60,7 @@ const SearchComponent = (props: any) => {
   });
   const evidenceSearchType = {
     MyAsstes: "#My Assets",
-    NotCategorized:"#Not Categorized",
+    NotCategorized: "#Not Categorized",
     ApproachingDeletion: "#Approaching Deletion"
   }
   const iconRotate = showAdvance ? ' ' : 'rotate90';
@@ -68,7 +68,7 @@ const SearchComponent = (props: any) => {
     (state: RootState) => state.assetSearchReducer.assetSearchInfo
   );
 
-  
+
   const [isSearchBtnDisable, setIsSearchBtnDisable] = React.useState<boolean>(true);
   const QUERRY: any = {
     bool: {
@@ -108,7 +108,7 @@ const SearchComponent = (props: any) => {
         setPredictiveText(evidenceSearchType.MyAsstes);
         setShowAssetDateCompact(true);
         setShowShortCutSearch(false);
-        
+
       },
     },
     {
@@ -168,7 +168,7 @@ const SearchComponent = (props: any) => {
             maxDate: approachingMaxDateValue.endDate()
           })
         }
-        
+
         setShowAssetDateCompact(true);
       },
     },
@@ -192,8 +192,7 @@ const SearchComponent = (props: any) => {
       });
 
       obj.map((o: any) => {
-        if(o)
-        {
+        if (o) {
           if (o.key == 'username') {
             const val = {
               bool: {
@@ -217,7 +216,7 @@ const SearchComponent = (props: any) => {
             AdvancedSearchQuerry.bool.must.push(val);
           }
         }
-        
+
       });
 
       if (dateTimeDropDown.displayText != "anytime") {
@@ -240,7 +239,7 @@ const SearchComponent = (props: any) => {
             },
           });
         }
-      } 
+      }
 
       fetchData(AdvancedSearchQuerry, SearchType.AdvanceSearch);
     }
@@ -251,7 +250,7 @@ const SearchComponent = (props: any) => {
       setSearchData(responseForSearch);
     }
     else {
-     setSearchData([]);
+      setSearchData([]);
     }
   }, [responseForSearch]);
 
@@ -279,8 +278,7 @@ const SearchComponent = (props: any) => {
 
   const Search = () => {
     if (querryString && querryString.length > 0 && querryString.includes("#")) {
-      if(querryString.startsWith("#"))
-      {
+      if (querryString.startsWith("#")) {
         let exactShortCutName = querryString.substring(1);
         let shortCut = shortcutData.find(x => x.text === exactShortCutName);
         if (shortCut) {
@@ -297,7 +295,7 @@ const SearchComponent = (props: any) => {
   const NormalSearch = () => {
     setDateTimeAsset(dateTimeDropDown);
     if (dateTimeDropDown.value !== 'anytime') {
-      
+
       if (dateTimeDropDown.startDate) {
         QUERRY.bool.must.push({
           range: {
@@ -317,7 +315,7 @@ const SearchComponent = (props: any) => {
         });
       }
     }
-    if (predictiveText === t("Approaching_Deletion")) {
+    if (predictiveText === evidenceSearchType.ApproachingDeletion) {
       fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups), SearchType.ShortcutSearch);
     }
     else {
@@ -361,7 +359,7 @@ const SearchComponent = (props: any) => {
       });
       setDateTimeAsset(dateTimeDropDown);
     }
-      setDateOptionType(dateOptionType);
+    setDateOptionType(dateOptionType);
   }
 
   const getAllOptions = (e: any) => {
@@ -402,7 +400,7 @@ const SearchComponent = (props: any) => {
             </CRXColumn>
             <CRXColumn item xs={6}>
               <label className='dateTimeLabel'>{t("Date_and_Time")}</label>
-              
+
               <DateTimeComponent
                 showCompact={compactDateRange.showCompact}
                 minDate={compactDateRange.minDate}

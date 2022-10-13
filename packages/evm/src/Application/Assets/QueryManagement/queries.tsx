@@ -81,27 +81,69 @@ let GetAssetsUnCategorized = (startDate: string, endDate: string, groupIds: stri
 
 let GetAssetsApproachingDeletion = (startDate: string, endDate: string, groupIds: string) => {
     const lockQuery = GenerateLockFilterQuery(groupIds);
+    const infinite = '9999-12-31T00:00:00Z';
     let approachingDeletion = {
-        bool: {
-            must: [
+        bool : {
+            "should": [
                 {
-                    range: {
-                        "expireOn": {
-                            gte: `${moment(startDate).toISOString()}`,
+                    "bool": {
+                        "must_not": {
+                            "exists": {
+                                "field": "holdUntil"
+                            }
                         },
-                    },
+                        "must": [
+                            {
+                                "range": {
+                                    "expireOn": {
+                                        "gte": `${moment(startDate).toISOString()}`
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "expireOn": {
+                                        "lte": `${moment(endDate).toISOString()}`
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 },
                 {
-                    range: {
-                        "expireOn": {
-                            lte: `${moment(endDate).toISOString()}`,
+                    "bool": {
+                        "must_not": {
+                            "term": {
+                                "holdUntil": `${infinite}`
+                            }
                         },
-                    },
+                        "must": [
+                            {
+                                "exists": {
+                                    "field": "holdUntil"
+                                }
+                            },
+                            {
+                                "range": {
+                                    "holdUntil": {
+                                        "gte": `${moment(startDate).toISOString()}`
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "holdUntil": {
+                                        "lte": `${moment(endDate).toISOString()}`
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 }
             ],
             "filter": lockQuery
         }
-    }
+    };
     return approachingDeletion;
 }
 
