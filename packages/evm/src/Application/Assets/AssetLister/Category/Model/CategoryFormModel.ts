@@ -13,3 +13,9 @@ export type CategoryFormProps = {
     setIndicateTxt: (param: boolean) => void;
     setshowSSticky: (param: boolean) => void;
 };
+
+export enum SubmitType {
+    WithForm = 1,
+    WithoutForm = 2,
+}
+

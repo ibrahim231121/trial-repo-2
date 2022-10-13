@@ -12,7 +12,6 @@ import { RootState } from "../../../../Redux/rootReducer";
 import { getUsersIdsAsync } from "../../../../Redux/UserReducer";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
-import Cookies from "universal-cookie";
 import moment from "moment";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
@@ -33,8 +32,6 @@ type AssignUserProps = {
   setRemovedOption: (param: any) => void;
   showToastMsg: (obj: any) => any;
 };
-
-const cookies = new Cookies();
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -62,7 +59,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     },
     page: 0,
     size: 25
-})
+  })
 
   React.useEffect(() => {
     dispatch(getUsersIdsAsync(pageiGrid));
@@ -167,7 +164,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   const getMasterAsset = async () => {
     const url =
       "/Evidences/" +
-      `${props.rowData.id}` +
+      `${props.rowData.evidence.id}` +
       "/assets/" +
       `${props.rowData.assetId}`;
     EvidenceAgent.getAsset(url).then((response: any) => {
@@ -326,7 +323,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                   <b>*</b>
                 </div>
                 <div className="fieldAssigInput">
-                {users.data && <MultiSelectBoxCategory
+                  {users.data && <MultiSelectBoxCategory
                     className="categortAutocomplete"
                     multiple={true}
                     CheckBox={true}
@@ -345,12 +342,12 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
                     }}
                   />}
                   <div className="fieldAssigSelectT">
-                  
-                  
-                  {isShowInfo === true ? (
-                    t("(Selected_users_will_replace_all_current_assigned_users)")
-                  ):null}  
-                  
+
+
+                    {isShowInfo === true ? (
+                      t("(Selected_users_will_replace_all_current_assigned_users)")
+                    ) : null}
+
                   </div>
                 </div>
               </div>

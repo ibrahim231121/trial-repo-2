@@ -16,7 +16,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const { getModuleIds } = useContext(ApplicationPermissionContext);
   const isCancelable = getModuleIds().includes(4) ? true : false
   React.useEffect(() => {
-    const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_Category");
+    const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_category");
     props.setModalTitle(modalTitleProps);
     props.setremoveClassName('crxEditCategoryDropdown');
   });

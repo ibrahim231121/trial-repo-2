@@ -1333,3 +1333,48 @@ body {
   color: green;
   float: right
 }
+
+.__Crx__Choose_Asset__MetaData__{
+  .CBX-input {
+    input{
+      width: 100% !important;
+      border: none;
+    }
+    .errorStyle{
+      color: var(--color-aa1d1d);
+      margin-top: 5px;
+      height : 18px;
+      font-size:14px;
+      i {
+        margin-right: 5px;
+      }
+      span {
+          text-transform: capitalize;
+      }
+    }
+    .errorBrdr {
+      outline: 1px solid var(--color-aa1d1d);
+    }
+  }
+}
+.cancelBtn{
+  margin-left: 33px;
+}
+.skipButton{
+    position: absolute;
+    right: 0;
+    height: 30px;
+    border: 1px solid var(--color-transparent);
+    position: relative;
+    margin-right: 0px;
+    left: 69px;
+    font-size: 14px;
+    font-weight: var(--Font-style-normal);
+    font-family: var(--base-font-family);
+    &:hover{
+      background: var(--color-f5f5f5) !important;
+      color: var(--color-333333);
+      border: 1px solid var(--color-333333);
+      font-size: 14px;
+    }
+}

@@ -12,11 +12,12 @@ const NoFormAttachedOfAssetBucket: React.FC<Props> = ({ categoryCollection }) =>
 
     return (
         <>
+        {console.log('categoryCollection', categoryCollection)}
             <CRXHeading variant='h6' className='categoryNextTitle dailogFormHeading'>
                 {t("Category_Title_Placeholder_Here")}
                 {categoryCollection.map((field: any, _key: number) => (
                     <span key={_key}>
-                        <b> {field.name}</b>
+                        <b> {field.label}</b>
                         {rowLen !== _key + 1 && <span>,</span>}
                     </span>
                 ))}
@@ -26,7 +27,7 @@ const NoFormAttachedOfAssetBucket: React.FC<Props> = ({ categoryCollection }) =>
                 {categoryCollection.map((field: any, _key: any) => (
                     <span key={_key}>
                         <span className='cateName' key={_key}>
-                            '{field.name}'
+                            '{field.label}'
                         </span>
                         {rowLen !== _key + 1 && <span>,</span>}
                     </span>

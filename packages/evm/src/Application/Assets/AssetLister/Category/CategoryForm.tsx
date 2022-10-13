@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-import { CategoryFormProps } from './Model/CategoryFormModel';
+import { CategoryFormProps, SubmitType } from './Model/CategoryFormModel';
 import { SearchType } from '../../utils/constants';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
@@ -159,36 +159,37 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     props.closeModal(false);
   };
 
-  const submitForm = () => {
+  const submitForm = (submitType: SubmitType) => {
     //create object to pass in patch request.
     const categoryBodyArr: any[] = [];
     for (const obj of filteredFormArray) {
       const categoryId = obj.id;
       const categoryFormDataArr: any[] = [];
-      for (const form of obj.form) {
-        const fieldsArray = [];
-        for (const field of form.fields) {
-          let value: any;
-          if (field.hasOwnProperty('key')) {
-            value = formFields.filter((x: any) => x.key == field.value).map((i: any) => i.value)[0];
-          } else {
-            value = formFields.filter((x: any) => x.key == field.name).map((i: any) => i.value)[0];
+      if (submitType === SubmitType.WithForm) {
+        for (const form of obj.form) {
+          const fieldsArray = [];
+          for (const field of form.fields) {
+            let value: any;
+            if (field.hasOwnProperty('key')) {
+              value = formFields.filter((x: any) => x.key == field.value).map((i: any) => i.value)[0];
+            } else {
+              value = formFields.filter((x: any) => x.key == field.name).map((i: any) => i.value)[0];
+            }
+            const _field = {
+              key: field.key === undefined ? field.name : field.key,
+              value: value,
+              dataType: field.dataType === undefined ? 'FieldTextBoxType' : field.dataType
+            };
+            fieldsArray.push(_field);
           }
-          const _field = {
-            key: field.key === undefined ? field.name : field.key,
-            value: value,
-            dataType: field.dataType === undefined ? 'FieldTextBoxType' : field.dataType
+
+          const _categoryFormbody = {
+            formId: form.formId !== undefined ? form.formId : form.id,
+            fields: fieldsArray
           };
-          fieldsArray.push(_field);
+          categoryFormDataArr.push(_categoryFormbody);
         }
-
-        const _categoryFormbody = {
-          formId: form.formId !== undefined ? form.formId : form.id,
-          fields: fieldsArray
-        };
-        categoryFormDataArr.push(_categoryFormbody);
       }
-
       const _categoryBody = {
         id: categoryId,
         formData: categoryFormDataArr,
@@ -227,39 +228,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         .catch(() => {
           setError(true);
         });
-
     }
-  };
-
-  const skipBtn = () => {
-    let categoryBodyArr: any[] = [];
-    for (const obj of filteredFormArray) {
-      const _categoryBody = {
-        id: obj.id,
-        formData: [],
-        assignedOn: moment().format('YYYY-MM-DDTHH:mm:ss')
-      };
-      categoryBodyArr.push(_categoryBody);
-    }
-
-    const body: EvdenceCategoryAssignment = {
-      unAssignCategories: [],
-      assignedCategories: categoryBodyArr,
-      updateCategories: []
-    };
-    const url = `/Evidences/${evidenceId}/Categories`;
-    EvidenceAgent.changeCategories(url, body).then(() => {
-      setSuccess(true);
-      setTimeout(() => {
-        props.setOpenForm();
-        props.setFilterValue(() => []); 
-        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
-        props.closeModal(false);
-      }, 3000);
-    })
-      .catch(() => {
-        setError(true);
-      });
   }
 
   return (
@@ -291,18 +260,16 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
               />
             ))}
             <div className='categoryModalFooter CRXFooter'>
-              <CRXButton onClick={submitForm} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
+              <CRXButton onClick={() => submitForm(SubmitType.WithForm)} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
                 {' '}
                 {props.isCategoryEmpty === false ? t("Next") : t("Save")}
               </CRXButton>
               <CRXButton className='cancelButton secondary' color='secondary' variant='contained' onClick={backBtn}>
                 {t("Back")}
               </CRXButton>
-              {props.isCategoryEmpty && (
-                <CRXButton className='skipButton' onClick={skipBtn}>
-                  {t("Skip_category_form_and_save")}
-                </CRXButton>
-              )}
+              <CRXButton className='skipButton' onClick={() => submitForm(SubmitType.WithoutForm)}>
+                {t("Skip_category_form_and_save")}
+              </CRXButton>
             </div>
           </>
         ) : (

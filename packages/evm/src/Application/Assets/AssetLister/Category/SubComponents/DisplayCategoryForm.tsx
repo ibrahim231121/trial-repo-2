@@ -36,7 +36,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
               ...validationSchema,
             })}
           >
-            {({ errors, touched }) => (
+            {({ errors }) => (
               <Form>
                 {formObj.fields.map((field: any) => (
                   <div className={`categoryInnerField`} key={field.id}>
