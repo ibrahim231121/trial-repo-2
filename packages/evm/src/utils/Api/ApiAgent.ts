@@ -197,7 +197,12 @@ export const FileAgent = {
 export const UsersAndIdentitiesServiceAgent = {
     getAllUsers: (url: string) => requests.get<UserList[]>(USER_INFO_GET_URL, url, config),
     
-    getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
+    //getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
+    getUsersInfo: (url: string, extraHeader?: Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<any>>(USER_INFO_GET_URL, url, config);
+    },
+    
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
     getGroups: (url: string, extraHeader?: Headers[]) => {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);

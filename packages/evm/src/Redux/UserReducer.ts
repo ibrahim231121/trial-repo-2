@@ -1064,8 +1064,9 @@ export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
     async (pageiFilter?: any) => {
         const url = USER + `/GetAllUsersInfo?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
+        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
              return await UsersAndIdentitiesServiceAgent
-             .getUsersInfo(url, pageiFilter.gridFilter)
+             .getUsersInfo(url, headers)
              .then((response) => {
                 return response
             })
@@ -1075,20 +1076,21 @@ export const getUsersInfoAsync: any = createAsyncThunk(
 export const getUsersIdsAsync: any = createAsyncThunk(
     'getUsersIds',
     async () => {
-        const url = USER + `/GetAllUsersInfo?Page=1&Size=1000`
+        const url = USER + `/GetAllUsersInfo?Page=1&Size=10000`
         const pageiFilter = {
             gridFilter: {
               logic: "and",
               filters: []
             },
             page: 1,
-            size: 1000
+            size: 10000
           }
-             return await UsersAndIdentitiesServiceAgent
-             .getUsersInfo(url, pageiFilter)
-             .then((response) => {
-                return response
-            })
+        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        return await UsersAndIdentitiesServiceAgent
+        .getUsersInfo(url, headers)
+        .then((response) => {
+            return response
+        })
 
 });
 
