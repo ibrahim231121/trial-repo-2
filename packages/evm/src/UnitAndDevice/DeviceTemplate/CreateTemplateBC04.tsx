@@ -133,7 +133,7 @@ const CreateTemplate = (props: any) => {
   async function setintialschema() {
     let dType  = historyState.deviceType.replace(/\s/g, '');
     let deviceId = historyState.deviceId.toString();
-    if (dType == "Incar" || dType == "BC03" || dType == "BC03LTE" || dType == "BC04") {
+    if (dType == "Incar" || dType == "BC02" || dType == "BC03" || dType == "BC03LTE" || dType == "BC04") {
       var deviceTypeDataRow = await UnitsAndDevicesAgent.getDeviceType(deviceId).then((response:DeviceType) => response);
       if(deviceTypeDataRow.schema){
         setFormSchema(JSON.parse(deviceTypeDataRow.schema));

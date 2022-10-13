@@ -272,7 +272,8 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     }
   }
   let duration = maximum_endpoint - minimum_startpont;
-  let durationInDateFormat = new Date(duration);
+  let durationround = (Math.ceil(duration/1000))*1000;
+  let durationInDateFormat = new Date(durationround);
   let durationinformat = milliSecondsToTimeFormat(durationInDateFormat);
   await setfinalduration(durationinformat)
 
@@ -1063,10 +1064,12 @@ const VideoPlayerBase = (props: any) => {
             renderBookmarkNotePopupOnSeek(timerValue);
           }
           else {
-            setPlaying(false);
             videoHandlers.forEach((videoHandle: any) => {
               videoHandle.pause();
             });
+            setTimer(0);
+            setControlBar(0);
+            setPlaying(false);
           }
         }
       }

@@ -283,6 +283,7 @@ export const CreateTempelateCase = (props: any) => {
                       name={formObj.key }
                       id={formObj.id}
                       type={formObj.type}
+                      placeholder={formObj.hinttext ? formObj.hintvalue : ""}
                     />
                     <ErrorMessage
                       name={formObj.key}
