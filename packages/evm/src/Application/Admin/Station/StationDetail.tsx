@@ -270,6 +270,18 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
+    let _configurationTemplate =  values.ConfigurationTemplate.map((x: any) => {
+      let configurationTemplate : any = {
+        id: x.id,
+        fields: x.fields,
+        history: x.history,
+        name: x.name,
+        operationType: x.operationType,
+        stationId: x.stationId,
+        typeOfDevice:x.typeOfDevice
+      }
+      return configurationTemplate
+    })
     let body: Station = {
       id: 0,
       name: values.Name,
@@ -290,7 +302,7 @@ const StationDetail: React.FC = () => {
           },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
-          configurationTemplates: values.ConfigurationTemplate ?? []
+          configurationTemplates:  _configurationTemplate ?? []
         }
       ],
       passcode: values.Passcode ?? "",
