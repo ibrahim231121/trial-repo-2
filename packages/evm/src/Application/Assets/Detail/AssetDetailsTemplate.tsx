@@ -251,7 +251,6 @@ const AssetDetailsTemplate = (props: any) => {
       let downloadedData = downloaded.replace(/'/g, '"')
       let gpsdata = JSON.parse(downloadedData).GPS;
       let sensorsData = JSON.parse(downloadedData).Sensors;
-      debugger;
       gpsdata.forEach((x:any)=>
         {
           x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());

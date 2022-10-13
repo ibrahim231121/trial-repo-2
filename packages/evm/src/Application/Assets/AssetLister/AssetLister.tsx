@@ -100,8 +100,9 @@ const SearchComponent = (props: any) => {
   const shortcutData = [
     {
       text: 'My Assets',
-      query: () => queries.GetAssetsByUserName(decoded.UserName, decoded.AssignedGroups),
+      query: () => queries.GetAssetsByUserName(decoded.UserName),
       renderData: function () {
+        setQuerryString(evidenceSearchType.MyAsstes);
         setDateTimeAsset(dateTimeDropDown);
         fetchData(this.query(), SearchType.ViewOwnAssets);
         setPredictiveText(evidenceSearchType.MyAsstes);
@@ -114,6 +115,7 @@ const SearchComponent = (props: any) => {
       text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function () {
+        setQuerryString(evidenceSearchType.NotCategorized);
         setPredictiveText(evidenceSearchType.NotCategorized);
         fetchData(this.query(), SearchType.ShortcutSearch);
         setDateTimeAsset(dateTimeDropDown);
@@ -126,6 +128,7 @@ const SearchComponent = (props: any) => {
       query: () =>
         queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
       renderData: function (dateTimeObject: DateTimeObject | undefined = undefined) {
+        setQuerryString(evidenceSearchType.ApproachingDeletion);
         setDateOptionType(dateOptionsTypes.approachingDeletion);
         setPredictiveText(evidenceSearchType.ApproachingDeletion);
         setIsSearchBtnDisable(false);

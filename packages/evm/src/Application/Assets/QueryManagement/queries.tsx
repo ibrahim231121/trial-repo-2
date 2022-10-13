@@ -15,16 +15,14 @@ let GetAssetsByState = (status: string, groupIds: string) => {
     }
 };
 
-let GetAssetsByUserName = (userName: string, groupIds: string) => {
-    const lockQuery = GenerateLockFilterQuery(groupIds);
+let GetAssetsByUserName = (userName: string) => {
     return {
         bool: {
-            should: [
+            must: [
                 {
                     match: { "asset.owners": userName }
                 }
-            ],
-            "filter": lockQuery
+            ]
         }
     }
 }
