@@ -15,13 +15,13 @@
                 position: relative;
                 span{
                     position: absolute;
-                    margin-top: -17px;
+                    margin-top: -13px;
                 }
             }
             .crx-radio-btn {
                 label {
                     .MuiFormControlLabel-label {
-                        padding-left: 2px;
+                        padding-left: 4px;
                         white-space: nowrap;
                         color : var(--color-333333);
                         font-family: var(--base-font-family);
@@ -46,8 +46,8 @@
             padding: 20px 0px;
         }
         label.MuiFormControlLabel-root {
-            padding-bottom: 15px;
-            margin-left: 15px;
+            padding-bottom: 17px;
+            margin-left: 23px;
             position: relative;
             top: 3px;
         }
@@ -57,4 +57,5 @@
         margin-bottom: 45px;
         padding-bottom: 30px;
     }
+    
 }

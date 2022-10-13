@@ -9,6 +9,7 @@ import './CRXRadio.scss';
 type Props = {
   content: { value: any; label: string;isDisabled: boolean;isDisableRipple:boolean; Comp:any}[];
   value:any;
+  onChange?:any;
   setValue:any;
   className?:string;
   disableRipple? :boolean;
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
   }
 });
 
-const CRXRadio: React.FC<Props> = ({ content ,value,setValue,className }) => {
+const CRXRadio: React.FC<Props> = ({ content ,value,setValue,className, onChange }) => {
 //   const [value, setValue] = React.useState("female");
   const classes = useStyles()
   const handleChange = (event: any) => {
@@ -48,10 +49,9 @@ const CRXRadio: React.FC<Props> = ({ content ,value,setValue,className }) => {
   return (
     <FormControl component="fieldset">
       <RadioGroup
-      className={className + " crx-radio-btn"}
+        className={className + " crx-radio-btn"}
         value={value}
- 
-        onChange={handleChange}
+        onChange={onChange ? onChange : handleChange}
       >
         {content.map((x) => (
           <>

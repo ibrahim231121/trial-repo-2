@@ -115,6 +115,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const cancelBtn = () => props.setOnClose();
 
   const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+
     const status = e.target.value;
     setFieldValue('RetentionStatus', status, false);
     if (status === RetentionStatusEnum.IndefiniteExtention) {
@@ -195,8 +196,10 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                 <div className='_rentention_fields'>
                   <div className='retention-modal-sub'>
                     {t("Extend")} {props.items.length > 1 ? props.items.length : 1} {t("Asset(s)")}
+                  
                   </div>
-                  <RadioGroup
+                  
+                  {/* <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     defaultValue="female"
                     name="RetentionStatus"
@@ -206,15 +209,25 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                   >
                     {values.RetentionOptions.map((x) => (
                       <>
+                      <div className='user-radio-group'>
                         <FormControlLabel
+                          className='crxEditRadioBtn'
                           key={x.value}
                           value={x.value}
                           control={<Radio />}
                           label={x.label}
+                          
                         />
+                        </div>
                       </>
+                      
                     ))}
-                  </RadioGroup>
+                  </RadioGroup> */}
+                   <CRXRadio
+                    value={values.RetentionStatus}
+                    content={values.RetentionOptions}
+                    onChange={(e: any) => RadioButtonOnChange(e, setFieldValue)}
+                    />   
                   <TextField
                     parentId="_rentention_field_parent"
                     className=""
@@ -264,7 +277,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
             {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
             <strong>{t("'user form'")}</strong>. {t("If_you_close_the_form")},
             {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
-            <div className="confirmMessageBottom">
+            <div className="confirmMessageBottom p-bottom">
               {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
             </div>
           </div>

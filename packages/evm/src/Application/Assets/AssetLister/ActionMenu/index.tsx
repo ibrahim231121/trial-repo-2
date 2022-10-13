@@ -377,7 +377,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
         position="auto"
         offsetX={25}
