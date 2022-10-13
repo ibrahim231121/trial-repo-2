@@ -207,9 +207,8 @@ const TenantSettings: React.FC = () => {
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
     }
-    if (values.Culture.value == null) {
-      values.Culture.label = navigator.languages[0];
-      values.Culture.value = navigator.languages[0];
+    if (values.Culture == null) {
+      values.Culture = navigator.languages[0];
     }
     if (values.AssetViewReasonRequired == "false") {
       values.Reasons = [];
@@ -361,11 +360,6 @@ const TenantSettings: React.FC = () => {
         },
         {
           TenantTypeId: 4,
-          key: "Culture",
-          value: values.Culture.value,
-        },
-        {
-          TenantTypeId: 4,
           key: "DateTimeFormat",
           value: new Date().toLocaleDateString(values.Culture.value),
         },
@@ -401,6 +395,20 @@ const TenantSettings: React.FC = () => {
         }
       ],
     };
+    if(values.Culture.value != null){
+      body.tenantSettingEntries.push({
+        TenantTypeId: 4,
+        key: "Culture",
+        value: values.Culture.value,
+      })
+    }
+    else{
+      body.tenantSettingEntries.push({
+        TenantTypeId: 4,
+        key: "Culture",
+        value: values.Culture
+      })
+    }
     if (values.Reasons?.length > 0) {
       body.tenantSettingEntries.push({
         TenantTypeId: 1,
