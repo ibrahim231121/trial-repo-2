@@ -57,6 +57,8 @@ import { SearchType } from "../utils/constants";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 const AssetDetailsTemplate = (props: any) => {
   
@@ -826,6 +828,62 @@ const milliSecondsToTimeFormat = (date: Date) => {
     });
   }
 
+  const downloadAuditTrail = () => {
+    if(rows && assetInfo){
+      const head =[[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
+      let data:any[] = [];
+      let arrS:any[] = [];
+      rows.forEach((x:any)=>
+        {
+          arrS.push(x.seqNo);
+          arrS.push((new Date(x.performedOn)).toLocaleString());
+          arrS.push(x.userName);
+          arrS.push(x.notes);
+          data.push(arrS);
+          arrS = [];
+        }
+      );
+      const doc = new jsPDF()
+      doc.setFontSize(11)
+      doc.setTextColor(100)
+      doc.text(t("CheckSum")+":", 14, 25)
+      doc.text(t("Asset Id")+":", 14, 30)
+      doc.text(t("Asset Type")+":", 14, 35)
+      doc.text(t("Asset Status")+":", 14, 40)
+      doc.text(t("Username")+":", 14, 45)
+      doc.text(t("Categories")+":", 14, 50)
+      doc.text(t("Camera Name")+":", 14, 55)
+      doc.text(t("Captured")+":", 14, 60)
+      doc.text(t("Duration")+":", 14, 65)
+      doc.text(t("Size")+":", 14, 70)
+      doc.text(t("Retention")+":", 14, 75)
+
+      let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
+      let assetId = assetInfo.id ? assetInfo.id.toString() : "";
+      doc.text(CheckSum, 50, 25)
+      doc.text(assetId, 50, 30)
+      doc.text(assetInfo.typeOfAsset, 50, 35)
+      doc.text(assetInfo.status, 50, 40)
+      doc.text(assetInfo.owners.join(', '), 50, 45)
+      doc.text(assetInfo.categories.join(', '), 50, 50)
+      doc.text(assetInfo.camera, 50, 55)
+      doc.text(assetInfo.captured, 50, 60)
+      doc.text(assetInfo.duration, 50, 65)
+      doc.text(assetInfo.size, 50, 70)
+      doc.text(assetInfo?.retention, 50, 75)
+
+      autoTable(doc, {
+        startY: 80,
+        head: head,
+        body: data,
+        didDrawCell: (data) => {
+          console.log(data.column.index)
+        },
+      })
+      doc.save('ASSET ID_Audit_Trail.pdf');
+    }
+  }
+
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
@@ -1138,7 +1196,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
                         setSelectedActionRow(val)
                       }
                       toolBarButton={
-                        <CRXButton className="asset_export_button">
+                        <CRXButton className="asset_export_button" onClick={()=>downloadAuditTrail()}>
                           <i className="far fa-download"></i>
                           Export
                         </CRXButton>

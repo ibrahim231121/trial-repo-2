@@ -35,6 +35,8 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "formik": "^2.2.9",
     "i18next": "^19.9.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "mui-blox": "^0.4.2",
