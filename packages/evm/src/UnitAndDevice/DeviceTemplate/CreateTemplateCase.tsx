@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { CRXButton, CRXConfirmDialog  } from '@cb/shared';
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Restricted from '../../ApplicationPermission/Restricted';
 
 var re = /[\/]/;
 
@@ -547,11 +548,14 @@ export const CreateTempelateCase = (props: any) => {
                 placement="right"
               />) : (<></>)}
           </div>
-          {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
-                <CRXButton onClick={sensorsEvent}>
-                    {t("Create Sensor & Trigger")}
-                </CRXButton>
-          </div>) :(<></>)}
+
+          <Restricted moduleId={52}>
+            {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
+                  <CRXButton onClick={sensorsEvent}>
+                      {t("Create Sensor & Trigger")}
+                  </CRXButton>
+            </div>) :(<></>)}
+          </Restricted>
         </div>
         </div>
         </div>

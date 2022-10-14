@@ -89,7 +89,7 @@ const openCreateSensorsAndTriggersForm = () => {
     >
         {selectedItems.length <=1 ? (
       <MenuItem onClick={openCreateSensorsAndTriggersForm}>
-      <Restricted moduleId={0}>
+      <Restricted moduleId={51}>
           <div className="crx-meu-content   crx-spac"  >
             <div className="crx-menu-icon">
             <i className="far fa-pencil"></i>
@@ -105,7 +105,7 @@ const openCreateSensorsAndTriggersForm = () => {
           )}  
     
       <MenuItem >
-      <Restricted moduleId={0}>
+      <Restricted moduleId={50}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
           <div className="crx-menu-icon">
             <i className="far fa-trash-alt"></i>

@@ -175,7 +175,7 @@ const CRXLefNavigation = () => {
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) },
         },
         {
-          moduleIds: 0,
+          moduleIds: 49,
           label: t('Sensors_And_Triggers'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggers)[0].url) },
         },

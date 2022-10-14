@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState} from "react";
+import React, { useEffect,useRef,useState,useContext} from "react";
 import { CRXDataTable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
@@ -28,6 +28,8 @@ import {
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import {CRXAlert} from "@cb/shared";
 import {getAllSensorsFilterEvents} from '../../../../Redux/SensorEvents';
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import Restricted from "../../../../ApplicationPermission/Restricted";
 
 
 type SensorAndTriggersTemplate = {
@@ -63,7 +65,7 @@ const SensorsAndTriggersList: React.FC = () => {
   const isFirstRenderRef = useRef<boolean>(true);
   const reformattedRowsRef = useRef<SensorAndTriggersTemplate[]>();
   const filterSensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.filterSensorEvents);
-
+  const { getModuleIds} = useContext(ApplicationPermissionContext);
   useEffect(() => {
     if(paging)
       setSensorsEventsData()
@@ -121,7 +123,7 @@ const SensorsAndTriggersList: React.FC = () => {
   };
 
   const AnchorDisplay = (e: string) => {
-    if(e) {
+    if(getModuleIds().includes(51)) {
     return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url)
     }
     else{
@@ -259,9 +261,11 @@ const SensorsAndTriggersList: React.FC = () => {
             />}
             toolBarButton = {
               <>
+              <Restricted moduleId={52}>
                 <CRXButton className="SensorsEventsBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url) }}>
                   {t("Create_Sensor_&_Trigger")}
                 </CRXButton>
+              </Restricted>
               <CRXButton className="secondary SensorsFilterBtn filterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton>
               </>
             }
