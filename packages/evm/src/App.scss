@@ -181,3 +181,40 @@ iframe {
     height: 57vh;
     width: 100%;
 }
+
+
+.iconButton_global {
+    height: 30px;
+    background: transparent;
+    border:1px solid transparent;
+    font-size: 14px;
+    font-family: var(--Arial-font-family);
+    padding: 0px 16px;
+    display: flex;
+    place-items: center;
+    &:hover {
+        background: var(--color-f5f5f5);
+        border: 1px solid var(--color-333333);
+    }
+    &:focus {
+        background: var(--color-231F20);
+        border:1px solid transparent;
+        color: var(--color-f5f5f5);
+    }
+    &:disabled {
+        color: #979797;
+        &:hover {
+            background: transparent;
+            border:1px solid transparent;
+        }
+        &:focus {
+            background: transparent;
+            border:1px solid transparent;
+        }
+    }
+
+    i {
+        font-size: 20px;
+        padding-right: 17px;
+    }
+}

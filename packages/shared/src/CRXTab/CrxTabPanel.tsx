@@ -31,7 +31,7 @@ const CrxTabPanel = (props: TabPanelProps) => {
     const classes = useStyles()
     return (
       <div
-        className={classes.root}
+        className={"cbxTabsContent " + classes.root}
         role="tabpanel"
         hidden={value !== index}
         id={`crx-tabpanel-${index}`}

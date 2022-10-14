@@ -57,6 +57,7 @@ import { SearchType } from "../utils/constants";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
 import { setLoaderValue } from "../../../Redux/loaderSlice";
+import { CRXCheckBox } from "@cb/shared";
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
@@ -191,7 +192,8 @@ const AssetDetailsTemplate = (props: any) => {
   const [reformattedRows, setReformattedRows] = React.useState<AuditTrail[]>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  const [paging, setPaging] = React.useState<boolean>();
+  const [isChecked, setIsChecked] = React.useState<boolean>();
+  const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -274,7 +276,7 @@ const AssetDetailsTemplate = (props: any) => {
 
       if(gpsdata.length>0){setGpsJson(distinctgpsdata);}
       if(sensorsData.length>0){setSensorsDataJson(distinctsensorsData)}
-      console.log("Downloaded blob content", gpsdata);
+      
     }
   
     // [Browsers only] A helper method used to convert a browser Blob into string.
@@ -701,14 +703,14 @@ const milliSecondsToTimeFormat = (date: Date) => {
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
 
     {
-      label: `${t("Seq No")}`,
+      label: `${t("Seq. No")}`,
       id: "recId",
       align: "right",
       searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
       minWidth: '211',
-      maxWidth: '211'
+      maxWidth: '300'
     },
     {
       label: `${t("Captured")}`,
@@ -720,7 +722,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
       searchComponent: searchDate,
       sort: false,
       minWidth: '313',
-      maxWidth: '313'
+      maxWidth: '485'
     },
     {
       label: `${t("Username")}`,
@@ -731,7 +733,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
       minWidth: '314',
-      maxWidth: '314'
+      maxWidth: '485'
     },
     {
       label: `${t("Activity")}`,
@@ -742,7 +744,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: true,
       minWidth: '415',
-      maxWidth: '415'
+      maxWidth: '485'
     },
     // {
     //   label: `${t("Action")}`,
@@ -828,6 +830,15 @@ const milliSecondsToTimeFormat = (date: Date) => {
     });
   }
 
+  const assetSelectionHanlder = (e : any) => {
+    setIsChecked(e.target.checked)
+    setIsDisabled(!e.target.checked)
+  }
+
+  useEffect(() => {
+   isChecked && setIsDisabled(false)
+  },[isChecked, isDisabled])
+ 
   const downloadAuditTrail = () => {
     if(rows && assetInfo){
       const head =[[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
@@ -876,7 +887,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
         startY: 80,
         head: head,
         body: data,
-        didDrawCell: (data) => {
+        didDrawCell: (data : any) => {
           console.log(data.column.index)
         },
       })
@@ -992,101 +1003,102 @@ const milliSecondsToTimeFormat = (date: Date) => {
 
        
           <div className="asset_detail_tabs" id="detail_view" ref={detail_view}>
-            
+          
             <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
+            
             <div className="list_data_main">
               <CrxTabPanel value={value} index={0}>
-                
+              
            
               <div className="list_data">
-                <Grid container spacing={2}>
-                    <Grid item xs={4} className="list_head list_head_dark " >
-                        <h1>{t("CheckSum")}:</h1>
+                <Grid container spacing={0}>
+                    <Grid item xs={4} className="list_para" >
+                        <div className="asset_MDI_label">{t("CheckSum")}</div>
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.checksum}</span>
+                        <div className="asset_MDI_data boldText">{assetInfo.checksum}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                        <h1>{t("Asset Id")}:</h1> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.id}</span>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_head">
-                        <h1>{t("Asset Type")}:</h1>
+                    <Grid item xs={4} className="list_para">
+                        <div className="asset_MDI_label">{t("Asset ID")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.typeOfAsset}</span>
+                        <div className="asset_MDI_data">{assetInfo.id}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                    <h1>{t("Asset Status")}:</h1> 
+                    <Grid item xs={4} className="list_para">
+                        <div className="asset_MDI_label">{t("Asset Type")}</div>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <div className="asset_MDI_data">{assetInfo.typeOfAsset}</div>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_para">
+                    <div className="asset_MDI_label">{t("Asset Status")}</div> 
                         
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.status}</span>
+                        <div className="asset_MDI_data">{assetInfo.status}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                      <h1>{t("Username")}:</h1>
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.owners.join(', ')}</span>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_head">
-                        <h1>{t("Categories")}:</h1> 
+                    <Grid item xs={4} className="list_para">
+                      <div className="asset_MDI_label">{t("Username")}</div>
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.categories}</span>
+                        <div className="asset_MDI_data">{assetInfo.owners.join(', ')}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                      <h1>{t("Camera Name")}:</h1> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                          <span>{assetInfo.camera}</span>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_head">
-                      <h1>{t("Captured")}:</h1> 
+                    <Grid item xs={4} className="list_para">
+                        <div className="asset_MDI_label">{t("Categories")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                          <span>{assetInfo.captured}</span>
+                        <div className="asset_MDI_data">{assetInfo.categories}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                      <h1>{t("Duration")}:</h1> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                          <span>{assetInfo.duration}</span>
-                    </Grid>
-
-
-
-                    <Grid item xs={4} className="list_head">
-                          <h1>{t("Size")}:</h1> 
+                    <Grid item xs={4} className="list_para">
+                      <div className="asset_MDI_label">{t("Camera Name")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo.size}</span>
+                          <div className="asset_MDI_data">{assetInfo.camera}</div>
                     </Grid>
 
 
-                    <Grid item xs={4} className="list_head">
-                          <h1>{t("Retention")}:</h1>
+                    <Grid item xs={4} className="list_para">
+                      <div className="asset_MDI_label">{t("Captured")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <span>{assetInfo?.retention}</span>
+                          <div className="asset_MDI_data">{assetInfo.captured}</div>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_para">
+                      <div className="asset_MDI_label">{t("Duration")}</div> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                          <div className="asset_MDI_data">{assetInfo.duration}</div>
+                    </Grid>
+
+
+
+                    <Grid item xs={4} className="list_para">
+                          <div className="asset_MDI_label">{t("Size")}</div> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <div className="asset_MDI_data">{assetInfo.size}</div>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_para">
+                          <div className="asset_MDI_label">{t("Retention")}</div>
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                        <div className="asset_MDI_data">{assetInfo?.retention}</div>
                     </Grid>
 
                 </Grid>
@@ -1095,7 +1107,13 @@ const milliSecondsToTimeFormat = (date: Date) => {
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={1}>
-
+                <div className="asset_export_button_group">
+                   <button className="iconButton_global" disabled={isDisabled}>
+                    <i className="far fa-download"></i>
+                      Download
+                    </button>
+              </div>
+             
                 <CrxAccordion
                   title={t("Grouped_Assets")}
                   id="accorIdx1"
@@ -1105,13 +1123,12 @@ const milliSecondsToTimeFormat = (date: Date) => {
                   isExpanedChange={isExpaned}
                   expanded={expanded === "panel1"}
                 >
-                  <div className="stationDetailOne">
-                    <div className="stationColumnSet">
-
+                  <div className="asset_group_tabs_data">
+                    
                       {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
-
-                      <table>
-                        <tbody>
+                    
+                      <div className="asset_group_tabs_data_row">
+                      
 
                           {(getAssetData !== undefined)
                             ? getAssetData.assets.children.map((asset: any, index: number) => {
@@ -1119,16 +1136,23 @@ const milliSecondsToTimeFormat = (date: Date) => {
                               var lastChar = asset.name.substr(asset.name.length - 4);
                               return (
                                 <>
-                                  <tr key={index}>
-
-                                    <td>
+                                  <div className="asset_group_tabs_data_col" key={index}>
+                                    <div className="_detail_checkBox_column">
+                                    <CRXCheckBox
+                                      checked={isChecked}
+                                      lightMode={true}
+                                      className='asse_detail_tab_checkBox '
+                                      onChange={(e : any) => assetSelectionHanlder(e)} 
+                                      />
+                                    </div>
+                                    <div className="_detail_thumb_column">
                                       <AssetThumbnail
                                         assetType={asset.typeOfAsset}
                                         className={"CRXPopupTableImage  CRXPopupTableImageUi"}
                                         onClick={() => newRound(asset.id, asset.name)}
                                       />
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div className="_asset_detail_link_meta">
                                       <Link
                                         className="linkColor"
                                         onClick={refresh}
@@ -1142,7 +1166,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
                                         }}>
 
                                         <div id="middletruncate" data-truncate={lastChar}>
-                                          <p>{asset.name}</p>
+                                          {asset.name}
                                         </div>
 
                                         {/* <div>{asset.name}</div> */}
@@ -1160,7 +1184,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
                                             </label>
                                           </div>
                                         ) : (
-                                          <div>
+                                          <div className="_asset_video_type_detail">
                                             <label className="CRXPopupDetailFontSize">
                                               {asset.typeOfAsset}
                                             </label>
@@ -1171,24 +1195,24 @@ const milliSecondsToTimeFormat = (date: Date) => {
                                         </label>
                                       </div>
 
-                                    </td>
+                                    </div>
 
-                                  </tr>
+                                  </div>
 
                                 </>
                               );
                             })
                             : null}
-                        </tbody>
-                      </table>
-                    </div>
+                        
+                      </div>
+                    
 
                   </div>
                 </CrxAccordion>
               </CrxTabPanel>
 
               <CrxTabPanel value={value} index={2}>
-                <div className="asset_detail_tab_third">
+                <div className="asset_detail_AT_table">
                   {rows && (
                     <CRXDataTable
                       id="Audit Trail"
@@ -1196,10 +1220,12 @@ const milliSecondsToTimeFormat = (date: Date) => {
                         setSelectedActionRow(val)
                       }
                       toolBarButton={
-                        <CRXButton className="asset_export_button" onClick={()=>downloadAuditTrail()}>
-                          <i className="far fa-download"></i>
-                          Export
-                        </CRXButton>
+                        <div className="auditTrailButton">
+                          <button className="iconButton_global" onClick={()=>downloadAuditTrail()}>
+                            <i className="far fa-download"></i>
+                            Export
+                          </button>
+                        </div>
                       }
                       showToolbar={true}
                       showCountText={false}
@@ -1218,14 +1244,14 @@ const milliSecondsToTimeFormat = (date: Date) => {
                       showTotalSelectedText={false}
                       showActionSearchHeaderCell={true}
                       showCustomizeIcon={false}
-                      className=""
+                      className="asset_detail_AT_dataTable"
                       onClearAll={clearAll}
                       getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
                       onResizeRow={resizeRowUnitDetail}
                       onHeadCellChange={onSetHeadCells}
                       setSelectedItems={setSelectedItems}
                       selectedItems={selectedItems}
-                      offsetY={0}
+                      offsetY={51}
                       page={page}
                       rowsPerPage={rowsPerPage}
                       setPage={(page: any) => setPage(page)}

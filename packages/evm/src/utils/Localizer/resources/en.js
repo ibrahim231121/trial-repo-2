@@ -211,7 +211,7 @@ export const resources = {
         "CheckSum":"CheckSum",
         "Video_Duration":"Video Duration",
         "Size":"Size",
-        "Retention":"Retention",
+        "Retention":"Retention Time Remaining",
         "Categories":"Categories",
         "Copyright_©_Getac_Video_Solutions_Inc._and_its_subsidiaries._All_rights_reserved._|_Enterprise_Version":"Copyright © Getac Video Solutions, Inc. and its subsidiaries. All rights reserved. | Enterprise Version",
         "is_successfully_set_as_primary_asset":"is successfully set as primary asset",
