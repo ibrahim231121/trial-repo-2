@@ -821,7 +821,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       categories,
       assets: { master, children },
       stationId,
-      computerAidedDispatch: null,
       tag: null,
       version: "",
     };
