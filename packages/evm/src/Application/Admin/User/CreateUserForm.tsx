@@ -108,6 +108,19 @@ const CreateUserForm = () => {
       clearButtton: true,
     });
   }
+
+  const checkFormPayload = () =>{
+    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber, pin } =
+      formpayload;
+
+      if (!validateUserName(userName).error && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateEmail(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
+      
+        return true;
+      }
+
+      return false;
+  }
+
   const [actual_formPayload, setactual_formPayload] = useState<userStateProps>(formpayload);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -187,8 +200,8 @@ const CreateUserForm = () => {
   }, [userPayload]);
 
   React.useEffect(() => {
-    const { userName, firstName, middleInitial, lastName, email, userGroups, deactivationDate, mobileNumber, pin } =
-      formpayload;
+    const { userGroups } = formpayload;
+
     if (userGroups.length > 0) {
       setError(false);
     }
@@ -196,7 +209,7 @@ const CreateUserForm = () => {
     if (JSON.stringify(formpayload) === JSON.stringify(USER_DATA)) {
       setDisableSave(true);
 
-    } else if (!validateUserName(userName).error && !validateFirstLastAndMiddleName(firstName,t('First_Name')).error && !validateFirstLastAndMiddleName(lastName,t('Last_Name')).error && validateEmail(email) && userGroups.length>0 && !validatePin(pin).error && !validatePhone(mobileNumber).error) {
+    } else if (checkFormPayload()) {
       setDisableSave(false);
     } else {
       setDisableSave(true);
@@ -266,7 +279,7 @@ const CreateUserForm = () => {
     // setUserPayload(response);
 
   };
-
+  
   const generateTempPassComp = () => {
     const onClickPass = () => {
       var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -941,7 +954,6 @@ const CreateUserForm = () => {
     }
     else {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: '' });
-      setDisableSave(false)
     }
   };
 
@@ -963,7 +975,11 @@ const CreateUserForm = () => {
       setDisableSave(true)
     } else {
       setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: '' });
-      setDisableSave(false)
+      
+      if(checkFormPayload())
+      {
+        setDisableSave(false)
+      }
     }
   };
 
