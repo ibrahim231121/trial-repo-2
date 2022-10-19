@@ -719,7 +719,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
 
     {
       label: `${t("Seq. No")}`,
-      id: "recId",
+      id: "seqNo",
       align: "right",
       searchComponent: searchText,
       dataComponent: (e: string) => textDisplay(e, " "),
