@@ -337,7 +337,6 @@ const CreateTemplate = (props: any) => {
 
   const setSensorsAndTriggersDropDown = () => {
     let sensorsAndTriggersOptions: any = [];
-    sensorsAndTriggersOptions.push({value : "list of all sensors and triggers", label: "list of all sensors and triggers"})
     sensorsAndTriggersOptions.push({value : "Add All", label: "Add All"})
     sensorEvents.map((x:any) => {
       sensorsAndTriggersOptions.push({value : x.id, label: x.description})
