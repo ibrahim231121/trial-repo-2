@@ -12,8 +12,9 @@ import './sensorsAndTriggersDetail.scss';
 import {SensorsAndTriggers} from '../../../../utils/Api/models/SensorsAndTriggers';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { getAllSensorsEvents } from "../../../../Redux/SensorEvents";
+import { RootState } from "../../../../Redux/rootReducer";
 
 type SensorsAndTriggersDetailProps = {
     id: string
@@ -139,6 +140,10 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
 
     useEffect (() => {
         dispatch(enterPathActionCreator({ val: "" }));
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+          }
+          
     },[])
 
     useEffect(() => {
@@ -156,6 +161,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 DeviceparametersItem(response, deviceParametersArray);
                 setSwitchParameters(switchParametersObj);
                 setDeviceParameter(deviceParametersArray);    
+                dispatch(enterPathActionCreator({ val: response?.description }));
        
                 const temp = {
                     deviceSettings: {...switchParametersObj},

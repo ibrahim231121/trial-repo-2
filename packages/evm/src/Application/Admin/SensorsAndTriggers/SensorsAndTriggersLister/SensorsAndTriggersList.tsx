@@ -11,6 +11,8 @@ import { urlList, urlNames } from "../../../../utils/urlList"
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton } from "@cb/shared";
+import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
+
 
 import {
   SearchObject,
@@ -84,6 +86,7 @@ const SensorsAndTriggersList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "sensorsAndTriggersTemplateDataTable");
+    dispatch(enterPathActionCreator({ val: "" }));
 }, []);
 
 
