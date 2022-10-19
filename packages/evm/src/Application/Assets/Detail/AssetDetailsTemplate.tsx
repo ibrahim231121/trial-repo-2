@@ -122,7 +122,7 @@ const AssetDetailsTemplate = (props: any) => {
   };
 
   type AssetReformated = {
-    categories: string[];
+    categories: any[];
     owners: string[];
     unit: number[];
     capturedDate: string;
@@ -132,9 +132,9 @@ const AssetDetailsTemplate = (props: any) => {
     retention: string;
     categoriesForm: string[];
     id?: number;
+    assetName?: string;
     typeOfAsset: string;
     status: string;
-    captured: string;
     camera: string;
   };
   let assetObj: AssetReformated = {
@@ -149,7 +149,6 @@ const AssetDetailsTemplate = (props: any) => {
     categoriesForm: [],
     typeOfAsset: "",
     status: "",
-    captured: "",
     camera: ""
   };
   const dispatch = useDispatch();
@@ -192,6 +191,8 @@ const AssetDetailsTemplate = (props: any) => {
   const [reformattedRows, setReformattedRows] = React.useState<AuditTrail[]>();
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [uploadedOn, setUploadedOn] = React.useState<string>("");
   const [isChecked, setIsChecked] = React.useState<boolean>();
   const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
@@ -399,14 +400,24 @@ const milliSecondsToTimeFormat = (date: Date) => {
     if(getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length)
     { // temp condition
         dispatch(setLoaderValue({isLoading: false, message: "" }))
-        var categories: string[] = [];
-        getAssetData.categories.forEach((x: any) =>
-          x.formData.forEach((y: any) =>
-            y.fields.forEach((z: any) => {
-              categories.push(z.key);
+        let categories: any[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          x.formData.forEach((y: any) =>  
+          {
+            let formDatas: any[] = [];
+            y.fields.map((z: any) => {
+              let formData ={
+                key: z.key,
+                value: z.value
+              }
+              formDatas.push(formData);
             })
-          )
-        );
+            categories.push({
+              name: y.name,
+              formDatas: formDatas
+            })
+          })
+        });
 
         var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
@@ -432,20 +443,18 @@ const milliSecondsToTimeFormat = (date: Date) => {
           owners: owners,
           unit: unit,
           capturedDate: moment(getAssetData.createdOn).format(
-            "YYYY / MM / DD HH:mm:ss"
+            "MM / DD / YY @ HH: mm: ss"
           ),
           checksum: checksum,
           duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
-          size: formatBytes(size* 1024 * 1024, 2),
+          size: formatBytes(size, 2),
           retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
           categories: categories,
           categoriesForm: categoriesForm,
           id: getAssetData?.assets?.master?.id,
+          assetName: getAssetData?.assets?.master?.name,
           typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
           status: getAssetData?.assets?.master?.status,
-          captured: moment(getAssetData?.assets?.master?.recording?.started).format(
-            "YYYY / MM / DD HH:mm:ss"
-          ),
           camera: getAssetData?.assets?.master?.camera ?? ""
         });
         const data = extract(getAssetData);
@@ -455,6 +464,12 @@ const milliSecondsToTimeFormat = (date: Date) => {
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
+      FileAgent.getFile(520001).then((response) => {
+        let uploadCompletedOnFormatted = moment(response.history.uploadCompletedOn).format(
+          "MM / DD / YY @ HH: mm: ss"
+        )
+        setUploadedOn(uploadCompletedOnFormatted)
+      });
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
         if(template.type == "GPS"){
           setGpsFileData([...gpsFileData, {
@@ -854,37 +869,85 @@ const milliSecondsToTimeFormat = (date: Date) => {
           arrS = [];
         }
       );
-      const doc = new jsPDF()
-      doc.setFontSize(11)
-      doc.setTextColor(100)
-      doc.text(t("CheckSum")+":", 14, 25)
-      doc.text(t("Asset Id")+":", 14, 30)
-      doc.text(t("Asset Type")+":", 14, 35)
-      doc.text(t("Asset Status")+":", 14, 40)
-      doc.text(t("Username")+":", 14, 45)
-      doc.text(t("Categories")+":", 14, 50)
-      doc.text(t("Camera Name")+":", 14, 55)
-      doc.text(t("Captured")+":", 14, 60)
-      doc.text(t("Duration")+":", 14, 65)
-      doc.text(t("Size")+":", 14, 70)
-      doc.text(t("Retention")+":", 14, 75)
 
       let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
       let assetId = assetInfo.id ? assetInfo.id.toString() : "";
-      doc.text(CheckSum, 50, 25)
-      doc.text(assetId, 50, 30)
-      doc.text(assetInfo.typeOfAsset, 50, 35)
-      doc.text(assetInfo.status, 50, 40)
-      doc.text(assetInfo.owners.join(', '), 50, 45)
-      doc.text(assetInfo.categories.join(', '), 50, 50)
-      doc.text(assetInfo.camera, 50, 55)
-      doc.text(assetInfo.captured, 50, 60)
-      doc.text(assetInfo.duration, 50, 65)
-      doc.text(assetInfo.size, 50, 70)
-      doc.text(assetInfo?.retention, 50, 75)
+      
+
+      const doc = new jsPDF()
+      doc.setFontSize(11)
+      doc.setTextColor(100)
+      let yaxis1 = 14;
+      let yaxis2 = 70;
+      let xaxis = 25;
+
+      doc.text(t("CheckSum")+":", yaxis1, xaxis)
+      doc.text(CheckSum, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Asset Id")+":", yaxis1, xaxis)
+      doc.text(assetId, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Asset Type")+":", yaxis1, xaxis)
+      doc.text(assetInfo.typeOfAsset, yaxis2, xaxis)
+      xaxis += 5;
+      
+      doc.text(t("Asset Status")+":", yaxis1, xaxis)
+      doc.text(assetInfo.status, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Username")+":", yaxis1, xaxis)
+      doc.text(assetInfo.owners.join(", "), yaxis2, xaxis)
+      xaxis += 5;
+
+      let categoriesString = "";
+      assetInfo.categories.forEach((x:any, index: number)=>
+      {
+        let formData = x.formDatas.map((y: any, index1: number) => {
+          if(index1 > 0)
+          {
+            xaxis += 5
+          }
+          return y.key + ": " + y.value + "\n"; 
+        })
+        categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
+        if(index > 0)
+        {
+          xaxis += 5
+        }
+      }
+      )
+      doc.text(t("Categories")+":", yaxis1, xaxis)
+      doc.text(categoriesString, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Camera Name")+":", yaxis1, xaxis)
+      doc.text(assetInfo.camera, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Captured")+":", yaxis1, xaxis)
+      doc.text(assetInfo.capturedDate, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Uploaded")+":", yaxis1, xaxis)
+      doc.text(uploadedOn, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Duration")+":", yaxis1, xaxis)
+      doc.text(assetInfo.duration, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Size")+":", yaxis1, xaxis)
+      doc.text(assetInfo.size, yaxis2, xaxis)
+      xaxis += 5;
+
+      doc.text(t("Retention")+":", yaxis1, xaxis)
+      doc.text(assetInfo?.retention, yaxis2, xaxis)
+      xaxis += 5;
 
       autoTable(doc, {
-        startY: 80,
+        startY: xaxis,
         head: head,
         body: data,
         didDrawCell: (data : any) => {
@@ -1017,6 +1080,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
                     </Grid>
                     <Grid item xs={8} className="list_para">
                         <div className="asset_MDI_data boldText">{assetInfo.checksum}</div>
+                        <p style={{color: "red", cursor: "pointer"}} onClick={() => {navigator.clipboard.writeText(assetInfo.checksum.toString())}}>copy</p>
                     </Grid>
 
 
@@ -1024,7 +1088,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
                         <div className="asset_MDI_label">{t("Asset ID")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.id}</div>
+                        <div className="asset_MDI_data">{assetInfo.assetName}</div>
                     </Grid>
 
 
@@ -1057,7 +1121,22 @@ const milliSecondsToTimeFormat = (date: Date) => {
                         <div className="asset_MDI_label">{t("Categories")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.categories}</div>
+                      <div className="asset_MDI_data">
+                        {
+                          assetInfo.categories.map((x: any) => 
+                          <>
+                          <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                              <span style={{fontWeight: 700}}>{x.name} :</span> 
+                            </Grid>
+                            <Grid item xs={9}>
+                              <span>{x.formDatas.map((x: any) => x.key + " : " + x.value)}</span>
+                            </Grid>
+                          </Grid>
+                            
+                          </>)
+                        }
+                      </div>
                     </Grid>
 
 
@@ -1073,7 +1152,15 @@ const milliSecondsToTimeFormat = (date: Date) => {
                       <div className="asset_MDI_label">{t("Captured")}</div> 
                     </Grid>
                     <Grid item xs={8} className="list_para">
-                          <div className="asset_MDI_data">{assetInfo.captured}</div>
+                      <div className="asset_MDI_data">{assetInfo.capturedDate}</div>
+                    </Grid>
+
+
+                    <Grid item xs={4} className="list_para">
+                      <div className="asset_MDI_label">{t("Upoaded")}</div> 
+                    </Grid>
+                    <Grid item xs={8} className="list_para">
+                      <div className="asset_MDI_data">{uploadedOn}</div>
                     </Grid>
 
 
