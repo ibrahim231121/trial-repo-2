@@ -13,6 +13,7 @@ import { addTimelineDetailActionCreator } from "../../../Redux/VideoPlayerTimeli
 import AssetDetailNotesandBookmarkBox from "./AssetDetailNotesandBookmarkBox";
 import List from "@material-ui/core/List";
 import { TextField } from "@cb/shared";
+import { CRXSelectBox } from "@cb/shared";
 
 type propsObject = {
   data: any;
@@ -48,7 +49,7 @@ type Timeline = {
 
 const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, toasterMsgRef }: propsObject) => {
   const { t } = useTranslation<string>();
-  const [selectDropDown, setSelectDropDown] = React.useState(openMap? "Map" : "");
+  const [selectDropDown, setSelectDropDown] = React.useState(openMap? "Map" : "Bookmarks");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
   const [alertType] = useState<string>('inline');
@@ -87,22 +88,21 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
     }
   }, [timelinedetail]);
 
-  
-
-  const [listOFMenu, setListOFMenu] = React.useState([
-    { label: "Transcription", route: t("Transcription"), onClick: (e: any) => handleChangeDropDown(e) },
-    { label: "Notes", route: t("Notes"), onClick: (e: any) => handleChangeDropDown(e) },
-    { label: "Bookmarks", route: t("Bookmarks"), onClick: (e: any) => handleChangeDropDown(e) }
+  const [options, setOptions] = React.useState([
+    { value: "Transcription", displayText: "Transcription" },
+    { value: "Notes", displayText: "Notes" },
+    { value: "Bookmarks", displayText: "Bookmarks" }
   ]);
 
   React.useEffect(() => {
     if (openMap && gpsJson.length > 0) {
-      setListOFMenu( [...listOFMenu ,{ label: "Map", route: t("Map"), onClick: (e: any) => handleChangeDropDown(e) }])
+      setOptions( [...options ,{ value: "Map", displayText: "Map" }])
     }
   }, [gpsJson]);
+  
   const handleChangeDropDown = (event: any) => {
-
-    setSelectDropDown(event.target.textContent);
+   
+    setSelectDropDown(event.target.value);
   };
 
   const callBackOnMarkerClick = (logtime: any) => {
@@ -113,7 +113,9 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   const handleFilter = (e: any) => {
     setsearchTerm(e.target.value)
   }
-
+  const handleFilterClear = (e: any) => {
+    setsearchTerm("");
+  } 
 
 
   return (
@@ -131,14 +133,14 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
         setShowSucess={() => null}
       />}
       <div className="Video_Side_Panel_DropDown">
-        <CRXMenu
-          id="Video_Side_Panel_DropDown"
-          name={t(selectDropDown)}
-          wrapper="_dropDown_wrapper_side_panel"
-          className="LightTheme _video_panel_dropdown_paper"
-          btnClass="_video_panel_dropdown_btn"
-          MenuList={listOFMenu}
-          selectedItem={0}
+        <CRXSelectBox
+          options={options}
+          defaultOption = {false}
+          className="video_right_panel_dropDown"
+          onChange={(e: any) => handleChangeDropDown(e)}
+          icon={true}
+          defaultOptionText={openMap? "Map" : "Bookmarks"}
+          popover="video_right_panel_dropDown_menu"
         />
       </div>
 
@@ -155,12 +157,13 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
       }
 
 
-      {(selectDropDown == "bookmarks" || selectDropDown == "notes") &&
+      {(selectDropDown == "Bookmarks" || selectDropDown == "Notes") &&
         <div className="_asset_detail_bookmarks">
           <div className="inner_asset_detail_bookmarks">
             <List>
-              <div className="_video_right_panel_item_heading">{selectDropDown == "bookmarks" ? t("Search Bookmarks") : t("Search Notes")}</div>
+              <div className="_video_right_panel_item_heading">{selectDropDown == "Bookmarks" ? t("Search Bookmarks") : t("Search Notes")}</div>
               <div className="_BN_Search_field">
+                
                 <TextField
                   type="text"
                   placeholder={t("Search_by_Name_keyword_etc.")}
@@ -168,9 +171,11 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                   value={searchTerm}
                   name="bookmarkSearch"
                 />
+                <i className="fa-regular fa-magnifying-glass magnifyingIconUi"></i>
+                {searchTerm  && <i onClick={handleFilterClear} className="fa-regular fa-xmark xmarkIconUi"></i> }
               </div>
               <div className="_bookMark_list_items ">
-                {selectDropDown == "bookmarks" &&
+                {selectDropDown == "Bookmarks" &&
                   bookmarksStateArr.filter((bookmarkStateObj: any) => searchTerm == "" ? true : bookmarkStateObj.description.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((bookmarkStateObj: any) => {
                       return (
@@ -185,7 +190,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                     }
                     )
                 }
-                {selectDropDown == "notes" &&
+                {selectDropDown == "Notes" &&
                   notesStateArr.filter((noteStateObj: any) => searchTerm == "" ? true : noteStateObj.description.toLowerCase().includes(searchTerm.toLowerCase()))
                     .map((noteStateObj: any) => {
                       return (
