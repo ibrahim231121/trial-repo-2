@@ -5,12 +5,17 @@ import { Station } from '../utils/Api/models/StationModels';
 import { MAX_REQUEST_SIZE_FOR} from '../utils/constant'
 import { setLoaderValue } from './loaderSlice';
 
-export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter?: any) => {
+export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter: any, thunkAPI) => {
   let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}, {key: "InquireDepth", value:"shallow"}]
+  thunkAPI.dispatch(setLoaderValue({isLoading: true}))
   return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
-    .then((response:any) => response)
+    .then((response:any) => {
+      thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+      return response
+    })
     .catch((error: any) => {
-        console.error(error.response.data);
+      thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+      console.error(error.response.data);
     });
 });
 
