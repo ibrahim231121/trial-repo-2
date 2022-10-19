@@ -53,7 +53,7 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     const [descriptionErr, setdescriptionErr] = React.useState("");
     const [reason, setReason] = React.useState<string>("");
     const [description, setdescription] = React.useState("");
-    const [abc, setAbc] = React.useState<boolean>(true);
+    const [reasonCheck, setReasonCheck] = React.useState<string>("");
     const [otherReason, setOtherReason] = React.useState(false);
     const [ip, setIP] = useState('');
     const [isSuccess, setIsSuccess] = React.useState({
@@ -214,6 +214,9 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         setAlert(false);
         // await onDelete();
     };
+
+
+
     const CheckOtherReason = () => {
         if (description.length == 0) {
             setdescriptionErr('Description is required');
@@ -221,9 +224,6 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         }
         setdescriptionErr('');
     }
-    React.useEffect(() => {
-        CheckOtherReason()
-    }, [description])
 
     const ReasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -232,11 +232,13 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
             setOtherReason(true)
             return;
         }
+        else if(reason === "" ){
+            setReasonCheck("CRXChangeColor");
+        }
         setOtherReason(false)
     }
 
 const errorsReason = reason == "Other" && descriptionErr.length > 0  ? "__CRX__ErrorReason__" : "";
-console.log(descriptionErr, "check")
     return (
         <div className='videoPlayerNote'>
             <CRXModalAssetViewReason
@@ -269,12 +271,12 @@ console.log(descriptionErr, "check")
                             <p>Please select a reason for viewing this asset.</p>
                             <label>Reason for viewing asset <sup>*</sup></label>
                             <CRXSelectBox
-                                className="CRXViewReasonDropdown"
+                                className={`CRXViewReasonDropdown ${reasonCheck}`}
                                 options={viewReason}
                                 defaultOptionText={"-- Please select one --"}
                                 disabled={false}
                                 popover={"CrxAssetSelectModal"}
-                                defaultOption={false}
+                                defaultOption={true}
                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { ReasonChange(e) }}
                             >
 
@@ -287,7 +289,15 @@ console.log(descriptionErr, "check")
                                 label='Other Description'
                                 className='description-input crx-category-scroll'
                                 required={true}
-                                onChange={(e: any) => setdescription(e.target.value)}
+                                onChange={(e: any) => {
+                                    setdescription(e.target.value);
+                                    if (e.target.value.length == 0) {
+                                        setdescriptionErr('Description is required');
+                                    }
+                                    else{
+                                        setdescriptionErr('');
+                                    }
+                                }}
                                 onBlur={CheckOtherReason}
                             />}
                         </div>

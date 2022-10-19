@@ -389,7 +389,7 @@ const SearchComponent = (props: any) => {
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents'>
-        <div className={`predictiveSearch ${searchData ? "CRXPredictiveDisable" : ""}`}>
+        <div className={`predictiveSearch ${searchData.length > 0 ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
               <label className='searchLabel'>{t("Search_Assets")}</label>

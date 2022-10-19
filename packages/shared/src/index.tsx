@@ -58,4 +58,4 @@ export { default as CRXMiddleTruncationPopover } from './CRXDataTable/CRXMiddleT
 export { default as CBXSwitcher } from './controls/CBXSwitcher/CBXSwitcher'
 export {default as CRXVideoPlayerStyle } from "./JssStyles/VideoPlayerStyle/CRXVideoPlayerStyle"
 export { default as VolumeControlStyle } from "./JssStyles/VideoPlayerStyle/VolumeControlStyle"
-
+export { default as CRXMultiViewStyle } from "./JssStyles/VideoPlayerStyle/CRXMultiViewStyle";
