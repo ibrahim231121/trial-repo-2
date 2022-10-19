@@ -1912,13 +1912,13 @@ const VideoPlayerBase = (props: any) => {
         setIsShowAudioGraph(true)
         _playerRedLine.style.height = "123px";
         _seakBarHoverGray.style.height = "123px";
-        _fwfSeakBarRedLine.style.height = "123px";
+        if(_fwfSeakBarRedLine){ _fwfSeakBarRedLine.style.height  = "123px" };
         _video_player_main_container.style.background = "#000"
       }else {
         setIsShowAudioGraph(false)
         _playerRedLine.style.height = "35px";
         _seakBarHoverGray.style.height = "35px";
-        _fwfSeakBarRedLine.style.height = "35px";
+        if(_fwfSeakBarRedLine){ _fwfSeakBarRedLine.style.height = "35px" };
         _video_player_main_container.style.background = "#fff"
       }
     },300)

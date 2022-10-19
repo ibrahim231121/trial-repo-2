@@ -32,15 +32,8 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
     const {openNoteForm,editNoteForm,setopenNoteForm,seteditNoteForm,AssetData,EvidenceId,NotetimePositon,note,noteAssetId,toasterMsgRef,timelinedetail} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
-    const [alertType, setAlertType] = useState<string>('inline');
-    const [errorType, setErrorType] = useState<string>('error');
-    const alertRef = useRef(null);
     const [onSave, setOnSave] = useState(true);
     const [descriptionErr, setdescriptionErr] = React.useState("");
-    const [isSuccess, setIsSuccess] = React.useState({
-        success: false,
-        SuccessType: "",
-    });
     const [description, setdescription] = React.useState(editNoteForm ? note.description : "");
     const dispatch = useDispatch();
 
@@ -60,41 +53,36 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
         setOpenModal(openNoteForm)
     }, []);
 
-    React.useEffect(() => {
-        if(isSuccess.success){
-            let tempData = JSON.parse(JSON.stringify(timelinedetail));
-            if(isSuccess.SuccessType == "Add"){
-                tempData.forEach((x:any)=> 
-                            {if(x.dataId == noteobj.assetId){
-                                x.notes = [...x.notes, noteobj]
-                            }})
-                dispatch(addTimelineDetailActionCreator([...tempData]));
-                setOpenModal(false);
-                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-            }
-            else if(isSuccess.SuccessType == "Update"){
-                tempData.forEach((x:any)=> 
-                            {if(x.dataId == noteobj.assetId){
-                                x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
-                                x.notes = [...x.notes, noteobj];
-                            }})
-                dispatch(addTimelineDetailActionCreator([...tempData]));
-                setOpenModal(false);
-                seteditNoteForm(false);
-                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-            }
-            else if(isSuccess.SuccessType == "Delete"){
-                tempData.forEach((x:any)=> 
-                            {if(x.dataId == noteobj.assetId){
-                                x.notes = x.notes.filter((y:any)=> y.id !== noteobj.id);
-                            }})
-                dispatch(addTimelineDetailActionCreator([...tempData]));
-                setOpenModal(false);
-                seteditNoteForm(false);
-                setIsSuccess({...isSuccess, success: false, SuccessType: ""});
-            }
+    const setNotesInTimelineDetail = (SuccessType: any, NTObj: any) => {
+        let tempData = JSON.parse(JSON.stringify(timelinedetail));
+        if(SuccessType == "Add"){
+            tempData.forEach((x:any)=> 
+                        {if(x.dataId == NTObj.assetId){
+                            x.notes = [...x.notes, NTObj]
+                        }})
+            dispatch(addTimelineDetailActionCreator([...tempData]));
+            setOpenModal(false);
         }
-    }, [isSuccess]);
+        else if(SuccessType == "Update"){
+            tempData.forEach((x:any)=> 
+                        {if(x.dataId == NTObj.assetId){
+                            x.notes = x.notes.filter((y:any)=> y.id !== NTObj.id);
+                            x.notes = [...x.notes, NTObj];
+                        }})
+            dispatch(addTimelineDetailActionCreator([...tempData]));
+            setOpenModal(false);
+            seteditNoteForm(false);
+        }
+        else if(SuccessType == "Delete"){
+            tempData.forEach((x:any)=> 
+                        {if(x.dataId == NTObj.assetId){
+                            x.notes = x.notes.filter((y:any)=> y.id !== NTObj.id);
+                        }})
+            dispatch(addTimelineDetailActionCreator([...tempData]));
+            setOpenModal(false);
+            seteditNoteForm(false);
+        }
+    };
 
     useEffect(() => {
         description.length > 0 ? setOnSave(false) : setOnSave(true);
@@ -134,8 +122,18 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             setopenNoteForm(false);
             const noteaddurl = "/Evidences/"+EvidenceId+"/Assets/"+AssetId+"/Notes";
             EvidenceAgent.addNote(noteaddurl, body).then((response: any) => {
-                setnoteobj({ ...noteobj, noteTime: body.noteTime, description: body.description, id: response, madeBy: body.madeBy, position: body.position });
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Add"});
+                let responseObj = {
+                    assetId: noteobj.assetId,
+                    createdOn: "",
+                    description: body.description,
+                    id: response,
+                    madeBy: body.madeBy,
+                    modifiedOn: null,
+                    noteTime: body.noteTime,
+                    position: body.position,
+                    version: ""
+                }
+                setNotesInTimelineDetail("Add", responseObj);
                 toasterMsgRef.current.showToaster({message: "Note Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
             })
             .catch((e:any) =>{
@@ -172,8 +170,18 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             };
             setopenNoteForm(false);
             EvidenceAgent.updateNote(url, body).then(() => {
-                setnoteobj({ ...noteobj, noteTime: note.noteTime, description: body.description, id: body.id, madeBy: note.madeBy, position: body.position, version: body.version, createdOn: note.createdOn, modifiedOn: note.modifiedOn })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Update"});
+                let responseObj = {
+                    assetId: noteobj.assetId,
+                    createdOn: note.createdOn,
+                    description: body.description,
+                    id: body.id,
+                    madeBy: note.madeBy,
+                    modifiedOn: note.modifiedOn,
+                    noteTime: note.noteTime,
+                    position: body.position,
+                    version: body.version
+                }
+                setNotesInTimelineDetail("Update", responseObj);
                 toasterMsgRef.current.showToaster({message: "Note Sucessfully Updated", variant: "Success", duration: 5000, clearButtton: true});
             })
             .catch((err: any) => {
@@ -194,8 +202,11 @@ const VideoPlayerNote: React.FC<VideoPlayerNoteProps> = React.memo((props) => {
             const url = "/Evidences/"+EvidenceId+"/Assets/"+note.assetId+"/Notes/"+note.id;
             setopenNoteForm(false);
             EvidenceAgent.deleteNote(url).then(() => {
-                setnoteobj({ ...noteobj, id: note.id })
-                setIsSuccess({...isSuccess, success: true, SuccessType: "Delete"})
+                let responseObj = {
+                    assetId: noteobj.assetId,
+                    id: note.id
+                }
+                setNotesInTimelineDetail("Delete", responseObj);
                 toasterMsgRef.current.showToaster({message: "Note Sucessfully Deleted", variant: "Success", duration: 5000, clearButtton: true});
             })
             .catch(() => {
