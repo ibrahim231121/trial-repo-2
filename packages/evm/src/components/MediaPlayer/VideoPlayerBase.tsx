@@ -513,7 +513,7 @@ const VideoPlayerBase = (props: any) => {
         event.preventDefault(); 
         modeSet(mode < 0 ? 2 : (mode + 2))
       } //Shift + .
-      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift - ,
       if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
       if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
@@ -1066,9 +1066,11 @@ const VideoPlayerBase = (props: any) => {
           else {
             videoHandlers.forEach((videoHandle: any) => {
               videoHandle.pause();
+              videoHandle.playbackRate = 1;
             });
             setTimer(0);
             setControlBar(0);
+            modeSet(0);
             setPlaying(false);
           }
         }
@@ -2188,7 +2190,7 @@ const VideoPlayerBase = (props: any) => {
                       <CRXTooltip
                         iconName={"fas fa-undo-alt undoAltIcon"}
                         placement="top"
-                        title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
+                        title={<>Playback slow down <span className="playBackTooltip">Shift - ,</span></>}
                         arrow={false}
                       />
                     </button>

@@ -31,7 +31,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
 
   let finalWidth =
     resizeWidth &&
-    resizeWidth.deltaX + clientWidth[resizeWidth.colIdx + 3].clientWidth + "px";
+    resizeWidth.deltaX + clientWidth[(resizeWidth.colIdx + 2)].clientWidth + "px";
 
     React.useEffect(() => {
       
@@ -202,18 +202,18 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 onStop={() => {
                   const memo: any = {};
                   for (i = 0; i < clientWidth.length; i++) {
-                    if (clientWidth[colIdx + 3] in memo)
-                      return clientWidth[colIdx + 3].id;
-                    if (clientWidth[colIdx + 3].id == headCells[colIdx].id) {
-                      memo[clientWidth[colIdx + 3]] =
-                        clientWidth[colIdx + 3].id;
+                    if (clientWidth[colIdx + 2] in memo)
+                      return clientWidth[colIdx + 2].id;
+                    if (clientWidth[colIdx + 2].id == headCells[colIdx].id) {
+                      memo[clientWidth[colIdx + 2]] =
+                        clientWidth[colIdx + 2].id;
 
                       headCells[colIdx].width =
                         resizeWidth.deltaX +
-                          clientWidth[colIdx + 3].clientWidth >
+                          clientWidth[colIdx + 2].clientWidth >
                         (headCells[colIdx]?.minWidth || 125)
                           ? resizeWidth.deltaX +
-                            clientWidth[colIdx + 3].clientWidth
+                            clientWidth[colIdx + 2].clientWidth
                           : headCells[colIdx].minWidth;
                     }
                   }

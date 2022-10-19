@@ -36,11 +36,7 @@
     padding-top: 0px !important;
     padding-left: 0px !important;
   }
-  &.switchLeftComponents {
-    padding-left: 63px;
-    padding-right: 0px;
-    padding-top: 122px;
-  }
+ 
   .touchPoint_bar {
     background:  var(--color-Black);
     padding: 5px 0px 4px 0px;
@@ -144,5 +140,27 @@
     left: 0px;
     box-shadow: 0px 2px 5px #D1D2D4;
     height: 1px;
+  }
+}
+
+.makeStyles-content-9.makeStyles-contentShift-10, .jss9.jss10 {
+  #_asset_detail_view_idx {
+    &.switchLeftComponents {
+      padding-left: 62px;
+      padding-right: 0px;
+      padding-top: 122px;
+    }
+  }
+}
+
+
+.makeStyles-content-9, .jss9{
+    #_asset_detail_view_idx {
+    
+    &.switchLeftComponents {
+      padding-left: 0px;
+      padding-right: 0px;
+      padding-top: 122px;
+    }
   }
 }

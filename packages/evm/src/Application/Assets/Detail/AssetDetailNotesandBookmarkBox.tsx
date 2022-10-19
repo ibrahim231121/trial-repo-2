@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CRXButton, TextField } from "@cb/shared";
 
 import "./AssetDetailsPanel.scss";
@@ -8,9 +8,9 @@ import { addTimelineDetailActionCreator } from "../../../Redux/VideoPlayerTimeli
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";
 import { CMTEntityRecord } from "../../../utils/Api/models/CommonModels";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
+import { Button , Menu , MenuItem } from "@material-ui/core";
 
 type Timeline = {
   recording_start_point: number;
@@ -51,7 +51,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const [onSave, setOnSave] = React.useState<boolean>(false);
   const [isReadMore, setIsReadMore] = useState<boolean>(false);
   const [madeByName, setMadeByName] = React.useState<string>("");
+  const [editDevice,setEditDevice] = useState(false);
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   React.useEffect(() => {
     if(!editDescription){
@@ -64,6 +66,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       setMadeByName(stateObj.madeBy);
     }
   });
+
 
   React.useEffect(() => {
     if (isReadMore) {
@@ -82,14 +85,14 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const onRemove = (del: boolean) => {
     if (del) {
       let tempData = JSON.parse(JSON.stringify(timelinedetail));
-      if(selectDropDown == "notes"){
+      if(selectDropDown == "Notes"){
         tempData.forEach((x:any)=> 
           {if(x.dataId == stateObj.assetId){
               x.notes = x.notes.filter((y:any)=> y.id !== stateObj.id);
           }})
         dispatch(addTimelineDetailActionCreator(tempData));
       }
-      else if(selectDropDown == "bookmarks"){
+      else if(selectDropDown == "Bookmarks"){
         tempData.forEach((x:any)=> 
           {if(x.dataId == stateObj.assetId){
               x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== stateObj.id);
@@ -103,6 +106,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     setEditDescription(false);
     setEnableOnSave(false);
     setIsReadMore(false);
+    setEditDevice(false);
+
   };
 
   const onChangeDescription = (e: any) => {
@@ -114,18 +119,20 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     await setIsReadMore(true);
     setEditDescription(true);
     setEnableOnSave(true);
+    setEditDevice(true);
   };
 
   const onUpdateDone = async () => {
     await setIsReadMore(false);
     setEditDescription(false);
     setEnableOnSave(false);
+    setEditDevice(false);
   }
 
   const onClickSave = () => {
-    if (selectDropDown == "bookmarks") {
+    if (selectDropDown == "Bookmarks") {
       onUpdateBookmark();
-    } else if (selectDropDown == "notes") {
+    } else if (selectDropDown == "Notes") {
       onUpdateNote();
     }
   };
@@ -218,7 +225,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
   const updateBookmarkNoteObjState = () => {
     let tempData = JSON.parse(JSON.stringify(timelinedetail));
-    if (selectDropDown == "notes") {
+    if (selectDropDown == "Notes") {
       tempData.forEach((x: any) => {
         if (x.dataId == stateObj.assetId) {
           x.notes.forEach((y: any) => {
@@ -230,7 +237,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       })
       dispatch(addTimelineDetailActionCreator(tempData));
     }
-    else if (selectDropDown == "bookmarks") {
+    else if (selectDropDown == "Bookmarks") {
       tempData.forEach((x: any) => {
         if (x.dataId == stateObj.assetId) {
           x.bookmarks.forEach((y: any) => {
@@ -309,9 +316,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   };
 
   const onDeleteConfirm = async () => {
-    if (selectDropDown == "bookmarks") {
+    if (selectDropDown == "Bookmarks") {
       onDeleteBookmark();
-    } else if (selectDropDown == "notes") {
+    } else if (selectDropDown == "Notes") {
       onDeleteNote();
     }
   };
@@ -323,102 +330,101 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     setIsReadMore(false);
  }
 
+
+    const handleClickAction = (event: any) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseAction = () => {
+      setAnchorEl(null);
+    };
+
   return (
     <>
       <div className="item_asset_detail_bookmarks">
-        <a onClick={() => selectDropDown == "notes" ? onClickBookmarkNote(stateObj, 2) : onClickBookmarkNote(stateObj, 1)} >
+        <a onClick={() => selectDropDown == "Notes" ? onClickBookmarkNote(stateObj, 2) : onClickBookmarkNote(stateObj, 1)} >
           <div className="_bookmark_time_user_flex">
             <div className="_bookmark_time">
-              {selectDropDown == "notes" ? moment(stateObj.noteTime).format("HH:MM:SS") : moment(stateObj.bookmarkTime).format("HH:MM:SS")}
+              {selectDropDown == "Notes" ? moment(stateObj.noteTime).format("HH:MM:SS") : moment(stateObj.bookmarkTime).format("HH:MM:SS")}
             </div>
-            <div className="_bookmark_users">
-              {` ${t("Form")} : ${stateObj.madeBy}`}
+            <div className={`${editDevice ? "_bookmark_detail_user_box _bookmark_detail_user_box_editabled " : "_bookmark_detail_user_box"}`} onClick={() => {isReadMore ? setIsReadMore(false) : setIsReadMore(true)  }}>
+                <div className="_bookmark_users">
+                  {` ${t("From")}: `}<span>{stateObj.madeBy}</span>
+                </div>
+                  <div className={`${editDevice ? "textToggler textField_Edited" : "textToggler"}  `}>
+                  <TextField
+                    type="text"
+                    placeholder={"Type your note here"}
+                    onChange={(e: any) => onChangeDescription(e)}
+                    value={description}
+                    multiline
+                    row={!isReadMore ? 2 : null}
+                    col={5}
+                    variant={"outlined"}
+                    inputProps={{ readOnly: !editDescription }}
+                    inputRef={(input: any) => {
+                      inputRef = input;
+                    }}
+                    fullWidth
+                  />
+                  {!editDescription && stateObj.description.length >= 50 && (description.length >= 50 ? 
+                  <div className="bookmark_read_function" onClick={() => handleReadLess() }><p>{t("Read_less")} </p><i className="fa-regular fa-chevron-up"></i></div> 
+                  : <div className="bookmark_read_function"  onClick={() => handleReadMore() }><p>{t("Read_More")}</p><i className="fa-regular fa-chevron-down"></i></div>)}
+                  {((selectDropDown == "Bookmarks" && stateObj.madeBy == "User") || selectDropDown == "Notes") && enableOnSave &&
+                    <div className="_field_action_container">
+                        <CRXButton onClick={onClickCancel}>
+                        <CRXTooltip
+                          iconName="fa-regular fa-xmark"
+                          placement="bottom"
+                          title="cancel"
+                          arrow={false}
+                          className="_field_action_button _action_button_xmark"
+                        ></CRXTooltip>
+                      </CRXButton>
+                      <CRXButton onClick={onClickSave} disabled={onSave}>
+                        <CRXTooltip
+                          iconName="far fa-check"
+                          placement="bottom"
+                          title="done"
+                          arrow={false}
+                          className="_field_action_button"
+                        ></CRXTooltip>
+                      </CRXButton>
+              
+                    </div>
+                  }
+                </div>
             </div>
-          </div>
-          <div className="textToggler">
-            <TextField
-              type="text"
-              placeholder={"Type your note here"}
-              onChange={(e: any) => onChangeDescription(e)}
-              value={description}
-              multiline
-              variant={"outlined"}
-              inputProps={{ readOnly: !editDescription }}
-              inputRef={(input: any) => {
-                inputRef = input;
-              }}
-              fullWidth
-            />
-            {stateObj.description.length >= 50 && (description.length >= 50 ? <i className="fas fa-angle-up" onClick={() => handleReadLess() }> {t("Showless")} </i> : <i className="fas fa-angle-down" onClick={() => handleReadMore() }> {t("Read_More")} </i>)}
-            {((selectDropDown == "bookmarks" && stateObj.madeBy == "User") || selectDropDown == "notes") && enableOnSave &&
-              <div className="_field_action_container">
-                <CRXButton onClick={onClickSave} disabled={onSave}>
-                  <CRXTooltip
-                    iconName="far fa-check"
-                    placement="bottom"
-                    title="done"
-                    arrow={false}
-                    className="_field_action_button"
-                  ></CRXTooltip>
-                </CRXButton>
-                <CRXButton onClick={onClickCancel}>
-                  <CRXTooltip
-                    iconName="fas fa-times"
-                    placement="bottom"
-                    title="cancel"
-                    arrow={false}
-                    className="_field_action_button"
-                  ></CRXTooltip>
-                </CRXButton>
-              </div>
-            }
-          </div>
-          <div className="_side_panel_bookmark_menu">
+          
+            <div className="_side_panel_bookmark_menu" onClick={handleClickAction}>
             {stateObj.madeBy == "User" &&
-              <div className="menu">
-                <Menu
-                  align="start"
-                  viewScroll="initial"
-                  direction="bottom"
-                  position="auto"
-                  arrow
-                  menuButton={
-                    <MenuButton>
-                      <CRXTooltip
-                        className="CRXTooltip_form"
-                        iconName="far fa-ellipsis-v"
-                        title="actions"
-                        placement="right"
-                      />
-                    </MenuButton>}>
-                  <MenuItem>
-
-                    <div onClick={() => onClickDelete()}
-                      className="crx-meu-content groupingMenu crx-spac">
-                      <div className="crx-menu-icon">
-                        <i className="fas fa-trash"></i>
-                      </div>
-                      <div className="_NB_menu_item">
-                        {t("Delete")}
-                      </div>
-                    </div>
-                  </MenuItem>
-                  <MenuItem>
-                    <div onClick={() => onClickEnableEdit()}
-                      className="crx-meu-content groupingMenu crx-spac">
-                      <div className="crx-menu-icon">
-                        <i className="fas fa-edit"></i>
-                      </div>
-                      <div className="_NB_menu_item">
-                        {t("Edit")}
-                      </div>
-                    </div>
-
-                  </MenuItem>
-                </Menu>
-              </div>
+            <>
+            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClickAction}>
+              <CRXTooltip
+                  placement="bottom"
+              iconName="far fa-ellipsis-v"
+              className="bookmarkActionEllipsis"
+              title="actions"
+              />
+            </Button>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onBlur={handleCloseAction}
+              className="Bookmark_Note_Action_Menu"
+            >
+              <MenuItem onClick={onClickEnableEdit}><i className="fas fa-pencil"></i> {t("Edit")}</MenuItem>
+              <MenuItem onClick={onClickDelete}><i className="fa-solid fa-trash-can"></i> {t("Delete")}</MenuItem>
+            </Menu>
+            </>
+     
             }
           </div>
+          </div>
+       
+      
         </a>
       </div>
       <CRXConfirmDialog

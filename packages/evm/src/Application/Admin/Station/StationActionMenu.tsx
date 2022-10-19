@@ -80,7 +80,14 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
         duration: 7000,
         clearButtton: true
       });
-      dispatch(getStationsAsync());
+      dispatch(getStationsAsync({
+        gridFilter: {
+          logic: "and",
+          filters: []
+        },
+        page: 0,
+        size: 25
+      }));
     })
       .catch(function (error) {
         showToastMsg?.({

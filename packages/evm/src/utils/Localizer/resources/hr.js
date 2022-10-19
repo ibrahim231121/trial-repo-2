@@ -159,6 +159,7 @@ export const resources = {
         "Edit":"hr-Edit",
         "Showless":"hr-Showless",
         "Read_More":"hr-Read More",
+        "Read_less":"hr-Read less",
         "Map":"hr-Map",
         "Bookmarks":"hr-Bookmarks",
         "Success":"hr-Success",
