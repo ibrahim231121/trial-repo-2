@@ -26,7 +26,7 @@
 // }
 
 // export const advancedSearchOptions= [
-  
+
 //     {
 //       value: i18n.t("User_Name"),
 //       key: "username",
@@ -59,28 +59,43 @@
 const SearchType = {
     SimpleSearch: "SimpleSearch",
     AdvanceSearch: "AdvanceSearch",
-    ShortcutSearch:"ShortcutSearch",
+    ShortcutSearch: "ShortcutSearch",
     ViewOwnAssets: "ViewOwnAssets"
-  }
+}
 
-  const GenerateLockFilterQuery = (groupId) => {
-    let groupIds = groupId.split(',');
+const GenerateLockFilterQuery = (decoded) => {
+    const Allowed_Access_To_Restricted_Assets = "29";
     const shouldGroup = [];
-    shouldGroup.push({
-        "bool": {
-            "must_not": {
-                "exists": {
-                    "field": "masterAsset.lock"
-                }
-            }
-        }
-    });
-    for (const id of groupIds) {
+    const isAllowed = decoded.AssignedModules.includes(Allowed_Access_To_Restricted_Assets);
+    if (isAllowed) {
+        const groupIds = decoded.AssignedGroups.split(',');
         shouldGroup.push({
             "bool": {
-                "must": {
-                    "match": {
-                        "masterAsset.lock.groupRecId": id
+                "must_not": {
+                    "exists": {
+                        "field": "masterAsset.lock"
+                    }
+                }
+            }
+        });
+        for (const id of groupIds) {
+            shouldGroup.push({
+                "bool": {
+                    "must": {
+                        "match": {
+                            "masterAsset.lock.groupRecId": id
+                        }
+                    }
+                }
+            });
+        }
+    }
+    else {
+        shouldGroup.push({
+            "bool": {
+                "must_not": {
+                    "exists": {
+                        "field": "masterAsset.lock"
                     }
                 }
             }
@@ -93,6 +108,6 @@ const SearchType = {
     }
 }
 
-export  { SearchType, GenerateLockFilterQuery}
+export { SearchType, GenerateLockFilterQuery }
 
 //export default { AssetStatus, AssetUnCategorized, SearchType, AssetShortCuts, AssetShortCutsWithPrefix, assetShortCutPrefix}

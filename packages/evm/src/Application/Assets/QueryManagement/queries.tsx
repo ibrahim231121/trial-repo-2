@@ -1,8 +1,9 @@
 import moment from 'moment';
+import { IDecoded } from '../../../Login/API/auth';
 import { GenerateLockFilterQuery } from '../utils/constants';
 
-let GetAssetsByState = (status: string, groupIds: string) => {
-    const lockQuery = GenerateLockFilterQuery(groupIds);
+let GetAssetsByState = (status: string, decoded: IDecoded) => {
+    const lockQuery = GenerateLockFilterQuery(decoded);
     return {
         bool: {
             must: [
@@ -27,8 +28,8 @@ let GetAssetsByUserName = (userName: string) => {
     }
 }
 
-let GetAssetsUnCategorized = (startDate: string, endDate: string, groupIds: string) => {
-    let lockQuery = GenerateLockFilterQuery(groupIds);
+let GetAssetsUnCategorized = (startDate: string, endDate: string, decoded: IDecoded) => {
+    let lockQuery = GenerateLockFilterQuery(decoded);
     let mustQuery = [
         {
             range: {
@@ -79,8 +80,8 @@ let GetAssetsUnCategorized = (startDate: string, endDate: string, groupIds: stri
     return query;
 };
 
-let GetAssetsApproachingDeletion = (startDate: string, endDate: string, groupIds: string) => {
-    const lockQuery = GenerateLockFilterQuery(groupIds);
+let GetAssetsApproachingDeletion = (startDate: string, endDate: string, decoded: IDecoded) => {
+    const lockQuery = GenerateLockFilterQuery(decoded);
     const infinite = '9999-12-31T00:00:00Z';
     let approachingDeletion = {
         bool: {
