@@ -11,7 +11,6 @@ import moment from 'moment';
 const DateTime = () => {
 
   const {
-
     disabled,
     onSelectionChange,
     openContainerState,
@@ -46,8 +45,8 @@ const DateTime = () => {
   },[dateOptionType])
 
   useEffect(()=>{
-
     if(reset){
+
         var defaultValue : string = '';
         if(dateOptionType === dateOptionsTypes.basicoptions){
           defaultValue = basicDateDefaultValue;
@@ -76,7 +75,6 @@ const DateTime = () => {
   },[reset])
 
   const changeDateOption = () =>{
-
     let dateValues : (DateTimeProp | undefined)[] = [];
     if(dateOptionType === dateOptionsTypes.basicoptions ){
       dateValues = dateOptions.basicoptions;
@@ -86,12 +84,23 @@ const DateTime = () => {
       dateValues = dateOptions.basicoptions;
     }
     
+    if(dateTimeDetail?.value == "customRange")
+    {
+      let dataArray =  [...dateValues]
+      var defaultDateValue : DateTimeProp = {
+        startDate : function() { return(dateTimeDetail.startDate)},
+        endDate : function() { return dateTimeDetail.endDate},
+        value : dateTimeDetail.value,
+        displayText : dateTimeDetail.displayText
+    }
+      dateValues =  [...dataArray,defaultDateValue];
+    }
+
     if(!showCompact){
       setDateOptions(dateValues);
     }
-
-
     else if(showCompact && (minDate === "" || minDate === undefined)  && ( maxDate === "" || maxDate === undefined) ){
+      
       let requiredDateOptions = dateValues.filter((x, i) => {
         if(x && x.value === "custom")
         return x
@@ -101,7 +110,6 @@ const DateTime = () => {
             return x;       
         }
       });
-
       if(dateTimeDetail.displayText === "tomorrow" || dateTimeDetail.displayText === "next 7 days" || dateTimeDetail.displayText === "next 30 days")
       {
           requiredDateOptions = dateOptions.approachingDeletion.filter((x, i) => {
@@ -110,8 +118,8 @@ const DateTime = () => {
             moment(x.endDate()) <= moment(dateTimeDetail.endDate)) { // add this check because by default it is showing DateTimeProp or undefined . 
               return x;       
           }
-      });
-    }
+        });
+      }
   
       if(requiredDateOptions != null && requiredDateOptions.length > 0 ){
         setDateOptions(requiredDateOptions);
@@ -153,17 +161,45 @@ const DateTime = () => {
       var datesOptionWithCustomRange = filterDataValues.concat(dateTime);
       setDateOptions(datesOptionWithCustomRange);
       onSelectionChange(dateTime)
-
     }
     else {
-      const dateOption = dateOptionsValues.find((x: DateTimeProp|undefined) => x?.value === value);
-      
-      if (dateOption) {
-        dateOption.startDate = dateOptions.basicoptions[0].startDate;
-        dateOption.endDate = dateOptions.basicoptions[0].endDate;
+      let basicOption = dateOptions.basicoptions.find((x: DateTimeProp|undefined) => x?.value === value);
+      let approachingDeletion = dateOptions.approachingDeletion.find((x: DateTimeProp|undefined) => x?.value === value);
+      if(basicOption)
+      {
+        if(value == "custom")
+        {
+          let dateValues = [...dateOptionsValues];
+          let dateObject = dateValues.find((x: DateTimeProp|undefined) => x?.value === customRange);
+          if(dateObject)
+          {
+            basicOption.startDate = dateObject.startDate;
+            basicOption.endDate = dateObject.endDate;
+          }
+          else
+          {
+
+            let lastIndex = dateValues.find((x: DateTimeProp | undefined) => x?.value === "anytime") ? 0 : dateValues?.length - 1;
+            if (lastIndex >= 1) {
+              let lastDate = dateValues[lastIndex-1];
+              if (lastDate) {
+                basicOption.startDate = lastDate.startDate;
+                basicOption.endDate = lastDate.endDate;
+              }
+            }
+            else
+            {
+              basicOption.startDate = dateOptions.basicoptions[0].startDate;
+              basicOption.endDate = dateOptions.basicoptions[0].endDate;
+            }
+          }
+        }
+        onSelectionChange(basicOption);
       }
-      
-      onSelectionChange(dateOption);
+      else if(approachingDeletion)
+      {
+        onSelectionChange(approachingDeletion);
+      }
     }
   };
 

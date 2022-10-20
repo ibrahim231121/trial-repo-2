@@ -19,6 +19,7 @@ import moment from "moment";
 import { getCategoryAsync } from "../../../Redux/categoryReducer";
 import { addMetadata, AddMetadataFormProps, CategoryNameAndValue, masterAsset, MasterAssetBucket, masterAssetFile, masterAssetStation, MasterNameAndValue, NameAndValue, UserNameAndValue } from "./SubComponents/types";
 import { SubmitType } from "../../Assets/AssetLister/Category/Model/CategoryFormModel";
+import { MAX_REQUEST_SIZE_FOR } from "../../../utils/constant";
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
@@ -245,7 +246,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   }, [formpayload.category]);
 
   const fetchStation = async () => {
-    var response = await UnitsAndDevicesAgent.getAllStationInfo("").then(
+    var response = await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1&Size=${MAX_REQUEST_SIZE_FOR.STATION}`).then(
       (response: Station[]) => response
     );
     var stationNames = response.map((x: any, i: any) => {

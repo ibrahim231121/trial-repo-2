@@ -478,7 +478,7 @@ const VideoPlayerBase = (props: any) => {
   const [updatedSensorsDataOverlay, setUpdatedSensorsDataOverlay] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
-  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(false);
+  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(true);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
   const [isMultiViewEnable, setIsMultiViewEnable] = React.useState<boolean>(false);
@@ -744,6 +744,7 @@ const VideoPlayerBase = (props: any) => {
   React.useEffect(() => { // work Asset View Reason
     if(CheckAssetViewReason()){
       setViewReasonControlsDisabled(false);
+      setViewReasonRequired(false);
     }
   }, []);
 
@@ -911,12 +912,12 @@ const VideoPlayerBase = (props: any) => {
     else {
       if (action == "bookmark") {
         toasterMsgRef.current.showToaster({
-          message: "Please seek to appropriate time of master camera to bookmark", variant: "Error", duration: 5000, clearButtton: true
+          message: "Please seek to appropriate time of master camera to bookmark", variant: "error", duration: 5000, clearButtton: true
         });
       }
       else if (action == "note") {
         toasterMsgRef.current.showToaster({
-          message: "Please seek to appropriate time of master camera to bookmark notes", variant: "Error", duration: 5000, clearButtton: true
+          message: "Please seek to appropriate time of master camera to bookmark notes", variant: "error", duration: 5000, clearButtton: true
         });
       }
 
@@ -932,7 +933,7 @@ const VideoPlayerBase = (props: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
           error = true;
           toasterMsgRef.current.showToaster({
-            message: "Unable To Add Duplicate Bookmark", variant: "Error", duration: 5000, clearButtton: true
+            message: "Unable To Add Duplicate Bookmark", variant: "error", duration: 5000, clearButtton: true
           });
         }
       })
@@ -942,7 +943,7 @@ const VideoPlayerBase = (props: any) => {
         if (minBKMTime <= y.position && mixBKMTime >= y.position) {
           error = true;
           toasterMsgRef.current.showToaster({
-            message: "Unable To Add Duplicate Note", variant: "Error", duration: 5000, clearButtton: true
+            message: "Unable To Add Duplicate Note", variant: "error", duration: 5000, clearButtton: true
           });
         }
       })
@@ -1313,28 +1314,35 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const onClickBookmarkNote = (event: any, Case: number) => {
-    var videos: any = timelinedetail;
-    var video: any;
-    switch (Case) {
-      case 1: //Bookmark
-        videos.forEach((vid: any) => {
-          if (vid.bookmarks.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
-        }
-        )
-        break;
-      case 2: //Notes
-        videos.forEach((vid: any) => {
-          if (vid.notes.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
-        }
-        )
-        break;
-      default:
-        break;
+    if(!viewReasonControlsDisabled){
+      let videos: any = timelinedetail;
+      let video: any;
+      switch (Case) {
+        case 1: //Bookmark
+          videos.forEach((vid: any) => {
+            if (vid.bookmarks.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
+          }
+          )
+          break;
+        case 2: //Notes
+          videos.forEach((vid: any) => {
+            if (vid.notes.some((x: any) => x.assetId == event.assetId && x.id == event.id)) { video = vid }
+          }
+          )
+          break;
+        default:
+          break;
+      }
+      if (video) {
+        let position = event.position / 1000;
+        let currTimeTotal = position + (video.recording_start_point);
+        handleControlBarChange(null, currTimeTotal);
+      }
     }
-    if (video) {
-      var position = event.position / 1000;
-      var currTimeTotal = position + (video.recording_start_point);
-      handleControlBarChange(null, currTimeTotal);
+    else{
+      toasterMsgRef.current.showToaster({
+        message: "Asset View Reason Required", variant: "error", duration: 5000, clearButtton: true
+      });
     }
   }
 
@@ -1576,7 +1584,7 @@ const VideoPlayerBase = (props: any) => {
     await dispatch(addTimelineDetailActionCreator(tempTimelines));
     setTimelineSyncHistoryCounter(0);
     toasterMsgRef.current.showToaster({
-      message: "Times reverted to original", letiant: "Success", duration: 5000, clearButtton: true
+      message: "Times reverted to original", variant: "success", duration: 5000, clearButtton: true
     });
   }
   const UndoRedo = async (indexOperation: number) => {
@@ -1610,7 +1618,7 @@ const VideoPlayerBase = (props: any) => {
     }
     if (indexOperation == 0) {
       toasterMsgRef.current.showToaster({
-        message: "Timelines reverted to last save", variant: "Success", duration: 5000, clearButtton: true
+        message: "Timelines reverted to last save", variant: "success", duration: 5000, clearButtton: true
       });
     }
   }
@@ -1658,7 +1666,7 @@ const VideoPlayerBase = (props: any) => {
     const url = "/Evidences/" + EvidenceId + "/TimelineSync";
     EvidenceAgent.timelineSync(url, body).then(() => {
       toasterMsgRef.current.showToaster({
-        message: "Timeline sync saved", variant: "Success", duration: 5000, clearButtton: true
+        message: "Timeline sync saved", variant: "success", duration: 5000, clearButtton: true
       });
       var timelineSyncHistoryTemp: TimelineSyncHistoryMain[] = [{
         maxTimelineDuration: timelineduration,
@@ -1669,7 +1677,7 @@ const VideoPlayerBase = (props: any) => {
     })
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
-          message: "Timelines failed to update", variant: "Error", duration: 5000, clearButtton: true
+          message: "Timelines failed to update", variant: "error", duration: 5000, clearButtton: true
         });
       })
   }

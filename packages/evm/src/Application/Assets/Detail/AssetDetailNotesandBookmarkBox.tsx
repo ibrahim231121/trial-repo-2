@@ -342,9 +342,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   return (
     <>
       <div className="item_asset_detail_bookmarks">
-        <a onClick={() => selectDropDown == "Notes" ? onClickBookmarkNote(stateObj, 2) : onClickBookmarkNote(stateObj, 1)} >
+        <a>
           <div className="_bookmark_time_user_flex">
-            <div className="_bookmark_time">
+            <div className="_bookmark_time" onClick={() => selectDropDown == "Notes" ? onClickBookmarkNote(stateObj, 2) : onClickBookmarkNote(stateObj, 1)}>
               {selectDropDown == "Notes" ? moment(stateObj.noteTime).format("HH:MM:SS") : moment(stateObj.bookmarkTime).format("HH:MM:SS")}
             </div>
             <div className={`${editDevice ? "_bookmark_detail_user_box _bookmark_detail_user_box_editabled " : "_bookmark_detail_user_box"}`} onClick={() => {isReadMore ? setIsReadMore(false) : setIsReadMore(true)  }}>
