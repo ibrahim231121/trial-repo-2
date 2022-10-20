@@ -41,7 +41,7 @@ const CustomizedMultiSelectForFormik = (props: any) => {
   const { children, form, field } = props;
   const { name, value } = field;
   const { setFieldValue } = form;
-  const [allSelected,setAllSelected] = useState(true)
+  const [allSelected,setAllSelected] = useState(value.includes("Add All"))
 
   return (
     <>
@@ -52,7 +52,7 @@ const CustomizedMultiSelectForFormik = (props: any) => {
           setFieldValue(name, e.target.value);
         }}
         MenuProps={{ classes: { paper: `multiSelectFormikIncar ${allSelected === true ? "AllDataSelectedList" : "NotAllSelectedList"}` } }}
-  
+
         renderValue={(selected: any[]) => {
           if(children.filter((x: any) => x.key != "Add All").length === selected.length)
           {
@@ -63,14 +63,11 @@ const CustomizedMultiSelectForFormik = (props: any) => {
             setAllSelected(false);
           }
           var addAllSelected = selected.includes("Add All");
-          var listToExclude = "list of all sensors and triggers";
           if(addAllSelected)
           {
-            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value).filter((x: any) => (!listToExclude.includes(x))));
+            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value));
+
             return children.filter((x: any) => x.key != "Add All").map((x:any) => x.key).join(', ');
-          }
-          if((selected.length > 1) && (selected.includes("list of all sensors and triggers"))) {
-            return children.filter((x:any) =>(!listToExclude.includes(x.props.value)) && selected.includes(x.props.value)).map((x:any) => x.key).join(', ')
           }
           return children.filter((x: any) => selected.includes(x.props.value)).map((x:any) => x.key).join(', ');
         }}
@@ -509,13 +506,14 @@ export const CreateTempelateCase = (props: any) => {
             <Field
               name={formObj.key}
               id={formObj.id}
+              placeholder="Heloss"
               component={CustomizedMultiSelectForFormik}
             // multiple={true}
             >
              
               {formObj.options.map(
                 (opt: any, key: string) => (
-
+                  
                   <MenuItem  key={opt.label} value={opt.value}  >
                     {/* <Checkbox checked={name.indexOf(opt.value) > -1} /> */}
                     <ListItemText primary={t(opt.label)} />

@@ -61,28 +61,26 @@
         background: none;
         border: none
     }
-    
+ 
 }
-
 
 ._video_Player_Right_Panel {
     width: 33.33%;
-    
     display: flex;
     position: relative;
     z-index: 99;
-    background: #282828;
-    border:1px solid var(--color-333333);
+    background: var(--color-333333);
+    border: 1px solid var(--color-151515);
     height: calc(100vh - (327px + 191px));
     margin-left: 5px;
     ._panel_resize_bar {
-        background: #282828;
+        background: var(--color-151515);
         width: 25px;
         height: 100%;
-       
+       border: 1px solid var(--color-151515);
     }
     ._bookMark_list_items {
-        height: calc(100vh - (238px + 400px));
+        height: calc(100vh - (129px + 310px));
         overflow-y: auto;
     }
     .detailDropdownMain {
@@ -97,16 +95,17 @@
             z-index: 999;
             top: 3px;
             ._dropDown_wrapper_side_panel {
-                width: 150px;
-                height: 30px;
+                width: 138px;
                 ._video_panel_dropdown_btn {
-                    background: #fff;
+                    height: 30px;
+                    padding-bottom: 2px;
+                    background: var(--color-d1d2d4);
                     width: 100%;
                     color: var(--color-333333);
                     border-radius: 0px;
                     justify-content: left;
                     padding-left: 16px;
-                    border: 1px solid #D1D2D4;
+                    border: 1px solid var(--color-88878773);
                     outline: 2px solid transparent;
                     font-family: var(--Arial-font-family);
                     margin-bottom: 2px;
@@ -132,51 +131,120 @@
 
         ._asset_detail_bookmarks {
             .inner_asset_detail_bookmarks {
-                padding: 24px;
+                padding: 61px 0px 0 0px;
                 ._video_right_panel_item_heading{
-                    font-size: 20px;
-                    color: #fff;
+                    font-size: 14px;
+                    padding-left: 19px;
+                    color: var(--color-d1d2d4);
                     font-family: var(--Arial-font-family);
                 }
                 ._bookMark_list_items {
-                    
+                    padding-left: 19px;
                     .item_asset_detail_bookmarks {
-                        border:1px solid var(--color-404041) ;
-                        background-color: var(--color-d1d2d4);
-                        padding: 0 10px;
-                        margin-bottom: 10px;
+                        background-color: var(--color-333333);
+                        color: var(--color-d1d2d4);
+                        padding: 0 20px 0 0;
                         position: relative;
                         a {
                             ._bookmark_time_user_flex {
                                 display: flex;
-                                padding: 8px 0px;
+                                border-bottom: 1px solid var(--color-4C4C4D);
+                                &:hover {
+                                    cursor: pointer;
+                                }
+                                ._bookmark_detail_user_box {
+                                    margin-right: auto;
+                                    width: 100%;
+                                    padding-top: 16px;
+                                    padding-bottom: 10px;
+                                    padding-left: 9px;
+                                    margin-left: 9px;
+                                    &:hover {
+                                        background-color: var(--color-404041);
+                                        cursor: pointer;
+                                    }
+                                }
+                                ._bookmark_detail_user_box_editabled  {
+                                    &:hover {
+                                        background-color: transparent;
+                                        cursor: pointer;
+                                    }
+                                }
+                          
                                 ._bookmark_time {
                                     font-size: 14px;
-                                    color: var(--color-333333);
+                                    color: var(--color-d1d2d4);
                                     font-family: var(--Arial-font-family);
-                                    padding-right: 30px;
+                                    position: relative; 
+                                    z-index: 1;
+                                    padding-top: 16px;
+                                    padding-bottom: 10px;
+
+                                   &:hover {
+                                    &::after {
+                                        position: absolute;
+                                        background-color: var(--color-404041);
+                                        content: "";
+                                        top: 0px;
+                                        left: -8px;
+                                        height: 100%;
+                                        width: 100%;
+                                        z-index: -1;
+                                        padding-right: 9px;
+                                        padding-left: 9px;
+                                    }
+                                    cursor: pointer;
+                                   }
+                                   &:active,&:focus {
+                                    &::after {
+                                        position: absolute;
+                                        background-color: var(--color-231f20);
+                                        content: "";
+                                        top: 0px;
+                                        left: -8px;
+                                        height: 100%;
+                                        width: 100%;
+                                        z-index: -1;
+                                        padding-right: 9px;
+                                        padding-left: 9px;
+                                    }
+                                    cursor: pointer;
+                                   }
                                 }
 
                                 ._bookmark_users {
                                     font-size: 14px;
-                                    color: var(--color-333333);
+                                    color: var(--color-d1d2d4);
                                     font-family: var(--Arial-font-family);
+                                    span {
+                                        font-weight: 700;
+                                    }
                                 }
                             }
                             .textToggler {
-                                position: relative;
-                                left: 56px;
-                                width: 78%;
+                                &:hover {
+                                    cursor: pointer;
+                                }
+                                .gridFilterTextBox {
+                                    padding: 0px;
+                                }
+                                .MuiInputBase-multiline {
+                                    padding-left: 0px;
+                                }
                                 textarea{
                                     font-size: 14px;
-                                    color: var(--color-333333);
+                                    padding-top: 0px;
+                                    text-indent: 0px;
+                                    color: var(--color-d1d2d4);
                                     font-family: var(--Arial-font-family);
-                                    line-height: 12px;
+                                    line-height: 16px;
                                     min-height: auto;
-                                    margin-bottom: 9px;
                                     width: 100%;
                                     background: transparent;
-                                    
+                                    outline: none;
+                                    &:hover {
+                                        cursor: pointer;
+                                    }
                                 }
                                 .removeOutLine {
                                     
@@ -190,13 +258,34 @@
                                     display: flex;
                                     align-items: flex-end;
                                     place-content: flex-end;
+
+                                    margin-top: -1px;
+                                    margin-bottom: -5px;
                                     ._field_action_button {
-                                        padding: 5px 10px
+                                        font-size:20px;
+                                        color: var(--color-d1d2d4);
+                                    }
+                                    button {
+                                        padding: 0 0;
+                                        width: 32px;
+                                        min-width: 23px;
+                                        margin-left: 12px;
                                     }
                                 }
                                 button {
                                     border: none;
-                                    color: #333333;
+                                    color: var(--color-d1d2d4);
+                                }
+                            }
+
+                            .textField_Edited   {
+                                textarea {
+                                    background-color: var(--color-d1d2d4);
+                                    color: var(--color-333333);
+                                    border: 2px solid var(--color-White);
+                                    margin-top: 4px;
+                                    padding: 15px 15px 15px 15px;
+                                    width: 100%;
                                 }
                             }
                             fieldset {
@@ -205,36 +294,168 @@
                             }
                         }
                         ._side_panel_bookmark_menu {
-                            position: absolute;
-                            top: 10px;
-                            right: 7px;
-                            .menu{
-                                .rc-menu-button {
-                                    i{
-                                        font-size: 20px;
-                                        color: var(--color-333333);
-                                    }
-                                    
+                            display: flex;
+                            align-items: center;
+                            padding: 0 0;
+                            width: 32px;
+                            justify-content: center;
+                            button {
+                                color: var(--color-D1D2D4);
+                                font-size: 20px;
+                                margin-right: -7px;
+                                &:hover {
+                                    background-color: transparent;
                                 }
-                                .rc-menu-container {
-                                    ul {
-                                        li {
-                                            .crx-meu-content {
-                                                ._NB_menu_item {
-                                                    padding-left: 11px;
-                                                }
-                                            }
-                                        }
-                                    }
+                                &:active {
+                                    background-color: transparent;
+                                }
+                                .MuiTouchRipple-root {
+                                    display: none;
                                 }
                             }
+                        }
+                        &:first-child {
+                            ul {
+                                margin-top: -18px !important;
+                            }
+                        }
+                        &:last-child {
+                            ul {
+                            margin-top: -3px !important;
+
+                            }
+                        }
+                    }
+                    .bookmark_read_function {
+                        display: flex;
+                        align-items: center;
+                        height: 20px;
+                        font-size: 12px;
+                        font-style: italic;
+                        padding-top: 5px;
+                        i {
+                            margin-left: 16px;
+                            padding-top: 3px;
                         }
                     }
                 }
                 ._BN_Search_field {
                     padding: 15px 0px;
+                    position: relative;
+                    margin-right: 26px;
+                    margin-left: 15px;
+                    padding-bottom: 2px;
+                    input {
+                        padding-left: 28px;
+                        color: var(--color-666666);
+                        background: var(--color-d1d2d4);
+                        outline: 1px solid var(--color-88878773);
+                        &:active, &:focus {
+                            outline: 2px solid var(--color-White) !important;
+                        }
+                        &::placeholder {
+                            color: var(--color-666666);
+                            opacity: 1;
+                            
+                        }
+                    }
+                    .magnifyingIconUi {
+                        position: absolute;
+                        top: 24px;
+                        font-size: 14px;
+                        color: var(--color-666666) ;
+                        left: 21px;
+                    }
+                    .xmarkIconUi {
+                        position: absolute;
+                        top: 24px;
+                        font-size: 14px;
+                        color: var(--color-333333);
+                        right: 21px;
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
                 }
             }
         }
     }
+    .video_right_panel_dropDown {
+        border: 1px solid var(--color-88878773);
+        background-color: var(--color-d1d2d4);
+        height: 30px;
+        width: 138px;
+        .MuiSelect-root {
+            color: var(--color-333333);
+            font-size: 14px;
+            padding-left: 6px;
+        }   
+    }
+  }
+  .video_right_panel_dropDown_menu  {
+    width: 138px;
+    border-radius: 0px !important;
+    margin-top: 7px;
+    box-shadow: 0 0 !important;
+  }
+  .Bookmark_Note_Action_Menu {
+      .MuiMenu-paper {
+        background-color: var(--color-404041);
+        margin-left: -65px;
+        margin-top: -22px;
+        width: 117px;
+        height: 84px;
+        border-radius: 0px;
+
+        ul {
+            width: 117px;
+            height: 84px;
+            border-radius: 0px;
+            position: relative;
+            &:before {
+                position: absolute;
+                content: " ";
+                width: 1px;
+                height: 100%;
+                background-color: var(--color-4c4c4d);
+                left: 39px;
+                top: 0px;
+                z-index: 21;
+            }
+            &:after {
+                position: absolute;
+                content: " ";
+                width: 77px;
+                height: 1px;
+                background-color: var(--color-4c4c4d);
+                top: 41px;
+                z-index: 21;
+                right: 0px;
+            }
+            li {
+                color: var(--color-d1d2d4);
+                height: 42px;
+                font-size: 14px;
+                position: relative;
+                padding-left: 58px;
+                i {
+                    position: absolute;
+                    left: 13px;
+                }
+                .fa-trash-can {
+                    font-size: 20px;
+                    position: absolute;
+                    left: 11px;
+                }
+                &:hover {
+                    background-color: var(--color-231f20);
+                }
+                &:active {
+                   background-color: var(--color-6E6E6E); 
+                }
+            }
+        }
+
+      }
+
   }

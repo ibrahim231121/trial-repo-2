@@ -191,8 +191,7 @@ const onConfirmm = () => {
                       <div className="_bookmark_users">
                         {` ${t("Form")} : ${x.madeBy}`}
                       </div>
-                    </div>
-                    <div className="textToggler">
+                      <div className="textToggler">
                     {x.description.length >= 0 && x.description.length < 50 &&  
                       
                       <TextField
@@ -235,52 +234,55 @@ const onConfirmm = () => {
                       </div>
                     )}
                     </div>
-                  <div className="_side_panel_bookmark_menu">
-                  {x.madeBy.includes("User") && 
-                  <div className="menu">
-                  <Menu
-                    align="start"
-                    viewScroll="initial"
-                    direction="bottom"
-                    position="auto"
-                    arrow
-                    menuButton={
-                    <MenuButton>   
-                    <CRXTooltip
-                      className="CRXTooltip_form"
-                      iconName="far fa-ellipsis-v"
-                      title="actions"
-                      placement="right"
-                    />
-                    </MenuButton>}>
-                    <MenuItem>
-                    
-                    <div onClick={()=>{handleNoteDelete(x.id,x.assetId)}}
-                        className="crx-meu-content groupingMenu crx-spac">
-                        <div className="crx-menu-icon">
-                          <i className="fas fa-trash"></i>
-                        </div>
-                        <div className="_NB_menu_item">
-                        {t("Delete")}
-                        </div>
+                      <div className="_side_panel_bookmark_menu">
+                        {x.madeBy.includes("User") && 
+                        <div className="menu">
+                        <Menu
+                          align="start"
+                          viewScroll="initial"
+                          direction="bottom"
+                          position="auto"
+                          arrow
+                          menuButton={
+                          <MenuButton>   
+                          <CRXTooltip
+                            className="CRXTooltip_form"
+                            iconName="far fa-ellipsis-v"
+                            title="actions"
+                            placement="right"
+                          />
+                          </MenuButton>}>
+                          <MenuItem>
+                          
+                          <div onClick={()=>{handleNoteDelete(x.id,x.assetId)}}
+                              className="crx-meu-content groupingMenu crx-spac">
+                              <div className="crx-menu-icon">
+                                <i className="fas fa-trash"></i>
+                              </div>
+                              <div className="_NB_menu_item">
+                              {t("Delete")}
+                              </div>
+                          </div>
+                          </MenuItem>
+                          <MenuItem>     
+                          <div onClick={() => onFocusFunction(x.id)}
+                              className="crx-meu-content groupingMenu crx-spac">
+                              <div className="crx-menu-icon">
+                                <i className="fas fa-edit"></i>
+                              </div>
+                              <div className="_NB_menu_item">
+                              {t("Edit")}
+                              </div>
+                          </div>
+                            
+                          </MenuItem>
+                          </Menu>
+                          </div>
+                      }
+                      </div>
                     </div>
-                    </MenuItem>
-                    <MenuItem>     
-                    <div onClick={() => onFocusFunction(x.id)}
-                        className="crx-meu-content groupingMenu crx-spac">
-                        <div className="crx-menu-icon">
-                          <i className="fas fa-edit"></i>
-                        </div>
-                        <div className="_NB_menu_item">
-                        {t("Edit")}
-                        </div>
-                    </div>
-                       
-                    </MenuItem>
-                    </Menu>
-                    </div>
-                }
-                </div>
+                   
+               
                   
                     
                   
