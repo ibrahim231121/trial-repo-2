@@ -742,6 +742,7 @@ const openHandler = (_: React.SyntheticEvent) => {
           }
           toolBarButton={
             <>
+            <Restricted moduleId={9}>
               <CRXButton
                 id={"createUser"}
                 className="primary manageUserBtn" 
@@ -749,6 +750,7 @@ const openHandler = (_: React.SyntheticEvent) => {
               >
                   {t("Create_User")}
               </CRXButton>
+              </Restricted>
               <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
             </>
           }
