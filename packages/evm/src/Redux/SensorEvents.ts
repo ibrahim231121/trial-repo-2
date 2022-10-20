@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { SetupConfigurationAgent } from '../utils/Api/ApiAgent';
-import {SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA} from '../../../evm/src/utils/Api/url';
+import {SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA,SENSOR_AND_TRIGGERS_GET_ALL} from '../../../evm/src/utils/Api/url';
 
 export const getAllSensorsFilterEvents: any = createAsyncThunk(
     'getAllFilterEvents',
@@ -25,15 +25,28 @@ export const getAllSensorsEvents: any = createAsyncThunk(
     }
 );
 
+export const getAllEvents: any = createAsyncThunk(
+    'getAllEvents',
+    async () => {
+         return SetupConfigurationAgent.getAll(SENSOR_AND_TRIGGERS_GET_ALL)
+         .then((response:any) => response)
+         .catch((error: any) => {
+             console.error(error.response.data);
+    });
+}
+);
+
 export const sensorEventsSlice = createSlice({ 
     name: 'sensorEventsForm',
-    initialState: { sensorEvents: [], filterSensorEvents: [] },
+    initialState: { sensorEvents: [], filterSensorEvents: [], getAll: [] },
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getAllSensorsEvents.fulfilled, (state: any, { payload }) => {
             state.sensorEvents = payload;
         }).addCase(getAllSensorsFilterEvents.fulfilled, (state: any, {payload}) => {
             state.filterSensorEvents = payload;
+        }).addCase(getAllEvents.fulfilled, (state: any, {payload}) => {
+            state.getAll = payload;
         })
     }
 });

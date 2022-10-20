@@ -4,16 +4,13 @@ import { CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox,
 import {useTranslation } from "react-i18next";
 import { defaultDevice, defaultParameter, defaultCriteria, defaultAction, defaultBookmark, defaultCamera,defaultCategory, defaultIcon } from '../TypeConstant/constants';
 import { DeviceParameterModel, SelectBoxType, SwitchParametersModel, DeviceParameterDropdownModel, SwitchParametersDropdownModel, SensorAndTriggerDetailErrorModel, SensorAndTriggerDetailValidationModel } from '../TypeConstant/types';
-import { SENSOR_AND_TRIGGERS_GET_ALL} from '../../../../utils/Api/url';
-import useGetFetch from '../../../../utils/Api/useGetFetch';
-import { getToken } from '../../../../Login/API/auth';
 import Grid from "@material-ui/core/Grid";
 import './sensorsAndTriggersDetail.scss';
 import {SensorsAndTriggers} from '../../../../utils/Api/models/SensorsAndTriggers';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
-import { getAllSensorsEvents } from "../../../../Redux/SensorEvents";
+import { getAllSensorsEvents, getAllEvents } from "../../../../Redux/SensorEvents";
 import { RootState } from "../../../../Redux/rootReducer";
 
 type SensorsAndTriggersDetailProps = {
@@ -92,13 +89,11 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const [responseError, setResponseError] = React.useState<string>('');
     const history = useHistory();
     const dispatch = useDispatch();
+    const getAll: any = useSelector((state: RootState) => state.sensorEventsSlice.getAll);
 
+
+    
     const { t } = useTranslation<string>(); 
-
-    const [getAllData, responseData] = useGetFetch<any>(SENSOR_AND_TRIGGERS_GET_ALL, {
-        "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}`
-    });
-
     useEffect(() => {
         if(!isFirstRenderRef.current) {
             if(!disableAddDeviceParameter() && name.length > 0 && switchParameters.action.data.value > 0) {
@@ -111,7 +106,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     }, [name,deviceParameters,switchParameters.action.data.value])
 
     useEffect(() => {
-        if(responseData != null) {
+        if(getAll != null) {
             let newSettingsDropdownData: SwitchParametersDropdownModel = {
                 bookmarkList: [],
                 actionList: [],
@@ -125,29 +120,28 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 criteriaList: []
             }
 
-            actionData(responseData, newSettingsDropdownData);
-            bookmarksData(responseData, newSettingsDropdownData);
-            categoriesData(responseData, newSettingsDropdownData);
+            actionData(newSettingsDropdownData);
+            bookmarksData(newSettingsDropdownData);
+            categoriesData(newSettingsDropdownData);
             newSettingsDropdownData.cameraList = Array.isArray(CAMERAS) === true ? CAMERAS : [];
-            iconsData(responseData, newSettingsDropdownData);
-            devicesData(responseData, newDeviceParametersDropdownData);
-            devicesParamsData(responseData, newDeviceParametersDropdownData);
-            matchTypesData(responseData, newDeviceParametersDropdownData);
+            iconsData(newSettingsDropdownData);
+            devicesData(newDeviceParametersDropdownData);
+            devicesParamsData(newDeviceParametersDropdownData);
+            matchTypesData(newDeviceParametersDropdownData);
             setSettingsDropdownData(newSettingsDropdownData);
             setDeviceParameterDropdownData(newDeviceParametersDropdownData);
         }
-    }, [responseData]);
+    }, [getAll]);
 
     useEffect (() => {
         dispatch(enterPathActionCreator({ val: "" }));
         return () => {
             dispatch(enterPathActionCreator({ val: "" }));
           }
-          
     },[])
 
     useEffect(() => {
-        getAllData();
+        dispatch(getAllEvents());
         isFirstRenderRef.current = false;
         if (id != undefined && id != null && id.length > 0) {
             SetupConfigurationAgent.getSensorsAndTriggersEvents(id).then((response: any) => {
@@ -175,60 +169,60 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
         }
     }, []);
 
-    const devicesParamsData = (responseData: any, newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
-        if (Array.isArray(responseData.devicesParams)) {
-            newDeviceParametersDropdownData.deviceParamsList = responseData.devicesParams;
+    const devicesParamsData = (newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
+        if (Array.isArray(getAll.devicesParams)) {
+            newDeviceParametersDropdownData.deviceParamsList = getAll.devicesParams;
         }
     }
     
-    const matchTypesData = (responseData: any, newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
-        if (Array.isArray(responseData.matchTypes)) {
-            const newCriterias = responseData.matchTypes.map((item: any) => {
+    const matchTypesData = (newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
+        if (Array.isArray(getAll.matchTypes)) {
+            const newCriterias = getAll.matchTypes.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newDeviceParametersDropdownData.criteriaList = Array.isArray(newCriterias) ? newCriterias : [];
         }
     }
     
-    const devicesData = (responseData: any, newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
-        if (Array.isArray(responseData.devices)) {
-            const newDevices = responseData.devices.map((item: any) => {
+    const devicesData = (newDeviceParametersDropdownData: DeviceParameterDropdownModel) => {
+        if (Array.isArray(getAll.devices)) {
+            const newDevices = getAll.devices.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newDeviceParametersDropdownData.deviceList = Array.isArray(newDevices) ? newDevices : [];
         }
     }
     
-    const iconsData = (responseData: any, newSettingsDropdownData: SwitchParametersDropdownModel) => {
-        if (Array.isArray(responseData.icons)) {
-            const newIcons = responseData.icons.map((item: any) => {
+    const iconsData = (newSettingsDropdownData: SwitchParametersDropdownModel) => {
+        if (Array.isArray(getAll.icons)) {
+            const newIcons = getAll.icons.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newSettingsDropdownData.iconList = Array.isArray(newIcons) === true ? newIcons : [];
         }
     }
     
-    const categoriesData = (responseData: any, newSettingsDropdownData: SwitchParametersDropdownModel) => {
-        if (Array.isArray(responseData.categories)) {
-            const newCategories = responseData.categories.map((item: any) => {
+    const categoriesData = (newSettingsDropdownData: SwitchParametersDropdownModel) => {
+        if (Array.isArray(getAll.categories)) {
+            const newCategories = getAll.categories.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newSettingsDropdownData.categoryList = Array.isArray(newCategories) === true ? newCategories : [];
         }
     }
     
-    const bookmarksData = (responseData: any, newSettingsDropdownData: SwitchParametersDropdownModel) => {
-        if (Array.isArray(responseData.bookmarks)) {
-            const newBookmarks = responseData.bookmarks.map((item: any) => {
+    const bookmarksData = (newSettingsDropdownData: SwitchParametersDropdownModel) => {
+        if (Array.isArray(getAll.bookmarks)) {
+            const newBookmarks = getAll.bookmarks.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newSettingsDropdownData.bookmarkList = Array.isArray(newBookmarks) === true ? newBookmarks : [];
         }
     }
     
-    const actionData = (responseData: any, newSettingsDropdownData: SwitchParametersDropdownModel) => {
-        if (Array.isArray(responseData.actions)) {
-            const newActions = responseData.actions.map((item: any) => {
+    const actionData = (newSettingsDropdownData: SwitchParametersDropdownModel) => {
+        if (Array.isArray(getAll.actions)) {
+            const newActions = getAll.actions.map((item: any) => {
                 return ({ value: item.id, displayText: item.name });
             });
             newSettingsDropdownData.actionList = Array.isArray(newActions) === true ? newActions : [];

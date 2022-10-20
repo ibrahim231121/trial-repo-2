@@ -36,7 +36,8 @@ import {
     AUDITLOG_SERVICE_URL,
     CountryStateApiUrl,
     EVIDENCE_GET_URL,
-    BASE_URL_AUTHENTICATION_SERVICE
+    BASE_URL_AUTHENTICATION_SERVICE,
+    SENSOR_AND_TRIGGERS_GET_ALL
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -151,6 +152,8 @@ export const SetupConfigurationAgent = {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, config);
     },
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
