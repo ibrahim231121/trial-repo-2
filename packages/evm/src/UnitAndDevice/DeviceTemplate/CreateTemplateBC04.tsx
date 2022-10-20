@@ -124,6 +124,7 @@ const CreateTemplate = (props: any) => {
   const [templateName] = React.useState<string>(historyState.deviceType);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
+  const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
@@ -895,6 +896,7 @@ const CreateTemplate = (props: any) => {
                                     setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
                                     isValid={isValid} setformSchema={setformSchema}
                                     touched={touched} errors={errors} 
+                                    setValidationFailed = {setValidationFailed}
                                     sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
                                 </div>) : (<></>));
 
@@ -907,8 +909,8 @@ const CreateTemplate = (props: any) => {
                   <div className="tctButton">
                     <div className="tctLeft">
                       <CRXButton
-                        className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
-                        disabled={!isValid || !dirty}
+                        className={validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
+                        disabled={validationFailed || !dirty}
                         type="submit"
                         onClick={() => handleSave(values, resetForm)}
                       >
