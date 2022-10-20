@@ -61,14 +61,14 @@ let GetAssetsUnCategorized = (startDate: string, endDate: string, groupIds: stri
             }
         }
     ];
-    let filterQuery : any = {
+    let filterQuery: any = {
         "bool": {
             "should": [
-               
+
             ]
         }
     };
-   
+
     filterQuery.bool.should.push(...lockQuery.bool.should);
     const query = {
         bool: {
@@ -83,65 +83,77 @@ let GetAssetsApproachingDeletion = (startDate: string, endDate: string, groupIds
     const lockQuery = GenerateLockFilterQuery(groupIds);
     const infinite = '9999-12-31T00:00:00Z';
     let approachingDeletion = {
-        bool : {
-            "should": [
+        bool: {
+            "must": [
                 {
                     "bool": {
-                        "must_not": {
-                            "exists": {
-                                "field": "holdUntil"
+                        "must": {
+                            "bool": {
+                                "should": [
+                                    {
+                                        "bool": {
+                                            "must_not": {
+                                                "exists": {
+                                                    "field": "holdUntil"
+                                                }
+                                            },
+                                            "must": [
+                                                {
+                                                    "range": {
+                                                        "expireOn": {
+                                                            "gte": `${moment(startDate).toISOString()}`
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "range": {
+                                                        "expireOn": {
+                                                            "lte": `${moment(endDate).toISOString()}`
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "bool": {
+                                            "must_not": {
+                                                "term": {
+                                                    "holdUntil": `${infinite}`
+                                                }
+                                            },
+                                            "must": [
+                                                {
+                                                    "exists": {
+                                                        "field": "holdUntil"
+                                                    }
+                                                },
+                                                {
+                                                    "range": {
+                                                        "holdUntil": {
+                                                            "gte": `${moment(startDate).toISOString()}`
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "range": {
+                                                        "holdUntil": {
+                                                            "lte": `${moment(endDate).toISOString()}`
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
                             }
                         },
-                        "must": [
-                            {
-                                "range": {
-                                    "expireOn": {
-                                        "gte": `${moment(startDate).toISOString()}`
-                                    }
-                                }
-                            },
-                            {
-                                "range": {
-                                    "expireOn": {
-                                        "lte": `${moment(endDate).toISOString()}`
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "bool": {
-                        "must_not": {
-                            "term": {
-                                "holdUntil": `${infinite}`
-                            }
-                        },
-                        "must": [
-                            {
-                                "exists": {
-                                    "field": "holdUntil"
-                                }
-                            },
-                            {
-                                "range": {
-                                    "holdUntil": {
-                                        "gte": `${moment(startDate).toISOString()}`
-                                    }
-                                }
-                            },
-                            {
-                                "range": {
-                                    "holdUntil": {
-                                        "lte": `${moment(endDate).toISOString()}`
-                                    }
-                                }
-                            }
+                        "should": [
+                            ...lockQuery.bool.should
                         ]
                     }
                 }
-            ],
-            "filter": lockQuery
+            ]
         }
     };
     return approachingDeletion;
