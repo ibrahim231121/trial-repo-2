@@ -93,13 +93,14 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
       if (response.expireOn != null) {
         formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
-        formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
         if(response.holdUntil !=null)
         {
           if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
+            formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
             formPayload.CurrentRetention = 'Current Retention: Indefinite';
           }
           else {
+            formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
             formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
           }
         }
