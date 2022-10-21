@@ -3,14 +3,16 @@ import "./PredictiveSearchBox.scss";
 import { EditableSelect } from '@cb/shared'
 import usePostFetch from "../../../../utils/Api/usePostFetch";
 import { EVIDENCE_PREDITIVE_URL } from '../../../../utils/Api/url'
-import { getToken } from "../../../../Login/API/auth";
+import { getToken, IDecoded } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
+import { GenerateLockFilterQuery } from '../../utils/constants';
 
 interface Props {
   onSet: (e: any) => void;
   value: string;
+  decoded: IDecoded;
 }
-const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
+const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded }) => {
   const { t } = useTranslation<string>();
   const [showSearch, setShowSearch] = React.useState<any>(false);
   const [outCome, setOutCome] = React.useState<any>([]);
@@ -63,13 +65,17 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value }) => {
             },
           },
         ],
+        filter: []
       },
     };
   };
 
   const fetchData = async (searchVal: string) => {
     /* Applying usePostFetch Hook*/
-    methodFromHook(getQuery(searchVal), {
+    let predictiveQuery : any = getQuery(searchVal);
+    const lockQuery = GenerateLockFilterQuery(decoded);
+    predictiveQuery.bool.filter = lockQuery;
+    methodFromHook(predictiveQuery, {
       'Authorization': `Bearer ${getToken()}`,
       "Content-Type": "application/json",
     });

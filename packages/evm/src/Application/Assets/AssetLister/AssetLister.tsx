@@ -13,7 +13,7 @@ import { RootState } from "../../../Redux/rootReducer";
 import { useDispatch, useSelector } from 'react-redux';
 import { enterPathActionCreator } from '../../../Redux/breadCrumbReducer';
 import moment from 'moment';
-import { SearchType } from '../utils/constants'
+import { GenerateLockFilterQuery, SearchType } from '../utils/constants'
 import {
   dateOptionsTypes,
   basicDateDefaultValue,
@@ -89,11 +89,13 @@ const SearchComponent = (props: any) => {
           },
         },
       ],
+      filter: []
     },
   };
   const AdvancedSearchQuerry: any = {
     bool: {
       must: [],
+      filter: []
     },
   };
 
@@ -113,7 +115,7 @@ const SearchComponent = (props: any) => {
     },
     {
       text: t("Not_Categorized"),
-      query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
+      query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded),
       renderData: function () {
         setQuerryString(evidenceSearchType.NotCategorized);
         setPredictiveText(evidenceSearchType.NotCategorized);
@@ -126,7 +128,7 @@ const SearchComponent = (props: any) => {
     {
       text: t("Approaching_Deletion"),
       query: () =>
-        queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups),
+        queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded),
       renderData: function (dateTimeObject: DateTimeObject | undefined = undefined) {
         setQuerryString(evidenceSearchType.ApproachingDeletion);
         setDateOptionType(dateOptionsTypes.approachingDeletion);
@@ -135,7 +137,7 @@ const SearchComponent = (props: any) => {
         if (!dateTimeObject) {
           let approachingdateValue = dateOptions.approachingDeletion.find(x => x.value === (dateTimeDropDown.displayText != "anytime" ? dateTimeDropDown.displayText : approachingDateDefaultValue));
           if (approachingdateValue != null) {
-            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate(), decoded.AssignedGroups), SearchType.ShortcutSearch)
+            fetchData(queries.GetAssetsApproachingDeletion(approachingdateValue.startDate(), approachingdateValue.endDate(), decoded), SearchType.ShortcutSearch)
             let defaultDateValue = dateOptions.basicoptions.find(x => x.value === basicDateDefaultValue);
             if (defaultDateValue !== undefined) {
               let approachingDefaultDateValue: DateTimeObject = {
@@ -156,7 +158,7 @@ const SearchComponent = (props: any) => {
           }
         }
         else {
-          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate, decoded.AssignedGroups), SearchType.ShortcutSearch)
+          fetchData(queries.GetAssetsApproachingDeletion(dateTimeObject.startDate, dateTimeObject.endDate, decoded), SearchType.ShortcutSearch)
         }
 
         let approachingMaxDateValue = dateOptions.approachingDeletion.find(x => x.value === t("next_30_days"));
@@ -240,7 +242,8 @@ const SearchComponent = (props: any) => {
           });
         }
       }
-
+      const lockQuery = GenerateLockFilterQuery(decoded);
+      AdvancedSearchQuerry.bool.filter = lockQuery;
       fetchData(AdvancedSearchQuerry, SearchType.AdvanceSearch);
     }
   }, [addvancedOptions]);
@@ -316,13 +319,15 @@ const SearchComponent = (props: any) => {
       }
     }
     if (predictiveText === evidenceSearchType.ApproachingDeletion) {
-      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded.AssignedGroups), SearchType.ShortcutSearch);
+      fetchData(queries.GetAssetsApproachingDeletion(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded), SearchType.ShortcutSearch);
     }
     else {
       if (querryString.length === 0) {
         const modifiedQuery = removeQueryStringObjectFromQuery(QUERRY);
         fetchData(modifiedQuery, SearchType.SimpleSearch);
       } else {
+        const lockQuery = GenerateLockFilterQuery(decoded);
+        QUERRY.bool.filter = lockQuery; 
         fetchData(QUERRY, SearchType.SimpleSearch);
       }
     }
@@ -383,6 +388,8 @@ const SearchComponent = (props: any) => {
     let must = modifiedQuery.bool.must;
     must.splice(0, 1);
     modifiedQuery.bool.must = must;
+    const lockQuery = GenerateLockFilterQuery(decoded);
+    modifiedQuery.bool.filter = lockQuery;
     return modifiedQuery;
   }
 
@@ -396,6 +403,7 @@ const SearchComponent = (props: any) => {
               <PredictiveSearchBox
                 onSet={(e) => onChangePredictiveSearch(e)}
                 value={predictiveText}
+                decoded={decoded}
               />
             </CRXColumn>
             <CRXColumn item xs={6}>
