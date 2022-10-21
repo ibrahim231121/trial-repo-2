@@ -10,7 +10,7 @@ import {SensorsAndTriggers} from '../../../../utils/Api/models/SensorsAndTrigger
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
-import { getAllSensorsEvents, getAllEvents } from "../../../../Redux/SensorEvents";
+import { getAllSensorsEvents, getAllData } from "../../../../Redux/SensorEvents";
 import { RootState } from "../../../../Redux/rootReducer";
 
 type SensorsAndTriggersDetailProps = {
@@ -141,7 +141,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     },[])
 
     useEffect(() => {
-        dispatch(getAllEvents());
+        dispatch(getAllData());
         isFirstRenderRef.current = false;
         if (id != undefined && id != null && id.length > 0) {
             SetupConfigurationAgent.getSensorsAndTriggersEvents(id).then((response: any) => {

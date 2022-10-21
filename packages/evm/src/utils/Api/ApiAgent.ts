@@ -36,8 +36,7 @@ import {
     AUDITLOG_SERVICE_URL,
     CountryStateApiUrl,
     EVIDENCE_GET_URL,
-    BASE_URL_AUTHENTICATION_SERVICE,
-    SENSOR_AND_TRIGGERS_GET_ALL
+    BASE_URL_AUTHENTICATION_SERVICE
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
