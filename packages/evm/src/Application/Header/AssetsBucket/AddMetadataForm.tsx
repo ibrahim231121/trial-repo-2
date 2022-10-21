@@ -439,11 +439,11 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".zip":
       case ".rar":
       case ".icm":
-        typeOfAsset = "Other";
+        typeOfAsset = "Others";
         break;
 
       default:
-        typeOfAsset = "Others";
+        typeOfAsset = "Other";
     }
     return typeOfAsset;
   };
