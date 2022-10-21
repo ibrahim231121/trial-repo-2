@@ -124,7 +124,7 @@ const addObject = (formObj: any, arrayHelpers: any, cameraFeildArrayCounter: any
 };
 
 
-const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField: any, values: any, applyValidation: any, setformSchema: any) => {
+const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any, setInitial_Values_obj_RequiredField: any, values: any, applyValidation: any, setformSchema: any, setValues: any) => {
   var rowToDelete = values["CameraSetup/Camera/FieldArray"]?.feilds[removeIndex];
   const arrayOfObj = Object.entries(Initial_Values_obj_RequiredField).map((e) => ({ key: e[0], value: e[1] }));
   var arrayOfObjUpdated = arrayOfObj.filter((x: any) => !(rowToDelete.some((y: any) => y.key == x.key)));
@@ -141,6 +141,14 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
     {}
   );
   setformSchema(formSchemaTemp);
+
+  const valuesArray = Object.entries(values).map((e) => ({ key: e[0], value: e[1] }));
+  var valuesArrayUpdated = valuesArray.filter((x: any) => !(rowToDelete.some((y: any) => y.key == x.key)));
+  var updatedValuesKV = valuesArrayUpdated.reduce(                  // Validations Object
+    (obj, item: any) => ({ ...obj, [item.key]: item.value }),
+    {}
+  );
+  setValues(updatedValuesKV);
 };
 
 
@@ -227,7 +235,7 @@ export const CreateTempelateCase = (props: any) => {
 
 
 
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors,sensorsEvent } = props;
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors, setValidationFailed, sensorsEvent} = props;
 
 
   const handleRowIdDependency = (key: string, extraFieldDependency?: any) => {
@@ -256,6 +264,15 @@ export const CreateTempelateCase = (props: any) => {
       optionAppendOnChange(formObj.value, formObj, values, setValues, index);
     }
   }, []);
+
+
+  React.useEffect(() => {
+   let validations = Object.entries(Initial_Values_obj_RequiredField).map((e) => e[0])
+   let errorAccured = Object.entries(errors).map((e) => e[0])
+
+   let validationError = validations.some(x => errorAccured.includes(x));
+   setValidationFailed(validationError);
+  }, [errors]);
 
 
 
@@ -703,10 +720,10 @@ export const CreateTempelateCase = (props: any) => {
                         
                           </div>
                           <div key={formObj.key + "_DIV" + key}>
-                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} setValidationFailed={setValidationFailed} />
                           </div></> :
                         <div key={formObj.key + "_DIV" + key}>
-                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} />
+                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} setValidationFailed={setValidationFailed} />
 
                         </div>
                     ))
@@ -726,7 +743,7 @@ export const CreateTempelateCase = (props: any) => {
 
               <CRXConfirmDialog
                 setIsOpen={(e: React.MouseEvent<HTMLElement>) => { IncarModalClose(); setOpen(false); }}
-                onConfirm={() => { IncarModalClose(); setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema); arrayHelpers.remove(removeIndex); }}
+                onConfirm={() => { IncarModalClose(); setOpen(false); removeObject(removeIndex, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, applyValidation, setformSchema, setValues); arrayHelpers.remove(removeIndex); }}
                 title={t("Please_Confirm")}
                 isOpen={open}
                 className="IncarDeviceModalUiMain"
