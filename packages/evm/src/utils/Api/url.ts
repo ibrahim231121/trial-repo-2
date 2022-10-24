@@ -72,7 +72,7 @@ export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 
-export const SENSOR_AND_TRIGGERS_GET_ALL = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
+export const SENSOR_AND_TRIGGERS_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
 export const SENSOR_AND_TRIGGERS = `${BASE_URL_SETUP_SERVICE}/SensorEvents/UpsertEvent`;
 export const SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/SensorEvents/GetAllEvents`;
 

@@ -29,7 +29,7 @@ import {
   GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import {CRXAlert} from "@cb/shared";
-import {getAllSensorsFilterEvents} from '../../../../Redux/SensorEvents';
+import {getAllSensorsFilterEvents,getAllSensorsEvents} from '../../../../Redux/SensorEvents';
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 
@@ -64,31 +64,39 @@ const SensorsAndTriggersList: React.FC = () => {
   const dispatch = useDispatch();
   let history = useHistory();
 
-  const isFirstRenderRef = useRef<boolean>(true);
   const reformattedRowsRef = useRef<SensorAndTriggersTemplate[]>();
   const filterSensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.filterSensorEvents);
+  const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
   const { getModuleIds} = useContext(ApplicationPermissionContext);
   useEffect(() => {
     if(paging)
-      setSensorsEventsData()
+      dispatch(getAllSensorsFilterEvents(pageiGrid));
     setPaging(false)
   },[pageiGrid])
+  
+
+  useEffect(() => {
+    document
+      .querySelector(".footerDRP")
+      ?.closest(".MuiMenu-paper")
+      ?.classList.add("MuiMenu_Modal_Ui");
+  });
 
   useEffect(() => {
     setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
     setPaging(true)
-    
   },[page, rowsPerPage])
 
   useEffect(() => {
-    setSensorsEventsData();
-    isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "sensorsAndTriggersTemplateDataTable");
     dispatch(enterPathActionCreator({ val: "" }));
 }, []);
 
+React.useEffect(() => {
+  setSensorsEventsData();
+}, [filterSensorEvents.data]);
 
     const onChange = (valuesObject: ValueString[], colIdx: number) => {
       headCells[colIdx].headerArray = valuesObject;
@@ -183,13 +191,7 @@ const SensorsAndTriggersList: React.FC = () => {
     reformattedRowsRef.current = sensorAndTriggersTemplateRows;
   }
 
-  React.useEffect(() => {
-    setSensorsEventsData();
-  }, [filterSensorEvents?.data]);
-
-  React.useEffect (() => {
-    dispatch(getAllSensorsFilterEvents(pageiGrid));
-  },[])
+  
 
   const getSelectedItemsUpdate = () => {
     setSelectedItems([]);
