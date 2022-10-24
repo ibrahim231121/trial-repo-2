@@ -458,7 +458,15 @@ const milliSecondsToTimeFormat = (date: Date) => {
           camera: getAssetData?.assets?.master?.camera ?? ""
         });
         const data = extract(getAssetData);
-        setVideoPlayerData(data);
+        if(data[0]?.id != parseInt(assetId))
+        {
+          let updatedData = data.filter(x => x.id == parseInt(assetId));
+          updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetId))]
+          setVideoPlayerData(updatedData);
+        }
+        else{
+          setVideoPlayerData(data);
+        }
     }
   },[getAssetData, fileData, childFileData]);
 
