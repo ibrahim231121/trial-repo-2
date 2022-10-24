@@ -39,6 +39,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import moment from "moment";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
+import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
 
 type Props = {
   row: any;
@@ -754,15 +755,16 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">
                 <SubMenu label={t("Export")}>
-                  <MenuItem onClick={handleDownloadAssetClick}>
-                    {t("Download_asset(s)")}
-                  </MenuItem>
+                  {!CheckEvidenceExpire(row?.evidence) ?
+                    <MenuItem onClick={handleDownloadAssetClick}>
+                      {t("Download_asset(s)")}
+                    </MenuItem> : null}
                   <MenuItem onClick={handleDownloadMetaDataClick}>
                     {t("Download_metadata_info")}
                   </MenuItem>
-                  <MenuItem onClick={onClickDownloadAssetTrail}>
-                    {t("Download_audit_trail")}
-                  </MenuItem>
+                  {!CheckEvidenceExpire(row?.evidence) ?
+                    <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                    : null}
                 </SubMenu>
               </div>
             </div>
