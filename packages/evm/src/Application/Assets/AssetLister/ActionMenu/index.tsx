@@ -748,7 +748,6 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         }
 
         <MenuItem>
-
           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}
             securityDescriptors={securityDescriptorsArray}>
             <div className="crx-meu-content groupingMenu">
