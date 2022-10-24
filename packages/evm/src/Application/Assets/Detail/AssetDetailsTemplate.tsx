@@ -464,11 +464,11 @@ const milliSecondsToTimeFormat = (date: Date) => {
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
-      FileAgent.getFile(520001).then((response) => {
-        let uploadCompletedOnFormatted = moment(response.history.uploadCompletedOn).format(
-          "MM / DD / YY @ HH: mm: ss"
-        )
-        setUploadedOn(uploadCompletedOnFormatted)
+      FileAgent.getFile(template.filesId).then((response) => {
+        if(template.type == "Video"){
+          let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";         
+          setUploadedOn(uploadCompletedOnFormatted)
+        }
       });
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
         if(template.type == "GPS"){
@@ -902,25 +902,26 @@ const milliSecondsToTimeFormat = (date: Date) => {
       xaxis += 5;
 
       let categoriesString = "";
+      let tempxaxis = 0;
       assetInfo.categories.forEach((x:any, index: number)=>
       {
         let formData = x.formDatas.map((y: any, index1: number) => {
           if(index1 > 0)
           {
-            xaxis += 5
+            tempxaxis += 5
           }
           return y.key + ": " + y.value + "\n"; 
         })
         categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
         if(index > 0)
         {
-          xaxis += 5
+          tempxaxis += 5
         }
       }
       )
       doc.text(t("Categories")+":", yaxis1, xaxis)
       doc.text(categoriesString, yaxis2, xaxis)
-      xaxis += 5;
+      xaxis += tempxaxis + 5;
 
       doc.text(t("Camera Name")+":", yaxis1, xaxis)
       doc.text(assetInfo.camera, yaxis2, xaxis)

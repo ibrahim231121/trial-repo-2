@@ -24,7 +24,7 @@ import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { EvidenceAgent, FileAgent } from "../../../../utils/Api/ApiAgent";
 import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
@@ -33,7 +33,12 @@ import { IDecoded } from "../../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
-import { AssetRestriction, MetadataFileType, PersmissionModel, securityDescriptorType } from "../../../../utils/Api/models/EvidenceModels";
+import { AssetRestriction, Evidence, MetadataFileType, PersmissionModel, securityDescriptorType } from "../../../../utils/Api/models/EvidenceModels";
+import { getAssetTrailInfoAsync } from "../../../../Redux/AssetDetailsReducer";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import moment from "moment";
+import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 
 type Props = {
   row: any;
@@ -234,6 +239,140 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       });
   }
 
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+  
+  const milliSecondsToTimeFormat = (date: Date) => {
+    let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+    return numberFormatting + " (" + nameFormatting + ")";
+  }
+
+  const formatBytes = (bytes: number, decimals: number = 2) => {
+    if (!+bytes) return '0 Bytes'
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+
+  const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
+    if(holdUntil)
+    {
+      return AssetRetentionFormat(holdUntil);
+    }
+    else if(expireOn)
+    {
+      return AssetRetentionFormat(expireOn);
+    }
+  }
+
+  const onClickDownloadAssetTrail = async () => {
+    if(row){
+      let assetTrail = await getAssetTrail();
+      let getAssetData = await getAssetInfo();
+      let uploadCompletedOn = await getuploadCompletedOn(getAssetData?.assets?.master?.files);
+
+      var assetInfo;
+      if(getAssetData){
+        let categories: any[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          x.formData.forEach((y: any) =>  
+          {
+            let formDatas: any[] = [];
+            y.fields.map((z: any) => {
+              let formData ={
+                key: z.key,
+                value: z.value
+              }
+              formDatas.push(formData);
+            })
+            categories.push({
+              name: y.name,
+              formDatas: formDatas
+            })
+          })
+        });
+  
+        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
+  
+        var unit: number[] = [];
+        unit.push(getAssetData.assets.master.unitId);
+  
+        var checksum: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          checksum.push(x.checksum.checksum);
+        });
+  
+  
+        let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
+  
+  
+        var categoriesForm: string[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          categoriesForm.push(x.record.cmtFieldName);
+        });
+  
+        assetInfo = {
+          owners: owners,
+          unit: unit,
+          capturedDate: moment(getAssetData.createdOn).format(
+            "MM / DD / YY @ HH: mm: ss"
+          ),
+          checksum: checksum,
+          duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
+          size: formatBytes(size, 2),
+          retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
+          categories: categories,
+          categoriesForm: categoriesForm,
+          id: getAssetData?.assets?.master?.id,
+          assetName: getAssetData?.assets?.master?.name,
+          typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
+          status: getAssetData?.assets?.master?.status,
+          camera: getAssetData?.assets?.master?.camera ?? ""
+        }
+      }
+
+      let uploadCompletedOnFormatted = uploadCompletedOn ? moment(uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
+
+      //download
+      if(assetTrail && assetInfo){
+        
+        downloadAssetTrail(assetTrail, assetInfo, uploadCompletedOnFormatted);
+      }
+    }
+  }
+
+  const getAssetTrail = async () => {
+    const evidence = row.evidence;
+    return await EvidenceAgent.getAssetTrail(`/Evidences/${evidence.id}/AssetTrail`).then((response) => response);
+  }
+
+  const getAssetInfo = async () => {
+    const evidence = row.evidence;
+    return await EvidenceAgent.getEvidence(evidence.id).then((response: Evidence) => response);
+  }
+
+  const getuploadCompletedOn = async (files : any) => {
+    if(files){
+      let uploadCompletedOn;
+      for (const file of files) {
+        if (file.type == "Video") {
+          await FileAgent.getFile(file.filesId).then((response) => {debugger; uploadCompletedOn = response.history.uploadCompletedOn});
+          break;
+        }
+      }
+      return uploadCompletedOn;
+    }
+  }
+
   const downloadFileByFileResponse = (response: AxiosResponse, assetId: number) => {
     let fileStream = response.data;
     const fileName = `${assetId}_Metadata.pdf`;
@@ -362,6 +501,110 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     let value = multiCompareAssetBucketData(assetBucketData, selectedItems);
     if (value.includes(false)) addToAssetBucketDisabled = false;
     else addToAssetBucketDisabled = true;
+  }
+
+  function downloadAssetTrail (assetTrail: any, assetInfo: any, uploadedOn: any){
+    const head =[[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
+    let data:any[] = [];
+    let arrS:any[] = [];
+    assetTrail.forEach((x:any)=>
+      {
+        arrS.push(x.seqNo);
+        arrS.push((new Date(x.performedOn)).toLocaleString());
+        arrS.push(x.userName);
+        arrS.push(x.notes);
+        data.push(arrS);
+        arrS = [];
+      }
+    );
+
+    let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
+    let assetId = assetInfo.id ? assetInfo.id.toString() : "";
+    
+
+    const doc = new jsPDF()
+    doc.setFontSize(11)
+    doc.setTextColor(100)
+    let yaxis1 = 14;
+    let yaxis2 = 70;
+    let xaxis = 25;
+
+    doc.text(t("CheckSum")+":", yaxis1, xaxis)
+    doc.text(CheckSum, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Asset Id")+":", yaxis1, xaxis)
+    doc.text(assetId, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Asset Type")+":", yaxis1, xaxis)
+    doc.text(assetInfo.typeOfAsset, yaxis2, xaxis)
+    xaxis += 5;
+    
+    doc.text(t("Asset Status")+":", yaxis1, xaxis)
+    doc.text(assetInfo.status, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Username")+":", yaxis1, xaxis)
+    doc.text(assetInfo.owners.join(", "), yaxis2, xaxis)
+    xaxis += 5;
+
+    let categoriesString = "";
+    let tempxaxis = 0;
+    assetInfo.categories.forEach((x:any, index: number)=>
+    {
+      let formData = x.formDatas.map((y: any, index1: number) => {
+        if(index1 > 0)
+        {
+          tempxaxis += 5
+        }
+        return y.key + ": " + y.value + "\n"; 
+      })
+      categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
+      if(index > 0)
+      {
+        tempxaxis += 5
+      }
+    }
+    )
+    doc.text(t("Categories")+":", yaxis1, xaxis)
+    doc.text(categoriesString, yaxis2, xaxis)
+    xaxis += tempxaxis + 5;
+
+
+    doc.text(t("Camera Name")+":", yaxis1, xaxis)
+    doc.text(assetInfo.camera, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Captured")+":", yaxis1, xaxis)
+    doc.text(assetInfo.capturedDate, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Uploaded")+":", yaxis1, xaxis)
+    doc.text(uploadedOn, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Duration")+":", yaxis1, xaxis)
+    doc.text(assetInfo.duration, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Size")+":", yaxis1, xaxis)
+    doc.text(assetInfo.size, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Retention")+":", yaxis1, xaxis)
+    doc.text(assetInfo?.retention, yaxis2, xaxis)
+    xaxis += 5;
+
+    autoTable(doc, {
+      startY: xaxis,
+      head: head,
+      body: data,
+      didDrawCell: (data : any) => {
+        console.log(data.column.index)
+      },
+    })
+    doc.save('ASSET ID_Audit_Trail.pdf');
   }
 
   return (
@@ -518,7 +761,9 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
                   <MenuItem onClick={handleDownloadMetaDataClick}>
                     {t("Download_metadata_info")}
                   </MenuItem>
-                  <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                  <MenuItem onClick={onClickDownloadAssetTrail}>
+                    {t("Download_audit_trail")}
+                  </MenuItem>
                 </SubMenu>
               </div>
             </div>
