@@ -41,6 +41,7 @@ import {BASE_URL_COMMAND_SERVICE} from './Api/url';
 
 export const urlNames: any = {
     assets: "assets",
+    assetSearchResult:"assetSearchResult",
     adminUserGroups: "adminUserGroups",
     adminUserGroup: "adminUserGroup",
     adminUserGroupId: "adminUserGroupId",
@@ -98,10 +99,20 @@ export const urlList: any = [
     },
     {
         name: urlNames.assetsDetail,
-        url: "/assetdetail",
+        url: '/assetdetail',
         details: [
             { routeTo: "/assets", type: "link", label: "Assets", },
-        ],
+            { routeTo:'/assetSearchResult', type: 'text', label: 'Search Results' },
+        ]
+    },
+    {
+        name: urlNames.assetSearchResult,
+        url: '/assetSearchResult',
+        details: [
+            { routeTo: "/assets", type: "link", label: "Assets", },
+            { routeTo:'/assetSearchResult', type: 'text', label: 'Search Results' },
+            
+        ]
     },
     // {
     //     name: urlNames.assetsDetail,

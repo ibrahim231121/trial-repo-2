@@ -81,7 +81,11 @@ const Breadcrumb: React.FC<any> = (props) => {
   const getTitle = () => {
     const paths = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (paths) {
-      const pathName = (otherLabels && otherLabels !== t("Search_Results")  ?  otherLabels : paths[paths.length - 1].label)
+      const pathName = (otherLabels 
+                     && otherLabels !== t("Search_Results") ? otherLabels  
+                     :
+                     paths[paths.length - 1].label && paths[paths.length - 1].label == t("Search_Results") ? paths[paths.length - 2].label : paths[paths.length - 1].label) 
+
       return pathName
     }
     else

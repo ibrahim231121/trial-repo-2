@@ -38,6 +38,7 @@ import CreateUserForm from "./Application/Admin/User/CreateUserForm";
 import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate/DefaultUnitTemplate";
 import SensorsAndTriggersDetail from "./Application/Admin/SensorsAndTriggers/SensorsAndTriggersDetail/SensorsAndTriggersDetail";
 import SensorAndTriggersList from './Application/Admin/SensorsAndTriggers/SensorsAndTriggersLister/SensorsAndTriggersList';
+import AssetLister from "./Application/Assets/AssetLister";
 
 
 
@@ -48,8 +49,6 @@ const Routes = () => {
   const [open, setOpen] = React.useState(true);
   const classes = CRXPanelStyle();
   const history = useHistory();
-
-
 
 
   const handleDrawerToggle = () => {
@@ -87,7 +86,8 @@ const Routes = () => {
           >
             <Switch>
               <PrivateRoute moduleId={1} path={urlList.filter((item:any) => item.name === urlNames.assets)[0].url} exact={true} component={MannageAsset} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />           
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assetsDetail)[0].url} exact={true} component={AssetDetailsTemplate} />  
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.assetSearchResult)[0].url} exact={true} component={MannageAsset} />   
               <PrivateRoute moduleId={5} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url}  exact={true} component={UserGroup} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url} exact={true} component={Group} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) =>  item.name === urlNames.userGroupCreate)[0].url} exact={true} component={Group} />
