@@ -82,6 +82,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
+  const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired]= React.useState(false);
 
   React.useEffect(() => {
     calculateSecurityDescriptor();
@@ -105,7 +106,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       setIsLockedAccess(true);
     }
   }, [row, selectedItems]);
-
+  
   const handleOpenAssignUserChange = () => setOpenAssignUser(true);
   const handleOpenManageRetention = () => setOpenManageRetention(true);
   const handleOpenAssetShare = () => setOpenAssetShare(true);
@@ -126,7 +127,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   }
 
   const findMaximumDescriptorId = (securityDescriptors: Array<securityDescriptorType>): number => {
-    return Math.max.apply(Math, securityDescriptors.map((o) => {
+    return securityDescriptors.length === 0 ? 0 : Math.max.apply(Math, securityDescriptors.map((o) => {
       return parseInt(PersmissionModel[o.permission], 10);
     }));
   }
@@ -366,7 +367,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       let uploadCompletedOn;
       for (const file of files) {
         if (file.type == "Video") {
-          await FileAgent.getFile(file.filesId).then((response) => {debugger; uploadCompletedOn = response.history.uploadCompletedOn});
+          await FileAgent.getFile(file.filesId).then((response) => {uploadCompletedOn = response.history.uploadCompletedOn});
           break;
         }
       }
@@ -475,9 +476,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       for (const asset of selectedItems) {
         assetIdSecurityDescriptorCollection.push({
           'assetId': asset.assetId,
-          'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors)
+          'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors),
+          'isEvidenceExpired' : CheckEvidenceExpire(asset.evidence)
         });
       }
+
+      let isEvidenceExpired = assetIdSecurityDescriptorCollection.filter((x : any)=> x.isEvidenceExpired === true)?.length > 0;
+      setIsMultiSelectEvidenceExpired(isEvidenceExpired);
       const lowestSecurityDescriptorAssetIdAndDescriptor = assetIdSecurityDescriptorCollection.sort((a: any, b: any) => (a.securityDescriptorMaxId > b.securityDescriptorMaxId ? 1 : -1))[0];
       setMaximumDescriptor(lowestSecurityDescriptorAssetIdAndDescriptor.securityDescriptorMaxId);
       const lowestSecurityDescriptorAssetObject = selectedItems.find((x: any) => x.assetId === lowestSecurityDescriptorAssetIdAndDescriptor.assetId);
@@ -489,6 +494,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       if (row) {
         setMaximumDescriptor(findMaximumDescriptorId(row.evidence.securityDescriptors));
         setSecurityDescriptorsArray(row.evidence.securityDescriptors);
+        setIsMultiSelectEvidenceExpired(false);
         return;
       }
     }
@@ -635,7 +641,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         }
       >
         <MenuItem>
-          <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
+          <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
               <div className="crx-menu-icon"></div>
               <div
@@ -653,7 +659,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {actionMenuPlacement == ActionMenuPlacement.AssetBucket && (
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Remove_from_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Remove_from_asset_bucket")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
@@ -666,7 +672,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {isPrimaryOptionOpen && (
           <MenuItem>
-            <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Set_as_primary")}</div>
@@ -677,7 +683,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         <MenuItem>
           <ActionMenuCheckList moduleId={21} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Assign_User")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
               <div className="crx-menu-icon">
                 <i className="far fa-user-tag fa-md"></i>
@@ -689,7 +695,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         <MenuItem>
           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Modify_Retention")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">{t("Modify_Retention")}</div>
@@ -700,7 +706,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {isCategoryEmpty ? (
           <MenuItem>
             <ActionMenuCheckList moduleId={2} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Categorize")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handleChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-clipboard-list fa-md"></i>
@@ -711,7 +717,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
           </MenuItem>
         ) : (
           <MenuItem>
-            <ActionMenuCheckList moduleId={3} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={3} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handleChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-clipboard-list fa-md"></i>
@@ -725,7 +731,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {isLockedAccess ?
           <MenuItem>
             <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Unlock_Access")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={unlockAccessClickHandler}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -736,7 +742,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
           </MenuItem>
           :
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={restrictAccessClickHandler}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -750,7 +756,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         <MenuItem>
           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu">
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">
@@ -774,7 +780,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {multiAssetDisabled === false ? (
           <MenuItem>
             <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Share_Asset")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -788,7 +794,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>

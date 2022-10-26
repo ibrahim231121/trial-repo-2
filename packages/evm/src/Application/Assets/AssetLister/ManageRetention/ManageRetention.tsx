@@ -121,22 +121,37 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     setFieldValue('RetentionStatus', status, false);
     if (status === RetentionStatusEnum.IndefiniteExtention) {
       setFieldValue('SaveButtonIsDisable', false, false);
-      setFieldValue('RetentionList', [{
-        id: props.rowData.id,
-        extendedDays: null,
-        holdUntil : 0
-      }], false);
+      setFieldValue('RetentionList',  GetRetentionList(null, 0), false);
       props.setIsformUpdated(true);
       
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
-      setFieldValue('RetentionList', [{
-        id: props.rowData.id,
-        holdUntil : null
-      }], false);
+      setFieldValue('RetentionList', GetRetentionList(null, null), false);
     }
     setFieldValue('SaveButtonIsDisable', false, false);
+  }
+
+  function GetRetentionList(retentionDays: any, holdUntil: any) {
+    let retentionList: { id: any; extendedDays: number; holdUntil: number }[] = [];
+    if (props?.items?.length > 1) {
+      props.items.forEach((el) => {
+        retentionList.push({
+          id: el.id,
+          extendedDays: parseInt(retentionDays),
+          holdUntil: holdUntil
+        });
+      });
+    }
+    else {
+      retentionList.push({
+        id: props?.rowData?.id,
+        extendedDays: parseInt(retentionDays),
+        holdUntil: holdUntil
+      });
+    }
+
+    return retentionList;
   }
 
 
@@ -144,12 +159,8 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     e.preventDefault();
     const retentionDays = e.target.value;
     setFieldValue('RetentionDays', retentionDays, false);
-    setFieldValue('RetentionList', [{
-      id: props.rowData.id,
-      extendedDays: parseInt(retentionDays)
-    }], false);
+    setFieldValue('RetentionList', GetRetentionList(parseInt(retentionDays), null), false);
     setFieldValue('SaveButtonIsDisable', false, false);
-    
     props.setIsformUpdated(true);
   }
 

@@ -3,14 +3,14 @@ import { CheckEvidenceExpire } from '../GlobalFunctions/CheckEvidenceExpire';
 
 type Props = {
     evidence: any,
-    actionMenuName : string
+    actionMenuName: string,
+    isMultiSelectEvidenceExpired: boolean
 };
 
 const allowedEvidenceExpireActionMenuList = ["Assign User", "Export"]
 
-const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, children }) => {
-
-    if (!CheckEvidenceExpire(evidence) || allowedEvidenceExpireActionMenuList.indexOf(actionMenuName) > -1) {
+const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, isMultiSelectEvidenceExpired, children }) => {
+    if ((!CheckEvidenceExpire(evidence) && !isMultiSelectEvidenceExpired) || allowedEvidenceExpireActionMenuList.indexOf(actionMenuName) > -1) {
         return <>{children}</>;
     }
 

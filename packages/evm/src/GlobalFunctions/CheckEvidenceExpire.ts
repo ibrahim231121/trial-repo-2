@@ -4,8 +4,8 @@ import { AssetRetentionFormat } from '../GlobalFunctions/AssetRetentionFormat';
 const CheckEvidenceExpire = (evidence?: any) => {
     if (evidence) {
         let date: Date;
-        if (evidence.holdUntill)
-            date = moment(evidence.holdUntill).toDate();
+        if (evidence.holdUntil)
+            date = moment(evidence.holdUntil).toDate();
         else
             date = moment(evidence.expireOn).toDate();
 

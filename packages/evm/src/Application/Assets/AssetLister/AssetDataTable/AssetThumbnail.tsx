@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const AssetThumbnailIcon = (data: any): any => {
-  debugger;
   switch (data) {
     case "PDFDoc":
       return <i className="fas fa-file-pdf tumbFontIcon"></i>;

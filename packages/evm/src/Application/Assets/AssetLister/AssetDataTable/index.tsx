@@ -101,7 +101,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
       evidence: row,
-      holdUntill: row.holdUntill,
+      holdUntil: row.holdUntil,
       expireOn: row.expireOn
     };
     reformattedRows.push(evidence);
@@ -308,8 +308,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
   const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
     let date: Date;
-    if (evidence.holdUntill != null)
-      date = moment(evidence.holdUntill).toDate();
+    if (evidence.holdUntil != null)
+      date = moment(evidence.holdUntil).toDate();
     else
       date = moment(evidence.expireOn).toDate();
 

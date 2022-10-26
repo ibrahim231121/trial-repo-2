@@ -3,7 +3,7 @@ export namespace SearchModel {
         id: number;
         tenantId: number;
         masterAssetRecId: number;
-        holdUntill?: Date;
+        holdUntil?: Date;
         station: string;
         cADId: string;
         retentionPolicyName: string;
