@@ -22,29 +22,29 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   });
 
   React.useEffect(() => {
-    props.setFilterValue(() => props.filterValue);
-    props.filterValue?.length > 0 ? setButtonState(false) : setButtonState(true);
+    props.setSelectedCategoryValues(() => props.selectedCategoryValues);
+    props.selectedCategoryValues.length > 0 ? setButtonState(false) : setButtonState(true);
     // Dropdown is updated, so 'x' button will redirect to cancel confirmation.
     // Check either new value added, but that is dependant on 'evidenceResponse'.
-    if (props.evidenceResponse) {
-      const changeInValues = props.filterValue.filter((o: any) => {
-        return !props.evidenceResponse?.categories.some((i: any) => i.name === o.label);
+    if (props.evidence) {
+      const changeInValues = props.selectedCategoryValues.filter((o) => {
+        return !props.evidence?.categories.some((i) => i.name === o.label);
       });
       if (changeInValues.length > 0) {
         props.setIsformUpdated(true);
       }
     }
     props.setIndicateTxt(true);
-  }, [props.filterValue, props.evidenceResponse]);
+  }, [props.selectedCategoryValues, props.evidence]);
 
   const handleChange = (e: any, colIdx: number, v: any, reason: any, detail: any) => {
-    props.setFilterValue(() => [...v]);
+    props.setSelectedCategoryValues(() => [...v]);
     if (reason === 'remove-option') {
       // Show "Remove Category Reason" Modal Here.
       // Set value of removed option in to parent state.
       if (isNewlyAddedCategory(detail.option.label)) {
         props.setRemovedOption(detail.option);
-        props.setActiveForm((prev: any) => prev + 3);
+        props.setActiveForm((prev) => prev + 3);
       } else {
         props.setIsformUpdated(false);
       }
@@ -52,7 +52,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   };
 
   const isNewlyAddedCategory = (label: string): boolean => {
-    let removedValueWasSaved = props.evidenceResponse?.categories.some((x: any) => x.name === label);
+    let removedValueWasSaved = props.evidence?.categories.some((x) => x.name === label);
     if (removedValueWasSaved) {
       return true;
     }
@@ -60,14 +60,14 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   };
 
   const onSubmitForm = () => {
-    if (props.filterValue?.length !== 0) {
-      props.setActiveForm((prev: any) => prev + 1);
+    if (props.selectedCategoryValues.length !== 0) {
+      props.setActiveForm((prev) => prev + 1);
     }
   };
 
   const cancelBtn = () => {
-    if (props.filterValue?.length !== 0) {
-      props.setActiveForm((prev: any) => prev + 2);
+    if (props.selectedCategoryValues.length !== 0) {
+      props.setActiveForm((prev) => prev + 2);
     } else {
       props.setOpenForm();
       props.closeModal(false);
@@ -91,7 +91,7 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
                 CheckBox={true}
                 visibility={isCancelable}
                 options={filterCategory(categoryOptions)}
-                value={props.filterValue}
+                value={props.selectedCategoryValues}
                 autoComplete={false}
                 isSearchable={true}
                 onChange={(event: any, newValue: any, reason: any, detail: any) => {

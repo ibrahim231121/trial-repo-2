@@ -62,7 +62,7 @@ import { Paginated, Headers } from './models/CommonModels';
 import { useState, useEffect } from 'react';
 import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { GlobalAssetViewReason } from './models/SetupConfigurations';
+import { SetupConfigurationsModel } from './models/SetupConfigurations';
 import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/SensorsAndTriggers';
 
 const cookies = new Cookies();
@@ -142,7 +142,7 @@ export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-    getGlobalAssetViewReason: (url: string) => requests.get<GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     putSensorsAndTriggersTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getSensorsAndTriggersEvents: (url: string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" + url, config),
     deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),

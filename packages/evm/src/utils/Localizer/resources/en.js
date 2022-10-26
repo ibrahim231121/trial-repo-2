@@ -128,7 +128,7 @@ export const resources = {
         "Required":"Required",
         "Category_Forms":"Category Forms",
         "is_required":"is required",
-        "Category_form":"Category form'",
+        "Category_form":"Category form",
         "Edit_category":"Edit category",
         "Next":"Next",
         "Skip_category_form_and_save":"Skip category form and save",

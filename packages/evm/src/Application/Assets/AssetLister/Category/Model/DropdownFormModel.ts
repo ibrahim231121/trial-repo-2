@@ -1,13 +1,17 @@
+import { Dispatch, SetStateAction } from 'react';
+import { Evidence } from '../../../../../utils/Api/models/EvidenceModels';
+import { SelectedCategoryModel } from './FormContainerModel';
+
 export type DropdownFormProps = {
-    filterValue: any[];
+    selectedCategoryValues: Array<SelectedCategoryModel>;
     setremoveClassName: any;
     activeForm: number;
-    evidenceResponse: any;
+    evidence: Evidence | undefined;
     isCategoryEmpty: boolean;
-    setFilterValue: (param: any) => void;
+    setSelectedCategoryValues: Dispatch<SetStateAction<Array<SelectedCategoryModel>>>;
     setOpenForm: () => void;
     closeModal: (param: boolean) => void;
-    setActiveForm: (param: any) => void;
+    setActiveForm: Dispatch<SetStateAction<number>>;
     setRemovedOption: (param: any) => void;
     setModalTitle: (param: string) => void;
     setIsformUpdated: (param: boolean) => void;

@@ -1,12 +1,17 @@
+import { Dispatch, SetStateAction } from 'react';
+import { Category, Evidence } from '../../../../../utils/Api/models/EvidenceModels';
+import { SetupConfigurationsModel } from '../../../../../utils/Api/models/SetupConfigurations';
+import { FieldTypes } from './FieldTypes';
+import { SelectedCategoryModel } from './FormContainerModel';
 export type CategoryFormProps = {
-    filterValue: any[];
+    selectedCategoryValues: Array<SelectedCategoryModel>;
     setremoveClassName: any;
     activeForm: number;
     isCategoryEmpty: boolean;
-    evidenceResponse: any;
-    setFilterValue: (param: any) => void;
+    evidence: Evidence | undefined;
+    setSelectedCategoryValues: Dispatch<SetStateAction<Array<SelectedCategoryModel>>>;
     closeModal: (param: boolean) => void;
-    setActiveForm: (param: any) => void;
+    setActiveForm: Dispatch<SetStateAction<number>>;
     setOpenForm: () => void;
     setModalTitle: (param: string) => void;
     setIsformUpdated: (param: boolean) => void;
@@ -16,6 +21,11 @@ export type CategoryFormProps = {
 
 export enum SubmitType {
     WithForm = 1,
-    WithoutForm = 2,
+    WithoutForm = 2
 }
 
+export type FormInitialValues = {
+    key: string;
+    value: string;
+    fieldType: FieldTypes;
+};

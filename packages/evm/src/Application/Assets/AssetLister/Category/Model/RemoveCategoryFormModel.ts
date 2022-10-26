@@ -1,11 +1,15 @@
+import { Dispatch, SetStateAction } from 'react';
+import { Evidence } from '../../../../../utils/Api/models/EvidenceModels';
+import { SelectedCategoryModel } from './FormContainerModel';
+
 export type RemoveCategoryFormProps = {
-    filterValue: [];
+    selectedCategoryValues: Array<SelectedCategoryModel>;
     setremoveClassName: any;
     removedOption: any;
-    evidenceResponse: any;
-    setActiveForm: (param: any) => void;
+    evidence: Evidence | undefined;
+    setActiveForm: Dispatch<SetStateAction<number>>;
     setOpenForm: () => void;
-    setFilterValue: (param: any) => void;
+    setSelectedCategoryValues: Dispatch<SetStateAction<Array<SelectedCategoryModel>>>;
     closeModal: (param: boolean) => void;
     setDifferenceOfDays: (param: number) => void;
     setRemovedOption: (param: any) => void;
@@ -17,4 +21,10 @@ export type RemoveCategoryFormProps = {
     setIndicateTxt: (param: boolean) => void;
 };
 
-export interface FormValues { }
+export interface FormValues {}
+
+export type RetentionDetailForCalculation = {
+    categoryName: string;
+    retentionId: number;
+    hours: number;
+};

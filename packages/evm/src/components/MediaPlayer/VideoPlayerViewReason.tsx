@@ -16,7 +16,7 @@ import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router";
 import { EvidenceAgent, SetupConfigurationAgent } from '../../utils/Api/ApiAgent';
 import { AssetViewReason } from '../../utils/Api/models/EvidenceModels';
-import { GlobalAssetViewReason } from '../../utils/Api/models/SetupConfigurations';
+import { SetupConfigurationsModel } from '../../utils/Api/models/SetupConfigurations';
 
 
 type VideoPlayerViewReasonProps = {
@@ -71,9 +71,9 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     ]
     React.useEffect(() => {
         SetupConfigurationAgent.getGlobalAssetViewReason('/TenantSettings/getassetviewreasons')
-            .then((response : GlobalAssetViewReason[]) =>
+            .then((response : SetupConfigurationsModel.GlobalAssetViewReason[]) =>
             {
-                let tempViewReason: ViewReason[]= response.map((x:GlobalAssetViewReason)=> {
+                let tempViewReason: ViewReason[]= response.map((x: SetupConfigurationsModel.GlobalAssetViewReason)=> {
                     return {
                         "displayText": x.label,
                         "value": x.inputValue

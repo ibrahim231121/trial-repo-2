@@ -17,7 +17,7 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const CategoryFormFields = useSelector((state: any) => state.CategoryFormFields);
-  const evidenceId = props.evidenceResponse?.id;
+  const evidenceId = props.evidence?.id;
   const initialValues: FormValues = {
     reason: ''
   };

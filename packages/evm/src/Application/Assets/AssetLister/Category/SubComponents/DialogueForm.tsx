@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Category, EvdenceCategoryAssignment } from '../../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../../utils/Api/ApiAgent';
 import './DialogueForm.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { DialogueFormProps } from '../Model/DialogueFormModel';
 import { getAssetSearchInfoAsync } from '../../../../../Redux/AssetSearchReducer';
 import { SearchType } from '../../../utils/constants';
@@ -27,11 +27,11 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (props.evidenceResponse) {
-      const newlyAddedCategories = getChangedCategories(props.initialValues, props.evidenceResponse);
+    if (props.evidence) {
+      const newlyAddedCategories = getChangedCategories(props.selectedCategoryValues, props.evidence);
       newlyAddedCategories.length > 0 ? setSaveBtn(false) : setSaveBtn(true);
     }
-  }, [props.initialValues, props.evidenceResponse]);
+  }, [props.selectedCategoryValues, props.evidence]);
 
   const backBtn = () => {
     props.setActiveForm((prev: number) => prev - 1);
@@ -44,8 +44,8 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
 
   const getChangedCategories = (initialValue: any, evidenceResponse: any) => {
     if (evidenceResponse && initialValue.length > 0) {
-      const newlyAddedCategories = props.initialValues.filter((o: any) => {
-        return !props.evidenceResponse?.categories.some((i: any) => i.name === o.label);
+      const newlyAddedCategories = props.selectedCategoryValues.filter((o: any) => {
+        return !props.evidence?.categories.some((i: any) => i.name === o.label);
       });
       return newlyAddedCategories;
     }
@@ -53,7 +53,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
   }
 
   const submitForm = (values: any[]) => {
-    const evidenceId = props.evidenceResponse?.id;
+    const evidenceId = props.evidence?.id;
     const Assign_Category_Arr: Category[] = [];
     const Assign_Category_URL = `/Evidences/${evidenceId}/Categories`;
     for (const v of values) {
@@ -73,7 +73,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
     };
 
     EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {
-      props.setFilterValue((val: []) => []);
+      props.setSelectedCategoryValues([]);
       setSuccess(true);
       setTimeout(() => {
         dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
@@ -97,7 +97,7 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
         />
       )}
       <Formik
-        initialValues={getChangedCategories(props.initialValues, props.evidenceResponse)}
+        initialValues={getChangedCategories(props.selectedCategoryValues, props.evidence)}
         onSubmit={(values, actions) => {
           submitForm(values);
           actions.setSubmitting(false);
