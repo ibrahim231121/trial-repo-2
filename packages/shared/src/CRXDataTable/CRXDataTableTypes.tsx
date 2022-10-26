@@ -124,6 +124,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
       color: "#d1d2d4 !important",
       whiteSpace: "nowrap",
+      paddingRight : "9px !important"
     },
     searchHeaderStickness: {
       top: "35px !important",

@@ -319,9 +319,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       );
     }
     return (
-      <p>
+      <div className="dataTableText ">
         {AssetRetentionFormat(date)}
-      </p>
+      </div>
     );
   }
 
@@ -342,7 +342,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     },
     {
       label: `${t("Asset_Thumbnail")}`,
-      id: "assetId",
+      id: "assetType",
       align: "left",
       dataComponent: thumbTemplate,
       minWidth: "130",

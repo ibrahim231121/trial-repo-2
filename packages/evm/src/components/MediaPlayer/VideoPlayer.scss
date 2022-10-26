@@ -2284,3 +2284,45 @@ span.playBackTooltipUp {
     }
   }
 }
+
+.mainFullView{
+  &.fullscreen {
+    &.fullscreen-enabled {
+      #screens {
+        ._videPlayer_height_AU {
+          height: 100vh !important;
+        }
+      }
+    }
+  }
+  &::backdrop {
+    background: transparent !important;
+  }
+  #screens {
+    video {
+      padding-bottom: 0px;
+    }
+    #video-player-screens {
+      ._videoPlayer_grid_customize {
+        padding-right: 0px;
+      }
+      ._video_Player_Right_Panel {
+        height: calc(100vh - 129px);
+        ._bookMark_list_items{
+          height: calc(100vh - 258px);
+        }
+      }
+    }
+  }
+  .videoContainer {
+    margin-bottom: 0px;
+  }
+  #CRX_Video_Player_Controls {
+    bottom: 27px !important;
+    padding-top: 14px !important;
+    background: rgba(0,0,0,0.5);
+    .playerViewFlex {
+      margin-bottom: 2px;
+    }
+  }
+} 

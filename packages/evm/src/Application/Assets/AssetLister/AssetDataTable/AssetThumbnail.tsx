@@ -11,23 +11,26 @@ interface Props {
 }
 
 export const AssetThumbnailIcon = (data: any): any => {
+  debugger;
   switch (data) {
     case "PDFDoc":
       return <i className="fas fa-file-pdf tumbFontIcon"></i>;
-    case "WordDoc":
+    case "Doc":
       return <i className="fas fa-file-word tumbFontIcon"></i>;
     case "ExcelDoc":
       return <i className="fas fa-file-excel tumbFontIcon"></i>;
     case "CSVDoc":
       return <i className="fas fa-file-csv tumbFontIcon"></i>;
     case "Audio":
-      return <i className="tumbPlayIcon icon icon-play4"></i>;
+      return <div className="asset_lister_thumb"><i className="fa-regular fa-waveform-lines"></i></div>;
     case "Video":
-      return <i className="tumbPlayIcon icon icon-play4"></i>;
-    default:
       return <div className="asset_lister_thumb">
-              <div className="_video_play_icon"><span className="icon icon-play4"></span></div>
-              <i className="fas fa-solid fa-file-video"></i>
+                <div className="_video_play_icon"><span className="icon icon-play4"></span></div>
+                <i className="fas fa-solid fa-file-video"></i>
+              </div>;
+    default:
+      return <div className="Unspecified-file-type">
+              <i className="fas fa-solid fa-file"></i>
             </div>;
   }
 };
@@ -41,20 +44,6 @@ export const AssetThumbnail: React.FC<Props> = ({
     <>
       <div className={"assetThumb " + className} onClick={onClick}>
         {AssetThumbnailIcon(assetType)}
-        {assetType === "Video" && (
-          // <img src={thumbImg} alt="Asset Thumb" className="assetsThumbGetac" />
-          <div className="asset_lister_thumb">
-            <i className="fas fa-solid fa-file-video"></i>
-          </div>
-        )}
-        {assetType === "Audio" && (
-          // <div className="audioBackground">
-          //   <img src={audioIcon} />
-          // </div>
-          <div className="asset_lister_thumb">
-            <i className="fas fa-solid fa-file-video"></i>
-          </div>
-        )}
       </div>
     </>
   );

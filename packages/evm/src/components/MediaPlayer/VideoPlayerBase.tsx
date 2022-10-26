@@ -1937,7 +1937,7 @@ const VideoPlayerBase = (props: any) => {
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener}>
-      
+      <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
 
       <div className="searchComponents">
         <div className="_video_player_container" id="_asset_detail_view_idx">
@@ -1965,7 +1965,7 @@ const VideoPlayerBase = (props: any) => {
         <div id="crx_video_player" className={( multiTimelineEnabled  && `_Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
          
           <CRXToaster ref={toasterMsgRef} />
-          <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
+          
             <div id="screens">
               <VideoPlayerOverlayMenu
                 overlayEnabled={overlayEnabled}
@@ -2395,7 +2395,7 @@ const VideoPlayerBase = (props: any) => {
             {/* {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
             {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
             {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>} */}
-          </FullScreen>
+          
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
             seteditBookmarkForm={seteditBookmarkForm}
@@ -2465,6 +2465,7 @@ const VideoPlayerBase = (props: any) => {
       </div>
       </div>
       </div>
+      </FullScreen>
       </div>
     );
 }

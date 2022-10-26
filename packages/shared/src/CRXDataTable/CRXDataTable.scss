@@ -50,6 +50,9 @@
             outline: 0px;
             box-shadow: 0px;
           }
+          &.MuiTableCell-paddingCheckbox {
+            padding: 0 12px 0 16px !important;
+          }
           .dateRangeContainer {
             .select {
               select {
