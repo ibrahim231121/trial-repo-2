@@ -430,7 +430,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
         });
 
 
-        let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
+        let size = getAssetData.assets.master.files.filter(x => x.type == "Video").reduce((a, b) => a + b.size, 0)
 
 
         var categoriesForm: string[] = [];
@@ -661,15 +661,23 @@ const milliSecondsToTimeFormat = (date: Date) => {
     const buffering = row.assets.master.buffering;
     const camera = row.assets.master.camera;
     const file = fileData;
-    const recording = row.assets.master.recording;
+    let recording = row.assets.master.recording;
     const bookmarks = row.assets.master.bookMarks ?? [];
     const notes = row.assets.master.notes ?? [];
     const id = row.assets.master.id;
     const unitId = row.assets.master.unitId;
     const typeOfAsset = row.assets.master.typeOfAsset;
+    recording = { ...recording, 
+      ended: new Date(new Date(recording.ended).getTime() + buffering.post),
+      started: new Date(new Date(recording.started).getTime() - buffering.pre),
+    }
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
     rowdetail.push(myData);
     rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+      template.recording = { ...template.recording, 
+        ended: new Date(new Date(template.recording.ended).getTime() + template.buffering.post),
+        started: new Date(new Date(template.recording.started).getTime() - template.buffering.pre),
+      }      
       return {
         id: template.id,
         files: childFileData,

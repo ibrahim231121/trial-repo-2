@@ -52,6 +52,7 @@ type Timeline = {
   indexNumberToDisplay: number,
   camera: string,
   timeOffset: number,
+  assetbuffering: any
 }
 
 type TimelineSyncHistory = {
@@ -168,6 +169,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
     let timeOffset = data[x].recording.timeOffset ?? 0;
+    let assetbuffering = data[x].assetbuffering;
     let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
     let recording_start_point = (recording_start_time - minstartpoint) / 1000;
     let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
@@ -199,7 +201,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
           enableDisplay: temptimelinedetail.enableDisplay,
           indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
           camera: temptimelinedetail.camera,
-          timeOffset: temptimelinedetail.timeOffset
+          timeOffset: temptimelinedetail.timeOffset,
+          assetbuffering: temptimelinedetail.assetbuffering
         }
         rowdetail.push(myData);
       }
@@ -224,7 +227,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         enableDisplay: x == 0 ? true : false,
         indexNumberToDisplay: x == 0 ? 1 : 0,
         camera: data[x].camera,
-        timeOffset: timeOffset
+        timeOffset: timeOffset,
+        assetbuffering: assetbuffering
       }
       bufferingArr.push({ id: myData.id, buffering: false })
       rowdetail.push(myData);
@@ -2059,13 +2063,13 @@ const VideoPlayerBase = (props: any) => {
                         <>
                           {x.enableDisplay &&
                             <>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_start_point * 1000, x.recording_start_point) }}>
+                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
                                 <span className="pip_icon" aria-hidden="true"
                                   onMouseOut={() =>
                                     mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
                                 </span>
                               </div>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_end_point * 1000, x.recording_start_point) }}>
+                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_end_point * 1000) - x.assetbuffering?.post), x.recording_start_point) }}>
                                 <span className="pip_icon" aria-hidden="true"
                                   onMouseOut={() =>
                                     mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
