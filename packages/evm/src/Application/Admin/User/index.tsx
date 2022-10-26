@@ -512,6 +512,8 @@ const openHandler = (_: React.SyntheticEvent) => {
 
     if(colIdx === 7 && initialRows) {   
 
+      console.log("initialRows : ", initialRows)
+
       const onSetSearchData = () => {
         setSearchData((prevArr) =>
           prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())

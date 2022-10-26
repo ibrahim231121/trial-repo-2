@@ -438,7 +438,6 @@ const Group = () => {
     let editCase = !isNaN(+id);
     var groupURL = SAVE_USER_GROUP_URL;
 
-
     let subModules : GroupSubModules[] = applicationPermissions
     .map((x) => x.children)
     .flat(1)
@@ -463,9 +462,11 @@ const Group = () => {
         }),
       },
     };
+    
     let groupId = 0;
     let status = 0;
     if (editCase) {
+      
       groupURL = groupURL + "/" + id;
       UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup).then(() => {
         groupId = parseInt(id);
@@ -473,10 +474,32 @@ const Group = () => {
       } )
     }
     else{
-      UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup).then((response: any) => {
+      UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup)
+      .then((response:any) => {
+        showToastMsg();
         groupId = parseInt(response.replace(/["']/g, ""));
         functionalityAfterRequest(groupId, 201)
-      } )
+      })
+      .catch((error: any) => {
+        if (error.response.status === 500 || error.response.status === 400) {
+          setShowSuccess(true);
+          functionInitialized();
+          setIsAppPermissionsChange(false);
+          setIsSaveButtonDisabled(true);
+  
+          setMessages(message[1].message);
+          setError(message[1].messageType);
+        } else if (error.response.status === 409 || error.response.status === 404) {
+          // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
+          setShowMessageCls("showMessageGroup");
+          setShowMessageError("errorMessageShow");
+          setShowSuccess(true);
+          setMessages(error.response.data);
+          setAlertType("inline");
+          setError("error");
+        }
+        
+      });
     }
     
 
@@ -539,6 +562,7 @@ const Group = () => {
   };
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
+    
     let permissionsToAdd = dataPermissions.map((x) => {
       return {
         id: x.containerMappingId,
@@ -556,6 +580,7 @@ const Group = () => {
       deletedContainerMappingIds: deletedDataPermissions,
       groupId:groupId
     };
+
     fetch(UPSERT_CONTAINER_MAPPING_URL, {
       method: "PUT",
       headers: {
@@ -566,11 +591,11 @@ const Group = () => {
       body: JSON.stringify(dataPermissionObj),
     })
       .then((container) => {
-        
-        if (container.status === 201 || container.status === 204) {
-          // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
-          showToastMsg();
-        } else if (
+        // if (container.status === 201 || container.status === 204) {
+        //   // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+        //   showToastMsg();
+        // } else 
+        if (
           container.status === 500 ||
           container.status === 400 ||
           container.status === 409 ||
@@ -580,7 +605,9 @@ const Group = () => {
           setAlertType("inline");
           setMessages(message[2].message);
           setError(message[2].messageType);
+          return;
         }
+        
       })
       .catch((error: any) => {
         if (error.response.status === 500 || error.response.status === 400) {
@@ -596,7 +623,6 @@ const Group = () => {
   
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
           effectAfterSave(groupId.toString(),status, true)
-  
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow");
   
@@ -604,9 +630,9 @@ const Group = () => {
           setAlertType("inline");
           setError("error");
         }
-        
+        return;
       });
-  
+      
     effectAfterSave(groupId.toString(),status, false)
    }
   
@@ -670,7 +696,7 @@ const Group = () => {
 
   return (
     <div className="App crxTabsPermission switchLeftComponents" style={{}}>
-      <CRXAlert
+      {showSuccess && showSuccess ? <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}
         type={error}
@@ -678,6 +704,7 @@ const Group = () => {
         alertType={alertType}
         setShowSucess={setShowSuccess}
       />
+     : ""}
       <CRXToaster ref={groupMsgRef} />
 
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
