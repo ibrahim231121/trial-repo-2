@@ -26,7 +26,7 @@ import ApplicationPermissionProvider from "./ApplicationPermission/ApplicationPe
 import { getToken } from "./Login/API/auth";
 import jwt_decode from "jwt-decode";
 import { TokenType } from "./types";
-import { AUTHENTICATION_NewAccessToken_URL } from "./utils/Api/url";
+import { AUTHENTICATION_NewAccessToken_URL, BASE_URL_SOCKET_SERVICE } from "./utils/Api/url";
 import { setAPIAgentConfig } from "./utils/Api/ApiAgent";
 import { setgroups } from "process";
 import { getLoaderValue } from "./Redux/loaderSlice";
@@ -35,6 +35,7 @@ import { useInterval } from "usehooks-ts";
 import { logOutUser } from "./Logout/API/auth";
 import { useHistory } from "react-router-dom";
 
+declare const window: any;
 interface CounterState {
   path: string,
   expires:Date
@@ -144,12 +145,10 @@ function App() {
   }, [culture, resources]);
 
   useEffect(()=>{
-
-   //setupSignalRConnection("https://localhost:54321/command");
-    
     var token = getToken();
     if(token){
-            setupSignalRConnection("https://localhost:54321/crossbone");
+            window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
+            setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
             let moduleIds = getModuleIds();
             let groupIds = getGroupIds();
             if(moduleIds){

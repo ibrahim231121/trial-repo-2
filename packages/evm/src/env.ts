@@ -21,5 +21,6 @@ type EnvType = {
   REACT_APP_BING_MAPS_API_KEY:string
   REACT_APP_AUDITLOG_SERVICE_URL: string
   REACT_APP_COMMAND_SERVICE_URL: string
+  REACT_APP_SOCKET_SERVICE_URL: string
 }
 export const env: EnvType = { ...process.env, ...window.env }

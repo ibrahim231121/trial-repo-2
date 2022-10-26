@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useRef } from "react";
 import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CRXButton  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -92,7 +92,7 @@ const UnitAndDevices: React.FC = () => {
 
   React.useEffect(() => {
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
-    
+    singleEventListener("onWSMsgRecEvent", onMsgReceived);
     dispatch(getAllUnitStatusKeyValuesAsync());
     dispatch(getAllUnitAssignmentKeyValuesAsync());
     dispatch(getAllUnitVersionKeyValuesAsync());
@@ -101,11 +101,15 @@ const UnitAndDevices: React.FC = () => {
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "Units & Devices");  // will check this
     document.getElementById("UDAssigned")?.parentElement?.classList.add("UDAssignedClass");
+  
+    return () => {
+        singleEventListener("onWSMsgRecEvent");
+         };
   }, []);
 
   
 
-
+  const statusJson =useRef<any>();
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
   const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
   const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);
@@ -122,7 +126,20 @@ const UnitAndDevices: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false)
 
   const {getModuleIds} = useContext(ApplicationPermissionContext);
-  
+
+  const singleEventListener = (function(element: any) {
+          var eventListenerHandlers:any = {};
+          return function(eventName: string, func?: any) {
+            eventListenerHandlers.hasOwnProperty(eventName) && element.removeEventListener(eventName, eventListenerHandlers[eventName]);
+            if(func) {
+              eventListenerHandlers[eventName] = func;
+              element.addEventListener(eventName, func);
+            }
+            else {
+              delete eventListenerHandlers[eventName];
+            }
+          }
+        })(window);
 
   const setData = () => {
  
@@ -159,9 +176,24 @@ const UnitAndDevices: React.FC = () => {
         });
 
         //setReformattedRows(unitRows);
-
+        singleEventListener("onWSMsgRecEvent", onMsgReceived);
   }
-
+  function onMsgReceived(e: any) {
+    if(e !=null && e.data != null && e.data.body !=null) { 
+      statusJson.current = JSON.parse(e.data.body.data);
+      setRowForUnitStatus(statusJson.current);
+    }
+  };
+   
+  const setRowForUnitStatus= (statusJson:any) => {
+      if(statusJson  != null && statusJson  != "undefined"){
+         const index = rows.findIndex(e => e.id === statusJson.UnitId);
+         const rowscopy = [...rows];
+         rowscopy[index].status = statusJson.Data;
+         setRows(rowscopy);
+         }
+       };
+       
   React.useEffect(() => {
     //console.log("reformattedRows : ", reformattedRows)
   }, [reformattedRows]);

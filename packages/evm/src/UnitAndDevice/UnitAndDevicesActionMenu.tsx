@@ -24,10 +24,6 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
     const history = useHistory();
 
 
-    const GetSingleLiveView = () => {
-        const path = `${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&unitId=${row?.id}`;
-       return path;
-      };
     return (
         <Menu
             align="start"
@@ -66,7 +62,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
                 </div>
             </div>
         </MenuItem>
-        <MenuItem  href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&unitId=${row?.id}`}>
+        <MenuItem  href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId.split('_')[0]}`}>
             <div className="crx-meu-content crx-spac">
                 <div className="crx-menu-icon">
                 </div>

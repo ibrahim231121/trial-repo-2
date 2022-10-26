@@ -109,6 +109,8 @@ const UnitCreate = (props: historyProps) => {
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
 
+  const statusJson = useRef<any>(null);
+  const [unitStatus, setUnitStatus] = useState<any>();
 
   const [stationName, SetStationName] = React.useState<string>('');
   const [page, setPage] = React.useState<number>(0);
@@ -154,7 +156,15 @@ const UnitCreate = (props: historyProps) => {
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
 
   React.useEffect(() => {
-    UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) => setPrimaryDeviceInfo(response));
+    singleEventListener("onWSMsgRecEvent", onMsgReceived);
+      UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) =>
+      {
+        setPrimaryDeviceInfo(response);
+        if (response != undefined) {
+         setUnitStatus(response.status.toUpperCase());
+        }
+      });
+   
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
     UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
     UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response:Unit) => {
@@ -168,6 +178,9 @@ const UnitCreate = (props: historyProps) => {
         setRows(unitAndDevicesRows);
       }
     });
+    return () => {
+              singleEventListener("onWSMsgRecEvent");
+           };
   }, []);
 
   React.useEffect(() => {
@@ -217,6 +230,28 @@ const UnitCreate = (props: historyProps) => {
       );
     }
   }, [primaryDeviceInfo, configTemplateList]);
+
+  function onMsgReceived(e: any) {
+       if(e !=null && e.data != null && e.data.body !=null) { 
+          statusJson.current = JSON.parse(e.data.body.data);
+          setUnitStatus(statusJson.current.Data.toUpperCase());
+        }
+       };
+
+  const singleEventListener = (function(element: any) {
+      var eventListenerHandlers:any = {};
+      return function(eventName: string, func?: any) {
+        eventListenerHandlers.hasOwnProperty(eventName) && element.removeEventListener(eventName, eventListenerHandlers[eventName]);
+        if(func) {
+          eventListenerHandlers[eventName] = func;
+          element.addEventListener(eventName, func);
+        }
+        else {
+          delete eventListenerHandlers[eventName];
+        }
+      }
+    })(window);
+
 
   const onChangeGroupInfo = (
     name: string,
@@ -481,8 +516,9 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-59"
                     }
                   >
-                    <div className="panel_Heading_unitDetail">{t(primaryDeviceInfo.status.toUpperCase())}</div>
-                    <span className={`pdStatus ${primaryDeviceInfo.status}`}>
+                   <div className="panel_Heading_unitDetail">{unitStatus}</div>
+                    <span className={`pdStatus ${unitStatus}`}>
+                      
                       <i className="fas fa-circle"></i>
                     </span>
                     <p>{t("STATUS")}</p>
