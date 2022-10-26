@@ -26,6 +26,12 @@ iframe {
     text-align: center;
     padding: 0;
     margin-left: -3px;
+    .crx-menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: 0px !important;
+    }
   }
   .menu_List_Button {
     display: flex;

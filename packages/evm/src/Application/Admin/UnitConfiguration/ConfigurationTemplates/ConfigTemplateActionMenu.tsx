@@ -126,7 +126,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
 
             <div className="crx-meu-content  crx-spac" onClick={ViewLog} >
               <div className="crx-menu-icon">
-                <i className="far fa-trash-alt"></i>
+                <i className="fa-regular fa-eye"></i>
               </div>
               <div className="crx-menu-list">
                 {t("View_Change_Log")}
