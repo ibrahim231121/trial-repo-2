@@ -505,6 +505,7 @@ const VideoPlayerBase = (props: any) => {
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
+  const addingSnapshot = useRef(false);
 
   const keydownListener = (event: any) => {
     const { code, shiftKey } = event;
@@ -2413,6 +2414,7 @@ const VideoPlayerBase = (props: any) => {
             bookmarkAssetId={bookmarkAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
+            addingSnapshot={addingSnapshot}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}

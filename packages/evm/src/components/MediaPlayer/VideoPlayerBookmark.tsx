@@ -25,10 +25,11 @@ type VideoPlayerSnapshotProps = {
     bookmarkAssetId?: number;
     toasterMsgRef: any;
     timelinedetail: any;
+    addingSnapshot: any;
 };
 
 const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((props) => {
-    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail} = props;
+    const {openBookmarkForm,editBookmarkForm,setopenBookmarkForm,seteditBookmarkForm,videoHandle,AssetData,EvidenceId,BookmarktimePositon,bookmark,bookmarkAssetId,toasterMsgRef,timelinedetail,addingSnapshot} = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [removeClassName, setremoveClassName] = React.useState('');
@@ -173,7 +174,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
                     version: "" 
                 };
                 setBookmarkInTimelineDetail("Add", responseObj);
-                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Bookmark Sucessfully Saved", variant: "success", duration: 5000, clearButtton: true});
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Bookmark Not Saved", variant: "error", duration: 5000, clearButtton: true});
@@ -210,7 +211,10 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
 
     const uploadSnapshotStatusStatusUpdate =  (data: any) => {
         if(data.data.percent == 100 && data.data.fileSize == data.data.loadedBytes){
-            AddSnapshot(data.data);
+            if(!addingSnapshot.current){
+                addingSnapshot.current = true;
+                AddSnapshot(data.data);
+            }
         }
         else if(data.data.error){
             toasterMsgRef.current.showToaster({message: "Snapshot Upload Error", variant: "error", duration: 5000, clearButtton: true});
@@ -273,12 +277,14 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             };
             const url = "/Evidences/" + EvidenceId + "/Assets";
             EvidenceAgent.addAsset(url, Assetbody).then(() => {
-                toasterMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "Success", duration: 5000, clearButtton: true});
+                toasterMsgRef.current.showToaster({message: "Snapshot Sucessfully Saved", variant: "success", duration: 5000, clearButtton: true});
                 setOpenModal(false);
                 setopenBookmarkForm(false);
+                addingSnapshot.current = false;
             })
             .catch((e:any) =>{
                 toasterMsgRef.current.showToaster({message: "Snapshot Saved Error", variant: "error", duration: 5000, clearButtton: true});
+                addingSnapshot.current = false;
             })
         }
         else

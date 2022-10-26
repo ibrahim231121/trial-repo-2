@@ -17,7 +17,7 @@ import { CRXConfirmDialog, CRXDataTable } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import "./UnitDetail.scss";
 import { enterPathActionCreator } from "../../Redux/breadCrumbReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../GlobalComponents/Display/TextDisplay";
 import {
@@ -37,6 +37,10 @@ import { Station } from "../../utils/Api/models/StationModels";
 import UnitDeviceEvents from "./UnitDeviceEvents";
 import UnitDeviceDiagnosticLogs from "./UnitDeviceDiagnosticLogs";
 import { CBXLink } from "@cb/shared";
+import { MAX_REQUEST_SIZE_FOR } from "../../utils/constant";
+import { setLoaderValue } from "../../Redux/loaderSlice";
+import { getStationsInfoAllAsync } from "../../Redux/StationReducer";
+import { RootState } from "../../Redux/rootReducer";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -151,9 +155,10 @@ const UnitCreate = (props: historyProps) => {
     { label: t("Device_Diagnostic"), index: 4 },
   ];
 
-  const [stationList, setStationList] = useState<any>();
-  const [configTemplateList, setConfigTemplateList] = useState<any>();
+  const [configTemplateList, setConfigTemplateList] = useState<any[]>([]);
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
+  const stationList: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
+
 
   React.useEffect(() => {
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
@@ -166,7 +171,7 @@ const UnitCreate = (props: historyProps) => {
       });
    
     UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
-    UnitsAndDevicesAgent.getAllStationInfo("").then((response:Station[]) => setStationList(response));
+    dispatch(getStationsInfoAllAsync());
     UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response:Unit) => {
       let unitAndDevicesRows: UnitAndDevice[] = [];  
       if (response != undefined) {
@@ -198,7 +203,7 @@ const UnitCreate = (props: historyProps) => {
   });
 
   React.useEffect(() => {
-    if (primaryDeviceInfo !== undefined && configTemplateList !== undefined &&  stationList !== undefined) {
+    if (primaryDeviceInfo && configTemplateList.length > 0 && stationList.length > 0) {
       SetStationName(primaryDeviceInfo.station)
       let template: any = [{ displayText: t("None"), value: "0" }];
       configTemplateList.map((x: any) => {
@@ -229,7 +234,7 @@ const UnitCreate = (props: historyProps) => {
         })
       );
     }
-  }, [primaryDeviceInfo, configTemplateList]);
+  }, [primaryDeviceInfo, configTemplateList, stationList]);
 
   function onMsgReceived(e: any) {
        if(e !=null && e.data != null && e.data.body !=null) { 
@@ -332,11 +337,12 @@ const UnitCreate = (props: historyProps) => {
     };
 
     UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
-      targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true});
       setIsSaveButtonDisabled(true);
-      SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText)    
+      SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText);
+      targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true});  
     })
     .catch(function (error) {
+      targetRef.current.showToaster({message: "Edited UnSucessfully", variant: "error", duration: 5000, clearButtton: true}); 
       return error;
     })
       
@@ -421,6 +427,7 @@ const UnitCreate = (props: historyProps) => {
   };
   return (
     <div className="UnitDetailMain switchLeftComponents _Unit_Detail_View">
+      <CRXToaster ref={targetRef} />
       <div className="unitDetailAction">
         <div className="menuUnitDetail">
           <Menu
