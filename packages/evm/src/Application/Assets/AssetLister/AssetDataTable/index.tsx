@@ -516,7 +516,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     searchData.forEach((el: SearchObject) => {
       if (el.columnName === "assetName" || el.columnName === "description")
         dataRows = onTextCompare(dataRows, headCells, el);
-      if (["assetType", "devices", "station", "status"].includes(el.columnName))
+      if (["assetType", "unit", "station", "status"].includes(el.columnName))
         dataRows = onMultipleCompare(dataRows, headCells, el);
       if (["categories", "recordedBy"].includes(el.columnName))
         dataRows = onMultiToMultiCompare(dataRows, headCells, el);
