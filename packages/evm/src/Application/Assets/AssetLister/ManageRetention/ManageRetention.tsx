@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form, FormikHelpers, Field } from 'formik';
 import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog, TextField } from '@cb/shared';
 import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
@@ -157,15 +157,17 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     e.preventDefault();
-    const retentionDays = e.target.value;
+    let retentionDays = parseInt(e.target.value);
+    retentionDays = retentionDays >= 1 ? retentionDays : 1;
     setFieldValue('RetentionDays', retentionDays, false);
-    setFieldValue('RetentionList', GetRetentionList(parseInt(retentionDays), null), false);
+    setFieldValue('RetentionList', GetRetentionList(retentionDays, null), false);
     setFieldValue('SaveButtonIsDisable', false, false);
     props.setIsformUpdated(true);
   }
 
   const onSubmitForm = (values: RetentionFormType, actions: FormikHelpers<RetentionFormType>) => {
     const url = '/Evidences/Retention';
+    console.log("values.RetentionDays",values.RetentionDays)
     EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
       setTimeout(() => {
@@ -240,15 +242,15 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                     content={values.RetentionOptions}
                     onChange={(e: any) => RadioButtonOnChange(e, setFieldValue)}
                     />   
-                  <TextField
-                    parentId="_rentention_field_parent"
-                    className=""
-                    type="number"
-                    disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
-                    value={values.RetentionDays}
-                    name="RetentionDays"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      onChangeEvent(e, setFieldValue)}
+                  <Field 
+                  parentId="_rentention_field_parent" 
+                  id="RetentionDays" 
+                  type="number" 
+                  value={values.RetentionDays}
+                  name="RetentionDays"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChangeEvent(e, setFieldValue)}
+                  disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
                   />
                   <div className="retention-label-days"><span>
                     days
