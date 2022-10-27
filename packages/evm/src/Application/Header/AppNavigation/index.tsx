@@ -31,7 +31,9 @@ const CRXLefNavigation = () => {
       moduleId: 1,
       label: t("Assets"),
       icon: "icon icon-file-video NaveIcon",
-      url: urlList.filter((item: any) => item.name === urlNames.assets)[0].url,
+      command: () => {
+        navigateToPage(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
+      },
       disabled: false,
       
     },
