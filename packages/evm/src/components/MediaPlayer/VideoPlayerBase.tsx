@@ -508,10 +508,10 @@ const VideoPlayerBase = (props: any) => {
   const addingSnapshot = useRef(false);
 
   const keydownListener = (event: any) => {
-    const { code, shiftKey } = event;
+    const { code, shiftKey, altKey } = event;
     if(!(openBookmarkForm || openNoteForm || reasonForViewing))
     {
-      if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //Space bar
       if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
       if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
       if (shiftKey && code == "Period") {
@@ -532,10 +532,10 @@ const VideoPlayerBase = (props: any) => {
         setVolume(volume + 1);
         setVolumeHandle(volume + 1);
       } //up arrows
-      if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
-      if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
-      if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
-      if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+      if (code == "KeyN" && shiftKey && altKey) {event.preventDefault(); handleaction("note")} // N
+      if (code == "KeyB" && shiftKey && altKey) {event.preventDefault(); handleaction("bookmark")} // B
+      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // B
+      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // B
     }
 
   };
@@ -2062,24 +2062,28 @@ const VideoPlayerBase = (props: any) => {
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
                       return (
                         <>
-                          {x.enableDisplay &&
-                            <>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
-                                <span className="pip_icon" aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
-                                </span>
-                              </div>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_end_point * 1000) - x.assetbuffering?.post), x.recording_start_point) }}>
-                                <span className="pip_icon" aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
-                                </span>
-                              </div>
-                            </>
-                          }
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
-                            if (multiTimelineEnabled ? y.madeBy == "User" : true) {
+                            if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording started")) {
+                              return (
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
+                                  <span className="pip_icon" aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
+                                  </span>
+                                </div>
+                              )
+                            }
+                            else if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording stopped")) {
+                              return (
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_end_point * 1000) - x.assetbuffering?.post), x.recording_start_point) }}>
+                                  <span className="pip_icon" aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
+                                  </span>
+                                </div>
+                              )
+                            }
+                            else if (multiTimelineEnabled ? y.madeBy == "User" : true) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
                                   <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"

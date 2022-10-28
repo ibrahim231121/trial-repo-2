@@ -203,7 +203,7 @@ const UnitCreate = (props: historyProps) => {
   });
 
   React.useEffect(() => {
-    if (primaryDeviceInfo && configTemplateList.length > 0 && stationList.length > 0) {
+    if (primaryDeviceInfo && configTemplateList && stationList && configTemplateList.length > 0 && stationList.length > 0) {
       SetStationName(primaryDeviceInfo.station)
       let template: any = [{ displayText: t("None"), value: "0" }];
       configTemplateList.map((x: any) => {
