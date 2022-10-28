@@ -89,7 +89,12 @@ const Group = () => {
 
   const [dataPermissions, setDataPermissions] = React.useState<
     DataPermissionModel[]
-  >([]);
+  >([ { 
+      containerMappingId:0,
+      mappingId:0,
+      permission:0,
+      fieldType:0
+  }]);
   const [dataPermissionsActual, setDataPermissionsActual] = React.useState<
     DataPermissionModel[]
   >([]);
@@ -295,6 +300,16 @@ const Group = () => {
           permission: x.groupMapping.permission,
         });
       });
+
+      if(newDataPerModel.length <= 0){
+        newDataPerModel.push({
+           containerMappingId:0,
+            fieldType:0,
+            mappingId:0,
+            permission:0
+        })
+      }
+
       setDataPermissions(newDataPerModel);
       setDataPermissionsActual(newDataPerModel);
     }
@@ -307,9 +322,7 @@ const Group = () => {
     setUserIds(userIds);
   };
 
-  const onChangeDataPermission = (
-    dataPermissionModel: DataPermissionModel[]
-  ) => {
+  const onChangeDataPermission = (dataPermissionModel: DataPermissionModel[]) => {
     setDataPermissions(dataPermissionModel);
   };
 
@@ -392,6 +405,7 @@ const Group = () => {
       setIsSaveButtonDisabled(false);
     } else if (
       JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)
+       && dataPermissions.filter(x=> x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length === 0
     ) {
       setIsSaveButtonDisabled(false);
     } else {
@@ -502,63 +516,6 @@ const Group = () => {
       });
     }
     
-
-    // if(editCase){
-    //   subModules.map(x=> {return {...x, "id":parseInt(id)}})
-    // }
-
-    //change here
-    
-   
-
-    
-    // fetch(groupURL, {
-    //   method: method,
-    //   headers: {
-    //     TenantId: "1",
-    //     "Content-Type": "application/json",
-    //     'Authorization': `Bearer ${getToken()}`
-        
-    //   },
-    //   body: JSON.stringify(userGroup),
-    // })
-    //   .then((res) => {
-    //     status = res.status;
-    //     return res.text();
-    //   })
-    //   .then((grpResponse) => {
-    //     if (status === 201 || status === 204) {
-    //       //which means group has been created or updated now its time to save container permission for station and categories.
-    //       let groupId = 0;
-    //       if (status === 201) {
-    //         groupId = parseInt(grpResponse.replace(/["']/g, ""));
-    //       }
-    //       if (status === 204) {
-    //         groupId = parseInt(id);
-    //       }
-          
-    //     } else if (status === 500 || status === 400) {
-    //       setShowSuccess(true);
-    //       functionInitialized();
-    //       setIsAppPermissionsChange(false);
-    //       setIsSaveButtonDisabled(true);
-
-    //       setMessages(message[1].message);
-    //       setError(message[1].messageType);
-    //     } else if (status === 409 || status === 404) {
-    //       let error = JSON.parse(grpResponse);
-
-    //       // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
-    //       effectAfterSave(groupId.toString(),status, true)
-
-    //       setShowMessageCls("showMessageGroup");
-    //       setShowMessageError("errorMessageShow");
-
-    //       setMessages(error);
-    //       setAlertType("inline");
-    //       setError("error");
-    //     }
-    //   });
   };
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
@@ -590,7 +547,8 @@ const Group = () => {
       },
       body: JSON.stringify(dataPermissionObj),
     })
-      .then((container) => {
+  
+    .then((container) => {
         // if (container.status === 201 || container.status === 204) {
         //   // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
         //   showToastMsg();
