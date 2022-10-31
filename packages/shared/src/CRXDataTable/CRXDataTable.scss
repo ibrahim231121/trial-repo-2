@@ -9,7 +9,7 @@
     tr {
     
       th.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox {
-        padding-left: 15px !important;
+        // padding-left: 15px !important;
         .CRXCheckBox {
           input {
             &:hover ~ span {
@@ -1060,11 +1060,12 @@ tr.Mui-selected {
 
 .crxClearfilter {
   place-content: flex-end;
-
+  
   .toolbar-button {
     flex: 2;
   }
 }
+
 
 .CRXDataTableCustom {
   tbody {

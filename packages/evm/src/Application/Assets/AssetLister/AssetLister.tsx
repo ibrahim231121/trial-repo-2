@@ -497,7 +497,7 @@ const SearchComponent = (props: any) => {
                 onClick={() => setShowAdvance(!showAdvance)}
                 className='PreSearchButton'
               >
-                <i className={'fas fa-sort-down ' + iconRotate}></i> {t("Advanced")}
+                <i className={'fas fa-sort-down ' + iconRotate}></i> {t("Advanced")}&nbsp;
                 {t("Search")}
               </CRXButton>
 
