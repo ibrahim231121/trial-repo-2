@@ -16,7 +16,7 @@ import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
 import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
-import { EvidenceAgent } from "../../utils/Api/ApiAgent";
+import { EvidenceAgent, SetupConfigurationAgent } from "../../utils/Api/ApiAgent";
 import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
 import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
@@ -482,6 +482,7 @@ const VideoPlayerBase = (props: any) => {
   const [updatedSensorsDataOverlay, setUpdatedSensorsDataOverlay] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
+  const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
   const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(true);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
@@ -747,10 +748,38 @@ const VideoPlayerBase = (props: any) => {
   }, [bookmarkNotePopupArrObj]);
 
   React.useEffect(() => { // work Asset View Reason
-    if(CheckAssetViewReason()){
+    if(assetViewReasonRequiredGet && CheckAssetViewReason()){
       setViewReasonControlsDisabled(false);
       setViewReasonRequired(false);
     }
+  }, [assetViewReasonRequiredGet]);
+
+  React.useEffect(() => {
+      SetupConfigurationAgent.getTenantSetting()
+          .then((response : any) =>
+          {
+              debugger;
+              response["settingEntries"].forEach(
+                (categories: any, index: number) => {
+                  let settingEntries = Object.entries(categories[index + 1]).map(
+                    (e: any) => ({ key: e[0], value: e[1] })
+                  );
+                  let obj = settingEntries.find(x => x.key === "AssetViewReasonRequired");
+                  if(obj && obj.value == "true"){
+                    setAssetViewReasonRequiredGet(true);
+                  }
+                  else if(obj){
+                    setViewReasonControlsDisabled(false);
+                    setViewReasonRequired(false);
+                  }
+                }
+              );
+          })
+          .catch((error: any) => {
+            setViewReasonControlsDisabled(false);
+            setViewReasonRequired(false);
+            console.error(error.response.data);
+          });
   }, []);
 
   const getFps = (videoHandle: any) => {
