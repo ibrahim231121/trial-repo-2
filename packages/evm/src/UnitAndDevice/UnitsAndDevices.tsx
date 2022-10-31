@@ -144,23 +144,29 @@ const UnitAndDevices: React.FC = () => {
     
         if (units.data && units.data.length > 0) {
           unitRows = units.data.map((unit: any, i:number) => {
-                return {
-                    id: unit.recId,
-                    unitId: unit.unitId + "_" + unit.recId +"_"+ unit.stationRecId+"_"+unit.template,
-                    description: unit.description,
-                    station: unit.station,
-                    serialNumber: unit.serialNumber,
-                    template: unit.template,
-                    version: unit.version,
-                    assignedTo: unit.assignedTo,
-                  //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
-                  //     return x.trim();
-                  // }) : [],
-                    lastCheckedIn: unit.lastCheckedIn,
-                    status: unit.status,
-                    stationId: unit.stationRecId
-                }
-            })
+            let urlProps = {
+              unitName : unit.unitId,
+              unitId : unit.recId,
+              stationId : unit.stationRecId,
+              template : unit.template
+            }
+            return {
+                id: unit.recId,
+                unitId: JSON.stringify(urlProps),
+                description: unit.description,
+                station: unit.station,
+                serialNumber: unit.serialNumber,
+                template: unit.template,
+                version: unit.version,
+                assignedTo: unit.assignedTo,
+              //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
+              //     return x.trim();
+              // }) : [],
+                lastCheckedIn: unit.lastCheckedIn,
+                status: unit.status,
+                stationId: unit.stationRecId
+            }
+          })
         }
         setRows(unitRows)
         
