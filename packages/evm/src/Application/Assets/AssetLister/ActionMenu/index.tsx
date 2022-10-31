@@ -82,8 +82,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
-  const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired]= React.useState(false);
-
+  const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] = React.useState(false);
   React.useEffect(() => {
     calculateSecurityDescriptor();
     if (selectedItems.length > 1) {
@@ -106,7 +105,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       setIsLockedAccess(true);
     }
   }, [row, selectedItems]);
-  
+
   const handleOpenAssignUserChange = () => setOpenAssignUser(true);
   const handleOpenManageRetention = () => setOpenManageRetention(true);
   const handleOpenAssetShare = () => setOpenAssetShare(true);
@@ -244,7 +243,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');
   }
-  
+
   const milliSecondsToTimeFormat = (date: Date) => {
     let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
     let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
@@ -266,31 +265,28 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   }
 
   const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
-    if(holdUntil)
-    {
+    if (holdUntil) {
       return AssetRetentionFormat(holdUntil);
     }
-    else if(expireOn)
-    {
+    else if (expireOn) {
       return AssetRetentionFormat(expireOn);
     }
   }
 
   const onClickDownloadAssetTrail = async () => {
-    if(row){
+    if (row) {
       let assetTrail = await getAssetTrail();
       let getAssetData = await getAssetInfo();
       let uploadCompletedOn = await getuploadCompletedOn(getAssetData?.assets?.master?.files);
 
       var assetInfo;
-      if(getAssetData){
+      if (getAssetData) {
         let categories: any[] = [];
         getAssetData.categories.forEach((x: any) => {
-          x.formData.forEach((y: any) =>  
-          {
+          x.formData.forEach((y: any) => {
             let formDatas: any[] = [];
             y.fields.map((z: any) => {
-              let formData ={
+              let formData = {
                 key: z.key,
                 value: z.value
               }
@@ -302,26 +298,26 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
             })
           })
         });
-  
+
         var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
-  
+
         var unit: number[] = [];
         unit.push(getAssetData.assets.master.unitId);
-  
+
         var checksum: number[] = [];
         getAssetData.assets.master.files.forEach((x: any) => {
           checksum.push(x.checksum.checksum);
         });
-  
-  
+
+
         let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
-  
-  
+
+
         var categoriesForm: string[] = [];
         getAssetData.categories.forEach((x: any) => {
           categoriesForm.push(x.record.cmtFieldName);
         });
-  
+
         assetInfo = {
           owners: owners,
           unit: unit,
@@ -345,8 +341,8 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       let uploadCompletedOnFormatted = uploadCompletedOn ? moment(uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
 
       //download
-      if(assetTrail && assetInfo){
-        
+      if (assetTrail && assetInfo) {
+
         downloadAssetTrail(assetTrail, assetInfo, uploadCompletedOnFormatted);
       }
     }
@@ -362,12 +358,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     return await EvidenceAgent.getEvidence(evidence.id).then((response: Evidence) => response);
   }
 
-  const getuploadCompletedOn = async (files : any) => {
-    if(files){
+  const getuploadCompletedOn = async (files: any) => {
+    if (files) {
       let uploadCompletedOn;
       for (const file of files) {
         if (file.type == "Video") {
-          await FileAgent.getFile(file.filesId).then((response) => {uploadCompletedOn = response.history.uploadCompletedOn});
+          await FileAgent.getFile(file.filesId).then((response) => { uploadCompletedOn = response.history.uploadCompletedOn });
           break;
         }
       }
@@ -423,31 +419,30 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
-    
+
     if (row !== undefined && row !== null) {
-      if(selectedItems.length > 0){
+      if (selectedItems.length > 0) {
         dispatch(addAssetToBucketActionCreator(selectedItems));
       }
-      else
-      {
-      const find = selectedItems.findIndex(
-        (selected: any) => selected.id === row.id
-      );
-
-      const data = find === -1 ? row : selectedItems;
-      // To cater object is not extensible issue,
-      let newObject = { ...data };
-
-      if (data.evidence) {
-        newObject.isMaster = data.evidence.masterAssetId === data.id;
-      }
       else {
-        newObject.isMaster = data.masterAssetId === asset.assetId;
-        newObject.selectedAssetId = asset.assetId;
+        const find = selectedItems.findIndex(
+          (selected: any) => selected.id === row.id
+        );
+
+        const data = find === -1 ? row : selectedItems;
+        // To cater object is not extensible issue,
+        let newObject = { ...data };
+
+        if (data.evidence) {
+          newObject.isMaster = data.evidence.masterAssetId === data.id;
+        }
+        else {
+          newObject.isMaster = data.masterAssetId === asset.assetId;
+          newObject.selectedAssetId = asset.assetId;
+        }
+        dispatch(addAssetToBucketActionCreator(newObject));
       }
-      dispatch(addAssetToBucketActionCreator(newObject));
     }
-    } 
     else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
@@ -477,11 +472,11 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         assetIdSecurityDescriptorCollection.push({
           'assetId': asset.assetId,
           'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors),
-          'isEvidenceExpired' : CheckEvidenceExpire(asset.evidence)
+          'isEvidenceExpired': CheckEvidenceExpire(asset.evidence)
         });
       }
 
-      let isEvidenceExpired = assetIdSecurityDescriptorCollection.filter((x : any)=> x.isEvidenceExpired === true)?.length > 0;
+      let isEvidenceExpired = assetIdSecurityDescriptorCollection.filter((x: any) => x.isEvidenceExpired === true)?.length > 0;
       setIsMultiSelectEvidenceExpired(isEvidenceExpired);
       const lowestSecurityDescriptorAssetIdAndDescriptor = assetIdSecurityDescriptorCollection.sort((a: any, b: any) => (a.securityDescriptorMaxId > b.securityDescriptorMaxId ? 1 : -1))[0];
       setMaximumDescriptor(lowestSecurityDescriptorAssetIdAndDescriptor.securityDescriptorMaxId);
@@ -491,7 +486,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     }
     //NOTE : Clicked on row.
     else {
-      if (row) {
+      if (row?.evidence?.securityDescriptors) {
         setMaximumDescriptor(findMaximumDescriptorId(row.evidence.securityDescriptors));
         setSecurityDescriptorsArray(row.evidence.securityDescriptors);
         setIsMultiSelectEvidenceExpired(false);
@@ -510,24 +505,23 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     else addToAssetBucketDisabled = true;
   }
 
-  function downloadAssetTrail (assetTrail: any, assetInfo: any, uploadedOn: any){
-    const head =[[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
-    let data:any[] = [];
-    let arrS:any[] = [];
-    assetTrail.forEach((x:any)=>
-      {
-        arrS.push(x.seqNo);
-        arrS.push((new Date(x.performedOn)).toLocaleString());
-        arrS.push(x.userName);
-        arrS.push(x.notes);
-        data.push(arrS);
-        arrS = [];
-      }
+  const downloadAssetTrail = (assetTrail: any, assetInfo: any, uploadedOn: any) => {
+    const head = [[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
+    let data: any[] = [];
+    let arrS: any[] = [];
+    assetTrail.forEach((x: any) => {
+      arrS.push(x.seqNo);
+      arrS.push((new Date(x.performedOn)).toLocaleString());
+      arrS.push(x.userName);
+      arrS.push(x.notes);
+      data.push(arrS);
+      arrS = [];
+    }
     );
 
     let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
     let assetId = assetInfo.id ? assetInfo.id.toString() : "";
-    
+
 
     const doc = new jsPDF()
     doc.setFontSize(11)
@@ -536,70 +530,67 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     let yaxis2 = 70;
     let xaxis = 25;
 
-    doc.text(t("CheckSum")+":", yaxis1, xaxis)
+    doc.text(t("CheckSum") + ":", yaxis1, xaxis)
     doc.text(CheckSum, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Asset Id")+":", yaxis1, xaxis)
+    doc.text(t("Asset Id") + ":", yaxis1, xaxis)
     doc.text(assetId, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Asset Type")+":", yaxis1, xaxis)
+    doc.text(t("Asset Type") + ":", yaxis1, xaxis)
     doc.text(assetInfo.typeOfAsset, yaxis2, xaxis)
     xaxis += 5;
-    
-    doc.text(t("Asset Status")+":", yaxis1, xaxis)
+
+    doc.text(t("Asset Status") + ":", yaxis1, xaxis)
     doc.text(assetInfo.status, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Username")+":", yaxis1, xaxis)
+    doc.text(t("Username") + ":", yaxis1, xaxis)
     doc.text(assetInfo.owners.join(", "), yaxis2, xaxis)
     xaxis += 5;
 
     let categoriesString = "";
     let tempxaxis = 0;
-    assetInfo.categories.forEach((x:any, index: number)=>
-    {
+    assetInfo.categories.forEach((x: any, index: number) => {
       let formData = x.formDatas.map((y: any, index1: number) => {
-        if(index1 > 0)
-        {
+        if (index1 > 0) {
           tempxaxis += 5
         }
-        return y.key + ": " + y.value + "\n"; 
+        return y.key + ": " + y.value + "\n";
       })
       categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
-      if(index > 0)
-      {
+      if (index > 0) {
         tempxaxis += 5
       }
     }
     )
-    doc.text(t("Categories")+":", yaxis1, xaxis)
+    doc.text(t("Categories") + ":", yaxis1, xaxis)
     doc.text(categoriesString, yaxis2, xaxis)
     xaxis += tempxaxis + 5;
 
 
-    doc.text(t("Camera Name")+":", yaxis1, xaxis)
+    doc.text(t("Camera Name") + ":", yaxis1, xaxis)
     doc.text(assetInfo.camera, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Captured")+":", yaxis1, xaxis)
+    doc.text(t("Captured") + ":", yaxis1, xaxis)
     doc.text(assetInfo.capturedDate, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Uploaded")+":", yaxis1, xaxis)
+    doc.text(t("Uploaded") + ":", yaxis1, xaxis)
     doc.text(uploadedOn, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Duration")+":", yaxis1, xaxis)
+    doc.text(t("Duration") + ":", yaxis1, xaxis)
     doc.text(assetInfo.duration, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Size")+":", yaxis1, xaxis)
+    doc.text(t("Size") + ":", yaxis1, xaxis)
     doc.text(assetInfo.size, yaxis2, xaxis)
     xaxis += 5;
 
-    doc.text(t("Retention")+":", yaxis1, xaxis)
+    doc.text(t("Retention") + ":", yaxis1, xaxis)
     doc.text(assetInfo?.retention, yaxis2, xaxis)
     xaxis += 5;
 
@@ -607,7 +598,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       startY: xaxis,
       head: head,
       body: data,
-      didDrawCell: (data : any) => {
+      didDrawCell: (data: any) => {
         console.log(data.column.index)
       },
     })
@@ -636,7 +627,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         portal={portal}
         menuButton={
           <MenuButton>
-            <i className="far fa-ellipsis-v"></i>
+            <i className={actionMenuPlacement == ActionMenuPlacement.AssetDetail ? 'fas fa-ellipsis-h' : 'far fa-ellipsis-v'}></i>
           </MenuButton>
         }
       >

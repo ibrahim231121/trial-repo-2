@@ -57,6 +57,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
           evidenceId: evidence.id,
           assetId: masterAsset.assetId,
           assetName: assetName,
+          evidenceSearchObject : evidence
         },
       }}
     >

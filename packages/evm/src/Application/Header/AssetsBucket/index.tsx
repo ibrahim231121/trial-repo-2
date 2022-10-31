@@ -1368,10 +1368,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                       </div>
                                     </div>
                                     <div className="bucketActionMenu">{
-                                      // <BucketActionMenu
-                                      // row={x}
-                                      // setSelectedItems={setSelectedItems}
-                                      // selectedItems={selectedItems} />
                                       <ActionMenu 
                                         row={x}
                                         selectedItems={selectedItems}
