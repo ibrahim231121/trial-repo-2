@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn, CRXGlobalSelectFilter } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +26,6 @@ import {
 import TextSearch from "../../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import multitextDisplay from "../../../../../GlobalComponents/Display/MultiTextDisplay";
-import MultSelectiDropDown from "../../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 
 type User = {
     id: number;
@@ -40,8 +39,8 @@ type infoProps = {
     onChangeUserIds: any
 }
 interface renderCheckMultiselect {
-    label?: string,
-    id?: string,
+    value: string,
+    id: string,
 
 }
 
@@ -148,72 +147,42 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
         );
     };
-    function findUniqueValue(value: any, index: any, self: any) {
-        return self.indexOf(value) === index;
-    }
+
     const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
 
-        if(colIdx === 4 && initialRows && initialRows.userGroups) {
+        if(colIdx === 4 && initialRows && initialRows.userGroups && initialRows.userGroups.length > 0) {   
 
-        let groups: any = [{id: 0, label: t("No_Groups") }];
-        initialRows.userGroups.map((x: any) => {
-            groups.push({id : x.id, label: x.name });
-        });
+            let status: any = [{id: 0, value: t("No_Groups") }];
+                initialRows.userGroups.map((x: any) => {
+                status.push({id : x.id, value: x.name });
+                });
         
-        const settingValues = (headCell: HeadCellProps) => {
-            let val: any = []
-            if(headCell.headerArray !== undefined) 
-                val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-            else 
-                val = []
-            return val
-        }
-    
-        return (
-            <div>
-                
-                <CRXGlobalSelectFilter
-                    id="multiSelect"
-                    multiple={true}
-                    value={settingValues(headCells[colIdx])}
-                    onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-                    options={groups}
-                    CheckBox={true}
-                    checkSign={false}
-                    open={open}
-                    theme="dark"
-                    clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-                    getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-                    getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-                    onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-                    noOptionsText={t("No_Groups")}
+            return (
+                <CBXMultiSelectForDatatable 
+                    width = {430} 
+                    option={status} 
+                    value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+                    onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+                    onSelectedClear = {() => onSelectedClear()}
+                    isCheckBox={true}
+                    isduplicate={true}
                 />
-            </div>
-        )
+            );
         }
 
     }
 
-    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
-        let value: any[] = val.map((x) => {
-            let item = {
-                value: x.label
-            }
-            return item
-        })
-        onSelection(value, colIdx)
-        headCells[colIdx].headerArray = value;
-    }
-    const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultiselect[]) => {
+    const onSelectedClear = () => {
         setSearchData([]);
         let headCellReset = onClearAll(headCells);
         setHeadCells(headCellReset);
+      }
+
+    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+        onSelection(val, colIdx)
+        headCells[colIdx].headerArray = val;
     }
-    const openHandler = (_: React.SyntheticEvent) => {
-        
-        //setOpen(true)
-    }
-    //
+
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
             label: t("ID"),
@@ -390,45 +359,45 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     return (
         <div className="userDataTableParent ">
             {rows && (
-                <CRXDataTable 
-                    id="group-userDataTable"
-                    actionComponent={() => { }}
-                    toolBarButton={
-                          <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
-                      }
-                    getRowOnActionClick={() => { }}
-                    showToolbar={true}
-                    dataRows={rows}
-                    initialRows={reformattedRows}
-                    headCells={headCells}
-                    orderParam={order}
-                    orderByParam={orderBy}
-                    searchHeader={true}
-                    columnVisibilityBar={true}
-                    allowDragableToList={false}
-                    className="ManageAssetDataTable usersGroupDataTable"
-                    onClearAll={clearAll}
-                    getSelectedItems={(v: User[]) => setSelectedItems(v)}
-                    onResizeRow={resizeRowUserTab}
-                    onHeadCellChange={onSetHeadCells}
-                    setSelectedItems={setSelectedItems}
-                    selectedItems={selectedItems}
-                    dragVisibility={false}
-                    showCheckBoxes={true}
-                    showActionCol={false}
-                    showActionSearchHeaderCell={false}
-                    showCountText={false}
-                    showCustomizeIcon={false}
-                    showTotalSelectedText={true}
-                    lightMode={false}
-                    offsetY={44}
-                    page={page}
-                    rowsPerPage={rowsPerPage}
-                    setPage= {(page:any) => setPage(page)}
-                    setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-                    totalRecords={users.totalCount}
-                />
-            )
+                    <CRXDataTable 
+                        id="group-userDataTable"
+                        actionComponent={() => { }}
+                        toolBarButton={
+                            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+                        }
+                        getRowOnActionClick={() => { }}
+                        showToolbar={true}
+                        dataRows={rows}
+                        initialRows={reformattedRows}
+                        headCells={headCells}
+                        orderParam={order}
+                        orderByParam={orderBy}
+                        searchHeader={true}
+                        columnVisibilityBar={true}
+                        allowDragableToList={false}
+                        className="ManageAssetDataTable usersGroupDataTable"
+                        onClearAll={clearAll}
+                        getSelectedItems={(v: User[]) => setSelectedItems(v)}
+                        onResizeRow={resizeRowUserTab}
+                        onHeadCellChange={onSetHeadCells}
+                        setSelectedItems={setSelectedItems}
+                        selectedItems={selectedItems}
+                        dragVisibility={false}
+                        showCheckBoxes={true}
+                        showActionCol={false}
+                        showActionSearchHeaderCell={false}
+                        showCountText={false}
+                        showCustomizeIcon={false}
+                        showTotalSelectedText={true}
+                        lightMode={false}
+                        offsetY={44}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        setPage= {(page:any) => setPage(page)}
+                        setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                        totalRecords={users.totalCount}
+                    />
+                )   
             }
         </div>
     )

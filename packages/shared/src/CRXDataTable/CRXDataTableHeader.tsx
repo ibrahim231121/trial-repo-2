@@ -158,7 +158,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                 >
                   {orderData.orderBy === headCells[colIdx].id ? (
                     <span>
-                      {console.log("cd", headCells[colIdx].id)}
                       {orderData.order === "desc" ? (
                         <IconButton
                           aria-label="expand row"

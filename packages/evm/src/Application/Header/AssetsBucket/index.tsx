@@ -30,7 +30,6 @@ import {
 } from "../../../GlobalFunctions/globalDataTableFunctions";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
-import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
@@ -333,72 +332,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       </CRXBadge>
   );
   const toggleState = () => setIsOpen((prevState: boolean) => !prevState);
-
-  // const searchText = (
-  //   rowsParam: AssetBucket[],
-  //   headCells: HeadCellProps[],
-  //   colIdx: number
-  // ) => {
-  //   const onChange = (valuesObject: ValueString[]) => {
-  //     headCells[colIdx].headerArray = valuesObject;
-  //     onSelection(valuesObject, colIdx);
-  //   };
-
-  //   return (
-  //     <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
-  //   );
-  // };
-
-  // const searchMultiDropDown = (
-  //   rowsParam: AssetBucket[],
-  //   headCells: HeadCellProps[],
-  //   colIdx: number
-  // ) => {
-  //   const onSetSearchData = () => {
-  //     setSearchData((prevArr) =>
-  //       prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-  //     );
-  //   };
-
-  //   const onSetHeaderArray = (v: ValueString[]) => {
-  //     headCells[colIdx].headerArray = v;
-  //   };
-  //   const noOptionStyled = {
-  //     width: "116px",
-  //     marginLeft: "-1px",
-  //     whiteSpace: "nowrap",
-  //     overFlow: "hidden",
-  //     textOverflow: "ellipsis",
-  //     marginRight: "0",
-  //     paddingLeft: "5px !important",
-  //     paddingRight: "10px !important",
-  //     fontSize: "13px",
-  //     lineHeight: "15px",
-  //     top: "0px",
-  //     marginTop: "0"
-  //   }
-  //   const paddLeft = {
-  //     marginLeft: "2px",
-  //     paddingRight: "3px !important",
-  //     marginRight: "2px",
-  //     paddingLeft: "2px",
-
-
-  //   }
-  //   return (
-  //     <MultSelectiDropDown
-  //       headCells={headCells}
-  //       colIdx={colIdx}
-  //       reformattedRows={rowsParam}
-  //       isSearchable={true}
-  //       onMultiSelectChange={onSelection}
-  //       onSetSearchData={onSetSearchData}
-  //       onSetHeaderArray={onSetHeaderArray}
-  //       widthNoOption={noOptionStyled}
-  //       checkedStyle={paddLeft}
-  //     />
-  //   );
-  // };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {

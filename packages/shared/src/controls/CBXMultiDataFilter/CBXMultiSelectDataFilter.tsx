@@ -221,9 +221,10 @@ type SelectProps = {
     width : number;
     onSelectedClear : (e : any) => void,
     isCheckBox? : boolean,
-    multiple : boolean
+	  isduplicate? : boolean
+    multiple? : boolean
 }
-export default function CBXMultiSelectForDatatable({onChange, multiple, value, option, defaultValue, onSelectedClear, isCheckBox, ...props} : SelectProps) {
+export default function CBXMultiSelectForDatatable({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()
@@ -233,6 +234,21 @@ export default function CBXMultiSelectForDatatable({onChange, multiple, value, o
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
   const checkedIcon = <i className="fa-light fa-square-check"></i>;
   const tickMarked = <i className="fa-solid fa-check selectBox_Tick_Marked"></i>
+
+ if(isduplicate) {
+    let unique: any = option.map((x: any) => x);
+    if (option.length > 0) {
+      unique = [];
+      unique[0] = option[0];
+      for (let i = 0; i < option.length; i++) {
+        if (!unique.some((item: any) => item.value === option[i].value)) {
+          unique.push(option[i]);
+        }
+      }
+    }
+    option = unique
+  }
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
   
     setAnchorEl(event.currentTarget);

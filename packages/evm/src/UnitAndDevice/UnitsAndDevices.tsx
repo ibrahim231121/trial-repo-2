@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useRef } from "react";
-import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CRXButton  } from "@cb/shared";
+import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CBXMultiSelectForDatatable,CRXButton  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {DateTimeComponent } from '../GlobalComponents/DateTime';
@@ -14,9 +14,6 @@ import dateDisplayFormat from "../GlobalFunctions/DateFormat";
 import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
-import MultSelectiDropDownValues from "../GlobalComponents/DataTableSearch/MultSelectiDropDownValues";
-import Popper from '@material-ui/core/Popper';
-
 
 import {
   SearchObject,
@@ -57,8 +54,8 @@ type Unit = {
   
 }
 interface renderCheckMultiselect {
-  label?: string,
-  id?: string,
+  value: string,
+  id: string,
 
 }
 type DateTimeProps = {
@@ -219,28 +216,7 @@ const UnitAndDevices: React.FC = () => {
       headCells[colIdx].headerArray = valuesObject;
       onSelection(valuesObject, colIdx);
     };
-
-    const onSelection = (v: ValueString[], colIdx: number) => {
-   
-      if (v.length > 0) {
-        for (var i = 0; i < v.length; i++) {
-          let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-          setSearchData((prevArr) =>
-            prevArr.filter(
-              (e) => e.columnName !== headCells[colIdx].id.toString()
-            )
-          );
-          setSearchData((prevArr) => [...prevArr, searchDataValue]);
-         
-        }
-      } else {
-        setSearchData((prevArr) =>
-          prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-        );
-      }
-    };
   
-
     return (
       <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
       );
@@ -332,84 +308,31 @@ const UnitAndDevices: React.FC = () => {
     return self.indexOf(value) === index;
 }
 
-const multiSelectVersionCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:Unit[]) => {
- 
-
-  if(colIdx === 6) {
-
-  let versionlist: any = [];
-    if(initialRows !== undefined){
-  if(initialRows.length > 0) {
-      initialRows.map((x: Unit) => {
-        versionlist.push(x.version );
-      });
-  }
-}
-  versionlist = versionlist.filter(findUniqueValue);
-  let version: any = [{ label: t("No_Version")}];
-  versionlist.map((x: string) => { version.push({ label: x}) })
-
-  const settingValues = (headCell: HeadCellProps) => {
-
-      let val: any = []
-      if(headCell.headerArray !== undefined) 
-          val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-      else 
-          val = []
-      return val
-  }
-  return (
-      <div>
-
-          <CRXGlobalSelectFilter
-              id="multiSelect"
-              multiple={true}
-              value={settingValues(headCells[colIdx])}
-              onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-              options={version}
-              className="unitVersionMultiSelect"
-              CheckBox={true}
-              checkSign={false}
-              open={open}
-              theme="dark"
-              clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-              getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-              getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-              onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-              noOptionsText={t("No_Version")}
-     
-          />                  
-      </div>
-  )
-  }
-
-}
-
-
 const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
 
-  if(colIdx === 2 && initialRows) {
+  if(colIdx === 2 && initialRows && initialRows.unitStatus && initialRows.unitStatus.length > 0) {
 
-    let status: any = [{id: 0, label: t("No_Status") }];
+    let status: any = [{id: 0, value: t("No_Status") }];
     initialRows.unitStatus.map((x: any) => {
-      status.push({id : x.id, label: x.name });
+      status.push({id : x.id, value: x.name });
     });
-    
-    const settingValues = (headCell: HeadCellProps) => {
-        let val: any = []
-        if(headCell.headerArray !== undefined) 
-            val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-        else 
-            val = []
-        return val
-    }
+  
 
     return (
       <div>
+        <CBXMultiSelectForDatatable 
+          width = {200} 
+          option={status} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => onSelectedClear()}
+          isCheckBox={true}
+          isduplicate={true}
+        />
         <CRXGlobalSelectFilter
             id="multiSelect"
             multiple={true}
-            value={settingValues(headCells[colIdx])}
+            value={[]}
             onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
             options={status}
             CheckBox={true}
@@ -418,10 +341,10 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
             statusIcon={true}
             open={open}
             theme="dark"
-            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
+            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => null}
+            getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
+            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.value === label.value}
+            onOpen={(e: React.SyntheticEvent) => { return setOpen(true) }}
             noOptionsText={t("No_Status")}
         />
       </div>
@@ -431,45 +354,22 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 
   if(colIdx === 9 && initialRows) {
      
-    let template: any = [{id: 0, label: t("No_Status") }];
+    let template: any = [{id: 0, value: t("No_Templates") }];
     initialRows.unitTemplates.map((x: any) => {
-      template.push({id : x.id, label: x.name });
+      template.push({id : x.id, value: x.name });
     });
-
-    const settingValues = (headCell: HeadCellProps) => {
-        let val: any = []
-        if(headCell.headerArray !== undefined) 
-            val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-        else 
-            val = []
-        return val
-    }
-
-    const PopperTemplate = function (props: any) {
-      return (<Popper {...props}  className="PopperTemplate" placement="left-start"/>)
-    }
 
     return (
       <div>
-        <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            value={settingValues(headCells[colIdx])}
-            onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-            options={template}
-            CheckBox={true}
-            PopperComponent={PopperTemplate}
-            className="unitTemplateMultiSelect"
-            checkSign={false}
-            statusIcon={false}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-            noOptionsText={t("No_Template")}
-          />
+        <CBXMultiSelectForDatatable 
+          width = {200} 
+          option={template} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => onSelectedClear()}
+          isCheckBox={true}
+          isduplicate={true}
+        />
       </div>
     )
   }
@@ -478,27 +378,15 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 
 
 const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
-
-  let value: any[] = val.map((x) => {
-      let item = {
-          value: x.label
-      }
-      return item
-  })
-  onSelection(value, colIdx)
-  headCells[colIdx].headerArray = value;
+  onSelection(val, colIdx)
+  headCells[colIdx].headerArray = val;
 }
-const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultiselect[]) => {
+
+const onSelectedClear = () => {
   setSearchData([]);
   let headCellReset = onClearAll(headCells);
   setHeadCells(headCellReset);
 }
-const openHandler = (_: React.SyntheticEvent ) => {
-  
-  //setOpen(true)
-}
-
-
 
 const AnchorDisplay = (e: string) => {
   if(getModuleIds().includes(14)) {
@@ -666,46 +554,44 @@ const AnchorDisplay = (e: string) => {
     isSearchable: boolean,
 ) => {
 
-  if(initialRows) { 
-    const onSetSearchData = () => {
-        setSearchData((prevArr) =>
-            prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-        );
-    };
-    const onSetHeaderArray = (v: ValueString[]) => {
-        headCells[colIdx].headerArray = v;
-    };
+  if(colIdx === 6 && initialRows && initialRows.unitVersions && initialRows.unitVersions.length > 0) {   
 
-    if(colIdx === 6) { 
-      return (
-        <MultSelectiDropDownValues
-            headCells={headCells}
-            colIdx={colIdx}
-            reformattedRows={
-              initialRows.unitVersions
-            }
-            isSearchable={isSearchable}
-            onMultiSelectChange={onSelection}
-            onSetSearchData={onSetSearchData}
-            onSetHeaderArray={onSetHeaderArray}
-          />
-      );
-    }
-    else if(colIdx === 4) { 
-      return (
-        <MultSelectiDropDownValues
-            headCells={headCells}
-            colIdx={colIdx}
-            reformattedRows={
-              initialRows.unitAssignments
-            }
-            isSearchable={isSearchable}
-            onMultiSelectChange={onSelection}
-            onSetSearchData={onSetSearchData}
-            onSetHeaderArray={onSetHeaderArray}
-          />
-      );
-    }
+    let status: any = [{id: 0, value: t("No_Versions") }];
+      initialRows.unitVersions.map((x: any) => {
+        status.push({id : x.id, value: x.name });
+      });
+
+    return (
+      <CBXMultiSelectForDatatable 
+        width = {250} 
+        option={status} 
+        value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+        onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+        onSelectedClear = {() => onSelectedClear()}
+        isCheckBox={true}
+        isduplicate={true}
+      />
+    );
+  }
+
+  if(colIdx === 4 && initialRows && initialRows.unitAssignments && initialRows.unitAssignments.length > 0) {   
+
+    let status: any = [{id: 0, value: t("No_Assignments") }];
+      initialRows.unitAssignments.map((x: any) => {
+        status.push({id : x.id, value: x.name });
+      });
+
+    return (
+      <CBXMultiSelectForDatatable 
+        width = {200} 
+        option={status} 
+        value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+        onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+        onSelectedClear = {() => onSelectedClear()}
+        isCheckBox={true}
+        isduplicate={true}
+      />
+    );
   }
 };
 const onSelection = (v: ValueString[], colIdx: number) => {

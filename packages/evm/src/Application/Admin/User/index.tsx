@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { CRXDataTable, CRXColumn, CRXToaster, CRXGlobalSelectFilter, CRXButton} from "@cb/shared";
+import React, { useEffect, useRef } from "react";
+import { CRXDataTable, CRXColumn, CRXToaster, CRXButton, CBXMultiSelectForDatatable} from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
@@ -30,8 +30,6 @@ import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
 import UserActionMenu from "./UserActionMenu";
 import { dateOptionsTypes } from "../../../utils/constant";
 import multitextDisplay from "../../../GlobalComponents/Display/MultiTextDisplay";
-import MultSelectiDropDownValues from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDownValues";
-import MultSelectiDropDown from "../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { NotificationMessage } from "../../Header/CRXNotifications/notificationsTypes";
 import moment from "moment";
@@ -63,8 +61,8 @@ type DateTimeObject = {
 };
 
 interface renderCheckMultiselect {
-  label?: string,
-  id?: string,
+  value: string,
+  id: string,
 
 }
 
@@ -159,26 +157,6 @@ const User: React.FC = () => {
       onSelection(valuesObject, colIdx);
     };
 
-    const onSelection = (v: ValueString[], colIdx: number) => {
-      if (v.length > 0) {
-        for (var i = 0; i < v.length; i++) {
-          let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-          setSearchData((prevArr) =>
-            prevArr.filter(
-              (e) => e.columnName !== headCells[colIdx].id.toString()
-            )
-          );
-          setSearchData((prevArr) => [...prevArr, searchDataValue]);
-        }
-      } else {
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[colIdx].id.toString()
-          )
-        );
-      }
-    };
-
     return (
       <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
@@ -270,94 +248,48 @@ const User: React.FC = () => {
     );
   };
   function findUniqueValue(value: any, index: any, self: any) {
-    
     return self.indexOf(value) === index;
-}
+  }
   const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
     
-    if(colIdx === 5 && initialRows) {      
-        
-        let status: any = [{id: 0, label: t("No_Status") }];
-        initialRows.userStatus.map((x: any) => {
-          status.push({id : x.id, label: x.name });
-        });
+    if(colIdx === 5 && initialRows && initialRows.userStatus && initialRows.userStatus.length > 0) { 
 
-        const settingValues = (headCell: HeadCellProps) => {
-          let val: any = [];
-          if (headCell.headerArray !== undefined)
-            val = headCell.headerArray
-              .filter((v) => v.value !== "")
-              .map((x) => x.value);
-          else val = [];
-          return val;
-        };
+      let status: any = [{id: 0, value: t("No_Status") }];
+      initialRows.userStatus.map((x: any) => {
+        status.push({id : x.id, value: x.name });
+      });
 
-    return (
+      return (
         <div>
-            <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            value={settingValues(headCells[colIdx])}
-            onChange={(
-              e: React.SyntheticEvent,
-              option: renderCheckMultiselect[]
-            ) => {
-              return changeMultiselect(e, option, colIdx);
-            }}
-            options={status}
-            CheckBox={true}
-            checkSign={false}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(
-              e: React.SyntheticEvent,
-              options: renderCheckMultiselect[]
-            ) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) =>
-              option.label ? option.label : " "
-            }
-            getOptionSelected={(
-              option: renderCheckMultiselect,
-              label: renderCheckMultiselect
-            ) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => {
-              return openHandler(e);
-            }}
-            noOptionsText={t("No_Status")}
+          <CBXMultiSelectForDatatable 
+            width = {150} 
+            option={status} 
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+            onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+            onSelectedClear = {() => onSelectedClear()}
+            isCheckBox={true}
           />
         </div>
-    )
-    }
+      )
+    } 
 
-}
-const changeMultiselect = (
-  e: React.SyntheticEvent,
-  val: renderCheckMultiselect[],
-  colIdx: number
-) => {
-  
-  let value: any[] = val.map((x) => {
-    let item = {
-      //id : x.id,
-      value: x.label,
-    };
-    return item;
-  });
-  onSelection(value, colIdx);
-  headCells[colIdx].headerArray = value;
-};
-const deleteSelectedItems = (
-  e: React.SyntheticEvent,
-  options: renderCheckMultiselect[]
-) => {
-  setSearchData([]);
-  let headCellReset = onClearAll(headCells);
-  setHeadCells(headCellReset);
-};
-const openHandler = (_: React.SyntheticEvent) => {
- 
-  //setOpen(true)
-};
+  }
+
+  const onSelectedClear = () => {
+    setSearchData([]);
+    let headCellReset = onClearAll(headCells);
+    setHeadCells(headCellReset);
+  }
+
+  const changeMultiselect = (
+    e: React.SyntheticEvent,
+    val: renderCheckMultiselect[],
+    colIdx: number
+  ) => {
+    console.log("val", val)
+    onSelection(val, colIdx);
+    headCells[colIdx].headerArray = val;
+  };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -510,48 +442,23 @@ const openHandler = (_: React.SyntheticEvent) => {
     isSearchable: boolean
   ) => {
 
-    if(colIdx === 7 && initialRows) {   
+    if(colIdx === 7 && initialRows && initialRows.userGroups && initialRows.userGroups.length > 0) {   
 
-      console.log("initialRows : ", initialRows)
+      let status: any = [{id: 0, value: t("No_Groups") }];
+        initialRows.userGroups.map((x: any) => {
+          status.push({id : x.id, value: x.name });
+        });
 
-      const onSetSearchData = () => {
-        setSearchData((prevArr) =>
-          prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
-        );
-      };
-      const onSetHeaderArray = (value: ValueString[]) => {
-        headCells[colIdx].headerArray = value;
-      };
-
-      const multiselectProps = {
-        marginLeft: "4px",
-        paddingRight: "7px",
-        marginRight: "7px",
-        paddingLeft: "7px",
-      };
-      const parentStye = {
-        width: "281px",
-        margin: "0px 0px 0px 4px",
-      };
-
-      const listwidth = {
-        width: "279px",
-        marginTop: "-4px",
-      };
       return (
-        <MultSelectiDropDownValues
-          headCells={headCells}
-          colIdx={colIdx}
-          reformattedRows={
-            initialRows.userGroups
-          }
-          isSearchable={isSearchable}
-          onMultiSelectChange={onSelection}
-          onSetSearchData={onSetSearchData}
-          onSetHeaderArray={onSetHeaderArray}
-          checkedStyle={multiselectProps}
-          parentStye={parentStye}
-          widthNoOption={listwidth}
+        <CBXMultiSelectForDatatable 
+          width = {430} 
+          option={status} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => onSelectedClear()}
+          isCheckBox={true}
+          isduplicate={true}
+          multiple={true}
         />
       );
     }
@@ -577,7 +484,7 @@ const openHandler = (_: React.SyntheticEvent) => {
 
   useEffect(() => {
     //dataArrayBuilder();
-    //console.log("searchData", searchData)
+    console.log("searchData", searchData)
   }, [searchData]);
 
   useEffect(() => {
@@ -721,7 +628,7 @@ const openHandler = (_: React.SyntheticEvent) => {
   }
 
   useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage});  
     setPaging(true)
     
   },[page, rowsPerPage])
