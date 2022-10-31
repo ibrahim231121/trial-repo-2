@@ -14,6 +14,13 @@ const VideoPlayerSettingMenu = (props: any) => {
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
+    
+    let scroll:any = window.scroll({
+      top: 100,
+      left: 0,
+      behavior: 'smooth'
+    })
+    event.target.checked && scroll();
   }
 
   const IsShowAudioGraphChangeEvent = (event : any) => {

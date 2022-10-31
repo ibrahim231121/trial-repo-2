@@ -85,7 +85,9 @@ const MultiSelectBoxCategory = ({
         overflow: "hidden",
       },
     },
-    popper: {},
+    popper: {
+      zIndex : 9999,
+    },
     option: {
       height: "33px",
       fontFamily: "Arial, Helvetica, sans-serif",

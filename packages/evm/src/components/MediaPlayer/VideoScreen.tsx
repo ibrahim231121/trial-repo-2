@@ -89,7 +89,7 @@ const VideoScreen = ({
         </>
       );
     } else {
-      return <div className="_empty_video"> </div>;
+      return <div className="_empty_video"> </div>
     }
   };
 
@@ -171,7 +171,7 @@ const VideoScreen = ({
             </div>
           )}
         </div>
-        {getVideo(camIndexVideoData)},
+        {getVideo(camIndexVideoData)}
         <div
           className={`videoMenuCss CRXVideoMultiView ${
             indexAnchorE1 == CameraCount ? "CRXCheckPopper" : ""
@@ -273,7 +273,9 @@ const VideoScreen = ({
     } else if (viewNumber == 6) {
       setLayoutBaseClass("_container_column_video_6");
       setVideoLayoutResetHeight("_reset_player_height");
-    } else {
+    } else if(viewNumber == 2) {
+      setLayoutBaseClass("_container_column_video_2");
+    }else {
       setLayoutBaseClass("");
       setVideoLayoutResetHeight("");
     }
@@ -291,7 +293,7 @@ const VideoScreen = ({
     >
       <div
         className={`_video_player_grid _videoPlayer_grid_customize ${
-          mapEnabled ? " _contaoner_75 " : ""
+          mapEnabled ? " _contaoner_75 " : "_video_all_player_center"
         } ${layoutBaseClass}`}
       >
         <VideoColumn

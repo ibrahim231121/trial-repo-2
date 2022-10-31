@@ -39,11 +39,13 @@ import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
-const thumbTemplate = (assetType: string) => {
+const thumbTemplate = (assetId: string, evidence : SearchModel.Evidence) => {
+  let assetType = evidence.masterAsset.assetType;
   return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
 };
 
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
+  
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
 
@@ -353,9 +355,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_Thumbnail")}`,
       id: "assetId",
       align: "left",
-      dataComponent: thumbTemplate,
+      dataComponent:(e : any, d : any) => thumbTemplate(e,d),
       minWidth: "130",
       maxWidth: "150",
+      detailedDataComponentId: "evidence",
       width: ""
     },
     {

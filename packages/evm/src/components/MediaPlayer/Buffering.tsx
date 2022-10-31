@@ -13,10 +13,10 @@ const Buffering = (props:any)  => {
     var video = document.getElementById(id) as HTMLVideoElement
     const canvas:any = canvasRef.current
     const context = canvas.getContext('2d')
-    context.fillStyle = '#aa1d1d';
+    context.fillStyle = '#333';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#D79903';
-    context.strokeStyle = '#aa1d1d';
+    context.fillStyle = '#333';
+    context.strokeStyle = '#333';
     var inc = canvas.width / width;
 
    
@@ -33,7 +33,7 @@ const Buffering = (props:any)  => {
     };
     draw(context)
   }, [draw])
-  return <canvas ref={canvasRef}  height="15" {...props}/>
+  return <canvas ref={canvasRef}  {...props}/>
 }
 
 export default Buffering

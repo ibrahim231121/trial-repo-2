@@ -4,11 +4,9 @@ import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
-import { FormControlLabel, Switch } from "@material-ui/core";
 import VideoPlayerViewReason from "./VideoPlayerViewReason";
 import VideoPlayerViewRequirement from "./VideoPlayerViewRequirement";
 import { setTimeout } from "timers";
@@ -402,7 +400,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [viewNumber, setViewNumber] = useState(1);
-  const [mapEnabled, setMapEnabled] = useState<boolean>(false);
+  const [mapEnabled, setMapEnabled] = useState<boolean>(true);
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
   const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
@@ -758,7 +756,6 @@ const VideoPlayerBase = (props: any) => {
       SetupConfigurationAgent.getTenantSetting()
           .then((response : any) =>
           {
-              debugger;
               response["settingEntries"].forEach(
                 (categories: any, index: number) => {
                   let settingEntries = Object.entries(categories[index + 1]).map(
@@ -1901,7 +1898,7 @@ const VideoPlayerBase = (props: any) => {
      
     }else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "-21px";
+      MainLayoutElement.style.top = "-74px";
     }
   }
 
@@ -1996,7 +1993,7 @@ const VideoPlayerBase = (props: any) => {
 
       <div className="searchComponents">
         <div className="_video_player_container">
-        <div id="crx_video_player" className={( multiTimelineEnabled  && `_Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
+        <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
          
           <CRXToaster ref={toasterMsgRef} />
           
@@ -2056,32 +2053,7 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
             </div>
-            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-              {/* TIME LINES BAR HERE */}
-              {loading ? (
-                <Timelines
-                  timelinedetail={timelinedetail}
-                  visibleThumbnail={visibleThumbnail}
-                  setVisibleThumbnail={setVisibleThumbnail}
-                  isMultiViewEnable={isMultiViewEnable}
-                  displayThumbnail={displayThumbnail}
-                  onClickBookmarkNote={onClickBookmarkNote}
-                  openThumbnail={openThumbnail}
-                  mouseovertype={mouseovertype}
-                  timelinedetail1={timelinedetail1}
-                  mouseOverBookmark={mouseOverBookmark}
-                  mouseOverNote={mouseOverNote}
-                  mouseOut={mouseOut}
-                  Event={Event}
-                  getbookmarklocation={getbookmarklocation}
-                  AdjustTimeline={AdjustTimeline}
-                  startTimelineSync={startTimelineSync}
-                  multiTimelineEnabled={multiTimelineEnabled}
-                  notesEnabled={notesEnabled}
-                />
-              ) : (<></>)}
-
-            </div>
+            
             <div>
             </div>
             <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
@@ -2430,9 +2402,50 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
             </div>
-            {/* {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
-            {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>} */}
+                     
+            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+              {/* TIME LINES BAR HERE */}
+              {loading ? (
+                <Timelines
+                  timelinedetail={timelinedetail}
+                  visibleThumbnail={visibleThumbnail}
+                  setVisibleThumbnail={setVisibleThumbnail}
+                  isMultiViewEnable={isMultiViewEnable}
+                  displayThumbnail={displayThumbnail}
+                  onClickBookmarkNote={onClickBookmarkNote}
+                  openThumbnail={openThumbnail}
+                  mouseovertype={mouseovertype}
+                  timelinedetail1={timelinedetail1}
+                  mouseOverBookmark={mouseOverBookmark}
+                  mouseOverNote={mouseOverNote}
+                  mouseOut={mouseOut}
+                  Event={Event}
+                  getbookmarklocation={getbookmarklocation}
+                  AdjustTimeline={AdjustTimeline}
+                  startTimelineSync={startTimelineSync}
+                  multiTimelineEnabled={multiTimelineEnabled}
+                  notesEnabled={notesEnabled}
+                />
+              ) : (<></>)}
+
+              {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
+              {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
+              {multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i>Sync timeline start</button>}
+            </div>
+             
+            {multiTimelineEnabled == false ? 
+            <div className="_bottom_arrow_seeMore">
+              {detailContent == false ?
+                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                    </button>
+                    :
+                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                    </button>
+                  }
+              </div>
+            : ""}
           
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
@@ -2490,17 +2503,7 @@ const VideoPlayerBase = (props: any) => {
         
         </div>{/** Video player container close div */}
       </div>
-      <div className="_bottom_arrow_seeMore">
-        {detailContent == false ?
-              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-              </button>
-              :
-              <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-              </button>
-            }
-        </div>
+      
       </div>
       </div>
       </div>
