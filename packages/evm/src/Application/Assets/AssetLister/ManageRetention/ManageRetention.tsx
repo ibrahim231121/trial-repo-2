@@ -115,19 +115,23 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const cancelBtn = () => props.setOnClose();
 
-  const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
-
+  const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any, retentionDays : number) => {
+    debugger
     const status = e.target.value;
     setFieldValue('RetentionStatus', status, false);
     if (status === RetentionStatusEnum.IndefiniteExtention) {
       setFieldValue('SaveButtonIsDisable', false, false);
       setFieldValue('RetentionList',  GetRetentionList(null, 0), false);
       props.setIsformUpdated(true);
-      
+      console.log("infinity","retentionDays")
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
       setFieldValue('RetentionList', GetRetentionList(null, null), false);
+    }
+    else if(status === RetentionStatusEnum.CustomExtention)
+    {
+      SetRetentionList(retentionDays, setFieldValue);
     }
     setFieldValue('SaveButtonIsDisable', false, false);
   }
@@ -157,8 +161,13 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     e.preventDefault();
-    let retentionDays = parseInt(e.target.value);
+    SetRetentionList(parseInt(e.target.value), setFieldValue);
+  }
+
+  function SetRetentionList(retentionDays: number, setFieldValue: any)
+  {
     retentionDays = retentionDays >= 1 ? retentionDays : 1;
+    console.log("retentionDays",retentionDays)
     setFieldValue('RetentionDays', retentionDays, false);
     setFieldValue('RetentionList', GetRetentionList(retentionDays, null), false);
     setFieldValue('SaveButtonIsDisable', false, false);
@@ -240,7 +249,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                    <CRXRadio
                     value={values.RetentionStatus}
                     content={values.RetentionOptions}
-                    onChange={(e: any) => RadioButtonOnChange(e, setFieldValue)}
+                    onChange={(e: any) => RadioButtonOnChange(e, setFieldValue, values.RetentionDays)}
                     />   
                   <Field 
                   parentId="_rentention_field_parent" 
