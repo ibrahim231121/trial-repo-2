@@ -450,6 +450,8 @@ export const resources = {
         "Delete_sensor_and_trigger": "Delete sensor and trigger",
         "Sensors_And_Triggers": "Sensors And Triggers",
         "Sensors_And_Triggers_Form": "Sensors And Triggers Form",
+        "Retention_Policies": "Retention Policies",
+        "Create_Retention_Policies": "Create Retention Policies",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"Are you sure you would like to delete sensors and triggers?",
         // ---------------------------------
         
@@ -804,7 +806,15 @@ export const resources = {
         "Yes,_close":"Yes, close",
         
         //---------------- Incar template page ----
-        "Create_TemplateIncar" : "Create Template : Incar"
+        "Create_TemplateIncar" : "Create Template : Incar",
+
+        //---------- Retention Policies -------------------
+        "Retention_Size":"Retention Size",
+        "Retention_Type":"Retention Type",
+        "Retention_Time":"Retention Time",
+        "Policy_Name":"Policy Name",
+        "Retention_Time_Or_Space" : "Retention Time / Space",
+        "Soft_Delete_Time" : "Soft Delete Time"
       }
     }
   };

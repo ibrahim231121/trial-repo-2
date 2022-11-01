@@ -415,6 +415,8 @@ export const resources = {
         "Delete_sensor_and_trigger": "hr-Delete sensor and trigger",
         "Sensors_And_Triggers": "hr-Sensors And Triggers",
         "Sensors_And_Triggers_Form": "hr-Sensors And Triggers Form",
+        "Retention_Policies": "Retention Policies",
+        "Create_Retention_Policies": "CreateRetention Policies",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"hr-Are you sure you would like to delete sensors and triggers?",
         // ---------------------------------
         
@@ -760,11 +762,19 @@ export const resources = {
         "Camera Setup":"hr-Camera Setup",
 
     
-           // --------- Share Asset ----------
-           "Link_Expiration":"Link Expiration",
-           "Link_Permissions":"Link Permissions",
-           "Comments":"Comments",
-           "Reason_for_Sharing":"Reason for Sharing",
+        // --------- Share Asset ----------
+        "Link_Expiration":"Link Expiration",
+        "Link_Permissions":"Link Permissions",
+        "Comments":"Comments",
+        "Reason_for_Sharing":"Reason for Sharing",
+
+        //---------- Retention Policies -------------------
+        "Retention_Size":"Retention Size",
+        "Retention_Type":"Retention Type",
+        "Retention_Time":"Retention Time",
+        "Policy_Name":"Policy Name",
+        "Retention_Time_Or_Space" : "Retention Time / Space",
+        "Soft_Delete_Time" : "Soft Delete Time"
 
       }
     }

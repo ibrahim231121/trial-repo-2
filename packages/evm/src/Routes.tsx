@@ -39,7 +39,7 @@ import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate
 import SensorsAndTriggersDetail from "./Application/Admin/SensorsAndTriggers/SensorsAndTriggersDetail/SensorsAndTriggersDetail";
 import SensorAndTriggersList from './Application/Admin/SensorsAndTriggers/SensorsAndTriggersLister/SensorsAndTriggersList';
 
-
+import RetentionPoliciesList from './Application/Admin/RetentionPolicies/RetentionPoliciesLister/RetentionPoliciesList';
 
 
 
@@ -119,7 +119,10 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggers)[0].url}  exact={true} component={SensorAndTriggersList} />
-              
+
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.retentionPolicies)[0].url}  exact={true} component={RetentionPoliciesList} />
+
+
               <Route path="/token/:token" exact={true} component={Token} />
 
               <Route path="/notfound" component={ErrorPage} /> 
