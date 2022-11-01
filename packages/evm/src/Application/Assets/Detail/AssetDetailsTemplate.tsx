@@ -62,6 +62,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import ActionMenu from "../AssetLister/ActionMenu";
 import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
+import { urlList, urlNames } from "../../../utils/urlList";
 
 const AssetDetailsTemplate = (props: any) => {
 
@@ -984,7 +985,7 @@ const AssetDetailsTemplate = (props: any) => {
           actionMenuPlacement={ActionMenuPlacement.AssetDetail}
         />
 
-        <CBXLink children="Exit" onClick={() => history.goBack()} />
+        <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assets)[0].url}`}/>
       </div>
       {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       {error && (
