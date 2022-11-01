@@ -602,11 +602,22 @@ const CreateTemplate = (props: any) => {
     setOpen(false);
   };
 
+  const handleRowIdDependency = (key: string, extraFieldDependency?: any, formObj?: any, values?: any) => {
+    let parentSplittedKey = formObj.key.split('_');
+    key = key.replace("rowId", parentSplittedKey[1])
+    let value = values[key]
+    if(extraFieldDependency == "cameraDevice")
+    {
+      return FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select").options.find((x:any) => x.value == value)?.label;
+    }
+    return value;
+  }
+
   const handleSave = (values: any, resetForm: any) => {
     //  let value1 = values
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
-
+    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"].feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
@@ -635,7 +646,7 @@ const CreateTemplate = (props: any) => {
         }
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
-          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key)) && visibleCameraFields.some((x: any) => x.key == key);
           if(keySubSplit[0] == "device" && valueToSave)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
