@@ -57,8 +57,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
   React.useEffect(() => {
     if(!editDescription){
-      if(stateObj.description.length > 50 && !isReadMore){
-        setDescription(stateObj.description.slice(0,49));
+      if(stateObj.description.length > 127 && !isReadMore){
+        setDescription(stateObj.description.slice(0,126)+"...");
       }
       else{
         setDescription(stateObj.description);
@@ -367,7 +367,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
                     }}
                     fullWidth
                   />
-                  {!editDescription && stateObj.description.length >= 50 && (description.length >= 50 ? 
+                  {!editDescription && stateObj.description.length >= 130 && (description.length >= 130 ? 
                   <div className="bookmark_read_function" onClick={() => handleReadLess() }><p>{t("Read_less")} </p><i className="fa-regular fa-chevron-up"></i></div> 
                   : <div className="bookmark_read_function"  onClick={() => handleReadMore() }><p>{t("Read_More")}</p><i className="fa-regular fa-chevron-down"></i></div>)}
                   {((selectDropDown == "Bookmarks" && stateObj.madeBy == "User") || selectDropDown == "Notes") && enableOnSave &&

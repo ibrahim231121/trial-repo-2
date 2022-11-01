@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { ClickAwayListener } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -133,6 +133,9 @@ const ClickInput = styled('div')`
   &.selectedInput {
     border:2px solid #fff
   }
+  &:button {
+    color : #333
+  }
 `
 
 const InnerButton = styled('button')`
@@ -146,6 +149,7 @@ const InnerButton = styled('button')`
   font-size: 18px;
   display: flex;
   justify-content: flex-end;
+  color: #333 !important
 `
 const OverlayWraper = styled('div')`
   width : 100%;
@@ -261,7 +265,16 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
 
   const open = Boolean(anchorEl);
   const id = open ? 'data-table-filter-select' : undefined;
-  
+  useLayoutEffect(() => {
+    
+    let tableContainer : any = document.querySelector("#customizedStickyHeader")
+    if(open == true) {
+      tableContainer && (tableContainer.style.overflow = "visible");
+    }else {
+      tableContainer && (tableContainer.style.overflow = "hidden");
+    }
+  },[open])
+
   return (
     <ClickAwayListener onClickAway={OnCloseHandler}>
     <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
