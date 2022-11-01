@@ -523,13 +523,25 @@ const VideoPlayerBase = (props: any) => {
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
       if (code == "ArrowDown") {
         event.preventDefault(); 
-        setVolume(volume - 1);
-        setVolumeHandle(volume - 1);
+        if(volume > 0)
+        {
+          setVolume(volume - 10);
+          setVolumeHandle(volume - 10);
+        }
+        else{
+          setVolumeHandle(volume);
+        }
       } //down arrows
       if (code == "ArrowUp") {
         event.preventDefault(); 
-        setVolume(volume + 1);
-        setVolumeHandle(volume + 1);
+        if(volume < 100)
+        {
+          setVolume(volume + 10);
+          setVolumeHandle(volume + 10);
+        }
+        else{
+          setVolumeHandle(volume);
+        }
       } //up arrows
       if (code == "KeyN" && shiftKey && altKey) {event.preventDefault(); handleaction("note")} // N
       if (code == "KeyB" && shiftKey && altKey) {event.preventDefault(); handleaction("bookmark")} // B
@@ -1967,7 +1979,7 @@ const VideoPlayerBase = (props: any) => {
   },[isAudioGraph])
   return (
     
-      <div className="_video_player_layout_main" onKeyDown={keydownListener}>
+      <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
       <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
 
       <div className="searchComponents">
