@@ -358,9 +358,7 @@
           }
         }
 
-        .hideControllerBar {
-          display: none;
-        }
+   
 
         .trueshow {
           display: block !important;
@@ -653,37 +651,8 @@
     // ._Multiview_Grid_Spacer_6 {
     //   padding-bottom: 200px !important ;
     // }
-  }
-}
-.mainFullView {
-  #CRX_Video_Player_Controls {
-    position: absolute;
-    width: 100%;
-    padding-left: 58px;
-    padding-right: 27px;
-    .player_controls_inner {
-      .dummy_audio_image {
-        width: 100%;
-      }
-    }
-  }
 
-  #timelines {
-    position: absolute;
-    bottom: 146px;
-    width: 100%;
-    padding-left: 50px;
-    padding-right: 59px;
-  }
 
-  #counter {
-    color: var(--color-White);
-  }
-
-  .volume-icon {
-    span {
-      color: var(--color-White);
-    }
   }
 }
 
@@ -2313,13 +2282,61 @@ span.playBackTooltipUp {
     margin-bottom: 0px;
   }
   #CRX_Video_Player_Controls {
-    bottom: 27px !important;
-    padding-top: 14px !important;
-    background: rgba(0,0,0,0.5);
+    bottom: 64px !important;
+    left: 0px !important;
+    
     .playerViewFlex {
       margin-bottom: 2px;
     }
+    .view_Main_Controller_Bar {
+      background: rgba(0,0,0,0.5);
+      padding-left: 25px !important;
+      padding-right: 25px !important;
+      padding-top: 14px !important;
+    }
   }
+  ._video_player_container {
+    #crx_video_player {
+      padding: 10px 0px 0px;
+    }
+  }
+  
+    #CRX_Video_Player_Controls {
+      position: absolute;
+      width: 100%;
+      padding-left: 58px;
+      padding-right: 27px;
+      .player_controls_inner {
+        .dummy_audio_image {
+          width: 100%;
+        }
+      }
+    }
+
+    #timelines {
+      position: absolute;
+      bottom: 146px;
+      width: 100%;
+      padding-left: 50px;
+      padding-right: 59px;
+    }
+
+    #counter {
+      color: var(--color-White);
+    }
+
+    .volume-icon {
+      span {
+        color: var(--color-White);
+      }
+    }
+    .showControlConatiner {
+      visibility: visible;
+    }
+    .removeControlContainer {
+      visibility: hidden;
+      transition: 3s all;
+    }
 } 
 
 .video_with_multiple_timeline {

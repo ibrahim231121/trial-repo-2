@@ -444,10 +444,9 @@ const VideoPlayerBase = (props: any) => {
   const toasterMsgRef = React.useRef<typeof CRXToaster>(null);
 
 
-  const [controllerBar, setControllerBar] = useState(true);
 
   const [styleScreen, setStyleScreen] = useState(false);
-
+  const [controllerBar, setControllerBar] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [speed, setSpeed] = useState<number>(1000); 
@@ -505,6 +504,7 @@ const VideoPlayerBase = (props: any) => {
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const addingSnapshot = useRef(false);
+ const [showControlConatiner , setShowControlConatiner] = useState(false);
 
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
@@ -1977,6 +1977,19 @@ const VideoPlayerBase = (props: any) => {
     },300)
     
   },[isAudioGraph])
+
+
+  const fullViewScreenOn = () => {
+    setShowControlConatiner(true);
+  }
+
+  const fullViewScreenOff = () => {
+    setShowControlConatiner(false);
+  }
+
+  const viewControlEnabler = showControlConatiner ? "showControlConatiner" : "removeControlContainer";
+  const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
+
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
@@ -2068,8 +2081,10 @@ const VideoPlayerBase = (props: any) => {
             
             <div>
             </div>
-            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-              <div className="player_controls_inner">
+         
+            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}   onMouseOut={fullViewScreenOff}    onMouseOver={fullViewScreenOn}  >
+             <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
+             <div className={`player_controls_inner `}>
                 <div className="main-control-bar">
                   <div id="SliderBookmarkNote" style={{ position: "relative" }}>
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
@@ -2413,6 +2428,7 @@ const VideoPlayerBase = (props: any) => {
 
                 </div>
               </div>
+             </div>
             </div>
                      
             <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>

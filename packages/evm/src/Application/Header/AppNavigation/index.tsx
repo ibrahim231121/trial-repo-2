@@ -11,13 +11,17 @@ import "./index.scss";
 
 import { useTranslation } from 'react-i18next';
 
-
-
 const CRXLefNavigation = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
+    
+    let pathBody = document.querySelector("body");
+    if(path !== "/assetdetail") {
+        pathBody?.classList.remove("pathAssetDetail");
+      }
+    
   };
 
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);

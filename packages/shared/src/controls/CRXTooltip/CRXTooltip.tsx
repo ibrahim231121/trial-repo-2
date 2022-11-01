@@ -41,7 +41,12 @@ function CRXCustomizedTooltip(props: any) {
 
   return (
     <Tooltip
-      
+    PopperProps={{
+      disablePortal: true,
+      popperOptions: {
+      positionFixed: true,
+      }
+    }}
       arrow
       classes={{
         arrow:
