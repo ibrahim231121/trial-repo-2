@@ -20,7 +20,7 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
   const onChangeName = (e: any) => {
     let groupName = e.target.value;
     
-    if(groupName.length <=2)
+    if(groupName.length > 0 && groupName.length <=2)
     {
       setErrorMessage("Group Name is Less than 3 characters")
       setIsSaveButtonDisabled(true)
@@ -43,6 +43,7 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
     onChangeGroupInfo(groupName, description);
     setName(groupName);
   }
+
   const onChangeDescription = (e: any) => {
     if(name.length == 0)
     {
@@ -62,7 +63,7 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
       <label className="indicates-label"><b>*</b> {t("Indicates_required_field")}</label>
       <div className="crx-group-info">
         <div className="groupInfoInputs">
-          <TextField required={true} label={t("Group_Name")} value={name} className="userError" onChange={onChangeName} error={errorMessage.length > 0} errorMsg={errorMessage}/>
+          <TextField required={true} label={t("Group_Name")} value={name} className="userError" onChange={onChangeName} error={errorMessage.length > 0} errorMsg={errorMessage} onBlur={onChangeName}/>
        
         </div>
         <div className="groupInfoInputs">
