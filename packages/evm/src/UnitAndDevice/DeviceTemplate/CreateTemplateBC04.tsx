@@ -623,6 +623,7 @@ const CreateTemplate = (props: any) => {
       var split = key.split(re);
       if (!(valueRaw?.feilds !== undefined)) {
         var valueToSave = true;
+        var nonDependantValue = true;
         var keySubSplit = split[1].split('_');
         if(split[1] == "PrimaryDevice" && valueToSave)
         {
@@ -646,7 +647,8 @@ const CreateTemplate = (props: any) => {
         }
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
-          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key)) && visibleCameraFields.some((x: any) => x.key == key);
+          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+          nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
           if(keySubSplit[0] == "streamPort")
           {
             var deviceTypeName = Initial_Values.find(x => x.key == "deviceTypeName_1_Camera")?.value;
@@ -705,13 +707,25 @@ const CreateTemplate = (props: any) => {
           }
         }
         if (valueToSave) {
-          Initial_Values.push({
-            key: split[1],
-            value: valueRaw,
-            group: split[0],
-            valueType: split[2],
-            sequence: 1,
-          });
+          if(nonDependantValue)
+          {
+            Initial_Values.push({
+              key: split[1],
+              value: valueRaw,
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
+          else{
+            Initial_Values.push({
+              key: split[1],
+              value: "",
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
         }
       }
       // Pretty straightforward - use key for the key and value for the value.
