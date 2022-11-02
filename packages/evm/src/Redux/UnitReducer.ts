@@ -4,13 +4,22 @@ import { UnitsAndDevicesAgent , EvidenceAgent} from '../utils/Api/ApiAgent';
 import { QueuedAssets, UnitInfo } from '../utils/Api/models/UnitModels';
 import { Paginated, Headers } from '../utils/Api/models/CommonModels';
 import { BASE_URL_UNIT_SERVICES} from '../utils/Api/url'
+import { setLoaderValue } from './loaderSlice'; 
 
 export const getUnitInfoAsync: any = createAsyncThunk(
     'getUnitInfo',
-    async (pageiFilter?: any) => {
+    async (pageiFilter: any, thunkAPI) => {
         let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
         return await UnitsAndDevicesAgent.getUnitInfo(`/Stations/0/Units/filterUnit?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
-            .then((response:any) => response);
+          .then((response:any) => {
+            thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+            return response
+          })
+          .catch((error: any) => {
+            thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+            console.error(error.response.data);
+          });
     }
 );
 

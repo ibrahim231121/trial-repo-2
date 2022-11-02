@@ -54,6 +54,7 @@ const UserGroup: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     // dispatch(getGroupAsync(pageiGrid));
@@ -246,6 +247,7 @@ const UserGroup: React.FC = () => {
 
   useEffect(() => {
     //dataArrayBuilder();
+    setIsSearchable(true)
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -279,26 +281,29 @@ const UserGroup: React.FC = () => {
 
   const getFilteredGroupData = () => {
 
-    pageiGrid.gridFilter.filters = []
+    if(isSearchable) {
+      pageiGrid.gridFilter.filters = []
 
-    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: headCells[item.colIdx].attributeOperator,
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          field: headCells[item.colIdx].attributeName,
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-          fieldType: headCells[item.colIdx].attributeType,
-        }
-        pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
-    })
-    
-    if(page !== 0)
-      setPage(0)
-    else{
-      dispatch(getGroupAsync(pageiGrid));
-      //dispatch(getGroupUserCountAsync());
+      searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+          let x: GridFilter = {
+            operator: headCells[item.colIdx].attributeOperator,
+            //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+            field: headCells[item.colIdx].attributeName,
+            value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+            fieldType: headCells[item.colIdx].attributeType,
+          }
+          pageiGrid.gridFilter.filters?.push(x)
+          pageiGrid.page = 0
+          pageiGrid.size = rowsPerPage
+      })
+      
+      if(page !== 0)
+        setPage(0)
+      else{
+        dispatch(getGroupAsync(pageiGrid));
+        //dispatch(getGroupUserCountAsync());
+      }
+      setIsSearchable(false)
     }
   }
 
@@ -308,8 +313,18 @@ const UserGroup: React.FC = () => {
     
   },[page, rowsPerPage])
 
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredGroupData()
+    }
+  }
+
+  const handleBlur = () => {
+    getFilteredGroupData()
+}
+
   return (
-    <div className="managePermissionTable switchLeftComponents">
+    <div className="managePermissionTable switchLeftComponents" onKeyDown={handleKeyDown} onBlur={handleBlur}>
      
       {
         rows && (
@@ -323,7 +338,7 @@ const UserGroup: React.FC = () => {
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
-              <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton>
+              {/* <CRXButton className="secondary manageUserBtn userGroupfilterButton mr_L_10" onClick={() => getFilteredGroupData()}> {t("Filter")} </CRXButton> */}
               </>
             }
             showToolbar={true}

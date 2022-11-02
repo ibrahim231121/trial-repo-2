@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
@@ -14,7 +14,8 @@ import {
   CRXButton,
   CRXRows,
   CRXColumn,
-  CRXConfirmDialog
+  CRXConfirmDialog,
+  CRXToaster
 } from "@cb/shared";
 import "./station.scss";
 import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
@@ -27,6 +28,9 @@ import { getConfigurationTemplatesAsync } from "../../../Redux/ConfigurationTemp
 import { AutoCompleteOptionType, IlatLong, StationFormType } from "./StationTypes";
 import { stationValidationSchema } from "./StationValidation";
 import UnitTemplates from "./UnitTemplates/UnitTemplates";
+import moment from "moment";
+import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
+import { NotificationMessage } from "./../../Header/CRXNotifications/notificationsTypes"
 
 const StationDetail: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -35,6 +39,7 @@ const StationDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const isAddCase = !!isNaN(+id);
+  const toasterRef = useRef<typeof CRXToaster>(null);
   const retentionResponse: any = useSelector(
     (state: RootState) => state.stationReducer.retentionState
   );
@@ -75,7 +80,6 @@ const StationDetail: React.FC = () => {
     ConfigurationTemplate: []
   };
   const [stationPayload, setStationPayload] = React.useState<StationFormType>(stationInitialState);
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [modal, setModal] = React.useState<boolean>(false);
   const [retentionAutoCompleteValue, setRetentionAutoCompleteValue] = React.useState<AutoCompleteOptionType | null>(null);
@@ -319,7 +323,7 @@ const StationDetail: React.FC = () => {
     });
     if (isAddCase) {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
-        setSuccess(true);
+        showToastMsg()
         setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
@@ -330,7 +334,7 @@ const StationDetail: React.FC = () => {
     } else {
       body.id = Number(id);
       UnitsAndDevicesAgent.updateStation(`/Stations/${id}`, body).then(() => {
-        setSuccess(true);
+        showToastMsg()
         setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
@@ -397,8 +401,28 @@ const StationDetail: React.FC = () => {
     );
   };
 
+  const showToastMsg = () => {
+    toasterRef.current.showToaster({
+      message: t("Success_You_have_saved_the_Station"),
+      variant: "success",
+      duration: 7000,
+      clearButtton: true,
+    });
+
+    let notificationMessage: NotificationMessage = {
+      title: t("Station_Detail"),
+      message: t("Success_You_have_saved_the_Station"),
+      type: "success",
+      date: moment(moment().toDate())
+        .local()
+        .format("YYYY / MM / DD HH:mm:ss"),
+    };
+    dispatch(addNotificationMessages(notificationMessage));
+  };
+
   return (
     <>
+      <CRXToaster ref={toasterRef} className="assetsBucketToster" />
       <Formik
         enableReinitialize={true}
         initialValues={stationPayload}
@@ -408,15 +432,14 @@ const StationDetail: React.FC = () => {
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
             <Form>
-              {console.log('values of Form', values)}
               <div className="ManageStation  switchLeftComponents ManageStationUi">
-                {success && (
+                {/* {success && (
                   <CRXAlert
                     message={t("Success_You_have_saved_the_Station")}
                     alertType="toast"
                     open={true}
                   />
-                )}
+                )} */}
                 {error && (
                   <CRXAlert
                     className=""

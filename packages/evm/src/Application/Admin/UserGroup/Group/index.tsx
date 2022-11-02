@@ -482,10 +482,32 @@ const Group = () => {
     if (editCase) {
       
       groupURL = groupURL + "/" + id;
-      UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup).then(() => {
+      UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup)
+      .then(() => {
+        showToastMsg();
         groupId = parseInt(id);
         functionalityAfterRequest(groupId, 204)
-      } )
+      })
+      .catch((error: any) => {
+        if (error.response.status === 500 || error.response.status === 400) {
+          setShowSuccess(true);
+          functionInitialized();
+          setIsAppPermissionsChange(false);
+          setIsSaveButtonDisabled(true);
+  
+          setMessages(message[1].message);
+          setError(message[1].messageType);
+        } else if (error.response.status === 409 || error.response.status === 404) {
+          // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
+          setShowMessageCls("showMessageGroup");
+          setShowMessageError("errorMessageShow");
+          setShowSuccess(true);
+          setMessages(error.response.data);
+          setAlertType("inline");
+          setError("error");
+        }
+        
+      });
     }
     else{
       UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup)
@@ -586,7 +608,7 @@ const Group = () => {
   
           setMessages(errorJson);
           setAlertType("inline");
-          setError("error");
+          setError(message[1].messageType);
         }
         return;
       });

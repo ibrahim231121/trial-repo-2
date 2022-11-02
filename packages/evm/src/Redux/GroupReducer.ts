@@ -3,15 +3,24 @@ import Cookies from 'universal-cookie';
 import { GROUP_GET_BY_ID_URL, GROUP_USER_COUNT_GET_URL } from '../utils/Api/url'
 import { GroupUserCount } from '../utils/Api/models/UsersAndIdentitiesModel';
 import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
+import { setLoaderValue } from './loaderSlice';
+
 const cookies = new Cookies();
 
 export const getGroupAsync: any = createAsyncThunk(
     'getGroups',
-    async (pageiFilter?: any) => {
+    async (pageiFilter: any, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
         let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
         return await UsersAndIdentitiesServiceAgent.getGroups(`/filterUserGroup?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
-            .then((response: any) => response)
-        
+            .then((response: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+                return response
+            })
+            .catch((error: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+                console.error(error.response.data);
+              });
         // const url = GROUP_GET_BY_ID_URL + `/filterUserGroup?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
         // const requestOptions = {
         //     method: 'GET',

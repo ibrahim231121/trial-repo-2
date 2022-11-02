@@ -4,6 +4,7 @@ import Cookies from 'universal-cookie';
 import { UsersAndIdentitiesServiceAgent } from '../utils/Api/ApiAgent';
 import { UsersInfo } from '../utils/Api/models/UsersAndIdentitiesModel';
 import { GROUP_GET_BY_ID_URL, USER } from '../utils/Api/url'
+import { setLoaderValue } from './loaderSlice';
 
 const cookies = new Cookies();
 const Users = [
@@ -1062,14 +1063,19 @@ const Users = [
 
 export const getUsersInfoAsync: any = createAsyncThunk(
     'getUsersInfo',
-    async (pageiFilter?: any) => {
+    async (pageiFilter: any, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
         const url = USER + `/GetAllUsersInfo?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
         let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
              return await UsersAndIdentitiesServiceAgent
              .getUsersInfo(url, headers)
              .then((response) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
                 return response
-            })
+            }).catch((error: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+                console.error(error.response.data);
+              });
 
 });
 

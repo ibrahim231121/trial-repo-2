@@ -454,13 +454,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     const data = find === -1 ? row : selectedItems
     dispatch(removeAssetFromBucketActionCreator(data));
     if (find !== -1) {
-      // setSelectedItems([])
+      selectedItems = []
     }
     // }
-    // else {
-    //   dispatch(removeAssetFromBucketActionCreator(selectedItems))
-    //   setSelectedItems([])
-    // }
+    else {
+      dispatch(removeAssetFromBucketActionCreator(selectedItems))
+      selectedItems = []
+    }
   }
 
   const calculateSecurityDescriptor = (): void => {
@@ -650,14 +650,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {actionMenuPlacement == ActionMenuPlacement.AssetBucket && (
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Remove_from_asset_bucket")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   {`${t("Remove_from_asset_bucket")}`}
                 </div>
               </div>
-            </ActionMenuCheckList>
           </MenuItem>
         )}
 

@@ -70,6 +70,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         page: page,
         size: rowsPerPage
     })
+    const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         
@@ -278,9 +279,10 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     useEffect(() => {
-        // if(searchData.length > 0)
-        //     dataArrayBuilder();
-    }, [searchData]);
+        //dataArrayBuilder();
+        console.log("searchData", searchData)
+        setIsSearchable(true)
+      }, [searchData]);
 
     const dataArrayBuilder = () => {
         if (reformattedRows !== undefined) {
@@ -328,27 +330,30 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     const getFilteredUserData = () => {
 
-        pageiGrid.gridFilter.filters = []
-    
-        searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-            let x: GridFilter = {
-              operator: headCells[item.colIdx].attributeOperator,
-              //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-              field: headCells[item.colIdx].attributeName,
-              value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-              fieldType: headCells[item.colIdx].attributeType,
-            }
-            pageiGrid.gridFilter.filters?.push(x)
-            pageiGrid.page = 0
-            pageiGrid.size = rowsPerPage
-        })
-    
-        if(page !== 0)
-          setPage(0)
-        else
-          dispatch(getUsersInfoAsync(pageiGrid));
+        if(isSearchable) {
+            pageiGrid.gridFilter.filters = []
+        
+            searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+                let x: GridFilter = {
+                operator: headCells[item.colIdx].attributeOperator,
+                //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+                field: headCells[item.colIdx].attributeName,
+                value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+                fieldType: headCells[item.colIdx].attributeType,
+                }
+                pageiGrid.gridFilter.filters?.push(x)
+                pageiGrid.page = 0
+                pageiGrid.size = rowsPerPage
+            })
+        
+            if(page !== 0)
+                setPage(0)
+            else
+                dispatch(getUsersInfoAsync(pageiGrid));
           
-      }
+            setIsSearchable(false)
+        }
+    }
 
     useEffect(() => {
         setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
@@ -356,8 +361,17 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     
     },[page, rowsPerPage])
 
+    const handleKeyDown = (event:any) => {
+        if (event.key === 'Enter') {
+          getFilteredUserData()
+        }
+    }
+    const handleBlur = () => {
+        getFilteredUserData()
+    }
+
     return (
-        <div className="userDataTableParent ">
+        <div className="userDataTableParent " onKeyDown={handleKeyDown} onBlur={handleBlur}>
             {rows && (
                     <CRXDataTable 
                         id="group-userDataTable"

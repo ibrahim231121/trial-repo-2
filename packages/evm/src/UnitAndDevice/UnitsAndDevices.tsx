@@ -85,7 +85,7 @@ const UnitAndDevices: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
-
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
@@ -335,7 +335,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           isCheckBox={true}
           isduplicate={true}
         />
-        <CRXGlobalSelectFilter
+        {/* <CRXGlobalSelectFilter
             id="multiSelect"
             multiple={true}
             value={[]}
@@ -352,7 +352,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
             getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.value === label.value}
             onOpen={(e: React.SyntheticEvent) => { return setOpen(true) }}
             noOptionsText={t("No_Status")}
-        />
+        /> */}
       </div>
     )
   }
@@ -619,8 +619,10 @@ const onSelection = (v: ValueString[], colIdx: number) => {
 };
 
 
-  useEffect(() => {
-    //dataArrayBuilder();
+useEffect(() => {
+  //dataArrayBuilder();
+  console.log("searchData", searchData)
+  setIsSearchable(true)
 }, [searchData]);
 
 useEffect(() => {
@@ -727,24 +729,27 @@ useEffect(()=>{
 
  const getFilteredUnitData = () => {
 
-  pageiGrid.gridFilter.filters = []
+  if(isSearchable) {
+    pageiGrid.gridFilter.filters = []
 
-  searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-      let x: GridFilter = {
-        operator: headCells[item.colIdx].attributeOperator,
-        field: headCells[item.colIdx].attributeName,
-        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-        fieldType: headCells[item.colIdx].attributeType,
-      }
-      pageiGrid.gridFilter.filters?.push(x)
-      pageiGrid.page = 0
-      pageiGrid.size = rowsPerPage
-  })
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+    })
 
-  if(page !== 0)
-    setPage(0)
-  else{
-    dispatch(getUnitInfoAsync(pageiGrid));
+    if(page !== 0)
+      setPage(0)
+    else{
+      dispatch(getUnitInfoAsync(pageiGrid));
+    }
+    setIsSearchable(false)
   }
 }
 
@@ -755,10 +760,18 @@ useEffect(()=>{
 },[page, rowsPerPage])
 
 
-  return (
- 
-  
-    <div className="unitDeviceMain searchComponents unitDeviceMainUii ">
+const handleKeyDown = (event:any) => {
+  if (event.key === 'Enter') {
+    getFilteredUnitData()
+  }
+}
+
+const handleBlur = () => {
+  getFilteredUnitData()
+}
+
+return (
+    <div className="unitDeviceMain searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown} onBlur={handleBlur}>
       {/* <p className="unitsStatusCounter">{rows.length} Units</p> */}
       {
         
@@ -769,9 +782,9 @@ useEffect(()=>{
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }
-          toolBarButton={
-            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUnitData()}> {t("Filter")} </CRXButton>
-          }
+          // toolBarButton={
+          //   <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUnitData()}> {t("Filter")} </CRXButton>
+          // }
           showToolbar={true}
           showCountText={true}
           columnVisibilityBar={true}

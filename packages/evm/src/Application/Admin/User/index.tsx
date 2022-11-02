@@ -79,6 +79,7 @@ const User: React.FC = () => {
       page: page,
       size: rowsPerPage
   })
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
@@ -286,7 +287,6 @@ const User: React.FC = () => {
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
-    console.log("val", val)
     onSelection(val, colIdx);
     headCells[colIdx].headerArray = val;
   };
@@ -485,6 +485,7 @@ const User: React.FC = () => {
   useEffect(() => {
     //dataArrayBuilder();
     console.log("searchData", searchData)
+    setIsSearchable(true)
   }, [searchData]);
 
   useEffect(() => {
@@ -605,26 +606,28 @@ const User: React.FC = () => {
 
   const getFilteredUserData = () => {
 
-    pageiGrid.gridFilter.filters = []
+    if(isSearchable) {
+      pageiGrid.gridFilter.filters = []
+      searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+          let x: GridFilter = {
+            operator: headCells[item.colIdx].attributeOperator,
+            //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+            field: headCells[item.colIdx].attributeName,
+            value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+            fieldType: headCells[item.colIdx].attributeType,
+          }
+          pageiGrid.gridFilter.filters?.push(x)
+          pageiGrid.page = 0
+          pageiGrid.size = rowsPerPage
+      })
 
-    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: headCells[item.colIdx].attributeOperator,
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          field: headCells[item.colIdx].attributeName,
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-          fieldType: headCells[item.colIdx].attributeType,
-        }
-        pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
-    })
-
-    if(page !== 0)
-      setPage(0)
-    else
-      dispatch(getUsersInfoAsync(pageiGrid));
+      if(page !== 0)
+        setPage(0)
+      else
+        dispatch(getUsersInfoAsync(pageiGrid));
       
+      setIsSearchable(false)
+    }
   }
 
   useEffect(() => {
@@ -633,8 +636,17 @@ const User: React.FC = () => {
     
   },[page, rowsPerPage])
 
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredUserData()
+    }
+  }
+  const handleBlur = () => {
+      getFilteredUserData()
+  }
+
   return (
-    <div className="crxManageUsers switchLeftComponents manageUsersIndex">
+    <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown} onBlur={handleBlur}>
 			<CRXToaster ref={toasterRef}/>
       
       {rows && (
@@ -660,7 +672,7 @@ const User: React.FC = () => {
                   {t("Create_User")}
               </CRXButton>
               </Restricted>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+              {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
             </>
           }
           getRowOnActionClick={(val: User) => setSelectedActionRow(val)}
