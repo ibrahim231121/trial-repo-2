@@ -247,4 +247,37 @@
         margin-left: 25px;
     }
 }
-
+.retentionPoliciesConfirm {
+    .crxConfirmFooterModal {
+      button {
+        &.primary {
+          min-width: 90px;
+          height: 30px;
+          margin-right: 23px;
+        }
+      }
+    }
+    .confirmMessage {
+      font-size: 14px;
+      font-weight: var(--Font-style-normal);
+      line-height: 18px;
+      padding: 13px 13px 0px 2px;
+      color: var(--color-333333);
+      padding-top: 13px;
+      font-family:var(--base-font-family);
+  
+      &.__crx__Please__confirm__modal {
+        margin-bottom: 40px;
+        .__crx__please_confirm_ {
+          display: flex;
+        }
+      }
+      strong {
+        font-weight: var(--Font-style-bold);
+      }
+      .confirmMessageBottom {
+        padding-top: 34px;
+        padding-bottom: 40px;
+      }
+    }
+  }

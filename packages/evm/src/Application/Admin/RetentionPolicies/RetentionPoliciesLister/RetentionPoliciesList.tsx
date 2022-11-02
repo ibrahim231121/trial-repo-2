@@ -298,10 +298,8 @@ const RetentionPoliciesList: React.FC = () => {
             />}
             toolBarButton = {
               <>
-              <Restricted moduleId={52}>
-                {/* <CRXButton className="RetentionPoliciesBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.retentionPoliciesCreate)[0].url) }}>
-                  {t("Create_Retention_Policies")}
-                </CRXButton> */}
+              <Restricted moduleId={0}>
+                
                  <CRXButton className="RetentionPoliciesBtn" onClick={() => { onClickOpenModel(true,0,"Create Retention Policy") }}>
                   {t("Create_Retention_Policies")}
                 </CRXButton>

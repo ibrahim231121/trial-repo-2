@@ -83,7 +83,7 @@ const openCreateRetentionPoliciesForm = () => {
     >
         {selectedItems.length <=1 ? (
       <MenuItem onClick={openCreateRetentionPoliciesForm}>
-      <Restricted moduleId={51}>
+      <Restricted moduleId={0}>
           <div className="crx-meu-content   crx-spac"  >
             <div className="crx-menu-icon">
             <i className="far fa-pencil"></i>
@@ -99,7 +99,7 @@ const openCreateRetentionPoliciesForm = () => {
           )}  
     
       <MenuItem >
-      <Restricted moduleId={50}>
+      <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
           <div className="crx-menu-icon">
             <i className="far fa-trash-alt"></i>

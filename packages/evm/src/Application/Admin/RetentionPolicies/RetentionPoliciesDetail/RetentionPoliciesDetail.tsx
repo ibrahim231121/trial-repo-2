@@ -209,7 +209,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     if (isIndefinite == true) {
         
         setRetentionTimeDays(365000);
-        setRetentionHours(8760000);
+        setRetentionHours(0);
         setSoftDeleteTimeDays(0);
         setGracePeriodHours(0);                     
     }
@@ -294,18 +294,18 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
-            if (e.request.status == 409) {
-                setError(true);
-                setResponseError(
-                    "Duplicate Name is not allowed."
-                );
-            }
-            else{
-              console.error(e.message);
-              setError(false);
-              return e;
-            }
-          })
+                    if (e.request.status == 409) {
+                        setError(true);
+                        setResponseError(
+                            "Duplicate Name is not allowed."
+                        );
+                    }
+                    else{
+                        console.error(e.message);
+                        setError(false);
+                        return e;
+                    }
+                })
         }
         else
         {
@@ -318,18 +318,18 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
-            if (e.request.status == 409) {
-                setError(true);
-                setResponseError(
-                    "Duplicate Name is not allowed."
-                );
-            }
-            else{
-              console.error(e.message);
-              setError(false);
-              return e;
-            }
-          })
+                    if (e.request.status == 409) {
+                        setError(true);
+                        setResponseError(
+                            "Duplicate Name is not allowed."
+                        );
+                    }
+                    else{
+                        console.error(e.message);
+                        setError(false);
+                        return e;
+                    }
+                })
         }
         
     }
@@ -818,7 +818,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             >
                 <div className="confirmMessage">
                 {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                <strong>{t("Retention_Policies_Form")}</strong>. {t("If_you_close_the_form")}, 
+                <strong>{t("retention_policies_Form")}</strong>. {t("If_you_close_the_form")}, 
                 {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
                 <div className="confirmMessageBottom">
                 {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
