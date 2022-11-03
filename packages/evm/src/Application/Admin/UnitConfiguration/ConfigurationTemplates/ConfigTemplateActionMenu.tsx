@@ -109,7 +109,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             </div>
           </div>
         </MenuItem>
-        <MenuItem >
+        {row?.defaultTemplate !== "Default" && <MenuItem >
           <Restricted moduleId={25}>
             <div className="crx-meu-content  crx-spac" onClick={Deleteconfirm} >
               <div className="crx-menu-icon">
@@ -120,7 +120,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
               </div>
             </div>
           </Restricted>
-        </MenuItem>
+        </MenuItem>}
         {selectedItems.length <= 1 ? (
           <MenuItem >
 
@@ -153,7 +153,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
               {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{unitId}</span> {t("template")}.
               {t("You_will_not_be_able_to_undo_this_action.")}
             </p>
-            <p className="configuserPara2">{("Are_you_sure_you_would_like_to_delete_template?")}</p>
+            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_template?")}</p>
           </div>
         }
       </Dialogbox>

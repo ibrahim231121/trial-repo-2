@@ -260,7 +260,7 @@ export const CreateTempelateCase = (props: any) => {
   }
 
   React.useEffect(() => {
-    if (formObj.optionAppendOnChange !== undefined) {
+    if (formObj.optionAppendOnChange) {
       optionAppendOnChange(formObj.value, formObj, values, setValues, index);
     }
   }, []);

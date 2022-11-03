@@ -27,6 +27,7 @@ import { CaptureDevice } from "../../utils/Api/models/StationModels";
 import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import {getAllSensorsEvents} from '../../Redux/SensorEvents';
+import Dialogbox from "../../Application/Admin/UnitConfiguration/ConfigurationTemplates/Dialogbox";
 
 
 
@@ -125,6 +126,7 @@ const CreateTemplate = (props: any) => {
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
   const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] = React.useState<boolean>(false);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
@@ -621,6 +623,7 @@ const CreateTemplate = (props: any) => {
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
+      let valueSaved = false;
       if (!(valueRaw?.feilds !== undefined)) {
         var valueToSave = true;
         var nonDependantValue = true;
@@ -660,6 +663,7 @@ const CreateTemplate = (props: any) => {
                 group: split[0],
                 valueType: split[2],
               });
+              valueSaved = true;
             }
             if(deviceTypeName == "Zero-Dark")
             {
@@ -669,6 +673,7 @@ const CreateTemplate = (props: any) => {
                 group: split[0],
                 valueType: split[2],
               });
+              valueSaved = true;
             }
           }
           if(keySubSplit[0] == "device" && valueToSave)
@@ -717,7 +722,7 @@ const CreateTemplate = (props: any) => {
               sequence: 1,
             });
           }
-          else{
+          else if(!valueSaved){
             Initial_Values.push({
               key: split[1],
               value: "",
@@ -809,13 +814,15 @@ const CreateTemplate = (props: any) => {
     history.go(0)
   }
 
-
-
-  let customEvent = (event: any, y: any, z: any) => {
-    if (event.target[z.inputType] === z.if) {
-      y(z.field, z.value)
-    }
-
+  const OnDeleteConfirmation = () => {
+    UnitsAndDevicesAgent.deleteConfigurationTemplate(historyState.id)
+    .then(() => {
+      history.push(urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) 
+    })
+    .catch(function (error) {
+        return error;
+    });    
+    setDeleteConfirmationIsOpen(false);
   }
 
   return (
@@ -880,14 +887,14 @@ const CreateTemplate = (props: any) => {
               <div className="crx-menu-list">{t("Clone_template")}</div>
             </div>
           </MenuItem>
-          <MenuItem>
+          {!historyState?.isDefaultTemplate && <MenuItem onClick={() => {setDeleteConfirmationIsOpen(true)}}>
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
                 <i className="far fa-trash-alt"></i>
               </div>
               <div className="crx-menu-list">{t("Delete_template")}</div>
             </div>
-          </MenuItem>
+          </MenuItem>}
         </Menu>
         <div className="tabCreateTemplate">
           <CRXTabs value={value} onChange={handleChange} tabitems={tabss1} />
@@ -979,6 +986,27 @@ const CreateTemplate = (props: any) => {
           </div>
         </div>
       </div >}
+
+      <Dialogbox
+        className="crx-unblock-modal crxConfigModal"
+        title={""}
+        setIsOpen={setDeleteConfirmationIsOpen}
+        onConfirm={OnDeleteConfirmation}
+        isOpen={deleteConfirmationIsOpen}
+        myVar={true}
+        secondary={t("Yes_delete")}
+        primary={t("No_do_not_delete")}
+      >
+        {
+          <div className="crxUplockContent configuserParaMain">
+            <p className="configuserPara1">
+              {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} {t("template")}.
+              {t("You_will_not_be_able_to_undo_this_action.")}
+            </p>
+            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_template?")}</p>
+          </div>
+        }
+      </Dialogbox>
     </>
   );
 
