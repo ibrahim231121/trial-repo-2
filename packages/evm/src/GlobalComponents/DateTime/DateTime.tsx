@@ -139,8 +139,8 @@ const DateTime = () => {
     return newDate;
   };
 
-
   const onOptionChange = (e: any, startDate : string = "", endDate : string = "", isCustomRange : boolean = false) => {
+    
     const { value } = e.target;
     if (value === "custom" && !openContainerState ) {
       setOpenContainerState(true);

@@ -9,7 +9,14 @@ import { CADID, CaseNO, FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropD
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
-  console.log('formCollection', props.formCollection);
+  
+  function IsFieldtypeEquals(field: any, fieldType: any) {
+    if ((field.type == fieldType) || (field.dataType == fieldType)) {
+      return true
+    }
+    return false;
+  }
+
   return (
     <>
       {(Object.keys(props.initialValueObjects).length > 0) &&
@@ -39,7 +46,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                         <b className={errors[field.name === undefined ? field.key : field.name] ? "errorStaric" : "formStaric"}>*</b>
                         <div className="CBX-input">
 
-                          {((field.type == FieldTypes.FieldTextBoxType) || (field.dataType == FieldTypes.FieldTextBoxType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldTextBoxType) || IsFieldtypeEquals(field, FieldTypes.CaseNO) || IsFieldtypeEquals(field, FieldTypes.PolygraphLogNumber) || IsFieldtypeEquals(field, FieldTypes.CADID) || IsFieldtypeEquals(field, FieldTypes.Unknown)) &&
                             <Field
                               className={
                                 `editCategoryField ${errors[field.name === undefined ? field.key : field.name] ? 'errorBrdr' : ''}`
@@ -131,18 +138,6 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                                 />
                               }
                             />
-                          }
-
-                          {((field.type == FieldTypes.CaseNO) || (field.dataType == FieldTypes.CaseNO)) &&
-                            <CaseNO />
-                          }
-
-                          {((field.type == FieldTypes.PolygraphLogNumber) || (field.dataType == FieldTypes.PolygraphLogNumber)) &&
-                            <PolygraphLogNumber />
-                          }
-
-                          {((field.type == FieldTypes.CADID) || (field.dataType == FieldTypes.CADID)) &&
-                            <CADID />
                           }
 
                           {errors[field.name === undefined ? field.key : field.name] !== undefined && (

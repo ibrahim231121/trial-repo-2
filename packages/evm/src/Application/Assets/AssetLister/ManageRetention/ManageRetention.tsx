@@ -23,7 +23,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
   const [prevRecord, setPrevRecord] = React.useState<Evidence>();
-
   const [alert, setAlert] = React.useState<boolean>(false);
   const alertRef = React.useRef(null);
   const retentionRadioDefaultOptions = [
