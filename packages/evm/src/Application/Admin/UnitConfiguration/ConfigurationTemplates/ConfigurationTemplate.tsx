@@ -1,11 +1,9 @@
 import React, { useEffect, useContext } from "react";
-import { CRXDataTable, CRXMenu } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import useGetFetch from "../../../../utils/Api/useGetFetch";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
-import anchorDisplay from "../../../../GlobalComponents/Display//AnchorDisplay";
 import { RootState } from "../../../../Redux/rootReducer";
 import "./ConfigurationTemplate.scss";
 import { CRXButton } from "@cb/shared";
@@ -26,7 +24,6 @@ import {
   onResizeRow,
   Order,
   onTextCompare,
-  onMultiToMultiCompare,
   onSetSingleHeadCellVisibility,
   onSetSearchDataValue,
   onClearAll,
@@ -35,9 +32,6 @@ import {
   GridFilter,
   PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { CRXGlobalSelectFilter } from "@cb/shared";
-import { PausePresentation } from "@material-ui/icons";
-import { classicNameResolver } from "typescript";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 
 type ConfigTemplate = {
@@ -71,8 +65,8 @@ type Unit = {
   stationId: number;
 };
 interface renderCheckMultiselect {
-  label?: string;
-  id?: string;
+  value: string;
+  id: string;
 }
 
 const configTemplate = (name: string, device: any) => {
@@ -113,7 +107,7 @@ const ConfigurationTemplates: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
-
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   React.useEffect(() => {
     //dispatch(getConfigurationInfoAsync(pageiGrid));
     dispatch(getDeviceTypeInfoAsync());
@@ -253,78 +247,24 @@ const ConfigurationTemplates: React.FC = () => {
       onSelection(valuesObject, colIdx);
     };
 
-    const onSelection = (v: ValueString[], colIdx: number) => {
-      if (v.length > 0) {
-        for (var i = 0; i < v.length; i++) {
-          let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
-          setSearchData((prevArr) =>
-            prevArr.filter(
-              (e) => e.columnName !== headCells[colIdx].id.toString()
-            )
-          );
-          setSearchData((prevArr) => [...prevArr, searchDataValue]);
-        }
-      } else {
-        setSearchData((prevArr) =>
-          prevArr.filter(
-            (e) => e.columnName !== headCells[colIdx].id.toString()
-          )
-        );
-      }
-    };
-
     return (
       <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
     );
   };
 
-  function findUniqueValue(value: any, index: any, self: any) {
-    return self.indexOf(value) === index;
+  const onSelectedClear = () => {
+    setSearchData([]);
+    let headCellReset = onClearAll(headCells);
+    setHeadCells(headCellReset);
   }
-
-  function findUniqueOptions(options: any) {
-    let unique: any = options.map((x: any) => x);
-      if (options.length > 0) {
-        unique = [];
-        unique[0] = options[0];
-        for (var i = 0; i < options.length; i++) {
-          if (!unique.some((item: any) => item.label === options[i].label)) {
-            let value: any = {};
-            value["id"] = options[i].id;
-            value["label"] = options[i].label;
-            unique.push(value);
-          }
-        }
-      }
-      return unique;
-  }
-
-  const openHandler = (_: React.SyntheticEvent) => {
-   
-    setOpen(true);
-  };
 
   const changeMultiselect = (
     e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
-    let value: any[] = val.map((x) => {
-      let item = {
-        value: x.label,
-      };
-      return item;
-    });
-    onSelection(value, colIdx);
-    headCells[colIdx].headerArray = value;
-  };
-  const deleteSelectedItems = (
-    e: React.SyntheticEvent,
-    options: renderCheckMultiselect[]
-  ) => {
-    setSearchData([]);
-    let headCellReset = onClearAll(headCells);
-    setHeadCells(headCellReset);
+    onSelection(val, colIdx);
+    headCells[colIdx].headerArray = val;
   };
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -344,68 +284,34 @@ const ConfigurationTemplates: React.FC = () => {
     }
   };
   // ------------------STATION DROP DOWN START
-  const multiSelectVersionCheckbox = (
+  const multiSelectStationCheckbox = (
     rowParam: ConfigTemplate[],
     headCells: HeadCellProps[],
     colIdx: number,
     initialRows: any
   ) => {
 
-    if (colIdx === 2 && initialRows) {
+    if(colIdx === 2 && initialRows && initialRows.stations && initialRows.stations.length > 0) { 
 
-      let station: any = [{id: 0,  label: t("No_Station") }];
+      let station: any = [{id: 0,  value: t("No_Station") }];
       initialRows.stations.map((x: any) => {
-        station.push({id: x.id, label: x.name });
+        station.push({id: x.id, value: x.name });
       });
-
-      station = findUniqueOptions(station);
-
-      const settingValues = (headCell: HeadCellProps) => {
-        let val: any = [];
-        if (headCell.headerArray !== undefined)
-          val = headCell.headerArray
-            .filter((v) => v.value !== "")
-            .map((x) => x.value);
-        else val = [];
-        return val;
-      };
 
       return (
         <div>
-          <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            value={settingValues(headCells[colIdx])}
-            onChange={(
-              e: React.SyntheticEvent,
-              option: renderCheckMultiselect[]
-            ) => {
-              return changeMultiselect(e, option, colIdx);
-            }}
-            options={station}
-            CheckBox={true}
-            checkSign={false}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(
-              e: React.SyntheticEvent,
-              options: renderCheckMultiselect[]
-            ) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) =>
-              option.label ? option.label : " "
-            }
-            getOptionSelected={(
-              option: renderCheckMultiselect,
-              label: renderCheckMultiselect
-            ) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => {
-              return openHandler(e);
-            }}
-            noOptionsText={t("No_Version")}
+          <CBXMultiSelectForDatatable 
+            width = {400} 
+            option={station} 
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+            onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+            onSelectedClear = {() => onSelectedClear()}
+            isCheckBox={true}
+            isduplicate={true}
           />
         </div>
-      );
-    }
+      )
+    } 
   };
 
   // ------------------STATION DROP DOWN END
@@ -417,58 +323,23 @@ const ConfigurationTemplates: React.FC = () => {
     colIdx: number,
     initialRows: any
   ) => {
-    if (colIdx === 3 && initialRows) {
+    if (colIdx === 3 && initialRows && initialRows.deviceType && initialRows.deviceType.length > 0) {
 
-      let type: any = [{id: 0,  label: t("No_type") }];
+      let type: any = [{id: 0,  value: t("No_type") }];
       initialRows.deviceType.map((x: any) => {
-        type.push({id: x.id, label: x.name });
+        type.push({id: x.id, value: x.name });
       });
-
-      type = findUniqueOptions(type);
-
-      const settingValues = (headCell: HeadCellProps) => {
-        let val: any = [];
-        if (headCell.headerArray !== undefined)
-          val = headCell.headerArray
-            .filter((v) => v.value !== "")
-            .map((x) => x.value);
-        else val = [];
-        return val;
-      };
 
       return (
         <div>
-          <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            className="typeDropDown"
-            value={settingValues(headCells[colIdx])}
-            onChange={(
-              e: React.SyntheticEvent,
-              option: renderCheckMultiselect[]
-            ) => {
-              return changeMultiselect(e, option, colIdx);
-            }}
-            options={type}
-            CheckBox={true}
-            checkSign={false}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(
-              e: React.SyntheticEvent,
-              options: renderCheckMultiselect[]
-            ) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) =>
-              option.label ? option.label : " "
-            }
-            getOptionSelected={(
-              option: renderCheckMultiselect,
-              label: renderCheckMultiselect
-            ) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => {
-              return openHandler(e);
-            }}
-            noOptionsText={t("No_type")}
+          <CBXMultiSelectForDatatable 
+            width = {400} 
+            option={type} 
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+            onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+            onSelectedClear = {() => onSelectedClear()}
+            isCheckBox={true}
+            isduplicate={true}
           />
         </div>
       );
@@ -484,57 +355,22 @@ const ConfigurationTemplates: React.FC = () => {
     colIdx: number,
     initialRows: any
   ) => {
-    if (colIdx === 4 && initialRows) {
+    if (colIdx === 4 && initialRows && initialRows.indicator && initialRows.indicator.length > 0) {
 
-      let indicator: any = [{id: 0,  label: t("Default") }];
+      let indicator: any = [{id: 0,  value: t("Default") }];
       initialRows.indicator.map((x: any) => {
-        indicator.push({id: x.id, label: x.name });
+        indicator.push({id: x.id, value: x.name });
       });
-
-      indicator = findUniqueOptions(indicator);
-
-      const settingValues = (headCell: HeadCellProps) => {
-        let val: any = [];
-        if (headCell.headerArray !== undefined)
-          val = headCell.headerArray
-            .filter((v) => v.value !== "")
-            .map((x) => x.value);
-        else val = [];
-        return val;
-      };
-
       return (
         <div>
-          <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            value={settingValues(headCells[colIdx])}
-            onChange={(
-              e: React.SyntheticEvent,
-              option: renderCheckMultiselect[]
-            ) => {
-              return changeMultiselect(e, option, colIdx);
-            }}
-            options={indicator}
-            CheckBox={false}
-            checkSign={true}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(
-              e: React.SyntheticEvent,
-              options: renderCheckMultiselect[]
-            ) => deleteSelectedItems(e, options)}
-            getOptionLabel={(option: renderCheckMultiselect) =>
-              option.label ? option.label : " "
-            }
-            getOptionSelected={(
-              option: renderCheckMultiselect,
-              label: renderCheckMultiselect
-            ) => option.label === label.label}
-            onOpen={(e: React.SyntheticEvent) => {
-              return openHandler(e);
-            }}
-            noOptionsText={t("No_Indicator")}
+          <CBXMultiSelectForDatatable 
+            width = {300} 
+            option={indicator} 
+            value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+            onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+            onSelectedClear = {() => onSelectedClear()}
+            isCheckBox={true}
+            isduplicate={true}
           />
         </div>
       );
@@ -585,7 +421,7 @@ const ConfigurationTemplates: React.FC = () => {
         columns: HeadCellProps[],
         colIdx: number,
         initialRows: ConfigTemplate[]
-      ) => multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),
+      ) => multiSelectStationCheckbox(rowData, columns, colIdx, initialRows),
       minWidth: "100",
       maxWidth: "500",
       detailedDataComponentId: "id",
@@ -636,6 +472,8 @@ const ConfigurationTemplates: React.FC = () => {
 
   useEffect(() => {
     //dataArrayBuilder();
+    console.log("searchData", searchData)
+    setIsSearchable(true)
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -675,26 +513,29 @@ const ConfigurationTemplates: React.FC = () => {
 
   const getFilteredConfigurationTemplateData = () => {
 
-    pageiGrid.gridFilter.filters = []
+    if(isSearchable) {
+      pageiGrid.gridFilter.filters = []
 
-    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-        let x: GridFilter = {
-          operator: headCells[item.colIdx].attributeOperator,
-          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-          field: headCells[item.colIdx].attributeName,
-          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-          fieldType: headCells[item.colIdx].attributeType,
-        }
-        pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
-    })
+      searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+          let x: GridFilter = {
+            operator: headCells[item.colIdx].attributeOperator,
+            //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+            field: headCells[item.colIdx].attributeName,
+            value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+            fieldType: headCells[item.colIdx].attributeType,
+          }
+          pageiGrid.gridFilter.filters?.push(x)
+          pageiGrid.page = 0
+          pageiGrid.size = rowsPerPage
+      })
 
-    if(page !== 0)
-      setPage(0)
-    else{
-      dispatch(getConfigurationInfoAsync(pageiGrid));
-      //dispatch(getGroupUserCountAsync());
+      if(page !== 0)
+        setPage(0)
+      else{
+        dispatch(getConfigurationInfoAsync(pageiGrid));
+        //dispatch(getGroupUserCountAsync());
+      }
+      setIsSearchable(false)
     }
   }
 
@@ -703,8 +544,17 @@ const ConfigurationTemplates: React.FC = () => {
     setPaging(true)
   },[page, rowsPerPage])
 
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredConfigurationTemplateData()
+    }
+  }
+  const handleBlur = () => {
+    getFilteredConfigurationTemplateData()
+  }
+
   return (
-    <div className="CrxConfigTemplate switchLeftComponents">
+    <div className="CrxConfigTemplate switchLeftComponents" onKeyDown={handleKeyDown} onBlur={handleBlur}>
 
       {
         rows && (

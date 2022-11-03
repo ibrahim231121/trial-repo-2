@@ -1,32 +1,16 @@
-import moment from 'moment';
 import React from 'react';
-import { AssetRetentionFormat } from '../GlobalFunctions/AssetRetentionFormat';
+import { CheckEvidenceExpire } from '../GlobalFunctions/CheckEvidenceExpire';
 
 type Props = {
     evidence: any,
-    actionMenuName : string
+    actionMenuName: string,
+    isMultiSelectEvidenceExpired: boolean
 };
 
-const isAssetExpired = (evidence?: any) => {
-    if (evidence) {
-        let date: Date;
-        if (evidence.holdUntill)
-            date = moment(evidence.holdUntill).toDate();
-        else
-            date = moment(evidence.expireOn).toDate();
+const allowedEvidenceExpireActionMenuList = ["Assign User", "Export"]
 
-        if (moment(date).format('DD-MM-YYYY') == "31-12-9999")    
-            return false;
-        if (AssetRetentionFormat(date) == "Asset Expired")
-            return true;
-    }
-    return false;
-}
-
-const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, children }) => {
-
-    if(!isAssetExpired(evidence)  || actionMenuName === "Assign User" )
-    {
+const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, isMultiSelectEvidenceExpired, children }) => {
+    if ((!CheckEvidenceExpire(evidence) && !isMultiSelectEvidenceExpired) || allowedEvidenceExpireActionMenuList.indexOf(actionMenuName) > -1) {
         return <>{children}</>;
     }
 

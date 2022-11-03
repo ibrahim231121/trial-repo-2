@@ -26,6 +26,12 @@ iframe {
     text-align: center;
     padding: 0;
     margin-left: -3px;
+    .crx-menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: 0px !important;
+    }
   }
   .menu_List_Button {
     display: flex;
@@ -127,6 +133,7 @@ iframe {
         button {
           position: relative;
           top: 5px;
+          left: -2px;
         }
       }
     }
@@ -174,7 +181,7 @@ iframe {
       vertical-align: middle;
       text-indent: 5px;
       &:first-child {
-        text-indent: 5px;
+        text-indent: -1px;
         .CRXCheckBox {
           .fal {
             background: transparent;
@@ -187,9 +194,7 @@ iframe {
     &:nth-child(1) {
       margin-top: -110px;
     }
-    &:nth-child(2) {
-      display: none;
-    }
+    
   }
 
   .rc-menu__arrow {

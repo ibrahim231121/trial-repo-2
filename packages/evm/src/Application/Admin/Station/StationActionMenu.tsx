@@ -21,7 +21,6 @@ type Props = {
 };
 
 const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }) => {
-  console.log('Station Action Menu Row', row)
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);

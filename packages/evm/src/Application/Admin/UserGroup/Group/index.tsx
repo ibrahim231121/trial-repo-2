@@ -89,7 +89,12 @@ const Group = () => {
 
   const [dataPermissions, setDataPermissions] = React.useState<
     DataPermissionModel[]
-  >([]);
+  >([ { 
+      containerMappingId:0,
+      mappingId:0,
+      permission:0,
+      fieldType:0
+  }]);
   const [dataPermissionsActual, setDataPermissionsActual] = React.useState<
     DataPermissionModel[]
   >([]);
@@ -295,6 +300,16 @@ const Group = () => {
           permission: x.groupMapping.permission,
         });
       });
+
+      if(newDataPerModel.length <= 0){
+        newDataPerModel.push({
+           containerMappingId:0,
+            fieldType:0,
+            mappingId:0,
+            permission:0
+        })
+      }
+
       setDataPermissions(newDataPerModel);
       setDataPermissionsActual(newDataPerModel);
     }
@@ -307,9 +322,7 @@ const Group = () => {
     setUserIds(userIds);
   };
 
-  const onChangeDataPermission = (
-    dataPermissionModel: DataPermissionModel[]
-  ) => {
+  const onChangeDataPermission = (dataPermissionModel: DataPermissionModel[]) => {
     setDataPermissions(dataPermissionModel);
   };
 
@@ -392,6 +405,7 @@ const Group = () => {
       setIsSaveButtonDisabled(false);
     } else if (
       JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)
+       && dataPermissions.filter(x=> x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length === 0
     ) {
       setIsSaveButtonDisabled(false);
     } else {
@@ -438,7 +452,6 @@ const Group = () => {
     let editCase = !isNaN(+id);
     var groupURL = SAVE_USER_GROUP_URL;
 
-
     let subModules : GroupSubModules[] = applicationPermissions
     .map((x) => x.children)
     .flat(1)
@@ -463,82 +476,72 @@ const Group = () => {
         }),
       },
     };
+    
     let groupId = 0;
     let status = 0;
     if (editCase) {
+      
       groupURL = groupURL + "/" + id;
-      UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup).then(() => {
+      UsersAndIdentitiesServiceAgent.editUserGroup(groupURL, userGroup)
+      .then(() => {
+        showToastMsg();
         groupId = parseInt(id);
         functionalityAfterRequest(groupId, 204)
-      } )
+      })
+      .catch((error: any) => {
+        if (error.response.status === 500 || error.response.status === 400) {
+          setShowSuccess(true);
+          functionInitialized();
+          setIsAppPermissionsChange(false);
+          setIsSaveButtonDisabled(true);
+  
+          setMessages(message[1].message);
+          setError(message[1].messageType);
+        } else if (error.response.status === 409 || error.response.status === 404) {
+          // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
+          setShowMessageCls("showMessageGroup");
+          setShowMessageError("errorMessageShow");
+          setShowSuccess(true);
+          setMessages(error.response.data);
+          setAlertType("inline");
+          setError("error");
+        }
+        
+      });
     }
     else{
-      UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup).then((response: any) => {
+      UsersAndIdentitiesServiceAgent.addUserGroup(groupURL, userGroup)
+      .then((response:any) => {
+        showToastMsg();
         groupId = parseInt(response.replace(/["']/g, ""));
         functionalityAfterRequest(groupId, 201)
-      } )
+      })
+      .catch((error: any) => {
+        if (error.response.status === 500 || error.response.status === 400) {
+          setShowSuccess(true);
+          functionInitialized();
+          setIsAppPermissionsChange(false);
+          setIsSaveButtonDisabled(true);
+  
+          setMessages(message[1].message);
+          setError(message[1].messageType);
+        } else if (error.response.status === 409 || error.response.status === 404) {
+          // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
+          setShowMessageCls("showMessageGroup");
+          setShowMessageError("errorMessageShow");
+          setShowSuccess(true);
+          setMessages(error.response.data);
+          setAlertType("inline");
+          setError("error");
+        }
+        
+      });
     }
     
-
-    // if(editCase){
-    //   subModules.map(x=> {return {...x, "id":parseInt(id)}})
-    // }
-
-    //change here
-    
-   
-
-    
-    // fetch(groupURL, {
-    //   method: method,
-    //   headers: {
-    //     TenantId: "1",
-    //     "Content-Type": "application/json",
-    //     'Authorization': `Bearer ${getToken()}`
-        
-    //   },
-    //   body: JSON.stringify(userGroup),
-    // })
-    //   .then((res) => {
-    //     status = res.status;
-    //     return res.text();
-    //   })
-    //   .then((grpResponse) => {
-    //     if (status === 201 || status === 204) {
-    //       //which means group has been created or updated now its time to save container permission for station and categories.
-    //       let groupId = 0;
-    //       if (status === 201) {
-    //         groupId = parseInt(grpResponse.replace(/["']/g, ""));
-    //       }
-    //       if (status === 204) {
-    //         groupId = parseInt(id);
-    //       }
-          
-    //     } else if (status === 500 || status === 400) {
-    //       setShowSuccess(true);
-    //       functionInitialized();
-    //       setIsAppPermissionsChange(false);
-    //       setIsSaveButtonDisabled(true);
-
-    //       setMessages(message[1].message);
-    //       setError(message[1].messageType);
-    //     } else if (status === 409 || status === 404) {
-    //       let error = JSON.parse(grpResponse);
-
-    //       // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
-    //       effectAfterSave(groupId.toString(),status, true)
-
-    //       setShowMessageCls("showMessageGroup");
-    //       setShowMessageError("errorMessageShow");
-
-    //       setMessages(error);
-    //       setAlertType("inline");
-    //       setError("error");
-    //     }
-    //   });
   };
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
+    
     let permissionsToAdd = dataPermissions.map((x) => {
       return {
         id: x.containerMappingId,
@@ -556,6 +559,7 @@ const Group = () => {
       deletedContainerMappingIds: deletedDataPermissions,
       groupId:groupId
     };
+
     fetch(UPSERT_CONTAINER_MAPPING_URL, {
       method: "PUT",
       headers: {
@@ -565,12 +569,13 @@ const Group = () => {
       },
       body: JSON.stringify(dataPermissionObj),
     })
-      .then((container) => {
-        
-        if (container.status === 201 || container.status === 204) {
-          // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
-          showToastMsg();
-        } else if (
+  
+    .then((container) => {
+        // if (container.status === 201 || container.status === 204) {
+        //   // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+        //   showToastMsg();
+        // } else 
+        if (
           container.status === 500 ||
           container.status === 400 ||
           container.status === 409 ||
@@ -580,7 +585,9 @@ const Group = () => {
           setAlertType("inline");
           setMessages(message[2].message);
           setError(message[2].messageType);
+          return;
         }
+        
       })
       .catch((error: any) => {
         if (error.response.status === 500 || error.response.status === 400) {
@@ -596,17 +603,16 @@ const Group = () => {
   
           // error = ( <div className="CrxMsgErrorGroup">We're Sorry. The Group Name <span> { error.substring(error.indexOf("'"), error.lastIndexOf("'")) }'</span> already exists, please choose a different group name.</div>)
           effectAfterSave(groupId.toString(),status, true)
-  
           setShowMessageCls("showMessageGroup");
           setShowMessageError("errorMessageShow");
   
           setMessages(errorJson);
           setAlertType("inline");
-          setError("error");
+          setError(message[1].messageType);
         }
-        
+        return;
       });
-  
+      
     effectAfterSave(groupId.toString(),status, false)
    }
   
@@ -670,7 +676,7 @@ const Group = () => {
 
   return (
     <div className="App crxTabsPermission switchLeftComponents" style={{}}>
-      <CRXAlert
+      {showSuccess && showSuccess ? <CRXAlert
         className={"CrxAlertNotificationGroup " + " " + alertMsgDiv}
         message={messages}
         type={error}
@@ -678,6 +684,7 @@ const Group = () => {
         alertType={alertType}
         setShowSucess={setShowSuccess}
       />
+     : ""}
       <CRXToaster ref={groupMsgRef} />
 
       <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />

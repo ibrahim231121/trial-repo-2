@@ -245,7 +245,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       var tempOwnerList = [...assetOwners];
       props.selectedItems.forEach((el) => {
         var temp: AddOwner = {
-          evidenceId: el.id,
+          evidenceId: el.id ? el.id  : el.evidence.id,
           assetId: el.assetId,
           owners: props.filterValue.map((x) => x.id),
         };
@@ -255,7 +255,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     } else {
       const url =
         "/Evidences/" +
-        `${props.rowData.id}` +
+        `${props.rowData.id ? props.rowData.id : props.rowData.evidence.id}` +
         "/assets/" +
         `${props.rowData.assetId}` +
         "/AssignUsersToAssets?IsChildAssetincluded=" +

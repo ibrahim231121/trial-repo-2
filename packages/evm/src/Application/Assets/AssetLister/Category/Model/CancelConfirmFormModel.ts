@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { SelectedCategoryModel } from "./FormContainerModel";
+
 export type CancelConfirmFormProps = {
     isCategoryEmpty: boolean;
     setremoveClassName: any;
@@ -5,7 +8,7 @@ export type CancelConfirmFormProps = {
     previousActive: number;
     setActiveForm: (param: any) => void;
     setOpenForm: () => void;
-    setFilterValue: (param: any) => void;
+    setSelectedCategoryValues: Dispatch<SetStateAction<Array<SelectedCategoryModel>>>;
     closeModal: (param: boolean) => void;
     setRemovedOption: (param: any) => void;
     setIsformUpdated: (param: boolean) => void;

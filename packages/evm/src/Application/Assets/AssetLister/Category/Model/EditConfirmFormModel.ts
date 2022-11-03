@@ -1,14 +1,17 @@
+import { Dispatch, SetStateAction } from "react";
+import { Evidence } from "../../../../../utils/Api/models/EvidenceModels";
+import { SelectedCategoryModel } from "./FormContainerModel";
+
 export type EditConfirmFormProps = {
-    evidenceResponse: any;
-    filterValue: any[];
+    evidence: Evidence | undefined;
     setremoveClassName: any;
     setOpenForm: () => void;
     closeModal: (param: boolean) => void;
     setIsformUpdated: (param: boolean) => void;
     setModalTitle: (param: string) => void;
-    setActiveForm: (param: number) => void;
-  };
-  
+    setActiveForm: Dispatch<SetStateAction<number>>;
+};
+
 export interface FormValues {
     reason: string;
-  }
+}

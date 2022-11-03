@@ -18,7 +18,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
   const cancelBtn = () => {
     const previouslyRemovedCategories = findPreviouslyRemovedCategories();
     if (previouslyRemovedCategories) {
-      props.setFilterValue((prevState: any) => [...prevState, previouslyRemovedCategories]);
+      props.setSelectedCategoryValues((prevState) => [...prevState, previouslyRemovedCategories]);
       /**
        * * Set removed option in to State again.
        */
@@ -51,14 +51,14 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
         onSubmit={() => {
           const previouslyRemovedCategories = findPreviouslyRemovedCategories();
           if (previouslyRemovedCategories) {
-            props.setFilterValue((prevState: any) => [...prevState, previouslyRemovedCategories]);
+            props.setSelectedCategoryValues((prevState) => [...prevState, previouslyRemovedCategories]);
             /**
              * * Set removed option in to State again.
              */
             props.setRemovedOption({});
           }
           props.setOpenForm();
-          props.setFilterValue((val: []) => []);
+          props.setSelectedCategoryValues([]);
           /**
            * * set Is form updated state back to false.
            */
@@ -68,7 +68,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
         <Form>
           <div className='modalContentText'>
             <div className='cancelConfrimText'>
-              {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the_modal_dialog")} {t("If_you_close_the_modal_dialog,")}  
+              {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the_modal_dialog")} {t("If_you_close_the_modal_dialog,")}
               {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}{' '}
             </div>
           </div>
@@ -78,7 +78,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
           <div className='cancelForm'>
             <div className='buttonContainer'>
               <CRXButton type='submit' className='primeryBtn'>
-              {t("Yes")}, {t("close")}
+                {t("Yes")}, {t("close")}
               </CRXButton>
             </div>
             <div className='buttonContainer'>
@@ -87,7 +87,7 @@ const CancelConfirmForm: React.FC<CancelConfirmFormProps> = (props) => {
                 color='secondary'
                 variant='contained'
                 className='cancelButtonCate secondary'>
-                  {t("No,_do_not_close")}
+                {t("No,_do_not_close")}
               </CRXButton>
             </div>
           </div>

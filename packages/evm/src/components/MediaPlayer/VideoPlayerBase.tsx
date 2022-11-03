@@ -4,11 +4,9 @@ import Timelines from "./Timeline";
 import "./VideoPlayer.scss";
 import { useInterval } from 'usehooks-ts'
 import VolumeControl from "./VolumeControl";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import VideoPlayerNote from "./VideoPlayerNote";
 import VideoPlayerBookmark from "./VideoPlayerBookmark";
-import { FormControlLabel, Switch } from "@material-ui/core";
 import VideoPlayerViewReason from "./VideoPlayerViewReason";
 import VideoPlayerViewRequirement from "./VideoPlayerViewRequirement";
 import { setTimeout } from "timers";
@@ -16,7 +14,7 @@ import TimelineSyncInstructionsModal from "./TimelineSyncInstructionsModal";
 import CRXSplitButton from "./CRXSplitButton";
 import TimelineSyncConfirmationModal from "./TimelineSyncConfirmationModal";
 import { TimelinesSync } from "../../utils/Api/models/EvidenceModels";
-import { EvidenceAgent } from "../../utils/Api/ApiAgent";
+import { EvidenceAgent, SetupConfigurationAgent } from "../../utils/Api/ApiAgent";
 import VideoPlayerSeekbar from "./VideoPlayerSeekbar";
 import VideoPlayerOverlayMenu from "./VideoPlayerOverlayMenu";
 import VideoPlayerSettingMenu from "./VideoPlayerSettingMenu";
@@ -52,6 +50,7 @@ type Timeline = {
   indexNumberToDisplay: number,
   camera: string,
   timeOffset: number,
+  assetbuffering: any
 }
 
 type TimelineSyncHistory = {
@@ -168,6 +167,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
     let timeOffset = data[x].recording.timeOffset ?? 0;
+    let assetbuffering = data[x].assetbuffering;
     let recording_start_time = new Date(data[x].recording.started).getTime() + timeOffset;
     let recording_start_point = (recording_start_time - minstartpoint) / 1000;
     let recording_Start_point_ratio = ((recording_start_point / duration) * 100)
@@ -199,7 +199,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
           enableDisplay: temptimelinedetail.enableDisplay,
           indexNumberToDisplay: temptimelinedetail.indexNumberToDisplay,
           camera: temptimelinedetail.camera,
-          timeOffset: temptimelinedetail.timeOffset
+          timeOffset: temptimelinedetail.timeOffset,
+          assetbuffering: temptimelinedetail.assetbuffering
         }
         rowdetail.push(myData);
       }
@@ -224,7 +225,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         enableDisplay: x == 0 ? true : false,
         indexNumberToDisplay: x == 0 ? 1 : 0,
         camera: data[x].camera,
-        timeOffset: timeOffset
+        timeOffset: timeOffset,
+        assetbuffering: assetbuffering
       }
       bufferingArr.push({ id: myData.id, buffering: false })
       rowdetail.push(myData);
@@ -398,7 +400,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [viewNumber, setViewNumber] = useState(1);
-  const [mapEnabled, setMapEnabled] = useState<boolean>(false);
+  const [mapEnabled, setMapEnabled] = useState<boolean>(true);
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
   const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
@@ -442,10 +444,9 @@ const VideoPlayerBase = (props: any) => {
   const toasterMsgRef = React.useRef<typeof CRXToaster>(null);
 
 
-  const [controllerBar, setControllerBar] = useState(true);
 
   const [styleScreen, setStyleScreen] = useState(false);
-
+  const [controllerBar, setControllerBar] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [speed, setSpeed] = useState<number>(1000); 
@@ -478,6 +479,7 @@ const VideoPlayerBase = (props: any) => {
   const [updatedSensorsDataOverlay, setUpdatedSensorsDataOverlay] = React.useState<any>();
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
+  const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
   const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(true);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
@@ -501,12 +503,14 @@ const VideoPlayerBase = (props: any) => {
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const [notesEnabled, setnotesEnabled] = useState(false);
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
+  const addingSnapshot = useRef(false);
+ const [showControlConatiner , setShowControlConatiner] = useState(false);
 
   const keydownListener = (event: any) => {
-    const { code, shiftKey } = event;
+    const { code, shiftKey, altKey } = event;
     if(!(openBookmarkForm || openNoteForm || reasonForViewing))
     {
-      if (code == "Space") {event.preventDefault(); handlePlayPause()} //Space bar
+      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //Space bar
       if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
       if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
       if (shiftKey && code == "Period") {
@@ -519,18 +523,30 @@ const VideoPlayerBase = (props: any) => {
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
       if (code == "ArrowDown") {
         event.preventDefault(); 
-        setVolume(volume - 1);
-        setVolumeHandle(volume - 1);
+        if(volume > 0)
+        {
+          setVolume(volume - 10);
+          setVolumeHandle(volume - 10);
+        }
+        else{
+          setVolumeHandle(volume);
+        }
       } //down arrows
       if (code == "ArrowUp") {
         event.preventDefault(); 
-        setVolume(volume + 1);
-        setVolumeHandle(volume + 1);
+        if(volume < 100)
+        {
+          setVolume(volume + 10);
+          setVolumeHandle(volume + 10);
+        }
+        else{
+          setVolumeHandle(volume);
+        }
       } //up arrows
-      if (code == "KeyN") {event.preventDefault(); handleaction("note")} // N
-      if (code == "KeyB") {event.preventDefault(); handleaction("bookmark")} // B
-      if (code == "KeyF") {event.preventDefault(); viewScreenEnter()} // B
-      if (code == "KeyL") {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+      if (code == "KeyN" && shiftKey && altKey) {event.preventDefault(); handleaction("note")} // N
+      if (code == "KeyB" && shiftKey && altKey) {event.preventDefault(); handleaction("bookmark")} // B
+      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // B
+      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // B
     }
 
   };
@@ -742,10 +758,37 @@ const VideoPlayerBase = (props: any) => {
   }, [bookmarkNotePopupArrObj]);
 
   React.useEffect(() => { // work Asset View Reason
-    if(CheckAssetViewReason()){
+    if(assetViewReasonRequiredGet && CheckAssetViewReason()){
       setViewReasonControlsDisabled(false);
       setViewReasonRequired(false);
     }
+  }, [assetViewReasonRequiredGet]);
+
+  React.useEffect(() => {
+      SetupConfigurationAgent.getTenantSetting()
+          .then((response : any) =>
+          {
+              response["settingEntries"].forEach(
+                (categories: any, index: number) => {
+                  let settingEntries = Object.entries(categories[index + 1]).map(
+                    (e: any) => ({ key: e[0], value: e[1] })
+                  );
+                  let obj = settingEntries.find(x => x.key === "AssetViewReasonRequired");
+                  if(obj && obj.value == "true"){
+                    setAssetViewReasonRequiredGet(true);
+                  }
+                  else if(obj){
+                    setViewReasonControlsDisabled(false);
+                    setViewReasonRequired(false);
+                  }
+                }
+              );
+          })
+          .catch((error: any) => {
+            setViewReasonControlsDisabled(false);
+            setViewReasonRequired(false);
+            console.error(error.response.data);
+          });
   }, []);
 
   const getFps = (videoHandle: any) => {
@@ -1808,7 +1851,7 @@ const VideoPlayerBase = (props: any) => {
     window.addEventListener('resize', videoPlayerResponsiveRightButton)
     window.addEventListener('load', videoPlayerResponsiveRightButton)
 
-    if(minWidth && minWidth <= 1024) {
+    if(minWidth && minWidth <= 930) {
       setIsShowPanel(true)
     }
   },[minWidth, isShowPanel])
@@ -1867,7 +1910,7 @@ const VideoPlayerBase = (props: any) => {
      
     }else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "-21px";
+      MainLayoutElement.style.top = "-74px";
     }
   }
 
@@ -1934,10 +1977,38 @@ const VideoPlayerBase = (props: any) => {
     },300)
     
   },[isAudioGraph])
+
+
+  const fullViewScreenOn = () => {
+    setShowControlConatiner(true);
+  }
+
+  setTimeout(()=>{
+    setShowControlConatiner(false);
+    
+  },3000)
+ 
+
+useEffect(() => {
+    let ViewScreenMenuLayout = document?.querySelector(".ViewScreenMenu");
+    let SettingBackMenuLayout = document?.querySelector(".SettingBackMenu");   
+    let PlayerRightLayout = document?.getElementById("crx_video_player");
+    if(ViewScreenMenuLayout ) {
+      PlayerRightLayout?.appendChild(ViewScreenMenuLayout);
+    }
+    if(SettingBackMenuLayout) {
+      PlayerRightLayout?.appendChild(SettingBackMenuLayout);
+    }
+    
+  },[multiTimelineEnabled,settingMenuEnabled,overlayEnabled])
+
+  const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
+  const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
+
   return (
     
-      <div className="_video_player_layout_main" onKeyDown={keydownListener}>
-      
+      <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
+      <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}    >
 
       <div className="searchComponents">
         <div className="_video_player_container" id="_asset_detail_view_idx">
@@ -1962,11 +2033,11 @@ const VideoPlayerBase = (props: any) => {
 
       <div className="searchComponents">
         <div className="_video_player_container">
-        <div id="crx_video_player" className={( multiTimelineEnabled  && `_Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
+        <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
          
           <CRXToaster ref={toasterMsgRef} />
-          <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
-            <div id="screens">
+          
+            <div id="screens" onMouseMove={fullViewScreenOn}>
               <VideoPlayerOverlayMenu
                 overlayEnabled={overlayEnabled}
                 overlayCheckedItems={overlayCheckedItems}
@@ -2022,59 +2093,40 @@ const VideoPlayerBase = (props: any) => {
                 </div>
               </div>
             </div>
-            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-              {/* TIME LINES BAR HERE */}
-              {loading ? (
-                <Timelines
-                  timelinedetail={timelinedetail}
-                  visibleThumbnail={visibleThumbnail}
-                  setVisibleThumbnail={setVisibleThumbnail}
-                  isMultiViewEnable={isMultiViewEnable}
-                  displayThumbnail={displayThumbnail}
-                  onClickBookmarkNote={onClickBookmarkNote}
-                  openThumbnail={openThumbnail}
-                  mouseovertype={mouseovertype}
-                  timelinedetail1={timelinedetail1}
-                  mouseOverBookmark={mouseOverBookmark}
-                  mouseOverNote={mouseOverNote}
-                  mouseOut={mouseOut}
-                  Event={Event}
-                  getbookmarklocation={getbookmarklocation}
-                  AdjustTimeline={AdjustTimeline}
-                  startTimelineSync={startTimelineSync}
-                  multiTimelineEnabled={multiTimelineEnabled}
-                  notesEnabled={notesEnabled}
-                />
-              ) : (<></>)}
-
-            </div>
+            
             <div>
             </div>
-            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
-              <div className="player_controls_inner">
+         
+            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}    onMouseMove={fullViewScreenOn}    >
+             <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
+             <div className={`player_controls_inner `}>
                 <div className="main-control-bar">
                   <div id="SliderBookmarkNote" style={{ position: "relative" }}>
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
                       return (
                         <>
-                          {x.enableDisplay &&
-                            <>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_start_point * 1000, x.recording_start_point) }}>
-                                <span className="pip_icon" aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
-                                </span>
-                              </div>
-                              <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(x.recording_end_point * 1000, x.recording_start_point) }}>
-                                <span className="pip_icon" aria-hidden="true"
-                                  onMouseOut={() =>
-                                    mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
-                                </span>
-                              </div>
-                            </>
-                          }
                           {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
-                            if (multiTimelineEnabled ? y.madeBy == "User" : true) {
+                            if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording started")) {
+                              return (
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
+                                  <span className="pip_icon" aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverRecordingStart(e, x.recording_start_point, x)} >
+                                  </span>
+                                </div>
+                              )
+                            }
+                            else if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording stopped")) {
+                              return (
+                                <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_end_point * 1000) - x.assetbuffering?.post), x.recording_start_point) }}>
+                                  <span className="pip_icon" aria-hidden="true"
+                                    onMouseOut={() =>
+                                      mouseOut()} onMouseOver={(e: any) => mouseOverRecordingEnd(e, x.recording_start_point, x)} >
+                                  </span>
+                                </div>
+                              )
+                            }
+                            else if (multiTimelineEnabled ? y.madeBy == "User" : true) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
                                   <span className="pip_icon" style={{ backgroundColor: "#D74B00" }} aria-hidden="true"
@@ -2244,6 +2296,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       /></div>
                     <VideoPlayerSettingMenu
+                      fullScreenControl={viewControlEnabler}
                       singleVideoLoad={singleVideoLoad}
                       multiTimelineEnabled={multiTimelineEnabled}
                       setMultiTimelineEnabled={setMultiTimelineEnabled}
@@ -2288,7 +2341,7 @@ const VideoPlayerBase = (props: any) => {
                     </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"}`}
+                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}`}
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
@@ -2391,11 +2444,53 @@ const VideoPlayerBase = (props: any) => {
 
                 </div>
               </div>
+             </div>
             </div>
-            {/* {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
-            {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-            {!startTimelineSync && <CRXButton className="assetTimelineSync" color="primary" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} variant="contained">Sync timeline start</CRXButton>} */}
-          </FullScreen>
+                     
+            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+              {/* TIME LINES BAR HERE */}
+              {loading ? (
+                <Timelines
+                  timelinedetail={timelinedetail}
+                  visibleThumbnail={visibleThumbnail}
+                  setVisibleThumbnail={setVisibleThumbnail}
+                  isMultiViewEnable={isMultiViewEnable}
+                  displayThumbnail={displayThumbnail}
+                  onClickBookmarkNote={onClickBookmarkNote}
+                  openThumbnail={openThumbnail}
+                  mouseovertype={mouseovertype}
+                  timelinedetail1={timelinedetail1}
+                  mouseOverBookmark={mouseOverBookmark}
+                  mouseOverNote={mouseOverNote}
+                  mouseOut={mouseOut}
+                  Event={Event}
+                  getbookmarklocation={getbookmarklocation}
+                  AdjustTimeline={AdjustTimeline}
+                  startTimelineSync={startTimelineSync}
+                  multiTimelineEnabled={multiTimelineEnabled}
+                  notesEnabled={notesEnabled}
+                />
+              ) : (<></>)}
+
+              {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
+              {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
+              {multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i>Sync timeline start</button>}
+            </div>
+             
+            {multiTimelineEnabled == false ? 
+            <div className="_bottom_arrow_seeMore">
+              {detailContent == false ?
+                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                    </button>
+                    :
+                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                    </button>
+                  }
+              </div>
+            : ""}
+          
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}
             seteditBookmarkForm={seteditBookmarkForm}
@@ -2409,6 +2504,7 @@ const VideoPlayerBase = (props: any) => {
             bookmarkAssetId={bookmarkAssetId}
             toasterMsgRef={toasterMsgRef}
             timelinedetail={timelinedetail}
+            addingSnapshot={addingSnapshot}
           />}
           {openNoteForm && <VideoPlayerNote
             setopenNoteForm={setopenNoteForm}
@@ -2451,20 +2547,11 @@ const VideoPlayerBase = (props: any) => {
         
         </div>{/** Video player container close div */}
       </div>
-      <div className="_bottom_arrow_seeMore">
-        {detailContent == false ?
-              <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-              </button>
-              :
-              <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-              </button>
-            }
-        </div>
+      
       </div>
       </div>
       </div>
+      </FullScreen>
       </div>
     );
 }

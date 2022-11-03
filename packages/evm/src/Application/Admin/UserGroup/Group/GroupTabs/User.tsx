@@ -1,10 +1,10 @@
 
 import React, { useEffect } from "react";
-import { CRXDataTable, CRXColumn, CRXGlobalSelectFilter } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsersInfoAsync, getUsersIdsAsync } from "../../../../../Redux/UserReducer";
+import { getUsersInfoAsync, getUsersIdsAsync, getAllUserGroupKeyValuesAsync } from "../../../../../Redux/UserReducer";
 import { RootState } from "../../../../../Redux/rootReducer";
 import {
     SearchObject,
@@ -20,27 +20,27 @@ import {
     onSaveHeadCellData,
     onSetHeadCellVisibility,
     onMultiToMultiCompare,
+    GridFilter,
     PageiGrid
 } from "../../../../../GlobalFunctions/globalDataTableFunctions";
 import TextSearch from "../../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import multitextDisplay from "../../../../../GlobalComponents/Display/MultiTextDisplay";
-import MultSelectiDropDown from "../../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 
 type User = {
     id: number;
     userName: string,
     firstName: string,
     lastName: string,
-    groups: string[]
+    userGroups: string[]
 }
 type infoProps = {
     ids: Number[],
     onChangeUserIds: any
 }
 interface renderCheckMultiselect {
-    label?: string,
-    id?: string,
+    value: string,
+    id: string,
 
 }
 
@@ -50,13 +50,14 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const dispatch = useDispatch();
     const users: any = useSelector((state: RootState) => state.userReducer.usersInfo);
     const userIds: any = useSelector((state: RootState) => state.userReducer.userIds);
+    const userGroups : any = useSelector((state: RootState) => state.userReducer.userGroups);
     // const [idValue, setIdValue] = React.useState<Number[]>(ids);
     const [rows, setRows] = React.useState<User[]>([]);
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
     const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
     const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
-    const [reformattedRows, setReformattedRows] = React.useState<User[]>([]);
+    const [reformattedRows, setReformattedRows] = React.useState<any>([]);
     const [open, setOpen] = React.useState<boolean>(false)
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -69,11 +70,13 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         page: page,
         size: rowsPerPage
     })
+    const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         
         dispatch(getUsersInfoAsync(pageiGrid));
         dispatch(getUsersIdsAsync());
+        dispatch(getAllUserGroupKeyValuesAsync());
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);
         onSaveHeadCellData(headCells, "group-userDataTable");
@@ -88,7 +91,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     userName: user.userName,
                     firstName: user.fName,
                     lastName: user.lName,
-                    groups: user.userGroups != null ? user.userGroups.split(',').map((x: string) => {
+                    userGroups: user.userGroups != null ? user.userGroups.split(',').map((x: string) => {
                         return x.trim();
                     }) : []
                 }
@@ -108,7 +111,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
         setSelectedItems(selectedUsers);
         setRows(userRows)
-        setReformattedRows(userRows);
+        //setReformattedRows(userRows);
+        setReformattedRows({...reformattedRows, rows: userRows, userGroups: userGroups});
     }
 
     React.useEffect(() => {
@@ -119,7 +123,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     React.useEffect(() => { 
         if(userIds.data && userIds.data.length > 0)
             setData()
-    }, [users.data, userIds.data]);
+    }, [users.data, userIds.data, userGroups]);
 
     useEffect(() => {
         if(paging){
@@ -144,79 +148,42 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             <TextSearch headCells={headCells} colIdx={colIdx} onChange={onChange} />
         );
     };
-    function findUniqueValue(value: any, index: any, self: any) {
-        return self.indexOf(value) === index;
-    }
-    const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:User[]) => {
 
-        if(colIdx === 4) {
-            
-        let groupNames: any = [];
+    const multiSelectCheckbox = (rowParam: User[],headCells: HeadCellProps[], colIdx: number, initialRows:any) => {
 
-        if(initialRows.length > 0) {
-            initialRows.map((x: User) => {
-                groupNames.push(...x.groups);
-            });
-        }
+        if(colIdx === 4 && initialRows && initialRows.userGroups && initialRows.userGroups.length > 0) {   
 
-        groupNames = groupNames.filter(findUniqueValue);
-        let groups: any = [{ label: t("No_Groups")}];
-        groupNames.map((x: string) => { groups.push({ label: x}) })
+            let status: any = [{id: 0, value: t("No_Groups") }];
+                initialRows.userGroups.map((x: any) => {
+                status.push({id : x.id, value: x.name });
+                });
         
-        const settingValues = (headCell: HeadCellProps) => {
-            let val: any = []
-            if(headCell.headerArray !== undefined) 
-                val = headCell.headerArray.filter(v => v.value !== "").map(x => x.value)
-            else 
-                val = []
-            return val
-        }
-    
-        return (
-            <div>
-                
-                <CRXGlobalSelectFilter
-                    id="multiSelect"
-                    multiple={true}
-                    value={settingValues(headCells[colIdx])}
-                    onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-                    options={groups}
-                    CheckBox={true}
-                    checkSign={false}
-                    open={open}
-                    theme="dark"
-                    clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => deleteSelectedItems(e, options)}
-                    getOptionLabel={(option: renderCheckMultiselect) => option.label ? option.label : " "}
-                    getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.label === label.label}
-                    onOpen={(e: React.SyntheticEvent) => { return openHandler(e) }}
-                    noOptionsText={t("No_Groups")}
+            return (
+                <CBXMultiSelectForDatatable 
+                    width = {430} 
+                    option={status} 
+                    value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+                    onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+                    onSelectedClear = {() => onSelectedClear()}
+                    isCheckBox={true}
+                    isduplicate={true}
                 />
-            </div>
-        )
+            );
         }
 
     }
 
-    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
-        let value: any[] = val.map((x) => {
-            let item = {
-                value: x.label
-            }
-            return item
-        })
-        onSelection(value, colIdx)
-        headCells[colIdx].headerArray = value;
-    }
-    const deleteSelectedItems = (e: React.SyntheticEvent, options: renderCheckMultiselect[]) => {
+    const onSelectedClear = () => {
         setSearchData([]);
         let headCellReset = onClearAll(headCells);
         setHeadCells(headCellReset);
+      }
+
+    const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+        onSelection(val, colIdx)
+        headCells[colIdx].headerArray = val;
     }
-    const openHandler = (_: React.SyntheticEvent) => {
-        
-        //setOpen(true)
-    }
-    //
+
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
         {
             label: t("ID"),
@@ -242,6 +209,9 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             minWidth: "230",
             maxWidth: "360",
             visible: true,
+            attributeName: "UserName",
+            attributeType: "String",
+            attributeOperator: "contains"
         },
         {
             label: t("First_Name"),
@@ -254,6 +224,9 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             minWidth: "180",
             maxWidth: "381",
             visible: true,
+            attributeName: "FName",
+            attributeType: "String",
+            attributeOperator: "contains"
         },
         {
             label: t("Last_Name"),
@@ -266,18 +239,24 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             minWidth: "180",
             maxWidth: "381",
             visible: true,
+            attributeName: "LName",
+            attributeType: "String",
+            attributeOperator: "contains"
         },
         {
             label: t("Groups"),
-            id: "groups",
+            id: "userGroups",
             align: "left",
             dataComponent: (e: string[]) => multitextDisplay(e, "data_table_fixedWidth_wrapText"),
             sort: true,
             searchFilter: true,
-            searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:User[]) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+            searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:any) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
             minWidth: "200",
             maxWidth: "400",
             visible: true,
+            attributeName: "UserGroups",
+            attributeType: "List",
+            attributeOperator: "contains"
         },
     ]);
 
@@ -300,22 +279,23 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     };
 
     useEffect(() => {
-        if(searchData.length > 0)
-            dataArrayBuilder();
-    }, [searchData]);
+        //dataArrayBuilder();
+        console.log("searchData", searchData)
+        setIsSearchable(true)
+      }, [searchData]);
 
     const dataArrayBuilder = () => {
         if (reformattedRows !== undefined) {
-            let dataRows: User[] = reformattedRows;
+            let dataRows: User[] = reformattedRows.rows;
             searchData.forEach((el: SearchObject) => {
                 if (el.columnName === "userName" || el.columnName === "firstName" || el.columnName === "lastName" || el.columnName === "email" || el.columnName === "status")
                     dataRows = onTextCompare(dataRows, headCells, el);
                 if (el.columnName === "lastLogin")
                     dataRows = onDateCompare(dataRows, headCells, el);
-                if (el.columnName === "groups") {
+                if (el.columnName === "userGroups") {
                     dataRows = onMultiToMultiCompare(dataRows, headCells, el);
                     if(el.value.includes("No Groups")) {
-                        reformattedRows.filter(i => i.groups.length === 0).map((x:User) => {
+                        reformattedRows.rows.filter((i:any) => i.userGroups.length === 0).map((x:User) => {
                             dataRows.push(x)
                         })
                         
@@ -336,6 +316,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         const clearButton:any = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0]
         clearButton && clearButton.click()
         setOpen(false)
+        pageiGrid.gridFilter.filters = []
+        dispatch(getUsersInfoAsync(pageiGrid));
         setSearchData([]);
         let headCellReset = onClearAll(headCells);
         setHeadCells(headCellReset);
@@ -346,51 +328,90 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         setHeadCells(headCellsArray);
     };
 
+    const getFilteredUserData = () => {
+
+        if(isSearchable) {
+            pageiGrid.gridFilter.filters = []
+        
+            searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+                let x: GridFilter = {
+                operator: headCells[item.colIdx].attributeOperator,
+                //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+                field: headCells[item.colIdx].attributeName,
+                value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+                fieldType: headCells[item.colIdx].attributeType,
+                }
+                pageiGrid.gridFilter.filters?.push(x)
+                pageiGrid.page = 0
+                pageiGrid.size = rowsPerPage
+            })
+        
+            if(page !== 0)
+                setPage(0)
+            else
+                dispatch(getUsersInfoAsync(pageiGrid));
+          
+            setIsSearchable(false)
+        }
+    }
+
     useEffect(() => {
         setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
         setPaging(true)
     
     },[page, rowsPerPage])
 
+    const handleKeyDown = (event:any) => {
+        if (event.key === 'Enter') {
+          getFilteredUserData()
+        }
+    }
+    const handleBlur = () => {
+        getFilteredUserData()
+    }
+
     return (
-        <div className="userDataTableParent ">
+        <div className="userDataTableParent " onKeyDown={handleKeyDown} onBlur={handleBlur}>
             {rows && (
-                <CRXDataTable 
-                    id="group-userDataTable"
-                    actionComponent={() => { }}
-                    getRowOnActionClick={() => { }}
-                    showToolbar={true}
-                    dataRows={rows}
-                    initialRows={reformattedRows}
-                    headCells={headCells}
-                    orderParam={order}
-                    orderByParam={orderBy}
-                    searchHeader={true}
-                    columnVisibilityBar={true}
-                    allowDragableToList={false}
-                    className="ManageAssetDataTable usersGroupDataTable"
-                    onClearAll={clearAll}
-                    getSelectedItems={(v: User[]) => setSelectedItems(v)}
-                    onResizeRow={resizeRowUserTab}
-                    onHeadCellChange={onSetHeadCells}
-                    setSelectedItems={setSelectedItems}
-                    selectedItems={selectedItems}
-                    dragVisibility={false}
-                    showCheckBoxes={true}
-                    showActionCol={false}
-                    showActionSearchHeaderCell={false}
-                    showCountText={false}
-                    showCustomizeIcon={false}
-                    showTotalSelectedText={true}
-                    lightMode={false}
-                    offsetY={44}
-                    page={page}
-                    rowsPerPage={rowsPerPage}
-                    setPage= {(page:any) => setPage(page)}
-                    setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-                    totalRecords={500}
-                />
-            )
+                    <CRXDataTable 
+                        id="group-userDataTable"
+                        actionComponent={() => { }}
+                        toolBarButton={
+                            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+                        }
+                        getRowOnActionClick={() => { }}
+                        showToolbar={true}
+                        dataRows={rows}
+                        initialRows={reformattedRows}
+                        headCells={headCells}
+                        orderParam={order}
+                        orderByParam={orderBy}
+                        searchHeader={true}
+                        columnVisibilityBar={true}
+                        allowDragableToList={false}
+                        className="ManageAssetDataTable usersGroupDataTable"
+                        onClearAll={clearAll}
+                        getSelectedItems={(v: User[]) => setSelectedItems(v)}
+                        onResizeRow={resizeRowUserTab}
+                        onHeadCellChange={onSetHeadCells}
+                        setSelectedItems={setSelectedItems}
+                        selectedItems={selectedItems}
+                        dragVisibility={false}
+                        showCheckBoxes={true}
+                        showActionCol={false}
+                        showActionSearchHeaderCell={false}
+                        showCountText={false}
+                        showCustomizeIcon={false}
+                        showTotalSelectedText={true}
+                        lightMode={false}
+                        offsetY={44}
+                        page={page}
+                        rowsPerPage={rowsPerPage}
+                        setPage= {(page:any) => setPage(page)}
+                        setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                        totalRecords={users.totalCount}
+                    />
+                )   
             }
         </div>
     )

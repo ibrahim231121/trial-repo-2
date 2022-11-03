@@ -9,22 +9,26 @@ import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { EvdenceCategoryAssignment } from '../../../../utils/Api/models/EvidenceModels';
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-import { CategoryFormProps, SubmitType } from './Model/CategoryFormModel';
+import { CategoryFormProps, FormInitialValues, SubmitType } from './Model/CategoryFormModel';
 import { SearchType } from '../../utils/constants';
+import { FieldTypes } from './Model/FieldTypes';
+import { SetupConfigurationsModel } from '../../../../utils/Api/models/SetupConfigurations';
+import * as Yup from "yup";
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [filteredFormArray, setFilteredFormArray] = React.useState<any[]>([]);
+  const [formCollection, setFormCollection] = React.useState<any[]>([]);
   const [success, setSuccess] = React.useState<boolean>(false);
   const [alert, setAlert] = React.useState<boolean>(false);
   const [error, setError] = React.useState<boolean>(false);
   const [saveBtn, setSaveBtn] = React.useState(true);
-  const [formFields, setFormFields] = React.useState<any>([]);
-  const [InitialValuesObject, setInitialValuesObject] = React.useState<any>({});
-  const evidenceResponse = props.evidenceResponse;
-  const evidenceId = evidenceResponse?.id;
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category);
+  const [formFields, setFormFields] = React.useState<any[]>([]);
+  const [initialValuesObject, setInitialValuesObject] = React.useState<any>({});
+  const [validationSchema, setValidationSchema] = React.useState<any>({});
+  const evidence = props.evidence;
+  const evidenceId = evidence?.id;
+  const categoryOptions = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
 
@@ -38,13 +42,13 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    const allCategories = props.filterValue;
-    const categoriesFormArr: any[] = [];
+    const selectedCategories = props.selectedCategoryValues;
+    const categoriesFormCollection: Array<any> = [];
     // Check how many categories are added recently,
-    const previousAttachedCategories = evidenceResponse?.categories;
-    const newSelectedCategories = allCategories.filter((x: any) => {
-      if (previousAttachedCategories.length > 0)
-        return !previousAttachedCategories.some((o: any) => o.name == x.label);
+    const previousAttachedCategories = evidence?.categories;
+    const newSelectedCategories = selectedCategories.filter((x) => {
+      if (previousAttachedCategories && previousAttachedCategories.length > 0)
+        return !previousAttachedCategories.some((o) => o.name == x.label);
       else
         return x;
     });
@@ -64,50 +68,42 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             type: 'add'
           };
         });
-      categoriesFormArr.push(...recentlyAddedCategory);
+      categoriesFormCollection.push(...recentlyAddedCategory);
     }
 
     // It means category was attacehd from the backend
-    if (previousAttachedCategories.length > 0) {
+    if (previousAttachedCategories && previousAttachedCategories.length > 0) {
       props.setModalTitle(t('Edit_category'));
-      let changingResponse = evidenceResponse.categories.map((o: any) => {
+      let changingResponse = evidence.categories.map((o) => {
         return {
           id: o.id,
-          name: o.record.record.find((x: any) => x.key === 'Name').value,
+          name: o.record?.record.find((x) => x.key === 'Name')?.value,
           form: o.formData,
           type: 'update'
         };
       });
-      categoriesFormArr.push(...changingResponse);
-      setFilteredFormArray(categoriesFormArr);
-
+      categoriesFormCollection.push(...changingResponse);
+      setFormCollection(categoriesFormCollection);
     } else {
-      setFilteredFormArray(categoriesFormArr);
+      setFormCollection(categoriesFormCollection);
     }
-  }, [props.filterValue, props.isCategoryEmpty]);
+  }, [props.selectedCategoryValues, props.isCategoryEmpty]);
 
   React.useEffect(() => {
-    let Initial_Values: Array<any> = [];
-    if (filteredFormArray.length > 0) {
-      for (const categoryObj of filteredFormArray) {
+    let Initial_Values: Array<FormInitialValues> = [];
+    if (formCollection.length > 0) {
+      for (const categoryObj of formCollection) {
         for (const form of categoryObj.form) {
           for (const field of form.fields) {
-            if (field.hasOwnProperty('key')) {
-              Initial_Values.push({
-                key: field.value,
-                value: field.value
-              });
-            } else {
-              Initial_Values.push({
-                key: field.name,
-                value: ''
-              });
-            }
+            Initial_Values.push({
+              key: field.key === undefined ? field.name : field.key,
+              value: field.value === undefined ? '' : field.value,
+              fieldType: field.type === undefined ? field.dataType as FieldTypes : field.type as FieldTypes
+            });
           }
         }
       }
-
-      let key_value_pair = Initial_Values.reduce((obj, item) => ((obj[item.key] = item.value), obj), {});
+      let key_value_pair = Initial_Values.reduce((obj: any, item) => ((obj[item.key] = item.value), obj), {});
       setInitialValuesObject(key_value_pair);
       const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
         return {
@@ -116,8 +112,9 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         };
       });
       setFormFields(initial_values_of_fields);
+      applyValidation(Initial_Values);
     }
-  }, [filteredFormArray]);
+  }, [formCollection]);
 
   React.useEffect(() => {
     if (formFields.length > 0) {
@@ -142,11 +139,15 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   }, [alert]);
 
   const setFieldsFunction = (e: any) => {
-    const { target } = e;
-    let newArray = formFields.filter((o: any) => {
-      return o.key !== target.name;
+    const { name, value } = e;
+    setInitialValuesObject((args: any) => {
+      args[name] = value;
+      return args;
     });
-    setFormFields(() => [...newArray, { key: target.name, value: target.value }]);
+    let excludedKeyValue = formFields.filter((o: any) => {
+      return o.key !== name;
+    });
+    setFormFields(() => [...excludedKeyValue, { key: name, value: value }]);
     props.setIsformUpdated(true);
   };
 
@@ -162,7 +163,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const submitForm = (submitType: SubmitType) => {
     //create object to pass in patch request.
     const categoryBodyArr: any[] = [];
-    for (const obj of filteredFormArray) {
+    for (const obj of formCollection) {
       const categoryId = obj.id;
       const categoryFormDataArr: any[] = [];
       if (submitType === SubmitType.WithForm) {
@@ -171,14 +172,16 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           for (const field of form.fields) {
             let value: any;
             if (field.hasOwnProperty('key')) {
-              value = formFields.filter((x: any) => x.key == field.value).map((i: any) => i.value)[0];
+              value = formFields.filter((x: any) => x.key == field.key).map((i: any) => i.value)[0];
             } else {
               value = formFields.filter((x: any) => x.key == field.name).map((i: any) => i.value)[0];
             }
+
             const _field = {
               key: field.key === undefined ? field.name : field.key,
               value: value,
-              dataType: field.dataType === undefined ? 'FieldTextBoxType' : field.dataType
+              dataType: field.type === undefined ? field.dataType : field.type,
+              defaultFieldValue: field.defaultFieldValue
             };
             fieldsArray.push(_field);
           }
@@ -231,6 +234,42 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     }
   }
 
+  const applyValidation = (arg: Array<FormInitialValues>): void => {
+    const Initial_Values_Validation_Schema = [];
+    for (const field of arg) {
+      let validationObject: any;
+      if (field.fieldType === FieldTypes.FieldTextBoxType || field.fieldType === FieldTypes.FieldTextAreaType) {
+        validationObject = Yup.string().max(1024, t("Maximum_lenght_is_1024")).required(t("required"));
+      }
+      else if (field.fieldType === FieldTypes.FieldDropDownListType) {
+        validationObject = Yup.string().required(t("required"))
+      }
+      else if (field.fieldType === FieldTypes.FieldCheckedBoxType) {
+
+      }
+
+      else if (field.fieldType === FieldTypes.FieldCheckedBoxListType) {
+
+      }
+      else if (field.fieldType === FieldTypes.FieldRadioButtonListType) {
+
+      }
+      else if (field.fieldType === FieldTypes.CaseNO) {
+
+      }
+      else if (field.fieldType === FieldTypes.PolygraphLogNumber) {
+
+      }
+      else if (field.fieldType === FieldTypes.CADID) {
+
+      }
+
+      Initial_Values_Validation_Schema.push({ key: field.key, value: validationObject });
+    }
+    const reducedFormSchema = Initial_Values_Validation_Schema.reduce((obj, item: any) => ({ ...obj, [item.key]: item.value }), {});
+    setValidationSchema(reducedFormSchema);
+  }
+
   return (
     <>
       {success && <CRXAlert message={t("You_have_saved_the_asset_categorization")} alertType='toast' open={true} />}
@@ -246,19 +285,16 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       <div className={'indicatestext indicateLessPadding ' + isErrorClx}>
         <b>*</b> {t('Indicates_required_field')}
       </div>
-      {filteredFormArray.length > 0 && (
-        filteredFormArray.some((o: any) => o.form.length > 0) ? (
+      {formCollection.length > 0 && (
+        formCollection.some((o: any) => o.form.length > 0) ? (
           // If form exist against selected category
           <>
-            {filteredFormArray.map((categoryObj: any) => (
-              <DisplayCategoryForm
-                key={categoryObj.id}
-                categoryObject={categoryObj}
-                isCategoryEmpty={props.isCategoryEmpty}
-                initialValueObjects={InitialValuesObject}
-                setFieldsFunction={(e: any) => setFieldsFunction(e)}
-              />
-            ))}
+            <DisplayCategoryForm
+              formCollection={formCollection}
+              initialValueObjects={initialValuesObject}
+              validationSchema={validationSchema}
+              setFieldsFunction={(e: any) => setFieldsFunction(e)}
+            />
             <div className='categoryModalFooter CRXFooter'>
               <CRXButton onClick={() => submitForm(SubmitType.WithForm)} disabled={saveBtn} className={saveBtnClass + ' ' + 'editButtonSpace'}>
                 {' '}
@@ -277,15 +313,14 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           <DialogueForm
             key={"dialogue_form"}
             setActiveForm={props.setActiveForm}
-            initialValues={props.filterValue}
-            evidenceResponse={evidenceResponse}
-            formCollection={filteredFormArray}
-            filterValue={props.filterValue}
+            selectedCategoryValues={props.selectedCategoryValues}
+            evidence={evidence}
+            formCollection={formCollection}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: boolean) => props.closeModal(v)}
             setremoveClassName={(v: any) => props.setremoveClassName(v)}
             setModalTitle={(i: string) => props.setModalTitle(i)}
-            setFilterValue={(v: any) => props.setFilterValue(v)}
+            setSelectedCategoryValues={(v) => props.setSelectedCategoryValues(v)}
             setIndicateTxt={(e: any) => props.setIndicateTxt(e)}
           />
         )

@@ -8,7 +8,7 @@ const cookies = new Cookies();
 export const getAssetTrailInfoAsync: any = createAsyncThunk(
     'getAssetTrailInfo',
     async (AssetDetails: any) => {
-        return await EvidenceAgent.getAssetTrail(`/Evidences/${AssetDetails.evidenceId}/Assets/${AssetDetails.assetId}/AssetTrail`).then((response) => response);
+        return await EvidenceAgent.getAssetTrail(`/Evidences/${AssetDetails.evidenceId}/AssetTrail`).then((response) => response);
     }
 );
 

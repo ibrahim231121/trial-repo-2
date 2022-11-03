@@ -13,6 +13,7 @@ import { CRXRows } from "@cb/shared";
 import { Field, Form, Formik } from "formik";
 import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload";
 import Cookies from 'universal-cookie';
+import { TextField } from "@cb/shared";
 declare const window: any;
 
 const cookies = new Cookies();
@@ -769,11 +770,18 @@ const TenantSettings: React.FC = () => {
                           <CRXRows>
                             <div className="CBX-input">
                               <label htmlFor="CustomPassword">Password</label>
-                              <Field
+                              <TextField id="password"
+                            type={passwordVisible ? "text" : "password"}
+                            value={values.CustomPassword}
+                            name="CustomPassword"
+                            onChange={(e: any) => setFieldValue("CustomPassword", e.target.value)}>
+                            
+                          </TextField>
+                              {/* <Field
                                 id="CustomPassword"
                                 type={passwordVisible ? "text" : "password"}
                                 name="CustomPassword"
-                              />
+                              /> */}
                               <CRXButton
                                 onClick={() =>
                                   passwordVisible
@@ -1028,11 +1036,20 @@ const TenantSettings: React.FC = () => {
                       >
                         <div className="CBX-input">
                           <label htmlFor="password">Password</label>
-                          <Field
+                          <TextField id="password"
+                            type="password"
+                            onBlur=""
+                            name="LiveStreamPassword"
+                            value={values.LiveStreamPassword}
+                            onChange={(e: any) => setFieldValue("LiveStreamPassword", e.target.value)}>
+                            
+                          </TextField>
+                          {/* <Field
                             id="password"
                             type="password"
+                            onBlur=""
                             name="LiveStreamPassword"
-                          />
+                          /> */}
                         </div>
                       </CRXRows>
                     </CRXColumn>

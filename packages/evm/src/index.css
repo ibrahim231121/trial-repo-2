@@ -260,10 +260,10 @@ body {
 
 .stickyPos {
   position: sticky !important;
-  top: 127px;
+  top: 125px;
   background: var(--color-White) !important;
   padding-top: 5px;
-  padding-bottom: 0px !important;
+  padding-bottom: 18px !important;
   height: 53px;
   width: 100%;
   left: 7px;
@@ -418,3 +418,25 @@ input:-webkit-autofill {
   font-size: 20px;
   line-height: 38;
 }
+
+
+.selectItems {
+  background: #888787;
+  border: 1px solid #333;
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  
+}
+
+.whitePaper {
+  width: 300px;
+  border:1px solid transparent;
+  background: white;
+  height: 30px;
+}
+
+.demoDiv {
+  margin-top: 20px;
+}
+

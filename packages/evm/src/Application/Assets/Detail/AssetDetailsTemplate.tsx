@@ -60,14 +60,18 @@ import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { CRXCheckBox } from "@cb/shared";
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import ActionMenu from "../AssetLister/ActionMenu";
+import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
+import { urlList, urlNames } from "../../../utils/urlList";
 
 const AssetDetailsTemplate = (props: any) => {
-  
+
   const historyState = props.location.state;
   const history = useHistory();
   let evidenceId: number = historyState.evidenceId;
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
+  const evidenceSearchObject: any = historyState.evidenceSearchObject;
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const detail_view = React.useRef(null);
@@ -156,7 +160,6 @@ const AssetDetailsTemplate = (props: any) => {
   const assetBucketData: AssetBucket[] = useSelector(
     (state: RootState) => state.assetBucket.assetBucketData
   );
-
   const [value, setValue] = React.useState(0);
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
@@ -215,12 +218,12 @@ const AssetDetailsTemplate = (props: any) => {
   );
 
   useEffect(() => {
-    dispatch(setLoaderValue({isLoading: true}))
+    dispatch(setLoaderValue({ isLoading: true }))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
     }).catch(() => {
-      dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+      dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
     });
     const getAssetUrl = "/Evidences/" + evidenceId + "/Assets/" + assetId;
     EvidenceAgent.getAsset(getAssetUrl).then((response: Asset) => setRes(response));
@@ -233,7 +236,7 @@ const AssetDetailsTemplate = (props: any) => {
   }, []);
 
   useEffect(() => {
-    if(gpsFileData && gpsFileData.length>0){
+    if (gpsFileData && gpsFileData.length > 0) {
       const blobSasUrl = gpsFileData[0].downloadUri;
       const containerWithFile = blobSasUrl.substring(blobSasUrl.indexOf('.net') + 5, blobSasUrl.indexOf('?'));
       const sasurl = blobSasUrl.replace(containerWithFile, '')
@@ -249,43 +252,41 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [gpsFileData]);
 
-  const gpsAndOverlayData = async (blobClient : any) => {
+  const gpsAndOverlayData = async (blobClient: any) => {
     const downloadBlockBlobResponse = await blobClient.download();
-    const downloaded : any = await blobToString(await downloadBlockBlobResponse.blobBody);
-    if(downloaded){
+    const downloaded: any = await blobToString(await downloadBlockBlobResponse.blobBody);
+    if (downloaded) {
       let downloadedData = downloaded.replace(/'/g, '"')
       let gpsdata = JSON.parse(downloadedData).GPS;
       let sensorsData = JSON.parse(downloadedData).Sensors;
-      gpsdata.forEach((x:any)=>
-        {
-          x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
-        }
+      gpsdata.forEach((x: any) => {
+        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+      }
       );
-      sensorsData.forEach((x:any)=>
-        {
-          x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
-        }
+      sensorsData.forEach((x: any) => {
+        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+      }
       );
-      let distinctgpsdata = gpsdata.filter((value : any, index: any, self: any) =>
+      let distinctgpsdata = gpsdata.filter((value: any, index: any, self: any) =>
         index === self.findIndex((t: any) => (
-        t.logTime === value.logTime
-      )));
-      let distinctsensorsData = sensorsData.filter((value : any, index: any, self: any) =>
+          t.logTime === value.logTime
+        )));
+      let distinctsensorsData = sensorsData.filter((value: any, index: any, self: any) =>
         index === self.findIndex((t: any) => (
-        t.logTime === value.logTime
-      )));
+          t.logTime === value.logTime
+        )));
 
-      if(gpsdata.length>0){setGpsJson(distinctgpsdata);}
-      if(sensorsData.length>0){setSensorsDataJson(distinctsensorsData)}
-      
+      if (gpsdata.length > 0) { setGpsJson(distinctgpsdata); }
+      if (sensorsData.length > 0) { setSensorsDataJson(distinctsensorsData) }
+
     }
-  
+
     // [Browsers only] A helper method used to convert a browser Blob into string.
     async function blobToString(blob: any) {
       const fileReader = new FileReader();
       return new Promise((resolve, reject) => {
         fileReader.onloadend = (ev) => {
-          if(ev){
+          if (ev) {
             resolve(ev.target?.result);
           }
         };
@@ -296,11 +297,11 @@ const AssetDetailsTemplate = (props: any) => {
   }
 
   const getUnixTimewithZeroinMillisecond = (time: number) => {
-    let firsthalf = time.toString().substring(0,10);
+    let firsthalf = time.toString().substring(0, 10);
     let last3digits = time.toString().substring(10);
-    if(Number(last3digits)>0){
+    if (Number(last3digits) > 0) {
       let Nlast3digits = "000";
-      return Number(firsthalf+Nlast3digits);
+      return Number(firsthalf + Nlast3digits);
     }
     return time;
   }
@@ -321,7 +322,6 @@ const AssetDetailsTemplate = (props: any) => {
     setValue(newValue);
   }
   useEffect(() => {
-
     if (res !== undefined) {
       setEvidence({
         ...evidence,
@@ -354,19 +354,17 @@ const AssetDetailsTemplate = (props: any) => {
   }, [evidenceCategoriesResponse]);
 
   useEffect(() => {
-    if(getAssetData){
+    if (getAssetData) {
       getMasterAssetFile(getAssetData?.assets.master.files)
       getChildAssetFile(getAssetData?.assets.children)
     }
   }, [getAssetData]);
 
   const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
-    if(holdUntil)
-    {
+    if (holdUntil) {
       return AssetRetentionFormat(holdUntil);
     }
-    else if(expireOn)
-    {
+    else if (expireOn) {
       return AssetRetentionFormat(expireOn);
     }
   }
@@ -382,96 +380,101 @@ const AssetDetailsTemplate = (props: any) => {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
   }
 
-function padTo2Digits(num: number) {
-  return num.toString().padStart(2, '0');
-}
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
 
-const milliSecondsToTimeFormat = (date: Date) => {
-  let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
-  let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
-  let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
-  let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
-  let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
-  return numberFormatting + " (" + nameFormatting + ")";
-}
+  const milliSecondsToTimeFormat = (date: Date) => {
+    let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+    return numberFormatting + " (" + nameFormatting + ")";
+  }
 
   useEffect(() => {
-    let masterasset = getAssetData?.assets.master.files.filter((x:any)=> x.type == "Video");
-    if(getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length)
-    { // temp condition
-        dispatch(setLoaderValue({isLoading: false, message: "" }))
-        let categories: any[] = [];
-        getAssetData.categories.forEach((x: any) => {
-          x.formData.forEach((y: any) =>  
-          {
-            let formDatas: any[] = [];
-            y.fields.map((z: any) => {
-              let formData ={
-                key: z.key,
-                value: z.value
-              }
-              formDatas.push(formData);
-            })
-            categories.push({
-              name: y.name,
-              formDatas: formDatas
-            })
+    let masterasset = getAssetData?.assets.master.files.filter((x: any) => x.type == "Video");
+    if (getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
+      dispatch(setLoaderValue({ isLoading: false, message: "" }))
+      let categories: any[] = [];
+      getAssetData.categories.forEach((x: any) => {
+        x.formData.forEach((y: any) => {
+          let formDatas: any[] = [];
+          y.fields.map((z: any) => {
+            let formData = {
+              key: z.key,
+              value: z.value
+            }
+            formDatas.push(formData);
           })
-        });
+          categories.push({
+            name: y.name,
+            formDatas: formDatas
+          })
+        })
+      });
 
-        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
+      var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
-        var unit: number[] = [];
-        unit.push(getAssetData.assets.master.unitId);
+      var unit: number[] = [];
+      unit.push(getAssetData.assets.master.unitId);
 
-        var checksum: number[] = [];
-        getAssetData.assets.master.files.forEach((x: any) => {
-          checksum.push(x.checksum.checksum);
-        });
-
-
-        let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
+      var checksum: number[] = [];
+      getAssetData.assets.master.files.forEach((x: any) => {
+        checksum.push(x.checksum.checksum);
+      });
 
 
-        var categoriesForm: string[] = [];
-        getAssetData.categories.forEach((x: any) => {
-          categoriesForm.push(x.record.cmtFieldName);
-        });
+      let size = getAssetData.assets.master.files.filter(x => x.type == "Video").reduce((a, b) => a + b.size, 0)
 
-        setAssetData({
-          ...assetInfo,
-          owners: owners,
-          unit: unit,
-          capturedDate: moment(getAssetData.createdOn).format(
-            "MM / DD / YY @ HH: mm: ss"
-          ),
-          checksum: checksum,
-          duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
-          size: formatBytes(size, 2),
-          retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
-          categories: categories,
-          categoriesForm: categoriesForm,
-          id: getAssetData?.assets?.master?.id,
-          assetName: getAssetData?.assets?.master?.name,
-          typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
-          status: getAssetData?.assets?.master?.status,
-          camera: getAssetData?.assets?.master?.camera ?? ""
-        });
-        const data = extract(getAssetData);
+
+      var categoriesForm: string[] = [];
+      getAssetData.categories.forEach((x: any) => {
+        categoriesForm.push(x.record.cmtFieldName);
+      });
+
+      setAssetData({
+        ...assetInfo,
+        owners: owners,
+        unit: unit,
+        capturedDate: moment(getAssetData.createdOn).format(
+          "MM / DD / YY @ HH: mm: ss"
+        ),
+        checksum: checksum,
+        duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
+        size: formatBytes(size, 2),
+        retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
+        categories: categories,
+        categoriesForm: categoriesForm,
+        id: getAssetData?.assets?.master?.id,
+        assetName: getAssetData?.assets?.master?.name,
+        typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
+        status: getAssetData?.assets?.master?.status,
+        camera: getAssetData?.assets?.master?.camera ?? ""
+      });
+      const data = extract(getAssetData);
+      if (data[0]?.id != parseInt(assetId)) {
+        let updatedData = data.filter(x => x.id == parseInt(assetId));
+        updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetId))]
+        setVideoPlayerData(updatedData);
+      }
+      else {
         setVideoPlayerData(data);
+      }
     }
-  },[getAssetData, fileData, childFileData]);
+  }, [getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
-      FileAgent.getFile(520001).then((response) => {
-        let uploadCompletedOnFormatted = moment(response.history.uploadCompletedOn).format(
-          "MM / DD / YY @ HH: mm: ss"
-        )
-        setUploadedOn(uploadCompletedOnFormatted)
+      FileAgent.getFile(template.filesId).then((response) => {
+        if (template.type == "Video") {
+          let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
+          setUploadedOn(uploadCompletedOnFormatted)
+        }
       });
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-        if(template.type == "GPS"){
+        if (template.type == "GPS") {
           setGpsFileData([...gpsFileData, {
             filename: template.name,
             fileurl: template.url,
@@ -479,7 +482,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
             downloadUri: response
           }])
         }
-        else if(template.type == "Video"){
+        else if (template.type == "Video") {
           setFileData([...fileData, {
             filename: template.name,
             fileurl: template.url,
@@ -498,11 +501,11 @@ const milliSecondsToTimeFormat = (date: Date) => {
     })
   }
   function getChildAssetFile(dt: any) {
-    let fileDownloadUrls : any = [];  
+    let fileDownloadUrls: any = [];
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          if(template.type == "Video"){
+          if (template.type == "Video") {
             fileDownloadUrls.push({
               filename: template.name,
               fileurl: template.url,
@@ -653,15 +656,25 @@ const milliSecondsToTimeFormat = (date: Date) => {
     const buffering = row.assets.master.buffering;
     const camera = row.assets.master.camera;
     const file = fileData;
-    const recording = row.assets.master.recording;
+    let recording = row.assets.master.recording;
     const bookmarks = row.assets.master.bookMarks ?? [];
     const notes = row.assets.master.notes ?? [];
     const id = row.assets.master.id;
     const unitId = row.assets.master.unitId;
     const typeOfAsset = row.assets.master.typeOfAsset;
+    recording = {
+      ...recording,
+      ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
+      started: new Date(new Date(recording.started).getTime() - buffering?.pre),
+    }
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
     rowdetail.push(myData);
     rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+      template.recording = {
+        ...template.recording,
+        ended: new Date(new Date(template.recording.ended).getTime() + template.buffering.post),
+        started: new Date(new Date(template.recording.started).getTime() - template.buffering.pre),
+      }
       return {
         id: template.id,
         files: childFileData,
@@ -716,7 +729,6 @@ const milliSecondsToTimeFormat = (date: Date) => {
     history.go(0)
   }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
-
     {
       label: `${t("Seq. No")}`,
       id: "seqNo",
@@ -845,34 +857,33 @@ const milliSecondsToTimeFormat = (date: Date) => {
     });
   }
 
-  const assetSelectionHanlder = (e : any) => {
+  const assetSelectionHanlder = (e: any) => {
     setIsChecked(e.target.checked)
     setIsDisabled(!e.target.checked)
   }
 
   useEffect(() => {
-   isChecked && setIsDisabled(false)
-  },[isChecked, isDisabled])
- 
+    isChecked && setIsDisabled(false)
+  }, [isChecked, isDisabled])
+
   const downloadAuditTrail = () => {
-    if(rows && assetInfo){
-      const head =[[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
-      let data:any[] = [];
-      let arrS:any[] = [];
-      rows.forEach((x:any)=>
-        {
-          arrS.push(x.seqNo);
-          arrS.push((new Date(x.performedOn)).toLocaleString());
-          arrS.push(x.userName);
-          arrS.push(x.notes);
-          data.push(arrS);
-          arrS = [];
-        }
+    if (rows && assetInfo) {
+      const head = [[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
+      let data: any[] = [];
+      let arrS: any[] = [];
+      rows.forEach((x: any) => {
+        arrS.push(x.seqNo);
+        arrS.push((new Date(x.performedOn)).toLocaleString());
+        arrS.push(x.userName);
+        arrS.push(x.notes);
+        data.push(arrS);
+        arrS = [];
+      }
       );
 
       let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
       let assetId = assetInfo.id ? assetInfo.id.toString() : "";
-      
+
 
       const doc = new jsPDF()
       doc.setFontSize(11)
@@ -881,68 +892,66 @@ const milliSecondsToTimeFormat = (date: Date) => {
       let yaxis2 = 70;
       let xaxis = 25;
 
-      doc.text(t("CheckSum")+":", yaxis1, xaxis)
+      doc.text(t("CheckSum") + ":", yaxis1, xaxis)
       doc.text(CheckSum, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Asset Id")+":", yaxis1, xaxis)
+      doc.text(t("Asset Id") + ":", yaxis1, xaxis)
       doc.text(assetId, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Asset Type")+":", yaxis1, xaxis)
+      doc.text(t("Asset Type") + ":", yaxis1, xaxis)
       doc.text(assetInfo.typeOfAsset, yaxis2, xaxis)
       xaxis += 5;
-      
-      doc.text(t("Asset Status")+":", yaxis1, xaxis)
+
+      doc.text(t("Asset Status") + ":", yaxis1, xaxis)
       doc.text(assetInfo.status, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Username")+":", yaxis1, xaxis)
+      doc.text(t("Username") + ":", yaxis1, xaxis)
       doc.text(assetInfo.owners.join(", "), yaxis2, xaxis)
       xaxis += 5;
 
       let categoriesString = "";
-      assetInfo.categories.forEach((x:any, index: number)=>
-      {
+      let tempxaxis = 0;
+      assetInfo.categories.forEach((x: any, index: number) => {
         let formData = x.formDatas.map((y: any, index1: number) => {
-          if(index1 > 0)
-          {
-            xaxis += 5
+          if (index1 > 0) {
+            tempxaxis += 5
           }
-          return y.key + ": " + y.value + "\n"; 
+          return y.key + ": " + y.value + "\n";
         })
         categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
-        if(index > 0)
-        {
-          xaxis += 5
+        if (index > 0) {
+          tempxaxis += 5
         }
       }
       )
-      doc.text(t("Categories")+":", yaxis1, xaxis)
+      doc.text(t("Categories") + ":", yaxis1, xaxis)
       doc.text(categoriesString, yaxis2, xaxis)
-      xaxis += 5;
+      xaxis += tempxaxis + 5;
 
-      doc.text(t("Camera Name")+":", yaxis1, xaxis)
+      doc.text(t("Camera Name") + ":", yaxis1, xaxis)
       doc.text(assetInfo.camera, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Captured")+":", yaxis1, xaxis)
+      doc.text(t("Captured") + ":", yaxis1, xaxis)
       doc.text(assetInfo.capturedDate, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Uploaded")+":", yaxis1, xaxis)
+      doc.text(t("Uploaded") + ":", yaxis1, xaxis)
       doc.text(uploadedOn, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Duration")+":", yaxis1, xaxis)
+      doc.text(t("Duration") + ":", yaxis1, xaxis)
       doc.text(assetInfo.duration, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Size")+":", yaxis1, xaxis)
+      doc.text(t("Size") + ":", yaxis1, xaxis)
       doc.text(assetInfo.size, yaxis2, xaxis)
       xaxis += 5;
 
-      doc.text(t("Retention")+":", yaxis1, xaxis)
+      doc.text(t("Retention") + ":", yaxis1, xaxis)
       doc.text(assetInfo?.retention, yaxis2, xaxis)
       xaxis += 5;
 
@@ -950,7 +959,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
         startY: xaxis,
         head: head,
         body: data,
-        didDrawCell: (data : any) => {
+        didDrawCell: (data: any) => {
           console.log(data.column.index)
         },
       })
@@ -958,87 +967,25 @@ const milliSecondsToTimeFormat = (date: Date) => {
     }
   }
 
+  const reformatRowPropDataForActionMenu = (evidenceSearchObject: any): any => {
+    let newObj: any = {};
+    newObj.evidence = evidenceSearchObject;
+    return newObj;
+  }
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
         {/* <div className="asset_date_categories">
-          <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
-          <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
-        </div> */} {/** maria told me the its not showing here its should be come in meta data see panel */}
-        <FormContainer
-          setOpenForm={() => setOpenForm(false)}
-          openForm={openForm}
-          rowData={evidence}
-          isCategoryEmpty={isCategoryEmpty}
-          setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
+              <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
+              <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>
+            </div> */}
+        {/** maria told me the its not showing here its should be come in meta data see panel */}
+        <ActionMenu
+          row={reformatRowPropDataForActionMenu(evidenceSearchObject)}
+          actionMenuPlacement={ActionMenuPlacement.AssetDetail}
         />
-        
-        <Menu
-          align="start"
-          viewScroll="initial"
-          direction="bottom"
-          position="auto"
-          arrow
-          menuButton={
-            <MenuButton>
-              <i className="fas fa-ellipsis-h"></i>
-            </MenuButton>
-          }
-        >
-          <MenuItem>
-            <Restricted moduleId={0}>
-              <div
-                className="crx-meu-content groupingMenu crx-spac"
-                onClick={addToAssetBucket}
-              >
-                <div className="crx-menu-icon"></div>
-                <div
-                  className={
-                    addToAssetBucketDisabled === false
-                      ? "crx-menu-list"
-                      : "crx-menu-list disabledItem"
-                  }
-                >
-                  {t("Add_to_asset_bucket")}
-                </div>
-              </div>
-            </Restricted>
-          </MenuItem>
-          {isCategoryEmpty === false ? (
-            <MenuItem>
-              <Restricted moduleId={3}>
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-clipboard-list fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Edit_Category_and_Form")}</div>
-                </div>
-              </Restricted>
-            </MenuItem>
-          ) : (
-            <MenuItem>
-              <Restricted moduleId={2}>
-                <div className="crx-meu-content" onClick={handleChange}>
-                  <div className="crx-menu-icon">
-                    <i className="far fa-clipboard-list fa-md"></i>
-                  </div>
-                  <div className="crx-menu-list">{t("Categorize")}</div>
-                </div>
-              </Restricted>
-            </MenuItem>
-          )}
-          <MenuItem>
-            <Restricted moduleId={0}>
-              <div className="crx-meu-content crx-spac" onClick={RestrictAccessClickHandler}>
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-lock fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("Restrict_access")}</div>
-              </div>
-            </Restricted>
-          </MenuItem>
-        </Menu>
-        <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
+
+        <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assets)[0].url}`}/>
       </div>
       {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
       {error && (
@@ -1049,311 +996,299 @@ const milliSecondsToTimeFormat = (date: Date) => {
           open={true}
         />
       )}
-
-      <RestrictAccessDialogue
-        openOrCloseModal={openRestrictAccessDialogue}
-        setOpenOrCloseModal={(e) => setOpenRestrictAccessDialogue(e)}
-        onConfirmBtnHandler={confirmCallBackForRestrictModal}
-        isError={assetLockUnLockError.isError}
-        errorMessage={assetLockUnLockError.errorMessage}
-      />
-
-      
-      
-          {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />}
-          {/* </div> */}
-          {detailContent && <div className="topBorderForDetail"></div>}
-
-       
-          <div className="asset_detail_tabs" id="detail_view" ref={detail_view}>
-          
-            <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
-            
-            <div className="list_data_main">
-              <CrxTabPanel value={value} index={0}>
-              
-           
-              <div className="list_data">
-                <Grid container spacing={0}>
-                    <Grid item xs={4} className="list_para" >
-                        <div className="asset_MDI_label">{t("CheckSum")}</div>
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data boldText">{assetInfo.checksum}</div>
-                        <p style={{color: "red", cursor: "pointer"}} onClick={() => {navigator.clipboard.writeText(assetInfo.checksum.toString())}}>copy</p>
-                    </Grid>
+      {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />}
+      {detailContent && <div className="topBorderForDetail"></div>}
 
 
-                    <Grid item xs={4} className="list_para">
-                        <div className="asset_MDI_label">{t("Asset ID")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.assetName}</div>
-                    </Grid>
+      <div className="asset_detail_tabs" id="detail_view" ref={detail_view}>
+
+        <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
+
+        <div className="list_data_main">
+          <CrxTabPanel value={value} index={0}>
 
 
-                    <Grid item xs={4} className="list_para">
-                        <div className="asset_MDI_label">{t("Asset Type")}</div>
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.typeOfAsset}</div>
-                    </Grid>
+            <div className="list_data">
+              <Grid container spacing={0}>
+                <Grid item xs={4} className="list_para" >
+                  <div className="asset_MDI_label">{t("CheckSum")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data boldText">{assetInfo.checksum}</div>
+                  <p style={{ color: "red", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText(assetInfo.checksum.toString()) }}>copy</p>
+                </Grid>
 
 
-                    <Grid item xs={4} className="list_para">
-                    <div className="asset_MDI_label">{t("Asset Status")}</div> 
-                        
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.status}</div>
-                    </Grid>
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Asset ID")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.assetName}</div>
+                </Grid>
 
 
-                    <Grid item xs={4} className="list_para">
-                      <div className="asset_MDI_label">{t("Username")}</div>
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.owners.join(', ')}</div>
-                    </Grid>
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Asset Type")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.typeOfAsset}</div>
+                </Grid>
 
 
-                    <Grid item xs={4} className="list_para">
-                        <div className="asset_MDI_label">{t("Categories")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                      <div className="asset_MDI_data">
-                        {
-                          assetInfo.categories.map((x: any) => 
-                          <>
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Asset Status")}</div>
+
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.status}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Username")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.owners.join(', ')}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Categories")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">
+                    {
+                      assetInfo.categories.map((x: any) =>
+                        <>
                           <Grid container spacing={2}>
                             <Grid item xs={3}>
-                              <span style={{fontWeight: 700}}>{x.name} :</span> 
+                              <span style={{ fontWeight: 700 }}>{x.name} :</span>
                             </Grid>
                             <Grid item xs={9}>
                               <span>{x.formDatas.map((x: any) => x.key + " : " + x.value)}</span>
                             </Grid>
                           </Grid>
-                            
-                          </>)
-                        }
-                      </div>
-                    </Grid>
 
-
-                    <Grid item xs={4} className="list_para">
-                      <div className="asset_MDI_label">{t("Camera Name")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                          <div className="asset_MDI_data">{assetInfo.camera}</div>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_para">
-                      <div className="asset_MDI_label">{t("Captured")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                      <div className="asset_MDI_data">{assetInfo.capturedDate}</div>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_para">
-                      <div className="asset_MDI_label">{t("Upoaded")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                      <div className="asset_MDI_data">{uploadedOn}</div>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_para">
-                      <div className="asset_MDI_label">{t("Duration")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                          <div className="asset_MDI_data">{assetInfo.duration}</div>
-                    </Grid>
-
-
-
-                    <Grid item xs={4} className="list_para">
-                          <div className="asset_MDI_label">{t("Size")}</div> 
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo.size}</div>
-                    </Grid>
-
-
-                    <Grid item xs={4} className="list_para">
-                          <div className="asset_MDI_label">{t("Retention")}</div>
-                    </Grid>
-                    <Grid item xs={8} className="list_para">
-                        <div className="asset_MDI_data">{assetInfo?.retention}</div>
-                    </Grid>
-
-                </Grid>
-              </div>
-              
-              </CrxTabPanel>
-
-              <CrxTabPanel value={value} index={1}>
-                <div className="asset_export_button_group">
-                   <button className="iconButton_global" disabled={isDisabled}>
-                    <i className="far fa-download"></i>
-                      Download
-                    </button>
-              </div>
-             
-                <CrxAccordion
-                  title={t("Grouped_Assets")}
-                  id="accorIdx1"
-                  className="crx-accordion"
-                  ariaControls="Content1"
-                  name="panel1"
-                  isExpanedChange={isExpaned}
-                  expanded={expanded === "panel1"}
-                >
-                  <div className="asset_group_tabs_data">
-                    
-                      {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
-                    
-                      <div className="asset_group_tabs_data_row">
-                      
-
-                          {(getAssetData !== undefined)
-                            ? getAssetData.assets.children.map((asset: any, index: number) => {
-
-                              var lastChar = asset.name.substr(asset.name.length - 4);
-                              return (
-                                <>
-                                  <div className="asset_group_tabs_data_col" key={index}>
-                                    <div className="_detail_checkBox_column">
-                                    <CRXCheckBox
-                                      checked={isChecked}
-                                      lightMode={true}
-                                      className='asse_detail_tab_checkBox '
-                                      onChange={(e : any) => assetSelectionHanlder(e)} 
-                                      />
-                                    </div>
-                                    <div className="_detail_thumb_column">
-                                      <AssetThumbnail
-                                        assetType={asset.typeOfAsset}
-                                        className={"CRXPopupTableImage  CRXPopupTableImageUi"}
-                                        onClick={() => newRound(asset.id, asset.name)}
-                                      />
-                                    </div>
-                                    <div className="_asset_detail_link_meta">
-                                      <Link
-                                        className="linkColor"
-                                        onClick={refresh}
-                                        to={{
-                                          pathname: "/assetdetail",
-                                          state: {
-                                            evidenceId: evidenceId,
-                                            assetId: asset.id,
-                                            assetName: asset.name,
-                                          },
-                                        }}>
-
-                                        <div id="middletruncate" data-truncate={lastChar}>
-                                          {asset.name}
-                                        </div>
-
-                                        {/* <div>{asset.name}</div> */}
-
-
-                                      </Link>
-
-                                      <div className="timeLineLister">
-                                        {asset.camera !== undefined &&
-                                          asset.camera !== null &&
-                                          asset.camera !== "" ? (
-                                          <div>
-                                            <label className="CRXPopupDetailFontSize">
-                                              {asset.camera}
-                                            </label>
-                                          </div>
-                                        ) : (
-                                          <div className="_asset_video_type_detail">
-                                            <label className="CRXPopupDetailFontSize">
-                                              {asset.typeOfAsset}
-                                            </label>
-                                          </div>
-                                        )}
-                                        <label className="CRXPopupDetailFontSize">
-                                          {asset.recording && dateDisplayFormat(asset.recording.started)}
-                                        </label>
-                                      </div>
-
-                                    </div>
-
-                                  </div>
-
-                                </>
-                              );
-                            })
-                            : null}
-                        
-                      </div>
-                    
-
+                        </>)
+                    }
                   </div>
-                </CrxAccordion>
-              </CrxTabPanel>
+                </Grid>
 
-              <CrxTabPanel value={value} index={2}>
-                <div className="asset_detail_AT_table">
-                  {rows && (
-                    <CRXDataTable
-                      id="Audit Trail"
-                      getRowOnActionClick={(val: AuditTrail) =>
-                        setSelectedActionRow(val)
-                      }
-                      toolBarButton={
-                        <div className="auditTrailButton">
-                          <button className="iconButton_global" onClick={()=>downloadAuditTrail()}>
-                            <i className="far fa-download"></i>
-                            Export
-                          </button>
-                        </div>
-                      }
-                      showToolbar={true}
-                      showCountText={false}
-                      columnVisibilityBar={true}
-                      showHeaderCheckAll={false}
-                      initialRows={reformattedRows}
-                      dragVisibility={false}
-                      showCheckBoxesCol={false}
-                      showActionCol={false}
-                      headCells={headCells}
-                      dataRows={rows}
-                      orderParam={order}
-                      orderByParam={orderBy}
-                      searchHeader={true}
-                      allowDragableToList={true}
-                      showTotalSelectedText={false}
-                      showActionSearchHeaderCell={true}
-                      showCustomizeIcon={false}
-                      className="asset_detail_AT_dataTable"
-                      onClearAll={clearAll}
-                      getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
-                      onResizeRow={resizeRowUnitDetail}
-                      onHeadCellChange={onSetHeadCells}
-                      setSelectedItems={setSelectedItems}
-                      selectedItems={selectedItems}
-                      offsetY={51}
-                      page={page}
-                      rowsPerPage={rowsPerPage}
-                      setPage={(page: any) => setPage(page)}
-                      setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-                      totalRecords={500}
-                    />
-                  )}
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Camera Name")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.camera}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Captured")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.capturedDate}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Upoaded")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{uploadedOn}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Duration")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.duration}</div>
+                </Grid>
+
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Size")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo.size}</div>
+                </Grid>
+
+
+                <Grid item xs={4} className="list_para">
+                  <div className="asset_MDI_label">{t("Retention")}</div>
+                </Grid>
+                <Grid item xs={8} className="list_para">
+                  <div className="asset_MDI_data">{assetInfo?.retention}</div>
+                </Grid>
+
+              </Grid>
+            </div>
+
+          </CrxTabPanel>
+
+          <CrxTabPanel value={value} index={1}>
+            <div className="asset_export_button_group">
+              <button className="iconButton_global" disabled={isDisabled}>
+                <i className="far fa-download"></i>
+                Download
+              </button>
+            </div>
+
+            <CrxAccordion
+              title={t("Grouped_Assets")}
+              id="accorIdx1"
+              className="crx-accordion"
+              ariaControls="Content1"
+              name="panel1"
+              isExpanedChange={isExpaned}
+              expanded={expanded === "panel1"}
+            >
+              <div className="asset_group_tabs_data">
+
+                {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
+
+                <div className="asset_group_tabs_data_row">
+
+
+                  {(getAssetData !== undefined)
+                    ? getAssetData.assets.children.map((asset: any, index: number) => {
+
+                      var lastChar = asset.name.substr(asset.name.length - 4);
+                      return (
+                        <>
+                          <div className="asset_group_tabs_data_col" key={index}>
+                            <div className="_detail_checkBox_column">
+                              <CRXCheckBox
+                                checked={isChecked}
+                                lightMode={true}
+                                className='asse_detail_tab_checkBox '
+                                onChange={(e: any) => assetSelectionHanlder(e)}
+                              />
+                            </div>
+                            <div className="_detail_thumb_column">
+                              <AssetThumbnail
+                                assetType={asset.typeOfAsset}
+                                className={"CRXPopupTableImage  CRXPopupTableImageUi"}
+                                onClick={() => newRound(asset.id, asset.name)}
+                              />
+                            </div>
+                            <div className="_asset_detail_link_meta">
+                              <Link
+                                className="linkColor"
+                                onClick={refresh}
+                                to={{
+                                  pathname: "/assetdetail",
+                                  state: {
+                                    evidenceId: evidenceId,
+                                    assetId: asset.id,
+                                    assetName: asset.name,
+                                  },
+                                }}>
+
+                                <div id="middletruncate" data-truncate={lastChar}>
+                                  {asset.name}
+                                </div>
+
+                                {/* <div>{asset.name}</div> */}
+
+
+                              </Link>
+
+                              <div className="timeLineLister">
+                                {asset.camera !== undefined &&
+                                  asset.camera !== null &&
+                                  asset.camera !== "" ? (
+                                  <div>
+                                    <label className="CRXPopupDetailFontSize">
+                                      {asset.camera}
+                                    </label>
+                                  </div>
+                                ) : (
+                                  <div className="_asset_video_type_detail">
+                                    <label className="CRXPopupDetailFontSize">
+                                      {asset.typeOfAsset}
+                                    </label>
+                                  </div>
+                                )}
+                                <label className="CRXPopupDetailFontSize">
+                                  {asset.recording && dateDisplayFormat(asset.recording.started)}
+                                </label>
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        </>
+                      );
+                    })
+                    : null}
+
                 </div>
 
-              </CrxTabPanel>
 
+              </div>
+            </CrxAccordion>
+          </CrxTabPanel>
 
+          <CrxTabPanel value={value} index={2}>
+            <div className="asset_detail_AT_table">
+              {rows && (
+                <CRXDataTable
+                  id="Audit Trail"
+                  getRowOnActionClick={(val: AuditTrail) =>
+                    setSelectedActionRow(val)
+                  }
+                  toolBarButton={
+                    <div className="auditTrailButton">
+                      <button className="iconButton_global" onClick={() => downloadAuditTrail()}>
+                        <i className="far fa-download"></i>
+                        Export
+                      </button>
+                    </div>
+                  }
+                  showToolbar={true}
+                  showCountText={false}
+                  columnVisibilityBar={true}
+                  showHeaderCheckAll={false}
+                  initialRows={reformattedRows}
+                  dragVisibility={false}
+                  showCheckBoxesCol={false}
+                  showActionCol={false}
+                  headCells={headCells}
+                  dataRows={rows}
+                  orderParam={order}
+                  orderByParam={orderBy}
+                  searchHeader={true}
+                  allowDragableToList={true}
+                  showTotalSelectedText={false}
+                  showActionSearchHeaderCell={true}
+                  showCustomizeIcon={false}
+                  className="asset_detail_AT_dataTable"
+                  onClearAll={clearAll}
+                  getSelectedItems={(v: AuditTrail[]) => setSelectedItems(v)}
+                  onResizeRow={resizeRowUnitDetail}
+                  onHeadCellChange={onSetHeadCells}
+                  setSelectedItems={setSelectedItems}
+                  selectedItems={selectedItems}
+                  offsetY={51}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  setPage={(page: any) => setPage(page)}
+                  setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
+                  totalRecords={500}
+                />
+              )}
             </div>
-          </div>
-        
+
+          </CrxTabPanel>
+
+
+        </div>
+      </div>
+
     </div>
   );
 };

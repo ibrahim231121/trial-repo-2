@@ -7,7 +7,7 @@ declare const window: any;
 
 var socketConnectionId: any = null;
 var hubConnection: HubConnection;
-var groupsToSubscribe: string[] = [];
+var groupsToSubscribe: string[] = ["UnitStatus"];
 
 enum WEB_SOCKET_METHODS {
     onMessage = "OnMessage",

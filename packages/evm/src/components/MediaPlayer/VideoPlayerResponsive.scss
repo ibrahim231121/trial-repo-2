@@ -1,4 +1,4 @@
-@media only screen and (min-width:1024px){
+@media only screen and (max-width:1024px){
     .player_right_responsive {
         display: block ;
         margin-left: -14px;
@@ -32,6 +32,18 @@
     ._video_Player_Right_Panel {
         height: 100%;
     }
+    ._videoPlayer_grid_customize {
+        height: 100%;
+        padding-right: 4px;
+        width: 80% !important;
+        margin: 0 auto;
+        &._container_column_video_2 {
+          width: 80% !important;
+        }
+      }
+      ._beforeline_Main .time_line_container ._before_line .line {
+        padding: 0 83px;
+      }
 }
 
 @media only screen and (min-width:1366px) { 
@@ -45,5 +57,15 @@
     
     ._video_Player_Right_Panel {
         height: 100%;
+    }
+}
+
+@media only screen and (max-width : 1440px) {
+    .mainFullView {
+        &.fullscreen {
+            .playerViewFlex {
+                background: #000;
+            }
+        }
     }
 }

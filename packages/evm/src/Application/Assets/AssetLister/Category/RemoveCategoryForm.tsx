@@ -5,7 +5,7 @@ import { CRXButton, CRXHeading } from '@cb/shared';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { useTranslation } from "react-i18next";
-import { FormValues, RemoveCategoryFormProps } from './Model/RemoveCategoryFormModel';
+import { FormValues, RemoveCategoryFormProps, RetentionDetailForCalculation } from './Model/RemoveCategoryFormModel';
 
 const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -32,46 +32,50 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
         };
       })[0];
     if (newValue) {
-      props.setFilterValue((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
+      props.setSelectedCategoryValues((prevState) => [...prevState, newValue]); // Set removed option in to State again.
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
   };
 
   const getPolicyAsync = (message: string) => {
+    const retentionDetails: RetentionDetailForCalculation[] = [];
     const removedCategory = props.removedOption;
-    const categoryObject = props.evidenceResponse.categories;
-    const retentionDetails: any = [];
-    props.setRemoveMessage(message);
-    for(const elem of categoryObject) {
-      const Hours = elem.dataRetentionPolicy.record.filter((x: any) => x.key === 'Hours')[0].value;
-      const GracePeriodHours = elem.dataRetentionPolicy.record.filter((x: any) => x.key === 'GracePeriodHours')[0].value;
-      const TotalHours = parseInt(Hours) + parseInt(GracePeriodHours);
-      retentionDetails.push({
-        categoryName: elem.record.record.filter((x: any) => x.key === 'Name')[0].value,
-        retentionId: elem.dataRetentionPolicy.cmtFieldValue,
-        hours: TotalHours
-      });
+    if (props.evidence) {
+      const categoryObject = props.evidence.categories;
+      props.setRemoveMessage(message);
+      for (const elem of categoryObject) {
+        if (elem.DataRetentionPolicy) {
+          const Hours = elem.DataRetentionPolicy.record.filter((x) => x.key === 'Hours')[0].value;
+          const GracePeriodHours = elem.DataRetentionPolicy.record.filter((x) => x.key === 'GracePeriodHours')[0].value;
+          const TotalHours = parseInt(Hours) + parseInt(GracePeriodHours);
+          retentionDetails.push({
+            categoryName: elem.record?.record.filter((x) => x.key === 'Name')[0].value ?? "",
+            retentionId: elem.DataRetentionPolicy.cmtFieldValue,
+            hours: TotalHours
+          });
+        }
+      }
     }
     /** 
      * * Sorted Array in Descending order by Hours. 
      * */
-    const sortedArray = retentionDetails.sort((a: any, b: any) => (a.hours > b.hours ? 1 : -1)).reverse();
+    const sortedArray = retentionDetails.sort((a, b) => (a.hours > b.hours ? 1 : -1)).reverse();
     const highestRetention = sortedArray[0];
-    if(sortedArray.length == 1){
+    if (sortedArray.length == 1) {
       /** 
        * * This was the last category 
        * */
-       props.setRemovalType(2);
-       props.setActiveForm(4);
-       return;
+      props.setRemovalType(2);
+      props.setActiveForm(4);
+      return;
     }
     const SecondHighestRetention = sortedArray[1];
     if (highestRetention.categoryName === removedCategory.label) {
       /** 
        * * Selected Category have Highest Hours 
        * */
-      const recordingStarted = props.evidenceResponse?.assets?.master?.recording.started;
+      const recordingStarted = props.evidence?.assets?.master?.recording.started;
       const expiryDate = moment(recordingStarted)
         .add(highestRetention.hours, 'hours').utc();
       const newExpiryDate = moment().add(SecondHighestRetention.hours, 'hours');
@@ -81,7 +85,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       /** Incase Retention is effected */
       props.setRemovalType(1);
       props.setActiveForm(4);
-    } else if (props.filterValue?.length === 0) {
+    } else if (props.selectedCategoryValues?.length === 0) {
       /** 
        * * This is the last category 
        * */
@@ -102,7 +106,7 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
         initialValues={initialValues}
         onSubmit={({ reason }: any, actions) => {
           // If assest is going to uncategorized.
-          const categoriesLenght: number = props.filterValue?.length;
+          const categoriesLenght: number = props.selectedCategoryValues?.length;
           if (categoriesLenght == 0) {
             props.setActiveForm(4);
           }
@@ -136,12 +140,12 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
             <div className='modalFooter CRXFooter removeFooter'>
               <div className='nextBtn'>
                 <CRXButton className='primeryBtn' type='submit' disabled={!(isValid && dirty)}>
-                {t("Save")}
+                  {t("Save")}
                 </CRXButton>
               </div>
               <div className='cancelBtn'>
                 <CRXButton onClick={cancelBtn} className='cancelButton'>
-                {t("Cancel")}
+                  {t("Cancel")}
                 </CRXButton>
               </div>
             </div>

@@ -11,13 +11,17 @@ import "./index.scss";
 
 import { useTranslation } from 'react-i18next';
 
-
-
 const CRXLefNavigation = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
   const navigateToPage = (path: string) => {
     history.push(path);
+    
+    let pathBody = document.querySelector("body");
+    if(path !== "/assetdetail") {
+        pathBody?.classList.remove("pathAssetDetail");
+      }
+    
   };
 
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
@@ -31,7 +35,9 @@ const CRXLefNavigation = () => {
       moduleId: 1,
       label: t("Assets"),
       icon: "icon icon-file-video NaveIcon",
-      url: urlList.filter((item: any) => item.name === urlNames.assets)[0].url,
+      command: () => {
+        navigateToPage(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
+      },
       disabled: false,
       
     },

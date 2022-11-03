@@ -48,6 +48,7 @@ const Station: React.FC = () => {
     page: page,
     size: rowsPerPage
   });
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const stations: any = useSelector((state: RootState) => state.stationReducer.stations);
   const [rows, setRows] = React.useState<StationType[]>([]);
   const [order, setOrder] = React.useState<Order>('asc');
@@ -94,6 +95,11 @@ const Station: React.FC = () => {
     dispatch(getConfigurationTemplatesAsync());
   }, []);
 
+  useEffect(() => {
+    //dataArrayBuilder();
+    console.log("searchData", searchData)
+    setIsSearchable(true)
+  }, [searchData]);
 
   useEffect(() => {
     setData();
@@ -261,31 +267,43 @@ const Station: React.FC = () => {
     dispatch(getStationsAsync(pageiGrid));
   };
 
-  const getFilteredUserData = () => {
+  const getFilteredStationData = () => {
 
-    pageiGrid.gridFilter.filters = []
+    if(isSearchable) {
+      pageiGrid.gridFilter.filters = []
+      searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+        pageiGrid.page = 0
+        pageiGrid.size = rowsPerPage
+      })
 
-    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
-      let x: GridFilter = {
-        operator: headCells[item.colIdx].attributeOperator,
-        //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-        field: headCells[item.colIdx].attributeName,
-        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-        fieldType: headCells[item.colIdx].attributeType,
-      }
-      pageiGrid.gridFilter.filters?.push(x)
-      pageiGrid.page = 0
-      pageiGrid.size = rowsPerPage
-    })
+      if (page !== 0)
+        setPage(0)
+      else
+        dispatch(getStationsAsync(pageiGrid));
 
-    if (page !== 0)
-      setPage(0)
-    else
-      dispatch(getStationsAsync(pageiGrid));
+      setIsSearchable(false)
+    }
+  }
+
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredStationData()
+    }
+  }
+  const handleBlur = () => {
+    getFilteredStationData()
   }
 
   return (
-    <div className='crxManageUsers crxStationDataUser  switchLeftComponents'>
+    <div className='crxManageUsers crxStationDataUser  switchLeftComponents' onKeyDown={handleKeyDown} onBlur={handleBlur}>
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -302,7 +320,7 @@ const Station: React.FC = () => {
               <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
                 {t('Create_Station')}
               </CRXButton>
-              <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+              {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
             </>
           }
           getRowOnActionClick={(val: StationType) => setSelectedActionRow(val)}

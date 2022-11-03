@@ -33,8 +33,11 @@
     position: sticky;
   }
   .stickyPos {
-    z-index: 9999;
+    // z-index: 9999;
+    z-index: 1000;
     min-height: 69px;
+    padding-bottom: 5px !important;
+    padding-top: 10px !important;
     .dataIconButton {
            font-size: 14px;
          }

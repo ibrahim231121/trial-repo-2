@@ -76,6 +76,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 
   React.useLayoutEffect(() => {
     let ThumbnailDesc = document.getElementById("Thumbnail-Desc");
+     
     if (ThumbnailDesc) {
       document.getElementById("thumbnailHeaderBar")?.classList.add("showHeaderBar")
       document.getElementById("thumbnailHeaderBar")?.classList.remove("hideHeaderBar")
@@ -87,15 +88,21 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
   }, [visibleThumbnail])
 
   return (
-    <div className="_beforeline_Main"  >
+    <div className="_beforeline_Main">
+      {multiTimelineEnabled && <div className="scroll_to_see_timeline">scroll to see multiple timelines</div>}
       {timelinedetail.filter((x: any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
         <div className="time_line_container">
           <div className="_before_line">
             <div className="line" style={{ position: "relative", display: 'flex' }}>
-             {multiTimelineEnabled && <p className="camraName_timeline">{x.camera}</p> }  
+             {multiTimelineEnabled && <div className="camraName_timeline">{x.camera}</div> }  
               <div className="video_player_hover_thumb" id={"video_player_hover_thumb" + x.indexNumberToDisplay}
                 style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform: "translate(-50px, 0px)" }}>
-
+              <div id="thumbnailHeaderBar">
+                  <div className="thumbnailHeaderBar" >
+                    {openThumbnail && <div className="_timeline_icon_top_area" id={"Thumbnail-Icon" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden" }}></div>}
+                    {openThumbnail && <p id={"Thumbnail-Desc"} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", color: "white", background: "black" }}></p>}
+                  </div>
+                </div>
                 {/* <div className="_timeline_thumb_top_area" id={"Thumbnail-CameraDesc" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden" }}></div> */}
                 <video
                   width="128px"
@@ -105,13 +112,8 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
                   <source src={x.src} type="video/mp4" />
                 </video>
                 <div className="video_thumb_line_time" id={"Thumbnail-Time" + x.indexNumberToDisplay}></div>
-                <div id="thumbnailHeaderBar">
-                  <div className="thumbnailHeaderBar" >
-                    {openThumbnail && <div className="_timeline_icon_top_area" id={"Thumbnail-Icon" + x.indexNumberToDisplay} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden" }}></div>}
-                    {openThumbnail && <p id={"Thumbnail-Desc"} style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", color: "white", background: "black" }}></p>}
-                  </div>
-                </div>
-
+                
+                
               </div>
               <div style={{ position: "absolute", top: "-5px", left: "0px", width: "100%" }}>
                 {x.bookmarks && multiTimelineEnabled && x.bookmarks.map((y: any, index: any) =>
@@ -135,29 +137,34 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
                   </div>
                 )}
               </div>
-
-              {isMultiViewEnable && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
+                   
+              {isMultiViewEnable && <div className="beforerecording" style={{ width: x.recording_Start_point_ratio + '%', height: multiTimelineEnabled ? '20px' : "0", display: 'flex' }} id={"timeLine-hover-before" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
               ></div>}
-              {isMultiViewEnable && <><div className="canvas-width"
-                style={{ backgroundColor: '#D1D2D4', width: x.recordingratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex'}}
+              {isMultiViewEnable && startTimelineSync && <><div className="canvas-width"
+                style={{ backgroundColor: '#333', width: x.recordingratio + '%', height: multiTimelineEnabled ? '20px' : "0", display: 'flex'}}
                 id={"timeLine-hover" + x.indexNumberToDisplay}
                 onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
                 onMouseOver={(e: any) => displayThumbail(e, x.id)}
                 onMouseMove={(e: any) => displayThumbail(e, x.id)}
                 onMouseOut={() => removeThumbnail()}>
                 {<Buffering width={x.video_duration_in_second} id={x.id} />}
+                {startTimelineSync && <div className="buffer_btn_container" style ={{width : x.video_duration_in_second, position : "absolute"}}>
+                  <div className="buffer_left_btn">
+                  <button className="buffer_button" type="button" style={{ left: x.recording_Start_point_ratio + 2 + '%', position: "relative", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, -1000)}><i className="fas fa-chevron-left"></i></button>
+                  <button className="buffer_button" type="button" style={{ left: x.recording_Start_point_ratio + 5 + '%', position: "relative", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, -100)}><i className="fas fa-chevrons-left"></i></button>
+                  </div>
+                  <div className="buffer_left_btn">
+                  <button className="buffer_button" type="button" style={{ left: x.recording_Start_point_ratio + 8 + '%', position: "relative", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, 100)}><i className="fas fa-chevrons-right"></i></button>
+                  <button className="buffer_button" type="button" style={{ left: x.recording_Start_point_ratio + 11 + '%', position: "relative", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, 1000)}><i className="fas fa-chevron-right"></i></button>
+                  </div>
+                </div>}
               </div>
-                {startTimelineSync && <>
-                  <input type="button" style={{ left: x.recording_Start_point_ratio + 2 + '%', position: "absolute", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, -1000)} value="<"></input>
-                  <input type="button" style={{ left: x.recording_Start_point_ratio + 5 + '%', position: "absolute", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, -100)} value="<<"></input>
-                  <input type="button" style={{ left: x.recording_Start_point_ratio + 8 + '%', position: "absolute", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, 100)} value=">>"></input>
-                  <input type="button" style={{ left: x.recording_Start_point_ratio + 11 + '%', position: "absolute", zIndex: 2 }} onClick={(e: any) => AdjustTimeline(e, x, 1000)} value=">"></input>
-                </>}
+                
               </>
               }
               {isMultiViewEnable &&
-                <div className="afterrecording" style={{ width: x.recording_end_point_ratio + '%', height: multiTimelineEnabled ? '6px' : "0", display: 'flex'}} id={"timeLine-hover-after" + x.indexNumberToDisplay}
+                <div className="afterrecording" style={{ width:'100%', height: multiTimelineEnabled ? '20px' : "0", display: 'flex'}} id={"timeLine-hover-after" + x.indexNumberToDisplay}
                   onClick={(e: any) => startTimelineSync ? AdjustTimeline(e, x, 0) : () => { }}
                 ></div>
               }
@@ -165,7 +172,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
           </div>
         </div>
       )}
-
+    {/* <div className="video_pointer_line"></div> */}
     </div>
   )
 

@@ -81,7 +81,11 @@ const Breadcrumb: React.FC<any> = (props) => {
   const getTitle = () => {
     const paths = urlList.filter((item:any) => item.url === urlPath)[0].details;
     if (paths) {
-      const pathName = (otherLabels && otherLabels !== t("Search_Results")  ?  otherLabels : paths[paths.length - 1].label)
+      const pathName = (otherLabels 
+                     && otherLabels !== t("Search_Results") ? otherLabels  
+                     :
+                     paths[paths.length - 1].label && paths[paths.length - 1].label == t("Search_Results") ? paths[paths.length - 2].label : paths[paths.length - 1].label) 
+
       return pathName
     }
     else
@@ -94,7 +98,7 @@ const Breadcrumb: React.FC<any> = (props) => {
       if(item === pathDetails[pathDetails.length-1]) {
         return {
           routeTo: (item.routeTo === undefined) ? Pathurl : item.routeTo,
-          type: "CBXLink",
+          type: "link",
           label: item.label
         }
       }
@@ -104,6 +108,8 @@ const Breadcrumb: React.FC<any> = (props) => {
     })
     return details
   }
+
+  const homePageLinks = ["/assets"]
 
   const getPaths = () => {
     let paths: BreadCrumbItem[] = urlList.filter((item:any) => item.url === urlPath)[0].details;
@@ -116,7 +122,7 @@ const Breadcrumb: React.FC<any> = (props) => {
       paths && paths.map((path: BreadCrumbItem, index: number) => {
           if (path.type === "link") {
             return (
-              <Link key={index} className="brdLinks breadCrumbItem" to={path.routeTo}>
+              <Link key={index} className="brdLinks breadCrumbItem" to={homePageLinks.includes(path.routeTo) ? "/" : path.routeTo}>
                 {path.label}
               </Link>
             );

@@ -16,6 +16,7 @@ interface popoverProps  {
 const useGapStyles = makeStyles({
     root : {
         position : "relative!important" as any,
+        zIndex : -1,
     },
     paper: {
         marginBottom: "2rem",
@@ -23,6 +24,7 @@ const useGapStyles = makeStyles({
         position: "absolute",
         top: "-165px!important" as any,
         minHeight: "95px",
+        zIndex : -1,
         left: "-12px!important" as any,
         '@media screen and (min-width:1024px)': {
             left: "-63px!important" as any,

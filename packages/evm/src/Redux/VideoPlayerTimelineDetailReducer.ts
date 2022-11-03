@@ -20,6 +20,7 @@ interface Timeline {
     indexNumberToDisplay: number,
     camera: string,
     timeOffset: number,
+    assetbuffering: any
 }
 
 const initialState = {

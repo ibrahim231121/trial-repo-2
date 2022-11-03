@@ -13,11 +13,11 @@ export interface FormData {
 }
 export interface Category {
     id: number;
+    name: string;
     formData: FormData[];
     assignedOn: Date;
     record?: CMTEntityRecord;
     DataRetentionPolicy?: CMTEntityRecord;
-    name: string;
 }
 
 export interface Recording {

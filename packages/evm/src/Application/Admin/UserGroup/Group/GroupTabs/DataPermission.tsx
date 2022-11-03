@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CRXMultiSelectBoxAutocomplete, CRXRows, CRXColumn, CRXSelectBox, CRXButton, CRXTooltip } from "@cb/shared";
 import {
     defaultPermissionType,
@@ -13,8 +13,15 @@ import "./dataPermission.scss"
 import { DataPermissionModel } from "..";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { MAX_REQUEST_SIZE_FOR } from '../../../../../utils/constant'
+import { debug } from "console";
+import { getCategoryAsync } from "../../../../../Redux/categoryReducer";
+import { getStationsInfoAllAsync } from "../../../../../Redux/StationReducer";
+import { SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../../../utils/Api/ApiAgent";
+import { CATEGORY_INFO_GET_URL } from "../../../../../utils/Api/url";
+import { object } from "yup";
+import { ConsoleLogger } from "@microsoft/signalr/dist/esm/Utils";
 
 type infoProps = {
     dataPermissionsInfo: DataPermissionModel[],
@@ -31,7 +38,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     let [isdisable, setisDisable] = useState<Boolean>(true);
     let [crxDatapermissionClass, setCrxDatapermissionClass] = useState<string>("");
 
-    const categoryFromReducer =  useSelector((state: any) => state.assetCategory.category);
+    const categoryFromReducer = useSelector((state: any) => state.assetCategory.category);
     const stationsFromReducer = useSelector((state: any) => state.stationReducer.stationInfo);
 
     const defaultPermission = {
@@ -41,30 +48,40 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         permissionLevel: { value: 0, label: "" }
     }
 
+    const dispatch = useDispatch();
+
     const disableAddPermission = () => {
         dataPermissions.map((obj) => {
-            
-            if((obj.permissionValue.value > 0 || obj.permissionValue.value < 0)  && obj.permissionLevel.value > 0){
-            setisDisable(false);
+
+            if ((obj.permissionValue.value > 0 || obj.permissionValue.value < 0) && obj.permissionLevel.value > 0) {
+                setisDisable(false);
             }
-            else{
+            else {
                 setisDisable(true)
             }
         })
     }
 
-   useEffect(() => {
-       disableAddPermission();
-   }, [dataPermissions])
+    useEffect(() => {
 
-   useEffect(() => {
-    
-}, [isdisable]);
+        disableAddPermission();
+        // if(dataPermissionsInfo.length <=0 ){
+        //     addDefaultPermission();
+        // }
+    }, [dataPermissions])
+
+    useEffect(()=>{
+
+        if(dataPermissionsInfo.length <=0 ){
+            addDefaultPermission();
+        }
+    },[dataPermissionsInfo])
+
     const LoadCategoryPermissionsByDb = (categories: any) => {
         let dbDataPermission: PermissionData[] = [];
         dataPermissionsInfo.map((x: any | undefined) => {
             var cat = categories.find((y: any) => parseInt(y.value) == x.mappingId);
-            
+
             if (x.fieldType == 2) {
                 if (cat != undefined) {
                     dbDataPermission.push({
@@ -90,13 +107,15 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             ...dbDataPermission
             ]
         })
+
     }
+
     const LoadStationPermissionsByDb = (stations: any) => {
         let dbDataPermission: PermissionData[] = [];
-        dataPermissionsInfo.map((x: any | undefined) => {
+        dataPermissionsInfo.forEach((x: any | undefined) => {
             var station = stations.find((y: any) => parseInt(y.value) == x.mappingId);
-            if (x.fieldType == 1 ) {
-                if (station != undefined) {
+            if (x.fieldType == 1) {
+                if (station) {
                     dbDataPermission.push({
                         id: x.containerMappingId,
                         type: { value: x.fieldType, label: "" },
@@ -122,26 +141,71 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         })
     }
 
-    useEffect(() => {
-        
-        loadCateogories();
+    const LoadEmptyPermissionsByDb = () =>{
+        let dbDataPermission: PermissionData[] = [];
+        dataPermissionsInfo.filter(x => x.fieldType <= 0).forEach((x: DataPermissionModel | undefined) => {
+            if(x){
+                dbDataPermission.push({
+                    id: x.containerMappingId,
+                    type: { value: x.fieldType, label: "" },
+                    permissionValue: { value: x.mappingId, label: "" },
+                    permissionLevel: { value: x.permission, label: "" }
+                });
+            }             
+        });        
+        setDataPermissions(prev => {
+            return [...prev,
+            ...dbDataPermission
+            ]
+        })
+    }
+
+    const getData = useCallback(async () => {
+        await dispatch(getStationsInfoAllAsync());
+        await dispatch(getCategoryAsync());
+    }, [dispatch]);
+
+    useEffect(()=>{
+
+        setDataPermissions([]);
         loadStations();
-        if (dataPermissionsInfo !== undefined && dataPermissionsInfo.length > 0) {
-            // LoadPermissionsByDb();
-        }
-        else {
-            addDefaultPermission();
-        }
-    }, []);
+        loadCateogories();
+        LoadEmptyPermissionsByDb();
+        // if (dataPermissions !== undefined && dataPermissions.length > 0) {
+        //     // LoadPermissionsByDb();
+        // }
+        // else {
+        //     addDefaultPermission();
+        // }
+    },[stationsFromReducer,categoryFromReducer]);
+
+    // useEffect(()=>{
+    //     loadCateogories();
+    //     if (dataPermissionsInfo !== undefined && dataPermissionsInfo.length > 0) {
+    //         // LoadPermissionsByDb();
+    //     }
+    //     else {
+    //         addDefaultPermission();
+    //     }
+    // },[categoryFromReducer]);
+
+    useEffect(() => {
+
+     if(stationsFromReducer && Object.keys(stationsFromReducer).length == 0 && 
+        categoryFromReducer && Object.keys(categoryFromReducer).length == 0 )
+        getData();
+    }, [getData]);
+
+
 
     const loadCateogories = () => {
         if (categoryFromReducer && categoryFromReducer.length > 0) {
             let categoryList = [...categoryFromReducer];
             let categories = categoryList
-            .sort((a: Category, b: Category) => a.name.localeCompare(b.name))
-            .map((x: Category) => {
-                return { value: x.id, label: x.name }
-            });
+                .sort((a: Category, b: Category) => a.name.localeCompare(b.name))
+                .map((x: Category) => {
+                    return { value: x.id, label: x.name }
+                });
             categories.push({ value: -2, label: t('All') })
             categories.push({ value: -1, label: t('Uncategorized') })
             setCategories(categories);
@@ -153,10 +217,10 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if (stationsFromReducer && stationsFromReducer.length > 0) {
             let stationList = [...stationsFromReducer];
             const stationResp = stationList
-            .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
-            .map((x: StationResponse) => {
-                return { value: (x.id), label: x.name };
-            });
+                .sort((a: StationResponse, b: StationResponse) => a.name.localeCompare(b.name))
+                .map((x: StationResponse) => {
+                    return { value: (x.id), label: x.name };
+                });
             stationResp.push({ value: -2, label: t('All') })
             stationResp.push({ value: -1, label: t('No_Station') })
             setStations(stationResp);
@@ -172,6 +236,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                 dPermission
             ]
         })
+        setDataPermissionInfo([...dataPermissions, dPermission])
     }
     const setDataPermissionInfo = (permissions: PermissionData[]) => {
         let dataPermissionModel: any = [];
@@ -188,7 +253,9 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     const onPermissionTypeChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
         permissions[i].type.value = parseInt(e.target.value);
-        
+
+       // permissions[i].permissionValue = { value: 0, label: "" };
+
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
         setCrxDatapermissionClass("crxDatapermissionClass");
@@ -197,7 +264,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     const onPermissionLevelChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
         let permissions = [...dataPermissions]
         permissions[i].permissionLevel.value = parseInt(e.target.value);
-        
+
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
         setCrxDatapermissionClass("crxDatapermissionClass");
@@ -205,7 +272,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
     const onPermissionValueChange = (e: React.ChangeEvent<HTMLInputElement>, v: any, i: number) => {
 
-        
+
         let permissions = [...dataPermissions]
         if (v !== null) {
             if (v && v.value) {
@@ -215,7 +282,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         }
         else
             permissions[i].permissionValue = { value: 0, label: "" };
-        
+
         setDataPermissions(permissions);
         setDataPermissionInfo(permissions);
     }
@@ -230,8 +297,8 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
         let permission = permissions[i];
 
-        
-        
+
+
         if (permission && permission.id && permission.id > 0) {
             onDeletePermission(permission.id);
         }
@@ -240,7 +307,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if (permissions.length <= 0) {
             permissions.push(defaultPermission)
         }
-        
+
         setDataPermissions([...permissions]);
         setDataPermissionInfo(permissions);
     }
@@ -271,7 +338,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             </div>
             <div className="crxPermissionPageScroll">
                 <div>
-                    <div className="crx-datapermission-col">
+                    <div className="crx-datapermission-col">                       
                         {
                             dataPermissions.map((permission, i) => {
                                 return <div className="crx-datapermission-item" key={i}>
@@ -295,9 +362,9 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 options={filterPermissionValuesBasedonType(permission.type.value)}
                                                 multiple={false}
                                                 onChange={(e: React.ChangeEvent<HTMLInputElement>, v: any) => {
-                                                    
-                                                    
-                                                    
+
+
+
                                                     onPermissionValueChange(e, v, i)
                                                 }}
                                                 value={permission.permissionValue}
@@ -324,7 +391,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemovePermission(i)}
-                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon"/></button>
+                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon" /></button>
                                             }
                                         </CRXColumn>
                                     </CRXRows>
@@ -336,7 +403,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
             </div>
             <div className="crxPermissionBtnUSers">
                 <CRXButton
-                disabled ={isdisable}
+                    disabled={isdisable}
                     className='PreSearchButton'
                     onClick={onAddPermission}
                     color='primary'

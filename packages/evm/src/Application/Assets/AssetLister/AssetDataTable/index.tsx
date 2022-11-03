@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { CRXDataTable, CRXToaster, CRXIcon, CRXDataTableTextPopover } from "@cb/shared";
+import { CRXDataTable, CRXToaster, CRXIcon, CRXDataTableTextPopover, CBXMultiSelectForDatatable } from "@cb/shared";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
 import {
   SearchObject,
@@ -31,7 +31,6 @@ import { AssetThumbnail } from "./AssetThumbnail";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
-import MultSelectiDropDown from "../../../../GlobalComponents/DataTableSearch/MultSelectiDropDown";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
@@ -40,11 +39,13 @@ import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
-const thumbTemplate = (assetType: string) => {
+const thumbTemplate = (assetId: string, evidence : SearchModel.Evidence) => {
+  let assetType = evidence.masterAsset.assetType;
   return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
 };
 
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
+  
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset;
 
@@ -57,6 +58,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
           evidenceId: evidence.id,
           assetId: masterAsset.assetId,
           assetName: assetName,
+          evidenceSearchObject : evidence
         },
       }}
     >
@@ -76,6 +78,11 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
   />
   );
 };
+
+interface renderCheckMultiselect {
+  value: string,
+  id: string,
+}
 
 const MasterMain: React.FC<MasterMainProps> = ({
   rowsData,
@@ -101,7 +108,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       recordingStarted: row.masterAsset.recordingStarted,
       status: row.masterAsset.status,
       evidence: row,
-      holdUntill: row.holdUntill,
+      holdUntil: row.holdUntil,
       expireOn: row.expireOn
     };
     reformattedRows.push(evidence);
@@ -134,8 +141,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
   });
 
   useEffect(() => {
-    if (searchData.length > 0)
-      dataArrayBuilder();
+    console.log("searchData", searchData)
+    dataArrayBuilder();
   }, [searchData]);
 
   useEffect(() => {
@@ -254,62 +261,66 @@ const MasterMain: React.FC<MasterMainProps> = ({
     );
   };
 
+  const changeMultiselect = (
+    e: React.SyntheticEvent,
+    val: renderCheckMultiselect[],
+    colIdx: number
+  ) => {
+    onSelection(val, colIdx);
+    headCells[colIdx].headerArray = val;
+  };
+
   const searchAndNonSearchMultiDropDown = (
     rowsParam: SearchModel.Evidence[],
     headCells: HeadCellProps[],
     colIdx: number,
+    initialRows: any,
     isSearchable: boolean
   ) => {
-    const onSetSearchData = () => {
-      setSearchData((prevArr) =>
-        prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+
+    if(initialRows) {   
+
+      let options = reformattedRows.map((row: any, _: any) => {
+        let option: any = {};
+        option["value"] = row[headCells[colIdx].id];
+        return option;
+      });
+      // For those properties which contains an array
+      if (
+        headCells[colIdx].id.toString() === "categories" ||
+        headCells[colIdx].id.toString() === "recordedBy"
+      ) {
+        let moreOptions: any = [];
+
+        reformattedRows.forEach((row: any, _: any) => {
+          let x = headCells[colIdx].id;
+          row[x]?.forEach((element: any) => {
+            let moreOption: any = {};
+            moreOption["value"] = element;
+            moreOptions.push(moreOption);
+          });
+        });
+        options = moreOptions;
+      }
+      
+      return (
+        <CBXMultiSelectForDatatable 
+          width = {220} 
+          option={options} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => clearAll()}
+          isCheckBox={false}
+          isduplicate={true}
+        />
       );
-    };
-
-    const onSetHeaderArray = (v: ValueString[]) => {
-      headCells[colIdx].headerArray = v;
-    };
-
-    const assetListerNoOptions = {
-      width: "100%",
-      marginLeft: "-1px",
-      whiteSpace: "nowrap",
-      overFlow: "hidden",
-      textOverflow: "ellipsis",
-      marginRight: "auto",
-      paddingLeft: "7px",
-      paddingRight: "7px",
-      fontSize: "14px",
-      top: "-5px",
-      marginTop: "4px"
-    };
-
-    const PaddLeftNoOptions = {
-      marginLeft: "4px",
-      paddingRight: "7px",
-      marginRight: "7px",
-      paddingLeft: "7px",
-    };
-
-    return (
-      <MultSelectiDropDown
-        headCells={headCells}
-        colIdx={colIdx}
-        reformattedRows={reformattedRows}
-        isSearchable={isSearchable}
-        onMultiSelectChange={onSelection}
-        onSetSearchData={onSetSearchData}
-        onSetHeaderArray={onSetHeaderArray}
-        widthNoOption={assetListerNoOptions}
-        checkedStyle={PaddLeftNoOptions}
-      />
-    );
+    }
   };
 
   const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
     let date: Date;
-    if (evidence.holdUntill != null)
-      date = moment(evidence.holdUntill).toDate();
+    if (evidence.holdUntil != null)
+      date = moment(evidence.holdUntil).toDate();
     else
       date = moment(evidence.expireOn).toDate();
 
@@ -319,9 +330,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       );
     }
     return (
-      <p>
+      <div className="dataTableText ">
         {AssetRetentionFormat(date)}
-      </p>
+      </div>
     );
   }
 
@@ -344,9 +355,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_Thumbnail")}`,
       id: "assetId",
       align: "left",
-      dataComponent: thumbTemplate,
+      dataComponent:(e : any, d : any) => thumbTemplate(e,d),
       minWidth: "130",
       maxWidth: "150",
+      detailedDataComponentId: "evidence",
       width: ""
     },
     {
@@ -372,8 +384,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "230",
       maxWidth: "250",
       visible: false,
@@ -410,8 +423,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "230",
       maxWidth: "250",
       visible: false,
@@ -426,8 +440,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
       minWidth: "230",
       maxWidth: "250",
       visible: false,
@@ -442,8 +457,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
       minWidth: "230",
       maxWidth: "250",
       visible: false,
@@ -458,8 +474,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, true),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "210",
       maxWidth: "230",
     },
@@ -475,8 +492,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],
-        colIdx: number
-      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, false),
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, false),
     },
     {
       label: t("Retention_Span"),
@@ -516,7 +534,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     searchData.forEach((el: SearchObject) => {
       if (el.columnName === "assetName" || el.columnName === "description")
         dataRows = onTextCompare(dataRows, headCells, el);
-      if (["assetType", "devices", "station", "status"].includes(el.columnName))
+      if (["assetType", "devices", "station", "status", "unit"].includes(el.columnName))
         dataRows = onMultipleCompare(dataRows, headCells, el);
       if (["categories", "recordedBy"].includes(el.columnName))
         dataRows = onMultiToMultiCompare(dataRows, headCells, el);
@@ -584,6 +602,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showToolbar={true}
           dataRows={rows}
           headCells={headCells}
+          initialRows={reformattedRows}
           orderParam={order}
           orderByParam={orderBy}
           searchHeader={true}

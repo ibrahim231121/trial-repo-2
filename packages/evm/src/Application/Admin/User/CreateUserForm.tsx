@@ -333,10 +333,9 @@ const CreateUserForm = () => {
           className='crx-gente-field crx-gente-field-pass'
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
-          label={t("SSID_Password")}
+          label={"Password"}
           type='password'
           required={true}
-          value={password}
           onChange={(e: any) => setPassword(e.target.value)}
           onBlur={checkPassword}
         />
@@ -347,7 +346,6 @@ const CreateUserForm = () => {
           label={t("Confirm_Password")}
           required={true}
           type='password'
-          value={confirmPassword}
           onChange={(e: any) => setConfirmPassword(e.target.value)}
           onBlur={checkConfirmPassword}
         />

@@ -3,14 +3,23 @@ import Cookies from 'universal-cookie';
 import { UnitsAndDevicesAgent } from '../utils/Api/ApiAgent';
 import { ConfigurationTemplateLogs, DeviceConfigurationTemplate, DeviceType } from '../utils/Api/models/UnitModels';
 import { BASE_URL_UNIT_SERVICES} from '../utils/Api/url'
+import { setLoaderValue } from './loaderSlice';
 
 const cookies = new Cookies();
 export const getConfigurationInfoAsync: any = createAsyncThunk(
     'GetAllConfiguration',
-    async (pageiFilter?: any) => {
+    async (pageiFilter: any, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
         let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
         return await UnitsAndDevicesAgent.getAllDeviceConfigurationTemplate(`/ConfigurationTemplates/filterUnitDeviceTemplate?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
-            .then((response:any) => response);
+            .then((response:any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+                return response
+            })
+            .catch((error: any) => {
+                thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+                console.error(error.response.data);
+              });
     }
 );
 

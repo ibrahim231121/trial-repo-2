@@ -21,7 +21,8 @@ export type AssetLockUnLockErrorType = {
 export enum ActionMenuPlacement {
     AssetLister = 1,
     AssetBucket = 2,
-    DetailedAssets = 3
+    DetailedAssets = 3,
+    AssetDetail = 4
 }
 
 export type AssetBucket = {

@@ -124,6 +124,7 @@ const CreateTemplate = (props: any) => {
   const [templateName] = React.useState<string>(historyState.deviceType);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
+  const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
@@ -601,16 +602,28 @@ const CreateTemplate = (props: any) => {
     setOpen(false);
   };
 
+  const handleRowIdDependency = (key: string, extraFieldDependency?: any, formObj?: any, values?: any) => {
+    let parentSplittedKey = formObj.key.split('_');
+    key = key.replace("rowId", parentSplittedKey[1])
+    let value = values[key]
+    if(extraFieldDependency == "cameraDevice")
+    {
+      return FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select").options.find((x:any) => x.value == value)?.label;
+    }
+    return value;
+  }
+
   const handleSave = (values: any, resetForm: any) => {
     //  let value1 = values
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
-
+    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"].feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
       if (!(valueRaw?.feilds !== undefined)) {
         var valueToSave = true;
+        var nonDependantValue = true;
         var keySubSplit = split[1].split('_');
         if(split[1] == "PrimaryDevice" && valueToSave)
         {
@@ -635,6 +648,29 @@ const CreateTemplate = (props: any) => {
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+          nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
+          if(keySubSplit[0] == "streamPort")
+          {
+            var deviceTypeName = Initial_Values.find(x => x.key == "deviceTypeName_1_Camera")?.value;
+            if(deviceTypeName == "NF-21" || deviceTypeName == "NF-22 Stream 1" || deviceTypeName == "NF-22 Stream 2")
+            {
+              Initial_Values.push({
+                key: split[1],
+                value: "554",
+                group: split[0],
+                valueType: split[2],
+              });
+            }
+            if(deviceTypeName == "Zero-Dark")
+            {
+              Initial_Values.push({
+                key: split[1],
+                value: "81",
+                group: split[0],
+                valueType: split[2],
+              });
+            }
+          }
           if(keySubSplit[0] == "device" && valueToSave)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
@@ -671,13 +707,25 @@ const CreateTemplate = (props: any) => {
           }
         }
         if (valueToSave) {
-          Initial_Values.push({
-            key: split[1],
-            value: valueRaw,
-            group: split[0],
-            valueType: split[2],
-            sequence: 1,
-          });
+          if(nonDependantValue)
+          {
+            Initial_Values.push({
+              key: split[1],
+              value: valueRaw,
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
+          else{
+            Initial_Values.push({
+              key: split[1],
+              value: "",
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
         }
       }
       // Pretty straightforward - use key for the key and value for the value.
@@ -895,6 +943,7 @@ const CreateTemplate = (props: any) => {
                                     setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
                                     isValid={isValid} setformSchema={setformSchema}
                                     touched={touched} errors={errors} 
+                                    setValidationFailed = {setValidationFailed}
                                     sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
                                 </div>) : (<></>));
 
@@ -907,8 +956,8 @@ const CreateTemplate = (props: any) => {
                   <div className="tctButton">
                     <div className="tctLeft">
                       <CRXButton
-                        className={!isValid || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
-                        disabled={!isValid || !dirty}
+                        className={validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
+                        disabled={validationFailed || !dirty}
                         type="submit"
                         onClick={() => handleSave(values, resetForm)}
                       >

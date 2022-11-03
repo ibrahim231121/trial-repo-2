@@ -1,6 +1,6 @@
 export type DisplayCategoryFormProps = {
-    isCategoryEmpty: boolean;
-    categoryObject: any;
+    formCollection: any[];
     initialValueObjects: Array<any>;
+    validationSchema : any;
     setFieldsFunction: (param: any) => void;
 };

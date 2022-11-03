@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Form, FormikHelpers } from 'formik';
+import { Formik, Form, FormikHelpers, Field } from 'formik';
 import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog, TextField } from '@cb/shared';
 import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
@@ -93,13 +93,14 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
     EvidenceAgent.getEvidence(props.rowData.id).then((response: Evidence) => {
       if (response.expireOn != null) {
         formPayload.OriginalRetention = `Original Retentions: ${moment(response.expireOn).format('DD-MM-YYYY HH:MM:ss')}`;
-        formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
         if(response.holdUntil !=null)
         {
           if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
+            formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
             formPayload.CurrentRetention = 'Current Retention: Indefinite';
           }
           else {
+            formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
             formPayload.CurrentRetention = `Current Retention: ${moment(response.holdUntil).format('DD-MM-YYYY HH:MM:ss')}`;
           }
         }
@@ -114,46 +115,68 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
 
   const cancelBtn = () => props.setOnClose();
 
-  const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
-
+  const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any, retentionDays : number) => {
+    debugger
     const status = e.target.value;
     setFieldValue('RetentionStatus', status, false);
     if (status === RetentionStatusEnum.IndefiniteExtention) {
       setFieldValue('SaveButtonIsDisable', false, false);
-      setFieldValue('RetentionList', [{
-        id: props.rowData.id,
-        extendedDays: null,
-        holdUntil : 0
-      }], false);
+      setFieldValue('RetentionList',  GetRetentionList(null, 0), false);
       props.setIsformUpdated(true);
-      
+      console.log("infinity","retentionDays")
     }
     else if(status === RetentionStatusEnum.RevertToOriginal)
     {
-      setFieldValue('RetentionList', [{
-        id: props.rowData.id,
-        holdUntil : null
-      }], false);
+      setFieldValue('RetentionList', GetRetentionList(null, null), false);
+    }
+    else if(status === RetentionStatusEnum.CustomExtention)
+    {
+      SetRetentionList(retentionDays, setFieldValue);
     }
     setFieldValue('SaveButtonIsDisable', false, false);
+  }
+
+  function GetRetentionList(retentionDays: any, holdUntil: any) {
+    let retentionList: { id: any; extendedDays: number; holdUntil: number }[] = [];
+    if (props?.items?.length > 1) {
+      props.items.forEach((el) => {
+        retentionList.push({
+          id: el.id,
+          extendedDays: parseInt(retentionDays),
+          holdUntil: holdUntil
+        });
+      });
+    }
+    else {
+      retentionList.push({
+        id: props?.rowData?.id,
+        extendedDays: parseInt(retentionDays),
+        holdUntil: holdUntil
+      });
+    }
+
+    return retentionList;
   }
 
 
   const onChangeEvent = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     e.preventDefault();
-    const retentionDays = e.target.value;
+    SetRetentionList(parseInt(e.target.value), setFieldValue);
+  }
+
+  function SetRetentionList(retentionDays: number, setFieldValue: any)
+  {
+    retentionDays = retentionDays >= 1 ? retentionDays : 1;
+    console.log("retentionDays",retentionDays)
     setFieldValue('RetentionDays', retentionDays, false);
-    setFieldValue('RetentionList', [{
-      id: props.rowData.id,
-      extendedDays: parseInt(retentionDays)
-    }], false);
+    setFieldValue('RetentionList', GetRetentionList(retentionDays, null), false);
     setFieldValue('SaveButtonIsDisable', false, false);
-    
     props.setIsformUpdated(true);
   }
 
   const onSubmitForm = (values: RetentionFormType, actions: FormikHelpers<RetentionFormType>) => {
     const url = '/Evidences/Retention';
+    console.log("values.RetentionDays",values.RetentionDays)
     EvidenceAgent.updateRetentionPolicy(url, values.RetentionList).then(() => {
       props.setOnClose();
       setTimeout(() => {
@@ -226,17 +249,17 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
                    <CRXRadio
                     value={values.RetentionStatus}
                     content={values.RetentionOptions}
-                    onChange={(e: any) => RadioButtonOnChange(e, setFieldValue)}
+                    onChange={(e: any) => RadioButtonOnChange(e, setFieldValue, values.RetentionDays)}
                     />   
-                  <TextField
-                    parentId="_rentention_field_parent"
-                    className=""
-                    type="number"
-                    disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
-                    value={values.RetentionDays}
-                    name="RetentionDays"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      onChangeEvent(e, setFieldValue)}
+                  <Field 
+                  parentId="_rentention_field_parent" 
+                  id="RetentionDays" 
+                  type="number" 
+                  value={values.RetentionDays}
+                  name="RetentionDays"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChangeEvent(e, setFieldValue)}
+                  disabled={values.RetentionStatus == RetentionStatusEnum.CustomExtention ? false : true}
                   />
                   <div className="retention-label-days"><span>
                     days

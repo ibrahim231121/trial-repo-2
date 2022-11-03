@@ -10,13 +10,13 @@ import { filterCategory } from './Utility/UtilityFunctions';
 import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import usePrevious from './Utility/usePrev';
-import { FormContainerProps } from './Model/FormContainerModel';
+import { FormContainerProps, SelectedCategoryModel } from './Model/FormContainerModel';
 
 const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   const [openModal, setOpenModal] = React.useState(false);
   const [showsSticky, setshowSSticky] = React.useState(false);
   const [activeForm, setActiveForm] = React.useState<number>(0);
-  const [filterValue, setFilterValue] = React.useState<any>([]);
+  const [selectedCategoryValues, setSelectedCategoryValues] = React.useState<Array<SelectedCategoryModel>>([]);
   const [removedOption, setRemovedOption] = React.useState<any>({});
   const [differenceOfDays, setDifferenceOfDays] = React.useState<number>(0);
   const [modalTitle, setModalTitle] = React.useState('');
@@ -42,7 +42,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
       if (props.rowData) {
         const evidenceId = props.rowData.id;
         EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
-          setFilterValue(filterCategory(response.categories));
+          setSelectedCategoryValues(filterCategory(response.categories));
           setEvidenceResponse(response);
         })
           .catch((err: any) => {
@@ -74,7 +74,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
       })[0];
 
     if (newValue) {
-      setFilterValue((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
+      setSelectedCategoryValues((prevState: any) => [...prevState, newValue]); // Set removed option in to State again.
       setRemovedOption({});
     }
     closeAndResetModal();
@@ -92,10 +92,10 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
         return (
           <DropdownForm
             activeForm={activeForm}
-            setActiveForm={(v: number) => setActiveForm(v)}
-            filterValue={filterValue}
-            setFilterValue={(v: any) => setFilterValue(v)}
-            evidenceResponse={evidenceResponse}
+            setActiveForm={(v) => setActiveForm(v)}
+            selectedCategoryValues={selectedCategoryValues}
+            setSelectedCategoryValues={(v) => setSelectedCategoryValues(v)}
+            evidence={evidenceResponse}
             isCategoryEmpty={props.isCategoryEmpty}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setOpenForm={() => props.setOpenForm()}
@@ -111,12 +111,12 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
           <CategoryForm
             activeForm={activeForm}
             setActiveForm={(v: any) => setActiveForm(v)}
-            filterValue={filterValue}
-            evidenceResponse={evidenceResponse}
+            selectedCategoryValues={selectedCategoryValues}
+            evidence={evidenceResponse}
             isCategoryEmpty={props.isCategoryEmpty}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            setFilterValue={(v: any) => setFilterValue(v)}
+            setSelectedCategoryValues={(v) => setSelectedCategoryValues(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
@@ -130,7 +130,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: any) => setActiveForm(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            setFilterValue={(v: any) => setFilterValue(v)}
+            setSelectedCategoryValues={(v) => setSelectedCategoryValues(v)}
             isCategoryEmpty={props.isCategoryEmpty}
             removedOption={removedOption}
             setremoveClassName={(v: any) => setremoveClassName(v)}
@@ -147,11 +147,11 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: any) => setActiveForm(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            filterValue={filterValue}
-            setFilterValue={(v: any) => setFilterValue(v)}
+            selectedCategoryValues={selectedCategoryValues}
+            setSelectedCategoryValues={(v) => setSelectedCategoryValues(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
-            evidenceResponse={evidenceResponse}
+            evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setDifferenceOfDays={(v: number) => setDifferenceOfDays(v)}
             setRemovedOption={(e: any) => setRemovedOption(e)}
@@ -168,10 +168,10 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: any) => setActiveForm(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            setFilterValue={(v: any) => setFilterValue(v)}
+            setSelectedCategoryValues={(v) => setSelectedCategoryValues(v)}
             setModalTitle={(i: any) => setModalTitle(i)}
             removedOption={removedOption}
-            evidenceResponse={evidenceResponse}
+            evidence={evidenceResponse}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             differenceOfDays={differenceOfDays}
             setRemovedOption={(e: any) => setRemovedOption(e)}
@@ -187,8 +187,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setActiveForm={(v: any) => setActiveForm(v)}
             setOpenForm={() => props.setOpenForm()}
             closeModal={(v: any) => setOpenModal(v)}
-            evidenceResponse={evidenceResponse}
-            filterValue={filterValue}
+            evidence={evidenceResponse}
             setModalTitle={(i: any) => setModalTitle(i)}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}

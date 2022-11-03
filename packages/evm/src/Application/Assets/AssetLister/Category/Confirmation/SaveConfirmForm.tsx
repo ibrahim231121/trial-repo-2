@@ -49,7 +49,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
       })[0];
     if (newValue) {
       /** Set removed option in to State again. */
-      props.setFilterValue((prevState: any) => [...prevState, newValue]);  
+      props.setSelectedCategoryValues((prevState) => [...prevState, newValue]);  
       props.setRemovedOption({});
     }
     props.setActiveForm(0);
@@ -62,7 +62,7 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
 
   const deleteRequest = () => {
     const message = props.removeMessage;
-    const evidenceId = props.evidenceResponse?.id;
+    const evidenceId = props.evidence?.id;
     const categoryId = props.removedOption.id;
     const unAssignCategory : Category = {
       id: categoryId,

@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled } = props;
+  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -14,6 +14,13 @@ const VideoPlayerSettingMenu = (props: any) => {
 
   const EnableMultipleTimeline = (event: any) => {
     setMultiTimelineEnabled(event.target.checked)
+    
+    let scroll:any = window.scroll({
+      top: 100,
+      left: 0,
+      behavior: 'smooth'
+    })
+    event.target.checked && scroll();
   }
 
   const IsShowAudioGraphChangeEvent = (event : any) => {
@@ -68,7 +75,7 @@ useEffect(() => {
     <>
    
     <MaterialMenu
-        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""} `}
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}`}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}
@@ -146,7 +153,7 @@ useEffect(() => {
 
 
       <MaterialMenu
-        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad  ? "MultiBackMenu" : ""}  ` }
+        className={`ViewScreenMenu SettingBackMenu ${position === true && multiTimelineEnabled == true ? "backOverlayTab" : ""} ${CheckedAll ? "CheckedAllTrueMain" : ""} ${ !singleVideoLoad  ? "MultiBackMenu" : ""} ${fullScreenControl} ` }
         anchorEl={overlayMenuEnabled}
         keepMounted
         open={Boolean(overlayMenuEnabled)}

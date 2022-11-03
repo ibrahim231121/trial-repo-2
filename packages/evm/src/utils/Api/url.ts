@@ -2,6 +2,7 @@ import { env } from "../../env";
 import { MAX_REQUEST_SIZE_FOR } from '../constant'
 
 
+export const BASE_URL_SOCKET_SERVICE = env.REACT_APP_SOCKET_SERVICE_URL;
 export const BASE_URL_COMMAND_SERVICE = env.REACT_APP_COMMAND_SERVICE_URL;
 const BASE_URL_SEARCH_SERVICE = env.REACT_APP_SEARCH_SERVICE_URL;
 export const BASE_URL_AUTHENTICATION_SERVICE = env.REACT_APP_AUTHENTICATION_SERVICE_URL;
@@ -72,7 +73,7 @@ export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries
 export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 
-export const SENSOR_AND_TRIGGERS_GET_ALL = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
+export const SENSOR_AND_TRIGGERS_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
 export const SENSOR_AND_TRIGGERS = `${BASE_URL_SETUP_SERVICE}/SensorEvents/UpsertEvent`;
 export const SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/SensorEvents/GetAllEvents`;
 

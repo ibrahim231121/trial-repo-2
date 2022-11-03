@@ -24,7 +24,7 @@ import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../../utils/urlList";
-import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
+import { EvidenceAgent, FileAgent } from "../../../../utils/Api/ApiAgent";
 import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "./types";
 import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
 import { SearchType } from "../../utils/constants";
@@ -33,7 +33,13 @@ import { IDecoded } from "../../../../Login/API/auth";
 import jwt_decode from "jwt-decode";
 import ActionMenuCheckList from "../../../../ApplicationPermission/ActionMenuCheckList";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
-import { AssetRestriction, MetadataFileType, PersmissionModel, securityDescriptorType } from "../../../../utils/Api/models/EvidenceModels";
+import { AssetRestriction, Evidence, MetadataFileType, PersmissionModel, securityDescriptorType } from "../../../../utils/Api/models/EvidenceModels";
+import { getAssetTrailInfoAsync } from "../../../../Redux/AssetDetailsReducer";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import moment from "moment";
+import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
+import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
 
 type Props = {
   row: any;
@@ -76,7 +82,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   const [openUnlockAccessDialogue, setOpenUnlockAccessDialogue] = React.useState(false);
   const [filterValue, setFilterValue] = React.useState<any>([]);
   const [IsformUpdated, setIsformUpdated] = React.useState(false);
-
+  const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] = React.useState(false);
   React.useEffect(() => {
     calculateSecurityDescriptor();
     if (selectedItems.length > 1) {
@@ -120,7 +126,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   }
 
   const findMaximumDescriptorId = (securityDescriptors: Array<securityDescriptorType>): number => {
-    return Math.max.apply(Math, securityDescriptors.map((o) => {
+    return securityDescriptors.length === 0 ? 0 : Math.max.apply(Math, securityDescriptors.map((o) => {
       return parseInt(PersmissionModel[o.permission], 10);
     }));
   }
@@ -234,6 +240,137 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       });
   }
 
+  function padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+
+  const milliSecondsToTimeFormat = (date: Date) => {
+    let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+    return numberFormatting + " (" + nameFormatting + ")";
+  }
+
+  const formatBytes = (bytes: number, decimals: number = 2) => {
+    if (!+bytes) return '0 Bytes'
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+
+  const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
+    if (holdUntil) {
+      return AssetRetentionFormat(holdUntil);
+    }
+    else if (expireOn) {
+      return AssetRetentionFormat(expireOn);
+    }
+  }
+
+  const onClickDownloadAssetTrail = async () => {
+    if (row) {
+      let assetTrail = await getAssetTrail();
+      let getAssetData = await getAssetInfo();
+      let uploadCompletedOn = await getuploadCompletedOn(getAssetData?.assets?.master?.files);
+
+      var assetInfo;
+      if (getAssetData) {
+        let categories: any[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          x.formData.forEach((y: any) => {
+            let formDatas: any[] = [];
+            y.fields.map((z: any) => {
+              let formData = {
+                key: z.key,
+                value: z.value
+              }
+              formDatas.push(formData);
+            })
+            categories.push({
+              name: y.name,
+              formDatas: formDatas
+            })
+          })
+        });
+
+        var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
+
+        var unit: number[] = [];
+        unit.push(getAssetData.assets.master.unitId);
+
+        var checksum: number[] = [];
+        getAssetData.assets.master.files.forEach((x: any) => {
+          checksum.push(x.checksum.checksum);
+        });
+
+
+        let size = getAssetData.assets.master.files.reduce((a, b) => a + b.size, 0)
+
+
+        var categoriesForm: string[] = [];
+        getAssetData.categories.forEach((x: any) => {
+          categoriesForm.push(x.record.cmtFieldName);
+        });
+
+        assetInfo = {
+          owners: owners,
+          unit: unit,
+          capturedDate: moment(getAssetData.createdOn).format(
+            "MM / DD / YY @ HH: mm: ss"
+          ),
+          checksum: checksum,
+          duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
+          size: formatBytes(size, 2),
+          retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
+          categories: categories,
+          categoriesForm: categoriesForm,
+          id: getAssetData?.assets?.master?.id,
+          assetName: getAssetData?.assets?.master?.name,
+          typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
+          status: getAssetData?.assets?.master?.status,
+          camera: getAssetData?.assets?.master?.camera ?? ""
+        }
+      }
+
+      let uploadCompletedOnFormatted = uploadCompletedOn ? moment(uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
+
+      //download
+      if (assetTrail && assetInfo) {
+
+        downloadAssetTrail(assetTrail, assetInfo, uploadCompletedOnFormatted);
+      }
+    }
+  }
+
+  const getAssetTrail = async () => {
+    const evidence = row.evidence;
+    return await EvidenceAgent.getAssetTrail(`/Evidences/${evidence.id}/AssetTrail`).then((response) => response);
+  }
+
+  const getAssetInfo = async () => {
+    const evidence = row.evidence;
+    return await EvidenceAgent.getEvidence(evidence.id).then((response: Evidence) => response);
+  }
+
+  const getuploadCompletedOn = async (files: any) => {
+    if (files) {
+      let uploadCompletedOn;
+      for (const file of files) {
+        if (file.type == "Video") {
+          await FileAgent.getFile(file.filesId).then((response) => { uploadCompletedOn = response.history.uploadCompletedOn });
+          break;
+        }
+      }
+      return uploadCompletedOn;
+    }
+  }
+
   const downloadFileByFileResponse = (response: AxiosResponse, assetId: number) => {
     let fileStream = response.data;
     const fileName = `${assetId}_Metadata.pdf`;
@@ -282,31 +419,30 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
   const addToAssetBucket = () => {
     //if undefined it means header is clicked
-    
+
     if (row !== undefined && row !== null) {
-      if(selectedItems.length > 0){
+      if (selectedItems.length > 0) {
         dispatch(addAssetToBucketActionCreator(selectedItems));
       }
-      else
-      {
-      const find = selectedItems.findIndex(
-        (selected: any) => selected.id === row.id
-      );
-
-      const data = find === -1 ? row : selectedItems;
-      // To cater object is not extensible issue,
-      let newObject = { ...data };
-
-      if (data.evidence) {
-        newObject.isMaster = data.evidence.masterAssetId === data.id;
-      }
       else {
-        newObject.isMaster = data.masterAssetId === asset.assetId;
-        newObject.selectedAssetId = asset.assetId;
+        const find = selectedItems.findIndex(
+          (selected: any) => selected.id === row.id
+        );
+
+        const data = find === -1 ? row : selectedItems;
+        // To cater object is not extensible issue,
+        let newObject = { ...data };
+
+        if (data.evidence) {
+          newObject.isMaster = data.evidence.masterAssetId === data.id;
+        }
+        else {
+          newObject.isMaster = data.masterAssetId === asset.assetId;
+          newObject.selectedAssetId = asset.assetId;
+        }
+        dispatch(addAssetToBucketActionCreator(newObject));
       }
-      dispatch(addAssetToBucketActionCreator(newObject));
     }
-    } 
     else {
       dispatch(addAssetToBucketActionCreator(selectedItems));
     }
@@ -318,13 +454,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     const data = find === -1 ? row : selectedItems
     dispatch(removeAssetFromBucketActionCreator(data));
     if (find !== -1) {
-      // setSelectedItems([])
+      selectedItems = []
     }
     // }
-    // else {
-    //   dispatch(removeAssetFromBucketActionCreator(selectedItems))
-    //   setSelectedItems([])
-    // }
+    else {
+      dispatch(removeAssetFromBucketActionCreator(selectedItems))
+      selectedItems = []
+    }
   }
 
   const calculateSecurityDescriptor = (): void => {
@@ -335,9 +471,13 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
       for (const asset of selectedItems) {
         assetIdSecurityDescriptorCollection.push({
           'assetId': asset.assetId,
-          'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors)
+          'securityDescriptorMaxId': findMaximumDescriptorId(asset.evidence.securityDescriptors),
+          'isEvidenceExpired': CheckEvidenceExpire(asset.evidence)
         });
       }
+
+      let isEvidenceExpired = assetIdSecurityDescriptorCollection.filter((x: any) => x.isEvidenceExpired === true)?.length > 0;
+      setIsMultiSelectEvidenceExpired(isEvidenceExpired);
       const lowestSecurityDescriptorAssetIdAndDescriptor = assetIdSecurityDescriptorCollection.sort((a: any, b: any) => (a.securityDescriptorMaxId > b.securityDescriptorMaxId ? 1 : -1))[0];
       setMaximumDescriptor(lowestSecurityDescriptorAssetIdAndDescriptor.securityDescriptorMaxId);
       const lowestSecurityDescriptorAssetObject = selectedItems.find((x: any) => x.assetId === lowestSecurityDescriptorAssetIdAndDescriptor.assetId);
@@ -346,9 +486,10 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     }
     //NOTE : Clicked on row.
     else {
-      if (row) {
+      if (row?.evidence?.securityDescriptors) {
         setMaximumDescriptor(findMaximumDescriptorId(row.evidence.securityDescriptors));
         setSecurityDescriptorsArray(row.evidence.securityDescriptors);
+        setIsMultiSelectEvidenceExpired(false);
         return;
       }
     }
@@ -362,6 +503,106 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
     let value = multiCompareAssetBucketData(assetBucketData, selectedItems);
     if (value.includes(false)) addToAssetBucketDisabled = false;
     else addToAssetBucketDisabled = true;
+  }
+
+  const downloadAssetTrail = (assetTrail: any, assetInfo: any, uploadedOn: any) => {
+    const head = [[t('Seq No'), t('Captured'), t('Username'), t('Activity')]];
+    let data: any[] = [];
+    let arrS: any[] = [];
+    assetTrail.forEach((x: any) => {
+      arrS.push(x.seqNo);
+      arrS.push((new Date(x.performedOn)).toLocaleString());
+      arrS.push(x.userName);
+      arrS.push(x.notes);
+      data.push(arrS);
+      arrS = [];
+    }
+    );
+
+    let CheckSum = assetInfo.checksum ? assetInfo.checksum.toString() : "";
+    let assetId = assetInfo.id ? assetInfo.id.toString() : "";
+
+
+    const doc = new jsPDF()
+    doc.setFontSize(11)
+    doc.setTextColor(100)
+    let yaxis1 = 14;
+    let yaxis2 = 70;
+    let xaxis = 25;
+
+    doc.text(t("CheckSum") + ":", yaxis1, xaxis)
+    doc.text(CheckSum, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Asset Id") + ":", yaxis1, xaxis)
+    doc.text(assetId, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Asset Type") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.typeOfAsset, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Asset Status") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.status, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Username") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.owners.join(", "), yaxis2, xaxis)
+    xaxis += 5;
+
+    let categoriesString = "";
+    let tempxaxis = 0;
+    assetInfo.categories.forEach((x: any, index: number) => {
+      let formData = x.formDatas.map((y: any, index1: number) => {
+        if (index1 > 0) {
+          tempxaxis += 5
+        }
+        return y.key + ": " + y.value + "\n";
+      })
+      categoriesString += (x.name ? x.name : "") + ":    " + formData + "\n";
+      if (index > 0) {
+        tempxaxis += 5
+      }
+    }
+    )
+    doc.text(t("Categories") + ":", yaxis1, xaxis)
+    doc.text(categoriesString, yaxis2, xaxis)
+    xaxis += tempxaxis + 5;
+
+
+    doc.text(t("Camera Name") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.camera, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Captured") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.capturedDate, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Uploaded") + ":", yaxis1, xaxis)
+    doc.text(uploadedOn, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Duration") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.duration, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Size") + ":", yaxis1, xaxis)
+    doc.text(assetInfo.size, yaxis2, xaxis)
+    xaxis += 5;
+
+    doc.text(t("Retention") + ":", yaxis1, xaxis)
+    doc.text(assetInfo?.retention, yaxis2, xaxis)
+    xaxis += 5;
+
+    autoTable(doc, {
+      startY: xaxis,
+      head: head,
+      body: data,
+      didDrawCell: (data: any) => {
+        console.log(data.column.index)
+      },
+    })
+    doc.save('ASSET ID_Audit_Trail.pdf');
   }
 
   return (
@@ -386,12 +627,12 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         portal={portal}
         menuButton={
           <MenuButton>
-            <i className="far fa-ellipsis-v"></i>
+            <i className={actionMenuPlacement == ActionMenuPlacement.AssetDetail ? 'fas fa-ellipsis-h' : 'far fa-ellipsis-v'}></i>
           </MenuButton>
         }
       >
         <MenuItem>
-          <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
+          <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Add_to_asset_bucket")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu crx-spac" onClick={addToAssetBucket}>
               <div className="crx-menu-icon"></div>
               <div
@@ -409,20 +650,18 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {actionMenuPlacement == ActionMenuPlacement.AssetBucket && (
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Remove_from_asset_bucket")} securityDescriptors={securityDescriptorsArray}>
               <div className="crx-meu-content groupingMenu crx-spac" onClick={removeFromAssetBucket}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">
                   {`${t("Remove_from_asset_bucket")}`}
                 </div>
               </div>
-            </ActionMenuCheckList>
           </MenuItem>
         )}
 
         {isPrimaryOptionOpen && (
           <MenuItem>
-            <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={30} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Set_as_primary")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handlePrimaryAsset}>
                 <div className="crx-menu-icon"></div>
                 <div className="crx-menu-list">{t("Set_as_primary")}</div>
@@ -433,7 +672,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         <MenuItem>
           <ActionMenuCheckList moduleId={21} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Assign_User")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content" onClick={handleOpenAssignUserChange}>
               <div className="crx-menu-icon">
                 <i className="far fa-user-tag fa-md"></i>
@@ -445,7 +684,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         <MenuItem>
           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Modify_Retention")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu" onClick={handleOpenManageRetention}>
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">{t("Modify_Retention")}</div>
@@ -456,7 +695,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {isCategoryEmpty ? (
           <MenuItem>
             <ActionMenuCheckList moduleId={2} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Categorize")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handleChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-clipboard-list fa-md"></i>
@@ -467,7 +706,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
           </MenuItem>
         ) : (
           <MenuItem>
-            <ActionMenuCheckList moduleId={3} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={3} descriptorId={4} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Edit_Category_and_Form")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content" onClick={handleChange}>
                 <div className="crx-menu-icon">
                   <i className="far fa-clipboard-list fa-md"></i>
@@ -481,7 +720,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {isLockedAccess ?
           <MenuItem>
             <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Unlock_Access")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={unlockAccessClickHandler}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -492,7 +731,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
           </MenuItem>
           :
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Restrict_access")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={restrictAccessClickHandler}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -505,20 +744,22 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         }
 
         <MenuItem>
-
           <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Export")}
-            securityDescriptors={securityDescriptorsArray}>
+            securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
             <div className="crx-meu-content groupingMenu">
               <div className="crx-menu-icon"></div>
               <div className="crx-menu-list">
                 <SubMenu label={t("Export")}>
-                  <MenuItem onClick={handleDownloadAssetClick}>
-                    {t("Download_asset(s)")}
-                  </MenuItem>
+                  {!CheckEvidenceExpire(row?.evidence) ?
+                    <MenuItem onClick={handleDownloadAssetClick}>
+                      {t("Download_asset(s)")}
+                    </MenuItem> : null}
                   <MenuItem onClick={handleDownloadMetaDataClick}>
                     {t("Download_metadata_info")}
                   </MenuItem>
-                  <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                  {!CheckEvidenceExpire(row?.evidence) ?
+                    <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                    : null}
                 </SubMenu>
               </div>
             </div>
@@ -528,7 +769,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
         {multiAssetDisabled === false ? (
           <MenuItem>
             <ActionMenuCheckList moduleId={0} descriptorId={2} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Share_Asset")}
-              securityDescriptors={securityDescriptorsArray}>
+              securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssetShare}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>
@@ -542,7 +783,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
         {multiAssetDisabled === false ? (
           <MenuItem>
-            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")} securityDescriptors={securityDescriptorsArray}>
+            <ActionMenuCheckList moduleId={0} descriptorId={3} maximumDescriptor={maximumDescriptor} evidence={row?.evidence} actionMenuName={t("Submit_For_Analysis")} securityDescriptors={securityDescriptorsArray} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
               <div className="crx-meu-content crx-spac" onClick={handleOpenAssignSubmission}>
                 <div className="crx-menu-icon">
                   <i className="far fa-user-lock fa-md"></i>

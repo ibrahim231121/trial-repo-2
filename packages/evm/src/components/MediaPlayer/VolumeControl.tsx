@@ -20,10 +20,6 @@ interface VolumecontrolProp {
 
   const VolumeControlCss = VolumeControlStyle();
 
-
-
-
-
   const handleVolumeChange = (event: any, value: any) => {
 
     setVolume(value);

@@ -30,7 +30,8 @@
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.3",
     "react-transition-group": "^4.4.1",
-    "react-virtualized": "^9.22.3"
+    "react-virtualized": "^9.22.3",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "@types/googlemaps": "^3.43.3",
@@ -38,6 +39,7 @@
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-date-range": "^1.1.4",
     "@types/react-dom": "^17.0.0",
+    "@types/styled-components": "^5.1.26",
     "copyfiles": "^2.4.1",
     "moment": "^2.29.1",
     "react": "^17.0.1",

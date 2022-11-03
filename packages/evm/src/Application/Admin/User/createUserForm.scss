@@ -301,7 +301,7 @@
   }
 
   .DataTableBodyCell {
-    text-indent: -1px !important;
+    text-indent: 0px !important;
   }
   .rc-menu {
     width: 242px;
@@ -781,4 +781,9 @@
 
 .mr_L_10 {
   margin-left: 10px !important;
+  margin-right: 15px !important;
+}
+
+.crxManageUsers .col-two{
+  padding-left: 0px !important;
 }
