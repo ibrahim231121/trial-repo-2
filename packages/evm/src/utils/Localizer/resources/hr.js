@@ -769,6 +769,7 @@ export const resources = {
         "Reason_for_Sharing":"Reason for Sharing",
 
         //---------- Retention Policies -------------------
+        "retention_policy_Form":"Retention Policy Form",
         "Retention_Size":"Retention Size",
         "Retention_Type":"Retention Type",
         "Retention_Time":"Retention Time",

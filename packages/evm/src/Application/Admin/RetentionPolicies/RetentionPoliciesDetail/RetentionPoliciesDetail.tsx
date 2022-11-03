@@ -8,11 +8,16 @@ import './retentionPoliciesDetail.scss';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
-import { getAllRetentionPolicies } from "../../../../Redux/RetentionPolicies";
+ import { getAllRetentionPoliciesFilter } from "../../../../Redux/RetentionPolicies";
+
+ import {
+    PageiGrid
+  } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type RetentionPoliciesDetailProps = {    
     id:number,
     title:string,
+    pageiGrid: PageiGrid, 
     openModel: React.Dispatch<React.SetStateAction<any>>;
 }
 
@@ -46,8 +51,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const [radioDiskSpace, setRadioDiskSpace] = React.useState(false);
     const [retentionTimeDays, setRetentionTimeDays] = useState<number>(0);
     const [retentionHours, setRetentionHours] = useState<number>(0);
+    const [retentionTotalHours, setRetentionTotalHours] = useState<number>(0);
     const [softDeleteTimeDays, setSoftDeleteTimeDays] = useState<number>(0);
-    const [gracePeriodHours, setGracePeriodHours] = useState<number>(0);
+    const [gracePeriodHours, setGracePeriodHours] = useState<number>(0);    
+    const [graceTotalPeriodHours, setGraceTotalPeriodHours] = useState<number>(0);
     const [retentionSize, setRetentionSize] = useState<number>(0);
     const [historyVersion, setHistoryVersion] = useState<string>("");
     const [unlimitedRetention, setUnlimitedRetention] = useState<boolean>(false);    
@@ -61,15 +68,17 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
   
     const [openModal, setOpenModal] = React.useState(false);
     const [isDeleted, setIsDeleted] = React.useState<boolean>(false);
+    const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
 
     const [success, setSuccess] = React.useState<boolean>(false);
     const [retentionPolicy, setRetentionPolicies] = useState<RetentionPoliciesModel>(defaultRetentionPolicies);
+    
    
     const [isOpen, setIsOpen] = React.useState(false);
     const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
     const isFirstRenderRef = useRef<boolean>(true);
     const deletedParamValuesIdRef = useRef<number[]>([]);
-    const dataToEdit = useRef<any>(null);
+    const dataToEdit = useRef<RetentionPoliciesModel>(null);
     const [error, setError] = React.useState<boolean>(false);
     const [responseError, setResponseError] = React.useState<string>('');
     const history = useHistory();
@@ -95,7 +104,11 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             setRetentionHours(0); 
             setSoftDeleteTimeDays(0);
             setGracePeriodHours(0);                 
-            setUnlimitedRetention(false);            
+            setUnlimitedRetention(false); 
+            setDisableRetentionTimeDays(false);
+            setDisableHours(false);
+            setDisableSoftDeleteTimeDays(false);
+            setDisableGracePeriodHours(false);           
         }
         else
         {
@@ -119,15 +132,115 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         let remainingHours = hours - (days * 24); 
 
         setRetentionTimeDays(days);
-        setRetentionHours(remainingHours);  
+        //setRetentionHours(remainingHours);  
+        onRetentionHoursChange(remainingHours,days);
       }
       const setSoftDeleteTimeValue = (hours: number) => {
-        let days = parseInt(String(hours/24));
+        let days =  parseInt(String(hours/24));
         let remainingHours = hours - (days * 24); 
 
         setSoftDeleteTimeDays(days);
-        setGracePeriodHours(remainingHours);  
+        //setGracePeriodHours(remainingHours);  
+        
+        onGraceHoursChange(remainingHours,days);
       }
+
+      const setRetentionTotalHourValue = (hours: number,days:number) => {
+        let totalHours = Number(hours) + Number(days * 24);
+        
+        setRetentionTotalHours(totalHours);  
+      }
+      const setGraceTotalPeriodHoursValue = (hours:number,days:number) => {
+        let totalHours = Number(hours) + Number(days * 24);
+        
+        setGraceTotalPeriodHours(totalHours);  
+      }
+      const EditCloseHandler =(dataToEdit: any, temp : any) => {
+        if (dataToEdit.current == null) {
+            dataToEdit.current = { ...temp };
+        }
+       }
+
+       const onRetentionDaysChange = (hours: number,days: number) =>
+       {
+            setRetentionTimeDays(days);
+            setRetentionTotalHourValue(hours,days);
+       }
+       
+       const onRetentionHoursChange = (hours: number,days:number) =>
+       {
+            setRetentionHours(hours);
+            setRetentionTotalHourValue(hours,days);
+       }
+       
+       const onGraceDaysChange = (hours: number,days: number) =>
+       {
+            setSoftDeleteTimeDays(days);
+            setGraceTotalPeriodHoursValue(hours,days);
+       }
+       
+       const onGraceHoursChange = (hours: number,days: number) =>
+       {
+            setGracePeriodHours(hours);
+            setGraceTotalPeriodHoursValue(hours,days);
+       }
+
+       const RetentionPolicyDataChanged = (retentionPolicies: RetentionPoliciesModel, isDataChanged: boolean, dataToEdit: RetentionPoliciesModel) => {
+        let retentionTypeName =(retentionPolicy.detail?.type  == "Space"? "DiskSpace": "TimePeriod");
+        if(name != retentionPolicy.name || description != retentionPolicy.description || retentionType != retentionTypeName            
+            ||  retentionTotalHours !=  retentionPolicy.detail?.limit?.hours ||  graceTotalPeriodHours !=  retentionPolicy.detail?.limit?.gracePeriodInHours ||  unlimitedRetention !=  retentionPolicy.detail?.limit?.isInfinite 
+            ||  retentionSize !=  retentionPolicy.detail?.space
+            )
+        {
+            isDataChanged = true;            
+        }
+        // for (let item in retentionPolicies) {
+        //     isDataChanged = dataToEdit.current.retentionPolicies[item] != retentionPolicies;
+        //     if (isDataChanged === true) {
+        //         break;
+        //     }
+        // }
+        return isDataChanged;
+        }
+        const redirectPage = () => {
+            if(dataToEdit.current != null) {
+                    let isDataChanged = false;
+                    isDataChanged = RetentionPolicyDataChanged(retentionPolicy, isDataChanged, dataToEdit.current);
+                                  
+                        if(isDataChanged === true) {
+                            setIsOpen(true)
+                        } 
+                        else                        
+                        {
+                            handleClose();
+                        }
+                    }
+                    else {
+                        handleClose();
+                    }
+            }   
+
+
+            // const onRetentionPolicyChange = (e: any, field: keyof RetentionPoliciesModel) => {
+            //     let retentionPoliciesObj: RetentionPoliciesModel = {...retentionPolicy};
+                
+            //     let retentionPoliciesField = retentionPoliciesObj[field];
+            //     if(typeof retentionPoliciesField === "number")  {
+            //         retentionPoliciesField = e.target.value; 
+            //     }
+            //     else if(typeof retentionPoliciesField === "string")  {
+            //         const value: string = e.target.value;                    
+            //         retentionPoliciesField = value;
+                    
+            //     }
+            //     // else if(typeof retentionPoliciesField.isDeleted === "DetailExpand.number")  {
+            //     //     retentionPoliciesField = e.target.value; 
+            //     // }
+            //     (retentionPoliciesObj[field] as any) = retentionPoliciesField;
+            //     setRetentionPolicies(retentionPoliciesObj);
+            // }
+        
+
 
     
     useEffect(() => {
@@ -159,9 +272,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setName(response.name);
                 setDescription(response.description);
                 onRetentionTypeChange(response.detail.type);
+                
                 setRetentionTimeSpaceValue(response.detail.limit.hours);
-                setSoftDeleteTimeValue(response.detail.limit.gracePeriodHours);                
-                setUnlimitedRetention(response.detail.limit.isIndefinite);
+                setSoftDeleteTimeValue(response.detail.limit.gracePeriodInHours);                
+                setUnlimitedRetention(response.detail.limit.isInfinite);
                 setRetentionSize(response.detail.space);
                 
 
@@ -171,8 +285,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 // retentionPoliciesItem(property,item);
                 // });
 
-                setRetentionPolicies(retentionPoliciesObj); 
+                setRetentionPolicies(response); 
                 dispatch(enterPathActionCreator({ val: response?.description }));
+
+                const temp = {
+                    retentionPolicies: {...retentionPoliciesObj}
+                };
+                EditCloseHandler(dataToEdit, temp); 
           
             })
             .catch((err: any) => {
@@ -187,22 +306,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     
   
     
-  const retentionPoliciesItem = (property:any,item:any) => {
-    if(property != null) {
-        property.id = parseInt(item.id);
-        if (typeof property.data === 'object') {
-            property.data = {
-                value: parseInt(item.value),
-                displayText: item.key
-            }
-        } else if (typeof property.data === 'string') {
-            property.data = item.value;
-        } else if (typeof property.data === 'boolean') {
-            property.data = item.value === 'true' ? true : false;
-        }
-    }
-  }
-
+ 
    
    const onIndefiniteChange =(e: any, fieldName : string) => {
     let isIndefinite = e.currentTarget.checked;
@@ -290,7 +394,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setRetentionPolicies(defaultRetentionPolicies);           
                 setSuccess(true);
                 setError(false);
-                dispatch(getAllRetentionPolicies());
+                dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
@@ -314,7 +418,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setRetentionPolicies(defaultRetentionPolicies);           
                 setSuccess(true);
                 setError(false);
-                dispatch(getAllRetentionPolicies());
+                dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
@@ -334,12 +438,12 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         
     }
 
-    const redirectPage = () => {    
-            history.goBack();            
-    }
+    // const redirectPage = () => {    
+    //         history.goBack();            
+    // }
         
     const closeDialog = () => {
-        setIsOpen(false);
+        // setIsOpen(false);
         redirectPage();
     };
 
@@ -406,9 +510,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 title={props.title}
                 className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__ '}
                 modelOpen={openModal}
-                onClose={handleClose}
+                onClose={closeDialog}
                 defaultButton={false}
                 showSticky={false}
+                closeWithConfirm={closeWithConfirm}
                 >
                     <div className="settingsContent">
                      <span className="gridFilterTextBox"> 
@@ -492,7 +597,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 value={retentionTimeDays}
                                 label={t("Retention_Time")}
                                 className="retention-policies-input"
-                                onChange={(e: any) => setRetentionTimeDays(e.target.value)}
+                                onChange={(e: any) => onRetentionDaysChange(retentionHours,e.target.value)}
                                 disabled = {disableRetentionTimeDays}
                                 type="number"
                                 name="retentionTimeDays"
@@ -509,7 +614,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 < TextField                
                                 value={retentionHours}
                                 className="retention-policies-input"
-                                onChange={(e: any) => setRetentionHours(e.target.value)}
+                                onChange={(e: any) => onRetentionHoursChange(e.target.value,retentionTimeDays)}
                                 disabled = {disableHours}
                                 type="number"
                                 name="retentionHours"
@@ -551,7 +656,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     value={softDeleteTimeDays}
                                     label={t("Soft_Delete_Time")}                            
                                     className="retention-policies-input"
-                                    onChange={(e: any) => setSoftDeleteTimeDays(e.target.value)}
+                                    onChange={(e: any) => onGraceDaysChange(gracePeriodHours,e.target.value)}
                                     disabled = {disableSoftDeleteTimeDays}
                                     type="number"
                                     name="softDeleteTimeDays"
@@ -564,7 +669,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     required={false}
                                     value={gracePeriodHours}                           
                                     className="retention-policies-input"
-                                    onChange={(e: any) => setGracePeriodHours(e.target.value)}
+                                    onChange={(e: any) => onGraceHoursChange(e.target.value,softDeleteTimeDays)}
                                     disabled = {disableGracePeriodHours}
                                     type="number"
                                     name="gracePeriodHours"
@@ -809,7 +914,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             </CRXModalDialog> 
             <CRXConfirmDialog
                 setIsOpen={() => setIsOpen(false)}
-                onConfirm={closeDialog}
+                onConfirm={handleClose}
                 isOpen={isOpen}
                 className="retentionPoliciesConfirm"
                 primary={t("Yes_close")}
@@ -818,7 +923,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             >
                 <div className="confirmMessage">
                 {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                <strong>{t("retention_policies_Form")}</strong>. {t("If_you_close_the_form")}, 
+                <strong>{t("retention_policy_Form")}</strong>. {t("If_you_close_the_form")}, 
                 {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
                 <div className="confirmMessageBottom">
                 {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}

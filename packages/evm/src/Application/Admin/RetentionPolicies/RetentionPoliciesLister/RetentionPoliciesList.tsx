@@ -218,8 +218,6 @@ const RetentionPoliciesList: React.FC = () => {
     reformattedRowsRef.current = RetentionPoliciesTemplateRows;
   }
 
-  console.log(filterRetentionPolicies);
-
   React.useEffect(() => {
     setRetentionPoliciesData();
   }, [filterRetentionPolicies?.data]);
@@ -342,7 +340,7 @@ const RetentionPoliciesList: React.FC = () => {
       }
       {
         openModel &&
-       (<RetentionPoliciesDetail  id={id}  title={title}  openModel = {updateOpenModel} />)
+       (<RetentionPoliciesDetail  id={id}  title={title} pageiGrid = {pageiGrid} openModel = {updateOpenModel} />)
       }
     </div>
   );

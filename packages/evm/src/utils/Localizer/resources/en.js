@@ -809,6 +809,7 @@ export const resources = {
         "Create_TemplateIncar" : "Create Template : Incar",
 
         //---------- Retention Policies -------------------
+        "retention_policy_Form":"Retention Policy Form",
         "Retention_Size":"Retention Size",
         "Retention_Type":"Retention Type",
         "Retention_Time":"Retention Time",
