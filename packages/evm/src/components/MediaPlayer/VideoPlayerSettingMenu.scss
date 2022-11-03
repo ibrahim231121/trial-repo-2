@@ -10,8 +10,11 @@
             width: 200px;
             overflow: hidden;
             border-radius: 0px;
-            position: relative;
-           
+            position: absolute;
+            left: unset !important;
+            top: unset !important;
+            right: 198px;
+            bottom: 133px;
 
             &::after {
                 position: absolute;
@@ -277,6 +280,11 @@
             height: 216px;
             overflow: hidden;
             border-radius: 0px;
+            position: absolute;
+            left: unset !important;
+            top: unset !important;
+            right: 198px;
+            bottom: 133px;
 
             .CRXCheckBox {
                 .fa-square {
@@ -520,5 +528,21 @@
         }
     }  
     
+}
+
+.mainFullView  {
+    .SettingOverlayMenu {
+        .MuiMenu-paper {
+            right: 205px;
+            bottom: 123px;
+        }
+    }
+    .SettingBackMenu {
+        .MuiMenu-paper {
+            right: 206px;
+            bottom: 125px;
+        }
+    }
+  
 }
 

@@ -467,9 +467,12 @@
         }
 
         .volume-icon {
-          span {
+         > span {
             color: white;
             font-size: 28px;
+          }
+          .VolumeBarHover  {
+            transform: scale(1);
             transition: 0.2s all;
 
             &:hover {
@@ -478,6 +481,7 @@
               margin-top: -7px;
             }
           }
+        
         }
 
         .commentAltBtn {
@@ -694,10 +698,14 @@
     .MinusIconPosition {
       margin-left: -1px;
       margin-right: 1px;
+      i {
       transition: 0.1s all;
-      &:hover {
-        transform: scale(1.3);
+      display: inline-block;
+        &:hover {
+          transform: scale(1.3);
+        }
       }
+  
     }
     button {
       margin: 0 4px;
@@ -813,27 +821,30 @@
     }
 
     .UndoIconHover {
+      i {
       transition: 0.1s all linear;
 
-      &:hover {
-        .modeIconUndoLinker {
-          // font-size: 13px;
-          cursor: pointer;
+        &:hover {
+          .modeIconUndoLinker {
+            // font-size: 13px;
+            cursor: pointer;
+          }
+  
+          .modeIconRedoLinker {
+            // font-size: 13px;
+            cursor: pointer;
+          }
+  
+          .undoAltIcon,
+          .undoRedoIcon {
+            // font-size: 30px !important;
+            cursor: pointer !important;
+          }
+  
+          transform: scale(1.3);
         }
-
-        .modeIconRedoLinker {
-          // font-size: 13px;
-          cursor: pointer;
-        }
-
-        .undoAltIcon,
-        .undoRedoIcon {
-          // font-size: 30px !important;
-          cursor: pointer !important;
-        }
-
-        transform: scale(1.3);
       }
+   
     }
   }
 }
@@ -1370,7 +1381,7 @@ span.playBackTooltipUp {
     right: 0px !important;
     left: auto !important;
     bottom: 0px !important;
-    margin-bottom: 198px !important;
+    margin-bottom: 134px !important;
     margin-right: 97px;
     ul {
       li {
@@ -2336,6 +2347,12 @@ span.playBackTooltipUp {
     .removeControlContainer {
       visibility: hidden;
       transition: 3s all;
+    }
+    ._Player_Layout_Menu_  {
+      .MuiMenu-paper {
+      margin-bottom: 126px !important;
+      margin-right: 104px;
+      }
     }
 } 
 

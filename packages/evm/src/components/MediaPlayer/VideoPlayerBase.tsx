@@ -1851,7 +1851,7 @@ const VideoPlayerBase = (props: any) => {
     window.addEventListener('resize', videoPlayerResponsiveRightButton)
     window.addEventListener('load', videoPlayerResponsiveRightButton)
 
-    if(minWidth && minWidth <= 1024) {
+    if(minWidth && minWidth <= 930) {
       setIsShowPanel(true)
     }
   },[minWidth, isShowPanel])
@@ -1983,17 +1983,32 @@ const VideoPlayerBase = (props: any) => {
     setShowControlConatiner(true);
   }
 
-  const fullViewScreenOff = () => {
+  setTimeout(()=>{
     setShowControlConatiner(false);
-  }
+    
+  },3000)
+ 
 
-  const viewControlEnabler = showControlConatiner ? "showControlConatiner" : "removeControlContainer";
+useEffect(() => {
+    let ViewScreenMenuLayout = document?.querySelector(".ViewScreenMenu");
+    let SettingBackMenuLayout = document?.querySelector(".SettingBackMenu");   
+    let PlayerRightLayout = document?.getElementById("crx_video_player");
+    if(ViewScreenMenuLayout ) {
+      PlayerRightLayout?.appendChild(ViewScreenMenuLayout);
+    }
+    if(SettingBackMenuLayout) {
+      PlayerRightLayout?.appendChild(SettingBackMenuLayout);
+    }
+    
+  },[multiTimelineEnabled,settingMenuEnabled,overlayEnabled])
+
+  const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
 
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
-      <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}  >
+      <FullScreen onChange={screenViewChange} handle={handleScreenView} className={ViewScreen === false ? 'mainFullView' : ''}    >
 
       <div className="searchComponents">
         <div className="_video_player_container" id="_asset_detail_view_idx">
@@ -2022,7 +2037,7 @@ const VideoPlayerBase = (props: any) => {
          
           <CRXToaster ref={toasterMsgRef} />
           
-            <div id="screens">
+            <div id="screens" onMouseMove={fullViewScreenOn}>
               <VideoPlayerOverlayMenu
                 overlayEnabled={overlayEnabled}
                 overlayCheckedItems={overlayCheckedItems}
@@ -2082,7 +2097,7 @@ const VideoPlayerBase = (props: any) => {
             <div>
             </div>
          
-            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}   onMouseOut={fullViewScreenOff}    onMouseOver={fullViewScreenOn}  >
+            <div id="CRX_Video_Player_Controls" style={{ display: styleScreen == false ? 'block' : '' }}    onMouseMove={fullViewScreenOn}    >
              <div className={`view_Main_Controller_Bar ${viewControlEnabler}`}>
              <div className={`player_controls_inner `}>
                 <div className="main-control-bar">
@@ -2281,6 +2296,7 @@ const VideoPlayerBase = (props: any) => {
                         arrow={false}
                       /></div>
                     <VideoPlayerSettingMenu
+                      fullScreenControl={viewControlEnabler}
                       singleVideoLoad={singleVideoLoad}
                       multiTimelineEnabled={multiTimelineEnabled}
                       setMultiTimelineEnabled={setMultiTimelineEnabled}
@@ -2325,7 +2341,7 @@ const VideoPlayerBase = (props: any) => {
                     </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"}`}
+                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}`}
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}

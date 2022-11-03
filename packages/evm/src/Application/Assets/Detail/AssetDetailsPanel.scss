@@ -274,6 +274,9 @@
                                         min-width: 23px;
                                         margin-left: 17px;
                                     }
+                                    .MuiTooltip-tooltip {
+                                        font-size: 14px;
+                                    }
                                 }
                                 button {
                                     border: none;
@@ -302,6 +305,9 @@
                             padding: 0 0;
                             width: 32px;
                             justify-content: center;
+                            .MuiTooltip-tooltip {
+                                text-transform: lowercase;
+                            }
                             button {
                                 color: var(--color-D1D2D4);
                                 font-size: 20px;
@@ -345,7 +351,7 @@
                 ._BN_Search_field {
                     padding: 15px 0px;
                     position: relative;
-                    margin-right: 15px;
+                    margin-right: 27px;
                     margin-left: 15px;
                     padding-bottom: 2px;
                     input {

@@ -18,13 +18,13 @@
     top: -111px;
     z-index: 0;
 
-    span {
+     > span {
       height: 46px;
       display: flex;
       align-items: flex-end;
       width: 25px;
 
-      i {
+     > i {
         font-size: 28px;
       }
     }
