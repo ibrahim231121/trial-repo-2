@@ -45,7 +45,6 @@ export type DateTimeObject = {
   const [openContainerState, setOpenContainerState] = React.useState(false);
 
   const onSelectionChange = (selectedDateOption: DateTimeProp) => {
-
     var dateValue : DateTimeObject ={
        startDate: selectedDateOption.startDate(),
        endDate: selectedDateOption.endDate(),
