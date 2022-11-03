@@ -43,7 +43,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         }    
            
     }
-    // const { id } = useParams<{ id: string }>();
     const [id, setId] = useState<number>(props.id); 
     const [name, setName] = useState<string>("");    
     const [retentionType, setRetentionType] = useState<string>(retentionTypeTimePeriod);    
@@ -132,15 +131,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         let remainingHours = hours - (days * 24); 
 
         setRetentionTimeDays(days);
-        //setRetentionHours(remainingHours);  
         onRetentionHoursChange(remainingHours,days);
       }
       const setSoftDeleteTimeValue = (hours: number) => {
         let days =  parseInt(String(hours/24));
         let remainingHours = hours - (days * 24); 
 
-        setSoftDeleteTimeDays(days);
-        //setGracePeriodHours(remainingHours);  
+        setSoftDeleteTimeDays(days);  
         
         onGraceHoursChange(remainingHours,days);
       }
@@ -194,12 +191,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         {
             isDataChanged = true;            
         }
-        // for (let item in retentionPolicies) {
-        //     isDataChanged = dataToEdit.current.retentionPolicies[item] != retentionPolicies;
-        //     if (isDataChanged === true) {
-        //         break;
-        //     }
-        // }
+      
         return isDataChanged;
         }
         const redirectPage = () => {
@@ -220,29 +212,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                     }
             }   
 
-
-            // const onRetentionPolicyChange = (e: any, field: keyof RetentionPoliciesModel) => {
-            //     let retentionPoliciesObj: RetentionPoliciesModel = {...retentionPolicy};
-                
-            //     let retentionPoliciesField = retentionPoliciesObj[field];
-            //     if(typeof retentionPoliciesField === "number")  {
-            //         retentionPoliciesField = e.target.value; 
-            //     }
-            //     else if(typeof retentionPoliciesField === "string")  {
-            //         const value: string = e.target.value;                    
-            //         retentionPoliciesField = value;
-                    
-            //     }
-            //     // else if(typeof retentionPoliciesField.isDeleted === "DetailExpand.number")  {
-            //     //     retentionPoliciesField = e.target.value; 
-            //     // }
-            //     (retentionPoliciesObj[field] as any) = retentionPoliciesField;
-            //     setRetentionPolicies(retentionPoliciesObj);
-            // }
-        
-
-
-    
     useEffect(() => {
         if(!isFirstRenderRef.current) {
             if( name.length > 0 && ((radioTimePeriod && (retentionTimeDays > 0 || retentionHours > 0)) || (radioDiskSpace && retentionSize > 0 ))  ) {
@@ -278,13 +247,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setUnlimitedRetention(response.detail.limit.isInfinite);
                 setRetentionSize(response.detail.space);
                 
-
-
-                // response.retentionPolicy.forEach((item: {id: string, key: string, value: string}) => {
-                // let property = retentionPoliciesObj[item.key as keyof RetentionPoliciesModel];
-                // retentionPoliciesItem(property,item);
-                // });
-
                 setRetentionPolicies(response); 
                 dispatch(enterPathActionCreator({ val: response?.description }));
 
@@ -300,13 +262,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         }
     }, []);
 
-   
-    
-  
-    
-  
-    
- 
    
    const onIndefiniteChange =(e: any, fieldName : string) => {
     let isIndefinite = e.currentTarget.checked;
@@ -330,32 +285,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     setDisableGracePeriodHours(isIndefinite);
    }
 
-    // const checkStringValidation = (value: string,fieldName: string) => {
-    //     let errorState = {...deviceSettingsValidation};
-    //     if(!!value && value.toString().trim().length > 0) {
-    //         errorState.name = ''
-    //     } else {
-    //         errorState.name = `${fieldName}_is_required`;
-    //     }
-    //     setDeviceSettingsValidation(errorState);
-    // }
-    // const checkNumberValidation = (value: number,fieldName: string) => {
-    //     let errorState = {...deviceSettingsValidation};
-    //     if(!!value && value > 0) {
-    //         errorState.name = ''
-    //     } else {
-    //         errorState.name = `${fieldName}_is_required`;
-    //     }
-    //     setDeviceSettingsValidation(errorState);
-    // }
-
-    
-
-   
   
-    
-
-    
     const setAddPayload:any = () => {
         const limit ={
             isInfinite : unlimitedRetention,
@@ -437,13 +367,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         }
         
     }
-
-    // const redirectPage = () => {    
-    //         history.goBack();            
-    // }
         
-    const closeDialog = () => {
-        // setIsOpen(false);
+    const closeDialog = () => {        
         redirectPage();
     };
 
@@ -529,7 +454,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             type="text"
                             name="retentionPoliciesName"
                             regex=""
-                            // onBlur={() => checkStringValidation(name,"Name")}
                             
                              />
 
@@ -562,8 +486,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             </CRXHeading>
 
                             <CRXRadio
-                                    className='crxEditRadioBtn'
-                                    // disableRipple={false}
+                                    className='crxEditRadioBtn'                                 
                                     content={RadioTimePeriodBtnValues} 
                                     value={retentionType}
                                     setValue={(e: any) =>onRetentionTypeChange(RadioTimePeriodBtnValues[0].Name)}  
@@ -572,23 +495,19 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 />
 
                                 <CRXRadio
-                                    className='crxEditRadioBtn'
-                                    // disableRipple={true}
+                                    className='crxEditRadioBtn'                                   
                                     content={RadioDiskSpaceBtnValues} 
                                     value={retentionType}
-                                    setValue={(e: any)  => onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)}    
-                                    // checked={true}   
+                                    setValue={(e: any)  => onRetentionTypeChange(RadioDiskSpaceBtnValues[0].Name)}                                       
                                     name="radio-buttons"      
                                 />
 
                     </div>
 
                     <div className="retention-type">
-
                     { 
                         radioTimePeriod &&
-                        (
-                                                   
+                        (                                                   
                             <div className="days-hours">
                            
                           
@@ -603,9 +522,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 name="retentionTimeDays"
                                 regex=""
                                
-                                
-                                // onBlur={() => checkNumberValidation(retentionTimeDays,"Retention Days")}
-                                
                                 />
                                 <label>{t("Days")}<span></span></label>  
 
@@ -620,21 +536,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 name="retentionHours"
                                 regex=""
                                 min={0}
-                                max={23}                                
-                                // onBlur={() => checkNumberValidation(retentionHours,"Retention Hours")}                            
+                                max={23}                                                        
                                 />
                                 <label>{t("Hours")}<span></span></label>  
 
-
-                                 {/* <div className="indefinite_checkBox_ui">
-                                    <label>{t("Indefinite")}<span></span></label>   
-                                    <CRXCheckBox                                    
-                                     checked={unlimitedRetention}
-                                    lightMode={true}
-                                    className='crxCheckBoxCreate '
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onIndefiniteChange(e, 'indefinite')} />
-                                
-                                </div> */}
                             </div>
                         
                         )
@@ -711,112 +616,12 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
 
                     </div>
 
-
-                            
-            {/* <div className="settingsContent"> */}
-                {/* <Grid container spacing={8} justify="flex-start">
-                    <Grid item xs={12} sm={12} md={12} lg={5}>
-                        <Grid container xs={12} sm={12} md={12} lg={12}>                           
-                            <span className="gridFilterTextBox">
-                            <CRXHeading variant="subtitle1" className="label">
-                                {getFormatedLabel(t("Retention_Type"))}
-                            </CRXHeading>
-                                <CRXRadio
-                                    className='crxEditRadioBtn'
-                                    disableRipple={true}
-                                    content={RadioTimePeriodBtnValues} 
-                                    value={radioTimePeriod}
-                                    setValue={(e: any) =>onRetentionTypeChange(RadioTimePeriodBtnValues[0].id)}                                    
-                                />
-                           
-                        </span>
-                        </Grid> */}
-
-                        {/* { 
-                        radioTimePeriod &&
-                        (
-                        <Grid>                           
-                            <span className="gridFilterTextBox">
-                           
-                            < TextField
-                            required={true}
-                            value={retentionTimeDays}
-                            label={t("Retention_Time")}
-                            className="retention-policies-input"
-                            onChange={(e: any) => setRetentionTimeDays(e.target.value)}
-                            disabled = {disableRetentionTimeDays}
-                            type="number"
-                            name="retentionTimeDays"
-                            regex=""
-                            onBlur={() => checkNumberValidation(retentionTimeDays,"Retention Days")}
-                            
-                             />
-                             <label>{t("Days")}<span></span></label>  
-
-                           < TextField
-                            required={false}
-                            value={softDeleteTimeDays}
-                            label={t("Soft_Delete_Time")}                            
-                            className="retention-policies-input"
-                            onChange={(e: any) => setSoftDeleteTimeDays(e.target.value)}
-                            disabled = {disableSoftDeleteTimeDays}
-                            type="number"
-                            name="softDeleteTimeDays"
-                            regex=""                            
-                             />
-                             <label>{t("Days")}<span></span></label>  
-
-                            <div className="indefinite_checkBox_ui">
-                                <label>{t("Indefinite")}<span></span></label>   
-                               <CRXCheckBox                                    
-                                     checked={unlimitedRetention}
-                                    lightMode={true}
-                                    className='crxCheckBoxCreate '
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onIndefiniteChange(e, 'indefinite')} />
-                                
-                            </div>
-                        </span>
-                        </Grid>
-                        )
-                        } */}
-                         {/* { 
-                        radioDiskSpace &&
-                        (
-                        <Grid container xs={12} sm={12} md={12} lg={12}>                           
-                            <span className="gridFilterTextBox">
-                           
-                            < TextField
-                            required={true}
-                            value={retentionSize}
-                            label={t("Retention_Size")}
-                            className="retention-policies-input"
-                            onChange={(e: any) => setRetentionSize(e.target.value)}
-                            disabled = {false}
-                            type="number"
-                            name="retentionSize"
-                            regex=""
-                            onBlur={() => checkNumberValidation(retentionSize,"Retention Size")}
-                            
-                             />
-                             <label>{t("GB")}<span></span></label>  
-
-                       
-                        </span>
-                        </Grid>
-                        )
-                        } */}
-
                         <div className="retention-type">
-
                         { 
                         radioDiskSpace &&
-                        (
-                                                
+                        (                                                
                             <div className="days-hours">
 
-                                {/* <Grid container xs={12} sm={12} md={12} lg={12}>                           
-                                    <span className="gridFilterTextBox"> */}
-                                
                                     < TextField
                                     required={true}
                                     value={retentionSize}
@@ -827,14 +632,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     type="number"
                                     name="retentionSize"
                                     regex=""
-                                    // onBlur={() => checkNumberValidation(retentionSize,"Retention Size")}
                                     
                                     />
                                     <label>{t("GB")}<span></span></label>  
-
-                            
-                                {/* </span>
-                                </Grid>            */}
+                                                     
                             </div>
                                                                     
                         )
@@ -842,54 +643,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             
                         </div> 
 
-                       
-                    {/* </Grid>    
-                    <div className='grid_spacer' />
-
-                    <Grid item xs={12} sm={12} md={8} lg={4}>
-                        <Grid container xs={12} sm={12} md={12} lg={12}>                           
-                           
-                        </Grid>
-                        { 
-                        radioTimePeriod &&
-                        (
-                        <Grid container xs={12} sm={12} md={12} lg={12}>                           
-                            <span className="gridFilterTextBox">
-                           
-                            < TextField
-                            required={false}
-                            value={softDeleteTimeDays}
-                            label={t("Soft_Delete_Time")}                            
-                            className="retention-policies-input"
-                            onChange={(e: any) => setSoftDeleteTimeDays(e.target.value)}
-                            disabled = {disableSoftDeleteTimeDays}
-                            type="number"
-                            name="softDeleteTimeDays"
-                            regex=""                            
-                             />
-                             <label>{t("Days")}<span></span></label>   
-
-                           < TextField
-                            required={false}
-                            value={gracePeriodHours}                           
-                            className="retention-policies-input"
-                            onChange={(e: any) => setGracePeriodHours(e.target.value)}
-                            disabled = {disableGracePeriodHours}
-                            type="number"
-                            name="gracePeriodHours"
-                            regex=""                            
-                             />
-                             <label>{t("Hours")}<span></span></label>  
-                            
-                        </span>
-                        </Grid>
-                        )
-                        }
-                    </Grid>   
-
-                </Grid> */}
-            {/* </div> */}
-            
+                
             <div className="tab-bottom-buttons retention-type-btns">
                 <div className="save-cancel-button-box">
                 <CRXButton
