@@ -67,8 +67,12 @@ interface AssetBucket {
   categories: string[];
 }
 
-const thumbTemplate = (assetType: string) => {
-  return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
+
+const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
+  let assetType = evidence.masterAsset.assetType;
+  let fileType = evidence.masterAsset.files[0].type;
+
+  return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
 };
 
 function usePrevious(value: any) {
@@ -351,9 +355,10 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       label: t("Asset_Thumbnail"),
       id: "assetType",
       align: "left",
-      dataComponent: thumbTemplate,
       minWidth: "80",
       maxWidth: "100",
+      dataComponent: (event: any, evidence: any) => thumbTemplate(event, evidence),
+      detailedDataComponentId: "evidence",
     },
     // {
     //   label: `${t("AssetID")}`,
@@ -1232,7 +1237,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                               error={mainProgressError}
                               maxDataSize={true}
                               width={100}
-                              widthInPercentage = {true}
+                              widthInPercentage={true}
                             // loadingCompleted={"uploadFileSize"}//"5.0Mb"
                             />
                           </div>
@@ -1269,6 +1274,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             <div className="bucketList" id="assetBucketLists">
                               {
                                 assetBucketData.map((x: any, index) => {
+                                  var selectedAsset = x.evidence.asset.filter((y:any) => x.assetId == y.assetId);
                                   return <div className="bucketLister">
                                     <div className="assetCheck">
 
@@ -1280,7 +1286,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                         lightMode={true}
                                       />
                                     </div>
-                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fontSize="61pt" /></div>
+                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fileType={selectedAsset[0].files[0].type} fontSize="61pt" /></div>
                                     <div className="bucketListTextData">
                                       {
                                         x?.isMaster ?
@@ -1296,12 +1302,16 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                             </>
                                           ))
                                       }
-                                      <div className="bucketListRec">
-                                        {x.categories.map((item: any) => item).join(", ")}
-                                      </div>
+                                      {
+                                        (x.categories && x.categories.length > 0) &&
+                                        <div className="bucketListRec">
+                                          {x.categories.map((item: any) => item).join(", ")}
+                                        </div>
+                                      }
+
                                     </div>
                                     <div className="bucketActionMenu">{
-                                      <ActionMenu 
+                                      <ActionMenu
                                         row={x}
                                         selectedItems={selectedItems}
                                         actionMenuPlacement={ActionMenuPlacement.AssetBucket}

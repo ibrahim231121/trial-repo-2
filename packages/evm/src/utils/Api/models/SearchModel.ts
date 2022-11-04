@@ -53,6 +53,7 @@ export namespace SearchModel {
 
     export type File = {
         filesId: number;
+        type: string;
     };
 
     export type AssetEventGeoData = {

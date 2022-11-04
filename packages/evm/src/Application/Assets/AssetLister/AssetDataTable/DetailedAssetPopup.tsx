@@ -202,6 +202,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                             <div className="_asset_group_list_thumb">
                               <AssetThumbnail
                                 assetType={asset.assetType}
+                                fileType={asset.files[0].type}
                                 className={"CRXPopupTableImage"}
                               />
                             </div>
@@ -228,7 +229,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                                 </div>
                               ) : (
                                 <div className="_asset_group_list_asset_type">
-                                    {asset.assetType}
+                                    {(asset.files[0].type != undefined || asset.files[0].type != null) ? asset.files[0].type : asset.assetType}
                                 </div>
                               )}
                               <div className="_asset_group_list_recordingStarted">

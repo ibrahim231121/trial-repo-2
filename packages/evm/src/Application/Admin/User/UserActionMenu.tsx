@@ -212,12 +212,15 @@ const UserActionMenu: React.FC<Props> = ({
         }
       </CRXConfirmDialog>
       <Menu
+        key="right"
         align="start"
-        viewScroll="initial"
+        viewScroll="close"
         direction="right"
         position="auto"
-        className="menuCss"
-        arrow
+        offsetX={0}
+        offsetY={0}
+        className="manageUsersMenuUi"
+        portal={true}
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>
