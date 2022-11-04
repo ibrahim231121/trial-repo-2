@@ -115,7 +115,6 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
   const cancelBtn = () => props.setOnClose();
 
   const RadioButtonOnChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any, retentionDays : number) => {
-    debugger
     const status = e.target.value;
     setFieldValue('RetentionStatus', status, false);
     if (status === RetentionStatusEnum.IndefiniteExtention) {

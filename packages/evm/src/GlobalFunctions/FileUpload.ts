@@ -23,7 +23,7 @@ interface FileInfo {
 let filesId = [0];
 let fileCountAtError = 0;
 let isErrorOccured = false;
-export const AddFilesToFileService = async (files: any) => {
+export const AddFilesToFileService = async (files: any, onRecvData: any) => {
     const promises = [];
     filesId = [];
     fileCountAtError = files.length;
@@ -56,16 +56,16 @@ export const AddFilesToFileService = async (files: any) => {
     }
     await Promise.all(promises).then((messages) => {
         //here we can find the blob url either amazon or azure
-        filesToUpload(files);
+        filesToUpload(files, onRecvData);
     }).catch((e) => {
         console.log("error", e)
     });
 }
-const filesToUpload = async (files: any) => {
+const filesToUpload = async (files: any, onRecvData: any) => {
     const promises: any = [];
     for (const file of files) {
         promises.push(new Promise((resolve, reject) => {
-            uploadFiles(file, resolve, reject);
+            uploadFiles(file, onRecvData, resolve, reject);
         }));
     }
 
@@ -185,6 +185,6 @@ export const getFileSize = (bytes: number) => {
     }
     else return "";
 }
-export const resumeFileUpload = async (fileName: string) => {
-    resumeFile(fileName);
+export const resumeFileUpload = async (fileName: string, onRecvData: any) => {
+    resumeFile(fileName, onRecvData);
 }

@@ -758,7 +758,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
                     {t("Download_metadata_info")}
                   </MenuItem>
                   {!CheckEvidenceExpire(row?.evidence) ?
-                    <MenuItem>{t("Download_audit_trail")}</MenuItem>
+                    <MenuItem onClick={onClickDownloadAssetTrail}>{t("Download_audit_trail")}</MenuItem>
                     : null}
                 </SubMenu>
               </div>

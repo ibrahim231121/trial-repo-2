@@ -10,7 +10,7 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { EvidenceAgent, SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
@@ -828,33 +828,24 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const onAdd = async (submitType: SubmitType) => {
-    const payload = await onAddMetaData(submitType);
+    const payload : any = await onAddMetaData(submitType);
 
-    await fetch(EVIDENCE_ASSET_DATA_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        TenantId: "1",
-        Authorization: `Bearer ${cookies.get("access_token")}`,
-      },
-      body: JSON.stringify(payload),
-    })
-      .then(function (res) {
-        if (res.ok) {
-          onClose();
-          setAddEvidence(true);
-          setActiveScreen(0);
-          return res.json();
-        } else if (res.status == 500) {
-          setAlert(true);
-          setResponseError(
-            t(
-              "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
-            )
-          );
-        } else return res.text();
-      })
-      .then((resp) => {
+    EvidenceAgent.addEvidence(payload).then((res) => {
+      onClose();
+      setAddEvidence(true);
+      setActiveScreen(0);
+      return res;
+    }).catch((error:any) =>{
+      if(error.response.status === 500){
+        setAlert(true);
+        setResponseError(
+          t(
+            "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
+          )
+        );
+      }
+      else{
+        let resp = error.response.data
         if (resp != undefined) {
           let error = JSON.parse(resp);
           if (!isNaN(+error)) {
@@ -865,7 +856,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             setResponseError(error);
           }
         }
-      });
+      }
+    });
   };
 
   const setEditPayload = () => {

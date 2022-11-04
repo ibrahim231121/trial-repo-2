@@ -4,6 +4,7 @@ import { StringIfPlural } from 'react-i18next';
 import { Category, Forms } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
 import { CRXLoader } from "@cb/shared"
+import jwt_decode from 'jwt-decode';
 
 import {
     AddOwner,
@@ -71,7 +72,7 @@ let config = {
         'Content-Type': 'application/json',
         'TenantId': '1',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
-        'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
+        'UserId': getUserId()
     }
 }
 
@@ -81,7 +82,7 @@ export const setAPIAgentConfig = () => {
             'Content-Type': 'application/json',
             'TenantId': '1',
             'Authorization': 'Bearer ' + cookies.get("access_token"),
-            'UserId': localStorage.getItem('User Id') == null ? "0" : localStorage.getItem('User Id')
+            'UserId': getUserId()
         }
     }
 }
@@ -129,6 +130,17 @@ const addHeaders = (headers?: Headers[]) => {
     }
 };
 
+function getUserId () {
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        return decodedAccessToken.UserId;
+    }
+    else{
+        return "0";
+    }
+};
+
 const requests = {
     get: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBody) },
     getAll: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBodyPaginated) },
@@ -163,6 +175,7 @@ export const EvidenceAgent = {
     getAssetFile: (url: string) => requests.get<File[]>(EVIDENCE_SERVICE_URL, url, config),
     getQueuedAssets: (unitId: number) => requests.get<QueuedAssets[]>(EVIDENCE_SERVICE_URL, '/Evidences/QueuedAssets/' + unitId, config),
     isStationExistsinEvidence: (url: string) => requests.get<number>(EVIDENCE_SERVICE_URL, url, config),
+    addEvidence: (body: any) => requests.post<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences', body, config),
     addAsset: (url: string, body: Asset) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),
     getEvidenceCategories: (evidenceId: number) => requests.get<Evidence>(EVIDENCE_SERVICE_URL, '/Evidences/' + evidenceId, config),
     addBookmark: (url: string, body: Bookmark) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body, config),

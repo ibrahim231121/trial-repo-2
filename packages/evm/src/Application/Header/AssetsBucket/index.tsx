@@ -478,7 +478,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
 
     setFiles(prev => { return [...prev, ...e.target.files] });
-    AddFilesToFileService(e.target.files);
+    AddFilesToFileService(e.target.files, window.onRecvBucketData);
 
     av.forEach(async x => {
       await getDuration(x.file).then(
@@ -848,7 +848,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
 
   useEffect(() => {
-    window.onRecvData = new CustomEvent("onUploadStatusUpdate");
+    window.onRecvBucketData = new CustomEvent("onUploadStatusUpdate");
     window.onRecvError = new CustomEvent("onUploadError");
     window.addEventListener("onUploadStatusUpdate", uploadStatusUpdate)
     window.addEventListener("onUploadError", uploadError)
@@ -895,7 +895,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setIsOpenConfirm(true);
   }
   const resumeFile = (file: FileUploadInfo) => {
-    resumeFileUpload(file.fileName);
+    resumeFileUpload(file.fileName, window.onRecvBucketData);
     //find the file and set to pause status
     setUploadInfo(prev => {
       if (prev.length > 0) {
