@@ -5,7 +5,6 @@ import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { CRXButton } from "@cb/shared";
-import CategoryFormOFAssetBucket from "./SubComponents/CategoryFormOFAssetBucket";
 import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBucket";
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
@@ -13,13 +12,13 @@ import { useTranslation } from "react-i18next";
 import { EvidenceAgent, SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
-import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
-import { Policy } from "../../../utils/Api/models/PolicyModels";
 import moment from "moment";
 import { getCategoryAsync } from "../../../Redux/categoryReducer";
 import { addMetadata, AddMetadataFormProps, CategoryNameAndValue, masterAsset, MasterAssetBucket, masterAssetFile, masterAssetStation, MasterNameAndValue, NameAndValue, UserNameAndValue } from "./SubComponents/types";
 import { SubmitType } from "../../Assets/AssetLister/Category/Model/CategoryFormModel";
 import { MAX_REQUEST_SIZE_FOR } from "../../../utils/constant";
+import DisplayCategoryForm from "../../Assets/AssetLister/Category/SubComponents/DisplayCategoryForm";
+import { applyValidation } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
@@ -61,7 +60,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [isDisable, setIsDisable] = useState<boolean>(false);
   const [isOwnerDisable, setIsOwnerDisable] = useState<boolean>(false);
   const [isCategoryDisable, setIsCategoryDisable] = useState<boolean>(false);
-  const [filteredForm, setFilteredForm] = useState<any>([]);
+  const [formFields, setFormFields] = useState<any>([]);
   const [InitialValues, setInitialValues] = React.useState<any>({});
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
@@ -88,7 +87,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     },
     page: 0,
     size: 1000
-  })
+  });
+  const [validationSchema, setValidationSchema] = React.useState<any>({});
 
   React.useEffect(() => {
     fetchStation();
@@ -111,7 +111,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       }
       /***
        * !  NOTE: Commenting below code because of violation of Category Form VD Design, not removing it for future reference
-       * */ 
+       * */
       // else {
       //   let checkFormExist = formpayload.category.some(
       //     (index: any) => index.form.length > 0
@@ -214,33 +214,41 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   React.useEffect(() => {
     if (activeScreen === 1) { // 'stationDisable' used For Edit Case.
       // NOTE : Submit Button Disable State, on the basis of Form Input.
-      const isFormValidated: boolean = filteredForm.some((ele: any) => (ele.value.length === 0 || ele.value.length > 1024));
+      const isFormValidated: boolean = formFields.some((ele: any) => (ele.value.length === 0 || ele.value.length > 1024));
       if (!isFormValidated)
         setIsDisable(false);
       else
         setIsDisable(true);
     }
-  }, [filteredForm, activeScreen]);
+  }, [formFields, activeScreen]);
 
   React.useEffect(() => {
-    const filteredArray: any = [];
+    const Initial_Values: Array<any> = [];
     formpayload.category.forEach((formIndex: any) => {
       if (formIndex.form.length > 0) {
-        formIndex.form.forEach((fieldIndex: any) => {
-          fieldIndex.fields.forEach((x: any) => {
-            filteredArray.push({
-              fieldId: x.id,
-              formId: x.formId,
-              key: x.name,
+        formIndex.form.forEach((form: any) => {
+          form.fields.forEach((field: any) => {
+            Initial_Values.push({
+              fieldId: field.id,
+              formId: field.formId,
+              key: field.name,
               value: "",
-              datatype: x.datatype,
-              version: "",
-            });
-            setFilteredForm(filteredArray);
-          });
+              fieldType: field.dataType,
+              version: ""
+            })
+          })
         });
-        const key_value_pair = filteredArray.reduce((obj: any, item: any) => ((obj[item.key] = item.value), obj), {});
+        const key_value_pair = Initial_Values.reduce((obj: any, item: any) => ((obj[item.key] = item.value), obj), {});
         setInitialValues(key_value_pair);
+        const initial_values_of_fields = Object.entries(key_value_pair).map((o: any) => {
+          return {
+            key: o[0],
+            value: o[1]
+          };
+        });
+        setFormFields(initial_values_of_fields);
+        const validation = applyValidation(Initial_Values);
+        setValidationSchema(validation);
       }
     });
   }, [formpayload.category]);
@@ -311,46 +319,46 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const fetchCategory = () => {
     if (categories && categories.length > 0) {
-      var categoryName = categories.map((categories: any) => {
-        let j: CategoryNameAndValue = {
+      const categoryName = categories.map((categories: any) => {
+        return {
           categoryId: categories.id,
           categoryName: categories.name,
-          categroyForm: categories.forms,
+          categoryForm: categories.forms,
           categoryRetentionId: categories.policies.retentionPolicyId
-        };
-        return j;
+        } as CategoryNameAndValue;
       });
+      sendCategoryOptionList(categoryName);
     }
-    sendCategoryOptionList(categoryName);
   };
 
   const sendCategoryOptionList = (data: any[]) => {
     const dateOfArry: any = [];
     const formOfArry: any = [];
-    data?.forEach((item, index) => {
-      if (item.categroyForm.length != 0) {
-        item.categroyForm.forEach((index: any) => {
-          index.fields.forEach((x: any) => {
-            let formfields = {
-              id: x.id,
-              formId: index.id,
-              name: x.name,
-              datatype: x.type,
+    data.forEach((item, index) => {
+      if (item.categoryForm.length != 0) {
+        item.categoryForm.forEach((form: any) => {
+          form.fields.forEach((field: any) => {
+            const formFields = {
+              id: field.id,
+              formId: form.id,
+              name: field.name,
+              dataType: field.type,
               display: {
-                caption: x.display.caption,
+                caption: field.display.caption,
               },
+              defaultFieldValue: field.defaultFieldValue
             };
-            formOfArry.push(formfields);
+            formOfArry.push(formFields);
           });
-          const fields = formOfArry.filter((x: any) => x.formId === index.id);
+          const fields = formOfArry.filter((x: any) => x.formId === form.id);
           dateOfArry.push({
             id: item.categoryId,
             label: item.categoryName,
             retentionId: item.categoryRetentionId,
             form: [
               {
-                id: index.id,
-                name: index.name,
+                id: form.id,
+                name: form.name,
                 fields,
               },
             ],
@@ -365,13 +373,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         });
       }
     });
-    var distinctCategoryList = dateOfArry.filter((value: any, index: any, self: any) =>
+    let distinctCategoryList = dateOfArry.filter((value: any, index: any, self: any) =>
       index === self.findIndex((t: any) => (
         t.id === value.id
       ))
-    )
+    );
     return setCategoryOption(distinctCategoryList);
-
   };
 
   const checkOwners = () => {
@@ -563,17 +570,22 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     payloadCategory.forEach((catIndexs: any, i: any) => {
       if (catIndexs.form.length != 0) {
         catIndexs.form.forEach((formIndex: any) => {
-          let filteredValues = filteredForm.filter(
-            (x: any) => x.formId === formIndex.id
-          );
-          let fields = filteredValues.map((x: any) => {
-            return {
-              fieldId: x.fieldId,
-              key: x.key,
-              value: x == undefined ? "" : x.value,
-              dataType: x.dataType,
-              version: "",
+          const fieldArrayIndex = new Array();
+          formIndex.fields.forEach((fieldIndex : any) => {
+            let value: any;
+            if (fieldIndex.hasOwnProperty('key')) {
+              value = formFields.filter((x: any) => x.key == fieldIndex.key).map((i: any) => i.value)[0];
+            } else {
+              value = formFields.filter((x: any) => x.key == fieldIndex.name).map((i: any) => i.value)[0];
+            }
+
+            const _field = {
+              key: fieldIndex.key === undefined ? fieldIndex.name : fieldIndex.key,
+              value: value,
+              dataType: fieldIndex.type === undefined ? fieldIndex.dataType : fieldIndex.type,
+              defaultFieldValue: fieldIndex.defaultFieldValue
             };
+            fieldArrayIndex.push(_field);
           });
 
           categoryArrayIndex.push({
@@ -582,7 +594,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             formData: [
               {
                 formId: formIndex.id,
-                fields,
+                fields : fieldArrayIndex,
               },
             ],
           });
@@ -994,22 +1006,16 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     }
   };
 
-  const setFormField = (e: any, formId: any, datatype: string) => {
-    const { target } = e;
-    let newArray = filteredForm.filter((o: any) => {
-      return o.key !== target.name;
+  const setFormField = (e: any) => {
+    const { name, value } = e;
+    setInitialValues((args: any) => {
+      args[name] = value;
+      return args;
     });
-    setFilteredForm(() => [
-      ...newArray,
-      {
-        fieldId: target.id,
-        formId: formId,
-        key: target.name,
-        value: target.value,
-        dataType: datatype,
-        version: "",
-      },
-    ]);
+    let excludedKeyValue = formFields.filter((o: any) => {
+      return o.key !== name;
+    });
+    setFormFields(() => [...excludedKeyValue, { key: name, value: value }]);
   };
 
   const handleActiveScreen = (activeScreen: number) => {
@@ -1164,20 +1170,18 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             />
             <div className="__CRX__Asset_MetaData__Form__">
               {formpayload.category.some((o: any) => o.form.length > 0) ? (
-                formpayload.category.map((obj: any) => (
-                  <CategoryFormOFAssetBucket
-                    categoryObject={obj}
-                    initialValues={InitialValues}
-                    setFieldForm={(e: any, formId: any, datatype: string) =>
-                      setFormField(e, formId, datatype)
-                    }
-                  />
-                ))
-              ) : (
-                <NoFormAttachedOfAssetBucket
-                  categoryCollection={formpayload.category}
+                <DisplayCategoryForm
+                  formCollection={formpayload.category}
+                  initialValueObjects={InitialValues}
+                  validationSchema={validationSchema}
+                  setFieldsFunction={(e: any) => setFormField(e)}
                 />
-              )}
+              )
+                : (
+                  <NoFormAttachedOfAssetBucket
+                    categoryCollection={formpayload.category}
+                  />
+                )}
             </div>
           </>
         );
