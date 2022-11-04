@@ -622,7 +622,6 @@ const CreateTemplate = (props: any) => {
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
-      let valueSaved = false;
       if (!(valueRaw?.feilds !== undefined)) {
         var valueToSave = true;
         var nonDependantValue = true;
@@ -649,7 +648,7 @@ const CreateTemplate = (props: any) => {
         }
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
-          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key)) && visibleCameraFields.some((x: any) => x.key == key);
+          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
           nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
           if(keySubSplit[0] == "device" && valueToSave)
           {
