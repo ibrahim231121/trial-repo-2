@@ -159,10 +159,6 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
   let validationOnCurrentValue = formObj.optionAppendOnChange?.filter((x: any) => x.value == e);
   validationOnCurrentValue?.map((x: any) => {
     let splittedKey = x.selectKey.split('_');
-    if(splittedKey[0] == "CameraSetup/resolution")
-    {
-      debugger;
-    }
     if (splittedKey.length > 0) {
       let key = splittedKey[0] + "_" + parentSplittedKey[1] + "_" + splittedKey[2];
       let select = values["CameraSetup/Camera/FieldArray"]
