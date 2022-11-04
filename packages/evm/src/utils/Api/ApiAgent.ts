@@ -202,7 +202,7 @@ export const AuthenticationAgent = {
 }
 
 export const AuditLogAgent = {
-    getUnitAuditLogs: (url: string) => requests.get<AuditLog[]>(AUDITLOG_SERVICE_URL, url),
+    getUnitAuditLogs: (url: string) => requests.get<AuditLog[]>(AUDITLOG_SERVICE_URL, url, config),
 }
 
 export const FileAgent = {

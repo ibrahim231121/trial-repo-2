@@ -541,7 +541,7 @@ const UnitCreate = (props: historyProps) => {
                     <p>{t("CURRENT_VERSION")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
-                    <div className="panel_Heading_unitDetail">#01</div>
+                    <div className="panel_Heading_unitDetail">{stationName.toUpperCase()}</div>
                     <span className="noRow"></span>
                     <p>{t("STATION")}</p>
                   </div>
