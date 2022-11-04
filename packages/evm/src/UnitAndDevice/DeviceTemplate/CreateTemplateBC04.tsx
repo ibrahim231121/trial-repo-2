@@ -169,6 +169,9 @@ const CreateTemplate = (props: any) => {
       settabss1(tabs1);
       setintial();
     }
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, [FormSchema])
   
   function setintial() {
@@ -186,10 +189,6 @@ const CreateTemplate = (props: any) => {
     else {
       setDataFetched(true);
       dispatch(enterPathActionCreator({ val: t("Create_Template") + historyState.deviceType }));
-    }
-
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
     }
   }
 

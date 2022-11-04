@@ -131,7 +131,7 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
 
     await fetch(`${FILE_SERVICE_URL}/Files/${id}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', TenantId: '1' }
+        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}`}
     }).then(function (res) {
         if (res.ok) {
             return res.json();
