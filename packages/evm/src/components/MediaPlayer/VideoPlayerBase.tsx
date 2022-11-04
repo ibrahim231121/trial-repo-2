@@ -2021,13 +2021,14 @@ useEffect(() => {
         setViewReasonRequired={setViewReasonRequired}
       />}
       {viewReasonRequired && reasonForViewing && <VideoPlayerViewReason
-        openViewReason={true}
+        openViewReason={reasonForViewing}
         EvidenceId={EvidenceId}
         AssetData={data[0]}
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
         setReasonForViewing={setReasonForViewing}
         setViewReasonRequired ={setViewReasonRequired}
         setOnRefreshViewReasonOpen={setOnRefreshViewReasonOpen}
+        setOpenViewRequirement={setOpenViewRequirement}
       />}
       
 
