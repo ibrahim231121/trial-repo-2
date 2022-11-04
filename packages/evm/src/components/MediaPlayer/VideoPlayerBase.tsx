@@ -2004,6 +2004,7 @@ useEffect(() => {
 
   const viewControlEnabler = showControlConatiner && !ViewScreen ? "showControlConatiner" : "removeControlContainer";
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
+  const mapEnabled_Bookmark_Notes  = mapEnabled ? "mapEnabled_Bookmark_Notes" : "mapDisabled_Bookmark_Notes";
 
   return (
     
@@ -2021,13 +2022,14 @@ useEffect(() => {
         setViewReasonRequired={setViewReasonRequired}
       />}
       {viewReasonRequired && reasonForViewing && <VideoPlayerViewReason
-        openViewReason={true}
+        openViewReason={reasonForViewing}
         EvidenceId={EvidenceId}
         AssetData={data[0]}
         setViewReasonControlsDisabled={setViewReasonControlsDisabled}
         setReasonForViewing={setReasonForViewing}
         setViewReasonRequired ={setViewReasonRequired}
         setOnRefreshViewReasonOpen={setOnRefreshViewReasonOpen}
+        setOpenViewRequirement={setOpenViewRequirement}
       />}
       
 
@@ -2528,7 +2530,7 @@ useEffect(() => {
             setOpenTimelineSyncConfirmation={setOpenTimelineSyncConfirmation}
             openTimelineSyncConfirmation={openTimelineSyncConfirmation} />
 
-          <div className="BookmarkNotePopupMain __CRX_BookMark_Note__">
+          <div className={`BookmarkNotePopupMain __CRX_BookMark_Note__ ${mapEnabled_Bookmark_Notes}`}>
             {bookmarkNotePopupArrObj.map((bookmarkNotePopupObj:any) =>
               {return (
                 <BookmarkNotePopup

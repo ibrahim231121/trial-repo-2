@@ -389,7 +389,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     var typeOfAsset: string = "";
     switch (assetType) {
       case ".mp4":
-      case ".mp3":
       case ".avi":
       case ".mkv":
       case ".3gp":
@@ -453,7 +452,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     switch (fileType) {
 
       case ".mp4":
-      case ".mp3":
       case ".avi":
       case ".mkv":
       case ".3gp":
@@ -713,7 +711,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         },
         version: "",
       };
-
       return {
         id: index.uploadedFileId,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
@@ -784,7 +781,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     const FilteringchildAsset = uploadedFile.filter(
       (x: any) => x.id != master.id
     );
-
     const children = FilteringchildAsset.map((childAsset: any) => {
       return {
         id: childAsset.id,

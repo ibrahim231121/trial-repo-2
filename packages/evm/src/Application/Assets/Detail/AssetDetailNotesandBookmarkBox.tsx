@@ -69,7 +69,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
 
   React.useEffect(() => {
-    if (isReadMore) {
+    if (isReadMore && !editDescription) {
       setDescription(stateObj.description);
     }
   }, [isReadMore]);
@@ -160,7 +160,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         onUpdateDone();
         toasterMsgRef.current.showToaster({
           message: "Bookmark saved",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -206,7 +206,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         onUpdateDone();
         toasterMsgRef.current.showToaster({
           message: "Note saved",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -268,7 +268,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         onRemove(true);
         toasterMsgRef.current.showToaster({
           message: "Bookmark Sucessfully Deleted",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -298,7 +298,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         onRemove(true);
         toasterMsgRef.current.showToaster({
           message: "Note Sucessfully Deleted",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -307,7 +307,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
           message: "Error Deleting Note",
-          variant: "Error",
+          variant: "error",
           duration: 5000,
           clearButtton: true,
         });
