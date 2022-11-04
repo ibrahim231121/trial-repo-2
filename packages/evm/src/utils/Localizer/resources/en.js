@@ -805,7 +805,6 @@ export const resources = {
         "Yes,_close":"Yes, close",
         
         //---------------- Incar template page ----
-        "Create_TemplateIncar" : "Create Template : Incar"
       }
     }
   };

@@ -188,7 +188,7 @@ const CreateTemplate = (props: any) => {
     }
     else {
       setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: t("Create_Template") + historyState.deviceType }));
+      dispatch(enterPathActionCreator({ val: t("Create_Template") + ": " + historyState.deviceType }));
     }
   }
 
