@@ -194,6 +194,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
     }
   }
   setValues(values);
+  console.log("resolution values", values["CameraSetup/Camera/FieldArray"]?.feilds)
 }
 
 
@@ -259,11 +260,11 @@ export const CreateTempelateCase = (props: any) => {
     document.querySelector("body")?.classList.remove("incarMOdalOpen");
   }
 
-  React.useEffect(() => {
-    if (formObj.optionAppendOnChange) {
-      optionAppendOnChange(formObj.value, formObj, values, setValues, index);
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   if (formObj.optionAppendOnChange) {
+  //     optionAppendOnChange(formObj.value, formObj, values, setValues, index);
+  //   }
+  // }, []);
 
 
   React.useEffect(() => {
