@@ -13,7 +13,7 @@ import { CategoryFormProps, FormInitialValues, SubmitType } from './Model/Catego
 import { SearchType } from '../../utils/constants';
 import { FieldTypes } from './Model/FieldTypes';
 import { SetupConfigurationsModel } from '../../../../utils/Api/models/SetupConfigurations';
-import * as Yup from "yup";
+import { applyValidation } from './Utility/UtilityFunctions';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -112,7 +112,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         };
       });
       setFormFields(initial_values_of_fields);
-      applyValidation(Initial_Values);
+      const validation = applyValidation(Initial_Values);
+      setValidationSchema(validation);
     }
   }, [formCollection]);
 
@@ -232,42 +233,6 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
           setError(true);
         });
     }
-  }
-
-  const applyValidation = (arg: Array<FormInitialValues>): void => {
-    const Initial_Values_Validation_Schema = [];
-    for (const field of arg) {
-      let validationObject: any;
-      if (field.fieldType === FieldTypes.FieldTextBoxType || field.fieldType === FieldTypes.FieldTextAreaType) {
-        validationObject = Yup.string().max(1024, t("Maximum_lenght_is_1024")).required(t("required"));
-      }
-      else if (field.fieldType === FieldTypes.FieldDropDownListType) {
-        validationObject = Yup.string().required(t("required"))
-      }
-      else if (field.fieldType === FieldTypes.FieldCheckedBoxType) {
-
-      }
-
-      else if (field.fieldType === FieldTypes.FieldCheckedBoxListType) {
-
-      }
-      else if (field.fieldType === FieldTypes.FieldRadioButtonListType) {
-
-      }
-      else if (field.fieldType === FieldTypes.CaseNO) {
-
-      }
-      else if (field.fieldType === FieldTypes.PolygraphLogNumber) {
-
-      }
-      else if (field.fieldType === FieldTypes.CADID) {
-
-      }
-
-      Initial_Values_Validation_Schema.push({ key: field.key, value: validationObject });
-    }
-    const reducedFormSchema = Initial_Values_Validation_Schema.reduce((obj, item: any) => ({ ...obj, [item.key]: item.value }), {});
-    setValidationSchema(reducedFormSchema);
   }
 
   return (
