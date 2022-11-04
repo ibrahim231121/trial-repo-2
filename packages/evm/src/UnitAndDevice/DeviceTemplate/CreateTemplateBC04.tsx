@@ -650,31 +650,7 @@ const CreateTemplate = (props: any) => {
         if (keySubSplit.length > 1) {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key)) && visibleCameraFields.some((x: any) => x.key == key);
-          //nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
-          // if(keySubSplit[0] == "streamPort")
-          // {
-          //   var deviceTypeName = Initial_Values.find(x => x.key == "deviceTypeName_1_Camera")?.value;
-          //   if(deviceTypeName == "NF-21" || deviceTypeName == "NF-22 Stream 1" || deviceTypeName == "NF-22 Stream 2")
-          //   {
-          //     Initial_Values.push({
-          //       key: split[1],
-          //       value: "554",
-          //       group: split[0],
-          //       valueType: split[2],
-          //     });
-          //     valueSaved = true;
-          //   }
-          //   if(deviceTypeName == "Zero-Dark")
-          //   {
-          //     Initial_Values.push({
-          //       key: split[1],
-          //       value: "81",
-          //       group: split[0],
-          //       valueType: split[2],
-          //     });
-          //     valueSaved = true;
-          //   }
-          // }
+          nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
           if(keySubSplit[0] == "device" && valueToSave)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
@@ -711,32 +687,25 @@ const CreateTemplate = (props: any) => {
           }
         }
         if (valueToSave) {
-          Initial_Values.push({
-            key: split[1],
-            value: valueRaw,
-            group: split[0],
-            valueType: split[2],
-            sequence: 1,
-          });
-          // if(nonDependantValue)
-          // {
-          //   Initial_Values.push({
-          //     key: split[1],
-          //     value: valueRaw,
-          //     group: split[0],
-          //     valueType: split[2],
-          //     sequence: 1,
-          //   });
-          // }
-          // else if(!valueSaved){
-          //   Initial_Values.push({
-          //     key: split[1],
-          //     value: "",
-          //     group: split[0],
-          //     valueType: split[2],
-          //     sequence: 1,
-          //   });
-          // }
+          if(nonDependantValue)
+          {
+            Initial_Values.push({
+              key: split[1],
+              value: valueRaw,
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
+          else{
+            Initial_Values.push({
+              key: split[1],
+              value: "",
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
         }
       }
       // Pretty straightforward - use key for the key and value for the value.
