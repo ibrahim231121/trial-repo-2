@@ -70,7 +70,7 @@ interface AssetBucket {
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
-  let fileType = evidence.masterAsset.files[0].type;
+  let fileType = evidence.masterAsset?.files[0]?.type;
 
   return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
 };
@@ -1286,7 +1286,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                         lightMode={true}
                                       />
                                     </div>
-                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fileType={selectedAsset[0].files[0].type} fontSize="61pt" /></div>
+                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fileType={selectedAsset[0]?.files[0]?.type} fontSize="61pt" /></div>
                                     <div className="bucketListTextData">
                                       {
                                         x?.isMaster ?

@@ -41,14 +41,14 @@ import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
-  let fileType = evidence.masterAsset.files[0].type;
+  let fileType = evidence.masterAsset?.files[0]?.type;
 
   return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
 };
 
 const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
-  let fileType = evidence.masterAsset.files[0].type;
+  let fileType = evidence.masterAsset?.files[0]?.type;
   if (assetType != undefined || assetType != null) {
     if (fileType != undefined || fileType != null) {
       return <div className={"dataTableText " + classes}>{fileType}</div>;
