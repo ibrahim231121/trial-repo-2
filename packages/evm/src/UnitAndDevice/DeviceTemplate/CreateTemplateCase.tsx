@@ -260,13 +260,6 @@ export const CreateTempelateCase = (props: any) => {
     document.querySelector("body")?.classList.remove("incarMOdalOpen");
   }
 
-  // React.useEffect(() => {
-  //   if (formObj.optionAppendOnChange) {
-  //     optionAppendOnChange(formObj.value, formObj, values, setValues, index);
-  //   }
-  // }, []);
-
-
   React.useEffect(() => {
    let validations = Object.entries(Initial_Values_obj_RequiredField).map((e) => e[0])
    let errorAccured = Object.entries(errors).map((e) => e[0])
