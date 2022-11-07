@@ -194,6 +194,7 @@ const optionAppendOnChange = (e: any, formObj: any, values: any, setValues: any,
     }
   }
   setValues(values);
+  console.log("resolution values", values["CameraSetup/Camera/FieldArray"]?.feilds)
 }
 
 
@@ -258,13 +259,6 @@ export const CreateTempelateCase = (props: any) => {
   const IncarModalClose = () => {
     document.querySelector("body")?.classList.remove("incarMOdalOpen");
   }
-
-  React.useEffect(() => {
-    if (formObj.optionAppendOnChange) {
-      optionAppendOnChange(formObj.value, formObj, values, setValues, index);
-    }
-  }, []);
-
 
   React.useEffect(() => {
    let validations = Object.entries(Initial_Values_obj_RequiredField).map((e) => e[0])

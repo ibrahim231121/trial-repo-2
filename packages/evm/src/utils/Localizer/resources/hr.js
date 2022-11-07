@@ -723,6 +723,7 @@ export const resources = {
         "Unit_Configuration_Template":"hr-Unit Configuration Template",
         "Unit_Detail":"hr-Unit Detail: ",
         "Unit_Edited_Sucessfully":"hr-Unit Edited Sucessfully",
+        "Unit_Edit_failed":"hr-Unit edit failed.",
         "Device_Name":"hr-Device Name",
         "Device_Type":"hr-Device Type",
         "Serial_Number":"hr-Serial Number",

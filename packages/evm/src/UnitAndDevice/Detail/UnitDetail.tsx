@@ -63,7 +63,7 @@ type UnitAndDevice = {
 type stateProps = {
   template: any;
   unitId: any;
-  stationId: historyProps;
+  stationId: any;
 };
 
 type locationProps = {
@@ -72,7 +72,6 @@ type locationProps = {
 
 type historyProps = {
   location: locationProps;
-  stationId: string;
 };
 
 const UnitCreate = (props: historyProps) => {
@@ -115,8 +114,9 @@ const UnitCreate = (props: historyProps) => {
 
   const statusJson = useRef<any>(null);
   const [unitStatus, setUnitStatus] = useState<any>();
-
   const [stationName, SetStationName] = React.useState<string>('');
+  const [stationID, SetStationID] = React.useState<any>(location.state.stationId);
+
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
@@ -133,9 +133,6 @@ const UnitCreate = (props: historyProps) => {
     setValue(newValue);
   }
 
-
-
-  const stationID = location.state.stationId;
   const unitID = location.state.unitId;
   const inCarTab: any = location.state.template;
 
@@ -339,10 +336,11 @@ const UnitCreate = (props: historyProps) => {
     UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
       setIsSaveButtonDisabled(true);
       SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText);
+      SetStationID(unitData.stationId);
       targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true});  
     })
     .catch(function (error) {
-      targetRef.current.showToaster({message: "Edited UnSucessfully", variant: "error", duration: 5000, clearButtton: true}); 
+      targetRef.current.showToaster({message: t("Unit_Edit_failed"), variant: "error", duration: 5000, clearButtton: true}); 
       return error;
     })
       
