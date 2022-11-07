@@ -31,7 +31,7 @@ const getBlockBlobInfo = async (uploadUri: string) => {
     return { blockBlobClient, fileName };
 }
 
-const uploadFiles = async (file: any, resolve: any, reject: any) => {
+const uploadFiles = async (file: any, onRecvData: any, resolve: any, reject: any) => {
 
     const allTasksController = new AbortController();
     window.tasks = window.tasks || [];
@@ -62,7 +62,7 @@ const uploadFiles = async (file: any, resolve: any, reject: any) => {
         reject,
         resolve
     }
-    await uploadStageBlock(usb)
+    await uploadStageBlock(usb, onRecvData)
 };
 
 const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
@@ -95,8 +95,7 @@ const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
     localStorage.setItem("uploadedFiles", JSON.stringify(uploadItem));
 }
 
-const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
-
+const uploadStageBlock = async (usb: UploadStageBlockInfo,  onRecvData: any) => {
     if (usb.remainingBytes == 0) {
         const blockBlobCommitBlockListOptions: BlockBlobCommitBlockListOptions = {
             abortSignal: window.tasks[usb.fileName].abortSignal.signal
@@ -105,7 +104,9 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
             .then((response) => {
                 console.log("response", response)
                 //this is the case when user uploaded the file and refresh the page wihout add metadata
-                saveFileToLocalStorage(usb);
+                if(onRecvData && onRecvData.type == "onUploadStatusUpdate"){
+                    saveFileToLocalStorage(usb);
+                }
             }).catch(e => {
                 console.log("error", e)
             })
@@ -121,7 +122,7 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
             window.tasks[usb.fileName].blockIds.find((x: any) => x.blockId == blockId).loadedBytes = ev.loadedBytes;
             var abc = window.tasks[usb.fileName].blockIds.map((x: any) => x.loadedBytes).reduce((partialSum: number, a: number) => partialSum + a, 0);
 
-            window.onRecvData.data = {
+            onRecvData.data = {
                 loadedBytes: getFileSize(Math.ceil(abc)),
                 percent: Math.round((Math.ceil(abc) / usb.file.size) * 100),
                 fileSize: getFileSize(usb.file.size),
@@ -131,7 +132,7 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
                 error: false,
                 removed: false,
             };
-            window.dispatchEvent(window.onRecvData);
+            window.dispatchEvent(onRecvData);
         }
     };
 
@@ -154,12 +155,12 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
                     usb.maxBlockSize = usb.remainingBytes;
                 }
                 //recursive call                
-                await uploadStageBlock(usb)
+                await uploadStageBlock(usb, onRecvData)
             }
         }).catch(e => {
             if (e.name == 'AbortError') {
                 if (!window.tasks[usb.file.uploadedFileName].isPause) {
-                    window.onRecvData.data = {
+                    onRecvData.data = {
                         removed: true,
                         fileName: usb.file.uploadedFileName
 
@@ -167,7 +168,7 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
                 }
             }
             else if (e.name == "RestError") {
-                window.onRecvData.data = {
+                onRecvData.data = {
                     error: true,
                     fileName: usb.file.uploadedFileName,
                     fileId: usb.file.uploadedFileId
@@ -175,11 +176,11 @@ const uploadStageBlock = async (usb: UploadStageBlockInfo) => {
                 };
             }
 
-            window.dispatchEvent(window.onRecvData);
+            window.dispatchEvent(onRecvData);
         })
 }
 
-export const resumeFile = async (fileName: string) => {
+export const resumeFile = async (fileName: string, onRecvData: any) => {
     const allTasksController = new AbortController();
     let fileObject = window.tasks[fileName];
     fileObject.abortSignal = new AbortController(allTasksController.signal);
@@ -191,16 +192,16 @@ export const resumeFile = async (fileName: string) => {
         if (x.maxBlockSize == x.loadedBytes) {
 
             if (fileObject.blockIds[fileObject.blockIds.length - 1].blockId == x.blockId) {
-                resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName)
+                resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName, onRecvData)
             }
             currentFilePointer = currentFilePointer + x.loadedBytes;
         }
         else {
-            resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName)
+            resumeFileStage(currentFilePointer, fileObject, x.maxBlockSize, blockBlobClient, fileName, onRecvData)
         }
     });
 };
-const resumeFileStage = async (currentFilePointer: number, fileObject: any, maxBlockSize: number, blockBlobClient: any, fileName: string) => {
+const resumeFileStage = async (currentFilePointer: number, fileObject: any, maxBlockSize: number, blockBlobClient: any, fileName: string, onRecvData: any) => {
     let remainingBytes = fileObject.file.size - currentFilePointer;
     fileObject.blockIds.pop();//remove last not complete block
     let usb: UploadStageBlockInfo = {
@@ -213,7 +214,7 @@ const resumeFileStage = async (currentFilePointer: number, fileObject: any, maxB
         reject: () => { console.log("reject") },
         resolve: () => { console.log("resolve") }
     }
-    await uploadStageBlock(usb);
+    await uploadStageBlock(usb, onRecvData);
 }
 export default uploadFiles;
 

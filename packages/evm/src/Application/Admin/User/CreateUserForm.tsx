@@ -279,7 +279,6 @@ const CreateUserForm = () => {
     // setUserPayload(response);
 
   };
-  
   const generateTempPassComp = () => {
     const onClickPass = () => {
       var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -290,6 +289,8 @@ const CreateUserForm = () => {
         password += chars.substring(randomNumber, randomNumber + 1);
       }
       setGeneratePassword(password);
+      setDisableSave(false);
+      
     };
     return (
       <>
@@ -484,47 +485,71 @@ const CreateUserForm = () => {
       return;
     }
     const payload = setAddPayload();
+    const errorUndefined = (error : any) =>{
+      
+      if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.UserName[0]);
+      }
+      if (error.errors.First !== undefined && error.errors.First.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.First[0]);
+      }
+      if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.Last[0]);
+      }
+      if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.Middle[0]);
+      }
+      if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.Email[0]);
+      }
+      if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.Number[0]);
+      }
+
+      if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
+        setAlert(true);
+        setResponseError(error.errors.Password[0]);
+      }
+    }
+    const errorDefined = (error : any) => {
+      setAlert(true);
+      setResponseError(error);
+      const errorString = error;
+      if (errorString.includes('email') === true) {
+        setIsExtEmail('isExtEmail');
+      } else {
+        setIsExtEmail('');
+      }
+
+      if (errorString.includes('username') === true) {
+        setIsExtUsers('isExtUserName');
+      } else {
+        setIsExtUsers('');
+      }
+    }
     const AddUser = "/Users";
-    UsersAndIdentitiesServiceAgent.addUser(AddUser, payload).then(function (res: number) {
-      if (res)
-        return res;
-      })
+    UsersAndIdentitiesServiceAgent.addUser(AddUser, payload)
+    // .then(function (res: number) {
+    //   if (res)
+    //     return res;
+    //   })
       .then((resp: any) => {
-        if (resp !== undefined) {
+        if (resp) {
           let error = JSON.parse(resp);
           if (error.errors !== undefined) {
-            if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.UserName[0]);
-            }
-            if (error.errors.First !== undefined && error.errors.First.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.First[0]);
-            }
-            if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Last[0]);
-            }
-            if (error.errors.Middle !== undefined && error.errors.Middle.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Middle[0]);
-            }
-            if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Email[0]);
-            }
-            if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Number[0]);
-            }
-
-            if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-              setAlert(true);
-              setResponseError(error.errors.Password[0]);
-            }
-          } else if (!isNaN(+error)) {
+            errorUndefined(error);
+          } 
+          
+          else if (!isNaN(+error)) {
             const userName = formpayload.firstName + ' ' + formpayload.lastName;
-            sendEmail(formpayload.email, '', userName);
+            if(radioValue == 'sendAct'){
+            sendEmail(formpayload.email, '', userName);}
             userFormMessages({
               message: t('You_have_created_the_user_account.'),
               variant: 'success',
@@ -535,50 +560,41 @@ const CreateUserForm = () => {
             const path = `${urlList.filter((item: any) => item.name === urlNames.editUser)[0].url}`;
             history.push(path.substring(0, path.lastIndexOf("/")) + "/" + resp);
             history.go(0)
-
-          } else {
-            setAlert(true);
-            setResponseError(error);
-            const errorString = error;
-            if (errorString.includes('email') === true) {
-              setIsExtEmail('isExtEmail');
-            } else {
-              setIsExtEmail('');
-            }
-
-            if (errorString.includes('username') === true) {
-              setIsExtUsers('isExtUserName');
-            } else {
-              setIsExtUsers('');
-            }
+          } 
+          else {
+         errorDefined(error);
           }
         }
         
       })
       .catch(function (e: any) {
-        if(e.request.status == 409) {
-          userFormMessages({
-            message: e.response.data,
-            variant: 'error',
-            duration: 7000
-          });
-
-        }
-        else if (e.request.status == 500) {
-          setAlert(true);
-          userFormMessages({
-            message: t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.'),
-            variant: 'error',
-            duration: 7000
-          });
-          setResponseError(
-            t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-          );
-        }
-        return e;
+        catchError(e);
       });
   };
 
+  const catchError = (e : any) => {
+    if(e.request.status == 409) {
+      userFormMessages({
+        message: e.response.data,
+        variant: 'error',
+        duration: 7000
+      });
+
+    }
+    else if (e.request.status == 500) {
+      setAlert(true);
+      userFormMessages({
+        message: t('We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator.'),
+        variant: 'error',
+        duration: 7000
+      });
+      setResponseError(
+        t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
+      );
+    }
+    return e;
+  }
+  
   const onSelectPasswordType = () => {
     if (radioValue === 'genTemp') return generatePassword;
     else if (radioValue === 'manual') return password;

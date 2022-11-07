@@ -63,8 +63,7 @@ export type PageiGrid = {
 }
 
 export function DateFormat(value: string) {
-  const stillUtc = moment.utc(value).toDate();
-  const localDate = moment(stillUtc).local().format("YYYY-MM-DD");
+  const localDate = moment(value).local().format("YYYY-MM-DD");
   return localDate;
 }
 
@@ -105,11 +104,11 @@ export const onTextCompare = (
 ) => {
   dataRows = dataRows.filter((x: any) => {
     return (
-      (x[headCells[el.colIdx].id] === undefined
+      (x[headCells[el.colIdx].id] === (undefined || null)
         ? ""
         : x[headCells[el.colIdx].id]
       )
-        .toString().toLowerCase()
+        ?.toString().toLowerCase()
         .indexOf(el.value[0].toString().toLowerCase()) !== -1
     );
   });

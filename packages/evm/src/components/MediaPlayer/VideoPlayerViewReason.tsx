@@ -27,6 +27,7 @@ type VideoPlayerViewReasonProps = {
     setReasonForViewing: any
     setViewReasonRequired: any
     setOnRefreshViewReasonOpen: any
+    setOpenViewRequirement: any
 };
 
 type ViewReason = {
@@ -41,7 +42,7 @@ type ViewReasonTimerObject = {
 }
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen } = props;
+    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement } = props;
     const [openModal, setOpenModal] = React.useState(false);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -188,7 +189,8 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
 
 
     const handleBack = (e: React.MouseEvent<HTMLElement>) => {
-        history.goBack();
+        setOpenViewRequirement(true);
+        setReasonForViewing(false)
     };
 
 

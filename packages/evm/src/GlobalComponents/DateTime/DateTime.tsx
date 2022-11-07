@@ -8,6 +8,11 @@ import { convertTimeToAmPm } from "../../utils/convertTimeToAmPm";
 import { useState } from "react";
 import moment from 'moment';
 
+interface AssetDateTime {
+  startDate : string,
+  endDate : string
+}
+
 const DateTime = () => {
 
   const {
@@ -25,10 +30,9 @@ const DateTime = () => {
   } = useContext(DateContext);
 
   const ref: any = React.useRef(null);
-
   const [dateOptionsValues, setDateOptions]= useState<Array<DateTimeProp|undefined>>([]);
   const [selectedDateOptionType, setSelectedDateOptionType] = useState<string>(dateOptionType);
-
+  const [customRangeDateTime, setCustomRangeDateTime] = React.useState<AssetDateTime>()
   const customRange = "customRange";
 
   useEffect(()=>{
@@ -87,6 +91,7 @@ const DateTime = () => {
     if(dateTimeDetail?.value == "customRange")
     {
       let dataArray =  [...dateValues]
+      setCustomRangeDateTime( { startDate :dateTimeDetail.startDate, endDate : dateTimeDetail.endDate })
       var defaultDateValue : DateTimeProp = {
         startDate : function() { return(dateTimeDetail.startDate)},
         endDate : function() { return dateTimeDetail.endDate},
@@ -128,7 +133,6 @@ const DateTime = () => {
     else if (showCompact && minDate !== "" && maxDate !== ""){
       setDateOptions(dateValues);
     }
-
   }
 
   const convertDateTime = (date: string) => {
@@ -139,6 +143,28 @@ const DateTime = () => {
     return newDate;
   };
 
+  function GetStartAndEndDate(dateValues: any) {
+    let assetDateTime: AssetDateTime = { startDate: "", endDate: "" };
+    let lastIndex = dateValues.find((x: DateTimeProp | undefined) => x?.value === "anytime") ? 0 : dateValues?.length - 1;
+    let isCustomValueExist = lastIndex != 0 && dateValues.find((x: DateTimeProp | undefined) => x?.value === customRange) ? 2 : 1;
+    debugger
+    if (lastIndex >= isCustomValueExist) {
+      let lastDate = dateValues[lastIndex - isCustomValueExist];
+      if (lastDate) {
+        assetDateTime = {
+          startDate: lastDate.startDate(),
+          endDate: lastDate.endDate()
+        }
+      }
+    }
+    else {
+      assetDateTime = {
+        startDate: "",
+        endDate: moment().format().toString()
+      }
+    }
+    return assetDateTime;
+  }
 
   const onOptionChange = (e: any, startDate : string = "", endDate : string = "", isCustomRange : boolean = false) => {
     const { value } = e.target;
@@ -147,7 +173,6 @@ const DateTime = () => {
     }
     else if (isCustomRange ) {
       const filterDataValues = dateOptionsValues.filter((x: DateTimeProp | undefined) => x?.value !== customRange);
-
       const newStartDateTime = startDate &&  convertDateTime(startDate);
       const newEndDateTime = endDate &&  convertDateTime(endDate);
 
@@ -163,42 +188,39 @@ const DateTime = () => {
       onSelectionChange(dateTime)
     }
     else {
-      let basicOption = dateOptions.basicoptions.find((x: DateTimeProp|undefined) => x?.value === value);
-      let approachingDeletion = dateOptions.approachingDeletion.find((x: DateTimeProp|undefined) => x?.value === value);
-      if(basicOption)
-      {
-        if(value == "custom")
-        {
-          let dateValues = [...dateOptionsValues];
-          let dateObject = dateValues.find((x: DateTimeProp|undefined) => x?.value === customRange);
-          if(dateObject)
-          {
-            basicOption.startDate = dateObject.startDate;
-            basicOption.endDate = dateObject.endDate;
-          }
-          else
-          {
-
-            let lastIndex = dateValues.find((x: DateTimeProp | undefined) => x?.value === "anytime") ? 0 : dateValues?.length - 1;
-            if (lastIndex >= 1) {
-              let lastDate = dateValues[lastIndex-1];
-              if (lastDate) {
-                basicOption.startDate = lastDate.startDate;
-                basicOption.endDate = lastDate.endDate;
+      if (value === customRange) {
+        var dateObject = dateOptionsValues.find((x: DateTimeProp | undefined) => x?.value === customRange);
+        onSelectionChange(dateObject);
+      }
+      else {
+        let basicOption = dateOptions.basicoptions.find((x: DateTimeProp | undefined) => x?.value === value);
+        let approachingDeletion = dateOptions.approachingDeletion.find((x: DateTimeProp | undefined) => x?.value === value);
+        if (basicOption) {
+          if (value == "custom") {
+            let dateValues = [...dateOptionsValues];
+            let dateObject = dateValues.find((x: DateTimeProp | undefined) => x?.value === customRange);
+            if (dateObject) {
+              if (customRangeDateTime) {
+                basicOption.startDate = () => customRangeDateTime.startDate;
+                basicOption.endDate = () => customRangeDateTime.endDate;
+              }
+              else {
+                let assetDateTime = GetStartAndEndDate(dateValues)
+                basicOption.startDate = () => assetDateTime.startDate;
+                basicOption.endDate = () => assetDateTime.endDate;
               }
             }
-            else
-            {
-              basicOption.startDate = dateOptions.basicoptions[0].startDate;
-              basicOption.endDate = dateOptions.basicoptions[0].endDate;
+            else {
+              let assetDateTime = GetStartAndEndDate(dateValues)
+              basicOption.startDate = () => assetDateTime.startDate;
+              basicOption.endDate = () => assetDateTime.endDate;
             }
           }
+          onSelectionChange(basicOption);
         }
-        onSelectionChange(basicOption);
-      }
-      else if(approachingDeletion)
-      {
-        onSelectionChange(approachingDeletion);
+        else if (approachingDeletion) {
+          onSelectionChange(approachingDeletion);
+        }
       }
     }
   };

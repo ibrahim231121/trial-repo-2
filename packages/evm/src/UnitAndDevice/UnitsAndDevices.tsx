@@ -105,7 +105,7 @@ const UnitAndDevices: React.FC = () => {
   }, []);
 
   
-
+  const rowsRef = useRef<any>([]);
   const statusJson =useRef<any>();
   const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
   const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
@@ -168,6 +168,7 @@ const UnitAndDevices: React.FC = () => {
             }
           })
         }
+        rowsRef.current = unitRows;
         setRows(unitRows)
         
         setReformattedRows({...reformattedRows, 
@@ -190,11 +191,14 @@ const UnitAndDevices: React.FC = () => {
    
   const setRowForUnitStatus= (statusJson:any) => {
       if(statusJson  != null && statusJson  != "undefined"){
-         const index = rows.findIndex(e => e.id === statusJson.UnitId);
-         const rowscopy = [...rows];
-         rowscopy[index].status = statusJson.Data;
-         setRows(rowscopy);
-         }
+        const index =  rowsRef.current.findIndex((e:any) => e.id === statusJson.UnitId);
+        const rowscopy = [...rowsRef.current];
+        if(index !== -1){
+          rowscopy[index].status = statusJson.Data;
+          rowsRef.current = rowscopy;
+          setRows(rowscopy);
+        }
+        }
        };
        
   React.useEffect(() => {
@@ -697,6 +701,7 @@ const dataArrayBuilder = () => {
 
         }
         );
+        rowsRef.current = dataRows;
         setRows(dataRows);
     }
 };

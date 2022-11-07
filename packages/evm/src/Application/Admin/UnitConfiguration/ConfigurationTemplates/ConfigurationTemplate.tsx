@@ -84,6 +84,7 @@ const configTemplate = (name: string, device: any) => {
             isedit: true,
             deviceId: device.deviceId,
             deviceType: device.deviceType,
+            isDefaultTemplate: device.isDefaultTemplate
           },
         }}
       />

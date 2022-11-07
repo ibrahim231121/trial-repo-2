@@ -31,7 +31,7 @@ export type UserNameAndValue = {
 export type CategoryNameAndValue = {
     categoryId: string;
     categoryName: string;
-    categroyForm: string[];
+    categoryForm: string[];
     categoryRetentionId: number;
 };
 

@@ -73,7 +73,7 @@ const TenantSettings: React.FC = () => {
   ];
 
   React.useEffect(() => {
-    window.onRecvData = new CustomEvent("onUploadLogoUpdate");
+    window.onRecvLogoData = new CustomEvent("onUploadLogoUpdate");
     window.addEventListener("onUploadLogoUpdate", UploadLogoUpdate);
   }, [mapAllFields]);
   const UploadLogoUpdate = (data: any) => {
@@ -89,7 +89,7 @@ const TenantSettings: React.FC = () => {
   };
   const handleOnUpload = async (e: any) => {
     setmapAllFieldsValue(e);
-    AddFilesToFileService(e.fileDetails);
+    AddFilesToFileService(e.fileDetails, window.onRecvLogoData);
   };
   React.useEffect(() => {
     const SETUP_CONFIGURATION_TENANTSETTINGS_GET_URL = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings`;

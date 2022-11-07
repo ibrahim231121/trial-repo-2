@@ -1,4 +1,5 @@
 export enum FieldTypes {
+    Unknown = 'Unknown',
     FieldTextBoxType = 'FieldTextBoxType',
     FieldDropDownListType = 'FieldDropDownListType',
     FieldCheckedBoxType = 'FieldCheckedBoxType',

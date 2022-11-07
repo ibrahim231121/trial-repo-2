@@ -48,8 +48,8 @@ type Props = {
     }
 };
 
-   var startDate : string = dateTimeDetail.startDate.split("+")[0];
-   var endDate  : string  = dateTimeDetail.endDate.split("+")[0];
+   var startDate : string = dateTimeDetail.startDate?.split("+")[0];
+   var endDate  : string  = dateTimeDetail.endDate?.split("+")[0];
 
    var minStartDate : string = "";
    var maxEndDate : string = "9999-12-31T23:59";
@@ -65,7 +65,11 @@ type Props = {
     maxEndDate = endDate ;
    }
 
-
+    if (dateTimeDetail?.value === "anytime" || dateTimeDetail.startDate === "") {
+      startDate = endDate;
+      minStartDate = "";
+      maxEndDate = "9999-12-31T23:59";
+    }
 
   return (
     <div className="calenderContent">

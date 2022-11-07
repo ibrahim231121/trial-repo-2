@@ -39,15 +39,35 @@ import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 
-const thumbTemplate = (assetId: string, evidence : SearchModel.Evidence) => {
+const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
-  return <AssetThumbnail assetType={assetType} fontSize="61pt" />;
+  let fileType = evidence.masterAsset?.files[0]?.type;
+
+  return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
+};
+
+const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
+  let assetType = evidence.masterAsset.assetType;
+  let fileType = evidence.masterAsset?.files[0]?.type;
+  if (assetType != undefined || assetType != null) {
+    if (fileType != undefined || fileType != null) {
+      return <div className={"dataTableText " + classes}>{fileType}</div>;
+    }
+    else 
+    {
+      return <div className={"dataTableText " + classes}>{assetType}</div>;
+    }
+  }
+  else 
+  {
+    return <div className={"dataTableText " + classes}></div>;
+  }
+
 };
 
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
-  
   let masterAsset = evidence.masterAsset;
-  let assets = evidence.asset;
+  let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
 
   let dataLink = <>
     <Link
@@ -58,7 +78,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
           evidenceId: evidence.id,
           assetId: masterAsset.assetId,
           assetName: assetName,
-          evidenceSearchObject : evidence
+          evidenceSearchObject: evidence
         },
       }}
     >
@@ -278,7 +298,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     isSearchable: boolean
   ) => {
 
-    if(initialRows) {   
+    if (initialRows) {
 
       let options = reformattedRows.map((row: any, _: any) => {
         let option: any = {};
@@ -302,14 +322,14 @@ const MasterMain: React.FC<MasterMainProps> = ({
         });
         options = moreOptions;
       }
-      
+
       return (
-        <CBXMultiSelectForDatatable 
-          width = {220} 
-          option={options} 
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear = {() => clearAll()}
+        <CBXMultiSelectForDatatable
+          width={220}
+          option={options}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear={() => clearAll()}
           isCheckBox={false}
           isduplicate={true}
         />
@@ -355,7 +375,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_Thumbnail")}`,
       id: "assetId",
       align: "left",
-      dataComponent:(e : any, d : any) => thumbTemplate(e,d),
+      dataComponent: (event: any, evidence: any) => thumbTemplate(event, evidence),
       minWidth: "130",
       maxWidth: "150",
       detailedDataComponentId: "evidence",
@@ -365,7 +385,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_ID")}`,
       id: "assetName",
       align: "left",
-      dataComponent: (e: any, d: any) => assetNameTemplate(e, d),
+      dataComponent: (e: any, d: any) => assetNameTemplate(e, d), 
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -417,9 +437,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_Type")}`,
       id: "assetType",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, ""),
+      dataComponent: (e: any, evidence: any) => assetTypeText("", evidence),//,(evidence: any) => assetTypeText(evidence, ""),//textDisplay(e, ""),
       sort: true,
       searchFilter: true,
+      detailedDataComponentId: "evidence",
       searchComponent: (
         rowData: SearchModel.Evidence[],
         columns: HeadCellProps[],

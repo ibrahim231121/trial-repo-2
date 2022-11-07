@@ -9,10 +9,8 @@ const NoFormAttachedOfAssetBucket: React.FC<Props> = ({ categoryCollection }) =>
     const { t } = useTranslation<string>();
     const alertIcon = <i className='fas fa-info-circle attentionIcon'></i>;
     const rowLen: number = categoryCollection?.length;
-
     return (
         <>
-        {console.log('categoryCollection', categoryCollection)}
             <CRXHeading variant='h6' className='categoryNextTitle dailogFormHeading'>
                 {t("Category_Title_Placeholder_Here")}
                 {categoryCollection.map((field: any, _key: number) => (

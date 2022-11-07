@@ -53,9 +53,9 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
     });
 
     useEffect(() => {
-        window.onRecvData = new CustomEvent("onUploadSnapshotStatusUpdate");
+        window.onRecvBookmarkData = new CustomEvent("onUploadSnapshotStatusUpdate");
         window.addEventListener("onUploadSnapshotStatusUpdate", uploadSnapshotStatusStatusUpdate);
-      }, [])
+    }, [])
 
     React.useEffect(() => {
         setOpenModal(openBookmarkForm)
@@ -205,7 +205,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
             let file: any = snapshotImage;
             file.id = +new Date();
             files.push(file);
-            AddFilesToFileService(files);
+            AddFilesToFileService(files, window.onRecvBookmarkData);
         }
     }
 

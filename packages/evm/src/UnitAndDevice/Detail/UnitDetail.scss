@@ -112,7 +112,18 @@ iframe {
         color: var(--color-02a200);
         font-size: 25px;
       }
+      &.ONLINE {
+        i{
+          color: var(--color-2d6fcc);
+        }
+      }
+      &.INACTIVE {
+        i{
+          color: var(--color-rosybrown);
+        }
+      }
     }
+
     .Unregistered {
       i {
         color: #FFD000 !important;

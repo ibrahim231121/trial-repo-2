@@ -27,6 +27,7 @@ import { CaptureDevice } from "../../utils/Api/models/StationModels";
 import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import {getAllSensorsEvents} from '../../Redux/SensorEvents';
+import Dialogbox from "../../Application/Admin/UnitConfiguration/ConfigurationTemplates/Dialogbox";
 
 
 
@@ -125,6 +126,7 @@ const CreateTemplate = (props: any) => {
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
   const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
+  const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] = React.useState<boolean>(false);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
 
@@ -167,6 +169,9 @@ const CreateTemplate = (props: any) => {
       settabss1(tabs1);
       setintial();
     }
+    return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
+    }
   }, [FormSchema])
   
   function setintial() {
@@ -183,11 +188,7 @@ const CreateTemplate = (props: any) => {
     }
     else {
       setDataFetched(true);
-      dispatch(enterPathActionCreator({ val: t("Create_Template") + historyState.deviceType }));
-    }
-
-    return () => {
-      dispatch(enterPathActionCreator({ val: "" }));
+      dispatch(enterPathActionCreator({ val: t("Create_Template") + ": " + historyState.deviceType }));
     }
   }
 
@@ -617,7 +618,7 @@ const CreateTemplate = (props: any) => {
     //  let value1 = values
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
-    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"].feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
+    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"]?.feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
@@ -649,28 +650,6 @@ const CreateTemplate = (props: any) => {
           var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
           nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
-          if(keySubSplit[0] == "streamPort")
-          {
-            var deviceTypeName = Initial_Values.find(x => x.key == "deviceTypeName_1_Camera")?.value;
-            if(deviceTypeName == "NF-21" || deviceTypeName == "NF-22 Stream 1" || deviceTypeName == "NF-22 Stream 2")
-            {
-              Initial_Values.push({
-                key: split[1],
-                value: "554",
-                group: split[0],
-                valueType: split[2],
-              });
-            }
-            if(deviceTypeName == "Zero-Dark")
-            {
-              Initial_Values.push({
-                key: split[1],
-                value: "81",
-                group: split[0],
-                valueType: split[2],
-              });
-            }
-          }
           if(keySubSplit[0] == "device" && valueToSave)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
@@ -809,13 +788,15 @@ const CreateTemplate = (props: any) => {
     history.go(0)
   }
 
-
-
-  let customEvent = (event: any, y: any, z: any) => {
-    if (event.target[z.inputType] === z.if) {
-      y(z.field, z.value)
-    }
-
+  const OnDeleteConfirmation = () => {
+    UnitsAndDevicesAgent.deleteConfigurationTemplate(historyState.id)
+    .then(() => {
+      history.push(urlList.filter((item:any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url) 
+    })
+    .catch(function (error) {
+        return error;
+    });    
+    setDeleteConfirmationIsOpen(false);
   }
 
   return (
@@ -880,14 +861,14 @@ const CreateTemplate = (props: any) => {
               <div className="crx-menu-list">{t("Clone_template")}</div>
             </div>
           </MenuItem>
-          <MenuItem>
+          {!historyState?.isDefaultTemplate && <MenuItem onClick={() => {setDeleteConfirmationIsOpen(true)}}>
             <div className="crx-meu-content groupingMenu crx-spac">
               <div className="crx-menu-icon">
                 <i className="far fa-trash-alt"></i>
               </div>
               <div className="crx-menu-list">{t("Delete_template")}</div>
             </div>
-          </MenuItem>
+          </MenuItem>}
         </Menu>
         <div className="tabCreateTemplate">
           <CRXTabs value={value} onChange={handleChange} tabitems={tabss1} />
@@ -979,6 +960,27 @@ const CreateTemplate = (props: any) => {
           </div>
         </div>
       </div >}
+
+      <Dialogbox
+        className="crx-unblock-modal crxConfigModal"
+        title={""}
+        setIsOpen={setDeleteConfirmationIsOpen}
+        onConfirm={OnDeleteConfirmation}
+        isOpen={deleteConfirmationIsOpen}
+        myVar={true}
+        secondary={t("Yes_delete")}
+        primary={t("No_do_not_delete")}
+      >
+        {
+          <div className="crxUplockContent configuserParaMain">
+            <p className="configuserPara1">
+              {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} {t("template")}.
+              {t("You_will_not_be_able_to_undo_this_action.")}
+            </p>
+            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_template?")}</p>
+          </div>
+        }
+      </Dialogbox>
     </>
   );
 
