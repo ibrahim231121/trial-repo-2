@@ -186,7 +186,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
   }
 
   const handleDownloadAssetClick = () => {
-    const masterAsset = row.evidence.masterAsset;
+    const masterAsset = row.files ? row : row.evidence.masterAsset;
     const assetFileId = masterAsset.files && masterAsset.files[0].filesId;
     if (!assetFileId) {
       showToastMsg?.({

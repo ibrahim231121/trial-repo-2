@@ -279,7 +279,6 @@ const CreateUserForm = () => {
     // setUserPayload(response);
 
   };
-  
   const generateTempPassComp = () => {
     const onClickPass = () => {
       var chars = '0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -290,6 +289,8 @@ const CreateUserForm = () => {
         password += chars.substring(randomNumber, randomNumber + 1);
       }
       setGeneratePassword(password);
+      setDisableSave(false);
+      
     };
     return (
       <>

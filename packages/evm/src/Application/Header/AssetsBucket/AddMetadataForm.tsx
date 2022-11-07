@@ -449,7 +449,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         break;
 
       default:
-        typeOfAsset = "Other";
+        typeOfAsset = "Others";
     }
     return typeOfAsset;
   };
@@ -509,6 +509,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".xlsb":
       case ".xltx":
       case ".xltm":
+      case ".xls":
         typeOfFile = "ExcelDoc";
         break;
 
@@ -556,7 +557,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         break;
 
       default:
-        typeOfFile = "Other";
+        typeOfFile = "Others";
     }
     return typeOfFile;
   };
