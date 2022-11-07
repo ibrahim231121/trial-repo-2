@@ -52,7 +52,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const [retentionHours, setRetentionHours] = useState<number>(0);
     const [retentionTotalHours, setRetentionTotalHours] = useState<number>(0);
     const [softDeleteTimeDays, setSoftDeleteTimeDays] = useState<number>(0);
-    const [gracePeriodHours, setGracePeriodHours] = useState<number>(0);    
+    const [gracePeriodHours, setGracePeriodHours] = useState<number>(0); 
+    
+    
     const [graceTotalPeriodHours, setGraceTotalPeriodHours] = useState<number>(0);
     const [retentionSize, setRetentionSize] = useState<number>(0);
     const [historyVersion, setHistoryVersion] = useState<string>("");
@@ -82,6 +84,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const [responseError, setResponseError] = React.useState<string>('');
     const history = useHistory();
     const dispatch = useDispatch();
+    const regexForNumberOnly = new RegExp('^[0-9]+$');
 
     const { t } = useTranslation<string>(); 
     const onRetentionTypeChange = (type:string) => {
@@ -158,28 +161,56 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         }
        }
 
-       const onRetentionDaysChange = (hours: number,days: number) =>
+       const onRetentionDaysChange = (hours: any,days: any) =>
        {
+            if(days < 0 || !regexForNumberOnly.test(days.toString()))
+            {
+                days= 0 ;
+            }
+            
             setRetentionTimeDays(days);
             setRetentionTotalHourValue(hours,days);
+            
        }
        
-       const onRetentionHoursChange = (hours: number,days:number) =>
+       const onRetentionHoursChange = (hours: any,days:any) =>
        {
+            if(hours < 0 || hours > 23 || !regexForNumberOnly.test(hours.toString()))
+            {
+                hours = 0 ;
+            }
             setRetentionHours(hours);
             setRetentionTotalHourValue(hours,days);
        }
        
-       const onGraceDaysChange = (hours: number,days: number) =>
+       const onGraceDaysChange = (hours: any,days: any) =>
        {
+            if(days < 0 || !regexForNumberOnly.test(days.toString()))
+            {
+                days= 0 ;
+            }
             setSoftDeleteTimeDays(days);
             setGraceTotalPeriodHoursValue(hours,days);
        }
        
-       const onGraceHoursChange = (hours: number,days: number) =>
+       const onGraceHoursChange = (hours: any,days: any) =>
        {
+            if(hours < 0 || hours > 23 || !regexForNumberOnly.test(hours.toString()) )
+            {
+                hours = 0 ;
+            }
             setGracePeriodHours(hours);
             setGraceTotalPeriodHoursValue(hours,days);
+       }
+
+        
+       const onDiskSpaceChange = (space: any) =>
+       {
+            if(space < 0)
+            {
+                space = 0;
+            }
+            setRetentionSize(space);
        }
 
        const RetentionPolicyDataChanged = (retentionPolicies: RetentionPoliciesModel, isDataChanged: boolean, dataToEdit: RetentionPoliciesModel) => {
@@ -221,9 +252,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setIsSaveDisable(true); 
             }
         }
+
+
     }, [name,retentionTimeDays,retentionHours,retentionSize])
 
- 
 
     useEffect (() => {
         dispatch(enterPathActionCreator({ val: "" }));
@@ -414,9 +446,20 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     return (
         
         <div className="retention-policies">
+              <CRXModalDialog
+                maxWidth="gl"
+                title={props.title}
+                className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__'}
+                modelOpen={openModal}
+                onClose={closeDialog}
+                defaultButton={false}
+                showSticky={false}
+                closeWithConfirm={closeWithConfirm} 
+                               
+                >
                 {success && (
                   <CRXAlert
-                    message={t("Success_You_have_saved_the_Retention_Policies")}
+                    message={t("Success_You_have_saved_the_Retention_Policy")}
                     alertType="toast"
                     open={true}
                   />
@@ -430,16 +473,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                     open={true}
                   />
                 )}  
-                <CRXModalDialog
-                maxWidth="gl"
-                title={props.title}
-                className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__ '}
-                modelOpen={openModal}
-                onClose={closeDialog}
-                defaultButton={false}
-                showSticky={false}
-                closeWithConfirm={closeWithConfirm}
-                >
+
+              
                     <div className="settingsContent">
                      <span className="gridFilterTextBox"> 
 
@@ -513,7 +548,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                           
                                 < TextField
                                 required={true}
-                                value={retentionTimeDays}
+                                value={retentionTimeDays ==0?"": retentionTimeDays}
                                 label={t("Retention_Time")}
                                 className="retention-policies-input"
                                 onChange={(e: any) => onRetentionDaysChange(retentionHours,e.target.value)}
@@ -521,14 +556,14 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                 type="number"
                                 name="retentionTimeDays"
                                 regex=""
-                               
+                            
                                 />
                                 <label>{t("Days")}<span></span></label>  
 
                                 
 
                                 < TextField                
-                                value={retentionHours}
+                                value={retentionHours==0?"": retentionHours}
                                 className="retention-policies-input"
                                 onChange={(e: any) => onRetentionHoursChange(e.target.value,retentionTimeDays)}
                                 disabled = {disableHours}
@@ -558,7 +593,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                            
                                 < TextField
                                     required={false}
-                                    value={softDeleteTimeDays}
+                                    value={softDeleteTimeDays==0?"": softDeleteTimeDays}
                                     label={t("Soft_Delete_Time")}                            
                                     className="retention-policies-input"
                                     onChange={(e: any) => onGraceDaysChange(gracePeriodHours,e.target.value)}
@@ -572,7 +607,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
 
                                     < TextField
                                     required={false}
-                                    value={gracePeriodHours}                           
+                                    value={gracePeriodHours==0?"": gracePeriodHours}                           
                                     className="retention-policies-input"
                                     onChange={(e: any) => onGraceHoursChange(e.target.value,softDeleteTimeDays)}
                                     disabled = {disableGracePeriodHours}
@@ -624,10 +659,10 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
 
                                     < TextField
                                     required={true}
-                                    value={retentionSize}
+                                    value={retentionSize==0?"": retentionSize}
                                     label={t("Retention_Size")}
                                     className="retention-policies-input"
-                                    onChange={(e: any) => setRetentionSize(e.target.value)}
+                                    onChange={(e: any) => onDiskSpaceChange(e.target.value)}
                                     disabled = {false}
                                     type="number"
                                     name="retentionSize"

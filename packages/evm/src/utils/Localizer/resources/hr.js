@@ -776,7 +776,8 @@ export const resources = {
         "Retention_Time":"Retention Time",
         "Policy_Name":"Policy Name",
         "Retention_Time_Or_Space" : "Retention Time / Space",
-        "Soft_Delete_Time" : "Soft Delete Time"
+        "Soft_Delete_Time" : "Soft Delete Time",        
+        "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy"
 
       }
     }

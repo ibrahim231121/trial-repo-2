@@ -10,10 +10,9 @@ import anchorDisplay from '../../../../utils/AnchorDisplay';
 import { urlList, urlNames } from "../../../../utils/urlList"
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton } from "@cb/shared";
+import { CRXButton,CRXIcon } from "@cb/shared";
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import RetentionPoliciesDetail from "../RetentionPoliciesDetail/RetentionPoliciesDetail";
-
 
 import {
   SearchObject,
@@ -41,7 +40,8 @@ type RetentionPoliciesTemplate = {
   name: string;
   retentionTimeOrSpace: string;
   softDeleteTime: string;  
-  description: string;
+  description: string; 
+  isInfinite:boolean;
 }
 
 const ORDER_BY = "asc" as Order;
@@ -131,8 +131,20 @@ const RetentionPoliciesList: React.FC = () => {
       <TextSearch headCells={headCell} colIdx={colIdx} onChange={(valueObject) => onChange(valueObject,colIdx)} />
     );
   };
-
  
+  const retentionInfiniteOrTimeSpace = (timeSpace: string): JSX.Element => {
+    if (timeSpace == "")
+    {
+      return (
+        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+      );
+
+    }     
+    else
+      {
+        return textDisplay(timeSpace, " ")   
+      }
+  }
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -165,7 +177,8 @@ const RetentionPoliciesList: React.FC = () => {
       label: `${t("Retention_Time_Or_Space")}`,
       id: "retentionTimeOrSpace",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent:(e: string) => retentionInfiniteOrTimeSpace(e), 
+     
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
@@ -207,9 +220,11 @@ const RetentionPoliciesList: React.FC = () => {
         return { 
             id: template.id,
             name:template.name ,
-            retentionTimeOrSpace:  getTimeSpaceValue(template.detail.limit.hours) ,
+            retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" :  getTimeSpaceValue(template.detail.limit.hours) ,
             softDeleteTime: getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
             description: template.description , 
+            isInfinite  : template.detail.limit.isInfinite          
+
         }
       })
     }

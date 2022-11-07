@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import {
   Menu,
   MenuItem,
-  MenuButton,
+  MenuButton
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import Dialogbox from '../../UnitConfiguration/ConfigurationTemplates/Dialogbox';
@@ -97,7 +97,7 @@ const openCreateRetentionPoliciesForm = () => {
         ) : (
           <div></div>
           )}  
-    
+    {selectedItems.length <=1 ? (
       <MenuItem >
       <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
@@ -110,6 +110,9 @@ const openCreateRetentionPoliciesForm = () => {
         </div>
         </Restricted>
       </MenuItem>
+      ) : (
+        <div></div>
+        )}  
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"
