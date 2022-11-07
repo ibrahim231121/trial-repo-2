@@ -618,7 +618,7 @@ const CreateTemplate = (props: any) => {
     //  let value1 = values
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
-    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"].feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
+    let visibleCameraFields = values["CameraSetup/Camera/FieldArray"]?.feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
     Object.entries(values).forEach(([key, value]) => {
       var valueRaw: any = value;
       var split = key.split(re);
