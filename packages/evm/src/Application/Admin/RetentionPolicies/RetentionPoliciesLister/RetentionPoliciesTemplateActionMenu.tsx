@@ -20,13 +20,13 @@ type Props = {
   getSelectedData : () => void;
   getSuccess : () => void;
   onClickOpenModel : (modelOpen: boolean,id:number,title:string)=> void;
+  onMessageShow: (isSuccess:boolean,message: string) => void;
 };
 
-const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,getSuccess,onClickOpenModel}) => {
+const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,getSuccess,onClickOpenModel,onMessageShow}) => {
 const { t } = useTranslation<string>();
 
 const [nondefault, setnondefault] = useState(false);
-
 
 const deleteRetentionPolicies = () => {
   if(Array.isArray(selectedItems) && selectedItems.length > 0) {
@@ -37,9 +37,11 @@ const deleteRetentionPolicies = () => {
     .then(() => {
       getSuccess();
       getRowData();
-      getSelectedData();
+      getSelectedData();      
+      onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
     })
-    .catch(function(error) {
+    .catch(function(error) {      
+      onMessageShow(false,error.response.data.toString());
       return error;
     });
   }
@@ -65,6 +67,7 @@ const openCreateRetentionPoliciesForm = () => {
 
   return (
     <div className="table_Inner_Action">
+    
     <Menu
       key="right"
       align="center"

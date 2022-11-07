@@ -28,11 +28,12 @@ import {
   PageiGrid,
   GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import {CRXAlert} from "@cb/shared";
+import {CRXToaster,CRXAlert} from "@cb/shared";
 import {getAllRetentionPoliciesFilter} from '../../../../Redux/RetentionPolicies';
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { number } from "yup/lib/locale";
+
 
 
 type RetentionPoliciesTemplate = {
@@ -48,6 +49,7 @@ const ORDER_BY = "asc" as Order;
 const ORDER_BY_PARAM = "recordingStarted";
 
 const RetentionPoliciesList: React.FC = () => {
+  const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   const [id, setId] = React.useState<number>(0);
   const [title, setTitle] = React.useState<string>("");
@@ -60,6 +62,7 @@ const RetentionPoliciesList: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [openModel, setOpenModel] = React.useState<boolean>(false);  
+
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -96,7 +99,14 @@ const RetentionPoliciesList: React.FC = () => {
     dispatch(enterPathActionCreator({ val: "" }));
 }, []);
 
-
+const retentionFormMessages = (obj: any) => {
+  retentionMsgFormRef.current.showToaster({
+    message: obj.message,
+    variant: obj.variant,
+    duration: obj.duration,
+    clearButtton: true,
+  });
+}
     const onChange = (valuesObject: ValueString[], colIdx: number) => {
       headCells[colIdx].headerArray = valuesObject;
       onSelection(valuesObject, colIdx);
@@ -232,7 +242,7 @@ const RetentionPoliciesList: React.FC = () => {
     setRows(RetentionPoliciesTemplateRows);
     reformattedRowsRef.current = RetentionPoliciesTemplateRows;
   }
-
+  
   React.useEffect(() => {
     setRetentionPoliciesData();
   }, [filterRetentionPolicies?.data]);
@@ -288,15 +298,29 @@ const RetentionPoliciesList: React.FC = () => {
     setOpenModel(modelOpen);
     dispatch(getAllRetentionPoliciesFilter(pageiGrid))
   }
+
+  const onMessageShow = (isSuccess:boolean,message: string) => {
+    if(isSuccess)
+    {
+      retentionFormMessages({
+        message: message,
+        variant: 'success',
+        duration: 7000
+      });
+    } 
+    else
+    {
+      retentionFormMessages({
+        message: message,
+        variant: 'error',
+        duration: 7000
+      });
+    }   
+  }
+
   return (
     <div className="CrxRetentionPoliciesTable switchLeftComponents">
-          {success && (
-              <CRXAlert
-                message={t("Success_You_have_deleted_the_Retention_Policies")}
-                alertType="toast"
-                open={true}
-              />
-          )}
+        
         {
         rows && (
           <CRXDataTable
@@ -308,6 +332,7 @@ const RetentionPoliciesList: React.FC = () => {
               getSelectedData= {getSelectedItemsUpdate}
               getSuccess = {getSuccessUpdate}
               onClickOpenModel = {onClickOpenModel}
+              onMessageShow = {onMessageShow}
             />}
             toolBarButton = {
               <>
