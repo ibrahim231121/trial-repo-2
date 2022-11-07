@@ -236,7 +236,9 @@ const UnitCreate = (props: historyProps) => {
   function onMsgReceived(e: any) {
        if(e !=null && e.data != null && e.data.body !=null) { 
           statusJson.current = JSON.parse(e.data.body.data);
-          setUnitStatus(statusJson.current.Data.toUpperCase());
+          if(statusJson.current.UnitId === unitID){
+            setUnitStatus(statusJson.current.Data.toUpperCase());
+          }
         }
        };
 
