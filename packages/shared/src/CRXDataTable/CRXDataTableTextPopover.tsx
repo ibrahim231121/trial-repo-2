@@ -1,4 +1,4 @@
-import React,{ useRef } from 'react'
+import React,{ useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Popover from '@material-ui/core/Popover';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -34,12 +34,15 @@ const useGapStyles = makeStyles({
 
   const  CRXDataTableTextPopover = ({content, id, isPopover, counts, minWidth, maxWidth}:popoverProps) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [initScroll, setInitScroll] = useState<any>()
     const popoverRefs = useRef(content)
     const paperRef = useRef<HTMLInputElement>(null)
     const classesPopover = useGapStyles()
 
     const popoverHandleClose = () => {
+        
         setAnchorEl(null);
+        
         const tableRow:HTMLElement | null = popoverRefs.current.parentElement.parentElement.parentElement;
         tableRow && ( tableRow.style.background = "" );
         tableRow?.childNodes.forEach(x => {
@@ -47,6 +50,26 @@ const useGapStyles = makeStyles({
         });
     }
 
+
+    useLayoutEffect(() => {
+        let windScroll = window.scrollY
+        setInitScroll(windScroll)
+    },[initScroll])
+
+    const handleScroll = () => {
+        
+        const currentScrollY = window.scrollY;
+        if (initScroll < currentScrollY) {
+            popoverHandleClose()
+        }
+        setInitScroll(currentScrollY)
+      };
+    
+    useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+    }, []); 
+    
     const popoverHandleClick = (e : any) => {
         
         setAnchorEl(e.currentTarget)
@@ -84,19 +107,21 @@ const useGapStyles = makeStyles({
         </div>
         : content }
         <ClickAwayListener onClickAway={popoverHandleClose}>
+           
         <Popover
             id={id}
             ref={paperRef}
             open={open}
             anchorEl={anchorEl}
-            onClose={popoverHandleClose}
+            getContentAnchorEl={(anchorEl : any) => anchorEl}
+            onClose={() => setAnchorEl(null)}
             marginThreshold={16}
             disablePortal
             hideBackdrop={true}
             classes={{
                 ...classesPopover
             }}
-            container={document.body}
+            container={popoverRefs.current}
             anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'center',
@@ -109,7 +134,7 @@ const useGapStyles = makeStyles({
             
         >
             <div className='popover_content'>{content}</div>
-            
+            {console.log("initScroll", initScroll)}
         </Popover>
         </ClickAwayListener>
         </div>

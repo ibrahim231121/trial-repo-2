@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Form, FormikHelpers, Field } from 'formik';
-import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog, TextField } from '@cb/shared';
+import { CRXRadio, CRXButton, CRXAlert, CRXConfirmDialog } from '@cb/shared';
 import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../../Redux/notificationPanelMessages';
 import { NotificationMessage } from '../../../Header/CRXNotifications/notificationsTypes';
@@ -9,10 +9,9 @@ import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import { Evidence } from '../../../../utils/Api/models/EvidenceModels';
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from "../../../../utils/urlList";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 import "./ManageRetention.scss";
 import { ManageRetentionProps, RetentionFormType, RetentionStatusEnum } from './ManageRetentionTypes';
-import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
 import { SearchType } from '../../utils/constants';  
 

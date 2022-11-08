@@ -14,6 +14,7 @@ import { Field, Form, Formik } from "formik";
 import { AddFilesToFileService } from "../../../GlobalFunctions/FileUpload";
 import Cookies from 'universal-cookie';
 import { TextField } from "@cb/shared";
+import { SetupConfigurationAgent } from "../../../utils/Api/ApiAgent"; 
 declare const window: any;
 
 const cookies = new Cookies();
@@ -183,14 +184,19 @@ const TenantSettings: React.FC = () => {
     console.log(requestOptions);
     return await fetch(url, requestOptions);
   };
-  const validatingFields = (values: any) => {
+  const validatingFields = async (values: any) => {
     if (values.MailServer != "Custom") {
+     await SetupConfigurationAgent.getMailServerSettings("/MailServers").then((defaultMailSettings : any) =>{
+      values.CustomURL=defaultMailSettings[0].server?.smtp;
+      values.CustomFromEmail = defaultMailSettings[0].from;
+      values.CustomPort = defaultMailSettings[0].server?.port;
+      values.CustomName = defaultMailSettings[0].name;
+      values.CustomPassword = defaultMailSettings[0].credential?.password;
+     
+    }).catch((e : any)=> {
+      console.log("ERORRR : "+ e.message);
+    });
       values.MailServer = "Default";
-      values.CustomURL = "";
-      values.CustomFromEmail = "";
-      values.CustomPort = "";
-      values.CustomName = "";
-      values.CustomPassword = "";
     }
     if (
       values.TimeFormat != "AM/PM" &&
@@ -216,7 +222,7 @@ const TenantSettings: React.FC = () => {
     }
     if (
       values.AuthServer != "External OpenId" &&
-      values.AuthServer != "Getac OpenId With AD"
+      values.AuthServer != "Getac OpenId with AD"
     ) {
       values.AuthServer = "Getac OpenId Without AD";
     }
@@ -231,9 +237,16 @@ const TenantSettings: React.FC = () => {
       values.ClientSecretId = "";
       values.RedirectingURL = "";
     }
+    else {
+      values.ApplicationClientId = "";
+      values.DirectoryTenantId = "";
+      values.ApplicationRedirectUrl = "";
+      values.ApplicationName = "";
+      values.ClientSecretId = "";
+    }
   };
   const submitTenantSettings = async (values: any) => {
-    validatingFields(values);
+    await validatingFields(values);
     const body = {
       settingEntries: null,
       tenantSettingEntries: [
@@ -772,7 +785,11 @@ const TenantSettings: React.FC = () => {
                               <label htmlFor="CustomPassword">Password</label>
                               <TextField id="password"
                             type={passwordVisible ? "text" : "password"}
-                            value={values.CustomPassword}
+                            placeholder={
+                              passwordVisible? values.CustomPassword:
+                              values.CustomPassword.length > 0?
+                              new Array(values.CustomPassword.length + 1).join("*") : "0"
+                              }
                             name="CustomPassword"
                             onChange={(e: any) => setFieldValue("CustomPassword", e.target.value)}>
                             
@@ -1040,7 +1057,9 @@ const TenantSettings: React.FC = () => {
                             type="password"
                             onBlur=""
                             name="LiveStreamPassword"
-                            value={values.LiveStreamPassword}
+                            placeholder={
+                              new Array(values.LiveStreamPassword.length + 1).join("*") 
+                              }
                             onChange={(e: any) => setFieldValue("LiveStreamPassword", e.target.value)}>
                             
                           </TextField>

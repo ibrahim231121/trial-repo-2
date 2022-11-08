@@ -84,6 +84,7 @@
     ._bookMark_list_items {
         height: calc(100vh - (129px + 310px));
         overflow-y: auto;
+        
     }
     .detailDropdownMain {
         //width: calc(100% - 25px);
@@ -230,9 +231,14 @@
                                 }
                                 .gridFilterTextBox {
                                     padding: 0px;
+                                    overflow: hidden;
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
                                 }
                                 .MuiInputBase-multiline {
                                     padding-left: 0px;
+                                    display: -webkit-box;
                                 }
                                 textarea{
                                     font-size: 14px;
@@ -312,6 +318,7 @@
                                 color: var(--color-D1D2D4);
                                 font-size: 20px;
                                 margin-right: -7px;
+                                min-width: 0px;
                                 &:hover {
                                     background-color: transparent;
                                 }
@@ -349,11 +356,11 @@
                     }
                 }
                 ._BN_Search_field {
-                    padding: 15px 0px;
+                    padding: 11px 0px;
                     position: relative;
                     margin-right: 27px;
                     margin-left: 15px;
-                    padding-bottom: 2px;
+                    padding-bottom: 0px;
                     input {
                         padding-left: 28px;
                         color: var(--color-666666);
@@ -370,7 +377,7 @@
                     }
                     .magnifyingIconUi {
                         position: absolute;
-                        top: 24px;
+                        top: 20px;
                         font-size: 14px;
                         color: var(--color-666666) ;
                         left: 21px;

@@ -1902,15 +1902,17 @@ const VideoPlayerBase = (props: any) => {
 
     const MainLayoutElement : undefined | any = document.querySelector("._bottom_arrow_seeMore");
     const _video_player_main_containers : any = document.querySelector("._video_player_layout_main")
+    const _video_player_screens: undefined | any = document.querySelector("#video-player-screens");
     if(targetId === "detail_view") {
       
       MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "73px";
+      MainLayoutElement.style.top = "115px";
       _video_player_main_containers.style.background = "#fff"
-     
+      _video_player_screens.classList.add("removeEXHeight")
     }else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
-      MainLayoutElement.style.top = "-74px";
+      MainLayoutElement.style.top = "-16px";
+      _video_player_screens.classList.remove("removeEXHeight")
     }
   }
 
@@ -2448,7 +2450,19 @@ useEffect(() => {
               </div>
              </div>
             </div>
-                     
+            {multiTimelineEnabled == false ? 
+            <div className="_bottom_arrow_seeMore">
+              {detailContent == false ?
+                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                    </button>
+                    :
+                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                    </button>
+                  }
+              </div>
+            : ""}         
             <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
               {/* TIME LINES BAR HERE */}
               {loading ? (
@@ -2479,19 +2493,7 @@ useEffect(() => {
               {multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i>Sync timeline start</button>}
             </div>
              
-            {multiTimelineEnabled == false ? 
-            <div className="_bottom_arrow_seeMore">
-              {detailContent == false ?
-                    <button id="seeMoreButton" className="_angle_down_up_icon_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
-                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
-                    </button>
-                    :
-                    <button id="lessMoreButton" data-target="#root" className="_angle_down_up_icon_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
-                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
-                    </button>
-                  }
-              </div>
-            : ""}
+           
           
           {openBookmarkForm && <VideoPlayerBookmark
             setopenBookmarkForm={setopenBookmarkForm}

@@ -43,7 +43,7 @@ type ViewReasonTimerObject = {
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
     const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement } = props;
-    const [openModal, setOpenModal] = React.useState(false);
+    const [openModal, setOpenModal] = React.useState(true);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
     const [responseError, setResponseError] = React.useState<string>('');

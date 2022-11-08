@@ -58,7 +58,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   React.useEffect(() => {
     if(!editDescription){
       if(stateObj.description.length > 127 && !isReadMore){
-        setDescription(stateObj.description.slice(0,126)+"...");
+        setDescription(stateObj.description.slice(0,126) + "...");
       }
       else{
         setDescription(stateObj.description);
