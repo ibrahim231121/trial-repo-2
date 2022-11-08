@@ -656,7 +656,7 @@ const CreateUserForm = () => {
       dispatch(enterPathActionCreator({ val: payload.account.userName }));
       if (disableLink) {
         const userName = userPayload.name.first + ' ' + userPayload.name.last;
-        sendEmail(payload.email, userPayload.id, userName);
+        sendEmail(payload.email, userPayload.id, userName, true);
         userFormMessages({
           message: t('You_have_resent_the_activation_link.'),
           variant: 'success',
@@ -997,7 +997,7 @@ const CreateUserForm = () => {
     }
   };
 
-  const sendEmail = (email: string, clientId: string, applicationName: string) => {
+  const sendEmail = (email: string, clientId: string, applicationName: string, ResendActivation : boolean = false) => {
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -1006,7 +1006,7 @@ const CreateUserForm = () => {
       }
     };
     //const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${clientId}&applicationName=${applicationName}`;
-    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${REACT_APP_CLIENT_ID}&applicationName=${applicationName}`;
+    const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${REACT_APP_CLIENT_ID}&applicationName=${applicationName}&resendActivation=${ResendActivation}`;
     fetch(url, requestOptions);
   };
 
