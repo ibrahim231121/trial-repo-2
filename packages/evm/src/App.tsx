@@ -145,10 +145,10 @@ function App() {
   }, [culture, resources]);
 
   useEffect(()=>{
+    setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
     var token = getToken();
     if(token){
             window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
-            setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
             let moduleIds = getModuleIds();
             let groupIds = getGroupIds();
             if(moduleIds){
