@@ -50,4 +50,26 @@ export namespace SetupConfigurationsModel {
         forms: Form[];
         history: History | null;
     }
+
+
+    export interface MailServer {
+            id: number,
+            name: string,
+            from: string,
+            replyTo: string,
+            credential: Credential,
+            server: Server
+        }
+    
+        export interface Credential {
+            userName: string;
+            password: string;
+        }
+
+        export interface Server {
+            port: number;
+            secureAuth: string;
+            smtp: string;
+        }
+    
 }

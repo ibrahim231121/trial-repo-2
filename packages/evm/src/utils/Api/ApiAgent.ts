@@ -165,6 +165,7 @@ export const SetupConfigurationAgent = {
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getTenantSetting: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/TenantSettings", config),
+    getMailServerSettings: (url:string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
 
 }
 export const EvidenceAgent = {
