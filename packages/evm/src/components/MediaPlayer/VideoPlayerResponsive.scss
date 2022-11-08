@@ -44,17 +44,16 @@
       ._beforeline_Main .time_line_container ._before_line .line {
         padding: 0 83px;
       }
+      .mainFullView {
+        &.fullscreen {
+            ._videoPlayer_grid_customize {
+                width: 100% !important;
+            }
+        }
+      }
 }
 
 @media only screen and (min-width:1366px) { 
-    ._video_player_container{
-        #crx_video_player{
-            // #video-player-screens  {
-            //     height: calc(100vh - 540px);
-            // }
-        } 
-    }
-    
     ._video_Player_Right_Panel {
         height: 100%;
     }
@@ -68,4 +67,20 @@
             }
         }
     }
+}
+
+@media only screen and (max-width : 1600px) {
+    ._video_player_layout_main{
+        ._video_player_container{
+            #crx_video_player {
+                #video-player-screens {
+                    &._videPlayer_height_AU {
+                        &.removeEXHeight {
+                            height: calc(100vh - 472px);
+                        }
+                    }
+                }
+            }
+        }
+    }  
 }
