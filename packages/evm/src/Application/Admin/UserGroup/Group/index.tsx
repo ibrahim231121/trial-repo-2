@@ -133,7 +133,6 @@ const Group = () => {
     { label: t("APPLICATION_PERMISSIONS"), index: 2 },
     { label: t("DATA_PERMISSIONS"), index: 3 },
   ];
-
   const message = [
     { messageType: "success", message: t("User_group_saved_successfully.") },
     {
@@ -408,8 +407,13 @@ const Group = () => {
        && dataPermissions.filter(x=> x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length === 0
     ) {
       setIsSaveButtonDisabled(false);
-    } else {
-      setIsSaveButtonDisabled(true);
+    }
+   else if(dataPermissions.every(x=> x.fieldType === 0 && x.mappingId === 0 && x.permission === 0) && dataPermissionsActual.every(x=> x.fieldType != 0 && x.mappingId != 0 && x.permission != 0) && deletedDataPermissions.length > 0){
+      setIsSaveButtonDisabled(false);
+    }
+    else {
+
+        setIsSaveButtonDisabled(true);
     }
   };
 
@@ -542,17 +546,18 @@ const Group = () => {
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
     
-    let permissionsToAdd = dataPermissions.map((x) => {
-      return {
-        id: x.containerMappingId,
-        mappingId: x.mappingId,
-        groupMapping: {
-          groupId: groupId,
-          permission: x.permission,
-        },
-        fieldType: x.fieldType,
-      };
-    });
+    let permissionsToAdd = dataPermissions.filter(x=> x.fieldType !== 0  && x.mappingId !== 0 && x.permission !== 0)
+                                          .map((x) => {
+                                            return {
+                                              id: x.containerMappingId,
+                                              mappingId: x.mappingId,
+                                              groupMapping: {
+                                                groupId: groupId,
+                                                permission: x.permission,
+                                              },
+                                              fieldType: x.fieldType,
+                                            };
+                                          });
     let dataPermissionObj = {
       //  groupId : id,
       containerMappings: permissionsToAdd,
@@ -571,10 +576,11 @@ const Group = () => {
     })
   
     .then((container) => {
-        // if (container.status === 201 || container.status === 204) {
-        //   // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
-        //   showToastMsg();
-        // } else 
+        if (container.status === 201 || container.status === 204) {
+          // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
+          // showToastMsg();
+          setIsSaveButtonDisabled(true)
+        } else 
         if (
           container.status === 500 ||
           container.status === 400 ||
