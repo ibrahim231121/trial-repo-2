@@ -300,22 +300,11 @@ const retentionFormMessages = (obj: any) => {
   }
 
   const onMessageShow = (isSuccess:boolean,message: string) => {
-    if(isSuccess)
-    {
-      retentionFormMessages({
-        message: message,
-        variant: 'success',
-        duration: 7000
-      });
-    } 
-    else
-    {
-      retentionFormMessages({
-        message: message,
-        variant: 'error',
-        duration: 7000
-      });
-    }   
+    retentionFormMessages({
+      message: message,
+      variant: isSuccess? 'success' : 'error',
+      duration: 7000
+    });    
   }
 
   return (
