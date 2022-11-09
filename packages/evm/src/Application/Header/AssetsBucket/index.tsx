@@ -778,7 +778,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     }
   }, [isCheckTrue])
 
-
   useEffect(() => {
     if (onAddEvidence) {
       toasterRef.current.showToaster({
@@ -1197,7 +1196,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                         </CRXModalDialog>
                       </CRXRows>
                       {!isFileUploadHide ?
-                        <Restricted moduleId={1}>
+                        <Restricted moduleId={26}>
                           <div className="uploadContent">
                             <div className="iconArea">
                               <i className="fas fa-layer-plus"></i>
