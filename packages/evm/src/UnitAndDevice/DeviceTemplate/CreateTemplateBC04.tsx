@@ -619,13 +619,15 @@ const CreateTemplate = (props: any) => {
     //  let value2= valuess
     let Initial_Values: Array<any> = [];
     let visibleCameraFields = values["CameraSetup/Camera/FieldArray"]?.feilds.flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))))
+    let visibleFormFields = Object.keys(FormSchema).map((x: any) => FormSchema[x]).flat(1).filter((formObj: any) => formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency, formObj, values))));
     Object.entries(values).forEach(([key, value]) => {
-      var valueRaw: any = value;
-      var split = key.split(re);
+      let valueRaw: any = value;
+      let split = key.split(re);
       if (!(valueRaw?.feilds !== undefined)) {
-        var valueToSave = true;
-        var nonDependantValue = true;
-        var keySubSplit = split[1].split('_');
+        let valueToSave = true;
+        let nonDependantValue = true;
+        let nonDependantFormValue = visibleFormFields.some((x: any) => x.key == key);
+        let keySubSplit = split[1].split('_');
         if(split[1] == "PrimaryDevice" && valueToSave)
         {
           let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
@@ -647,7 +649,7 @@ const CreateTemplate = (props: any) => {
           }
         }
         if (keySubSplit.length > 1) {
-          var parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
+          let parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
           nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
           if(keySubSplit[0] == "device" && valueToSave)
@@ -686,7 +688,7 @@ const CreateTemplate = (props: any) => {
           }
         }
         if (valueToSave) {
-          if(nonDependantValue)
+          if(nonDependantValue && nonDependantFormValue)
           {
             Initial_Values.push({
               key: split[1],
