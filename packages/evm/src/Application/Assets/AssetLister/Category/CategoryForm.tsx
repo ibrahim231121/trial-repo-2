@@ -13,7 +13,7 @@ import { CategoryFormProps, FormInitialValues, SubmitType } from './Model/Catego
 import { SearchType } from '../../utils/constants';
 import { FieldTypes } from './Model/FieldTypes';
 import { SetupConfigurationsModel } from '../../../../utils/Api/models/SetupConfigurations';
-import { applyValidation } from './Utility/UtilityFunctions';
+import { applyValidation, MapSetupCategoryFormToEvidenceCategoryForm, RemapFormFieldKeyName, RevertKeyName } from './Utility/UtilityFunctions';
 
 const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -28,7 +28,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
   const [validationSchema, setValidationSchema] = React.useState<any>({});
   const evidence = props.evidence;
   const evidenceId = evidence?.id;
-  const categoryOptions = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
+  const setupCategories = useSelector((state: any) => state.assetCategory.category) as Array<SetupConfigurationsModel.Category>;
   const saveBtnClass = saveBtn ? 'nextButton-Edit' : 'primeryBtn';
   const isErrorClx = error && 'onErrorcaseClx';
 
@@ -52,37 +52,35 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       else
         return x;
     });
-
     // If user selected addtional categories, then cross icon click should be a update case.
     if (newSelectedCategories.length > 0) {
       props.setIsformUpdated(true);
-      const recentlyAddedCategory = categoryOptions
-        .filter((o: any) => {
+      const operationTypeAdded = setupCategories.filter((o: any) => {
           return newSelectedCategories.some((e: any) => e.label === o.name);
         })
         .map((i: any) => {
           return {
             id: i.id,
             name: i.name,
-            form: i.forms,
+            form: RemapFormFieldKeyName(i.forms),
             type: 'add'
           };
         });
-      categoriesFormCollection.push(...recentlyAddedCategory);
+      categoriesFormCollection.push(...operationTypeAdded);
     }
-
-    // It means category was attacehd from the backend
+    // It means category was attached from the backend
     if (previousAttachedCategories && previousAttachedCategories.length > 0) {
       props.setModalTitle(t('Edit_category'));
-      let changingResponse = evidence.categories.map((o) => {
+      const mappedCategories = MapSetupCategoryFormToEvidenceCategoryForm(setupCategories,evidence.categories);
+      let operationTypeAdded = mappedCategories.map((o) => {
         return {
           id: o.id,
-          name: o.record?.record.find((x) => x.key === 'Name')?.value,
-          form: o.formData,
+          name: o.record?.record.find((x: any) => x.key === 'Name')?.value,
+          form: RemapFormFieldKeyName(o.formData),
           type: 'update'
         };
       });
-      categoriesFormCollection.push(...changingResponse);
+      categoriesFormCollection.push(...operationTypeAdded);
       setFormCollection(categoriesFormCollection);
     } else {
       setFormCollection(categoriesFormCollection);
@@ -179,7 +177,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             }
 
             const _field = {
-              key: field.key === undefined ? field.name : field.key,
+              key: RevertKeyName(field.key === undefined ? field.name : field.key),
               value: value,
               dataType: field.type === undefined ? field.dataType : field.type,
               defaultFieldValue: field.defaultFieldValue

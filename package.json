@@ -5,7 +5,8 @@
     "start": "(set PORT=3000 || export PORT=3000) && lerna run start --parallel",
     "build": "lerna run build",
     "build:qa": "lerna run build:qa",
-    "build:prod": "lerna run build:prod"
+    "build:prod": "lerna run build:prod",
+    "start:qa" : "lerna run start:qa"
   },
   "devDependencies": {
     "lerna": "^3.22.1"

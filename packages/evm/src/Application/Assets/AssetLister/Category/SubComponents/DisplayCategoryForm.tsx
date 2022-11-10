@@ -5,17 +5,12 @@ import { CRXHeading } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { DisplayCategoryFormProps } from "../Model/DisplayCategoryForm";
 import { FieldTypes } from "../Model/FieldTypes";
-import { CADID, CaseNO, FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropDownListType, FieldRadioButtonListType, PolygraphLogNumber } from "./FieldTypes/Index";
+import { FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropDownListType, FieldRadioButtonListType } from "./FieldTypes/Index";
+import { IsFieldtypeEquals } from "../Utility/UtilityFunctions";
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
+  console.log('Display', props)
   const { t } = useTranslation<string>();
-  
-  function IsFieldtypeEquals(field: any, fieldType: any) {
-    if ((field.type == fieldType) || (field.dataType == fieldType)) {
-      return true
-    }
-    return false;
-  }
 
   return (
     <>
@@ -41,31 +36,29 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                     {formObj.fields.map((field: any) => (
                       <div className={`categoryInnerField`} key={field.id}>
                         <label className="categoryFormLabel" htmlFor={field.id}>
-                          {field.name === undefined ? field.key : field.name}
+                          {field?.display?.caption}
                         </label>
-                        <b className={errors[field.name === undefined ? field.key : field.name] ? "errorStaric" : "formStaric"}>*</b>
+                        <b className={errors[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</b>
                         <div className="CBX-input">
-
                           {(IsFieldtypeEquals(field, FieldTypes.FieldTextBoxType) || IsFieldtypeEquals(field, FieldTypes.CaseNO) || IsFieldtypeEquals(field, FieldTypes.PolygraphLogNumber) || IsFieldtypeEquals(field, FieldTypes.CADID) || IsFieldtypeEquals(field, FieldTypes.Unknown)) &&
                             <Field
                               className={
-                                `editCategoryField ${errors[field.name === undefined ? field.key : field.name] ? 'errorBrdr' : ''}`
+                                `editCategoryField ${errors[field.name ?? field.key] ? 'errorBrdr' : ''}`
                               }
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               onKeyUp={(e: any) => {
                                 props.setFieldsFunction({ name: e.target.name, value: e.target.value });
                               }}
                             />
                           }
-
-                          {((field.type == FieldTypes.FieldDropDownListType) || (field.dataType == FieldTypes.FieldDropDownListType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldDropDownListType)) &&
                             <Field
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               component={(formikProps: any) =>
                                 <FieldDropDownListType
@@ -76,12 +69,11 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-
-                          {((field.type == FieldTypes.FieldCheckedBoxType) || (field.dataType == FieldTypes.FieldCheckedBoxType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldCheckedBoxType)) &&
                             <Field
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               component={(formikProps: any) =>
                                 <FieldCheckedBoxType
@@ -91,28 +83,26 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-
-                          {((field.type == FieldTypes.FieldTextAreaType) || (field.dataType == FieldTypes.FieldTextAreaType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldTextAreaType)) &&
                             <Field
                               as="textarea"
                               className={
-                                `editCategoryField ${errors[field.name === undefined ? field.key : field.name] ? 'errorBrdr' : ''}`
+                                `editCategoryField ${errors[field.name ?? field.key] ? 'errorBrdr' : ''}`
                               }
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               onKeyUp={(e: any) => {
                                 props.setFieldsFunction({ name: e.target.name, value: e.target.value });
                               }}
                             />
                           }
-
-                          {((field.type == FieldTypes.FieldCheckedBoxListType) || (field.dataType == FieldTypes.FieldCheckedBoxListType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldCheckedBoxListType)) &&
                             <Field
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               component={(formikProps: any) =>
                                 <FieldCheckedBoxListType
@@ -123,12 +113,11 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-
-                          {((field.type == FieldTypes.FieldRadioButtonListType) || (field.dataType == FieldTypes.FieldRadioButtonListType)) &&
+                          {(IsFieldtypeEquals(field, FieldTypes.FieldRadioButtonListType)) &&
                             <Field
                               id={field.id}
                               name={
-                                field.name === undefined ? field.key : field.name
+                                field.name ?? field.key
                               }
                               component={(formikProps: any) =>
                                 <FieldRadioButtonListType
@@ -139,11 +128,10 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-
-                          {errors[field.name === undefined ? field.key : field.name] !== undefined && (
+                          {errors[field.name ?? field.key] && (
                             <div className="errorStyle">
                               <i className="fas fa-exclamation-circle"></i>
-                              {errors[field.name === undefined ? field.key : field.name]}
+                              {errors[field.name ?? field.key]}
                             </div>
                           )}
                         </div>

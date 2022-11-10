@@ -9,7 +9,7 @@ import NoFormAttachedOfAssetBucket from "./SubComponents/NoFormAttachedOfAssetBu
 import Cookies from "universal-cookie";
 import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
-import { EvidenceAgent, SetupConfigurationAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
+import { EvidenceAgent, UnitsAndDevicesAgent } from "../../../utils/Api/ApiAgent";
 import { Station } from "../../../utils/Api/models/StationModels";
 import { PageiGrid } from "../../../GlobalFunctions/globalDataTableFunctions";
 import moment from "moment";
@@ -18,7 +18,7 @@ import { addMetadata, AddMetadataFormProps, CategoryNameAndValue, masterAsset, M
 import { SubmitType } from "../../Assets/AssetLister/Category/Model/CategoryFormModel";
 import { MAX_REQUEST_SIZE_FOR } from "../../../utils/constant";
 import DisplayCategoryForm from "../../Assets/AssetLister/Category/SubComponents/DisplayCategoryForm";
-import { applyValidation } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
+import { applyValidation, RemapFormFieldKeyName, RevertKeyName } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
@@ -50,7 +50,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     stationErr: "",
     ownerErr: "",
   });
-  const [optionList, setOptionList] = useState<any>([]);
+  const [stationList, setStationList] = useState<any>([]);
   const [userOption, setUserOption] = useState<any>([]);
   const [categoryOption, setCategoryOption] = useState<any>([]);
   const [masterAssetOption, setMasterAssetOption] = useState<any>([]);
@@ -166,7 +166,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             categoryData.push(i);
           });
         });
-      let stationString: string = "";
+      let stationString = "";
+      stationList
+        .filter((x: any) => station == x.value)
+        .forEach((x: any) => {
+          stationString = x.value;
+        });
       const ownerDateOfArry: any = [];
       userOption.map((item: any, counter: number) =>
         owners.forEach((x: any) => {
@@ -254,18 +259,17 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   }, [formpayload.category]);
 
   const fetchStation = async () => {
-    var response = await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1&Size=${MAX_REQUEST_SIZE_FOR.STATION}`).then(
-      (response: Station[]) => response
-    );
-    var stationNames = response.map((x: any, i: any) => {
-      let j: NameAndValue = {
-        id: x.id,
-        value: x.name,
-      };
-      return j;
-    });
-
-    setOptionList(stationNames);
+    await UnitsAndDevicesAgent.getAllStationInfo(`?Page=1&Size=${MAX_REQUEST_SIZE_FOR.STATION}`)
+      .then((res: Station[]) => res)
+      .then(response => {
+        const stationNames = response.map((x: any, i: any) => {
+          return {
+            id: x.id,
+            value: x.name,
+          } as NameAndValue;
+        });
+        setStationList(stationNames);
+      });
   };
 
   const masterAssets = () => {
@@ -294,19 +298,17 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const fetchUser = () => {
     if (users.data && users.data.length > 0) {
-      var userNames = users.data.map((user: any) => {
-        let j: UserNameAndValue = {
+      const userNames = users.data.map((user: any) => {
+        return {
           userid: user.recId,
           userName: user.userName,
-        };
-        return j;
+        } as UserNameAndValue;
       });
+      sendOptionList(userNames);
     }
-
-    sendOptionList(userNames);
   };
 
-  const sendOptionList = (data: any[]) => {
+  const sendOptionList = (data: any[]): void => {
     const dateOfArry: any = [];
     data?.forEach((item, index) => {
       dateOfArry.push({
@@ -314,7 +316,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         label: item.userName,
       });
     });
-    return setUserOption(dateOfArry);
+    setUserOption(dateOfArry);
   };
 
   const fetchCategory = () => {
@@ -393,7 +395,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const checkAssetType = (assetType: string) => {
-    var typeOfAsset: string = "";
+    let typeOfAsset: string = "";
     switch (assetType) {
       case ".mp4":
       case ".avi":
@@ -455,7 +457,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const checkFileType = (fileType: string) => {
-    var typeOfFile: string = "";
+    let typeOfFile: string = "";
     switch (fileType) {
 
       case ".mp4":
@@ -572,7 +574,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       if (catIndexs.form.length != 0) {
         catIndexs.form.forEach((formIndex: any) => {
           const fieldArrayIndex = new Array();
-          formIndex.fields.forEach((fieldIndex : any) => {
+          formIndex.fields.forEach((fieldIndex: any) => {
             let value: any;
             if (fieldIndex.hasOwnProperty('key')) {
               value = formFields.filter((x: any) => x.key == fieldIndex.key).map((i: any) => i.value)[0];
@@ -581,7 +583,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             }
 
             const _field = {
-              key: fieldIndex.key === undefined ? fieldIndex.name : fieldIndex.key,
+              key: RevertKeyName(fieldIndex.key === undefined ? fieldIndex.name : fieldIndex.key),
               value: value,
               dataType: fieldIndex.type === undefined ? fieldIndex.dataType : fieldIndex.type,
               defaultFieldValue: fieldIndex.defaultFieldValue
@@ -595,7 +597,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             formData: [
               {
                 formId: formIndex.id,
-                fields : fieldArrayIndex,
+                fields: fieldArrayIndex,
               },
             ],
           });
@@ -618,9 +620,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         fileName
     );
 
-    var hh = 0;
-    var mm = 0;
-    var ss = 0;
+    let hh = 0;
+    let mm = 0;
+    let ss = 0;
 
     if (filterObject != undefined) {
       const fileNameExtension = filterObject.name.substring(
@@ -635,7 +637,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         fileNameExtension === ".3gp" ||
         fileNameExtension === ".wav"
       ) {
-        var myVideos: any = [];
+        let myVideos: any = [];
         myVideos.push(filterObject);
         myVideos[myVideos.length - 1].duration = filterObject.duration;
       } else {
@@ -650,18 +652,18 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     const seconds = getDecimalPart(minutes) * 60;
     ss = Math.trunc(seconds);
     const milliSecond = getDecimalPart(seconds) * 1000;
-    var today = new Date();
+    let today = new Date();
     today.setUTCHours(today.getUTCHours() + hh);
     today.setUTCMinutes(today.getUTCMinutes() + mm);
     today.setUTCSeconds(today.getUTCSeconds() + ss);
     today.setUTCMilliseconds(today.getUTCMilliseconds() + milliSecond);
-    var m = "" + (today.getUTCMonth() + 1);
-    var dd = "" + today.getUTCDate();
-    var yyyy = today.getUTCFullYear();
-    var currentHour = today.getUTCHours().toString();
-    var currentMinute = today.getUTCMinutes().toString();
-    var currentSecond = today.getUTCSeconds().toString();
-    var currentMiliSecond = today.getUTCMilliseconds().toString();
+    let m = "" + (today.getUTCMonth() + 1);
+    let dd = "" + today.getUTCDate();
+    let yyyy = today.getUTCFullYear();
+    let currentHour = today.getUTCHours().toString();
+    let currentMinute = today.getUTCMinutes().toString();
+    let currentSecond = today.getUTCSeconds().toString();
+    let currentMiliSecond = today.getUTCMilliseconds().toString();
     if (currentHour.length < 2) currentHour = "0" + currentHour;
     if (currentMinute.length < 2) currentMinute = "0" + currentMinute;
     if (currentSecond.length < 2) currentSecond = "0" + currentSecond;
@@ -680,7 +682,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const onAddMetaData = async (submitType: SubmitType) => {
-    const station = optionList.find(
+    const station = stationList.find(
       (x: any) => x.value === formpayload.station
     );
     let categories: any[] = [];
@@ -837,15 +839,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const onAdd = async (submitType: SubmitType) => {
-    const payload : any = await onAddMetaData(submitType);
+    const payload: any = await onAddMetaData(submitType);
 
     EvidenceAgent.addEvidence(payload).then((res) => {
       onClose();
       setAddEvidence(true);
       setActiveScreen(0);
       return res;
-    }).catch((error:any) =>{
-      if(error.response.status === 500){
+    }).catch((error: any) => {
+      if (error.response.status === 500) {
         setAlert(true);
         setResponseError(
           t(
@@ -853,7 +855,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
           )
         );
       }
-      else{
+      else {
         let resp = error.response.data
         if (resp != undefined) {
           let error = JSON.parse(resp);
@@ -968,8 +970,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   };
 
   const onSubmit = async (submitType: SubmitType) => {
-    var ids: number = 0;
-    var assetId: number = 0;
+    let ids: number = 0;
+    let assetId: number = 0;
     let checkSubmitType: any = uploadAssetBucket
       .filter(
         (x: any) => x.evidence.masterAsset.assetName === formpayload.masterAsset
@@ -989,10 +991,19 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
 
   const categoryDropdownOnChangeHandler = (
     event: React.SyntheticEvent,
-    value: string[]
+    value: any[]
   ) => {
     event.isDefaultPrevented();
-    setFormPayload({ ...formpayload, category: value });
+    // Remap fields of Form with FormId.
+    const categoryForm: any = value.map((i: any) => {
+      return {
+        id: i.id,
+        label: i.label,
+        retentionId: i.retentionId,
+        form: RemapFormFieldKeyName(i.form)
+      }
+    });
+    setFormPayload({ ...formpayload, category: categoryForm });
     setIsNext(true);
   };
 
@@ -1103,7 +1114,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                     error={meteDataErrMsg.required == "" ? true : false}
                     errorMsg={meteDataErrMsg.required}
                     defaultOptionText=""
-                    options={optionList}
+                    options={stationList}
                     defaultValue=""
                   />
                 </div>
