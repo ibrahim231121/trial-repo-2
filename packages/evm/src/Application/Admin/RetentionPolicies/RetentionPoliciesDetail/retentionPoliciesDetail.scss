@@ -1,0 +1,109 @@
+
+
+.indefinite_checkBox_ui {
+    margin-left: 4px;
+    label {
+        font-size: 14px;
+        margin-left: 4px;
+        span {
+            font-size: 20px;
+            color: black;
+            font-weight: 700;
+            margin-left: 4px;
+            margin-right: 20px;
+        }
+    }
+    span {
+        margin-left: 16px;
+    }
+}
+
+.CrxRetentionPoliciesTable .dataTableColumnShoHide{
+    display: none;
+}
+
+.settingsContent 
+{
+    margin-top: 30px;
+
+    .text-field .gridFilterTextBox{
+        margin: 25px 0px;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 0 0px;
+    label{
+        flex-grow: 1;
+    }
+    h6{
+        flex-grow: 1;
+        width: 0px;
+    }
+    span.gridFilterSpanUi.Crx_defaultText {
+        flex-grow: 1;
+    }
+    }
+}
+.retention-type{
+    display: flex;
+    h6{
+        width: 146px;
+    font-size: 14px;
+    line-height: 37px
+    }
+    .days-hours{
+        display: flex;
+        flex-direction: row;
+        margin-top: 50px;
+        align-items: flex-end;
+    }
+
+    .days-hours .gridFilterTextBox {
+        display: flex !important;
+        align-items: inherit;
+        h6{
+            width: 200px;
+        }
+    }
+    
+}
+.retention-type-btns{
+    padding-top: 30px;
+    .secondary{
+        margin-left: 25px;
+    }
+}
+.retentionPoliciesConfirm {
+    .crxConfirmFooterModal {
+      button {
+        &.primary {
+          min-width: 90px;
+          height: 30px;
+          margin-right: 23px;
+        }
+      }
+    }
+    .confirmMessage {
+      font-size: 14px;
+      font-weight: var(--Font-style-normal);
+      line-height: 18px;
+      padding: 13px 13px 0px 2px;
+      color: var(--color-333333);
+      padding-top: 13px;
+      font-family:var(--base-font-family);
+  
+      &.__crx__Please__confirm__modal {
+        margin-bottom: 40px;
+        .__crx__please_confirm_ {
+          display: flex;
+        }
+      }
+      strong {
+        font-weight: var(--Font-style-bold);
+      }
+      .confirmMessageBottom {
+        padding-top: 34px;
+        padding-bottom: 40px;
+      }
+    }
+  }

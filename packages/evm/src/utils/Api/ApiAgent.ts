@@ -65,6 +65,8 @@ import { setLoaderValue, getLoaderValue } from './../../Redux/loaderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { SetupConfigurationsModel } from './models/SetupConfigurations';
 import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/SensorsAndTriggers';
+import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/RetentionPolicies';
+
 
 const cookies = new Cookies();
 let config = {
@@ -166,6 +168,16 @@ export const SetupConfigurationAgent = {
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getTenantSetting: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/TenantSettings", config),
     getMailServerSettings: (url:string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+
+
+    deleteAllRetentionPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/", body, config),    
+    getRetentionPolicies: (id: number) => requests.get<RetentionPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/" + id, config),
+    getAllFiltersRetentionPolicies: (url: string, extraHeader?: Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/PolicyType/DataRetention/${url}`, config);
+    },
+    putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
 
 }
 export const EvidenceAgent = {

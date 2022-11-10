@@ -201,7 +201,12 @@ const CRXLefNavigation = () => {
           command: () => {
             navigateToPage(urlList.filter((item: any) => item.name === urlNames.adminStation)[0].url);
           },
-        }
+        },
+        {
+          moduleIds: 0,
+          label: t('Retention_Policies'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.retentionPolicies)[0].url) },
+        },
       ],
     },
   ];

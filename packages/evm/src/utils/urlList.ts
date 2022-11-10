@@ -72,7 +72,9 @@ export const urlNames: any = {
     sensorsAndTriggers: 'sensorsAndTriggers',
     sensorsAndTriggersCreate: 'sensorsAndTriggersCreate',
     sensorsAndTriggersEdit: "sensorsAndTriggersEdit",
-    singleLiveView:'singleLiveView'
+    singleLiveView:'singleLiveView',
+    retentionPolicies: 'retentionPolicies',
+
 };
 
 export const urlList: any = [
@@ -355,4 +357,12 @@ export const urlList: any = [
             { routeTo: '/admin/sensorsAndTriggers', type: 'link', label: 'Sensors & Triggers' },
         ],
     },
+    {
+        name: urlNames.retentionPolicies,
+        url: "/admin/retentionPolicies",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/retentionPolicies', type: 'text', label: 'Retention Policies' }
+        ],
+    }
 ];
