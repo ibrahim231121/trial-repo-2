@@ -301,8 +301,11 @@ const CreateTemplate = (props: any) => {
       if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
       {
         let audioDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
-        audioDevice1.options = [];
-        audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+        if(audioDevice1)
+        {
+          audioDevice1.options = [];
+          audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+        }
       }
 
       let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/PrimaryDevice/Select")
@@ -633,13 +636,20 @@ const CreateTemplate = (props: any) => {
           let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
           if(deviceType)
           {
-            Initial_Values.push({
-              key: "PrimaryDeviceName",
-              value: deviceType.name,
-              group: split[0],
-              valueType: split[2],
-              sequence: 1,
-            });
+            let isExist = Initial_Values.find((x: any) => x.key == "PrimaryDeviceName");
+            if(isExist)
+            {
+              isExist.value = deviceType.name
+            }
+            else{
+              Initial_Values.push({
+                key: "PrimaryDeviceName",
+                value: deviceType.name,
+                group: split[0],
+                valueType: split[2],
+                sequence: 1,
+              });
+            }
           }
         }
         if(split[1] === "SensorEvents") {
@@ -648,6 +658,7 @@ const CreateTemplate = (props: any) => {
             valueRaw = "";
           }
         }
+        
         if (keySubSplit.length > 1) {
           let parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
           valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
