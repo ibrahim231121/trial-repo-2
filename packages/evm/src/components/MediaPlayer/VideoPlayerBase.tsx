@@ -481,6 +481,7 @@ const VideoPlayerBase = (props: any) => {
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
   const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
   const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(true);
+  const [reasons, setReasons] = React.useState<any[]>([]);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
   const [isMultiViewEnable, setIsMultiViewEnable] = React.useState<boolean>(false);
@@ -774,8 +775,12 @@ const VideoPlayerBase = (props: any) => {
                     (e: any) => ({ key: e[0], value: e[1] })
                   );
                   let obj = settingEntries.find(x => x.key === "AssetViewReasonRequired");
+                  let Reasons = settingEntries.find(x => x.key === "Reasons");
                   if(obj && obj.value == "true"){
                     setAssetViewReasonRequiredGet(true);
+                    if(Reasons && Reasons.value.length >0){
+                      setReasons(Reasons.value.split(","));
+                    }
                   }
                   else if(obj){
                     setViewReasonControlsDisabled(false);
@@ -2032,6 +2037,7 @@ useEffect(() => {
         setViewReasonRequired ={setViewReasonRequired}
         setOnRefreshViewReasonOpen={setOnRefreshViewReasonOpen}
         setOpenViewRequirement={setOpenViewRequirement}
+        reasons={reasons}
       />}
       
 

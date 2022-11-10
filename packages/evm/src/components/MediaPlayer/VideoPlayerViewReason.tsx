@@ -28,6 +28,7 @@ type VideoPlayerViewReasonProps = {
     setViewReasonRequired: any
     setOnRefreshViewReasonOpen: any
     setOpenViewRequirement: any
+    reasons: any
 };
 
 type ViewReason = {
@@ -42,7 +43,7 @@ type ViewReasonTimerObject = {
 }
 
 const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((props) => {
-    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement } = props;
+    const { openViewReason, EvidenceId, AssetData, setViewReasonControlsDisabled, setReasonForViewing, setViewReasonRequired, setOnRefreshViewReasonOpen, setOpenViewRequirement, reasons } = props;
     const [openModal, setOpenModal] = React.useState(true);
     const [IsOpenConfirmDailog, setIsOpenConfirmDailog] = React.useState(false);
     const [alert, setAlert] = React.useState<boolean>(false);
@@ -71,21 +72,14 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         { displayText: "Other", value: "Other" },
     ]
     React.useEffect(() => {
-        SetupConfigurationAgent.getGlobalAssetViewReason('/TenantSettings/getassetviewreasons')
-            .then((response : SetupConfigurationsModel.GlobalAssetViewReason[]) =>
-            {
-                let tempViewReason: ViewReason[]= response.map((x: SetupConfigurationsModel.GlobalAssetViewReason)=> {
-                    return {
-                        "displayText": x.label,
-                        "value": x.inputValue
-                    }
-                })
-                tempViewReason.push({displayText: "Other", value: "Other"})
-                setViewReason(tempViewReason)
-            })
-            .catch((error: any) => {
-                console.error(error.response.data);
-            });
+        let tempViewReason: ViewReason[]= reasons.map((x: SetupConfigurationsModel.GlobalAssetViewReason)=> {
+            return {
+                "displayText": x,
+                "value": x
+            }
+        })
+        tempViewReason.push({displayText: "Other", value: "Other"})
+        setViewReason(tempViewReason)
     }, []);
     const history = useHistory();
     React.useEffect(() => {
