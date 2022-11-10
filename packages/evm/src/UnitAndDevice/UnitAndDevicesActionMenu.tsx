@@ -62,7 +62,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
                 </div>
             </div>
         </MenuItem>
-        <MenuItem  href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId.split('_')[0]}`}>
+        <MenuItem  href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId != null ? JSON.parse(row?.unitId).unitName : ""}`}>
             <div className="crx-meu-content crx-spac">
                 <div className="crx-menu-icon">
                 </div>
