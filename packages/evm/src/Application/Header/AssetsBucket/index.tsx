@@ -1285,26 +1285,26 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                                         lightMode={true}
                                       />
                                     </div>
-                                    <div className="bucketThumb"><AssetThumbnail assetType={x.assetType} fileType={selectedAsset[0]?.files[0]?.type} fontSize="61pt" /></div>
+                                    <div className="bucketThumb"><AssetThumbnail assetType={selectedAsset[0].assetType} fileType={selectedAsset[0]?.files[0]?.type} fontSize="61pt" /></div>
                                     <div className="bucketListTextData">
                                       {
                                         x?.isMaster ?
                                           <>
-                                            <div className="bucketListAssetName">{x.assetName}</div>
-                                            <div className="bucketListRec">{x.assetType}</div>
+                                            <div className="bucketListAssetName">{selectedAsset[0].assetName}</div>
+                                            <div className="bucketListRec">{selectedAsset[0].assetType}</div>
                                           </>
                                           :
-                                          x?.asset?.filter((y: any) => y.assetId === x.selectedAssetId).map((u: any) => (
+                                          
                                             <>
-                                              <div className="bucketListAssetName">{u.assetName}</div>
-                                              <div className="bucketListRec">{u.assetType}</div>
+                                              <div className="bucketListAssetName">{(selectedAsset[0].assetName.length > 25) ? selectedAsset[0].assetName.substr(0,25)+'...':selectedAsset[0].assetName}</div>
+                                              <div className="bucketListRec">{selectedAsset[0].assetType}</div>
                                             </>
-                                          ))
+                                          
                                       }
                                       {
-                                        (x.categories && x.categories.length > 0) &&
+                                        (x.evidence.categories && x.evidence.categories.length > 0) &&
                                         <div className="bucketListRec">
-                                          {x.categories.map((item: any) => item).join(", ")}
+                                          {x.evidence.categories.map((item: any) => item).join(", ")}
                                         </div>
                                       }
 

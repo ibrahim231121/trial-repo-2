@@ -36,7 +36,7 @@ const CRXLefNavigation = () => {
       label: t("Assets"),
       icon: "icon icon-file-video NaveIcon",
       command: () => {
-        navigateToPage(urlList.filter((item: any) => item.name === urlNames.assets)[0].url);
+        history.push('/');
       },
       disabled: false,
       
