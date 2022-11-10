@@ -11,6 +11,7 @@ import { CMTEntityRecord } from "../../../utils/Api/models/CommonModels";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import { Button , Menu , MenuItem } from "@material-ui/core";
+import { RootRef } from '@material-ui/core';
 
 type Timeline = {
   recording_start_point: number;
@@ -82,6 +83,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     }
   }, [editDescription]);
 
+  const modalTextSelector = selectDropDown == "Bookmarks" ? "bookmark" : "note";
+
   const onRemove = (del: boolean) => {
     if (del) {
       let tempData = JSON.parse(JSON.stringify(timelinedetail));
@@ -120,6 +123,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
     setEditDescription(true);
     setEnableOnSave(true);
     setEditDevice(true);
+    setCustomOpen(false);
+
   };
 
   const onUpdateDone = async () => {
@@ -253,6 +258,8 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
   const onClickDelete = () => {
     setIsOpenConfirmDailog(true);
+    setCustomOpen(false);
+
   };
 
   const onDeleteBookmark = () => {
@@ -333,12 +340,43 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
 
     const handleClickAction = (event: any) => {
       setAnchorEl(event.currentTarget);
+ 
     };
 
     const handleCloseAction = () => {
       setAnchorEl(null);
     };
 
+    const wrapperRef = useRef(null);
+
+    function useOutsideAlerter(ref: any) {
+      useEffect(() => {
+      
+        function handleClickOutside(event: any) {
+          if (ref.current && !ref.current.contains(event.target)) {
+            setCustomOpen(false);
+           
+          }
+        }
+     
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [ref]);
+    }
+    useOutsideAlerter(wrapperRef);
+
+const [customOpen,setCustomOpen] = useState(false);
+  const customMenu = () => {
+    if(!customOpen ) {
+      setCustomOpen(true);
+    } else {
+      setCustomOpen(false);
+
+    }
+  }
   return (
     <>
       <div className="item_asset_detail_bookmarks">
@@ -399,7 +437,9 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
             <div className="_side_panel_bookmark_menu" onClick={handleClickAction}>
             {stateObj.madeBy == "User" &&
             <>
-            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClickAction}>
+          
+
+      <Button aria-controls="simple-menu" aria-haspopup="true" onClick={customMenu}>
               <CRXTooltip
                   placement="bottom"
               iconName="far fa-ellipsis-v"
@@ -407,17 +447,16 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
               title="actions"
               />
             </Button>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onBlur={handleCloseAction}
-              className="Bookmark_Note_Action_Menu"
-            >
-              <MenuItem onClick={onClickEnableEdit}><i className="fas fa-pencil"></i> {t("Edit")}</MenuItem>
-              <MenuItem onClick={onClickDelete}><i className="fa-solid fa-trash-can"></i> {t("Delete")}</MenuItem>
-            </Menu>
+
+            {customOpen && 
+            <div  ref={wrapperRef} className="action_menu_bookmarkNotes">
+              <ul>
+                <li onClick={onClickEnableEdit}><i className="fas fa-pencil"></i>{t("Edit")}</li>
+                <li onClick={onClickDelete}><i className="fa-solid fa-trash-can BN_fa-trash"></i>{t("Delete")}</li>
+
+              </ul>
+            </div>
+            }
             </>
      
             }
@@ -431,7 +470,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         setIsOpen={() => setIsOpenConfirmDailog(false)}
         onConfirm={onDeleteConfirm}
         className="__CRX_BookMarkNote_Delete_Modal__"
-        title="Please Confirm"
+        title={t("Please_confirm")}
         isOpen={IsOpenConfirmDailog}
         primary="Yes, delete"
         secondary="No, do not delete"
@@ -439,11 +478,11 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         {
           <div className="crxUplockContent">
             You are attempting to <strong>delete</strong> the{" "}
-            {selectDropDown}. You will not be able to undo this
+            {modalTextSelector}. You will not be able to undo this
             action.
             <p>
               Are you sure you would like to <strong>delete</strong> the{" "}
-              {selectDropDown}?
+              {modalTextSelector}?
             </p>
           </div>
         }
