@@ -92,6 +92,14 @@ export const onResizeRow = (
 export const onClearAll = (headCells: HeadCellProps[]) => {
   let headCellReset = headCells.map((headCell: HeadCellProps) => {
     headCell.headerArray = [{ value: "" }];
+   if(headCell.headerObject){
+       headCell.headerObject = {
+      startDate: "",
+      endDate: "",
+      value: "custom",
+      displayText: "Custom Range",
+    } 
+  }
     return headCell;
   });
   return headCellReset;
