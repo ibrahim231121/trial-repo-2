@@ -26,6 +26,7 @@ import {
 import TextSearch from "../../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { CRXButton } from "@cb/shared";
 import multitextDisplay from "../../../../../GlobalComponents/Display/MultiTextDisplay";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 type User = {
     id: number;
@@ -164,7 +165,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                     option={status} 
                     value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
                     onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-                    onSelectedClear = {() => onSelectedClear()}
+                    onSelectedClear = {() => onSelectedClear(colIdx)}
                     isCheckBox={true}
                     isduplicate={true}
                 />
@@ -173,9 +174,18 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     }
 
-    const onSelectedClear = () => {
-        setSearchData([]);
-        let headCellReset = onClearAll(headCells);
+    const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
+        let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
+          if(colIdx === index)
+            headCell.headerArray = [{ value: "" }];
+          return headCell;
+        });
+        return headCellReset;
+      };
+
+    const onSelectedClear = (colIdx: number) => {
+        setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+        let headCellReset = onSelectedIndividualClear(headCells,colIdx);
         setHeadCells(headCellReset);
       }
 
@@ -281,7 +291,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     useEffect(() => {
         //dataArrayBuilder();
         console.log("searchData", searchData)
-        setIsSearchable(true)
+        if(searchData.length > 0)
+            setIsSearchable(true)
       }, [searchData]);
 
     const dataArrayBuilder = () => {
@@ -330,29 +341,27 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     const getFilteredUserData = () => {
 
-        if(isSearchable) {
-            pageiGrid.gridFilter.filters = []
+        pageiGrid.gridFilter.filters = []
+    
+        searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+            let x: GridFilter = {
+            operator: headCells[item.colIdx].attributeOperator,
+            //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+            field: headCells[item.colIdx].attributeName,
+            value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+            fieldType: headCells[item.colIdx].attributeType,
+            }
+            pageiGrid.gridFilter.filters?.push(x)
+            pageiGrid.page = 0
+            pageiGrid.size = rowsPerPage
+        })
+    
+        if(page !== 0)
+            setPage(0)
+        else
+            dispatch(getUsersInfoAsync(pageiGrid));
         
-            searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-                let x: GridFilter = {
-                operator: headCells[item.colIdx].attributeOperator,
-                //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-                field: headCells[item.colIdx].attributeName,
-                value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-                fieldType: headCells[item.colIdx].attributeType,
-                }
-                pageiGrid.gridFilter.filters?.push(x)
-                pageiGrid.page = 0
-                pageiGrid.size = rowsPerPage
-            })
-        
-            if(page !== 0)
-                setPage(0)
-            else
-                dispatch(getUsersInfoAsync(pageiGrid));
-          
-            setIsSearchable(false)
-        }
+        setIsSearchable(false)
     }
 
     useEffect(() => {
@@ -367,18 +376,20 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
         }
     }
     const handleBlur = () => {
-        getFilteredUserData()
+        if(isSearchable)
+            getFilteredUserData()
     }
 
     return (
-        <div className="userDataTableParent " onKeyDown={handleKeyDown} onBlur={handleBlur}>
+        <ClickAwayListener onClickAway={handleBlur}>
+        <div className="userDataTableParent " onKeyDown={handleKeyDown}>
             {rows && (
                     <CRXDataTable 
                         id="group-userDataTable"
                         actionComponent={() => { }}
-                        toolBarButton={
-                            <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
-                        }
+                        // toolBarButton={
+                        //     <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton>
+                        // }
                         getRowOnActionClick={() => { }}
                         showToolbar={true}
                         dataRows={rows}
@@ -414,6 +425,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                 )   
             }
         </div>
+        </ClickAwayListener>
     )
 }
 

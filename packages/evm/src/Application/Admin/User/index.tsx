@@ -5,6 +5,7 @@ import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersInfoAsync, getUserStatusKeyValuesAsync, getAllUserGroupKeyValuesAsync } from "../../../Redux/UserReducer";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { RootState } from "../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../utils/urlList";
 import { useHistory } from "react-router-dom";
@@ -100,6 +101,7 @@ const User: React.FC = () => {
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
   const [paging, setPaging] = React.useState<boolean>();
+  const toasterRef = useRef<typeof CRXToaster>(null);
 
   React.useEffect(() => {
     //dispatch(getUsersInfoAsync(pageiGrid));
@@ -267,7 +269,7 @@ const User: React.FC = () => {
             option={status} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
             onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-            onSelectedClear = {() => onSelectedClear()}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
           />
         </div>
@@ -276,9 +278,18 @@ const User: React.FC = () => {
 
   }
 
-  const onSelectedClear = () => {
-    setSearchData([]);
-    let headCellReset = onClearAll(headCells);
+  const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
+    let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
+      if(colIdx === index)
+        headCell.headerArray = [{ value: "" }];
+      return headCell;
+    });
+    return headCellReset;
+  };
+
+  const onSelectedClear = (colIdx: number) => {
+    setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+    let headCellReset = onSelectedIndividualClear(headCells,colIdx);
     setHeadCells(headCellReset);
   }
 
@@ -455,7 +466,7 @@ const User: React.FC = () => {
           option={status} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear = {() => onSelectedClear()}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
           multiple={true}
@@ -483,9 +494,8 @@ const User: React.FC = () => {
   };
 
   useEffect(() => {
-    //dataArrayBuilder();
-    console.log("searchData", searchData)
-    setIsSearchable(true)
+    if(searchData.length > 0)
+      setIsSearchable(true)
   }, [searchData]);
 
   useEffect(() => {
@@ -566,7 +576,7 @@ const User: React.FC = () => {
     setHeadCells(headCellsArray);
   };
 
-  const toasterRef = useRef<typeof CRXToaster>(null);
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -605,8 +615,7 @@ const User: React.FC = () => {
   }
 
   const getFilteredUserData = () => {
-
-    if(isSearchable) {
+    
       pageiGrid.gridFilter.filters = []
       searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
           let x: GridFilter = {
@@ -627,7 +636,6 @@ const User: React.FC = () => {
         dispatch(getUsersInfoAsync(pageiGrid));
       
       setIsSearchable(false)
-    }
   }
 
   useEffect(() => {
@@ -642,13 +650,15 @@ const User: React.FC = () => {
     }
   }
   const handleBlur = () => {
+    if(isSearchable) {     
       getFilteredUserData()
+    }
   }
 
   return (
-    <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown} onBlur={handleBlur}>
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className="crxManageUsers switchLeftComponents manageUsersIndex" onKeyDown={handleKeyDown}> 
 			<CRXToaster ref={toasterRef}/>
-      
       {rows && (
         <CRXDataTable
           id="userDataTable"
@@ -707,7 +717,9 @@ const User: React.FC = () => {
           totalRecords={users.totalCount}
         />
       )}
+      
     </div>
+    </ClickAwayListener>
   );
 };
 

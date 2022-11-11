@@ -33,6 +33,7 @@ import {
   PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 type ConfigTemplate = {
   id: number;
@@ -253,9 +254,18 @@ const ConfigurationTemplates: React.FC = () => {
     );
   };
 
-  const onSelectedClear = () => {
-    setSearchData([]);
-    let headCellReset = onClearAll(headCells);
+  const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
+    let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
+      if(colIdx === index)
+        headCell.headerArray = [{ value: "" }];
+      return headCell;
+    });
+    return headCellReset;
+  };
+
+  const onSelectedClear = (colIdx: number) => {
+    setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+    let headCellReset = onSelectedIndividualClear(headCells,colIdx);
     setHeadCells(headCellReset);
   }
 
@@ -306,7 +316,7 @@ const ConfigurationTemplates: React.FC = () => {
             option={station} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
             onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-            onSelectedClear = {() => onSelectedClear()}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
           />
@@ -338,7 +348,7 @@ const ConfigurationTemplates: React.FC = () => {
             option={type} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
             onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-            onSelectedClear = {() => onSelectedClear()}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
           />
@@ -369,7 +379,7 @@ const ConfigurationTemplates: React.FC = () => {
             option={indicator} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
             onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-            onSelectedClear = {() => onSelectedClear()}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
           />
@@ -474,7 +484,8 @@ const ConfigurationTemplates: React.FC = () => {
   useEffect(() => {
     //dataArrayBuilder();
     console.log("searchData", searchData)
-    setIsSearchable(true)
+    if(searchData.length > 0)
+      setIsSearchable(true)
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -514,7 +525,6 @@ const ConfigurationTemplates: React.FC = () => {
 
   const getFilteredConfigurationTemplateData = () => {
 
-    if(isSearchable) {
       pageiGrid.gridFilter.filters = []
 
       searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
@@ -537,7 +547,6 @@ const ConfigurationTemplates: React.FC = () => {
         //dispatch(getGroupUserCountAsync());
       }
       setIsSearchable(false)
-    }
   }
 
   useEffect(() => {
@@ -551,10 +560,12 @@ const ConfigurationTemplates: React.FC = () => {
     }
   }
   const handleBlur = () => {
-    getFilteredConfigurationTemplateData()
+    if(isSearchable)
+      getFilteredConfigurationTemplateData()
   }
 
   return (
+    <ClickAwayListener onClickAway={handleBlur}>
     <div className="CrxConfigTemplate switchLeftComponents" onKeyDown={handleKeyDown} onBlur={handleBlur}>
 
       {
@@ -597,7 +608,6 @@ const ConfigurationTemplates: React.FC = () => {
                     )
                   })}
                 </Menu >
-                <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredConfigurationTemplateData()}> {t("Filter")} </CRXButton>
               </div>
             
           }
@@ -635,6 +645,7 @@ const ConfigurationTemplates: React.FC = () => {
         )
       }
     </div>
+    </ClickAwayListener>
   );
 };
 

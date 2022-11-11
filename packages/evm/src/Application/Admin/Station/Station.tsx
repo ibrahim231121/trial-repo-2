@@ -33,6 +33,7 @@ import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
 import { getConfigurationTemplatesAsync } from '../../../Redux/ConfigurationTemplatesReducer';
 import { StationType, DateTimeProps } from './StationTypes';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
@@ -98,7 +99,8 @@ const Station: React.FC = () => {
   useEffect(() => {
     //dataArrayBuilder();
     console.log("searchData", searchData)
-    setIsSearchable(true)
+    if(searchData.length > 0)
+      setIsSearchable(true)
   }, [searchData]);
 
   useEffect(() => {
@@ -269,7 +271,6 @@ const Station: React.FC = () => {
 
   const getFilteredStationData = () => {
 
-    if(isSearchable) {
       pageiGrid.gridFilter.filters = []
       searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number) => {
         let x: GridFilter = {
@@ -290,7 +291,6 @@ const Station: React.FC = () => {
         dispatch(getStationsAsync(pageiGrid));
 
       setIsSearchable(false)
-    }
   }
 
   const handleKeyDown = (event:any) => {
@@ -299,11 +299,13 @@ const Station: React.FC = () => {
     }
   }
   const handleBlur = () => {
-    getFilteredStationData()
+    if(isSearchable)
+      getFilteredStationData()
   }
 
   return (
-    <div className='crxManageUsers crxStationDataUser  switchLeftComponents' onKeyDown={handleKeyDown} onBlur={handleBlur}>
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className='crxManageUsers crxStationDataUser  switchLeftComponents' onKeyDown={handleKeyDown}>
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -365,6 +367,7 @@ const Station: React.FC = () => {
         onClose={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
         closeWithConfirm={closeWithConfirm}></CRXModalDialog>
     </div>
+    </ClickAwayListener>
   );
 };
 

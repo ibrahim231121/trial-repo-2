@@ -14,7 +14,7 @@ import dateDisplayFormat from "../GlobalFunctions/DateFormat";
 import textDisplayStatus from "../GlobalComponents/Display/textDisplayStatus";
 import textDisplayStation from "../GlobalComponents/Display/textDisplayStation";
 import multitextDisplayAssigned from "../GlobalComponents/Display/multitextDisplayAssigned";
-
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {
   SearchObject,
   ValueString,
@@ -335,7 +335,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           option={status} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear = {() => onSelectedClear()}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
         />
@@ -376,7 +376,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           option={template} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear = {() => onSelectedClear()}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
         />
@@ -392,9 +392,18 @@ const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[
   headCells[colIdx].headerArray = val;
 }
 
-const onSelectedClear = () => {
-  setSearchData([]);
-  let headCellReset = onClearAll(headCells);
+const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
+  let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
+    if(colIdx === index)
+      headCell.headerArray = [{ value: "" }];
+    return headCell;
+  });
+  return headCellReset;
+};
+
+const onSelectedClear = (colIdx: number) => {
+  setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
+  let headCellReset = onSelectedIndividualClear(headCells,colIdx);
   setHeadCells(headCellReset);
 }
 
@@ -577,7 +586,7 @@ const AnchorDisplay = (e: string) => {
         option={status.filter((x: any) =>x.value != null && x.value != "")} 
         value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
         onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-        onSelectedClear = {() => onSelectedClear()}
+        onSelectedClear = {() => onSelectedClear(colIdx)}
         isCheckBox={true}
         isduplicate={true}
       />
@@ -597,7 +606,7 @@ const AnchorDisplay = (e: string) => {
         option={status} 
         value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
         onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-        onSelectedClear = {() => onSelectedClear()}
+        onSelectedClear = {() => onSelectedClear(colIdx)}
         isCheckBox={true}
         isduplicate={true}
       />
@@ -626,7 +635,8 @@ const onSelection = (v: ValueString[], colIdx: number) => {
 useEffect(() => {
   //dataArrayBuilder();
   console.log("searchData", searchData)
-  setIsSearchable(true)
+  if(searchData.length > 0)
+    setIsSearchable(true)
 }, [searchData]);
 
 useEffect(() => {
@@ -734,7 +744,6 @@ useEffect(()=>{
 
  const getFilteredUnitData = () => {
 
-  if(isSearchable) {
     pageiGrid.gridFilter.filters = []
 
     searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
@@ -755,7 +764,6 @@ useEffect(()=>{
       dispatch(getUnitInfoAsync(pageiGrid));
     }
     setIsSearchable(false)
-  }
 }
 
  useEffect(() => {
@@ -772,11 +780,13 @@ const handleKeyDown = (event:any) => {
 }
 
 const handleBlur = () => {
-  getFilteredUnitData()
+  if(isSearchable)
+    getFilteredUnitData()
 }
 
 return (
-    <div className="unitDeviceMain searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown} onBlur={handleBlur}>
+  <ClickAwayListener onClickAway={handleBlur}>
+    <div className="unitDeviceMain searchComponents unitDeviceMainUii " onKeyDown={handleKeyDown}>
       {/* <p className="unitsStatusCounter">{rows.length} Units</p> */}
       {
         
@@ -826,7 +836,7 @@ return (
         }
       
     </div>
- 
+    </ClickAwayListener>
   )
 }
 

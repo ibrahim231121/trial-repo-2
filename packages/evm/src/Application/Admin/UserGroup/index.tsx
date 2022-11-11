@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 import './index.scss'
 import { urlList, urlNames } from "../../../utils/urlList"
 import Restricted from '../../../ApplicationPermission/Restricted'
-
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {
   SearchObject,
   ValueString,
@@ -247,7 +247,8 @@ const UserGroup: React.FC = () => {
 
   useEffect(() => {
     //dataArrayBuilder();
-    setIsSearchable(true)
+    if(searchData.length > 0)
+      setIsSearchable(true)
   }, [searchData]);
 
   const dataArrayBuilder = () => {
@@ -281,7 +282,6 @@ const UserGroup: React.FC = () => {
 
   const getFilteredGroupData = () => {
 
-    if(isSearchable) {
       pageiGrid.gridFilter.filters = []
 
       searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
@@ -304,7 +304,6 @@ const UserGroup: React.FC = () => {
         //dispatch(getGroupUserCountAsync());
       }
       setIsSearchable(false)
-    }
   }
 
   useEffect(() => {
@@ -320,11 +319,13 @@ const UserGroup: React.FC = () => {
   }
 
   const handleBlur = () => {
-    getFilteredGroupData()
+    if(isSearchable)
+     getFilteredGroupData()
 }
 
   return (
-    <div className="managePermissionTable switchLeftComponents" onKeyDown={handleKeyDown} onBlur={handleBlur}>
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className="managePermissionTable switchLeftComponents" onKeyDown={handleKeyDown}>
      
       {
         rows && (
@@ -373,6 +374,7 @@ const UserGroup: React.FC = () => {
         )
       }
     </div>
+    </ClickAwayListener>
   )
 }
 
