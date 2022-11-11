@@ -288,6 +288,8 @@ export const resources = {
         "Yes_close":"Yes, close",
         "custom_range":"custom range",
         "No_Status":"No Status",
+        "No_Assignments":"No Assignments",
+        "No_Versions":"No Versions",
         "Status":"Status",
         "Last_Login":"Last Login",
         "Groups":"Groups",

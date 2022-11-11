@@ -574,7 +574,7 @@ const AnchorDisplay = (e: string) => {
     return (
       <CBXMultiSelectForDatatable 
         width = {250} 
-        option={status} 
+        option={status.filter((x: any) =>x.value != null && x.value != "")} 
         value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
         onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
         onSelectedClear = {() => onSelectedClear()}
@@ -583,9 +583,9 @@ const AnchorDisplay = (e: string) => {
       />
     );
   }
-
+ 
   if(colIdx === 4 && initialRows && initialRows.unitAssignments && initialRows.unitAssignments.length > 0) {   
-
+   
     let status: any = [{id: 0, value: t("No_Assignments") }];
       initialRows.unitAssignments.map((x: any) => {
         status.push({id : x.id, value: x.name });
