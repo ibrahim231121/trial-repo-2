@@ -627,11 +627,11 @@ const CreateTemplate = (props: any) => {
       let valueRaw: any = value;
       let split = key.split(re);
       if (!(valueRaw?.feilds !== undefined)) {
-        let valueToSave = true;
+        let cameraField = false;
         let nonDependantValue = true;
         let nonDependantFormValue = visibleFormFields.some((x: any) => x.key == key);
         let keySubSplit = split[1].split('_');
-        if(split[1] == "PrimaryDevice" && valueToSave)
+        if(split[1] == "PrimaryDevice" && nonDependantFormValue)
         {
           let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
           if(deviceType)
@@ -652,7 +652,7 @@ const CreateTemplate = (props: any) => {
             }
           }
         }
-        if(split[1] === "SensorEvents") {
+        if(split[1] === "SensorEvents" && nonDependantFormValue) {
           valueRaw = valueRaw.filter((a: any) => a != "list of all sensors and triggers");
           if(valueRaw === undefined || valueRaw.length === 0){
             valueRaw = "";
@@ -660,10 +660,9 @@ const CreateTemplate = (props: any) => {
         }
         
         if (keySubSplit.length > 1) {
-          let parentKey = split[0] + "/" + keySubSplit[2] + "/" + "FieldArray";
-          valueToSave = values[parentKey].feilds.some((x: any) => x.some((y: any) => y.key == key));
+          cameraField = true;
           nonDependantValue = visibleCameraFields.some((x: any) => x.key == key);
-          if(keySubSplit[0] == "device" && valueToSave)
+          if(keySubSplit[0] == "device" && nonDependantValue)
           {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
@@ -684,7 +683,7 @@ const CreateTemplate = (props: any) => {
               });
             }
           }
-          else if(keySubSplit[0] == "audioDeviceType" && valueToSave){
+          else if(keySubSplit[0] == "audioDeviceType" && nonDependantValue){
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
             {
@@ -698,26 +697,24 @@ const CreateTemplate = (props: any) => {
             }
           }
         }
-        if (valueToSave) {
-          if(nonDependantValue && nonDependantFormValue)
-          {
-            Initial_Values.push({
-              key: split[1],
-              value: valueRaw,
-              group: split[0],
-              valueType: split[2],
-              sequence: 1,
-            });
-          }
-          else{
-            Initial_Values.push({
-              key: split[1],
-              value: "",
-              group: split[0],
-              valueType: split[2],
-              sequence: 1,
-            });
-          }
+        if(cameraField ? nonDependantValue : nonDependantFormValue)
+        {
+          Initial_Values.push({
+            key: split[1],
+            value: valueRaw,
+            group: split[0],
+            valueType: split[2],
+            sequence: 1,
+          });
+        }
+        else{
+          Initial_Values.push({
+            key: split[1],
+            value: "",
+            group: split[0],
+            valueType: split[2],
+            sequence: 1,
+          });
         }
       }
       // Pretty straightforward - use key for the key and value for the value.

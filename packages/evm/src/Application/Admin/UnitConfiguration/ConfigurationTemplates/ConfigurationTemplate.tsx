@@ -207,10 +207,10 @@ const ConfigurationTemplates: React.FC = () => {
     let stations = UnitConfigurationTemplateValues.map((item:any, i:number) => {
       let element: any = {
         id: item.stationId,
-        name: item.stationName
+        name: item.stationName ?? ""
       }
       return element
-    })
+    }).filter((x: any) => x.name !== "")
 
     let deviceType = UnitConfigurationTemplateValues.map((item:any, i:number) => {
       let element: any = {
