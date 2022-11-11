@@ -1,7 +1,7 @@
 .rc-menu-container {
   ul.rc-menu {
     background-color: var(--color-404041);
-    width: 242px;
+    width: 230px;
     padding-top: 0;
     padding-bottom: 0px;
     border-radius: 0px;
@@ -33,6 +33,7 @@
 
     .rc-menu__item {
       padding: 0px 0px !important;
+
       .crx-meu-content {
         display: flex;
         flex: 1;
@@ -41,6 +42,25 @@
         font-size: 14px;
         height: 33px;
         line-height: 33px;
+        .crx-menu-list {
+          .rc-menu__submenu {
+            .rc-menu__item {
+              &::after {
+                content: "\f0da";
+                font-weight: bold;
+                font-family: "Font Awesome 6 Pro";
+              }
+            }
+            .rc-menu {
+              .rc-menu__item {
+                &::after {
+                  display: none;
+                }
+              }
+           
+            }
+          }
+        }
         .crx-menu-icon {
           width: 38px;
           flex-direction: column;
@@ -88,13 +108,12 @@
             }
           }
         }
-
         .crx-menu-list {
           flex-direction: column;
           text-indent: 15px;
           font-weight: var(--Font-style-normal);
-          font-family:var(--base-font-family);
-          width: 203px;
+          font-family: var(--base-font-family);
+          width: 192px;
           color: var(--color-d1d2d4);
           text-align: left;
           letter-spacing: 0;
@@ -137,7 +156,7 @@
     }
   }
 }
-.CRXModalAssignUser  {
+.CRXModalAssignUser {
   .MuiDialog-paperWidthLg {
     padding-left: 3px;
   }
@@ -148,41 +167,40 @@
     margin-top: 2px;
     margin-bottom: 69px;
     padding-right: 3px;
-}
-.checkBoxAssign {
-  margin-left: -10px;
-  margin-top: 19px;
-}
-.categoryTitle {
-  margin-bottom: 9px !important;
-  margin-left: -2px !important;
-      margin-top: 39px !important;
-  b {
-    margin-left: 8px !important;
   }
-}
-.categortAutocomplete  {
-  .fa-caret-down {
-    padding-top: 3px;
+  .checkBoxAssign {
+    margin-left: -10px;
+    margin-top: 19px;
   }
-}
-.MuiFilledInput-adornedStart {
-  .fa-caret-down {
-    padding-top: 0px;
-  }
-}
-.assignFieldBlock {
-
-  width: 100%;
-  .fieldAssigInput {
-    width: 100%;
-    margin-left: auto;
-    .fieldAssigSelectT {
-      font-size: 14px;
-      color:#74767C;
-      font-style: italic;
-      margin-top: 3px;
+  .categoryTitle {
+    margin-bottom: 9px !important;
+    margin-left: -2px !important;
+    margin-top: 39px !important;
+    b {
+      margin-left: 8px !important;
     }
   }
-} 
+  .categortAutocomplete {
+    .fa-caret-down {
+      padding-top: 3px;
+    }
+  }
+  .MuiFilledInput-adornedStart {
+    .fa-caret-down {
+      padding-top: 0px;
+    }
+  }
+  .assignFieldBlock {
+    width: 100%;
+    .fieldAssigInput {
+      width: 100%;
+      margin-left: auto;
+      .fieldAssigSelectT {
+        font-size: 14px;
+        color: #74767c;
+        font-style: italic;
+        margin-top: 3px;
+      }
+    }
+  }
 }

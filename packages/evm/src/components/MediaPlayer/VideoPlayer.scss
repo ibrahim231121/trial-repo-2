@@ -1597,7 +1597,7 @@ span.playBackTooltipUp {
       &:focus {
         .CRXVideoMultiView {
           ._select_video_button {
-            display: block !important;
+            visibility: visible !important;
           }
         }
       }
@@ -1606,14 +1606,19 @@ span.playBackTooltipUp {
       }
       .CRXVideoMultiView {
         ._select_video_button {
-          display: none !important;
+          visibility: hidden !important;
+          &.rc-menu-button--open {
+            visibility: visible !important;
+          }
         }
         &.CRXCheckPopper {
           ._select_video_button {
             display: block !important;
+            visibility: visible !important;
           }
           .CRXMultipleViewPopover {
             display: block !important;
+            visibility: visible !important;
           }
         }
         .rc-menu-container {
