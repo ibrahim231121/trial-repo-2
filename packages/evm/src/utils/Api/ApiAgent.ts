@@ -72,7 +72,6 @@ const cookies = new Cookies();
 let config = {
     headers: {
         'Content-Type': 'application/json',
-        'TenantId': '1',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
         'UserId': getUserId()
     }
@@ -82,7 +81,6 @@ export const setAPIAgentConfig = () => {
     config = {
         headers: {
             'Content-Type': 'application/json',
-            'TenantId': '1',
             'Authorization': 'Bearer ' + cookies.get("access_token"),
             'UserId': getUserId()
         }

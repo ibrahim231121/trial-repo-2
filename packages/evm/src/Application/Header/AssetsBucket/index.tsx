@@ -567,7 +567,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     const requestOptions = {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
+        'Content-Type': 'application/json','Authorization': `Bearer ${cookies.get('access_token')}`
       },
       body: JSON.stringify(body)
     };
@@ -984,7 +984,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     const requestOptions = {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
+        'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.get('access_token')}`
       },
       body: JSON.stringify(body)
     };

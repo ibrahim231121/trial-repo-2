@@ -43,8 +43,8 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
 
 
   
-  //const [getResponseGroups, responseGroups] = useGetFetch<any>(GROUP_GET_URL, { 'Content-Type': 'application/json', 'TenantId': '1' });
-  //const [getResponseSelectedGroup, responseSelectedGroup] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + selectedUserGroup?.id, { 'Content-Type': 'application/json', 'TenantId': '1' });
+  //const [getResponseGroups, responseGroups] = useGetFetch<any>(GROUP_GET_URL, { 'Content-Type': 'application/json'});
+  //const [getResponseSelectedGroup, responseSelectedGroup] = useGetFetch<any>(GROUP_GET_BY_ID_URL + "/" + selectedUserGroup?.id, { 'Content-Type': 'application/json'});
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // {

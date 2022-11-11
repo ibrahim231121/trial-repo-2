@@ -78,7 +78,7 @@ const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => 
 
     await fetch(FILE_SERVICE_URL + "/Files", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}` },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${cookies.get('access_token')}` },
         body: JSON.stringify(payload)
     }).then(function (res) {
         if (res.ok) return res.json();
@@ -131,7 +131,7 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
 
     await fetch(`${FILE_SERVICE_URL}/Files/${id}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', TenantId: '1', 'Authorization': `Bearer ${cookies.get('access_token')}`}
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookies.get("access_token")}
     }).then(function (res) {
         if (res.ok) {
             return res.json();

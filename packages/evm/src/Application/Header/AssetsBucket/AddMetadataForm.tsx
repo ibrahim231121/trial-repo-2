@@ -946,7 +946,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        TenantId: "1",
         Authorization: `Bearer ${cookies.get("access_token")}`,
       },
       body: JSON.stringify(payload),

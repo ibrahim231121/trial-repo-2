@@ -1143,28 +1143,12 @@ export const updateUsersInfoAsync: any = createAsyncThunk(
                 "value": args.valueToUpdate
             }
         ]
-        // const requestOptions = {
-        //     method: 'PATCH',
-        //     headers: {
-        //         'Content-Type': 'application/json', 'TenantId': '1', 'Authorization': `Bearer ${cookies.get('access_token')}`
-        //     },
-        //     body: JSON.stringify(body)
-        // };
         const url = '/Users?userId='+ args.userId;
-
-        // const resp = await fetch(USER_INFO_UPDATE_URL + `?userId=` + args.userId, requestOptions);
          await UsersAndIdentitiesServiceAgent.updateUserInfoURL(url, JSON.stringify(body)).then(()=> {
             args.dispatchNewCommand(true);
         }).catch((e: any) =>{
             args.dispatchNewCommand(false);
         })
-
-        // if (resp.ok) {
-        //     args.dispatchNewCommand(true);
-        // }
-        // else {
-        //     args.dispatchNewCommand(false);
-        // }
     }
 );
 

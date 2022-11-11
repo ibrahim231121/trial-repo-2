@@ -31,7 +31,7 @@ const TenantSettings: React.FC = () => {
   const [actionVerb, setActionVerb] = React.useState<string>("PUT");
   const [setReasons, setReasonsValue] = React.useState<string[]>([]);
   const [setTimezone, setTimezoneValue] = React.useState<string[]>([]);
-
+  const cookies = new Cookies();
   const [mapAllFields, setmapAllFieldsValue] = React.useState<any>({
     TenantName: "",
     PasswordRules: "",
@@ -161,23 +161,18 @@ const TenantSettings: React.FC = () => {
     if (type === "GET") {
       requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
       };
     } else if (type === "PUT") {
       requestOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json", TenantId: "1" },
+        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
         body: JSON.stringify(body),
       };
     } else {
       requestOptions = {
         method: "POST",
-        headers: 
-                { 
-                  "Content-Type": "application/json", 
-                  TenantId: "1",
-                  'Authorization': 'Bearer ' + cookies.get("access_token"),
-                 },
+        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
         body: JSON.stringify(body),
       };
     }

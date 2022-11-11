@@ -9,6 +9,7 @@ import DateTime from "../../../GlobalComponents/DateTime/DateTime";
 import moment from "moment";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
 import { Link } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 
 
@@ -299,11 +300,11 @@ useEffect(() => {
     });
   }
 const DecryptLink = async () => {
+  const cookies = new Cookies();
   const url = EVIDENCE_SERVICE_URL + '/OpenSharedMedia?E=' + `${token}`
-
   const res = await fetch(url, {
     method: 'Get',
-    headers: { 'Content-Type': 'application/json', TenantId: '1' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookies.get("access_token") },
   })
   let response = await res.json();
   setIsdownloadable(response.permissons.isDownloadable);

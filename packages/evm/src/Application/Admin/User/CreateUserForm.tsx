@@ -265,19 +265,10 @@ const CreateUserForm = () => {
   };
 
   const fetchUser = async () => {
-    ///Change here!!!!!
-    // const res = await fetch(`${USER}/${id}`, {
-    //   method: 'GET',
-    //   headers: { 'Content-Type': 'application/json', TenantId: '1' }
-    // });
-    // var response = await res.json();
     UsersAndIdentitiesServiceAgent.getUser(id).then((response: UserList) => {
       dispatch(enterPathActionCreator({ val: response.account.userName }));
       setUserPayload(response);
     });
-    // dispatch(enterPathActionCreator({ val: response.account.userName }));
-    // setUserPayload(response);
-
   };
   const generateTempPassComp = () => {
     const onClickPass = () => {
@@ -725,84 +716,6 @@ const CreateUserForm = () => {
       }
       return error;
     });
-    //   await fetch(urlEdit, {
-    //     method: 'PUT',
-    //     headers: { 'Content-Type': 'application/json', TenantId: '1' ,  'Authorization': `Bearer ${cookiesBiscuit.get('access_token')}` },
-    //     body: JSON.stringify(payload)
-    //   })
-    //     .then(function (res) {
-    //       if (res.ok) {
-    //         if (disableLink) {
-    //           const userName = userPayload.name.first + ' ' + userPayload.name.last;
-    //           sendEmail(payload.email, userPayload.id, userName);
-    //           userFormMessages({
-    //             message: t('You_have_resent_the_activation_link.'),
-    //             variant: 'success',
-    //             duration: 7000
-    //           });
-    //           dispatch(getUsersInfoAsync());
-    //           setDisableSave(true)
-    //         }
-    //         userFormMessages({ message: t('You_have_updated_the_user_account.'), variant: 'success', duration: 7000 });
-    //         dispatch(getUsersInfoAsync());
-    //         setDisableSave(true)
-    //       } else if (res.status == 500) {
-    //         setAlert(true);
-    //         setResponseError(
-    //           t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-    //         );
-    //       } else return res.text();
-    //     })
-    //     .then((resp) => {
-    //       if (resp !== undefined) {
-    //         let error = JSON.parse(resp);
-
-    //         if (error.errors !== undefined) {
-    //           if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.UserName[0]);
-    //           }
-    //           if (error.errors.First !== undefined && error.errors.First.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.First[0]);
-    //           }
-    //           if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.Last[0]);
-    //           }
-    //           if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.Email[0]);
-    //           }
-    //           if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.Password[0]);
-    //           }
-    //           if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-    //             setAlert(true);
-    //             setResponseError(error.errors.Password[0]);
-    //           }
-    //         } else {
-    //           setAlert(true);
-    //           setResponseError(error);
-    //           const errorString = error;
-    //           if (errorString.includes('email') === true) {
-    //             setIsExtEmail('isExtEmail');
-    //           } else {
-    //             setIsExtEmail('');
-    //           }
-
-    //           if (errorString.includes('username') === true) {
-    //             setIsExtUsers('isExtUserName');
-    //           } else {
-    //             setIsExtUsers('');
-    //           }
-    //         }
-    //       }
-    //     })
-    //     .catch(function (error) {
-    //       return error;
-    //     });
   };
 
   const onSubmit = async (e: any) => {
@@ -1005,7 +918,6 @@ const CreateUserForm = () => {
         TenantId: '1'
       }
     };
-    //const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${clientId}&applicationName=${applicationName}`;
     const url = `${AUTHENTICATION_EMAIL_SERVICE}?email=${email}&client_id=${REACT_APP_CLIENT_ID}&applicationName=${applicationName}&resendActivation=${ResendActivation}`;
     fetch(url, requestOptions);
   };
