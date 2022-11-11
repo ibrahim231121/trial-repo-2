@@ -1232,6 +1232,7 @@ const CreateUserForm = () => {
                     onChange={(_e: React.SyntheticEvent, value: AutoCompleteOptionType[]) => {
                       setFormPayload({ ...formpayload, userGroups: value });
                     }}
+                    isSuggestion={false}
                   />
                 </div>
               }

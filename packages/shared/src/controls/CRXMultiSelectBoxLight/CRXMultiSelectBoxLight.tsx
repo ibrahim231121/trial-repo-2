@@ -180,7 +180,7 @@ interface multiSelectProps {
   label?: string,
   disabled?: boolean;
   freeSolo? : boolean
-
+  isSuggestion? :boolean
 }
 
 const CRXMultiSelectBoxLight = ({
@@ -200,6 +200,8 @@ const CRXMultiSelectBoxLight = ({
   errorMsg,
   disabled,
   freeSolo=false,
+  isSuggestion=true,
+
 }: multiSelectProps) => {
 
   const classes = useSelectBoxStyle();
@@ -305,13 +307,14 @@ const CRXMultiSelectBoxLight = ({
 
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
-  
+          if(isSuggestion) {
           // Suggest the creation of a new value
-          if (params.inputValue !== '') {
-            filtered.push({
-              inputValue: params.inputValue,
-              label: params.inputValue,
-            });
+            if (params.inputValue !== '') {
+              filtered.push({
+                inputValue: params.inputValue,
+                label: params.inputValue,
+              });
+            }
           }
   
           return filtered;
