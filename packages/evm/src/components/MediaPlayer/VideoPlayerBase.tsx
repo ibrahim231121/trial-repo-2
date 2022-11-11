@@ -499,6 +499,7 @@ const VideoPlayerBase = (props: any) => {
   const last_media_time = useRef(0);
   const last_frame_num = useRef(0);
   const fps_rounder = useRef<any>([]);
+  const [isEditBookmarkNotePopup, setIsEditBookmarkNotePopup] = useState(false);
   const frame_not_seeked = useRef<boolean>(true);
   const [fps, setFps] = useState<number>(30); // Default set to 30fps until fps is not set
   const [detailContent, setDetailContent] = useState<boolean>(false);
@@ -559,6 +560,20 @@ const VideoPlayerBase = (props: any) => {
       vid.removeEventListener("seeked", function () {});
     }
   }, [fps]);
+
+  React.useEffect(() => {  // On Edit bookmark note popup stop playing
+    if(isEditBookmarkNotePopup && isPlaying){
+      setPlaying(!isPlaying);
+      setMarkerFwRw(false);
+      setisPlayingFwRw(false);
+      setShowFRicon({ showFRCon: false, caseNum: 0 })
+      videoHandlers.forEach((videoHandle: any) => {
+        videoHandle.pause();
+        videoHandle.playbackRate = 1;
+      });
+      setMode(0);
+    }
+  }, [isEditBookmarkNotePopup]);
 
   React.useEffect(() => {
     if(videoHandlers.length>0){
@@ -1837,9 +1852,12 @@ const VideoPlayerBase = (props: any) => {
   useInterval(
     () => {
       if (bookmarkNotePopupArrObj.length>0) {
-        let temp :any[] = [...bookmarkNotePopupArrObj];
-        temp.shift();
-        setBookmarkNotePopupArrObj(temp);
+        let temp = bookmarkNotePopupArrObj;
+        if(!isEditBookmarkNotePopup && temp){
+          temp.sort((a:any, b:any) => parseFloat(a.position) - parseFloat(b.position));
+          temp.shift();
+          setBookmarkNotePopupArrObj(temp);
+        }
       }
     },
     // Speed in milliseconds or null to stop it
@@ -2541,15 +2559,18 @@ useEffect(() => {
 
           <div className={`BookmarkNotePopupMain __CRX_BookMark_Note__ ${mapEnabled_Bookmark_Notes}`}>
             {bookmarkNotePopupArrObj.map((bookmarkNotePopupObj:any) =>
-              {return (
+              {
+                return (
                 <BookmarkNotePopup
                 bookmarkNotePopupObj={bookmarkNotePopupObj}
                 bookmarkNotePopupArrObj={bookmarkNotePopupArrObj} 
                 setBookmarkNotePopupArrObj={setBookmarkNotePopupArrObj}
                 EvidenceId={EvidenceId}
                 timelinedetail={timelinedetail}
-                toasterMsgRef={toasterMsgRef} />
-              )}
+                toasterMsgRef={toasterMsgRef}
+                setIsEditBookmarkNotePopup={setIsEditBookmarkNotePopup} />
+                )
+              }
             )}
           </div>
 

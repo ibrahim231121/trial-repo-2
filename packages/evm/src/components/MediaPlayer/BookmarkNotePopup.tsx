@@ -17,6 +17,7 @@ interface BookmarkNotePopupprops {
   EvidenceId: any
   timelinedetail: any
   toasterMsgRef: any
+  setIsEditBookmarkNotePopup: any
 }
 
 const BookmarkNotePopup = ({
@@ -26,6 +27,7 @@ const BookmarkNotePopup = ({
   EvidenceId,
   timelinedetail,
   toasterMsgRef,
+  setIsEditBookmarkNotePopup
 }: BookmarkNotePopupprops) => {
   const [description, setDescription] = React.useState<string>("");
   const [editDescription, setEditDescription] = React.useState<boolean>(false);
@@ -38,7 +40,12 @@ const BookmarkNotePopup = ({
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    setDescription(bookmarkNotePopupObj.description);
+    if (!editDescription) {
+      setDescription(bookmarkNotePopupObj.description);
+    }
+  });
+
+  React.useEffect(() => {
     if (bookmarkNotePopupObj.objtype == "Note") {
       let listOfKeyValue = bookmarkNotePopupObj?.userId?.record;
       if (listOfKeyValue && listOfKeyValue.length > 0) {
@@ -66,6 +73,7 @@ const BookmarkNotePopup = ({
 
   let inputRef: any;
   useEffect(() => {
+    setIsEditBookmarkNotePopup(editDescription);
     if (editDescription) {
       inputRef.focus();
     }
@@ -161,7 +169,7 @@ const BookmarkNotePopup = ({
         updateBookmarkNotePopupObjState();
         toasterMsgRef.current.showToaster({
           message: "Bookmark saved",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -205,7 +213,7 @@ const BookmarkNotePopup = ({
         updateBookmarkNotePopupObjState();
         toasterMsgRef.current.showToaster({
           message: "Note saved",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -213,7 +221,7 @@ const BookmarkNotePopup = ({
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
           message: "Note error",
-          variant: "Error",
+          variant: "error",
           duration: 5000,
           clearButtton: true,
         });
@@ -272,7 +280,7 @@ const BookmarkNotePopup = ({
         onRemove(true);
         toasterMsgRef.current.showToaster({
           message: "Bookmark Sucessfully Deleted",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -302,7 +310,7 @@ const BookmarkNotePopup = ({
         onRemove(true);
         toasterMsgRef.current.showToaster({
           message: "Note Sucessfully Deleted",
-          variant: "Success",
+          variant: "success",
           duration: 5000,
           clearButtton: true,
         });
@@ -311,7 +319,7 @@ const BookmarkNotePopup = ({
       .catch((err: any) => {
         toasterMsgRef.current.showToaster({
           message: "Error Deleting Note",
-          variant: "Error",
+          variant: "error",
           duration: 5000,
           clearButtton: true,
         });
