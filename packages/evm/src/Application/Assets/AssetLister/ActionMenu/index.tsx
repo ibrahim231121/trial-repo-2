@@ -404,6 +404,7 @@ const ActionMenu: React.FC<Props> = React.memo(({ row, selectedItems = [], isPri
 
   const closeDialog = () => {
     setIsModalOpen(false);
+    setOpenManageRetention(false)
     history.push(
       urlList.filter((item: any) => item.name === urlNames.assets)[0]
         .url

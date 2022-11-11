@@ -1,23 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useRef, useState } from 'react';
 import { CRXModalAssetViewReason } from '@cb/shared';
-import { CRXButton } from '@cb/shared';
-import { CRXAlert } from '@cb/shared';
-import { TextField } from '@cb/shared';
-import "./VideoPlayer.scss";
-import { CRXCheckBox } from '@cb/shared';
-import moment from 'moment';
-import { CRXConfirmDialog } from '@cb/shared';
-import { CRXSelectBox } from '@cb/shared';
-import CRXAppDropdown from '../../Application/Header/AppBarMenu/AppBarLinks';
+import { CRXButton, CRXAlert, TextField, CRXSelectBox } from '@cb/shared';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router";
-import { EvidenceAgent, SetupConfigurationAgent } from '../../utils/Api/ApiAgent';
+import { EvidenceAgent } from '../../utils/Api/ApiAgent';
 import { AssetViewReason } from '../../utils/Api/models/EvidenceModels';
 import { SetupConfigurationsModel } from '../../utils/Api/models/SetupConfigurations';
-
+import "./VideoPlayer.scss";
 
 type VideoPlayerViewReasonProps = {
     openViewReason: boolean;
@@ -51,7 +42,6 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     const [alertType, setAlertType] = useState<string>('inline');
     const [errorType, setErrorType] = useState<string>('error');
     const alertRef = useRef(null);
-    const [onSave, setOnSave] = useState(true);
     const [descriptionErr, setdescriptionErr] = React.useState("");
     const [reason, setReason] = React.useState<string>("");
     const [description, setdescription] = React.useState("");
@@ -299,13 +289,15 @@ const errorsReason = reason == "Other" && descriptionErr.length > 0  ? "__CRX__E
                         </div>
                         <div className='modalFooter CRXFooter'>
                         <div className="nextBtn">
+                            
                             <CRXButton
                                 className='primary'
                                 onClick={handleSave}
-                                disabled={reason.length == 0 || (reason == "Other" && descriptionErr.length > 0 ? true : false)}>
+                                disabled={reason.length == 0 ||  
+                                (reason == "Other" && description.length == 0 ? true : false) }>
                                 Submit asset view reason
                             </CRXButton>
-                            </div>
+                            </div>   
                             <div className="cancelBtn">
                             <CRXButton className='secondary' onClick={handleBack}>
                                 Back

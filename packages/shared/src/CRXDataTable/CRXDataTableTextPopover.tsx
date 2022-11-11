@@ -134,7 +134,6 @@ const useGapStyles = makeStyles({
             
         >
             <div className='popover_content'>{content}</div>
-            {console.log("initScroll", initScroll)}
         </Popover>
         </ClickAwayListener>
         </div>
