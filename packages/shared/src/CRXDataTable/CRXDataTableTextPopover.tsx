@@ -1,4 +1,4 @@
-import React,{ useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React,{ useEffect, useRef, useState } from 'react'
 import Popover from '@material-ui/core/Popover';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -50,12 +50,6 @@ const useGapStyles = makeStyles({
         });
     }
 
-
-    useLayoutEffect(() => {
-        let windScroll = window.scrollY
-        setInitScroll(windScroll)
-    },[initScroll])
-
     const handleScroll = () => {
         
         const currentScrollY = window.scrollY;
@@ -65,10 +59,12 @@ const useGapStyles = makeStyles({
         setInitScroll(currentScrollY)
       };
     
-    useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-    }, []); 
+      useEffect(() => {
+        let windScroll = window.scrollY
+        setInitScroll(windScroll)
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    },[initScroll])
     
     const popoverHandleClick = (e : any) => {
         
@@ -90,6 +86,8 @@ const useGapStyles = makeStyles({
         <div className='assetIdx'>
             {isPopover && (isPopover == true && contentlength > 28) ? 
         <div 
+        aria-owns={open ? 'mouse-over-popover' : undefined}
+        aria-haspopup="true"
         className='popoverChar' 
         ref={popoverRefs}
         style={{
@@ -109,12 +107,12 @@ const useGapStyles = makeStyles({
         <ClickAwayListener onClickAway={popoverHandleClose}>
            
         <Popover
-            id={id}
+            id="mouse-over-popover"
             ref={paperRef}
             open={open}
             anchorEl={anchorEl}
             getContentAnchorEl={(anchorEl : any) => anchorEl}
-            onClose={() => setAnchorEl(null)}
+            onClose={popoverHandleClose}
             marginThreshold={16}
             disablePortal
             hideBackdrop={true}
@@ -126,12 +124,13 @@ const useGapStyles = makeStyles({
                 vertical: 'top',
                 horizontal: 'center',
               }}
+              
               transformOrigin={{
                 vertical: "bottom",
                 horizontal: 'center',
               }}
             className="crx_popover_customized"
-            
+            disableRestoreFocus
         >
             <div className='popover_content'>{content}</div>
         </Popover>

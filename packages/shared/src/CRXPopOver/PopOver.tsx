@@ -1,4 +1,4 @@
-import React  from 'react'
+import React, { useEffect, useState }  from 'react'
 import Popper  from '@material-ui/core/Popper';
 import { makeStyles } from '@material-ui/core/styles';
 import "./popOver.scss";
@@ -46,9 +46,28 @@ const cbxPopoverStyle = makeStyles(() => ({
 
 const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl, id, className, onSetAnchorE1}) => {
   const classes = cbxPopoverStyle();
+  const [initScroll, setInitScroll] = useState<any>()
     const handlePopoverClose = () => {
       onSetAnchorE1(null);
     };
+
+   
+  
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (initScroll < currentScrollY) {
+          handlePopoverClose()
+      }
+      setInitScroll(currentScrollY)
+    };
+
+    useEffect(() => {
+      let windScroll = window.scrollY
+      setInitScroll(windScroll)
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+  },[initScroll])
+
     const arrow = document.querySelector('#arrow');
     return (
       <>
@@ -73,7 +92,7 @@ const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, ancho
             },
             
           }}
-          transition
+          transition={false}
         >
           <div className='_popover_content'>
           <div className='_popover_title'>
