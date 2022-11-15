@@ -178,6 +178,21 @@ iframe {
           }
         }
       }
+      .CRXDataTableCustom {
+        tbody {
+          tr {
+            &:first-child {
+              td {
+                &:nth-child(2) {
+                  .rc-menu {
+                    margin-top: 43px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
     
     .rc-menu__arrow {
