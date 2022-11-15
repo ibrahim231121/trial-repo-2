@@ -254,6 +254,8 @@ export const resources = {
         "custom_range":"hr-custom range",
         "No_Status":"hr-No Status",       
         "No_Versions":"No Versions",
+        "Key": "Key",
+        "KEY": "KEY",
         "No_Assignments":"No Assignments",
         "Status":"hr-Status",
         "Last_Login":"hr-Last Login",

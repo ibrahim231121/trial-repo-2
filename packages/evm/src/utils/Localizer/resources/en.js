@@ -290,6 +290,8 @@ export const resources = {
         "No_Status":"No Status",
         "No_Assignments":"No Assignments",
         "No_Versions":"No Versions",
+        "Key": "Key",
+        "KEY": "KEY",
         "Status":"Status",
         "Last_Login":"Last Login",
         "Groups":"Groups",
