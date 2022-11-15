@@ -5,7 +5,6 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 interface popoverProps  {
     content : any,
-    id : any,
     isPopover : boolean | undefined,
     minWidth? : any, 
     title : string,
@@ -32,7 +31,7 @@ const useGapStyles = makeStyles({
     }
 });
 
-  const  CRXDataTableTextPopover = ({content, id, isPopover, counts, minWidth, maxWidth}:popoverProps) => {
+  const  CRXDataTableTextPopover = ({content, isPopover, counts, minWidth, maxWidth}:popoverProps) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [initScroll, setInitScroll] = useState<any>()
     const popoverRefs = useRef(content)
@@ -43,11 +42,11 @@ const useGapStyles = makeStyles({
         
         setAnchorEl(null);
         
-        const tableRow:HTMLElement | null = popoverRefs.current.parentElement.parentElement.parentElement;
-        tableRow && ( tableRow.style.background = "" );
-        tableRow?.childNodes.forEach(x => {
-            (x as HTMLElement).style.color = ""
-        });
+        // const tableRow:HTMLElement | null = popoverRefs.current.parentElement.parentElement.parentElement;
+        // tableRow && ( tableRow.style.background = "" );
+        // tableRow?.childNodes.forEach(x => {
+        //     (x as HTMLElement).style.color = ""
+        // });
     }
 
     const handleScroll = () => {
