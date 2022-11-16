@@ -38,12 +38,11 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                         <label className="categoryFormLabel" htmlFor={field.id}>
                           {field?.display?.caption}
                         </label>
-                        <b className={errors[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</b>
                         <div className="CBX-input">
                           {(IsFieldtypeEquals(field, FieldTypes.FieldTextBoxType) || IsFieldtypeEquals(field, FieldTypes.CaseNO) || IsFieldtypeEquals(field, FieldTypes.PolygraphLogNumber) || IsFieldtypeEquals(field, FieldTypes.CADID) || IsFieldtypeEquals(field, FieldTypes.Unknown)) &&
                             <Field
                               className={
-                                `editCategoryField ${errors[field.name ?? field.key] ? 'errorBrdr' : ''}`
+                                `editCategoryField`
                               }
                               id={field.id}
                               name={
@@ -87,7 +86,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                             <Field
                               as="textarea"
                               className={
-                                `editCategoryField ${errors[field.name ?? field.key] ? 'errorBrdr' : ''}`
+                                `editCategoryField`
                               }
                               id={field.id}
                               name={
@@ -128,12 +127,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-                          {errors[field.name ?? field.key] && (
-                            <div className="errorStyle">
-                              <i className="fas fa-exclamation-circle"></i>
-                              {errors[field.name ?? field.key]}
-                            </div>
-                          )}
+                          
                         </div>
                       </div>
                     ))}

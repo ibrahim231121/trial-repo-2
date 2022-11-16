@@ -123,7 +123,6 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       //   }
       // }
     }
-
     if (
       !formpayload.masterAsset ||
       !formpayload.station ||
@@ -1207,6 +1206,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const backBtnHandler = () => {
     setActiveScreen(activeScreen - 1);
     setIsNext(true);
+    setIsDisable(false);
   }
 
   return (
