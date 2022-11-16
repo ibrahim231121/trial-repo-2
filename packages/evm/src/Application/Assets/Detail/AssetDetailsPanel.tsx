@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { CRXToaster, CRXAlert, CRXMenu } from "@cb/shared";
 import "./AssetDetailsPanel.scss";
-import AssetDetailNotesandBookmark from "./AssetDetailNotesandBookmark";
 import GoogleMap from "../../../map/google/GoogleMap";
 import { Bookmark, Note } from "../../../utils/Api/models/EvidenceModels";
 import { EvidenceAgent } from "../../../utils/Api/ApiAgent";

@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled } = props;
+  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -103,7 +103,7 @@ useEffect(() => {
           </div>
         </MaterialMenuItem>
 
-        <MaterialMenuItem className="settingOverlay">
+        {ViewScreen && <MaterialMenuItem className="settingOverlay">
           <span className='fas fa-comment-alt-plus iconsLeft'></span>
 
           <div className="SwitcherControl"  >
@@ -112,7 +112,7 @@ useEffect(() => {
               <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={notesEnabled} size="small" onChange={(e: any) => notes(e)} name="Notes" />
             </label>
           </div>
-        </MaterialMenuItem>
+        </MaterialMenuItem>}
         <MaterialMenuItem className="settingOverlay">
           <span className="fa-solid fa-chart-simple iconsLeft"></span>
           {/* <span className="toggleBack"></span> */}

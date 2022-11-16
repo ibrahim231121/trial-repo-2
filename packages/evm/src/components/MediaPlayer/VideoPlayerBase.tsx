@@ -545,8 +545,8 @@ const VideoPlayerBase = (props: any) => {
           setVolumeHandle(volume);
         }
       } //up arrows
-      if (code == "KeyN" && shiftKey && altKey) {event.preventDefault(); handleaction("note")} // N
-      if (code == "KeyB" && shiftKey && altKey) {event.preventDefault(); handleaction("bookmark")} // B
+      if (code == "KeyN" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("note")} // N
+      if (code == "KeyB" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("bookmark")} // B
       if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // B
       if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // B
     }
@@ -2340,9 +2340,10 @@ useEffect(() => {
                       setIsAudioGraphAnimate={setIsAudioGraphAnimate}
                       notesEnabled={notesEnabled}
                       setnotesEnabled={setnotesEnabled}
+                      ViewScreen={ViewScreen}
                     />
                   </div>
-                  {notesEnabled && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
+                  {notesEnabled && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
@@ -2351,14 +2352,14 @@ useEffect(() => {
                     />
                   </CRXButton>}
 
-                  <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
+                  {ViewScreen && <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
                       title={<>Bookmarks  <span className="BookmarksTooltip">B</span></>}
                       arrow={false}
                     />
-                  </CRXButton>
+                  </CRXButton>}
                   <div className="MenuListGrid">
                     <CRXButton onClick={() => {setLayoutMenuEnabled(true)}}>
                       <CRXTooltip
