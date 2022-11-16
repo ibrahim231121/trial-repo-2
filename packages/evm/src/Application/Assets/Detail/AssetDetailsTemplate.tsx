@@ -395,7 +395,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS").length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
