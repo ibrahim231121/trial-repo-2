@@ -667,54 +667,79 @@ const CreateTemplate = (props: any) => {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
             {
-              Initial_Values.push({
-                key: "deviceTypeCategory_" + keySubSplit[1] + "_" + keySubSplit[2],
-                value: deviceType.category,
-                group: split[0],
-                valueType: split[2],
-                sequence: 1,
-              });
-              Initial_Values.push({
-                key: "deviceTypeName_" + keySubSplit[1] + "_" + keySubSplit[2],
-                value: deviceType.name,
-                group: split[0],
-                valueType: split[2],
-                sequence: 1,
-              });
+              let isExistDeviceTypeCategory = Initial_Values.find((x: any) => x.key == "deviceTypeCategory_" + keySubSplit[1] + "_" + keySubSplit[2]);
+              if(isExistDeviceTypeCategory)
+              {
+                isExistDeviceTypeCategory.value = deviceType.category
+              }
+              else{
+                Initial_Values.push({
+                  key: "deviceTypeCategory_" + keySubSplit[1] + "_" + keySubSplit[2],
+                  value: deviceType.category,
+                  group: split[0],
+                  valueType: split[2],
+                  sequence: 1,
+                });
+              }
+
+              let isExistDeviceTypeName = Initial_Values.find((x: any) => x.key == "deviceTypeName_" + keySubSplit[1] + "_" + keySubSplit[2]);
+              if(isExistDeviceTypeName)
+              {
+                isExistDeviceTypeName.value = deviceType.name
+              }
+              else{
+                Initial_Values.push({
+                  key: "deviceTypeName_" + keySubSplit[1] + "_" + keySubSplit[2],
+                  value: deviceType.name,
+                  group: split[0],
+                  valueType: split[2],
+                  sequence: 1,
+                });
+              }
             }
           }
           else if(keySubSplit[0] == "audioDeviceType" && nonDependantValue){
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
             {
-              Initial_Values.push({
-                key: "audioDeviceTypeName" + "_" + keySubSplit[1] + "_" + keySubSplit[2],
-                value: deviceType.name,
-                group: split[0],
-                valueType: split[2],
-                sequence: 1,
-              });
+              let isExistAudioDeviceTypeName = Initial_Values.find((x: any) => x.key == "audioDeviceTypeName" + "_" + keySubSplit[1] + "_" + keySubSplit[2]);
+              if(isExistAudioDeviceTypeName)
+              {
+                isExistAudioDeviceTypeName.value = deviceType.name
+              }
+              else{
+                Initial_Values.push({
+                  key: "audioDeviceTypeName" + "_" + keySubSplit[1] + "_" + keySubSplit[2],
+                  value: deviceType.name,
+                  group: split[0],
+                  valueType: split[2],
+                  sequence: 1,
+                });
+              }
             }
           }
         }
-        if(cameraField ? nonDependantValue : nonDependantFormValue)
+        if((!Initial_Values.some(x => x.key == split[1])))
         {
-          Initial_Values.push({
-            key: split[1],
-            value: valueRaw,
-            group: split[0],
-            valueType: split[2],
-            sequence: 1,
-          });
-        }
-        else{
-          Initial_Values.push({
-            key: split[1],
-            value: "",
-            group: split[0],
-            valueType: split[2],
-            sequence: 1,
-          });
+          if((cameraField ? nonDependantValue : nonDependantFormValue))
+            {
+            Initial_Values.push({
+              key: split[1],
+              value: valueRaw,
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
+          else{
+            Initial_Values.push({
+              key: split[1],
+              value: "",
+              group: split[0],
+              valueType: split[2],
+              sequence: 1,
+            });
+          }
         }
       }
       // Pretty straightforward - use key for the key and value for the value.

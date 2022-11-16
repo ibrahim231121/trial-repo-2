@@ -63,6 +63,18 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
   if (row) {
     var unitId = row.name;
   }
+  const editTemplate = () => {
+    if (row) {
+      history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, {
+        id: row.id,
+        name: row.name,
+        isedit: true,
+        deviceId: row.device.deviceId,
+        deviceType: row.deviceType,
+        isDefaultTemplate: row.defaultTemplate == "Default"
+      });
+    }
+  }
   const cloneTemplate = () => {
     if (row) {
       history.push('/admin/unitanddevices/createtemplate/template', { id: row.id, isclone: true, name: row.name, deviceId: row.device.deviceId, deviceType: row.deviceType });
@@ -89,7 +101,7 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
       >
         <MenuItem >
           <Restricted moduleId={24}>
-            <div className="crx-meu-content   crx-spac"  >
+            <div className="crx-meu-content   crx-spac" onClick={editTemplate} >
               <div className="crx-menu-icon">
                 <i className="far fa-pencil"></i>
               </div>
