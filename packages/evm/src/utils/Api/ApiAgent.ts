@@ -73,7 +73,8 @@ let config = {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
-        'UserId': getUserId()
+        'UserId': getUserId(),
+         'TenantId': getTenantId()
     }
 }
 
@@ -82,7 +83,8 @@ export const setAPIAgentConfig = () => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + cookies.get("access_token"),
-            'UserId': getUserId()
+            'UserId': getUserId(),
+            'TenantId': getTenantId()
         }
     }
 }
@@ -135,6 +137,17 @@ function getUserId () {
     if(accessToken){
         let decodedAccessToken : any = jwt_decode(accessToken);
         return decodedAccessToken.UserId;
+    }
+    else{
+        return "0";
+    }
+};
+
+function getTenantId () {
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        return decodedAccessToken.TenantId;
     }
     else{
         return "0";
