@@ -74,7 +74,7 @@ export const resources = {
         "Add_to_asset_bucket":"Add to asset bucket",
         "Edit_category_and_form":"Edit category and form",
         "Categorize":"Categorize",
-        "Set_as_primary":"Set as Primary",
+        "Set_as_primary":"Set as primary",
         "Email":"Email",
         "File":"File",
         "Metadata":"",
