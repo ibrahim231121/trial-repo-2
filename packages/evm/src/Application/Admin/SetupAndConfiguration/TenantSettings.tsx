@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
 import "./tenantSettings.scss";
 import { CRXColumn } from "@cb/shared";
@@ -65,7 +65,11 @@ const TenantSettings: React.FC = () => {
     AlertEmails: "",
     fileDetails: [],
   });
-
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const handleClickk = () => {
+    if(hiddenFileInput?.current)
+      hiddenFileInput.current.click();
+  };
   const cultures = [
     { label: 'en-US', value: 'en-US'},
     { label: 'en-GB', value: 'en-GB'},
@@ -181,12 +185,12 @@ const TenantSettings: React.FC = () => {
   };
   const validatingFields = async (values: any) => {
     if (values.MailServer != "Custom") {
-     await SetupConfigurationAgent.getMailServerSettings("/MailServers").then((defaultMailSettings : any) =>{
-      values.CustomURL=defaultMailSettings[0].server?.smtp;
-      values.CustomFromEmail = defaultMailSettings[0].from;
-      values.CustomPort = defaultMailSettings[0].server?.port;
-      values.CustomName = defaultMailSettings[0].name;
-      values.CustomPassword = defaultMailSettings[0].credential?.password;
+     await SetupConfigurationAgent.getMailServerSettings("/MailServers/1").then((defaultMailSettings : any) =>{
+      values.CustomURL=defaultMailSettings.server?.smtp;
+      values.CustomFromEmail = defaultMailSettings.from;
+      values.CustomPort = defaultMailSettings.server?.port;
+      values.CustomName = defaultMailSettings.name;
+      values.CustomPassword = defaultMailSettings.credential?.password;
      
     }).catch((e : any)=> {
       console.log("ERORRR : "+ e.message);
@@ -649,10 +653,18 @@ const TenantSettings: React.FC = () => {
                       <label htmlFor="Watermark Logo">
                         Watermark Logo on Playback
                       </label>
+                      <CRXButton
+                    onClick={handleClickk}
+                    variant="contained"
+                    className="groupInfoTabButtons"
+                  >
+                    Upload
+                  </CRXButton>
                       <input
                         type="file"
                         accept="image/*"
-                        placeholder="UPLOAD LOGO"
+                        ref={hiddenFileInput}
+                        style={{display: 'none'}} 
                         id="contained"
                         name="fileDetails"
                         onChange={(event) => {
