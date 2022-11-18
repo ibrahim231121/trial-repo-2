@@ -1899,23 +1899,14 @@ const VideoPlayerBase = (props: any) => {
        PlayerRight?.appendChild(layoutContent)
     }
     if(multiTimelineEnabled) {
-    document.documentElement.style.overflow = "auto";
-    document.documentElement.style.scrollBehavior = "smooth" ;
-
-
+      document.documentElement.style.overflow = "auto";
+      document.documentElement.style.scrollBehavior = "smooth" ;
     } else {
-    document.documentElement.style.overflow = "hidden";
-    document.body.scrollTop = 0; 
-    document.documentElement.scrollTop = 0;
+      document.documentElement.style.overflow = "hidden";
+      document.body.scrollTop = 0; 
+      document.documentElement.scrollTop = 0;
     }
   },[multiTimelineEnabled,layoutMenuEnabled])
-
-  // if(viewNumber === 1 ) {
-  //   document.documentElement.style.overflow = "hidden";
-  //   document.body.scrollTop = 0; 
-  //   document.documentElement.scrollTop = 0;
-
-  // }
 
   const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);

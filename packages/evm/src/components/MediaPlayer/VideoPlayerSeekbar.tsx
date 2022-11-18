@@ -38,7 +38,6 @@ const VideoPlayerSeekbar = (props:any)  => {
                       ...videoPlayerJssStyle
                     }}
                   />
-                  {console.log("controlBar", timelineduration)}
                   <div className="_play_timeLine_pipeRed" id="_hover_timeLine_pipeRed" style={{left : ((controlBar/timelineduration)*100)+"%"}}></div>
                    <div className="_hover_timeLine_pipeGray" id="_hover_timeLine_pipeGray"></div>
                    {markerFwRw && <div className={`_fwrw_timeLine_pipeRed`} id="_fwrw_timeLine_pipeRed" style={{left: ((controlBar/timelineduration)*100)+"%" }}></div>}

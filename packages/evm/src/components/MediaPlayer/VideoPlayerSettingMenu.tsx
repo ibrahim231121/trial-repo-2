@@ -36,10 +36,10 @@ const VideoPlayerSettingMenu = (props: any) => {
       setPosition(true);
     } else {
       setPosition(false);
-
     }
     setOverlayEnabled(event.target.checked);
     setSettingMenuEnabled(null)
+ 
   }
 
   const notes = (e: any) => {
@@ -70,6 +70,14 @@ useEffect(() => {
   let CheckedTimestamp = overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp");
   let CheckedGPS = overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")
   let CheckedSpeed = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")
+
+  useEffect(()=>{
+      if(settingMenuEnabled === null) {
+        document.documentElement.style.overflow = "hidden";
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
+      }
+  },[settingMenuEnabled])
 
   return (
     <>
