@@ -257,6 +257,7 @@ export const resources = {
         "Key": "Key",
         "KEY": "KEY",
         "No_Assignments":"No Assignments",
+        "Default_Template":"Default Template",
         "Status":"hr-Status",
         "Last_Login":"hr-Last Login",
         "Groups":"hr-Groups",

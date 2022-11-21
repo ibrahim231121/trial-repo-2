@@ -290,6 +290,7 @@ export const resources = {
         "No_Status":"No Status",
         "No_Assignments":"No Assignments",
         "No_Versions":"No Versions",
+        "Default_Template":"Default Template",
         "Key": "Key",
         "KEY": "KEY",
         "Status":"Status",
