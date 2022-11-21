@@ -576,7 +576,9 @@ const ConfigurationTemplates: React.FC = () => {
               row={selectedActionRow}
               selectedItems={selectedItems}
             />}
-            toolBarButton={
+            toolBarButton=
+            {
+              getModuleIds().includes(23) ? 
               <div className="menu_List_Button">
                 <Menu
                   style={{ backgroundColor: '#FFFFFF' }}
@@ -609,8 +611,8 @@ const ConfigurationTemplates: React.FC = () => {
                   })}
                 </Menu >
               </div>
-            
-          }
+            :<div></div>
+             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
