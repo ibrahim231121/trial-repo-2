@@ -45,13 +45,13 @@ const RemoveCategoryForm: React.FC<RemoveCategoryFormProps> = (props) => {
       const categoryObject = props.evidence.categories;
       props.setRemoveMessage(message);
       for (const elem of categoryObject) {
-        if (elem.DataRetentionPolicy) {
-          const Hours = elem.DataRetentionPolicy.record.filter((x) => x.key === 'Hours')[0].value;
-          const GracePeriodHours = elem.DataRetentionPolicy.record.filter((x) => x.key === 'GracePeriodHours')[0].value;
+        if (elem.dataRetentionPolicy) {
+          const Hours = elem.dataRetentionPolicy.record.filter((x) => x.key === 'Hours')[0].value;
+          const GracePeriodHours = elem.dataRetentionPolicy.record.filter((x) => x.key === 'GracePeriodHours')[0].value;
           const TotalHours = parseInt(Hours) + parseInt(GracePeriodHours);
           retentionDetails.push({
             categoryName: elem.record?.record.filter((x) => x.key === 'Name')[0].value ?? "",
-            retentionId: elem.DataRetentionPolicy.cmtFieldValue,
+            retentionId: elem.dataRetentionPolicy.cmtFieldValue,
             hours: TotalHours
           });
         }

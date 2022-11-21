@@ -17,7 +17,7 @@ export interface Category {
     formData: FormData[];
     assignedOn: Date;
     record?: CMTEntityRecord;
-    DataRetentionPolicy?: CMTEntityRecord;
+    dataRetentionPolicy?: CMTEntityRecord;
 }
 
 export interface Recording {
