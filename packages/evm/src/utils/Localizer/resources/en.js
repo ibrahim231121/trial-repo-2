@@ -69,7 +69,7 @@ export const resources = {
         "Video_Analysis":"Video Analysis",
         "Audio_Analysis":"Audio Analysis",
         "Audio_Source":"Audio Source",
-        "Select_Audio_Source":"Select Audio Source",
+        "Select_Audio_Source":"Select Audio Source",        
         "Submit_for_analysis":"Submit for analysis",
         "Add_to_asset_bucket":"Add to asset bucket",
         "Edit_category_and_form":"Edit category and form",
@@ -459,6 +459,16 @@ export const resources = {
         "Retention_Policies": "Retention Policies",
         "Create_Retention_Policies": "Create Retention Policies",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"Are you sure you would like to delete sensors and triggers?",
+
+        
+        "Create_Upload_Policy" : "Create Upload Policy",
+        "Edit_upload_policy": "Edit upload policy",
+        "Delete_upload_policy": "Delete upload policy",
+        "Upload_Policies": "Upload Policies",
+        "Upload_Policies_Form": "Upload Policies Form",
+        "Are_you_sure_you_would_like_to_delete_upload_policies?":"Are you sure you would like to delete upload policies?",
+       
+
         // ---------------------------------
         
         // --------- Asset buctet ----------
@@ -824,7 +834,14 @@ export const resources = {
         "Retention_Time_Or_Space" : "Retention Time / Space",
         "Soft_Delete_Time" : "Soft Delete Time",
         "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",        
-        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully"
+        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully",
+        //----------  Upload Policies  ---------       
+        "Upload" :"Upload",
+        "Metadata_Upload_Connection":"Metadata Upload Connection",
+        "Asset_Upload_Priority":"Asset Upload Priority",
+        "Asset_Upload_Connection":"Asset Upload Connection",
+        "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
+        "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
       }
     }
   };

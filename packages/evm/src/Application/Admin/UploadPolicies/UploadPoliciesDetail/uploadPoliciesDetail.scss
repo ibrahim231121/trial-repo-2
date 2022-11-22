@@ -1,0 +1,201 @@
+.upload-policies {
+    padding: 120px 4px 0px 65px;
+    .settingsContent {
+        position: relative;
+        margin-top: 76px;
+        .select-box {
+            width: 100%;
+        }
+        .gridFilterTextBox {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            h6 {
+                width: 220.66px !important;
+            }
+            .gridFilterSpanUi {
+                width: 100%;
+            }
+        }
+        .setting_para {
+            position: absolute;
+            left: 25px;
+            top: -44px;
+        }
+    }
+
+    .uploadPolicyDetailContent {
+        position: relative;
+        margin-top: 100px;
+            > h2 {
+                position: absolute;
+                top: -100px;
+                margin-left: 30px;
+            }
+        .select-box {
+            width: 100%;
+        }
+        .Mui-container {
+            place-content: center;
+        }
+        .uploadPolicyDetailHeader {
+            margin: 0 86px;
+            .uploadPolicyDetailColumn {
+                background: var(--color-333333);
+                color: var(--color-d1d2d4);
+                text-align: center;
+                place-items: center;
+                justify-content: center;
+                height: 50px;
+                font-size: 14px;
+                font-family: var(--base-font-family);
+                &:nth-child(even) {
+                    border-left: 1px solid var(--color-ccc);
+                    border-right: 1px solid var(--color-ccc);
+                }
+            }
+        }
+        .uploadPolicyDetailPageScroll {
+            padding: 0;
+            width: 100%;
+            max-height: 336px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            overflow-y: overlay;
+            .uploadPolicyDetailColumnContent {
+                padding: 10px 0 27px;
+                margin: 0 86px;
+                .uploadPolicyDetailColumnItem {
+                    padding: 17px 0;
+                    position: relative;
+                    .uploadPolicyDetailCol {
+                        padding: 0px 15px;
+                        .select-box {
+                            width: 100%;
+                        }
+                    }
+                    &:last-child {
+                        &:nth-of-type(odd) {
+                          padding-bottom: 0;
+                        }
+                    }
+                    &:nth-of-type(even) {
+                        background: var(--color-f2f2f2);
+                    }
+                    &:nth-of-type(odd) {
+                        background: var(--color-White);
+                    }
+                    .uploadPolicyDetailBtnRemove {
+                        position: absolute;
+                        right: -38px;
+                        width: auto;
+                        bottom: auto;
+                        height: 30px;
+                        top: auto;
+                        .removeBtn {
+                            padding: 0;
+                            line-height: 0;
+                            background: var(--color-transparent);
+                            font-size: 18px;
+                            border: 0px;
+                            color: var(--color-333333);
+                            border-radius: 100px;
+                            vertical-align: middle;
+                            position: relative;
+                        }
+                    }
+                    .input-field {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        .uploadPolicyDetailBtnAdd {
+            margin: 0 86px;
+            padding: 0 0 0 0;
+            border-top: 1px solid var(--color-333333);
+            .PreSearchButton {
+                background-color: var(--color-333333);
+                color: var(--color-d1d2d4) !important;
+                font-size: 14px;
+                margin-top: 27px;
+                height: 30px;
+                box-shadow: none !important;
+            }
+        }
+        
+
+        
+    }
+
+    @media screen  and (min-width: 2200px) {
+        .grid_spacer {
+          width: 193px;
+        }
+    }    
+    @media screen  and (min-width: 1700px) and (max-width:2200px) {
+        .grid_spacer {
+            width: 144px;
+        }
+    }
+    @media screen and (max-width:1279px) {
+        .grid_spacer {
+            display: none;
+        }
+    }
+    
+    .tab-bottom-buttons {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 81px;
+        margin-top: 19px;
+        .groupInfoTabButtons {
+            margin-right: 20px;
+        }
+    }
+    .nameFieldUploadPolicy {
+    margin-left: 52px;
+    margin-bottom: 29px;
+    margin-top: 26px;
+        .gridFilterTextBox {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .gridFilterSpanUi {
+            width: 100%;
+            margin-left: 119px;
+        }
+        .MuiInput-root {
+            width: 255px;
+            margin-left: -83px;
+        } 
+    }
+}
+.email_checkBox_ui {
+    margin-left: 4px;
+    label {
+        font-size: 14px;
+        margin-left: 4px;
+        span {
+            font-size: 20px;
+            color: black;
+            font-weight: 700;
+            margin-left: 4px;
+            margin-right: 20px;
+        }
+    }
+    span {
+        margin-left: 16px;
+    }
+}
+.updated-policy-fields{
+    width: 749px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+.metadataUploadAutocomplete {
+    width: 100% !important;
+}

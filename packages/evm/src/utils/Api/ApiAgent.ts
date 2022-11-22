@@ -66,6 +66,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SetupConfigurationsModel } from './models/SetupConfigurations';
 import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/SensorsAndTriggers';
 import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/RetentionPolicies';
+import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies';
 
 
 const cookies = new Cookies();
@@ -192,6 +193,19 @@ export const SetupConfigurationAgent = {
     },
     putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
+    deleteAllUploadPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/", body, config),
+    getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config), 
+    getAllInitialData: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetAllInitialData", config),      
+    getAllFiltersUploadPolicies: (url: string, extraHeader?: Headers[]) => {
+        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);
+    },
+
+    // putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+
+    putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
+
 
 }
 export const EvidenceAgent = {

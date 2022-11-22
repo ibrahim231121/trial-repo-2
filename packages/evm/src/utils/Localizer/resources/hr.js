@@ -252,7 +252,7 @@ export const resources = {
         "the_form?":"hr-the form?",
         "Yes_close":"hr-Yes, close",
         "custom_range":"hr-custom range",
-        "No_Status":"hr-No Status",       
+        "No_Status":"hr-No Status",
         "No_Versions":"No Versions",
         "Key": "Key",
         "KEY": "KEY",
@@ -424,6 +424,17 @@ export const resources = {
         "Retention_Policies": "Retention Policies",
         "Create_Retention_Policies": "CreateRetention Policies",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"hr-Are you sure you would like to delete sensors and triggers?",
+
+         // --------- Upload Policies ----------
+        "Create_Upload_Policy" : "Create Upload Policy",
+        "Edit_upload_policy": "Edit upload policy",
+        "Delete_upload_policy": "Delete upload policy",
+        "Upload_Policies": "Upload Policies",
+        "Upload_Policies_Form": "Upload Policies Form",
+        "Are_you_sure_you_would_like_to_delete_upload_policies?":"Are you sure you would like to delete upload policies?",
+        
+
+
         // ---------------------------------
         
         // --------- Asset buctet ----------
@@ -769,13 +780,13 @@ export const resources = {
         "Camera Setup":"hr-Camera Setup",
 
     
-        // --------- Share Asset ----------
-        "Link_Expiration":"Link Expiration",
-        "Link_Permissions":"Link Permissions",
-        "Comments":"Comments",
-        "Reason_for_Sharing":"Reason for Sharing",
+           // --------- Share Asset ----------
+           "Link_Expiration":"Link Expiration",
+           "Link_Permissions":"Link Permissions",
+           "Comments":"Comments",
+           "Reason_for_Sharing":"Reason for Sharing",
 
-        //---------- Retention Policies -------------------
+            //---------- Retention Policies -------------------
         "retention_policy_Form":"Retention Policy Form",
         "Retention_Size":"Retention Size",
         "Retention_Type":"Retention Type",
@@ -784,7 +795,16 @@ export const resources = {
         "Retention_Time_Or_Space" : "Retention Time / Space",
         "Soft_Delete_Time" : "Soft Delete Time",        
         "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",
-        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully"
+        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully",
+           //----------  Upload Policies  ---------
+        
+          "Upload" :"Upload",
+          "Metadata_Upload_Connection":"Metadata Upload Connection",
+          "Asset_Upload_Priority":"Asset Upload Priority",
+          "Asset_Upload_Connection":"Asset Upload Connection",
+          "Upload_Policies_Form": "hr-Upload Policies Form",
+          "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
+          "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
       }
     }
   };
