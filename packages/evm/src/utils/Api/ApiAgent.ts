@@ -177,7 +177,10 @@ export const SetupConfigurationAgent = {
     },
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
-    getTenantSetting: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/TenantSettings", config),
+    getTenantSetting: (url? : any) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", config),
+    getTenantSettingTimezone: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL,"/TenantSettings/gettimezone", config),
+    postTenantSetting: (body : any,url? : any) => requests.post<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body , config),
+    putTenantSetting: (body : any,url? : any) => requests.put<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body, config),
     getMailServerSettings: (url:string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
 
 
