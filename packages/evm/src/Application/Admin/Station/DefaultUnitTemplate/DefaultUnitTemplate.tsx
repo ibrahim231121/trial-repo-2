@@ -10,10 +10,7 @@ import { CRXAlert } from '@cb/shared';
 import { useTranslation } from 'react-i18next';
 import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { DeviceType } from '../../../../utils/Api/models/UnitModels';
-import { Station } from '../../../../utils/Api/models/StationModels';
 import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
-import { Paginated } from '../../../../utils/Api/models/CommonModels';
-
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -29,10 +26,8 @@ const DefaultUnitTemplate: React.FC = () => {
     const [confirmModalDisplay, setConfirmModalDisplay] = React.useState<boolean>(false);
     const [success, setSuccess] = React.useState<boolean>(false);
     const [error, setError] = React.useState<boolean>(false);
-     
-    const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
-    const [page, setPage] = React.useState<number>(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+    const [page, setPage] = React.useState<number>(1);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(1000);
     const [paging, setPaging] = React.useState<boolean>();
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
         gridFilter: {
@@ -41,7 +36,8 @@ const DefaultUnitTemplate: React.FC = () => {
         },
         page: page,
         size: rowsPerPage
-    })
+    });
+    const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
     const dispatch = useDispatch();
     React.useEffect(() => {
         getDeviceTypeRecord();
@@ -106,7 +102,7 @@ const DefaultUnitTemplate: React.FC = () => {
          * */
         if ((stationCollection.length > 0) && (selectBoxValues.length === 0)) //  Second Condtion Make It Run Only Once.
             createInitialStateOfSelectBox();
-    }, [deviceTypeCollection, selectBoxValues, stationCollection]);
+    }, [deviceTypeCollection, selectBoxValues, stationCollection, configurationTemplatesFromStore]);
 
     React.useEffect(() => {
         if (paging)
@@ -130,7 +126,7 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Size=100&Page=1`, [{key : 'InquireDepth', value : 'narrow'}])
+        UnitsAndDevicesAgent.getAllStations(`?Page=${pageiGrid.page}&Size=${pageiGrid.size}`, [{key : 'InquireDepth', value : 'deep'}])
         .then((response:any) => {
             setStationCollection(response.data);
             let stationInfo = response.data.map((x: any) => {
@@ -193,15 +189,13 @@ const DefaultUnitTemplate: React.FC = () => {
         UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(() => {
             setSuccess(true);
         })
-            .catch((error: any) => {
-                setError(true);
-                console.error(error.response.data);
-            });
+        .catch((error: any) => {
+            setError(true);
+            console.error(error.response.data);
+        });
     }
 
-    const cancelBtnHandler = () => {
-        history.goBack();
-    }
+    const cancelBtnHandler = () => history.goBack();
 
     const closeBtnHandler = () => {
         if (isStateChanged) {
@@ -211,9 +205,7 @@ const DefaultUnitTemplate: React.FC = () => {
         }
     }
 
-    const closeOnConfirmBtnHandler = () => {
-        history.goBack();
-    }
+    const closeOnConfirmBtnHandler = () => history.goBack();
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
@@ -228,7 +220,6 @@ const DefaultUnitTemplate: React.FC = () => {
 
     return (
         <>
-            {console.log('configurationTemplatesFromStore', configurationTemplatesFromStore)}
             {success && (
                 <CRXAlert
                     message={t("Success_You_have_saved_the_Default_Unit_Template")}
