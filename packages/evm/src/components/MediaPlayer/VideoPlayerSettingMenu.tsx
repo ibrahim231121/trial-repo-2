@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled } = props;
+  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -36,10 +36,10 @@ const VideoPlayerSettingMenu = (props: any) => {
       setPosition(true);
     } else {
       setPosition(false);
-
     }
     setOverlayEnabled(event.target.checked);
     setSettingMenuEnabled(null)
+ 
   }
 
   const notes = (e: any) => {
@@ -70,6 +70,14 @@ useEffect(() => {
   let CheckedTimestamp = overlayCheckedItems.some((x: any) => x == "All" || x == "Timestamp");
   let CheckedGPS = overlayCheckedItems.some((x: any) => x == "All" || x == "GPS (location + speed)")
   let CheckedSpeed = overlayCheckedItems.some((x: any) => x == "All" || x == "Speed")
+
+  useEffect(()=>{
+      if(settingMenuEnabled === null) {
+        document.documentElement.style.overflow = "hidden";
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
+      }
+  },[settingMenuEnabled])
 
   return (
     <>
@@ -103,7 +111,7 @@ useEffect(() => {
           </div>
         </MaterialMenuItem>
 
-        <MaterialMenuItem className="settingOverlay">
+        {ViewScreen && <MaterialMenuItem className="settingOverlay">
           <span className='fas fa-comment-alt-plus iconsLeft'></span>
 
           <div className="SwitcherControl"  >
@@ -112,7 +120,7 @@ useEffect(() => {
               <CBXSwitcher rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={notesEnabled} size="small" onChange={(e: any) => notes(e)} name="Notes" />
             </label>
           </div>
-        </MaterialMenuItem>
+        </MaterialMenuItem>}
         <MaterialMenuItem className="settingOverlay">
           <span className="fa-solid fa-chart-simple iconsLeft"></span>
           {/* <span className="toggleBack"></span> */}

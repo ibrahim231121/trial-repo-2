@@ -6,6 +6,8 @@ import { EVIDENCE_PREDITIVE_URL } from '../../../../utils/Api/url'
 import { getToken, IDecoded } from "../../../../Login/API/auth";
 import { useTranslation } from "react-i18next";
 import { GenerateLockFilterQuery } from '../../utils/constants';
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 
 interface Props {
   onSet: (e: any) => void;
@@ -18,6 +20,8 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded 
   const [outCome, setOutCome] = React.useState<any>([]);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [methodFromHook, responseFromHook] = usePostFetch<any>(EVIDENCE_PREDITIVE_URL);
+  const cookies = new Cookies();
+  let decodedToken : IDecoded = jwt_decode(cookies.get("access_token"));
 
   React.useEffect(() => {
     if (responseFromHook) {
@@ -64,6 +68,17 @@ const PredictiveSearchBox: React.FC<Props> = ({ children, onSet, value, decoded 
               ],
             },
           },
+          {
+            bool: {
+              should: [
+                {
+                  "match": {
+                    "asset.owners": decodedToken.UserName
+                  },
+                }
+              ]
+            }
+          }
         ],
         filter: []
       },

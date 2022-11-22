@@ -139,6 +139,18 @@ const CreateUserForm = () => {
   }, []);
 
   React.useEffect(() => {
+if(radioValue == 'sendAct' && disableLink){
+  setDisableSave(false)
+}
+else if(radioValue == 'genTemp' && generatePassword){
+  setDisableSave(false)
+}
+else {
+  setDisableSave(true)
+}
+  },[disableLink,radioValue,generatePassword])
+
+  React.useEffect(() => {
     if (id) { fetchUser(); }
   }, [id]);
 
@@ -925,6 +937,7 @@ const CreateUserForm = () => {
   const sendActivationLink = () => {
     const linkClick = () => {
       setDisableLink(true);
+      setDisableSave(false)
     };
     return (
       <>

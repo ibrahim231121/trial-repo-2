@@ -394,8 +394,8 @@ const AssetDetailsTemplate = (props: any) => {
   }
 
   useEffect(() => {
-    let masterasset = getAssetData?.assets.master.files.filter((x: any) => x.type == "Video");
-    if (getAssetData && fileData.length == masterasset?.length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
+    let masterasset = getAssetData?.assets.master.files;
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS").length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -468,7 +468,7 @@ const AssetDetailsTemplate = (props: any) => {
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
       FileAgent.getFile(template.filesId).then((response) => {
-        if (template.type == "Video") {
+        if (template.type != "GPS") {
           let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
           setUploadedOn(uploadCompletedOnFormatted)
         }
@@ -482,7 +482,7 @@ const AssetDetailsTemplate = (props: any) => {
             downloadUri: response
           }])
         }
-        else if (template.type == "Video") {
+        else {
           setFileData([...fileData, {
             filename: template.name,
             fileurl: template.url,
@@ -972,6 +972,18 @@ const AssetDetailsTemplate = (props: any) => {
     newObj.evidence = evidenceSearchObject;
     return newObj;
   }
+
+  const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: any, apiKey: any) => {    
+    switch(videoPlayerData[0]?.typeOfAsset) {
+      case 'Video':
+        return <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />;
+      case 'Image':
+        return <img src={videoPlayerData[0]?.files[0]?.downloadUri}></img>
+      default:
+        return <></>;
+    }
+  }
+
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
@@ -996,7 +1008,9 @@ const AssetDetailsTemplate = (props: any) => {
           open={true}
         />
       )}
-      {videoPlayerData.length > 0 && videoPlayerData[0]?.typeOfAsset === "Video" && <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />}
+
+      {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
+
       {detailContent && <div className="topBorderForDetail"></div>}
 
 

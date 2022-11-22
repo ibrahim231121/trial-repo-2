@@ -46,6 +46,7 @@ type Unit = {
   serialNumber: string,
   template: string,
   version: string,
+  key: string,
   station: string,
   assignedTo: string[],
   lastCheckedIn: string,
@@ -157,6 +158,7 @@ const UnitAndDevices: React.FC = () => {
                 station: unit.station,
                 serialNumber: unit.serialNumber,
                 template: unit.template,
+                key: unit.key,
                 version: unit.version,
                 assignedTo: unit.assignedTo,
               //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
@@ -362,7 +364,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
   }
 
 
-  if(colIdx === 9 && initialRows) {
+  if(colIdx === 10 && initialRows) {
      
     let template: any = [{id: 0, value: t("No_Templates") }];
     initialRows.unitTemplates.map((x: any) => {
@@ -506,6 +508,20 @@ const AnchorDisplay = (e: string) => {
       attributeOperator: "contains"
     },
     {
+      label: `${t("Key")}`,
+      id: "key",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "160",
+      maxWidth: "160",
+      attributeName: "Key",
+      attributeType: "String",
+      attributeOperator: "contains"
+    },
+    {
       label: `${t("Version")}`,
       id: "version",
       align: "center",
@@ -573,7 +589,7 @@ const AnchorDisplay = (e: string) => {
     isSearchable: boolean,
 ) => {
 
-  if(colIdx === 6 && initialRows && initialRows.unitVersions && initialRows.unitVersions.length > 0) {   
+  if(colIdx === 7 && initialRows && initialRows.unitVersions && initialRows.unitVersions.length > 0) {   
 
     let status: any = [{id: 0, value: t("No_Versions") }];
       initialRows.unitVersions.map((x: any) => {
@@ -593,7 +609,7 @@ const AnchorDisplay = (e: string) => {
     );
   }
  
-  if(colIdx === 4 && initialRows && initialRows.unitAssignments && initialRows.unitAssignments.length > 0) {   
+  if(colIdx === 4 && initialRows && initialRows.unitAssignments ) {//&& initialRows.unitAssignments.length > 0   
    
     let status: any = [{id: 0, value: t("No_Assignments") }];
       initialRows.unitAssignments.map((x: any) => {
@@ -674,7 +690,7 @@ const dataArrayBuilder = () => {
     
         let dataRows: Unit[] = reformattedRows.rows;
         searchData.forEach((el: SearchObject) => {
-          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber")
+          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber" || el.columnName === "key")
                 dataRows = onTextCompare(dataRows, headCells, el);
             if (el.columnName === "lastCheckedIn")
                 dataRows = onDateCompare(dataRows, headCells, el);

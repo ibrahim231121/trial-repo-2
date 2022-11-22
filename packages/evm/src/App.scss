@@ -374,3 +374,27 @@ iframe {
         }
     }
 }
+
+// Asset Drag Ui start
+.divInner {
+    .onDraggingThumb {
+        margin: 0 16px;
+    }
+    .divAssetId {
+        display: flex;
+        align-items: center; 
+        padding: 0 6px;
+        .linkColor {
+            word-break: break-all;
+        } 
+    }
+    .dragging {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        i {
+            position: unset;
+        }
+    }
+}
+// Asset Drag Ui end

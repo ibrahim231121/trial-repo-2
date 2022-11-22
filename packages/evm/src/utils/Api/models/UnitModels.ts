@@ -110,6 +110,7 @@ export interface GetPrimaryDeviceInfo {
     triggerGroup: string,
     serialNumber: string,
     version: string,
+    key: string,
     station: string,
     status: string,
     deviceType: string,

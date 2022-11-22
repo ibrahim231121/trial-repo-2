@@ -73,7 +73,8 @@ let config = {
     headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
-        'UserId': getUserId()
+        'UserId': getUserId(),
+         'TenantId': getTenantId()
     }
 }
 
@@ -82,7 +83,8 @@ export const setAPIAgentConfig = () => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + cookies.get("access_token"),
-            'UserId': getUserId()
+            'UserId': getUserId(),
+            'TenantId': getTenantId()
         }
     }
 }
@@ -141,6 +143,17 @@ function getUserId () {
     }
 };
 
+function getTenantId () {
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        return decodedAccessToken.TenantId;
+    }
+    else{
+        return "0";
+    }
+};
+
 const requests = {
     get: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBody) },
     getAll: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.get<T>(url, config).then(responseBodyPaginated) },
@@ -164,7 +177,10 @@ export const SetupConfigurationAgent = {
     },
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
-    getTenantSetting: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/TenantSettings", config),
+    getTenantSetting: (url? : any) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", config),
+    getTenantSettingTimezone: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL,"/TenantSettings/gettimezone", config),
+    postTenantSetting: (body : any,url? : any) => requests.post<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body , config),
+    putTenantSetting: (body : any,url? : any) => requests.put<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body, config),
     getMailServerSettings: (url:string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
 
 
@@ -172,7 +188,7 @@ export const SetupConfigurationAgent = {
     getRetentionPolicies: (id: number) => requests.get<RetentionPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/" + id, config),
     getAllFiltersRetentionPolicies: (url: string, extraHeader?: Headers[]) => {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/PolicyType/DataRetention/${url}`, config);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataRetention/${url}`, config);
     },
     putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),

@@ -41,8 +41,9 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
 
   React.useEffect(() => {
     const trAtiveValue = document
-      .querySelector(".rc-menu--open")
+      .querySelector(".rc-menu-button--open")
       ?.closest(".MuiTableRow-root.MuiTableRow-hover");
+      console.log(trAtiveValue,"trAtiveValue")
     let dataui = document.querySelectorAll(".MuiTableRow-root");
     let trAtiveArray = Array.from(dataui);
     trAtiveArray.map((e) => {

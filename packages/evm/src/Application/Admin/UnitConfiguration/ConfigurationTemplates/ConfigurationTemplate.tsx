@@ -195,7 +195,7 @@ const ConfigurationTemplates: React.FC = () => {
             name: template.name,
             deviceType: template.deviceType,
             station: template.stationName,
-            defaultTemplate: template.isDefaultTemplate ? "Default" : "",
+            defaultTemplate: template.isDefaultTemplate ? "Default" : "Not a Default",
             device: template,
           };
         }
@@ -222,7 +222,7 @@ const ConfigurationTemplates: React.FC = () => {
 
     let indicator = UnitConfigurationTemplateValues.map((item:any, i:number) => {
       let element: any = {
-        name: item.isDefaultTemplate ? "Default" : "",
+        name: item.isDefaultTemplate ? "Default" : "Not a Default",
       }
       return element
     })
@@ -278,6 +278,7 @@ const ConfigurationTemplates: React.FC = () => {
     headCells[colIdx].headerArray = val;
   };
   const onSelection = (v: ValueString[], colIdx: number) => {
+  
     if (v.length > 0) {
       for (var i = 0; i < v.length; i++) {
         let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
@@ -460,7 +461,7 @@ const ConfigurationTemplates: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: t("Indicator"),
+      label: t("Default_Template"),
       id: "defaultTemplate",
       width: "",
       align: "left",
@@ -476,8 +477,8 @@ const ConfigurationTemplates: React.FC = () => {
       minWidth: "250",
       maxWidth: "400",
       attributeName: "IsDefaultTemplate",
-      attributeType: "List",
-      attributeOperator: "contains"
+      attributeType: "bool",
+      attributeOperator: "eq"
     },
   ]);
 
@@ -576,7 +577,9 @@ const ConfigurationTemplates: React.FC = () => {
               row={selectedActionRow}
               selectedItems={selectedItems}
             />}
-            toolBarButton={
+            toolBarButton=
+            {
+              getModuleIds().includes(23) ? 
               <div className="menu_List_Button">
                 <Menu
                   style={{ backgroundColor: '#FFFFFF' }}
@@ -609,8 +612,8 @@ const ConfigurationTemplates: React.FC = () => {
                   })}
                 </Menu >
               </div>
-            
-          }
+            :<div></div>
+             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
@@ -626,7 +629,7 @@ const ConfigurationTemplates: React.FC = () => {
             allowDragableToList={false}
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
-            showCustomizeIcon={true}
+            showCustomizeIcon={false}
             initialRows = {reformattedRows}
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}

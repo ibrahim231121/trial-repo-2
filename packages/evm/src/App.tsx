@@ -318,7 +318,6 @@ function App() {
         createBorder.append(dragGrep);
         getParent != null && getParent.appendChild(createBorder);
       }
-
       draggableItem.appendChild(divOuter);
 
     }

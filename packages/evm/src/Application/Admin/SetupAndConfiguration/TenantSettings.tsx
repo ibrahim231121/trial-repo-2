@@ -1,5 +1,4 @@
-import React from "react";
-import { SETUP_CONFIGURATION_SERVICE_URL } from "../../../utils/Api/url";
+import React, { useRef } from "react";
 import "./tenantSettings.scss";
 import { CRXColumn } from "@cb/shared";
 import * as Yup from "yup";
@@ -65,7 +64,11 @@ const TenantSettings: React.FC = () => {
     AlertEmails: "",
     fileDetails: [],
   });
-
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const handleClickk = () => {
+    if(hiddenFileInput?.current)
+      hiddenFileInput.current.click();
+  };
   const cultures = [
     { label: 'en-US', value: 'en-US'},
     { label: 'en-GB', value: 'en-GB'},
@@ -93,15 +96,8 @@ const TenantSettings: React.FC = () => {
     AddFilesToFileService(e.fileDetails, window.onRecvLogoData);
   };
   React.useEffect(() => {
-    const SETUP_CONFIGURATION_TENANTSETTINGS_GET_URL = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings`;
-    tenantSettingService(SETUP_CONFIGURATION_TENANTSETTINGS_GET_URL, "GET")
-      .then((res) => {
-        //console.log("result : ", res);
-        if (res.ok) return res.json();
-        else setActionVerb("POST");
-      })
+    SetupConfigurationAgent.getTenantSetting()
       .then((tenantsett) => {
-        // console.log("Tenant ", tenantsett);
         tenantsett["settingEntries"].forEach(
           (categories: any, index: number) => {
             let settingEntries = Object.entries(categories[index + 1]).map(
@@ -125,25 +121,17 @@ const TenantSettings: React.FC = () => {
           type: "image/jpg",
         });
       })
-      .catch((err: any) => {});
+      .catch((err: any) => {setActionVerb("POST");});
   }, []);
   React.useEffect(() => {
-    const SETUP_CONFIGURATION_GET_REASONS = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings/getassetviewreasons`;
-    tenantSettingService(SETUP_CONFIGURATION_GET_REASONS, "GET")
-      .then((res) => {
-        if (res.ok) return res.json();
-      })
+    SetupConfigurationAgent.getTenantSetting('/TenantSettings/getassetviewreasons')
       .then((reasons: any) => {
         setReasonsValue(reasons);
       })
       .catch(() => {});
   }, []);
   React.useEffect(() => {
-    const SETUP_CONFIGURATION_GET_TIMEZONE = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings/gettimezone`;
-    tenantSettingService(SETUP_CONFIGURATION_GET_TIMEZONE, "GET")
-      .then((res) => {
-        if (res.ok) return res.json();
-      })
+    SetupConfigurationAgent.getTenantSettingTimezone()
       .then((timezone: any) => {
         const temp = timezone.map((x: any) => {
           return { label: x.DisplayName, value: x.DisplayName };
@@ -152,41 +140,14 @@ const TenantSettings: React.FC = () => {
       })
       .catch(() => {});
   }, []);
-  const tenantSettingService = async (
-    url: string,
-    type: string,
-    body?: any
-  ) => {
-    let requestOptions: any;
-    if (type === "GET") {
-      requestOptions = {
-        method: "GET",
-        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
-      };
-    } else if (type === "PUT") {
-      requestOptions = {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
-        body: JSON.stringify(body),
-      };
-    } else {
-      requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json", 'Authorization': 'Bearer ' + cookies.get("access_token") },
-        body: JSON.stringify(body),
-      };
-    }
-    console.log(requestOptions);
-    return await fetch(url, requestOptions);
-  };
   const validatingFields = async (values: any) => {
     if (values.MailServer != "Custom") {
-     await SetupConfigurationAgent.getMailServerSettings("/MailServers").then((defaultMailSettings : any) =>{
-      values.CustomURL=defaultMailSettings[0].server?.smtp;
-      values.CustomFromEmail = defaultMailSettings[0].from;
-      values.CustomPort = defaultMailSettings[0].server?.port;
-      values.CustomName = defaultMailSettings[0].name;
-      values.CustomPassword = defaultMailSettings[0].credential?.password;
+     await SetupConfigurationAgent.getMailServerSettings("/MailServers/1").then((defaultMailSettings : any) =>{
+      values.CustomURL=defaultMailSettings.server?.smtp;
+      values.CustomFromEmail = defaultMailSettings.from;
+      values.CustomPort = defaultMailSettings.server?.port;
+      values.CustomName = defaultMailSettings.name;
+      values.CustomPassword = defaultMailSettings.credential?.password;
      
     }).catch((e : any)=> {
       console.log("ERORRR : "+ e.message);
@@ -445,25 +406,32 @@ const TenantSettings: React.FC = () => {
         value: values.Timezone.value,
       });
     }
-    //console.log("BODY :" + body);
-    const SETUP_CONFIGURATION_TENANTSETTINGS_POST_URL = `${SETUP_CONFIGURATION_SERVICE_URL}/TenantSettings`;
-    tenantSettingService(
-      SETUP_CONFIGURATION_TENANTSETTINGS_POST_URL,
-      actionVerb,
-      body
-    )
+    debugger;
+    if(actionVerb == "POST"){
+      SetupConfigurationAgent.postTenantSetting(body)
       .then((res: any) => {
-        if (res.ok) {
           setActionVerb("PUT");
           setSuccess(true);
           setTimeout(() => window.location.reload(), 1000);
-        } else return res.text();
+       
       })
-      .then((message) => {})
       .catch((err: any) => {
         setError(true);
         console.error(err);
       });
+    }
+    else{
+      SetupConfigurationAgent.putTenantSetting(body)
+      .then((res: any) => {
+          setActionVerb("PUT");
+          setSuccess(true);
+          setTimeout(() => window.location.reload(), 1000);
+      })
+      .catch((err: any) => {
+        setError(true);
+        console.error(err);
+      });
+    }
   };
   const onSubmit = (values: any) => {
     if (values.fileDetails[0]?.size > 0) {
@@ -483,18 +451,6 @@ const TenantSettings: React.FC = () => {
     TenantName: Yup.string().required("Tenant Name is required"),
     EmailLinkExpiration: Yup.number().min(1).max(2016),
     AlertEmails: Yup.string().email("Invalid Email"),
-    // fileDetails: Yup.mixed()
-    //   .required("A file is required")
-    //   .test(
-    //     "fileDetails",
-    //     "File too large",
-    //     (value) => value[0] && value[0].size <= FILE_SIZE
-    //   )
-    //   .test(
-    //     "fileDetails",
-    //     "Unsupported Format",
-    //     (value) => value[0] && SUPPORTED_FORMATS.includes(value[0].type)
-    //   ),
     CustomFromEmail: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string()
@@ -575,9 +531,6 @@ const TenantSettings: React.FC = () => {
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid }) => (
           <>
-            {/* {console.log("errors", errors)}
-            {console.log("touch", touched)}
-            {console.log("VALUES", values)} */}
             <Form>
               <div className="TenantSettingsUpdate  switchLeftComponents">
                 {success && (
@@ -649,10 +602,18 @@ const TenantSettings: React.FC = () => {
                       <label htmlFor="Watermark Logo">
                         Watermark Logo on Playback
                       </label>
+                      <CRXButton
+                    onClick={handleClickk}
+                    variant="contained"
+                    className="groupInfoTabButtons"
+                  >
+                    Upload
+                  </CRXButton>
                       <input
                         type="file"
                         accept="image/*"
-                        placeholder="UPLOAD LOGO"
+                        ref={hiddenFileInput}
+                        style={{display: 'none'}} 
                         id="contained"
                         name="fileDetails"
                         onChange={(event) => {
@@ -1058,12 +1019,6 @@ const TenantSettings: React.FC = () => {
                             onChange={(e: any) => setFieldValue("LiveStreamPassword", e.target.value)}>
                             
                           </TextField>
-                          {/* <Field
-                            id="password"
-                            type="password"
-                            onBlur=""
-                            name="LiveStreamPassword"
-                          /> */}
                         </div>
                       </CRXRows>
                     </CRXColumn>

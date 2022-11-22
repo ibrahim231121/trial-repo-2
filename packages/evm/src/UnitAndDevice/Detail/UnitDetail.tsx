@@ -536,6 +536,11 @@ const UnitCreate = (props: historyProps) => {
                     <p>{t("SERIAL_NUMBER")}</p>
                   </div>
                   <div className="pannelBoard mr-59">
+                    <div className="panel_Heading_unitDetail">{primaryDeviceInfo.key.toUpperCase()}</div>
+                    <span className="noRow"></span>
+                    <p>{t("KEY")}</p>
+                  </div>
+                  <div className="pannelBoard mr-59">
                     <div className="panel_Heading_unitDetail">{primaryDeviceInfo.version}</div>
                     <span className="noRow"></span>
                     <p>{t("CURRENT_VERSION")}</p>

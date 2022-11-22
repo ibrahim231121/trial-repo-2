@@ -9,8 +9,8 @@ type infoProps = {
   info: GroupInfoModel,
   onChangeGroupInfo: any,
   setIsSaveButtonDisabled: any,
-  setErrorMessage : any,
-  errorMessage : string
+  setErrorMessage: any,
+  errorMessage: string
 }
 const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButtonDisabled, errorMessage, setErrorMessage }) => {
   const { t } = useTranslation<string>();
@@ -35,9 +35,16 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
       setErrorMessage("Group Name is required");
       setIsSaveButtonDisabled(true)
     }
-    else
-    {
-      setErrorMessage("");
+    else {
+      const chracterRegx = /^[a-zA-Z0-9-_.]+$/.test(String(groupName).toLowerCase());
+      if (!chracterRegx) {
+        setErrorMessage("Please Provide a Valid Group Name");
+        setIsSaveButtonDisabled(true)
+      }
+      else {
+        setErrorMessage("");
+        setIsSaveButtonDisabled(false)
+      }
     }
 
     onChangeGroupInfo(groupName, description);

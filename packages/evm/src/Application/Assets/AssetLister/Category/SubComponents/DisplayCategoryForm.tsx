@@ -9,9 +9,7 @@ import { FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropDownListType, Fi
 import { IsFieldtypeEquals } from "../Utility/UtilityFunctions";
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
-  console.log('Display', props)
   const { t } = useTranslation<string>();
-
   return (
     <>
       {(Object.keys(props.initialValueObjects).length > 0) &&
