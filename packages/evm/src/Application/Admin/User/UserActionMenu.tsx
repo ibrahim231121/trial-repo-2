@@ -47,7 +47,7 @@ const UserActionMenu: React.FC<Props> = ({
       logic: "and",
       filters: []
     },
-    page: 1,
+    page: 0,
     size: 25
 })
   const unlockUser = () => {
