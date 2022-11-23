@@ -172,14 +172,17 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         setDataPermissions([]);
         loadStations();
         loadCateogories();
-        LoadEmptyPermissionsByDb();
         // if (dataPermissions !== undefined && dataPermissions.length > 0) {
         //     // LoadPermissionsByDb();
         // }
         // else {
         //     addDefaultPermission();
         // }
-    },[stationsFromReducer,categoryFromReducer]);
+    },[stationsFromReducer,categoryFromReducer,dataPermissionsInfo]);
+
+    useEffect(() => {
+        LoadEmptyPermissionsByDb();
+    },[stationsFromReducer,categoryFromReducer])
 
     // useEffect(()=>{
     //     loadCateogories();
