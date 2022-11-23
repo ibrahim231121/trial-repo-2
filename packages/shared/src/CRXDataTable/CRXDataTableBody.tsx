@@ -81,7 +81,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     bodyCellWidth?.finalWidth : "0px";
     
     const removePx = width.slice(0, 3);
-    let cellFinalWidth = parseInt(removePx) + 20 + "px";
+    let cellFinalWidth = parseInt(removePx) + 6 + "px";
     
     return cellFinalWidth;
 

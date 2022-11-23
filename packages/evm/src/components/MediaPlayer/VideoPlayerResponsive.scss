@@ -35,7 +35,7 @@
     ._videoPlayer_grid_customize {
         height: 100%;
         padding-right: 4px;
-        width: 80% !important;
+        width: 100% !important;
         margin: 0 auto;
         &._container_column_video_2 {
           width: 80% !important;
@@ -49,6 +49,11 @@
             ._videoPlayer_grid_customize {
                 width: 100% !important;
             }
+        }
+      }
+      .video_with_multiple_timeline {
+        .assetTimelineSync{
+            margin-left: 254px;
         }
       }
 }
@@ -83,4 +88,62 @@
             }
         }
     }  
+}
+
+@media only screen and (min-width : 1280px) and (max-width : 1550px) {
+    //View on side screen css for min screen only 1600
+    ._video_player_container {
+        #crx_video_player {
+            #video-player-screens {
+                ._setVideoOnScreenRes {
+                    
+                    &._container_column_dir {
+                        ._video_grid_col{
+                            &.vid_col_8 {
+            
+                            }
+                            &.vid_col_4 {
+                                height: 100%;
+                                .viewOnSideVideos {
+                                    height: 50%;
+                                }
+                            }
+                            .videoContainer {
+                                height: 100%;
+                                video {
+                                    height: 100%;
+                                }
+                            }
+                        }  
+                    }
+                } 
+                ._video_player_grid {
+                    &._container_column_video_4 {
+                        ._video_grid_col {
+                            .videoContainer {
+                                ._empty_video{
+                                    height: 100%;
+                                }
+                            }
+                        }
+                    }
+                    &._setVideoOnScreenRes {
+                        &._container_column_video_6 {
+                            ._video_grid_col {
+                                .videoContainer {
+                                    ._empty_video{
+                                        height: 100%;
+                                    }
+                                    video {
+                                        height: 100%;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }//._video_player_grid 
+                
+            }//#video-player-screens
+        }
+    }
 }
