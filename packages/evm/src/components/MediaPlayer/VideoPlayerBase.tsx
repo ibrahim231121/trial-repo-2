@@ -401,6 +401,7 @@ const VideoPlayerBase = (props: any) => {
 
   const [viewNumber, setViewNumber] = useState(1);
   const [mapEnabled, setMapEnabled] = useState<boolean>(true);
+  const [overlayClass, setOverLayClass] = useState<string>()
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
   const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
@@ -833,7 +834,6 @@ const VideoPlayerBase = (props: any) => {
       fps_rounder1.push(diff);
       fps_rounder.current = fps_rounder1;
       fps = Math.round(1 / get_fps_average());
-      console.log("FPS: " + fps + ", certainty: " + fps_rounder1.length * 2 + "%");
       if(fps_rounder1.length * 2 == 100){
         setFps(fps);
       }
@@ -1236,6 +1236,8 @@ const VideoPlayerBase = (props: any) => {
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
+      volumeIcon.current.style.opacity = 0;
+      volumeIcon.current.style.zIndex = 0
     }, 1200)
   }
   useEffect(() => {
@@ -1885,10 +1887,13 @@ const VideoPlayerBase = (props: any) => {
 
   const sideDataPanel = (event:any) => {
     if(event.target.checked) {
+      setOverLayClass("defaultWidth")
       setMapEnabled(true)
+      
     } else {
+      setOverLayClass("fullWidthOverLay")
       setMapEnabled(false)
-
+      
     }
   }
 
@@ -2022,6 +2027,32 @@ useEffect(() => {
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
   const mapEnabled_Bookmark_Notes  = mapEnabled ? "mapEnabled_Bookmark_Notes" : "mapDisabled_Bookmark_Notes";
 
+  const multiVideoEnabled_Status = !singleVideoLoad && isMultiViewEnable ? "multiVideoEnabled_ON" : "multiVideoEnabled_OFF"; 
+
+  useLayoutEffect(() => {
+    const playBtn = document.getElementById("_video_play");
+    const pauseBtn = document.getElementById("_video_pause");
+    const videoFrontLayer = document.getElementById("videoFrontLayer")
+    if (isPlaying === true) {
+      playBtn?.classList.remove("zoomOut");
+      playBtn?.classList.add("zoomIn");
+      videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
+      setTimeout(() => {
+        playBtn?.classList.remove("zoomIn");
+        playBtn?.classList.add("zoomOut");
+        videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
+      }, 1200);
+    } else {
+      pauseBtn?.classList.remove("zoomOut");
+      pauseBtn?.classList.add("zoomIn");
+      videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
+      setTimeout(() => {
+        pauseBtn?.classList.remove("zoomIn");
+        pauseBtn?.classList.add("zoomOut");
+        videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
+      }, 1200);
+    }
+  }, [isPlaying]);
 
   return (
     
@@ -2050,7 +2081,7 @@ useEffect(() => {
         reasons={reasons}
       />}
       
-
+ 
       <div className="searchComponents">
         <div className="_video_player_container">
         <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
@@ -2064,6 +2095,23 @@ useEffect(() => {
                 updatedSensorsDataOverlay={updatedSensorsDataOverlay}
                 updatedGpsDataOverlay={updatedGpsDataOverlay}
               />
+                  <div id="videoFrontLayer" className={"videoFrontLayer " + `${overlayClass}`}>
+                  {isPlaying ? (
+                    <div
+                      id="_video_play"
+                      className={`video_play_onScreen _video_button_size animated`}
+                    >
+                      <PlayButton />
+                    </div>
+                  ) : (
+                    <div
+                      id="_video_pause"
+                      className={`video_pause_onScreen _video_button_size animated`}
+                    >
+                      <PauseButton />
+                    </div>
+                  )}
+                </div>
               <VideoScreen
                 setData={setdata}
                 evidenceId={EvidenceId}
@@ -2316,6 +2364,8 @@ useEffect(() => {
                         arrow={false}
                       /></div>
                     <VideoPlayerSettingMenu
+                      timelinedetail={timelinedetail}
+
                       fullScreenControl={viewControlEnabler}
                       singleVideoLoad={singleVideoLoad}
                       multiTimelineEnabled={multiTimelineEnabled}
@@ -2362,7 +2412,7 @@ useEffect(() => {
                     </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}`}
+                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}  ${multiVideoEnabled_Status}`  }
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
@@ -2580,4 +2630,19 @@ useEffect(() => {
     );
 }
 
+const PlayButton = () => {
+  return (
+    <div className="video_playButton">
+      <i className="icon icon-play4"></i>
+    </div>
+  );
+};
+
+const PauseButton = () => {
+  return (
+    <div className="video_PauseButton">
+      <i className="icon icon-pause2"></i>
+    </div>
+  );
+};
 export default VideoPlayerBase

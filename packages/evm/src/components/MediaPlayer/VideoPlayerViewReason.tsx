@@ -201,8 +201,6 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
         // await onDelete();
     };
 
-
-
     const CheckOtherReason = () => {
         if (description.length == 0) {
             setdescriptionErr('Description is required');
@@ -212,10 +210,10 @@ const VideoPlayerViewReason: React.FC<VideoPlayerViewReasonProps> = React.memo((
     }
 
     const ReasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
         setReason(e.target.value)
         if (e.target.value === "Other") {
             setOtherReason(true)
+            setReasonCheck("CRXChangeColor");
             return;
         }
         else if(reason === "" ){

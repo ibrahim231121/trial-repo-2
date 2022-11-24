@@ -97,6 +97,7 @@ const AssetDetailsTemplate = (props: any) => {
     typeOfAsset: string;
     notes: any;
     camera: string;
+    status: string;
   }
   type AuditTrail = {
     sequenceNumber: string;
@@ -426,7 +427,7 @@ const AssetDetailsTemplate = (props: any) => {
       });
 
 
-      let size = getAssetData.assets.master.files.filter(x => x.type == "Video").reduce((a, b) => a + b.size, 0)
+      let size = getAssetData.assets.master.files.filter(x => x.type != "GPS").reduce((a, b) => a + b.size, 0)
 
 
       var categoriesForm: string[] = [];
@@ -505,15 +506,13 @@ const AssetDetailsTemplate = (props: any) => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          if (template.type == "Video") {
-            fileDownloadUrls.push({
-              filename: template.name,
-              fileurl: template.url,
-              fileduration: template.duration,
-              downloadUri: response
-            })
-            setChildFileData([...fileDownloadUrls])
-          }
+          fileDownloadUrls.push({
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          })
+          setChildFileData([...fileDownloadUrls])
         }).catch(e => {
           fileDownloadUrls.push({
             filename: template.name,
@@ -662,18 +661,19 @@ const AssetDetailsTemplate = (props: any) => {
     const id = row.assets.master.id;
     const unitId = row.assets.master.unitId;
     const typeOfAsset = row.assets.master.typeOfAsset;
+    const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : row.assets.master.status;
     recording = {
       ...recording,
       ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
       started: new Date(new Date(recording.started).getTime() - buffering?.pre),
     }
-    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera }
+    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera, status: status }
     rowdetail.push(myData);
-    rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+    rowdetail1 = row.assets.children.map((template: any, i: number) => {
       template.recording = {
         ...template.recording,
-        ended: new Date(new Date(template.recording.ended).getTime() + template.buffering.post),
-        started: new Date(new Date(template.recording.started).getTime() - template.buffering.pre),
+        ended: new Date(new Date(template.recording?.ended).getTime() + template.buffering?.post),
+        started: new Date(new Date(template.recording?.started).getTime() - template.buffering?.pre),
       }
       return {
         id: template.id,
@@ -685,7 +685,8 @@ const AssetDetailsTemplate = (props: any) => {
         unitId: template.unitId,
         typeOfAsset: template.typeOfAsset,
         notes: template.notes ?? [],
-        camera: template.camera
+        camera: template.camera,
+        status: template.files[0]?.filesId > 0 ? "Available" : template.status
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {
@@ -974,13 +975,22 @@ const AssetDetailsTemplate = (props: any) => {
   }
 
   const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: any, apiKey: any) => {    
-    switch(videoPlayerData[0]?.typeOfAsset) {
-      case 'Video':
-        return <VideoPlayerBase data={videoPlayerData} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} />;
-      case 'Image':
-        return <img src={videoPlayerData[0]?.files[0]?.downloadUri}></img>
-      default:
-        return <></>;
+    let availableAssets = videoPlayerData.filter((x: any) => x.status == "Available");
+    if(availableAssets.length > 0)
+    {
+      let videos = availableAssets.filter((x: any) => x.typeOfAsset == "Video");
+      
+      switch(videoPlayerData[0]?.typeOfAsset) {
+        case 'Video':
+          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} /> : <>Uploading in progress! Assets not available.</>;
+        case 'Image':
+          return <img src={availableAssets[0]?.files[0]?.downloadUri}></img>
+        default:
+          return <></>;
+      }
+    }
+    else{
+      return <>Uploading in progress! Assets not available.<div className="_video_player_layout_main"></div></>
     }
   }
 

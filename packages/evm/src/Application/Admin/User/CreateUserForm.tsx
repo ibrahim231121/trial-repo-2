@@ -625,7 +625,7 @@ else {
     if (disableLink || isPasswordResetRequired) {
       userPayload.account.status = 3;
     }
-    const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
+    const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType(), isPasswordResetRequired: isPasswordResetRequired };
     
 
     const payload: User = {
