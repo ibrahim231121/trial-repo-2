@@ -18,7 +18,8 @@ import {
     Note,
     TimelinesSync,
     EvdenceCategoryAssignment,
-    SubmitAnalysisModel
+    SubmitAnalysisModel,
+    MetadataFileType
 } from './models/EvidenceModels';
 import { File as FileF } from './models/FileModels';
 import {
@@ -74,7 +75,7 @@ let config = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
         'UserId': getUserId(),
-         'TenantId': getTenantId()
+        'TenantId': getTenantId()
     }
 }
 
@@ -225,6 +226,12 @@ export const EvidenceAgent = {
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
     submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
     LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
+    ExportEvidence: (evidenceId: number, assetId: number, fileType : MetadataFileType) => {
+        return axios.get(`${EVIDENCE_SERVICE_URL}/Evidences/ExportAsset/${evidenceId}/${assetId}/${fileType}`, {
+            headers: config.headers,
+            responseType: "blob",
+        });
+    }
 }
 
 export const AuthenticationAgent = {

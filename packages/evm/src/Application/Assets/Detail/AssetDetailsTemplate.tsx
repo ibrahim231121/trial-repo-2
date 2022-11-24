@@ -21,7 +21,6 @@ import { useHistory } from "react-router";
 import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
 import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
-import http from "../../../http-common";
 import "./AssetDetailTabsMenu.scss";
 import { AxiosError } from "axios";
 import {

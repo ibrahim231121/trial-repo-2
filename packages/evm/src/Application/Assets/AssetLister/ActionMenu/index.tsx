@@ -20,11 +20,6 @@ import ShareAsset from "../ShareAsset/ShareAsset";
 import { RootState } from "../../../../Redux/rootReducer";
 import { useTranslation } from "react-i18next";
 import RestrictAccessDialogue from "../RestrictAccessDialogue";
-import http from "../../../../http-common";
-import {
-  FILE_SERVICE_URL,
-  EVIDENCE_EXPORT_META_DATA_URL,
-} from "../../../../utils/Api/url";
 import { AxiosError, AxiosResponse } from "axios";
 import SubmitAnalysis from "../SubmitAnalysis/SubmitAnalysis";
 import UnlockAccessDialogue from "../UnlockAccessDialogue";
@@ -168,11 +163,11 @@ const ActionMenu: React.FC<Props> = React.memo(
       return securityDescriptors.length === 0
         ? 0
         : Math.max.apply(
-            Math,
-            securityDescriptors.map((o) => {
-              return parseInt(PersmissionModel[o.permission], 10);
-            })
-          );
+          Math,
+          securityDescriptors.map((o) => {
+            return parseInt(PersmissionModel[o.permission], 10);
+          })
+        );
     };
 
     const confirmCallBackForRestrictAndUnLockModal = (operation: string) => {
@@ -234,11 +229,11 @@ const ActionMenu: React.FC<Props> = React.memo(
             errorMessage =
               operation === AssetRestriction.Lock
                 ? t(
-                    "We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator"
-                  )
+                  "We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator"
+                )
                 : t(
-                    "We_re_sorry_The_asset_cant_be_unlocked_Please_retry_or_contact_your_Systems_Administrator"
-                  );
+                  "We_re_sorry_The_asset_cant_be_unlocked_Please_retry_or_contact_your_Systems_Administrator"
+                );
           }
           setAssetLockUnLockError({
             isError: true,
@@ -259,11 +254,9 @@ const ActionMenu: React.FC<Props> = React.memo(
         return;
       }
 
-      const url = `${FILE_SERVICE_URL}/Files/download/${assetFileId}`;
-      http
-        .get(url)
+      FileAgent.getDownloadFileUrl(assetFileId)
         .then((response) => {
-          downloadFileByURLResponse(response.data);
+          downloadFileByURLResponse(response);
         })
         .catch(() => {
           showToastMsg?.({
@@ -285,15 +278,7 @@ const ActionMenu: React.FC<Props> = React.memo(
       const evidenceId = row.evidence.id;
       const assetId = row.assetId;
       const fileType = MetadataFileType.PDF;
-      const url = `${EVIDENCE_EXPORT_META_DATA_URL}/${evidenceId}/${assetId}/${fileType}`;
-      http
-        .get(url, {
-          headers: {
-            TenantId: "1",
-            "Content-Type": "application/json",
-          },
-          responseType: "blob",
-        })
+      EvidenceAgent.ExportEvidence(evidenceId, assetId, fileType)
         .then((response) => {
           downloadFileByFileResponse(response, assetId);
         })
@@ -481,6 +466,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         link.parentNode.removeChild(link);
       }
     };
+    
 
     const downloadFileByURLResponse = (url: string) => {
       // Create Link to trigger browser api to download.
@@ -1053,7 +1039,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             filterValue={filterValue}
             setFilterValue={(v: any) => setFilterValue(v)}
             rowData={row}
-            setRemovedOption={(e: any) => {}}
+            setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssignUser(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
           />
@@ -1072,7 +1058,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             items={selectedItems}
             filterValue={filterValue}
             rowData={row}
-            setRemovedOption={(e: any) => {}}
+            setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenManageRetention(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
@@ -1093,7 +1079,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             items={selectedItems}
             filterValue={filterValue}
             rowData={row}
-            setRemovedOption={(e: any) => {}}
+            setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssetShare(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
           />
@@ -1112,7 +1098,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             items={selectedItems}
             filterValue={filterValue}
             rowData={row}
-            setRemovedOption={(e: any) => {}}
+            setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenSubmitAnalysis(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
           />
