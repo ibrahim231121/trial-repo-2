@@ -45,7 +45,6 @@ interface VolumecontrolProp {
   }
 
   const handleVoumeClick = () => {
-   
     setIsMute(!isMute);
     setMuteHandle(!isMute);
     if (volume == 0 && isMute) {
