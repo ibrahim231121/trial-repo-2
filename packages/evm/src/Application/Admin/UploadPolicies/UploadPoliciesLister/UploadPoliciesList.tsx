@@ -25,7 +25,7 @@ import {
   onSaveHeadCellData,
   PageiGrid
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import {CRXAlert} from "@cb/shared";
+import {CRXAlert,CRXToaster} from "@cb/shared";
 import {getAllUploadPoliciesFilter} from '../../../../Redux/UploadPolicies';
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import Restricted from "../../../../ApplicationPermission/Restricted";
@@ -45,9 +45,8 @@ const UploadPoliciesList: React.FC = () => {
   const [rows, setRows] = React.useState<UploadPoliciesTemplate[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<UploadPoliciesTemplate[]>([]);
   const [selectedActionRow,setSelectedActionRow] = useState<UploadPoliciesTemplate[]>();
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
   const [paging, setPaging] = React.useState<boolean>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -57,6 +56,7 @@ const UploadPoliciesList: React.FC = () => {
     page: page,
     size: rowsPerPage
   })
+  const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
   const dispatch = useDispatch();
   let history = useHistory();
 
@@ -91,7 +91,7 @@ const UploadPoliciesList: React.FC = () => {
 
 React.useEffect(() => {
   setUploadPoliciesData();
-}, [filterUploadPolicies.data]);
+}, [filterUploadPolicies?.data]);
 
     const onChange = (valuesObject: ValueString[], colIdx: number) => {
       headCells[colIdx].headerArray = valuesObject;      
@@ -117,14 +117,31 @@ React.useEffect(() => {
     }
   }
 
+  const UploadFormMessages = (obj: any) => {
+    uploadMsgFormRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+
+  const onMessageShow = (isSuccess:boolean,message: string) => {
+    UploadFormMessages({
+      message: message,
+      variant: isSuccess? 'success' : 'error',
+      duration: 7000
+    });    
+  }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
       id: "id",
       align: "right",
       dataComponent: () => null,
-      sort: true,
-      searchFilter: true,
+      sort: false,
+      searchFilter: false,
       searchComponent: () => null,
       keyCol: true,
       visible: false,
@@ -137,8 +154,8 @@ React.useEffect(() => {
       id: "name",
       align: "left",
       dataComponent: (e: string) => AnchorDisplay(e),
-      sort: true,
-      searchFilter: true,
+      sort: false,
+      searchFilter: false,
       searchComponent: searchText,
       minWidth: "300",
       width: "800",
@@ -153,8 +170,8 @@ React.useEffect(() => {
       id: "description",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ''),
-      sort: true,
-      searchFilter: true,
+      sort: false,
+      searchFilter: false,
       searchComponent: searchText,
       minWidth: "100",
       width: "100",
@@ -185,10 +202,6 @@ React.useEffect(() => {
     setSelectedItems([]);
   }
 
-  const getSuccessUpdate = () => {
-    setSuccess(true);
-  }
-
   const UploadPolicyAction = () => {
     dispatch(getAllUploadPoliciesFilter(pageiGrid));
   }
@@ -213,13 +226,7 @@ React.useEffect(() => {
   };
   return (
     <div className="CrxUploadPoliciesTable switchLeftComponents">
-          {success && (
-              <CRXAlert
-                message={t("Upload_Policy_Deleted_Successfully")}
-                alertType="toast"
-                open={true}
-              />
-          )}
+      <CRXToaster ref={uploadMsgFormRef} />
         {
         rows && (
           <CRXDataTable
@@ -229,7 +236,7 @@ React.useEffect(() => {
               selectedItems={selectedItems}
               getRowData={UploadPolicyAction}
               getSelectedData= {getSelectedItemsUpdate}
-              getSuccess = {getSuccessUpdate}
+              onMessageShow = {onMessageShow}
             />}
             toolBarButton = {
               <>
@@ -252,19 +259,19 @@ React.useEffect(() => {
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}
-            searchHeader={false}
+            searchHeader={true}
             allowDragableToList={false}
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
             showCustomizeIcon={false}
-            className="crxTableHeight crxTableDataUi UploadPoliciesTableTemplate"
+            className="crxTableHeight crxTableDataUi UploadPoliciesTableTemplate UploadPoliciesTable_UI"
             onClearAll={clearAll}
             getSelectedItems={(v: UploadPoliciesTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={206}
+            offsetY={209}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}

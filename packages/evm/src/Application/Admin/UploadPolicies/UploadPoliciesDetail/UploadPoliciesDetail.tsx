@@ -122,17 +122,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
 
                 let uploadPolicyDetailArray : any[] = [];
                 let uploadPolicyDetailArrayCopy : any[] = [];
-                
-
                 UploadPolicyDetailItem(response, uploadPolicyDetailArray);
-                
                 setUploadPolicyDetail(uploadPolicyDetailArray);    
                 dispatch(enterPathActionCreator({ val: response?.description }));
-
-
-
                 uploadPolicyDetailArrayCopy = JSON.parse(JSON.stringify(uploadPolicyDetailArray));
-               
                 const temp = {                
                     uploadPolicyDetail: [...uploadPolicyDetailArrayCopy]
                 };
@@ -148,16 +141,16 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     }, []);
 
     const assetUploadConnectionsData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
-        if (Array.isArray(getAll.assetUploadConnections)) {
-            const newAssetUploadConnections = getAll.assetUploadConnections.map((item: any) => {
+        if (Array.isArray(getAll.dataConnectionJsonTypes)) {
+            const newAssetUploadConnections = getAll.dataConnectionJsonTypes.map((item: any) => {
                 return ({ value: item.key, label: item.value });
             });
             newUploadPolicyDetailDropdownData.assetUploadConnectionList =  Array.isArray(newAssetUploadConnections) ? newAssetUploadConnections : [];;
         }
     }
     const assetUploadPrioritiesData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
-        if (Array.isArray(getAll.assetUploadPriorities)) {
-            const newAssetUploadPriorities = getAll.assetUploadPriorities.map((item: any) => {
+        if (Array.isArray(getAll.assetUploadPriorityTypes)) {
+            const newAssetUploadPriorities = getAll.assetUploadPriorityTypes.map((item: any) => {
                 return ({ value: item.key, displayText: item.value });
             });
             newUploadPolicyDetailDropdownData.assetUploadPriorityList =  Array.isArray(newAssetUploadPriorities) ? newAssetUploadPriorities : [];;
@@ -173,8 +166,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     }
     
     const metaDataConnectionsData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
-        if (Array.isArray(getAll.metadataUploadConnections)) {
-            const newMetaDataConnections = getAll.metadataUploadConnections.map((item: any) => {
+        if (Array.isArray(getAll.metaDataUploadConnectionTypes)) {
+            const newMetaDataConnections = getAll.metaDataUploadConnectionTypes.map((item: any) => {
                 return ({ value: item.key, label: item.value });
             });
             newUploadPolicyDetailDropdownData.metadataUploadConnectionList = Array.isArray(newMetaDataConnections) ? newMetaDataConnections : [];
@@ -184,7 +177,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const assetTypesData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
         if (Array.isArray(getAll.assetTypes)) {
             const newAssetTypes = getAll.assetTypes.map((item: any) => {
-                return ({ value: item.recId, displayText: item.description });
+                return ({ value: item.key, displayText: item.value });
             });
             newUploadPolicyDetailDropdownData.assetTypeList = Array.isArray(newAssetTypes) ? newAssetTypes : [];
         }

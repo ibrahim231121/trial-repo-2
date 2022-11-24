@@ -17,10 +17,10 @@ type Props = {
   row?: any;
   getRowData: () => void;
   getSelectedData : () => void;
-  getSuccess : () => void;
+  onMessageShow: (isSuccess:boolean,message: string) => void;
 };
 
-const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,getSuccess}) => {
+const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,onMessageShow}) => {
 const { t } = useTranslation<string>();
 const history = useHistory();
 const [nondefault, setnondefault] = useState(false);
@@ -32,12 +32,15 @@ const deleteUploadPolicies = () => {
     });
     SetupConfigurationAgent.deleteAllUploadPoliciesTemplate(eventIds)
     .then(() => {
-      getSuccess();
       getRowData();
       getSelectedData();
+      onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
     })
-    .catch(function(error) {
-      return error;
+    .catch(function(error) {      
+      if(error?.response?.status === 405) {
+        onMessageShow(false,error?.response?.data?.toString());
+        return error;
+      }
     });
   }
 }
@@ -54,7 +57,6 @@ const openCreateUploadPolicyForm = () => {
       urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + row?.id
     );
   };
-
 
  async function Onconfirm(){
   deleteUploadPolicies();
@@ -95,7 +97,7 @@ const openCreateUploadPolicyForm = () => {
         ) : (
           <div></div>
           )}  
-    
+        {selectedItems.length <=1 ? (
       <MenuItem >
       <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
@@ -108,6 +110,9 @@ const openCreateUploadPolicyForm = () => {
         </div>
         </Restricted>
       </MenuItem>
+      ) : (
+        <div></div>
+        )}  
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"

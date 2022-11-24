@@ -328,6 +328,16 @@ iframe {
   }
   
   .stickyTableHeader {
-    visibility: collapse;
+    visibility: collapse ;
+  
   }
   
+  .UploadPoliciesTable_UI  {
+    table {
+      thead {
+        &:nth-child(2) {
+          display: none;
+        }
+      }
+    }
+  }

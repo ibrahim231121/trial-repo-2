@@ -41,8 +41,10 @@ const deleteRetentionPolicies = () => {
       onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
     })
     .catch(function(error) {      
-      onMessageShow(false,error.response.data.toString());
-      return error;
+      if(error?.response?.status === 405) {
+        onMessageShow(false,error?.response?.data?.toString());
+        return error;
+      }
     });
   }
 }
