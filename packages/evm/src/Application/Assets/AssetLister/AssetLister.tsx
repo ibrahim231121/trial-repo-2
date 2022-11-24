@@ -41,7 +41,7 @@ const SearchComponent = (props: any) => {
   const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
   const [searchData, setSearchData] = React.useState<SearchModel.Evidence[]>([]);
   const [predictiveText, setPredictiveText] = React.useState('');
- const [querryString, setQuerryString] = React.useState('');
+  const [querryString, setQuerryString] = React.useState('');
   const [randomKey, setRandomKey] = React.useState(0);
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
     startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
