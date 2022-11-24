@@ -86,6 +86,7 @@ const AssetDetailsTemplate = (props: any) => {
     displayText: string;
   };
   type assetdata = {
+    name: string
     files: any;
     assetduration: number;
     assetbuffering: any;
@@ -660,13 +661,14 @@ const AssetDetailsTemplate = (props: any) => {
     const id = row.assets.master.id;
     const unitId = row.assets.master.unitId;
     const typeOfAsset = row.assets.master.typeOfAsset;
+    const name = row.assets.master.name;
     const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : row.assets.master.status;
     recording = {
       ...recording,
       ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
       started: new Date(new Date(recording.started).getTime() - buffering?.pre),
     }
-    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, notes: notes, camera: camera, status: status }
+    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, name: name, notes: notes, camera: camera, status: status }
     rowdetail.push(myData);
     rowdetail1 = row.assets.children.map((template: any, i: number) => {
       template.recording = {
@@ -683,6 +685,7 @@ const AssetDetailsTemplate = (props: any) => {
         bookmarks: template.bookMarks ?? [],
         unitId: template.unitId,
         typeOfAsset: template.typeOfAsset,
+        name : template.name,
         notes: template.notes ?? [],
         camera: template.camera,
         status: template.files[0]?.filesId > 0 ? "Available" : template.status

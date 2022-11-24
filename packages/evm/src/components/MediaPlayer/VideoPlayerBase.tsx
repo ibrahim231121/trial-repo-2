@@ -33,6 +33,8 @@ import Cookies from "universal-cookie";
 import "./overRide_video_player_style.scss"
 
 type Timeline = {
+  assetName: string;
+  recording_started: any;
   recording_start_point: number;
   recording_Start_point_ratio: number;
   recording_end_point: number;
@@ -183,6 +185,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
       if (temptimelinedetail) {
         let myData: Timeline =
         {
+          assetName: data[x].name,
+          recording_started: new Date(data[x].recording.started).getTime() + data[x].recording.timeOffset ?? 0,
           recording_start_point: recording_start_point,
           recording_Start_point_ratio: recording_Start_point_ratio,
           recording_end_point: recording_end_point,
@@ -209,6 +213,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
       let protocol = 'http://';
       let myData: Timeline =
       {
+        assetName: data[x].name,
+        recording_started: new Date(data[x].recording.started).getTime() + data[x].recording.timeOffset ?? 0,
         recording_start_point: recording_start_point,
         recording_Start_point_ratio: recording_Start_point_ratio,
         recording_end_point: recording_end_point,
@@ -508,20 +514,22 @@ const VideoPlayerBase = (props: any) => {
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const addingSnapshot = useRef(false);
  const [showControlConatiner , setShowControlConatiner] = useState(false);
+ const [isMute, setIsMute] = useState(false);
 
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
     if(!(openBookmarkForm || openNoteForm || reasonForViewing))
     {
-      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //Space bar
-      if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
-      if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
-      if (shiftKey && code == "Period") {
+      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //shift + Space bar
+      if (!ismodeFwdisable && shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+      if (!ismodeRwdisable && shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
+      if (!disabledModeRight && shiftKey && code == "Period") {
         event.preventDefault(); 
         modeSet(mode < 0 ? 2 : (mode + 2))
-      } //Shift + .
-      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift - ,
-      if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+      } //Shift + .>
+      if (!disabledModeLeft && shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+      if (!disabledModeMinus && shiftKey && code == "Slash") {event.preventDefault(); modeSet(0)} // shift + /
+      if (shiftKey && altKey && code == "Quote") {event.preventDefault(); openSettingMenu(event)} // '
       if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
       if (code == "ArrowDown") {
@@ -548,8 +556,9 @@ const VideoPlayerBase = (props: any) => {
       } //up arrows
       if (code == "KeyN" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("note")} // N
       if (code == "KeyB" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("bookmark")} // B
-      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // B
-      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // F
+      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // L
+      if (code == "KeyM" && shiftKey && altKey) {event.preventDefault(); handleVoumeClick();} // M
     }
 
   };
@@ -811,6 +820,15 @@ const VideoPlayerBase = (props: any) => {
             console.error(error.response.data);
           });
   }, []);
+
+  const handleVoumeClick = () => {
+    setIsMute(!isMute);
+    setMuteHandle(!isMute);
+    if (volume == 0 && isMute) {
+      setVolume(50);
+      setVolumeHandle(50);
+    }
+  }
 
   const getFps = (videoHandle: any) => {
     videoHandle.requestVideoFrameCallback(ticker);
@@ -2282,7 +2300,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
                         placement="top"
-                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Space</span></>}
+                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Shift + Space</span></>}
                         arrow={false}
                       />
                     </CRXButton>
@@ -2309,7 +2327,7 @@ useEffect(() => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
+                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick}/>
                 </div>
                 <div className="playerViewMiddle">
                   <div className="playBackMode">
@@ -2318,7 +2336,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={"fas fa-undo-alt undoAltIcon"}
                         placement="top"
-                        title={<>Playback slow down <span className="playBackTooltip">Shift - ,</span></>}
+                        title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
                         arrow={false}
                       />
                     </button>
@@ -2326,7 +2344,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={"icon icon-minus iconMinusUndo"}
                         placement="top"
-                        title={<>Normal speed <span className="normalSped">/</span></>}
+                        title={<>Normal speed <span className="normalSped">Shift + /</span></>}
                         arrow={false}
                       />
                     </button>
@@ -2360,7 +2378,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={`fas fa-cog faCogIcon ${settingMenuEnabled}`}
                         placement="top"
-                        title={<>Settings <span className="settingsTooltip">,</span></>}
+                        title={<>Settings <span className="settingsTooltip">Shift + ALT + '</span></>}
                         arrow={false}
                       /></div>
                     <VideoPlayerSettingMenu
@@ -2388,7 +2406,7 @@ useEffect(() => {
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
-                      title={<>Notes <span className="notesTooltip">N</span></>}
+                      title={<>Notes <span className="notesTooltip">Shift + ALT + N</span></>}
                       arrow={false}
                     />
                   </CRXButton>}
@@ -2397,7 +2415,7 @@ useEffect(() => {
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
-                      title={<>Bookmarks  <span className="BookmarksTooltip">B</span></>}
+                      title={<>Bookmarks  <span className="BookmarksTooltip">Shift + ALT + B</span></>}
                       arrow={false}
                     />
                   </CRXButton>}
@@ -2406,7 +2424,7 @@ useEffect(() => {
                       <CRXTooltip
                           iconName={"fas fa-table iconTableClr"}
                           placement="top"
-                          title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                          title={<>Layouts <span className="LayoutsTooltips">Shift + ALT + L</span></>}
                           arrow={false}
                         />
                     </CRXButton>
@@ -2499,7 +2517,7 @@ useEffect(() => {
                         <CRXTooltip
                           iconName={"fas fa-expand-wide"}
                           placement="top"
-                          title={<>Full screen <span className="FullScreenTooltip">F</span></>}
+                          title={<>Full screen <span className="FullScreenTooltip">Shift + ALT + F</span></>}
                           arrow={false}
                         />
                       </div> :
@@ -2507,7 +2525,7 @@ useEffect(() => {
                         <CRXTooltip
                           iconName={"fas fa-compress-wide"}
                           placement="top"
-                          title={<>Minimize screen <span className="FullScreenTooltip">M</span></>}
+                          title={<>Minimize screen <span className="FullScreenTooltip">ESC</span></>}
                           arrow={false}
                         />
                       </div>}

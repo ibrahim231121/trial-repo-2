@@ -337,7 +337,7 @@ const UnitCreate = (props: historyProps) => {
 
     UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
       setIsSaveButtonDisabled(true);
-      SetStationName(unitInfo.stationList.find((y:any)=> y.value === unitInfo.stationId).displayText);
+      SetStationName(unitInfo.stationList.find((y:any)=> y.value == unitInfo.stationId).displayText);
       SetStationID(unitData.stationId);
       targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true});  
     })
