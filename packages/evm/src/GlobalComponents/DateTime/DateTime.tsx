@@ -157,7 +157,6 @@ const DateTime = () => {
     let assetDateTime: AssetDateTime = { startDate: "", endDate: "" };
     let lastIndex = dateValues.find((x: DateTimeProp | undefined) => x?.value === "anytime") ? 0 : dateValues?.length - 1;
     let isCustomValueExist = lastIndex != 0 && dateValues.find((x: DateTimeProp | undefined) => x?.value === customRange) ? 2 : 1;
-    debugger
     if (lastIndex >= isCustomValueExist) {
       let lastDate = dateValues[lastIndex - isCustomValueExist];
       if (lastDate) {
