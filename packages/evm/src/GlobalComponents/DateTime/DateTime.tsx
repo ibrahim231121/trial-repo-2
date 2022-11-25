@@ -23,7 +23,7 @@ const DateTime = () => {
     showCompact,
     dateTimeDetail,
     getDateTimeDropDown,
-    dateOptionType,   
+    dateOptionType,
     reset,
     minDate,
     maxDate
