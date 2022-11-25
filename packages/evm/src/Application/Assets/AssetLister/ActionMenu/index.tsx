@@ -276,7 +276,12 @@ const ActionMenu: React.FC<Props> = React.memo(
       if (selectedItems.length != 0) {
       }
       const evidenceId = row.evidence.id;
-      const assetId = row.assetId;
+      let assetId : number;
+      if(actionMenuPlacement === ActionMenuPlacement.AssetDetail){
+        assetId = row.evidence.asset[0].assetId;
+      } else {
+        assetId = row.assetId;
+      }
       const fileType = MetadataFileType.PDF;
       EvidenceAgent.ExportEvidence(evidenceId, assetId, fileType)
         .then((response) => {
