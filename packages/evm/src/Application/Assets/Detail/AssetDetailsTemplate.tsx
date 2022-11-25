@@ -356,8 +356,8 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     if (getAssetData) {
-      getMasterAssetFile(getAssetData?.assets.master.files)
-      getChildAssetFile(getAssetData?.assets.children)
+      getMasterAssetFile(getAssetData?.assets.master.files.filter(x => x.filesId > 0))
+      getChildAssetFile(getAssetData?.assets.children.filter(x => x.status == "Available"))
     }
   }, [getAssetData]);
 
@@ -396,7 +396,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS").length && getAssetData?.assets.children.length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x.status == "Available").length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -662,7 +662,7 @@ const AssetDetailsTemplate = (props: any) => {
     const unitId = row.assets.master.unitId;
     const typeOfAsset = row.assets.master.typeOfAsset;
     const name = row.assets.master.name;
-    const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : row.assets.master.status;
+    const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : "";
     recording = {
       ...recording,
       ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
@@ -688,7 +688,7 @@ const AssetDetailsTemplate = (props: any) => {
         name : template.name,
         notes: template.notes ?? [],
         camera: template.camera,
-        status: template.files[0]?.filesId > 0 ? "Available" : template.status
+        status: template.files[0]?.filesId > 0 ? "Available" : ""
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {
@@ -984,7 +984,25 @@ const AssetDetailsTemplate = (props: any) => {
       
       switch(videoPlayerData[0]?.typeOfAsset) {
         case 'Video':
-          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} /> : <>Uploading in progress! Assets not available.</>;
+          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} /> : 
+          <>
+            <div className="_player_video_uploading">
+              <div className="layout_inner_container">
+                {assetInfo.id && <div className="text_container_video">Evidence is not available, Uploading is in progress!</div>}
+                <div className="_empty_arrow_seeMore">
+                  {detailContent == false ?
+                        <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                          <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                        </button>
+                        :
+                        <button id="lessMoreButton" data-target="#root" className="_empty_content_see_mot_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                          <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                        </button>
+                      }
+                </div>
+              </div>
+            </div>
+          </>
         case 'Image':
           return <img src={availableAssets[0]?.files[0]?.downloadUri}></img>
         default:
@@ -992,7 +1010,24 @@ const AssetDetailsTemplate = (props: any) => {
       }
     }
     else{
-      return <>Uploading in progress! Assets not available.<div className="_video_player_layout_main"></div></>
+      return <>
+        <div className="_player_video_uploading">
+          <div className="layout_inner_container">
+            {assetInfo.id && <div className="text_container_video">Evidence is not available, Uploading is in progress!</div>}
+            <div className="_empty_arrow_seeMore">
+              {detailContent == false ?
+                    <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
+                      <CRXTooltip iconName="fas fa-chevron-down" placement="bottom" arrow={false} title="see more" />
+                    </button>
+                    :
+                    <button id="lessMoreButton" data-target="#root" className="_empty_content_see_mot_btn lessMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "root")}>
+                      <CRXTooltip iconName="fas fa-chevron-up" placement="bottom" arrow={false} title="see less" />
+                    </button>
+                  }
+            </div>
+          </div>
+        </div>
+      </>
     }
   }
 

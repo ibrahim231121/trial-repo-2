@@ -513,7 +513,7 @@ const TenantSettings: React.FC = () => {
       otherwise: Yup.string(),
     }),
     RedirectingURL: Yup.string().when("AuthServer", {
-      is: "Getac OpenId With AD",
+      is: "Getac OpenId with AD",
       then: Yup.string().required("RedirectingURL is required"),
       otherwise: Yup.string(),
     }),
