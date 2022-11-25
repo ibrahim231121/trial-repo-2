@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
 import { useHistory, useParams } from "react-router";
-import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip } from "@cb/shared";
+import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip,CRXToaster } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { defaultType, defaultUpload, defaultMetadataUploadConnection, defaultAssetUploadPriority,  defaultAssetUploadConnection } from '../TypeConstant/constants';
 import { UploadPolicyDetailModel, SelectBoxType, UploadPolicyDropdownModel, UploadPolicyDetailErrorModel, UploadPolicyDetailValidationModel, SelectConnectionLevel } from '../TypeConstant/types';
@@ -52,7 +52,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { id } = useParams<{ id: string }>();
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [success, setSuccess] = React.useState<boolean>(false);
     const [uploadPolicyDetailValidation, setUploadPolicyDetailValidation] = useState<UploadPolicyDetailValidationModel>(defaultValidationModel);
     const [uploadPolicyDetail, setUploadPolicyDetail] = useState<UploadPolicyDetailModel[]>([defaultUploadPolicyDetail]);
     const [isOpen, setIsOpen] = React.useState(false);
@@ -62,8 +61,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const deletedParamValuesIdRef = useRef<number[]>([]);
     const dataResponseToEdit = useRef<any>(null);
     const dataToEdit = useRef<any>(null);
-    const [error, setError] = React.useState<boolean>(false);
-    const [responseError, setResponseError] = React.useState<string>('');
+    const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
     const history = useHistory();
     const dispatch = useDispatch();
     const getAll: any = useSelector((state: RootState) => state.uploadPoliciesSlice.getAll);
@@ -75,7 +73,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { t } = useTranslation<string>(); 
     useEffect(() => {
         if(!isFirstRenderRef.current) {
-            if(!disableAddUploadPolicyDetail() && name.length > 0 ) {
+            if(!disableAddUploadPolicyDetail() && name.length > 2 ) {
                 setIsSaveDisable(false);
             }
             else{
@@ -182,9 +180,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             newUploadPolicyDetailDropdownData.assetTypeList = Array.isArray(newAssetTypes) ? newAssetTypes : [];
         }
     }
-    
-   
-
   const EditCloseHandler =( temp : any) => {
     if (dataToEdit.current == null) {
         dataToEdit.current = { ...temp };
@@ -244,6 +239,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
         setUploadPolicyDetailValidation(errorState);
     }
+    
 
     const disableAddUploadPolicyDetail = () => {
         let isDisable = false;
@@ -410,48 +406,33 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
           const urlEditUploadPolicies = 'Policies/' + id  ;
           SetupConfigurationAgent.putUploadPoliciesTemplate(urlEditUploadPolicies,payload).then(()=>{        
                 setUploadPolicyDetail([defaultUploadPolicyDetail]);
-                setSuccess(true);
-                setError(false);
+                onMessageShow(true,t("Success_You_have_saved_the_Upload_Policy"));
                 dispatch(getAllUploadPoliciesFilter());
                 setTimeout(() => history.goBack(), 500);
             })
-            .catch((e:any) => {
-                  if (e.request.status == 409) {
-                      setError(true);
-                      setResponseError(
-                          "Duplicate Name is not allowed."
-                      );
-                  }
-                  else{
-                      console.error(e.message);
-                      setError(false);
-                      return e;
-                  }
-              })
+            .catch(function(error) {      
+                if(error?.response?.status === 405) {
+                  onMessageShow(false,error?.response?.data?.toString());
+                  return error;
+                }
+              });
       }
       else
       {
           const urlAddUploadPolicies = 'Policies' ;
           SetupConfigurationAgent.postUploadPoliciesTemplate(urlAddUploadPolicies,payload).then(()=>{        
                 setUploadPolicyDetail([defaultUploadPolicyDetail]);
-                setSuccess(true);
-                setError(false);
+                onMessageShow(true,t("Success_You_have_saved_the_Upload_Policy"));
                 dispatch(getAllUploadPoliciesFilter());
                 setTimeout(() => history.goBack(), 500);
             })
-            .catch((e:any) => {
-                  if (e.request.status == 409) {
-                      setError(true);
-                      setResponseError(
-                          "Duplicate Name is not allowed."
-                      );
-                  }
-                  else{
-                      console.error(e.message);
-                      setError(false);
-                      return e;
-                  }
-              })
+
+            .catch(function(error) {      
+                if(error) {
+                  onMessageShow(false,error?.response?.data?.toString());
+                  return error;
+                }
+              });
       }
     }
 
@@ -520,27 +501,28 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const closeBtnHandler = () => {
         history.goBack();
     }
-
+    
+    const UploadFormMessages = (obj: any) => {
+        uploadMsgFormRef?.current?.showToaster({
+          message: obj.message,
+          variant: obj.variant,
+          duration: obj.duration,
+          clearButtton: true,
+        });
+      }
+    
+      const onMessageShow = (isSuccess:boolean,message: string) => {
+        UploadFormMessages({
+          message: message,
+          variant: isSuccess? 'success' : 'error',
+          duration: 7000
+        });    
+      }
 
     return (
         
         <div className="upload-policies">
-                {success && (
-                  <CRXAlert
-                    message={t("Success_You_have_saved_the_Upload_Policy")}
-                    alertType="toast"
-                    open={true}
-                  />
-                )}
-                {error && (
-                  <CRXAlert
-                    className=""
-                    message={responseError}
-                    type="error"
-                    alertType="inline"
-                    open={true}
-                  />
-                )}        
+            <CRXToaster ref={uploadMsgFormRef} />
                 <div className="updated-policy-fields">
                     <div className="nameFieldUploadPolicy">
                         <Grid  item xs={12} sm={12} md={12} lg={5}>

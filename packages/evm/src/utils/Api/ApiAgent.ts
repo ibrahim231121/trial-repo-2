@@ -195,7 +195,7 @@ export const SetupConfigurationAgent = {
     postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
     deleteAllUploadPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/", body, config),
     getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config), 
-    getAllInitialData: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetAllInitialData", config),      
+    GetUploadPolicyValues: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetUploadPolicyValues", config),      
     getAllFiltersUploadPolicies: (url: string, extraHeader?: Headers[]) => {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);

@@ -28,7 +28,7 @@ export const getAllUploadPoliciesFilter: any = createAsyncThunk(
 export const getAllData: any = createAsyncThunk(
     'getAllData',
     async () => {
-         return SetupConfigurationAgent.getAllInitialData()
+         return SetupConfigurationAgent.GetUploadPolicyValues()
          .then((response:any) => response)
          .catch((error: any) => {
              console.error(error.response.data);
