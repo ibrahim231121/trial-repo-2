@@ -161,7 +161,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   });
 
   useEffect(() => {
-    console.log("searchData", searchData)
     dataArrayBuilder();
   }, [searchData]);
 

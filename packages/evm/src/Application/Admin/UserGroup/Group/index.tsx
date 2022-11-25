@@ -159,6 +159,7 @@ const Group = () => {
     { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` }
   );
   const [errorMessage, setErrorMessage]= React.useState<string>("");
+  const [isDataPermissionSave, setIsDataPermissionSave]= React.useState<boolean>(false);
 
   // const [getResponseAppPermission, resAppPermission] = useGetFetch<any>(
   //   APPLICATION_PERMISSION_URL,
@@ -173,6 +174,12 @@ const Group = () => {
       window.removeEventListener("scroll", checkGroupScrollTop);
     };
   }, []);
+  
+
+  React.useEffect(() => {
+    functionInitialized();
+  },[isDataPermissionSave])
+  
 
   const functionInitialized = async () => {
     //this work is done for edit, if id available then retrive data from url
@@ -289,7 +296,7 @@ const Group = () => {
   }, [res]);
 
   React.useEffect(() => {
-    if (ContainerMappingRes !== undefined) {
+    if (ContainerMappingRes !== undefined && id != undefined) {
       let newDataPerModel: DataPermissionModel[] = [];
       ContainerMappingRes.map((x: any) => {
         newDataPerModel.push({
@@ -312,7 +319,7 @@ const Group = () => {
       setDataPermissions(newDataPerModel);
       setDataPermissionsActual(newDataPerModel);
     }
-  }, [ContainerMappingRes]);
+  }, [ContainerMappingRes,isDataPermissionSave]);
 
   const onChangeGroupInfo = (name: string, decription: string) => {
     setGroupInfo({ name: name, description: decription });
@@ -545,7 +552,6 @@ const Group = () => {
   };
 
   const functionalityAfterRequest = (groupId: number, status: number) => {
-    
     let permissionsToAdd = dataPermissions.filter(x=> x.fieldType !== 0  && x.mappingId !== 0 && x.permission !== 0)
                                           .map((x) => {
                                             return {
@@ -558,6 +564,7 @@ const Group = () => {
                                               fieldType: x.fieldType,
                                             };
                                           });
+                                         
     let dataPermissionObj = {
       //  groupId : id,
       containerMappings: permissionsToAdd,
@@ -579,6 +586,8 @@ const Group = () => {
         if (container.status === 201 || container.status === 204) {
           // pushToHistory(urlList.filter((item:any) => item.name === urlNames.adminUserGroups)[0].url);
           // showToastMsg();
+          
+          setIsDataPermissionSave(true)
           setIsSaveButtonDisabled(true)
         } else 
         if (

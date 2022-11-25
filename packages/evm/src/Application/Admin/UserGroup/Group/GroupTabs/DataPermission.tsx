@@ -62,6 +62,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         })
     }
 
+
     useEffect(() => {
 
         disableAddPermission();
@@ -75,7 +76,15 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if(dataPermissionsInfo.length <=0 ){
             addDefaultPermission();
         }
+        loadStations();
+        loadCateogories();
+        setDataPermissions(prev => {
+            return [...loadfilterDataPermission()
+            ]
+        })
     },[dataPermissionsInfo])
+
+    
 
     const LoadCategoryPermissionsByDb = (categories: any) => {
         let dbDataPermission: PermissionData[] = [];
@@ -109,7 +118,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         })
 
     }
-
     const LoadStationPermissionsByDb = (stations: any) => {
         let dbDataPermission: PermissionData[] = [];
         dataPermissionsInfo.forEach((x: any | undefined) => {
@@ -166,7 +174,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }, [dispatch]);
 
     useEffect(()=>{
-
         setDataPermissions([]);
         loadStations();
         loadCateogories();
@@ -195,7 +202,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         categoryFromReducer && Object.keys(categoryFromReducer).length == 0 )
         getData();
     }, [getData]);
-
 
 
     const loadCateogories = () => {
@@ -228,15 +234,35 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         }
     }
 
-    const addDefaultPermission = () => {
+    const loadfilterDataPermission = () => {
+        let dataPermissionInfoString: any = [];
+        dataPermissionsInfo.forEach((x: any) => {
+            if(x.fieldType == 2){
+                let dataPermissionCategory = categories.find((y: any) => parseInt(y.value) == x.mappingId);
+                dataPermissionInfoString.push({
+                    id: x.containerMappingId,
+                    type: { value: x.fieldType, label: "" },
+                        permissionValue: { value: x.mappingId, label: dataPermissionCategory?.label },
+                        permissionLevel: { value: x.permission, label: "" }
+                });
+            }
+            else{
+                let dataPermissionStation = stations.find((y: any) => parseInt(y.value) == x.mappingId);
+                dataPermissionInfoString.push({
+                    id: x.containerMappingId,
+                    type: { value: x.fieldType, label: "" },
+                        permissionValue: { value: x.mappingId, label: dataPermissionStation?.label },
+                        permissionLevel: { value: x.permission, label: "" }
+                });
+            }
+        });
+        return dataPermissionInfoString;
+    }
 
+    const addDefaultPermission = () => {
         let dPermission = Object.assign({}, defaultPermission);
-        setDataPermissions(permissions => {
-            return [...permissions,
-                dPermission
-            ]
-        })
-        setDataPermissionInfo([...dataPermissions, dPermission])
+
+        setDataPermissions([...loadfilterDataPermission(),dPermission])
     }
     const setDataPermissionInfo = (permissions: PermissionData[]) => {
         let dataPermissionModel: any = [];
@@ -272,7 +298,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
 
     const onPermissionValueChange = (e: React.ChangeEvent<HTMLInputElement>, v: any, i: number) => {
 
-
         let permissions = [...dataPermissions]
         if (v !== null) {
             if (v && v.value) {
@@ -292,8 +317,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }
 
     const onRemovePermission = (i: number) => {
-
-        let permissions = dataPermissions;
+        let permissions = loadfilterDataPermission();
 
         let permission = permissions[i];
 

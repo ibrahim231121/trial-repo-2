@@ -1,86 +1,383 @@
-@media only screen and (max-width:1024px){
-    .player_right_responsive {
-        display: block ;
-        margin-left: -14px;
-    }
-    .PVR_Expand {
-        position: absolute;
-        bottom: -60px;
-        right: -2px;
-        background-color: var(--color-Black);
-        padding-left: 17px;
+@media only screen and (max-width: 1024px) {
+  .player_right_responsive {
+    display: block;
+    margin-left: -14px;
+  }
+  .PVR_Expand {
+    position: absolute;
+    bottom: -60px;
+    right: -2px;
+    background-color: var(--color-Black);
+    padding-left: 17px;
+  }
+  .PVR_Collapse {
+    position: absolute;
+    bottom: -60px;
+    right: -2px;
+    background-color: var(--color-Black);
+    padding-left: 17px;
+    display: none !important;
+  }
 
-        
-    }  
-    .PVR_Collapse {
-        position: absolute;
-        bottom: -60px;
-        right: -2px;
-        background-color: var(--color-Black);
-        padding-left: 17px;
-        display: none !important;
+  ._video_player_container {
+    #crx_video_player {
+      // #video-player-screens  {
+      //     min-height: calc(100vh - 540px);
+      // }
     }
-    
-   
-    ._video_player_container{
-        #crx_video_player{
-            // #video-player-screens  {
-            //     min-height: calc(100vh - 540px);
-            // }
-        } 
-    } 
-    ._video_Player_Right_Panel {
-        height: 100%;
+  }
+  ._video_Player_Right_Panel {
+    height: 100%;
+  }
+  ._videoPlayer_grid_customize {
+    height: 100%;
+    padding-right: 4px;
+    width: 100% !important;
+    margin: 0 auto;
+    &._container_column_video_2 {
+      width: 80% !important;
     }
-    ._videoPlayer_grid_customize {
-        height: 100%;
-        padding-right: 4px;
-        width: 80% !important;
-        margin: 0 auto;
-        &._container_column_video_2 {
-          width: 80% !important;
-        }
+  }
+  ._beforeline_Main .time_line_container ._before_line .line {
+    padding: 0 78px 0 85px;
+  }
+  .mainFullView {
+    &.fullscreen {
+      ._videoPlayer_grid_customize {
+        width: 100% !important;
       }
-      ._beforeline_Main .time_line_container ._before_line .line {
-        padding: 0 78px 0 85px;
-      }
-      .mainFullView {
-        &.fullscreen {
-            ._videoPlayer_grid_customize {
-                width: 100% !important;
+    }
+  }
+  /* 3 Multiplayer screen  */
+  ._container_column_dir {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
             }
+          }
+        }
+      }
+    }
+  }
+  /* 3 Multiplayer screen  */
+  /* 4 Multiplayer screen  */
+  ._container_column_video_4 {
+    .vid_col_6 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+      &:nth-child(3) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 4 Multiplayer screen  */
+  /* 6 Multiplayer screen  */
+  ._container_column_video_6 {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+      &:nth-child(4) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+      &:nth-child(5) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 6 Multiplayer screen  */
+
+      .video_with_multiple_timeline {
+        .assetTimelineSync{
+            margin-left: 254px;
         }
       }
 }
-
-@media only screen and (min-width:1366px) { 
-    ._video_Player_Right_Panel {
-        height: 100%;
-    }
-}
-
-@media only screen and (max-width : 1440px) {
-    .mainFullView {
-        &.fullscreen {
-            .playerViewFlex {
-                background: #000;
+@media only screen and (min-width: 1366px) and (max-width: 1600px) {
+  /* 3 Multiplayer screen  */
+  ._container_column_dir {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
             }
+          }
         }
+      }
     }
+  }
+  /* 3 Multiplayer screen  */
+  /* 4 Multiplayer screen  */
+  ._container_column_video_4 {
+    .vid_col_6 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+      &:nth-child(3) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 4 Multiplayer screen  */
+  /* 6 Multiplayer screen  */
+  ._container_column_video_6 {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+      &:nth-child(2) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+      &:nth-child(4) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+      &:nth-child(5) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 6 Multiplayer screen  */
+}
+@media only screen and (min-width: 1366px) {
+  ._video_Player_Right_Panel {
+    height: 100%;
+  }
 }
 
-@media only screen and (max-width : 1600px) {
-    ._video_player_layout_main{
-        ._video_player_container{
-            #crx_video_player {
-                #video-player-screens {
-                    &._videPlayer_height_AU {
-                        &.removeEXHeight {
-                            height: calc(100vh - 472px);
+@media only screen and (max-width: 1440px) {
+  .mainFullView {
+    &.fullscreen {
+      .playerViewFlex {
+        background: #000;
+      }
+    }
+  }
+  /* 3 Multiplayer screen  */
+  ._container_column_dir {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 3 Multiplayer screen  */
+  /* 4 Multiplayer screen  */
+  ._container_column_video_4 {
+    .vid_col_6 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+      &:nth-child(3) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 4 Multiplayer screen  */
+  /* 6 Multiplayer screen  */
+  ._container_column_video_6 {
+    .vid_col_4 {
+      .CRXMultipleViewPopover {
+        .CRXPopupInnerDiv {
+          .CRXPopupTableDiv {
+            .crx-category-scroll {
+              height: 180px;
+            }
+          }
+        }
+      }
+
+      &:nth-child(4) {
+        .videoContainer {
+          .CRXCheckPopper {
+            .CRXMultipleViewPopover {
+              left: 6px;
+              top: -1px;
+            }
+          }
+        }
+      }
+    }
+  }
+  /* 6 Multiplayer screen  */
+}
+
+@media only screen and (max-width: 1600px) {
+  ._video_player_layout_main {
+    ._video_player_container {
+      #crx_video_player {
+        #video-player-screens {
+          &._videPlayer_height_AU {
+            &.removeEXHeight {
+              height: calc(100vh - 472px);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (min-width : 1280px) and (max-width : 1550px) {
+    //View on side screen css for min screen only 1600
+    ._video_player_container {
+        #crx_video_player {
+            #video-player-screens {
+                ._setVideoOnScreenRes {
+                    
+                    &._container_column_dir {
+                        ._video_grid_col{
+                            &.vid_col_8 {
+            
+                            }
+                            &.vid_col_4 {
+                                height: 100%;
+                                .viewOnSideVideos {
+                                    height: 50%;
+                                }
+                            }
+                            .videoContainer {
+                                height: 100%;
+                                video {
+                                    height: 100%;
+                                }
+                            }
+                        }  
+                    }
+                } 
+                ._video_player_grid {
+                    &._container_column_video_4 {
+                        ._video_grid_col {
+                            .videoContainer {
+                                ._empty_video{
+                                    height: 100%;
+                                }
+                            }
                         }
                     }
-                }
-            }
+                    &._setVideoOnScreenRes {
+                        &._container_column_video_6 {
+                            ._video_grid_col {
+                                .videoContainer {
+                                    ._empty_video{
+                                        height: 100%;
+                                    }
+                                    video {
+                                        height: 100%;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }//._video_player_grid 
+                
+            }//#video-player-screens
         }
-    }  
+    }
 }
