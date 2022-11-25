@@ -17,9 +17,10 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   const isCancelable = getModuleIds().includes(4) ? true : false
   React.useEffect(() => {
     const modalTitleProps = props.isCategoryEmpty ? t("Choose_Category") : t("Edit_category");
+    props.setIsformUpdated(false);
     props.setModalTitle(modalTitleProps);
     props.setremoveClassName('crxEditCategoryDropdown');
-  });
+  }, []);
 
   React.useEffect(() => {
     props.setSelectedCategoryValues(() => props.selectedCategoryValues);
@@ -66,12 +67,17 @@ const DropdownForm: React.FC<DropdownFormProps> = (props) => {
   };
 
   const cancelBtn = () => {
-    if (props.selectedCategoryValues.length !== 0) {
-      props.setActiveForm((prev) => prev + 2);
-    } else {
-      props.setOpenForm();
-      props.closeModal(false);
-    }
+    /**
+    * ! Below code is commented behalf of GEP-3886, it might be reverted back.
+    */
+    // if (props.selectedCategoryValues.length !== 0) {
+    //   props.setActiveForm((prev) => prev + 2);
+    // } else {
+    //   props.setOpenForm();
+    //   props.closeModal(false);
+    // }
+    props.setOpenForm();
+    props.closeModal(false);
   };
 
   return (

@@ -493,6 +493,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     const closeDialog = () => {
       setIsModalOpen(false);
       setOpenManageRetention(false);
+      setOpenAssignUser(false);
       history.push(
         urlList.filter((item: any) => item.name === urlNames.assets)[0].url
       );
@@ -502,6 +503,12 @@ const ActionMenu: React.FC<Props> = React.memo(
       if (IsformUpdated) setIsModalOpen(true);
       else setOpenManageRetention(false);
     };
+
+    const handleCloseAssignUser = () => {
+      if (IsformUpdated) setIsModalOpen(true);
+      else setOpenAssignUser(false);
+    };
+
 
     const addToAssetBucket = () => {
       //if undefined it means header is clicked
@@ -1035,7 +1042,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           title={t("Assign_User")}
           className={"CRXModal CRXModalAssignUser"}
           modelOpen={openAssignUser}
-          onClose={() => setOpenAssignUser(false)}
+          onClose={() => handleCloseAssignUser()}
           defaultButton={false}
           indicatesText={true}
         >
@@ -1047,6 +1054,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssignUser(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
+            setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
           />
         </CRXModalDialog>
 
