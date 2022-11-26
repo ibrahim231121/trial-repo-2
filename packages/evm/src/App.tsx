@@ -150,7 +150,6 @@ function App() {
       if(token) {
         setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
         window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
-        window.clearInterval(id);
         let moduleIds = getModuleIds();
         let groupIds = getGroupIds();
         if(moduleIds){
@@ -159,6 +158,7 @@ function App() {
         if(groupIds){
           setGroupIds(groupIds);            
         }
+        window.clearInterval(id);
       }
     }, 3000)
     return () => {
