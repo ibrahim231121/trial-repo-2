@@ -145,20 +145,24 @@ function App() {
   }, [culture, resources]);
 
   useEffect(()=>{
-    setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
-    var token = getToken();
-    if(token){
-            window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
-            let moduleIds = getModuleIds();
-            let groupIds = getGroupIds();
-            if(moduleIds){
-
-             setModuleIds(moduleIds);            
-            }
-            if(groupIds){
-
-              setGroupIds(groupIds);            
-             }
+    const id = window.setInterval(() => {
+      const token = getToken();
+      if(token) {
+        setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
+        window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
+        window.clearInterval(id);
+        let moduleIds = getModuleIds();
+        let groupIds = getGroupIds();
+        if(moduleIds){
+          setModuleIds(moduleIds);         
+        }
+        if(groupIds){
+          setGroupIds(groupIds);            
+        }
+      }
+    }, 3000)
+    return () => {
+      window.clearInterval(id);
     }
   }, []);
 

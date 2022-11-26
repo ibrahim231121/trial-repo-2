@@ -41,6 +41,7 @@ import { MAX_REQUEST_SIZE_FOR } from "../../utils/constant";
 import { setLoaderValue } from "../../Redux/loaderSlice";
 import { getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import { RootState } from "../../Redux/rootReducer";
+import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../../utils/hub_config";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -159,6 +160,7 @@ const UnitCreate = (props: historyProps) => {
 
   React.useEffect(() => {
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
+    subscribeGroupToSocket("UnitStatus");
       UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) =>
       {
         setPrimaryDeviceInfo(response);
@@ -181,7 +183,8 @@ const UnitCreate = (props: historyProps) => {
       }
     });
     return () => {
-              singleEventListener("onWSMsgRecEvent");
+      singleEventListener("onWSMsgRecEvent");
+      unSubscribeGroupFromSocket("UnitStatus");
            };
   }, []);
 
