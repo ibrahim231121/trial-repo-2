@@ -1,5 +1,9 @@
 import { HubConnectionState, HubConnectionBuilder, LogLevel, HubConnection } from '@microsoft/signalr';
 import { getToken } from '../Login/API/auth';
+import Cookies from 'universal-cookie';
+import jwt_decode from 'jwt-decode';
+
+const cookies = new Cookies();
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -7,7 +11,7 @@ declare const window: any;
 
 var socketConnectionId: any = null;
 var hubConnection: HubConnection;
-var groupsToSubscribe: string[] = ["UnitStatus"];
+var groupsToSubscribe: string[] = [];
 
 enum WEB_SOCKET_METHODS {
     onMessage = "OnMessage",
@@ -78,14 +82,51 @@ export const addToSubscribedGroups = (group: any) => {
     groupsToSubscribe.push(group);
 }
 
+export const subscribeGroupToSocket = (groupName: string) => {
+    if(groupsToSubscribe.findIndex(a => a === groupName) === -1) {
+      sendDataToWebSocket(WEB_SOCKET_METHODS.subscribeGroups, [groupName]);
+      groupsToSubscribe.push(groupName);
+    }
+}
+
+export const unSubscribeGroupFromSocket = (groupName: string) => {
+    const idx = groupsToSubscribe.findIndex(a => a === groupName);
+    if(idx > -1) {
+        sendDataToWebSocket(WEB_SOCKET_METHODS.unSubscribeGroups, [groupsToSubscribe[idx]]);
+        groupsToSubscribe.splice(idx, 1);
+    }
+}
+
+function getUserId () {
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        return decodedAccessToken.UserId;
+    }
+    else{
+        return "0";
+    }
+};
+
+function getTenantId () {
+    let accessToken = cookies.get('access_token');
+    if(accessToken){
+        let decodedAccessToken : any = jwt_decode(accessToken);
+        return decodedAccessToken.TenantId;
+    }
+    else{
+        return "0";
+    }
+};
+
 // Set up a SignalR connection to the specified hub URL, and actionEventMap.
 // actionEventMap should be an object mapping event names, to eventHandlers that will
 // be dispatched with the message body.
 export const setupSignalRConnection = (connectionHub: any) =>{
     const credentials = {
         token: getToken(),
-        userId: localStorage.getItem('User Id'),
-        tenantId: "1"
+        userId: getUserId(),
+        tenantId: getTenantId()
     }
     // create the connection instance
     // withAutomaticReconnect will automatically try to reconnect

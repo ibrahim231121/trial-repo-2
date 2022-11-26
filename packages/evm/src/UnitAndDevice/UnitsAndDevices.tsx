@@ -37,6 +37,7 @@ import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
 import ApplicationPermissionContext from "../ApplicationPermission/ApplicationPermissionContext";
+import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../utils/hub_config";
 
 
 type Unit = {
@@ -89,6 +90,7 @@ const UnitAndDevices: React.FC = () => {
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
+    subscribeGroupToSocket("UnitStatus");
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
     dispatch(getAllUnitStatusKeyValuesAsync());
@@ -102,6 +104,7 @@ const UnitAndDevices: React.FC = () => {
   
     return () => {
         singleEventListener("onWSMsgRecEvent");
+        unSubscribeGroupFromSocket("UnitStatus");
          };
   }, []);
 
