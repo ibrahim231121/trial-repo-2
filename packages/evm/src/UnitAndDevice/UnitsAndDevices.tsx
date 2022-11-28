@@ -37,6 +37,7 @@ import TextSearch from "../GlobalComponents/DataTableSearch/TextSearch";
 
 import { enterPathActionCreator } from "../Redux/breadCrumbReducer";
 import ApplicationPermissionContext from "../ApplicationPermission/ApplicationPermissionContext";
+import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../utils/hub_config";
 
 
 type Unit = {
@@ -89,6 +90,7 @@ const UnitAndDevices: React.FC = () => {
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
+    subscribeGroupToSocket("UnitStatus");
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
     dispatch(getAllUnitStatusKeyValuesAsync());
@@ -102,6 +104,7 @@ const UnitAndDevices: React.FC = () => {
   
     return () => {
         singleEventListener("onWSMsgRecEvent");
+        unSubscribeGroupFromSocket("UnitStatus");
          };
   }, []);
 
@@ -114,8 +117,8 @@ const UnitAndDevices: React.FC = () => {
   const unitVersions: any = useSelector((state: RootState) => state.unitReducer.unitVersionKeyValues);
   const unitAssignments: any = useSelector((state: RootState) => state.unitReducer.UnitAssignmentKeyValues);
   const [rows, setRows] = React.useState<Unit[]>([]);
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("lastCheckedIn");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<any>();

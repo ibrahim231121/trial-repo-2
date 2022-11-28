@@ -144,6 +144,11 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
 
   const valuesArray = Object.entries(values).map((e) => ({ key: e[0], value: e[1] }));
   var valuesArrayUpdated = valuesArray.filter((x: any) => !(rowToDelete.some((y: any) => y.key == x.key)));
+  if(rowToDelete.length > 0)
+  {
+    let indexNumber = rowToDelete[0].key.split('_')[1];
+    valuesArrayUpdated = valuesArrayUpdated.filter((x: any) => !x.key.includes('_' + indexNumber + "_") );
+  }
   var updatedValuesKV = valuesArrayUpdated.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item.key]: item.value }),
     {}

@@ -158,8 +158,8 @@ useEffect(()=> {
       className={classes.container + " AssetsDataGrid tableScrollValue " + className}
       component={Paper}
       style={{
-        overflowX : container.length > 0 ? "auto" : "visible",
-        overflowY : container.length > 0 ? "hidden" : "visible",
+        overflowX : container.rows.length > 0 ? "auto" : "visible",
+        overflowY : container.rows.length > 0 ? "hidden" : "visible",
       }}
     >
       

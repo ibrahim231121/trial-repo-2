@@ -345,6 +345,12 @@ else {
           error={!!formpayloadErr.passwordErr}
           errorMsg={formpayloadErr.passwordErr}
           label={"Password"}
+          inputProps={{
+            autocomplete: 'new-password',
+            form: {
+              autocomplete: 'off',
+            },
+          }}
           type='password'
           required={true}
           onChange={(e: any) => setPassword(e.target.value)}
@@ -1172,14 +1178,14 @@ else {
                   errorMsg={formpayloadErr.pinErr}
                   label={t("Pin")}
                   required={false}
-                  type='text'
+                  type='number'
                   value={formpayload.pin}
                   onChange={(e: any) => setFormPayload({ ...formpayload, pin: e.target.value })}
                   onBlur={checkPin}
                 />
               </div>
 
-              <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" || radioValue == "manual" ? "radioBtnUiSpacer" : ""}`}>
+              <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" ? "radioBtnUiSpacer" : ""} ${radioValue == "manual" ? "ManualRadioBtn" : ""}`}>
                 <label>{t("User_Password_Setup")}</label>
                 <div className='user-radio-group'>
                   <CRXRadio

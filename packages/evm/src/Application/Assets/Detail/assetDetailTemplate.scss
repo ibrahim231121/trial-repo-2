@@ -166,3 +166,52 @@
     }
   }
 }
+
+._player_video_uploading {
+  height: calc(100vh - 168px);
+  background: #000;
+  display: table;
+  width: 100%;
+  position: relative;
+  .layout_inner_container {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 22px;
+    flex-direction: column;
+    ._empty_arrow_seeMore {
+      position: absolute;
+      bottom: 0px;
+      background-color: var(--color-Black);
+      height: 30px;
+      text-align: center;
+      width: 100%;
+      margin: 0px;
+
+      ._empty_content_see_mot_btn {
+        border: 0px;
+        background: transparent;
+        font-size: 30px;
+        color: var(--color-White);
+        padding: 0px;
+        margin: 0 auto;
+        width: 136px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        place-items: center;
+        align-items: center;
+        cursor: pointer;
+      }
+      &._emptylessMoreDetailView_arrow {
+        background-color: #fff;
+        .lessMoreButton {
+          color: #000;
+        }
+      }
+    }
+  }
+}
