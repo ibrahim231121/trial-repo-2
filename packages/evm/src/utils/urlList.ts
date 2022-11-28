@@ -74,7 +74,10 @@ export const urlNames: any = {
     sensorsAndTriggersEdit: "sensorsAndTriggersEdit",
     singleLiveView:'singleLiveView',
     retentionPolicies: 'retentionPolicies',
-
+    
+    uploadPolicies: 'uploadPolicies',
+    uploadPoliciesCreate: 'uploadPoliciesCreate',
+    uploadPoliciesEdit: "uploadPoliciesEdit",
 };
 
 export const urlList: any = [
@@ -365,4 +368,30 @@ export const urlList: any = [
             { routeTo: '/admin/retentionPolicies', type: 'text', label: 'Retention Policies' }
         ],
     }
+    ,
+    {
+        name: urlNames.uploadPolicies,
+        url: "/admin/uploadPolicies",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/uploadPolicies', type: 'text', label: 'Upload Policies' }
+        ],
+    },
+    {
+        name: urlNames.uploadPoliciesCreate,
+        url: "/admin/uploadPolicies/uploadPoliciesCreate",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/uploadPolicies', type: 'link', label: 'Upload Policies' },
+            { type: "text", label: "Create Upload Policy", }
+        ],
+    },
+    {
+        name: urlNames.uploadPoliciesEdit,
+        url: "/admin/uploadPolicies/uploadPoliciesEdit/:id",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/uploadPolicies', type: 'link', label: 'Upload Policies' },
+        ],
+    },
 ];

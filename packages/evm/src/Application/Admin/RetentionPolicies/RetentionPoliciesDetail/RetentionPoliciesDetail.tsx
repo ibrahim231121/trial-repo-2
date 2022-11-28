@@ -489,7 +489,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             type="text"
                             name="retentionPoliciesName"
                             regex=""
-                            
                              />
 
                      </div>
@@ -507,6 +506,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             name="retentionPoliciesDescription"
                             regex=""
                             
+                            multiline={true}
                             
                              />
                      </div>

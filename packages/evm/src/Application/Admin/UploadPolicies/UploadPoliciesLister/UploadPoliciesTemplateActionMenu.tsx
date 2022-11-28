@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useCallback} from "react";
+import React, { useState} from "react";
 import {
   Menu,
   MenuItem,
@@ -11,11 +11,6 @@ import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from '../../../../utils/urlList';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
-import { getAllSensorsEvents } from "../../../../Redux/SensorEvents";
-import { useDispatch } from "react-redux";
-
-
-
 
 type Props = {
   selectedItems?: any;
@@ -25,28 +20,27 @@ type Props = {
   onMessageShow: (isSuccess:boolean,message: string) => void;
 };
 
-const SensorsAndTriggersTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,onMessageShow}) => {
+const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,onMessageShow}) => {
 const { t } = useTranslation<string>();
 const history = useHistory();
-const dispatch = useDispatch();
-
 const [nondefault, setnondefault] = useState(false);
 
-
-const deleteSensorAndTrigger = () => {
+const deleteUploadPolicies = () => {
   if(Array.isArray(selectedItems) && selectedItems.length > 0) {
     const eventIds: number[] = selectedItems.map((data: any) => {
       return data.id;
     });
-    SetupConfigurationAgent.deleteAllSensorsAndTriggersTemplate(eventIds)
+    SetupConfigurationAgent.deleteAllUploadPoliciesTemplate(eventIds)
     .then(() => {
       getRowData();
       getSelectedData();
-      onMessageShow(true,t("Success_You_have_deleted_the_Sensors_And_Triggers"));
+      onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
     })
     .catch(function(error) {      
+      if(error?.response?.status === 405) {
         onMessageShow(false,error?.response?.data?.toString());
         return error;
+      }
     });
   }
 }
@@ -57,16 +51,15 @@ const deleteConfirm = () => {
   }
 }
 
-const openCreateSensorsAndTriggersForm = () => {
-    let urlPathName =urlList.filter((item: any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url;
+const openCreateUploadPolicyForm = () => {
+    let urlPathName =urlList.filter((item: any) => item.name === urlNames.uploadPoliciesEdit)[0].url;
     history.push(
       urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + row?.id
     );
   };
 
-
  async function Onconfirm(){
-  deleteSensorAndTrigger();
+  deleteUploadPolicies();
   setnondefault(false);
   }
 
@@ -89,14 +82,14 @@ const openCreateSensorsAndTriggersForm = () => {
     
     >
         {selectedItems.length <=1 ? (
-      <MenuItem onClick={openCreateSensorsAndTriggersForm}>
-      <Restricted moduleId={51}>
+      <MenuItem onClick={openCreateUploadPolicyForm}>
+      <Restricted moduleId={0}>
           <div className="crx-meu-content   crx-spac"  >
             <div className="crx-menu-icon">
             <i className="far fa-pencil"></i>
             </div>
             <div className="crx-menu-list">
-              {t("Edit_sensor_and_trigger")}
+              {t("Edit_upload_policy")}
             </div>
           </div>
           </Restricted>
@@ -104,19 +97,22 @@ const openCreateSensorsAndTriggersForm = () => {
         ) : (
           <div></div>
           )}  
-    
+        {selectedItems.length <=1 ? (
       <MenuItem >
-      <Restricted moduleId={50}>
+      <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
           <div className="crx-menu-icon">
             <i className="far fa-trash-alt"></i>
           </div>
           <div className="crx-menu-list">
-          {t("Delete_sensor_and_trigger")}
+          {t("Delete_upload_policy")}
           </div>
         </div>
         </Restricted>
       </MenuItem>
+      ) : (
+        <div></div>
+        )}  
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"
@@ -131,14 +127,14 @@ const openCreateSensorsAndTriggersForm = () => {
         {
           <div className="crxUplockContent configuserParaMain">
             <p className="configuserPara1">
-            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{selectedItems && selectedItems.description}</span> {t("Sensors_And_Triggers")}. 
+            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{selectedItems && selectedItems.description}</span> {t("Upload_Policies")}. 
             {t("You_will_not_be_able_to_undo_this_action.")}
             </p>
-            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_sensors_and_triggers?")}</p>
+            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_upload_policies?")}</p>
           </div>
         }
       </Dialogbox> 
     </div>
   );
 };
-export default SensorsAndTriggersTemplateActionMenu;
+export default UploadPoliciesTemplateActionMenu;

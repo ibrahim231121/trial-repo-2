@@ -10,11 +10,17 @@ iframe {
     padding-bottom: 0px !important;
   }
   
-  .CrxRetentionPoliciesTable {
+  .CrxUploadPoliciesTable {
     .dataTableColumnShoHide {
       .dataIconButton {
         font-size: 14px;
         margin-top: 21px;
+      }
+    }
+    .CRXDataTableCustom {
+      margin-top: 0px;
+      &.visibleTable {
+        margin-top: 0;
       }
     }
     .CRXDataTableCustom {
@@ -28,7 +34,7 @@ iframe {
       padding: 0;
       margin-left: -3px;
     }
-    .RetentionPoliciesBtn {
+    .UploadPoliciesBtn {
       margin-top: -16px !important;
       color: var(--color-d1d2d4) !important;
       background-color: var(--color-333333) !important;
@@ -53,21 +59,11 @@ iframe {
         border-color: var(--color-231f20) !important ;
       }
     }
-    .RetentionFilterBtn {
-      height: 30px;
-      width: 108px;
-      padding: 0 0;
-      margin-top: -12px;
-      position: sticky;
-      top: 144px;
-      &:hover {
-        border: 1px solid var(--color-6e6e6e);
-      }
-    }
+   
     .filterButton {
       top: -7px;
     }
-    .RetentionPoliciesTableTemplate {
+    .UploadPoliciesTableTemplate {
       margin-top: -3px;
       tr {
         &:nth-child(odd) {
@@ -200,6 +196,7 @@ iframe {
     }
   
     .crxClearfilter {
+      // transform: translateY(-37px);
       transform: translateY(-20px);
     }
   
@@ -307,6 +304,7 @@ iframe {
   .SelectedActionMenu {
     background-color: #333333 !important;
     .col-three {
+      // position: relative;
       button {
         color: #d1d2d4 !important;
       }
@@ -320,7 +318,7 @@ iframe {
   }
   
   @media (max-width: 1850px) {
-    .CrxRetentionPoliciesTable {
+    .CrxUploadPoliciesTable {
       .AssetsDataGrid {
         &::-webkit-scrollbar {
           width: 10px !important;
@@ -330,14 +328,15 @@ iframe {
   }
   
   .stickyTableHeader {
-    visibility: collapse;
+    visibility: collapse ;
+  
   }
   
-  .RetentionPoliciesTable_UI {
+  .UploadPoliciesTable_UI  {
     table {
       thead {
         &:nth-child(2) {
-          display: none
+          display: none;
         }
       }
     }

@@ -203,6 +203,11 @@ const CRXLefNavigation = () => {
           label: t('Retention_Policies'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.retentionPolicies)[0].url) },
         },
+        {
+          moduleIds: 0,
+          label: t('Upload_Policies'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.uploadPolicies)[0].url) },
+        }
       ],
     },
   ];

@@ -22,6 +22,7 @@ import loaderSlice from './loaderSlice';
 import accessAndRefreshTokenSlice from './AccessAndRefreshTokenReducer';
 import sensorEventsSlice from './SensorEvents';
 import retentionPoliciesSlice from './RetentionPolicies';
+import uploadPoliciesSlice from './UploadPolicies';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -45,7 +46,8 @@ export const reducer = combineReducers({
   assetDetailReducer: assetDetailSlice.reducer,
   configurationTemplatesSlice: configurationTemplatesReducerSlice.reducer,
   auditLogSlice: auditLogSlice.reducer,
-  sensorEventsSlice : sensorEventsSlice.reducer,
-  retentionPoliciesSlice : retentionPoliciesSlice.reducer
+  sensorEventsSlice : sensorEventsSlice.reducer, 
+  retentionPoliciesSlice : retentionPoliciesSlice.reducer, 
+  uploadPoliciesSlice : uploadPoliciesSlice.reducer
 })
 export type RootState = ReturnType<typeof reducer>
