@@ -107,7 +107,7 @@ React.useEffect(() => {
   };
 
   const AnchorDisplay = (e: string) => {
-    if(getModuleIds().includes(51)) {
+    if(getModuleIds().includes(0)) {
     return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.uploadPoliciesEdit)[0].url)
     }
     else{

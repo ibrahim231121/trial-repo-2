@@ -243,7 +243,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
 
     const disableAddUploadPolicyDetail = () => {
         let isDisable = false;
-        uploadPolicyDetail.map((obj) => {
+        uploadPolicyDetail.forEach((obj) => {
             if(obj.assetType.value > 0 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
                 && obj.assetUploadConnection.length > 0 ) {
                 setIsAddUploadPolicyDetailDisable(false);
