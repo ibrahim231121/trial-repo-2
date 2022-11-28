@@ -802,7 +802,6 @@ export const resources = {
           "Metadata_Upload_Connection":"Metadata Upload Connection",
           "Asset_Upload_Priority":"Asset Upload Priority",
           "Asset_Upload_Connection":"Asset Upload Connection",
-          "Upload_Policies_Form": "hr-Upload Policies Form",
           "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
           "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
       }

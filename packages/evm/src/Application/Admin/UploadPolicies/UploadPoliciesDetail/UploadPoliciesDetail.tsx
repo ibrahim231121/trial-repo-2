@@ -252,6 +252,16 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 isDisable = true
             }
         });
+
+        uploadPolicyDetail.forEach((obj) => {
+            if(obj.assetType.value > 0 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
+                && obj.assetUploadConnection.length > 0 ) {
+                setIsAddUploadPolicyDetailDisable(false);
+            } else{
+                setIsAddUploadPolicyDetailDisable(true);
+                isDisable = true
+            }
+         });
         return isDisable;
     }
 
@@ -331,9 +341,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const  convertArrayToConnectionJsonString = (arrayValues: SelectConnectionLevel[]) =>
     {
         let obj: any = {};
-        arrayValues.map((item:SelectConnectionLevel)=> {
-            obj[item.label] = Number(item.value);
-        });
+        arrayValues.forEach((item:SelectConnectionLevel) => {
+             obj[item.label] = Number(item.value)
+          });
      
         return JSON.stringify(obj);    
     }
@@ -732,7 +742,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             >
                 <div className="confirmMessage">
                 {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                <strong>{t("Upload_Policies_Form")}</strong>. {t("If_you_close_the_form")}, 
+                <strong>{t("Upload Policies Form")}</strong>. {t("If_you_close_the_form")}, 
                 {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
                 <div className="confirmMessageBottom">
                 {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
