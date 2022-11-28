@@ -205,9 +205,6 @@ export const SetupConfigurationAgent = {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);
     },
-
-    // putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-
     putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
 

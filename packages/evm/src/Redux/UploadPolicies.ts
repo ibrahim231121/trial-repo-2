@@ -14,16 +14,6 @@ export const getAllUploadPoliciesFilter: any = createAsyncThunk(
     }
 );
 
-// export const getAllUploadPolicies: any = createAsyncThunk(
-//         'getAllUploadPolicies',
-//         async () => {
-//              return SetupConfigurationAgent.getUploadPolicies(UPLOAD_POLICIES_GET_ALL_UPLOAD_POLICIES_DATA +`?Page=1&Size=100`)
-//              .then((response:any) => response)
-//              .catch((error: any) => {
-//                  console.error(error.response.data);
-//         });
-//     }
-// );
 
 export const getAllData: any = createAsyncThunk(
     'getAllData',
