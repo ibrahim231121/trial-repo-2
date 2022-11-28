@@ -445,6 +445,12 @@
     .user-radio-group {
       margin-top: 4px;
       width: 100% !important;
+    
+    }
+    &.radioBtnUiSpacer {
+      .user-radio-group {
+      width: 434px !important;
+    }
     }
     label {
       font-size: 14px;
@@ -502,7 +508,7 @@
       }
     }
   }
-  .radioBtnUiSpacer {
+  .radioBtnUiSpacer,.ManualRadioBtn {
     margin-bottom: 160px;
   }
   .CrxIndicates {
