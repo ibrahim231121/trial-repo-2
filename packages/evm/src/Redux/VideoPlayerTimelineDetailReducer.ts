@@ -3,8 +3,6 @@ import { createSlice, createAsyncThunk,PayloadAction } from '@reduxjs/toolkit'
 
 
 interface Timeline {
-    assetName: string;
-    recording_started: any;
     recording_start_point: number;
     recording_Start_point_ratio: number;
     recording_end_point: number;

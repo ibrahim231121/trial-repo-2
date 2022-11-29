@@ -55,17 +55,15 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const [editDevice,setEditDevice] = useState(false);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [numberOfLine, setNumberOfLine] = useState<any>("")
+
   React.useEffect(() => {
     if(!editDescription){
-      let des : any = document.querySelector('textarea')?.getClientRects().length
       if(stateObj.description.length > 127 && !isReadMore){
-        setNumberOfLine(stateObj.description.slice(0,126));
+        setDescription(stateObj.description.slice(0,126) + "...");
       }
       else{
-        setNumberOfLine(stateObj.description);
+        setDescription(stateObj.description);
       }
-      setDescription(stateObj.description);
       setMadeByName(stateObj.madeBy);
     }
   });
@@ -379,13 +377,10 @@ const [customOpen,setCustomOpen] = useState(false);
 
     }
   }
-
-  
   return (
     <>
       <div className="item_asset_detail_bookmarks">
         <a>
-         
           <div className="_bookmark_time_user_flex">
             <div className="_bookmark_time" onClick={() => selectDropDown == "Notes" ? onClickBookmarkNote(stateObj, 2) : onClickBookmarkNote(stateObj, 1)}>
               {selectDropDown == "Notes" ? moment(stateObj.noteTime).format("HH:MM:SS") : moment(stateObj.bookmarkTime).format("HH:MM:SS")}
@@ -394,23 +389,23 @@ const [customOpen,setCustomOpen] = useState(false);
                 <div className="_bookmark_users">
                   {` ${t("From")}: `}<span>{stateObj.madeBy}</span>
                 </div>
-                  <div className={`${editDevice ? "textToggler textField_Edited" : "textToggler"} ${isReadMore ? 'displayBlock' : ''}  `}>
+                  <div className={`${editDevice ? "textToggler textField_Edited" : "textToggler"}  `}>
                   <TextField
                     type="text"
                     placeholder={"Type your note here"}
                     onChange={(e: any) => onChangeDescription(e)}
                     value={description}
                     multiline
-                    rows={!isReadMore && numberOfLine.length >= 80 ? 2 : null}
+                    row={!isReadMore ? 2 : null}
+                    col={5}
                     variant={"outlined"}
-                    
+                    inputProps={{ readOnly: !editDescription }}
                     inputRef={(input: any) => {
                       inputRef = input;
                     }}
                     fullWidth
                   />
-                   
-                  {!editDescription && stateObj.description.length >= 130 && (numberOfLine.length >= 130 ? 
+                  {!editDescription && stateObj.description.length >= 130 && (description.length >= 130 ? 
                   <div className="bookmark_read_function" onClick={() => handleReadLess() }><p>{t("Read_less")} </p><i className="fa-regular fa-chevron-up"></i></div> 
                   : <div className="bookmark_read_function"  onClick={() => handleReadMore() }><p>{t("Read_More")}</p><i className="fa-regular fa-chevron-down"></i></div>)}
                   {((selectDropDown == "Bookmarks" && stateObj.madeBy == "User") || selectDropDown == "Notes") && enableOnSave &&

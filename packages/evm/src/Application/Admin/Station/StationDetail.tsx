@@ -324,7 +324,7 @@ const StationDetail: React.FC = () => {
     if (isAddCase) {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
         showToastMsg()
-        //setTimeout(() => navigateToStations(), 3000);
+        setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
           errorHandler(e.response.data);
@@ -335,7 +335,7 @@ const StationDetail: React.FC = () => {
       body.id = Number(id);
       UnitsAndDevicesAgent.updateStation(`/Stations/${id}`, body).then(() => {
         showToastMsg()
-        //setTimeout(() => navigateToStations(), 3000);
+        setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
           errorHandler(e.response.data);

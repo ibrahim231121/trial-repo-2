@@ -266,7 +266,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
               <CRXButton className='cancelButton secondary' color='secondary' variant='contained' onClick={backBtn}>
                 {t("Back")}
               </CRXButton>
-              <CRXButton className='skipButton secondary' onClick={() => submitForm(SubmitType.WithoutForm)}>
+              <CRXButton className='skipButton' onClick={() => submitForm(SubmitType.WithoutForm)}>
                 {t("Skip_category_form_and_save")}
               </CRXButton>
             </div>

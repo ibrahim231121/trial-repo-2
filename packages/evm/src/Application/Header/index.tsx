@@ -42,15 +42,6 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
        
     },[])
 
-    let viewUrl = window.location.href;
-    let pathBody = document.querySelector("body");
-    let htmlTag = document.querySelector('html')
-    
-    if(viewUrl !== "/assetdetail") {
-      pathBody?.classList.remove("pathAssetDetail");
-      htmlTag && (htmlTag.style.overflowY = "auto")
-    }
-
     return (
         <div className="CRXAppHeader">
             <CRXRows

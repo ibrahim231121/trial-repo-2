@@ -187,8 +187,8 @@ const ConfigurationTemplates: React.FC = () => {
 
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
-    if (UnitConfigurationTemplates.data && UnitConfigurationTemplates.data.length > 0) {
-      configTemplateRows = UnitConfigurationTemplates.data.map(
+    if (UnitConfigurationTemplates?.data && UnitConfigurationTemplates?.data.length > 0) {
+      configTemplateRows = UnitConfigurationTemplates?.data.map(
         (template: any, i: number) => {
           return {
             id: template.recId,
@@ -231,7 +231,7 @@ const ConfigurationTemplates: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [UnitConfigurationTemplates.data, UnitConfigurationTemplateValues]);
+  }, [UnitConfigurationTemplates?.data, UnitConfigurationTemplateValues]);
 
   useEffect(() => {
     if(paging)
@@ -643,7 +643,7 @@ const ConfigurationTemplates: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={UnitConfigurationTemplates.totalCount}
+            totalRecords={UnitConfigurationTemplates?.totalCount}
           />
         )
       }

@@ -60,3 +60,4 @@ export {default as CRXVideoPlayerStyle } from "./JssStyles/VideoPlayerStyle/CRXV
 export { default as VolumeControlStyle } from "./JssStyles/VideoPlayerStyle/VolumeControlStyle"
 export { default as CBXMultiSelectForDatatable } from "./controls/CBXMultiDataFilter/CBXMultiSelectDataFilter"
 export { default as CRXMultiViewStyle } from "./JssStyles/VideoPlayerStyle/CRXMultiViewStyle";
+export { default as useSelectBoxStyle } from "./controls/CRXMultiSelectAutocomplete/CBXMultiselectStyle"

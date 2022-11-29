@@ -7,7 +7,6 @@ import { DisplayCategoryFormProps } from "../Model/DisplayCategoryForm";
 import { FieldTypes } from "../Model/FieldTypes";
 import { FieldCheckedBoxListType, FieldCheckedBoxType, FieldDropDownListType, FieldRadioButtonListType } from "./FieldTypes/Index";
 import { IsFieldtypeEquals } from "../Utility/UtilityFunctions";
-import "./DisplayCategoryForm.scss";
 
 const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
   const { t } = useTranslation<string>();
@@ -33,8 +32,8 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                 {({ errors }) => (
                   <Form>
                     {formObj.fields.map((field: any) => (
-                      <div className={`categoryInnerField `} key={field.id}>
-                        <label className="categoryFormLabel  " htmlFor={field.id}>
+                      <div className={`categoryInnerField`} key={field.id}>
+                        <label className="categoryFormLabel" htmlFor={field.id}>
                           {field?.display?.caption}
                         </label>
                         <b className={errors[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</b>
@@ -54,22 +53,19 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                             />
                           }
                           {(IsFieldtypeEquals(field, FieldTypes.FieldDropDownListType)) &&
-                                  <div  className="categoryFormDropDown_UI">
-                                  <Field
-                                      id={field.id}
-                                      name={
-                                        field.name ?? field.key
-                                      }
-                                      component={(formikProps: any) =>
-                                        <FieldDropDownListType
-                                          formikProps={formikProps}
-                                          options={field.defaultFieldValue.split('|')}
-                                          setFieldsFunction={(e) => { props.setFieldsFunction({ name: e.name, value: e.value }); }}
-                                        />
-                                      }
-                                    />
-                                  </div>
-                        
+                            <Field
+                              id={field.id}
+                              name={
+                                field.name ?? field.key
+                              }
+                              component={(formikProps: any) =>
+                                <FieldDropDownListType
+                                  formikProps={formikProps}
+                                  options={field.defaultFieldValue.split('|')}
+                                  setFieldsFunction={(e) => { props.setFieldsFunction({ name: e.name, value: e.value }); }}
+                                />
+                              }
+                            />
                           }
                           {(IsFieldtypeEquals(field, FieldTypes.FieldCheckedBoxType)) &&
                             <Field

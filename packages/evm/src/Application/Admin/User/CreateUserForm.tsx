@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from '../../../utils/Api/url';
 import moment from 'moment';
 import './createUserForm.scss';
@@ -139,7 +139,7 @@ const CreateUserForm = () => {
   }, []);
 
   React.useEffect(() => {
-if(radioValue == 'sendAct'){
+if(radioValue == 'sendAct' && disableLink){
   setDisableSave(false)
 }
 else if(radioValue == 'genTemp' && generatePassword){
@@ -210,13 +210,6 @@ else {
       setRadioValue('');
     }
   }, [userPayload]);
-
-  useEffect(() => {
-    if(radioValue == 'sendAct' && userPayload ){
-      setDisableLink(true);
-          setDisableSave(false)
-    }
-    },[radioValue])
 
   React.useEffect(() => {
     const { userGroups } = formpayload;
@@ -638,7 +631,7 @@ else {
     if (disableLink || isPasswordResetRequired) {
       userPayload.account.status = 3;
     }
-    const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType(), isPasswordResetRequired: isPasswordResetRequired };
+    const account = { ...userPayload.account, userName: formpayload.userName, password: onSelectEditPasswordType() };
     
 
     const payload: User = {
@@ -948,6 +941,24 @@ else {
   };
 
   const sendActivationLink = () => {
+    const linkClick = () => {
+      setDisableLink(true);
+      setDisableSave(false)
+    };
+    return (
+      <>
+        {userPayload && (
+          <div className='crxCreateEditFormActivationLink'>
+            <div className='crxActivationLink'>
+              <CRXButton className='secondary' onClick={linkClick} disabled={disableLink}>
+                {t("Resend_Activation_Link")}
+              </CRXButton>
+              <label>{t("(Link_will_be_sent_after_saving_this_form.)")}</label>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {

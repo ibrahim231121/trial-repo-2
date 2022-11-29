@@ -226,7 +226,7 @@ const VideoPlayerBookmark: React.FC<VideoPlayerSnapshotProps> = React.memo((prop
         {
             const AssetFilebody : EvidenceFile = {
                 id:0,
-                filesId: fileresponse.fileId,
+                filesId: 0,
                 assetId: 0,
                 name: fileresponse.fileName,
                 type: "Image",

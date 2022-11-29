@@ -9,8 +9,8 @@ import { useState } from "react";
 import moment from 'moment';
 
 interface AssetDateTime {
-  startDate: string,
-  endDate: string
+  startDate : string,
+  endDate : string
 }
 
 const DateTime = () => {
@@ -79,24 +79,32 @@ const DateTime = () => {
   },[reset])
 
   const changeDateOption = () =>{
-    let dateValues: (DateTimeProp | undefined)[] = SetDropDownValues();
+    let dateValues : (DateTimeProp | undefined)[] = [];
+    if(dateOptionType === dateOptionsTypes.basicoptions ){
+      dateValues = dateOptions.basicoptions;
+    }else if(dateOptionType === dateOptionsTypes.approachingDeletion ){
+      dateValues = dateOptions.approachingDeletion;
+    }else{
+      dateValues = dateOptions.basicoptions;
+    }
     
-    if (dateTimeDetail?.value === customRange) {
-      let dataArray = [...dateValues]
-      setCustomRangeDateTime({ startDate: dateTimeDetail.startDate, endDate: dateTimeDetail.endDate })
-      var defaultDateValue: DateTimeProp = {
-        startDate: function () { return (dateTimeDetail.startDate) },
-        endDate: function () { return dateTimeDetail.endDate },
-        value: dateTimeDetail.value,
-        displayText: dateTimeDetail.displayText
-      }
-      dateValues = [...dataArray, defaultDateValue];
+    if(dateTimeDetail?.value == "customRange")
+    {
+      let dataArray =  [...dateValues]
+      setCustomRangeDateTime( { startDate :dateTimeDetail.startDate, endDate : dateTimeDetail.endDate })
+      var defaultDateValue : DateTimeProp = {
+        startDate : function() { return(dateTimeDetail.startDate)},
+        endDate : function() { return dateTimeDetail.endDate},
+        value : dateTimeDetail.value,
+        displayText : dateTimeDetail.displayText
+    }
+      dateValues =  [...dataArray,defaultDateValue];
     }
 
     if(!showCompact){
       setDateOptions(dateValues);
     }
-    else if(showCompact && CheckMinAndMaxDate()){
+    else if(showCompact && (minDate === "" || minDate === undefined)  && ( maxDate === "" || maxDate === undefined) ){
       
       let requiredDateOptions = dateValues.filter((x, i) => {
         if(x && x.value === "custom")
@@ -107,9 +115,15 @@ const DateTime = () => {
             return x;       
         }
       });
-      if(IsApproachingDeletion())
+      if(dateTimeDetail.displayText === "tomorrow" || dateTimeDetail.displayText === "next 7 days" || dateTimeDetail.displayText === "next 30 days")
       {
-        requiredDateOptions = dateOptions.basicoptions;
+          requiredDateOptions = dateOptions.approachingDeletion.filter((x, i) => {
+          
+          if (x && moment(x.startDate()) >=  moment(dateTimeDetail.startDate) &&
+            moment(x.endDate()) <= moment(dateTimeDetail.endDate)) { // add this check because by default it is showing DateTimeProp or undefined . 
+              return x;       
+          }
+        });
       }
   
       if(requiredDateOptions != null && requiredDateOptions.length > 0 ){
@@ -128,30 +142,6 @@ const DateTime = () => {
     newDate[1] = convertTimeToAmPm(newDate[1]);
     return newDate;
   };
-
-  function CheckMinAndMaxDate()
-  {
-    return (minDate === "" || minDate === undefined)  && ( maxDate === "" || maxDate === undefined);
-  }
-
-  function IsApproachingDeletion()
-  {
-    return dateTimeDetail.displayText === "tomorrow" || dateTimeDetail.displayText === "next 7 days" || dateTimeDetail.displayText === "next 30 days";
-  }
-
-  function SetDropDownValues()
-  {
-    let dateValues: (DateTimeProp | undefined)[] = [];
-    if (dateOptionType === dateOptionsTypes.basicoptions) {
-      dateValues = dateOptions.basicoptions;
-    } else if (dateOptionType === dateOptionsTypes.approachingDeletion) {
-      dateValues = dateOptions.approachingDeletion;
-    } else {
-      dateValues = dateOptions.basicoptions;
-    }
-
-    return dateValues;
-  }
 
   function GetStartAndEndDate(dateValues: any) {
     let assetDateTime: AssetDateTime = { startDate: "", endDate: "" };

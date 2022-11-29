@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const {  fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen } = props;
+  const { fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -18,10 +18,8 @@ const VideoPlayerSettingMenu = (props: any) => {
     let scroll:any = window.scroll({
       top: 100,
       left: 0,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
-    let htmlScroll = document.querySelector("html");
-    htmlScroll && (htmlScroll.style.overflowY = "auto")
     event.target.checked && scroll();
   }
 
@@ -75,19 +73,17 @@ useEffect(() => {
 
   useEffect(()=>{
       if(settingMenuEnabled === null) {
-        //document.documentElement.style.overflow = "hidden";
-        //document.body.scrollTop = 0; 
-        //document.documentElement.scrollTop = 0;
+        document.documentElement.style.overflow = "hidden";
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
       }
   },[settingMenuEnabled])
-
-  const settingEnabled_status = !singleVideoLoad && isMultiViewEnable ? "settingEnabled_on" : "settingEnabled_off";
 
   return (
     <>
    
     <MaterialMenu
-        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}  ${settingEnabled_status}`}
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}`}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}

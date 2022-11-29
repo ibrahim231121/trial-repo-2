@@ -3,12 +3,11 @@ import "./index.scss";
 import useGetFetch from "../../utils/Api/useGetFetch";
 import { EVIDENCE_SEARCH_VERSION_URL } from '../../utils/Api/url'
 import { useTranslation } from "react-i18next";
-import { getToken } from "../../Login/API/auth";
 
 const Footer = React.memo(() => {
   const { t } = useTranslation<string>();
   const [versionNumber, setVersionNumber] = React.useState("");
-  const [getResponse, res] = useGetFetch<any>(EVIDENCE_SEARCH_VERSION_URL, { "Content-Type": "application/json", TenantId: "1",'Authorization': `Bearer ${getToken()}` });
+  const [getResponse, res] = useGetFetch<any>(EVIDENCE_SEARCH_VERSION_URL);
   const [showScroll, setShowScroll] = React.useState(false);
 
   const checkScrollTop = () => {

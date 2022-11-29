@@ -8,14 +8,13 @@ interface VolumecontrolProp {
   setMuteHandle: (values: boolean) => void;
   volume: number;
   setVolume: any;
-  setIsMute : any;
-  isMute: boolean;
-  handleVoumeClick: any;
 }
 
   const VolumeControl = (props: VolumecontrolProp) => {
+  const{setVolumeHandle, setMuteHandle, volume, setVolume} = props;
 
-  const{setVolumeHandle, setMuteHandle, volume, setVolume, setIsMute, isMute, handleVoumeClick} = props;
+  
+  const [isMute, setIsMute] = useState(false);
 
   const [volumeBar, setvolumeBar] = useState("hideVolumeBar");
 
@@ -44,6 +43,18 @@ interface VolumecontrolProp {
   const VolumeBarLeave = () => {
     setvolumeBar("hideVolumeBar");
   }
+
+  const handleVoumeClick = () => {
+   
+    setIsMute(!isMute);
+    setMuteHandle(!isMute);
+    if (volume == 0 && isMute) {
+      setVolume(50);
+      setVolumeHandle(50);
+    }
+
+  }
+
 
   const getVolumeIconClass = () => {
 
@@ -87,9 +98,9 @@ interface VolumecontrolProp {
             placement="bottom"
             title={
               <>
-                <p className="MuteTool MuteTool_1">{isMute ? "Unmute" : "Mute"} <span className={isMute ? "UnMuteSpacer" : "MuteSpacer"}>Shift + ALT + M</span></p>
+                <p className="MuteTool MuteTool_1">{isMute ? "Unmute" : "Mute"} <span className={isMute ? "UnMuteSpacer" : "MuteSpacer"}>M</span></p>
                 <p className="MuteTool MuteTool_2">Volume up <i className="fal fa-long-arrow-up"></i></p>
-                <p className="MuteTool MuteTool_3">Volume down <i className="fal fa-long-arrow-down"></i></p>
+                <p className="MuteTool MuteTool_3">Volume down<i className="fal fa-long-arrow-down"></i></p>
               </>
             }
             arrow={false}

@@ -76,12 +76,6 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         if(dataPermissionsInfo.length <=0 ){
             addDefaultPermission();
         }
-        loadStations();
-        loadCateogories();
-        setDataPermissions(prev => {
-            return [...loadfilterDataPermission()
-            ]
-        })
     },[dataPermissionsInfo])
 
     
@@ -174,6 +168,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
     }, [dispatch]);
 
     useEffect(()=>{
+
         setDataPermissions([]);
         loadStations();
         loadCateogories();
@@ -202,6 +197,7 @@ const DataPermission: React.FC<infoProps> = ({ dataPermissionsInfo, onChangeData
         categoryFromReducer && Object.keys(categoryFromReducer).length == 0 )
         getData();
     }, [getData]);
+
 
 
     const loadCateogories = () => {

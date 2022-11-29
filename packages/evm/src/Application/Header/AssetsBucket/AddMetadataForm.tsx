@@ -1051,11 +1051,11 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             </div>
             <div className="metaData-masterAsset">
               <div className="metaData-inner-masterAsset">
-                <label className="masterAsset_label_ui">
+                <label>
                   {t("Master_Asset")} <span>*</span>
                 </label>
                 <CRXSelectBox
-                  className={`metaData-Station-Select  ${formpayload.masterAsset === "" ? "" : "gepAddClass"
+                  className={`metaData-Station-Select ${formpayload.masterAsset === "" ? "" : "gepAddClass"
                     }`}
                   id={"select_" + "selectBox"}
                   defaultOptionText={t("Select_Master_Asset")}
@@ -1081,7 +1081,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               </div>
             </div>
             <div
-              className={`metaData-station  ${meteDataErrMsg.required == ""
+              className={`metaData-station ${meteDataErrMsg.required == ""
                 ? ""
                 : "__Crx_MetaData__Station_Error"
                 }`}
@@ -1090,12 +1090,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                 className={`metaData-inner ${formpayload.station === "" ? "" : "gepAddClass"
                   }`}
               >
-                <label className="label_Select_ui_field">
+                <label>
                   {t("Station")} <span>*</span>
                 </label>
                 <div className="__CrX_Station__metaData__">
                   <CRXSelectBox
-                    className="metaData-Station-Select metaData-Station-Select_ui_field"
+                    className="metaData-Station-Select"
                     id={"select_" + "selectBox"}
                     value={
                       formpayload.station === "" ? "" : formpayload.station

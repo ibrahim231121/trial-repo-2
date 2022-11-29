@@ -160,13 +160,14 @@ const VideosSelection = ({
                             </div>
                             <div className="CRXMultiViewDetailList">
                               <div className="CRXMultiViewName">
-                                {video.assetName}
+                                #8437653765376537653765374
+                                {video.camera}
                               </div>
-                              {video.camera && <div className="CRXMultiViewType">{video.camera}</div>}
+                              <div className="CRXMultiViewType">Body cam</div>
                               <div className="CRXMultiViewDate">
-                              {new Date(video.recording_started).toLocaleDateString()}
+                                02 / 16 / 2019
                               </div>
-                              <div className="CRXMultiViewTime">{new Date(video.recording_started).toLocaleTimeString()}</div>
+                              <div className="CRXMultiViewTime">14:28:19</div>
                             </div>
                           </div>
                         </>

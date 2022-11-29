@@ -170,7 +170,7 @@ const TenantSettings: React.FC = () => {
     if (values.EmailLinkExpiration == "") {
       values.EmailLinkExpiration = 1;
     }
-    if (values.Culture == null || values.Culture == "" || values.Culture?.label == "") {
+    if (values.Culture == null) {
       values.Culture = navigator.languages[0];
     }
     if (values.AssetViewReasonRequired == "false") {
@@ -406,6 +406,7 @@ const TenantSettings: React.FC = () => {
         value: values.Timezone.value,
       });
     }
+    debugger;
     if(actionVerb == "POST"){
       SetupConfigurationAgent.postTenantSetting(body)
       .then((res: any) => {
