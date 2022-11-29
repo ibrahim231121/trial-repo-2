@@ -7,21 +7,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import './CRXRadio.scss';
 
 type Props = {
-  content?: { value: any; label: string;isDisabled: boolean;isDisableRipple:boolean; Comp:any}[];
+  content: { value: any; label: string;isDisabled: boolean;isDisableRipple:boolean; Comp:any}[];
   value:any;
   onChange?:any;
   setValue:any;
   className?:string;
   disableRipple? :boolean;
-  name? : any;
-  checked? : any,
-  singleRadioChange? : any
 };
 
-const radioButtonStyle = makeStyles({
-  root : {
-    padding: "0px",
-  },
+const useStyles = makeStyles({
   icon: {
     fontSize: "18px",
     color:"#d1d2d4",
@@ -43,9 +37,9 @@ const radioButtonStyle = makeStyles({
   }
 });
 
-const CRXRadio: React.FC<Props> = ({ content ,value,setValue, singleRadioChange, checked, name, className, onChange }) => {
+const CRXRadio: React.FC<Props> = ({ content ,value,setValue,className, onChange }) => {
 //   const [value, setValue] = React.useState("female");
-  const classes = radioButtonStyle()
+  const classes = useStyles()
   const handleChange = (event: any) => {
     setValue(event.target.value);
   };
@@ -53,16 +47,13 @@ const CRXRadio: React.FC<Props> = ({ content ,value,setValue, singleRadioChange,
   const radioIcon = "icon icon-radio-unchecked";
   const cehckedIcon = "icon-radio-checked";
   return (
-    <>
-    {content && content.length > 0 ?
-    
     <FormControl component="fieldset">
       <RadioGroup
         className={className + " crx-radio-btn"}
         value={value}
         onChange={onChange ? onChange : handleChange}
       >
-        {content && content.map((x) => (
+        {content.map((x) => (
           <>
             <FormControlLabel
             key={x.value}
@@ -81,18 +72,6 @@ const CRXRadio: React.FC<Props> = ({ content ,value,setValue, singleRadioChange,
         ))}
       </RadioGroup>
     </FormControl>
-    : <Radio
-        checked={checked === value}
-        onChange={singleRadioChange}
-        value={value}
-        name={name}
-        className = {classes.root}
-        inputProps={{ 'aria-label': name }}
-        checkedIcon={<span className={classes.checkedIcon + " " + cehckedIcon}></span>}
-        icon={<span className={classes.icon + " " + radioIcon}></span>}
-      />
-    }
-    </>
   );
 };
 export default CRXRadio

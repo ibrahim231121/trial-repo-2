@@ -89,7 +89,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
     ref
   ) => {
     const [errMsg, setErrorMsg] = useState<string | undefined>();
-   const errorMessage = (error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errMsg}</span> </div>)
+   const errorMessage = (!error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errMsg}</span> </div>)
     const option = Object.assign(options).map((data: any, i: number) => {
       return (
         <StyledMenuItem aria-label="None" key={i} value={data.value}>

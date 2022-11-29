@@ -118,8 +118,8 @@ const UnitAndDevices: React.FC = () => {
   const unitVersions: any = useSelector((state: RootState) => state.unitReducer.unitVersionKeyValues);
   const unitAssignments: any = useSelector((state: RootState) => state.unitReducer.UnitAssignmentKeyValues);
   const [rows, setRows] = React.useState<Unit[]>([]);
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("lastCheckedIn");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<any>();

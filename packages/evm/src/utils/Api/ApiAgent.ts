@@ -18,7 +18,8 @@ import {
     Note,
     TimelinesSync,
     EvdenceCategoryAssignment,
-    SubmitAnalysisModel
+    SubmitAnalysisModel,
+    MetadataFileType
 } from './models/EvidenceModels';
 import { File as FileF } from './models/FileModels';
 import {
@@ -75,7 +76,7 @@ let config = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + cookies.get("access_token"),
         'UserId': getUserId(),
-         'TenantId': getTenantId()
+        'TenantId': getTenantId()
     }
 }
 
@@ -118,7 +119,7 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
 };
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 const addHeaders = (headers?: Headers[]) => {
-
+    
     if (config && headers) {
         let config2: any = config;
         if (config2["headers"]) {
@@ -128,8 +129,14 @@ const addHeaders = (headers?: Headers[]) => {
                 ConfigHeader.push(a)
             })
             var obj = ConfigHeader.reduce((obj, cur) => ({ ...obj, [cur[0]]: cur[1] }), {})
-            config["headers"] = obj;
+            return {headers: obj}
         }
+        else{
+            return config;
+        }
+    }
+    else{
+        return config;
     }
 };
 
@@ -173,8 +180,7 @@ export const SetupConfigurationAgent = {
     getSensorsAndTriggersEvents: (url: string) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/GetEvent/" + url, config),
     deleteAllSensorsAndTriggersTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/SensorEvents/DeleteAllEvents/", body, config),
     getAllFiltersSensorsAndTriggersEvents: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, config);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/SensorEvents/GetAllEvents${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -188,8 +194,7 @@ export const SetupConfigurationAgent = {
     deleteAllRetentionPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/", body, config),    
     getRetentionPolicies: (id: number) => requests.get<RetentionPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/" + id, config),
     getAllFiltersRetentionPolicies: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataRetention/${url}`, config);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataRetention/${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
@@ -232,6 +237,12 @@ export const EvidenceAgent = {
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
     submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
     LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
+    ExportEvidence: (evidenceId: number, assetId: number, fileType : MetadataFileType) => {
+        return axios.get(`${EVIDENCE_SERVICE_URL}/Evidences/ExportAsset/${evidenceId}/${assetId}/${fileType}`, {
+            headers: config.headers,
+            responseType: "blob",
+        });
+    }
 }
 
 export const AuthenticationAgent = {
@@ -255,14 +266,12 @@ export const UsersAndIdentitiesServiceAgent = {
     
     //getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
     getUsersInfo: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(USER_INFO_GET_URL, url, config);
+        return requests.getAll<Paginated<any>>(USER_INFO_GET_URL, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
     getGroups: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL, url, config);
+        return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     getUserStatusKeyValues: (url: string) => requests.get<UserStatus[]>('', url, config),
     getAllUserGroupKeyValues: (url: string) => requests.get<UserGroups[]>('', url, config),
@@ -280,8 +289,7 @@ export const UsersAndIdentitiesServiceAgent = {
 }
 export const UnitsAndDevicesAgent = {
     getAllUnits: (url: string, extraHeader?: Headers[]) => {
-        addHeaders(extraHeader);
-        return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, config)
+        return requests.get<Unit[]>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
     getUnit: (url: string) => requests.get<Unit>(BASE_URL_UNIT_SERVICES, url, config),
     getConfigurationTemplateList: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
@@ -289,12 +297,10 @@ export const UnitsAndDevicesAgent = {
     changeUnitInfo: (url: string, body: UnitTemp) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     deleteUnit: (url: string) => requests.delete<void>(BASE_URL_UNIT_SERVICES, url, config),
     getUnitInfo: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<UnitInfo[]>>(BASE_URL_UNIT_SERVICES, url, config)
+        return requests.getAll<Paginated<UnitInfo[]>>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
     getAllStations: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, config);
+        return requests.getAll<Paginated<Station[]>>(BASE_URL_UNIT_SERVICES, `/Stations${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     getStation: (url: string) => requests.get<Station>(BASE_URL_UNIT_SERVICES, url, config),
     getAllStationInfo: (url: string) => requests.get<Station[]>(BASE_URL_UNIT_SERVICES, "/Stations/StationsInfo" + url, config),
@@ -305,8 +311,7 @@ export const UnitsAndDevicesAgent = {
     addTemplateConfiguration: (body: ConfigurationTemplate) => requests.post<number>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates", body, config),
     changeKeyValues: (url: string, body: ConfigurationTemplate) => requests.put<void>(BASE_URL_UNIT_SERVICES, url, body, config),
     getAllDeviceConfigurationTemplate: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<DeviceConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, url, config)
+        return requests.getAll<Paginated<DeviceConfigurationTemplate[]>>(BASE_URL_UNIT_SERVICES, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
     getAllConfigurationValues: (url: string) => requests.get<any[]>(BASE_URL_UNIT_SERVICES, url, config),
     getTemplateConfigurationLogs: (url: string) => requests.get<ConfigurationTemplateLogs[]>(BASE_URL_UNIT_SERVICES, "/ConfigurationTemplates/TemplateConfigurationLogs/" + url, config),
@@ -327,8 +332,7 @@ export const CommonAgent = {
 }
 export const SearchAgent = {
     getAssetBySearch: (body: any, extraHeader?: Headers[]) => {
-        addHeaders(extraHeader);
-        return requests.post<any>(EVIDENCE_GET_URL, '', body, config)
+        return requests.post<any>(EVIDENCE_GET_URL, '', body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
 }
 

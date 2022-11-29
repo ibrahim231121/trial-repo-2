@@ -43,7 +43,6 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     const trAtiveValue = document
       .querySelector(".rc-menu-button--open")
       ?.closest(".MuiTableRow-root.MuiTableRow-hover");
-      console.log(trAtiveValue,"trAtiveValue")
     let dataui = document.querySelectorAll(".MuiTableRow-root");
     let trAtiveArray = Array.from(dataui);
     trAtiveArray.map((e) => {
@@ -81,7 +80,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     bodyCellWidth?.finalWidth : "0px";
     
     const removePx = width.slice(0, 3);
-    let cellFinalWidth = parseInt(removePx) + 20 + "px";
+    let cellFinalWidth = parseInt(removePx) + 6 + "px";
     
     return cellFinalWidth;
 

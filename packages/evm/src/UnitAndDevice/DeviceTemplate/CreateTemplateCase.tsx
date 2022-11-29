@@ -1,6 +1,9 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useLayoutEffect, useRef, useState} from 'react';
 import { Field, FieldArray, ErrorMessage } from 'formik';
-import { CRXTooltip, CRXSelectBox, CRXRadio, CRXMultiSelectBoxLight } from '@cb/shared';
+import { CRXTooltip } from '@cb/shared';
+import { Select, MenuItem, ListItemText } from '@material-ui/core';
+import Menu from '@material-ui/core/Menu';
+import { makeStyles } from '@material-ui/core/styles';
 import { CRXButton, CRXConfirmDialog  } from '@cb/shared';
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,78 +11,70 @@ import Restricted from '../../ApplicationPermission/Restricted';
 
 var re = /[\/]/;
 
-export const inCarSelectTypes = [
-  { value: "value", displayText: 'label' },
-];
-
 const CustomizedSelectForFormik = (props: any) => {
 
-  const { options, field, onChange, errors, handleBlur, formObj } = props;
-  const { value } = field;
+  const { children, form, field, onChange } = props;
+  const { name, value } = field;
+  const { setFieldValue } = form;
 
-  
+
   return (
     <>  
-      <CRXSelectBox
+      <Select
         {...field}
         value={value ?? ""}
         onChange={(e:any) => { onChange(e) }}
-        className="selectFormikIncar"
-        options={options}
-        isRequried={true}
-        error={errors[formObj.key]?.length > 0}
-        errorMsg={formObj.key.split(re)[1].split('_')[0] + " is " + errors[formObj.key]}
-        icon={true}
-        popover={"selectFormikIncar_wraper"}
-        defaultOptionText={value}
-        defaultValue={value}
-        onClose={handleBlur}
-      />
-   
+        MenuProps={{ classes: { paper: `selectFormikIncar ` }  }}
+        
+      >
+        {children}
+      </Select>
     </>
   );
 };
 
-const cameraTemplateFledForRadio = (props : any) => { 
-  const { value, values, onChange, formObj } = props;
-  return (
-    <>
-    <CRXRadio 
-      className="usama" 
-      value={value} 
-      checked={values[formObj.key]} 
-      name={formObj.key}
-      singleRadioChange={onChange}
-     />
-    </>
-  )
-}
 
 
 
 
 const CustomizedMultiSelectForFormik = (props: any) => {
-  const { form, field, options, formObj, errors } = props;
+  const { children, form, field } = props;
   const { name, value } = field;
   const { setFieldValue } = form;
-  const valueArray = Array.isArray(value) ? value : value.split(',')
-  
+  const [allSelected,setAllSelected] = useState(value.includes("Add All"))
+
   return (
-  <>
-    <CRXMultiSelectBoxLight
-      className="_device_template_multiselect"
-      multiple={true}
-      CheckBox={false}
-      error={errors[formObj.key]?.length > 0}
-      errorMsg={formObj.key.split(re)[1].split('_')[0] + " is " + errors[formObj.key]}
-      options={options}
-      value={options.filter((x: any) => valueArray.includes(x.value))}
-      isSearchable={false}
-      onChange={(e: any, value: any[]) => {
-        let values = value.map((x: any) => x.value ?? x);
-        setFieldValue(name, values);
-      }}
-    />
+    <>
+
+      <Select
+        multiple
+        onChange={e => {
+          setFieldValue(name, e.target.value);
+        }}
+        MenuProps={{ classes: { paper: `multiSelectFormikIncar ${allSelected === true ? "AllDataSelectedList" : "NotAllSelectedList"}` } }}
+
+        renderValue={(selected: any[]) => {
+          if(children.filter((x: any) => x.key != "Add All").length === selected.length)
+          {
+            setAllSelected(true) ;
+          }
+          else
+          {
+            setAllSelected(false);
+          }
+          var addAllSelected = selected.includes("Add All");
+          if(addAllSelected)
+          {
+            setFieldValue(name, children.filter((x: any) => x.key != "Add All").map((x:any) => x.props.value));
+
+            return children.filter((x: any) => x.key != "Add All").map((x:any) => x.key).join(', ');
+          }
+          return children.filter((x: any) => selected.includes(x.props.value)).map((x:any) => x.key).join(', ');
+        }}
+        {...field}
+      >
+        {children}
+      </Select>
     </>
   )
 };
@@ -149,6 +144,11 @@ const removeObject = (removeIndex: number, Initial_Values_obj_RequiredField: any
 
   const valuesArray = Object.entries(values).map((e) => ({ key: e[0], value: e[1] }));
   var valuesArrayUpdated = valuesArray.filter((x: any) => !(rowToDelete.some((y: any) => y.key == x.key)));
+  if(rowToDelete.length > 0)
+  {
+    let indexNumber = rowToDelete[0].key.split('_')[1];
+    valuesArrayUpdated = valuesArrayUpdated.filter((x: any) => !x.key.includes('_' + indexNumber + "_") );
+  }
   var updatedValuesKV = valuesArrayUpdated.reduce(                  // Validations Object
     (obj, item: any) => ({ ...obj, [item.key]: item.value }),
     {}
@@ -241,8 +241,8 @@ export const CreateTempelateCase = (props: any) => {
 
 
 
-  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors, setValidationFailed, handleBlur, sensorsEvent} = props;
-  
+  const { formObj, values, setValues, index, handleChange, setFieldValue, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, FormSchema, isValid, setformSchema, touched, errors, setValidationFailed, sensorsEvent} = props;
+
 
   const handleRowIdDependency = (key: string, extraFieldDependency?: any) => {
     var parentSplittedKey = formObj.key.split('_');
@@ -283,10 +283,10 @@ export const CreateTempelateCase = (props: any) => {
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
           {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={`formMainHeading   ${formObj.labelGroupRecording} `}>{t(formObj.labelGroupRecording)}</h1></span></span>}
-          <div className={"_template_form_group " + formObj.class}>
+          <span className={formObj.class}>
             <div className={touched[formObj.key] == true && errors[formObj.key] ? " textFieldError" : "textField"} >
               <div className="UiLabelTextbox " >
-                
+                <div>
                   <label className="labelRadioo">{t(formObj.label)}
                     <label>
                       {formObj.validation?.some((x: any) => x.key == 'required') === true ? <span className={touched[formObj.key] == true && errors[formObj.key] ? "textBoxRed" : "textBoxBlack"}>*</span> : null}
@@ -321,11 +321,11 @@ export const CreateTempelateCase = (props: any) => {
                       placement="right"
                     />
                   ) : null}
-                
+                </div>
               </div>
             </div>
-          </div>
-          {/* <div className="UiColumnSpacer"></div> */}
+          </span>
+          <div className="UiColumnSpacer"></div>
         </>
       );
     case "time":
@@ -375,8 +375,7 @@ export const CreateTempelateCase = (props: any) => {
             (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
             <>
               {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`} >{t(formObj.labelGroupRecording)}</h1>}
-              
-              <div className={formObj.labelMute + " _template_radio_button"}>
+              <div className={formObj.class}>
                 <div className="UiRadioMain">
                   <div className="UiRadioLabel">
                     <label >{t(formObj.labelMute)}</label>
@@ -386,17 +385,15 @@ export const CreateTempelateCase = (props: any) => {
                   >
                     <div className="Enabled">
                       <label className="containerRadio">
-                        
                         <Field
-                          formObj={formObj}
+                          id={formObj.id}
+                          type={formObj.type}
+                          name={formObj.key}
                           value={formObj.value}
-                          values={values}
-                          component={cameraTemplateFledForRadio}
-                          onChange={(e: any) => setFieldValue(formObj.key, e.target.value)}
                         />
-                        
+                        <span className="checkmarkRadio"></span>
                       </label>
-                      <label className="radio_label">{t(formObj.label)}
+                      <label className={formObj.label + "Text"}>{t(formObj.label)}
                         <label>
                           {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                         </label>
@@ -423,7 +420,7 @@ export const CreateTempelateCase = (props: any) => {
                   </div>
                 </div>
               </div>
-              
+              <div className="UiColumnRadioSpacer"></div>
             </>
           }
         </>
@@ -438,12 +435,12 @@ export const CreateTempelateCase = (props: any) => {
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? `UiStationSelect UiStationSelectDepended` : ' UiStationSelect'}
             >
-              
+              <div>
                 <label className='UiStationSelectLabel'>{t(formObj.label)}
-                  <label className='starikBlack'>
+                  <label>
                     {formObj.validation?.some((x: any) => x.key == 'required') === true ? "*" : null}
                   </label></label>
-                <div className="UicustomMulti">
+                <div className="UicustomMulti" id="ghk">
                   <Field
                     name={formObj.key}
                     id={formObj.id}
@@ -456,18 +453,23 @@ export const CreateTempelateCase = (props: any) => {
                         optionAppendOnChange(e.target.value, formObj, values, setValues, index);
                       }
                       setFieldValue(formObj.key, e.target.value);
+
                     }}
-                    options={formObj.options?.filter((x: any) => x.hidden != true).map((x: any) => {
-                        return {
-                          "displayText" : x.label ,
-                          "value" : x.value    
-                        }
-                      })
-                    }
-                    errors={errors}
-                    handleBlur={handleBlur}
-                    formObj={formObj}
-                  />
+                  >
+                 
+                   {formObj.options?.filter((x: any) => x.hidden != true).map(
+                      (opt: any, key: string) => (
+                        <MenuItem
+                          className={"selectFieldIncar"}
+                          value={opt.value}
+                          key={key}
+                        >{t(opt.label)}{" "}</MenuItem>
+                      )
+                    )}
+                
+              
+                          
+                  </Field>
 
                   <span className='UicustomMultiHint'>
                     {formObj.hintText ? (
@@ -478,7 +480,7 @@ export const CreateTempelateCase = (props: any) => {
                       />
                     ) : null}
                   </span>
-                
+                </div>
               </div>
               <div>
                 <ErrorMessage
@@ -504,8 +506,8 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         
-        <div className={formObj.class  + touched[formObj.key] == true && errors[formObj.key] ? " multiSelectFieldError" : "multiSelectField"}>
-        
+        <div className={touched[formObj.key] == true && errors[formObj.key] ? " multiSelectFieldError" : "multiSelectField"}>
+        <div className={formObj.class}>
                <div
           className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'multiSelectUi multiSelectUiDepend' : 'multiSelectUi '}
         >
@@ -522,12 +524,29 @@ export const CreateTempelateCase = (props: any) => {
               id={formObj.id}
               placeholder="Heloss"
               component={CustomizedMultiSelectForFormik}
-              formObj={formObj}
-              options={formObj.options}
-              errors={errors}
-              handleBlur={handleBlur}
-            />
+            // multiple={true}
+            >
+             
+              {formObj.options.map(
+                (opt: any, key: string) => (
+                  
+                  <MenuItem  key={opt.label} value={opt.value}  >
+                    {/* <Checkbox checked={name.indexOf(opt.value) > -1} /> */}
+                    <ListItemText primary={t(opt.label)} />
+                  </MenuItem>
+
+                  // <option
+                  //   style={{ width: "50%" }}
+                  //   value={opt.value}
+                  //   key={key}
+                  // >
+                  //   {opt.label}{" "}
+                  // </option>
+                )
+              )}
               
+        
+            </Field>
             <ErrorMessage
                   name={formObj.key}
                   render={(msg) => (
@@ -543,6 +562,7 @@ export const CreateTempelateCase = (props: any) => {
                 placement="right"
               />) : (<></>)}
           </div>
+
           <Restricted moduleId={52}>
             {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
                   <CRXButton onClick={sensorsEvent}>
@@ -552,6 +572,7 @@ export const CreateTempelateCase = (props: any) => {
           </Restricted>
         </div>
         </div>
+        </div>
      
       );
     case "checkbox":
@@ -559,12 +580,12 @@ export const CreateTempelateCase = (props: any) => {
       return (
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
         <>
-          {(formObj.labelGroupRecording) && <span className={ "MainHeadingDevices " + formObj.label + formObj.id }><span className="MainHeadingDevices"><h1 className={'formMainHeading '}>{t(formObj.labelGroupRecording)}</h1></span></span>}
-          <div className={formObj.class + " _template_checkbox"}>
+          {(formObj.labelGroupRecording) && <span className="MainHeadingDevices"><span className="MainHeadingDevices"><h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1></span></span>}
+          <div className={formObj.class}>
             <div
               className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiCheckbox UiCheckboxDepend ' : 'UiCheckbox'}
             >
-              
+              <div className="UiCheckboxMain">
                 <div className="UiCheckboxLeft">
                   <label className={formObj.label ? "labelAdded" : "labelNotAdded"}>{t(formObj.label)}
                     <label>
@@ -588,7 +609,7 @@ export const CreateTempelateCase = (props: any) => {
                       <span className="checkmark" ></span>
                       <p className="checkHelperText">{t(formObj.belowFieldText)}</p>
                     </label>
-                    <div className='textWithRadioCheckBox'>{formObj.checkBoxText ? <p>{t(formObj.checkBoxText)}</p> : ''}</div>
+                    <div>{formObj.checkBoxText ? <p>{t(formObj.checkBoxText)}</p> : ''}</div>
                     {formObj.hintText ? (
                       <CRXTooltip
                         iconName="fas fa-info-circle"
@@ -606,9 +627,9 @@ export const CreateTempelateCase = (props: any) => {
                     />
                   </div>
                 </div>
-              
+              </div>
             </div>
-            
+            <div className={'UiColumnSpacerCheckBox'}></div>
           </div>
         </>
       );
@@ -616,13 +637,13 @@ export const CreateTempelateCase = (props: any) => {
       return (
 
         (formObj.depends == null || formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency)))) &&
-        
-          <div className={touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError NumberField " : "NumberField " + formObj.label}>
+        <div className={formObj.class}>
+          <div className={touched[formObj.key] == true && errors[formObj.key] ? " NumberFieldError" : "NumberField"}>
             <div className={formObj.depends?.every((x: any) => x.value.includes(handleRowIdDependency(x.key, x.extraFieldDependency))) ? 'UiNumberSelectorDepend' : ''}>
               <div
                 className={`${(formObj.postFieldText && formObj.postFieldText == "minutes") ? "UiNumberSelector UiNumberSelectorMinute" : "UiNumberSelector"}`}
+
               >
-                
                 {(formObj.labelGroupRecording) && <h1 className={'formMainHeading ' + formObj.labelGroupRecording + `HeadingSpacer`}>{t(formObj.labelGroupRecording)}</h1>}
                 <div className={formObj.belowFieldText ? 'UiNumberSelectorMain checkHelperTextMain ' : 'UiNumberSelectorMain'}>
                   <div className="UiNumberSelectorLeft ">
@@ -633,7 +654,7 @@ export const CreateTempelateCase = (props: any) => {
                     </label>
                   </div>
                   <div className={` ${formObj.hintText ? 'UiNumberSelectorRight ' : "UiNumberSelectorRight UiNumberSelectorNoHint"}`}>
-                    <div className={(formObj.postFieldText && formObj.postFieldText == "volts") ? "voltsDepended" : ""} >
+                    <span className={(formObj.postFieldText && formObj.postFieldText == "volts") ? "voltsDepended" : ""} >
                       <Field
                         name={formObj.key}
                         id={formObj.id}
@@ -642,6 +663,7 @@ export const CreateTempelateCase = (props: any) => {
                       <label className="timeShow">
                         {formObj.postFieldText ? t(formObj.postFieldText) : ""}
                       </label>
+                      <p className="checkSelectorText">{t(formObj.belowFieldText)}</p>
                       {formObj.hintText ? (
                         <CRXTooltip
                           iconName="fas fa-info-circle"
@@ -649,8 +671,6 @@ export const CreateTempelateCase = (props: any) => {
                           placement="right"
                         />
                       ) : null}
-                      
-                      <div className="checkSelectorText">{t(formObj.belowFieldText)}</div>
                       <ErrorMessage
                         name={formObj.key}
                         render={(msg) => (
@@ -660,14 +680,14 @@ export const CreateTempelateCase = (props: any) => {
                           </div>
                         )}
                       />
-                      
-                    </div>
+                    </span>
                   </div>
                 </div>
                 <div className="UiColumnSpacer"></div>
               </div>
             </div>
           </div>
+        </div>
       );
     case "fieldarray":
       return (
@@ -675,7 +695,7 @@ export const CreateTempelateCase = (props: any) => {
           name={formObj.key + ".feilds"}
           render={arrayHelpers => (
             // <></>
-            <div className='_camera_setup_tab'>
+            <div>
               {
                 values[formObj.key]?.feilds && values[formObj.key]?.feilds.length > 0 ? (
                   values[formObj.key]?.feilds.map((feildArray: any, index: any) => (
@@ -686,8 +706,8 @@ export const CreateTempelateCase = (props: any) => {
                       key == 0 ?
                         <>
                           <div className='cameraSetup'>
-                            <div className='_device_temp_camera_title'>{t("Camera")} {(index + 1)}</div>
-                               <div className='_remove_camera_icon' onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}>
+                            <h1>{t("Camera")} {(index + 1)}</h1>
+                               <div onClick={() => { IncarModalOpen(); setOpen(true); setRemoveIndex(index) }}>
                                     <CRXTooltip 
                                       className="assetsGroupPopupTootip"
                                       placement="bottom-left"
@@ -698,15 +718,13 @@ export const CreateTempelateCase = (props: any) => {
                                </div>
                         
                           </div>
-                        
-                          <div className='_camera_setup_flieds' key={formObj.key + "_DIV" + key}>
-                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setValidationFailed={setValidationFailed} />
+                          <div key={formObj.key + "_DIV" + key}>
+                            <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} setValidationFailed={setValidationFailed} />
                           </div></> :
-                        <div className='_camera_setup_flieds' key={formObj.key + "_DIV" + key}>
-                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setValidationFailed={setValidationFailed} />
+                        <div key={formObj.key + "_DIV" + key}>
+                          <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} setValidationFailed={setValidationFailed} />
 
                         </div>
-                        
                     ))
 
 
@@ -715,7 +733,7 @@ export const CreateTempelateCase = (props: any) => {
                 ) : (<></>)}
               <div className='AddCameraLineIncar'></div>
               <div className='AddCameraIncar'>
-                <CRXButton className=" secondary" color="secondary" variant="outlined" onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
+                <CRXButton onClick={() => addObject(formObj, arrayHelpers, cameraFeildArrayCounter, setCameraFeildArrayCounter, applyValidation, Initial_Values_obj_RequiredField, setInitial_Values_obj_RequiredField, values, setValues, isValid, setformSchema)}>
                   <i className="fa fa-plus"></i>  {t("Add camera")}
                 </CRXButton>
               </div>

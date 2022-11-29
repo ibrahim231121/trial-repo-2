@@ -442,3 +442,12 @@ input:-webkit-autofill {
   margin-top: 20px;
 }
 
+.overlayPanel{
+  background-color: #fff;
+  height: 97vh;
+  width: 30px;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  z-index: 999;
+}

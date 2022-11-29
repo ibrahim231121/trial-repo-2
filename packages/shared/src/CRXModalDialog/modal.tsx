@@ -96,7 +96,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
         (showSticky && showSticky == true) ? 
         <div className="optionalSticky"></div> : ""
       }
-      <div className="CRXContent CRXContent_user">
+      <div className="CRXContent CRXContent_user ">
         {children}
         <CRXConfirmDialog
           setIsOpen={setIsOpen}

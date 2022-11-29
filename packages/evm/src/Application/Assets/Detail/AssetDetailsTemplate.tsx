@@ -21,7 +21,6 @@ import { useHistory } from "react-router";
 import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
 import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
-import http from "../../../http-common";
 import "./AssetDetailTabsMenu.scss";
 import { AxiosError } from "axios";
 import {
@@ -428,7 +427,7 @@ const AssetDetailsTemplate = (props: any) => {
       });
 
 
-      let size = getAssetData.assets.master.files.filter(x => x.type == "Video").reduce((a, b) => a + b.size, 0)
+      let size = getAssetData.assets.master.files.filter(x => x.type != "GPS").reduce((a, b) => a + b.size, 0)
 
 
       var categoriesForm: string[] = [];
@@ -507,15 +506,13 @@ const AssetDetailsTemplate = (props: any) => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          if (template.type == "Video") {
-            fileDownloadUrls.push({
-              filename: template.name,
-              fileurl: template.url,
-              fileduration: template.duration,
-              downloadUri: response
-            })
-            setChildFileData([...fileDownloadUrls])
-          }
+          fileDownloadUrls.push({
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: response
+          })
+          setChildFileData([...fileDownloadUrls])
         }).catch(e => {
           fileDownloadUrls.push({
             filename: template.name,
@@ -673,11 +670,11 @@ const AssetDetailsTemplate = (props: any) => {
     }
     let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, name: name, notes: notes, camera: camera, status: status }
     rowdetail.push(myData);
-    rowdetail1 = row.assets.children.filter((x: any) => x.typeOfAsset == "Video").map((template: any, i: number) => {
+    rowdetail1 = row.assets.children.map((template: any, i: number) => {
       template.recording = {
         ...template.recording,
-        ended: new Date(new Date(template.recording.ended).getTime() + template.buffering.post),
-        started: new Date(new Date(template.recording.started).getTime() - template.buffering.pre),
+        ended: new Date(new Date(template.recording?.ended).getTime() + template.buffering?.post),
+        started: new Date(new Date(template.recording?.started).getTime() - template.buffering?.pre),
       }
       return {
         id: template.id,

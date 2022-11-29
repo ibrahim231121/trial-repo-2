@@ -1,2081 +1,1273 @@
-// .CrxCreateTemplate {
-//   position: relative;
+.CrxCreateTemplate {
+  position: relative;
 
-//   .incarBodywornGroup {
-//     display: block;
-//     margin-bottom: -3px;
-//   }
+  .incarBodywornGroup {
+    display: block;
+    margin-bottom: -3px;
+  }
 
-//   .MuiTab-root {
-//     padding: 0 25px;
-//     &:nth-child(1) {
-//       width: 226px;
-//       min-width: 226px;
-//     }
-//     &:nth-child(2) {
-//       width: 226px;
-//       min-width: 226px;
-//     }
-//   }
-//   .MuiTab-textColorInherit {
-//     width: auto;
-//   }
+  .MuiTab-root {
+    padding: 0 25px;
+    &:nth-child(1) {
+      width: 226px;
+      min-width: 226px;
+    }
+    &:nth-child(2) {
+      width: 226px;
+      min-width: 226px;
+    }
+  }
+  .MuiTab-textColorInherit {
+    width: auto;
+  }
 
-//   .rc-menu-button {
-//     float: right;
-//     background-color: transparent;
-//     font-size: 23px;
-//     position: absolute;
-//     color: #333333;
-//     right: 0;
-//     top: 65px;
-//     border: none;
-//     z-index: 60000;
-//     height: 34px;
-//     width: 36px;
-//   }
-//   .tabCreateTemplate {
-//     position: relative;
-//     .MuiTab-wrapper {
-//       text-transform: uppercase;
-//     }
-//     .MuiTabs-root {
-//       position: absolute;
-//       top: -33px;
-//     }
-//     .DeviceIndicator {
-//       color: #333333;
-//       font-size: 14px;
-//       font-family: Arial, Helvetica, sans-serif;
-//       font-style: italic;
-//       line-height: 20px;
-//       font-weight: 400;
-//       margin-left: 75px;
-//       margin-top: 18px;
-//       margin-bottom: 44px;
-//       span {
-//         color: #333333;
-//         font-family: Arial, Helvetica, sans-serif;
-//         font-weight: 700;
-//         font-size: 20px;
-//         display: inline-block;
-//         margin-right: 4px;
-//       }
-//     }
-//     .UiLabelTextbox {
-//       width: 749px;
-//       margin-left: auto;
-//       margin-right: auto;
-//       position: relative;
-//       div {
-//         &:nth-child(1) {
-//           display: flex;
-//           justify-content: space-between;
-//           align-items: center;
-//         }
-//       }
-//       label {
-//         color: #333333;
-//         font-family: Arial, Helvetica, sans-serif;
-//         font-weight: 400;
-//         line-height: 16.8px;
-//         font-size: 14px;
-//         position: relative;
-//         width: 180px;
-//         display: inline-block;
-//         margin-left: -3px;
-//         label {
-//           color: #333333;
-//           font-size: 20px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           font-weight: 700;
-//           position: absolute;
-//           top: -6px;
-//           margin-left: 6px;
-//         }
-//       }
-//       input {
-//         height: 30px;
-//         width: 430px;
-//         border-radius: 0px;
-//         border: 1px solid #d1d2d4;
-//         background-color: #ffffff;
-//         &:focus,
-//         &:focus-visible {
-//           @extend input;
-//           border: 3px solid #888787;
-//           outline: none;
-//         }
-//         &[value] {
-//           color: #333333;
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           padding-left: 18px;
-//         }
-//       }
-//       .UiLabelTextboxRight {
-//         position: relative;
-//         margin-right: 1px;
-//         .UiLabelTextboxError {
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           color: #aa1d1d;
-//           position: absolute;
-//           top: 33px;
-//           left: 0px;
-//           i {
-//             color: #aa1d1d;
-//             font-size: 14px;
-//             margin-right: 1px;
-//           }
-//         }
-//       }
-//     }
-//     .UiStationSelect {
-//       // width: 675px;
-//       width: 746px;
-//       margin-left: auto;
-//       margin-right: auto;
-//       position: relative;
-//       .UiStationSelectLabel {
-//         margin-left: -5px !important;
-//       }
-//       div {
-//         &:nth-child(1) {
-//           display: flex;
-//           justify-content: space-between;
-//           align-items: center;
-//         }
-//       }
-//       .UicustomMulti {
-//         position: relative;
-//         width: 430px;
-//         height: 30px;
+  .rc-menu-button {
+    float: right;
+    background-color: transparent;
+    font-size: 23px;
+    position: absolute;
+    color: #333333;
+    right: 0;
+    top: 65px;
+    border: none;
+    z-index: 60000;
+    height: 34px;
+    width: 36px;
+  }
+  .tabCreateTemplate {
+    position: relative;
+    .MuiTab-wrapper {
+      text-transform: uppercase;
+    }
+    .MuiTabs-root {
+      position: absolute;
+      top: -33px;
+    }
+    .DeviceIndicator {
+      color: #333333;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-style: italic;
+      line-height: 20px;
+      font-weight: 400;
+      margin-left: 75px;
+      margin-top: 18px;
+      margin-bottom: 44px;
+      span {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        display: inline-block;
+        margin-right: 4px;
+      }
+    }
+    .UiLabelTextbox {
+      width: 749px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      div {
+        &:nth-child(1) {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+      label {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        line-height: 16.8px;
+        font-size: 14px;
+        position: relative;
+        width: 180px;
+        display: inline-block;
+        margin-left: -3px;
+        label {
+          color: #333333;
+          font-size: 20px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 700;
+          position: absolute;
+          top: -6px;
+          margin-left: 6px;
+        }
+      }
+      input {
+        height: 30px;
+        width: 430px;
+        border-radius: 0px;
+        border: 1px solid #d1d2d4;
+        background-color: #ffffff;
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+        &[value] {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          padding-left: 18px;
+        }
+      }
+      .UiLabelTextboxRight {
+        position: relative;
+        margin-right: 1px;
+        .UiLabelTextboxError {
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #aa1d1d;
+          position: absolute;
+          top: 33px;
+          left: 0px;
+          i {
+            color: #aa1d1d;
+            font-size: 14px;
+            margin-right: 1px;
+          }
+        }
+      }
+    }
+    .UiStationSelect {
+      // width: 675px;
+      width: 746px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      .UiStationSelectLabel {
+        margin-left: -5px !important;
+      }
+      div {
+        &:nth-child(1) {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+      .UicustomMulti {
+        position: relative;
+        width: 430px;
+        height: 30px;
 
-//         .MuiInputBase-root {
-//           padding-left: 18px;
-//           border: 1px solid #d1d2d4;
-//           height: 30px;
-//         }
+        .MuiInputBase-root {
+          padding-left: 18px;
+          border: 1px solid #d1d2d4;
+          height: 30px;
+        }
         
-//         .Mui-focused {
-//           border: 3px solid #888787;
-//           outline: none;
-//         }
-//         .MuiSelect-root {
-//             background-color: transparent;   
-//             color: #333333;
-//             font-size: 14px;
-//             font-family: Arial, Helvetica, sans-serif;
-//         }
-//         i {
-//           position: absolute;
-//           right: 4px;
-//           font-size: 21px;
-//           width: 16px;
-//           background: white;
-//           top: 3px;
-//         }
-//         .UicustomMultiHint {
-//           position: absolute;
-//           right: 0px;
-//           top: 7px;
-//           i {
-//             position: absolute;
-//             font-size: 14px;
-//             color: #333333;
-//             right: -32px;
-//           }
-//         }
-//         .MuiSelect-icon {
-//           color: #333333;
-//           font-size: 27px;
-//           margin-top: -1px;
-//           margin-right: 11px;
-//         }
-//         .MuiSelect-iconOpen {
-//           transform: rotate(0);
-//         }
-//       }
+        .Mui-focused {
+          border: 3px solid #888787;
+          outline: none;
+        }
+        .MuiSelect-root {
+            background-color: transparent;   
+            color: #333333;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        i {
+          position: absolute;
+          right: 4px;
+          font-size: 21px;
+          width: 16px;
+          background: white;
+          top: 3px;
+        }
+        .UicustomMultiHint {
+          position: absolute;
+          right: 0px;
+          top: 7px;
+          i {
+            position: absolute;
+            font-size: 14px;
+            color: #333333;
+            right: -32px;
+          }
+        }
+        .MuiSelect-icon {
+          color: #333333;
+          font-size: 27px;
+          margin-top: -1px;
+          margin-right: 11px;
+        }
+        .MuiSelect-iconOpen {
+          transform: rotate(0);
+        }
+      }
 
-//       label {
-//         color: #333333;
-//         font-family: Arial, Helvetica, sans-serif;
-//         font-weight: 400;
-//         line-height: 16.8px;
-//         font-size: 14px;
-//         position: relative;
-//         width: 180px;
-//         display: inline-block;
-//         margin-left: -1px;
-//         label {
-//           color: #333333;
-//           font-size: 20px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           font-weight: 700;
-//           position: absolute;
-//           top: -6px;
-//           margin-left: 6px;
-//         }
-//       }
-//       select {
-//         height: 30px;
-//         margin-right: -1px;
-//         width: 430px;
-//         border: 1px solid #d1d2d4;
-//         color: #333333;
-//         font-size: 14px;
-//         font-family: Arial, Helvetica, sans-serif;
-//         padding-left: 12px;
-//         &:focus,
-//         &:focus-visible {
-//           @extend input;
-//           border: 3px solid #888787;
-//           outline: none;
-//         }
-//       }
-//     }
-//     .selectFieldError {
-//       .UicustomMulti {
-//         .MuiInputBase-root {
-//           border: 2px solid #aa1d1d !important ;
-//         }
-//       }
-//     }
-//     .UiNumberSelector {
-//       // width: 682px;
-//       width: 755px;
-//       margin-left: auto;
-//       margin-right: auto;
-//       position: relative;
-//       input[type='number'] {
-//         -moz-appearance: textfield;
-//       }
-//       input::-webkit-outer-spin-button,
-//       input::-webkit-inner-spin-button {
-//         -webkit-appearance: none;
-//         margin: 0;
-//       }
-//       label {
-//         &:nth-child(1) {
-//           color: #333333;
-//           font-family: Arial, Helvetica, sans-serif;
-//           font-weight: 400;
-//           line-height: 16.8px;
-//           font-size: 14px;
-//           position: relative;
-//           display: inline-block;
-//           label {
-//             color: #333333;
-//             font-size: 20px;
-//             font-family: Arial, Helvetica, sans-serif;
-//             font-weight: 700;
-//             position: absolute;
-//             top: -6px;
-//             margin-left: 6px;
-//             width: 20px;
-//           }
-//         }
-//       }
-//       input {
-//         height: 30px;
-//         width: 140px;
-//         border: 1px solid #d1d2d4;
-//         border-radius: 0;
-//         &[value] {
-//           color: #333333;
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           padding-left: 12px;
-//         }
-//         &:focus,
-//         &:focus-visible {
-//           @extend input;
-//           border: 3px solid #888787;
-//           outline: none;
-//         }
-//       }
-//       .timeShow {
-//         color: #333333;
-//         font-size: 14px;
-//         font-family: Arial, Helvetica, sans-serif;
-//         margin-left: 17px;
-//         margin-right: 12px;
-//       }
-//       i {
-//         font-size: 14px;
-//         color: #333333;
-//         position: absolute;
-//         top: 8px;
-//       }
-//       .numberIconCircle {
-//         position: relative !important;
-//         top: 1px !important;
-//       }
-//       .checkSelectorText {
-//         position: absolute;
-//         top: 19px;
-//         width: 500px;
-//         left: 1px;
-//         font-size: 14px;
-//         font-family: Arial, Helvetica, sans-serif;
-//         color: var(--color-74767c);
-//         font-style: italic;
-//       }
-//     }
-//     .UiColumnSpacer {
-//       height: 34px;
-//     }
-//     .UiColumnSpacerCheckBox {
-//       height: 57px;
-//     }
-//     .UiStationSelectDepended {
-//       margin-top: -32px;
-//       margin-bottom: -4px;
-//     }
-//     .checkHelperTextMain {
-//       margin-bottom: 17px;
-//     }
+      label {
+        color: #333333;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 400;
+        line-height: 16.8px;
+        font-size: 14px;
+        position: relative;
+        width: 180px;
+        display: inline-block;
+        margin-left: -1px;
+        label {
+          color: #333333;
+          font-size: 20px;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 700;
+          position: absolute;
+          top: -6px;
+          margin-left: 6px;
+        }
+      }
+      select {
+        height: 30px;
+        margin-right: -1px;
+        width: 430px;
+        border: 1px solid #d1d2d4;
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        padding-left: 12px;
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+      }
+    }
+    .selectFieldError {
+      .UicustomMulti {
+        .MuiInputBase-root {
+          border: 2px solid #aa1d1d !important ;
+        }
+      }
+    }
+    .UiNumberSelector {
+      // width: 682px;
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      input[type='number'] {
+        -moz-appearance: textfield;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      label {
+        &:nth-child(1) {
+          color: #333333;
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: 400;
+          line-height: 16.8px;
+          font-size: 14px;
+          position: relative;
+          display: inline-block;
+          label {
+            color: #333333;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            position: absolute;
+            top: -6px;
+            margin-left: 6px;
+            width: 20px;
+          }
+        }
+      }
+      input {
+        height: 30px;
+        width: 140px;
+        border: 1px solid #d1d2d4;
+        border-radius: 0;
+        &[value] {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          padding-left: 12px;
+        }
+        &:focus,
+        &:focus-visible {
+          @extend input;
+          border: 3px solid #888787;
+          outline: none;
+        }
+      }
+      .timeShow {
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 17px;
+        margin-right: 12px;
+      }
+      i {
+        font-size: 14px;
+        color: #333333;
+        position: absolute;
+        top: 8px;
+      }
+      .numberIconCircle {
+        position: relative !important;
+        top: 1px !important;
+      }
+      .checkSelectorText {
+        position: absolute;
+        top: 19px;
+        width: 500px;
+        left: 1px;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--color-74767c);
+        font-style: italic;
+      }
+    }
+    .UiColumnSpacer {
+      height: 34px;
+    }
+    .UiColumnSpacerCheckBox {
+      height: 57px;
+    }
+    .UiStationSelectDepended {
+      margin-top: -32px;
+      margin-bottom: -4px;
+    }
+    .checkHelperTextMain {
+      margin-bottom: 17px;
+    }
 
-//     .UiNumberSelectorMain {
-//       display: flex;
-//       justify-content: space-between;
-//       .UiNumberSelectorRight {
-//         margin-right: 198px;
-//         // margin-right: 201px;
-//         position: relative;
-//         .UiNumberSelectorError {
-//           position: absolute;
-//           width: 400px;
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           color: #aa1d1d;
-//           top: 33px;
-//           i {
-//             color: #aa1d1d;
-//             font-size: 14px;
-//             margin-right: 1px;
-//           }
-//         }
-//       }
-//     }
-//     .UiCheckbox {
-//       width: 756px;
-//       margin-left: auto;
-//       margin-right: auto;
-//     }
-//     .UiCheckboxDepend {
-//       margin-top: -21px;
-//     }
-//     .UiCheckboxMain {
-//       display: flex;
-//       justify-content: space-between;
-//       .UiCheckboxLeft {
-//         .labelAdded {
-//           position: relative;
-//           label {
-//             color: #333333;
-//             font-size: 20px;
-//             font-family: Arial, Helvetica, sans-serif;
-//             font-weight: 700;
-//             position: absolute;
-//             top: -6px;
-//             margin-left: 6px;
-//           }
-//         }
-//         label {
-//           color: #333333;
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//         }
-//       }
-//       .UiCheckboxRight {
-//         position: relative;
-//         width: 400px;
+    .UiNumberSelectorMain {
+      display: flex;
+      justify-content: space-between;
+      .UiNumberSelectorRight {
+        margin-right: 198px;
+        // margin-right: 201px;
+        position: relative;
+        .UiNumberSelectorError {
+          position: absolute;
+          width: 400px;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          color: #aa1d1d;
+          top: 33px;
+          i {
+            color: #aa1d1d;
+            font-size: 14px;
+            margin-right: 1px;
+          }
+        }
+      }
+    }
+    .UiCheckbox {
+      width: 756px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .UiCheckboxDepend {
+      margin-top: -21px;
+    }
+    .UiCheckboxMain {
+      display: flex;
+      justify-content: space-between;
+      .UiCheckboxLeft {
+        .labelAdded {
+          position: relative;
+          label {
+            color: #333333;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+            position: absolute;
+            top: -6px;
+            margin-left: 6px;
+          }
+        }
+        label {
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+      }
+      .UiCheckboxRight {
+        position: relative;
+        width: 400px;
      
-//         div {
-//           display: inline-block;
-//           p {
-//             margin-top: 0;
-//             margin-bottom: 0;
-//             color: #333333;
-//             font-size: 14px;
-//             font-family: Arial, Helvetica, sans-serif;
-//           }
-//         }
+        div {
+          display: inline-block;
+          p {
+            margin-top: 0;
+            margin-bottom: 0;
+            color: #333333;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+        }
 
-//         .containerCheck {
-//           display: block;
-//           position: relative;
-//           cursor: pointer;
-//           font-size: 22px;
-//           -webkit-user-select: none;
-//           -moz-user-select: none;
-//           -ms-user-select: none;
-//           user-select: none;
-//           right: 34px;
-//           top: 2px;
-//           input {
-//             position: absolute;
-//             opacity: 0;
-//             cursor: pointer;
-//             height: 0;
-//             width: 0;
-//             &:checked {
-//               ~ {
-//                 .checkmark {
-//                   background-color: #333333;
-//                   border: 1px solid #333333;
-//                   &:after {
-//                     display: block;
-//                   }
-//                 }
-//               }
-//             }
-//           }
+        .containerCheck {
+          display: block;
+          position: relative;
+          cursor: pointer;
+          font-size: 22px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          right: 34px;
+          top: 2px;
+          input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+            &:checked {
+              ~ {
+                .checkmark {
+                  background-color: #333333;
+                  border: 1px solid #333333;
+                  &:after {
+                    display: block;
+                  }
+                }
+              }
+            }
+          }
 
-//           .checkmark {
-//             &:after {
-//               left: 5px;
-//               top: 1px;
-//               width: 3px;
-//               height: 8px;
-//               border: solid white;
-//               border-radius: 1px;
-//               border-width: 0 2px 2px 0;
-//               transform: rotate(45deg);
-//             }
-//           }
-//           .checkHelperText {
-//             position: absolute;
-//             top: 18px;
-//             left: 3px;
-//             width: 470px;
-//             color: #74767c;
-//             font-size: 14px;
-//             font-family: Arial, Helvetica, sans-serif;
-//             font-style: italic;
-//           }
-//         }
-//         .checkmark {
-//           position: absolute;
-//           top: 0;
-//           left: 0;
-//           height: 17px;
-//           width: 16px;
-//           border: 1px solid #d1d2d4;
-//           background-color: transparent;
-//           border-radius: 3px;
-//           &:after {
-//             content: '';
-//             position: absolute;
-//             display: none;
-//           }
-//         }
-//         i {
-//           font-size: 14px;
-//           color: #333333;
-//           margin-left: 14px;
-//         }
-//       }
-//     }
-//     .rc-menu-button {
-//         float: right;
-//         background-color: var(--color-transparent);
-//         font-size: 18px;
-//         position: absolute;
-//         right: 0;
-//         top: -40px;
-//         border: 1px solid;
-//         z-index: 60000;
-//         height: 34px;
-//         width: 36px;
-//         border-radius: 26px;
-// }
-//     .UiColumnRadioSpacer {
-//       margin-top: -16px;
-//     }
-//     .UiRadioMain {
-//       width: 755px;
-//       margin-left: auto;
-//       margin-right: auto;
-//       display: flex;
-//       justify-content: space-between;
-//       margin-top: 28px;
-//       .Enabled {
-//         position: relative;
-//         display: flex;
-//         width: 432px;
-//         justify-content: flex-start;
-//         .MutedText {
-//           position: relative;
-//           margin-bottom: 58px;
-//           .labelMutedText {
-//             position: absolute;
-//             width: 900px;
-//             top: 9px;
-//             color: #74767c;
-//             font-size: 14px;
-//             font-family: Arial, Helvetica, sans-serif;
-//             font-style: italic;
-//             left: -36px;
-//           }
-//         }
-//         i {
-//           margin-left: 12px;
-//           font-size: 14px;
-//           color: #333333;
-//           margin-top: 4px;
-//         }
-//       }
-//       .UiRadioLabel {
-//       }
-//       .containerRadio {
-//         display: block;
-//         position: relative;
-//         padding-left: 35px;
-//         margin-bottom: 12px;
-//         margin-left: -2px;
-//         cursor: pointer;
-//         font-size: 22px;
-//         -webkit-user-select: none;
-//         -moz-user-select: none;
-//         -ms-user-select: none;
-//         user-select: none;
-//         input {
-//           position: absolute;
-//           opacity: 0;
-//           cursor: pointer;
-
-//           &:checked {
-//             ~ {
-//               .checkmarkRadio {
-//                 border: 2px solid #333333;
-//                 &:after {
-//                   display: block;
-//                 }
-//               }
-//             }
-//           }
-//         }
-
-//         .checkmarkRadio {
-//           &:after {
-//             top: 3px;
-//             left: 3px;
-//             width: 8px;
-//             height: 8px;
-//             border-radius: 50%;
-//             background: #333333;
-//           }
-//         }
-//       }
-//       .checkmarkRadio {
-//         position: absolute;
-//         top: 0;
-//         left: 0;
-//         height: 18px;
-//         width: 18px;
-//         // background-color: #eee;
-//         border: 2px solid #d1d2d4;
-//         border-radius: 50%;
-//         &:after {
-//           content: '';
-//           position: absolute;
-//           display: none;
-//         }
-//       }
-//     }
-//     .HeartbeatRecordingBco4 {
-//       margin-bottom: 32px;
-//     }
-//   }
-//   .UiNumberSelectorMinute {
-//     .UiNumberSelectorRight {
-//       margin-right: 215px !important;
-//       position: relative;
-//     }
-//   }
-
-//   .UiNumberSelectorRight {
-//     margin-right: 212px !important;
-//     position: relative;
-//   }
-
-//   .rc-menu__arrow {
-//     display: none;
-//   }
-//   .rc-menu {
-//     top: -110px !important;
-//     z-index: 60000 !important;
-//     width: 167px !important;
-//     .crx-menu-list {
-//       width: 129px !important;
-//     }
-//     li {
-//       a {
-//         &:hover {
-//           box-shadow: none !important;
-//         }
-//       }
-//     }
-//     .crx-menu-icon {
-//       display: flex;
-//       justify-content: center;
-//       align-items: center;
-//     }
-//   }
-//   .tctButton {
-//     display: flex;
-//     justify-content: space-between;
-//     margin-top: 24px;
-//     .tctLeft {
-//       button {
-//         margin-right: 30px;
-//       }
-//       .tctSaveEnable {
-//         background-color: #231f20 !important;
-//         border: 1px solid #231f20;
-//         color: #f5f5f5;
-//         &:hover {
-//           background-color: #6e6e6e !important;
-//           border: 1px solid #6e6e6e;
-//         }
-//         &:active {
-//           background-color: #231f20 !important;
-//           border: 1px solid #231f20;
-//           color: #f5f5f5 !important;
-//         }
-//       }
-//     }
-//     button {
-//       width: 80px;
-//       height: 30px;
-//       border: 1px solid #878787;
-//       color: #333333;
-//       &:hover {
-//         background-color: #f5f5f5 !important;
-//         border: 1px solid #333333;
-//         color: #333333;
-//       }
-//       &:active {
-//         background-color: #231f20 !important;
-//         color: #f5f5f5 !important;
-//       }
-//     }
-//   }
-//   .multiSelectUi {
-//     width: 756px;
-//     margin-left: auto;
-//     margin-right: auto;
-//     margin-bottom: 30px;
-//     display: flex;
-//     justify-content: space-between;
-//     .multiSelectUiLabel {
-//       color: #333333;
-//       font-size: 14px;
-//       font-family: Arial, Helvetica, sans-serif;
-//     }
-//     .multiSelectUiStar {
-//       color: #333333;
-//       font-size: 20px;
-//       font-family: Arial, Helvetica, sans-serif;
-//       font-weight: 700;
-//       margin-left: 6px;
-//     }
-//     select {
-//       width: 430px;
-//       height: 30px;
-//       border: 1px solid #d1d2d4;
-//       margin-right: 4px;
-//     }
-//     .multiSelectUiRight {
-//       .MuiInputBase-root {
-//         border: 1px solid #d1d2d4;
-//       }
-//       .Mui-focused {
-//         border: 3px solid #888787;
-//       }
-//     }
-//   }
-//   .multiSelectFieldError {
-//     .MuiInputBase-root {
-//       border: 2px solid #aa1d1d !important;
-//     }
-//   }
-//   .multiSelectUiDepend {
-//     margin-top: -35px;
-//     margin-bottom: 64px;
-//   }
-//   .tctContent {
-//     form {
-//       div[id*="crx-tabpanel-"] {
-//         height: calc(100vh - 282px);
-//         border-top: 1px solid #333;
-//         margin-top: -2px;
-//       }
-//     }
-//   }
-// }
-
-// .MainHeadingDevices {
-//   .Controls {
-//     margin-top: 9px;
-//     margin-bottom: 30px;
-//   }
-//   .Location {
-//     margin-top: 8px;
-//     margin-bottom: 35px;
-//   }
-// }
-// .UiNumberSelectorDepend {
-//   margin-top: -30px;
-//   margin-bottom: 10px;
-// }
-// .checkHelperTextPresent {
-//   top: 47px !important;
-// }
-// .formMainHeading {
-//   color: #333333;
-//   font-size: 18px;
-//   font-family: Arial, Helvetica, sans-serif;
-//   font-weight: 700;
-//   margin-top: -7px;
-//   margin-left: 160px;
-//   margin-bottom: 50px;
-// }
-// .ConfigUpdateClass {
-//   margin-top: 28px;
-// }
-// .NumberFieldError {
-//   // margin-bottom: 19px;
-//   margin-bottom: 46px;
-//   input {
-//     border: 2px solid #aa1d1d !important;
-//   }
-// }
-// .textFieldError {
-//   margin-bottom: 21px;
-//   input {
-//     border: 2px solid #aa1d1d !important;
-//   }
-// }
-
-// .VideoPreBuffer {
-//   margin-top: 27px;
-// }
-// .muteRadioDevice {
-//   margin-top: -25px;
-// }
-// .EnableGpsClass {
-//   margin-top: -16px;
-//   margin-bottom: 4px;
-// }
-// .starikRed {
-//   color: #aa1d1d;
-// }
-// .textBoxRed {
-//   color: #aa1d1d;
-// }
-
-// // incar template
-// .IncarTemplatePage {
-//   .CrxCreateTemplate {
-//     .MuiTab-root {
-//       &:nth-child(1),
-//       &:nth-child(2),
-//       &:nth-child(3),
-//       &:nth-child(4) {
-//         padding: 0;
-//         width: 226px;
-//         height: 34px;
-//       }
-//     }
-//     .HideField{
-//       display: none;
-//     }
-//     .CategoriesIncar {
-//       margin-top: 28px;
-//     }
-//     .UpdateIntervalIncar {
-//       // margin-top: 60px;
-//       margin-top: 8px;
-//       .NumberFieldError {
-//         margin-bottom: 48px;
-//       }
-//     }
-//     .RetentionPolicyIncar {
-//       margin-top: 30px;
-//     }
-//     .MaximumVideoLengthIncar {
-//       margin-top: 30px;
-//     }
-//     .GPSFrequencyIncar {
-//       margin-top: 30px;
-//     }
-//     .RebootIncar {
-//       margin-top: 27px;
-//     }
-//     .DynamicFormTimeUi {
-//       // width: 677px;
-//       width: 755px;
-//       margin-left: auto;
-//       margin-right: auto;
-//       display: flex;
-//       justify-content: space-between;
-
-//       .DFTUILabel {
-//         color: #333333;
-//         font-size: 14px;
-//         font-family: Arial, Helvetica, sans-serif;
-//       }
-//       .DFTUIRight {
-//         margin-right: 291px;
-//         input {
-//           width: 140px;
-//           height: 30px;
-//           border: 1px solid #d1d2d4;
-//           background-color: white;
-//           padding-left: 12px;
-//           padding-right: 12px;
-//           color: #333333;
-//           font-size: 14px;
-//           font-family: Arial, Helvetica, sans-serif;
-//           &:focus {
-//             border: 3px solid #888787;
-//             outline: none;
-//           }
-//         }
-//       }
-//       .DFTUIRequired {
-//         color: #333333;
-//         font-size: 20px;
-//         font-family: Arial, Helvetica, sans-serif;
-//         font-weight: 700;
-//         margin-left: 6px;
-//       }
-//     }
-//     .DynamicFormTimeUiDepend {
-//       margin-top: -32px;
-//     }
-//     .timeUnitIncar {
-//       margin-bottom: 62px;
-//     }
-//   }
-//   .USBGPSIncar {
-//     margin-top: -12px;
-//     .UiCheckbox {
-//       margin-bottom: -2px;
-//     }
-//   }
-//   .PortNameIncar {
-//     margin-top: 16px;
-//     .timeShow {
-//       opacity: 0;
-//     }
-
-//     i {
-//       right: 53px;
-//     }
-//   }
-//   .SerialBaudRateIncar {
-//     .timeShow {
-//       opacity: 0;
-//     }
-
-//     i {
-//       right: 53px;
-//     }
-//   }
-
-//   .SerialBaudRateIncar {
-//     margin-top: 30px;
-//     margin-bottom: 45px;
-//   }
-//   .HardwareMonitoringIncar {
-//     margin-top: -15px;
-//   }
-//   .ShutdownIgnitionIncar {
-//     margin-top: 2px;
-//   }
-//   .voltsDepended {
-//     margin-right: 23px;
-//   }
-//   .BeepDuringIncar {
-//     margin-top: 28px;
-//   }
-//   .SensorRecordingIncar {
-//     margin-top: 4px;
-//   }
-//   .LogoutIncar {
-//     margin-top: 3px;
-//   }
-//   .LogoutTwoIncar {
-//     margin-top: -31px;
-//     margin-bottom: 2px;
-//   }
-//   .USBPortChargeIncar {
-//     margin-bottom: 45px;
-//   }
-//   .cameraSetup {
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center;
-//     margin-right: 26px;
-//     margin-left: 73px;
-//     h1 {
-//       color: #333333;
-//       font-size: 18px;
-//       font-family: Arial, Helvetica, sans-serif;
-//       font-weight: 700;
-//     }
-//     i {
-//       color: #333333;
-//       &:hover {
-//         cursor: pointer;
-//       }
-//     }
-//   }
-//   .GPSHeadingSpacer {
-//     margin-left: 73px !important;
-//   }
-//   .InterfaceHeadingSpacer {
-//     margin-left: 73px !important;
-//   }
-//   .DeviceTypeIncar {
-//     margin-top: 26px;
-//   }
-//   .PreRecordingDurationIncar {
-//     margin-top: -1px;
-//     .NumberFieldError {
-//       margin-bottom: 19px;
-//     }
-//   }
-//   .PostRecordingDurationIncar {
-//     .NumberField {
-//       margin-bottom: 30px;
-//     }
-//     .NumberFieldError {
-//       margin-bottom: 48px;
-//     }
-//   }
-//   .BlackboxRecordingIncar {
-//     .UiRadioMain {  
-//        margin-bottom: -18px ;
-
-//     }
-//   }
-//   .CaptureMasterButtonIncar {
-//     margin-bottom: 3px;
-//   }
-//   .BlackboxDirectoryIncar {
-//     margin-top: 40px !important;
-//     display: inherit;
-//   }
-//   .MicOffIncar {
-//     margin-top: 56px;
-//   }
-//   .AddCameraIncar {
-//     button {
-//       height: 30px;
-//       width: 134px;
-//       color: #333333;
-//       border: 1px solid #878787;
-//       background-color: white;
-//       margin-bottom: 90px;
-//       margin-top: 25px;
-//       span {
-//         font-size: 14px;
-//         font-weight: 400;
-//         font-family: Arial, Helvetica, sans-serif;
-//         i {
-//           margin-right: 11px;
-//           font-size: 11px;
-//           color: #333333;
-//         }
-//       }
-//       &:hover {
-//         background-color: #f5f5f5 !important;
-//         color: #333333 !important;
-//       }
-//       &:active {
-//         background-color: #231f20 !important;
-//         border: 1px solid #231f20 !important;
-//         color: #f5f5f5 !important;
-//         i {
-//           color: #f5f5f5 !important;
-//         }
-//       }
-//     }
-//   }
-//   .AddCameraLineIncar {
-//     background-color: #e3e4e5;
-//     height: 1px;
-//     margin-top: 45px;
-//   }
-//   .EnableCategorizationDepended {
-//     .multiSelectUiRight {
-//       margin-right: 5px;
-//         .MuiSelect-select {
-//           width: 386px;
-//           padding-left: 18px;
-//         }
-//     }
-//   }
-
-// .BeepDuringRecordingSpaceBox {
-//   margin-top: -33px !important;
-//   margin-bottom: 29px;
-// }
-
-// .nf_21_bitRate {
-//   margin-top: 31px;
-//   margin-bottom: 4px;
-// } 
-// .nf_21_resolution {
-//   margin-top: 31px;
-//   margin-bottom: 2px;
-// }
-// .nf_21_audioEnable {
-//   margin-top: 50px;
-//   margin-bottom: 3px;
-// }
-// .audio_audioDeviceType {
-//   margin-top: -36px;
-// }
-
-// .audio_audioName {
-//   margin-top: 3px;
-//   display: block;
-// }
-// .audio_channelNumber {
-//   margin-top: 30px;
-//   .timeShow {
-//     opacity: 0;
-//   }
-// }
-// .audio_Volume {
-//   margin-top: 29px;
-//   .timeShow {
-//     opacity: 0;
-//   }
-// }
-// .audio_powerPin {
-//   margin-top: 33px;
-//   margin-bottom: 35px;
-// }
-// .UiStationSelectErrorField {
-//   color: #aa1d1d;
-//   font-size: 14px;
-//   font-family: Arial, Helvetica, sans-serif;
-//   flex-direction: row;
-//   justify-content: normal !important;
-//   margin-left: 316px;
-//   margin-top: 3px;
-//   margin-bottom: -7px;
-//   i {
-//     margin-right: 5px;
-//   }
-// }
-// .RTSP_streamPort {
-//   margin-top: 29px;
-//   margin-bottom: 31px;
-//   .timeShow {
-//     opacity: 0;
-//   }
-// }
- 
-// .Veretos_powerPin {
-//   margin-top: 31px;
-// }
-// .Veretos_Index {
-//   margin-top: 32px;
-//   .timeShow {
-//     opacity: 0;
-//   }
-// }
-
-// .USB_secondaryCameraPosition {
-//   margin-top: 2px;
-//   display: block;
-//   margin-bottom: -2px;
-// }
-
-// }
-// // incar modal
-// .incarMOdalOpen {
-//   .MuiDialog-paperScrollPaper {
-//     overflow-x: hidden;
-//     h6 {
-//       color: #333333;
-//       font-size: 18px;
-//       font-family: Arial, Helvetica, sans-serif;
-//     }
-//     .modalPara1 {
-//       margin-top: 11px;
-//       font-size: 14px;
-//       font-family: Arial, Helvetica, sans-serif;
-//       color: #333333;
-//     }
-//     .modalPara2 {
-//       font-size: 14px;
-//       font-family: Arial, Helvetica, sans-serif;
-//       color: #333333;
-//       margin-top: 31px !important;
-//       margin-bottom: 39px;
-//     }
-//     .crxConfirmFooterModal {
-//       padding: 23px 25px;
-//       margin-right: auto;
-//       .MuiButton-containedPrimary {
-//         margin-right: 25px;
-//         color: #d1d2d4 !important;
-//         background-color: #333333 !important;
-//         &:hover {
-//           background-color: #6e6e6e !important;
-//           color: #f5f5f5 !important;
-//         }
-//         &:active {
-//           background-color: #231f20 !important;
-//           color: #f5f5f5 !important;
-//         }
-//       }
-//     }
-//   }
-// }
-// .multiSelectUiRight {
-//   .MuiSelect-select {
-//     width: 400px;
-//     background-color: transparent !important;
-//   }
-// }
-// .CreateSensorsEventForm {
-//   button {
-//     height: 37px;
-//     width: 214px;
-//     color: #333333;
-//     border: 1px solid #878787;
-//     background-color: white;
-//     left: 68px;
-//     &:hover {
-//       background-color: #f5f5f5 !important;
-//       color: #333333 !important;
-//     }
-//     &:active {
-//       background-color: #231f20 !important;
-//       border: 1px solid #231f20 !important;
-//       color: #f5f5f5 !important;
-//       i {
-//         color: #f5f5f5 !important;
-//       }
-//     }
-//   }
-// }
-
-
-//   .selectFormikIncar  {
-//     margin-top: 33px;
-//     margin-left: -22px;
-//     border-radius: 0px !important;
-//     max-height: 297px !important;
-//     height: auto;
-//     box-shadow: 0 0 0 0;
-//     ul {
-//     background: white;
-//     width: 414px !important;
-//     padding-right: 0px !important;
-//     .MuiTouchRipple-root {
-//       display: none;
-//     }
-//     li {
-//       color: #333333;
-//       height: 33px;
-//       padding-left: 17px;
-//       font-size: 14px;
-//       font-family: var(--base-font-family); 
-//         &:hover {
-//             background-color: #F5F5F5;
-//             color: #333333;
-//         }
-//         &:active   {
-//           color: #333;
-//           background-color: rgba(0, 0, 0, 0.08);
-//         }
-//     }
-//     .Mui-selected {
-//      background-color: #6E6E6E !important;   
-//      color: #F5F5F5 !important;
-//     }
-
-//     }
-//   }
-
-//   .multiSelectFormikIncar  {
-//     border-radius: 0px !important;
-//     background-color: transparent;
-//     ul {
-
-//       li {
-//         height: 33px;
-//         font-size: 14px;
-//         font-family: var(--base-font-family);
-//       }
-//     }
-//     .MuiTouchRipple-root {
-//       display: none;
-//     }
-//   }
-//    .AllDataSelectedList {
-//     ul {
-//       li {
-//         background-color: #6E6E6E !important;
-//          color: #F5F5F5 !important;
-//        }
-//     }
-//   }
-//   .NotAllSelectedList  {
-//     ul {
-//       li {
-
-//         background-color: white;
-//         color: #333333;
-//       &:hover {
-//         background-color: #F5F5F5;
-//         color: #333333;
-//     }
-//         &:active   {
-//           color: #333;
-//           background-color: rgba(0, 0, 0, 0.08);
-//         }
-    
-//       }
-//       .Mui-selected {
-//         background-color: #6E6E6E !important;
-//         color: #F5F5F5 !important;
-//         &:hover {
-//           color: #F5F5F5 !important;
-//         background-color: #6E6E6E !important;
-//          }
-//       }
-
-//     }
-//   }
-// .multiSelectField {
-//   svg {
-//     color: #333333;
-//     font-size: 27px;
-//     margin-top: -1px;
-//     margin-right: 11px;
-//   }
-//   .MuiSelect-iconOpen {
-//     transform: rotate(0);
-//   }
-// }
-
-.selectFormikIncar_wraper {
-  max-height: 450px !important;
-  min-width: 430px !important;
-  margin-top: 8px;
+          .checkmark {
+            &:after {
+              left: 5px;
+              top: 1px;
+              width: 3px;
+              height: 8px;
+              border: solid white;
+              border-radius: 1px;
+              border-width: 0 2px 2px 0;
+              transform: rotate(45deg);
+            }
+          }
+          .checkHelperText {
+            position: absolute;
+            top: 18px;
+            left: 3px;
+            width: 470px;
+            color: #74767c;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: italic;
+          }
+        }
+        .checkmark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 17px;
+          width: 16px;
+          border: 1px solid #d1d2d4;
+          background-color: transparent;
+          border-radius: 3px;
+          &:after {
+            content: '';
+            position: absolute;
+            display: none;
+          }
+        }
+        i {
+          font-size: 14px;
+          color: #333333;
+          margin-left: 14px;
+        }
+      }
+    }
+    .rc-menu-button {
+        float: right;
+        background-color: var(--color-transparent);
+        font-size: 18px;
+        position: absolute;
+        right: 0;
+        top: -40px;
+        border: 1px solid;
+        z-index: 60000;
+        height: 34px;
+        width: 36px;
+        border-radius: 26px;
 }
+    .UiColumnRadioSpacer {
+      margin-top: -16px;
+    }
+    .UiRadioMain {
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 28px;
+      .Enabled {
+        position: relative;
+        display: flex;
+        width: 432px;
+        justify-content: flex-start;
+        .MutedText {
+          position: relative;
+          margin-bottom: 58px;
+          .labelMutedText {
+            position: absolute;
+            width: 900px;
+            top: 9px;
+            color: #74767c;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-style: italic;
+            left: -36px;
+          }
+        }
+        i {
+          margin-left: 12px;
+          font-size: 14px;
+          color: #333333;
+          margin-top: 4px;
+        }
+      }
+      .UiRadioLabel {
+      }
+      .containerRadio {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        margin-left: -2px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        input {
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
 
-.DeviceIndicator {
-  font-size: 14px;
-  color: var(--color-333333);
-  font-style: italic;
-  padding-left: 75px;
-  padding-top: 15px;
-  span{
-    font-size: 20px;
-    font-weight: bold;
-    padding-right: 5px;
+          &:checked {
+            ~ {
+              .checkmarkRadio {
+                border: 2px solid #333333;
+                &:after {
+                  display: block;
+                }
+              }
+            }
+          }
+        }
+
+        .checkmarkRadio {
+          &:after {
+            top: 3px;
+            left: 3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333333;
+          }
+        }
+      }
+      .checkmarkRadio {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        // background-color: #eee;
+        border: 2px solid #d1d2d4;
+        border-radius: 50%;
+        &:after {
+          content: '';
+          position: absolute;
+          display: none;
+        }
+      }
+    }
+    .HeartbeatRecordingBco4 {
+      margin-bottom: 32px;
+    }
+  }
+  .UiNumberSelectorMinute {
+    .UiNumberSelectorRight {
+      margin-right: 215px !important;
+      position: relative;
+    }
+  }
+
+  .UiNumberSelectorRight {
+    margin-right: 212px !important;
+    position: relative;
+  }
+
+  .rc-menu__arrow {
+    display: none;
+  }
+  .rc-menu {
+    top: -110px !important;
+    z-index: 60000 !important;
+    width: 167px !important;
+    .crx-menu-list {
+      width: 129px !important;
+    }
+    li {
+      a {
+        &:hover {
+          box-shadow: none !important;
+        }
+      }
+    }
+    .crx-menu-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  .tctButton {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    .tctLeft {
+      button {
+        margin-right: 30px;
+      }
+      .tctSaveEnable {
+        background-color: #231f20 !important;
+        border: 1px solid #231f20;
+        color: #f5f5f5;
+        &:hover {
+          background-color: #6e6e6e !important;
+          border: 1px solid #6e6e6e;
+        }
+        &:active {
+          background-color: #231f20 !important;
+          border: 1px solid #231f20;
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+    button {
+      width: 80px;
+      height: 30px;
+      border: 1px solid #878787;
+      color: #333333;
+      &:hover {
+        background-color: #f5f5f5 !important;
+        border: 1px solid #333333;
+        color: #333333;
+      }
+      &:active {
+        background-color: #231f20 !important;
+        color: #f5f5f5 !important;
+      }
+    }
+  }
+  .multiSelectUi {
+    width: 756px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    .multiSelectUiLabel {
+      color: #333333;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .multiSelectUiStar {
+      color: #333333;
+      font-size: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    select {
+      width: 430px;
+      height: 30px;
+      border: 1px solid #d1d2d4;
+      margin-right: 4px;
+    }
+    .multiSelectUiRight {
+      .MuiInputBase-root {
+        border: 1px solid #d1d2d4;
+      }
+      .Mui-focused {
+        border: 3px solid #888787;
+      }
+    }
+  }
+  .multiSelectFieldError {
+    .MuiInputBase-root {
+      border: 2px solid #aa1d1d !important;
+    }
+  }
+  .multiSelectUiDepend {
+    margin-top: -35px;
+    margin-bottom: 64px;
+  }
+  .tctContent {
+    form {
+      div[id*="crx-tabpanel-"] {
+        height: calc(100vh - 282px);
+        border-top: 1px solid #333;
+        margin-top: -2px;
+      }
+    }
   }
 }
-._Create_Template {
 
-  input[type="checkbox"] {
+.MainHeadingDevices {
+  .Controls {
+    margin-top: 9px;
+    margin-bottom: 30px;
+  }
+  .Location {
+    margin-top: 8px;
+    margin-bottom: 35px;
+  }
+}
+.UiNumberSelectorDepend {
+  margin-top: -30px;
+  margin-bottom: 10px;
+}
+.checkHelperTextPresent {
+  top: 47px !important;
+}
+.formMainHeading {
+  color: #333333;
+  font-size: 18px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  margin-top: -7px;
+  margin-left: 160px;
+  margin-bottom: 50px;
+}
+.ConfigUpdateClass {
+  margin-top: 28px;
+}
+.NumberFieldError {
+  // margin-bottom: 19px;
+  margin-bottom: 46px;
+  input {
+    border: 2px solid #aa1d1d !important;
+  }
+}
+.textFieldError {
+  margin-bottom: 21px;
+  input {
+    border: 2px solid #aa1d1d !important;
+  }
+}
+
+.VideoPreBuffer {
+  margin-top: 27px;
+}
+.muteRadioDevice {
+  margin-top: -25px;
+}
+.EnableGpsClass {
+  margin-top: -16px;
+  margin-bottom: 4px;
+}
+.starikRed {
+  color: #aa1d1d;
+}
+.textBoxRed {
+  color: #aa1d1d;
+}
+
+// incar template
+.IncarTemplatePage {
+  .CrxCreateTemplate {
+    .MuiTab-root {
+      &:nth-child(1),
+      &:nth-child(2),
+      &:nth-child(3),
+      &:nth-child(4) {
+        padding: 0;
+        width: 226px;
+        height: 34px;
+      }
+    }
+    .HideField{
+      display: none;
+    }
+    .CategoriesIncar {
+      margin-top: 28px;
+    }
+    .UpdateIntervalIncar {
+      // margin-top: 60px;
+      margin-top: 8px;
+      .NumberFieldError {
+        margin-bottom: 48px;
+      }
+    }
+    .RetentionPolicyIncar {
+      margin-top: 30px;
+    }
+    .MaximumVideoLengthIncar {
+      margin-top: 30px;
+    }
+    .GPSFrequencyIncar {
+      margin-top: 30px;
+    }
+    .RebootIncar {
+      margin-top: 27px;
+    }
+    .DynamicFormTimeUi {
+      // width: 677px;
+      width: 755px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: space-between;
+
+      .DFTUILabel {
+        color: #333333;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .DFTUIRight {
+        margin-right: 291px;
+        input {
+          width: 140px;
+          height: 30px;
+          border: 1px solid #d1d2d4;
+          background-color: white;
+          padding-left: 12px;
+          padding-right: 12px;
+          color: #333333;
+          font-size: 14px;
+          font-family: Arial, Helvetica, sans-serif;
+          &:focus {
+            border: 3px solid #888787;
+            outline: none;
+          }
+        }
+      }
+      .DFTUIRequired {
+        color: #333333;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        margin-left: 6px;
+      }
+    }
+    .DynamicFormTimeUiDepend {
+      margin-top: -32px;
+    }
+    .timeUnitIncar {
+      margin-bottom: 62px;
+    }
+  }
+  .USBGPSIncar {
+    margin-top: -12px;
+    .UiCheckbox {
+      margin-bottom: -2px;
+    }
+  }
+  .PortNameIncar {
+    margin-top: 16px;
+    .timeShow {
+      opacity: 0;
+    }
+
+    i {
+      right: 53px;
+    }
+  }
+  .SerialBaudRateIncar {
+    .timeShow {
+      opacity: 0;
+    }
+
+    i {
+      right: 53px;
+    }
+  }
+
+  .SerialBaudRateIncar {
+    margin-top: 30px;
+    margin-bottom: 45px;
+  }
+  .HardwareMonitoringIncar {
+    margin-top: -15px;
+  }
+  .ShutdownIgnitionIncar {
+    margin-top: 2px;
+  }
+  .voltsDepended {
+    margin-right: 23px;
+  }
+  .BeepDuringIncar {
+    margin-top: 28px;
+  }
+  .SensorRecordingIncar {
+    margin-top: 4px;
+  }
+  .LogoutIncar {
+    margin-top: 3px;
+  }
+  .LogoutTwoIncar {
+    margin-top: -31px;
+    margin-bottom: 2px;
+  }
+  .USBPortChargeIncar {
+    margin-bottom: 45px;
+  }
+  .cameraSetup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 26px;
+    margin-left: 73px;
+    h1 {
+      color: #333333;
+      font-size: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+    }
+    i {
+      color: #333333;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .GPSHeadingSpacer {
+    margin-left: 73px !important;
+  }
+  .InterfaceHeadingSpacer {
+    margin-left: 73px !important;
+  }
+  .DeviceTypeIncar {
+    margin-top: 26px;
+  }
+  .PreRecordingDurationIncar {
+    margin-top: -1px;
+    .NumberFieldError {
+      margin-bottom: 19px;
+    }
+  }
+  .PostRecordingDurationIncar {
+    .NumberField {
+      margin-bottom: 30px;
+    }
+    .NumberFieldError {
+      margin-bottom: 48px;
+    }
+  }
+  .BlackboxRecordingIncar {
+    .UiRadioMain {  
+       margin-bottom: -18px ;
+
+    }
+  }
+  .CaptureMasterButtonIncar {
+    margin-bottom: 3px;
+  }
+  .BlackboxDirectoryIncar {
+    margin-top: 40px !important;
+    display: inherit;
+  }
+  .MicOffIncar {
+    margin-top: 56px;
+  }
+  .AddCameraIncar {
+    button {
+      height: 30px;
+      width: 134px;
+      color: #333333;
+      border: 1px solid #878787;
+      background-color: white;
+      margin-bottom: 90px;
+      margin-top: 25px;
+      span {
+        font-size: 14px;
+        font-weight: 400;
+        font-family: Arial, Helvetica, sans-serif;
+        i {
+          margin-right: 11px;
+          font-size: 11px;
+          color: #333333;
+        }
+      }
+      &:hover {
+        background-color: #f5f5f5 !important;
+        color: #333333 !important;
+      }
+      &:active {
+        background-color: #231f20 !important;
+        border: 1px solid #231f20 !important;
+        color: #f5f5f5 !important;
+        i {
+          color: #f5f5f5 !important;
+        }
+      }
+    }
+  }
+  .AddCameraLineIncar {
+    background-color: #e3e4e5;
+    height: 1px;
+    margin-top: 45px;
+  }
+  .EnableCategorizationDepended {
+    .multiSelectUiRight {
+      margin-right: 5px;
+        .MuiSelect-select {
+          width: 386px;
+          padding-left: 18px;
+        }
+    }
+  }
+
+.BeepDuringRecordingSpaceBox {
+  margin-top: -33px !important;
+  margin-bottom: 29px;
+}
+
+.nf_21_bitRate {
+  margin-top: 31px;
+  margin-bottom: 4px;
+} 
+.nf_21_resolution {
+  margin-top: 31px;
+  margin-bottom: 2px;
+}
+.nf_21_audioEnable {
+  margin-top: 50px;
+  margin-bottom: 3px;
+}
+.audio_audioDeviceType {
+  margin-top: -36px;
+}
+
+.audio_audioName {
+  margin-top: 3px;
+  display: block;
+}
+.audio_channelNumber {
+  margin-top: 30px;
+  .timeShow {
     opacity: 0;
   }
-  /*Template Info*/
-  .containerCheck {
-    position: relative;
-    
-    .checkmark{
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-radius: 3px;
-      height: 16px;
-      width: 16px;
-      background-color: #fff;
-      border: 1px solid #D1D2D4;
-      &:after {
-        content: "";
-        position: absolute;
-        display: none;
-        left: 4.2px;
-        top: 0px;
-        width: 4px;
-        height: 9px;
-        border: solid white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(40deg);
-      }
-    }
-    &:hover {
-      input[type="checkbox"] ~ .checkmark {
-        border-color: #333;
-      }
-    }
-    input[type="checkbox"]:checked ~ .checkmark {
-      background: #333;
-      border-color: transparent;
-      border-radius: 3px;
-      &:after{
-        display: block;
-      }
-    }
-    
+}
+.audio_Volume {
+  margin-top: 29px;
+  .timeShow {
+    opacity: 0;
   }
-  ._create_template_Content {
+}
+.audio_powerPin {
+  margin-top: 33px;
+  margin-bottom: 35px;
+}
+.UiStationSelectErrorField {
+  color: #aa1d1d;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  flex-direction: row;
+  justify-content: normal !important;
+  margin-left: 316px;
+  margin-top: 3px;
+  margin-bottom: -7px;
+  i {
+    margin-right: 5px;
+  }
+}
+.RTSP_streamPort {
+  margin-top: 29px;
+  margin-bottom: 31px;
+  .timeShow {
+    opacity: 0;
+  }
+}
+ 
+.Veretos_powerPin {
+  margin-top: 31px;
+}
+.Veretos_Index {
+  margin-top: 32px;
+  .timeShow {
+    opacity: 0;
+  }
+}
 
-    label {
+.USB_secondaryCameraPosition {
+  margin-top: 2px;
+  display: block;
+  margin-bottom: -2px;
+}
+
+}
+// incar modal
+.incarMOdalOpen {
+  .MuiDialog-paperScrollPaper {
+    overflow-x: hidden;
+    h6 {
+      color: #333333;
+      font-size: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .modalPara1 {
+      margin-top: 11px;
       font-size: 14px;
-      color: var(--color-333333);
-      width: 250px;
-      line-height: 29px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
     }
-    input[type="text"], input[type="number"], input[type="time"]{
-      height: 30px;
-      border:1px solid var(--color-d1d2d4);
-      outline: 2px solid transparent;
-      color: #333;
+    .modalPara2 {
       font-size: 14px;
-      padding: 0 16px;
-      width: 100%;
-      &:hover{
-        border:1px solid var(--color-888787);
-      }
-      &:focus {
-        border:1px solid var(--color-888787);
-        outline:2px solid var(--color-888787);
-      }
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
+      margin-top: 31px !important;
+      margin-bottom: 39px;
     }
-
-    .textFieldError {
-      input[type="text"], input[type="number"], input[type="time"]{
-        border:1px solid transparent;
-        outline:2px solid var(--color-aa1d1d);
-        width: 100%;
-        font-size: 14px;
-      }
-      .UiLabelTextboxError {
-        padding-top: 4px;
-        font-size: 14px;
-        color: var(--color-aa1d1d);
-        font-family: var(--Arial-font-family);
-        i{
-          font-size: 14px;
-          color: var(--color-aa1d1d);
+    .crxConfirmFooterModal {
+      padding: 23px 25px;
+      margin-right: auto;
+      .MuiButton-containedPrimary {
+        margin-right: 25px;
+        color: #d1d2d4 !important;
+        background-color: #333333 !important;
+        &:hover {
+          background-color: #6e6e6e !important;
+          color: #f5f5f5 !important;
+        }
+        &:active {
+          background-color: #231f20 !important;
+          color: #f5f5f5 !important;
         }
       }
-    }
-
-    .UiLabelTextbox, .UiStationSelect  {
-      display: flex;
-    }
-
-    .selectFormikIncar {
-      width: 430px;
-      &.Mui-focused{
-        border: 2px solid var(--color-888787);
-      }
-    }
-
-    
-    form {
-      ._template_form_row {
-        margin: 0 auto;
-        ._label_and_form_field{
-          display: flex;
-          padding-bottom: 32px;
-
-          .textWithRadioCheckBox {
-            font-size: 14px;
-            color: var(--color-333333);
-            font-family: var(--Arial-font-family);
-          }
-          .UiNumberSelectorError {
-            font-size: 14px;
-            color:var(--color-aa1d1d) ;
-            font-family: var(--Arial-font-family);
-            padding-top: 3px;
-          }
-          .multiSelectField {
-            .multiSelectUi {
-              display: flex;
-            }
-          }
-          .NumberField {
-            .UiNumberSelector {
-              .UiNumberSelectorMain{
-                display: flex;
-              }
-            }
-          }
-          .starikBlack, .textBoxBlack {
-            font-weight: bold;
-            font-size: 20px;
-            position: relative;
-            top: -2px;
-            margin-left: 10px;
-            color: var(--color-333333);
-          }
-          .starikRed {
-            font-weight: bold;
-            font-size: 20px;
-            position: relative;
-            top: -2px;
-            margin-left: 10px;
-            color: var(--color-aa1d1d);
-          }
-          .textBoxRed {
-            font-weight: bold;
-            font-size: 20px;
-            position: relative;
-            top: -2px;
-            margin-left: 10px;
-            color: var(--color-aa1d1d);
-          }
-        }
-      }
-      div[id="crx-tabpanel-0"]{
-        ._template_form_row {
-          width: 614px;
-          margin: 0 auto;
-          padding-top: 47px;
-          ._label_and_form_field{
-            display: flex;
-            padding-bottom: 32px;
-            ._template_form_group{
-              .textField, .textFieldError{
-                .UiLabelTextbox {
-                  .UiLabelTextboxRight{
-                    width: 430px;
-                  }
-                  
-                }
-              }
-                
-            }
-          }
-        }
-      }/*....... Tab id-0........*/
-
-      div[id="crx-tabpanel-1"] {
-        ._template_form_row {
-          width: 680px;
-          ._label_and_form_field{
-            &:nth-child(3) {
-              padding-bottom: 0px;
-              padding-top: 30px;
-            }
-            &:nth-child(4) {
-              .multiSelectField {
-                margin-bottom: 27px;
-              }
-            }
-            &:nth-child(10) {
-              padding-bottom: 0px;
-            }
-            &:nth-child(11) {
-              .DynamicFormTimeUi {
-                padding-bottom: 28px;
-              }
-            }
-            &:nth-child(14) {
-                padding-bottom: 64px;
-                padding-top: 4px;
-            }
-            &:nth-child(15) {
-              padding-bottom: 37px;
-            }
-            &:nth-child(17) {
-              padding-bottom: 59px;
-              margin-top: -4px;
-            }
-            .timeUnitIncar {
-              .DynamicFormTimeUi {
-                display: flex;
-                .DFTUILeft {
-                  width: 250px;
-                }
-                .DFTUIRight {
-                  width: 430px;
-                  .UiCheckboxRightPosition {
-                    div {
-                      p {
-                        font-size: 14px;
-                        color: var(--color-333333);
-                        font-family: var(--Arial-font-family);
-                      }
-                    }
-                  }
-                  input[type="time"] {
-                    width: 140px;
-                  }
-                }
-              }
-            }
-            &.Mode {
-              &:nth-child(1){
-                padding-top: 45px;
-              }
-              
-            }
-            &.Config{
-              &.Update {
-                &.Interval{
-                  padding-top: 4px;
-                  padding-bottom: 62px;
-                }
-              }
-            }
-            &.Maximum{
-              &.Video {
-                padding-top: 31px;
-              }
-            }
-            &.GPS{
-              &.Frequency{
-                padding-bottom: 62px;
-                padding-top: 30px;
-              }
-            }
-          }/*.... _label_and_form_field ........*/
-          ._label_and_form_field  + .Logout {
-            padding-top: 4px;
-            padding-bottom: 8px;
-          } 
-        }
-        .UiCheckbox {
-          display: flex;
-          .UiCheckboxLeft {
-            width: 250px;
-            margin-top: -6px;
-           
-          }
-          .UiCheckboxRight {
-            .UiCheckboxRightPosition{
-              display: flex;
-              .containerCheck{
-                width: 30px;
-              }
-              div{
-                width: auto;
-                padding-right: 10px;;
-                p{
-                  padding: 0px;
-                  margin: 0px;
-                  font-size: 14px;
-                  color: var(--color-333333);
-                }
-              }
-            }
-          }
-        }
-        .multiSelectField {
-          .multiSelectUi {
-            display: flex;
-            
-            .multiSelectUiLeft {
-              width: 250px;
-            }
-            .multiSelectUiRight {
-              ._device_template_multiselect {
-                min-width: 430px;
-                input[type="text"] {
-                  border:0px;
-                  outline: 0px;
-                  position: absolute;
-                  &:focus {
-                    border:0px;
-                  }
-                  &:hover {
-                    border:0px;
-                  }
-                }
-              }
-            }
-          }
-      }
-      
-        .NumberField {
-          .UiNumberSelector {
-            .UiNumberSelectorMain{
-              .UiNumberSelectorLeft  {
-                width: 250px;
-              }
-              .UiNumberSelectorRight  {
-                width: 430px;
-                input[type="number"] {
-                  width: 140px;
-                  margin-right: 17px;
-                }
-                .timeShow {
-                  font-size: 14px;
-                  color: var(--color-333333);
-                  font-family: var(--Arial-font-family);
-                  padding-right: 12px;
-                }
-                .checkSelectorText {
-                  font-size: 14px;
-                  font-family: var(--Arial-font-family);
-                  font-style: italic;
-                  color: var(--color-74767c);
-                  padding-top: 4px;
-                }
-                .UiNumberSelectorError {
-                  font-size: 14px;
-                  color:var(--color-aa1d1d) ;
-                  font-family: var(--Arial-font-family);
-                  padding-top: 3px;
-                }
-              }
-            }
-          }
-        }
-      }/*....... Tab id-1.........*/
-
-      div[id="crx-tabpanel-2"]{
-          ._template_form_row {
-            width: calc(100% - 142px);
-            ._label_and_form_field{
-              label {
-                width: 324px;
-              }
-              &:nth-child(2) {
-                padding-top: 7px;
-                margin-left: 9px;
-                ._template_checkbox {
-                  padding-top: 66px;
-                  padding-bottom: 2px;
-                }
-              }
-              &:nth-child(5){
-                .UiCheckbox {
-                  margin-left: 9px;
-                }
-              }
-              &:nth-child(11) {
-                .NumberField {
-                  margin-bottom: -8px;
-                }
-              }
-              .Sensor.Recording.Start.Delay {
-                padding-top: 36px;
-              }
-              div {
-                p{
-                  margin: 0px;
-                  padding: 0px;
-                  font-size: 14px;
-                  font-family: var(--Arial-font-family);
-                  color: var(--color-333333);
-                }
-              }
-              .selectField {
-                width: 502px;
-                margin: 0px auto;
-              }
-              .USBGPSIncar {
-                width: 746px;
-                .UiCheckbox {
-                  display: flex;
-                  .UiCheckboxLeft{
-                    width: 324px;
-                  }
-                  .UiCheckboxRight {
-                    .UiCheckboxRightPosition {
-                      display: flex;
-                      .containerCheck {
-                        width: 16px;
-                        margin-right: 14px;
-                      }
-                    }
-                  }
-                }
-              }
-              .MainHeadingDevices {
-                width: 414px;
-                &.Hardware{
-                  &.Interface {
-                    padding: 0px 0 0px 0px;
-                    .MainHeadingDevices {
-                      .formMainHeading{
-                        padding: 0px;
-                      }
-                    }
-                  }
-                }
-              }
-              ._template_form_group {
-                width: 746px;
-                margin: 0 auto;
-                .textField {
-                  .UiLabelTextbox  {
-                    .labelRadioo {
-                      width: 324px;
-                    }
-                    .UiLabelTextboxRight {
-                      margin-right: 10px;
-                      input[type="text"] {
-                        width: 140px;
-                      }
-                    }
-                    .crxTooltip{
-                      margin-top: 7px;
-                    }
-                  }
-                }
-              }
-              .NumberField {
-                width: 746px;
-                margin: 0 auto;
-                .UiNumberSelectorDepend {
-                  .UiNumberSelector {
-                    .UiNumberSelectorMain {
-                      .UiNumberSelectorLeft {
-                        width: 324px;
-                      }
-                      .UiNumberSelectorRight  {
-                        display: flex;
-                        input[type="number"] {
-                          width: 140px;
-                          margin-right: 14px;
-                        }
-                        .timeShow {
-                          margin-right: 10px;
-                        }
-                        .checkSelectorText {
-                          font-size: 14px;
-                          font-family: var(--Arial-font-family);
-                          font-style: italic;
-                          color: var(--color-74767c);
-                          padding-top: 4px;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-              .HardwareMonitoringIncar, .RecordingStopIncar, .BeepDuringIncar {
-                
-                .UiCheckbox {
-                  display: flex;
-                  .UiCheckboxLeft {
-                    width: 324px;
-                  }
-                  .UiCheckboxRight {
-                    .UiCheckboxRightPosition{
-                      display: flex;
-                      .containerCheck {
-                        width: 16px;
-                        margin-right: 14px;
-                      }
-                    }
-                  }
-                }
-              }
-              .RecordingStopIncar {
-                width: 746px;
-                margin: 0 auto;
-              }
-              .NumberField {
-                .UiNumberSelector{
-                  .UiNumberSelectorMain {
-                    .UiNumberSelectorLeft {
-                      width: 324px;
-                    }
-                    .UiNumberSelectorRight  {
-                      input[type="number"] {
-                        width: 140px;
-                        margin-right: 14px;
-                      }
-                    }
-                  }
-                }
-              }
-              .checkSelectorText {
-                font-size: 14px;
-                font-family: var(--Arial-font-family);
-                font-style: italic;
-                color: var(--color-74767c);
-                padding-top: 4px;
-              }
-              .timeShow {
-                margin-right: 10px;
-              }
-              .UiNumberSelectorError {
-                padding-top: 4px;
-                font-size: 14px;
-                color: var(--color-aa1d1d);
-                font-family: var(--Arial-font-family);
-                i{
-                  font-size: 14px;
-                  color: var(--color-aa1d1d);
-                }
-              }
-              .BeepDuringIncar {
-                width: 746px;
-                margin: 0 auto;
-                .UiCheckboxRightPosition {
-                  div {
-                    p{
-                      margin-right: 10px;
-                    }
-                  }
-                }
-              }
-              &.Hardware {
-                &.Monitoring{
-                  padding: 31px 0px 0px 0px;
-                  ._template_checkbox{
-                    &:nth-child(2) {
-                    padding-top: 75px;
-                    padding-bottom: 49px;
-                    }
-                  }
-                  
-                }
-              }
-              .RecordingStopIncar {
-                padding-bottom: 17px;
-              }
-              
-              &.Beep {
-                &.During{
-                  &.Recording {
-                    padding-top: 29px;
-                    padding-bottom: 15px;
-                  }
-                } 
-              }
-              &:empty {
-                display: none;
-              }
-            }/*......... div field ...........*/
-          }
-          .MainHeadingDevices {
-            .formMainHeading {
-              font-size: 18px;
-              color: var(--color-333333);
-              font-family: var(--Arial-font-family);
-              font-weight: bold;
-            }
-          }
-      }/*....... Tab id-2.........*/
-
-      div[id="crx-tabpanel-3"] {
-        ._template_form_row {
-          ._label_and_form_field {
-            width: 100%;
-            ._camera_setup_tab {
-              width: 100%;
-              .cameraSetup {
-                display: flex;
-                padding-bottom: 38px;
-                justify-content: space-between;
-                padding-right: 25px;
-                padding-left: 72px;
-                padding-top: 42px;
-                ._device_temp_camera_title {
-                    font-size: 18px;
-                    font-weight: bold;
-                    font-family: var(--Arial-font-family);
-                    color: var(--color-333333);
-                }
-              }
-              ._camera_setup_flieds {
-                width: 681px;
-                margin: 0 auto;
-                padding-bottom: 31px;
-             
-                &:empty {
-                  display: none;
-                }
-                label {
-                  width: 215px;
-                }
-                &:nth-child(2) {
-                  input {
-                    width: 430px;
-                  }
-                }
-                &:nth-child(25) {
-                  padding-top: 16px;
-                }
-                .NumberField {
-                  .UiNumberSelector {
-                    .UiNumberSelectorMain {
-                      .UiNumberSelectorLeft  {
-                        width: 215px;
-                      }
-                      .UiNumberSelectorRight  {
-                          input[type= "number"] {
-                            width: 140px;
-                            margin-right: 14px;
-                          }
-                          .timeShow {
-                            margin-right: 10px;
-                          }
-                          .checkSelectorText
-                          {
-                            font-size: 14px;
-                            font-family: var(--Arial-font-family);
-                            font-style: italic;
-                            color: var(--color-74767c);
-                            padding-top: 4px;
-                          }
-                      }
-                    }
-                  }
-                  &.Index {
-                    padding-top: 31px;
-                  }
-                  &.NumberFieldError {
-                    &.Index {
-                      padding-top: 31px;
-                    }
-                  }
-                }
-                ._template_radio_button {
-                  padding-bottom: 0px;
-                  &.Blackbox {
-                    padding-top: 21px;
-                  }
-                  .UiRadioMain {
-                    display: flex;
-                    place-items: flex-start;
-                    .UiRadioLabel {
-                      width: 215px;
-                    }
-                    .UiRadioCheck {
-                      .Enabled {
-                        display: flex;
-                        .containerRadio {
-                          margin-right: 12px;
-                          width: 18px;
-                        }
-                        .radio_label {
-                          width: auto;
-                          padding-right: 11px;
-                        }
-                        .crxTooltip {
-                          top:6px
-                        }
-                      }
-                    }
-                  }
-                }
-                ._template_checkbox {
-                  padding-bottom: 17px;
-                  .UiCheckbox {
-                    display: flex;
-                    .UiCheckboxLeft {
-                      width: 215px;
-                      .labelAdded{
-                        line-height: 20px;
-                      }
-                    }
-                    .UiCheckboxRight {
-                      .UiCheckboxRightPosition {
-                        display: flex;
-                        place-items: center;
-                        .containerCheck {
-                          width: 16px;
-                          height: 16px;
-                          margin-right: 13px;
-                        }
-                        div {
-                          p{
-                            padding: 0px;
-                            margin: 0px;
-                            margin-right: 12px;
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-
-                .selectField {
-                  .UiStationSelect {
-                    .selectFormikIncar {
-                      margin-right: 12px;
-                    }
-                  }
-                }
-                .Post-Recording.Duration {
-                  padding-bottom: 6px;
-                }
-              }/*...... Camera setup fields ........*/
-            }/*......._camera_setup_tab......*/
-          }
-        }
-      }/*......... Tab id-3.............*/
     }
   }
 }
-/*......... ak start.............*/
-        .CrxCreateTemplateUi  {
-              position: relative;
-              top: 9px;
-                .rc-menu-button {
-                  position: absolute;
-                  right: 0px;
-                  top: 62px;
-                  z-index: 9999;
-                  background: transparent;
-                  border: none;
-                  font-size: 20px;
-                  color: var(--color-333333);
-                }
-                .rc-menu-container {
-                    ul {
-                      z-index: 9999 !important;
-                    }
-                }
-                form {
-                  border-top: 1px solid var(--color-878787);
-                  margin-top: -2px;
-                }
-                .tctButton {
-                  display: flex;
-                  justify-content: space-between;
-                  margin-top: 24px;
-                  .tctLeft {
-                    button {
-                      &:nth-child(1) {
-                        margin-right: 32px;
-                      }
-                    }
-                  }
-              }
-              .AddCameraIncar { 
-                i {
-                  padding-right: 19px;
-                }
-              }
+.multiSelectUiRight {
+  .MuiSelect-select {
+    width: 400px;
+    background-color: transparent !important;
+  }
+}
+.CreateSensorsEventForm {
+  button {
+    height: 37px;
+    width: 214px;
+    color: #333333;
+    border: 1px solid #878787;
+    background-color: white;
+    left: 68px;
+    &:hover {
+      background-color: #f5f5f5 !important;
+      color: #333333 !important;
+    }
+    &:active {
+      background-color: #231f20 !important;
+      border: 1px solid #231f20 !important;
+      color: #f5f5f5 !important;
+      i {
+        color: #f5f5f5 !important;
+      }
+    }
+  }
+}
+
+
+  .selectFormikIncar  {
+    margin-top: 33px;
+    margin-left: -22px;
+    border-radius: 0px !important;
+    max-height: 297px !important;
+    height: auto;
+    box-shadow: 0 0 0 0;
+    ul {
+    background: white;
+    width: 414px !important;
+    padding-right: 0px !important;
+    .MuiTouchRipple-root {
+      display: none;
+    }
+    li {
+      color: #333333;
+      height: 33px;
+      padding-left: 17px;
+      font-size: 14px;
+      font-family: var(--base-font-family); 
+        &:hover {
+            background-color: #F5F5F5;
+            color: #333333;
         }
-        .selectFormikIncar_wraper  {
-          border-radius: 0px !important;
-          ul {
-            border-radius: 0px;
-            li {
-              &:first-child {
-                display: none ;
-              }
-            }
-          }
+        &:active   {
+          color: #333;
+          background-color: rgba(0, 0, 0, 0.08);
         }
-/*......... ak end.............*/
+    }
+    .Mui-selected {
+     background-color: #6E6E6E !important;   
+     color: #F5F5F5 !important;
+    }
+
+    }
+  }
+
+  .multiSelectFormikIncar  {
+    border-radius: 0px !important;
+    background-color: transparent;
+    ul {
+
+      li {
+        height: 33px;
+        font-size: 14px;
+        font-family: var(--base-font-family);
+      }
+    }
+    .MuiTouchRipple-root {
+      display: none;
+    }
+  }
+   .AllDataSelectedList {
+    ul {
+      li {
+        background-color: #6E6E6E !important;
+         color: #F5F5F5 !important;
+       }
+    }
+  }
+  .NotAllSelectedList  {
+    ul {
+      li {
+
+        background-color: white;
+        color: #333333;
+      &:hover {
+        background-color: #F5F5F5;
+        color: #333333;
+    }
+        &:active   {
+          color: #333;
+          background-color: rgba(0, 0, 0, 0.08);
+        }
+    
+      }
+      .Mui-selected {
+        background-color: #6E6E6E !important;
+        color: #F5F5F5 !important;
+        &:hover {
+          color: #F5F5F5 !important;
+        background-color: #6E6E6E !important;
+         }
+      }
+
+    }
+  }
+.multiSelectField {
+  svg {
+    color: #333333;
+    font-size: 27px;
+    margin-top: -1px;
+    margin-right: 11px;
+  }
+  .MuiSelect-iconOpen {
+    transform: rotate(0);
+  }
+}

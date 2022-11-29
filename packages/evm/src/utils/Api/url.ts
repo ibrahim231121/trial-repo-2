@@ -70,7 +70,6 @@ export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
-export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 
 export const SENSOR_AND_TRIGGERS_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;

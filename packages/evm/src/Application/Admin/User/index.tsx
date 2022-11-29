@@ -92,8 +92,8 @@ const User: React.FC = () => {
     (state: RootState) => state.userReducer.userGroups
   );
   const [rows, setRows] = React.useState<User[]>([]);
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("lastCheckedIn");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<any>();

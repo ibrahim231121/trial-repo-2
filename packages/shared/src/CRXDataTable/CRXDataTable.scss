@@ -502,7 +502,7 @@
 .DragHandle {
   cursor: col-resize;
   color: var(--color-337e05);
-  height: 100vh;
+  height: calc(100vh - 263px);
   width: 5px;
   background: var(--color-transparent);
   position: absolute;
