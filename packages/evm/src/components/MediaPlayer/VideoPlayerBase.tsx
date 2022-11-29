@@ -2072,6 +2072,14 @@ useEffect(() => {
     }
   }, [isPlaying]);
 
+  const fwfScreenIcon = () => {
+    return (
+      <div className="ClickerIcons">
+      <div className="iconFF">{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`x${modeFw}`}</span></span> : ""}  </div>
+      <div className="iconFF">{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`x${modeRw}`}</span></span> : ""}  </div>
+    </div>
+    )
+  }
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
@@ -2153,12 +2161,10 @@ useEffect(() => {
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
                 toasterMsgRef={toasterMsgRef}
                 isAudioGraph={isAudioGraph}
+                ffScreenIcon = {fwfScreenIcon}
               />
 
-              <div className="ClickerIcons">
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`x${modeFw}`}</span></span> : ""}  </p>
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`x${modeRw}`}</span></span> : ""}  </p>
-              </div>
+             
               <div className="modeButton">
 
                 {modePrev && mode == 2 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}

@@ -10,6 +10,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   orderData,
   onHandleRequestSort,
   //   onResizeRow,
+  
   showCheckBoxesCol,
   showActionCol,
   setBodyCellWidth

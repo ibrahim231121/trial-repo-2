@@ -311,7 +311,7 @@ const SearchComponent = (props: any) => {
   }, []);
 
   React.useEffect(() => {
-    window.scrollTo({ top: 186, behavior: "smooth" });
+    window.scrollTo({ top: 200, behavior: "smooth" });
   }, [searchData]);
 
   React.useEffect(() => {

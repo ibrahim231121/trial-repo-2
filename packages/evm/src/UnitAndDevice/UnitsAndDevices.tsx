@@ -847,12 +847,17 @@ return (
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
-          offsetY={190}
           page={page}
           rowsPerPage={rowsPerPage}
           setPage= {(page:any) => setPage(page)}
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
           totalRecords={units.totalCount}
+           //Please dont miss this block.
+          offsetY={-22}
+          searchHeaderPosition={233}
+          dragableHeaderPosition={190}
+          topSpaceDrag = {16}
+            //End here
           />
           )
         }

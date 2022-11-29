@@ -349,12 +349,17 @@ const Station: React.FC = () => {
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}
-          offsetY={205}
           page={page}
           rowsPerPage={rowsPerPage}
           setPage={(page: any) => setPage(page)}
           setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={stations.totalCount}
+          //Please dont miss this block.
+          offsetY={-30}
+          searchHeaderPosition={250}
+          dragableHeaderPosition={205}
+          topSpaceDrag = {8}
+          //End here
         />
       )}
       

@@ -356,13 +356,16 @@ const retentionFormMessages = (obj: any) => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={206}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterRetentionPolicies?.totalCount}
-
+            //Please dont miss this block.
+            offsetY={-20}
+            dragableHeaderPosition={207}
+            topSpaceDrag = {5}
+            //End here
           />
          
         )

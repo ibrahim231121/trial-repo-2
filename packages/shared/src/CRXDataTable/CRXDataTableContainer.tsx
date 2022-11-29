@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -37,130 +37,21 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   initialRows,
   offsetY,
   showHeaderCheckAll,
-  selfPaging
+  selfPaging,
+  searchHeaderPosition,
+  dragableHeaderPosition,
+  topSpaceDrag
 }) => {
 
-  //NOTE : Sticky Header code block please dont do the any changes on this block 
   const classes : any = useStyles();
-  const [stickeyStickyScroll, setStickeyStickyScroll] = React.useState(0)
   const [bodyCellWidth, setBodyCellWidth] = React.useState<any>()
-  const scrolled50Ref:any = React.useRef();
-  
-  const resizeColumn = (table1 : any, table2 : any) => {
-    table1.children[0].firstChild.childNodes.forEach((_ : any,i : any) => {
-      let colWidth = table1.children[0].firstChild.childNodes[i]?.children[0]?.style.width;
-      let inx= i;
-      if(colWidth != undefined) {
-        setBodyCellWidth(colWidth)
-        table2.children[0].firstChild.childNodes[inx].children[0].style.width = colWidth
-      }
-    })
-  }
-  useEffect(() => {
-    const tableScrollValue = document.getElementsByClassName("tableScrollValue")[0];
-    const userTabId = document.querySelector("#crx-tabpanel-1");
-    const userTabId_tabs = document.querySelector("#crx-tabpanel-2");
-    const scrollFun = () => {
-      const tbl : any = document.getElementsByClassName('tableHeaderVisibility')[0];
-      const tbl2 : any = document.getElementsByClassName("visibleTable")[0];
-      if (offsetY && window.pageYOffset > 40 || userTabId && userTabId?.scrollTop > 100 || userTabId_tabs && userTabId_tabs?.scrollTop > 74) {
-        if (!scrolled50Ref.current) {
-          scrolled50Ref.current = true;
-          tbl.children[0].style.visibility = "collapse";
-          tbl.children[1].style.visibility = "collapse";
-          tbl2.children[0].style.visibility = "visible";
-          tbl2.children[1].style.visibility = "visible";
-          resizeColumn(tbl, tbl2)
-        }
 
-      } else {
-        scrolled50Ref.current = false;
-        tbl.children[0].style.visibility = "visible";
-        tbl.children[1].style.visibility = "visible";
-        tbl2.children[0].style.visibility = "collapse";
-        tbl2.children[1].style.visibility = "collapse";
-      }
-      setStickeyStickyScroll(tableScrollValue.scrollLeft);
-    };
-    
-      userTabId?.addEventListener("scroll", scrollFun)
-      userTabId_tabs?.addEventListener("scroll", scrollFun)
-      window.addEventListener("scroll", scrollFun);
-      tableScrollValue.addEventListener("scroll", scrollFun);
-
-    return () => {
-
-      window.removeEventListener("scroll", scrollFun);
-      tableScrollValue.removeEventListener("scroll", scrollFun);
-      userTabId?.removeEventListener("scroll", scrollFun)
-      userTabId_tabs?.removeEventListener("scroll", scrollFun)
-
-    };
-
-  }, []);
-
-const tableHeader = useRef(null);
-
-useEffect(()=> {
-  const stickyTableHeader = document.getElementsByClassName("stickyTableHeader")[0];
-  stickyTableHeader.scrollLeft = stickeyStickyScroll;
-},[stickeyStickyScroll])
   return (
     <>
-    
-   <TableContainer
-      id="customizedStickyHeader"
-      ref={tableHeader}
-      className={classes.container + " AssetsDataGrid stickyTableHeader  " + className}
-      style={{overflowX : "hidden", overflowY : "visible", position: "sticky", top : offsetY + "px", zIndex : "100", transition: "all 1s ease-in-out !important"}}
-      component={Paper}
-    >
-    <Table
-        className={"CRXDataTableCustom visibleTable " + classes.table}
-        style={{
-          width: `${allColHide === undefined || allColHide ? "140px" : "auto"}`,
-        }}
-        aria-label="simple table"
-        size="small"
-        stickyHeader
-      >
-        
-     <CRXDataTableStickyHeaders
-          id={id}
-          orderColumn={orderColumn}
-          headCells={headCells}
-          orderData={orderData}
-          selectedItems={selectedItems}
-          container={container}
-          initialRows={initialRows}
-          actionComponent={actionComponent}
-          searchHeader={searchHeader}
-          page={page}
-          onMoveReorder={onMoveReorder}
-          onReorderEnd={(e: any, _) => onReorderEnd(e, _)}
-          onResizeRow={(e: any) => onResizeRow(e)}
-          getRowOnActionClick={getRowOnActionClick}
-          onHandleRequestSort={(e) => onHandleRequestSort(e)}
-          onSetCheckAll={onSetCheckAll}
-          dragVisibility={dragVisibility}
-          showCheckBoxesCol={showCheckBoxesCol}
-          showActionCol={showActionCol}
-          showActionSearchHeaderCell={showActionSearchHeaderCell}
-          showHeaderCheckAll={showHeaderCheckAll}
-          checkAllPageWise={checkAllPageWise}
-          setBodyCellWidth={setBodyCellWidth}
-        />
-
-        </Table>
-        </TableContainer> 
        
     <TableContainer
       className={classes.container + " AssetsDataGrid tableScrollValue " + className}
       component={Paper}
-      style={{
-        overflowX : container.rows.length > 0 ? "auto" : "visible",
-        overflowY : container.rows.length > 0 ? "hidden" : "visible",
-      }}
     >
       
       <Table
@@ -197,6 +88,10 @@ useEffect(()=> {
           showHeaderCheckAll={showHeaderCheckAll}
           checkAllPageWise={checkAllPageWise}
           setBodyCellWidth={setBodyCellWidth}
+          offsetY={offsetY}
+          searchHeaderPosition={searchHeaderPosition}
+          dragableHeaderPosition={dragableHeaderPosition}
+          topSpaceDrag={topSpaceDrag}
         />
 
         <DataTableBody
@@ -217,7 +112,7 @@ useEffect(()=> {
             selfPaging={selfPaging}
           />
       </Table>
-      
+      <div className="scrollControler"></div>
     </TableContainer>
       <div className="overlayPanel"></div>
     </>

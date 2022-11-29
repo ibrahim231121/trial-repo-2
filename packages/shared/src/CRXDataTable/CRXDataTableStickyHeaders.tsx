@@ -6,9 +6,7 @@ import {
   import DragableHead from "./CRXDragableHead";
   import SearchHeader from "./CRXDataTableSearchHeader";
   import DataTableHeader from "./CRXDataTableHeader";
-
-
-
+ 
 const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
     id,
     orderColumn,
@@ -32,7 +30,11 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
     onSetCheckAll,
     checkAllPageWise,
     initialRows,
-    setBodyCellWidth
+    setBodyCellWidth,
+    offsetY,
+    searchHeaderPosition,
+    dragableHeaderPosition,
+    topSpaceDrag
 }) => {
     return (
         <>
@@ -43,8 +45,11 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
           axis="x"
           onSortEnd={(e: any, _: any) => onReorderEnd(e,_)}
           onSortStart={(e:any) => onMoveReorder(e)}
+          offsetY={offsetY}
+          dragableHeaderPosition={dragableHeaderPosition}
+          topSpaceDrag={topSpaceDrag}
+          searchHeader={searchHeader}
         >
-         
            <DataTableHeader
              orderColumn={orderColumn}
              headCells={headCells}
@@ -55,8 +60,8 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
              showCheckBoxesCol={showCheckBoxesCol}
              showActionCol={showActionCol}
              setBodyCellWidth={setBodyCellWidth}
+             
            />
-   
          
         </DragableHead>
 
@@ -79,6 +84,8 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
             onSetCheckAll={onSetCheckAll}
             checkAllPageWise={checkAllPageWise}
             initialRows={initialRows}
+            offsetY={offsetY}
+            searchHeaderPosition={searchHeaderPosition}
           />
         ) : null}
         </>

@@ -210,7 +210,7 @@
         ._videoPlayer_grid_customize {
           height: 100%;
           padding-right: 4px;
-          // width: 80%;
+          position: relative;
           margin: 0 auto;
           margin-right: 22px;
           &._video_all_player_center {
@@ -1204,28 +1204,6 @@ span.playBackTooltipUp {
   .CrxchevronDown {
     font-size: 28px;
     top: -6px;
-  }
-}
-
-.ClickerIcons {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  bottom: 0px;
-  p {
-    color: white;
-  }
-
-  i {
-    font-size: 34px;
-    position: relative;
-    top: 8px;
-  }
-
-  .iconFSSpan {
-    font-size: 16px;
-    margin-left: 4px;
   }
 }
 

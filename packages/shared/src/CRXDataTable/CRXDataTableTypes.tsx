@@ -105,7 +105,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     container: {
       width: "99.8%",
       height: "auto",
-      overflowX: "auto",
       overflowY : "hidden",
       //scrollBehavior: "smooth"
     },
@@ -225,6 +224,9 @@ export type DataTableProps = {
   setRowsPerPage: (e: any) => void;
   totalRecords: number;
   selfPaging?: boolean;
+  searchHeaderPosition? : number,
+  dragableHeaderPosition? : number,
+  topSpaceDrag? : number
 };
 
 export type OrderData = {
@@ -266,6 +268,9 @@ export type DataTableContainerProps = {
   offsetY? : number;
   headerOffSetY? : number;
   selfPaging?: boolean;
+  searchHeaderPosition? : number,
+  dragableHeaderPosition? : number,
+  topSpaceDrag? : number
 };
 
 export type DataTableStickyHeadersProps = {
@@ -295,7 +300,11 @@ export type DataTableStickyHeadersProps = {
   checkAllPageWise: CheckAllPageWise[];
   lightMode?: boolean;
   initialRows?: any[];
-  setBodyCellWidth? : any
+  setBodyCellWidth? : any,
+  offsetY? : number,
+  searchHeaderPosition? : number,
+  dragableHeaderPosition? : number,
+  topSpaceDrag? : number
 };
 
 export type DataTableBodyProps = {
@@ -336,6 +345,8 @@ export type SearchHeaderProps = {
   onSetCheckAll: (e: boolean) => void;
   checkAllPageWise: CheckAllPageWise[];
   initialRows?: any[];
+  offsetY? : number,
+  searchHeaderPosition? : number
 };
 
 export type DataTableHeaderProps = {
@@ -347,7 +358,7 @@ export type DataTableHeaderProps = {
   dragVisibility?: boolean;
   showCheckBoxesCol?: boolean;
   showActionCol?: boolean;
-  setBodyCellWidth? : any
+  setBodyCellWidth? : any,
 };
 
 export type DataTableClearFilterProps = {

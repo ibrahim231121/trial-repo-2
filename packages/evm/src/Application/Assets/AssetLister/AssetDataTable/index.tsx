@@ -266,7 +266,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-
+    {console.log("dateOptionType", dateOptionType)}
     return (
       <DateTimeComponent
         showCompact={showDateCompact}
@@ -640,7 +640,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
-          offsetY={177}
+          //Kindly add this block for sticky header Please dont miss it.
+          offsetY={207}
+          searchHeaderPosition={221}
+          dragableHeaderPosition={178}
+          topSpaceDrag = {251}
+          //End here
           page={page}
           rowsPerPage={rowsPerPage}
           setPage={(page: any) => setPage(page)}

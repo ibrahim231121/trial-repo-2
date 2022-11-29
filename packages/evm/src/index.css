@@ -451,3 +451,20 @@ input:-webkit-autofill {
   top: 0px;
   z-index: 999;
 }
+
+.AssetsDataGrid table thead  {
+  transition:transform 0s;
+  position: sticky;
+  z-index: 99;
+}
+
+.AssetsDataGrid {
+  overflow-x: overlay !important;
+}
+
+.scrollControler {
+  height: 15px;
+  width: 100%;
+  position: relative;
+  display: block;
+}

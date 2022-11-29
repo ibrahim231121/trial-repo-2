@@ -32,6 +32,7 @@ interface VideoScreenProp {
   setOnMarkerClickTimeData: any;
   toasterMsgRef: any;
   isAudioGraph: any;
+  ffScreenIcon ? : any
 }
 
 const VideoScreen = ({
@@ -57,6 +58,7 @@ const VideoScreen = ({
   isMultiTimelineEnabled,
   toasterMsgRef,
   isAudioGraph,
+  ffScreenIcon,
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -325,16 +327,18 @@ const VideoScreen = ({
           {getVideoTag(6)}
         </VideoColumn>
 
+        {isOpenWindowFwRw && (
+          <VideoPlayerFastFwRw
+            videoData={timelinedetail}
+            setVideoHandlersFwRw={setVideoHandlersFwRw}
+            setvideoTimerFwRw={setvideoTimerFwRw}
+            onClickVideoFwRw={onClickVideoFwRw}
+            ffScreenIcon={ffScreenIcon}
+          />
+        )}
         
       </div>
-      {isOpenWindowFwRw && (
-        <VideoPlayerFastFwRw
-          videoData={timelinedetail}
-          setVideoHandlersFwRw={setVideoHandlersFwRw}
-          setvideoTimerFwRw={setvideoTimerFwRw}
-          onClickVideoFwRw={onClickVideoFwRw}
-        />
-      )}
+      
       {mapEnabled && (
         <div className="_video_Player_Right_Panel">
           <div className="_panel_resize_bar"></div>

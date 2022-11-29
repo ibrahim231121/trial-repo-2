@@ -10,7 +10,10 @@
       background: var(--color-Black);
       padding: 4px;
       padding-bottom: 0px;
-
+      z-index: 99;
+      video {
+        aspect-ratio: 16/9;
+      }
       .video_thumb_line_time {
         position: absolute;
         bottom: 4px;
@@ -132,9 +135,9 @@
   .videoFRCTimeline {
     position: relative;
 
-    p {
+    .ffVideoTimer{
       position: absolute;
-      bottom: -5px;
+      bottom: 7px;
       background: black;
       color: white;
       padding: 0px 7px;
@@ -144,6 +147,26 @@
 
       @media(max-width:821px) {
         font-size: 12px;
+      }
+    }
+    .ClickerIcons {
+      position: absolute;
+      z-index: 6;
+      transform: translate(102px, 0%);
+      bottom: 14px;
+      .iconFF {
+        color: white;
+      }
+    
+      i {
+        font-size: 34px;
+        position: relative;
+        top: 8px;
+      }
+    
+      .iconFSSpan {
+        font-size: 16px;
+        margin-left: 4px;
       }
     }
   }

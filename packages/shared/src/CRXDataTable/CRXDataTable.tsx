@@ -105,6 +105,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   setRowsPerPage,
   totalRecords,
   selfPaging,
+  searchHeaderPosition,
+  dragableHeaderPosition,
+  topSpaceDrag
 }) => {
   const classes = useStyles();
   
@@ -394,6 +397,9 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       offsetY={offsetY}
                       headerOffSetY={headerOffSetY}
                       selfPaging={selfPaging}
+                      searchHeaderPosition={searchHeaderPosition}
+                      dragableHeaderPosition={dragableHeaderPosition}
+                      topSpaceDrag={topSpaceDrag}
                     />
                     {/* {(rowsPerPage  >= 25) ? */}
                       <TablePagination

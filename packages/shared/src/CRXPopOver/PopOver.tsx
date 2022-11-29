@@ -1,7 +1,7 @@
 import React, { useEffect, useState }  from 'react'
 import Popper  from '@material-ui/core/Popper';
 import { makeStyles } from '@material-ui/core/styles';
-// import "./PopOver.scss";
+import "./popOver.scss";
 
 
 type typoProps = {
