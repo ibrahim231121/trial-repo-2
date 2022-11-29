@@ -49,7 +49,8 @@ type Unit = {
   version: string,
   key: string,
   station: string,
-  assignedTo: string[],
+  //assignedTo: string[],
+  assignedToStr: string,
   lastCheckedIn: string,
   status: string,
   stationId: number,
@@ -163,7 +164,8 @@ const UnitAndDevices: React.FC = () => {
                 template: unit.template,
                 key: unit.key,
                 version: unit.version,
-                assignedTo: unit.assignedTo,
+                //assignedTo: unit.assignedTo,
+                assignedToStr: unit.assignedToStr,
               //   assignedTo: unit.assignedTo != null ? unit.assignedTo.split(',').map((x: string) => {
               //     return x.trim();
               // }) : [],
@@ -484,9 +486,10 @@ const AnchorDisplay = (e: string) => {
     },
     {
       label: `${t("Assigned_To")}`,
-      id: "assignedTo",
+      id: "assignedToStr",
       align: "left",
-      dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
+      //dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
+      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
@@ -693,7 +696,7 @@ const dataArrayBuilder = () => {
     
         let dataRows: Unit[] = reformattedRows.rows;
         searchData.forEach((el: SearchObject) => {
-          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedTo" || el.columnName === "serialNumber" || el.columnName === "key")
+          if (el.columnName === "description" || el.columnName === "station" || el.columnName === "unitId" || el.columnName === "assignedToStr" || el.columnName === "serialNumber" || el.columnName === "key")
                 dataRows = onTextCompare(dataRows, headCells, el);
             if (el.columnName === "lastCheckedIn")
                 dataRows = onDateCompare(dataRows, headCells, el);
