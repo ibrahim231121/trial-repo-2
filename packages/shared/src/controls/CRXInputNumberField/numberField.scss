@@ -1,0 +1,32 @@
+.number_field_textBox {
+  margin: 25px 0 0;
+  display: block;
+  .input_number_field {
+      .CBX-Number-input{
+          height: 30px;
+          border:1px solid #D1D2D4;
+          color: #333333;
+          min-width: 150px;
+          padding: 0px 16px;
+          appearance: auto;
+          outline: 2px solid transparent;
+          &:hover {
+              border: 1px solid #888787;
+              outline: 2px solid transparent;
+              &[type = 'number']::-webkit-outer-spin-button,
+              &[type = 'number']::-webkit-inner-spin-button {
+                  opacity: 1;
+              }
+          }
+          &:focus {
+              border: 1px solid #888787;
+              outline: 2px solid #888787;
+          }
+          &[type = 'number']::-webkit-outer-spin-button,
+          &[type = 'number']::-webkit-inner-spin-button {
+              opacity: 0;
+              background-color: transparent;
+          }
+      }
+  }
+}

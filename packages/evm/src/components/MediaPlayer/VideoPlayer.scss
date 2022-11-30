@@ -2596,6 +2596,10 @@ span.playBackTooltipUp {
           padding: 4px;
           background: #000;
           bottom: 143px !important;
+          z-index: 99;
+          video {
+            aspect-ratio: 16/9;
+          }
         }
       }
     }

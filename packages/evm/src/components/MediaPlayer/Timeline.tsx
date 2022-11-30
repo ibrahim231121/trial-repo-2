@@ -71,7 +71,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 
   }
   const removeThumbnail = () => {
-    setVisibleThumbnail([]);
+    //setVisibleThumbnail([]);
   }
 
   React.useLayoutEffect(() => {
