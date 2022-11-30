@@ -353,8 +353,12 @@ else {
           }}
           type='password'
           required={true}
-          onChange={(e: any) => setPassword(e.target.value)}
-          onBlur={checkPassword}
+          onChange={(e: any) => {
+            setPassword(e.target.value)
+            checkPassword(e.target.value)
+          }
+          }
+          onBlur={() => checkPassword()}
         />
         <TextField
           className='crx-gente-field crx-gente-field-confrim '
@@ -363,8 +367,11 @@ else {
           label={t("Confirm_Password")}
           required={true}
           type='password'
-          onChange={(e: any) => setConfirmPassword(e.target.value)}
-          onBlur={checkConfirmPassword}
+          onChange={(e: any) => {
+            setConfirmPassword(e.target.value)
+            checkConfirmPassword(e.target.value)
+          }}
+          onBlur={() => checkConfirmPassword()}
         />
         <div className='crx-requird-check'>
           <CRXCheckBox
@@ -791,9 +798,10 @@ else {
     return { error: false, errorMessage: '' };
   }
 
-  const checkFirstName = () => {
-    const isUserFirstNameValid = validateFirstLastAndMiddleName(formpayload.firstName, t('First_Name'));
-    if (!formpayload.firstName) {
+  const checkFirstName = (firstNameOnChange : string = "") => {
+    firstNameOnChange = setValue(formpayload.firstName, firstNameOnChange);
+    const isUserFirstNameValid = validateFirstLastAndMiddleName(firstNameOnChange, t('First_Name'));
+    if (!firstNameOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         firstNameErr: t('First_Name_is_required')
@@ -808,9 +816,10 @@ else {
     }
   };
 
-  const checkLastName = () => {
-    const isUserLastNameValid = validateFirstLastAndMiddleName(formpayload.lastName, t('Last_Name'));
-    if (!formpayload.lastName) {
+  const checkLastName = (lastNameOnChange: string = "") => {
+    lastNameOnChange = setValue(formpayload.lastName, lastNameOnChange);
+    const isUserLastNameValid = validateFirstLastAndMiddleName(lastNameOnChange, t('Last_Name'));
+    if (!lastNameOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         lastNameErr: t('Last_Name_is_required')
@@ -840,9 +849,10 @@ else {
     return { error: false, errorMessage: '' };
   }
 
-  const checkPin = () => {
-    if (formpayload.pin !== null) {
-      const isPinValid = validatePin(formpayload.pin.toString());
+  const checkPin = (pinOnChange: string = "") => {
+    pinOnChange = setValue(formpayload.pin === null ? "" : formpayload.pin, pinOnChange)
+    if (pinOnChange !== null) {
+      const isPinValid = validatePin(pinOnChange);
       if (isPinValid.error) {
         setFormPayloadErr({ ...formpayloadErr, pinErr: isPinValid.errorMessage });
       }
@@ -852,9 +862,18 @@ else {
     }
   }
 
-  const checkUserName = () => {
-    const isUserNameValid = validateUserName(formpayload.userName);
-    if (!formpayload.userName) {
+  function setValue(value: string, onChangeValue: string) {
+    if (onChangeValue === "") {
+      return onChangeValue;
+    }
+
+    return value;
+  }
+
+  const checkUserName = (userNameOnChange: string = "") => {
+    userNameOnChange = setValue(formpayload.userName, userNameOnChange);
+    const isUserNameValid = validateUserName(userNameOnChange);
+    if (!userNameOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         userNameErr: t('Username is required')
@@ -869,9 +888,10 @@ else {
     }
   }
 
-  const checkEmail = () => {
-    const isEmailValid = validateEmail(formpayload.email);
-    if (!formpayload.email) {
+  const checkEmail = (emailOnChange: string = "") => {
+    emailOnChange = setValue(formpayload.email, emailOnChange);
+    const isEmailValid = validateEmail(emailOnChange);
+    if (!emailOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         emailErr: t("Email_is_required")
@@ -891,16 +911,16 @@ else {
     return re.test(String(password).toLowerCase());
   }
 
-  const checkPassword = () => {
-    const isPasswwordValid = validatePassword(password);
-    if (!password) {
+  const checkPassword = (passwordOnChange: string = "") => {
+    passwordOnChange = setValue(password, passwordOnChange);
+    if (!passwordOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         passwordErr: t("Password_is_required")
       });
       setDisableSave(true)
     }
-    else if (password.length < 6) {
+    else if (passwordOnChange.length < 6) {
       setFormPayloadErr({ ...formpayloadErr, passwordErr: `${t("Password_should_be_greater_than_six_characters")}` });
       setDisableSave(true)
     }
@@ -909,27 +929,27 @@ else {
     }
   };
 
-  const checkConfirmPassword = () => {
-    if (!confirmPassword) {
+  const checkConfirmPassword = (confirmPasswordOnChange: string = "") => {
+    confirmPasswordOnChange = setValue(confirmPassword, confirmPasswordOnChange);
+    if (!confirmPasswordOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         confirmPasswordErr: t("Confirm_Password_is_required")
       });
       setDisableSave(true)
-    } else if (password !== confirmPassword) {
+    } else if (password !== confirmPasswordOnChange) {
       setFormPayloadErr({
         ...formpayloadErr,
         confirmPasswordErr: t("Passwords_are_not_same")
       });
       setDisableSave(true)
-    }else if (confirmPassword.length < 6) {
+    } else if (confirmPasswordOnChange.length < 6) {
       setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: `${t("Confirm_Password_should_be_greater_than_six_characters")}` });
       setDisableSave(true)
     } else {
       setFormPayloadErr({ ...formpayloadErr, confirmPasswordErr: '' });
-      
-      if(checkFormPayload())
-      {
+
+      if (checkFormPayload()) {
         setDisableSave(false)
       }
     }
@@ -962,9 +982,10 @@ else {
     return { error: false, errorMessage: '' };
   }
 
-  const checkPhoneumber = () => {
-    const isPhoneValidate = validatePhone(formpayload.mobileNumber);
-    if (!formpayload.mobileNumber) {
+  const checkPhoneumber = (mobileNumberOnChange: string = "") => {
+    mobileNumberOnChange = setValue(formpayload.mobileNumber, mobileNumberOnChange);
+    const isPhoneValidate = validatePhone(mobileNumberOnChange);
+    if (!mobileNumberOnChange) {
       setFormPayloadErr({ ...formpayloadErr, phoneNumberErr: '' });
     } else if (isPhoneValidate.error) {
       setFormPayloadErr({
@@ -977,8 +998,9 @@ else {
     }
   }
 
-  const checkMiddleInitial = () => {
-    if (!formpayload.middleInitial) {
+  const checkMiddleInitial = (middleInitialOnChange: string = "") => {
+    middleInitialOnChange = setValue(formpayload.middleInitial, middleInitialOnChange);
+    if (!middleInitialOnChange) {
       setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
     } else {
       setFormPayloadErr({ ...formpayloadErr, middleInitialErr: '' });
@@ -1065,7 +1087,10 @@ else {
                 value={formpayload.userName}
                 label={t("User_Name")}
                 className={'users-input ' + isExtUsers}
-                onChange={(e: any) => setFormPayload({ ...formpayload, userName: e.target.value })}
+                onChange={(e: any) => {
+                  setFormPayload({ ...formpayload, userName: e.target.value })
+                  checkUserName(e.target.value)
+                }}
                 disabled={isADUser}
                 // onBlur={(e: any) => {
                 //   !formpayload.userName
@@ -1075,7 +1100,7 @@ else {
                 //     })
                 //     : setFormPayloadErr({ ...formpayloadErr, userNameErr: '' });
                 // }}
-                onBlur={checkUserName}
+                onBlur={() => checkUserName()}
               />
               <TextField
                 error={!!formpayloadErr.firstNameErr}
@@ -1084,8 +1109,12 @@ else {
                 label={t("First_Name")}
                 className='users-input'
                 value={formpayload.firstName}
-                onChange={(e: any) => setFormPayload({ ...formpayload, firstName: e.target.value })}
-                onBlur={checkFirstName}
+                onChange={(e: any) => {
+                  setFormPayload({ ...formpayload, firstName: e.target.value })
+                  checkFirstName(e.target.value)
+                }
+                }
+                onBlur={() => checkFirstName()}
               />
               <TextField
                 error={!!formpayloadErr.middleInitialErr}
@@ -1093,8 +1122,12 @@ else {
                 value={formpayload.middleInitial}
                 label={t("Middle_Initial")}
                 className='users-input'
-                onChange={(e: any) => setFormPayload({ ...formpayload, middleInitial: e.target.value })}
-                onBlur={checkMiddleInitial}
+                onChange={(e: any) => {
+                  setFormPayload({ ...formpayload, middleInitial: e.target.value })
+                  checkMiddleInitial(e.target.value)
+                }
+                }
+                onBlur={()=>checkMiddleInitial()}
               />
               <TextField
                 error={!!formpayloadErr.lastNameErr}
@@ -1103,8 +1136,10 @@ else {
                 value={formpayload.lastName}
                 label={t("Last_Name")}
                 className='users-input'
-                onChange={(e: any) => setFormPayload({ ...formpayload, lastName: e.target.value })}
-                onBlur={checkLastName}
+                onChange={(e: any) =>  { setFormPayload({ ...formpayload, lastName: e.target.value })
+                checkLastName(e.target.value)  
+              }}
+                onBlur={() => checkLastName()}
               />
             </Grid>
             <div className='grid_spacer'>
@@ -1118,8 +1153,11 @@ else {
                 disabled={isADUser}
                 label={t("Email")}
                 className={'users-input ' + isExtEmail}
-                onChange={(e: any) => setFormPayload({ ...formpayload, email: e.target.value })}
-                onBlur={checkEmail}
+                onChange={(e: any) => {
+                  setFormPayload({ ...formpayload, email: e.target.value })
+                  checkEmail(e.target.value)
+                }}
+                onBlur={() => (checkEmail())}
               />
               <TextField
                 error={!!formpayloadErr.phoneNumberErr}
@@ -1127,8 +1165,10 @@ else {
                 value={formpayload.mobileNumber}
                 label={t("Mobile_Number")}
                 className='users-input'
-                onChange={(e: any) => setFormPayload({ ...formpayload, mobileNumber: e.target.value })}
-                onBlur={checkPhoneumber}
+                onChange={(e: any) =>  { setFormPayload({ ...formpayload, mobileNumber: e.target.value })
+                checkPhoneumber(e.target.value)
+                }}
+                onBlur={() => checkPhoneumber()}
               />
 
               {
@@ -1180,8 +1220,12 @@ else {
                   required={false}
                   type='number'
                   value={formpayload.pin}
-                  onChange={(e: any) => setFormPayload({ ...formpayload, pin: e.target.value })}
-                  onBlur={checkPin}
+                  onChange={(e: any) => {
+                    setFormPayload({ ...formpayload, pin: e.target.value })
+                    checkPin(e.target.value)
+                  }
+                  }
+                  onBlur={() => checkPin()}
                 />
               </div>
 
