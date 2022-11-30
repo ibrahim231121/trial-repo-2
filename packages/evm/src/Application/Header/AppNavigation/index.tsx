@@ -94,6 +94,7 @@ const CRXLefNavigation = () => {
       icon: "fas fa-video NaveIcon",
       classes: "liveVideoTab",
       url: urlList.filter((item: any) => item.name === urlNames.liveVideo)[0].url,
+      target: "_blank"
     },
     {
       moduleId:0,
@@ -101,6 +102,7 @@ const CRXLefNavigation = () => {
       icon:"icon icon-compass5 NaveIcon", 
       classes: "mapsTab",
       url: urlList.filter((item: any) => item.name === urlNames.avlMap)[0].url,
+      target: "_blank"
     },
     // {
     //   moduleId: 0,
