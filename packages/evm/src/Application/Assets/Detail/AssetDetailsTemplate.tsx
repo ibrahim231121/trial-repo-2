@@ -357,7 +357,7 @@ const AssetDetailsTemplate = (props: any) => {
   useEffect(() => {
     if (getAssetData) {
       getMasterAssetFile(getAssetData?.assets.master.files.filter(x => x.filesId > 0))
-      getChildAssetFile(getAssetData?.assets.children.filter(x => x.status == "Available"))
+      getChildAssetFile(getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0))
     }
   }, [getAssetData]);
 
@@ -396,7 +396,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x.status == "Available").length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -492,13 +492,16 @@ const AssetDetailsTemplate = (props: any) => {
           }])
         }
       }).catch(e => {
-        setFileData([...fileData, {
-          filename: template.name,
-          fileurl: template.url,
-          fileduration: template.duration,
-          downloadUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-        }])
-      });
+        if (template.type != "GPS") 
+        {
+          setFileData([...fileData, {
+            filename: template.name,
+            fileurl: template.url,
+            fileduration: template.duration,
+            downloadUri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          }])
+        }
+      });   
     })
   }
   function getChildAssetFile(dt: any) {
