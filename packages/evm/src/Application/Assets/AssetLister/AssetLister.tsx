@@ -316,8 +316,11 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     // NOTE: To Enable Search Button, on the basis of Query String.
-    if (querryString.length > 1)
+    if (dateTimeDropDown.value === 'anytime' && querryString.length > 0)
       setIsSearchBtnDisable(false);
+      else if(dateTimeDropDown.value === 'anytime' && querryString.length === 0){
+        setIsSearchBtnDisable(true);
+      }
   }, [querryString]);
 
   React.useEffect(() => {
