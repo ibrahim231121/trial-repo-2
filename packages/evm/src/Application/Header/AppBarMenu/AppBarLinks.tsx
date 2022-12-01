@@ -10,7 +10,7 @@ import ApplicationPermissionContext from "../../../../../evm/src/ApplicationPerm
 
 const CRXAppDropdown = () => {
     const { t } = useTranslation<string>();
-    const icon = <CRXTooltip className="crxTooltipAppBar applicationIcon" arrow={false} placement="bottom-end" iconName="icon icon-grid" title="getec applications"/>;
+    const icon = <CRXTooltip className="crxTooltipAppBar applicationIcon" id="applicationIcon_grid_tooltip" arrow={false} placement="bottom-end" iconName="icon icon-grid" title="getec applications"/>;
     const {getModuleIds} = useContext(ApplicationPermissionContext);
     var between = getModuleIds().filter( (item : any) => {
         return (item >= 32 && item <= 42);
