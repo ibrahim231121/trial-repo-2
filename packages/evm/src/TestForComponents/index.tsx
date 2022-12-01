@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  TextField, CBXMultiSelectForDatatable
+  TextField, CBXMultiSelectForDatatable, NumberField
 } from '@cb/shared';
 import "./Test.scss"
 const TabsDemo = () => {
  const [value, setValue] = React.useState<any>();
- 
+ const [val, setNumberVal] = useState<number>(1)
  const [values, setValues] = React.useState<any>();
  const [ShowHideTextVlaue, setShowHideText] = React.useState<boolean>(false);
 
@@ -135,7 +135,10 @@ const changeHanlder = (e : any, val : any) => {
 const onSelectedClear = () => {
   setGetVal([])
 }
+
   return (
+    <>
+    
     <div className="App" style={{ marginTop: "130px", marginLeft: "90px" }}>
       <div className="inlineDiv">
           <TextField 
@@ -171,7 +174,10 @@ const onSelectedClear = () => {
       isCheckBox={true}
       />
       </div>
+      <NumberField type="number" max={10} min={1} onChange={(e : any) => setNumberVal(e.target.value)} value={val} />
     </div>
+    
+    </>
   );
 }
 
