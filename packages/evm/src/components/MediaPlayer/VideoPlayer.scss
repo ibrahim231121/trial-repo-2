@@ -2500,6 +2500,10 @@ span.playBackTooltipUp {
   ._bottom_arrow_seeMore {
     display: none;
   }
+  .video_player_hover_thumb {
+    top: -18px;
+    transform: translate(-92px, 0px) !important;
+  }
 }
 
 .video_with_multiple_timeline {
