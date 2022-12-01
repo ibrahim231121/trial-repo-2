@@ -19,8 +19,7 @@ const CRXAppDropdown = () => {
     const listOFMenu = [
         {
             label : t('Getac_Command'),
-            router : "",
-            onClick: () => {window.location.href = BASE_URL_COMMAND_SERVICE as string }
+            onClick: () => { window.open(BASE_URL_COMMAND_SERVICE, "_blank") }
         },
         {
             label : t('Getac_Enterprise'),
