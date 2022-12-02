@@ -53,6 +53,12 @@ const StationDetail: React.FC = () => {
     t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
   );
   const [deviceTypeCollection, setDeviceTypeCollection] = React.useState<DeviceType[]>([]);
+  const [blackBoxRetentionTouched, setBlackBoxRetentionTouched] = React.useState<number>(0);
+  const [retentionPolicyTouched, setRetentionPolicyTouched] = React.useState<number>(0);
+  const [uploadPolicyTouched, setUploadPolicyTouched] = React.useState<number>(0);
+  const [blackBoxRetentionValue, setBlackBoxRetentionValue] = React.useState<AutoCompleteOptionType | null | undefined>(undefined);
+  const [retentionPolicyValue, setRetentionPolicyValue] = React.useState<AutoCompleteOptionType | null | undefined>(undefined);
+  const [uploadPolicyValue, setUploadPolicyValue] = React.useState<AutoCompleteOptionType | null | undefined>(undefined);
   const [defaultUnitTemplateSelectBoxValues, setDefaultUnitTemplateSelectBoxValues] = React.useState<any[]>([]);
   const stationInitialState: StationFormType = {
     Name: "",
@@ -238,10 +244,6 @@ const StationDetail: React.FC = () => {
           setError(true);
           setErrorResponseMessage(error.errors.Name[0]);
         }
-        if (error.errors.Name !== undefined && (error.errors.Name.length > 128 || error.errors.Name.length < 3)) {
-          setError(true);
-          setErrorResponseMessage(error.errors.Name[0]);
-        }
         if (
           error.errors['Address.State'] !== undefined
         ) {
@@ -278,15 +280,15 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
-    let _configurationTemplate = values.ConfigurationTemplate.map((x: any) => {
-      let configurationTemplate: any = {
+    let _configurationTemplate =  values.ConfigurationTemplate.map((x: any) => {
+      let configurationTemplate : any = {
         id: x.id,
         fields: x.fields,
         history: x.history,
         name: x.name,
         operationType: x.operationType,
         stationId: x.stationId,
-        typeOfDevice: x.typeOfDevice
+        typeOfDevice:x.typeOfDevice
       }
       return configurationTemplate
     })
@@ -310,7 +312,7 @@ const StationDetail: React.FC = () => {
           },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
-          configurationTemplates: _configurationTemplate ?? []
+          configurationTemplates:  _configurationTemplate ?? []
         }
       ],
       passcode: values.Passcode ?? "",
@@ -706,31 +708,36 @@ const StationDetail: React.FC = () => {
                           <div className="CrxStationError">
                             <CRXMultiSelectBoxLight
                               id="blackBoxPolicyMultiSelect"
+                              name="blackBoxPolicyMultiSelect"
                               multiple={false}
+                              error={blackBoxRetentionTouched == 1}
+                              errorMsg={"Blackbox_Retention_Policy_is_required"}
                               value={blackBoxAutoCompleteValue}
                               options={blackBoxAutoCompleteOptions.length > 0 && blackBoxAutoCompleteOptions}
                               onChange={(
                                 e: any,
                                 value: AutoCompleteOptionType,
                                 reason: string
-                              ) =>
+                              ) => {
                                 blackBoxAutoCompleteonChange(
                                   e,
                                   value,
                                   setFieldValue,
                                   reason
                                 )
+                                setBlackBoxRetentionTouched(value === null ? 1 : 0)
+                                setBlackBoxRetentionValue(value === null ? null : value);
                               }
+                              }
+                              onBlur ={() =>
+                              {
+                                setBlackBoxRetentionTouched(blackBoxRetentionValue == (null || undefined) ? 1 : 0)
+                              }}
                               CheckBox={true}
                               checkSign={false}
                               required={true}
                             />
-                            {errors.BlackboxRetentionPolicy ? (
-                              <div className="errorStationStyle">
-                                <i className="fas fa-exclamation-circle"></i>
-                                {t("Blackbox_Retention_Policy_is_required")}
-                              </div>
-                            ) : null}
+                            
                           </div>
                         </div>
                       </CRXColumn>
@@ -750,6 +757,8 @@ const StationDetail: React.FC = () => {
                               id="retentionPolicyMultiSelect"
                               className="getStationField"
                               multiple={false}
+                              error={retentionPolicyTouched === 1}
+                              errorMsg={"Retention_Policy_is_required"}
                               value={retentionAutoCompleteValue}
                               options={retentionAutoCompleteOptions.length > 0 && retentionAutoCompleteOptions}
                               onChange={(
@@ -757,23 +766,28 @@ const StationDetail: React.FC = () => {
                                 value: AutoCompleteOptionType,
                                 reason: string
                               ) =>
+                              {
                                 retentionAutoCompleteonChange(
                                   e,
                                   value,
                                   setFieldValue,
                                   reason
                                 )
+                                setRetentionPolicyTouched(value === null ? 1 : 0)
+                                setRetentionPolicyValue(value === null ? null : value);
                               }
+                              }
+
+                              onBlur = {() =>
+                              {
+                                setRetentionPolicyTouched(retentionPolicyValue == (null || undefined) ? 1 : 0)
+                              }
+                            }
                               CheckBox={true}
                               checkSign={false}
                               required={true}
                             />
-                            {errors.RetentionPolicy ? (
-                              <div className="errorStationStyle">
-                                <i className="fas fa-exclamation-circle"></i>
-                                {t("Retention_Policy_is_required")}
-                              </div>
-                            ) : null}
+                            
                           </div>
                         </div>
 
@@ -792,6 +806,8 @@ const StationDetail: React.FC = () => {
                             <CRXMultiSelectBoxLight
                               id="uploadPolicyMultiSelect"
                               className="getStationField"
+                              error={uploadPolicyTouched === 1}
+                              errorMsg={"Upload_Policy_is_required"}
                               multiple={false}
                               value={uploadAutoCompleteValue}
                               options={uploadAutoCompleteOptions.length > 0 && uploadAutoCompleteOptions}
@@ -800,23 +816,27 @@ const StationDetail: React.FC = () => {
                                 value: AutoCompleteOptionType,
                                 reason: string
                               ) =>
+                              {
                                 uploadAutoCompleteonChange(
                                   e,
                                   value,
                                   setFieldValue,
                                   reason
                                 )
+                                setUploadPolicyTouched(value === null ? 1 : 0)
+                                setUploadPolicyValue(value === null ? null : value);
+                              }
+                              }
+                              onBlur = {() =>
+                              {
+                                setUploadPolicyTouched(uploadPolicyValue == (null || undefined) ? 1 : 0)
+                              }
                               }
                               CheckBox={true}
                               checkSign={false}
                               required={true}
                             />
-                            {errors.UploadPolicy !== undefined ? (
-                              <div className="errorStationStyle">
-                                <i className="fas fa-exclamation-circle"></i>
-                                {t("Upload_Policy_is_required")}
-                              </div>
-                            ) : null}
+                            
                           </div>
                         </div>
                       </CRXColumn>
