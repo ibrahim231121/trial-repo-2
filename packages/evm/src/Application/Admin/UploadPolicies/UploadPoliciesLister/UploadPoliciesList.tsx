@@ -190,7 +190,7 @@ React.useEffect(() => {
         return { 
             id: template.id, 
             name: template.name + "_" + template.id, 
-            description: template.description + "_" + template.id, 
+            description: template.description , 
         }
       })
     }

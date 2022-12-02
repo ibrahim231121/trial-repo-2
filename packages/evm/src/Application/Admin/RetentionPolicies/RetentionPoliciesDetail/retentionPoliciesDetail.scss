@@ -36,7 +36,7 @@
         flex-grow: 1;
     }
     h6{
-        flex-grow: 1;
+        flex-grow: 0.4;
         width: 0px;
     }
     span.gridFilterSpanUi.Crx_defaultText {
@@ -107,3 +107,42 @@
       }
     }
   }
+
+  .___CRXCreateRetentionPolicy__  {
+    .MuiDialog-paper {
+        min-width: 700px !important;
+    }
+  }
+.days_retention_field_ui {
+    margin-left: 50px;
+    display: flex;
+    align-items: baseline;
+    input {
+        margin: 0 15px;
+    }
+}
+.number_retention_field_ui  {
+    margin-top: -54px;
+    input {
+        margin-left: 131px;
+
+    }
+}
+
+.number_retention_field_ui {
+    .requiredLable {
+        position: relative;
+        top: 30px;
+    }
+}
+.number_retention_field_ui_label {
+    h6 {
+        position: relative;
+        top: 33px;
+    }
+}
+label.number_retention_label_gb {
+    position: absolute;
+    left: 377px;
+    margin-top: -23px;
+}
