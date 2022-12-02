@@ -121,18 +121,17 @@
         margin: 0 15px;
     }
 }
-.number_retention_field_ui  {
-    margin-top: -54px;
-    input {
-        margin-left: 131px;
 
-    }
-}
 
 .number_retention_field_ui {
+    margin-top: -54px;
     .requiredLable {
         position: relative;
         top: 30px;
+    }
+    input {
+        margin-left: 131px;
+
     }
 }
 .number_retention_field_ui_label {
