@@ -238,6 +238,10 @@ const StationDetail: React.FC = () => {
           setError(true);
           setErrorResponseMessage(error.errors.Name[0]);
         }
+        if (error.errors.Name !== undefined && (error.errors.Name.length > 128 || error.errors.Name.length < 3)) {
+          setError(true);
+          setErrorResponseMessage(error.errors.Name[0]);
+        }
         if (
           error.errors['Address.State'] !== undefined
         ) {
@@ -274,15 +278,15 @@ const StationDetail: React.FC = () => {
     values: StationFormType,
     actions: FormikHelpers<StationFormType>
   ) => {
-    let _configurationTemplate =  values.ConfigurationTemplate.map((x: any) => {
-      let configurationTemplate : any = {
+    let _configurationTemplate = values.ConfigurationTemplate.map((x: any) => {
+      let configurationTemplate: any = {
         id: x.id,
         fields: x.fields,
         history: x.history,
         name: x.name,
         operationType: x.operationType,
         stationId: x.stationId,
-        typeOfDevice:x.typeOfDevice
+        typeOfDevice: x.typeOfDevice
       }
       return configurationTemplate
     })
@@ -306,7 +310,7 @@ const StationDetail: React.FC = () => {
           },
           blackboxRetentionPolicyId: Number(values.BlackboxRetentionPolicy?.id),
           uploadPolicyId: Number(values.UploadPolicy?.id),
-          configurationTemplates:  _configurationTemplate ?? []
+          configurationTemplates: _configurationTemplate ?? []
         }
       ],
       passcode: values.Passcode ?? "",

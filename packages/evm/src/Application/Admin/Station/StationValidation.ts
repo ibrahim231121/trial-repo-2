@@ -4,7 +4,7 @@ const regex = /^[a-zA-Z0-9]+[a-zA-Z0-9\b]*$/;
 const regex_PhoneNumber = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
 const regexForNumberOnly = new RegExp('^[0-9]+$');
 export const stationValidationSchema = Yup.object().shape({
-    Name: Yup.string().required('Station_Name_is_required'),
+    Name: Yup.string().required('Station_Name_is_required').min(3, "Station Name cannot be less than 3 and greater than 128").max(128, "Station Name cannot be less than 3 and greater than 128"),
     Passcode: Yup.string()
         .test(
             'len',
