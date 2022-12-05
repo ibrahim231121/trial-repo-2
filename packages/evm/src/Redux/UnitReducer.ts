@@ -9,7 +9,15 @@ import { setLoaderValue } from './loaderSlice';
 export const getUnitInfoAsync: any = createAsyncThunk(
     'getUnitInfo',
     async (pageiFilter: any, thunkAPI) => {
-        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+        let headers = [
+                {   
+                    key : 'GridFilter', 
+                    value : JSON.stringify(pageiFilter.gridFilter)
+                },
+                {
+                    key: 'GridSort', 
+                    value : JSON.stringify(pageiFilter.gridSort)
+                }]
         thunkAPI.dispatch(setLoaderValue({isLoading: true}))
         return await UnitsAndDevicesAgent.getUnitInfo(`/Stations/0/Units/filterUnit?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
           .then((response:any) => {

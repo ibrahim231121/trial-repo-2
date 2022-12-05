@@ -330,6 +330,8 @@ const StationDetail: React.FC = () => {
     if (isAddCase) {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
         showToastMsg()
+        dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
+        
         //setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {
@@ -339,8 +341,9 @@ const StationDetail: React.FC = () => {
         });
     } else {
       body.id = Number(id);
-      UnitsAndDevicesAgent.updateStation(`/Stations/${id}`, body).then(() => {
+      UnitsAndDevicesAgent.updateStation(`/Stations/${id}`, body).then((response: any) => {
         showToastMsg()
+        dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
         //setTimeout(() => navigateToStations(), 3000);
       })
         .catch((e: any) => {

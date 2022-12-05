@@ -168,6 +168,9 @@ export interface HeadCellProps {
   headerObject?: any;
   detailedDataComponentId?: string;
   isPopover? : boolean;
+  attributeName? : string;
+  attributeType? : string;
+  attributeOperator? : string;
 }
 
 export interface DataTableToolbarProps {
@@ -224,6 +227,7 @@ export type DataTableProps = {
   setRowsPerPage: (e: any) => void;
   totalRecords: number;
   selfPaging?: boolean;
+  setSortOrder?: (e: any) => void;
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
   topSpaceDrag? : number

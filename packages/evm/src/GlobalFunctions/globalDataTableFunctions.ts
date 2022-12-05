@@ -56,10 +56,16 @@ export type GridFilter = {
   filters?: GridFilter[];
 }
 
+export type GridSort = {
+  field: string,
+  dir: string,
+}
+
 export type PageiGrid = {
   gridFilter: GridFilter,
   page: number,
-  size: number
+  size: number,
+  gridSort?: GridSort,
 }
 
 export function DateFormat(value: string) {

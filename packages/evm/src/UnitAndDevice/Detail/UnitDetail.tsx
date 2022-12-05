@@ -183,6 +183,7 @@ const UnitCreate = (props: historyProps) => {
       }
     });
     return () => {
+      dispatch(enterPathActionCreator({ val: "" }));
       singleEventListener("onWSMsgRecEvent");
       unSubscribeGroupFromSocket("UnitStatus");
            };
