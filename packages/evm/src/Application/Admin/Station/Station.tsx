@@ -38,22 +38,12 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 const Station: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  const [paging, setPaging] = React.useState<boolean>();
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-    gridFilter: {
-      logic: "and",
-      filters: []
-    },
-    page: page,
-    size: rowsPerPage
-  });
+  
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const stations: any = useSelector((state: RootState) => state.stationReducer.stations);
   const [rows, setRows] = React.useState<StationType[]>([]);
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<string>('recordingStarted');
+  const [orderBy, setOrderBy] = React.useState<string>('Name');
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<StationType[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<StationType[]>();
@@ -72,6 +62,21 @@ const Station: React.FC = () => {
     colIdx: 0
   });
   const toasterRef = useRef<typeof CRXToaster>(null);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+    }
+  });
   const setData = () => {
     let stationRows: StationType[] = [];
     if (stations.data && stations.data.length > 0) {
@@ -136,9 +141,14 @@ const Station: React.FC = () => {
   }, [dateTime]);
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage, gridSort:{field: orderBy, dir: order} });
     setPaging(true);
   }, [page, rowsPerPage])
+
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setPaging(true)
+  }
 
   const searchText = (rowsParam: StationType[], headCells: HeadCellProps[], colIdx: number) => {
     const onChange = (valuesObject: ValueString[]) => {
@@ -281,9 +291,9 @@ const Station: React.FC = () => {
           fieldType: headCells[item.colIdx].attributeType,
         }
         pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
       })
+      pageiGrid.page = 0
+      pageiGrid.size = rowsPerPage
 
       if (page !== 0)
         setPage(0)
@@ -355,6 +365,7 @@ const Station: React.FC = () => {
           setPage={(page: any) => setPage(page)}
           setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={stations.totalCount}
+          setSortOrder={(sort:any) => sortingOrder(sort)}
         />
       )}
       

@@ -105,6 +105,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   setRowsPerPage,
   totalRecords,
   selfPaging,
+  setSortOrder,
 }) => {
   const classes = useStyles();
   
@@ -208,10 +209,12 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   };
 
   useEffect(() => {
-    stableSort(
-      containers.tableId.rows,
-      getComparator(orderData.order, orderData.orderBy)
-    );
+    console.log("orderData : ",orderData)
+    // stableSort(
+    //   containers.tableId.rows,
+    //   getComparator(orderData.order, orderData.orderBy)
+    // );
+    setSortOrder && setSortOrder(orderData)
     if (open === true) setOpen(false);
     else setOpen(true);
   }, [orderData]);

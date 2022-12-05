@@ -76,18 +76,42 @@ type DateTimeObject = {
 const UnitAndDevices: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
+
+  const rowsRef = useRef<any>([]);
+  const statusJson =useRef<any>();
+  const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
+  const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
+  const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);
+  const unitVersions: any = useSelector((state: RootState) => state.unitReducer.unitVersionKeyValues);
+  const unitAssignments: any = useSelector((state: RootState) => state.unitReducer.UnitAssignmentKeyValues);
+  const [rows, setRows] = React.useState<Unit[]>([]);
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("LastCheckedIn");
+  const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
+  const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
+  const [open, setOpen] = React.useState<boolean>(false)
+  const {getModuleIds} = useContext(ApplicationPermissionContext);
+
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
-      filters: []
+      filters: [],
     },
     page: page,
-    size: rowsPerPage
+    size: rowsPerPage,
+    gridSort: {
+      field: orderBy,
+      dir: order
+    }
+    
   })
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+  
 
   React.useEffect(() => {
     //dispatch(getUnitInfoAsync(pageiGrid)); // getunitInfo 
@@ -105,26 +129,6 @@ const UnitAndDevices: React.FC = () => {
         singleEventListener("onWSMsgRecEvent");
          };
   }, []);
-
-  
-  const rowsRef = useRef<any>([]);
-  const statusJson =useRef<any>();
-  const units: any = useSelector((state: RootState) => state.unitReducer.unitInfo);
-  const unitStatus: any = useSelector((state: RootState) => state.unitReducer.UnitStatusKeyValues);
-  const unitTemplates: any = useSelector((state: RootState) => state.unitReducer.UnitTemplateKeyValues);
-  const unitVersions: any = useSelector((state: RootState) => state.unitReducer.unitVersionKeyValues);
-  const unitAssignments: any = useSelector((state: RootState) => state.unitReducer.UnitAssignmentKeyValues);
-  const [rows, setRows] = React.useState<Unit[]>([]);
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<string>("lastCheckedIn");
-  const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [selectedItems, setSelectedItems] = React.useState<Unit[]>([]);
-  const [reformattedRows, setReformattedRows] = React.useState<any>();
-  const [selectedActionRow, setSelectedActionRow] = React.useState<Unit>();
-
-  const [open, setOpen] = React.useState<boolean>(false)
-
-  const {getModuleIds} = useContext(ApplicationPermissionContext);
 
   const singleEventListener = (function(element: any) {
           var eventListenerHandlers:any = {};
@@ -422,169 +426,167 @@ const AnchorDisplay = (e: string) => {
   }
 }
 
+const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
+  {
+    label: `${t("ID")}`,
+    id: "id",
+    align: "right",
+    dataComponent: () => null,
+    sort: true,
+    searchFilter: true,
+    searchComponent: () => null,
+    keyCol: true,
+    visible: false,
+    minWidth: "80",
+    maxWidth: "100",
+  },
+  {
+    label: `${t("Unit_ID")}`,
+    id: "unitId",
+    align: "left",
+    dataComponent: (e: string) => AnchorDisplay(e),// textDisplay(e, ""),
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchText,
+    minWidth: "120",
+    attributeName: "UnitId",
+    attributeType: "String",
+    attributeOperator: "contains"
+    
+  },
+  {
+    label: `${t("Status")}`,
+    id: "status",
+    align: "left",
+    dataComponent: (e: string) => textDisplayStatus(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+    multiSelectCheckbox(rowData, columns, colIdx, initialRows),      
+    minWidth: "100",
+    maxWidth: "100",
+    attributeName: "Status",
+    attributeType: "List",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Description")}`,
+    id: "description",
+    align: "left",
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchText,
+    minWidth: "265",
+    maxWidth: "265",
+    attributeName: "Description",
+    attributeType: "String",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Assigned_To")}`,
+    id: "assignedToStr",
+    align: "left",
+    //dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
+    minWidth: "20",
+    maxWidth: "20",
+    attributeName: "AssignedTo",
+    attributeType: "List",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Serial_Number")}`,
+    id: "serialNumber",
+    align: "left",
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchText,
+    minWidth: "160",
+    maxWidth: "160",
+    attributeName: "SerialNumber",
+    attributeType: "String",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Key")}`,
+    id: "key",
+    align: "left",
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchText,
+    minWidth: "160",
+    maxWidth: "160",
+    attributeName: "Key",
+    attributeType: "String",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Version")}`,
+    id: "version",
+    align: "center",
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+    // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
+    searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
+    minWidth: "80",
+    maxWidth: "100",
+    attributeName: "Version",
+    attributeType: "List",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Station")}`,
+    id: "station",
+    align: "left",
+    dataComponent: (e: string) => textDisplayStation(e, "linkColor"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchText,
+    minWidth: "185",
+    maxWidth: "185",
+    attributeName: "Station",
+    attributeType: "String",
+    attributeOperator: "contains"
+  },
+  {
+    label: `${t("Last_Checked_In")}`,
+    id: "lastCheckedIn",
+    align: "center",
+    dataComponent: dateDisplayFormat,
+    sort: true,
+    searchFilter: true,
+    searchComponent: searchDate,
+    minWidth: "190",
+    attributeName: "LastCheckedIn",
+    attributeType: "DateTime",
+    attributeOperator: "between"
+  },
+  {
+    label: `${t("Template")}`, 
+    id: "template",
+    align: "left",
+    dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+    sort: true,
+    searchFilter: true,
+    searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
+    multiSelectCheckbox(rowData, columns, colIdx, initialRows),
+    minWidth: "100",
+    attributeName: "Template",
+    attributeType: "List",
+    attributeOperator: "contains"
+    
+  }, 
+]);
 
-
-  const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
-    {
-      label: `${t("ID")}`,
-      id: "id",
-      align: "right",
-      dataComponent: () => null,
-      sort: true,
-      searchFilter: true,
-      searchComponent: () => null,
-      keyCol: true,
-      visible: false,
-      minWidth: "80",
-      maxWidth: "100",
-    },
-    {
-      label: `${t("Unit_ID")}`,
-      id: "unitId",
-      align: "left",
-      dataComponent: (e: string) => AnchorDisplay(e),// textDisplay(e, ""),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "120",
-      attributeName: "UnitId",
-      attributeType: "String",
-      attributeOperator: "contains"
-      
-    }, 
-    {
-      label: `${t("Status")}`,
-      id: "status",
-      align: "left",
-      dataComponent: (e: string) => textDisplayStatus(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectCheckbox(rowData, columns, colIdx, initialRows),      
-      minWidth: "100",
-      maxWidth: "100",
-      attributeName: "Status",
-      attributeType: "List",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Description")}`,
-      id: "description",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "265",
-      maxWidth: "265",
-      attributeName: "Description",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Assigned_To")}`,
-      id: "assignedToStr",
-      align: "left",
-      //dataComponent: (e: string[]) => multitextDisplayAssigned(e, "data_table_fixedWidth_wrapText"),
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-      minWidth: "20",
-      maxWidth: "20",
-      attributeName: "AssignedTo",
-      attributeType: "List",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Serial_Number")}`,
-      id: "serialNumber",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "160",
-      maxWidth: "160",
-      attributeName: "SerialNumber",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Key")}`,
-      id: "key",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "160",
-      maxWidth: "160",
-      attributeName: "Key",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Version")}`,
-      id: "version",
-      align: "center",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-      minWidth: "80",
-      maxWidth: "100",
-      attributeName: "Version",
-      attributeType: "List",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Station")}`,
-      id: "station",
-      align: "left",
-      dataComponent: (e: string) => textDisplayStation(e, "linkColor"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "185",
-      maxWidth: "185",
-      attributeName: "Station",
-      attributeType: "String",
-      attributeOperator: "contains"
-    },
-    {
-      label: `${t("Last_Checked_In")}`,
-      id: "lastCheckedIn",
-      align: "center",
-      dataComponent: dateDisplayFormat,
-      sort: true,
-      searchFilter: true,
-      searchComponent: searchDate,
-      minWidth: "190",
-      attributeName: "LastCheckedIn",
-      attributeType: "DateTime",
-      attributeOperator: "between"
-    },
-    {
-      label: `${t("Template")}`, 
-      id: "template",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
-      sort: true,
-      searchFilter: true,
-      searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
-      multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "100",
-      attributeName: "Template",
-      attributeType: "List",
-      attributeOperator: "contains"
-      
-    }, 
-  ]);
-
-  const searchAndNonSearchMultiDropDown = (
+const searchAndNonSearchMultiDropDown = (
     rowsParam: Unit[],
     headCells: HeadCellProps[],
     colIdx: number,  
@@ -773,9 +775,9 @@ useEffect(()=>{
           fieldType: headCells[item.colIdx].attributeType,
         }
         pageiGrid.gridFilter.filters?.push(x)
-        pageiGrid.page = 0
-        pageiGrid.size = rowsPerPage
     })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
 
     if(page !== 0)
       setPage(0)
@@ -786,10 +788,15 @@ useEffect(()=>{
 }
 
  useEffect(() => {
-  setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
+  setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}}); 
   setPaging(true)
   
 },[page, rowsPerPage])
+
+const sortingOrder = (sort: any) => {
+  setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+  setPaging(true)
+}
 
 
 const handleKeyDown = (event:any) => {
@@ -850,6 +857,7 @@ return (
           setPage= {(page:any) => setPage(page)}
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
           totalRecords={units.totalCount}
+          setSortOrder={(sort:any) => sortingOrder(sort)}
           />
           )
         }

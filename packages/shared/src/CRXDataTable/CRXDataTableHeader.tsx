@@ -154,7 +154,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               {headCells[colIdx].sort === true ? (
                 <span
                   className="GridSortIcon"
-                  onClick={() => onHandleRequestSort(headCells[colIdx].id)}
+                  onClick={() => onHandleRequestSort(headCells[colIdx].attributeName)}
                 >
                   {orderData.orderBy === headCells[colIdx].id ? (
                     <span>
