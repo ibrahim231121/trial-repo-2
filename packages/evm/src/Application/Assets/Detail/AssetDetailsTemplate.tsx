@@ -179,6 +179,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
   const [getAssetData, setGetAssetData] = React.useState<Evidence>();
+  const [assetsList, setAssetList] = React.useState<Asset[]>([]);
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
   const [res, setRes] = React.useState<Asset>();
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -222,6 +223,9 @@ const AssetDetailsTemplate = (props: any) => {
     dispatch(setLoaderValue({ isLoading: true }))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
       setGetAssetData(response);
+      let assetListTemp: Asset[] = [response.assets.master];
+      assetListTemp = [...assetListTemp, ...response.assets.children];
+      setAssetList(assetListTemp);
       setEvidenceCategoriesResponse(response.categories)
     }).catch(() => {
       dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
@@ -1216,8 +1220,7 @@ const AssetDetailsTemplate = (props: any) => {
                 <div className="asset_group_tabs_data_row">
 
 
-                  {(getAssetData !== undefined)
-                    ? getAssetData.assets.children.map((asset: any, index: number) => {
+                  {assetsList.filter(x => x.id != parseInt(assetId)).map((asset: any, index: number) => {
 
                       var lastChar = asset.name.substr(asset.name.length - 4);
                       return (
@@ -1287,8 +1290,7 @@ const AssetDetailsTemplate = (props: any) => {
 
                         </>
                       );
-                    })
-                    : null}
+                    })}
 
                 </div>
 

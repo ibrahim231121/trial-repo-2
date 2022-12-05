@@ -100,10 +100,10 @@ axios.interceptors.response.use(async response => {
         return await Promise.reject(ex);
     }
 }, async (error: AxiosError) => {
-    console.log(error.request.responseURL + ", error code: " + error.response?.status);
-    if (error.code === "ERR_NETWORK") { // Handles preflight OPTIONS request rejection by Ocelot
-        Logout()
-    }
+    // console.log(error.request.responseURL + ", error code: " + error.response?.status);
+    // if (error.code === "ERR_NETWORK") { // Handles preflight OPTIONS request rejection by Ocelot
+    //     Logout()
+    // }
     const status: number | undefined = error.response?.status;
     if (status === 401) { // Unauthorized request redirection - need to add routine to retreive new token and re-attempt request
         Logout()
