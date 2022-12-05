@@ -79,8 +79,8 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     React.useEffect(() => {
         
-        dispatch(getUsersInfoAsync(pageiGrid));
-        dispatch(getUsersIdsAsync());
+        // dispatch(getUsersInfoAsync(pageiGrid));
+        // dispatch(getUsersIdsAsync());
         dispatch(getAllUserGroupKeyValuesAsync());
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);

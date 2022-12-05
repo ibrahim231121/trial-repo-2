@@ -1097,9 +1097,22 @@ export const getUsersIdsAsync: any = createAsyncThunk(
               filters: []
             },
             page: 1,
-            size: 10000
+            size: 10000,
+            gridSort: {
+              field: "UserName",
+              dir: "asc"
+            }
+
           }
-        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
+          let headers = [
+            {   
+                key : 'GridFilter', 
+                value : JSON.stringify(pageiFilter.gridFilter)
+            },
+            {
+                key: 'GridSort', 
+                value : JSON.stringify(pageiFilter.gridSort)
+            }]
         return await UsersAndIdentitiesServiceAgent
         .getUsersInfo(url, headers)
         .then((response) => {
