@@ -69,7 +69,7 @@ export const resources = {
         "Video_Analysis":"Video Analysis",
         "Audio_Analysis":"Audio Analysis",
         "Audio_Source":"Audio Source",
-        "Select_Audio_Source":"Select Audio Source",
+        "Select_Audio_Source":"Select Audio Source",        
         "Submit_for_analysis":"Submit for analysis",
         "Add_to_asset_bucket":"Add to asset bucket",
         "Edit_category_and_form":"Edit category and form",
@@ -257,8 +257,8 @@ export const resources = {
         "You_have_resent_the_activation_link.":"You have resent the activation link.",
         "You_have_updated_the_user_account.":"You have updated the user account.",
         "Please_provide_a_valid_User_name.":"Please provide a valid User name.",
-        "User_name_must_contain_atleast_three_characters.":"User name must contain atleast three characters.",
-        "User_name_must_not_exceed_128_characters.":"User name must not exceed 128 characters.",
+        "User_name_must_contain_atleast_three_characters.":"Username must contain atleast three characters.",
+        "User_name_must_not_exceed_128_characters.":"Username must not exceed 128 characters.",
         "Please_provide_a_valid":"Please provide a valid",
         "must_contain_atleast_three_characters.":"must contain atleast three characters.",
         "must_not_exceed_128_characters.":"must not exceed 128 characters.",
@@ -275,7 +275,7 @@ export const resources = {
         "(Link_will_be_sent_after_saving_this_form.)":"(Link will be sent after saving this form.)",
         "Please_provide_a_valid_mobile_number.":"Please provide a valid Mobile number.",
         "Number_must_not_exceed_15_characters.":"Number must not exceed 15 characters.",
-        "User_group_is_required":"User group is required",
+        "User_group_is_required":"User Group is required",
         "Middle_Initial":"Middle Initial",
         "Phone_Number":"Phone Number",
         "Mobile_Number":"Mobile Number",
@@ -459,6 +459,16 @@ export const resources = {
         "Retention_Policies": "Retention Policies",
         "Create_Retention_Policies": "Create Retention Policies",
         "Are_you_sure_you_would_like_to_delete_sensors_and_triggers?":"Are you sure you would like to delete sensors and triggers?",
+
+        
+        "Create_Upload_Policy" : "Create Upload Policy",
+        "Edit_upload_policy": "Edit upload policy",
+        "Delete_upload_policy": "Delete upload policy",
+        "Upload_Policies": "Upload Policies",
+        "Upload_Policies_Form": "Upload Policies Form",
+        "Are_you_sure_you_would_like_to_delete_upload_policies?":"Are you sure you would like to delete upload policies?",
+       
+
         // ---------------------------------
         
         // --------- Asset buctet ----------
@@ -824,7 +834,17 @@ export const resources = {
         "Retention_Time_Or_Space" : "Retention Time / Space",
         "Soft_Delete_Time" : "Soft Delete Time",
         "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",        
-        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully"
+        "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully",
+        "Edit_retention_policy": "Edit retention policy",
+        "Delete_retention_policy": "Delete retention policy",
+
+        //----------  Upload Policies  ---------       
+        "Upload" :"Upload",
+        "Metadata_Upload_Connection":"Metadata Upload Connection",
+        "Asset_Upload_Priority":"Asset Upload Priority",
+        "Asset_Upload_Connection":"Asset Upload Connection",
+        "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
+        "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
       }
     }
   };

@@ -31,6 +31,7 @@ type AssignUserProps = {
   setOnClose: () => void;
   setRemovedOption: (param: any) => void;
   showToastMsg: (obj: any) => any;
+  setIsformUpdated: (param: boolean) => void;
 };
 
 const AssignUser: React.FC<AssignUserProps> = (props) => {
@@ -106,6 +107,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       }
     }
   }, [alert]);
+
   const history = useHistory();
   const sendData = async () => {
     const url =
@@ -134,6 +136,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       });
   };
   const getData = () => {
+    props.setIsformUpdated(false);
     let notSame = 0;
     if (props.selectedItems.length > 1) {
       let selectedItemsOwnerList = props.selectedItems.map(
@@ -218,6 +221,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   ) => {
     setButtonState(false);
     props.setFilterValue(() => [...v]);
+    props.setIsformUpdated(true);
     if (reason === "remove-option") {
       // Show "Remove Category Reason" Modal Here.
       // Set value of removed option in to parent state.
@@ -290,16 +294,21 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
   };
 
   const cancelBtn = () => {
-    if (initialfilterValue != props.filterValue) {
-      setIsOpen(true);
-    } else {
-      props.setOnClose();
-    }
+    /**
+     * ! Below code is commented behalf of GEP-3886, it might be reverted back.
+     */
+    // if (initialfilterValue != props.filterValue) {
+    //   setIsOpen(true);
+    // } else {
+    //   props.setOnClose();
+    // }
+    props.setOnClose();
   };
 
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setButtonState(false);
     setAssignUserCheck(e.target.checked);
+    props.setIsformUpdated(true);
   };
 
   return (

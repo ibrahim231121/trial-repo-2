@@ -10,7 +10,7 @@ import anchorDisplay from '../../../../utils/AnchorDisplay';
 import { urlList, urlNames } from "../../../../utils/urlList"
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton } from "@cb/shared";
+import { CRXButton,CRXToaster} from "@cb/shared";
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 
 
@@ -49,7 +49,6 @@ const SensorsAndTriggersList: React.FC = () => {
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<SensorAndTriggersTemplate[]>([]);
   const [selectedActionRow,setSelectedActionRow] = useState<SensorAndTriggersTemplate[]>();
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
@@ -68,6 +67,7 @@ const SensorsAndTriggersList: React.FC = () => {
   const filterSensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.filterSensorEvents);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
   const { getModuleIds} = useContext(ApplicationPermissionContext);
+  const sensorsAndTriggersMsgFormRef = useRef<typeof CRXToaster>(null);
   useEffect(() => {
     if(paging)
       dispatch(getAllSensorsFilterEvents(pageiGrid));
@@ -168,8 +168,7 @@ React.useEffect(() => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "2094",
-      maxWidth: "300",
+      width: "calc(100% - 145px)",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
@@ -195,10 +194,6 @@ React.useEffect(() => {
 
   const getSelectedItemsUpdate = () => {
     setSelectedItems([]);
-  }
-
-  const getSuccessUpdate = () => {
-    setSuccess(true);
   }
 
   const SensorsEventAction = () => {
@@ -242,17 +237,27 @@ React.useEffect(() => {
   const onSetHeadCells = (e: HeadCellProps[]) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
-
   };
+
+  const SensorsAndTriggersFormMessages = (obj: any) => {
+    sensorsAndTriggersMsgFormRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+
+  const onMessageShow = (isSuccess:boolean,message: string) => {
+    SensorsAndTriggersFormMessages({
+      message: message,
+      variant: isSuccess? 'success' : 'error',
+      duration: 7000
+    });    
+  }
   return (
     <div className="CrxSensorsAndTriggersTable switchLeftComponents">
-          {success && (
-              <CRXAlert
-                message={t("Success_You_have_deleted_the_Sensors_And_Triggers")}
-                alertType="toast"
-                open={true}
-              />
-          )}
+      <CRXToaster ref={sensorsAndTriggersMsgFormRef} />
         {
         rows && (
           <CRXDataTable
@@ -262,7 +267,7 @@ React.useEffect(() => {
               selectedItems={selectedItems}
               getRowData={SensorsEventAction}
               getSelectedData= {getSelectedItemsUpdate}
-              getSuccess = {getSuccessUpdate}
+              onMessageShow = {onMessageShow}
             />}
             toolBarButton = {
               <>

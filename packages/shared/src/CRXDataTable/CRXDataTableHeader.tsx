@@ -10,6 +10,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   orderData,
   onHandleRequestSort,
   //   onResizeRow,
+  
   showCheckBoxesCol,
   showActionCol,
   setBodyCellWidth
@@ -46,6 +47,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
     setResizeWidth(e);
   };
 
+  
   return (
     <>
       {/* {dragVisibility === true || dragVisibility === undefined ? (
@@ -143,9 +145,11 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               minWidth: "100%",
               width:
                 colIdx === resizeWidth?.colIdx
-                  ? finalWidth
+                  ? finalWidth 
                   : headCells[colIdx].width + "px",
+              
             }}
+            
           >
             <div className={classes.headerStickness} key={headCells[colIdx].id}>
               <label>{headCells[colIdx].label}</label>

@@ -372,13 +372,19 @@ const UserGroup: React.FC = () => {
             showCheckBoxesCol={false}
             showActionCol={true}
             showTotalSelectedText={false}
-            offsetY={192}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
             totalRecords={groups.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
+             //Please dont miss this block.
+            offsetY={-22}
+            searchHeaderPosition={228}
+            dragableHeaderPosition={193}
+            topSpaceDrag = {10}
+            //End here
+   
           />
         )
       }

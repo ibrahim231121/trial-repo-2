@@ -648,13 +648,18 @@ const ConfigurationTemplates: React.FC = () => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={206}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
             totalRecords={UnitConfigurationTemplates.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
+             //Please dont miss this block.
+             offsetY={-25}
+             searchHeaderPosition={245}
+             dragableHeaderPosition={210}
+             topSpaceDrag = {5}
+             //End here
           />
         )
       }

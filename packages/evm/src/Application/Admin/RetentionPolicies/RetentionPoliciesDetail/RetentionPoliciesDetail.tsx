@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
 import { useHistory, useParams } from "react-router";
-import {  CRXModalDialog,CRXRadio,CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip } from "@cb/shared";
+import {  CRXModalDialog,CRXRadio,CRXButton, CRXConfirmDialog,CRXAlert,  CRXCheckBox, TextField, CRXHeading,NumberField } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { DetailExpand,RetentionPoliciesModel } from '../TypeConstant/types';
 import { retentionTypeTimePeriod,retentionTypeDiskSpace } from '../TypeConstant/constants';
@@ -489,7 +489,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             type="text"
                             name="retentionPoliciesName"
                             regex=""
-                            
                              />
 
                      </div>
@@ -507,6 +506,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                             name="retentionPoliciesDescription"
                             regex=""
                             
+                            multiline={true}
                             
                              />
                      </div>
@@ -545,35 +545,37 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                         (                                                   
                             <div className="days-hours">
                            
-                          
-                                < TextField
-                                required={true}
-                                value={retentionTimeDays ==0?"": retentionTimeDays}
-                                label={t("Retention_Time")}
-                                className="retention-policies-input"
-                                onChange={(e: any) => onRetentionDaysChange(retentionHours,e.target.value)}
-                                disabled = {disableRetentionTimeDays}
-                                type="number"
-                                name="retentionTimeDays"
-                                regex=""
-                            
-                                />
-                                <label>{t("Days")}<span></span></label>  
-
-                                
-
-                                < TextField                
-                                value={retentionHours==0?"": retentionHours}
-                                className="retention-policies-input"
-                                onChange={(e: any) => onRetentionHoursChange(e.target.value,retentionTimeDays)}
-                                disabled = {disableHours}
-                                type="number"
-                                name="retentionHours"
-                                regex=""
-                                min={0}
-                                max={23}                                                        
-                                />
-                                <label>{t("Hours")}<span></span></label>  
+                                <div className="number_retention_field_ui">
+                                        < NumberField 
+                                        required={true}
+                                        value={retentionTimeDays ==0?"": retentionTimeDays}
+                                        label={t("Retention_Time")}
+                                        className="retention-policies-input"
+                                        onChange={(e: any) => onRetentionDaysChange(retentionHours,e.target.value)}
+                                        disabled = {disableRetentionTimeDays}
+                                        type="number"
+                                        name="retentionTimeDays"
+                                        regex=""
+                                    
+                                        />
+                                       
+                                </div>
+                                <div className="days_retention_field_ui">
+                                          <label>{t("Days")}<span></span></label>  
+                                        < NumberField                
+                                        value={retentionHours==0?"": retentionHours}
+                                        className="retention-policies-input"
+                                        onChange={(e: any) => onRetentionHoursChange(e.target.value,retentionTimeDays)}
+                                        disabled = {disableHours}
+                                        type="number"
+                                        name="retentionHours"
+                                        regex=""
+                                        min={0}
+                                        max={23}                                                        
+                                        />
+                                        <label>{t("Hours")}<span></span></label>  
+                                </div>
+                     
 
                             </div>
                         
@@ -590,8 +592,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                         (
                                                    
                             <div className="days-hours">
+                                <div className="number_retention_field_ui number_retention_field_ui_label">
                            
-                                < TextField
+                                < NumberField
                                     required={false}
                                     value={softDeleteTimeDays==0?"": softDeleteTimeDays}
                                     label={t("Soft_Delete_Time")}                            
@@ -603,9 +606,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     regex=""
                                     min={0}                                                            
                                     />
+                                    </div>
+
+                                <div className="days_retention_field_ui  ">
+
                                     <label>{t("Days")}<span></span></label> 
 
-                                    < TextField
+                                    < NumberField
                                     required={false}
                                     value={gracePeriodHours==0?"": gracePeriodHours}                           
                                     className="retention-policies-input"
@@ -618,7 +625,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     max={23}                                                             
                                     />
                                     <label>{t("Hours")}<span></span></label>  
-                            
+                            </div>
 
                             </div>
                         
@@ -656,8 +663,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                         radioDiskSpace &&
                         (                                                
                             <div className="days-hours">
-
-                                    < TextField
+                                <div className="number_retention_field_ui">
+                                
+                                < NumberField
                                     required={true}
                                     value={retentionSize==0?"": retentionSize}
                                     label={t("Retention_Size")}
@@ -669,7 +677,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                                     regex=""
                                     
                                     />
-                                    <label>{t("GB")}<span></span></label>  
+                                    <label className="number_retention_label_gb">{t("GB")}<span></span></label>  
+                                </div>
+                        
                                                      
                             </div>
                                                                     

@@ -71,7 +71,7 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
 
   }
   const removeThumbnail = () => {
-    setVisibleThumbnail([]);
+    //setVisibleThumbnail([]);
   }
 
   React.useLayoutEffect(() => {
@@ -90,11 +90,12 @@ const Timelines = ({ timelinedetail, visibleThumbnail, setVisibleThumbnail, isMu
   return (
     <div className="_beforeline_Main">
       {multiTimelineEnabled && <div className="scroll_to_see_timeline">scroll to see multiple timelines</div>}
-      {timelinedetail.filter((x: any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any) =>
+      {timelinedetail.filter((x: any) => x.enableDisplay).sort((a, b) => a.indexNumberToDisplay - b.indexNumberToDisplay).map((x: any, i:any) =>
         <div className="time_line_container">
           <div className="_before_line">
-            <div className="line" style={{ position: "relative", display: 'flex' }}>
+            <div className="line"  style={{ position: "relative", display: 'flex' }}>
              {multiTimelineEnabled && <div className="camraName_timeline">{x.camera}</div> }  
+             
               <div className="video_player_hover_thumb" id={"video_player_hover_thumb" + x.indexNumberToDisplay}
                 style={{ visibility: visibleThumbnail.includes(x.indexNumberToDisplay) ? "visible" : "hidden", position: "absolute", transform: "translate(-50px, 0px)" }}>
               <div id="thumbnailHeaderBar">

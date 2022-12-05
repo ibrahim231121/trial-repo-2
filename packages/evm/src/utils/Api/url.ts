@@ -70,7 +70,6 @@ export const FILE_SERVICE_URL = `${REACT_APP_FILE_SERVICE_URL}`
 
 export const JOBCOORDINATOR_SERVICE_URL = `${REACT_APP_JOBCOORDINATOR_SERVICE_URL}/Project`
 export const CountryStateApiUrl = `https://countriesnow.space/api/v0.1/countries/states`;
-export const EVIDENCE_EXPORT_META_DATA_URL = `${REACT_APP_EVIDENCE_SERVICE_URL}/Evidences/ExportAsset`;
 
 
 export const SENSOR_AND_TRIGGERS_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/SensorEvents/GetAll`;
@@ -78,5 +77,8 @@ export const SENSOR_AND_TRIGGERS = `${BASE_URL_SETUP_SERVICE}/SensorEvents/Upser
 export const SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/SensorEvents/GetAllEvents`;
 
 
+export const UPLOAD_POLICIES_GET_ALL_DATA = `${BASE_URL_SETUP_SERVICE}/Policies/GetAll`;
+export const UPLOAD_POLICIES = `${BASE_URL_SETUP_SERVICE}/Policies/UpsertUploadPolicy`;
+export const UPLOAD_POLICIES_GET_ALL_UPLOAD_POLICIES_DATA = `${SETUP_CONFIGURATION_SERVICE_URL}/Policies/GetAllUploadPolicies`;
 
 export const REACT_APP_CLIENT_ID = env.REACT_APP_CLIENT_ID

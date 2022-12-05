@@ -22,10 +22,10 @@ type Props = {
   row?: any;
   getRowData: () => void;
   getSelectedData : () => void;
-  getSuccess : () => void;
+  onMessageShow: (isSuccess:boolean,message: string) => void;
 };
 
-const SensorsAndTriggersTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,getSuccess}) => {
+const SensorsAndTriggersTemplateActionMenu: React.FC<Props> = ({selectedItems, row, getRowData,getSelectedData,onMessageShow}) => {
 const { t } = useTranslation<string>();
 const history = useHistory();
 const dispatch = useDispatch();
@@ -40,12 +40,13 @@ const deleteSensorAndTrigger = () => {
     });
     SetupConfigurationAgent.deleteAllSensorsAndTriggersTemplate(eventIds)
     .then(() => {
-      getSuccess();
       getRowData();
       getSelectedData();
+      onMessageShow(true,t("Success_You_have_deleted_the_Sensors_And_Triggers"));
     })
-    .catch(function(error) {
-      return error;
+    .catch(function(error) {      
+        onMessageShow(false,error?.response?.data?.toString());
+        return error;
     });
   }
 }

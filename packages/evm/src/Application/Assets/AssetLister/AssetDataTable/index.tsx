@@ -144,7 +144,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [rows, setRows] = React.useState<SearchModel.Evidence[]>(reformattedRows);
-  const [order, setOrder] = React.useState<Order>("asc");
+  const [order, setOrder] = React.useState<Order>("desc");
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
@@ -161,7 +161,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   });
 
   useEffect(() => {
-    console.log("searchData", searchData)
     dataArrayBuilder();
   }, [searchData]);
 
@@ -267,7 +266,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-
+    {console.log("dateOptionType", dateOptionType)}
     return (
       <DateTimeComponent
         showCompact={showDateCompact}
@@ -641,7 +640,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showActionCol={true}
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
-          offsetY={177}
+          //Kindly add this block for sticky header Please dont miss it.
+          offsetY={207}
+          searchHeaderPosition={221}
+          dragableHeaderPosition={178}
+          topSpaceDrag = {251}
+          //End here
           page={page}
           rowsPerPage={rowsPerPage}
           setPage={(page: any) => setPage(page)}

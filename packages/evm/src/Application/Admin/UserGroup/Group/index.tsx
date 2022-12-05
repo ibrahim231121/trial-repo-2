@@ -396,33 +396,58 @@ const Group = () => {
       name: res === undefined ? "" : res.name,
       description: res === undefined ? "" : res.description,
     };
-    
-    if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp) && errorMessage.length == 0 ) {
+
+    if (JSON.stringify(groupInfo) !== JSON.stringify(groupInfo_temp) && errorMessage.length == 0) {
       setIsSaveButtonDisabled(false);
-    } else if (
-      JSON.stringify(userIds.length === 0 ? [] : userIds.sort()) !==
-      JSON.stringify(
-        res === undefined || res.members === undefined
-          ? []
-          : res.members.users?.map((x: any) => x.id)?.sort())
-    ) {
-      setIsSaveButtonDisabled(false);
-    } else if (isAppPermissionsChange) {
-      setIsSaveButtonDisabled(false);
-    } else if (
-      JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)
-       && dataPermissions.filter(x=> x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length === 0
-    ) {
-      setIsSaveButtonDisabled(false);
-    }
-   else if(dataPermissions.every(x=> x.fieldType === 0 && x.mappingId === 0 && x.permission === 0) && dataPermissionsActual.every(x=> x.fieldType != 0 && x.mappingId != 0 && x.permission != 0) && deletedDataPermissions.length > 0){
-      setIsSaveButtonDisabled(false);
+      ValidationCheck(true)
+    } else if (res !== undefined) {
+      ValidationCheck();
     }
     else {
 
-        setIsSaveButtonDisabled(true);
+      setIsSaveButtonDisabled(true);
     }
   };
+
+  function ValidationCheck(condition = false) {
+    if (errorMessage.length !== 0) {
+      setIsSaveButtonDisabled(true);
+    }
+    else if (res !== undefined && (
+      JSON.stringify(userIds.length === 0 ? [] : userIds.sort()) !==
+      JSON.stringify(
+        res.members === undefined
+          ? []
+          : res.members.users?.map((x: any) => x.id)?.sort())
+    )) {
+      setIsSaveButtonDisabled(false);
+    }
+    else if (JSON.stringify(applicationPermissions.sort()) !== JSON.stringify(applicationPermissionsActual.sort())) {
+      setIsSaveButtonDisabled(false);
+    }
+    else if(dataPermissions.filter(x => x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length > 0)
+    {
+      setIsSaveButtonDisabled(true);
+    }
+    else if (
+      JSON.stringify(dataPermissions) !== JSON.stringify(dataPermissionsActual)
+      && dataPermissions.filter(x => x.fieldType === 0 || x.mappingId === 0 || x.permission === 0).length === 0
+    ) {
+      setIsSaveButtonDisabled(false);
+    }
+    else if (dataPermissions.every(x => x.fieldType === 0 && x.mappingId === 0 && x.permission === 0) && dataPermissionsActual.every(x => x.fieldType != 0 && x.mappingId != 0 && x.permission != 0) && deletedDataPermissions.length > 0) {
+      setIsSaveButtonDisabled(false);
+    }
+    else {
+      if (condition) {
+        setIsSaveButtonDisabled(false);
+      }
+      else {
+        setIsSaveButtonDisabled(true);
+      }
+    }
+    
+  }
 
   const closeDialog = () => {
     setIsOpen(false);

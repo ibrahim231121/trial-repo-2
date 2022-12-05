@@ -100,7 +100,7 @@ const RetentionPoliciesList: React.FC = () => {
 }, []);
 
 const retentionFormMessages = (obj: any) => {
-  retentionMsgFormRef.current.showToaster({
+  retentionMsgFormRef?.current?.showToaster({
     message: obj.message,
     variant: obj.variant,
     duration: obj.duration,
@@ -309,7 +309,7 @@ const retentionFormMessages = (obj: any) => {
 
   return (
     <div className="CrxRetentionPoliciesTable switchLeftComponents">
-        
+        <CRXToaster ref={retentionMsgFormRef} />
         {
         rows && (
           <CRXDataTable
@@ -344,25 +344,28 @@ const retentionFormMessages = (obj: any) => {
             dragVisibility={false}
             showCheckBoxesCol={true}
             showActionCol={true}
-            searchHeader={false}
+            searchHeader={true}
             allowDragableToList={false}
             showTotalSelectedText={false}
             showActionSearchHeaderCell={true}
             showCustomizeIcon={true}
-            className="crxTableHeight crxTableDataUi RetentionPoliciesTableTemplate"
+            className="crxTableHeight crxTableDataUi RetentionPoliciesTableTemplate RetentionPoliciesTable_UI"
             onClearAll={clearAll}
             getSelectedItems={(v: RetentionPoliciesTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={206}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterRetentionPolicies?.totalCount}
-
+            //Please dont miss this block.
+            offsetY={-20}
+            dragableHeaderPosition={207}
+            topSpaceDrag = {5}
+            //End here
           />
          
         )

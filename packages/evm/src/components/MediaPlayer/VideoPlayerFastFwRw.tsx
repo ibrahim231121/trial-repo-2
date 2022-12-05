@@ -5,11 +5,12 @@ interface VideoPlayerFastFwRwProp {
   videoData: any[],
   setVideoHandlersFwRw: any,
   setvideoTimerFwRw: any,
-  onClickVideoFwRw: any
+  onClickVideoFwRw: any,
+  ffScreenIcon? : any
 }
 
 
-const VideoPlayerFastFwRw = ({ videoData, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw }: VideoPlayerFastFwRwProp) => {
+const VideoPlayerFastFwRw = ({ videoData, setVideoHandlersFwRw, setvideoTimerFwRw, onClickVideoFwRw, ffScreenIcon }: VideoPlayerFastFwRwProp) => {
 
 
 
@@ -54,7 +55,8 @@ const VideoPlayerFastFwRw = ({ videoData, setVideoHandlersFwRw, setvideoTimerFwR
           <video id="vid-2" className="videoForwardRewindCenter" preload="auto" crossOrigin="anonymous" onClick={(e: any) => onClickVideoFwRw(e)}>
             <source src={videoData[0]?.src} type="video/mp4" />
           </video>
-          <p id={"Time-2"}></p>
+          {ffScreenIcon()}
+          <div className="ffVideoTimer" id={"Time-2"}></div>
         </div>
         <div>
           <video id="vid-3" className="videoForwardRewind" preload="auto" crossOrigin="anonymous" onClick={(e: any) => onClickVideoFwRw(e)}>

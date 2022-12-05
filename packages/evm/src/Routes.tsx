@@ -39,8 +39,11 @@ import DefaultUnitTemplate from "./Application/Admin/Station/DefaultUnitTemplate
 import SensorsAndTriggersDetail from "./Application/Admin/SensorsAndTriggers/SensorsAndTriggersDetail/SensorsAndTriggersDetail";
 import SensorAndTriggersList from './Application/Admin/SensorsAndTriggers/SensorsAndTriggersLister/SensorsAndTriggersList';
 import AssetLister from "./Application/Assets/AssetLister";
+import UploadPoliciesDetail from "./Application/Admin/UploadPolicies/UploadPoliciesDetail/UploadPoliciesDetail";
+import UploadPoliciesList from './Application/Admin/UploadPolicies/UploadPoliciesLister/UploadPoliciesList';
 
 import RetentionPoliciesList from './Application/Admin/RetentionPolicies/RetentionPoliciesLister/RetentionPoliciesList';
+
 
 
 
@@ -101,7 +104,6 @@ const Routes = () => {
 
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testVideoPlayer)[0].url} exact={true} component={VideoPlayer} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitCreate} />
-              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.testEvidence)[0].url} exact={true} component={Evidence} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.tenantSettings)[0].url} exact={true} component={TenantSettings} />
               
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.createUser)[0].url} exact={true}  component={CreateUserForm}  />
@@ -119,9 +121,12 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersEdit)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggersCreate)[0].url}  exact={true} component={SensorsAndTriggersDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sensorsAndTriggers)[0].url}  exact={true} component={SensorAndTriggersList} />
-
+              
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.retentionPolicies)[0].url}  exact={true} component={RetentionPoliciesList} />
-
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPoliciesEdit)[0].url}  exact={true} component={UploadPoliciesDetail} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPoliciesCreate)[0].url}  exact={true} component={UploadPoliciesDetail} />
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPolicies)[0].url}  exact={true} component={UploadPoliciesList} />
+              
 
               <Route path="/token/:token" exact={true} component={Token} />
 

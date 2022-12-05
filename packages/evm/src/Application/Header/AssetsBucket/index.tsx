@@ -318,6 +318,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           iconName={"fas " + bucketIconByState}
           placement="left"
           arrow={true}
+          id="bucket_tooltip_asset_1"
         ></CRXTooltip>
       </div>
     </>
@@ -331,6 +332,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           title={t("Asset_Bucket_can_be_used_to_build_cases_and_do_one_action_on_many_assets_at_the_same_time.")}
           iconName={"fas " + bucketIconByState}
           placement="left"
+          id="bucket_tooltip_asset_2"
           arrow={true}
         ></CRXTooltip>
       </CRXBadge>
@@ -1175,7 +1177,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
 
                         <CRXModalDialog
-                          className="add-metadata-window __Add__MetaData__Window__"
+                          className="add-metadata-window __Add__MetaData__Window__ __Add__MetaData__Window__UI"
                           maxWidth="xl"
                           title={t("Choose_asset_metadata")}
                           cancelButtonTxt="Cancel"

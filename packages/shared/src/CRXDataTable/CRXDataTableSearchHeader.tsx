@@ -18,7 +18,8 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   container,
   actionComponent,
   getRowOnActionClick,
-  
+  offsetY,
+  searchHeaderPosition,
   showCheckBoxesCol,
   showActionCol,
   showActionSearchHeaderCell,
@@ -34,6 +35,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     setCheckAll(event.target.checked);
     onSetCheckAll(event.target.checked)
   }
+
   useEffect(() => {
     let count: boolean = false
     checkAllPageWise.map((item:CheckAllPageWise) => {
@@ -48,8 +50,39 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
 
   },[page,checkAllPageWise])
 
+  const [windScrollValue, setWindScrollValue] = React.useState<any>(0)
+  
+  function createScrollStopListener(element : any, callback : any, timeout : number) {
+    let handle: any = null;
+    const tbl : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    const onScroll = function() {
+        
+        if (handle) {
+            clearTimeout(handle);
+        }
+        
+        handle = setTimeout(callback, timeout || 200); // default 200 ms
+        tbl && ( tbl.style.display = "inline-table")
+        offsetY && window.pageYOffset > offsetY && setWindScrollValue(searchHeaderPosition)
+    };
+
+    element.addEventListener('scroll', onScroll);
+    return function() {
+        element.removeEventListener('scroll', onScroll);
+    };
+  }
+  
+  useEffect(() => {
+    const tblBlock : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    let minSticky : any =  offsetY && offsetY - 3
+    createScrollStopListener(window, function() {
+      tblBlock && (tblBlock.style.display = "block")
+      setWindScrollValue(window.pageYOffset - minSticky)
+    }, 300);
+  },[])
+  
   return (
-    <TableHead>
+    <TableHead style={{"top" : windScrollValue +  "px"}}>
       <TableRow>
         {/* {(dragVisibility === true || dragVisibility === undefined) ? 
           <TableCell

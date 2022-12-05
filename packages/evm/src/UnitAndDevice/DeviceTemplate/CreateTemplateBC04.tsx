@@ -288,23 +288,28 @@ const CreateTemplate = (props: any) => {
       let cameraDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
       cameraDevice.options = [];
       cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+     
       if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
       {
-        let cameraDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/device_1_Camera/Select")
-        cameraDevice1.options = [];
-        cameraDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+        let cameraDevice0Obj = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key.split("_")[0] == "CameraSetup/device")
+        if(cameraDevice0Obj)
+        {
+          cameraDevice0Obj.options = [];
+          cameraDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+        }
       }
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
       audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+
       if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
       {
-        let audioDevice1 = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
-        if(audioDevice1)
+        let audioDevice0Obj = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key.split("_")[0] == "CameraSetup/audioDeviceType")
+        if(audioDevice0Obj)
         {
-          audioDevice1.options = [];
-          audioDevice1.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+          audioDevice0Obj.options = [];
+          audioDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
         }
       }
 

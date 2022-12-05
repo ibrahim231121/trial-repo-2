@@ -228,12 +228,17 @@ const ViewConfigurationTemplateLog= (props: any) => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={192}
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
             totalRecords={500}
+             //Please dont miss this block.
+             offsetY={-22}
+             searchHeaderPosition={228}
+             dragableHeaderPosition={193}
+             topSpaceDrag = {10}
+             //End here
           />
         )
       }

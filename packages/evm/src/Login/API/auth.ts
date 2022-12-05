@@ -47,6 +47,16 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
 
 export const isAuthenticated = () => {
     if (cookies.get('access_token')) {
+        const cookies = new Cookies();
+        let currentDate: any = new Date();
+        currentDate = Math.floor(currentDate.getTime() / 1000);
+        let accessToken = cookies.get('access_token');
+        let decodedAccessToken: any = jwt_decode(accessToken);
+        let tokenexpiry = decodedAccessToken.exp;
+        if (tokenexpiry < currentDate && tokenexpiry > 0) {
+            return false;
+        }
+
         return cookies.get('access_token');
     } else {
         return false;

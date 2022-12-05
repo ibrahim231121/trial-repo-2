@@ -33,6 +33,8 @@ import Cookies from "universal-cookie";
 import "./overRide_video_player_style.scss"
 
 type Timeline = {
+  assetName: string;
+  recording_started: any;
   recording_start_point: number;
   recording_Start_point_ratio: number;
   recording_end_point: number;
@@ -183,6 +185,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
       if (temptimelinedetail) {
         let myData: Timeline =
         {
+          assetName: data[x].name,
+          recording_started: new Date(data[x].recording.started).getTime() + data[x].recording.timeOffset ?? 0,
           recording_start_point: recording_start_point,
           recording_Start_point_ratio: recording_Start_point_ratio,
           recording_end_point: recording_end_point,
@@ -209,6 +213,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
       let protocol = 'http://';
       let myData: Timeline =
       {
+        assetName: data[x].name,
+        recording_started: new Date(data[x].recording.started).getTime() + data[x].recording.timeOffset ?? 0,
         recording_start_point: recording_start_point,
         recording_Start_point_ratio: recording_Start_point_ratio,
         recording_end_point: recording_end_point,
@@ -401,6 +407,7 @@ const VideoPlayerBase = (props: any) => {
 
   const [viewNumber, setViewNumber] = useState(1);
   const [mapEnabled, setMapEnabled] = useState<boolean>(true);
+  const [overlayClass, setOverLayClass] = useState<string>()
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
   const [singleVideoLoad, setsingleVideoLoad] = useState<boolean>(true);
 
@@ -507,20 +514,22 @@ const VideoPlayerBase = (props: any) => {
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const addingSnapshot = useRef(false);
  const [showControlConatiner , setShowControlConatiner] = useState(false);
+ const [isMute, setIsMute] = useState(false);
 
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
     if(!(openBookmarkForm || openNoteForm || reasonForViewing))
     {
-      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //Space bar
-      if (shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
-      if (shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
-      if (shiftKey && code == "Period") {
+      if (code == "Space" && shiftKey) {event.preventDefault(); handlePlayPause()} //shift + Space bar
+      if (!ismodeFwdisable && shiftKey && code == "BracketRight") {event.preventDefault(); onClickFwRw(modeFw + 2, 1)} //shift + ]
+      if (!ismodeRwdisable && shiftKey && code == "BracketLeft") {event.preventDefault(); onClickFwRw(modeRw + 2, 2)} //shift + [
+      if (!disabledModeRight && shiftKey && code == "Period") {
         event.preventDefault(); 
         modeSet(mode < 0 ? 2 : (mode + 2))
-      } //Shift + .
-      if (shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift - ,
-      if (code == "Slash") {event.preventDefault(); modeSet(0)} // /
+      } //Shift + .>
+      if (!disabledModeLeft && shiftKey && code == "Comma") {event.preventDefault(); modeSet(mode > 0 ? -2 : (mode - 2))} //Shift + ,
+      if (!disabledModeMinus && shiftKey && code == "Slash") {event.preventDefault(); modeSet(0)} // shift + /
+      if (shiftKey && altKey && code == "Quote") {event.preventDefault(); openSettingMenu(event)} // '
       if (code == "ArrowRight") {event.preventDefault(); handleforward()} //Shift + ->
       if (code == "ArrowLeft") {event.preventDefault(); handleReverse()} //Shift + <-
       if (code == "ArrowDown") {
@@ -547,8 +556,9 @@ const VideoPlayerBase = (props: any) => {
       } //up arrows
       if (code == "KeyN" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("note")} // N
       if (code == "KeyB" && shiftKey && altKey && ViewScreen) {event.preventDefault(); handleaction("bookmark")} // B
-      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // B
-      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // B
+      if (code == "KeyF" && shiftKey && altKey) {event.preventDefault(); viewScreenEnter()} // F
+      if (code == "KeyL" && shiftKey && altKey) {event.preventDefault(); setLayoutMenuEnabled(true);} // L
+      if (code == "KeyM" && shiftKey && altKey) {event.preventDefault(); handleVoumeClick();} // M
     }
 
   };
@@ -811,6 +821,15 @@ const VideoPlayerBase = (props: any) => {
           });
   }, []);
 
+  const handleVoumeClick = () => {
+    setIsMute(!isMute);
+    setMuteHandle(!isMute);
+    if (volume == 0 && isMute) {
+      setVolume(50);
+      setVolumeHandle(50);
+    }
+  }
+
   const getFps = (videoHandle: any) => {
     videoHandle.requestVideoFrameCallback(ticker);
     videoHandle.addEventListener("seeked", function () {
@@ -833,7 +852,6 @@ const VideoPlayerBase = (props: any) => {
       fps_rounder1.push(diff);
       fps_rounder.current = fps_rounder1;
       fps = Math.round(1 / get_fps_average());
-      console.log("FPS: " + fps + ", certainty: " + fps_rounder1.length * 2 + "%");
       if(fps_rounder1.length * 2 == 100){
         setFps(fps);
       }
@@ -1236,6 +1254,8 @@ const VideoPlayerBase = (props: any) => {
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("zoomIn"))
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.add("zoomOut"));
       volumeIcon.current && (volumeIcon.current?.childNodes[0].classList.remove("fontSizeIn"));
+      volumeIcon.current.style.opacity = 0;
+      volumeIcon.current.style.zIndex = 0
     }, 1200)
   }
   useEffect(() => {
@@ -1885,10 +1905,13 @@ const VideoPlayerBase = (props: any) => {
 
   const sideDataPanel = (event:any) => {
     if(event.target.checked) {
+      setOverLayClass("defaultWidth")
       setMapEnabled(true)
+      
     } else {
+      setOverLayClass("fullWidthOverLay")
       setMapEnabled(false)
-
+      
     }
   }
 
@@ -2022,7 +2045,41 @@ useEffect(() => {
   const  viewControlOverlay = showControlConatiner ? "" : "viewControlOverlay";
   const mapEnabled_Bookmark_Notes  = mapEnabled ? "mapEnabled_Bookmark_Notes" : "mapDisabled_Bookmark_Notes";
 
+  const multiVideoEnabled_Status = !singleVideoLoad && isMultiViewEnable ? "multiVideoEnabled_ON" : "multiVideoEnabled_OFF"; 
 
+  useLayoutEffect(() => {
+    const playBtn = document.getElementById("_video_play");
+    const pauseBtn = document.getElementById("_video_pause");
+    const videoFrontLayer = document.getElementById("videoFrontLayer")
+    if (isPlaying === true) {
+      playBtn?.classList.remove("zoomOut");
+      playBtn?.classList.add("zoomIn");
+      videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
+      setTimeout(() => {
+        playBtn?.classList.remove("zoomIn");
+        playBtn?.classList.add("zoomOut");
+        videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
+      }, 1200);
+    } else {
+      pauseBtn?.classList.remove("zoomOut");
+      pauseBtn?.classList.add("zoomIn");
+      videoFrontLayer && (videoFrontLayer.style.zIndex = "1");
+      setTimeout(() => {
+        pauseBtn?.classList.remove("zoomIn");
+        pauseBtn?.classList.add("zoomOut");
+        videoFrontLayer && (videoFrontLayer.style.zIndex = "0");
+      }, 1200);
+    }
+  }, [isPlaying]);
+
+  const fwfScreenIcon = () => {
+    return (
+      <div className="ClickerIcons">
+      <div className="iconFF">{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`x${modeFw}`}</span></span> : ""}  </div>
+      <div className="iconFF">{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`x${modeRw}`}</span></span> : ""}  </div>
+    </div>
+    )
+  }
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
@@ -2050,7 +2107,7 @@ useEffect(() => {
         reasons={reasons}
       />}
       
-
+ 
       <div className="searchComponents">
         <div className="_video_player_container">
         <div id="crx_video_player" className={( multiTimelineEnabled  && `video_with_multiple_timeline _Multiview_Grid_Spacer_${viewNumber}`) || "_Multiview_Grid"}>
@@ -2064,6 +2121,23 @@ useEffect(() => {
                 updatedSensorsDataOverlay={updatedSensorsDataOverlay}
                 updatedGpsDataOverlay={updatedGpsDataOverlay}
               />
+                  <div id="videoFrontLayer" className={"videoFrontLayer " + `${overlayClass}`}>
+                  {isPlaying ? (
+                    <div
+                      id="_video_play"
+                      className={`video_play_onScreen _video_button_size animated`}
+                    >
+                      <PlayButton />
+                    </div>
+                  ) : (
+                    <div
+                      id="_video_pause"
+                      className={`video_pause_onScreen _video_button_size animated`}
+                    >
+                      <PauseButton />
+                    </div>
+                  )}
+                </div>
               <VideoScreen
                 setData={setdata}
                 evidenceId={EvidenceId}
@@ -2087,12 +2161,10 @@ useEffect(() => {
                 setOnMarkerClickTimeData={setOnMarkerClickTimeData}
                 toasterMsgRef={toasterMsgRef}
                 isAudioGraph={isAudioGraph}
+                ffScreenIcon = {fwfScreenIcon}
               />
 
-              <div className="ClickerIcons">
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 1 ? <span><i className="icon icon-forward3 iconForwardScreen"></i><span className="iconFSSpan">{`x${modeFw}`}</span></span> : ""}  </p>
-                <p >{showFRicon.showFRCon && showFRicon.caseNum == 2 ? <span><i className="icon icon-backward2  iconBackward2Screen"></i><span className="iconFSSpan">{`x${modeRw}`}</span></span> : ""}  </p>
-              </div>
+             
               <div className="modeButton">
 
                 {modePrev && mode == 2 ? <span className="modeBtnIconLeft"> <i className="fas fa-redo-alt"><span className="circleRedo" ><span>{mode}</span>X</span></i> </span> : ""}
@@ -2234,7 +2306,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={isPlaying ? "icon icon-pause2 iconPause2" : "icon icon-play4 iconPlay4"}
                         placement="top"
-                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Space</span></>}
+                        title={<>{isPlaying ? "Pause" : "Play"} <span className="playPause">Shift + Space</span></>}
                         arrow={false}
                       />
                     </CRXButton>
@@ -2261,7 +2333,7 @@ useEffect(() => {
                         arrow={false}
                       />
                     </CRXButton>
-                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} />
+                    <VolumeControl volume={volume} setVolume={setVolume} setVolumeHandle={setVolumeHandle} setMuteHandle={setMuteHandle} isMute={isMute} setIsMute={setIsMute} handleVoumeClick={handleVoumeClick}/>
                 </div>
                 <div className="playerViewMiddle">
                   <div className="playBackMode">
@@ -2270,7 +2342,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={"fas fa-undo-alt undoAltIcon"}
                         placement="top"
-                        title={<>Playback slow down <span className="playBackTooltip">Shift - ,</span></>}
+                        title={<>Playback slow down <span className="playBackTooltip">Shift + ,</span></>}
                         arrow={false}
                       />
                     </button>
@@ -2278,7 +2350,7 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={"icon icon-minus iconMinusUndo"}
                         placement="top"
-                        title={<>Normal speed <span className="normalSped">/</span></>}
+                        title={<>Normal speed <span className="normalSped">Shift + /</span></>}
                         arrow={false}
                       />
                     </button>
@@ -2312,10 +2384,12 @@ useEffect(() => {
                       <CRXTooltip
                         iconName={`fas fa-cog faCogIcon ${settingMenuEnabled}`}
                         placement="top"
-                        title={<>Settings <span className="settingsTooltip">,</span></>}
+                        title={<>Settings <span className="settingsTooltip">Shift + ALT + '</span></>}
                         arrow={false}
                       /></div>
                     <VideoPlayerSettingMenu
+                      timelinedetail={timelinedetail}
+
                       fullScreenControl={viewControlEnabler}
                       singleVideoLoad={singleVideoLoad}
                       multiTimelineEnabled={multiTimelineEnabled}
@@ -2338,7 +2412,7 @@ useEffect(() => {
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
-                      title={<>Notes <span className="notesTooltip">N</span></>}
+                      title={<>Notes <span className="notesTooltip">Shift + ALT + N</span></>}
                       arrow={false}
                     />
                   </CRXButton>}
@@ -2347,7 +2421,7 @@ useEffect(() => {
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
-                      title={<>Bookmarks  <span className="BookmarksTooltip">B</span></>}
+                      title={<>Bookmarks  <span className="BookmarksTooltip">Shift + ALT + B</span></>}
                       arrow={false}
                     />
                   </CRXButton>}
@@ -2356,13 +2430,13 @@ useEffect(() => {
                       <CRXTooltip
                           iconName={"fas fa-table iconTableClr"}
                           placement="top"
-                          title={<>Layouts <span className="LayoutsTooltips">L</span></>}
+                          title={<>Layouts <span className="LayoutsTooltips">Shift + ALT + L</span></>}
                           arrow={false}
                         />
                     </CRXButton>
                     <MaterialMenu
                      anchorEl={layoutMenuEnabled}
-                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}`}
+                     className={`_Player_Layout_Menu_  ${multiTimelineEnabled && "_Player_Layout_Menu_Multi"} ${viewControlEnabler}  ${multiVideoEnabled_Status}`  }
                      keepMounted
                      open={Boolean(layoutMenuEnabled)}
                      onClose={() => { setLayoutMenuEnabled(false) }}
@@ -2449,7 +2523,7 @@ useEffect(() => {
                         <CRXTooltip
                           iconName={"fas fa-expand-wide"}
                           placement="top"
-                          title={<>Full screen <span className="FullScreenTooltip">F</span></>}
+                          title={<>Full screen <span className="FullScreenTooltip">Shift + ALT + F</span></>}
                           arrow={false}
                         />
                       </div> :
@@ -2457,7 +2531,7 @@ useEffect(() => {
                         <CRXTooltip
                           iconName={"fas fa-compress-wide"}
                           placement="top"
-                          title={<>Minimize screen <span className="FullScreenTooltip">M</span></>}
+                          title={<>Minimize screen <span className="FullScreenTooltip">ESC</span></>}
                           arrow={false}
                         />
                       </div>}
@@ -2580,4 +2654,19 @@ useEffect(() => {
     );
 }
 
+const PlayButton = () => {
+  return (
+    <div className="video_playButton">
+      <i className="icon icon-play4"></i>
+    </div>
+  );
+};
+
+const PauseButton = () => {
+  return (
+    <div className="video_PauseButton">
+      <i className="icon icon-pause2"></i>
+    </div>
+  );
+};
 export default VideoPlayerBase

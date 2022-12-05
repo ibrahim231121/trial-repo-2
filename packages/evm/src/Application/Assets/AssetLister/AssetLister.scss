@@ -41,16 +41,17 @@
     .combo-box-Search {
       .MuiAutocomplete-endAdornment {
         display: flex;
-         height: 100%;
-         right: 15px;
+        height: 100%;
+        right: 15px;
         button {
           visibility: visible;
           background: transparent;
-         &:hover , &:focus {
-          .MuiTouchRipple-root {
-            display: none;
+          &:hover,
+          &:focus {
+            .MuiTouchRipple-root {
+              display: none;
+            }
           }
-         }
         }
       }
     }
@@ -70,10 +71,8 @@
       padding-top: 113px;
       transition: 0.5s padding ease-out;
     }
-
   }
 }
-
 
 .makeStyles-content-9 {
   .searchComponents {
@@ -88,6 +87,10 @@
 }
 //Its a fix for build issue not releted to work
 .jss9 {
+  .switchLeftComponents {
+    padding-top: 118px;
+    transition: 1s padding ease-out;
+  }
   &.jss10 {
     .searchComponents {
       padding: 0 4px 0px 65px;
@@ -133,4 +136,18 @@
 
 .userGroupNameConfirm {
   z-index: 9999 !important;
+}
+.CRXActiveBreadcrumb {
+  &.makeStyles-bradCrumscontent-23 {
+    transition: 1s padding ease-out;
+    &.makeStyles-bradCrumscontentShift-24 {
+      transition: 0.5s padding ease-out;
+    }
+  }
+  &.jss23 {
+    transition: 1s padding ease-out;
+    &.jss24 {
+      transition: 0.5s padding ease-out;
+    }
+  }
 }

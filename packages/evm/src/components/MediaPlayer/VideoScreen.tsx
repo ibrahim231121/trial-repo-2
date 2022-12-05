@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
-import Grid from "@material-ui/core/Grid";
+import React, {useState, useLayoutEffect } from "react";
 import VideoPlayerFastFwRw from "./VideoPlayerFastFwRw";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import VideosSelection from "./VideosSelection";
-import { GridList, IconButton, Switch } from "@material-ui/core";
 import AssetDetailsPanel from "../../Application/Assets/Detail/AssetDetailsPanel";
 import { useDispatch } from "react-redux";
 import "../../Assets/css/animate.min.css";
@@ -34,6 +32,7 @@ interface VideoScreenProp {
   setOnMarkerClickTimeData: any;
   toasterMsgRef: any;
   isAudioGraph: any;
+  ffScreenIcon ? : any
 }
 
 const VideoScreen = ({
@@ -59,6 +58,7 @@ const VideoScreen = ({
   isMultiTimelineEnabled,
   toasterMsgRef,
   isAudioGraph,
+  ffScreenIcon,
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -71,8 +71,11 @@ const VideoScreen = ({
   const dispatch = useDispatch();
   const anchorRef = React.useRef<any>(null);
   const getVideo = (camIndexVideoData: any) => {
+   
     if (camIndexVideoData !== undefined) {
+
       return (
+        
         <>
           <video
             id={camIndexVideoData.id}
@@ -89,6 +92,7 @@ const VideoScreen = ({
         </>
       );
     } else {
+      
       return <div className="_empty_video"> </div>
     }
   };
@@ -119,27 +123,6 @@ const VideoScreen = ({
     setIndexNumber(0);
   };
 
-  useLayoutEffect(() => {
-    const playBtn = document.getElementById("_video_play");
-    const pauseBtn = document.getElementById("_video_pause");
-
-    if (isPlaying === true) {
-      playBtn?.classList.remove("zoomOut");
-      playBtn?.classList.add("zoomIn");
-      setTimeout(() => {
-        playBtn?.classList.remove("zoomIn");
-        playBtn?.classList.add("zoomOut");
-      }, 1200);
-    } else {
-      pauseBtn?.classList.remove("zoomOut");
-      pauseBtn?.classList.add("zoomIn");
-      setTimeout(() => {
-        pauseBtn?.classList.remove("zoomIn");
-        pauseBtn?.classList.add("zoomOut");
-      }, 1200);
-    }
-  }, [isPlaying]);
-
   const getVideoTag = (CameraCount: number) => {
     //console.log(viewNumber)
     //poster="https://i.ibb.co/C0PqYN4/Media-Not-Available.png"
@@ -154,23 +137,7 @@ const VideoScreen = ({
     }
     return (
       <div className="videoContainer">
-        <div className="videoFrontLayer">
-          {isPlaying ? (
-            <div
-              id="_video_play"
-              className={`video_play_onScreen _video_button_size animated`}
-            >
-              <PlayButton />
-            </div>
-          ) : (
-            <div
-              id="_video_pause"
-              className={`video_pause_onScreen _video_button_size animated`}
-            >
-              <PauseButton />
-            </div>
-          )}
-        </div>
+       
         {getVideo(camIndexVideoData)}
         <div
           className={`videoMenuCss CRXVideoMultiView ${
@@ -284,6 +251,7 @@ const VideoScreen = ({
     CrateLayoutbaseClass();
   }, [viewNumber]);
 
+  
   return (
     <div
       id="video-player-screens"
@@ -293,7 +261,7 @@ const VideoScreen = ({
     >
       <div
         className={`_video_player_grid _videoPlayer_grid_customize ${
-          mapEnabled ? " _contaoner_75 " : "_video_all_player_center"
+          mapEnabled ? " _contaoner_75 " : "_video_all_player_center  _setVideoOnScreenRes"
         } ${layoutBaseClass}`}
       >
         <VideoColumn
@@ -314,16 +282,22 @@ const VideoScreen = ({
         >
           {getVideoTag(1)}
         </VideoColumn>
+      
+      {viewNumber && viewNumber == 3 ? <div className="_video_grid_col vid_col_4"> 
+        <div className="viewOnSideVideos">
+          {getVideoTag(2)}
+        </div>
 
-        <VideoColumn
+        <div className="viewOnSideVideos">
+          {getVideoTag(3)}
+        </div>
+      </div> :  <VideoColumn
           className=""
           sx={
             viewNumber == 1
               ? 1
               : viewNumber == 2
               ? 6
-              : viewNumber == 3
-              ? 4
               : viewNumber == 4
               ? 6
               : viewNumber == 6
@@ -332,17 +306,11 @@ const VideoScreen = ({
           }
         >
           {getVideoTag(2)}
-        </VideoColumn>
-
-        <VideoColumn
-          className=""
-          sx={
-            viewNumber == 3 ? 4 : viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1
-          }
-        >
+        </VideoColumn>}    
+        
+         {viewNumber && viewNumber == 6 ? <VideoColumn className="" sx={4}>
           {getVideoTag(3)}
-        </VideoColumn>
-
+        </VideoColumn> : ""}     
         <VideoColumn
           className=""
           sx={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}
@@ -350,7 +318,8 @@ const VideoScreen = ({
           {getVideoTag(4)}
         </VideoColumn>
 
-        <VideoColumn className="" sx={viewNumber == 6 ? 4 : 1}>
+        <VideoColumn className="" sx={viewNumber == 6 ? 4 : viewNumber == 4
+              ? 6 : 1}>
           {getVideoTag(5)}
         </VideoColumn>
 
@@ -358,16 +327,18 @@ const VideoScreen = ({
           {getVideoTag(6)}
         </VideoColumn>
 
+        {isOpenWindowFwRw && (
+          <VideoPlayerFastFwRw
+            videoData={timelinedetail}
+            setVideoHandlersFwRw={setVideoHandlersFwRw}
+            setvideoTimerFwRw={setvideoTimerFwRw}
+            onClickVideoFwRw={onClickVideoFwRw}
+            ffScreenIcon={ffScreenIcon}
+          />
+        )}
         
       </div>
-      {isOpenWindowFwRw && (
-        <VideoPlayerFastFwRw
-          videoData={timelinedetail}
-          setVideoHandlersFwRw={setVideoHandlersFwRw}
-          setvideoTimerFwRw={setvideoTimerFwRw}
-          onClickVideoFwRw={onClickVideoFwRw}
-        />
-      )}
+      
       {mapEnabled && (
         <div className="_video_Player_Right_Panel">
           <div className="_panel_resize_bar"></div>
@@ -386,22 +357,6 @@ const VideoScreen = ({
         </div>
       )}
      
-    </div>
-  );
-};
-
-const PlayButton = () => {
-  return (
-    <div className="video_playButton">
-      <i className="icon icon-play4"></i>
-    </div>
-  );
-};
-
-const PauseButton = () => {
-  return (
-    <div className="video_PauseButton">
-      <i className="icon icon-pause2"></i>
     </div>
   );
 };

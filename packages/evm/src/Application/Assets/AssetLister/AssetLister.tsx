@@ -41,7 +41,7 @@ const SearchComponent = (props: any) => {
   const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
   const [searchData, setSearchData] = React.useState<SearchModel.Evidence[]>([]);
   const [predictiveText, setPredictiveText] = React.useState('');
- const [querryString, setQuerryString] = React.useState('');
+  const [querryString, setQuerryString] = React.useState('');
   const [randomKey, setRandomKey] = React.useState(0);
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
     startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
@@ -311,13 +311,16 @@ const SearchComponent = (props: any) => {
   }, []);
 
   React.useEffect(() => {
-    window.scrollTo({ top: 186, behavior: "smooth" });
+    window.scrollTo({ top: 200, behavior: "smooth" });
   }, [searchData]);
 
   React.useEffect(() => {
     // NOTE: To Enable Search Button, on the basis of Query String.
-    if (querryString.length > 1)
+    if (dateTimeDropDown.value === 'anytime' && querryString.length > 0)
       setIsSearchBtnDisable(false);
+      else if(dateTimeDropDown.value === 'anytime' && querryString.length === 0){
+        setIsSearchBtnDisable(true);
+      }
   }, [querryString]);
 
   React.useEffect(() => {
