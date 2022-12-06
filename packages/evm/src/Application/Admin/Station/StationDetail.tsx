@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/rootReducer";
 import { useHistory, useParams } from "react-router";
 import { urlList, urlNames } from "../../../utils/urlList";
-import { getRetentionStateAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
+import { getRetentionStateAsync, getStationsAsync, getUploadStateAsync } from "../../../Redux/StationReducer";
 import {
   CRXTabs,
   CrxTabPanel,
@@ -331,6 +331,16 @@ const StationDetail: React.FC = () => {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
         showToastMsg()
         dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
+        dispatch(getStationsAsync({
+          gridFilter: {
+            logic: "and",
+            filters: []
+          },
+          page: 0,
+          size: 25
+        }));
+        const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url}`;
+        history.push(path.substring(0, path.lastIndexOf("/")) + "/" + response);
         
         //setTimeout(() => navigateToStations(), 3000);
       })
