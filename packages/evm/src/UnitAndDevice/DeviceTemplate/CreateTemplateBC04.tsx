@@ -291,12 +291,14 @@ const CreateTemplate = (props: any) => {
      
       if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
       {
-        let cameraDevice0Obj = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key.split("_")[0] == "CameraSetup/device")
-        if(cameraDevice0Obj)
-        {
-          cameraDevice0Obj.options = [];
-          cameraDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
-        }
+        Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"].forEach((x: any) => {
+          let cameraDevice0Obj = x.find((x: any) => x.key.split("_")[0] == "CameraSetup/device")
+          if(cameraDevice0Obj)
+          {
+            cameraDevice0Obj.options = [];
+            cameraDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+          }
+        })
       }
 
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
@@ -305,12 +307,14 @@ const CreateTemplate = (props: any) => {
 
       if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
       {
-        let audioDevice0Obj = Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"][0].find((x: any) => x.key.split("_")[0] == "CameraSetup/audioDeviceType")
-        if(audioDevice0Obj)
-        {
-          audioDevice0Obj.options = [];
-          audioDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
-        }
+        Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"].forEach((x: any) => {
+          let audioDevice0Obj = x.find((x: any) => x.key.split("_")[0] == "CameraSetup/audioDeviceType")
+          if(audioDevice0Obj)
+          {
+            audioDevice0Obj.options = [];
+            audioDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+          }
+        })
       }
 
       let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/PrimaryDevice/Select")

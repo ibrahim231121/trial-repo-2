@@ -103,7 +103,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
               {
                 //container.rows
                 //.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                containerRows
+                containerRows.length > 0 ? containerRows
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `checkbox with default color-${index}`;
@@ -243,12 +243,15 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                            <div style={{
                             width:`${OnResizeHeader(headCells[colIdx].id)}`,
                            }}></div>
+                           {console.log("No record found", orderColumn)}
                           </TableCell>
-                        ))}
+                        ))
+                      
+                      }
                       </TableRow>
                     </React.Fragment>
                   );
-                })}
+                }) : <div className="noDataInTable">No records found</div>}
               {provided.placeholder}
             </TableBody>
           </RootRef>

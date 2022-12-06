@@ -468,3 +468,11 @@ input:-webkit-autofill {
   position: relative;
   display: block;
 }
+
+.noDataInTable {
+  font-size: 14px;
+  padding: 30px 0px 15px 0px;
+  text-indent: 25px;
+  color: #333;
+  white-space: nowrap;
+}
