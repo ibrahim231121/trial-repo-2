@@ -793,11 +793,11 @@ const CreateTemplate = (props: any) => {
           history.go(0)
           resetForm()
         }
-        targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: 'success', duration: 5000, clearButtton: true });
       })
       .catch((e:any) => {
         if (e.request.status == 409) {
-          targetRef.current.showToaster({ message: `${t("Template_with_this_name")} ${templateNames} ${t("is_already_exists")}`, variant: "Error", duration: 5000, clearButtton: true });
+          targetRef.current.showToaster({ message: `${t("Template_with_this_name")} ${templateNames} ${t("is_already_exists")}`, variant: "error", duration: 5000, clearButtton: true });
         }
         else{
           console.error(e.message);
