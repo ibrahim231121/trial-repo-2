@@ -212,12 +212,13 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   };
 
   useEffect(() => {
-    console.log("orderData : ",orderData)
-    // stableSort(
-    //   containers.tableId.rows,
-    //   getComparator(orderData.order, orderData.orderBy)
-    // );
-    setSortOrder && setSortOrder(orderData)
+    if(id == "assetDataTable")
+      stableSort(
+        containers.tableId.rows,
+        getComparator(orderData.order, orderData.orderBy)
+      );
+    else
+      setSortOrder && setSortOrder(orderData)
     if (open === true) setOpen(false);
     else setOpen(true);
   }, [orderData]);

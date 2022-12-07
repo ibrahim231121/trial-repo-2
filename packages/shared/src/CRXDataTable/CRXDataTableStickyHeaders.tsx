@@ -51,6 +51,7 @@ const CRXDataTableStickyHeaders: React.FC<DataTableStickyHeadersProps> =  ({
           searchHeader={searchHeader}
         >
            <DataTableHeader
+             id={id}
              orderColumn={orderColumn}
              headCells={headCells}
              orderData={orderData}

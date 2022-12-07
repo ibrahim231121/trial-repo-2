@@ -5,6 +5,7 @@ import Draggable from "react-draggable";
 import { useStyles, DataTableHeaderProps } from "./CRXDataTableTypes";
 import { useTranslation } from "react-i18next";
 const DataTableHeader: React.FC<DataTableHeaderProps> = ({
+  id,
   orderColumn,
   headCells,
   orderData,
@@ -158,7 +159,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               {headCells[colIdx].sort === true ? (
                 <span
                   className="GridSortIcon"
-                  onClick={() => onHandleRequestSort(headCells[colIdx].attributeName)}
+                  onClick={() => onHandleRequestSort(id == "assetDataTable" ? headCells[colIdx].id : headCells[colIdx].attributeName)} 
                 >
                   {orderData.orderBy === headCells[colIdx].id ? (
                     <span>

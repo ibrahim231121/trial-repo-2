@@ -354,6 +354,7 @@ export type SearchHeaderProps = {
 };
 
 export type DataTableHeaderProps = {
+  id: string;
   orderColumn: number[];
   headCells: HeadCellProps[];
   orderData: OrderData;
