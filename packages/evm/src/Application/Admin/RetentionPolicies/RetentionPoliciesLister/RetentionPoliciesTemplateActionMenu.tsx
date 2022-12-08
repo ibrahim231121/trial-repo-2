@@ -34,14 +34,22 @@ const deleteRetentionPolicies = () => {
       return data.id;
     });
     SetupConfigurationAgent.deleteAllRetentionPoliciesTemplate(retentionIds)
-    .then(() => {
-      getSuccess();
+    .then(function(response:any){
+      let {AssignIdName,UnAssignsIds} = response;
+      if(AssignIdName.length > 0) {
+            var names = AssignIdName.map(function (singleName:any){
+              return singleName.name;
+            })
+            onMessageShow(false,t(`Unable to process your request, Policy Ids  is Assigned ${names} on Categories`))
+      }
+      if(UnAssignsIds.length > 0){
+        onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
+      }
       getRowData();
-      getSelectedData();      
-      onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
+      getSelectedData();
     })
     .catch(function(error) {      
-      if(error?.response?.status === 405) {
+      if(error) {
         onMessageShow(false,error?.response?.data?.toString());
         return error;
       }
@@ -102,7 +110,6 @@ const openCreateRetentionPoliciesForm = () => {
         ) : (
           <div></div>
           )}  
-    {selectedItems.length <=1 ? (
       <MenuItem >
       <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
@@ -115,9 +122,6 @@ const openCreateRetentionPoliciesForm = () => {
         </div>
         </Restricted>
       </MenuItem>
-      ) : (
-        <div></div>
-        )}  
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"

@@ -105,6 +105,7 @@ const retentionFormMessages = (obj: any) => {
     variant: obj.variant,
     duration: obj.duration,
     clearButtton: true,
+    className : "policy"
   });
 }
     const onChange = (valuesObject: ValueString[], colIdx: number) => {
@@ -303,7 +304,8 @@ const retentionFormMessages = (obj: any) => {
     retentionFormMessages({
       message: message,
       variant: isSuccess? 'success' : 'error',
-      duration: 7000
+      duration: 5000,
+      className : "policy"
     });    
   }
 

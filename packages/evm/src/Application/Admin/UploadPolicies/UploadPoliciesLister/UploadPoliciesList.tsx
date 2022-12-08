@@ -123,6 +123,7 @@ React.useEffect(() => {
       variant: obj.variant,
       duration: obj.duration,
       clearButtton: true,
+      className : "policy"
     });
   }
 
@@ -130,7 +131,8 @@ React.useEffect(() => {
     UploadFormMessages({
       message: message,
       variant: isSuccess? 'success' : 'error',
-      duration: 7000
+      duration: 5000,
+      className: "policy"
     });    
   }
 
@@ -190,7 +192,7 @@ React.useEffect(() => {
         return { 
             id: template.id, 
             name: template.name + "_" + template.id, 
-            description: template.description + "_" + template.id, 
+            description: template.description, 
         }
       })
     }

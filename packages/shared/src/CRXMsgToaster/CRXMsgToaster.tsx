@@ -9,6 +9,7 @@ type Props = {
     duration : number,
     persist? : boolean,
     TransitionComponent: any
+    className? : string
 }
 
 const CRXToaster : any = forwardRef((_, ref) => {
@@ -21,10 +22,11 @@ const CRXToaster : any = forwardRef((_, ref) => {
         </div>
     );
     useImperativeHandle(ref, () => ({
-        showToaster({message, variant, duration, TransitionComponent, persist = false} : Props) {
-            let customMssg = <div className="toasterContent"><span className={variant + "-stater"}>{variant + ":"}</span> {message}</div>;
+        showToaster({message, variant,className, duration, TransitionComponent, persist = false} : Props) {
+            let customMssg = <div className="toasterContent"><span className={className + variant + "-stater"}>{variant + ":"}</span> {message}</div>;
             enqueueSnackbar(customMssg, {
                 variant : variant,
+                className: className,
                 autoHideDuration : duration,
                 preventDuplicate: false,
                 persist: persist,
