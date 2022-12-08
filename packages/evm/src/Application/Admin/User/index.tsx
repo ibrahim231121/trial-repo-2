@@ -70,17 +70,6 @@ interface renderCheckMultiselect {
 const User: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
-  const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-      gridFilter: {
-        logic: "and",
-        filters: []
-      },
-      page: page,
-      size: rowsPerPage
-  })
-  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
@@ -93,7 +82,7 @@ const User: React.FC = () => {
   );
   const [rows, setRows] = React.useState<User[]>([]);
   const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<string>("lastCheckedIn");
+  const [orderBy, setOrderBy] = React.useState<string>("LastLogin");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<User[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<any>();
@@ -102,6 +91,21 @@ const User: React.FC = () => {
   const [selectedActionRow, setSelectedActionRow] = React.useState<User>();
   const [paging, setPaging] = React.useState<boolean>();
   const toasterRef = useRef<typeof CRXToaster>(null);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+      gridFilter: {
+        logic: "and",
+        filters: []
+      },
+      page: page,
+      size: rowsPerPage,
+      gridSort: {
+        field: orderBy,
+        dir: order
+      }
+  })
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     //dispatch(getUsersInfoAsync(pageiGrid));
@@ -626,9 +630,9 @@ const User: React.FC = () => {
             fieldType: headCells[item.colIdx].attributeType,
           }
           pageiGrid.gridFilter.filters?.push(x)
-          pageiGrid.page = 0
-          pageiGrid.size = rowsPerPage
       })
+      pageiGrid.page = 0
+      pageiGrid.size = rowsPerPage
 
       if(page !== 0)
         setPage(0)
@@ -639,10 +643,15 @@ const User: React.FC = () => {
   }
 
   useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage});  
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});  
     setPaging(true)
     
   },[page, rowsPerPage])
+
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setPaging(true)
+  }
 
   const handleKeyDown = (event:any) => {
     if (event.key === 'Enter') {
@@ -714,6 +723,7 @@ const User: React.FC = () => {
           setPage= {(page:any) => setPage(page)}
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
           totalRecords={users.totalCount}
+          setSortOrder={(sort:any) => sortingOrder(sort)}
            //Kindly add this block for sticky header Please dont miss it.
            offsetY={-38}
            searchHeaderPosition={250}

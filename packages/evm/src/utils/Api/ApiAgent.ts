@@ -68,6 +68,8 @@ import { SetupConfigurationsModel } from './models/SetupConfigurations';
 import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/SensorsAndTriggers';
 import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/RetentionPolicies';
 import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies';
+import { logOutUser } from '../../Logout/API/auth';
+
 
 
 const cookies = new Cookies();
@@ -98,7 +100,14 @@ axios.interceptors.response.use(async response => {
         return await Promise.reject(ex);
     }
 }, async (error: AxiosError) => {
-    console.log(error.request.responseURL + ", error code: " + error.response?.status);
+    // console.log(error.request.responseURL + ", error code: " + error.response?.status);
+    // if (error.code === "ERR_NETWORK") { // Handles preflight OPTIONS request rejection by Ocelot
+    //     Logout()
+    // }
+    const status: number | undefined = error.response?.status;
+    if (status === 401) { // Unauthorized request redirection - need to add routine to retreive new token and re-attempt request
+        Logout()
+    }
     return Promise.reject(error);
 })
 
@@ -117,9 +126,14 @@ const responseBodyPaginated = <T>(response: AxiosResponse<T>) => {
         return paginatedResponse;
     }
 };
+const Logout = () => {
+    cookies.remove('access_token');
+    localStorage.removeItem('User Id');
+    window.location.href = '/';
+}
 const setBaseUrl = (baseUrl: string) => axios.defaults.baseURL = baseUrl;
 const addHeaders = (headers?: Headers[]) => {
-    
+
     if (config && headers) {
         let config2: any = config;
         if (config2["headers"]) {
@@ -129,35 +143,35 @@ const addHeaders = (headers?: Headers[]) => {
                 ConfigHeader.push(a)
             })
             var obj = ConfigHeader.reduce((obj, cur) => ({ ...obj, [cur[0]]: cur[1] }), {})
-            return {headers: obj}
+            return { headers: obj }
         }
-        else{
+        else {
             return config;
         }
     }
-    else{
+    else {
         return config;
     }
 };
 
-function getUserId () {
+function getUserId() {
     let accessToken = cookies.get('access_token');
-    if(accessToken){
-        let decodedAccessToken : any = jwt_decode(accessToken);
+    if (accessToken) {
+        let decodedAccessToken: any = jwt_decode(accessToken);
         return decodedAccessToken.UserId;
     }
-    else{
+    else {
         return "0";
     }
 };
 
-function getTenantId () {
+function getTenantId() {
     let accessToken = cookies.get('access_token');
-    if(accessToken){
-        let decodedAccessToken : any = jwt_decode(accessToken);
+    if (accessToken) {
+        let decodedAccessToken: any = jwt_decode(accessToken);
         return decodedAccessToken.TenantId;
     }
-    else{
+    else {
         return "0";
     }
 };
@@ -184,29 +198,29 @@ export const SetupConfigurationAgent = {
     },
     getAllSensorsAndTriggersEvents: (url: any) => requests.get<SensorsAndTriggers[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getAll: (url: any) => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
-    getTenantSetting: (url? : any) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", config),
-    getTenantSettingTimezone: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL,"/TenantSettings/gettimezone", config),
-    postTenantSetting: (body : any,url? : any) => requests.post<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body , config),
-    putTenantSetting: (body : any,url? : any) => requests.put<any>(SETUP_CONFIGURATION_SERVICE_URL, url?? "/TenantSettings", body, config),
-    getMailServerSettings: (url:string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    getTenantSetting: (url?: any) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, url ?? "/TenantSettings", config),
+    getTenantSettingTimezone: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/TenantSettings/gettimezone", config),
+    postTenantSetting: (body: any, url?: any) => requests.post<any>(SETUP_CONFIGURATION_SERVICE_URL, url ?? "/TenantSettings", body, config),
+    putTenantSetting: (body: any, url?: any) => requests.put<any>(SETUP_CONFIGURATION_SERVICE_URL, url ?? "/TenantSettings", body, config),
+    getMailServerSettings: (url: string) => requests.get<SetupConfigurationsModel.MailServer>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
 
 
-    deleteAllRetentionPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/", body, config),    
+    deleteAllRetentionPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/", body, config),
     getRetentionPolicies: (id: number) => requests.get<RetentionPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataRetention/" + id, config),
     getAllFiltersRetentionPolicies: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataRetention/${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-    postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
+    postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteAllUploadPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/", body, config),
-    getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config), 
-    GetUploadPolicyValues: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetUploadPolicyValues", config),      
+    getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config),
+    GetUploadPolicyValues: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetUploadPolicyValues", config),
     getAllFiltersUploadPolicies: (url: string, extraHeader?: Headers[]) => {
         (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);
     },
     putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-    postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL,url, body, config),
+    postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
 
 
 }
@@ -237,7 +251,7 @@ export const EvidenceAgent = {
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
     submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
     LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
-    ExportEvidence: (evidenceId: number, assetId: number, fileType : MetadataFileType) => {
+    ExportEvidence: (evidenceId: number, assetId: number, fileType: MetadataFileType) => {
         return axios.get(`${EVIDENCE_SERVICE_URL}/Evidences/ExportAsset/${evidenceId}/${assetId}/${fileType}`, {
             headers: config.headers,
             responseType: "blob",
@@ -263,12 +277,12 @@ export const FileAgent = {
 
 export const UsersAndIdentitiesServiceAgent = {
     getAllUsers: (url: string) => requests.get<UserList[]>(USER_INFO_GET_URL, url, config),
-    
+
     //getUsersInfo: (url: string, body: any) => requests.postPaginated<Paginated<UsersInfo[]>>(USER_INFO_GET_URL, url, body, config),
     getUsersInfo: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(USER_INFO_GET_URL, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
-    
+
     getUsersGroups: () => requests.get<UserGroups[]>(GROUP_GET_URL, '', config),
     getGroups: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(GROUP_GET_BY_ID_URL, url, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
@@ -321,11 +335,11 @@ export const UnitsAndDevicesAgent = {
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
     getAllCaptureDevices: () => requests.get<CaptureDevice[]>(BASE_URL_UNIT_SERVICES, "/CaptureDevices", config),
 
-    
+
     getAllUnitStatusKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitVersionKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitTemplateKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
-    getAllUnitAssignmentKeyValues : (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getAllUnitAssignmentKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
 }
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),

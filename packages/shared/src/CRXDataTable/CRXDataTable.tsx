@@ -105,6 +105,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   setRowsPerPage,
   totalRecords,
   selfPaging,
+  setSortOrder,
   searchHeaderPosition,
   dragableHeaderPosition,
   topSpaceDrag
@@ -211,10 +212,13 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   };
 
   useEffect(() => {
-    stableSort(
-      containers.tableId.rows,
-      getComparator(orderData.order, orderData.orderBy)
-    );
+    if(id == "assetDataTable")
+      stableSort(
+        containers.tableId.rows,
+        getComparator(orderData.order, orderData.orderBy)
+      );
+    else
+      setSortOrder && setSortOrder(orderData)
     if (open === true) setOpen(false);
     else setOpen(true);
   }, [orderData]);

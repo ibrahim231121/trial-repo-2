@@ -863,7 +863,7 @@ else {
   }
 
   function setValue(value: string, onChangeValue: string) {
-    if (onChangeValue === "") {
+    if (onChangeValue !== "") {
       return onChangeValue;
     }
 

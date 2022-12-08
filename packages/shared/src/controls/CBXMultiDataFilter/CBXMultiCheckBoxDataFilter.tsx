@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { ClickAwayListener } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Popper from '@material-ui/core/Popper';
 import Checkbox from '@material-ui/core/Checkbox';
 import styled from 'styled-components';
-import "./cbxMultiDataFilter.scss"
+import "./cbxCheckboxDataFilter.scss"
 
 const selectStyled = makeStyles((_: Theme) =>
   createStyles({
@@ -37,6 +37,7 @@ const selectBoxStyled = makeStyles({
       borderRadius: "0px",
       outline : "0px",
       boxShadow : "none",
+      height : "0px",
     },
     fullWidth: {
         background : "#333"
@@ -50,8 +51,8 @@ const selectBoxStyled = makeStyles({
     },
     popper : {
         background: "#404041",
-        marginTop: "2px",
-        marginLeft : "-3px",
+        marginTop: "1px",
+        marginLeft : "0px",
     },
     paper : {
         background: "#404041",
@@ -63,7 +64,7 @@ const selectBoxStyled = makeStyles({
     inputRoot : {
         border:"0px",
         borderRadius : "0px",
-        padding:"10px 15px !important",
+        padding:"0px 0px !important",
         
         '& : hover' : {
             border:"0px",
@@ -130,6 +131,8 @@ const ClickInput = styled('div')`
   outline:1px solid #888787;
   border:2px solid transparent;
   background : #d1d2d4;
+  display : flex;
+  justify-content: space-between;
   color:#333;
   &.selectedInput {
     border:2px solid #fff
@@ -173,6 +176,21 @@ const SelectButton = styled('button')`
     width: 40px;
     cursor : pointer
 `
+
+// const ClearButton = styled('button')`
+//     background : transparent;
+//     color: #333;
+//     font-size : 14px;
+//     border:0px;;
+//     outline : 0px;
+//     height: 100%;
+//     width: 40px;
+//     cursor : pointer;
+//     padding-top: 5px;
+//     .clearItem {
+//       font-weight : bold;
+//     }
+// `
 const Tag = styled(({ label, onDelete, ...props }) => (
   <div {...props} className="select_custom_chips">
     <span>{label}</span>
@@ -212,6 +230,15 @@ const Tag = styled(({ label, onDelete, ...props }) => (
   }
 `;
 
+const SingleTag = styled(({ label, ...props }) => (
+  <div {...props} className="select_checkBox_chips">
+    
+    <span>{label}</span>
+  </div>
+))`
+  font-size : 14px;
+  color : #333; 
+`;
 
 interface LabelType {
     value : string,
@@ -229,11 +256,12 @@ type SelectProps = {
 	  isduplicate? : boolean
     multiple? : boolean
 }
-export default function CBXMultiSelectForDatatable({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [singleValue, setSingleValue] = useState<any>()
   const selectRefs = useRef(null)
   
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
@@ -275,25 +303,37 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
       tableContainer && (tableContainer.style.overflow = "hidden");
     }
   },[open])
-
+  
   return (
     <ClickAwayListener onClickAway={OnCloseHandler}>
     <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
-    
+    {console.log("value", value)}
     <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
-        <InnerButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
-        <i className="fa-solid fa-sort-down"></i>
+        
+        {value.length > 0 && multiple == true && singleValue ?
+        <SingleTag label={singleValue[0].value} /> : "" }
+
+         <InnerButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
+          <i className="fa-solid fa-sort-down"></i>
         </InnerButton>
+        {/* {multiple == false && singleValue ? <>
+        <SingleTag label={singleValue.value} />
+        <ClearButton onClick={(e : any) => onSelectedClear(e)}>
+          <i className="icon icon-cross2 clearItem"></i>
+        </ClearButton></> :  */}
+       
+        
+      
     </ClickInput>
     
-    {value && value.length > 0 && open == false ?  
+    {value && value.length > 1 && open == false || value.length > 1 && open === true ?  
     <OverlayWraper> 
         <SelectButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
             <i className='fas fa-filter'></i>
         </SelectButton>  
         <SelectButton onClick={(e : any) => onSelectedClear(e)}><i className="icon icon-cross2"></i></SelectButton>  
     </OverlayWraper>
-    : "" }
+    : ""}
     
     <Popper
     id={id}
@@ -301,7 +341,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
     ref={selectRefs}
     anchorEl={anchorEl}
     disablePortal = {true}
-    className="select_popper"
+    className="select_popper_Checkbox noHeight"
     container={selectRefs.current}
     placement="bottom-start">
     
@@ -311,12 +351,12 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
         popupIcon=""
         closeIcon=""
         onClose={OnCloseHandler}
-        id="multiple-limit-tags"
+        id="multiple-tags_checkbox"
         options={option}
         onChange={(e,value) => {
             return onChange(e,value);
         }}
-        className="data_filter_select_list"
+        className="data_filter_select_list_checkbox"
         classes = {{
             ...selectClass
         }}
@@ -349,13 +389,13 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
           </React.Fragment>
         )}
         renderTags={(tagValue, getTagProps) => {
-          
+          setSingleValue(tagValue)
           return tagValue.map((option, index) => (
             <Tag {...getTagProps({ index })} label={option.value} />
           ));
         }}
         renderInput={(params) => (
-          <TextField className={'select_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width - 3 + "px"}} {...params} variant="outlined" />
+          <TextField className={'select_Checkbox_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params} variant="outlined" />
         )}
       />
       

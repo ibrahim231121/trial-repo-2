@@ -289,9 +289,33 @@ const CreateTemplate = (props: any) => {
       cameraDevice.options = [];
       cameraDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
      
+      if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
+      {
+        Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"].forEach((x: any) => {
+          let cameraDevice0Obj = x.find((x: any) => x.key.split("_")[0] == "CameraSetup/device")
+          if(cameraDevice0Obj)
+          {
+            cameraDevice0Obj.options = [];
+            cameraDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category !== "Audio" && x.category !== "DVR"))
+          }
+        })
+      }
+
       let audioDevice = FormSchema["CameraSetup"].find((x: any) => x.key == "CameraSetup/Camera/FieldArray")["feilds"][0].find((x: any) => x.key == "CameraSetup/audioDeviceType_1_Camera/Select")
       audioDevice.options = [];
       audioDevice.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+
+      if(Initial_Values_obj["CameraSetup/Camera/FieldArray"] && (historyState.isedit || historyState.isclone))
+      {
+        Initial_Values_obj["CameraSetup/Camera/FieldArray"]["feilds"].forEach((x: any) => {
+          let audioDevice0Obj = x.find((x: any) => x.key.split("_")[0] == "CameraSetup/audioDeviceType")
+          if(audioDevice0Obj)
+          {
+            audioDevice0Obj.options = [];
+            audioDevice0Obj.options.push(...captureDevicesOptions.filter((x:any) => x.category == "Audio"))
+          }
+        })
+      }
 
       let devicePrimaryDevice = FormSchema["Primary Device"].find((x: any) => x.key == "device/PrimaryDevice/Select")
       devicePrimaryDevice.options = [];
@@ -773,11 +797,11 @@ const CreateTemplate = (props: any) => {
           history.go(0)
           resetForm()
         }
-        targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: 'success', duration: 5000, clearButtton: true });
       })
       .catch((e:any) => {
         if (e.request.status == 409) {
-          targetRef.current.showToaster({ message: `${t("Template_with_this_name")} ${templateNames} ${t("is_already_exists")}`, variant: "Error", duration: 5000, clearButtton: true });
+          targetRef.current.showToaster({ message: `${t("Template_with_this_name")} ${templateNames} ${t("is_already_exists")}`, variant: "error", duration: 5000, clearButtton: true });
         }
         else{
           console.error(e.message);

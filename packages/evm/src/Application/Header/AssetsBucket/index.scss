@@ -235,6 +235,7 @@
   &.crxTooltipAll {
     margin-left: -42px;
   }
+  text-transform: lowercase;
 }
 
 .bucketIconButton {
@@ -1389,3 +1390,10 @@ body {
       font-size: 14px;
     }
 }
+
+#bucket_tooltip_asset_1 {
+text-transform: lowercase;
+}
+#bucket_tooltip_asset_2 {
+  text-transform: lowercase;
+  }

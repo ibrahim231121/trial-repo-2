@@ -68,7 +68,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             unitEventRows = unitEventsData.map((x: any) => {
                 return {
                     
-                    users: x.user.userName,
+                    users: x.user?.userName,
                     event: x.event,
                     description: x.message,
                     eventTime: x.logTime,

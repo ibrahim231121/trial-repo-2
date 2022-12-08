@@ -142,7 +142,7 @@ const CRXAutocomplete = ({
       freeSolo={freeSolo}
       popupIcon={opupOpenCret}
       clearText=""
-      closeIcon={<CRXTooltip iconName="fal fa-times" arrow={false} title="clear" placement="bottom" id="clearIconSelectBox_search" className="predictiveSearchCloseIcon"/>}
+      closeIcon={<CRXTooltip iconName="fal fa-times" arrow={false} title="clear" placement="top" id="clearIconSelectBox_search" className="predictiveSearchCloseIcon"/>}
        ChipProps={{
           deleteIcon: <ClearSharpIcon fontSize="large" fontWeight="bold" />,
         }}

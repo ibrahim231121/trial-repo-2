@@ -835,6 +835,9 @@ export const resources = {
         "Soft_Delete_Time" : "Soft Delete Time",
         "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",        
         "Retention_Policy_Deleted_Successfully" :"Retention Policy Deleted Sucessfully",
+        "Edit_retention_policy": "Edit retention policy",
+        "Delete_retention_policy": "Delete retention policy",
+
         //----------  Upload Policies  ---------       
         "Upload" :"Upload",
         "Metadata_Upload_Connection":"Metadata Upload Connection",

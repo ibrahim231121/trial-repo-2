@@ -6,7 +6,19 @@ import { MAX_REQUEST_SIZE_FOR} from '../utils/constant'
 import { setLoaderValue } from './loaderSlice';
 
 export const getStationsAsync: any = createAsyncThunk('getStationsInfo', async (pageiFilter: any, thunkAPI) => {
-  let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}, {key: "InquireDepth", value:"shallow"}]
+  let headers = [
+    {   
+        key : 'GridFilter', 
+        value : JSON.stringify(pageiFilter.gridFilter)
+    },
+    {
+        key: 'GridSort', 
+        value : JSON.stringify(pageiFilter.gridSort)
+    }, 
+    {
+        key: "InquireDepth", 
+        value:"shallow"
+    }]
   thunkAPI.dispatch(setLoaderValue({isLoading: true}))
   return await UnitsAndDevicesAgent.getAllStations(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
     .then((response:any) => {

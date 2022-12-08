@@ -59,5 +59,6 @@ export { default as CBXSwitcher } from './controls/CBXSwitcher/CBXSwitcher'
 export {default as CRXVideoPlayerStyle } from "./JssStyles/VideoPlayerStyle/CRXVideoPlayerStyle"
 export { default as VolumeControlStyle } from "./JssStyles/VideoPlayerStyle/VolumeControlStyle"
 export { default as CBXMultiSelectForDatatable } from "./controls/CBXMultiDataFilter/CBXMultiSelectDataFilter"
+export { default as CBXMultiCheckBoxDataFilter } from "./controls/CBXMultiDataFilter/CBXMultiCheckBoxDataFilter"
 export { default as CRXMultiViewStyle } from "./JssStyles/VideoPlayerStyle/CRXMultiViewStyle";
 export { default as NumberField } from "./controls/CRXInputNumberField/CRXNumberField"
