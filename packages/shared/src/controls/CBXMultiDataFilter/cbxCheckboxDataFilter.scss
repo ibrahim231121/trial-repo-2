@@ -18,21 +18,24 @@
     }
 }
 
-.select_popper {
-    border:2px solid #888787;
+.select_popper_Checkbox {
+    border:0px solid #888787;
+    opacity: 0 !important;
     width: calc(100% - 0px);
     .MuiAutocomplete-hasPopupIcon {
             border:0px;
-            background: #404041;
+            background: none;
             border-radius: 0px;
             padding: 0px;
-            min-height: 50px;
+            min-height: 0px;
             .MuiOutlinedInput-root {
                 box-shadow: none;
                 outline: 0px;
                 border-radius: 0px;
                 padding: 0px;
                 border: 0px solid #888787;
+                height: 0px;
+                opacity: 0 !important;
                 &.Mui-focused {
                     .MuiOutlinedInput-notchedOutline {
                         border: 0px;
@@ -49,7 +52,7 @@
                 }
                
             }
-        .select_input_field {
+        .select_Checkbox_input_field {
             padding: 0px;
             &.bg-dp-value{
                 &::before {
@@ -66,12 +69,12 @@
                     margin: auto;
                     padding: 2px;
                 }
-                #multiple-limit-tags {
+                #multiple-tags_checkbox{
                     border:0px solid #888787
                 }
             }
             
-            #multiple-limit-tags {
+            #multiple-tags_checkbox {
                 height: 30px;
                 padding: 0px;
                 background : #d1d2d4;
@@ -79,7 +82,7 @@
             }
         }
     }
-    .data_filter_select_list {
+    .data_filter_select_list_checkbox {
         .select_custom_chips{
             top: 0px;
             color: #333;
@@ -95,7 +98,6 @@
             border-radius: 1px;
             margin-bottom: 2px;
             background-color: #fff;
-            display: flex;
             &:hover {
                 color: #333333;
                 border: 1px solid #888787;
@@ -127,7 +129,7 @@
     }
 }
 
-#multiple-limit-tags-popup {
+#multiple-tags_checkbox-popup {
     li{
         .select_checkbox {
             i{

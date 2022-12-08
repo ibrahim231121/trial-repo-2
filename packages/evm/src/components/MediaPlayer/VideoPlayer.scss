@@ -1513,7 +1513,7 @@ span.playBackTooltipUp {
         margin: auto;
         aspect-ratio: 16 / 9;
         &:nth-child(1) {
-          margin-bottom: 16px;
+          margin-bottom: 5px;
         }
       }
       video {
@@ -1524,7 +1524,7 @@ span.playBackTooltipUp {
       &.vid_col_8 {
         .videoContainer {
           video {
-            margin-bottom: 14px;
+            margin-bottom: 0px;
           }
         }
       }

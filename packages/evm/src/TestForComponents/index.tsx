@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  TextField, CBXMultiSelectForDatatable, NumberField
+  TextField, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter,  NumberField
 } from '@cb/shared';
 import "./Test.scss"
 const TabsDemo = () => {
@@ -164,17 +164,19 @@ const onSelectedClear = () => {
       {/* <CBXMultiSelectForDatatable option={top100Films} multiple={true} defaultValue={defaultValue} styled="checkBox" /> */}
 
       <div className='demoDiv'>
-      <CBXMultiSelectForDatatable 
+      <CBXMultiCheckBoxDataFilter 
       width = {300} 
       option={top100Films} 
       defaultValue={defaultValue} 
       value={getVal} 
       onChange={(e: any, value : any) => changeHanlder(e, value)}
       onSelectedClear = {() => onSelectedClear()}
-      isCheckBox={true}
+      isCheckBox={false}
+      multiple={true}
+      
       />
       </div>
-      <NumberField type="number" max={10} min={1} onChange={(e : any) => setNumberVal(e.target.value)} value={val} />
+     
     </div>
     
     </>

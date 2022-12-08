@@ -469,6 +469,12 @@ input:-webkit-autofill {
   display: block;
 }
 
+
+.select_popper_Checkbox {
+  height: 0px;
+  opacity: 0px;
+}
+
 .noDataInTable {
   font-size: 14px;
   padding: 30px 0px 15px 0px;
