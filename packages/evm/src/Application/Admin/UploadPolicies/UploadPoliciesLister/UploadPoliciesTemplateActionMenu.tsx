@@ -34,8 +34,8 @@ const deleteUploadPolicies = () => {
     .then(function(response:any){
       let {AssignIdName,UnAssignsIds} = response;
       if(AssignIdName.length > 0) {
-            var names = AssignIdName.map(function (singleName:any){
-              return singleName.name;
+            var names = AssignIdName.map(function (x:any){
+              return x.name;
             })
             onMessageShow(false,t(`Unable to process your request, Policy Ids  is Assigned ${names} on Categories`))
       }
