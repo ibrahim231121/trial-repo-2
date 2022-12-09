@@ -74,12 +74,12 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   
   useEffect(() => {
     const tblBlock : any = document.getElementsByClassName('AssetsDataGrid')[0]
-    let minSticky : any =  offsetY && offsetY - 3
+    let minSticky : any =  offsetY && (offsetY - 3)
     createScrollStopListener(window, function() {
       tblBlock && (tblBlock.style.display = "block")
       setWindScrollValue(window.pageYOffset - minSticky)
     }, 300);
-  },[])
+  },[windScrollValue])
   
   return (
     <TableHead style={{"top" : windScrollValue +  "px"}}>

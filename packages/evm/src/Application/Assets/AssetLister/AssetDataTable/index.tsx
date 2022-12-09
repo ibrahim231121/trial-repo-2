@@ -109,6 +109,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
   dateOptionType,
   dateTimeDetail,
   showDateCompact,
+  showAdvanceSearch,
 }) => {
   const toasterRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
@@ -630,10 +631,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={207}
-          searchHeaderPosition={221}
-          dragableHeaderPosition={178}
-          topSpaceDrag = {251}
+          offsetY={showAdvanceSearch == false ? 140 : 650}
+          searchHeaderPosition={showAdvanceSearch == false ? 221 : 889}
+          dragableHeaderPosition={showAdvanceSearch == false ? 178 : 889}
+          topSpaceDrag = {showAdvanceSearch == false ? 183 : 689}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}
