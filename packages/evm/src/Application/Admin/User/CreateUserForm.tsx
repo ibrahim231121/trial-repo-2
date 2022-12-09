@@ -1079,6 +1079,14 @@ else {
     );
   };
 
+  useEffect(()=>{
+    window.scrollBy({
+      top: 120,
+      left: 0,
+      behavior: 'smooth'
+    });
+  },[radioValue])
+  
   return (
     <div className='createUser CrxCreateUser CreateUserUi searchComponents'>
       <CRXToaster ref={userMsgFormRef} />
@@ -1246,7 +1254,7 @@ else {
                   onBlur={() => checkPin()}
                 />
               </div>
-
+            
               <div className={`crxRadioBtn crxRadioBtnUi ${radioValue == "genTemp" ? "radioBtnUiSpacer" : ""} ${radioValue == "manual" ? "ManualRadioBtn" : ""}`}>
                 <label>{t("User_Password_Setup")}</label>
                 <div className='user-radio-group'>
@@ -1262,7 +1270,8 @@ else {
             </Grid>
           </Grid>
         </div>
-        <div className='crxFooterEditFormBtn'>
+   
+      <div  className='crxFooterEditFormBtn'>
           <div className='__crxFooterBtnUser__'>
             <CRXButton className='primary' disabled={disableSave} onClick={onSubmit}>
               {t("Save")}
