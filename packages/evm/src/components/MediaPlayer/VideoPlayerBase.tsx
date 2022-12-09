@@ -2132,7 +2132,7 @@ useEffect(() => {
          
           <CRXToaster ref={toasterMsgRef} />
           
-            <div id="screens" onMouseMove={fullViewScreenOn}>
+            <div id="screens">
               <VideoPlayerOverlayMenu
                 overlayEnabled={overlayEnabled}
                 overlayCheckedItems={overlayCheckedItems}
