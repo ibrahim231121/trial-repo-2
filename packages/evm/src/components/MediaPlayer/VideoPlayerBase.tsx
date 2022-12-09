@@ -85,6 +85,9 @@ type DurationFinderModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   dispatch: any
+  setViewNumber: any
+  viewNumberFirstTime: any
+  setViewNumberFirstTime: any
 }
 type TimelineGeneratorModel = {
   data: any
@@ -100,6 +103,9 @@ type TimelineGeneratorModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   dispatch: any
+  setViewNumber: any
+  viewNumberFirstTime: any
+  setViewNumberFirstTime: any
 }
 type ViewReasonTimerObject = {
   evidenceId: number;
@@ -163,8 +169,8 @@ function padTo2Digits(num: number) {
 const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
-async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel,) {
-  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch } = TimelineGeneratorModel
+async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
+  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, setViewNumber, viewNumberFirstTime, setViewNumberFirstTime } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
@@ -228,8 +234,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         id: "Video-" + x,
         dataId: data[x].id,
         unitId: data[x].unitId,
-        enableDisplay: x == 0 ? true : false,
-        indexNumberToDisplay: x == 0 ? 1 : 0,
+        enableDisplay: true,
+        indexNumberToDisplay: x + 1,
         camera: data[x].camera,
         timeOffset: timeOffset,
         assetbuffering: assetbuffering
@@ -260,11 +266,16 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   if (!updateVideoSelection) {
     await setBufferingArray(bufferingArr)
   }
+  if(viewNumberFirstTime)
+  {
+    setViewNumber(rowdetail.filter(x => x.enableDisplay).length)
+    setViewNumberFirstTime(false);
+  }
   await dispatch(addTimelineDetailActionCreator(rowdetail));
   setupdateVideoSelection(false);
 }
 async function Durationfinder(DurationFinderModel: DurationFinderModel) {
-  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch } = DurationFinderModel
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, setViewNumber, viewNumberFirstTime, setViewNumberFirstTime } = DurationFinderModel
 
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -303,7 +314,10 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     setBufferingArray,
     setupdateVideoSelection,
     isDetailPageAccess : isDetailPageAccess,
-    dispatch
+    dispatch,
+    setViewNumber,
+    viewNumberFirstTime, 
+    setViewNumberFirstTime
   });
 }
 
@@ -406,6 +420,7 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [viewNumber, setViewNumber] = useState(1);
+  const [viewNumberFirstTime, setViewNumberFirstTime] = useState(true);
   const [mapEnabled, setMapEnabled] = useState<boolean>(true);
   const [overlayClass, setOverLayClass] = useState<string>()
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
@@ -669,7 +684,10 @@ const VideoPlayerBase = (props: any) => {
         setBufferingArray,
         setupdateVideoSelection,
         isDetailPageAccess: props.history !== undefined ? false : true,
-        dispatch: dispatch
+        dispatch: dispatch,
+        setViewNumber,
+        viewNumberFirstTime, 
+        setViewNumberFirstTime
       });
       setLoading(true)
     }
