@@ -968,6 +968,24 @@ else {
   };
 
   const sendActivationLink = () => {
+    const linkClick = () => {
+      setDisableLink(true);
+      setDisableSave(false)
+    };
+    return (
+      <>
+        {userPayload && (
+          <div className='crxCreateEditFormActivationLink'>
+            <div className='crxActivationLink'>
+              <CRXButton className='secondary' onClick={linkClick} disabled={disableLink}>
+                {t("Resend_Activation_Link")}
+              </CRXButton>
+              <label>{t("(Link_will_be_sent_after_saving_this_form.)")}</label>
+            </div>
+          </div>
+        )}
+      </>
+    );
   };
 
   const validatePhone = (phoneNumber: string): { error: boolean, errorMessage: string } => {

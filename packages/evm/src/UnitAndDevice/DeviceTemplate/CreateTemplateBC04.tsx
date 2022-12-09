@@ -3,18 +3,12 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { CRXTabs, CrxTabPanel, CRXButton } from "@cb/shared";
 import { useHistory } from "react-router";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
-import { Link } from "react-router-dom";
 import "./createTemplate.scss";
-import BC04 from "../unitSchemaBC04.json";
-import BC03 from '../unitSchemaBC03.json';
-import VRX from '../unitSchemaVRX.json';
-import BC03LTE from "../unitSchemaBCO3Lte.json";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import { CRXModalDialog } from "@cb/shared";
 import { CRXConfirmDialog, CRXTooltip, CRXToaster, CRXAlert } from "@cb/shared";
 import { enterPathActionCreator } from '../../Redux/breadCrumbReducer';
 import * as Yup from "yup";
-import { CRXTitle } from "@cb/shared";
 import { urlList, urlNames } from "../../utils/urlList";
 import { RootState } from "../../Redux/rootReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +17,6 @@ import { CreateTempelateCase } from "./CreateTemplateCase";
 import { UnitsAndDevicesAgent } from "../../utils/Api/ApiAgent";
 import { ConfigurationTemplate, DeviceType } from "../../utils/Api/models/UnitModels";
 import { useTranslation } from "react-i18next";
-import { CaptureDevice } from "../../utils/Api/models/StationModels";
 import { getCategoryAsync } from "../../Redux/categoryReducer";
 import { getRetentionStateAsync, getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import {getAllSensorsEvents} from '../../Redux/SensorEvents';
@@ -113,16 +106,12 @@ const CreateTemplate = (props: any) => {
   const deviceTypes: any = useSelector((state: RootState) => state.unitTemplateSlice.deviceTypes);
   const stations: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
   const [stationsLoaded, setStationsLoaded] = React.useState<boolean>(false);
-  const [deviceTypeLoaded, setDeviceTypeLoaded] = React.useState<boolean>(false);
-  const formikProps = useFormikContext()
-  const [errCkher, seterrChker] = React.useState<string>("");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
   const [alertType] = useState<string>('inline');
   const [errorType] = useState<string>('error');
   const [responseError] = React.useState<string>('');
   const [alert] = React.useState<boolean>(false);
-  const [templateName] = React.useState<string>(historyState.deviceType);
   const [tabss, settabss] = React.useState<any>();
   const [tabss1, settabss1] = React.useState<any>();
   const [validationFailed, setValidationFailed] = React.useState<boolean>(true);
@@ -323,7 +312,6 @@ const CreateTemplate = (props: any) => {
     }
     setFormSchema(FormSchema);
     setInitial_Values_obj(Initial_Values_obj);
-    setDeviceTypeLoaded(true);
   }
 
   const setStationDropDown = () => {
@@ -731,7 +719,7 @@ const CreateTemplate = (props: any) => {
         if((!Initial_Values.some(x => x.key == split[1])))
         {
           if((cameraField ? nonDependantValue : nonDependantFormValue))
-            {
+          {
             Initial_Values.push({
               key: split[1],
               value: valueRaw,
@@ -847,15 +835,18 @@ const CreateTemplate = (props: any) => {
     <>
       {tabss1 && tabss && <div className="CrxCreateTemplate switchLeftComponents CrxCreateTemplateUi ">
         <CRXToaster ref={targetRef} />
+      {alert && 
         <CRXAlert
-          ref={alertRef}
-          message={responseError}
-          className='crxAlertUserEditForm'
-          alertType={alertType}
-          type={errorType}
-          open={alert}
-          setShowSucess={() => null}
-        />
+        ref={alertRef}
+        message={responseError}
+        className='crxAlertUserEditForm'
+        alertType={alertType}
+        type={errorType}
+        open={alert}
+        setShowSucess={() => null}
+      />
+      }
+       
         <CRXConfirmDialog
           setIsOpen={(e: React.MouseEvent<HTMLElement>) => handleClose(e)}
           onConfirm={onConfirmm}
@@ -883,7 +874,7 @@ const CreateTemplate = (props: any) => {
           viewScroll="initial"
           direction="left"
           position="auto"
-          arrow
+          arrow={false}
           menuButton={
             <MenuButton>
                       <CRXTooltip 
@@ -914,9 +905,9 @@ const CreateTemplate = (props: any) => {
             </div>
           </MenuItem>}
         </Menu>
-        <div className="tabCreateTemplate">
+        <div className="_Create_Template">
           <CRXTabs value={value} onChange={handleChange} tabitems={tabss1} />
-          <div className="tctContent">
+          <div className="_create_template_Content">
             <Formik
               enableReinitialize={true}
               initialValues={Initial_Values_obj}
@@ -925,15 +916,15 @@ const CreateTemplate = (props: any) => {
               {({
                 values,
                 handleChange,
-                handleSubmit,
                 setValues,
-                isSubmitting,
                 dirty,
                 isValid,
                 resetForm,
                 touched,
                 setFieldValue,
-                errors
+                errors,
+                handleBlur,
+                setTouched
               }) => (
                 <Form>
                   {
@@ -941,39 +932,44 @@ const CreateTemplate = (props: any) => {
 
                       {tabss.map((x: any) => {
                         return <CrxTabPanel value={value} index={x.index}>
-                          <p className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</p>
-                          <div>
-
-                          </div>
+                          <div className="DeviceIndicator"><span>*</span> {t("Indicates_required_field")}</div>
+                       
+                          <div className="_template_form_row">
                           {FormSchema[x.label].map(
                             (formObj: any, key: number) => {
-                              <div>
-                                <p>{formObj.labelGroupRecording}</p>
-                              </div>;
-
-                              return (formObj.type !== undefined ? (
-                                <div key={key}>
-                                  {stationsLoaded && <CreateTempelateCase
-                                    formObj={formObj}
-                                    values={values}
-                                    setValues={setValues}
-                                    FormSchema={FormSchema}
-                                    index={0}
-                                    handleChange={handleChange}
-                                    setFieldValue={setFieldValue}
-                                    cameraFeildArrayCounter={cameraFeildArrayCounter}
-                                    setCameraFeildArrayCounter={setCameraFeildArrayCounter}
-                                    applyValidation={applyValidation}
-                                    Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
-                                    setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
-                                    isValid={isValid} setformSchema={setformSchema}
-                                    touched={touched} errors={errors} 
-                                    setValidationFailed = {setValidationFailed}
-                                    sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
-                                </div>) : (<></>));
-
+                              return (
+                                <>
+                                {/* <div className="_label_Group_recording">
+                                  <div>{formObj.labelGroupRecording}</div>
+                                </div> */}
+                                {
+                                  formObj.type !== undefined ? (
+                                  <div className={"_label_and_form_field " + formObj.label} key={key}>
+                                    {stationsLoaded && <CreateTempelateCase
+                                      formObj={formObj}
+                                      values={values}
+                                      setValues={setValues}
+                                      FormSchema={FormSchema}
+                                      index={0}
+                                      handleChange={handleChange}
+                                      setFieldValue={setFieldValue}
+                                      cameraFeildArrayCounter={cameraFeildArrayCounter}
+                                      setCameraFeildArrayCounter={setCameraFeildArrayCounter}
+                                      applyValidation={applyValidation}
+                                      Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField}
+                                      setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField}
+                                      isValid={isValid} setformSchema={setformSchema}
+                                      touched={touched} errors={errors} 
+                                      setValidationFailed = {setValidationFailed}
+                                      handleBlur={handleBlur}
+                                      setTouched={setTouched}
+                                      sensorsEvent = {openCreateSensorsAndTriggersTemplate} />}
+                                  </div>) : (<></>)
+                              }
+                              </>);
                             }
                           )}
+                          </div>
                         </CrxTabPanel>
                       })}
                     </>
@@ -988,12 +984,12 @@ const CreateTemplate = (props: any) => {
                       >
                         {t("Save")}
                       </CRXButton>
-                      <CRXButton onClick={() => history.goBack()}>
+                      <CRXButton  className=" secondary" color="secondary" variant="outlined" onClick={() => history.goBack()}>
                       {t("Cancel")}
                       </CRXButton>
                     </div>
                     <div className="tctRight">
-                      <CRXButton onClick={() => handleChangeCloseButton(!dirty)}>
+                      <CRXButton     className=" secondary" color="secondary" variant="outlined" onClick={() => handleChangeCloseButton(!dirty)}>
                       {t("Close")}
                       </CRXButton>
                     </div>
