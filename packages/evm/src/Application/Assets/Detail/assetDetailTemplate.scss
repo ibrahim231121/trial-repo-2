@@ -17,11 +17,11 @@
     a {
       padding-top: 2px;
       padding-left: 25px;
-      color: #D74B00;
+      color: #d74b00;
       font-size: 14px;
     }
     .asset_date_categories {
-      flex-grow : 1;
+      flex-grow: 1;
       span {
         font-size: 14px;
         color: var(--color-333333);
@@ -37,14 +37,14 @@
     padding-left: 0px !important;
     // height: calc(100vh - 135px);
   }
- 
+
   .touchPoint_bar {
-    background:  var(--color-Black);
+    background: var(--color-Black);
     padding: 5px 0px 4px 0px;
-    margin:10px 0px ;
+    margin: 10px 0px;
     text-align: center;
     height: 50px;
-    
+
     ._angle_down_up_icon_btn {
       border: 0px;
       background: transparent;
@@ -67,7 +67,7 @@
   .tabCreateTemplate {
     margin-top: 70px;
   }
-  .topBorderForDetail{
+  .topBorderForDetail {
     height: 1px;
     width: 100%;
     background: var(--color-d1d2d4);
@@ -77,21 +77,20 @@
   }
 
   .asset_detail_tabs {
-    padding:0px 24px;
+    padding: 0px 27px;
     margin-top: 29px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     .list_data_main {
       div[id*="crx-tabpanel-"] {
-        height: calc(100vh - 312px);
+        height: calc(100vh - 320px);
         margin-top: -1px;
         border-top: 1px solid #878787;
       }
     }
-    
   }
 }
 
-._bottom_arrow_seeMore{
+._bottom_arrow_seeMore {
   background-color: var(--color-Black);
   height: 30px;
   text-align: center;
@@ -99,7 +98,7 @@
   top: -16px;
   width: 100%;
   margin: 00px;
-  
+
   ._angle_down_up_icon_btn {
     border: 0px;
     background: transparent;
@@ -121,7 +120,6 @@
   a {
     font-size: 28px;
     color: var(--color-White);
-    
   }
   .lessMoreButton {
     color: var(--color-333333);
@@ -131,7 +129,7 @@
 
 .lessMoreDetailView_arrow {
   background: transparent;
-  border-top:1px solid #d1d2d4;
+  border-top: 1px solid #d1d2d4;
   width: 98%;
   margin: 0 auto;
   &::before {
@@ -140,12 +138,13 @@
     content: "";
     top: 0px;
     left: 0px;
-    box-shadow: 0px 2px 5px #D1D2D4;
+    box-shadow: 0px 2px 5px #d1d2d4;
     height: 1px;
   }
 }
 
-.makeStyles-content-9.makeStyles-contentShift-10, .jss9.jss10 {
+.makeStyles-content-9.makeStyles-contentShift-10,
+.jss9.jss10 {
   #_asset_detail_view_idx {
     &.switchLeftComponents {
       padding-left: 62px;
@@ -155,10 +154,9 @@
   }
 }
 
-
-.makeStyles-content-9, .jss9{
-    #_asset_detail_view_idx {
-    
+.makeStyles-content-9,
+.jss9 {
+  #_asset_detail_view_idx {
     &.switchLeftComponents {
       padding-left: 0px;
       padding-right: 0px;
@@ -210,6 +208,28 @@
         background-color: #fff;
         .lessMoreButton {
           color: #000;
+        }
+      }
+    }
+  }
+}
+
+.cbxTabsContent {
+  .asset_detail_AT_table {
+    .asset_detail_AT_dataTable {
+      display: inline-table !important;
+
+      position: sticky !important;
+
+      .CRXDataTableCustom {
+        thead {
+          &:nth-child(1) {
+            top: 55px !important;
+          }
+
+          &:nth-child(2) {
+            top: 90px !important;
+          }
         }
       }
     }
