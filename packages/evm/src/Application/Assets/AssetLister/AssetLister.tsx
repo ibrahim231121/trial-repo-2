@@ -115,6 +115,7 @@ const SearchComponent = (props: any) => {
         setPredictiveText(evidenceSearchType.MyAsstes);
         setShowAssetDateCompact(true);
         setShowShortCutSearch(false);
+        setAdvanceSearch(false);
 
       },
     },
@@ -128,6 +129,7 @@ const SearchComponent = (props: any) => {
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
+        setAdvanceSearch(false);
       },
     },
     {
@@ -177,6 +179,7 @@ const SearchComponent = (props: any) => {
         }
 
         setShowAssetDateCompact(true);
+        setAdvanceSearch(false);
       },
     },
   ];
@@ -298,6 +301,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if (responseForSearch.length > 0) {
+      
       setSearchData(responseForSearch);
       setRandomKey(Math.random())
     }
@@ -311,7 +315,12 @@ const SearchComponent = (props: any) => {
   }, []);
 
   React.useEffect(() => {
-    window.scrollTo({ top: 200, behavior: "smooth" });
+   if( showAdvanceSearch == true ) {
+    window.scrollTo({ top: 693, behavior: "smooth" });
+   }else {
+    window.scrollTo({ top: 207, behavior: "smooth" });
+   }
+    
   }, [searchData]);
 
   React.useEffect(() => {
@@ -339,7 +348,9 @@ const SearchComponent = (props: any) => {
         if (shortCut) {
           shortCut.renderData();
         } else {
+          
           setSearchData([]);
+          
         }
       }
     } else {
@@ -476,7 +487,7 @@ const SearchComponent = (props: any) => {
         <div className='preSearcBtnContent'>
           <CRXButton
             className='PreSearchButton'
-            onClick={Search}
+            onClick={() => Search()}
             color='primary'
             variant='contained'
             disabled={isSearchBtnDisable}
@@ -523,6 +534,7 @@ const SearchComponent = (props: any) => {
               showDateCompact={showAssetDateCompact}
               dateOptionType={dateOptionType === dateOptionsTypes.approachingDeletion ? "" : dateOptionType}
               dateTimeDetail={dateTimeAsset}
+              showAdvanceSearch={showAdvanceSearch}
             />
           </div>
         )}

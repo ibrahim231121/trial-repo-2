@@ -29,4 +29,5 @@ export type MasterMainProps = {
     dateOptionType: string;
     dateTimeDetail: DateTimeObject;
     showDateCompact: boolean;
+    showAdvanceSearch? : boolean
 };

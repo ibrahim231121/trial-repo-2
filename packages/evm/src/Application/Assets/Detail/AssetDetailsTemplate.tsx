@@ -1068,11 +1068,11 @@ const AssetDetailsTemplate = (props: any) => {
       {detailContent && <div className="topBorderForDetail"></div>}
 
 
-      <div className="asset_detail_tabs" id="detail_view" ref={detail_view}>
+      <div className="asset_detail_tabs CRX_detail_tabs" id="detail_view" ref={detail_view}>
 
         <CRXTabs value={value} onChange={tabHandleChange} tabitems={tabs} />
 
-        <div className="list_data_main">
+        <div className="list_data_main CRX_accordion_main">
           <CrxTabPanel value={value} index={0}>
 
 
@@ -1082,8 +1082,8 @@ const AssetDetailsTemplate = (props: any) => {
                   <div className="asset_MDI_label">{t("CheckSum")}</div>
                 </Grid>
                 <Grid item xs={8} className="list_para">
-                  <div className="asset_MDI_data boldText">{assetInfo.checksum}</div>
-                  <p style={{ color: "red", cursor: "pointer" }} onClick={() => { navigator.clipboard.writeText(assetInfo.checksum.toString()) }}>copy</p>
+                  <div className="asset_MDI_data boldText asset_check_sum">&lt;{assetInfo.checksum}&gt;</div>
+                  <p className="list_Copy_text" onClick={() => { navigator.clipboard.writeText(assetInfo.checksum.toString()) }}>Copy</p>
                 </Grid>
 
 
@@ -1339,12 +1339,13 @@ const AssetDetailsTemplate = (props: any) => {
                   onHeadCellChange={onSetHeadCells}
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
-                  offsetY={51}
+  					      offsetY={51}
                   page={page}
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={500}
+              
                 />
               )}
             </div>

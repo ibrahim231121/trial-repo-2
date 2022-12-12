@@ -215,7 +215,7 @@ const VideoScreen = ({
               </div>
             </MenuItem>
           </Menu>
-          <VideosSelection
+          {indexAnchorE1 > 0 && <VideosSelection
           timelinedetail={timelinedetail}
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
@@ -223,7 +223,7 @@ const VideoScreen = ({
           indexNumber={indexNumber}
           setupdateVideoSelection={setupdateVideoSelection}
           anchorRef={anchorRef}
-        />
+        />}
         </div>
         
       </div>
