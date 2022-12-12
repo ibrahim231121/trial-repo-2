@@ -845,6 +845,8 @@ export const resources = {
         "Asset_Upload_Connection":"Asset Upload Connection",
         "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
         "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
+        "Unable_to_process_your_request,_Policy_Ids" : "Unable to process your request, PolicyIds ",
+        "is_Assigned_on_Categories" : " is Assigned on Categories"
       }
     }
   };

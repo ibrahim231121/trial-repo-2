@@ -40,7 +40,7 @@ const deleteRetentionPolicies = () => {
             var names = AssignIdName.map(function (x:any){
               return x.name;
             })
-            onMessageShow(false,t(`Unable to process your request, Policy Ids  is Assigned ${names} on Categories`))
+            onMessageShow(false,t(("Unable_to_process_your_request,_Policy_Ids")) + names.join() + t("is_Assigned_on_Categories"));
       }
       if(UnAssignsIds.length > 0){
         onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
