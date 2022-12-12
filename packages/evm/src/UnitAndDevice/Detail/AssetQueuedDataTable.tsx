@@ -16,12 +16,13 @@ import {
 import textDisplay from "../../GlobalComponents/Display/TextDisplay";
 import { useTranslation } from "react-i18next";
 import { QueuedAssets } from "../../utils/Api/models/UnitModels";
+import { EvidenceAgent} from '../../utils/Api/ApiAgent';
 
 type infoProps = {
   unitId: any;
 }
 const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
-    const queuedAssets: any = useSelector((state: RootState) => state.unitReducer.queuedAssets);
+    const [queuedAssets, setqueuedAssets] =  React.useState<QueuedAssets[]>([]);
     const { t } = useTranslation<string>();
     const [reformattedRows, setReformattedRows] = React.useState<QueuedAssets[]>();
     const [selectedActionRow, setSelectedActionRow] =React.useState<QueuedAssets>();
@@ -46,15 +47,19 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
  
   useInterval(
     () => {
-      dispatch(getQueuedAssetInfoAsync({unitId: unitId}));
+      EvidenceAgent.getQueuedAssets(unitId).then((response:QueuedAssets[]) => setqueuedAssets(response));  
+
       let headCellsArray = onSetHeadCellVisibility(headCells);
       setHeadCells(headCellsArray);
       onSaveHeadCellData(headCells, "Queued_Assets");  
     },
     // Speed in milliseconds or null to stop it
-   10000,
+    10000,
   );
-
+  React.useEffect(() => {
+    EvidenceAgent.getQueuedAssets(unitId).then((response:QueuedAssets[]) => setqueuedAssets(response));  
+    setData();
+  }, []);
 
     const setData = () => {
        let asset: QueuedAssets[] = [];
