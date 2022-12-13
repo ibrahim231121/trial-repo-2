@@ -113,6 +113,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [IsformUpdated, setIsformUpdated] = React.useState(false);
     const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] =
       React.useState(false);
+    const EXPORT_ASSETS_AND_METADATA_PERMISSION = 60;
     React.useEffect(() => {
       calculateSecurityDescriptor();
       if (selectedItems.length > 1) {
@@ -276,8 +277,8 @@ const ActionMenu: React.FC<Props> = React.memo(
       if (selectedItems.length != 0) {
       }
       const evidenceId = row.evidence.id;
-      let assetId : number;
-      if(actionMenuPlacement === ActionMenuPlacement.AssetDetail){
+      let assetId: number;
+      if (actionMenuPlacement === ActionMenuPlacement.AssetDetail) {
         assetId = row.evidence.asset[0].assetId;
       } else {
         assetId = row.assetId;
@@ -471,7 +472,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         link.parentNode.removeChild(link);
       }
     };
-    
+
 
     const downloadFileByURLResponse = (url: string) => {
       // Create Link to trigger browser api to download.
@@ -937,39 +938,38 @@ const ActionMenu: React.FC<Props> = React.memo(
               </ActionMenuCheckList>
             </MenuItem>
           ) : null}
-
-          <MenuItem>
-            <ActionMenuCheckList
-              moduleId={0}
-              descriptorId={3}
-              maximumDescriptor={maximumDescriptor}
-              evidence={row?.evidence}
-              actionMenuName={t("Export")}
-              securityDescriptors={securityDescriptorsArray}
-              isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
-            >
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">
-                  <SubMenu label={t("Export")}>
-                    {!CheckEvidenceExpire(row?.evidence) ? (
-                      <MenuItem onClick={handleDownloadAssetClick}>
-                        {t("Download_asset(s)")}
+            <MenuItem>
+              <ActionMenuCheckList
+                moduleId={EXPORT_ASSETS_AND_METADATA_PERMISSION}
+                descriptorId={2}
+                maximumDescriptor={maximumDescriptor}
+                evidence={row?.evidence}
+                actionMenuName={t("Export")}
+                securityDescriptors={securityDescriptorsArray}
+                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+              >
+                <div className="crx-meu-content groupingMenu">
+                  <div className="crx-menu-icon"></div>
+                  <div className="crx-menu-list">
+                    <SubMenu label={t("Export")}>
+                      {!CheckEvidenceExpire(row?.evidence) ? (
+                        <MenuItem onClick={handleDownloadAssetClick}>
+                          {t("Download_asset(s)")}
+                        </MenuItem>
+                      ) : null}
+                      <MenuItem onClick={handleDownloadMetaDataClick}>
+                        {t("Download_metadata_info")}
                       </MenuItem>
-                    ) : null}
-                    <MenuItem onClick={handleDownloadMetaDataClick}>
-                      {t("Download_metadata_info")}
-                    </MenuItem>
-                    {!CheckEvidenceExpire(row?.evidence) ? (
-                      <MenuItem onClick={onClickDownloadAssetTrail}>
-                        {t("Download_audit_trail")}
-                      </MenuItem>
-                    ) : null}
-                  </SubMenu>
+                      {!CheckEvidenceExpire(row?.evidence) ? (
+                        <MenuItem onClick={onClickDownloadAssetTrail}>
+                          {t("Download_audit_trail")}
+                        </MenuItem>
+                      ) : null}
+                    </SubMenu>
+                  </div>
                 </div>
-              </div>
-            </ActionMenuCheckList>
-          </MenuItem>
+              </ActionMenuCheckList>
+            </MenuItem>
 
           {isLockedAccess ? (
             <MenuItem>

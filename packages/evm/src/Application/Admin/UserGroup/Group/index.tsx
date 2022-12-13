@@ -414,7 +414,7 @@ const Group = () => {
       setIsSaveButtonDisabled(true);
     }
     else if (res !== undefined && (
-      JSON.stringify(userIds.length === 0 ? [] : userIds.sort()) !==
+      JSON.stringify(userIds.length === 0 ? [] : userIds?.sort()) !==
       JSON.stringify(
         res.members === undefined
           ? []
