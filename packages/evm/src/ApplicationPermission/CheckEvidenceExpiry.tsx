@@ -7,7 +7,7 @@ type Props = {
     isMultiSelectEvidenceExpired: boolean
 };
 
-const allowedEvidenceExpireActionMenuList = ["Assign User", "Export"]
+const allowedEvidenceExpireActionMenuList = ["Assign user", "Export"]
 
 const CheckEvidenceExpiry: React.FunctionComponent<Props> = ({ evidence, actionMenuName, isMultiSelectEvidenceExpired, children }) => {
     if ((!CheckEvidenceExpire(evidence) && !isMultiSelectEvidenceExpired) || allowedEvidenceExpireActionMenuList.indexOf(actionMenuName) > -1) {

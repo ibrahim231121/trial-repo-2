@@ -331,14 +331,6 @@ const StationDetail: React.FC = () => {
       UnitsAndDevicesAgent.addStation(body).then((response: number) => {
         showToastMsg()
         dispatch(enterPathActionCreator({ val: t("Station") + ": " + body.name }));
-        dispatch(getStationsAsync({
-          gridFilter: {
-            logic: "and",
-            filters: []
-          },
-          page: 0,
-          size: 25
-        }));
         const path = `${urlList.filter((item: any) => item.name === urlNames.adminStationEdit)[0].url}`;
         history.push(path.substring(0, path.lastIndexOf("/")) + "/" + response);
         
@@ -392,7 +384,6 @@ const StationDetail: React.FC = () => {
   }
 
   const handleChange = (event: any, newValue: number) => setValue(newValue);
-
   const tabs = [
     { label: t("General"), index: 0 },
     { label: t("Station_Settings"), index: 1 },
