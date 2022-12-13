@@ -34,7 +34,7 @@ const deleteUploadPolicies = () => {
     .then(function(response:any){
       let {AssignIdName,UnAssignsIds} = response;
       if(AssignIdName.length > 0) {
-            var names = AssignIdName.map(function (x:any){
+            let names = AssignIdName.map(function (x:any){
               return x.name;
             })
             onMessageShow(false,t(("Unable_to_process_your_request,_Policy_Ids")) + names.join() + t("is_Assigned_on_Categories"));
