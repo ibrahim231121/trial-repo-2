@@ -31,13 +31,22 @@ const deleteUploadPolicies = () => {
       return data.id;
     });
     SetupConfigurationAgent.deleteAllUploadPoliciesTemplate(eventIds)
-    .then(() => {
+    .then(function(response:any){
+      let {AssignIdName,UnAssignsIds} = response;
+      if(AssignIdName.length > 0) {
+            let names = AssignIdName.map(function (x:any){
+              return x.name;
+            })
+            onMessageShow(false,t(("Unable_to_process_your_request,_Policy_Ids")) + names.join() + t("is_Assigned_on_Categories"));
+      }
+      if(UnAssignsIds.length > 0){
+        onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
+      }
       getRowData();
       getSelectedData();
-      onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
     })
-    .catch(function(error) {      
-      if(error?.response?.status === 405) {
+    .catch(function(error) {  
+      if(error) {
         onMessageShow(false,error?.response?.data?.toString());
         return error;
       }
@@ -97,7 +106,7 @@ const openCreateUploadPolicyForm = () => {
         ) : (
           <div></div>
           )}  
-        {selectedItems.length <=1 ? (
+        
       <MenuItem >
       <Restricted moduleId={0}>
         <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
@@ -110,9 +119,6 @@ const openCreateUploadPolicyForm = () => {
         </div>
         </Restricted>
       </MenuItem>
-      ) : (
-        <div></div>
-        )}  
     </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
 import { useHistory, useParams } from "react-router";
-import {  CRXModalDialog,CRXRadio,CRXButton, CRXConfirmDialog,CRXAlert,  CRXCheckBox, TextField, CRXHeading,NumberField } from "@cb/shared";
+import {  CRXModalDialog,CRXRadio,CRXButton, CRXConfirmDialog,CRXAlert,  CRXCheckBox, TextField, CRXHeading,NumberField,CRXToaster } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { DetailExpand,RetentionPoliciesModel } from '../TypeConstant/types';
 import { retentionTypeTimePeriod,retentionTypeDiskSpace } from '../TypeConstant/constants';
@@ -54,7 +54,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const [softDeleteTimeDays, setSoftDeleteTimeDays] = useState<number>(0);
     const [gracePeriodHours, setGracePeriodHours] = useState<number>(0); 
     
-    
     const [graceTotalPeriodHours, setGraceTotalPeriodHours] = useState<number>(0);
     const [retentionSize, setRetentionSize] = useState<number>(0);
     const [historyVersion, setHistoryVersion] = useState<string>("");
@@ -65,23 +64,17 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const [disableHours, setDisableHours] = useState(false);
     const [disableSoftDeleteTimeDays, setDisableSoftDeleteTimeDays] = useState(false);
     const [disableGracePeriodHours, setDisableGracePeriodHours] = useState(false);
+    const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
 
-  
     const [openModal, setOpenModal] = React.useState(false);
     const [isDeleted, setIsDeleted] = React.useState<boolean>(false);
     const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-
-    const [success, setSuccess] = React.useState<boolean>(false);
     const [retentionPolicy, setRetentionPolicies] = useState<RetentionPoliciesModel>(defaultRetentionPolicies);
-    
-   
     const [isOpen, setIsOpen] = React.useState(false);
     const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
     const isFirstRenderRef = useRef<boolean>(true);
     const deletedParamValuesIdRef = useRef<number[]>([]);
     const dataToEdit = useRef<RetentionPoliciesModel>(null);
-    const [error, setError] = React.useState<boolean>(false);
-    const [responseError, setResponseError] = React.useState<string>('');
     const history = useHistory();
     const dispatch = useDispatch();
     const regexForNumberOnly = new RegExp('^[0-9]+$');
@@ -89,18 +82,13 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
     const { t } = useTranslation<string>(); 
     const onRetentionTypeChange = (type:string) => {
         let isDiskSpace =(type == "Space");
-          
-     
         onSetDiskSpace(isDiskSpace);
         onSetTimePeriod(!isDiskSpace);
-        
-               
     }
     const onChangeRetentionType = (isDiskSpace:boolean) =>
     {
         if(isDiskSpace)
         {
-            
             setRetentionType(retentionTypeDiskSpace);
             setRetentionTimeDays(0);
             setRetentionHours(0); 
@@ -252,8 +240,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 setIsSaveDisable(true); 
             }
         }
-
-
     }, [name,retentionTimeDays,retentionHours,retentionSize])
 
 
@@ -261,8 +247,8 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
         dispatch(enterPathActionCreator({ val: "" }));
         return () => {
             dispatch(enterPathActionCreator({ val: "" }));
+            retentionMsgFormRef.current = null;
           }
-          
     },[])
 
     useEffect(() => {
@@ -354,21 +340,16 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             const urlEditRetentionPolicies = 'Policies/' + id  ;
             SetupConfigurationAgent.putRetentionPoliciesTemplate(urlEditRetentionPolicies,payload).then(()=>{        
                 setRetentionPolicies(defaultRetentionPolicies);           
-                setSuccess(true);
-                setError(false);
+                onMessageShow(true,t("Success_You_have_saved_the_Retention_Policy"));
                 dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
                     if (e.request.status == 409) {
-                        setError(true);
-                        setResponseError(
-                            "Duplicate Name is not allowed."
-                        );
+                        onMessageShow(false,t("Duplicate_Name_is_not_allowed"));
                     }
                     else{
-                        console.error(e.message);
-                        setError(false);
+                        onMessageShow(false,e.message.toString());
                         return e;
                     }
                 })
@@ -378,21 +359,17 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             const urlAddRetentionPolicies = 'Policies' ;
             SetupConfigurationAgent.postRetentionPoliciesTemplate(urlAddRetentionPolicies,payload).then(()=>{        
                 setRetentionPolicies(defaultRetentionPolicies);           
-                setSuccess(true);
-                setError(false);
+                onMessageShow(true,t("Success_You_have_saved_the_Retention_Policy"));
                 dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
                     if (e.request.status == 409) {
-                        setError(true);
-                        setResponseError(
-                            "Duplicate Name is not allowed."
-                        );
+                        onMessageShow(false,t("Duplicate_Name_is_not_allowed"));
                     }
                     else{
                         console.error(e.message);
-                        setError(false);
+                        onMessageShow(false,e.message.toString());
                         return e;
                     }
                 })
@@ -441,11 +418,28 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
           Name:"Space"
         }
       ];
-      
+
+      const RetentionFormMessages = (obj: any) => {
+        retentionMsgFormRef?.current?.showToaster({
+          message: obj.message,
+          variant: obj.variant,
+          duration: obj.duration,
+          clearButtton: true,
+        });
+      }
+    
+      const onMessageShow = (isSuccess:boolean,message: string) => {
+        RetentionFormMessages({
+          message: message,
+          variant: isSuccess? 'success' : 'error',
+          duration: 5000
+        });    
+      }
 
     return (
         
         <div className="retention-policies">
+            <CRXToaster ref={retentionMsgFormRef} />
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
@@ -457,24 +451,6 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 closeWithConfirm={closeWithConfirm} 
                                
                 >
-                {success && (
-                  <CRXAlert
-                    message={t("Success_You_have_saved_the_Retention_Policy")}
-                    alertType="toast"
-                    open={true}
-                  />
-                )}
-                {error && (
-                  <CRXAlert
-                    className=""
-                    message={responseError}
-                    type="error"
-                    alertType="inline"
-                    open={true}
-                  />
-                )}  
-
-              
                     <div className="settingsContent">
                      <span className="gridFilterTextBox"> 
 
