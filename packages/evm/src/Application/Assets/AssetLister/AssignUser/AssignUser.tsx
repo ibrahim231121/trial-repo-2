@@ -169,7 +169,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
       "/Evidences/" +
       `${props.rowData.evidence.id}` +
       "/assets/" +
-      `${props.rowData.assetId}`;
+      `${props.rowData.evidence.masterAssetId}`;
     EvidenceAgent.getAsset(url).then((response: any) => {
       let result = response.owners.map((x: CMTEntityRecord) => {
         let item: any = {
@@ -233,6 +233,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
     }
   };
 
+  
   const isNewlyAddedCategory = (label: string): boolean => {
     let removedValueWasSaved = props.rowData.categories.some(
       (x: any) => x === label
@@ -261,7 +262,7 @@ const AssignUser: React.FC<AssignUserProps> = (props) => {
         "/Evidences/" +
         `${props.rowData.id ? props.rowData.id : props.rowData.evidence.id}` +
         "/assets/" +
-        `${props.rowData.assetId}` +
+        `${props.rowData.evidence.masterAssetId}` +
         "/AssignUsersToAssets?IsChildAssetincluded=" +
         `${assignUserCheck}`;
       EvidenceAgent.addUsersToAsset(

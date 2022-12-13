@@ -34,6 +34,7 @@ import {
   CRXDataTable,
   CRXConfirmDialog,
   CRXTooltip,
+  CRXToaster,
   CBXLink
 } from "@cb/shared";
 
@@ -165,7 +166,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
   const [childFileData, setChildFileData] = React.useState<any[]>([]);
-
+  const targetRef = React.useRef<typeof CRXToaster>(null);
   const [evidence, setEvidence] = React.useState<EvidenceReformated>(evidenceObj);
   //const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
@@ -185,6 +186,8 @@ const AssetDetailsTemplate = (props: any) => {
   const [success, setSuccess] = React.useState<boolean>(false);
   const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [error, setError] = React.useState<boolean>(false);
+  const [GroupedFilesId, setGroupedFilesId] = React.useState<any[]>([]);
+
   const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [order] = React.useState<Order>("asc");
   const { t } = useTranslation<string>();
@@ -866,13 +869,27 @@ const AssetDetailsTemplate = (props: any) => {
     });
   }
 
-  const assetSelectionHanlder = (e: any) => {
+  const assetSelectionHanlder = (e: any, filesId: any) => {
     setIsChecked(e.target.checked)
-    setIsDisabled(!e.target.checked)
+    if(e.target.checked)
+    {    
+      setGroupedFilesId([...GroupedFilesId, {
+       filesId
+      }])
+    }
+    else
+    {
+      setGroupedFilesId(GroupedFilesId.filter((x: any) => x.filesId != filesId));
+    }
+    
   }
 
   useEffect(() => {
-    isChecked && setIsDisabled(false)
+    if(GroupedFilesId && GroupedFilesId.length > 0)
+        setIsDisabled(false)
+    else    
+        setIsDisabled(true)
+
   }, [isChecked, isDisabled])
 
   const downloadAuditTrail = () => {
@@ -976,6 +993,37 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }
 
+
+  const DownloadFile = () => {
+
+    GroupedFilesId.forEach((x: any) => {
+    FileAgent.getDownloadFileUrl(x.filesId)
+      .then((response) => {
+       downloadFileByURLResponse(response);
+      })
+      .catch(() => {
+        targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
+      });
+    })
+
+  }
+
+  const downloadFileByURLResponse = (url: string) => {
+    const link = document.createElement("a");
+    // Give url to link.
+    link.href = url;
+    //set download attribute to that link.
+    link.setAttribute("download", ``);
+    // Append to html link element page.
+    document.body.appendChild(link);
+    // start download.
+    link.click();
+    // Clean up and remove the link.
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+  };
+
   const reformatRowPropDataForActionMenu = (evidenceSearchObject: any): any => {
     let newObj: any = {};
     newObj.evidence = evidenceSearchObject;
@@ -1040,6 +1088,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
+          <CRXToaster ref={targetRef} />
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
         {/* <div className="asset_date_categories">
               <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
@@ -1198,7 +1247,7 @@ const AssetDetailsTemplate = (props: any) => {
 
           <CrxTabPanel value={value} index={1}>
             <div className="asset_export_button_group">
-              <button className="iconButton_global" disabled={isDisabled}>
+              <button className="iconButton_global"  disabled={isDisabled} onClick={() => DownloadFile()}>
                 <i className="far fa-download"></i>
                 Download
               </button>
@@ -1231,7 +1280,7 @@ const AssetDetailsTemplate = (props: any) => {
                                 checked={isChecked}
                                 lightMode={true}
                                 className='asse_detail_tab_checkBox '
-                                onChange={(e: any) => assetSelectionHanlder(e)}
+                                onChange={(e: any) => assetSelectionHanlder(e, asset.files[0].filesId)}
                               />
                             </div>
                             <div className="_detail_thumb_column">
