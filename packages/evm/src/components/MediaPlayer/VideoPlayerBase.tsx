@@ -1958,14 +1958,20 @@ const VideoPlayerBase = (props: any) => {
     const MainLayoutElement : undefined | any = document.querySelector("._bottom_arrow_seeMore");
     const _video_player_main_containers : any = document.querySelector("._video_player_layout_main")
     const _video_player_screens: undefined | any = document.querySelector("#video-player-screens");
+    const _videoPlayerId: undefined | any = document.querySelector("#crx_video_player");
+    const _video_Multiview_Grid : undefined | any = document.querySelector("._Multiview_Grid")
     if(targetId === "detail_view") {
       
       MainLayoutElement?.classList.add("lessMoreDetailView_arrow")
       MainLayoutElement.style.top = "115px";
       _video_player_main_containers.style.background = "#fff"
+      _videoPlayerId.style.background = "#fff"
+      _video_Multiview_Grid.style.background = "#fff"
       _video_player_screens.classList.add("removeEXHeight")
     }else {
       MainLayoutElement.classList.remove("lessMoreDetailView_arrow")
+      _videoPlayerId.style.background = "#000"
+      _video_Multiview_Grid.style.background = "#000"
       MainLayoutElement.style.top = "-16px";
       _video_player_screens.classList.remove("removeEXHeight")
     }

@@ -36,7 +36,7 @@
       .asset_group_tabs_data_row {
         display: grid;
         gap: 22px;
-        column-gap: 138px;
+        column-gap: 143px;
         grid-template-columns: auto auto;
         .asset_group_tabs_data_col {
           display: flex;
@@ -94,7 +94,7 @@
         padding-top: 0px;
         min-height: 30px;
         height: 30px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
         &::before {
           width: 100%;
           height: 25px;
@@ -161,6 +161,7 @@
     }
     div[id="crx-tabpanel-0"] {
       padding-left: 34px;
+      padding-bottom: 18px;
     }
     div[id="crx-tabpanel-1"] {
       padding-left: 34px;
@@ -169,7 +170,7 @@
     &.CRX_accordion_main {
       .cbxTabsContent {
         .MuiAccordionDetails-root {
-          padding: 45px 25px ;
+          padding: 45px 25px 75px ;
           ._detail_thumb_column {
               margin-top: -4px;
           }
@@ -196,7 +197,7 @@
         }
       }
       #crx-tabpanel-2 {
-        padding: 25px 30px 25px 35px;
+        padding: 25px 30px 21px 35px;
         .toolbar-button {
             margin-top: 17px;
             .auditTrailButton {

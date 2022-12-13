@@ -1128,10 +1128,10 @@ const AssetDetailsTemplate = (props: any) => {
             <div className="list_data">
               <Grid container spacing={0}>
                 <Grid item xs={4} className="list_para" >
-                  <div className="asset_MDI_label">{t("CheckSum")}</div>
+                  <div className="asset_MDI_label">{t("Checksum")}</div>
                 </Grid>
                 <Grid item xs={8} className="list_para">
-                  <div className="asset_MDI_data boldText asset_check_sum">&lt;{assetInfo.checksum}&gt;</div>
+                  <div className="asset_MDI_data boldText asset_check_sum">{assetInfo.checksum}</div>
                   <p className="list_Copy_text" onClick={() => { navigator.clipboard.writeText(assetInfo.checksum.toString()) }}>Copy</p>
                 </Grid>
 
@@ -1209,7 +1209,7 @@ const AssetDetailsTemplate = (props: any) => {
 
 
                 <Grid item xs={4} className="list_para">
-                  <div className="asset_MDI_label">{t("Upoaded")}</div>
+                  <div className="asset_MDI_label">{t("Uploaded")}</div>
                 </Grid>
                 <Grid item xs={8} className="list_para">
                   <div className="asset_MDI_data">{uploadedOn}</div>
