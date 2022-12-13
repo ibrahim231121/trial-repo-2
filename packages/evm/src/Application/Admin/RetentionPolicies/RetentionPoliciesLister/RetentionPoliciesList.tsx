@@ -231,8 +231,8 @@ const retentionFormMessages = (obj: any) => {
         return { 
             id: template.id,
             name:template.name ,
-            retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" :  getTimeSpaceValue(template.detail.limit.hours) ,
-            softDeleteTime: getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
+            retentionTimeOrSpace:  template.detail.limit.isInfinite == true? "" : template.detail.space > 0 ? template.detail.space + " GB" :  getTimeSpaceValue(template.detail.limit.hours) ,
+            softDeleteTime:  template.detail.space > 0 ? "" : getTimeSpaceValue(template.detail.limit.gracePeriodInHours) ,
             description: template.description , 
             isInfinite  : template.detail.limit.isInfinite          
 

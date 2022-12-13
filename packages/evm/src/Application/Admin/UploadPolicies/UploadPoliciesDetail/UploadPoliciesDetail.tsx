@@ -106,6 +106,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         dispatch(enterPathActionCreator({ val: "" }));
         return () => {
             dispatch(enterPathActionCreator({ val: "" }));
+            uploadMsgFormRef.current = null;
           }
     },[])
 
@@ -685,7 +686,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                         onClick={onAddUploadPolicyDetail}
                         color='primary'
                         variant='contained'
-                    > {t("Add_data_permissions")}
+                    > {t("Add_policy_rules")}
                     </CRXButton>
                 </div>
             </div>

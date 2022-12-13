@@ -332,15 +332,6 @@ iframe {
   
   }
   
-  .UploadPoliciesTable_UI  {
-    table {
-      thead {
-        &:nth-child(2) {
-          display: none;
-        }
-      }
-    }
-  }
 
   .policy {
     .toasterContent {
