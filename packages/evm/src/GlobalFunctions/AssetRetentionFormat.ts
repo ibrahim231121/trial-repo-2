@@ -12,12 +12,27 @@ const CalculateRetentionSpan = (expiration: moment.Moment): string => {
         const diffInHours =   expiration.diff(now, 'hours') - (diffInDays * 24);
         // const diffDuration: any = moment.duration(diff);
         let differenceInString = "";
-        if (diffInDays > 0 )
-            differenceInString = diffInDays + " Day(s) ";
-        if (diffInHours > 0)
-            differenceInString = differenceInString + diffInHours + " Hour(s) ";
-        if(diffInHours < 0){
-            differenceInString = differenceInString + "1" + " Hour(s) ";
+        let years, months, days: number;
+        switch (true) {
+            case diffInDays > 365:
+                years = Math.floor(diffInDays / 365);
+                months = Math.floor(diffInDays % 365 / 30);
+                differenceInString = years + " Year(s) " + " " + months + " Month(s)";
+                break;
+            case diffInDays < 365 && diffInDays > 30:
+                months = Math.floor(diffInDays % 365 / 30);
+                days = Math.floor(diffInDays % 365 % 30);
+                differenceInString = months + " Month(s)" + " " + days + " Day(s)"
+                break;
+            case diffInDays < 30 && diffInDays > 0:
+                differenceInString = diffInDays + " Day(s) " + " " + diffInHours + " Hour(s) "
+                break;
+            case diffInDays <= 0 && diffInHours > 0:
+                differenceInString = diffInHours + " Hour(s) "
+                break;
+
+            default:
+                differenceInString = " 1 Hour(s) "
         }
 
         return differenceInString;
