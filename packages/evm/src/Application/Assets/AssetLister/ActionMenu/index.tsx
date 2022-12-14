@@ -278,15 +278,18 @@ const ActionMenu: React.FC<Props> = React.memo(
       }
       const evidenceId = row.evidence.id;
       let assetId: number;
+      let assetName: string;
       if (actionMenuPlacement === ActionMenuPlacement.AssetDetail) {
         assetId = row.evidence.asset[0].assetId;
+        assetName = row.evidence.asset[0].assetName;
       } else {
         assetId = row.assetId;
+        assetName = row.assetName;
       }
       const fileType = MetadataFileType.PDF;
       EvidenceAgent.ExportEvidence(evidenceId, assetId, fileType)
         .then((response) => {
-          downloadFileByFileResponse(response, assetId);
+          downloadFileByFileResponse(response, assetName);
         })
         .catch(() => {
           showToastMsg?.({
@@ -459,10 +462,10 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     const downloadFileByFileResponse = (
       response: AxiosResponse,
-      assetId: number
+      assetName: string
     ) => {
       let fileStream = response.data;
-      const fileName = `${assetId}_Metadata.pdf`;
+      const fileName = `${assetName}_Metadata.pdf`;
       const blob = new Blob([fileStream], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
