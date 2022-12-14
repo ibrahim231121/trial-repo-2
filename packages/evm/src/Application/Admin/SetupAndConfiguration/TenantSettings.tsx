@@ -60,6 +60,11 @@ const TenantSettings: React.FC = () => {
     CustomPort: "",
     CustomName: "",
     CustomPassword: "",
+    URL: "",
+    FromEmail: "",
+    Port: "",
+    Name: "",
+    Password: "",
     MesaurementUnit: "",
     AlertEmails: "",
     fileDetails: [],
@@ -148,11 +153,21 @@ const TenantSettings: React.FC = () => {
       values.CustomPort = defaultMailSettings.server?.port;
       values.CustomName = defaultMailSettings.name;
       values.CustomPassword = defaultMailSettings.credential?.password;
-     
+      values.URL="";
+      values.FromEmail="";
+      values.Port="";
+      values.Name="";
+      values.Password="";
     }).catch((e : any)=> {
       console.log("ERORRR : "+ e.message);
     });
-      values.MailServer = "Default";
+    }
+    else {
+      values.CustomURL=values.URL;
+      values.CustomFromEmail = values.FromEmail;
+      values.CustomPort = values.Port;
+      values.CustomName = values.Name;
+      values.CustomPassword = values.Password;
     }
     if (
       values.TimeFormat != "AM/PM" &&
@@ -282,6 +297,32 @@ const TenantSettings: React.FC = () => {
           TenantTypeId: 2,
           key: "CustomPassword",
           value: values.CustomPassword,
+        },
+
+        {
+          TenantTypeId: 2,
+          key: "URL",
+          value: values.URL,
+        },
+        {
+          TenantTypeId: 2,
+          key: "FromEmail",
+          value: values.FromEmail,
+        },
+        {
+          TenantTypeId: 2,
+          key: "Port",
+          value: values.Port,
+        },
+        {
+          TenantTypeId: 2,
+          key: "Name",
+          value: values.Name,
+        },
+        {
+          TenantTypeId: 2,
+          key: "Password",
+          value: values.Password,
         },
         {
           TenantTypeId: 5,
@@ -450,7 +491,7 @@ const TenantSettings: React.FC = () => {
     TenantName: Yup.string().required("Tenant Name is required"),
     EmailLinkExpiration: Yup.number().min(1).max(2016),
     AlertEmails: Yup.string().email("Invalid Email"),
-    CustomFromEmail: Yup.string().when("MailServer", {
+    FromEmail: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string()
         .email("Must be a valid email")
@@ -462,7 +503,7 @@ const TenantSettings: React.FC = () => {
       then: Yup.array().min(1, "Reasons are required"),
       otherwise: Yup.array(),
     }),
-    CustomURL: Yup.string().when("MailServer", {
+    URL: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string()
         .trim()
@@ -470,17 +511,17 @@ const TenantSettings: React.FC = () => {
         .required("URL is required"),
       otherwise: Yup.string(),
     }),
-    CustomName: Yup.string().when("MailServer", {
+    Name: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string().required("User name is required"),
       otherwise: Yup.string(),
     }),
-    CustomPassword: Yup.string().when("MailServer", {
+    Password: Yup.string().when("MailServer", {
       is: "Custom",
       then: Yup.string().required("Password is required"),
       otherwise: Yup.string(),
     }),
-    CustomPort: Yup.number().when("MailServer", {
+    Port: Yup.number().when("MailServer", {
       is: "Custom",
       then: Yup.number()
         .max(99999, "Cannnot be more than 5 characters")
@@ -681,12 +722,12 @@ const TenantSettings: React.FC = () => {
                               <label htmlFor="CustomURL">
                                 SMTP Mail Server
                               </label>
-                              <Field id="CustomURL" name="CustomURL" />
-                              {errors.CustomURL !== undefined &&
-                              touched.CustomURL === true ? (
+                              <Field id="URL" name="URL" />
+                              {errors.URL !== undefined &&
+                              touched.URL === true ? (
                                 <div className="errorTenantStyle">
                                   <i className="fas fa-exclamation-circle"></i>
-                                  {errors.CustomURL}
+                                  {errors.URL}
                                 </div>
                               ) : (
                                 <></>
@@ -695,19 +736,19 @@ const TenantSettings: React.FC = () => {
                           </CRXRows>
                           <CRXRows>
                             <div className="CBX-input">
-                              <label htmlFor="CustomFromEmail">
+                              <label htmlFor="FromEmail">
                                 From Email
                               </label>
                               <Field
-                                id="CustomFromEmail"
+                                id="FromEmail"
                                 type="Email"
-                                name="CustomFromEmail"
+                                name="FromEmail"
                               />
-                              {errors.CustomFromEmail !== undefined &&
-                              touched.CustomFromEmail === true ? (
+                              {errors.FromEmail !== undefined &&
+                              touched.FromEmail === true ? (
                                 <div className="errorTenantStyle">
                                   <i className="fas fa-exclamation-circle"></i>
-                                  {errors.CustomFromEmail}
+                                  {errors.FromEmail}
                                 </div>
                               ) : (
                                 <></>
@@ -716,13 +757,13 @@ const TenantSettings: React.FC = () => {
                           </CRXRows>
                           <CRXRows>
                             <div className="CBX-input">
-                              <label htmlFor="CustomPort">Port</label>
-                              <Field id="CustomPort" name="CustomPort" />
-                              {errors.CustomPort !== undefined &&
-                              touched.CustomPort === true ? (
+                              <label htmlFor="ort">Port</label>
+                              <Field id="Port" name="Port" />
+                              {errors.Port !== undefined &&
+                              touched.Port === true ? (
                                 <div className="errorTenantStyle">
                                   <i className="fas fa-exclamation-circle"></i>
-                                  {errors.CustomPort}
+                                  {errors.Port}
                                 </div>
                               ) : (
                                 <></>
@@ -731,22 +772,31 @@ const TenantSettings: React.FC = () => {
                           </CRXRows>
                           <CRXRows>
                             <div className="CBX-input">
-                              <label htmlFor="CustomName">Username</label>
-                              <Field id="CustomName" name="CustomName" />
+                              <label htmlFor="Name">Username</label>
+                              <Field id="Name" name="Name" />
+                              {errors.Name !== undefined &&
+                              touched.Name === true ? (
+                                <div className="errorTenantStyle">
+                                  <i className="fas fa-exclamation-circle"></i>
+                                  {errors.Name}
+                                </div>
+                              ) : (
+                                <></>
+                              )}
                             </div>
                           </CRXRows>
                           <CRXRows>
                             <div className="CBX-input">
-                              <label htmlFor="CustomPassword">Password</label>
+                              <label htmlFor="Password">Password</label>
                               <TextField id="password"
                             type={passwordVisible ? "text" : "password"}
                             placeholder={
-                              passwordVisible? values.CustomPassword:
-                              values.CustomPassword.length > 0?
-                              new Array(values.CustomPassword.length + 1).join("*") : "0"
+                              passwordVisible? values.Password:
+                              values.Password.length > 0?
+                              new Array(values.Password.length + 1).join("*") : ""
                               }
-                            name="CustomPassword"
-                            onChange={(e: any) => setFieldValue("CustomPassword", e.target.value)}>
+                            name="Password"
+                            onChange={(e: any) => setFieldValue("Password", e.target.value)}>
                             
                           </TextField>
                               {/* <Field
