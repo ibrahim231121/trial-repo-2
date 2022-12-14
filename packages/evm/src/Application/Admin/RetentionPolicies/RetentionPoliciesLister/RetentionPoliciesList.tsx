@@ -80,19 +80,23 @@ const RetentionPoliciesList: React.FC = () => {
   const { getModuleIds} = useContext(ApplicationPermissionContext);
   useEffect(() => {
     if(paging)
-      setRetentionPoliciesData()
+      dispatch(getAllRetentionPoliciesFilter(pageiGrid));
     setPaging(false)
   },[pageiGrid])
 
   useEffect(() => {
     setPageiGrid({...pageiGrid, page:page, size:rowsPerPage}); 
     setPaging(true)
-    
   },[page, rowsPerPage])
 
   useEffect(() => {
-    setRetentionPoliciesData();
-    isFirstRenderRef.current = false;
+    document
+      .querySelector(".footerDRP")
+      ?.closest(".MuiMenu-paper")
+      ?.classList.add("MuiMenu_Modal_Ui");
+  });
+
+  useEffect(() => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "RetentionPoliciesTemplateDataTable");
@@ -247,10 +251,6 @@ const retentionFormMessages = (obj: any) => {
   React.useEffect(() => {
     setRetentionPoliciesData();
   }, [filterRetentionPolicies?.data]);
-
-  React.useEffect (() => {
-    dispatch(getAllRetentionPoliciesFilter(pageiGrid));
-  },[])
 
   const getSelectedItemsUpdate = () => {
     setSelectedItems([]);
