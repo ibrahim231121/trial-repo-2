@@ -498,8 +498,10 @@ const User: React.FC = () => {
   };
 
   useEffect(() => {
-    if(searchData.length > 0)
+    if(searchData.length > 0){
+      getFilteredUserData()
       setIsSearchable(true)
+    }
   }, [searchData]);
 
   useEffect(() => {
@@ -523,6 +525,7 @@ const User: React.FC = () => {
           )
         );
         setSearchData((prevArr) => [...prevArr, newItem]);
+        handleBlur()
       } else
         setSearchData((prevArr) =>
           prevArr.filter(
