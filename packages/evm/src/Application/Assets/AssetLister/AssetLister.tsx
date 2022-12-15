@@ -1,6 +1,6 @@
 import React from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
-import { CRXButton, CRXRows, CRXColumn } from '@cb/shared';
+import { CRXButton, CRXRows, CRXColumn,CRXAlert  } from '@cb/shared';
 import AdvanceOption from './AdvanceOption';
 import MasterMain from './AssetDataTable';
 import jwt_decode from "jwt-decode";
@@ -103,6 +103,8 @@ const SearchComponent = (props: any) => {
       filter: []
     },
   };
+  const [isEmptySearch,setIsEmptySearch] = React.useState<boolean>(false);
+  const [searchResult,setSearchResult] = React.useState<boolean>(false)
 
   const shortcutData = [
     {
@@ -123,12 +125,16 @@ const SearchComponent = (props: any) => {
       text: t("Not_Categorized"),
       query: () => queries.GetAssetsUnCategorized(dateTimeDropDown.startDate, dateTimeDropDown.endDate, decoded),
       renderData: function () {
+        setDateOptionType(dateOptionsTypes.basicoptions);
         setQuerryString(evidenceSearchType.NotCategorized);
+        let categorydateValue = dateOptions.basicoptions.find(x => x.value === (dateTimeDropDown.displayText != "anytime" ? basicDateDefaultValue : dateTimeDropDown.displayText));
+        if(categorydateValue != null)
+        fetchData(queries.GetAssetsUnCategorized(categorydateValue.startDate(), categorydateValue.endDate(), decoded), SearchType.ShortcutSearch,evidenceSearchType.NotCategorized);
         setPredictiveText(evidenceSearchType.NotCategorized);
-        fetchData(this.query(), SearchType.ShortcutSearch,evidenceSearchType.NotCategorized);
         setDateTimeAsset(dateTimeDropDown);
         setShowAssetDateCompact(true);
         setIsSearchBtnDisable(false);
+        setShowShortCutSearch(false);
         setAdvanceSearch(false);
       },
     },
@@ -234,6 +240,22 @@ const SearchComponent = (props: any) => {
   },[searchData])
 
   React.useEffect(() => {
+    if(isEmptySearch && searchData.length === 0){
+      setSearchResult(true)
+      setAdvanceSearch(true)
+      setShowShortCutSearch(true);
+    }
+    else if(searchData.length !== 0){
+      setShowShortCutSearch(false);
+      setAdvanceSearch(false)
+      setSearchResult(false)
+    }
+    else{
+      setSearchResult(false)
+    }
+  },[isEmptySearch,searchData])
+
+  React.useEffect(() => {
     let obj: any = {};
     if (addvancedOptions && addvancedOptions.options) {
       obj = addvancedOptions.options.map((x: any) => {
@@ -298,7 +320,6 @@ const SearchComponent = (props: any) => {
   }, [addvancedOptions]);
 
   
-
   React.useEffect(() => {
     if (responseForSearch.length > 0) {
       
@@ -340,7 +361,6 @@ const SearchComponent = (props: any) => {
   }, [dateTimeDropDown]);
 
   const Search = () => {
-    
     if (querryString && querryString.length > 0 && querryString.includes("#")) {
       if (querryString.startsWith("#")) {
         let exactShortCutName = querryString.substring(1);
@@ -348,7 +368,6 @@ const SearchComponent = (props: any) => {
         if (shortCut) {
           shortCut.renderData();
         } else {
-          
           setSearchData([]);
           
         }
@@ -399,6 +418,8 @@ const SearchComponent = (props: any) => {
   }
 
   const fetchData = (querry: any, searchValue: any,searchValueType: any) => {
+    setIsEmptySearch(true);
+    setSearchResult(false)
     dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchValue }));
     dispatch(getAssetSearchNameAsync({ QUERRY: QUERRY,dateTime: dateTimeDropDown,searchType: searchValueType }));
     
@@ -526,6 +547,15 @@ const SearchComponent = (props: any) => {
             </div>
           </>
         )}
+
+         <CRXAlert
+                    className=""
+                    message={t("No_Assets_found._Try_modifying_your_search_or_reach_out_to_your_admin_with_questions_on _permissions.")}
+                    type="info"
+                    alertType="inline"
+                    open={searchResult}
+                  />
+
         {(searchData.length > 0) && (
           <div className='dataTabAssets dataTabAssets_table'>
             <MasterMain
