@@ -128,6 +128,8 @@ export const resources = {
         "Back":"Back",
         "Required":"Required",
         "Category_Forms":"Category Forms",
+        "Create_Category_Forms":"Create Category Forms",
+        "Edit_Category_Forms":"Edit Category Forms",
         "is_required":"is required",
         "Category_form":"Category form",
         "Edit_category":"Edit category",
@@ -468,8 +470,12 @@ export const resources = {
         "Upload_Policies": "Upload Policies",
         "Upload_Policies_Form": "Upload Policies Form",
         "Are_you_sure_you_would_like_to_delete_upload_policies?":"Are you sure you would like to delete upload policies?",
-       
-
+        "Create_Category": "Create Category",
+        "Create_Category_Form": "Create Category Form",
+        "Category_Name" : "Category name",
+        "Evidence_Retention_Policy" : "Evidence Retention Policy",
+        "Upload_Policy" : "Upload Policy",
+        "Edit_Category" : "Edit Category",
         // ---------------------------------
         
         // --------- Asset buctet ----------

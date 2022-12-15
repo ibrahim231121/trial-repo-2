@@ -13,14 +13,40 @@ export const getAllRetentionPoliciesFilter: any = createAsyncThunk(
     }
 );
 
+export const getAllRetentionPolicies: any = createAsyncThunk(
+    'getAllRetentionPolicies',
+    async () => {
+        return SetupConfigurationAgent.getAllPoliciesByType('DataRetention')
+            .then((response: any) => response)
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
+    }
+);
+
+export const getAllUploadPolicies: any = createAsyncThunk(
+    'getAllUploadPolicies',
+    async () => {
+        return SetupConfigurationAgent.getAllPoliciesByType('DataUpload')
+            .then((response: any) => response)
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
+    }
+);
+
 export const retentionPoliciesSlice = createSlice({ 
     name: 'retentionPoliciesForm',
-    initialState: { retentioPolicies: [], filterRetentionPolicies: [] },
+    initialState: { retentioPolicies: [], filterRetentionPolicies: [], getAllRetentionPolicies : [], getAllUploadPolicies : [] },
     reducers: {},
     extraReducers: (builder) => {
         builder
         .addCase(getAllRetentionPoliciesFilter.fulfilled, (state: any, {payload}) => {
             state.filterRetentionPolicies = payload;
+        }).addCase(getAllRetentionPolicies.fulfilled, (state: any, {payload}) => {
+            state.getAllRetentionPolicies = payload;
+        }).addCase(getAllUploadPolicies.fulfilled, (state: any, {payload}) => {
+            state.getAllUploadPolicies = payload;
         })
     }
 });

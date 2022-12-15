@@ -209,6 +209,16 @@ const CRXLefNavigation = () => {
           moduleIds: 0,
           label: t('Upload_Policies'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.uploadPolicies)[0].url) },
+        },
+        {
+          moduleIds: 53,
+          label: t('Categories'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.categories)[0].url) },
+        },
+        {
+          moduleIds: 55,
+          label: t('Category_Forms'),
+          command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.categoryForms)[0].url) },
         }
       ],
     },

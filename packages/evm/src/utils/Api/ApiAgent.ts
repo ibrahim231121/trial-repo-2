@@ -1,7 +1,7 @@
 import { MaxRetentionPolicyDetail } from './../../Application/Assets/AssetLister/Category/Model/MaxRetentionPolicyDetail';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
-import { Category, Forms } from './models/CategoryModels';
+import { Category, CategoryModel } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
 import { CRXLoader } from "@cb/shared"
 import jwt_decode from 'jwt-decode';
@@ -187,6 +187,9 @@ const requests = {
 }
 export const SetupConfigurationAgent = {
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
+    postCategories: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    putCategories: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    getSingleCategory: (id : number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -210,6 +213,9 @@ export const SetupConfigurationAgent = {
     getAllFiltersRetentionPolicies: (url: string, extraHeader?: Headers[]) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataRetention/${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
+    getAllPoliciesByType: (type: string) => {
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/${type}`, config);
+    },
     putRetentionPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postRetentionPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteAllUploadPoliciesTemplate: (body: number[]) => requests.post<void>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/", body, config),
@@ -221,8 +227,15 @@ export const SetupConfigurationAgent = {
     },
     putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
-
-
+    getAllFiltersCategories: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
+    getAllFiltersCategoryFroms: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
+    getAllCategoryFroms: (url: string) => {
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms${url}`, config);
+    },
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
@@ -334,8 +347,6 @@ export const UnitsAndDevicesAgent = {
     getDeviceType: (url: string) => requests.get<DeviceType>(BASE_URL_UNIT_SERVICES, "/DeviceTypes/" + url, config),
     postUpdateDefaultUnitTemplate: (body: DefaultUnitTemplate[]) => requests.post<void>(BASE_URL_UNIT_SERVICES, "/Stations/DefaultUnitTemplate", body, config),
     getAllCaptureDevices: () => requests.get<CaptureDevice[]>(BASE_URL_UNIT_SERVICES, "/CaptureDevices", config),
-
-
     getAllUnitStatusKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitVersionKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitTemplateKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),

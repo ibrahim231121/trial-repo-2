@@ -43,7 +43,6 @@ const UserGroup: React.FC = () => {
   const { t } = useTranslation<string>();
   const dispatch = useDispatch();
   let history = useHistory();
-  
 
   React.useEffect(() => {
     // dispatch(getGroupAsync(pageiGrid));
@@ -112,7 +111,7 @@ const UserGroup: React.FC = () => {
 
   React.useEffect(() => {
     setData();
-  }, [groups.data]);
+  }, [groups?.data]);
 
   React.useEffect(() => {
     if(paging){
@@ -376,7 +375,7 @@ const UserGroup: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage= {(page:any) => setPage(page)}
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
-            totalRecords={groups.totalCount}
+            totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
              //Please dont miss this block.
             offsetY={-22}
