@@ -65,7 +65,7 @@ const deleteConfirm = () => {
 
 const openCreateRetentionPoliciesForm = () => {
     
-  onClickOpenModel(true,Number( row?.id),"Edit Retention Policy") ;
+  onClickOpenModel(true, Number( row?.id),"Edit Retention Policy") ;
       
   };
 

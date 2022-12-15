@@ -1,0 +1,323 @@
+import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
+import { useDispatch, useSelector } from "react-redux";
+import CategoryFormsTemplateActionMenu from './CategoryFormsTemplateActionMenu';
+import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
+import './categoryFormsList.scss'
+import { RootState } from "../../../../Redux/rootReducer";
+import { CRXButton, CRXDataTable, CRXToaster } from "@cb/shared";
+import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
+
+import {
+  SearchObject,
+  ValueString,
+  HeadCellProps,
+  onResizeRow,
+  Order,
+  onSetSingleHeadCellVisibility,
+  onSetSearchDataValue,
+  onClearAll,
+  onSetHeadCellVisibility,
+  onSaveHeadCellData,
+  PageiGrid,
+  onTextCompare
+} from "../../../../GlobalFunctions/globalDataTableFunctions";
+import { getAllCategoriesFilter } from '../../../../Redux/Categories';
+import Restricted from "../../../../ApplicationPermission/Restricted";
+import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
+
+
+
+type CategoryFormsTemplate = {
+  id: number;
+  name: string;
+  description: string;
+}
+
+const ORDER_BY = "asc" as Order;
+const ORDER_BY_PARAM = "recordingStarted";
+
+const CategoryFormsList: React.FC = () => {
+  const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
+  const { t } = useTranslation<string>();
+  const [id, setId] = React.useState<number>(0);
+  const [title, setTitle] = React.useState<string>("");
+  const [rows, setRows] = React.useState<CategoryFormsTemplate[]>([]);
+  const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
+  const [selectedItems, setSelectedItems] = React.useState<CategoryFormsTemplate[]>([]);
+  const [selectedActionRow, setSelectedActionRow] = useState<CategoryFormsTemplate[]>();
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [page, setPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
+  const [paging, setPaging] = React.useState<boolean>();
+  const [openModel, setOpenModel] = React.useState<boolean>(false);
+
+  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
+    gridFilter: {
+      logic: "and",
+      filters: []
+    },
+    page: page,
+    size: rowsPerPage
+  })
+  const dispatch = useDispatch();
+  const isFirstRenderRef = useRef<boolean>(true);
+  const [reformattedRows, setReformattedRows] = React.useState<CategoryFormsTemplate[]>([]);
+  const filterCategoryForms: any = useSelector((state: RootState) => state.CategoryFormSlice.filterCategoryForms);
+  
+  useEffect(() => {
+    if (paging)
+      setCategoryForms()
+    setPaging(false)
+  }, [pageiGrid])
+
+  useEffect(() => {
+    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
+    setPaging(true)
+
+  }, [page, rowsPerPage])
+
+  useEffect(() => {
+    setCategoryForms();
+    isFirstRenderRef.current = false;
+    let headCellsArray = onSetHeadCellVisibility(headCells);
+    setHeadCells(headCellsArray);
+    onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
+    dispatch(enterPathActionCreator({ val: "" }));
+  }, []);
+
+  const retentionFormMessages = (obj: any) => {
+    retentionMsgFormRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+  const onChange = (valuesObject: ValueString[], colIdx: number) => {
+    headCells[colIdx].headerArray = valuesObject;
+    onSelection(valuesObject, colIdx);
+  }
+
+  const onSelection = (v: ValueString[], colIdx: number) => {
+    if (v.length > 0) {
+      for (let i = 0; i < v.length; i++) {
+        let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
+        setSearchData((prevArr) =>
+          prevArr.filter(
+            (e) => e.columnName !== headCells[colIdx].id.toString()
+          )
+        );
+        setSearchData((prevArr) => [...prevArr, searchDataValue]);
+      }
+    } else {
+      setSearchData((prevArr) =>
+        prevArr.filter(
+          (e) => e.columnName !== headCells[colIdx].id.toString()
+        )
+      );
+    }
+  }
+
+  const searchText = (
+    rowsParam: CategoryFormsTemplate[],
+    headCell: HeadCellProps[],
+    colIdx: number
+  ) => {
+    return (
+      <TextSearch headCells={headCell} colIdx={colIdx} onChange={(valueObject) => onChange(valueObject, colIdx)} />
+    );
+  };
+
+  const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
+    {
+      label: t("ID"),
+      id: "id",
+      align: "right",
+      dataComponent: () => null,
+      sort: false,
+      searchFilter: false,
+      searchComponent: () => null,
+      keyCol: true,
+      visible: false,
+      minWidth: "80",
+      width: "100",
+      maxWidth: "150",
+    },
+    {
+      label: `${t("Category_Name")}`,
+      id: "name",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: false,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "300",
+      width: "926",
+      maxWidth: "800"
+    },
+    {
+      label: `${t("Description")}`,
+      id: "description",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: false,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "300",
+      width: "926",
+      maxWidth: "800"
+    }
+  ]);
+
+  const setCategoryForms = () => {
+    let CategoryFormTemplateRows: CategoryFormsTemplate[] = [];
+
+    if (filterCategoryForms?.data && filterCategoryForms?.data.length > 0) {
+      CategoryFormTemplateRows = filterCategoryForms?.data.map((template: any) => {
+        return {
+          id: template.id,
+          name: template.name,
+          description: template.description
+        }
+      })
+    }
+
+    setRows(CategoryFormTemplateRows);
+    setReformattedRows(CategoryFormTemplateRows)
+  }
+
+  const dataArrayBuilder = () => {
+    let dataRows: CategoryFormsTemplate[] = reformattedRows;
+    searchData.forEach((el: SearchObject) => {
+      dataRows = onTextCompare(dataRows, headCells, el);
+    });
+    setRows(dataRows);
+  };
+
+  React.useEffect(() => {
+    setCategoryForms();
+  }, [filterCategoryForms?.data]);
+
+  React.useEffect(() => {
+    dispatch(getAllCategyFormsFilter(pageiGrid));
+  }, [])
+
+  useEffect(() => {
+    dataArrayBuilder();
+  }, [searchData]);
+
+  const getSelectedItemsUpdate = () => {
+    setSelectedItems([]);
+  }
+
+  const getSuccessUpdate = () => {
+    setSuccess(true);
+  }
+
+  const CategoriesAction = () => {
+    dispatch(getAllCategoriesFilter(pageiGrid));
+  }
+
+  const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
+    let headCellReset = onResizeRow(e, headCells);
+    setHeadCells(headCellReset);
+  };
+
+  const clearAll = () => {
+    pageiGrid.gridFilter.filters = []
+    dispatch(getAllCategoriesFilter(pageiGrid));
+    setSearchData([]);
+    let headCellReset = onClearAll(headCells);
+    setHeadCells(headCellReset);
+  };
+
+  const onSetHeadCells = (e: HeadCellProps[]) => {
+    let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
+    setHeadCells(headCellsArray);
+
+  };
+
+  const onClickOpenModel = (modelOpen: boolean, id: number, title: string) => {
+    setId(id);
+    setTitle(title);
+    setOpenModel(modelOpen);
+  }
+
+  const onMessageShow = (isSuccess: boolean, message: string) => {
+    retentionFormMessages({
+      message: message,
+      variant: isSuccess ? 'success' : 'error',
+      duration: 7000
+    });
+  }
+
+  return (
+    <div className="CrxCategoriesTable switchLeftComponents">
+      <CRXToaster ref={retentionMsgFormRef} />
+      {
+        rows && (
+          <CRXDataTable
+            id="CategoriesTemplateDataTable"
+            actionComponent={<CategoryFormsTemplateActionMenu
+              row={selectedActionRow}
+              selectedItems={selectedItems}
+              getRowData={CategoriesAction}
+              getSelectedData={getSelectedItemsUpdate}
+              getSuccess={getSuccessUpdate}
+              onClickOpenModel={onClickOpenModel}
+              onMessageShow={onMessageShow}
+            />}
+            toolBarButton={
+              <>
+                <Restricted moduleId={0}>
+
+                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category_Forms")) }}>
+                    {t("Create_Category_Forms")}
+                  </CRXButton>
+                </Restricted>
+              </>
+            }
+            showTotalSelectedText={false}
+            showToolbar={true}
+            showCountText={false}
+            columnVisibilityBar={false}
+            showCustomizeIcon={false}
+            getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
+            dataRows={rows}
+            headCells={headCells}
+            orderParam={ORDER_BY}
+            orderByParam={ORDER_BY_PARAM}
+            dragVisibility={false}
+            showCheckBoxesCol={false}
+            showActionCol={true}
+            searchHeader={true}
+            allowDragableToList={false}
+            showActionSearchHeaderCell={true}
+            className="crxTableHeight crxTableDataUi CategoriesTableTemplate CategoriesTable_UI"
+            onClearAll={clearAll}
+            getSelectedItems={(v: CategoryFormsTemplate[]) => setSelectedItems(v)}
+            onResizeRow={resizeRowConfigTemp}
+            onHeadCellChange={onSetHeadCells}
+            setSelectedItems={setSelectedItems}
+            selectedItems={selectedItems}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            setPage={(pages: any) => setPage(pages)}
+            setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
+            totalRecords={filterCategoryForms?.totalCount}
+            //Please dont miss this block.
+            offsetY={20}
+            dragableHeaderPosition={207}
+            topSpaceDrag={5}
+          //End here
+          />
+
+        )
+      }
+    </div>
+  );
+};
+
+export default CategoryFormsList;

@@ -43,6 +43,8 @@ import UploadPoliciesDetail from "./Application/Admin/UploadPolicies/UploadPolic
 import UploadPoliciesList from './Application/Admin/UploadPolicies/UploadPoliciesLister/UploadPoliciesList';
 
 import RetentionPoliciesList from './Application/Admin/RetentionPolicies/RetentionPoliciesLister/RetentionPoliciesList';
+import CategoriesList from "./Application/Admin/Categories/CategoriesLister/CategoriesList";
+import CategoryFormsList from "./Application/Admin/CategoryForms/CategoryFormsLister/CategoryFormsList";
 
 
 
@@ -126,7 +128,8 @@ const Routes = () => {
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPoliciesEdit)[0].url}  exact={true} component={UploadPoliciesDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPoliciesCreate)[0].url}  exact={true} component={UploadPoliciesDetail} />
               <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.uploadPolicies)[0].url}  exact={true} component={UploadPoliciesList} />
-              
+              <PrivateRoute moduleId={53} path={urlList.filter((item:any) => item.name === urlNames.categories)[0].url}  exact={true} component={CategoriesList} />
+              <PrivateRoute moduleId={55} path={urlList.filter((item:any) => item.name === urlNames.categoryForms)[0].url}  exact={true} component={CategoryFormsList} />
 
               <Route path="/token/:token" exact={true} component={Token} />
 

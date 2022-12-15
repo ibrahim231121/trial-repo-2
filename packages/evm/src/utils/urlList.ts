@@ -74,10 +74,11 @@ export const urlNames: any = {
     sensorsAndTriggersEdit: "sensorsAndTriggersEdit",
     singleLiveView:'singleLiveView',
     retentionPolicies: 'retentionPolicies',
-    
     uploadPolicies: 'uploadPolicies',
     uploadPoliciesCreate: 'uploadPoliciesCreate',
     uploadPoliciesEdit: "uploadPoliciesEdit",
+    categories : 'categories',
+    categoryForms : 'categoryForms',
 };
 
 export const urlList: any = [
@@ -394,4 +395,20 @@ export const urlList: any = [
             { routeTo: '/admin/uploadPolicies', type: 'link', label: 'Upload Policies' },
         ],
     },
+    {
+        name: urlNames.categories,
+        url: "/admin/categories",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categories', type: 'text', label: 'Categories' }
+        ],
+    },
+    {
+        name: urlNames.categoryForms,
+        url: "/admin/categoryForms",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categoryForms', type: 'text', label: 'Category Forms' }
+        ],
+    }
 ];
