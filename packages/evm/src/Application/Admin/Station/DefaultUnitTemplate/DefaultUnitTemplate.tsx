@@ -26,8 +26,8 @@ const DefaultUnitTemplate: React.FC = () => {
     const [confirmModalDisplay, setConfirmModalDisplay] = React.useState<boolean>(false);
     const [success, setSuccess] = React.useState<boolean>(false);
     const [error, setError] = React.useState<boolean>(false);
-    const [page, setPage] = React.useState<number>(1);
-    const [rowsPerPage, setRowsPerPage] = React.useState<number>(1000);
+    const [page, setPage] = React.useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
     const [paging, setPaging] = React.useState<boolean>();
     const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
         gridFilter: {
@@ -41,8 +41,7 @@ const DefaultUnitTemplate: React.FC = () => {
     const dispatch = useDispatch();
     React.useEffect(() => {
         getDeviceTypeRecord();
-        getAllStationRecord();
-        if(!(configurationTemplatesFromStore) || Object.keys(configurationTemplatesFromStore).length === 0){
+        if (!(configurationTemplatesFromStore) || Object.keys(configurationTemplatesFromStore).length === 0) {
             dispatch(getConfigurationTemplatesAsync());
         }
     }, []);
@@ -105,8 +104,10 @@ const DefaultUnitTemplate: React.FC = () => {
     }, [deviceTypeCollection, selectBoxValues, stationCollection, configurationTemplatesFromStore]);
 
     React.useEffect(() => {
-        if (paging)
-            setPaging(false);
+        if (paging) {
+            getAllStationRecord();
+        }
+        setPaging(false);
     }, [pageiGrid]);
 
     React.useEffect(() => {
@@ -126,20 +127,20 @@ const DefaultUnitTemplate: React.FC = () => {
     }
 
     const getAllStationRecord = () => {
-        UnitsAndDevicesAgent.getAllStations(`?Page=${pageiGrid.page}&Size=${pageiGrid.size}`, [{key : 'InquireDepth', value : 'deep'}])
-        .then((response:any) => {
-            setStationCollection(response.data);
-            let stationInfo = response.data.map((x: any) => {
-                return {
-                    id: x.id,
-                    name: x.name
-                } as StationInfo 
-            }) as StationInfo[];
-            setStationDataTableRow(stationInfo)
-        })
-        .catch((error: any) => {
-            console.error(error.response.data);
-        }); 
+        UnitsAndDevicesAgent.getAllStations(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`, [{ key: 'InquireDepth', value: 'deep' }])
+            .then((response: any) => {
+                setStationCollection(response.data);
+                let stationInfo = response.data.map((x: any) => {
+                    return {
+                        id: x.id,
+                        name: x.name
+                    } as StationInfo
+                }) as StationInfo[];
+                setStationDataTableRow(stationInfo)
+            })
+            .catch((error: any) => {
+                console.error(error.response.data);
+            });
     }
 
     const manipulateSelectBoxValueResponse = (e: any, _stationId: number) => {
@@ -181,18 +182,18 @@ const DefaultUnitTemplate: React.FC = () => {
             });
             tempArrayToHoldState.push(...tempObjectForState);
         }
-        if(tempArrayToHoldState.length > 0)
-           setSelectBoxValues(tempArrayToHoldState);
+        if (tempArrayToHoldState.length > 0)
+            setSelectBoxValues(tempArrayToHoldState);
     }
 
     const saveBtnClickHandler = () => {
         UnitsAndDevicesAgent.postUpdateDefaultUnitTemplate(selectBoxValues).then(() => {
             setSuccess(true);
         })
-        .catch((error: any) => {
-            setError(true);
-            console.error(error.response.data);
-        });
+            .catch((error: any) => {
+                setError(true);
+                console.error(error.response.data);
+            });
     }
 
     const cancelBtnHandler = () => history.goBack();
