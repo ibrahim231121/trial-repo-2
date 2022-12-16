@@ -378,7 +378,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
       dataComponent: (event: any, evidence: any) => thumbTemplate(event, evidence),
       minWidth: "150",
       detailedDataComponentId: "evidence",
-      width: ""
     },
     {
       label: `${t("Asset_ID")}`,

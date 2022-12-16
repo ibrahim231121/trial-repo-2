@@ -408,7 +408,6 @@ const ConfigurationTemplates: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      maxWidth: "100",
     },
     {
       label: `${t("Name")}`,
@@ -419,8 +418,7 @@ const ConfigurationTemplates: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      maxWidth: "350",
+      minWidth: "460",
       detailedDataComponentId: "device",
       attributeName: "Name",
       attributeType: "String",
@@ -439,8 +437,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectStationCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "100",
-      maxWidth: "500",
+      minWidth: "400",
       detailedDataComponentId: "id",
       attributeName: "StationName",
       attributeType: "List",
@@ -459,8 +456,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectTypeCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "300",
-      maxWidth: "500",
+      minWidth: "400",
       attributeName: "DeviceType",
       attributeType: "List",
       attributeOperator: "contains"
@@ -468,7 +464,6 @@ const ConfigurationTemplates: React.FC = () => {
     {
       label: t("Default_Template"),
       id: "defaultTemplate",
-      width: "",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
@@ -479,8 +474,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectIndicatorCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "250",
-      maxWidth: "400",
+      minWidth: "300",
       attributeName: "IsDefaultTemplate",
       attributeType: "bool",
       attributeOperator: "eq"

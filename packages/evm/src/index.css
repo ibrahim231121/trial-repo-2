@@ -269,7 +269,10 @@ body {
   height: 53px;
   width: 100%;
   left: 7px;
-  z-index: 101;
+  z-index: 1100;
+}
+.stickyPos.dataTableStickyPos {
+  z-index: 1099;
 }
 
 .stickyPos:hover {
@@ -343,8 +346,8 @@ a::selection {
 
 .dragableCellCustomize {
   position: absolute;
-  left: 2px;
-  top: 21px;
+  left: 5px;
+  top: 14px;
   display: block;
 }
 
@@ -481,4 +484,20 @@ input:-webkit-autofill {
   text-indent: 25px;
   color: #333;
   white-space: nowrap;
+}
+.dataTableShowHideFilter .MuiTooltip-popper {
+  position: absolute !important;
+  transform: translate3d(15px, -43px, 0) !important;
+  top: auto !important;
+  left: 0 !important;
+  right: 0;
+  z-index: 1100;
+
+}
+.dataTableShowHideCustomizeColumn .MuiTooltip-popper  {
+  position: absolute !important;
+  transform: translate3d(-79px, -43px, 0) !important;
+  top: auto !important;
+  width: 158px;
+  z-index: 1100;
 }

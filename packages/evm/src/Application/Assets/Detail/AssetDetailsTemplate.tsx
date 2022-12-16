@@ -1166,7 +1166,7 @@ const AssetDetailsTemplate = (props: any) => {
                   <div className="asset_MDI_label">{t("Username")}</div>
                 </Grid>
                 <Grid item xs={8} className="list_para">
-                  <div className="asset_MDI_data">{assetInfo.owners.join(', ')}</div>
+                  <div className="asset_MDI_data">{assetInfo.owners.join(',')}</div>
                 </Grid>
 
 

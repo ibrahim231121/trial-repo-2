@@ -188,7 +188,7 @@ const DataTableCustomizeColumns: React.FC<DataTableCustomizeColumnsProps> = ({
   }, [customizeColumn]);
 
   return (
-    <div className="dataTableColumnShoHide">
+    <div className="dataTableColumnShoHide dataTableShowHideCustomizeColumn">
       
         <IconButton
           ref={anchorRef}

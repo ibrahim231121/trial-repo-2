@@ -23,7 +23,7 @@ const DataTableClearFilter: React.FC<DataTableClearFilterProps> = ({columnVisibi
   },[filterClose])
   
   return (
-    <div className="dataTableColumnShoHide">
+    <div className="dataTableColumnShoHide dataTableShowHideFilter">
         { columnVisibilityBar === true ? (
             <>
             <IconButton
