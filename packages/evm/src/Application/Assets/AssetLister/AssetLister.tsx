@@ -240,15 +240,25 @@ const SearchComponent = (props: any) => {
   },[searchData])
 
   React.useEffect(() => {
-    if(isEmptySearch && searchData.length === 0){
+    if(isEmptySearch && responseForSearch.length === 0){
       setSearchResult(true)
+    }
+    else if(responseForSearch.length !== 0){
+      setSearchResult(false)
+    }
+    else{
+      setSearchResult(false)
+    }
+  },[responseForSearch])
+
+  React.useEffect(() => {
+    if(isEmptySearch && searchData.length === 0){
       setAdvanceSearch(true)
       setShowShortCutSearch(true);
     }
     else if(searchData.length !== 0){
       setShowShortCutSearch(false);
       setAdvanceSearch(false)
-      setSearchResult(false)
     }
     else{
       setSearchResult(false)
