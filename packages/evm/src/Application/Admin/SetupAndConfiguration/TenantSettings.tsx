@@ -139,7 +139,7 @@ const TenantSettings: React.FC = () => {
     SetupConfigurationAgent.getTenantSettingTimezone()
       .then((timezone: any) => {
         const temp = timezone.map((x: any) => {
-          return { label: x.DisplayName, value: x.DisplayName };
+          return { label: x.DisplayName.slice(0,x.DisplayName.lastIndexOf(")")+1)+ " "+x.Id, value: x.Id };
         });
         setTimezoneValue(temp);
       })
