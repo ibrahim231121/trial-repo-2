@@ -35,7 +35,7 @@ const SearchComponent = (props: any) => {
   const cookies = new Cookies();
   let decoded: IDecoded = jwt_decode(cookies.get("access_token"));
   const [showAdvance, setShowAdvance] = React.useState(false);
-  const [showAdvanceSearch, setAdvanceSearch] = React.useState(true);
+  const [showAdvanceSearch, setAdvanceSearch] = React.useState(false);
   const [showShortCutSearch, setShowShortCutSearch] = React.useState(true);
   const [addvancedOptions, setAddvancedOptions] = React.useState<any>();
   const [dateOptionType, setDateOptionType] = React.useState(dateOptionsTypes.basicoptions);
@@ -253,7 +253,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if(isEmptySearch && searchData.length === 0){
-      setAdvanceSearch(true)
+      setAdvanceSearch(false)
       setShowShortCutSearch(true);
     }
     else if(searchData.length !== 0){
@@ -347,9 +347,9 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
-    window.scrollTo({ top: 693, behavior: "smooth" });
+    window.scrollTo({ top: 773, behavior: "smooth" });
    }else {
-    window.scrollTo({ top: 207, behavior: "smooth" });
+    window.scrollTo({ top: 293, behavior: "smooth" });
    }
     
   }, [searchData]);
@@ -558,14 +558,14 @@ const SearchComponent = (props: any) => {
           </>
         )}
 
-         <CRXAlert
+        {searchResult &&  <CRXAlert
                     className=""
                     message={t("No_Assets_found._Try_modifying_your_search_or_reach_out_to_your_admin_with_questions_on _permissions.")}
                     type="info"
                     alertType="inline"
                     open={searchResult}
                   />
-
+        }
         {(searchData.length > 0) && (
           <div className='dataTabAssets dataTabAssets_table'>
             <MasterMain

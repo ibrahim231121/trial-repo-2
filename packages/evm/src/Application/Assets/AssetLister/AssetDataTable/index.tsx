@@ -267,7 +267,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-    {console.log("dateOptionType", dateOptionType)}
+    
     return (
       <DateTimeComponent
         showCompact={showDateCompact}
@@ -594,6 +594,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
   return (
     <>
+    
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -630,10 +631,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={showAdvanceSearch == false ? 140 : 650}
-          searchHeaderPosition={showAdvanceSearch == false ? 221 : 889}
-          dragableHeaderPosition={showAdvanceSearch == false ? 178 : 889}
-          topSpaceDrag = {showAdvanceSearch == false ? 183 : 689}
+          offsetY={showAdvanceSearch == false ? 250 : 755}
+          topSpaceDrag = {showAdvanceSearch == false ? 290 : 799}
+          headerPositionInit={178}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}

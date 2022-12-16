@@ -54,7 +54,9 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   
   function createScrollStopListener(element : any, callback : any, timeout : number) {
     let handle: any = null;
-    const tbl : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    const tbl : any = document.getElementsByClassName('tableScrollValue')[0]
+    const table2 : any = document.getElementById("customizedStickyHeader");
+    const dataTable : any = document.getElementsByClassName('tableHeaderVisibility')[0];
     const onScroll = function() {
         
         if (handle) {
@@ -62,8 +64,11 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         }
         
         handle = setTimeout(callback, timeout || 200); // default 200 ms
+        table2.style.visibility = "visible"
         tbl && ( tbl.style.display = "inline-table")
-        offsetY && window.pageYOffset > offsetY && setWindScrollValue(searchHeaderPosition)
+        tbl && (dataTable.children[0].style.opacity = 0, dataTable.children[1].style.opacity = 0)
+        offsetY && window.pageYOffset > offsetY && setWindScrollValue(searchHeaderPosition); 
+        
     };
 
     element.addEventListener('scroll', onScroll);
@@ -73,12 +78,24 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   }
   
   useEffect(() => {
-    const tblBlock : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    const tblBlock : any = document.getElementsByClassName('tableScrollValue')[0]
+    const dataTableOnStop : any = document.getElementsByClassName('tableHeaderVisibility')[0];
+    const dataTableOnScroll : any = document.getElementById("customizedStickyHeader");
     let minSticky : any =  offsetY && (offsetY - 3)
+    if(window.pageYOffset == 0 ) {
+        dataTableOnScroll.style.visibility = "collapse"
+      }
     createScrollStopListener(window, function() {
+      dataTableOnScroll.style.visibility = "hidden"
+      tblBlock && (dataTableOnStop.children[0].style.opacity = 1, dataTableOnStop.children[1].style.opacity = 1)
       tblBlock && (tblBlock.style.display = "block")
       setWindScrollValue(window.pageYOffset - minSticky)
-    }, 300);
+      
+      if(window.pageYOffset == 0 ) {
+        dataTableOnScroll.style.visibility = "collapse"
+      }
+    },100);
+
   },[windScrollValue])
   
   return (

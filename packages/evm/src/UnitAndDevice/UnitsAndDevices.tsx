@@ -861,10 +861,9 @@ return (
           totalRecords={units.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
-          offsetY={-22}
-          searchHeaderPosition={233}
-          dragableHeaderPosition={190}
-          topSpaceDrag = {16}
+          offsetY={82}
+          headerPositionInit = {190}
+          topSpaceDrag = {126}
             //End here
           />
           )

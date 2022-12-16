@@ -727,11 +727,10 @@ const User: React.FC = () => {
           setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
           totalRecords={users.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
-           //Kindly add this block for sticky header Please dont miss it.
-           offsetY={-38}
-           searchHeaderPosition={250}
-           dragableHeaderPosition={207}
-           topSpaceDrag = {5}
+           //Please dont miss this block.
+           offsetY={74}
+           headerPositionInit={201}
+           topSpaceDrag = {114}
            //End here
         />
       )}

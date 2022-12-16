@@ -175,9 +175,8 @@ React.useEffect(() => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "100",
+      minWidth: "200",
       width: "100",
-      maxWidth: "300",
       detailedDataComponentId: "name",
       attributeName: "Name",
       attributeType: "String",
@@ -273,7 +272,11 @@ React.useEffect(() => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={209}
+             //Please dont miss this block.
+              offsetY={65}
+              headerPositionInit={210}
+              topSpaceDrag = {42}
+              //End here
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}

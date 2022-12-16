@@ -241,4 +241,11 @@ iframe {
         }
     }
 }
+
 // Asset Drag Ui end
+
+#customizedStickyHeader {
+    position: sticky;
+    overflow-x: hidden !important;
+    z-index: 102;
+}

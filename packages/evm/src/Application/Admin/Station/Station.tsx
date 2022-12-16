@@ -365,12 +365,11 @@ const Station: React.FC = () => {
           setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={stations.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
-          //Please dont miss this block.
-          offsetY={-30}
-          searchHeaderPosition={250}
-          dragableHeaderPosition={205}
-          topSpaceDrag = {8}
-          //End here
+           //Please dont miss this block.
+           offsetY={75}
+           headerPositionInit={206}
+           topSpaceDrag = {119}
+           //End here
         />
       )}
       

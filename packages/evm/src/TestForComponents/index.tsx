@@ -22,6 +22,7 @@ const TabsDemo = () => {
   }
   // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
+ 
   { value: 'The Shawshank Redemption', id: 1994 },
   { value: 'The Godfather', id: 1972 },
   { value: 'The Godfather: Part II', id: 1974 },
@@ -161,19 +162,17 @@ const onSelectedClear = () => {
 
           
       </div>
-      {/* <CBXMultiSelectForDatatable option={top100Films} multiple={true} defaultValue={defaultValue} styled="checkBox" /> */}
-
+      
       <div className='demoDiv'>
       <CBXMultiCheckBoxDataFilter 
       width = {300} 
       option={top100Films} 
       defaultValue={defaultValue} 
-      value={getVal} 
-      onChange={(e: any, value : any) => changeHanlder(e, value)}
+      onChange={setValues}
       onSelectedClear = {() => onSelectedClear()}
-      isCheckBox={false}
+      isCheckBox={true}
       multiple={true}
-      
+      selectAllLabel="All"
       />
       </div>
      

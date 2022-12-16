@@ -178,7 +178,7 @@
     }
   }
   .MuiTableHead-root {
-    height: 34px;
+    height: 39px;
   }
 }
 
@@ -637,4 +637,26 @@ thead {
 
 .userGroupfilterButton {
   top: -7px;
+}
+
+.cbxTabsContent {
+  .crxGroupTab1 {
+
+      .usersGroupDataTable {
+          display: inline-table !important;
+          position: sticky !important;
+      .CRXDataTableCustom {
+          thead {
+            &:nth-child(1) {
+              top: 44px !important;
+            }
+  
+            &:nth-child(2) {
+              top: 90px !important;
+            }
+          }
+        }
+      }
+    }
+  
 }

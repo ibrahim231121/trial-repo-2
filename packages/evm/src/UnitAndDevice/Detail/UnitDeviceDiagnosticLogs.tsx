@@ -131,8 +131,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "230",
-            maxWidth: "360",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -143,8 +142,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "230",
-            maxWidth: "360",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -155,8 +153,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "230",
-            maxWidth: "360",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -167,8 +164,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "325",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -179,8 +175,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -191,8 +186,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "180",
             visible: true,
         },
         {
@@ -203,8 +197,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "180",
             visible: true,
         },
     ]);
@@ -270,7 +263,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable usersGroupDataTable"
+                    className="ManageAssetDataTable usersGroupDataTable unitDeviceTabDataTable"
                     onClearAll={clearAll}
                     getSelectedItems={(v: UnitEvents[]) => setSelectedItems(v)}
                     onResizeRow={resizeRowUserTab}

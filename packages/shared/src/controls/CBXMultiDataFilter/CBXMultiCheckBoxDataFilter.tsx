@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import { ClickAwayListener } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -8,6 +8,7 @@ import Popper from '@material-ui/core/Popper';
 import Checkbox from '@material-ui/core/Checkbox';
 import styled from 'styled-components';
 import "./cbxCheckboxDataFilter.scss"
+import CRXTooltip from '../CRXTooltip/CRXTooltip';
 
 const selectStyled = makeStyles((_: Theme) =>
   createStyles({
@@ -246,27 +247,29 @@ interface LabelType {
 }
 
 type SelectProps = {
-    onChange: (e: any,value:any) => void;
-    value:any[];
+    onChange: (val : any) => void;
+    value?:any[];
     option : LabelType[];
     defaultValue ? : any;
     width : number;
     onSelectedClear : (e : any) => void,
     isCheckBox? : boolean,
 	  isduplicate? : boolean
-    multiple? : boolean
+    multiple? : boolean,
+    selectAllLabel? : string
 }
-export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, ...props} : SelectProps) {
+export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, value, option, defaultValue, onSelectedClear, isCheckBox, isduplicate, selectAllLabel, ...props} : SelectProps) {
   const classes = selectStyled();
   const selectClass = selectBoxStyled();
   const checkBoxClass = CheckBoxStyle()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [singleValue, setSingleValue] = useState<any>()
+  const [selectAllText, setAllselectText] = useState<any>("")
   const selectRefs = useRef(null)
   
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
   const checkedIcon = <i className="fa-light fa-square-check"></i>;
-  const tickMarked = <i className="fa-solid fa-check selectBox_Tick_Marked"></i>
+  //const tickMarked = <i className="fa-solid fa-check selectBox_Tick_Marked"></i>
 
  if(isduplicate) {
     let unique: any = option.map((x: any) => x);
@@ -304,14 +307,83 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
     }
   },[open])
   
+  //If now working will remove from here
+  const [selectedOptions, setSelectedOptions] = useState<any>([]);
+  const allSelected = option.length === selectedOptions.length;
+
+  const handleToggleOption = (selectedOptions : any) =>
+    setSelectedOptions(selectedOptions);
+  const handleClearOptions = () => setSelectedOptions([]);
+  const getOptionLabel = (option : any) => `${option.value}`;
+  const handleSelectAll = (isSelected : any) => {
+    if (isSelected) {
+      setSelectedOptions(option);
+    } else {
+      handleClearOptions();
+    }
+  };
+
+  const handleToggleSelectAll = () => {
+    handleSelectAll && handleSelectAll(!allSelected);
+  };
+
+  const handleChange = (_ : any, selectedOptions : any, reason : any) => {
+
+    if (reason === "select-option" || reason === "remove-option") {
+      if (selectedOptions.find((option : any) => option.value === selectAllLabel)) {
+        handleToggleSelectAll();
+        let result = [];
+        result = option.filter(el => el.value !== selectAllLabel);
+        setAllselectText(result)
+        return onChange(result);
+      } else {
+        handleToggleOption && handleToggleOption(selectedOptions);
+        return onChange(selectedOptions);
+      }
+    } else if (reason === "clear") {
+      handleClearOptions && handleClearOptions();
+    }
+  };
+  const optionRenderer = (option : any, { selected } : any) => {
+    const selectAllProps =
+      option.value === selectAllLabel // To control the state of 'select-all' checkbox
+        ? { checked: allSelected }
+        : {};
+    return (
+      <>
+
+            <Checkbox
+              icon={icon}
+              checkedIcon={checkedIcon}
+              style={{ marginRight: 10 }}
+              checked={selected}
+              disableRipple
+              className="select_checkbox"
+              classes = {{
+                ...checkBoxClass
+              }}
+              {...selectAllProps}
+            />
+            {getOptionLabel(option)}
+      
+      </>
+    );
+  };
+  const inputRenderer = (params : any) => (
+    <TextField className={'select_Checkbox_input_field ' + `${ selectedOptions.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params} variant="outlined" />
+  );
+  const getOptionSelected = (option: any, selectedOptions: any) =>
+    option.value === selectedOptions.value;
+
+  const filter = createFilterOptions()
   return (
     <ClickAwayListener onClickAway={OnCloseHandler}>
     <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
-    {console.log("value", value)}
+    
     <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
-        
-        {value.length > 0 && multiple == true && singleValue ?
-        <SingleTag label={singleValue[0].value} /> : "" }
+        {console.log("selectAllText", selectAllText)}
+        {selectedOptions.length > 0 && multiple == true && singleValue && allSelected == false ?
+        <SingleTag label={singleValue[0].value} /> : <SingleTag label={selectedOptions.length > 0 && selectAllLabel} /> }
 
          <InnerButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
           <i className="fa-solid fa-sort-down"></i>
@@ -326,12 +398,28 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
       
     </ClickInput>
     
-    {value && value.length > 1 && open == false || value.length > 1 && open === true ?  
+    {selectedOptions.length > 1 && selectedOptions.length !== option.length && open == false || selectedOptions.length > 1 && open === true && selectedOptions.length !== option.length ?  
     <OverlayWraper> 
         <SelectButton onClick={(e : React.MouseEvent<HTMLElement>) => handleClick(e)}>
-            <i className='fas fa-filter'></i>
+        <CRXTooltip
+          className="bucketIcon"
+          title="filter"
+          iconName="fas fa-filter"
+          placement="top"
+          arrow={false}
+          id=""
+        ></CRXTooltip>
         </SelectButton>  
-        <SelectButton onClick={(e : any) => onSelectedClear(e)}><i className="icon icon-cross2"></i></SelectButton>  
+        <SelectButton onClick={(_ : any) => handleClearOptions()}>
+          <CRXTooltip
+            className="bucketIcon"
+            title="clear"
+            iconName="icon icon-cross2"
+            placement="top"
+            arrow={false}
+            id=""
+          ></CRXTooltip>
+        </SelectButton>  
     </OverlayWraper>
     : ""}
     
@@ -353,50 +441,51 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
         onClose={OnCloseHandler}
         id="multiple-tags_checkbox"
         options={option}
-        onChange={(e,value) => {
-            return onChange(e,value);
-        }}
+        onChange={handleChange}
         className="data_filter_select_list_checkbox"
         classes = {{
             ...selectClass
         }}
         filterSelectedOptions={false}
         size="medium"
-        value={value}
-        getOptionLabel={(option) => option.value}
+        value={selectedOptions}
+        getOptionLabel={getOptionLabel}
         defaultValue={ defaultValue }
         disableCloseOnSelect={true}
-        getOptionSelected={(option: any, value: any) =>
-          option.value == value.value
-        }
-        renderOption={(option, { selected }) => (
+        getOptionSelected={getOptionSelected}
+        filterOptions={(options, params) => {
+          const filtered = filter(options, params);
           
-          <React.Fragment>
-            {isCheckBox == true ?
-            <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 10 }}
-              checked={selected}
-              disableRipple
-              className="select_checkbox"
-              classes = {{
-                ...checkBoxClass
-              }}
-            />
-            : tickMarked}
-            {option.value}
-          </React.Fragment>
-        )}
+          return [{ label: selectAllLabel, value: selectAllLabel }, ...filtered];
+        }}
+        renderOption = {optionRenderer}
+        
+        // renderOption={(option, { selected }) => (
+          
+        //   <React.Fragment>
+        //     {isCheckBox == true ?
+        //     <Checkbox
+        //       icon={icon}
+        //       checkedIcon={checkedIcon}
+        //       style={{ marginRight: 10 }}
+        //       checked={selected}
+        //       disableRipple
+        //       className="select_checkbox"
+        //       classes = {{
+        //         ...checkBoxClass
+        //       }}
+        //     />
+        //     : tickMarked}
+        //     {option.value}
+        //   </React.Fragment>
+        // )}
         renderTags={(tagValue, getTagProps) => {
           setSingleValue(tagValue)
           return tagValue.map((option, index) => (
             <Tag {...getTagProps({ index })} label={option.value} />
           ));
         }}
-        renderInput={(params) => (
-          <TextField className={'select_Checkbox_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params} variant="outlined" />
-        )}
+        renderInput={inputRenderer}
       />
       
       </Popper>
