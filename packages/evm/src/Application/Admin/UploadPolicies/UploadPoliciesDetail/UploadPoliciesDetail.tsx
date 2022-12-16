@@ -191,8 +191,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     response.dataUploadPolicyTypes.forEach((item: any) => {
         let uploadPolicyDetailObj = {} as UploadPolicyDetailModel;
         uploadPolicyDetailObj.id = item.id;
-        console.log(item,"item")
-        console.log(uploadPolicyDetailDropdownDataRef.current.assetTypeList,"uploadPolicyDetailDropdownDataRef.current.assetTypeList")
         let assetTypeId: any = uploadPolicyDetailDropdownDataRef.current.assetTypeList.find((val: any) => val.displayText == item.typeOfAsset)?.value ?? -1;
         let assetUploadPriorityId: any = uploadPolicyDetailDropdownDataRef.current.assetUploadPriorityList.find((val: any) => (val.displayText == item.priority) ? val.value : 0);            
 
