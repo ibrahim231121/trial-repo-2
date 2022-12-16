@@ -243,7 +243,6 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                            <div style={{
                             width:`${OnResizeHeader(headCells[colIdx].id)}`,
                            }}></div>
-                           {console.log("No record found", orderColumn)}
                           </TableCell>
                         ))
                       

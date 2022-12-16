@@ -148,6 +148,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [isMetaDataOpen, setIsMetaDataOpen] = React.useState<boolean>(false);
   const [isFileUploadHide, setIsFileUploadHide] = useState<boolean>(false);
   const [fileToRemove, setFileToRemove] = React.useState<string>("");
+  const [isMessageRedisplay, setMessageRedisplay] = React.useState<boolean>(false);
+ 
   //--for asset upload
   const dispatch = useDispatch()
 
@@ -155,7 +157,13 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     // on load check asset bucket exists in local storage
     dispatch(loadFromLocalStorage());
     setCheckedAll(false)
-    uploadInfoFromLocalStorage();
+    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+    uploadInfoFromLocalStorage(uploadItem);
+    if(uploadItem.length>0)
+    {
+      setMessageRedisplay(true);
+    }
+ 
   }, []);
 
   window.onbeforeunload = () => {
@@ -163,9 +171,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       return "";
     }
   }
-  const uploadInfoFromLocalStorage = () => {
-
-    var uploadItem = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+  const uploadInfoFromLocalStorage = (uploadItem:any) => {   
 
     if (uploadItem.length > 0) {
 
@@ -242,7 +248,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       if (assetBucketData.length > prevCount && isBucket == "True") {
         localStorage.setItem("isBucket", "False");
         showToastMsg()
-
       }
       else
         if (assetBucketData.length < prevCount) {
@@ -264,7 +269,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
               .format("YYYY / MM / DD HH:mm:ss"),
           };
           dispatch(addNotificationMessages(notificationMessage));
-
         }
   }, [assetBucketData]);
 
@@ -437,7 +441,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     e.target.value = null;
   }
   const handleOnUpload = async (e: any) => {
-
+    setMessageRedisplay(false)
     var av = [];
     for (let i = 0; i < e.target.files.length; i++) {
       let fileName = e.target.files[i].name.replaceAll(' ', '_');
@@ -581,7 +585,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       });
   }
 
-
+  
   let firstExecution = 0; // Store the first execution time
   const interval = 7000; // 7 seconds
   const onFileUploadError = () => {
@@ -734,10 +738,14 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
 
   useEffect(() => {
-    if (totalFilePer === 100) {
+    if (totalFilePer === 100 ) {
+     
+      if(!isMessageRedisplay)
+      {
       toasterRef.current.showToaster({
         message: t("File(s) uploaded"), variant: "success", duration: 7000, clearButtton: true
       });
+    }
       if (isCheckTrue) {
         setIsMainProgressBarOpen(false);
         setIsFileUploadHide(false)
@@ -1027,6 +1035,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   const [activeScreen, setActiveScreen] = useState<number>(0);
   const checkBoxRef = useRef(null);
+
   const selectAssetFromList = (e: any, row: SearchModel.Asset) => {
     if (!e.target.checked)
       setCheckedAll(false)
@@ -1034,7 +1043,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     /*
     * * Change made to tackle situation, in which it is mandatory to select checkbox.  
     */
-    setSelectedItems([...selectedItems, row]);
+    //setSelectedItems([...selectedItems, row]);
+
     if (e.target.checked)
       setSelectedItems((prevArr) => [...prevArr, row]);
     else
@@ -1057,8 +1067,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     })
     if (isCheckedAll)
       setSelectedItems(setSelectFill);
-
-    isCheckedAll == true ? setSelectedItems(setSelectFill) : setSelectedItems([])
   }, [isCheckedAll]);
 
   const OfflineOnlineStatus = () => {

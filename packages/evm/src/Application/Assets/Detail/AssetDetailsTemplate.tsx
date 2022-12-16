@@ -71,7 +71,7 @@ const AssetDetailsTemplate = (props: any) => {
   let evidenceId: number = historyState.evidenceId;
   let assetId: string = historyState.assetId;
   let assetName: string = historyState.assetName;
-  const evidenceSearchObject: any = historyState.evidenceSearchObject;
+
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const detail_view = React.useRef(null);
@@ -1026,7 +1026,8 @@ const AssetDetailsTemplate = (props: any) => {
 
   const reformatRowPropDataForActionMenu = (evidenceSearchObject: any): any => {
     let newObj: any = {};
-    newObj.evidence = evidenceSearchObject;
+    newObj.assetId = evidenceSearchObject.assetId;
+    newObj.evidence = evidenceSearchObject.evidenceSearchObject;
     return newObj;
   }
 
@@ -1096,7 +1097,7 @@ const AssetDetailsTemplate = (props: any) => {
             </div> */}
         {/** maria told me the its not showing here its should be come in meta data see panel */}
         <ActionMenu
-          row={reformatRowPropDataForActionMenu(evidenceSearchObject)}
+          row={reformatRowPropDataForActionMenu(historyState)}
           actionMenuPlacement={ActionMenuPlacement.AssetDetail}
         />
 
