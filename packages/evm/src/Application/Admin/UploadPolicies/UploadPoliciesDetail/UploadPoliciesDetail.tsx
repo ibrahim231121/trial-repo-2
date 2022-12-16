@@ -27,7 +27,7 @@ const defaultValidationModel: UploadPolicyDetailValidationModel = {
 const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const defaultUploadPolicyDetail = {
         id: 0,
-        assetType: { value: 0, displayText: "" },
+        assetType: { value: -1, displayText: "" },
         uploadType: { value: 0, displayText: "" },
         metadataUploadConnection: [],
         assetUploadPriority: { value: 0, displayText: "" },
@@ -191,11 +191,13 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     response.dataUploadPolicyTypes.forEach((item: any) => {
         let uploadPolicyDetailObj = {} as UploadPolicyDetailModel;
         uploadPolicyDetailObj.id = item.id;
-        let assetTypeId: any = uploadPolicyDetailDropdownDataRef.current.assetTypeList.find((val: any) => (val.displayText == item.typeOfAsset) ? val.value : 0);
+        console.log(item,"item")
+        console.log(uploadPolicyDetailDropdownDataRef.current.assetTypeList,"uploadPolicyDetailDropdownDataRef.current.assetTypeList")
+        let assetTypeId: any = uploadPolicyDetailDropdownDataRef.current.assetTypeList.find((val: any) => val.displayText == item.typeOfAsset)?.value ?? -1;
         let assetUploadPriorityId: any = uploadPolicyDetailDropdownDataRef.current.assetUploadPriorityList.find((val: any) => (val.displayText == item.priority) ? val.value : 0);            
 
         uploadPolicyDetailObj.assetType = {
-            value: assetTypeId.value,
+            value: assetTypeId,
             displayText: item.typeOfAsset
         };
         uploadPolicyDetailObj.uploadType = {
@@ -246,7 +248,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         let isDisable = false;       
 
         uploadPolicyDetail.forEach((obj) => {
-            if(obj.assetType.value > 0 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
+            if(obj.assetType.value > -1 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
                 && obj.assetUploadConnection.length > 0 ) {
                 setIsAddUploadPolicyDetailDisable(false);
             } else{
@@ -298,7 +300,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         (parameters[idx][field] as SelectBoxType).value = parseInt(e.target.value);
     
         if (parameters[idx] != null) {
-            if (parameters[idx].assetType.value > 0 && parameters[idx].uploadType.value > 0 
+            if (parameters[idx].assetType.value > -1 && parameters[idx].uploadType.value > 0 
                 && parameters[idx].metadataUploadConnection.length > 0 && parameters[idx].assetUploadPriority.value > 0 
                 && parameters[idx].assetUploadConnection.length > 0 ) {
                 isFirstRenderRef.current = false;
@@ -313,7 +315,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         (parameters[idx][field] as SelectConnectionLevel[]) = values;
     
         if (parameters[idx] != null) {
-            if (parameters[idx].assetType.value > 0 && parameters[idx].uploadType.value > 0 
+            if (parameters[idx].assetType.value > -1 && parameters[idx].uploadType.value > 0 
                 && parameters[idx].metadataUploadConnection.length > 0 && parameters[idx].assetUploadPriority.value > 0 
                 && parameters[idx].assetUploadConnection.length > 0 ) {
                 isFirstRenderRef.current = false;
@@ -584,7 +586,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                             <CRXSelectBox
                                                 className="select-box"
                                                 id={`upload-policy-detail-type-${idx}`}
-                                                value={uploadPolicyDetail.assetType.value > 0 ? uploadPolicyDetail.assetType.value : defaultType}
+                                                value={uploadPolicyDetail.assetType.value > -1 ? uploadPolicyDetail.assetType.value : defaultType}
                                                 onChange={(e: any) => onUploadPolicyDetailChange(e, idx, 'assetType')}
                                                 options={uploadPolicyDetailDropdownData.assetTypeList}
                                                 icon={true}
@@ -666,7 +668,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                         </CRXColumn>
                                         <CRXColumn className="uploadPolicyDetailBtnRemove" container item xs={3} spacing={0}>
                                             {
-                                                uploadPolicyDetail.assetType.value > 0 &&
+                                                uploadPolicyDetail.assetType.value > -1 &&
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveUploadPolicyDetail(idx)}
