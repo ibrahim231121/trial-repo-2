@@ -321,6 +321,7 @@
 }
 
 .checkedDataTable {
+  z-index: 9999;
   .MuiPopover-paper {
     max-width: 550px;
     padding: 15px 25px 8px 25px;
