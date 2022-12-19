@@ -187,7 +187,7 @@ const AssetDetailsTemplate = (props: any) => {
   const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [error, setError] = React.useState<boolean>(false);
   const [GroupedFilesId, setGroupedFilesId] = React.useState<any[]>([]);
-
+  const [fileState, setFileState] = React.useState<string>("");
   const [errorMessage, setErrorMessage] = React.useState<string>('');
   const [order] = React.useState<Order>("asc");
   const { t } = useTranslation<string>();
@@ -403,7 +403,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type != "GPS" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == "Video" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -462,26 +462,31 @@ const AssetDetailsTemplate = (props: any) => {
         camera: getAssetData?.assets?.master?.camera ?? ""
       });
       const data = extract(getAssetData);
-      if (data[0]?.id != parseInt(assetId)) {
-        let updatedData = data.filter(x => x.id == parseInt(assetId));
-        updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetId))]
-        setVideoPlayerData(updatedData);
-      }
-      else {
-        setVideoPlayerData(data);
+      if (fileState != "Deleted") { // File state from Azure deleted - do not render video player - page crashes - ad hoc fix - need to show pop up 
+        if (data[0]?.id != parseInt(assetId)) {
+          let updatedData = data.filter(x => x.id == parseInt(assetId));
+          updatedData = [...updatedData, ...data.filter(x => x.id != parseInt(assetId))]
+          setVideoPlayerData(updatedData);
+        }
+        else {
+          setVideoPlayerData(data);
+        }
       }
     }
   }, [getAssetData, fileData, childFileData]);
 
   function getMasterAssetFile(dt: any) {
     dt?.map((template: any, i: number) => {
+      var responseResult: any = null;
       FileAgent.getFile(template.filesId).then((response) => {
+        setFileState(response.state)
         if (template.type != "GPS") {
           let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
           setUploadedOn(uploadCompletedOnFormatted)
         }
       });
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
+
         if (template.type == "GPS") {
           setGpsFileData([...gpsFileData, {
             filename: template.name,
@@ -685,6 +690,7 @@ const AssetDetailsTemplate = (props: any) => {
         ended: new Date(new Date(template.recording?.ended).getTime() + template.buffering?.post),
         started: new Date(new Date(template.recording?.started).getTime() - template.buffering?.pre),
       }
+
       return {
         id: template.id,
         files: childFileData,
@@ -697,7 +703,7 @@ const AssetDetailsTemplate = (props: any) => {
         name: template.name,
         notes: template.notes ?? [],
         camera: template.camera,
-        status: template.files[0]?.filesId > 0 ? "Available" : ""
+        status: template.status
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {
@@ -871,24 +877,22 @@ const AssetDetailsTemplate = (props: any) => {
 
   const assetSelectionHanlder = (e: any, filesId: any) => {
     setIsChecked(e.target.checked)
-    if(e.target.checked)
-    {    
+    if (e.target.checked) {
       setGroupedFilesId([...GroupedFilesId, {
-       filesId
+        filesId
       }])
     }
-    else
-    {
+    else {
       setGroupedFilesId(GroupedFilesId.filter((x: any) => x.filesId != filesId));
     }
-    
+
   }
 
   useEffect(() => {
-    if(GroupedFilesId && GroupedFilesId.length > 0)
-        setIsDisabled(false)
-    else    
-        setIsDisabled(true)
+    if (GroupedFilesId && GroupedFilesId.length > 0)
+      setIsDisabled(false)
+    else
+      setIsDisabled(true)
 
   }, [isChecked, isDisabled])
 
@@ -997,13 +1001,13 @@ const AssetDetailsTemplate = (props: any) => {
   const DownloadFile = () => {
 
     GroupedFilesId.forEach((x: any) => {
-    FileAgent.getDownloadFileUrl(x.filesId)
-      .then((response) => {
-       downloadFileByURLResponse(response);
-      })
-      .catch(() => {
-        targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
-      });
+      FileAgent.getDownloadFileUrl(x.filesId)
+        .then((response) => {
+          downloadFileByURLResponse(response);
+        })
+        .catch(() => {
+          targetRef.current.showToaster({ message: t("Unable_to_download_file"), variant: 'error', duration: 5000, clearButtton: true });
+        });
     })
 
   }
@@ -1069,7 +1073,8 @@ const AssetDetailsTemplate = (props: any) => {
       return <>
         <div className="_player_video_uploading">
           <div className="layout_inner_container">
-            {assetInfo.id && <div className="text_container_video">Evidence is not available, Uploading is in progress!</div>}
+            {/* Please make error message dynamic */}
+            {assetInfo.id && <div className="text_container_video">Evidence is not available!</div>}
             <div className="_empty_arrow_seeMore">
               {detailContent == false ?
                 <button id="seeMoreButton" className="_empty_content_see_mot_btn seeMoreButton" onClick={(e: any) => gotoSeeMoreView(e, "detail_view")} data-target="#detail_view">
@@ -1089,7 +1094,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
-          <CRXToaster ref={targetRef} />
+      <CRXToaster ref={targetRef} />
       <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
         {/* <div className="asset_date_categories">
               <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
@@ -1248,7 +1253,7 @@ const AssetDetailsTemplate = (props: any) => {
 
           <CrxTabPanel value={value} index={1}>
             <div className="asset_export_button_group">
-              <button className="iconButton_global"  disabled={isDisabled} onClick={() => DownloadFile()}>
+              <button className="iconButton_global" disabled={isDisabled} onClick={() => DownloadFile()}>
                 <i className="far fa-download"></i>
                 Download
               </button>
@@ -1272,75 +1277,75 @@ const AssetDetailsTemplate = (props: any) => {
 
                   {assetsList.filter(x => x.id != parseInt(assetId)).map((asset: any, index: number) => {
 
-                      var lastChar = asset.name.substr(asset.name.length - 4);
-                      return (
-                        <>
-                          <div className="asset_group_tabs_data_col" key={index}>
-                            <div className="_detail_checkBox_column">
-                              <CRXCheckBox
-                                checked={isChecked}
-                                lightMode={true}
-                                className='asse_detail_tab_checkBox '
-                                onChange={(e: any) => assetSelectionHanlder(e, asset.files[0].filesId)}
-                              />
-                            </div>
-                            <div className="_detail_thumb_column">
-                              <AssetThumbnail
-                                assetType={asset.typeOfAsset}
-                                className={"CRXPopupTableImage  CRXPopupTableImageUi"}
-                                onClick={() => newRound(asset.id, asset.name)}
-                              />
-                            </div>
-                            <div className="_asset_detail_link_meta">
-                              <Link
-                                className="linkColor"
-                                onClick={refresh}
-                                to={{
-                                  pathname: "/assetdetail",
-                                  state: {
-                                    evidenceId: evidenceId,
-                                    assetId: asset.id,
-                                    assetName: asset.name,
-                                  },
-                                }}>
+                    var lastChar = asset.name.substr(asset.name.length - 4);
+                    return (
+                      <>
+                        <div className="asset_group_tabs_data_col" key={index}>
+                          <div className="_detail_checkBox_column">
+                            <CRXCheckBox
+                              checked={isChecked}
+                              lightMode={true}
+                              className='asse_detail_tab_checkBox '
+                              onChange={(e: any) => assetSelectionHanlder(e, asset.files[0].filesId)}
+                            />
+                          </div>
+                          <div className="_detail_thumb_column">
+                            <AssetThumbnail
+                              assetType={asset.typeOfAsset}
+                              className={"CRXPopupTableImage  CRXPopupTableImageUi"}
+                              onClick={() => newRound(asset.id, asset.name)}
+                            />
+                          </div>
+                          <div className="_asset_detail_link_meta">
+                            <Link
+                              className="linkColor"
+                              onClick={refresh}
+                              to={{
+                                pathname: "/assetdetail",
+                                state: {
+                                  evidenceId: evidenceId,
+                                  assetId: asset.id,
+                                  assetName: asset.name,
+                                },
+                              }}>
 
-                                <div id="middletruncate" data-truncate={lastChar}>
-                                  {asset.name}
-                                </div>
-
-                                {/* <div>{asset.name}</div> */}
-
-
-                              </Link>
-
-                              <div className="timeLineLister">
-                                {asset.camera !== undefined &&
-                                  asset.camera !== null &&
-                                  asset.camera !== "" ? (
-                                  <div>
-                                    <label className="CRXPopupDetailFontSize">
-                                      {asset.camera}
-                                    </label>
-                                  </div>
-                                ) : (
-                                  <div className="_asset_video_type_detail">
-                                    <label className="CRXPopupDetailFontSize">
-                                      {asset.typeOfAsset}
-                                    </label>
-                                  </div>
-                                )}
-                                <label className="CRXPopupDetailFontSize">
-                                  {asset.recording && dateDisplayFormat(asset.recording.started)}
-                                </label>
+                              <div id="middletruncate" data-truncate={lastChar}>
+                                {asset.name}
                               </div>
 
+                              {/* <div>{asset.name}</div> */}
+
+
+                            </Link>
+
+                            <div className="timeLineLister">
+                              {asset.camera !== undefined &&
+                                asset.camera !== null &&
+                                asset.camera !== "" ? (
+                                <div>
+                                  <label className="CRXPopupDetailFontSize">
+                                    {asset.camera}
+                                  </label>
+                                </div>
+                              ) : (
+                                <div className="_asset_video_type_detail">
+                                  <label className="CRXPopupDetailFontSize">
+                                    {asset.typeOfAsset}
+                                  </label>
+                                </div>
+                              )}
+                              <label className="CRXPopupDetailFontSize">
+                                {asset.recording && dateDisplayFormat(asset.recording.started)}
+                              </label>
                             </div>
 
                           </div>
 
-                        </>
-                      );
-                    })}
+                        </div>
+
+                      </>
+                    );
+                  })}
 
                 </div>
 
@@ -1389,13 +1394,13 @@ const AssetDetailsTemplate = (props: any) => {
                   onHeadCellChange={onSetHeadCells}
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
-  					      offsetY={51}
+                  offsetY={51}
                   page={page}
                   rowsPerPage={rowsPerPage}
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={500}
-              
+
                 />
               )}
             </div>
