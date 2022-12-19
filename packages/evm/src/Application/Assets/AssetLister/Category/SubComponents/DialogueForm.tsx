@@ -69,7 +69,8 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
     const body: EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: Assign_Category_Arr,
-      updateCategories: []
+      updateCategories: [],
+      categorizedBy : props.categorizedBy
     };
 
     EvidenceAgent.changeCategories(Assign_Category_URL, body).then(() => {

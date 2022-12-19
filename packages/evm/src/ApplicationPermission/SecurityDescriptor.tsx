@@ -6,16 +6,21 @@ type Props = {
     descriptorId: Permission;
     maximumDescriptor: Permission;
     securityDescriptors?: any;
+    isCategorizedByCheck?: boolean;
+    isCategorizedBy?: boolean;
 };
 
-const SecurityDescriptor: React.FunctionComponent<Props> = ({ maximumDescriptor, descriptorId, securityDescriptors, children }) => {
-    const {getGroupIds} = useContext(ApplicationPermissionContext);
-    let groupIds  = getGroupIds();
+const SecurityDescriptor: React.FunctionComponent<Props> = ({ maximumDescriptor, descriptorId, securityDescriptors, isCategorizedByCheck = false, isCategorizedBy, children }) => {
+    const { getGroupIds } = useContext(ApplicationPermissionContext);
+    let groupIds = getGroupIds();
     let evidenceGroupIds = securityDescriptors?.map((x: any) => x.groupId);
-    if(maximumDescriptor != 0 && groupIds?.some((x: any) => evidenceGroupIds?.includes(x))){
-        if (maximumDescriptor >= descriptorId) {
+    if (maximumDescriptor != 0 && groupIds?.some((x: any) => evidenceGroupIds?.includes(x))) {
+        if (isCategorizedByCheck && isCategorizedBy)
             return <>{children}</>;
-        }
+        else if (maximumDescriptor >= descriptorId)
+            return <>{children}</>;
+        else
+            return null;
     }
     return null;
 };

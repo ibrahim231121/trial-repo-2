@@ -17,6 +17,7 @@ export type CategoryFormProps = {
     setIsformUpdated: (param: boolean) => void;
     setIndicateTxt: (param: boolean) => void;
     setshowSSticky: (param: boolean) => void;
+    categorizedBy : number | null;
 };
 
 export enum SubmitType {

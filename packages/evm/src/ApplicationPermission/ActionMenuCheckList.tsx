@@ -12,12 +12,14 @@ type Props = {
     actionMenuName: string;
     securityDescriptors: Array<SearchModel.SecurityDescriptor>;
     isMultiSelectEvidenceExpired: boolean;
+    isCategorizedByCheck?: boolean;
+    isCategorizedBy?: boolean;
 };
 
-const ActionMenuCheckList: React.FunctionComponent<Props> = ({ evidence, moduleId, descriptorId, maximumDescriptor, actionMenuName, securityDescriptors, isMultiSelectEvidenceExpired, children }) => {
+const ActionMenuCheckList: React.FunctionComponent<Props> = ({ evidence, moduleId, descriptorId, maximumDescriptor, actionMenuName, securityDescriptors, isMultiSelectEvidenceExpired, isCategorizedByCheck, isCategorizedBy, children }) => {
     return (<CheckEvidenceExpiry evidence={evidence} actionMenuName={actionMenuName} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
         <Restricted moduleId={moduleId}>
-            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={securityDescriptors}>
+            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={securityDescriptors} isCategorizedByCheck={isCategorizedByCheck} isCategorizedBy={isCategorizedBy}>
                 <>{children}</>
             </SecurityDescriptor>
         </Restricted>

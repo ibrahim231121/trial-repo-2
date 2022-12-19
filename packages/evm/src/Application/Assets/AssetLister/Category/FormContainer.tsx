@@ -39,8 +39,8 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
   React.useEffect(() => {
     if (props.openForm == true) {
       setOpenModal(true);
-      if (props.rowData) {
-        const evidenceId = props.rowData.id;
+      if (props.evidenceId) {
+        const evidenceId = props.evidenceId;
         EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
           setSelectedCategoryValues(filterCategory(response.categories));
           setEvidenceResponse(response);
@@ -122,6 +122,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setIndicateTxt={(e: any) => setIndicateTxt(e)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
             setshowSSticky={(a: any) => setshowSSticky(a)}
+            categorizedBy={props.categorizedBy}
           />
         );
       case 2:
@@ -179,6 +180,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             removalType={removalType}
             removeMessage={removeMessage}
             holdUntill={holdUntill}
+            categorizedBy={props.categorizedBy}
           />
         );
       case 5:
@@ -191,6 +193,7 @@ const FormContainer: React.FC<FormContainerProps> = React.memo((props) => {
             setModalTitle={(i: any) => setModalTitle(i)}
             setremoveClassName={(v: any) => setremoveClassName(v)}
             setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
+            categorizedBy={props.categorizedBy}
           />
         );
     }

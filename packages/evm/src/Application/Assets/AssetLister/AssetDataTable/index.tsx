@@ -142,6 +142,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       unit: row.masterAsset.unit,
       description: row.description,
       categories: row.categories,
+      categorizedBy : row.categorizedBy,
       devices: row.devices,
       station: row.station,
       recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,

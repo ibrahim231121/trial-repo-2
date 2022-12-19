@@ -216,7 +216,8 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
       const body: EvdenceCategoryAssignment = {
         unAssignCategories: [],
         assignedCategories: categoryBodyArr,
-        updateCategories: []
+        updateCategories: [],
+        categorizedBy : props.categorizedBy
       };
 
       const url = `/Evidences/${evidenceId}/Categories`;
@@ -285,6 +286,7 @@ const CategoryForm: React.FC<CategoryFormProps> = (props) => {
             setModalTitle={(i: string) => props.setModalTitle(i)}
             setSelectedCategoryValues={(v) => props.setSelectedCategoryValues(v)}
             setIndicateTxt={(e: any) => props.setIndicateTxt(e)}
+            categorizedBy={props.categorizedBy}
           />
         )
       )}

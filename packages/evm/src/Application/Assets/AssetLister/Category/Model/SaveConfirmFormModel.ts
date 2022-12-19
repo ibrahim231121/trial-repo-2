@@ -17,6 +17,7 @@ export type SaveConfirmFormProps = {
     setRemovedOption: (param: any) => void;
     setModalTitle: (param: string) => void;
     setIndicateTxt: (param: boolean) => void;
+    categorizedBy: number | null;
   }
 
   export interface FormValues { }
