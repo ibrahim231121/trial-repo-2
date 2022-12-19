@@ -38,6 +38,7 @@ import { addNotificationMessages } from "../../../../Redux/notificationPanelMess
 import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
+import { CRXTooltip } from "@cb/shared";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
@@ -84,7 +85,9 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     >
       <div className="assetName">{assetName}</div>
     </Link>
-
+    {assets  && evidence.masterAsset.lock &&
+    <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
+    }
     <DetailedAssetPopup asset={assets} row={evidence} />
   </>
   return (<CRXDataTableTextPopover
