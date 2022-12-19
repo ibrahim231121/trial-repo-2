@@ -10,6 +10,7 @@ export type EditConfirmFormProps = {
     setIsformUpdated: (param: boolean) => void;
     setModalTitle: (param: string) => void;
     setActiveForm: Dispatch<SetStateAction<number>>;
+    categorizedBy : number | null;
 };
 
 export interface FormValues {

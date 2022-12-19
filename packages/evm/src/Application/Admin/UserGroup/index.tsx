@@ -377,11 +377,10 @@ const UserGroup: React.FC = () => {
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
             totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
-             //Please dont miss this block.
-            offsetY={-22}
-            searchHeaderPosition={228}
-            dragableHeaderPosition={193}
-            topSpaceDrag = {10}
+            //Please dont miss this block.
+            offsetY={74}
+            headerPositionInit={201}
+            topSpaceDrag = {106}
             //End here
    
           />

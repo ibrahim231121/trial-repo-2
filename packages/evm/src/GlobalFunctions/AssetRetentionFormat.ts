@@ -36,7 +36,7 @@ const CalculateRetentionSpan = (expiration: moment.Moment): string => {
 
         return differenceInString;
     }
-    return 'Asset Expired';
+    return 'Expired';
 };
 
 // const CalculateRetentionSpan = (expiration: moment.Moment): string => {

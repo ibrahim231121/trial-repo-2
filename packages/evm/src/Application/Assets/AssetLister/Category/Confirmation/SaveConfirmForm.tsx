@@ -74,7 +74,8 @@ const SaveConfirmForm: React.FC<SaveConfirmFormProps> = (props) => {
     const body : EvdenceCategoryAssignment = {
       unAssignCategories: [unAssignCategory],
       assignedCategories: [],
-      updateCategories: []
+      updateCategories: [],
+      categorizedBy : props.categorizedBy
     }
     const url = `/Evidences/${evidenceId}/Categories?editReason=${message}`;
     EvidenceAgent.changeCategories(url, body).then(() => {

@@ -2578,7 +2578,7 @@ useEffect(() => {
                   }
               </div>
             : ""}         
-            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+           { multiTimelineEnabled && <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
               {/* TIME LINES BAR HERE */}
               {loading ? (
                 <Timelines
@@ -2607,6 +2607,7 @@ useEffect(() => {
               {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
               {multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i>Sync timeline start</button>}
             </div>
+            }
              
            
           

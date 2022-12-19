@@ -9,6 +9,7 @@ export namespace SearchModel {
         retentionPolicyName: string;
         devices: string;
         categories: string[];
+        categorizedBy? : number;
         formData: FormDataKeyValue[];
         masterAsset: Asset;
         asset: Asset[];
@@ -16,6 +17,7 @@ export namespace SearchModel {
         securityDescriptors: SecurityDescriptor[];
         expireOn: Date;
         description: string;
+        retentionSpanText: string;
     };
 
     export type FormDataKeyValue = {

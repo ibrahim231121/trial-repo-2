@@ -1,6 +1,6 @@
 
   .CrxUnitDetailId {
-    padding: 0px;
+    padding: 5px 0 0;
     transition: 1s padding ease-out;
     .unitDeviceDetail {
       margin-top: 0 !important;
@@ -19,7 +19,7 @@
       }
     }
     div[id*="crx-tabpanel"] {
-      height: calc(100vh - 423px);
+      height: calc(100vh - 434px);
       overflow-y: auto;
     }
     .crxMainTab {

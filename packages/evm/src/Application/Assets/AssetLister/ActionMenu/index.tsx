@@ -96,7 +96,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         isError: false,
         errorMessage: "",
       });
-    const { AssignedGroups }: IDecoded = jwt_decode(
+    const { AssignedGroups, UserId }: IDecoded = jwt_decode(
       cookies.get("access_token")
     );
     const [securityDescriptorsArray, setSecurityDescriptorsArray] =
@@ -126,12 +126,25 @@ const ActionMenu: React.FC<Props> = React.memo(
       } else {
         setIsSelectedItem(false);
       }
-
-      if (row?.categories?.length == 0) {
-        setIsCategoryEmpty(true);
-      }
+      // Check for Lock property in Evidence response, to show message in Action Menu Item.
       if (row?.evidence?.masterAsset?.lock) {
         setIsLockedAccess(true);
+      } else {
+        setIsLockedAccess(false);
+      }
+      /**
+       ** Category Window Depends on Evidence Response Provided from Parent Element,
+       ** as response is different for every screen,
+       ** we need to check from which screen action menu is opened.
+       */
+      if (actionMenuPlacement === ActionMenuPlacement.AssetLister) {
+        if (row?.categories.length == 0) {
+          setIsCategoryEmpty(true);
+        }
+      } else {
+        if (row?.evidence.categories.length == 0) {
+          setIsCategoryEmpty(true);
+        }
       }
     }, [row, selectedItems]);
 
@@ -718,14 +731,41 @@ const ActionMenu: React.FC<Props> = React.memo(
       doc.save("ASSET ID_Audit_Trail.pdf");
     };
 
+    const isEvidenceCategorizedByCurrentUser = () => {
+      let categorizedBy: number;
+      if (actionMenuPlacement === ActionMenuPlacement.AssetLister)
+        categorizedBy = row?.categorizedBy;
+      else
+        categorizedBy = row?.evidence.categorizedBy;
+      if (categorizedBy) {
+        if (categorizedBy === Number(UserId))
+          return true;
+        else
+          return false;
+      }
+      return false;
+    }
+
+    const evidenceCategorizedBy = (): number | null => {
+      if(row?.evidence){
+        if (row?.evidence.categorizedBy) {
+          return Number(row?.evidence.categorizedBy);
+        } else {
+          return null;
+        }
+      }
+      return null;
+    }
+
     return (
       <>
         <FormContainer
           setOpenForm={() => setOpenForm(false)}
           openForm={openForm}
-          rowData={row}
+          evidenceId={row?.evidence.id}
           isCategoryEmpty={isCategoryEmpty}
           setIsCategoryEmpty={() => setIsCategoryEmpty(true)}
+          categorizedBy={evidenceCategorizedBy()}
         />
 
         <Menu
@@ -802,6 +842,8 @@ const ActionMenu: React.FC<Props> = React.memo(
                 actionMenuName={t("Categorize")}
                 securityDescriptors={securityDescriptorsArray}
                 isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+                isCategorizedByCheck={true}
+                isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
               >
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
@@ -821,6 +863,8 @@ const ActionMenu: React.FC<Props> = React.memo(
                 actionMenuName={t("Edit_category_and_form")}
                 securityDescriptors={securityDescriptorsArray}
                 isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+                isCategorizedByCheck={true}
+                isCategorizedBy={isEvidenceCategorizedByCurrentUser()}
               >
                 <div className="crx-meu-content" onClick={handleChange}>
                   <div className="crx-menu-icon">
@@ -941,38 +985,38 @@ const ActionMenu: React.FC<Props> = React.memo(
               </ActionMenuCheckList>
             </MenuItem>
           ) : null}
-            <MenuItem>
-              <ActionMenuCheckList
-                moduleId={EXPORT_ASSETS_AND_METADATA_PERMISSION}
-                descriptorId={2}
-                maximumDescriptor={maximumDescriptor}
-                evidence={row?.evidence}
-                actionMenuName={t("Export")}
-                securityDescriptors={securityDescriptorsArray}
-                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
-              >
-                <div className="crx-meu-content groupingMenu">
-                  <div className="crx-menu-icon"></div>
-                  <div className="crx-menu-list">
-                    <SubMenu label={t("Export")}>
-                      {!CheckEvidenceExpire(row?.evidence) ? (
-                        <MenuItem onClick={handleDownloadAssetClick}>
-                          {t("Download_asset(s)")}
-                        </MenuItem>
-                      ) : null}
-                      <MenuItem onClick={handleDownloadMetaDataClick}>
-                        {t("Download_metadata_info")}
+          <MenuItem>
+            <ActionMenuCheckList
+              moduleId={EXPORT_ASSETS_AND_METADATA_PERMISSION}
+              descriptorId={2}
+              maximumDescriptor={maximumDescriptor}
+              evidence={row?.evidence}
+              actionMenuName={t("Export")}
+              securityDescriptors={securityDescriptorsArray}
+              isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+            >
+              <div className="crx-meu-content groupingMenu">
+                <div className="crx-menu-icon"></div>
+                <div className="crx-menu-list">
+                  <SubMenu label={t("Export")}>
+                    {!CheckEvidenceExpire(row?.evidence) ? (
+                      <MenuItem onClick={handleDownloadAssetClick}>
+                        {t("Download_asset(s)")}
                       </MenuItem>
-                      {!CheckEvidenceExpire(row?.evidence) ? (
-                        <MenuItem onClick={onClickDownloadAssetTrail}>
-                          {t("Download_audit_trail")}
-                        </MenuItem>
-                      ) : null}
-                    </SubMenu>
-                  </div>
+                    ) : null}
+                    <MenuItem onClick={handleDownloadMetaDataClick}>
+                      {t("Download_metadata_info")}
+                    </MenuItem>
+                    {!CheckEvidenceExpire(row?.evidence) ? (
+                      <MenuItem onClick={onClickDownloadAssetTrail}>
+                        {t("Download_audit_trail")}
+                      </MenuItem>
+                    ) : null}
+                  </SubMenu>
                 </div>
-              </ActionMenuCheckList>
-            </MenuItem>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
 
           {isLockedAccess ? (
             <MenuItem>

@@ -649,10 +649,9 @@ const ConfigurationTemplates: React.FC = () => {
             totalRecords={UnitConfigurationTemplates.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
              //Please dont miss this block.
-             offsetY={-25}
-             searchHeaderPosition={245}
-             dragableHeaderPosition={210}
-             topSpaceDrag = {5}
+             offsetY={65}
+             headerPositionInit={207}
+             topSpaceDrag = {99}
              //End here
           />
         )

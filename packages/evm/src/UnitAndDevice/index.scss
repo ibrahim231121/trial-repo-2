@@ -311,3 +311,25 @@ iframe {
   top: 27px !important;
   left: 37px !important;
 }
+
+.cbxTabsContent {
+  .userDataTableParent{
+
+      .unitDeviceTabDataTable {
+          display: inline-table !important;
+          position: sticky !important;
+      .CRXDataTableCustom {
+          thead {
+            &:nth-child(1) {
+              top: 44px !important;
+            }
+  
+            &:nth-child(2) {
+              top: 90px !important;
+            }
+          }
+        }
+      }
+    }
+  
+}

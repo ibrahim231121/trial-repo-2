@@ -38,6 +38,7 @@ import { addNotificationMessages } from "../../../../Redux/notificationPanelMess
 import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
+import { CRXTooltip } from "@cb/shared";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
@@ -84,7 +85,9 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     >
       <div className="assetName">{assetName}</div>
     </Link>
-
+    {assets  && evidence.masterAsset.lock &&
+    <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
+    }
     <DetailedAssetPopup asset={assets} row={evidence} />
   </>
   return (<CRXDataTableTextPopover
@@ -98,6 +101,25 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
   />
   );
 };
+
+const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
+  let date: Date;
+  if (evidence.holdUntil != null)
+    date = moment(evidence.holdUntil).toDate();
+  else
+    date = moment(evidence.expireOn).toDate();
+
+  if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
+    return (
+      <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+    );
+  }
+  return (
+    <div className="dataTableText ">
+      {AssetRetentionFormat(date)}
+    </div>
+  );
+}
 
 interface renderCheckMultiselect {
   value: string,
@@ -123,6 +145,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       unit: row.masterAsset.unit,
       description: row.description,
       categories: row.categories,
+      categorizedBy : row.categorizedBy,
       devices: row.devices,
       station: row.station,
       recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,
@@ -130,7 +153,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
       status: row.masterAsset.status,
       evidence: row,
       holdUntil: row.holdUntil,
-      expireOn: row.expireOn
+      expireOn: row.expireOn,
+      retentionSpanText: retentionSpanText("", row).props.children
     };
     reformattedRows.push(evidence);
   });
@@ -267,7 +291,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-    {console.log("dateOptionType", dateOptionType)}
+    
     return (
       <DateTimeComponent
         showCompact={showDateCompact}
@@ -337,24 +361,34 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
   };
 
-  const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
-    let date: Date;
-    if (evidence.holdUntil != null)
-      date = moment(evidence.holdUntil).toDate();
-    else
-      date = moment(evidence.expireOn).toDate();
+  const searchAndNonSearchMultiDropDownForRetention = (
+    rowsParam: SearchModel.Evidence[],
+    headCells: HeadCellProps[],
+    colIdx: number,
+    initialRows: any,
+    isSearchable: boolean
+  ) => {
 
-    if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
+    if (initialRows) {
+
+      let options: any[] = [
+        { value: t("Available") }, 
+        { value: t("Expired") }
+      ];
+
       return (
-        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+        <CBXMultiSelectForDatatable
+          width={220}
+          option={options}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear={() => clearAll()}
+          isCheckBox={true}
+          isduplicate={true}
+        />
       );
     }
-    return (
-      <div className="dataTableText ">
-        {AssetRetentionFormat(date)}
-      </div>
-    );
-  }
+  };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -508,12 +542,17 @@ const MasterMain: React.FC<MasterMainProps> = ({
     },
     {
       label: t("Retention_Span"),
-      id: "expireOn",
+      id: "retentionSpanText",
       align: "left",
-      dataComponent: retentionSpanText,
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: () => null,
+      searchComponent: (
+        rowData: SearchModel.Evidence[],
+        columns: HeadCellProps[],
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDownForRetention(rowData, columns, colIdx, initialRow, false),
       minWidth: "230",
       detailedDataComponentId: "evidence",
       visible: true
@@ -538,6 +577,24 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
   };
 
+  const onRetentionCompare = (
+    dataRows: any[],
+    headCells: HeadCellProps[],
+    el: SearchObject
+  ) => {
+
+    dataRows = dataRows.filter((x: any) => {
+      return el.value.includes((x[headCells[el.colIdx].id] !== "Expired" && 
+                                x[headCells[el.colIdx].id] !== "" && 
+                                x[headCells[el.colIdx].id] !== null && 
+                                x[headCells[el.colIdx].id].length > 2) 
+                                ?  "Available" 
+                                : x[headCells[el.colIdx].id]);
+    });
+
+    return dataRows;
+  };
+
   const dataArrayBuilder = () => {
     let dataRows: SearchModel.Evidence[] = reformattedRows;
     searchData.forEach((el: SearchObject) => {
@@ -545,6 +602,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
         dataRows = onTextCompare(dataRows, headCells, el);
       if (["assetType", "devices", "station", "status", "unit"].includes(el.columnName))
         dataRows = onMultipleCompare(dataRows, headCells, el);
+      if (["retentionSpanText"].includes(el.columnName))
+        dataRows = onRetentionCompare(dataRows, headCells, el);
       if (["categories", "recordedBy"].includes(el.columnName))
         dataRows = onMultiToMultiCompare(dataRows, headCells, el);
       if (el.columnName === "recordingStarted") {
@@ -594,6 +653,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
   return (
     <>
+    
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable
@@ -630,10 +690,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={showAdvanceSearch == false ? 140 : 650}
-          searchHeaderPosition={showAdvanceSearch == false ? 221 : 889}
-          dragableHeaderPosition={showAdvanceSearch == false ? 178 : 889}
-          topSpaceDrag = {showAdvanceSearch == false ? 183 : 689}
+          offsetY={showAdvanceSearch == false ? 250 : 755}
+          topSpaceDrag = {showAdvanceSearch == false ? 290 : 799}
+          headerPositionInit={178}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}

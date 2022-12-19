@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -40,15 +40,61 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
   selfPaging,
   searchHeaderPosition,
   dragableHeaderPosition,
-  topSpaceDrag
+  topSpaceDrag,
+  headerPositionInit
 }) => {
 
   const classes : any = useStyles();
   const [bodyCellWidth, setBodyCellWidth] = React.useState<any>()
-
+  const tableHeader = useRef(null);
   return (
     <>
-       
+    <TableContainer
+      id="customizedStickyHeader"
+      ref={tableHeader}
+      className={classes.container + " AssetsDataGrid  " + className}
+      component={Paper}
+      style={{top : headerPositionInit + "px"}}
+    >
+    <Table
+        className={"CRXDataTableCustom visibleTable " + classes.table}
+        style={{
+          width: `${allColHide === undefined || allColHide ? "140px" : "auto"}`,
+        }}
+        aria-label="simple table"
+        size="small"
+        stickyHeader
+      >
+        
+     <CRXDataTableStickyHeaders
+          id={id}
+          orderColumn={orderColumn}
+          headCells={headCells}
+          orderData={orderData}
+          selectedItems={selectedItems}
+          container={container}
+          initialRows={initialRows}
+          actionComponent={actionComponent}
+          searchHeader={searchHeader}
+          page={page}
+          onMoveReorder={onMoveReorder}
+          onReorderEnd={(e: any, _) => onReorderEnd(e, _)}
+          onResizeRow={(e: any) => onResizeRow(e)}
+          getRowOnActionClick={getRowOnActionClick}
+          onHandleRequestSort={(e) => onHandleRequestSort(e)}
+          onSetCheckAll={onSetCheckAll}
+          dragVisibility={dragVisibility}
+          showCheckBoxesCol={showCheckBoxesCol}
+          showActionCol={showActionCol}
+          showActionSearchHeaderCell={showActionSearchHeaderCell}
+          showHeaderCheckAll={showHeaderCheckAll}
+          checkAllPageWise={checkAllPageWise}
+          setBodyCellWidth={setBodyCellWidth}
+        />
+
+        </Table>
+        </TableContainer> 
+
     <TableContainer
       className={classes.container + " AssetsDataGrid tableScrollValue " + className}
       component={Paper}

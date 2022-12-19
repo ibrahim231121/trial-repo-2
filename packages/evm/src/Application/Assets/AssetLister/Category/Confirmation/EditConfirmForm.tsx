@@ -60,7 +60,8 @@ const EditConfirmForm: React.FC<EditConfirmFormProps> = (props) => {
     const body: EvdenceCategoryAssignment = {
       unAssignCategories: [],
       assignedCategories: assignedCategories,
-      updateCategories: updateCategories
+      updateCategories: updateCategories,
+      categorizedBy : props.categorizedBy
     };
 
     EvidenceAgent.changeCategories(`/Evidences/${evidenceId}/Categories?editReason=${message}`, body).then(() => {

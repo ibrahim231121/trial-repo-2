@@ -10,7 +10,8 @@ const DragableHead = SortableContainer(( props: any) => {
   
   function createScrollStopListener(element : any, callback : any, timeout : number) {
     let handle: any = null;
-    const tbl : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    const tbl : any = document.getElementsByClassName('tableScrollValue')[0]
+    
     const onScroll = function() {
         
         if (handle) {
@@ -29,12 +30,12 @@ const DragableHead = SortableContainer(( props: any) => {
   }
   
   useEffect(() => {
-    const tblBlock : any = document.getElementsByClassName('AssetsDataGrid')[0]
+    const tblBlock : any = document.getElementsByClassName('tableScrollValue')[0]
     
     createScrollStopListener(window, function() {
       tblBlock && props.searchHeader == false &&  (tblBlock.style.display = "block")
       setWindScrollValue(window.pageYOffset - props.topSpaceDrag)
-    }, 300);
+    }, 100);
   },[])
 
     return (

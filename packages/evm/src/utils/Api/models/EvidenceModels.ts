@@ -197,6 +197,7 @@ export interface EvdenceCategoryAssignment {
     unAssignCategories: Category[];
     assignedCategories: Category[];
     updateCategories: Category[];
+    categorizedBy : number | null;
 }
 
 export type securityDescriptorType = {

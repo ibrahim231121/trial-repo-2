@@ -302,7 +302,11 @@ React.useEffect(() => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-            offsetY={206}
+             //Please dont miss this block.
+             offsetY={65}
+             headerPositionInit={206}
+             topSpaceDrag = {99}
+             //End here
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}

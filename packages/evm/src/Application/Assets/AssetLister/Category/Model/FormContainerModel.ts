@@ -1,10 +1,11 @@
 export type FormContainerProps = {
     openForm: boolean;
     isCategoryEmpty: boolean;
-    rowData: any;
+    evidenceId: number;
     setOpenForm: () => void;
     setIsCategoryEmpty: (param: boolean) => void;
     formActionButton?: React.ReactNode;
+    categorizedBy : number | null;
 };
 
 export type SelectedCategoryModel = {

@@ -230,7 +230,8 @@ export type DataTableProps = {
   setSortOrder?: (e: any) => void;
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
-  topSpaceDrag? : number
+  topSpaceDrag? : number,
+  headerPositionInit? : number
 };
 
 export type OrderData = {
@@ -274,7 +275,8 @@ export type DataTableContainerProps = {
   selfPaging?: boolean;
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
-  topSpaceDrag? : number
+  topSpaceDrag? : number,
+  headerPositionInit? : number
 };
 
 export type DataTableStickyHeadersProps = {
