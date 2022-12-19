@@ -243,6 +243,8 @@ export const resources = {
         "There_is_no_File_against_this_Asset." : "There is no File against this Asset. Please contact your Systems Administrator",
         "Unable_to_download_file." : "We 're sorry. The asset(s) can't be download. Please retry or contact your Systems Administrator.",
         "Unable_to_download_response." : "We 're sorry. The asset(s) Meta Data can't be download. Please retry or contact your Systems Administrator.",
+        "Available" : "Available",
+        "Expired" : "Expired",
         "No_Assets_found._Try_modifying_your_search_or_reach_out_to_your_admin_with_questions_on _permissions." : "No Assets found. Try modifying your search or reach out to your admin with questions on permissions.",
         // -------------------------
 

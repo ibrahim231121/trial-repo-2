@@ -207,6 +207,8 @@ export const resources = {
         "There_is_no_File_against_this_Asset." : "hr-There is no File against this Asset. Please contact your Systems Administrator",
         "Unable_to_download_file." : "hr-We 're sorry. The asset(s) can't be download. Please retry or contact your Systems Administrator.",
         "Unable_to_download_response." : "hr-We 're sorry. The asset(s) Meta Data can't be download. Please retry or contact your Systems Administrator.",
+        "Available" : "hr-Available",
+        "Expired" : "hr-Expired",
         // -------------------------
 
         // --------- User ----------

@@ -290,7 +290,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         variant: "success",
         duration: 7000,
       });
-
           toasterRef.current.showToaster({
             message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
             variant: "success",
@@ -1108,11 +1107,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     if (!e.target.checked) setCheckedAll(false);
     setChecked({ ...isChecked, [row.assetId]: e.target.checked });
     /*
-     * * Change made to tackle situation, in which it is mandatory to select checkbox.
-     */
+    * * Change made to tackle situation, in which it is mandatory to select checkbox.  
+    */
     //setSelectedItems([...selectedItems, row]);
 
-    if (e.target.checked) setSelectedItems((prevArr) => [...prevArr, row]);
+    if (e.target.checked)
+      setSelectedItems((prevArr) => [...prevArr, row]);
     else
       setSelectedItems((prevArr) =>
         prevArr.filter((e) => e.assetId !== row.assetId)
@@ -1131,8 +1131,9 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     const setSelectFill = [...selectedItems];
     assetBucketData.forEach((element: any) => {
       setSelectFill.push(element);
-    });
-    if (isCheckedAll) setSelectedItems(setSelectFill);
+    })
+    if (isCheckedAll)
+      setSelectedItems(setSelectFill);
   }, [isCheckedAll]);
 
   const OfflineOnlineStatus = () => {

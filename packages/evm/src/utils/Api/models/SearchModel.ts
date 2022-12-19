@@ -16,6 +16,7 @@ export namespace SearchModel {
         securityDescriptors: SecurityDescriptor[];
         expireOn: Date;
         description: string;
+        retentionSpanText: string;
     };
 
     export type FormDataKeyValue = {

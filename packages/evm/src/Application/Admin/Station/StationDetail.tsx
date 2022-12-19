@@ -689,6 +689,7 @@ const StationDetail: React.FC = () => {
                         lg={12}
                         xs={12}
                         spacing={0}
+                        style={{display: "none"}}
                       >
                         <div className="CBX-input passwordStationField">
                           <label htmlFor="password">

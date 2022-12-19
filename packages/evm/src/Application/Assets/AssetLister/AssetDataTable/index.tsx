@@ -99,6 +99,25 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
   );
 };
 
+const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
+  let date: Date;
+  if (evidence.holdUntil != null)
+    date = moment(evidence.holdUntil).toDate();
+  else
+    date = moment(evidence.expireOn).toDate();
+
+  if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
+    return (
+      <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+    );
+  }
+  return (
+    <div className="dataTableText ">
+      {AssetRetentionFormat(date)}
+    </div>
+  );
+}
+
 interface renderCheckMultiselect {
   value: string,
   id: string,
@@ -130,7 +149,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
       status: row.masterAsset.status,
       evidence: row,
       holdUntil: row.holdUntil,
-      expireOn: row.expireOn
+      expireOn: row.expireOn,
+      retentionSpanText: retentionSpanText("", row).props.children
     };
     reformattedRows.push(evidence);
   });
@@ -337,24 +357,34 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
   };
 
-  const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
-    let date: Date;
-    if (evidence.holdUntil != null)
-      date = moment(evidence.holdUntil).toDate();
-    else
-      date = moment(evidence.expireOn).toDate();
+  const searchAndNonSearchMultiDropDownForRetention = (
+    rowsParam: SearchModel.Evidence[],
+    headCells: HeadCellProps[],
+    colIdx: number,
+    initialRows: any,
+    isSearchable: boolean
+  ) => {
 
-    if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
+    if (initialRows) {
+
+      let options: any[] = [
+        { value: t("Available") }, 
+        { value: t("Expired") }
+      ];
+
       return (
-        <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
+        <CBXMultiSelectForDatatable
+          width={220}
+          option={options}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear={() => clearAll()}
+          isCheckBox={true}
+          isduplicate={true}
+        />
       );
     }
-    return (
-      <div className="dataTableText ">
-        {AssetRetentionFormat(date)}
-      </div>
-    );
-  }
+  };
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
@@ -508,12 +538,17 @@ const MasterMain: React.FC<MasterMainProps> = ({
     },
     {
       label: t("Retention_Span"),
-      id: "expireOn",
+      id: "retentionSpanText",
       align: "left",
-      dataComponent: retentionSpanText,
+      dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: () => null,
+      searchComponent: (
+        rowData: SearchModel.Evidence[],
+        columns: HeadCellProps[],
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDownForRetention(rowData, columns, colIdx, initialRow, false),
       minWidth: "230",
       detailedDataComponentId: "evidence",
       visible: true
@@ -538,6 +573,24 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
   };
 
+  const onRetentionCompare = (
+    dataRows: any[],
+    headCells: HeadCellProps[],
+    el: SearchObject
+  ) => {
+
+    dataRows = dataRows.filter((x: any) => {
+      return el.value.includes((x[headCells[el.colIdx].id] !== "Expired" && 
+                                x[headCells[el.colIdx].id] !== "" && 
+                                x[headCells[el.colIdx].id] !== null && 
+                                x[headCells[el.colIdx].id].length > 2) 
+                                ?  "Available" 
+                                : x[headCells[el.colIdx].id]);
+    });
+
+    return dataRows;
+  };
+
   const dataArrayBuilder = () => {
     let dataRows: SearchModel.Evidence[] = reformattedRows;
     searchData.forEach((el: SearchObject) => {
@@ -545,6 +598,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
         dataRows = onTextCompare(dataRows, headCells, el);
       if (["assetType", "devices", "station", "status", "unit"].includes(el.columnName))
         dataRows = onMultipleCompare(dataRows, headCells, el);
+      if (["retentionSpanText"].includes(el.columnName))
+        dataRows = onRetentionCompare(dataRows, headCells, el);
       if (["categories", "recordedBy"].includes(el.columnName))
         dataRows = onMultiToMultiCompare(dataRows, headCells, el);
       if (el.columnName === "recordingStarted") {
