@@ -565,8 +565,8 @@
         position: absolute !important;
         left: unset !important;
         top: unset !important;
-        right: 187px;
-        bottom: 161px;
+        right: 199px;
+        bottom: 116px;
     }
     .SettingBackMenu {
         right: 187px;
@@ -576,3 +576,8 @@
 }
 
 
+.notesEnabled_On {
+    .MuiMenu-paper {
+        right: 265px;
+    }
+}

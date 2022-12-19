@@ -43,6 +43,7 @@ const VideoPlayerSettingMenu = (props: any) => {
     setSettingMenuEnabled(null)
  
   }
+ 
 
   const notes = (e: any) => {
     if (e.target.checked) {
@@ -75,19 +76,26 @@ useEffect(() => {
 
   useEffect(()=>{
       if(settingMenuEnabled === null) {
-        //document.documentElement.style.overflow = "hidden";
-        //document.body.scrollTop = 0; 
-        //document.documentElement.scrollTop = 0;
+        document.documentElement.style.overflow = "hidden";
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
       }
-  },[settingMenuEnabled])
+      if(isAudioGraphEnabled || multiTimelineEnabled) {
+        document.documentElement.style.overflow = "scroll";
+      }else {
+        document.documentElement.style.overflow = "hidden";
+        document.body.scrollTop = 0; 
+        document.documentElement.scrollTop = 0;
+      }
+  },[settingMenuEnabled,isAudioGraphEnabled,multiTimelineEnabled])
 
   const settingEnabled_status = !singleVideoLoad && isMultiViewEnable ? "settingEnabled_on" : "settingEnabled_off";
-
+const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
   return (
     <>
    
     <MaterialMenu
-        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}  ${settingEnabled_status}`}
+        className={`ViewScreenMenu   ${position === true ? "settingOverlayPos" : ""}   ${multiTimelineEnabled ? "enabledMultiLine" : "disenabledMultiLine"}  ${position === true && multiTimelineEnabled == true ? " settingMultiOverlay" : ""} ${!singleVideoLoad && isMultiViewEnable ? "MultiVideoMenu" : "SettingOverlayMenu"} ${overlayEnabled ? "overlayEnabledPosition" : ""}  ${fullScreenControl}  ${settingEnabled_status} ${notesEnabledClass}`}
         anchorEl={settingMenuEnabled}
         keepMounted
         open={Boolean(settingMenuEnabled)}
