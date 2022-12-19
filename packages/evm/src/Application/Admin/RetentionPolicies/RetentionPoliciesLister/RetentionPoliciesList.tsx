@@ -364,9 +364,9 @@ const retentionFormMessages = (obj: any) => {
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterRetentionPolicies?.totalCount}
              //Please dont miss this block.
-           offsetY={65}
+           offsetY={62}
            headerPositionInit={210}
-           topSpaceDrag = {42}
+           topSpaceDrag = {98}
            //End here
           />
          

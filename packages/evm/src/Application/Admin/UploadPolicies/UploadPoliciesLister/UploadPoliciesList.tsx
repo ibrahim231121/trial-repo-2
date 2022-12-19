@@ -148,8 +148,6 @@ React.useEffect(() => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: "",
-      maxWidth: "100",
     },
     {
       label: `${t("Policy_Name")}`,
@@ -159,9 +157,7 @@ React.useEffect(() => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "800",
-      maxWidth: "1200",
+      minWidth: "825",
       detailedDataComponentId: "name",
       attributeName: "Name",
       attributeType: "String",
@@ -175,8 +171,7 @@ React.useEffect(() => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "200",
-      width: "100",
+      minWidth: "825",
       detailedDataComponentId: "name",
       attributeName: "Name",
       attributeType: "String",
@@ -272,11 +267,11 @@ React.useEffect(() => {
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
-             //Please dont miss this block.
-              offsetY={65}
-              headerPositionInit={210}
-              topSpaceDrag = {42}
-              //End here
+            //Please dont miss this block.
+            offsetY={62}
+            headerPositionInit={210}
+            topSpaceDrag = {98}
+            //End here
             page={page}
             rowsPerPage={rowsPerPage}
             setPage= {(pages:any) => setPage(pages)}
