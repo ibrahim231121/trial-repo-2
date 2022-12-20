@@ -60,6 +60,8 @@ export const resources = {
         "User_Name":"Username",
         "Captured":"Captured",
         "File_Status":"File Status",
+        "Asset_Duration":"Asset Duration",
+        "Asset_Size":"Asset Size",
         "Select_All":"Select all",
         "Grouped_Assets":"Grouped Assets",
         "Assign_user":"Assign user",

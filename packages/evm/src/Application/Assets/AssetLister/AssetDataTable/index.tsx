@@ -38,6 +38,7 @@ import { addNotificationMessages } from "../../../../Redux/notificationPanelMess
 import { ActionMenuPlacement } from "../ActionMenu/types";
 import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
+import { assetSizeFormat, assetDurationFormat } from "../../../../GlobalFunctions/AssetSizeFormat";
 import { CRXTooltip } from "@cb/shared";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
@@ -154,6 +155,8 @@ const MasterMain: React.FC<MasterMainProps> = ({
       evidence: row,
       holdUntil: row.holdUntil,
       expireOn: row.expireOn,
+      duration: row.masterAsset.duration,
+      size: row.masterAsset.size,
       retentionSpanText: retentionSpanText("", row).props.children
     };
     reformattedRows.push(evidence);
@@ -556,6 +559,28 @@ const MasterMain: React.FC<MasterMainProps> = ({
       minWidth: "230",
       detailedDataComponentId: "evidence",
       visible: true
+    },
+    {
+      label: t("Asset_Duration"),
+      id: "duration",
+      align: "left",
+      dataComponent: assetDurationFormat,
+      sort: true,
+      searchFilter: true,
+      searchComponent: () => null,
+      minWidth: "230",
+      visible: false,
+    },
+    {
+      label: t("Asset_Size"),
+      id: "size",
+      align: "left",
+      dataComponent: assetSizeFormat,
+      sort: true,
+      searchFilter: true,
+      searchComponent: () => null,
+      minWidth: "230",
+      visible: false,
     },
   ]);
 

@@ -253,7 +253,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if(isEmptySearch && searchData.length === 0){
-      setAdvanceSearch(false)
+      setAdvanceSearch(true)
       setShowShortCutSearch(true);
     }
     else if(searchData.length !== 0){

@@ -42,6 +42,7 @@ export namespace SearchModel {
         preBuffer: number;
         postBuffer: number;
         duration: number;
+        size: number;
         isOverlaid: boolean;
         segmentCount: number;
         owners: string[];
