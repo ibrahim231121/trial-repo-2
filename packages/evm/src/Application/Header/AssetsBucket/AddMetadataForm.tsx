@@ -69,6 +69,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [alert, setAlert] = useState<boolean>(false);
   const [responseError, setResponseError] = useState<string>("");
   const [errorType, setErrorType] = useState<string>("error");
+  const [isCategoriesFormEmpty, setIsCategoriesFormEmpty] = useState<boolean>(false);
   const users: any = useSelector(
     (state: RootState) => state.userReducer.usersInfo
   );
@@ -1179,19 +1180,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               setShowSucess={() => null}
             />
             <div className="__CRX__Asset_MetaData__Form__">
-              {formpayload.category.some((o: any) => o.form.length > 0) ? (
-                <DisplayCategoryForm
-                  formCollection={formpayload.category}
-                  initialValueObjects={InitialValues}
-                  validationSchema={validationSchema}
-                  setFieldsFunction={(e: any) => setFormField(e)}
-                />
-              )
-                : (
-                  <NoFormAttachedOfAssetBucket
-                    categoryCollection={formpayload.category}
-                  />
-                )}
+              <RenderDialogueOrCategoryForm />
             </div>
           </>
         );
@@ -1209,6 +1198,42 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     setIsDisable(false);
   }
 
+  const RenderDialogueOrCategoryForm = (): JSX.Element => {
+    /**
+     ** Checking either Current Category Contains any Empty Form.
+     ** Then Maintaining State for Visiblity of 'Skip_category_form_and_save' Button. 
+     * */
+    const isCategoriesFormExist = (formpayload.category.every((x: any) => x.form.length === 0));
+    if (isCategoriesFormExist) {
+      setIsDisable(false);
+    }
+    setIsCategoriesFormEmpty(isCategoriesFormExist);
+    return (
+      <>
+        {formpayload.category.some((o: any) => o.form.length > 0) ? (
+          <DisplayCategoryForm
+            formCollection={formpayload.category}
+            initialValueObjects={InitialValues}
+            validationSchema={validationSchema}
+            setFieldsFunction={(e: any) => setFormField(e)}
+          />
+        )
+          : (
+            <NoFormAttachedOfAssetBucket
+              categoryCollection={formpayload.category}
+            />
+          )}
+      </>
+    );
+  }
+  // Added to Seperate Submit Button Handler to handle Submission of Categories With No Form. 
+  const SaveBtnSubmitForm = () => {
+    if(isCategoriesFormEmpty){
+      onSubmit(SubmitType.WithoutForm);
+    } else {
+      onSubmit(SubmitType.WithForm);
+    }
+  }
   return (
     <div className="metaData-Station-Parent">
       {handleActiveScreen(activeScreen)}
@@ -1218,7 +1243,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
             <CRXButton
               className="primary"
               disabled={isDisable}
-              onClick={() => onSubmit(SubmitType.WithForm)}
+              onClick={() => SaveBtnSubmitForm()}
             >
               {t("Save")}
             </CRXButton>
@@ -1240,9 +1265,12 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
               <CRXButton className='cancelButton secondary' color='secondary' variant='contained' onClick={backBtnHandler}>
                 {t("Back")}
               </CRXButton>
-              <CRXButton className='skipButton' onClick={() => onSubmit(SubmitType.WithoutForm)}>
-                {t("Skip_category_form_and_save")}
-              </CRXButton>
+              {/* Won't render if Categories have Form in it. */}
+              {(!isCategoriesFormEmpty) &&
+                <CRXButton className='skipButton' onClick={() => onSubmit(SubmitType.WithoutForm)}>
+                  {t("Skip_category_form_and_save")}
+                </CRXButton>
+              }
             </>
             :
             <CRXButton className="secondary" onClick={onClose}>

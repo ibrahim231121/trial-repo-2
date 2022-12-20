@@ -12,7 +12,6 @@ const NoFormAttachedOfAssetBucket: React.FC<Props> = ({ categoryCollection }) =>
     return (
         <>
             <CRXHeading variant='h6' className='categoryNextTitle dailogFormHeading'>
-                {t("Category_Title_Placeholder_Here")}
                 {categoryCollection.map((field: any, _key: number) => (
                     <span key={_key}>
                         <b> {field.label}</b>

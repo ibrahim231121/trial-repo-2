@@ -105,7 +105,6 @@ const DialogueForm: React.FC<DialogueFormProps> = (props) => {
         }}>
         <Form>
           <CRXHeading variant='h6' className='categoryNextTitle dailogFormHeading'>
-            {t("Category_Title_Placeholder_Here")}
             {props.formCollection.map((field: any, _key: number) => (
               <span key={_key}>
                 <b> {field.name}</b>
