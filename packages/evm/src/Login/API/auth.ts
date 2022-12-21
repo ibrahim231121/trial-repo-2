@@ -19,7 +19,6 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
     }
 
     decoded = jwt_decode(idToken);
-    localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('username', decoded.UserName);
     localStorage.setItem('remember me', decoded.RememberMe);
     localStorage.setItem('User Id', decoded.UserId);
@@ -34,10 +33,12 @@ export const authenticate = (accessToken: string, idToken: string, refreshToken:
         localStorage.setItem('expiryDate', expireDateLocalStorage);
         const options = { path: '/', expires: expireDate };
         cookies.set('access_token', accessToken, options);
+        cookies.set('refreshToken', refreshToken, options);
         setAPIAgentConfig();
     } else {
         const options = { path: '/' };
         cookies.set('access_token', accessToken, options);
+        cookies.set('refreshToken', refreshToken, options);
         setAPIAgentConfig();
     }
     codeChallengeRemove();
