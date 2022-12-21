@@ -422,19 +422,19 @@ const AssetDetailsTemplate = (props: any) => {
           })
         })
       });
-
-      var owners: any[] = getAssetData.assets.master.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
+      var assetMetadata : any = assetsList.find(x => x.id == parseInt(assetId));
+      var owners: any[] = assetMetadata.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
       var unit: number[] = [];
-      unit.push(getAssetData.assets.master.unitId);
+      unit.push(assetMetadata.unitId);
 
       var checksum: number[] = [];
-      getAssetData.assets.master.files.forEach((x: any) => {
+      assetMetadata.files.forEach((x: any) => {
         checksum.push(x.checksum.checksum);
       });
 
 
-      let size = getAssetData.assets.master.files.filter(x => x.type != "GPS").reduce((a, b) => a + b.size, 0)
+      let size = assetMetadata.files.filter((x: any) => x.type != "GPS").reduce((a:any, b:any) => a + b.size, 0)
 
 
       var categoriesForm: string[] = [];
@@ -450,16 +450,16 @@ const AssetDetailsTemplate = (props: any) => {
           "MM / DD / YY @ HH: mm: ss"
         ),
         checksum: checksum,
-        duration: milliSecondsToTimeFormat(new Date(getAssetData.assets.master.duration)),
+        duration: milliSecondsToTimeFormat(new Date(assetMetadata.duration)),
         size: formatBytes(size, 2),
         retention: retentionSpanText(getAssetData.holdUntil, getAssetData.expireOn) ?? "",
         categories: categories,
         categoriesForm: categoriesForm,
-        id: getAssetData?.assets?.master?.id,
-        assetName: getAssetData?.assets?.master?.name,
-        typeOfAsset: getAssetData?.assets?.master?.typeOfAsset,
-        status: getAssetData?.assets?.master?.status,
-        camera: getAssetData?.assets?.master?.camera ?? ""
+        id: assetMetadata.id,
+        assetName: assetMetadata.name,
+        typeOfAsset: assetMetadata.typeOfAsset,
+        status: assetMetadata.status,
+        camera: assetMetadata.camera ?? ""
       });
       const data = extract(getAssetData);
       if (fileState != "Deleted") { // File state from Azure deleted - do not render video player - page crashes - ad hoc fix - need to show pop up 
@@ -1129,7 +1129,6 @@ const AssetDetailsTemplate = (props: any) => {
 
         <div className="list_data_main CRX_accordion_main">
           <CrxTabPanel value={value} index={0}>
-
 
             <div className="list_data">
               <Grid container spacing={0}>
