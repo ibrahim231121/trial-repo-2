@@ -1064,7 +1064,7 @@ const AssetDetailsTemplate = (props: any) => {
         case 'Image':
           return <img src={availableAssets[0]?.files[0]?.downloadUri}></img>
         case 'Audio':
-          return <audio src={availableAssets[0]?.files[0]?.downloadUri}></audio>
+          return <audio controls={true} src={availableAssets[0]?.files[0]?.downloadUri}></audio>
         default:
           return <></>;
       }

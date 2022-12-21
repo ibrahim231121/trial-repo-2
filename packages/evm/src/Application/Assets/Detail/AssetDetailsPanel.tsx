@@ -48,7 +48,7 @@ type Timeline = {
 
 const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, updateSeekMarker, gMapApiKey, gpsJson, openMap, setOnMarkerClickTimeData, toasterMsgRef }: propsObject) => {
   const { t } = useTranslation<string>();
-  const [selectDropDown, setSelectDropDown] = React.useState(openMap? "Map" : "Bookmarks");
+  const [selectDropDown, setSelectDropDown] = React.useState(openMap ? "Map" : "Bookmarks");
   const targetRef = React.useRef<typeof CRXToaster>(null);
   const alertRef = useRef(null);
   const [alertType] = useState<string>('inline');
@@ -58,6 +58,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   const [bookmarksStateArr, setBookmarksStateArr] = useState<any>([]);
   const [notesStateArr, setNotesStateArr] = useState<any>([]);
   const [searchTerm, setsearchTerm] = React.useState("");
+  const [assetDetailSelectValue, setAssetDetailSelectValue] = React.useState<string>("Bookmarks")
 
   const timelinedetail: Timeline[] = useSelector(
     (state: RootState) => state.timelineDetailReducer.data
@@ -95,13 +96,16 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
 
   React.useEffect(() => {
     if (openMap && gpsJson.length > 0) {
-      setOptions( [...options ,{ value: "Map", displayText: "Map" }])
+      setOptions([...options, { value: "Map", displayText: "Map" }])
+      setAssetDetailSelectValue("Map")
+      setSelectDropDown("Map")
     }
   }, [gpsJson]);
-  
+
   const handleChangeDropDown = (event: any) => {
-   
+
     setSelectDropDown(event.target.value);
+    setAssetDetailSelectValue(event.target.value)
   };
 
   const callBackOnMarkerClick = (logtime: any) => {
@@ -114,13 +118,13 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   }
   const handleFilterClear = (e: any) => {
     setsearchTerm("");
-  } 
+  }
 
 
   return (
 
     <div className="detailDropdownMain">
-      
+
       <CRXToaster ref={targetRef} />
       {alert && <CRXAlert
         ref={alertRef}
@@ -134,12 +138,13 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
       <div className="Video_Side_Panel_DropDown">
         <CRXSelectBox
           options={options}
-          defaultOption = {false}
+          defaultOption={false}
           className="video_right_panel_dropDown"
           onChange={(e: any) => handleChangeDropDown(e)}
           icon={true}
-          defaultOptionText={openMap? "Map" : "Bookmarks"}
+          defaultOptionText={openMap ? "Map" : "Bookmarks"}
           popover="video_right_panel_dropDown_menu"
+          value={assetDetailSelectValue}
         />
       </div>
 
@@ -162,7 +167,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
             <List>
               <div className="_video_right_panel_item_heading">{selectDropDown == "Bookmarks" ? t("Search Bookmarks") : t("Search Notes")}</div>
               <div className="_BN_Search_field">
-                
+
                 <TextField
                   type="text"
                   placeholder={t("Search_by_Name_keyword_etc.")}
@@ -171,7 +176,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
                   name="bookmarkSearch"
                 />
                 <i className="fa-regular fa-magnifying-glass magnifyingIconUi"></i>
-                {searchTerm  && <i onClick={handleFilterClear} className="fa-regular fa-xmark xmarkIconUi"></i> }
+                {searchTerm && <i onClick={handleFilterClear} className="fa-regular fa-xmark xmarkIconUi"></i>}
               </div>
               <div className="_bookMark_list_items ">
                 {selectDropDown == "Bookmarks" &&
