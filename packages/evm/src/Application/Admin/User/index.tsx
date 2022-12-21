@@ -502,6 +502,13 @@ const User: React.FC = () => {
       getFilteredUserData()
       setIsSearchable(true)
     }
+    if(
+      dateTime.dateTimeObj.startDate === "" && dateTime.dateTimeObj.endDate === "" 
+    ){
+      pageiGrid.gridFilter.filters = []
+      dispatch(getUsersInfoAsync(pageiGrid));
+    }
+    
   }, [searchData]);
 
   useEffect(() => {
