@@ -332,4 +332,15 @@ iframe {
       }
     }
   
+}.unitDeviceRemoveMuiIcon {
+  padding-top: 0px !important;
+  & > .MuiGrid-item {
+    position: relative;
+    &::before {
+      display: none;
+    }
+  }
+  .crxClearfilter {
+    top: 0px;
+  }
 }

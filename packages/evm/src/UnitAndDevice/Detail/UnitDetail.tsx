@@ -638,7 +638,7 @@ const UnitCreate = (props: historyProps) => {
 
         {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={1}>
-            <div className="unitDeviceMain searchComponents unitDeviceMainUii">
+            <div className="unitDeviceMain searchComponents unitDeviceMainUii unitDeviceRemoveMuiIcon">
               {rows && (
                 <CRXDataTable
                   id={t("Unit_Details")}
