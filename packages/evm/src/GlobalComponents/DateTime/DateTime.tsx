@@ -169,7 +169,7 @@ const DateTime = () => {
     else {
       assetDateTime = {
         startDate: "",
-        endDate: moment().format().toString()
+        endDate: ""
       }
     }
     return assetDateTime;
