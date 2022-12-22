@@ -715,7 +715,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={showAdvanceSearch == false ? 250 : 755}
+          offsetY={showAdvanceSearch == false ? 246 : 750}
           topSpaceDrag = {showAdvanceSearch == false ? 290 : 799}
           headerPositionInit={178}
           //End here

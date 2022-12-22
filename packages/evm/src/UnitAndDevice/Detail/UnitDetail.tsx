@@ -345,12 +345,21 @@ const UnitCreate = (props: historyProps) => {
       SetStationID(unitData.stationId);
       targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true});  
     })
-    .catch(function (error) {
-      targetRef.current.showToaster({message: t("Unit_Edit_failed"), variant: "error", duration: 5000, clearButtton: true}); 
-      return error;
+    .catch(function (e: any) {
+      catchError(e);
     })
       
   };
+  const catchError = (e : any) => {
+    if(e.request.status == 409) {
+      targetRef.current.showToaster({message: e.response.data, variant: "error", duration: 5000, clearButtton: true}); 
+
+    }
+    else if (e.request.status == 500) {  
+      targetRef.current.showToaster({message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator."), variant: "error", duration: 5000, clearButtton: true}); 
+    }
+    return e;
+  }
   const alertMsgDiv = showSuccess ? " " : "hideMessageGroup";
 
   const [resChecker, setresChecker] = useState(true);
@@ -638,7 +647,7 @@ const UnitCreate = (props: historyProps) => {
 
         {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={1}>
-            <div className="unitDeviceMain searchComponents unitDeviceMainUii">
+            <div className="unitDeviceMain searchComponents unitDeviceMainUii unitDeviceRemoveMuiIcon">
               {rows && (
                 <CRXDataTable
                   id={t("Unit_Details")}

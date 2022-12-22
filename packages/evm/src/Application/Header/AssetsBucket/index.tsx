@@ -283,30 +283,23 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       showToastMsg();
     } else if (assetBucketData.length < prevCount) {
       const totalRemoved = prevCount - assetBucketData.length;
-      toasterRef.current.showToaster({
-        message: `${totalRemoved} ${
-          totalRemoved > 1 ? t("assets") : t("asset")
-        } ${t("removed_the_asset_bucket")}`,
-        variant: "success",
-        duration: 7000,
-      });
-          toasterRef.current.showToaster({
-            message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-            variant: "success",
-            duration: 7000,
+        toasterRef.current.showToaster({
+          message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+          variant: "success",
+          duration: 7000,
 
-          });
+        });
 
-          let notificationMessage: NotificationMessage = {
-            title: t("Asset_Lister"),
-            message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
-            type: "success",
-            date: moment(moment().toDate())
-              .local()
-              .format("YYYY / MM / DD HH:mm:ss"),
-          };
-          dispatch(addNotificationMessages(notificationMessage));
-        }
+        let notificationMessage: NotificationMessage = {
+          title: t("Asset_Lister"),
+          message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
+          type: "success",
+          date: moment(moment().toDate())
+            .local()
+            .format("YYYY / MM / DD HH:mm:ss"),
+        };
+        dispatch(addNotificationMessages(notificationMessage));
+      }
   }, [assetBucketData]);
 
   const showToastMsg = () => {
@@ -1077,6 +1070,15 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
         duration: 7000,
         clearButtton: true,
       });
+      let notificationMessage: NotificationMessage = {
+        title: t("Asset_Bucket"),
+        message: t("File_has_been_removed_successfully"),
+        type: "success",
+        date: moment(moment().toDate())
+          .local()
+          .format("YYYY / MM / DD HH:mm:ss"),
+      };
+      dispatch(addNotificationMessages(notificationMessage));
     } else {
     }
   };

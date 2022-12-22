@@ -27,13 +27,9 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
       setClientWidth(divWidth);
   }, []);
 
-
-  
-  
-
   let finalWidth =
     resizeWidth &&
-    resizeWidth.deltaX + clientWidth[(resizeWidth.colIdx + 2)].clientWidth + "px";
+    resizeWidth.deltaX + clientWidth[(resizeWidth.colIdx)].clientWidth + "px";
 
     React.useEffect(() => {
       
@@ -44,7 +40,6 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
   //
 
   const resizeRow = (e: { colIdx: number; deltaX: number, colID : any }) => {
-   
     setResizeWidth(e);
   };
 
@@ -128,7 +123,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             }`,
             userSelect: "none",
             minWidth: headCells[colIdx].minWidth + "px",
-            width : headCells[colIdx].maxWidth + "px",
+            
           }}
           align={
             headCells[colIdx].align === "right"
@@ -147,7 +142,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               width:
                 colIdx === resizeWidth?.colIdx
                   ? finalWidth 
-                  : headCells[colIdx].width + "px",
+                  : headCells[colIdx].minWidth + "px",
               
             }}
             
@@ -203,6 +198,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                     deltaX: deltaX.x / 2,
                     colID : headCells[colIdx].id
                   });
+                  console.log("deltaX", deltaX)
                 }}
                 onStop={() => {
                   const memo: any = {};
@@ -227,10 +223,15 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
               >
                 <span className="DragHandleIcon"></span>
               </Draggable>
+              
             </div>
+            
           </div>
+          
         </TableCell>
+        
       ))}
+      
     </>
   );
 };

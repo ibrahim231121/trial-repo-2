@@ -22,7 +22,7 @@ const TimelineSyncInstructionsModal: React.FC<VideoPlayerTimelineSyncInstruction
             <CRXModalDialog
                 maxWidth="gl"
                 // title="Asset view reason"
-                className={'CRXModal '}
+                className={'CRXModal sync_timeline_model'}
                 modelOpen={openTimelineSyncInstructions}
                 onClose={handleClose}
                 defaultButton={false}
@@ -45,7 +45,7 @@ const TimelineSyncInstructionsModal: React.FC<VideoPlayerTimelineSyncInstruction
                         </div>
                         <div className='crxFooterEditFormBtn'>
                             <CRXButton className='primary' onClick={handleClose}>
-                            hide this message
+                            Okay, got it
                             </CRXButton>
                         </div>
                     </div>

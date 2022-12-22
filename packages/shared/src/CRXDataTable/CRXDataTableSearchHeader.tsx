@@ -65,7 +65,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         
         handle = setTimeout(callback, timeout || 200); // default 200 ms
         table2.style.visibility = "visible"
-        tbl && ( tbl.style.display = "inline-table")
+        //tbl && ( tbl.style.display = "inline-table")
         tbl && (dataTable.children[0].style.opacity = 0, dataTable.children[1].style.opacity = 0)
         offsetY && window.pageYOffset > offsetY && setWindScrollValue(searchHeaderPosition); 
         
@@ -88,7 +88,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
     createScrollStopListener(window, function() {
       dataTableOnScroll.style.visibility = "hidden"
       tblBlock && (dataTableOnStop.children[0].style.opacity = 1, dataTableOnStop.children[1].style.opacity = 1)
-      tblBlock && (tblBlock.style.display = "block")
+      //tblBlock && (tblBlock.style.display = "block")
       setWindScrollValue(window.pageYOffset - minSticky)
       
       if(window.pageYOffset == 0 ) {

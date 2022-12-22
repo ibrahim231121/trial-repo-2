@@ -45,9 +45,10 @@ import UploadPoliciesList from './Application/Admin/UploadPolicies/UploadPolicie
 import RetentionPoliciesList from './Application/Admin/RetentionPolicies/RetentionPoliciesLister/RetentionPoliciesList';
 import CategoriesList from "./Application/Admin/Categories/CategoriesLister/CategoriesList";
 import CategoryFormsList from "./Application/Admin/CategoryForms/CategoryFormsLister/CategoryFormsList";
+import Cookies from "universal-cookie";
 
 
-
+const cookies = new Cookies();
 
 const Routes = () => {
 
@@ -62,10 +63,13 @@ const Routes = () => {
 
  //session expiration method
  const handleOnIdle = () => {
-  localStorage.setItem("sessionRoute","sessionRoute")
-  logOutUserSessionExpired(()=>{
-    history.push('/sessionExpiration')
-  })
+  // If command is open in another tab we would not apply idle logic/condition.
+  if(!(parseInt(cookies.get("command_tab_count")) > 0)) {
+    localStorage.setItem("sessionRoute","sessionRoute")
+    logOutUserSessionExpired(()=>{
+      history.push('/sessionExpiration')
+    })
+  }
 }
 
   return (

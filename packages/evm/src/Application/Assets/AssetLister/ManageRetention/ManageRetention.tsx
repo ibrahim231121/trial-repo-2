@@ -96,6 +96,7 @@ const ManageRetention: React.FC<ManageRetentionProps> = (props) => {
           if (moment(response.holdUntil).format('DD-MM-YYYY') == "31-12-9999") {
             formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];
             formPayload.CurrentRetention = 'Current Retention: Indefinite';
+            formPayload.RetentionOptions = formPayload.RetentionOptions.map((options: any)=> options.value == '2' ? {...options , isDisabled : true} : options)
           }
           else {
             formPayload.RetentionOptions = [...formPayload.RetentionOptions, { value: '3', label: `${t('Revert_to_original_retention')}`, Comp: () => { } }];

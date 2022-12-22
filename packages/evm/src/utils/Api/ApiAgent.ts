@@ -105,9 +105,9 @@ axios.interceptors.response.use(async response => {
     //     Logout()
     // }
     const status: number | undefined = error.response?.status;
-    if (status === 401) { // Unauthorized request redirection - need to add routine to retreive new token and re-attempt request
-        Logout()
-    }
+    // if (status === 401) { // Unauthorized request redirection - need to add routine to retreive new token and re-attempt request
+    //     Logout()
+    // }
     return Promise.reject(error);
 })
 
