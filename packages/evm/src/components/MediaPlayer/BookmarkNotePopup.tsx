@@ -79,21 +79,23 @@ const BookmarkNotePopup = ({
     }
   }, [editDescription]);
 
-  const onRemove = (del : boolean) => {
-    if(del){
+  const onRemove = (del: boolean) => {
+    if (del) {
       let tempData = JSON.parse(JSON.stringify(timelinedetail));
-      if(bookmarkNotePopupObj.objtype == "Note"){
-        tempData.forEach((x:any)=> 
-          {if(x.dataId == bookmarkNotePopupObj.assetId){
-              x.notes = x.notes.filter((y:any)=> y.id !== bookmarkNotePopupObj.id);
-          }})
+      if (bookmarkNotePopupObj.objtype == "Note") {
+        tempData.forEach((x: any) => {
+          if (x.dataId == bookmarkNotePopupObj.assetId) {
+            x.notes = x.notes.filter((y: any) => y.id !== bookmarkNotePopupObj.id);
+          }
+        })
         dispatch(addTimelineDetailActionCreator(tempData));
       }
-      else if(bookmarkNotePopupObj.objtype == "Bookmark"){
-        tempData.forEach((x:any)=> 
-          {if(x.dataId == bookmarkNotePopupObj.assetId){
-              x.bookmarks = x.bookmarks.filter((y:any)=> y.id !== bookmarkNotePopupObj.id);
-          }})
+      else if (bookmarkNotePopupObj.objtype == "Bookmark") {
+        tempData.forEach((x: any) => {
+          if (x.dataId == bookmarkNotePopupObj.assetId) {
+            x.bookmarks = x.bookmarks.filter((y: any) => y.id !== bookmarkNotePopupObj.id);
+          }
+        })
         dispatch(addTimelineDetailActionCreator(tempData));
       }
     }
@@ -140,6 +142,8 @@ const BookmarkNotePopup = ({
   };
 
   const onClickSave = () => {
+    setEditDescription(false);
+    setEnableOnSave(false);
     if (bookmarkNotePopupObj.objtype == "Bookmark") {
       onUpdateBookmark();
     } else if (bookmarkNotePopupObj.objtype == "Note") {
@@ -231,24 +235,28 @@ const BookmarkNotePopup = ({
 
   const updateBookmarkNotePopupObjState = () => {
     let tempData = JSON.parse(JSON.stringify(timelinedetail));
-    if(bookmarkNotePopupObj.objtype == "Note"){
-      tempData.forEach((x:any)=> 
-        {if(x.dataId == bookmarkNotePopupObj.assetId){
-          x.notes.forEach((y:any)=> 
-            {if(y.id == bookmarkNotePopupObj.id){
+    if (bookmarkNotePopupObj.objtype == "Note") {
+      tempData.forEach((x: any) => {
+        if (x.dataId == bookmarkNotePopupObj.assetId) {
+          x.notes.forEach((y: any) => {
+            if (y.id == bookmarkNotePopupObj.id) {
               y.description = description;
-            }});
-        }})
+            }
+          });
+        }
+      })
       dispatch(addTimelineDetailActionCreator(tempData));
     }
-    else if(bookmarkNotePopupObj.objtype == "Bookmark"){
-      tempData.forEach((x:any)=> 
-        {if(x.dataId == bookmarkNotePopupObj.assetId){
-          x.bookmarks.forEach((y:any)=> 
-            {if(y.id == bookmarkNotePopupObj.id){
+    else if (bookmarkNotePopupObj.objtype == "Bookmark") {
+      tempData.forEach((x: any) => {
+        if (x.dataId == bookmarkNotePopupObj.assetId) {
+          x.bookmarks.forEach((y: any) => {
+            if (y.id == bookmarkNotePopupObj.id) {
               y.description = description;
-            }});
-        }})
+            }
+          });
+        }
+      })
       dispatch(addTimelineDetailActionCreator(tempData));
     }
     let tempData1 = [...bookmarkNotePopupArrObj];
@@ -328,6 +336,9 @@ const BookmarkNotePopup = ({
   };
 
   const onDeleteConfirm = async () => {
+    setIsOpenConfirmDailog(false);
+    setEditDescription(false);
+    setEnableOnSave(false);
     if (bookmarkNotePopupObj.objtype == "Bookmark") {
       onDeleteBookmark();
     } else if (bookmarkNotePopupObj.objtype == "Note") {
