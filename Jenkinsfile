@@ -53,6 +53,11 @@ pipeline {
         }
         dir('src') {
           buildName "1.0.${currentBuild.number}"
+          sh label: 'createa version file', script: "echo export const buildVersionNumber = '1.0.${currentBuild.number}' > packages/evm/src/version.ts"
+          sh label: 'createa version file', script: """
+          echo "export const buildVersionNumber = '1.0.${currentBuild.number}'" > packages/evm/src/version.ts
+          """
+          sh label: 'check the version file', script: 'cat packages/evm/src/version.ts' 
 		  sh label: 'removing node_module', script: 'rm -rf node_modules/'
           sh label: 'npm install', script: 'npm install'
           sh label: 'lerna bootstrap', script: 'npx lerna bootstrap'

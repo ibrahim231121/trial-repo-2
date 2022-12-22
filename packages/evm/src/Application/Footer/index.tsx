@@ -4,6 +4,7 @@ import useGetFetch from "../../utils/Api/useGetFetch";
 import { EVIDENCE_SEARCH_VERSION_URL } from '../../utils/Api/url'
 import { useTranslation } from "react-i18next";
 import { getToken } from "../../Login/API/auth";
+import { buildVersionNumber } from "../../version"
 
 const Footer = React.memo(() => {
   const { t } = useTranslation<string>();
@@ -37,9 +38,10 @@ const Footer = React.memo(() => {
     setVersionNumber(res); //res.replace(/^"|"$/g, '')
   }, [res]);
 
+  let buildNumber : any = buildVersionNumber;
   return (
     <div className="footerDiv">
-      {t("Copyright_©_Getac_Video_Solutions_Inc._and_its_subsidiaries._All_rights_reserved._|_Enterprise_Version")}: {versionNumber}
+      {t("Copyright_©_Getac_Video_Solutions_Inc._and_its_subsidiaries._All_rights_reserved._|_Enterprise_Version")}: {buildNumber !== undefined ? buildNumber :  "In Development" }
       <i
         className="fas fa-chevron-up"
         onClick={scrollTop}

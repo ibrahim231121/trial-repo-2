@@ -160,7 +160,7 @@ const DataTableContainer: React.FC<DataTableContainerProps> = ({
       </Table>
       <div className="scrollControler"></div>
     </TableContainer>
-      <div className="overlayPanel"></div>
+      
     </>
   );
 };

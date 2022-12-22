@@ -39,7 +39,7 @@ const DragableHead = SortableContainer(( props: any) => {
   },[])
 
     return (
-      <TableHead style={{"top" : windScrollValue +  "px"}}>
+      <TableHead style={{"top" : windScrollValue +  "px", zIndex : 999}}>
         <TableRow>
           {props.children}
         </TableRow>
