@@ -694,59 +694,7 @@ else {
 
       functionalityAfterRequest()
     }).catch((e: any) => {
-
-      if (e !== undefined) {
-        let error = JSON.parse(e);
-
-        if (error.errors !== undefined) {
-          if (error.errors.UserName !== undefined && error.errors.UserName.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.UserName[0]);
-          }
-          if (error.errors.First !== undefined && error.errors.First.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.First[0]);
-          }
-          if (error.errors.Last !== undefined && error.errors.Last.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Last[0]);
-          }
-          if (error.errors.Email !== undefined && error.errors.Email.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Email[0]);
-          }
-          if (error.errors.Number !== undefined && error.errors.Number.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Password[0]);
-          }
-          if (error.errors.Password !== undefined && error.errors.Password.length > 0) {
-            setAlert(true);
-            setResponseError(error.errors.Password[0]);
-          }
-        } else {
-          setAlert(true);
-          setResponseError(error);
-          const errorString = error;
-          if (errorString.includes('email') === true) {
-            setIsExtEmail('isExtEmail');
-          } else {
-            setIsExtEmail('');
-          }
-
-          if (errorString.includes('username') === true) {
-            setIsExtUsers('isExtUserName');
-          } else {
-            setIsExtUsers('');
-          }
-        }
-      }
-      else if (e.status == 500) {
-        setAlert(true);
-        setResponseError(
-          t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator")
-        );
-      }
-      return error;
+        catchError(e);
     });
   };
 
