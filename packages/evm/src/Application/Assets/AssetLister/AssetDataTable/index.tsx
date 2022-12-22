@@ -1,50 +1,33 @@
-import React, { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { CRXDataTable, CRXToaster, CRXIcon, CRXDataTableTextPopover, CBXMultiSelectForDatatable } from "@cb/shared";
-import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
-import {
-  SearchObject,
-  Order,
-  ValueString,
-  HeadCellProps,
-  onResizeRow,
-  onClearAll,
-  onTextCompare,
-  onMultipleCompare,
-  onMultiToMultiCompare,
-  onDateCompare,
-  onSetHeadCellVisibility,
-  onSaveHeadCellData,
-  onSetSingleHeadCellVisibility,
-  onSetSearchDataValue,
-  GridFilter,
-  PageiGrid
-} from "../../../../GlobalFunctions/globalDataTableFunctions";
-import "./index.scss";
-import { useTranslation } from "react-i18next";
-import ActionMenu from "../ActionMenu";
-import { getAssetSearchInfoAsync } from "../../../../Redux/AssetSearchReducer";
-import DetailedAssetPopup from "./DetailedAssetPopup";
-import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
-import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
-import { AssetThumbnail } from "./AssetThumbnail";
-import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
-import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
-import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
-import { Link } from "react-router-dom";
+import { CBXMultiSelectForDatatable, CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip } from "@cb/shared";
 import moment from "moment";
-import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
+import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
+import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
+import multitextDisplay from "../../../../GlobalComponents/Display/MultiTextDisplay";
+import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
+import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
+import { assetDurationFormat, assetSizeFormat } from "../../../../GlobalFunctions/AssetSizeFormat";
+import dateDisplayFormat from "../../../../GlobalFunctions/DateFormat";
+import {
+  HeadCellProps, onClearAll, onDateCompare, onMultipleCompare,
+  onMultiToMultiCompare, onResizeRow, onSaveHeadCellData, onSetHeadCellVisibility, onSetSearchDataValue, onSetSingleHeadCellVisibility, onTextCompare, Order, SearchObject, ValueString
+} from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { addNotificationMessages } from "../../../../Redux/notificationPanelMessages";
-import { ActionMenuPlacement } from "../ActionMenu/types";
-import { DateTimeObject, DateTimeProps, MasterMainProps } from "./AssetDataTableModel";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
-import { assetSizeFormat, assetDurationFormat } from "../../../../GlobalFunctions/AssetSizeFormat";
-import { CRXTooltip } from "@cb/shared";
+import { NotificationMessage } from "../../../Header/CRXNotifications/notificationsTypes";
+import ActionMenu from "../ActionMenu";
+import { ActionMenuPlacement } from "../ActionMenu/types";
+import { AssetDetailRouteStateType, DateTimeObject, DateTimeProps, MasterMainProps, renderCheckMultiselect } from "./AssetDataTableModel";
+import { AssetThumbnail } from "./AssetThumbnail";
+import DetailedAssetPopup from "./DetailedAssetPopup";
+import "./index.scss";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
   let fileType = evidence.masterAsset?.files &&  evidence.masterAsset?.files[0]?.type;
-
   return <AssetThumbnail assetType={assetType} fileType={fileType} fontSize="61pt" />;
 };
 
@@ -64,14 +47,13 @@ const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
   {
     return <div className={"dataTableText " + classes}></div>;
   }
-
 };
 
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
-
-  let dataLink = <>
+  let dataLink = 
+  <>
     <Link
       className="linkColor"
       to={{
@@ -81,7 +63,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
           assetId: masterAsset.assetId,
           assetName: assetName,
           evidenceSearchObject: evidence
-        },
+        } as AssetDetailRouteStateType,
       }}
     >
       <div className="assetName">{assetName}</div>
@@ -91,16 +73,15 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     }
     <DetailedAssetPopup asset={assets} row={evidence} />
   </>
-  return (<CRXDataTableTextPopover
-    content={dataLink}
-    id="dataAssets"
-    isPopover={true}
-    counts={assetName}
-    title="Assets ID"
-    minWidth="130"
-    maxWidth="263"
-  />
-  );
+    return (<CRXDataTableTextPopover
+      content={dataLink}
+      id="dataAssets"
+      isPopover={true}
+      counts={assetName}
+      title="Assets ID"
+      minWidth="130"
+      maxWidth="263"
+    />);
 };
 
 const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
@@ -120,11 +101,6 @@ const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Eleme
       {AssetRetentionFormat(date)}
     </div>
   );
-}
-
-interface renderCheckMultiselect {
-  value: string,
-  id: string,
 }
 
 const MasterMain: React.FC<MasterMainProps> = ({
@@ -176,7 +152,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [orderBy, setOrderBy] = React.useState<string>("recordingStarted");
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
-  // const [isOpen, setIsOpen] = React.useState<any>(undefined)
   const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
@@ -674,8 +649,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
     }
   };
 
-
-
   return (
     <>
     
@@ -731,4 +704,5 @@ const MasterMain: React.FC<MasterMainProps> = ({
     </>
   );
 };
+
 export default MasterMain;

@@ -95,7 +95,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       },
       Forms : payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type : "Unknown" } })
     }
-debugger
     if (id > 0) {
       url += "/" + id;
       SetupConfigurationAgent.putCategories(url, body).then(() => {
