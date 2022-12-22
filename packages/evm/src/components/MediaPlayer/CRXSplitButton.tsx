@@ -7,9 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-
-
 
 const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any) => {
   const [open, setOpen] = React.useState(false);
@@ -21,8 +18,8 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
     if(selectedIndex == 0){saveOffsets()}
     if(selectedIndex == 2){UndoRedo(-1)}
     else if(selectedIndex == 3){UndoRedo(1)}
-    else if(selectedIndex == 4){UndoRedo(0)}
-    else if(selectedIndex == 5){RevertToOriginal()}
+    else if(selectedIndex == 3){UndoRedo(0)}
+    else if(selectedIndex == 4){RevertToOriginal()}
   }
 
   const handleMenuItemClick = (event: any, index: any) => {
@@ -36,25 +33,28 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
 
   const handleClose = (event: any) => {
     if (anchorRef.current) {
-      return;
+    setOpen(false);
+      
     }
 
     setOpen(false);
   };
 
   return (
-    <React.Fragment>
+    <React.Fragment  >
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={handleClick}>{options[selectedIndex].label}</Button>
+        <Button  onClick={handleClick}>{options[selectedIndex].label}</Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
-          aria-expanded={open ? 'true' : undefined}
+          aria-expanded={open ? 'true' : 'false'}
           aria-label="select merge strategy"
           aria-haspopup="menu"
           onClick={handleToggle}
+          className={open ? "splitOptionsEnabled" : "splitOptionsDisabled"}
         >
-          <ArrowDropDownIcon />
+          <i className="fa-solid fa-caret-down"></i>
+
         </Button>
       </ButtonGroup>
       <Popper
@@ -63,6 +63,7 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
         role={undefined}
         transition
         disablePortal
+        className="split-button-menu-main"
       >
         {({ TransitionProps, placement }) => (
           <Grow
@@ -73,7 +74,7 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
             }}
           >
             <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
+              <ClickAwayListener onClickAway={handleClose} >
                 <MenuList id="split-button-menu" autoFocusItem>
                   {options.map((option, index) => (
                     <MenuItem
@@ -82,7 +83,8 @@ const SplitButton = ({buttonArray, RevertToOriginal, UndoRedo, saveOffsets}: any
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >
-                      {option.label}
+                      <span className='split_label_text'>{option.label}</span>
+                      <span className='split_label_shortKey'>{option.shortKey}</span>
                     </MenuItem>
                   ))}
                 </MenuList>

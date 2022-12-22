@@ -2519,23 +2519,43 @@ span.playBackTooltipUp {
     background: transparent;
     font-size: 14px;
     height: 30px;
-    color: #d1d2d4;
+    color: var(--color-d1d2d4);
     padding: 0 16px;
     border: 1px solid transparent;
-    margin-left: 356px;
+    margin-left: 176px;
+    display: flex;
+    align-items: center;
+    transition: all .1s;
     i {
       margin-right: 14px;
+      font-size: 20px;
+      display: inline-block;
+    }
+    span {
+      display: inline-block;
+      line-height: 16px;
     }
     &:hover {
       border: 1px solid var(--color-d74b00);
-      background: #d1d2d4;
-      color: #333;
+      background: var(--color-e7e7e7);
+      color: var(--color-333333);
+      cursor: pointer;
+    }
+    &:active {
+      border: 2px solid var(--color-d74b00);
+      background: var(--color-e7e7e7);
+      color: var(--color-333333);
+      cursor: pointer;
     }
   }
 }
 
 ._beforeline_Main {
   position: relative;
+  width: 81%;
+  &:hover {
+    cursor: pointer;
+  }
   .video_pointer_line {
     position: absolute;
     top: 0px;
@@ -2551,9 +2571,17 @@ span.playBackTooltipUp {
   }
   margin: 0 auto;
   .time_line_container {
+    &:hover {
+      .canvas-width {
+        border: 3px solid #f5f5f5 !important;
+      }
+      .buffer_button {
+        margin-top: -3px !important;
+      }
+    }
     ._before_line {
       .line {
-        padding: 0 168px 0 177px;
+        // padding: 0 168px 0 177px;
         margin-bottom: 23px;
         .beforerecording {
           background-color: #333;
@@ -2569,6 +2597,7 @@ span.playBackTooltipUp {
           padding-right: 16px;
           white-space: nowrap;
           color: var(--color-d1d2d4);
+          background-color:#333;
           width: 199px;
           min-width: 100px;
         }
@@ -2583,7 +2612,10 @@ span.playBackTooltipUp {
             color: #333;
             text-align: center;
             padding: 0;
-            margin-right: 12px;
+            margin-right: 15px;
+            &:hover {
+              cursor: pointer;
+            }
           }
           .buffer_btn_container {
             display: flex;
@@ -2606,6 +2638,12 @@ span.playBackTooltipUp {
           }
         }
       }
+      .syncButton_Disabled_Before{
+        border-right: 2px solid #d79903;
+      }
+      .syncButton_Disabled_After{
+        border-left: 2px solid #d79903;
+      }
     }
   }
 } /*_beforeline_Main*/
@@ -2616,4 +2654,188 @@ span.playBackTooltipUp {
   color: var(--color-White);
   font-family: var(--Arial-font-family);
   margin-bottom: 38px;
+}
+
+.syncButtonEnable {
+  display: block;
+}
+.syncButtonDisabled {
+  display: none !important;
+}
+.timeLineSyncActions {
+  margin-left: 175px;
+  display: flex;
+  .SplitButton_action {
+    > div {
+      height: 30px;
+    }
+  
+    button {
+      border-radius: 0px;
+      background-color: var(--color-e7e7e7);
+      &:nth-child(1) {
+        min-width: 156px;
+        display: flex;
+        justify-content: flex-start;
+        text-transform: none;
+        span {
+          color: var(--color-333333);
+          font-size: 14px;
+        }
+        border-right: 1px solid #E3E4E6;
+      }
+      &:nth-child(2) {
+          min-width: 38px !important;
+          padding: 4px 0px !important;
+          &:hover {
+            border: 2px solid var(--color-d74b00);
+          }
+          i {
+            font-size: 21px;
+          }
+      }
+      &:hover {
+        box-shadow: none;
+      }
+    }
+    .MuiTouchRipple-root {
+      display: none;
+    }
+  }
+
+  .SplitButton_close {
+    margin-left: 32px;
+    button {
+      height: 30px;
+      border: 1px solid var(--color-d1d2d4);
+      padding: 0 16px;
+      color:var(--color-d1d2d4);
+    }
+  
+  }
+}
+.splitOptionsEnabled {
+      border: 2px solid var(--color-d74b00) !important;
+}
+.split-button-menu-main { 
+  left: 38px !important;
+  z-index: 2;
+  width: 270px;
+  .MuiPaper-root {
+    background-color: var(--color-404041);
+    border-radius: 0px;
+    color: var(--color-d1d2d4);
+  }
+  #split-button-menu {
+      li {
+        height: 34px;
+        border-bottom: 1px solid var(--color-69696a) !important;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        &:nth-child(2) {
+          border-bottom: transparent !important;
+        }
+        &:hover {
+          background-color: var(--color-231f20);
+          color: var(--color-f5f5f5);
+        }
+        &:active {
+          background-color: var(--color-6e6e6e);
+        }
+      }
+      .Mui-selected {
+        background-color: transparent !important;
+        &:hover {
+          background-color: var(--color-231f20) !important;
+          color: var(--color-f5f5f5) !important;
+        }
+        &:active {
+          background-color: var(--color-6e6e6e) !important;
+        }
+      }
+      .split_label_shortKey {
+        color: var(--color-White);
+      }
+  }
+}
+
+#seekBar_multiTimeLine_view{
+  position: absolute;
+  top: 0;
+  transform: translate(-12.9vw, 50px);
+  width: 2px;
+  background-color: white;
+  cursor: pointer;
+  &:after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: -10px;
+    border-top: 10px solid white;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+  }
+}
+
+.buffer_button {
+  .MuiTooltip-popper{
+   top: 34px !important;
+  }
+}
+
+.enabledTimeline_bar_2 {
+  height: 67px;
+}
+.enabledTimeline_bar_3 {
+  height: 109px;
+}
+.enabledTimeline_bar_4 {
+  height: 152px;
+}
+
+.sync_timeline_model {
+  .MuiDialog-paper  {
+    .CRXPopupCrossButton {
+      display: none;
+    }
+    .CrxEditForm {
+      p {
+        font-weight: 700;
+      }
+      ul {
+        padding-left: 17px;
+        padding-top: 12px;
+        li {
+          padding-bottom: 5px;
+        }
+      }
+    }
+  }
+  .crxFooterEditFormBtn {
+    margin-bottom: -18px;
+    display: flex;
+    justify-content: center;
+    margin-top: 23px !important;
+  } 
+}
+
+@media only screen and (max-width: 1680px) { 
+  #seekBar_multiTimeLine_view {
+  transform: translate(-13.5vw, 50px);
+
+  }
+}
+
+@media only screen and (max-width: 1366px) { 
+  #seekBar_multiTimeLine_view {
+  transform: translate(-14.4vw, 50px);
+
+  }
+}
+@media only screen and (max-width: 1024px) { 
+  #seekBar_multiTimeLine_view {
+  transform: translate(16vw, 50px);
+
+  }
 }

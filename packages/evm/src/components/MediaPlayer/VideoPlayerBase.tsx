@@ -230,7 +230,7 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         notes: data[x].notes,
         startdiff: startdiff,
         video_duration_in_second: video_duration_in_second,
-        src: isDetailPageAccess ? data[x].files[0].downloadUri : `${protocol}commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+        src: isDetailPageAccess ? data[x]?.files[0]?.downloadUri : `${protocol}commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
         id: "Video-" + x,
         dataId: data[x].id,
         unitId: data[x].unitId,
@@ -382,18 +382,21 @@ const VideoPlayerBase = (props: any) => {
   const buttonArray = [
     {
       label: 'Save',
+      shortKey: 'Ctrl + S',
       disabled: false,
     },
-    {
-      label: 'Save as',
-      disabled: true,
-    },
+    // {
+    //   label: 'Save as',
+    //   disabled: true,
+    // },
     {
       label: 'Undo',
+      shortKey: 'Ctrl + Z',
       disabled: false,
     },
     {
       label: 'Redo',
+      shortKey: 'Ctrl + Shift + Z',
       disabled: false,
     },
     {
@@ -1667,7 +1670,7 @@ const VideoPlayerBase = (props: any) => {
     let durationinformat = secondsToHms(maxTimelineDuration);
     setfinalduration(durationinformat.toString())
     settimelineduration(maxTimelineDuration);
-
+    setSyncButton(false);
     tempTimelines.forEach((x: any) => {
       let recording_start_point = x.recording_start_point - (x.timeOffset / 1000) + negativeHandler;
       let recording_Start_point_ratio = ((recording_start_point / maxTimelineDuration) * 100)
@@ -2104,6 +2107,9 @@ useEffect(() => {
     </div>
     )
   }
+ 
+  const [syncButton,setSyncButton] = useState(false);
+
   return (
     
       <div className="_video_player_layout_main" onKeyDown={keydownListener} tabIndex={-1}>
@@ -2600,12 +2606,18 @@ useEffect(() => {
                   startTimelineSync={startTimelineSync}
                   multiTimelineEnabled={multiTimelineEnabled}
                   notesEnabled={notesEnabled}
+                  syncButton={startTimelineSync}
                 />
               ) : (<></>)}
-
-              {startTimelineSync && <CRXSplitButton className="SplitButton" buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />}
-              {startTimelineSync && <CRXButton color="primary" onClick={() => UndoRedo(0)} variant="contained">Cancel</CRXButton>}
-              {multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i>Sync timeline start</button>}
+              <div className="timeLineSyncActions">
+                <div className="SplitButton_action">
+                  {syncButton && (startTimelineSync && <CRXSplitButton  buttonArray={buttonArray} RevertToOriginal={RevertToOriginal} UndoRedo={UndoRedo} saveOffsets={saveOffsets} toasterMsgRef={toasterMsgRef} />)}
+                </div>
+                <div className="SplitButton_close">
+                 {syncButton && (startTimelineSync && <CRXButton  onClick={() => UndoRedo(0)} >Cancel</CRXButton>)}
+                </div>
+              </div>
+              {!syncButton && (multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setSyncButton(true); setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i><span>Sync timeline start</span></button>)}
             </div>
             }
              
