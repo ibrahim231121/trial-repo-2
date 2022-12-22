@@ -65,6 +65,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const getAll: any = useSelector((state: RootState) => state.uploadPoliciesSlice.getAll);
+    const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
+        nameErr: "",
+      });
 
     React.useEffect(() => {
         uploadPolicyDetailDropdownDataRef.current = uploadPolicyDetailDropdownData; 
@@ -102,17 +105,15 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
     }, [getAll]);
 
-    useEffect (() => {
-        dispatch(enterPathActionCreator({ val: "" }));
-        return () => {
-            dispatch(enterPathActionCreator({ val: "" }));
-            uploadMsgFormRef.current = null;
-          }
-    },[])
+    React.useEffect(() => { 
+        if(!isFirstRenderRef.current) {
+            checkNameValidation();        
+        }
+    }, [name]);
 
     useEffect(() => {
         dispatch(getAllData());
-       
+        dispatch(enterPathActionCreator({ val: "" }));
         isFirstRenderRef.current = false;
         if (id != undefined && id != null && id.length > 0) {
             SetupConfigurationAgent.getUploadPolicies(Number(id)).then((response: any) => {
@@ -137,6 +138,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 console.error(err);
             });
         }
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+            uploadMsgFormRef.current = null;
+          }
     }, []);
 
     const assetUploadConnectionsData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
@@ -231,17 +236,42 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         });
     }
 
-    const checkNameValidation = (value: string) => {
-        let errorState = {...uploadPolicyDetailValidation};
-        if(!!value && value.toString().trim().length > 0) {
-            errorState.name = ''
-        } else {
-            errorState.name = `Name_is_required`;
+    const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
+        const regex = new RegExp(/^([A-Z]|[a-z]){1}(([^\\W]|\\s)+){2,}/);
+        const chracterRegx = regex.test(String(name).toLowerCase())
+        if (!chracterRegx) {
+          return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
+        } else if (name.length < 3) {
+          return {
+            error: true,
+            errorMessage: t("Policy_Name_must_contains_atleast_three_characters"),
+          };
+        } else if (name.length > 128) {
+          return {
+            error: true,
+            errorMessage: t("Policy_Name_must_not_exceed_128_characters"),
+          };
         }
-        setUploadPolicyDetailValidation(errorState);
-    }
-    
+        return { error: false, errorMessage: "" };
+      };
 
+    const checkNameValidation = () => {
+        const isPolicyNameValid = validatePolicyName(name);
+        if (!name) {
+            setUploadPolicyDetailErr({
+            ...UploadPolicyDetailErr,
+            nameErr: t("Policy_Name_is_required"),
+          });
+        } else if (isPolicyNameValid.error) {
+            setUploadPolicyDetailErr({
+            ...UploadPolicyDetailErr,
+            nameErr: isPolicyNameValid.errorMessage,
+          });
+        } else {
+            setUploadPolicyDetailErr({ ...UploadPolicyDetailErr, nameErr: "" });
+        }
+    };
+    
     const disableAddUploadPolicyDetail = () => {
         let isDisable = false;       
 
@@ -529,6 +559,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                     <div className="nameFieldUploadPolicy">
                         <Grid  item xs={12} sm={12} md={12} lg={5}>
                             <TextField
+                            error ={!!UploadPolicyDetailErr.nameErr}
+                            errorMsg={UploadPolicyDetailErr.nameErr}
                             required={true}
                             value={name}
                             label={t("Name")}
@@ -538,12 +570,11 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             type="text"
                             name="uploadPoliciesName"
                             regex=""
-                            onBlur={() => checkNameValidation(name)}
+                            onBlur={() => checkNameValidation()}
                             />
                         </Grid>
                     </div>
                     <div className="nameFieldUploadPolicy">
-                       
                     
                         <Grid  item xs={12} sm={12} md={12} lg={5}>                           
                             <TextField                            
