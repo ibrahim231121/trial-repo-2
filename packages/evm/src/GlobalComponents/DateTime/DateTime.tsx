@@ -214,15 +214,19 @@ const DateTime = () => {
                 basicOption.endDate = () => customRangeDateTime.endDate;
               }
               else {
-                let assetDateTime = GetStartAndEndDate(dateValues)
-                basicOption.startDate = () => assetDateTime.startDate;
-                basicOption.endDate = () => assetDateTime.endDate;
+                basicOption.startDate = () => "";
+                basicOption.endDate = () => "";
+                // let assetDateTime = GetStartAndEndDate(dateValues)
+                // basicOption.startDate = () => assetDateTime.startDate;
+                // basicOption.endDate = () => assetDateTime.endDate;
               }
             }
             else {
-              let assetDateTime = GetStartAndEndDate(dateValues)
-              basicOption.startDate = () => assetDateTime.startDate;
-              basicOption.endDate = () => assetDateTime.endDate;
+              basicOption.startDate = () => "";
+              basicOption.endDate = () => "";
+              // let assetDateTime = GetStartAndEndDate(dateValues)
+              // basicOption.startDate = () => assetDateTime.startDate;
+              // basicOption.endDate = () => assetDateTime.endDate;
             }
           }
           onSelectionChange(basicOption);
