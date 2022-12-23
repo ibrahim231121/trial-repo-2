@@ -10,7 +10,7 @@ import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import ActionMenu from "../ActionMenu";
 import { SearchType } from "../../utils/constants";
 import { ActionMenuPlacement } from "../ActionMenu/types";
-
+import { ReFormatPropsForActionMenu } from "./Utility";
 
 type Props = {
   row?: any;
@@ -28,7 +28,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const [errorType, setErrorType] = React.useState<string>("error");
   const [showSuccess, setShowSuccess] = React.useState<boolean>(true);
   const DetailedPopupMsgRef = React.useRef<typeof CRXToaster>(null);
-  const [isPrimaryAsset, setIsPrimaryAsset] = React.useState(true)
+  const [isPrimaryAsset, setIsPrimaryAsset] = React.useState(true);
   const message = [
     { messageType: "success", message: `${asset.assetName}` + ` ${t("is_successfully_set_as_primary_asset")}` },
   ];
@@ -65,12 +65,6 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
       });
   };
 
-  const reformatRowPropData = (row: any, asset: any) => {
-    let newObj: any = {};
-    newObj = { ...asset };
-    newObj.evidence = row;
-    return newObj;
-  }
   const reformatSelectedAsset = (selectedAssets: any[]) => {
     const filteredArray = selectedAssets.filter(x => x.isChecked == true);
     if (filteredArray.length > 0) {
@@ -112,7 +106,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         }
       </CRXConfirmDialog>
       <ActionMenu
-        row={reformatRowPropData(row, asset)}
+        row={ReFormatPropsForActionMenu(row, asset.assetId)}
         selectedItems={reformatSelectedAsset(selectedItems)}
         asset={asset}
         showToastMsg={() => showToastMsg()}
