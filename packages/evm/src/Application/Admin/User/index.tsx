@@ -735,8 +735,8 @@ const User: React.FC = () => {
           totalRecords={users.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
-           offsetY={74}
-           headerPositionInit={201}
+           offsetY={70}
+           headerPositionInit={206.5}
            topSpaceDrag = {114}
            //End here
         />

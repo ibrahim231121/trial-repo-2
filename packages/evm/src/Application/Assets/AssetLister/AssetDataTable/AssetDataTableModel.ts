@@ -1,5 +1,4 @@
-import { SearchModel } from "../../../../utils/Api/models/SearchModel";
-
+import { SearchModel } from '../../../../utils/Api/models/SearchModel';
 
 export type DateTimeProps = {
     dateTimeObj: DateTimeObject;
@@ -25,9 +24,25 @@ export type MasterAsset = {
 
 export type MasterMainProps = {
     rowsData: SearchModel.Evidence[];
-    // rowsData: Evidence[];
     dateOptionType: string;
     dateTimeDetail: DateTimeObject;
     showDateCompact: boolean;
-    showAdvanceSearch? : boolean
+    showAdvanceSearch?: boolean;
 };
+
+export interface AssetDetailRouteStateType {
+    evidenceId: number;
+    assetId: number;
+    assetName: string;
+    evidenceSearchObject: SearchModel.Evidence;
+}
+
+export interface renderCheckMultiselect {
+    value: string;
+    id: string;
+};
+
+export type EvidenceObjectToPassInActionMenu = {
+    assetId: number;
+    evidence : SearchModel.Evidence;
+}

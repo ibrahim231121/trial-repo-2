@@ -1,148 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
-import "./assetDetailTemplate.scss";
-import Restricted from "../../../ApplicationPermission/Restricted";
-import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../Redux/rootReducer";
-import { addAssetToBucketActionCreator } from "../../../Redux/AssetActionReducer";
-import FormContainer from "../AssetLister/Category/FormContainer";
-import { dateOptionsTypes } from '../../../utils/constant';
-import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
-import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
-import { useTranslation } from "react-i18next";
-import { AssetThumbnail } from "../AssetLister/AssetDataTable/AssetThumbnail"
-import { Link } from "react-router-dom";
+import {
+  CBXLink, CrxAccordion, CRXAlert, CRXColumn,
+  CRXDataTable, CrxTabPanel, CRXTabs, CRXToaster, CRXTooltip
+} from "@cb/shared";
 import moment from "moment";
-import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import VideoPlayerBase from "../../../components/MediaPlayer/VideoPlayerBase";
+import TextSearch from "../../../GlobalComponents/DataTableSearch/TextSearch";
+import { DateTimeComponent } from '../../../GlobalComponents/DateTime';
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
-import { useHistory } from "react-router";
-import RestrictAccessDialogue from "./../AssetLister/RestrictAccessDialogue";
+import dateDisplayFormat from "../../../GlobalFunctions/DateFormat";
+import { enterPathActionCreator } from "../../../Redux/breadCrumbReducer";
+import { RootState } from "../../../Redux/rootReducer";
 import { EvidenceAgent, FileAgent } from "../../../utils/Api/ApiAgent";
 import { Asset, Category, Evidence } from "../../../utils/Api/models/EvidenceModels";
+import { dateOptionsTypes } from '../../../utils/constant';
+import { AssetThumbnail } from "../AssetLister/AssetDataTable/AssetThumbnail";
 import "./AssetDetailTabsMenu.scss";
-import { AxiosError } from "axios";
-import {
-  CRXMultiSelectBoxLight,
-  CrxAccordion, CRXTabs, CrxTabPanel,
-  CRXAlert,
-  CRXModalDialog,
-  CRXButton,
-  CRXRows,
-  CRXColumn,
-  CRXDataTable,
-  CRXConfirmDialog,
-  CRXTooltip,
-  CRXToaster,
-  CBXLink
-} from "@cb/shared";
+import "./assetDetailTemplate.scss";
 
-import {
-  HeadCellProps,
-  onResizeRow,
-  Order,
-  ValueString,
-  onSetSearchDataValue,
-  SearchObject,
-  onSetSingleHeadCellVisibility,
-  onClearAll,
-  PageiGrid
-} from "../../../GlobalFunctions/globalDataTableFunctions";
-import { AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
-import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
-import { getAssetSearchInfoAsync } from "../../../Redux/AssetSearchReducer";
-import { Grid } from "@material-ui/core";
-import { SearchType } from "../utils/constants";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
-import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { CRXCheckBox } from "@cb/shared";
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
-import ActionMenu from "../AssetLister/ActionMenu";
-import { ActionMenuPlacement } from "../../Assets/AssetLister/ActionMenu/types";
+import { Grid } from "@material-ui/core";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { AssetRetentionFormat } from "../../../GlobalFunctions/AssetRetentionFormat";
+import {
+  HeadCellProps, onClearAll, onResizeRow, onSetSearchDataValue, onSetSingleHeadCellVisibility, Order, PageiGrid, SearchObject, ValueString
+} from "../../../GlobalFunctions/globalDataTableFunctions";
+import { getAssetTrailInfoAsync } from "../../../Redux/AssetDetailsReducer";
+import { setLoaderValue } from "../../../Redux/loaderSlice";
 import { urlList, urlNames } from "../../../utils/urlList";
+import ActionMenu from "../AssetLister/ActionMenu";
+import { ActionMenuPlacement, AssetBucket, AssetLockUnLockErrorType } from "../AssetLister/ActionMenu/types";
+import { assetdata, AssetReformated, AuditTrail, DateTimeObject, DateTimeProps, EvidenceReformated } from "./AssetDetailsTemplateModel";
+import { AssetDetailRouteStateType } from "../AssetLister/AssetDataTable/AssetDataTableModel";
+import { SearchModel } from "../../../utils/Api/models/SearchModel";
+import { ReFormatPropsForActionMenu } from "../AssetLister/AssetDataTable/Utility";
 
-const AssetDetailsTemplate = (props: any) => {
-
-  const historyState = props.location.state;
+const AssetDetailsTemplate = () => {
+  const { state } = useLocation<AssetDetailRouteStateType>();
   const history = useHistory();
-  let evidenceId: number = historyState.evidenceId;
-  let assetId: string = historyState.assetId;
-  let assetName: string = historyState.assetName;
+  const evidenceId: number = state.evidenceId;
+  const assetId: string = state.assetId.toString();
+  const assetName: string = state.assetName;
+  const evidenceSearchObject: SearchModel.Evidence = state.evidenceSearchObject;
 
   const [expanded, isExpaned] = React.useState<string | boolean>("panel1");
   const [detailContent, setDetailContent] = useState<boolean>(false);
   const detail_view = React.useRef(null);
 
-  type DateTimeProps = {
-    dateTimeObj: DateTimeObject;
-    colIdx: number;
-  };
-  type DateTimeObject = {
-    startDate: string;
-    endDate: string;
-    value: string;
-    displayText: string;
-  };
-  type assetdata = {
-    name: string
-    files: any;
-    assetduration: number;
-    assetbuffering: any;
-    recording: any;
-    bookmarks: [];
-    id: number;
-    unitId: number;
-    typeOfAsset: string;
-    notes: any;
-    camera: string;
-    status: string;
-  }
-  type AuditTrail = {
-    sequenceNumber: string;
-    captured: any;
-    username: string;
-    activity: string
-  }
-
-  type EvidenceReformated = {
-    id: number;
-    categories: string[];
-
-    assetId: string;
-    assetName: string;
-    assetType: string;
-    recordingStarted: string;
-  };
-
-  let evidenceObj: EvidenceReformated = {
-    id: evidenceId,
-    categories: [],
-
-    assetId: assetId,
-    assetName: "",
-    assetType: "",
-    recordingStarted: "",
-  };
-
-  type AssetReformated = {
-    categories: any[];
-    owners: string[];
-    unit: number[];
-    capturedDate: string;
-    checksum: number[];
-    duration: string;
-    size: string;
-    retention: string;
-    categoriesForm: string[];
-    id?: number;
-    assetName?: string;
-    typeOfAsset: string;
-    status: string;
-    camera: string;
-  };
   let assetObj: AssetReformated = {
     categories: [],
     owners: [],
@@ -157,11 +67,17 @@ const AssetDetailsTemplate = (props: any) => {
     status: "",
     camera: ""
   };
+
+  let evidenceObj: EvidenceReformated = {
+    id: evidenceId,
+    categories: [],
+    assetId: assetId,
+    assetName: '',
+    assetType: '',
+    recordingStarted: ''
+  };
+
   const dispatch = useDispatch();
-  let addToAssetBucketDisabled: boolean = false;
-  const assetBucketData: AssetBucket[] = useSelector(
-    (state: RootState) => state.assetBucket.assetBucketData
-  );
   const [value, setValue] = React.useState(0);
   const [fileData, setFileData] = React.useState<any[]>([]);
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
@@ -171,10 +87,7 @@ const AssetDetailsTemplate = (props: any) => {
   //const [selectedItems, setSelectedItems] = React.useState<any>([]);
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [isCategoryEmpty, setIsCategoryEmpty] = React.useState<boolean>(true);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
-  const [openForm, setOpenForm] = React.useState(false);
-  const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] = React.useState(false);
   const [openMap, setOpenMap] = React.useState(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
@@ -183,9 +96,6 @@ const AssetDetailsTemplate = (props: any) => {
   const [assetsList, setAssetList] = React.useState<Asset[]>([]);
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
   const [res, setRes] = React.useState<Asset>();
-  const [success, setSuccess] = React.useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = React.useState<string>('');
-  const [error, setError] = React.useState<boolean>(false);
   const [GroupedFilesId, setGroupedFilesId] = React.useState<any[]>([]);
   const [fileState, setFileState] = React.useState<string>("");
   const [errorMessage, setErrorMessage] = React.useState<string>('');
@@ -203,21 +113,13 @@ const AssetDetailsTemplate = (props: any) => {
   const [uploadedOn, setUploadedOn] = React.useState<string>("");
   const [isChecked, setIsChecked] = React.useState<boolean>();
   const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
-  const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-    gridFilter: {
-      logic: "and",
-      filters: []
-    },
-    page: page,
-    size: rowsPerPage
-  });
-  const [assetLockUnLockError, setAssetLockUnLockError] = React.useState<AssetLockUnLockErrorType>({
-    isError: false,
-    errorMessage: ''
-  });
-  const handleChange = () => {
-    setOpenForm(true);
-  };
+
+  const tabs = [
+    { label: t("Asset_Metadata_Info"), index: 0 },
+    { label: t("GROUPED_AND_RELATED_ASSETS"), index: 1 },
+    { label: t("Audit_Trail"), index: 2 },
+  ];
+
   const AssetTrail: any = useSelector(
     (state: RootState) => state.assetDetailReducer.assetTrailInfo
   );
@@ -260,61 +162,6 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [gpsFileData]);
 
-  const gpsAndOverlayData = async (blobClient: any) => {
-    const downloadBlockBlobResponse = await blobClient.download();
-    const downloaded: any = await blobToString(await downloadBlockBlobResponse.blobBody);
-    if (downloaded) {
-      let downloadedData = downloaded.replace(/'/g, '"')
-      let gpsdata = JSON.parse(downloadedData).GPS;
-      let sensorsData = JSON.parse(downloadedData).Sensors;
-      gpsdata.forEach((x: any) => {
-        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
-      }
-      );
-      sensorsData.forEach((x: any) => {
-        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
-      }
-      );
-      let distinctgpsdata = gpsdata.filter((value: any, index: any, self: any) =>
-        index === self.findIndex((t: any) => (
-          t.logTime === value.logTime
-        )));
-      let distinctsensorsData = sensorsData.filter((value: any, index: any, self: any) =>
-        index === self.findIndex((t: any) => (
-          t.logTime === value.logTime
-        )));
-
-      if (gpsdata.length > 0) { setGpsJson(distinctgpsdata); }
-      if (sensorsData.length > 0) { setSensorsDataJson(distinctsensorsData) }
-
-    }
-
-    // [Browsers only] A helper method used to convert a browser Blob into string.
-    async function blobToString(blob: any) {
-      const fileReader = new FileReader();
-      return new Promise((resolve, reject) => {
-        fileReader.onloadend = (ev) => {
-          if (ev) {
-            resolve(ev.target?.result);
-          }
-        };
-        fileReader.onerror = reject;
-        fileReader.readAsText(blob);
-      });
-    }
-  }
-
-  const getUnixTimewithZeroinMillisecond = (time: number) => {
-    let firsthalf = time.toString().substring(0, 10);
-    let last3digits = time.toString().substring(10);
-    if (Number(last3digits) > 0) {
-      let Nlast3digits = "000";
-      return Number(firsthalf + Nlast3digits);
-    }
-    return time;
-  }
-
-
   useEffect(() => {
     setRows(AssetTrail)
   }, [AssetTrail]);
@@ -326,9 +173,7 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [gpsJson]);
 
-  function tabHandleChange(event: any, newValue: number) {
-    setValue(newValue);
-  }
+
   useEffect(() => {
     if (res !== undefined) {
       setEvidence({
@@ -341,7 +186,7 @@ const AssetDetailsTemplate = (props: any) => {
 
   useEffect(() => {
     if (evidenceCategoriesResponse !== undefined) {
-      var categories: string[] = [];
+      let categories: string[] = [];
       evidenceCategoriesResponse.forEach((x: any) =>
         x.formData.map((y: any) =>
           y.fields.map((z: any) => {
@@ -349,15 +194,7 @@ const AssetDetailsTemplate = (props: any) => {
           })
         )
       );
-
-      if (categories?.length > 0) {
-        setIsCategoryEmpty(false);
-      } else {
-        setIsCategoryEmpty(true);
-      }
-
       setEvidence({ ...evidence, categories: categories });
-
     }
   }, [evidenceCategoriesResponse]);
 
@@ -367,39 +204,6 @@ const AssetDetailsTemplate = (props: any) => {
       getChildAssetFile(getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0))
     }
   }, [getAssetData]);
-
-  const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
-    if (holdUntil) {
-      return AssetRetentionFormat(holdUntil);
-    }
-    else if (expireOn) {
-      return AssetRetentionFormat(expireOn);
-    }
-  }
-
-  const formatBytes = (bytes: number, decimals: number = 2) => {
-    if (!+bytes) return '0 Bytes'
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
-
-  function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-  }
-
-  const milliSecondsToTimeFormat = (date: Date) => {
-    let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
-    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
-    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
-    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
-    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
-    return numberFormatting + " (" + nameFormatting + ")";
-  }
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
@@ -422,22 +226,22 @@ const AssetDetailsTemplate = (props: any) => {
           })
         })
       });
-      var assetMetadata : any = assetsList.find(x => x.id == parseInt(assetId));
-      var owners: any[] = assetMetadata.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
+      let assetMetadata: any = assetsList.find(x => x.id == parseInt(assetId));
+      let owners: any[] = assetMetadata.owners.map((x: any) => (x.record.find((y: any) => y.key == "UserName")?.value) ?? "");
 
-      var unit: number[] = [];
+      let unit: number[] = [];
       unit.push(assetMetadata.unitId);
 
-      var checksum: number[] = [];
+      let checksum: number[] = [];
       assetMetadata.files.forEach((x: any) => {
         checksum.push(x.checksum.checksum);
       });
 
 
-      let size = assetMetadata.files.filter((x: any) => x.type != "GPS").reduce((a:any, b:any) => a + b.size, 0)
+      let size = assetMetadata.files.filter((x: any) => x.type != "GPS").reduce((a: any, b: any) => a + b.size, 0)
 
 
-      var categoriesForm: string[] = [];
+      let categoriesForm: string[] = [];
       getAssetData.categories.forEach((x: any) => {
         categoriesForm.push(x.record.cmtFieldName);
       });
@@ -475,9 +279,108 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }, [getAssetData, fileData, childFileData]);
 
-  function getMasterAssetFile(dt: any) {
+  useEffect(() => {
+    if (GroupedFilesId && GroupedFilesId.length > 0)
+      setIsDisabled(false);
+    else
+      setIsDisabled(true)
+
+  }, [isChecked, isDisabled]);
+
+  const gpsAndOverlayData = async (blobClient: any) => {
+    const downloadBlockBlobResponse = await blobClient.download();
+    const downloaded: any = await blobToString(await downloadBlockBlobResponse.blobBody);
+    if (downloaded) {
+      let downloadedData = downloaded.replace(/'/g, '"')
+      let gpsdata = JSON.parse(downloadedData).GPS;
+      let sensorsData = JSON.parse(downloadedData).Sensors;
+      gpsdata.forEach((x: any) => {
+        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+      }
+      );
+      sensorsData.forEach((x: any) => {
+        x.logTime = getUnixTimewithZeroinMillisecond(new Date(x.logTime).getTime());
+      }
+      );
+      let distinctgpsdata = gpsdata.filter((value: any, index: any, self: any) =>
+        index === self.findIndex((t: any) => (
+          t.logTime === value.logTime
+        )));
+      let distinctsensorsData = sensorsData.filter((value: any, index: any, self: any) =>
+        index === self.findIndex((t: any) => (
+          t.logTime === value.logTime
+        )));
+
+      if (gpsdata.length > 0) { setGpsJson(distinctgpsdata); }
+      if (sensorsData.length > 0) { setSensorsDataJson(distinctsensorsData) }
+
+    }
+  }
+
+  // [Browsers only] A helper method used to convert a browser Blob into string.
+  const blobToString = async (blob: any) => {
+    const fileReader = new FileReader();
+    return new Promise((resolve, reject) => {
+      fileReader.onloadend = (ev) => {
+        if (ev) {
+          resolve(ev.target?.result);
+        }
+      };
+      fileReader.onerror = reject;
+      fileReader.readAsText(blob);
+    });
+  }
+
+  const getUnixTimewithZeroinMillisecond = (time: number) => {
+    let firsthalf = time.toString().substring(0, 10);
+    let last3digits = time.toString().substring(10);
+    if (Number(last3digits) > 0) {
+      let Nlast3digits = "000";
+      return Number(firsthalf + Nlast3digits);
+    }
+    return time;
+  }
+
+  const tabHandleChange = (event: any, newValue: number) => {
+    setValue(newValue);
+  }
+
+  const retentionSpanText = (holdUntil?: Date, expireOn?: Date) => {
+    if (holdUntil) {
+      return AssetRetentionFormat(holdUntil);
+    }
+    else if (expireOn) {
+      return AssetRetentionFormat(expireOn);
+    }
+  }
+
+  const formatBytes = (bytes: number, decimals: number = 2) => {
+    if (!+bytes) return '0 Bytes'
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+
+  const padTo2Digits = (num: number) => {
+    return num.toString().padStart(2, '0');
+  }
+
+  const milliSecondsToTimeFormat = (date: Date) => {
+    let numberFormatting = padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
+    let hourFormatting = date.getUTCHours() > 0 ? date.getUTCHours() : undefined
+    let minuteFormatting = date.getUTCMinutes() > 0 ? date.getUTCMinutes() : undefined
+    let secondFormatting = date.getUTCSeconds() > 0 ? date.getUTCSeconds() : undefined
+    let nameFormatting = (hourFormatting ? hourFormatting + " Hours " : "") + (minuteFormatting ? minuteFormatting + " Minutes " : "") + (secondFormatting ? secondFormatting + " Seconds " : "")
+    return numberFormatting + " (" + nameFormatting + ")";
+  }
+
+  const getMasterAssetFile = (dt: any) => {
     dt?.map((template: any, i: number) => {
-      var responseResult: any = null;
+      let responseResult: any = null;
       FileAgent.getFile(template.filesId).then((response) => {
         setFileState(response.state)
         if (template.type != "GPS") {
@@ -515,7 +418,7 @@ const AssetDetailsTemplate = (props: any) => {
       });
     })
   }
-  function getChildAssetFile(dt: any) {
+  const getChildAssetFile = (dt: any) => {
     let fileDownloadUrls: any = [];
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
@@ -555,7 +458,7 @@ const AssetDetailsTemplate = (props: any) => {
     const onSelection = (v: ValueString[], colIdx: number) => {
 
       if (v.length > 0) {
-        for (var i = 0; i < v.length; i++) {
+        for (let i = 0; i < v.length; i++) {
           let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
           setSearchData((prevArr) =>
             prevArr.filter(
@@ -662,7 +565,7 @@ const AssetDetailsTemplate = (props: any) => {
   };
 
 
-  function extract(row: any) {
+  const extract = (row: any) => {
     let rowdetail: assetdata[] = [];
     let rowdetail1: assetdata[] = [];
     const masterduration = row.assets.master.duration;
@@ -711,41 +614,21 @@ const AssetDetailsTemplate = (props: any) => {
     }
     return rowdetail
   }
-  // function  extractfile(file: any) {
-  //   let Filedata: any[] = [];
 
-  //   var a = file.map((template: any, i: number) => {
-  //     return FileAgent.getDownloadFileUrl(template.id).then((response: string) => response).then((response: any) => {
-
-  //       Filedata.push({
-  //         filename: template.name,
-  //         fileurl: template.url,
-  //         fileduration: template.duration,
-  //         downloadUri: response
-  //       })
-  //       return response
-  //     });
-  //   })
-  //   var b = a[0].then((response:any) => response)
-  //   return b;
-  // }
-
-  const tabs = [
-    { label: t("Asset_Metadata_Info"), index: 0 },
-    { label: t("GROUPED_AND_RELATED_ASSETS"), index: 1 },
-    { label: t("Audit_Trail"), index: 2 },
-  ];
   const refresh = () => {
     window.location.reload();
   }
+
   const newRound = (x: any, y: any) => {
     history.push('/assetdetail', {
       evidenceId: evidenceId,
       assetId: x,
       assetName: y,
+      evidenceSearchObject: evidenceSearchObject
     })
     history.go(0)
   }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: `${t("Seq. No")}`,
@@ -790,83 +673,28 @@ const AssetDetailsTemplate = (props: any) => {
       sort: true,
       minWidth: '415',
       maxWidth: '485'
-    },
-    // {
-    //   label: `${t("Action")}`,
-    //   id: "action",
-    //   align: "right",
-    //   searchFilter: true,
-    //   searchComponent: searchText,
-    //   dataComponent: (e: string) => textDisplay(e, " "),
-    //   sort: true
-    // }
+    }
   ]);
+
   const clearAll = () => {
     const clearButton: any = document.getElementsByClassName(
       "MuiAutocomplete-clearIndicator"
     )[0];
     clearButton && clearButton.click();
     setOpen(false);
-    // setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
   };
+
   const resizeRowUnitDetail = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
   };
+
   const onSetHeadCells = (e: HeadCellProps[]) => {
     let headCellsArray = onSetSingleHeadCellVisibility(headCells, e);
     setHeadCells(headCellsArray);
-  };
-  const addToAssetBucket = () => {
-    //if undefined it means header is clicked
-    if (evidence !== undefined && evidence !== null) {
-      const find = selectedItems.findIndex(
-        (selected: any) => selected.id === evidence.id
-      );
-      const data = find === -1 ? evidence : selectedItems;
-      dispatch(addAssetToBucketActionCreator(data));
-    } else {
-      dispatch(addAssetToBucketActionCreator(selectedItems));
-    }
-  };
-
-  const confirmCallBackForRestrictModal = () => {
-    const _requestBody = [];
-    _requestBody.push({
-      evidenceId: getAssetData?.id,
-      assetId: getAssetData?.assets?.master?.id,
-      userRecId: parseInt(localStorage.getItem('User Id') ?? "0"),
-      operation: "Lock"
-    });
-    const _body = JSON.stringify(_requestBody);
-    EvidenceAgent.LockOrUnLockAsset(_body).then(() => {
-      setSuccessMessage(t('The_asset_are_locked'));
-      setSuccess(true);
-      setTimeout(() => {
-        dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch }));
-        setOpenRestrictAccessDialogue(false);
-        setSuccess(false);
-      }, 2000);
-    })
-      .catch((error) => {
-        let errorMessage = '';
-        const err = error as AxiosError;
-        if (err.request.status === 409) {
-          errorMessage = t('The_asset_is_already_locked');
-        } else {
-          errorMessage = t('We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator');
-        }
-        setAssetLockUnLockError({
-          errorMessage: errorMessage,
-          isError: true
-        });
-      });
   }
-
-  const RestrictAccessClickHandler = () => setOpenRestrictAccessDialogue(true);
-
 
   const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);
@@ -885,16 +713,7 @@ const AssetDetailsTemplate = (props: any) => {
     else {
       setGroupedFilesId(GroupedFilesId.filter((x: any) => x.filesId != filesId));
     }
-
   }
-
-  useEffect(() => {
-    if (GroupedFilesId && GroupedFilesId.length > 0)
-      setIsDisabled(false)
-    else
-      setIsDisabled(true)
-
-  }, [isChecked, isDisabled])
 
   const downloadAuditTrail = () => {
     if (rows && assetInfo) {
@@ -997,9 +816,7 @@ const AssetDetailsTemplate = (props: any) => {
     }
   }
 
-
   const DownloadFile = () => {
-
     GroupedFilesId.forEach((x: any) => {
       FileAgent.getDownloadFileUrl(x.filesId)
         .then((response) => {
@@ -1027,13 +844,6 @@ const AssetDetailsTemplate = (props: any) => {
       link.parentNode.removeChild(link);
     }
   };
-
-  const reformatRowPropDataForActionMenu = (evidenceSearchObject: any): any => {
-    let newObj: any = {};
-    newObj.assetId = evidenceSearchObject.assetId;
-    newObj.evidence = evidenceSearchObject.evidenceSearchObject;
-    return newObj;
-  }
 
   const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: any, apiKey: any) => {
     let availableAssets = videoPlayerData.filter((x: any) => x.status == "Available");
@@ -1102,26 +912,18 @@ const AssetDetailsTemplate = (props: any) => {
             </div> */}
         {/** maria told me the its not showing here its should be come in meta data see panel */}
         <ActionMenu
-          row={reformatRowPropDataForActionMenu(historyState)}
+          row={ReFormatPropsForActionMenu(evidenceSearchObject, Number(assetId))}
           actionMenuPlacement={ActionMenuPlacement.AssetDetail}
         />
 
         <CBXLink children="Exit" href={`${urlList.filter((item: any) => item.name === urlNames.assets)[0].url}`} />
       </div>
-      {success && <CRXAlert message={successMessage} alertType='toast' open={true} />}
-      {error && (
-        <CRXAlert
-          message={errorMessage}
-          type='error'
-          alertType='inline'
-          open={true}
-        />
-      )}
 
       {assetDisplay(videoPlayerData, evidenceId, gpsJson, sensorsDataJson, openMap, apiKey)}
-
-      {detailContent && <div className="topBorderForDetail"></div>}
-
+      
+      {detailContent
+        && <div className="topBorderForDetail"></div>
+      }
 
       <div className="asset_detail_tabs CRX_detail_tabs" id="detail_view" ref={detail_view}>
 
@@ -1244,10 +1046,8 @@ const AssetDetailsTemplate = (props: any) => {
                 <Grid item xs={8} className="list_para">
                   <div className="asset_MDI_data">{assetInfo?.retention}</div>
                 </Grid>
-
               </Grid>
             </div>
-
           </CrxTabPanel>
 
           <CrxTabPanel value={value} index={1}>
@@ -1268,15 +1068,9 @@ const AssetDetailsTemplate = (props: any) => {
               expanded={expanded === "panel1"}
             >
               <div className="asset_group_tabs_data">
-
-                {/* {getAssetData !== undefined ? getAssetData.assets.children.length : null} */}
-
                 <div className="asset_group_tabs_data_row">
-
-
                   {assetsList.filter(x => x.id != parseInt(assetId)).map((asset: any, index: number) => {
-
-                    var lastChar = asset.name.substr(asset.name.length - 4);
+                    let lastChar = asset.name.substr(asset.name.length - 4);
                     return (
                       <>
                         <div className="asset_group_tabs_data_col" key={index}>
@@ -1305,16 +1099,13 @@ const AssetDetailsTemplate = (props: any) => {
                                   evidenceId: evidenceId,
                                   assetId: asset.id,
                                   assetName: asset.name,
-                                },
+                                  evidenceSearchObject: evidenceSearchObject
+                                } as AssetDetailRouteStateType,
                               }}>
 
                               <div id="middletruncate" data-truncate={lastChar}>
                                 {asset.name}
                               </div>
-
-                              {/* <div>{asset.name}</div> */}
-
-
                             </Link>
 
                             <div className="timeLineLister">
@@ -1337,18 +1128,12 @@ const AssetDetailsTemplate = (props: any) => {
                                 {asset.recording && dateDisplayFormat(asset.recording.started)}
                               </label>
                             </div>
-
                           </div>
-
                         </div>
-
                       </>
                     );
                   })}
-
                 </div>
-
-
               </div>
             </CrxAccordion>
           </CrxTabPanel>
@@ -1399,14 +1184,10 @@ const AssetDetailsTemplate = (props: any) => {
                   setPage={(page: any) => setPage(page)}
                   setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={500}
-
                 />
               )}
             </div>
-
           </CrxTabPanel>
-
-
         </div>
       </div>
 
