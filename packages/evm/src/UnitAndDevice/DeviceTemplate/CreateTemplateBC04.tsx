@@ -984,7 +984,7 @@ const CreateTemplate = (props: any) => {
                       >
                         {t("Save")}
                       </CRXButton>
-                      <CRXButton  className=" secondary" color="secondary" variant="outlined" onClick={() => history.goBack()}>
+                      <CRXButton  className=" secondary" color="secondary" variant="outlined" onClick={() => { history.push(urlList.filter((item: any) => item.name === urlNames.adminUnitConfigurationTemplate)[0].url);}}>
                       {t("Cancel")}
                       </CRXButton>
                     </div>

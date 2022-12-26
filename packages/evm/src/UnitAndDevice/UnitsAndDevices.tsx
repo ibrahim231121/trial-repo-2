@@ -822,7 +822,7 @@ return (
         rows && (
         <CRXDataTable
           id={t("Units_&_Devices")}
-          actionComponent={<UnitAndDevicesActionMenu row={selectedActionRow} />}
+          actionComponent={<UnitAndDevicesActionMenu selectedItems ={selectedItems} row={selectedActionRow} />}
           getRowOnActionClick={(val: Unit) =>
             setSelectedActionRow(val)
           }

@@ -456,24 +456,9 @@ const UnitCreate = (props: historyProps) => {
               </MenuButton>
             }
           >
-            <MenuItem>
-              <div className="crx-meu-content">
-                <div className="crx-menu-icon">
-                  <i className="far fa-user-tag fa-md"></i>
-                </div>
-                <div className="crx-menu-list">{t("test")}</div>
-              </div>
-            </MenuItem>
-            <MenuItem>
-              <div className="crx-meu-content groupingMenu">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("test")}</div>
-              </div>
-            </MenuItem>
-            <MenuItem>
+            <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${stationID}&unitSysSerial=${unitID}&unitId=${primaryDeviceInfo ? primaryDeviceInfo.name : ""}`} target="_blank">
               <div className="crx-meu-content ">
-                <div className="crx-menu-icon"></div>
-                <div className="crx-menu-list">{t("test")}</div>
+                <div className="crx-menu-list">{t("View_Live_Video")}</div>
               </div>
             </MenuItem>
           </Menu>
