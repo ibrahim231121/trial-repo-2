@@ -97,10 +97,14 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   React.useEffect(() => {
     if (openMap && gpsJson.length > 0) {
       setOptions([...options, { value: "Map", displayText: "Map" }])
-      setAssetDetailSelectValue("Map")
-      setSelectDropDown("Map")
+
     }
   }, [gpsJson]);
+
+  React.useEffect(() => {
+    setAssetDetailSelectValue("Map")
+    setSelectDropDown("Map")
+  }, [options])
 
   const handleChangeDropDown = (event: any) => {
 
