@@ -356,7 +356,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         id={id}
                         numSelected={selectedItems.length}
                         headCells={headCells}
-                        rowCount={container.rows.length}
+                        rowCount={totalRecords}
                         columnVisibilityBar={columnVisibilityBar}
                         onChange={onColumnVisibility}
                         onClearAll={() => onClearAll()}
