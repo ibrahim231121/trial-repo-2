@@ -141,6 +141,9 @@
         }
       }
     }
+    &.detail-popup-menu {
+      z-index: 99999;
+    }
   }
 }
 

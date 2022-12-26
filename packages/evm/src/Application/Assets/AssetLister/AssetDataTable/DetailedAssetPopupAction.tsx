@@ -112,7 +112,9 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         showToastMsg={() => showToastMsg()}
         setIsPrimaryOptionOpen={setIsOpen}
         isPrimaryOptionOpen={isPrimaryAsset}
+        portal={true}
         actionMenuPlacement={ActionMenuPlacement.DetailedAssets}
+        className="detail-popup-menu"
       />
     </>
   );

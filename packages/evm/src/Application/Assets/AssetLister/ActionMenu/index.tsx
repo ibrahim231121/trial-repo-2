@@ -61,6 +61,7 @@ type Props = {
   showToastMsg?: (obj: any) => void;
   setIsPrimaryOptionOpen?: (obj: boolean) => void;
   actionMenuPlacement: ActionMenuPlacement;
+  className? : string
 };
 
 const ActionMenu: React.FC<Props> = React.memo(
@@ -73,6 +74,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     showToastMsg,
     setIsPrimaryOptionOpen,
     actionMenuPlacement,
+    className
   }) => {
     const cookies = new Cookies();
     const history = useHistory();
@@ -776,7 +778,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           position="auto"
           offsetX={25}
           offsetY={12}
-          className="menuCss"
+          className={"menuCss " + className}
           portal={portal}
           menuButton={
             <MenuButton>
