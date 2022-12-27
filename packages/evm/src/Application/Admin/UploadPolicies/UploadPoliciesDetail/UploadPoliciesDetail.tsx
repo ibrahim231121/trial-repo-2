@@ -58,7 +58,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const [isAddUploadPolicyDetailDisable, setIsAddUploadPolicyDetailDisable] = useState<boolean>(true);
     const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
     const isFirstRenderRef = useRef<boolean>(true);
-    const deletedParamValuesIdRef = useRef<number[]>([]);
+    const deleteUploadPolicyTypesValuesIdRef = useRef<number[]>([]);
     const dataResponseToEdit = useRef<any>(null);
     const dataToEdit = useRef<any>(null);
     const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
@@ -76,7 +76,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { t } = useTranslation<string>(); 
     useEffect(() => {
         if(!isFirstRenderRef.current) {
-            if(!checkNameValidation() && !disableAddUploadPolicyDetail()) {
+            if(!checkNameValidation() && !disableAddUploadPolicyDetailBtn()) {
 
                 setIsSaveDisable(false);
             }
@@ -85,6 +85,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             }
         }
     }, [name,uploadPolicyDetail])
+
+    useEffect(() => {
+        disableAddUploadPolicyDetail();
+    },[uploadPolicyDetail])
 
     useEffect(() => {
         if(getAll != null) {
@@ -269,8 +273,20 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
         return isDisable;
     };
-    
+
     const disableAddUploadPolicyDetail = () => {
+        uploadPolicyDetail.forEach((obj) => {
+            if(obj.assetType.value > -1 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
+                && obj.assetUploadConnection.length > 0 ) {
+                setIsAddUploadPolicyDetailDisable(false);
+            } else{
+                setIsAddUploadPolicyDetailDisable(true);
+            }
+         });
+    }
+    
+    
+    const disableAddUploadPolicyDetailBtn = () => {
         let isDisable = false;       
 
         uploadPolicyDetail.forEach((obj) => {
@@ -308,7 +324,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         
         if (parameter && parameter.id && parameter.id > 0) {
             if(id) {
-                deletedParamValuesIdRef.current.push(parameter.id);
+                deleteUploadPolicyTypesValuesIdRef.current.push(parameter.id);
             }
         }
         parameters.splice(i, 1)
@@ -392,7 +408,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 return returnAssetUpload;
             });
             
-            const paramValue = {
+            const UploadPolicyTypesValue = {
                 id: item.id,
                 typeOfAsset:String(assetTypeName['displayText']),
                 upload: item.uploadType.value == 1 ? true: false,
@@ -405,7 +421,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             };
 
 
-            listUploadPolicyDetailValues.push(paramValue);
+            listUploadPolicyDetailValues.push(UploadPolicyTypesValue);
         });
     }
 
@@ -422,9 +438,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             description : description,
             type : UploadPolicy,            
             detail: [],
-            dataUploadPolicyTypes : listUploadPolicyDetail
+            dataUploadPolicyTypes : listUploadPolicyDetail,
+            deleteUploadPolicyTypesValuesIdRef : deleteUploadPolicyTypesValuesIdRef.current
         }        
-
           return uploadPolicy;
       }
 
@@ -695,7 +711,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                         </CRXColumn>
                                         <CRXColumn className="uploadPolicyDetailBtnRemove" container item xs={3} spacing={0}>
                                             {
-                                                uploadPolicyDetail.assetType.value > -1 &&
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveUploadPolicyDetail(idx)}
