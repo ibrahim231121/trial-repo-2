@@ -128,7 +128,7 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
                             <p>{x.message}</p>
                           </div>
                          
-                          <div style={{textAlign:"right",width:"15%"}}>
+                          <div className="closeBtnArea">
                               <CRXButton
                                 className={"notification-cross"}
                                 disableRipple={true}
