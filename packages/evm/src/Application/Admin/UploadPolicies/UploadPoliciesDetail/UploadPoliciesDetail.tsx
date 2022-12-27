@@ -76,7 +76,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { t } = useTranslation<string>(); 
     useEffect(() => {
         if(!isFirstRenderRef.current) {
-            if(!disableAddUploadPolicyDetail() && name.length > 2 ) {
+            if(!checkNameValidation() && !disableAddUploadPolicyDetail()) {
+
                 setIsSaveDisable(false);
             }
             else{
@@ -105,11 +106,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
     }, [getAll]);
 
-    React.useEffect(() => { 
-        if(!isFirstRenderRef.current) {
-            checkNameValidation();        
-        }
-    }, [name]);
 
     useEffect(() => {
         dispatch(getAllData());
@@ -237,8 +233,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     }
 
     const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
-        const regex = new RegExp(/^([A-Z]|[a-z]){1}(([^\\W]|\\s)+){2,}/);
-        const chracterRegx = regex.test(String(name).toLowerCase())
+        const chracterRegx = /^^[a-zA-Z]+[a-zA-Z0-9-_\b]*$/.test(String(name).toLowerCase());
         if (!chracterRegx) {
           return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
         } else if (name.length < 3) {
@@ -256,6 +251,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
       };
 
     const checkNameValidation = () => {
+        let isDisable = true;
         const isPolicyNameValid = validatePolicyName(name);
         if (!name) {
             setUploadPolicyDetailErr({
@@ -269,7 +265,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
           });
         } else {
             setUploadPolicyDetailErr({ ...UploadPolicyDetailErr, nameErr: "" });
+            isDisable = false;
         }
+        return isDisable;
     };
     
     const disableAddUploadPolicyDetail = () => {
