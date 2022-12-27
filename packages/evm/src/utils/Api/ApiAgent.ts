@@ -172,7 +172,7 @@ function getTenantId() {
         return decodedAccessToken.TenantId;
     }
     else {
-        return "0";
+        return "1";
     }
 };
 
@@ -262,6 +262,8 @@ export const EvidenceAgent = {
     updateRetentionPolicy: (url: string, body: ExtendRetention[]) => requests.put<void>(EVIDENCE_SERVICE_URL, url, body, config),
     changeCategories: (url: string, body: EvdenceCategoryAssignment) => requests.patch<void>(EVIDENCE_SERVICE_URL, url, body, config),
     shareAsset: (url: string, body?: AssetSharingModel) => requests.post<void>(EVIDENCE_SERVICE_URL, url, body ?? {}, config),
+    //openSharedMedia: (url: string) => requests.get<AssetSharingModel>(EVIDENCE_SERVICE_URL+'/OpenSharedMedia?E='+url),
+    
     submitAnalysis: (url: string, body?: SubmitAnalysisModel) => requests.post<void>(JOBCOORDINATOR_SERVICE_URL, url, body ?? {}),
     LockOrUnLockAsset: (body: any) => requests.patch<void>(EVIDENCE_SERVICE_URL, '/Evidences/LockUnlock', body, config),
     ExportEvidence: (evidenceId: number, assetId: number, fileType: MetadataFileType) => {

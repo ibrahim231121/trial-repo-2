@@ -67,8 +67,8 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
     </>
   );
 
-  const removeMessage = (e: React.DOMAttributes<HTMLButtonElement>, x:NotificationMessage) => {
-    dispatch(removeNotificationMessages(x));
+  const removeMessage = (e: React.DOMAttributes<HTMLButtonElement>, notificationMessage:NotificationMessage) => {
+    dispatch(removeNotificationMessages(notificationMessage));
   }
 
   const clearAllMessage = (e: React.DOMAttributes<HTMLButtonElement>, notificationMessage:NotificationMessage[]) => {

@@ -24,6 +24,7 @@ import { AssetDetailRouteStateType, DateTimeObject, DateTimeProps, MasterMainPro
 import { AssetThumbnail } from "./AssetThumbnail";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import "./index.scss";
+import { EvidenceChildSharingModel } from "../../../../utils/Api/models/EvidenceModels";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
@@ -153,6 +154,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
+  const [selectedMaster, setSelectedMaster] = React.useState<number[]>();
+
+    const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -163,6 +167,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
     colIdx: 0,
   });
 
+  useEffect(() => {
+    debugger;
+  },[selectedItems])
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
@@ -647,6 +654,35 @@ const MasterMain: React.FC<MasterMainProps> = ({
       };
       dispatch(addNotificationMessages(notificationMessage));
     }
+  };
+  const abc = (obj: any) => {
+    var v = obj;
+    setSelectedChild(prevState => {
+       
+      let a:EvidenceChildSharingModel={masterId:0,assetId:[]};
+      let b:number[]=[];
+      selectedItems.map((x: any) => {
+        if (x?.isChecked == true) {
+          a.masterId=x.evidence.id;
+          a.assetId.push(x.assetId)              
+         }
+         else{
+           b.push(x.evidence.id);
+         }
+       });    
+       setSelectedMaster(b);
+             const new1 = [...prevState];
+             const rec = new1.find(x => x.masterId == a.masterId);
+             if (rec != undefined || rec != null) {
+               rec.assetId=a.assetId;
+               rec.masterId=a.masterId;
+             }
+             else{
+              new1.push({assetId:a.assetId,masterId:a.masterId})
+             }
+             return new1;
+           });
+           
   };
 
   return (

@@ -25,6 +25,7 @@ import retentionPoliciesSlice from './RetentionPolicies';
 import uploadPoliciesSlice from './UploadPolicies';
 import categoriesSlice from './Categories';
 import categoryFromsSlice from './CategoryForms';
+import groupedSelectedAssets from './groupedSelectedAssets';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -35,6 +36,7 @@ export const reducer = combineReducers({
   userReducer: userSlice.reducer,
   stationReducer: stationsSlice.reducer,
   notificationReducer: notificationMessages.reducer,
+  groupedSelectedAssetsReducer: groupedSelectedAssets.reducer,
   timerReducers: timerSlice.reducer,
   loaderSlice: loaderSlice.reducer,
   templateSlice: templateSlice.reducer,

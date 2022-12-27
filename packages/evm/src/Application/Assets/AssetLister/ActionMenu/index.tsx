@@ -41,6 +41,7 @@ import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 import {
   AssetRestriction,
   Evidence,
+  EvidenceChildSharingModel,
   MetadataFileType,
   PersmissionModel,
   securityDescriptorType,
@@ -51,6 +52,8 @@ import autoTable from "jspdf-autotable";
 import moment from "moment";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
+import { getGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
+import { GroupedSelectedAssets } from "../AssetDataTable/AssetTypes";
 
 type Props = {
   row: any;
@@ -62,6 +65,16 @@ type Props = {
   setIsPrimaryOptionOpen?: (obj: boolean) => void;
   actionMenuPlacement: ActionMenuPlacement;
   className? : string
+};
+
+type AssetLink = {
+  masterId: number,
+  assetId: number,
+  evidenceId: number
+};
+type MasterAssetEvidence = {
+  masterId: number,
+  evidenceId: number
 };
 
 const ActionMenu: React.FC<Props> = React.memo(
@@ -84,6 +97,9 @@ const ActionMenu: React.FC<Props> = React.memo(
     const assetBucketData: AssetBucket[] = useSelector(
       (state: RootState) => state.assetBucket.assetBucketData
     );
+    const groupedSelectedAssets: any = useSelector(
+      (state: RootState) => state.groupedSelectedAssetsReducer.groupedSelectedAssets
+    );
     const [multiAssetDisabled, setMultiAssetDisabled] =
       React.useState<boolean>(false);
     const [isCategoryEmpty, setIsCategoryEmpty] =
@@ -93,6 +109,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [openForm, setOpenForm] = React.useState(false);
     const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
+    const [assetlinks, setAssetLinks] = React.useState<AssetLink[]>([]);
+
     const [assetLockUnLockError, setAssetLockUnLockError] =
       React.useState<AssetLockUnLockErrorType>({
         isError: false,
@@ -113,10 +131,66 @@ const ActionMenu: React.FC<Props> = React.memo(
       React.useState(false);
     const [filterValue, setFilterValue] = React.useState<any>([]);
     const [IsformUpdated, setIsformUpdated] = React.useState(false);
+    const [selectedMaster, setSelectedMaster] = React.useState<MasterAssetEvidence[]>();
+
+    const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
     const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] =
       React.useState(false);
     const EXPORT_ASSETS_AND_METADATA_PERMISSION = 60;
     React.useEffect(() => {
+      dispatch(getGroupedSelectedAssets());
+      if (row == undefined && selectedItems != null) {
+        let masterIds: MasterAssetEvidence[] = [];
+        selectedItems.map((obj: any) => {
+          masterIds.push({
+            masterId:obj.assetId,
+            evidenceId: obj.evidence.id,
+          });
+        });
+        setSelectedMaster(masterIds);
+      }
+      //const filterRetentionPolicies: any = useSelector((state: RootState) => state.retentionPoliciesSlice.filterRetentionPolicies);
+
+
+
+      // const rec = selectedItems.find(y => y?.isChecked == true); 
+      //  setSelectedChild(prevState => {
+
+      //   let a:EvidenceChildSharingModel={masterId:0,assetId:[]};
+      //   let b:number[]=[];
+      //   selectedItems.map((x: any) => {
+      //     if (x?.isChecked == true) {
+      //       a.masterId=x.evidence.id;
+      //       a.assetId.push(x.assetId)              
+      //      }
+      //      else{
+      //        b.push(x.evidence.id);
+      //      }
+      //    });    
+      //    setSelectedMaster(b);
+      //          const new1 = [...prevState];
+      //          const rec = new1.find(x => x.masterId == a.masterId);
+      //          if (rec != undefined || rec != null) {
+      //            rec.assetId=a.assetId;
+      //            rec.masterId=a.masterId;
+      //          }
+      //          else{
+      //           new1.push({assetId:a.assetId,masterId:a.masterId})
+      //          }
+      //          return new1;
+      //        });
+
+      // let groupedSelectedAssets = selectedItems.map((select: any, i: number) => {
+      //   let obj: any = {
+      //     evidenceId: select.evidence.id,
+      //     assetId: select.assetId,
+
+      //   }
+      //   return obj;
+      // });
+
+      //dispatch(addGroupedSelectedAssets(groupedSelectedAssets));
+
       calculateSecurityDescriptor();
       if (selectedItems.length > 1) {
         setMultiAssetDisabled(true);
@@ -149,6 +223,27 @@ const ActionMenu: React.FC<Props> = React.memo(
         }
       }
     }, [row, selectedItems]);
+
+    React.useEffect(() => {
+      let assetsList: AssetLink[] = [];
+      groupedSelectedAssets.map((obj: any) => {
+        if (obj.isChecked == true) {
+          assetsList.push({
+            masterId: obj.masterId,
+            assetId: obj.assetId,
+            evidenceId: obj.evidenceId
+          });
+        }
+      });
+      selectedMaster?.map((obj: MasterAssetEvidence) => {
+        assetsList.push({
+          masterId: obj.masterId,
+          assetId: obj.masterId,
+          evidenceId: obj.evidenceId
+        });
+      });
+      setAssetLinks(assetsList);
+    }, [groupedSelectedAssets]);
 
     const handleOpenAssignUserChange = () => setOpenAssignUser(true);
     const handleOpenManageRetention = () => setOpenManageRetention(true);
@@ -727,7 +822,6 @@ const ActionMenu: React.FC<Props> = React.memo(
         head: head,
         body: data,
         didDrawCell: (data: any) => {
-          console.log(data.column.index);
         },
       });
       doc.save("ASSET ID_Audit_Trail.pdf");
@@ -1138,7 +1232,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           showSticky={true}
         >
           <ShareAsset
-            items={selectedItems}
+            items={assetlinks} //{selectedItems}
             filterValue={filterValue}
             rowData={row}
             setRemovedOption={(e: any) => { }}

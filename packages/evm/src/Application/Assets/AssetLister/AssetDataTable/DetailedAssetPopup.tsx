@@ -1,6 +1,8 @@
 import {
   CRXCheckBox, CRXPopOver
 } from "@cb/shared";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../../Redux/rootReducer";
 import React, { useRef, useState } from "react";
 
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -14,10 +16,13 @@ import { AssetThumbnail } from "./AssetThumbnail";
 import "./DetailedAssetPopup.scss";
 import DetailedAssetPopupAction from "./DetailedAssetPopupAction";
 import { AssetDetailRouteStateType } from "./AssetDataTableModel";
+import { addGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
 
 type CheckValue = {
   isChecked: boolean;
   assetId: number;
+  masterId?: number;
+  evidenceId?:number;
 };
 
 type Props = {
@@ -26,6 +31,7 @@ type Props = {
 }
 
 const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const popOverRef: any = useRef(null)
@@ -53,6 +59,7 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
+
     setGroupedAsset(asset);
     setAnchorEl(popOverRef.current);
   };
@@ -62,11 +69,24 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
       let checkValues = groupedAsset.map((select: SearchModel.Asset, i: number) => {
         let obj: CheckValue = {
           isChecked: check,
-          assetId: select.assetId
+          assetId: select.assetId,
+          masterId: row.masterAsset.assetId,
+          evidenceId: row.id
         }
         return obj;
       });
       setSelected(checkValues);
+
+      let groupedSelectedAssets = checkValues.map((select: any, i: number) => {
+        let obj: any = {
+          isChecked: select.isChecked,
+          assetId: select.assetId,
+          masterId: row.masterAsset.assetId,
+          evidenceId: row.id
+        }
+        return obj;
+      });
+      dispatch(addGroupedSelectedAssets(groupedSelectedAssets));
     }
   };
 
@@ -75,6 +95,7 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
     controlSelection(event.target.checked)
   }
 
+
   const handleCheck = (e: React.ChangeEvent<HTMLInputElement>, assetId: number) => {
     let countCheck: number = 0;
     let checkValues = selected.map((select: CheckValue, i: number) => {
@@ -82,12 +103,24 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
         if (e.target.checked === false) setCheckAll(e.target.checked);
         let obj: CheckValue = {
           isChecked: e.target.checked,
-          assetId: select.assetId
+          assetId: select.assetId,
+          masterId: row.masterAsset.assetId
+
         }
         return obj;
       } else return select;
     });
     setSelected(checkValues);
+
+    let groupedSelectedAssets = checkValues.map((select: any, i: number) => {
+      let obj: any = {
+        isChecked: select.isChecked,
+        assetId: select.assetId,
+        masterId: row.masterAsset.assetId
+      }
+      return obj;
+    });
+    dispatch(addGroupedSelectedAssets(groupedSelectedAssets));
 
     checkValues.forEach((x) => {
       if (x.isChecked === true) countCheck++;
@@ -97,6 +130,27 @@ const DetailedAssetPopup: React.FC<Props> = ({ asset, row }) => {
     else setCheckAll(false);
   };
 
+  const createLink = (asset: any, strLen: number) => {
+    const dataLength = asset.toString().length;
+    if (dataLength <= strLen) {
+      return dataLength
+    } else {
+      var separator: any = separator || '...';
+      var separator: any = separator || '...';
+      var sepLen = separator.length,
+        charsToShow = strLen - sepLen,
+        frontChars = Math.ceil(charsToShow / 2),
+        backChars = Math.floor(charsToShow / 2);
+
+      const middleElip = asset.substr(1, frontChars) +
+        separator +
+        asset.substr(dataLength - backChars);
+
+      return middleElip
+    }
+
+
+  }
   return (
     <ClickAwayListener onClickAway={() => onClose()}>
       <div className="CRXPopupOuterDiv">
