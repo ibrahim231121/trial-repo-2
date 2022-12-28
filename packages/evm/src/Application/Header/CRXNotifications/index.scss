@@ -23,7 +23,7 @@
 
   .uploadContent{
     border: 1px solid var(--color-8a8888);
-    height: 70px;
+    height: auto;
     margin-top: 10px;
     border-radius: 5px;
     max-width: 410px;
@@ -43,6 +43,11 @@
       .notification_info {
         color:var(--color-2259aa);
       }
+    }
+    .closeBtnArea{
+      display: flex;
+      flex-basis: initial;
+      margin: auto;
     }
   }
   .textArea{
@@ -69,7 +74,7 @@
     border-right: 0px;
     border-top: 0px;
     border-bottom: 0px;
-    margin-top: 10px;
+    // margin-top: 10px;
   }
   .notification-cross:hover{
     border-right: 0px;
@@ -120,4 +125,5 @@
       height: 8px;
     }
   }
+  
 }

@@ -264,8 +264,8 @@ body {
   position: sticky !important;
   top: 125px;
   background: var(--color-White) !important;
-  padding-top: 5px;
-  padding-bottom: 18px !important;
+  padding-top: 15px;
+  padding-bottom: 15px !important;
   height: 53px;
   width: 100%;
   left: 7px;

@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Formik, Form } from "formik";
 import { CRXCheckBox, CRXSelectBox, CRXButton, CRXRadio,CRXInput } from "@cb/shared";
 import { useDispatch } from "react-redux";
 import Cookies from "universal-cookie";
 import { EvidenceAgent } from "../../../../utils/Api/ApiAgent";
-import { AssetSharingModel } from "../../../../utils/Api/models/EvidenceModels";
+import { AssetSharingModel,AssetShareLink } from "../../../../utils/Api/models/EvidenceModels";
 import { useTranslation } from "react-i18next";
 import "./ShareAsset.scss";
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 
 type ShareAssetProps = {
   items: any[];
@@ -67,6 +68,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
   const [currentRetention, setCurrentRetention] = React.useState<string>("-");
   const [assetSharing, setAssetSharing] = React.useState<AssetSharingModel>();
+  const { getTenantId } = useContext(ApplicationPermissionContext);
   const [error, setError] = React.useState({
     emailErr: "",
     
@@ -92,9 +94,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     }
   }, [linkExpireType]);
 
-  React.useEffect(() => {
-    if (props.items.length <= 1) getRetentionData();
-  }, []);
+
   React.useEffect(() => {
     if (email == "" || regex.test(email) == true) {
       setEmailError("");
@@ -132,9 +132,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     //   setShowLinkExpirationError(true);
     // }
   }, [linkExpire]);
-  console.log(reasonForView, "checkreason");
 
-  console.log(reasonForView, "reason");
   const checkEmail = () => {
     if (email == "") {
       setEmailError("Email is required");
@@ -177,13 +175,23 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     setViewableOnce(e.target.checked);
   };
 
-  const getRetentionData = async () => {};
+
   const onLinkExpireTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLinkExpireType(e.target.value);
     setMetaDataErrMsg({ ...meteDataErrMsg, required: "" });
   };
   const onSubmitForm = async () => {
+    let tId  = getTenantId();
+    let rowObject:AssetShareLink = {
+      assetId: props.rowData.assetId,
+      masterId: props.rowData.assetId,
+      evidenceId: props.rowData.id
+
+    }
+    let tempAssetGroup : AssetShareLink[] = [rowObject];
     let temp: AssetSharingModel = {
+      assetGroup: (props.items.length > 0 )?props.items:tempAssetGroup,
+      tenantId: tId,
       message: comment,
       email: email,
       permissons: {
@@ -209,8 +217,8 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
 
     setAssetSharing(temp);
   };
-  const sendData = async () => {
-    const url = '/Evidences/' + `${props.rowData.id}` + '/Assets/' + `${props.rowData.assetId}/Share`
+  const sendData = async () => { 
+    const url = '/Evidence/Share'// + `${props.items}`
     EvidenceAgent.shareAsset(url, assetSharing).then(() => {
       props.setOnClose();
       props.showToastMsg({
@@ -293,7 +301,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
                       <div className="errorStationStyle">
                         <i className="fas fa-exclamation-circle"></i>
                         {emailError}
-                        {console.log(emailError, "emailcheck")}
+                       
                       </div>
                     ) : null}
                   </div>

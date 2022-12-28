@@ -38,14 +38,14 @@ import { useHistory } from "react-router-dom";
 declare const window: any;
 interface CounterState {
   path: string,
-  expires:Date
+  expires: Date
 }
 
-interface IDecoded{
-  exp:string;
+interface IDecoded {
+  exp: string;
 }
 
-let decoded:IDecoded;
+let decoded: IDecoded;
 
 
 const refreshToken = localStorage.getItem('refreshToken')
@@ -77,20 +77,22 @@ function App() {
   const dispatch = useDispatch();
   const [moduleIds, setModuleIds] = React.useState<number[]>([]);
   const [groupIds, setGroupIds] = React.useState<number[]>([]);
+  const [tenantId, setTenantId] = React.useState<number>(0);
+
   const [open, setOpen] = useState(true);
   const isRefreshTokeSuccess: boolean = useSelector((state: RootState) => state.accessAndRefreshTokenSlice.success);
   const history = useHistory();
 
- 
+
   const classes = CRXPanelStyle();
 
   useInterval(
     async () => {
       let accessToken = cookies.get('access_token');
-      if(accessToken){
-        let decodedAccessToken : any = jwt_decode(accessToken);
+      if (accessToken) {
+        let decodedAccessToken: any = jwt_decode(accessToken);
         let UserIdExist = decodedAccessToken.UserId ? true : false;
-        if(UserIdExist){
+        if (UserIdExist) {
           await dispatch(getAccessAndRefreshTokenAsync());
         }
       }
@@ -99,12 +101,12 @@ function App() {
     true ? 60000 : null,
   );
 
-  if(!isRefreshTokeSuccess){
-    logOutUser(()=>{
+  if (!isRefreshTokeSuccess) {
+    logOutUser(() => {
       history.push('/logout')
     })
   }
-  
+
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
@@ -144,19 +146,25 @@ function App() {
     }
   }, [culture, resources]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const id = window.setInterval(() => {
       const token = getToken();
-      if(token) {
+      if (token) {
         setupSignalRConnection(BASE_URL_SOCKET_SERVICE);
         window.onWSMsgRec = new CustomEvent("onWSMsgRecEvent");
         let moduleIds = getModuleIds();
         let groupIds = getGroupIds();
-        if(moduleIds){
-          setModuleIds(moduleIds);         
+        let tId = getTenantId();
+
+        if (moduleIds) {
+          setModuleIds(moduleIds);
         }
-        if(groupIds){
-          setGroupIds(groupIds);            
+        if (groupIds) {
+          setGroupIds(groupIds);
+        }
+        if(tId)
+        {
+          setTenantId(tId);
         }
         window.clearInterval(id);
       }
@@ -199,7 +207,7 @@ function App() {
       if (groupIds.length <= 0) {
         var accessTokenDecode: TokenType = jwt_decode(token);
         if (
-          accessTokenDecode  && accessTokenDecode.AssignedGroups 
+          accessTokenDecode && accessTokenDecode.AssignedGroups
         ) {
           var groupIdsAssigned = accessTokenDecode.AssignedGroups.split(
             ","
@@ -215,6 +223,17 @@ function App() {
     } else {
       return [];
     }
+  };
+
+  const getTenantId = () => {
+    var token = getToken();
+    if (token) {
+      
+        var accessTokenDecode: TokenType = jwt_decode(token);
+        return parseInt(accessTokenDecode.TenantId);
+    }
+    else
+        return 0;
   };
 
   const onDragStart = (e: any) => {
@@ -397,37 +416,45 @@ function App() {
     error: <i className="fas fa-exclamation-circle errorIcon"></i>,
   };
 
-  
-  return (
-    <ApplicationPermissionProvider  setModuleIds={
-                                          (moduleIds:number[]) =>{
 
-                                            setModuleIds(moduleIds)}
-                                          }  
-                                    moduleIds={moduleIds}  
-                                    getModuleIds={()=>{ 
-                                          var moduleIds =  getModuleIds()
-                                          if(moduleIds){
-                                            return moduleIds
-                                          }else{
-                                            return []
-                                          }
-                                    }}
-                                    getGroupIds={()=>{ 
-                                      var groupIds =  getGroupIds()
-                                      if(groupIds){
-                                        return groupIds
-                                      }else{
-                                        return []
-                                      }
-                                    }}
+  return (
+    <ApplicationPermissionProvider setModuleIds={
+      (moduleIds: number[]) => {
+
+        setModuleIds(moduleIds)
+      }
+    }
+      moduleIds={moduleIds}
+      getModuleIds={() => {
+        var moduleIds = getModuleIds()
+        if (moduleIds) {
+          return moduleIds
+        } else {
+          return []
+        }
+      }}
+      getGroupIds={() => {
+        var groupIds = getGroupIds()
+        if (groupIds) {
+          return groupIds
+        } else {
+          return []
+        }
+      }}
+      getTenantId={() => {
+        var tenantIds = getTenantId();
+    
+        return tenantIds;
+        
+      }} 
+                          
                                     >
-        <div dir={rtl}>
-          <CRXLoader 
-            show={loadingValue > 0}
-            loadingText="Please wait"
-          />
-          <SnackbarProvider
+      <div dir={rtl}>
+        <CRXLoader
+          show={loadingValue > 0}
+          loadingText="Please wait"
+        />
+        <SnackbarProvider
           maxSnack={100}
           anchorOrigin={{
             vertical: "top",
@@ -438,7 +465,7 @@ function App() {
             error: icons.error,
             warning: icons.warning,
             info: icons.attention,
-          }} 
+          }}
           className="toasterMsg"
           classes={{
             variantSuccess: "success",
@@ -451,7 +478,7 @@ function App() {
           <div className={`language_selector_app Language_type_${value}`}>
             <CRXSelectBox
               options={options}
-              defaultOption = {false}
+              defaultOption={false}
               popover={`language_selector_dropDown language_dropDown_${value}`}
               id="simpleSelectBox"
               onChange={handleChange}
@@ -482,7 +509,7 @@ function App() {
       <footer>
         <Footer />
       </footer> */}
-         
+
           </DragDropContext>
         </SnackbarProvider>
       </div>

@@ -67,6 +67,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
 
   const reformatSelectedAsset = (selectedAssets: any[]) => {
     const filteredArray = selectedAssets.filter(x => x.isChecked == true);
+    console.log("filteredArray ",filteredArray)
     if (filteredArray.length > 0) {
       filteredArray.forEach(element => {
         element.evidence = row;
@@ -112,7 +113,9 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         showToastMsg={() => showToastMsg()}
         setIsPrimaryOptionOpen={setIsOpen}
         isPrimaryOptionOpen={isPrimaryAsset}
+        portal={true}
         actionMenuPlacement={ActionMenuPlacement.DetailedAssets}
+        className="detail-popup-menu"
       />
     </>
   );

@@ -1,8 +1,16 @@
 .sensors-and-triggers {
     padding: 120px 4px 0px 65px;
     .settingsContent {
-        position: relative;
-        margin-top: 76px;
+        // position: relative;
+        margin-top: 50px;
+        .titlePage{
+            font-size: 50px !important;
+            margin-bottom: 35px;
+            margin-left: 75px;
+            &:after{
+                content: none !important;
+            }
+         }
         .select-box {
             width: 100%;
         }
@@ -13,9 +21,15 @@
             width: 100%;
             h6 {
                 width: 220.66px !important;
+                align-items: baseline;
             }
             .gridFilterSpanUi {
                 width: 100%;
+            }
+            .fa-exclamation-circle{
+                &:before {
+                    content: none;
+                }
             }
         }
         .setting_para {
@@ -23,11 +37,37 @@
             left: 25px;
             top: -44px;
         }
+        .requiredLable{
+            align-items: baseline;
+            span{
+                font-size: 20px;
+                position: relative;
+                top: -5px;
+                left: 9px;
+                padding-left: 0px !important;
+                font-weight: var(--Font-style-bold);
+            }
+        }
+        .setttingsTextBox{
+            margin-top: 35px;
+            margin-bottom: 35px;
+        }
+        .email_checkBox_ui{
+            span{
+            margin-left: 27px;
+            }
+        }
+    }
+    .settingsForm{
+        justify-content: center;
     }
 
     .deviceParameterContent {
-        position: relative;
-        margin-top: 100px;
+        margin-top: 20px;
+        .titlePage{
+            margin-bottom: 35px;
+            margin-left: 75px;
+        }
             > h2 {
                 position: absolute;
                 top: -100px;
@@ -150,28 +190,33 @@
         display: flex;
         justify-content: space-between;
         padding: 0 81px;
-        margin-top: 19px;
+        margin-top: 50px;
         .groupInfoTabButtons {
             margin-right: 20px;
         }
     }
     .nameFieldSensors {
-    margin-left: 52px;
-    margin-bottom: 29px;
-    margin-top: 26px;
+        margin-left: 71px;
+        margin-bottom: 29px;
+        margin-top: 26px;
+        h6{
+            width: 15%;
+        }
         .gridFilterTextBox {
             display: flex;
         }
-        .gridFilterSpanUi {
-            width: 100%;
-            margin-left: 119px;
-        }
+        // .gridFilterSpanUi {
+        //     width: 100%;
+        //     margin-left: 119px;
+        // }
         .MuiInput-root {
             width: 255px;
-            margin-left: -83px;
         } 
     }
 }
+
+
+
 .email_checkBox_ui {
     margin-left: 4px;
     label {

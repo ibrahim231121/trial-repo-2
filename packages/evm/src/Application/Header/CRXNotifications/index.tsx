@@ -67,8 +67,8 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
     </>
   );
 
-  const removeMessage = (e: React.DOMAttributes<HTMLButtonElement>, x:NotificationMessage) => {
-    dispatch(removeNotificationMessages(x));
+  const removeMessage = (e: React.DOMAttributes<HTMLButtonElement>, notificationMessage:NotificationMessage) => {
+    dispatch(removeNotificationMessages(notificationMessage));
   }
 
   const clearAllMessage = (e: React.DOMAttributes<HTMLButtonElement>, notificationMessage:NotificationMessage[]) => {
@@ -128,7 +128,7 @@ const CRXNotficationPanel = ({otherPanel} : panelProps) => {
                             <p>{x.message}</p>
                           </div>
                          
-                          <div style={{textAlign:"right",width:"15%"}}>
+                          <div className="closeBtnArea">
                               <CRXButton
                                 className={"notification-cross"}
                                 disableRipple={true}

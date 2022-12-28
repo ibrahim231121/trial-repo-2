@@ -87,13 +87,13 @@ export interface Asset {
     files: File[];
     owners: CMTEntityRecord[] | number[];
     lock: Lock;
-    version? : string;
-    createdOn? : Date;
-    modifiedOn? : Date;
+    version?: string;
+    createdOn?: Date;
+    modifiedOn?: Date;
 }
 
 export interface Lock {
-    groupRecId? : Array<number>;
+    groupRecId?: Array<number>;
 }
 
 export interface Role {
@@ -144,12 +144,25 @@ export interface RevokedModel {
     on?: Date;
 }
 export interface AssetSharingModel {
+    assetGroup: AssetShareLink[];
+    tenantId: number;
     message: string;
     email: string;
     permissons: PermissionModel;
     shared: SharedModel;
     revoked: RevokedModel;
     version: string;
+}
+export interface AssetShareLink {
+    assetId: number;
+    masterId: number;
+    evidenceId: number;
+
+}
+export interface EvidenceChildSharingModel {
+    masterId: number;
+    assetId: number[];
+
 }
 export interface SubmitAnalysisModel {
     project: Project;

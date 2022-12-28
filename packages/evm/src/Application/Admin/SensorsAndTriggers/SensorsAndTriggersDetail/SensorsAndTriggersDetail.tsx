@@ -565,7 +565,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const getFormatedLabel = (label: string) => {
         return <span className="requiredLable">
                     {label}{" "}
-                    {label === 'Action' ? <span style={{color: "#000",paddingLeft: "8px", fontWeight: "bold"}}>*</span> : <span></span>}
+                    {label === 'Action' || 'Icon' ? <span style={{color: "#000",paddingLeft: "8px", fontWeight: "bold"}}>*</span> : <span></span>}
                 </span>
     }
 
@@ -589,26 +589,34 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                   />
                 )}        
                     <div className="nameFieldSensors">
-                        <Grid  item xs={12} sm={12} md={12} lg={5}>
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={12} lg={5} >
                             <TextField
-                            required={true}
-                            value={name}
-                            label={t("Name")}
-                            className="sensors-and-triggers-input"
-                            onChange={(e: any) => setName(e.target.value)}
-                            disabled = {false}
-                            type="text"
-                            name="sensorAndTriggerName"
-                            regex=""
-                            onBlur={() => checkNameValidation(name)}
-                            />
+                                required={true}
+                                value={name}
+                                label={t("Name")}
+                                className="sensors-and-triggers-input"
+                                onChange={(e: any) => setName(e.target.value)}
+                                disabled = {false}
+                                type="text"
+                                name="sensorAndTriggerName"
+                                regex=""
+                                onBlur={() => checkNameValidation(name)}
+                                />
                         </Grid>
+                    </Grid>
+                        {/* <Grid  item xs={12} sm={12} md={12} lg={5}>
+                            
+                        </Grid> */}
                     </div>
             <div className="settingsContent">
-                <Grid container spacing={8} justify="center">
-                    <Grid item xs={12} sm={12} md={12} lg={5}>
-                        <Grid container xs={12} sm={12} md={12} lg={12}>
-                            <h2 className="setting_para">Settings</h2>
+                    <div className="CRXPageTitle titlePage">
+                         <h2>Settings</h2>
+                    </div>
+                <Grid container spacing={2} className="settingsForm" >
+                
+                    <Grid item xs={12} sm={12} md={8} lg={4} >
+                        <div>
                             <span className="gridFilterTextBox">
                             <CRXHeading variant="subtitle1" className="label">
                                 {getFormatedLabel(t("Action"))}
@@ -624,10 +632,8 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 defaultOption={true}
                                 defaultOptionText={defaultAction}
                                 defaultValue={defaultAction} />
-                        </span>
-                        </Grid>
-                        
-                        <Grid container xs={12} sm={12} md={12} lg={12}>
+                            </span>
+
                             <span className="gridFilterTextBox">
                             <CRXHeading variant="subtitle1" className="label">
                                 {getFormatedLabel(t("Icon"))}
@@ -646,9 +652,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                 error={!!deviceSettingsValidation.icon}
                                 errorMsg={deviceSettingsValidation.icon} />
                             </span>
-                        </Grid>
 
-                        <Grid container xs={12} sm={12} md={12} lg={12}>
                             <span className="gridFilterTextBox">
                                 <CRXHeading variant="subtitle1" className="label">
                                     {getFormatedLabel(t("Category"))}
@@ -665,32 +669,29 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     defaultOptionText={defaultCategory}
                                     defaultValue={defaultCategory} />
                             </span>
-                        </Grid>
-                        
-                        <Grid container xs={12} sm={12} md={12} lg={12}>
-                            <span className="gridFilterTextBox">
-                            <CRXHeading variant="subtitle1" className="label">
-                                {getFormatedLabel(t("Camera"))}
-                            </CRXHeading>
-                            <CRXSelectBox
-                                className="select-box"
-                                id="settingCamera"
-                                value={switchParameters.camera.data.value > 0 ? switchParameters.camera.data.value : defaultCamera}
-                                onChange={(e: any) => onDeviceSettingChange(e, 'camera')}
-                                options={settingsDropdownData.cameraList}
-                                isRequried={true}
-                                disabled={false}
-                                defaultOption={true}
-                                defaultOptionText={defaultCamera}
-                                defaultValue={defaultCamera} />
-                            </span>
-                        </Grid>
-                    </Grid>
 
-                    <div className='grid_spacer' />
+                            <span className="gridFilterTextBox">
+                                <CRXHeading variant="subtitle1" className="label">
+                                    {getFormatedLabel(t("Camera"))}
+                                </CRXHeading>
+                                <CRXSelectBox
+                                    className="select-box"
+                                    id="settingCamera"
+                                    value={switchParameters.camera.data.value > 0 ? switchParameters.camera.data.value : defaultCamera}
+                                    onChange={(e: any) => onDeviceSettingChange(e, 'camera')}
+                                    options={settingsDropdownData.cameraList}
+                                    isRequried={true}
+                                    disabled={false}
+                                    defaultOption={true}
+                                    defaultOptionText={defaultCamera}
+                                    defaultValue={defaultCamera} />
+                            </span>
+                        </div>
+                    </Grid>
+                    <div className='grid_spacer'></div>
 
                     <Grid item xs={12} sm={12} md={8} lg={4}>
-                    <span className="gridFilterTextBox">
+                            <span className="gridFilterTextBox">
                                 <CRXHeading variant="subtitle1" className="label">
                                     {getFormatedLabel(t("Bookmark"))}
                                 </CRXHeading>
@@ -708,30 +709,36 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                                     defaultOptionText={defaultBookmark}
                                     defaultValue={defaultBookmark} />
                             </span>
-                        <TextField
-                            value={switchParameters.overlay.data}
-                            label={t("Overlay")}
-                            className="sensors-and-triggers-input"
-                            onChange={(e: any) => onDeviceSettingChange(e, 'overlay')}
-                            onBlur={() => checkDeviceSettingsValidation(switchParameters.overlay.data, 'overlay')}
-                            disabled = {false}
-                            type="text"
-                            name="sensorAndTriggerSettingsOverlay"
-                            regex="" />
 
-                        <TextField
-                            value={switchParameters.description.data}
-                            label={t("Description")}
-                            className="sensors-and-triggers-input"
-                            onChange={(e: any) => onDeviceSettingChange(e, 'description')}
-                            onBlur={() => checkDeviceSettingsValidation(switchParameters.description.data, 'description')}
-                            disabled = {false}
-                            type="text"
-                            name="sensorAndTriggerSettingsDescription"
-                            maxLength={3}
-                            regex="" />
+                            <div className="setttingsTextBox">
+                                <TextField
+                                    value={switchParameters.overlay.data}
+                                    label={t("Overlay")}
+                                    className="sensors-and-triggers-input"
+                                    onChange={(e: any) => onDeviceSettingChange(e, 'overlay')}
+                                    onBlur={() => checkDeviceSettingsValidation(switchParameters.overlay.data, 'overlay')}
+                                    disabled = {false}
+                                    type="text"
+                                    name="sensorAndTriggerSettingsOverlay"
+                                    regex="" />
+                            </div>
+                        
+                           <div>
+                            <TextField
+                                value={switchParameters.description.data}
+                                label={t("Description")}
+                                className="sensors-and-triggers-input"
+                                onChange={(e: any) => onDeviceSettingChange(e, 'description')}
+                                onBlur={() => checkDeviceSettingsValidation(switchParameters.description.data, 'description')}
+                                disabled = {false}
+                                type="text"
+                                name="sensorAndTriggerSettingsDescription"
+                                maxLength={3}
+                                regex="" />
+                            </div>
+                        
                         <div className="email_checkBox_ui">
-                        <label>{t("Email alert")}<span></span></label>   
+                        <label>{t("Email alert")}</label>   
                             <CRXCheckBox
                                 checked={switchParameters.emailAlert.data}
                                 lightMode={true}
@@ -744,7 +751,12 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
 
 
             <div className="deviceParameterContent">
-                <h2>Device Parameters</h2>
+            
+
+                <div className="CRXPageTitle titlePage">
+                    <h2>Device Parameters</h2>
+                </div>
+                
                 <div className="deviceParameterHeader">
                     <CRXRows container spacing={0}>
                         <CRXColumn className="deviceParameterColumn" container item xs={3} spacing={0}>{t("Device")}</CRXColumn>
@@ -846,7 +858,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
                 <div className="save-cancel-button-box">
                 <CRXButton
                     variant="contained"
-                    className="groupInfoTabButtons"
+                    className="groupInfoTabButtons primary"
                     onClick={onSave}
                     disabled={isSaveDisable}
                 >
