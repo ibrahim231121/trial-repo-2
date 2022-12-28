@@ -1061,7 +1061,6 @@ const ActionMenu: React.FC<Props> = React.memo(
             </MenuItem>
           ) : null}
 
-          {multiAssetDisabled === false ? (
             <MenuItem>
               <ActionMenuCheckList
                 moduleId={0}
@@ -1080,7 +1079,6 @@ const ActionMenu: React.FC<Props> = React.memo(
                 </div>
               </ActionMenuCheckList>
             </MenuItem>
-          ) : null}
           <MenuItem>
             <ActionMenuCheckList
               moduleId={EXPORT_ASSETS_AND_METADATA_PERMISSION}

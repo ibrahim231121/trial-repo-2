@@ -105,7 +105,6 @@ const SharedMedia = () => {
 
   const [getAssetData, setGetAssetData] = React.useState<Evidence>();
   const [evidenceCategoriesResponse, setEvidenceCategoriesResponse] = React.useState<Category[]>([]);
-  const [res, setRes] = React.useState<Asset>();
   const [apiKey, setApiKey] = React.useState<string>("");
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
@@ -113,19 +112,12 @@ const SharedMedia = () => {
   const [evidenceId, setEvidenceId] = React.useState<number>(0);
   const [openMap, setOpenMap] = React.useState(false);
   const [fileData, setFileData] = React.useState<any[]>([]);
-  const [childFileData, setChildFileData] = React.useState<any[]>([]);
-  const [assetId, setAssetId] = React.useState<number>();
   const [isdownloadable, setIsdownloadable] = React.useState<boolean>(false);
-  const [uploadedOn, setUploadedOn] = React.useState<string>("");
   const [gpsFileData, setGpsFileData] = React.useState<any[]>([]);
   const [detailContent, setDetailContent] = React.useState<boolean>(false);
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
 
-
-
-
   const { t } = useTranslation<string>();
-
   const dispatch = useDispatch();
 
   const queryParams = new URLSearchParams(window.location.search);
@@ -242,119 +234,6 @@ const SharedMedia = () => {
     return numberFormatting + " (" + nameFormatting + ")";
   }
 
-  function getMasterAssetFile(dt: any) {
-    dt?.map((template: any, i: number) => {
-      FileAgent.getFile(template.filesId).then((response) => {
-        if (template.type != "GPS") {
-          let uploadCompletedOnFormatted = response.history.uploadCompletedOn ? moment(response.history.uploadCompletedOn).format("MM / DD / YY @ HH: mm: ss") : "";
-          setUploadedOn(uploadCompletedOnFormatted)
-        }
-      });
-      FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-        if (template.type == "GPS") {
-          setGpsFileData([...gpsFileData, {
-            filename: template.name,
-            fileurl: template.url,
-            type: template.type,
-            downloadUri: response
-          }])
-        }
-        else {
-          setFileData([...fileData, {
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          }])
-        }
-      }).catch(e => {
-        setFileData([...fileData, {
-          filename: template.name,
-          fileurl: template.url,
-          fileduration: template.duration,
-          downloadUri: ""
-        }])
-      });
-    })
-  }
-  function getChildAssetFile(dt: any) {
-    let fileDownloadUrls: any = [];
-    dt?.map((ut: any, i: number) => {
-      ut?.files.map((template: any, j: number) => {
-        FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          fileDownloadUrls.push({
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          })
-          setChildFileData([...fileDownloadUrls])
-        }).catch(e => {
-          fileDownloadUrls.push({
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: ""
-          })
-          setChildFileData([...fileDownloadUrls])
-        })
-      })
-    })
-
-  }
-
-
-
-
-  function extract(row: any) {
-    let rowdetail: assetdata[] = [];
-    let rowdetail1: assetdata[] = [];
-    const masterduration = row.assets.master.duration;
-    const buffering = row.assets.master.buffering;
-    const camera = row.assets.master.camera;
-    const file = fileData;
-    let recording = row.assets.master.recording;
-    const bookmarks = row.assets.master.bookMarks ?? [];
-    const notes = row.assets.master.notes ?? [];
-    const id = row.assets.master.id;
-    const unitId = row.assets.master.unitId;
-    const typeOfAsset = row.assets.master.typeOfAsset;
-    const name = row.assets.master.name;
-    const status = row.assets.master.files[0]?.filesId > 0 ? "Available" : "";
-    recording = {
-      ...recording,
-      ended: new Date(new Date(recording.ended).getTime() + buffering?.post),
-      started: new Date(new Date(recording.started).getTime() - buffering?.pre),
-    }
-    let myData: assetdata = { id: id, files: file, assetduration: masterduration, assetbuffering: buffering, recording: recording, bookmarks: bookmarks, unitId: unitId, typeOfAsset: typeOfAsset, name: name, notes: notes, camera: camera, status: status }
-    rowdetail.push(myData);
-    rowdetail1 = row.assets.children.map((template: any, i: number) => {
-      template.recording = {
-        ...template.recording,
-        ended: new Date(new Date(template.recording?.ended).getTime() + template.buffering?.post),
-        started: new Date(new Date(template.recording?.started).getTime() - template.buffering?.pre),
-      }
-      return {
-        id: template.id,
-        files: childFileData,
-        assetduration: template.duration,
-        assetbuffering: template.buffering,
-        recording: template.recording,
-        bookmarks: template.bookMarks ?? [],
-        unitId: template.unitId,
-        typeOfAsset: template.typeOfAsset,
-        name: template.name,
-        notes: template.notes ?? [],
-        camera: template.camera,
-        status: template.files[0]?.filesId > 0 ? "Available" : ""
-      }
-    })
-    for (let x = 0; x < rowdetail1.length; x++) {
-      rowdetail.push(rowdetail1[x])
-    }
-    return rowdetail
-  }
-
 
   const gotoSeeMoreView = (e: any, targetId: any) => {
     detailContent == false ? setDetailContent(true) : setDetailContent(false);
@@ -439,7 +318,6 @@ const SharedMedia = () => {
       //setEvidenceCategoriesResponse(response.categories)
       setEvidenceId(response.evidenceId);
       setIsdownloadable(response[0].permissons.isDownloadable);
-      setAssetId(response[0].assetId);
       var expiry_date = moment(response[0].shared.on).add(response[0].shared.expiryDuration, 'hours');
       let now = moment();
       if (now.isBefore(expiry_date)) {
