@@ -118,6 +118,19 @@ const CreateTemplate = (props: any) => {
   const [deleteConfirmationIsOpen, setDeleteConfirmationIsOpen] = React.useState<boolean>(false);
   const sensorEvents: any = useSelector((state: RootState) => state.sensorEventsSlice.sensorEvents);
 
+  const valuesOfDevices = [
+    { device: "NF-21-N", url: "rtsp://192.168.5.28/live/0", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21-W", url: "rtsp://192.168.5.29/live/0", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21-WI", url: "rtsp://192.168.5.30/live/0", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21A-70", url: "rtsp://192.168.5.36/live", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21A-146", url: "rtsp://192.168.5.37/live", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21A-180", url: "rtsp://192.168.5.38/live", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-21A-146IR", url: "rtsp://192.168.5.35/live", port: 554, userId: "admin", password: 2100 },
+    { device: "NF-22-N", url: "rtsp://192.168.5.47/live/0", port: 554, userId: "admin", password: 2200 },
+    { device: "NF-22-W", url: "rtsp://192.168.5.48/live/1", port: 554, userId: "admin", password: 2200 },
+    { device: "Zero-Dark", url: "http://192.168.5.8/live/stream1.cgi", port: 81, userId: "admin", password: 8131 },
+  ]
+
 
   let tabs: { label: keyof typeof FormSchema, index: number }[] = [];
   let tabs1: { label: keyof typeof FormSchema, index: number }[] = [];
@@ -664,6 +677,70 @@ const CreateTemplate = (props: any) => {
             let deviceType: DeviceType = deviceTypes.find((x:DeviceType) => x.id == valueRaw);
             if(deviceType)
             {
+              let valuesOfDevice = valuesOfDevices.find(x => x.device == deviceType.name);
+              if(valuesOfDevice)
+              {
+                let isExistUserId = Initial_Values.find((x: any) => x.key == "userId_" + keySubSplit[1] + "_" + keySubSplit[2]);
+                if(isExistUserId)
+                {
+                  isExistUserId.value = valuesOfDevice.userId;
+                }
+                else{
+                  Initial_Values.push({
+                    key: "userId_" + keySubSplit[1] + "_" + keySubSplit[2],
+                    value: valuesOfDevice.userId,
+                    group: split[0],
+                    valueType: split[2],
+                    sequence: 1,
+                  });
+                }
+
+                let isExistPassword = Initial_Values.find((x: any) => x.key == "password_" + keySubSplit[1] + "_" + keySubSplit[2]);
+                if(isExistPassword)
+                {
+                  isExistPassword.value = valuesOfDevice.password;
+                }
+                else{
+                  Initial_Values.push({
+                    key: "password_" + keySubSplit[1] + "_" + keySubSplit[2],
+                    value: valuesOfDevice.password,
+                    group: split[0],
+                    valueType: split[2],
+                    sequence: 1,
+                  });
+                }
+
+                let isExistUrl = Initial_Values.find((x: any) => x.key == "url_" + keySubSplit[1] + "_" + keySubSplit[2]);
+                if(isExistUrl)
+                {
+                  isExistUrl.value = valuesOfDevice.url;
+                }
+                else{
+                  Initial_Values.push({
+                    key: "url_" + keySubSplit[1] + "_" + keySubSplit[2],
+                    value: valuesOfDevice.url,
+                    group: split[0],
+                    valueType: split[2],
+                    sequence: 1,
+                  });
+                }
+
+                let isExistStreamPort = Initial_Values.find((x: any) => x.key == "streamPort_" + keySubSplit[1] + "_" + keySubSplit[2]);
+                if(isExistStreamPort)
+                {
+                  isExistStreamPort.value = valuesOfDevice.port;
+                }
+                else{
+                  Initial_Values.push({
+                    key: "streamPort_" + keySubSplit[1] + "_" + keySubSplit[2],
+                    value: valuesOfDevice.port,
+                    group: split[0],
+                    valueType: split[2],
+                    sequence: 1,
+                  });
+                }
+              }
+
               let isExistDeviceTypeCategory = Initial_Values.find((x: any) => x.key == "deviceTypeCategory_" + keySubSplit[1] + "_" + keySubSplit[2]);
               if(isExistDeviceTypeCategory)
               {
