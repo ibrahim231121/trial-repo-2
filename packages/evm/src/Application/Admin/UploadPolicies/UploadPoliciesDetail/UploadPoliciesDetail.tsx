@@ -58,13 +58,16 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const [isAddUploadPolicyDetailDisable, setIsAddUploadPolicyDetailDisable] = useState<boolean>(true);
     const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
     const isFirstRenderRef = useRef<boolean>(true);
-    const deletedParamValuesIdRef = useRef<number[]>([]);
+    const deleteUploadPolicyTypesValuesIdRef = useRef<number[]>([]);
     const dataResponseToEdit = useRef<any>(null);
     const dataToEdit = useRef<any>(null);
     const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
     const history = useHistory();
     const dispatch = useDispatch();
     const getAll: any = useSelector((state: RootState) => state.uploadPoliciesSlice.getAll);
+    const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
+        nameErr: "",
+      });
 
     React.useEffect(() => {
         uploadPolicyDetailDropdownDataRef.current = uploadPolicyDetailDropdownData; 
@@ -73,7 +76,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { t } = useTranslation<string>(); 
     useEffect(() => {
         if(!isFirstRenderRef.current) {
-            if(!disableAddUploadPolicyDetail() && name.length > 2 ) {
+            if(!checkNameValidation() && !disableAddUploadPolicyDetailBtn()) {
+
                 setIsSaveDisable(false);
             }
             else{
@@ -81,6 +85,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             }
         }
     }, [name,uploadPolicyDetail])
+
+    useEffect(() => {
+        disableAddUploadPolicyDetail();
+    },[uploadPolicyDetail])
 
     useEffect(() => {
         if(getAll != null) {
@@ -102,17 +110,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
     }, [getAll]);
 
-    useEffect (() => {
-        dispatch(enterPathActionCreator({ val: "" }));
-        return () => {
-            dispatch(enterPathActionCreator({ val: "" }));
-            uploadMsgFormRef.current = null;
-          }
-    },[])
 
     useEffect(() => {
         dispatch(getAllData());
-       
+        dispatch(enterPathActionCreator({ val: "" }));
         isFirstRenderRef.current = false;
         if (id != undefined && id != null && id.length > 0) {
             SetupConfigurationAgent.getUploadPolicies(Number(id)).then((response: any) => {
@@ -137,6 +138,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 console.error(err);
             });
         }
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+            uploadMsgFormRef.current = null;
+          }
     }, []);
 
     const assetUploadConnectionsData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
@@ -231,18 +236,57 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         });
     }
 
-    const checkNameValidation = (value: string) => {
-        let errorState = {...uploadPolicyDetailValidation};
-        if(!!value && value.toString().trim().length > 0) {
-            errorState.name = ''
-        } else {
-            errorState.name = `Name_is_required`;
+    const validatePolicyName = ( name: string):{ error: boolean; errorMessage: string } => {
+        const chracterRegx = /^^[a-zA-Z]+[a-zA-Z0-9-_\b]*$/.test(String(name).toLowerCase());
+        if (!chracterRegx) {
+          return { error: true, errorMessage: t("Please_provide_a_valid_policy_name") };
+        } else if (name.length < 3) {
+          return {
+            error: true,
+            errorMessage: t("Policy_Name_must_contains_atleast_three_characters"),
+          };
+        } else if (name.length > 128) {
+          return {
+            error: true,
+            errorMessage: t("Policy_Name_must_not_exceed_128_characters"),
+          };
         }
-        setUploadPolicyDetailValidation(errorState);
-    }
-    
+        return { error: false, errorMessage: "" };
+      };
+
+    const checkNameValidation = () => {
+        let isDisable = true;
+        const isPolicyNameValid = validatePolicyName(name);
+        if (!name) {
+            setUploadPolicyDetailErr({
+            ...UploadPolicyDetailErr,
+            nameErr: t("Policy_Name_is_required"),
+          });
+        } else if (isPolicyNameValid.error) {
+            setUploadPolicyDetailErr({
+            ...UploadPolicyDetailErr,
+            nameErr: isPolicyNameValid.errorMessage,
+          });
+        } else {
+            setUploadPolicyDetailErr({ ...UploadPolicyDetailErr, nameErr: "" });
+            isDisable = false;
+        }
+        return isDisable;
+    };
 
     const disableAddUploadPolicyDetail = () => {
+        uploadPolicyDetail.forEach((obj) => {
+            if(obj.assetType.value > -1 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
+                && obj.assetUploadConnection.length > 0 ) {
+                setIsAddUploadPolicyDetailDisable(false);
+            } else{
+                setIsAddUploadPolicyDetailDisable(true);
+            }
+         });
+    }
+    
+    
+    const disableAddUploadPolicyDetailBtn = () => {
         let isDisable = false;       
 
         uploadPolicyDetail.forEach((obj) => {
@@ -280,7 +324,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         
         if (parameter && parameter.id && parameter.id > 0) {
             if(id) {
-                deletedParamValuesIdRef.current.push(parameter.id);
+                deleteUploadPolicyTypesValuesIdRef.current.push(parameter.id);
             }
         }
         parameters.splice(i, 1)
@@ -364,7 +408,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 return returnAssetUpload;
             });
             
-            const paramValue = {
+            const UploadPolicyTypesValue = {
                 id: item.id,
                 typeOfAsset:String(assetTypeName['displayText']),
                 upload: item.uploadType.value == 1 ? true: false,
@@ -377,7 +421,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             };
 
 
-            listUploadPolicyDetailValues.push(paramValue);
+            listUploadPolicyDetailValues.push(UploadPolicyTypesValue);
         });
     }
 
@@ -394,9 +438,9 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             description : description,
             type : UploadPolicy,            
             detail: [],
-            dataUploadPolicyTypes : listUploadPolicyDetail
+            dataUploadPolicyTypes : listUploadPolicyDetail,
+            deleteUploadPolicyTypesValuesIdRef : deleteUploadPolicyTypesValuesIdRef.current
         }        
-
           return uploadPolicy;
       }
 
@@ -529,6 +573,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                     <div className="nameFieldUploadPolicy">
                         <Grid  item xs={12} sm={12} md={12} lg={5}>
                             <TextField
+                            error ={!!UploadPolicyDetailErr.nameErr}
+                            errorMsg={UploadPolicyDetailErr.nameErr}
                             required={true}
                             value={name}
                             label={t("Name")}
@@ -538,12 +584,11 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             type="text"
                             name="uploadPoliciesName"
                             regex=""
-                            onBlur={() => checkNameValidation(name)}
+                            onBlur={() => checkNameValidation()}
                             />
                         </Grid>
                     </div>
                     <div className="nameFieldUploadPolicy">
-                       
                     
                         <Grid  item xs={12} sm={12} md={12} lg={5}>                           
                             <TextField                            
@@ -666,7 +711,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                         </CRXColumn>
                                         <CRXColumn className="uploadPolicyDetailBtnRemove" container item xs={3} spacing={0}>
                                             {
-                                                uploadPolicyDetail.assetType.value > -1 &&
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveUploadPolicyDetail(idx)}

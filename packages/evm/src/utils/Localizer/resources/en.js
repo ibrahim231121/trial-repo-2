@@ -861,6 +861,10 @@ export const resources = {
         "Unable_to_process_your_request,_Policy_Ids" : "Unable to process your request, PolicyIds ",
         "is_Assigned_on_Categories" : " is Assigned on Categories",
         "Add_policy_rules":"+ Add policy rules",
+        "Policy_Name_is_required": "Policy Name is required",
+        "Please_provide_a_valid_policy_name" : "Please provide a valid policy name",
+        "Policy_Name_must_contains_atleast_three_characters" : "Policy Name must contains atleast three characters",
+        "Policy_Name_must_not_exceed_128_characters" : "Policy Name must not exceed 128 characters"
       }
     }
   };
