@@ -37,6 +37,7 @@ const BookmarkNotePopup = ({
   const [showButton, setShowButton] = React.useState<boolean>(false);
   const [objTypeDescription, setObjTypeDescription] = React.useState<string>("");
   const [noteUserName, setNoteUserName] = React.useState<string>("");
+  const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false)
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -334,6 +335,13 @@ const BookmarkNotePopup = ({
         console.error(err);
       });
   };
+  useEffect(() => {
+    if (confirmDelete) {
+      onDeleteConfirm()
+    }
+  }, [confirmDelete]);
+
+
 
   const onDeleteConfirm = async () => {
     setIsOpenConfirmDailog(false);
@@ -468,7 +476,7 @@ const BookmarkNotePopup = ({
       </div>
       <CRXConfirmDialog
         setIsOpen={() => setIsOpenConfirmDailog(false)}
-        onConfirm={onDeleteConfirm}
+        onConfirm={() => { setConfirmDelete(true) }}
         className="__CRX_BookMarkNote_Delete_Modal__"
         title="Please Confirm"
         isOpen={IsOpenConfirmDailog}

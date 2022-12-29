@@ -56,6 +56,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [numberOfLine, setNumberOfLine] = useState<any>("")
+  const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
   React.useEffect(() => {
     if (!editDescription) {
       let des: any = document.querySelector('textarea')?.getClientRects().length
@@ -327,12 +328,23 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
         console.error(err);
       });
   };
+  useEffect(() => {
+    if (confirmDelete) {
+      onDeleteConfirm()
+
+    }
+  }, [confirmDelete]);
+
 
   const onDeleteConfirm = async () => {
-    if (selectDropDown == "Bookmarks") {
-      onDeleteBookmark();
-    } else if (selectDropDown == "Notes") {
-      onDeleteNote();
+    if (IsOpenConfirmDailog) {
+      setIsOpenConfirmDailog(false)
+      if (selectDropDown == "Bookmarks") {
+        onDeleteBookmark();
+      } else if (selectDropDown == "Notes") {
+        onDeleteNote();
+      }
+      setConfirmDelete(!confirmDelete)
     }
   };
 
@@ -477,7 +489,7 @@ const AssetDetailNotesandBookmarkBox = ({ stateObj, EvidenceId, timelinedetail, 
       </div>
       <CRXConfirmDialog
         setIsOpen={() => setIsOpenConfirmDailog(false)}
-        onConfirm={onDeleteConfirm}
+        onConfirm={() => setConfirmDelete(true)}
         className="__CRX_BookMarkNote_Delete_Modal__"
         title={t("Please_confirm")}
         isOpen={IsOpenConfirmDailog}
