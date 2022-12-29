@@ -2584,7 +2584,7 @@ useEffect(() => {
                   }
               </div>
             : ""}         
-           { multiTimelineEnabled && <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
+            <div id="timelines" style={{ display: styleScreen == false ? 'block' : '' }} className={controllerBar === true ? 'showControllerBar' : 'hideControllerBar'}>
               {/* TIME LINES BAR HERE */}
               {loading ? (
                 <Timelines
@@ -2619,7 +2619,6 @@ useEffect(() => {
               </div>
               {!syncButton && (multiTimelineEnabled && <button className="assetTimelineSync" onClick={() => { setSyncButton(true); setOpenTimelineSyncInstructions(true); setStartTimelineSync(true) }} ><i className="fas fa-sync"></i><span>Sync timeline start</span></button>)}
             </div>
-            }
              
            
           

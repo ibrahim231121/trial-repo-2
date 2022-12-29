@@ -183,14 +183,19 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
   const onSubmitForm = async () => {
     let tId  = getTenantId();
     let rowObject:AssetShareLink = {
-      assetId: props.rowData.assetId,
       masterId: props.rowData.assetId,
-      evidenceId: props.rowData.id
+      assetId: props.rowData.assetId,
+      evidenceId: (props.rowData.id == undefined)?props.rowData.evidence.id:props.rowData.id
 
     }
-    let tempAssetGroup : AssetShareLink[] = [rowObject];
+    var tempAsset = props.items.find(x => x.assetId == rowObject.assetId);
+    if(tempAsset == undefined)
+    {
+      
+      props.items.push(rowObject);
+    }
     let temp: AssetSharingModel = {
-      assetGroup: (props.items.length > 0 )?props.items:tempAssetGroup,
+      assetGroup: props.items,
       tenantId: tId,
       message: comment,
       email: email,

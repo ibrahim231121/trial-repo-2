@@ -127,10 +127,10 @@ const AssetDetailsTemplate = () => {
   useEffect(() => {
     dispatch(setLoaderValue({ isLoading: true }))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
-      setGetAssetData(response);
       let assetListTemp: Asset[] = [response.assets.master];
       assetListTemp = [...assetListTemp, ...response.assets.children];
       setAssetList(assetListTemp);
+      setGetAssetData(response);
       setEvidenceCategoriesResponse(response.categories)
     }).catch(() => {
       dispatch(setLoaderValue({ isLoading: false, message: "", error: true }))
@@ -207,7 +207,7 @@ const AssetDetailsTemplate = () => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == "Video" && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == res?.typeOfAsset && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {
@@ -389,7 +389,6 @@ const AssetDetailsTemplate = () => {
         }
       });
       FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-
         if (template.type == "GPS") {
           setGpsFileData([...gpsFileData, {
             filename: template.name,
@@ -398,13 +397,13 @@ const AssetDetailsTemplate = () => {
             downloadUri: response
           }])
         }
-        else {
-          setFileData([...fileData, {
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          }])
+        else if (template.type == res?.typeOfAsset){
+            setFileData([...fileData, {
+              filename: template.name,
+              fileurl: template.url,
+              fileduration: template.duration,
+              downloadUri: response
+            }])
         }
       }).catch(e => {
         if (template.type != "GPS") {
@@ -423,13 +422,15 @@ const AssetDetailsTemplate = () => {
     dt?.map((ut: any, i: number) => {
       ut?.files.map((template: any, j: number) => {
         FileAgent.getDownloadFileUrl(template.filesId).then((response: string) => response).then((response: any) => {
-          fileDownloadUrls.push({
-            filename: template.name,
-            fileurl: template.url,
-            fileduration: template.duration,
-            downloadUri: response
-          })
-          setChildFileData([...fileDownloadUrls])
+          if (template.type == res?.typeOfAsset){
+            fileDownloadUrls.push({
+              filename: template.name,
+              fileurl: template.url,
+              fileduration: template.duration,
+              downloadUri: response
+            })
+            setChildFileData([...fileDownloadUrls])
+          }
         }).catch(e => {
           fileDownloadUrls.push({
             filename: template.name,
