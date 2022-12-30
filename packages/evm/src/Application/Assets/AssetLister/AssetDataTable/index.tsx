@@ -168,7 +168,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   });
 
   useEffect(() => {
-    debugger;
   },[selectedItems])
   useEffect(() => {
     dataArrayBuilder();
