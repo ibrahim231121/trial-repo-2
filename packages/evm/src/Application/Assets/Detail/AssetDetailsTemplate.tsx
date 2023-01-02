@@ -607,7 +607,7 @@ const AssetDetailsTemplate = () => {
         name: template.name,
         notes: template.notes ?? [],
         camera: template.camera,
-        status: template.status
+        status: template.files[0]?.filesId > 0 ? "Available" : ""
       }
     })
     for (let x = 0; x < rowdetail1.length; x++) {
