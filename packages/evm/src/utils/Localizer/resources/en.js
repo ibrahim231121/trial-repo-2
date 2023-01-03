@@ -856,7 +856,8 @@ export const resources = {
         "Metadata_Upload_Connection":"Metadata Upload Connection",
         "Asset_Upload_Priority":"Asset Upload Priority",
         "Asset_Upload_Connection":"Asset Upload Connection",
-        "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
+        "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",
+        "Success_You_have_updated_the_Upload_Policy":"You have updated the Upload Policy Successfully",        
         "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
         "Unable_to_process_your_request,_Policy_Ids" : "Unable to process your request, PolicyIds ",
         "is_Assigned_on_Categories" : " is Assigned on Categories",
@@ -864,7 +865,8 @@ export const resources = {
         "Policy_Name_is_required": "Policy Name is required",
         "Please_provide_a_valid_policy_name" : "Please provide a valid policy name",
         "Policy_Name_must_contains_atleast_three_characters" : "Policy Name must contains atleast three characters",
-        "Policy_Name_must_not_exceed_128_characters" : "Policy Name must not exceed 128 characters"
+        "Policy_Name_must_not_exceed_128_characters" : "Policy Name must not exceed 128 characters",
+        "Upload_Policies" : "Upload Policies"
       }
     }
   };

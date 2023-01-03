@@ -1,6 +1,6 @@
 export interface UploadPolicies {
     uploadPolicy : uploadPolicy,
-    
+    DeleteUploadPolicyTypesIds : number[],
 }
 
 export interface uploadPolicy {
@@ -9,8 +9,7 @@ export interface uploadPolicy {
     description : string,
     type : string,
     history : any,
-    dataUploadPolicyTypes : any
-    deleteUploadPolicyTypesValuesIdRef: number[],
+    DataUploadPolicyTypes : any
 }
 export interface uploadPolicyDetail {
     id : number,
