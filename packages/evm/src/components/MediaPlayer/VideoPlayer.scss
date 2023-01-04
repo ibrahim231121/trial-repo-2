@@ -1356,7 +1356,7 @@ span.playBackTooltipUp {
     top: auto !important;
     right: 99px !important;
     left: auto !important;
-    bottom: 139px !important;
+    bottom: 115px !important;
     // margin-bottom: 134px !important;
     // margin-right: 97px;
     ul {
@@ -2336,6 +2336,20 @@ span.playBackTooltipUp {
           }
         }
       }
+      ._Player_Layout_Menu_  {
+        .MuiMenu-paper {
+          bottom: 0px !important;
+          right: 0px !important;
+        }  
+      }
+      .videoFastRw {
+        bottom: calc(0vh + 20vh);
+      }
+      .fullWidthOverLay + ._videPlayer_height_AU   {
+        .videoFastRw  {
+          bottom: calc(0vh + 12vh);
+          }
+      }  
     }
   }
   &::backdrop {

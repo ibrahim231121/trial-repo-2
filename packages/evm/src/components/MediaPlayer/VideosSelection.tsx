@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { CRXPopOver } from "@cb/shared";
-import { CRXButton,CRXMultiViewStyle } from "@cb/shared";
+import { CRXButton, CRXMultiViewStyle } from "@cb/shared";
 import { CRXHeading } from "@cb/shared";
 import { CRXCheckBox } from "@cb/shared";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,7 @@ const VideosSelection = ({
   const RadioBtnValues = [
     {
       value: 1,
-      Comp: () => {},
+      Comp: () => { },
     },
   ];
 
@@ -117,11 +117,10 @@ const VideosSelection = ({
                       return (
                         <>
                           <div
-                            className={`CRXMultiViewDetail ${
-                              checkedVideo === video.id
+                            className={`CRXMultiViewDetail ${checkedVideo === video.id
                                 ? "CRXMultiViewDetailActive"
                                 : ""
-                            }`}
+                              }`}
                             onClick={(e: any) => videoCheckRadio()}
                             key={index}
                           >
@@ -164,7 +163,7 @@ const VideosSelection = ({
                               </div>
                               {video.camera && <div className="CRXMultiViewType">{video.camera}</div>}
                               <div className="CRXMultiViewDate">
-                              {new Date(video.recording_started).toLocaleDateString()}
+                                {new Date(video.recording_started).toLocaleDateString()}
                               </div>
                               <div className="CRXMultiViewTime">{new Date(video.recording_started).toLocaleTimeString()}</div>
                             </div>
@@ -177,7 +176,7 @@ const VideosSelection = ({
                   <CRXButton
                     className="primary"
                     disabled={checkedVideo === "" ? true : false}
-                    onClick={confirmEvent}
+                    onClick={(e: any) => { confirmEvent(); }}
                   >
                     Confirm selection for view
                   </CRXButton>

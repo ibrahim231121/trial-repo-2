@@ -696,10 +696,10 @@ export const CreateTempelateCase = (props: any) => {
                         
                           </div>
                         
-                          <div className='_camera_setup_flieds' key={formObj.key + "_DIV" + key}>
+                          <div className={'_camera_setup_flieds ' + feild.class ?? "" } key={formObj.key + "_DIV" + key}>
                             <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} />
                           </div></> :
-                        <div className='_camera_setup_flieds' key={formObj.key + "_DIV" + key}>
+                        <div className={'_camera_setup_flieds ' + feild.class ?? "" } key={formObj.key + "_DIV" + key}>
                           <CreateTempelateCase formObj={feild} values={values} setValues={setValues} index={index} handleChange={handleChange} setFieldValue={setFieldValue} applyValidation={applyValidation} Initial_Values_obj_RequiredField={Initial_Values_obj_RequiredField} setInitial_Values_obj_RequiredField={setInitial_Values_obj_RequiredField} FormSchema={FormSchema} cameraFeildArrayCounter={cameraFeildArrayCounter} setCameraFeildArrayCounter={setCameraFeildArrayCounter} isValid={isValid} setformSchema={setformSchema} touched={touched} errors={errors} handleBlur={handleBlur} setTouched={setTouched} setValidationFailed={setValidationFailed} />
 
                         </div>

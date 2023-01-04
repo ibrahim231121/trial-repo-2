@@ -563,6 +563,7 @@ const SearchComponent = (props: any) => {
                     type="info"
                     alertType="inline"
                     open={searchResult}
+                    setShowSucess={() => null}
                   />
         }
         {(searchData.length > 0) && (
