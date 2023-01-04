@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import RetentionPoliciesTemplateActionMenu from './RetentionPoliciesTemplateActionMenu';
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './retentionPoliciesList.scss'
-import anchorDisplay from '../../../../utils/AnchorDisplay';
-import { urlList, urlNames } from "../../../../utils/urlList"
 import { useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton,CRXIcon } from "@cb/shared";

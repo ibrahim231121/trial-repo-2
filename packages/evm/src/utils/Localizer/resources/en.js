@@ -850,6 +850,8 @@ export const resources = {
         "Edit_retention_policy": "Edit retention policy",
         "Delete_retention_policy": "Delete retention policy",
         "Duplicate_Name_is_not_allowed":"Duplicate Name is not allowed",
+        "Are_you_sure_you_would_like_to_delete_retention_policies?" : "Are you sure you would like to delete retention policies?",
+        "All_Retention_Policies_Deleted_Successfully" : "All Retention Policies Deleted Successfully",
 
         //----------  Upload Policies  ---------       
         "Upload" :"Upload",
@@ -859,14 +861,20 @@ export const resources = {
         "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",
         "Success_You_have_updated_the_Upload_Policy":"You have updated the Upload Policy Successfully",        
         "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
-        "Unable_to_process_your_request,_Policy_Ids" : "Unable to process your request, PolicyIds ",
+        "Unable_to_process_your_request,_Policy" : "Unable to process your request, Policy ",
+        "Unable_to_process_your_request,_Policies" : "Unable to process your request, Policies ",
         "is_Assigned_on_Categories" : " is Assigned on Categories",
+        "is_Assigned_on_Category" : " is Assigned on Category",
         "Add_policy_rules":"+ Add policy rules",
         "Policy_Name_is_required": "Policy Name is required",
         "Please_provide_a_valid_policy_name" : "Please provide a valid policy name",
         "Policy_Name_must_contains_atleast_three_characters" : "Policy Name must contains atleast three characters",
         "Policy_Name_must_not_exceed_128_characters" : "Policy Name must not exceed 128 characters",
-        "Upload_Policies" : "Upload Policies"
+        "Upload_Policies" : "Upload Policies",
+        "Policies" : "Policies ",
+        "Policy" : "Policy",
+        "Are_you_sure_you_would_like_to_delete_upload_policy?" : "Are you sure you would like to delete upload policy?",
+        "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully"
       }
     }
   };

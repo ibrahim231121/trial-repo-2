@@ -106,17 +106,6 @@ React.useEffect(() => {
     );
   };
 
-  const AnchorDisplay = (e: string) => {
-    if(getModuleIds().includes(0)) {
-    return anchorDisplay(e, "linkColor", urlList.filter((item:any) => item.name === urlNames.uploadPoliciesEdit)[0].url)
-    }
-    else{
-    let lastid = e.lastIndexOf("_");
-    let text =  e.substring(0,lastid)
-    return textDisplay(text,"")
-    }
-  }
-
   const UploadFormMessages = (obj: any) => {
     uploadMsgFormRef?.current?.showToaster({
       message: obj.message,
@@ -153,7 +142,7 @@ React.useEffect(() => {
       label: `${t("Policy_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => AnchorDisplay(e),
+      dataComponent: (e: string) => textDisplay(e,""),
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
@@ -185,8 +174,8 @@ React.useEffect(() => {
       uploadPoliciesTemplateRows = filterUploadPolicies?.data.map((template: any) => {
         return { 
             id: template.id, 
-            name: template.name + "_" + template.id, 
-            description: template.description , 
+            name: template.name, 
+            description: template.description, 
         }
       })
     }

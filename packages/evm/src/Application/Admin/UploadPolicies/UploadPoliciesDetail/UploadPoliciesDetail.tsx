@@ -1,28 +1,20 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
 import { useHistory, useParams } from "react-router";
-import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip,CRXToaster } from "@cb/shared";
+import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog, CRXRows, CRXColumn, CRXSelectBox, TextField,CRXTooltip,CRXToaster } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { defaultType, defaultUpload, defaultMetadataUploadConnection, defaultAssetUploadPriority,  defaultAssetUploadConnection } from '../TypeConstant/constants';
-import { UploadPolicyDetailModel, SelectBoxType, UploadPolicyDropdownModel, UploadPolicyDetailErrorModel, UploadPolicyDetailValidationModel, SelectConnectionLevel } from '../TypeConstant/types';
+import { UploadPolicyDetailModel, SelectBoxType, UploadPolicyDropdownModel, SelectConnectionLevel } from '../TypeConstant/types';
 import Grid from "@material-ui/core/Grid";
 import './uploadPoliciesDetail.scss';
-import {UploadPolicies} from '../../../../utils/Api/models/UploadPolicies';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
 import { getAllUploadPoliciesFilter, getAllData } from "../../../../Redux/UploadPolicies";
 import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
-import { is } from "immer/dist/internal";
-import { string } from "yup";
 
 type UploadPoliciesDetailProps = {
     id: string
-}
-
-const defaultValidationModel: UploadPolicyDetailValidationModel = {
-    name: '',
-    description:''    
 }
 
 const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
@@ -53,7 +45,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { id } = useParams<{ id: string }>();
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [uploadPolicyDetailValidation, setUploadPolicyDetailValidation] = useState<UploadPolicyDetailValidationModel>(defaultValidationModel);
     const [uploadPolicyDetail, setUploadPolicyDetail] = useState<UploadPolicyDetailModel[]>([defaultUploadPolicyDetail]);
     const [isOpen, setIsOpen] = React.useState(false);
     const [isAddUploadPolicyDetailDisable, setIsAddUploadPolicyDetailDisable] = useState<boolean>(true);
@@ -71,7 +62,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
         nameErr: "",
       });
-    const isAddCase = !!isNaN(+id);
+    const isAddCase = isNaN(+id);
     const { t } = useTranslation<string>();
     
     
@@ -131,14 +122,14 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         dispatch(enterPathActionCreator({ val: "" }));
         isFirstRenderRef.current = false;
         if (!isAddCase) {
-            isAddCaseHandler();
+            addCaseHandler();
         }
         return () => {
             dispatch(enterPathActionCreator({ val: "" }));
             uploadMsgFormRef.current = null;
         }
     }, [isAddCase]);
-
+    
     const initialUpdatedHandler = () => {
         if(initialState.current && updatedState.current && !checkNameValidation() && !disableAddUploadPolicyDetailBtn()){
             if(JSON.stringify(initialState.current)== JSON.stringify(updatedState.current)){
@@ -150,7 +141,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
     }
     
-    const isAddCaseHandler =() => {
+    const addCaseHandler =() => {
         SetupConfigurationAgent.getUploadPolicies(Number(id))
             .then((response : any) => {
                 return response
@@ -166,7 +157,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 initialState.current = {
                     name:Uploadpolicy.name,
                     description:Uploadpolicy.description,
-                    dataUploadPolicyTypes:JSON.parse(JSON.stringify(uploadPolicyDetailArray)) 
+                    dataUploadPolicyTypes:JSON.parse(JSON.stringify(uploadPolicyDetailArray)),
                 }
                 initialUpdatedHandler();
                 setUploadPolicyDetail(uploadPolicyDetailArray);    
@@ -404,13 +395,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         setUploadPolicyDetail(parameters);
     }
 
-
-    const isSelectBoxType = (param: any) => {
-        if (typeof param === "object") {
-            return (param.data as SelectBoxType).value != undefined;
-        }
-        return false;
-    }
     const  convertArrayToConnectionJsonString = (arrayValues: SelectConnectionLevel[]) =>
     {
         let obj: any = {};
@@ -475,8 +459,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             description : description,
             type : UploadPolicy,            
             detail: [],
-            DataUploadPolicyTypes : listUploadPolicyDetail,
-            DeleteUploadPolicyTypesIds : deleteUploadPolicyTypesIds
+            dataUploadPolicyTypes : listUploadPolicyDetail,
+            deleteUploadPolicyTypesIds : deleteUploadPolicyTypesIds
         }        
           return uploadPolicy;
       }
@@ -504,7 +488,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
           else
           {
                 SetupConfigurationAgent.putUploadPoliciesTemplate(`Policies/${id}`,payload).then((res:any)=>{
-                isAddCaseHandler();
+                addCaseHandler();
                 dispatch(enterPathActionCreator({ val: payload.name }));   
                 onMessageShow(true,t("Success_You_have_updated_the_Upload_Policy"));
                 dispatch(getAllUploadPoliciesFilter());
@@ -640,8 +624,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             name="uploadPoliciesDescription"
                             regex=""
                             multiline={true}
-                           
-
                             />
                         </Grid>
                     </div>
@@ -749,7 +731,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                         </CRXColumn>
                                         <CRXColumn className="uploadPolicyDetailBtnRemove" container item xs={3} spacing={0}>
                                             {
-                                                uploadPolicyDetail.assetType.value > -1 &&
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveUploadPolicyDetail(idx)}

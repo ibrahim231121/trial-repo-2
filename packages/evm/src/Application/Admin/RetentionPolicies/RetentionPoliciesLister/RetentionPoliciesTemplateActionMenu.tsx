@@ -6,7 +6,6 @@ import {
 } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import Dialogbox from '../../UnitConfiguration/ConfigurationTemplates/Dialogbox';
-import { useHistory } from "react-router";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
@@ -27,6 +26,7 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, ro
 const { t } = useTranslation<string>();
 
 const [nondefault, setnondefault] = useState(false);
+const [policyName, setPolicyName] = useState<any[]>([]);
 
 const deleteRetentionPolicies = () => {
   if(Array.isArray(selectedItems) && selectedItems.length > 0) {
@@ -37,14 +37,16 @@ const deleteRetentionPolicies = () => {
     .then(function(response:any){
       let {AssignIdName,UnAssignsIds} = response;
       if(AssignIdName.length > 0) {
-            let names = AssignIdName.map(function (x:any){
-              return x.name;
-            })
-            onMessageShow(false,t(("Unable_to_process_your_request,_Policy_Ids")) + names.join() + t("is_Assigned_on_Categories"));
-      }
-      if(UnAssignsIds.length > 0){
-        onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
-      }
+        let names = AssignIdName.map(function (x:any){
+          return x.name;
+        })
+        AssignIdName.length > 1 ? onMessageShow(false,t(("Unable_to_process_your_request,_Policies")) + names.join() + t("is_Assigned_on_Categories")) 
+        : onMessageShow(false,t(("Unable_to_process_your_request,_Policy")) + names.join() + t("is_Assigned_on_Category"));;
+  }
+    if(UnAssignsIds.length > 0)
+    {
+     UnAssignsIds.length > 1 ? onMessageShow(true,t("All_Retention_Policies_Deleted_Successfully")) : onMessageShow(true,t("Retention_Policy_Deleted_Successfully"));
+    }
       getRowData();
       getSelectedData();
     })
@@ -60,6 +62,16 @@ const deleteRetentionPolicies = () => {
 const deleteConfirm = () => {
   if(selectedItems) {   
       setnondefault(true);  
+      policyNameHandler();
+  }
+}
+
+const policyNameHandler = () => {
+  if(Array.isArray(selectedItems) && selectedItems.length > 0) {
+     let uploadPolicyName = selectedItems.map((data: any) => {
+      return data.name;
+    });
+    setPolicyName(uploadPolicyName)
   }
 }
 
@@ -136,7 +148,8 @@ const openCreateRetentionPoliciesForm = () => {
         {
           <div className="crxUplockContent configuserParaMain">
             <p className="configuserPara1">
-            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{selectedItems && selectedItems.description}</span> {t("Retention_Policies")}. 
+            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}&nbsp;</span>{policyName.length > 1 ? `${t("Policies")}` : `${t("Policy")}`}<span className="boldPara">&nbsp;{policyName.join()}.</span>&nbsp; 
+
             {t("You_will_not_be_able_to_undo_this_action.")}
             </p>
             <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_retention_policies?")}</p>

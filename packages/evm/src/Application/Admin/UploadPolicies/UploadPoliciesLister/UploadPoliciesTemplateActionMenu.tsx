@@ -24,6 +24,7 @@ const UploadPoliciesTemplateActionMenu: React.FC<Props> = ({selectedItems, row, 
 const { t } = useTranslation<string>();
 const history = useHistory();
 const [nondefault, setnondefault] = useState(false);
+const [policyName, setPolicyName] = useState<any[]>([]);
 
 const deleteUploadPolicies = () => {
   if(Array.isArray(selectedItems) && selectedItems.length > 0) {
@@ -37,10 +38,12 @@ const deleteUploadPolicies = () => {
             let names = AssignIdName.map(function (x:any){
               return x.name;
             })
-            onMessageShow(false,t(("Unable_to_process_your_request,_Policy_Ids")) + names.join() + t("is_Assigned_on_Categories"));
+            AssignIdName.length > 1 ? onMessageShow(false,t(("Unable_to_process_your_request,_Policies")) + names.join() + t("is_Assigned_on_Categories")) 
+            : onMessageShow(false,t(("Unable_to_process_your_request,_Policy")) + names.join() + t("is_Assigned_on_Category"));
       }
-      if(UnAssignsIds.length > 0){
-        onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
+      if(UnAssignsIds.length > 0)
+      {
+        UnAssignsIds.length > 1 ? onMessageShow(true,t("All_Upload_Policies_Deleted_Successfully")) : onMessageShow(true,t("Upload_Policy_Deleted_Successfully"));
       }
       getRowData();
       getSelectedData();
@@ -57,6 +60,7 @@ const deleteUploadPolicies = () => {
 const deleteConfirm = () => {
   if(selectedItems) {   
       setnondefault(true);  
+      policyNameHandler();
   }
 }
 
@@ -70,6 +74,14 @@ const openCreateUploadPolicyForm = () => {
  async function Onconfirm(){
   deleteUploadPolicies();
   setnondefault(false);
+  }
+  const policyNameHandler = () => {
+    if(Array.isArray(selectedItems) && selectedItems.length > 0) {
+       let uploadPolicyName = selectedItems.map((data: any) => {
+        return data.name;
+      });
+      setPolicyName(uploadPolicyName)
+    }
   }
 
   return (
@@ -133,10 +145,11 @@ const openCreateUploadPolicyForm = () => {
         {
           <div className="crxUplockContent configuserParaMain">
             <p className="configuserPara1">
-            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}</span> {t("this")} <span className="boldPara">{selectedItems && selectedItems.description}</span> {t("Upload_Policies")}. 
+            {t("You_are_attempting_to")} <span className="boldPara">{t("delete")}&nbsp;</span>{policyName.length > 1 ? `${t("Policies")}` : `${t("Policy")}`}<span className="boldPara">&nbsp;{policyName.join()}.</span>&nbsp; 
+
             {t("You_will_not_be_able_to_undo_this_action.")}
             </p>
-            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_upload_policies?")}</p>
+            <p className="configuserPara2">{t("Are_you_sure_you_would_like_to_delete_upload_policy?")}</p>
           </div>
         }
       </Dialogbox> 
