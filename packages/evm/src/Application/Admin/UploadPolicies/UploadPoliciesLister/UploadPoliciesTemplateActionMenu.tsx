@@ -39,7 +39,7 @@ const deleteUploadPolicies = () => {
               return x.name;
             })
             AssignIdName.length > 1 ? onMessageShow(false,t(("Unable_to_process_your_request,_Policies")) + names.join() + t("is_Assigned_on_Categories")) 
-            : onMessageShow(false,t(("Unable_to_process_your_request,_Policy")) + names.join() + t("is_Assigned_on_Category"));
+            : onMessageShow(false,t(("Unable_to_process_your_request,_Policy")) + names.join() + t("is_Assigned_on_Categories"));
       }
       if(UnAssignsIds.length > 0)
       {

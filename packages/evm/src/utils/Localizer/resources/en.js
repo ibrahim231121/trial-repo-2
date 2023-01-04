@@ -864,7 +864,6 @@ export const resources = {
         "Unable_to_process_your_request,_Policy" : "Unable to process your request, Policy ",
         "Unable_to_process_your_request,_Policies" : "Unable to process your request, Policies ",
         "is_Assigned_on_Categories" : " is Assigned on Categories",
-        "is_Assigned_on_Category" : " is Assigned on Category",
         "Add_policy_rules":"+ Add policy rules",
         "Policy_Name_is_required": "Policy Name is required",
         "Please_provide_a_valid_policy_name" : "Please provide a valid policy name",
