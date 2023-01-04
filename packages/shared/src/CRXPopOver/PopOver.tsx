@@ -1,5 +1,5 @@
 import React, { useEffect, useState }  from 'react'
-import Popper  from '@material-ui/core/Popper';
+import Popper, {PopperPlacementType }  from '@material-ui/core/Popper';
 import { makeStyles } from '@material-ui/core/styles';
 import "./popOver.scss";
 
@@ -9,12 +9,13 @@ type typoProps = {
     open : boolean 
     anchorEl: HTMLElement
     id? : string,
-    placement : string,
+    placement? :PopperPlacementType | undefined,
     className? : string,
     onSetAnchorE1: (v: HTMLElement | null) => void;
     arrowRef? : any,
     title : string,
-    arrowDown : boolean
+    arrowDown : boolean,
+    disablePortal: boolean
 }
 
 
@@ -44,7 +45,7 @@ const cbxPopoverStyle = makeStyles(() => ({
 )
 
 
-const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl, id, className, onSetAnchorE1}) => {
+const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, anchorEl,disablePortal=false ,placement="top-start",id, className, onSetAnchorE1}) => {
   const classes = cbxPopoverStyle();
   const [initScroll, setInitScroll] = useState<any>()
     const handlePopoverClose = () => {
@@ -77,7 +78,8 @@ const CRXPopOver: React.FC<typoProps> = ({children,title, arrowDown, open, ancho
           id={id}
           open={open}
           anchorEl={anchorEl}
-          placement="top-start"
+          placement={placement}
+          disablePortal={disablePortal}
           modifiers={{
             flip: {
               enabled: true,

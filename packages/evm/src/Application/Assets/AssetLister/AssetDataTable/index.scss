@@ -138,7 +138,7 @@
     &:hover {
       td {
         &.DataTableBodyCell {
-          .assetThumb {
+          > .assetThumb {
             .audioBackground {
               background: var(--color-d1d2d4);
               color: var(--color-333333);
