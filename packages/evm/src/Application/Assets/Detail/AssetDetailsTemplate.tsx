@@ -207,7 +207,7 @@ const AssetDetailsTemplate = () => {
 
   useEffect(() => {
     let masterasset = getAssetData?.assets.master.files;
-    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == res?.typeOfAsset && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0).length == childFileData.length) { // temp condition
+    if (getAssetData && fileData.length == masterasset?.filter(x => x.type == res?.typeOfAsset && x.filesId > 0).length && getAssetData?.assets.children.filter(x => x?.files[0]?.filesId > 0 && x?.files[0]?.type == res?.typeOfAsset).length == childFileData.length) { // temp condition
       dispatch(setLoaderValue({ isLoading: false, message: "" }))
       let categories: any[] = [];
       getAssetData.categories.forEach((x: any) => {

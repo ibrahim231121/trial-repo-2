@@ -1,6 +1,7 @@
 import React from 'react'
 import { CRXItem, CRXMenu } from "@cb/shared";
 import { useTranslation } from 'react-i18next';
+import { urlList, urlNames } from '../../../utils/urlList';
 
 
 
@@ -23,7 +24,7 @@ const CRXHelp = () => {
         },
         {
             label : 'About',
-            router : "About"
+            router : urlList.filter((item:any) => item.name === urlNames.about)[0].url
         }
     ];
     return (

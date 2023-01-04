@@ -46,6 +46,7 @@ import RetentionPoliciesList from './Application/Admin/RetentionPolicies/Retenti
 import CategoriesList from "./Application/Admin/Categories/CategoriesLister/CategoriesList";
 import CategoryFormsList from "./Application/Admin/CategoryForms/CategoryFormsLister/CategoryFormsList";
 import Cookies from "universal-cookie";
+import MicroservicesBuildVersion from "./Application/MicroservicesBV";
 
 
 const cookies = new Cookies();
@@ -118,7 +119,7 @@ const Routes = () => {
               <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
               <Route path="/assets/SharedMedia" exact={true} component={SharedMedia} />
 
-             
+              <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.about)[0].url} exact={true} component={MicroservicesBuildVersion} />
               <PrivateRoute moduleId={17} path={urlList.filter((item:any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />
               <PrivateRoute moduleId={18} path={urlList.filter((item:any) => item.name === urlNames.adminStationCreate)[0].url} exact={true} component={StationDetail} />
               <PrivateRoute moduleId={19} path={urlList.filter((item:any) => item.name === urlNames.adminStationEdit)[0].url} exact={true} component={StationDetail} />

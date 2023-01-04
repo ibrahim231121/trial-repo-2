@@ -79,6 +79,7 @@ export const urlNames: any = {
     uploadPoliciesEdit: "uploadPoliciesEdit",
     categories : 'categories',
     categoryForms : 'categoryForms',
+    about : 'about'
 };
 
 export const urlList: any = [
@@ -409,6 +410,13 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/categoryForms', type: 'text', label: 'Category Forms' }
+        ],
+    },
+    {
+        name: urlNames.about,
+        url: "/about",
+        details: [
+            { type: 'text', label: 'Microservices Build Version' }
         ],
     }
 ];

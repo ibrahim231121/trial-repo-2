@@ -38,7 +38,11 @@ import {
     AUDITLOG_SERVICE_URL,
     CountryStateApiUrl,
     EVIDENCE_GET_URL,
-    BASE_URL_AUTHENTICATION_SERVICE
+    BASE_URL_AUTHENTICATION_SERVICE,
+    BASE_URL_Cases_SERVICE,
+    BASE_URL_Configuration_SERVICE,
+    BASE_URL_DeviceHeartBeat_SERVICE,
+    BASE_URL_COMMAND_SERVICE
 } from './url';
 import { getVerificationURL } from "../../utils/settings";
 import { Token } from './models/AuthenticationModels';
@@ -236,6 +240,7 @@ export const SetupConfigurationAgent = {
     getAllCategoryFroms: (url: string) => {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms${url}`, config);
     },
+    getSetupConfigurationBuildVersion: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/SetupConfigurations/Health/BuildVersion"),
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),
@@ -271,16 +276,19 @@ export const EvidenceAgent = {
             headers: config.headers,
             responseType: "blob",
         });
-    }
+    },
+    getEvidenceBuildVersion: () => requests.get<any>(EVIDENCE_SERVICE_URL, "/Evidence/Health/BuildVersion"),
 }
 
 export const AuthenticationAgent = {
     getAccessToken: (url: string) => requests.get<Token>(getVerificationURL(url), '', config),
-    getAccessAndRefreshToken: (url: string) => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, url, config)
+    getAccessAndRefreshToken: (url: string) => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, url, config),
+    getAuthenticationBuildVersion: () => requests.get<any>(BASE_URL_AUTHENTICATION_SERVICE, "/Authentication/Health/BuildVersion"),
 }
 
 export const AuditLogAgent = {
     getUnitAuditLogs: (url: string) => requests.get<AuditLog[]>(AUDITLOG_SERVICE_URL, url, config),
+    getAuditLogBuildVersion: () => requests.get<any>(AUDITLOG_SERVICE_URL, "/AuditLogs/Health/BuildVersion"),
 }
 
 export const FileAgent = {
@@ -288,6 +296,7 @@ export const FileAgent = {
     getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL + "/Files", url, config),
     getFile: (id: number) => requests.get<FileF>(FILE_SERVICE_URL, "/Files/" + id, config),
     getHealthCheck: () => requests.get<string>(FILE_SERVICE_URL, '/Files/HealthCheck', config),
+    getFileBuildVersion: () => requests.get<any>(FILE_SERVICE_URL, "/Files/Health/BuildVersion"),
 }
 
 export const UsersAndIdentitiesServiceAgent = {
@@ -314,7 +323,8 @@ export const UsersAndIdentitiesServiceAgent = {
     getUserGroupsById: (id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL, `/${id}`, config),
     getSelectedUserGroups: (id: string) => requests.get<UserGroups>(GROUP_GET_BY_ID_URL, `/${id}`, config),
     addUserGroup: (url: string, body: UserGroups) => requests.post<number>(GROUP_GET_BY_ID_URL, url, body, config),
-    editUserGroup: (url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL, url, body, config)
+    editUserGroup: (url: string, body: UserGroups) => requests.put<void>(GROUP_GET_BY_ID_URL, url, body, config),
+    getUserBuildVersion: () => requests.get<any>(BASE_URL_USER_SERVICE, "/UsersIdentities/Health/BuildVersion"),
 }
 export const UnitsAndDevicesAgent = {
     getAllUnits: (url: string, extraHeader?: Headers[]) => {
@@ -353,14 +363,34 @@ export const UnitsAndDevicesAgent = {
     getAllUnitVersionKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitTemplateKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
     getAllUnitAssignmentKeyValues: (url: string) => requests.get<UnitTemplateConfigurationInfo[]>(BASE_URL_UNIT_SERVICES, url, config),
+    getUnitBuildVersion: () => requests.get<any>(BASE_URL_UNIT_SERVICES, "/UnitsDevices/Health/BuildVersion"),
 }
+
 export const CommonAgent = {
     getCoutriesAlongWithStates: () => requests.get<any>(CountryStateApiUrl, '', config),
 }
+
 export const SearchAgent = {
     getAssetBySearch: (body: any, extraHeader?: Headers[]) => {
         return requests.post<any>(EVIDENCE_GET_URL, '', body, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config)
     },
+    getSearchBuildVersion: () => requests.get<any>(BASE_URL_USER_SERVICE, "/Search/Health/BuildVersion"),
+}
+
+export const CasesAgent = {
+    getCasesBuildVersion: () => requests.get<any>(BASE_URL_Cases_SERVICE, "/Cases/Health/BuildVersion"),
+}
+
+export const ConfigurationAgent = {
+    getConfigurationBuildVersion: () => requests.get<any>(BASE_URL_Configuration_SERVICE, "/Configuration/Health/BuildVersion"),
+}
+
+export const DeviceHeartBeatAgent = {
+    getDeviceHeartBeatBuildVersion: () => requests.get<any>(BASE_URL_DeviceHeartBeat_SERVICE, "/HeartBeat/Health/BuildVersion"),
+}
+
+export const GvsCommandAgent = {
+    getDeviceHeartBeatBuildVersion: () => requests.get<any>(BASE_URL_COMMAND_SERVICE, "/GvsCommand/Health/BuildVersion"),
 }
 
 export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
