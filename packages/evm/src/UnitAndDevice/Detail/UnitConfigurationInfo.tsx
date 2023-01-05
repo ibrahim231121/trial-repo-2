@@ -95,10 +95,10 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
         error: true,
         errorMessage: t("Unit_Id_must_contains_atleast_three_characters."),
       };
-    } else if (name.length > 128) {
+    } else if (name.length > 10) { 
       return {
         error: true,
-        errorMessage: t("Unit_Id_must_not_exceed_128_characters."),
+        errorMessage: t("Unit_Id_must_not_exceed_10_characters."),
       };
     }
     return { error: false, errorMessage: "" };

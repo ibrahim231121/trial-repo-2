@@ -738,7 +738,7 @@ export const resources = {
         "File_Name":"hr-File Name",
         "Please_provide_a_valid_Unit_Id.":"hr-Please provide a valid Unit Id.",
         "Unit_Id_must_contains_atleast_three_characters.":"hr-Unit Id must contains atleast three characters.",
-        "Unit_Id_must_not_exceed_128_characters.":"hr-Unit Id must not exceed 128 characters.",
+        "Unit_Id_must_not_exceed_10_characters.":"hr-Unit Id must not exceed 10 characters.",
         "Unit_Id_is_Required":"hr-Unit Id is Required",
         "Unit_Configuration_Template":"hr-Unit Configuration Template",
         "Unit_Detail":"hr-Unit Detail: ",

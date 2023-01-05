@@ -350,13 +350,13 @@ const UnitCreate = (props: historyProps) => {
     })
       
   };
-  const catchError = (e : any) => {
-    if(e.request.status == 409) {
-      targetRef.current.showToaster({message: e.response.data, variant: "error", duration: 5000, clearButtton: true}); 
-
+  const catchError = (e : any) => {   
+    if (e.request.status == 500) {  
+      targetRef.current.showToaster({message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"), variant: "error", duration: 5000, clearButtton: true}); 
     }
-    else if (e.request.status == 500) {  
-      targetRef.current.showToaster({message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator."), variant: "error", duration: 5000, clearButtton: true}); 
+    else
+    {
+      targetRef.current.showToaster({message: e.response.data, variant: "error", duration: 5000, clearButtton: true});    
     }
     return e;
   }
