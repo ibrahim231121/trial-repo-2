@@ -1,27 +1,20 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from "react";
 import { useHistory, useParams } from "react-router";
-import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog,CRXAlert, CRXRows, CRXColumn, CRXSelectBox, CRXCheckBox, TextField, CRXHeading,CRXTooltip,CRXToaster } from "@cb/shared";
+import { CRXMultiSelectBoxLight, CRXButton, CRXConfirmDialog, CRXRows, CRXColumn, CRXSelectBox, TextField,CRXTooltip,CRXToaster } from "@cb/shared";
 import {useTranslation } from "react-i18next";
 import { defaultType, defaultUpload, defaultMetadataUploadConnection, defaultAssetUploadPriority,  defaultAssetUploadConnection } from '../TypeConstant/constants';
-import { UploadPolicyDetailModel, SelectBoxType, UploadPolicyDropdownModel, UploadPolicyDetailErrorModel, UploadPolicyDetailValidationModel, SelectConnectionLevel } from '../TypeConstant/types';
+import { UploadPolicyDetailModel, SelectBoxType, UploadPolicyDropdownModel, SelectConnectionLevel } from '../TypeConstant/types';
 import Grid from "@material-ui/core/Grid";
 import './uploadPoliciesDetail.scss';
-import {UploadPolicies} from '../../../../utils/Api/models/UploadPolicies';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
 import { getAllUploadPoliciesFilter, getAllData } from "../../../../Redux/UploadPolicies";
 import { RootState } from "../../../../Redux/rootReducer";
-import { is } from "immer/dist/internal";
-import { string } from "yup";
+import { urlList, urlNames } from "../../../../utils/urlList";
 
 type UploadPoliciesDetailProps = {
     id: string
-}
-
-const defaultValidationModel: UploadPolicyDetailValidationModel = {
-    name: '',
-    description:''    
 }
 
 const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
@@ -52,13 +45,14 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const { id } = useParams<{ id: string }>();
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [uploadPolicyDetailValidation, setUploadPolicyDetailValidation] = useState<UploadPolicyDetailValidationModel>(defaultValidationModel);
     const [uploadPolicyDetail, setUploadPolicyDetail] = useState<UploadPolicyDetailModel[]>([defaultUploadPolicyDetail]);
     const [isOpen, setIsOpen] = React.useState(false);
     const [isAddUploadPolicyDetailDisable, setIsAddUploadPolicyDetailDisable] = useState<boolean>(true);
     const [isSaveDisable, setIsSaveDisable] = useState<boolean>(true);
     const isFirstRenderRef = useRef<boolean>(true);
-    const deleteUploadPolicyTypesValuesIdRef = useRef<number[]>([]);
+    const [deleteUploadPolicyTypesIds, setDeleteUploadPolicyTypesIds] = useState<number[]>([])
+    const initialState = useRef<any>({});
+    const updatedState = useRef<any>({});
     const dataResponseToEdit = useRef<any>(null);
     const dataToEdit = useRef<any>(null);
     const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
@@ -68,23 +62,36 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
         nameErr: "",
       });
-
+    const isAddCase = isNaN(+id);
+    const { t } = useTranslation<string>();
+    
+    
     React.useEffect(() => {
         uploadPolicyDetailDropdownDataRef.current = uploadPolicyDetailDropdownData; 
       }, [uploadPolicyDetailDropdownData]);
-    
-    const { t } = useTranslation<string>(); 
+
     useEffect(() => {
         if(!isFirstRenderRef.current) {
             if(!checkNameValidation() && !disableAddUploadPolicyDetailBtn()) {
-
                 setIsSaveDisable(false);
             }
             else{
                 setIsSaveDisable(true); 
             }
+            UploadpolicyDetailUpdated();
         }
-    }, [name,uploadPolicyDetail])
+    }, [name,uploadPolicyDetail,description])
+
+
+    const UploadpolicyDetailUpdated = () => {
+            updatedState.current = {
+                name:name,
+                description:description,
+                dataUploadPolicyTypes:uploadPolicyDetail
+            }
+        initialUpdatedHandler();
+    }
+
 
     useEffect(() => {
         disableAddUploadPolicyDetail();
@@ -110,39 +117,62 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         }
     }, [getAll]);
 
-
     useEffect(() => {
         dispatch(getAllData());
         dispatch(enterPathActionCreator({ val: "" }));
         isFirstRenderRef.current = false;
-        if (id != undefined && id != null && id.length > 0) {
-            SetupConfigurationAgent.getUploadPolicies(Number(id)).then((response: any) => {
-                setName(response.name); 
-                setDescription(response.description); 
-
+        if (!isAddCase) {
+            addCaseHandler();
+        }
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+            uploadMsgFormRef.current = null;
+        }
+    }, [isAddCase]);
+    
+    const initialUpdatedHandler = () => {
+        if(initialState.current && updatedState.current && !checkNameValidation() && !disableAddUploadPolicyDetailBtn()){
+            if(JSON.stringify(initialState.current)== JSON.stringify(updatedState.current)){
+                setIsSaveDisable(true);
+            }
+            else{
+                setIsSaveDisable(false);
+            }
+        }
+    }
+    
+    const addCaseHandler =() => {
+        SetupConfigurationAgent.getUploadPolicies(Number(id))
+            .then((response : any) => {
+                return response
+            })
+            .then((Uploadpolicy:any) => {
+                
+                setName(Uploadpolicy.name); 
+                setDescription(Uploadpolicy.description);
                 let uploadPolicyDetailArray : any[] = [];
+                setDeleteUploadPolicyTypesIds([]);
                 let uploadPolicyDetailArrayCopy : any[] = [];
-                UploadPolicyDetailItem(response, uploadPolicyDetailArray);
+                UploadPolicyDetailItem(Uploadpolicy, uploadPolicyDetailArray);
+                initialState.current = {
+                    name:Uploadpolicy.name,
+                    description:Uploadpolicy.description,
+                    dataUploadPolicyTypes:JSON.parse(JSON.stringify(uploadPolicyDetailArray)),
+                }
+                initialUpdatedHandler();
                 setUploadPolicyDetail(uploadPolicyDetailArray);    
-                dispatch(enterPathActionCreator({ val: response?.description }));
+                dispatch(enterPathActionCreator({ val: Uploadpolicy.name }));
                 uploadPolicyDetailArrayCopy = JSON.parse(JSON.stringify(uploadPolicyDetailArray));
                 const temp = {                
                     uploadPolicyDetail: [...uploadPolicyDetailArrayCopy]
                 };
                 EditCloseHandler(temp); 
-
-                dataResponseToEdit.current = response;
-                   
+                dataResponseToEdit.current = Uploadpolicy;
             })
             .catch((err: any) => {
                 console.error(err);
             });
-        }
-        return () => {
-            dispatch(enterPathActionCreator({ val: "" }));
-            uploadMsgFormRef.current = null;
-          }
-    }, []);
+    }
 
     const assetUploadConnectionsData = (newUploadPolicyDetailDropdownData: UploadPolicyDropdownModel) => {
         if (Array.isArray(getAll.dataConnectionJsonTypes)) {
@@ -292,9 +322,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         uploadPolicyDetail.forEach((obj) => {
             if(obj.assetType.value > -1 && obj.uploadType.value > 0 && obj.metadataUploadConnection.length  > 0 && obj.assetUploadPriority.value > 0 
                 && obj.assetUploadConnection.length > 0 ) {
-                setIsAddUploadPolicyDetailDisable(false);
             } else{
-                setIsAddUploadPolicyDetailDisable(true);
                 isDisable = true
             }
          });
@@ -324,7 +352,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         
         if (parameter && parameter.id && parameter.id > 0) {
             if(id) {
-                deleteUploadPolicyTypesValuesIdRef.current.push(parameter.id);
+                setDeleteUploadPolicyTypesIds([...deleteUploadPolicyTypesIds, parameter.id]);
             }
         }
         parameters.splice(i, 1)
@@ -367,13 +395,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         setUploadPolicyDetail(parameters);
     }
 
-
-    const isSelectBoxType = (param: any) => {
-        if (typeof param === "object") {
-            return (param.data as SelectBoxType).value != undefined;
-        }
-        return false;
-    }
     const  convertArrayToConnectionJsonString = (arrayValues: SelectConnectionLevel[]) =>
     {
         let obj: any = {};
@@ -439,22 +460,39 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
             type : UploadPolicy,            
             detail: [],
             dataUploadPolicyTypes : listUploadPolicyDetail,
-            deleteUploadPolicyTypesValuesIdRef : deleteUploadPolicyTypesValuesIdRef.current
+            deleteUploadPolicyTypesIds : deleteUploadPolicyTypesIds
         }        
           return uploadPolicy;
       }
 
     const onSave = async () => {
-    const payload = setAddPayload();
-
-      if (Number(id) > 0)
-      {
-          const urlEditUploadPolicies = 'Policies/' + id  ;
-          SetupConfigurationAgent.putUploadPoliciesTemplate(urlEditUploadPolicies,payload).then(()=>{        
-                setUploadPolicyDetail([defaultUploadPolicyDetail]);
-                onMessageShow(true,t("Success_You_have_saved_the_Upload_Policy"));
+        const payload = setAddPayload();
+    
+          if(isAddCase)
+          {
+            SetupConfigurationAgent.postUploadPoliciesTemplate('Policies',payload).then((res:any)=>{ 
+                  onMessageShow(true,t("Success_You_have_saved_the_Upload_Policy"));
+                  dispatch(enterPathActionCreator({ val: payload.name }));
+                  const path = `${urlList.filter((item: any) => item.name === urlNames.uploadPoliciesEdit)[0].url}`;
+                  history.push(path.substring(0, path.lastIndexOf("/")) + "/" + res);
+                  setIsSaveDisable(true);
+                  
+              })
+              .catch(function(error) {      
+                  if(error) {
+                    onMessageShow(false,error?.response?.data?.toString());
+                    return error;
+                  }
+                });
+          }
+          else
+          {
+                SetupConfigurationAgent.putUploadPoliciesTemplate(`Policies/${id}`,payload).then((res:any)=>{
+                addCaseHandler();
+                dispatch(enterPathActionCreator({ val: payload.name }));   
+                onMessageShow(true,t("Success_You_have_updated_the_Upload_Policy"));
                 dispatch(getAllUploadPoliciesFilter());
-                setTimeout(() => history.goBack(), 500);
+                
             })
             .catch(function(error) {      
                 if(error?.response?.status === 405) {
@@ -462,25 +500,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                   return error;
                 }
               });
-      }
-      else
-      {
-          const urlAddUploadPolicies = 'Policies' ;
-          SetupConfigurationAgent.postUploadPoliciesTemplate(urlAddUploadPolicies,payload).then(()=>{        
-                setUploadPolicyDetail([defaultUploadPolicyDetail]);
-                onMessageShow(true,t("Success_You_have_saved_the_Upload_Policy"));
-                dispatch(getAllUploadPoliciesFilter());
-                setTimeout(() => history.goBack(), 500);
-            })
-
-            .catch(function(error) {      
-                if(error) {
-                  onMessageShow(false,error?.response?.data?.toString());
-                  return error;
-                }
-              });
-      }
-    }
+          }
+        }
 
     const UploadPolicyDetailDataChanged = (isDataChanged: boolean, uploadPolicyDetail: UploadPolicyDetailModel[]) => {
         if (isDataChanged === false) {
@@ -532,10 +553,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                     setIsOpen(true)
                 }   
                 else
-                    history.goBack();
+                closeBtnHandler();
             }
             else {
-            history.goBack();
+                closeBtnHandler();
             }
         }
         
@@ -545,7 +566,8 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     };
 
     const closeBtnHandler = () => {
-        history.goBack();
+        const path = `${urlList.filter((item: any) => item.name === urlNames.uploadPolicies)[0].url}`;
+        history.push(path);
     }
     
     const UploadFormMessages = (obj: any) => {
@@ -602,8 +624,6 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             name="uploadPoliciesDescription"
                             regex=""
                             multiline={true}
-                           
-
                             />
                         </Grid>
                     </div>
@@ -622,7 +642,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 <div className="uploadPolicyDetailPageScroll">
                     <div className="uploadPolicyDetailColumnContent">
                         {
-                            uploadPolicyDetail.map((uploadPolicyDetail, idx) => {
+                            uploadPolicyDetail?.map((uploadPolicyDetail, idx) => {
                                 return <div className="uploadPolicyDetailColumnItem" key={idx}>
                                     <CRXRows container="container" spacing={0}>
                                         <CRXColumn className="uploadPolicyDetailCol" item xs={1}>
