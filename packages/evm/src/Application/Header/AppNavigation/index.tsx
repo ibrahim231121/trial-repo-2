@@ -211,7 +211,7 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 0,
-          label: t('Manage_Default_Unit_Templates'),
+          label: 'Manage Default Unit Templates',
           command: () => {
             navigateToPage(urlList.filter((item: any) => item.name === urlNames.defaultUnitTemplate)[0].url);
           },

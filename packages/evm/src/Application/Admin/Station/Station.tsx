@@ -336,9 +336,9 @@ const Station: React.FC = () => {
                 {t('Create_Station')}
               </CRXButton>
 
-              <CRXButton className='secondary unitTemplateBtn' onClick={unitClickOpen}>
+              {/* <CRXButton className='secondary unitTemplateBtn' onClick={unitClickOpen}>
                 {t('Manage_Default_Unit_Templates')}
-              </CRXButton>
+              </CRXButton> */}
               {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
             </>
           }

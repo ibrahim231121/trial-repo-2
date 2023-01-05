@@ -211,23 +211,6 @@ iframe {
   }
 }
 
-// @media only screen and (min-width: 400px) {
-//   div[class*='makeStyles-container-'] {
-//     height: auto !important;
-//   }
-// }
-
-@media (min-width: 1800px) {
-  // .unitDeviceMain {
-  //   & > .MuiGrid-item {
-  //     &::before {
-  //       top: 125px;
-  //       height: 69px;
-  //     }
-  //   }
-  // }
-}
-
 .unitDeviceMainUii {
   position: relative;
   top: 0px;
@@ -272,5 +255,22 @@ iframe {
   }
   .crxClearfilter {
     top: 0px;
+  }
+}
+
+
+.unitAndDeviceTable {
+  table {
+    tbody {
+      tr {
+        &:first-child {
+          .col-three {
+              .unitDeviceMenuCss {
+                top : 1px !important
+              }
+          }
+        }
+      }
+    }
   }
 }

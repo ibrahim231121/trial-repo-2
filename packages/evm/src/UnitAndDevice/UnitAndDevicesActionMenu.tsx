@@ -27,7 +27,7 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
     return (
         <Menu
             align="start"
-            viewScroll="initial"
+            viewScroll="close"
             direction="right"
             position="auto"
             className="menuCss unitDeviceMenuCss"

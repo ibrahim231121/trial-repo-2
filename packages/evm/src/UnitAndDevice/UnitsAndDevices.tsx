@@ -847,7 +847,7 @@ return (
           showActionSearchHeaderCell={true}
           showCustomizeIcon={true}
           //---required Props
-          className=""
+          className="unitAndDeviceTable"
           onClearAll={clearAll}
           getSelectedItems={(v: Unit[]) => setSelectedItems(v)}
           onResizeRow={resizeRowUnitDevice}

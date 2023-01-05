@@ -412,7 +412,7 @@ input:-webkit-autofill {
 .overlayPanel{
   background-color: #fff;
   height: calc(100vh - 60px);
-  width: 31px;
+  width: 28px;
   position: fixed;
   right: 0px;
   top: 60px;
