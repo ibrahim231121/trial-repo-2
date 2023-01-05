@@ -51,6 +51,16 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .Progress_Text {
+      background-color: #003A5D;
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    .errorProgress_Text {
+        background-color: var(--color-aa1d1d);
+        padding-left: 3px;
+        padding-right: 3px;
+    }
 }
 
 .rotate {

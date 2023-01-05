@@ -90,7 +90,10 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
 
   const percentageText = errorClx == "progressErorr" ? "" : "%";
 
+  const textPercentClass = errorClx == "progressErorr" ? "errorProgress_Text" : "Progress_Text";
+
   const perc = progressBar * width / 100 - 7;
+
   return (
     <div className="crx-progress-br">
       <div className={clx}>{loadingText}</div>
@@ -114,7 +117,7 @@ const CRXProgressBar = (props: LinearProgressProps & ProgressTypes) => {
             }}
           />
           <div
-            className="progressPercentage"
+            className={`progressPercentage ${textPercentClass}`}
             style={{ left: (perc / 2) + (widthInPercentage ? "%" : "px") }}
           >
             {progressBar + percentageText}
