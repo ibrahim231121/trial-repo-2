@@ -211,6 +211,13 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 0,
+          label: t('Manage_Default_Unit_Templates'),
+          command: () => {
+            navigateToPage(urlList.filter((item: any) => item.name === urlNames.defaultUnitTemplate)[0].url);
+          },
+        },
+        {
+          moduleIds: 0,
           label: t('Retention_Policies'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.retentionPolicies)[0].url) },
         },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CRXDataTable, CRXButton, CRXConfirmDialog } from '@cb/shared';
+import { CRXDataTable, CRXButton, CRXConfirmDialog, CRXRows, CRXColumn } from '@cb/shared';
 import textDisplay from '../../../../GlobalComponents/Display/TextDisplay';
 import { HeadCellProps, PageiGrid } from '../../../../GlobalFunctions/globalDataTableFunctions';
 import DropdownComponent from './DropdownComponent';
@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { UnitsAndDevicesAgent } from '../../../../utils/Api/ApiAgent';
 import { DeviceType } from '../../../../utils/Api/models/UnitModels';
 import { getConfigurationTemplatesAsync } from '../../../../Redux/ConfigurationTemplatesReducer';
+import './DefaultUnitTemplate.scss';
+// import '../../UserGroup/Group/GroupTabs/dataPermission.scss'
 
 const DefaultUnitTemplate: React.FC = () => {
     const { t } = useTranslation<string>();
@@ -55,7 +57,7 @@ const DefaultUnitTemplate: React.FC = () => {
             const headerColumnCollection = [];
             headerColumnCollection.push({
                 id: 1,
-                name: '',
+                name: 'Stations',
                 type: 'text',
                 dropdown_policy_id: 'name',
             });
@@ -72,19 +74,19 @@ const DefaultUnitTemplate: React.FC = () => {
                 const headCellObject: HeadCellProps = {
                     label: headerColObj.name ?? "",
                     id: headerColObj.dropdown_policy_id,
-                    align: 'center',
+                    align: 'left',
                     dataComponent: (e: any, rowId: any) => headerColObj.type === 'text' ? textDisplay(e, "") : dropdownDataComponent(e, rowId, headerColObj.dropdown_policy_id, configurationTemplatesFromStore, selectBoxValues),
                     sort: false,
                     searchFilter: false,
                     searchComponent: () => null,
                     visible: true,
-                    minWidth: '80',
-                    maxWidth: '100'
+                    minWidth: '297',
+                    maxWidth: '0',
                 };
                 headCellArray.push(headCellObject);
             }
             headCellArray.push({
-                label: t("To_Get_ID"),
+                label: t("To_Get_ID"),  
                 id: 'id',
                 align: 'center',
                 dataComponent: () => null,
@@ -210,12 +212,19 @@ const DefaultUnitTemplate: React.FC = () => {
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
+            // <CRXRows container="container" spacing={0}>
+            // <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
+            
             <DropdownComponent
+                // className='bilal'
                 deviceTypeId={parseInt(_deviceTypeId)}
                 stationId={parseInt(_rowId)}
                 selectBoxValue={_selectBoxValues}
                 configurationTemplatesFromStore={_configurationTemplatesFromStore}
                 setSelectBoxValueIntoParent={(eventFromChild: any) => manipulateSelectBoxValueResponse(eventFromChild, parseInt(_rowId))} />
+
+                // </CRXColumn>
+                // </CRXRows>      
         );
     }
 
@@ -237,6 +246,7 @@ const DefaultUnitTemplate: React.FC = () => {
                     open={true}
                 />
             )}
+            
             <div className='switchLeftComponents'>
                 {(headCellState.length > 0 && stationDataTableRow.length > 0)
                     &&
@@ -247,8 +257,8 @@ const DefaultUnitTemplate: React.FC = () => {
                         headCells={headCellState}
                         orderParam={"asc"}
                         searchHeader={false}
-                        columnVisibilityBar={false}
-                        className="ManageAssetDataTable"
+                        columnVisibilityBar={true}
+                        className="ManageAssetDataTable defaultUnitTemp"
                         onClearAll={null}
                         getSelectedItems={(v: string[]) => setSelectedItems(v)}
                         onResizeRow={null}
@@ -260,15 +270,19 @@ const DefaultUnitTemplate: React.FC = () => {
                         showCheckBoxesCol={false}
                         showActionCol={false}
                         showHeaderCheckAll={false}
-                        showTotalSelectedText={false}
+                        showTotalSelectedText={true}
                         showToolbar={false}
                         page={page}
                         rowsPerPage={rowsPerPage}
                         setPage={(page: any) => setPage(page)}
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                         totalRecords={configurationTemplatesFromStore.length}
+                        offsetY={44}
                     />
                 }
+                
+                <div className='crxFooterEditFormBtn'>
+                <div className='save-cancel-button-box'>
 
                 <CRXButton
                     className="groupInfoTabButtons secondary"
@@ -282,6 +296,9 @@ const DefaultUnitTemplate: React.FC = () => {
                     disabled={false}>
                     {t("Cancel")}
                 </CRXButton>
+
+                </div>
+
                 <CRXButton
                     className="groupInfoTabButtons secondary"
                     onClick={closeBtnHandler}
@@ -289,6 +306,9 @@ const DefaultUnitTemplate: React.FC = () => {
                 >
                     {t("Close")}
                 </CRXButton>
+                </div>
+                
+                
 
                 <CRXConfirmDialog
                     className="crx-unblock-modal CRXStationModal"

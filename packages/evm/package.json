@@ -33,7 +33,6 @@
     "date-and-time": "^2.1.0",
     "env-cmd": "^10.1.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
-    "file-system": "^2.2.2",
     "formik": "^2.2.9",
     "i18next": "^19.9.0",
     "jspdf": "^2.5.1",
@@ -64,7 +63,7 @@
   },
   "scripts": {
     "start": "SET PORT=3000 && yarn run start:dev",
-    "build": "yarn run build:dev && yarn react-inject-env set",
+    "build": "yarn run build:dev && yarn react-inject-env set  ",
     "build_qa": "yarn run build:qa && yarn react-inject-env set ",
     "start:dev": "env-cmd -f ./environment/.env.dev react-app-rewired start",
     "start:qa": "env-cmd -f ./environment/.env.qa react-app-rewired start",

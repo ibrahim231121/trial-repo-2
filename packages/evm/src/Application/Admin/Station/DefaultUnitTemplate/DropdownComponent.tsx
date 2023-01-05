@@ -40,7 +40,7 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({ deviceTypeId, sta
         <>
             <CRXSelectBox
                 id={'simple-select-' + deviceTypeId}
-                className='Autocomplete'
+                className='Autocomplete adVSelectBox'
                 options={filterOptionValuesOnTheBaseOfDropdownId(deviceTypeId, stationId)}
                 onChange={(e: React.ChangeEvent) => selectBoxOnChangeHandler(e, deviceTypeId)}
                 value={(Object.keys(selectBoxValue).length > 0) && setValuesOfSelectBoxOnLoad(deviceTypeId, stationId)}

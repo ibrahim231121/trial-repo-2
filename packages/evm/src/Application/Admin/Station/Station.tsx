@@ -255,6 +255,12 @@ const Station: React.FC = () => {
     history.push(path);
   };
 
+  const unitClickOpen = () => {
+    // setOpen(true);
+    const path = `${urlList.filter((item: any) => item.name === urlNames.defaultUnitTemplate)[0].url}`;
+    history.push(path);
+  };
+
   const showToastMsg = (obj: any) => {
     toasterRef.current.showToaster({
       message: obj.message,
@@ -331,6 +337,10 @@ const Station: React.FC = () => {
             <>
               <CRXButton id={'createUser'} className='primary manageUserBtn' onClick={handleClickOpen}>
                 {t('Create_Station')}
+              </CRXButton>
+
+              <CRXButton className='secondary unitTemplateBtn' onClick={unitClickOpen}>
+                {t('Manage_Default_Unit_Templates')}
               </CRXButton>
               {/* <CRXButton className="secondary manageUserBtn mr_L_10" onClick={() => getFilteredUserData()}> {t("Filter")} </CRXButton> */}
             </>

@@ -256,14 +256,14 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
               <i className='far fa-ellipsis-v'></i>
             </MenuButton>
           }>
-          <MenuItem onClick={defaultUnitTemplateClickHandler}>
+          {/* <MenuItem onClick={defaultUnitTemplateClickHandler}>
             <div className='crx-meu-content groupingMenu crx-spac'>
               <div className='crx-menu-icon'>
                 <i className='fas fa-folder-open'></i>
               </div>
               <div className='crx-menu-list'>{t("View_default_unit_templates")}</div>
             </div>
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
       }
     </>

@@ -77,6 +77,9 @@ export const urlNames: any = {
     uploadPolicies: 'uploadPolicies',
     uploadPoliciesCreate: 'uploadPoliciesCreate',
     uploadPoliciesEdit: "uploadPoliciesEdit",
+
+    defaultUnitTemplate:"defaultUnitTemplate",
+    
     categories : 'categories',
     categoryForms : 'categoryForms',
     about : 'about',
@@ -337,7 +340,7 @@ export const urlList: any = [
         url: "/admin/defaultUnitTemplate",
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/defaultUnitTemplate', type: 'text', label: 'Manage Default Unit Template' }
+            { routeTo: '/admin/defaultUnitTemplate', type: 'text', label: 'Manage Default Unit Templates' }
         ],
     },
     {
@@ -371,6 +374,15 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/retentionPolicies', type: 'text', label: 'Retention Policies' }
+        ],
+    }
+    ,
+    {
+        name: urlNames.defaultUnitTemplate,
+        url: "/admin/defaultUnitTemplate",
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/defaultUnitTemplate', type: 'text', label: 'Default Unit Templates' }
         ],
     }
     ,

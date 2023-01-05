@@ -808,6 +808,10 @@ export const resources = {
           "Asset_Upload_Connection":"Asset Upload Connection",
           "Success_You_have_saved_the_Upload_Policy":"You have saved the Upload Policy Successfully",        
           "Upload_Policy_Deleted_Successfully" :"Upload Policy Deleted Sucessfully",
+
+          "Unit_Default_Templates":"Default Unit Templates",
+          "Manage_Default_Unit_Templates": "Manage Default Unit Templates",
+
       }
     }
   };
