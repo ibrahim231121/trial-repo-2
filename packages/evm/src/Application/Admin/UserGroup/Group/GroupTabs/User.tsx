@@ -131,11 +131,13 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     }, [users.data, userIds.data, userGroups]);
 
     useEffect(() => {
+        const overlay : any = document.getElementsByClassName("overlayPanel")
         if(paging){
           dispatch(getUsersInfoAsync(pageiGrid));
           dispatch(getUsersIdsAsync());
         }
         setPaging(false)
+        overlay && (overlay[0].style.width = "28px")
     },[pageiGrid])
 
     const searchText = (
@@ -210,7 +212,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             keyCol: true,
             visible: false,
             minWidth: "80",
-            maxWidth: "80",
+            
         },
         {
             label: t("User_Name"),
@@ -221,7 +223,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             searchFilter: true,
             searchComponent: searchText,
             minWidth: "230",
-            maxWidth: "360",
+           
             visible: true,
             attributeName: "UserName",
             attributeType: "String",
@@ -235,8 +237,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "180",
-            maxWidth: "381",
+            minWidth: "380",
             visible: true,
             attributeName: "FName",
             attributeType: "String",
@@ -250,8 +251,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "180",
-            maxWidth: "381",
+            minWidth: "380",
             visible: true,
             attributeName: "LName",
             attributeType: "String",
@@ -265,8 +265,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             sort: true,
             searchFilter: true,
             searchComponent: (rowData: User[], columns: HeadCellProps[], colIdx: number, initialRows:any) => multiSelectCheckbox(rowData, columns, colIdx, initialRows),
-            minWidth: "200",
-            maxWidth: "400",
+            minWidth: "400",
             visible: true,
             attributeName: "UserGroups",
             attributeType: "List",
@@ -424,7 +423,13 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                         showCustomizeIcon={false}
                         showTotalSelectedText={true}
                         lightMode={false}
-                        offsetY={44}
+                        //Please dont miss this block.
+                        offsetY={-33}
+                        topSpaceDrag = {-1}
+                        searchHeaderPosition={102}
+                        dragableHeaderPosition={67}
+                        stickyToolbar={0}
+                        //End here
                         page={page}
                         rowsPerPage={rowsPerPage}
                         setPage= {(page:any) => setPage(page)}

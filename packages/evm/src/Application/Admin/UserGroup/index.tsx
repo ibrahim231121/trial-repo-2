@@ -180,9 +180,9 @@ const UserGroup: React.FC = () => {
     )
   }
 
-  const AnchorDisplay = (e: string) => {
+  const AnchorDisplay = (e: string, className :string) => {
     if(getModuleIds().includes(7)) {
-    return anchorDisplay(e, "", urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url)
+    return anchorDisplay(e, className, urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url)
     }
     else{
     let lastid = e.lastIndexOf("_");
@@ -202,19 +202,17 @@ const UserGroup: React.FC = () => {
       searchComponent: () => null,
       keyCol: true,
       visible: false,
-      minWidth: "80",
-      maxWidth: "100",
+      minWidth: "100",
     },
     {
       label: t("Group Name"),
       id: "name",
       align: "left",
-      dataComponent: (e: string) => AnchorDisplay(e),
+      dataComponent: (e: string) => AnchorDisplay(e, "dataTableEllipsesText"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "250",
-      maxWidth: "600",
+      minWidth: "520",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -227,8 +225,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
-      minWidth: "300",
-      maxWidth: "600",
+      minWidth: "510",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -241,8 +238,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "250",
-      maxWidth: "600",
+      minWidth: "600",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -343,7 +339,7 @@ const UserGroup: React.FC = () => {
             toolBarButton = {
               <>
               <Restricted moduleId={6}>
-                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
+                <CRXButton className="primary managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
@@ -378,9 +374,11 @@ const UserGroup: React.FC = () => {
             totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={74}
-            headerPositionInit={201}
-            topSpaceDrag = {106}
+            offsetY={-33}
+            topSpaceDrag = {-1}
+            searchHeaderPosition={227}
+            dragableHeaderPosition={192}
+            stickyToolbar={139}
             //End here
    
           />

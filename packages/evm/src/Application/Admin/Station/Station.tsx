@@ -195,8 +195,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '350',
-      maxWidth: '600',
+      minWidth: '650',
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -209,8 +208,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '250',
-      maxWidth: '600',
+      minWidth: '650',
       attributeName: "Address.Street",
       attributeType: "String",
       attributeOperator: "contains"
@@ -223,8 +221,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '100',
-      maxWidth: '600',
+      minWidth: '310',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"
@@ -365,11 +362,13 @@ const Station: React.FC = () => {
           setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
           totalRecords={stations.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
-           //Please dont miss this block.
-           offsetY={75}
-           headerPositionInit={206}
-           topSpaceDrag = {119}
-           //End here
+          //Please dont miss this block.
+          offsetY={-27}
+          topSpaceDrag = {5}
+          searchHeaderPosition={221}
+          dragableHeaderPosition={186}
+          stickyToolbar={133}
+          //End here
         />
       )}
       

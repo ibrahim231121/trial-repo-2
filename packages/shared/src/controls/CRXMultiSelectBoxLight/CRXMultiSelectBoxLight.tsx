@@ -23,6 +23,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       '& > *': {
         margin: theme.spacing(0),
       },
+     
     },
 
     focused: {
@@ -58,6 +59,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       overflow: "hidden",
       position: "relative",
       backgroundColor: "#fff",
+      zIndex : "inherit" as any,
       top: "2px",
       left: "0px",
       '& > ul': {
@@ -325,7 +327,6 @@ const CRXMultiSelectBoxLight = ({
             placeholder={placeHolder}
             onBlur={onBlur}
             error={error}
-            helperText={errorMessage}
             variant="filled"
             InputLabelProps={{ required: required }}
             {...params}
@@ -333,7 +334,7 @@ const CRXMultiSelectBoxLight = ({
           />
         )}
       />
-
+      {error && errorMessage}
     </>
   );
 }

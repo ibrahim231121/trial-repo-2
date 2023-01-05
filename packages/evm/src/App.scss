@@ -249,3 +249,15 @@ iframe {
     overflow-x: hidden !important;
     z-index: 102;
 }
+
+.stickyFooter_Tab {
+    padding-top: 23px;
+    width: calc(100% - 117px);
+    display: flex;
+    position: fixed;
+    bottom: 1px;
+    background: #fff;
+    z-index: 9999;
+    padding-bottom: 20px;
+    border-top: 1px solid var(--color-878787);
+  }

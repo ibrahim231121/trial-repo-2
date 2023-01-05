@@ -189,7 +189,7 @@ const SearchComponent = (props: any) => {
       },
     },
   ];
-  
+
   React.useEffect(() => {
     if(props.isopen){
       dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.ViewOwnAssets }));
@@ -198,7 +198,7 @@ const SearchComponent = (props: any) => {
       if (addvancedOptions && addvancedOptions.options) {
         setAdvanceSearch(true);
       }
-      
+
     }
     else{
        setDateTimeDropDown({
@@ -222,7 +222,7 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
     if(responseForSearchName[0] != undefined){
-     if( props.isopen) { 
+     if( props.isopen) {
       setPredictiveText( responseForSearchName[1].replaceAll('*', ''))
       setDateTimeDropDown(responseForSearchName[0])
     }
@@ -329,10 +329,10 @@ const SearchComponent = (props: any) => {
     }
   }, [addvancedOptions]);
 
-  
+
   React.useEffect(() => {
     if (responseForSearch.length > 0) {
-      
+
       setSearchData(responseForSearch);
       setRandomKey(Math.random())
     }
@@ -345,13 +345,19 @@ const SearchComponent = (props: any) => {
     setSearchData([]);
   }, []);
 
+  const CreateBorderWithScroll = () => {
+    const borderBottomd : HTMLCollectionOf<any> = document.getElementsByClassName('titlePage');
+    borderBottomd.length > 0 && (borderBottomd[0].style.borderBottom = "1px solid #dedede") ;
+  }
+
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
-    window.scrollTo({ top: 773, behavior: "smooth" });
+    window.scrollTo({ top: 180, behavior: "smooth" });
    }else {
-    window.scrollTo({ top: 293, behavior: "smooth" });
+    window.scrollTo({ top: 180, behavior: "smooth" });
+    CreateBorderWithScroll()
    }
-    
+   
   }, [searchData]);
 
   React.useEffect(() => {
@@ -379,7 +385,7 @@ const SearchComponent = (props: any) => {
           shortCut.renderData();
         } else {
           setSearchData([]);
-          
+
         }
       }
     } else {
@@ -419,7 +425,7 @@ const SearchComponent = (props: any) => {
         fetchData(modifiedQuery, SearchType.SimpleSearch,'');
       } else {
         const lockQuery = GenerateLockFilterQuery(decoded);
-        QUERRY.bool.filter = lockQuery; 
+        QUERRY.bool.filter = lockQuery;
         fetchData(QUERRY, SearchType.SimpleSearch,'');
       }
     }
@@ -432,19 +438,15 @@ const SearchComponent = (props: any) => {
     setSearchResult(false)
     dispatch(getAssetSearchInfoAsync({ QUERRY: (querry || QUERRY), searchType: searchValue }));
     dispatch(getAssetSearchNameAsync({ QUERRY: QUERRY,dateTime: dateTimeDropDown,searchType: searchValueType }));
-    
+
     if (searchValue === SearchType.SimpleSearch || searchValue === SearchType.ShortcutSearch) {
       setShowShortCutSearch(false);
       setAdvanceSearch(false);
     }
     if(!props.isopen){
-      dispatch(enterPathActionCreator({ val: t('Search_Results') })); 
+      dispatch(enterPathActionCreator({ val: t('Search_Results') }));
     }
-    const titleCOnt = document.getElementsByClassName('titlePage');
-    var appendClass = document.getElementsByClassName('bottomLine');
-    if (appendClass.length === 0) {
-      titleCOnt[0].innerHTML += '<div class="bottomLine"></div>';
-    }
+    CreateBorderWithScroll()
   }
   const onChangePredictiveSearch = (e: any) => {
     setQuerryString(e);
@@ -453,7 +455,7 @@ const SearchComponent = (props: any) => {
       dateOptionType = dateOptionsTypes.approachingDeletion;
     } else {
       dateOptionType = dateOptionsTypes.basicoptions;
-     
+
       setDateTimeAsset(dateTimeDropDown);
     }
     setDateOptionType(dateOptionType);
@@ -493,7 +495,7 @@ const SearchComponent = (props: any) => {
             <CRXColumn item xs={6} className='topColumn'>
               <label className='searchLabel'>{t("Search_Assets")}</label>
               <PredictiveSearchBox
-                
+
                 onSet={(e) => onChangePredictiveSearch(e)}
                 value={predictiveText}
                 decoded={decoded}

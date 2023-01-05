@@ -40,6 +40,9 @@ const CRXModalDialog = (props: crxDialogProps) => {
         backgroundColor: "transparent",
       },
     },
+    root : {
+      zIndex : "13000 !important" as any,
+    }
   });
 
   const classes = widgetStyle();
@@ -74,7 +77,7 @@ const CRXModalDialog = (props: crxDialogProps) => {
     <Dialog
       scroll="paper"
       id={id}
-      className={"crx-model" + " " + className}
+      className={"crx-model" + " " + className + " " + classes.root}
       aria-labelledby="simple-dialog-title"
       open={modelOpen}
       maxWidth={maxWidthProps}

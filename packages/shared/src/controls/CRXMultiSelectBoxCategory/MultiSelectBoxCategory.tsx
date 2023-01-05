@@ -86,7 +86,7 @@ const MultiSelectBoxCategory = ({
       },
     },
     popper: {
-      zIndex : 9999,
+      zIndex : 13000,
     },
     option: {
       height: "33px",

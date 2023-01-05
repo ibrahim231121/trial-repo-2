@@ -524,9 +524,12 @@
     font-size: 14px;
     sup {
       line-height: 17px;
-      margin-right: 5px;
-      font-size: 20px;
-      font-weight: var(--Font-style-bold);
+    /* margin-right: 5px; */
+    font-size: 20px;
+    font-weight: var(--Font-style-bold);
+    margin-top: 7px;
+    position: relative;
+    top: 6px;
     }
   }
 }

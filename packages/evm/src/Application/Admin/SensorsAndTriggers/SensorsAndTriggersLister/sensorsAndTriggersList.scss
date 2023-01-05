@@ -69,115 +69,11 @@ iframe {
     }
     .SensorsAndTriggersTableTemplate {
       margin-top: -3px;
-      tr {
-        &:nth-child(odd) {
-          .col-three {
-            background-color: var(--color-White);
-            left: 0 !important;
-            ::selection {
-              background-color: red !important;
-            }
-          }
-          &:hover {
-            .col-three {
-              background-color: var(--color-333333) !important;
-            }
-          }
-        }
-        &:nth-child(even) {
-          .col-three {
-            background-color: var(--color-f2f2f2) !important;
-            left: 0 !important;
-          }
-          &:hover {
-            .col-three {
-              background-color: var(--color-333333) !important;
-            }
-          }
-        }
-        .col-three {
-          position: sticky !important;
-          left: 0;
-          right: 0;
-          button {
-            position: relative;
-            top: 5px;
-          }
-        }
-      }
-  
+      
       .crx-global-Select {
         width: auto !important;
       }
-      thead {
-        &:nth-child(1) {
-          tr {
-            th {
-              &:nth-child(3) {
-                min-width: 426px !important;
-                width: 426px !important;
-              }
-              &:nth-child(4) {
-                min-width: 300px !important;
-                width: 300px !important;
-              }
-              &:nth-child(5) {
-                min-width: 300px !important;
-                width: 300px !important;
-              }
-              &:nth-child(6) {
-                min-width: 300px !important;
-                width: 300px !important;
-              }
-            }
-          }
-        }
-        &:nth-child(2) {
-          tr {
-            th {
-              &:nth-child(3) {
-                input {
-                  background-color: var(--color-d1d2d4) !important;
-                  margin: 0 -4px;
-                }
-              }
-              &:nth-child(6) {
-                input {
-                  background-color: var(--color-d1d2d4) !important;
-                }
-              }
-            }
-          }
-        }
-      }
-      tbody {
-        tr {
-          td {
-            &:nth-child(3) {
-              a {
-                color: var(--color-d74b00) !important;
-              }
-              &:hover {
-                a {
-                  text-decoration: none !important;
-                }
-              }
-            }
-          }
-        }
-      }
-      .DataTableBodyCell {
-        vertical-align: middle;
-        text-indent: 5px;
-        &:first-child {
-          text-indent: 5px;
-          .CRXCheckBox {
-            .fal {
-              background: transparent;
-            }
-          }
-        }
-      }
+      
     }
     
     .rc-menu__arrow {
@@ -220,44 +116,7 @@ iframe {
         }
       }
     }
-    table {
-      thead {
-        &:nth-child(1) {
-          tr {
-            th {
-              position: sticky !important;
-              &:nth-child(1) {
-                left: 0 !important;
-              }
-            }
-          }
-        }
-        &:nth-child(2) {
-          tr {
-            th {
-              &:nth-child(1) {
-                left: 0 !important;
-              }
-            }
-          }
-        }
-      }
-      tbody {
-        tr {
-          height: 50px !important;
-          td {
-            &:nth-child(1) {
-              &::selection {
-                background-color: #d74b00 !important;
-              }
-              .rc-menu-button {
-                font-size: 23px !important;
-              }
-            }
-          }
-        }
-      }
-    }
+    
     .stickyPos {
       // z-index: 1000;
       top: 151px;

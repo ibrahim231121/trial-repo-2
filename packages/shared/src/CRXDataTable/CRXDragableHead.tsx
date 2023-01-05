@@ -18,9 +18,9 @@ const DragableHead = SortableContainer(( props: any) => {
             clearTimeout(handle);
         }
         
-        handle = setTimeout(callback, timeout || 200); // default 200 ms
-        tbl && props.searchHeader == false && ( tbl.style.display = "inline-table")
-        props.offsetY && window.pageYOffset > props.offsetY && setWindScrollValue(props.dragableHeaderPosition)
+        handle = setTimeout(callback, timeout || 100); // default 200 ms
+        tbl && props.searchHeader == false && ( tbl.style.display = "table")
+        setWindScrollValue(props.dragableHeaderPosition)
     };
 
     element.addEventListener('scroll', onScroll);

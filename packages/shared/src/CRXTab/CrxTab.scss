@@ -1,7 +1,5 @@
 .crxMainTab {
     min-height: 34px !important;
-    border-bottom: 1px solid var(--color-transparent) !important;   
-    
     .MuiTab-root {
         border-top: 1px solid var(--color-333333);;
         border-bottom: 2px solid var(--color-333333);
@@ -104,5 +102,15 @@
 }
 
 
-
+//Sticky tab button area we need add this one class every tabs container save and close conatiner
+.stickyTabButton {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0px;
+    position: sticky;
+    border-top: 1px solid #878787;
+    background: #fff;
+    padding: 22px 0 0px;
+    bottom: 0;
+}
 

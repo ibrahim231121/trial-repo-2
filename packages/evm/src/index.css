@@ -39,7 +39,7 @@ body {
   margin-top: -3px;
 }
 
-.linkColor {
+/* .linkColor {
   color: var(--color-c34400);
   cursor: pointer;
   box-shadow: none !important;
@@ -48,7 +48,7 @@ body {
 .linkColor:hover {
   text-decoration: underline;
   color: var(--color-ff6e20) !important;
-}
+} */
 
 .linkColor > div {
   line-height: 17px;
@@ -141,16 +141,6 @@ body {
   z-index: 40;
 }
 
-.AssetsDataGrid table tbody tr td:first-child::before {
-  border: 2px solid var(--color-transparent);
-  border-right: 0px;
-  position: absolute;
-  width: 100%;
-  height: 88px;
-  content: ' ';
-  top: 0px;
-  left: 0px;
-}
 
 .AssetsDataGrid table tbody tr td:first-child:hover::before {
   border: 2px solid var(--color-transparent);
@@ -264,9 +254,6 @@ body {
   position: sticky !important;
   top: 125px;
   background: var(--color-White) !important;
-  padding-top: 15px;
-  padding-bottom: 15px !important;
-  height: 53px;
   width: 100%;
   left: 7px;
   z-index: 1100;
@@ -344,19 +331,8 @@ a::selection {
   top: 186px;
 }
 
-.dragableCellCustomize {
-  position: absolute;
-  left: 5px;
-  top: 14px;
-  display: block;
-}
-
 .LocationMap {
   width: 100%;
-}
-
-.data_table_fixedWidth_wrapText {
-  word-break: break-all;
 }
 
 .DataTableBodyCell .rc-menu-container{
@@ -400,20 +376,6 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 50px white inset;
 }
 
-.DataTableBodyCell .row_anchor_point  .rc-menu-button {
-  width: 80px;
-  height: 100%;
-  cursor: pointer;
-} 
-
-.row_anchor_point {
-  display: flex;
-  height: 100%;
-  cursor: pointer;
-  justify-content: center;
-  place-items: center;
-}
-
 
 .demo-div {
   height: calc(100vh - 198px);
@@ -447,19 +409,19 @@ input:-webkit-autofill {
 
 .overlayPanel{
   background-color: #fff;
-  height: 97vh;
-  width: 28px;
+  height: calc(100vh - 60px);
+  width: 31px;
   position: fixed;
   right: 0px;
-  top: 0px;
+  top: 60px;
   z-index: 999;
 }
 
-.AssetsDataGrid table thead  {
+/* .AssetsDataGrid table thead  {
   transition:transform 0s;
   position: sticky;
   z-index: 99;
-}
+} */
 
 .AssetsDataGrid {
   overflow-x: overlay !important;
@@ -500,4 +462,10 @@ input:-webkit-autofill {
   top: auto !important;
   width: 158px;
   z-index: 1100;
+}
+
+.crxDropdownValidationError {
+    color : var(--color-aa1d1d);
+    padding-top: 7px;
+    font-size: 14px;
 }

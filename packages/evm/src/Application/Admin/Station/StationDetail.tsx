@@ -460,7 +460,7 @@ const StationDetail: React.FC = () => {
                   />
                 )}
 
-                <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+                <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={142} />
                 <CrxTabPanel value={value} index={0} >
                   <div className="centerGeneralTab">
                     <div className="itemIndicator">
@@ -864,7 +864,7 @@ const StationDetail: React.FC = () => {
                   </div>
                 </CrxTabPanel>
 
-                <div className="crxStationDetailBtn stationDetailButton">
+                <div className="stationDetailButton stickyFooter_Tab">
                   <div>
                     <CRXButton
                       type="submit"

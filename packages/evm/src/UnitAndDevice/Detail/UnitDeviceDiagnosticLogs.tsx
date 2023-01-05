@@ -241,7 +241,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
     };
 
     return (
-        <div className="userDataTableParent ">
+        <div className="unit_detail_tab_events ">
             {rows && (
                 <CRXDataTable 
                     id="unitdevice-auditlog"
@@ -263,7 +263,7 @@ const UnitDeviceDiagnosticLogs: React.FC<infoProps> = ({id}) => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable usersGroupDataTable unitDeviceTabDataTable"
+                    className="unit_detail_tab_events_data_table"
                     onClearAll={clearAll}
                     getSelectedItems={(v: UnitEvents[]) => setSelectedItems(v)}
                     onResizeRow={resizeRowUserTab}

@@ -97,7 +97,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             //   showCheckBoxesCol,
             //   2
             // )}`,
-            left : "60px",
+            left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined  ? "60px" : "0px"}`,
             position: "sticky",
             zIndex: 4,
           }}

@@ -132,7 +132,6 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             searchFilter: true,
             searchComponent: searchText,
             minWidth: "230",
-            maxWidth: "360",
             visible: true,
         },
         {
@@ -144,7 +143,6 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             searchFilter: true,
             searchComponent: searchText,
             minWidth: "200",
-            maxWidth: "325",
             visible: true,
         },
         {
@@ -155,8 +153,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "450",
             visible: true,
         },
         {
@@ -167,8 +164,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "450",
             visible: true,
         },
         {
@@ -179,8 +175,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "450",
             visible: true,
         },
         {
@@ -191,8 +186,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "450",
             visible: true,
         },
         {
@@ -203,8 +197,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
             sort: true,
             searchFilter: true,
             searchComponent: searchText,
-            minWidth: "200",
-            maxWidth: "450",
+            minWidth: "450",
             visible: true,
         },
     ]);
@@ -248,7 +241,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
     };
 
     return (
-        <div className="userDataTableParent ">
+        <div className="unit_detail_tab_events">
             {rows && (
                 <CRXDataTable 
                     id="unitdevice-auditlog"
@@ -256,7 +249,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
                     getRowOnActionClick={() => { }}
                     toolBarButton = {
            
-                        <CRXButton  >
+                        <CRXButton>
                           Export
                         </CRXButton>
                     
@@ -270,7 +263,7 @@ const UnitDeviceEvents: React.FC<infoProps> = ({id}) => {
                     searchHeader={true}
                     columnVisibilityBar={true}
                     allowDragableToList={false}
-                    className="ManageAssetDataTable usersGroupDataTable"
+                    className="unit_detail_tab_events_data_table"
                     onClearAll={clearAll}
                     getSelectedItems={(v: UnitEvents[]) => setSelectedItems(v)}
                     onResizeRow={resizeRowUserTab}

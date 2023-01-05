@@ -146,7 +146,7 @@ React.useEffect(() => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "825",
+      minWidth: "790",
       detailedDataComponentId: "name",
       attributeName: "Name",
       attributeType: "String",
@@ -160,7 +160,7 @@ React.useEffect(() => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "825",
+      minWidth: "805",
       detailedDataComponentId: "name",
       attributeName: "Name",
       attributeType: "String",
@@ -226,7 +226,7 @@ React.useEffect(() => {
             toolBarButton = {
               <>
               <Restricted moduleId={0}>
-                <CRXButton className="UploadPoliciesBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.uploadPoliciesCreate)[0].url) }}>
+                <CRXButton className="primary UploadPoliciesBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.uploadPoliciesCreate)[0].url) }}>
                   {t("Create_Upload_Policy")}
                 </CRXButton>
               </Restricted>
@@ -257,9 +257,11 @@ React.useEffect(() => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
             //Please dont miss this block.
-            offsetY={62}
-            headerPositionInit={210}
-            topSpaceDrag = {98}
+            offsetY={-27}
+            topSpaceDrag = {5}
+            searchHeaderPosition={219}
+            dragableHeaderPosition={184}
+            stickyToolbar={133}
             //End here
             page={page}
             rowsPerPage={rowsPerPage}

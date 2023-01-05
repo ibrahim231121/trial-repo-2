@@ -14,11 +14,13 @@ interface CRXAppBarProps {
     color : Colors
 }
 
-const theme = createTheme({
+const headerStyle = createTheme({
+   
     palette: {
         primary: {
             main: "#333333",
             light: '#0066ff',
+            
         },
         secondary: {
             main: "#f4f4f4",
@@ -42,7 +44,7 @@ const theme = createTheme({
 const CRXAppBar = ({children, id, className, position = "relative", color} : CRXAppBarProps) => {
     return (
         <>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={headerStyle}>
         <AppBar id={id} className={"CRXAppBar " + className} position={position} color={color}>
             { children }
         </AppBar>

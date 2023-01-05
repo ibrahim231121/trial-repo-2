@@ -172,7 +172,7 @@ const retentionFormMessages = (obj: any) => {
       visible: false,
       minWidth: "80",
       width: "",
-      maxWidth: "100",
+      maxWidth: "400",
     },
     {
       label: `${t("Name")}`,
@@ -182,9 +182,7 @@ const retentionFormMessages = (obj: any) => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "500", 
-      maxWidth: "600"
+      minWidth: "332",
     },
     {
       label: `${t("Retention_Time_Or_Space")}`,
@@ -195,9 +193,7 @@ const retentionFormMessages = (obj: any) => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "100",
-      width: "100",
-      maxWidth: "100"
+      minWidth: "400",
     },
     {
       label: `${t("Soft_Delete_Time")}`,
@@ -207,9 +203,7 @@ const retentionFormMessages = (obj: any) => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "100",
-      width: "100",
-      maxWidth: "100"
+      minWidth: "400",
     },
     {
       label: `${t("Description")}`,
@@ -219,9 +213,7 @@ const retentionFormMessages = (obj: any) => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "400",
-      maxWidth: "500"
+      minWidth: "400",
     },
 
   ]);
@@ -361,11 +353,13 @@ const retentionFormMessages = (obj: any) => {
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterRetentionPolicies?.totalCount}
-             //Please dont miss this block.
-           offsetY={62}
-           headerPositionInit={210}
-           topSpaceDrag = {98}
-           //End here
+            //Please dont miss this block.
+            offsetY={-27}
+            topSpaceDrag = {5}
+            searchHeaderPosition={221}
+            dragableHeaderPosition={186}
+            stickyToolbar={133}
+            //End here
           />
          
         )

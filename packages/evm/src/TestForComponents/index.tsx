@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  TextField, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter,  NumberField
+  TextField, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter,  NumberField, 
 } from '@cb/shared';
 import "./Test.scss"
 const TabsDemo = () => {
@@ -125,6 +125,7 @@ const top100Films = [
   { value: 'Monty Python and the Holy Grail', id: 1975 },
 ];
 
+
 const defaultValue = [
   {value: 'Monty Python and the Holy Grail', id: 1975}
 ]
@@ -137,6 +138,86 @@ const onSelectedClear = () => {
   setGetVal([])
 }
 
+const headerCol = [
+  {"id" : 1, "label" : "Asset id", "width" : 200},
+  {"id" : 2, "label" : "Asset id", "width" : 200},
+  {"id" : 3, "label" : "Asset id", "width" : 200},
+  {"id" : 4, "label" : "Asset id", "width" : 200},
+  {"id" : 5, "label" : "Asset id", "width" : 200},
+  {"id" : 6, "label" : "Asset id", "width" : 200},
+  {"id" : 7, "label" : "Asset id", "width" : 200},
+  {"id" : 8, "label" : "Asset id", "width" : 200},
+]
+
+const [tableHead, setTbleHead] = useState([])
+useEffect(() => {
+     fetch('https://dummyjson.com/users')
+     .then(res => res.json())
+     .then(json => {setTbleHead(json.users)});
+}, [])
+
+
+let reformattedRows = [];
+tableHead.length > 0 && tableHead.forEach((row: any, i: number) => {
+     let evidence: any = {
+          id : row.id,
+          username : row.username,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          maidenName : row.maidenName,
+          gender : row.gender,
+          department: row.department,
+     };
+     reformattedRows.push(evidence);
+   });
+
+   const [headCells, setHeadCells] = React.useState<any>([
+     {
+          label: "Id",
+          id: "id",
+          width: 50,
+          keyCol: true,
+          className: "fixedCol"
+     },
+     {
+          label: "User Name",
+          id: "username",
+          width: 150,
+          className: "fixedCol"
+     },
+     {
+          label: "First Name",
+          id: "firstName",
+          width: 150,
+          
+     },
+     {
+          label: "Last Name",
+          id: "lastName",
+          width: 150,
+     },
+     {
+          label: "Maiden Name",
+          id: "maidenName",
+          width: 150,
+     },
+     {
+          label: "Gender",
+          id: "gender",
+          width: 100,
+     },
+     {
+          label: "City",
+          id: "city",
+          width: 100,
+     },
+     {
+          label: "Department",
+          id: "department",
+          width: 150,
+     },
+   ])   
+const data : any = []
   return (
     <>
     
@@ -176,8 +257,9 @@ const onSelectedClear = () => {
       />
       </div>
      
-    </div>
-    
+
+
+</div>
     </>
   );
 }

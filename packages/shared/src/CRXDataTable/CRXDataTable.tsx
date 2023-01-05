@@ -109,7 +109,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   searchHeaderPosition,
   dragableHeaderPosition,
   topSpaceDrag,
-  headerPositionInit
+  headerPositionInit,
+  stickyToolbar,
 }) => {
   const classes = useStyles();
   
@@ -367,6 +368,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         showCustomizeIcon={showCustomizeIcon}
                         showTotalSelectedText={showTotalSelectedText}
                         toolBarButton={toolBarButton}
+                        stickyToolbar={stickyToolbar}
                       />
                     )}
 
@@ -431,7 +433,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       />
                     {/* : null
                     } */}
-                   
+                   <div className="overlayPanel"></div>
                   </div>
                 </ThemeProvider>
               ) : null}

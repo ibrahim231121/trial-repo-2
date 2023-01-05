@@ -3,7 +3,7 @@
   border: 1px solid var(--color-ccc);
   font-family: var(--App-font-family);
   border-radius: 0px !important;
-  margin-top: 61px;
+  margin-top: 13px;
   margin-bottom: 43px;
   overflow-x: initial !important;
   table {
@@ -14,7 +14,7 @@
           padding: 0px;
           border-right: 1px solid var(--color-ccc);
           position: sticky;
-          top: 86px;
+          top: 0px;
           &.CRXMultiDataTableLabelCell {
             .crxMultiTableHeader {
               text-align: center;
@@ -112,18 +112,18 @@
     }
   }
   .application-permission-menu {
-    position: sticky;
-    top: 0;
-    text-align: right;
     z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     .application-permission-dropdown {
       width: 238px;
       border: 1px solid var(--color-d1d2d4);
       outline: 3px solid var(--color-transparent);
       height: 30px;
-      position: absolute;
-      right: 0;
-      top: 27px;
+      // position: absolute;
+      // right: 0;
+      // top: 27px;
       &:hover {
         border: 1px solid var(--color-888787);
       }
@@ -162,8 +162,6 @@
       color: var(--color-74767c);
       font-family: var(--App-font-family);
       padding-right: 17px;
-      position: relative;
-      top: -5px;
     }
   }
 }

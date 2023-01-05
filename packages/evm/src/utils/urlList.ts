@@ -149,6 +149,7 @@ export const urlList: any = [
     {
         name: urlNames.adminUserGroupId,
         url: "/admin/usergroups/group/:id",
+        type : "form",
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },

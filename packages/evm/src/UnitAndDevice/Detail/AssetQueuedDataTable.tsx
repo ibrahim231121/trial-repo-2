@@ -106,22 +106,22 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
       const projectStatusProgress = (e:any) => {
       
         return (            
-            <>
+            <div className="status_grid_loader">
             <CRXProgressBar
             id="raw"
             loadingText='File'
             value={e}
             error={false}
-            width={280}
-           
+            width={236}
             maxDataSize={true}
           />
-          </>
+          </div>
            
         );
       };
 
-      
+    const tabsIdx : any = window.innerWidth;
+    
     const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
        
         {
@@ -130,8 +130,7 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
           align: "right",
           dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
           sort: true,
-          minWidth: "120",
-          maxWidth: "325",
+          minWidth: `${tabsIdx && tabsIdx / 2 - 270}`,
           visible: true,
         },
         {
@@ -140,8 +139,7 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
           align: "left",
           dataComponent:  (e: any) => projectStatusProgress(e),
           sort: false, 
-          minWidth: "200",
-          maxWidth: "325",
+          minWidth: `${tabsIdx && tabsIdx / 2 - 210}`,
           visible: true,
         }
       
@@ -153,10 +151,10 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
     },[page, rowsPerPage])
 
     return (
-      <div className="userDataTableParent ">
+      <div className="unit_detail_tab_events unit_Device_tabUI">
       {rows && (
           <CRXDataTable 
-              id="group-userDataTable"
+              id="unit_device_queued_tab_table"
               actionComponent={() => { }}
               getRowOnActionClick={() => { }}
               showToolbar={true}
@@ -165,10 +163,10 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
               headCells={headCells}
               orderParam={order}
               orderByParam={orderBy}
-              searchHeader={true}
+              searchHeader={false}
               columnVisibilityBar={true}
               allowDragableToList={false}
-              className="ManageAssetDataTable usersGroupDataTable"
+              className="unit_detail_tab_events_data_table"
               onClearAll={clearAll}
               getSelectedItems={(v: QueuedAssets[]) => setSelectedItems(v)}
               onResizeRow={resizeQueuedAssets}
@@ -189,6 +187,7 @@ const QueuedAsstsDataTable :React.FC<infoProps> =  ({unitId})=>{
               setPage= {(page:any) => setPage(page)}
               setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
               totalRecords={500}
+              stickyToolbar={0}
           />
       )}
       </div>

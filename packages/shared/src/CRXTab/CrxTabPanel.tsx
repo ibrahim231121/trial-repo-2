@@ -12,17 +12,9 @@ interface TabPanelProps {
         border:"1px solid #878787",
         borderTop: "0px",
         padding:"25px",
-        paddingBottom : "0px",
+        paddingBottom : "55px",
         overflowY:"auto",
-        '@media only screen and (max-width: 1920px)': {
-          height : "619px"
-        },
-        '@media only screen and (max-width: 1600px)': {
-          height : "432px"
-        },
-        '@media only screen and (max-width: 1366px)': {
-          height : "305px"
-        }
+        minHeight: "calc(100vh - 220px)",
     },
   });
 

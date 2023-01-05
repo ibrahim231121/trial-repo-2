@@ -124,7 +124,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
        validationCheckOnButton(!!formpayloadErr.nameErr)
   },[formpayloadErr.nameErr])
   return (
-    <div className="crx-group-info-form CBX-input">
+    <div className="crx-group-info-form CBX-input unit_device_configuration_form">
       <div className="crx-group-info unitConfiguration">
 
 <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">

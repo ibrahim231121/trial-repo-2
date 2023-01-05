@@ -11,22 +11,9 @@
     border-top: 1px solid var(--color-878787);
     margin-top: -2px;
     position: relative;
-    &::before {
-      width: 1606px;
-      height: 9px;
-      background: var(--color-White);
-      position: fixed;
-      content: " ";
-      z-index: 2;
-      margin-top: -25px;
-      margin-left: 69px;
-    }
+   
   }
-  div[aria-labelledby="crx-tab-3"] {
-    &::before {
-      background: var(--color-transparent);
-    }
-  }
+
 
   .MuiTab-root {
     padding: 0 25px;
@@ -45,10 +32,6 @@
   }
 
   .tab-bottom-buttons {
-    padding-top: 23px;
-    width: 100%;
-    display: flex;
-    justify-content: "space-between";
 
     .save-cancel-button-box {
       width: 100%;
@@ -110,9 +93,6 @@
   .hideMessageGroup {
     margin: 0;
     display: none;
-  }
-  div[id*="crx-tabpanel-"] {
-    height: calc(100vh - 303px);
   }
 }
 

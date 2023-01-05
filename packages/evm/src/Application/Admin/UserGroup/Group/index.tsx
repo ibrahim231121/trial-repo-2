@@ -694,10 +694,6 @@ const Group = () => {
     }
   };
 
-  const scrollGroupTop = () => {
-    window.scrollTo({ top: 0 });
-  };
-
   const alertMsgDiv = showSuccess ? " " : "hideMessageGroup";
 
   useEffect(() => {
@@ -727,7 +723,7 @@ const Group = () => {
      : ""}
       <CRXToaster ref={groupMsgRef} />
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={139}/>
       <CrxTabPanel value={value} index={0}>
         {/* <div className={showMessageError}> */}
         <div
@@ -750,12 +746,12 @@ const Group = () => {
       </CrxTabPanel>
 
       <CrxTabPanel value={value} index={2}>
-        <div
+        {/* <div
           onClick={scrollGroupTop}
           className={`${
             showSuccess ? "hiddenArea isErrorHide" : "hiddenArea"
           } ${messagesadd}`}
-        ></div>
+        ></div> */}
         <Application
           resAppPermission={resAppPermission}
           applicationPermissions={applicationPermissions}
@@ -779,7 +775,7 @@ const Group = () => {
         </div>
       </CrxTabPanel>
 
-      <div className="tab-bottom-buttons">
+      <div className="tab-bottom-buttons stickyFooter_Tab">
         <div className="save-cancel-button-box">
           <CRXButton
             variant="contained"

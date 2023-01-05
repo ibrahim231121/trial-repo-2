@@ -11,7 +11,10 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: theme.spacing(2.9),
+      paddingBottom: theme.spacing(3.7),
+      paddingTop : theme.spacing(3),
+      minHeight : "30px !important",
+      height : "30px",
     },
     highlight:
       theme.palette.type === "light"
@@ -40,17 +43,17 @@ export const theme = createTheme({
   overrides: {
     MuiTableRow: {
       root: {
-        "&$selected": {
-          // <-- mixing the two classes
-          backgroundColor: "#f2f2f2",
-        },
-        "&$selected:hover": {
-          // <-- mixing the two classes
-          backgroundColor: "#f2f2f2",
-        },
-        "&:hover": {
-          backgroundColor: "#333333",
-        },
+        // "&$selected": {
+        //   // <-- mixing the two classes
+        //   backgroundColor: "#f2f2f2",
+        // },
+        // "&$selected:hover": {
+        //   // <-- mixing the two classes
+        //   backgroundColor: "#f2f2f2",
+        // },
+        // "&:hover": {
+        //   backgroundColor: "#333333",
+        // },
       },
     },
 
@@ -123,7 +126,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
       color: "#d1d2d4 !important",
       whiteSpace: "nowrap",
-      paddingRight : "9px !important"
+      padding : "0px 11px !important"
     },
     searchHeaderStickness: {
       top: "35px !important",
@@ -187,7 +190,8 @@ export interface DataTableToolbarProps {
   showCountText?: boolean;
   showCustomizeIcon?: boolean;
   showTotalSelectedText?: boolean;
-  toolBarButton? : React.ReactNode
+  toolBarButton? : React.ReactNode,
+  stickyToolbar? : number
 }
 
 export type DataTableProps = {
@@ -231,7 +235,8 @@ export type DataTableProps = {
   searchHeaderPosition? : number,
   dragableHeaderPosition? : number,
   topSpaceDrag? : number,
-  headerPositionInit? : number
+  headerPositionInit? : number,
+  stickyToolbar? : number
 };
 
 export type OrderData = {

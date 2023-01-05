@@ -76,3 +76,53 @@
         }
     }
 }
+
+
+.resp-data-grid {
+    display:  table;
+    width:auto;
+    border:1px solid  #666666;
+    border-spacing:1px;/*cellspacing:poor IE support for  this*/
+    /* border-collapse:separate;*/
+    .grid-row {
+       
+        width:auto;
+        .grid-cell {
+            display: table-cell;
+            padding: 8px 11px;
+            &.fixedCol {
+                position: sticky;
+                left: 0px;
+            }
+            
+        }
+    }
+    .resp-data-grid-header {
+        position: sticky;
+        top: 200px;
+        .header-cell {
+            background: #444;
+            color: #fff;
+            
+        }
+    }
+    .resp-data-grid-body {
+        .body-row {
+            border-bottom: 1px solid #dedede;
+            &:nth-child(even) {
+                background: #f9f9f9;
+            }
+            .body-cell {
+                border: 0px solid #dedede;
+                border-right: 1px solid #dedede;
+                &.fixedCol {
+                    position: sticky;
+                    left: 0px;
+                }
+            }
+        }
+    }
+    
+    
+}
+

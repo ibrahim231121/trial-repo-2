@@ -88,8 +88,8 @@ iframe {
       margin-top: -20px;
     }
   }
-  .rc-menu {
-    position: uns;
+  .unitDeviceMenuCss {
+    left: 93px !important;
   }
   .col-three {
     &:hover {
@@ -97,14 +97,6 @@ iframe {
         background-color: var(--color-transparent) !important;
       }
     }
-  }
-
-  .DataTableBodyCell {
-    vertical-align: middle !important;
-    text-indent: 0 !important;
-    line-height: 20px !important;
-    padding-left: 13px !important;
-    padding-right: 12px !important;
   }
   .unitsStatusCounter {
     position: sticky;
@@ -246,62 +238,7 @@ iframe {
 .unitDeviceMainUii {
   position: relative;
   top: 0px;
-  .stickyPos  {
-  transform: translateY(0px); 
-  }
-  thead {
-    &:nth-child(2) {
-      th {
-        &:nth-child(5) {
-          .gridFilterGlobal {
-            .crx-global-Select {
-              width: 156px;
-            }
-          }
-        }
-        &:nth-child(7) {
-          .centerPosition {
-            min-width: 195px;
-          }
-        }
-        &:nth-child(9) {
-          .gridFilterGlobal {
-            .crx-global-Select {
-              width: 137px;
-            }
-          }
-        }
-        &:nth-child(12) {
-          .gridFilterGlobal {
-            .crx-global-Select {
-              width: 185px;
-            }
-          }
-        }
-        &:nth-child(11) { 
-          .wrapper {
-            .select {
-              width: 177px;
-            }
-          }
-        }
-      }
-    }
-  }
-  tbody {
-    .col-three {
-      position: sticky;
-      left: 59px !important;
-    }
-    td {
-      &:nth-child(9) {
-        .dataTableText {
-          text-align: left;
-          margin-left: 4px;
-        }
-      }
-    }
-  }
+  padding: 0 81px;
   .unitTemplateMultiSelect , .unitVersionMultiSelect, .unitStatusMultiSelect{
       margin: 0 6px;
   } 

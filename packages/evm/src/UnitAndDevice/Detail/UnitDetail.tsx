@@ -132,6 +132,8 @@ const UnitCreate = (props: historyProps) => {
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
+    const overlay : any = document.getElementsByClassName("overlayPanel");
+    overlay.length > 0 && (overlay[0].style.width = "28px")
   }
 
   const unitID = location.state.unitId;
@@ -180,7 +182,9 @@ const UnitCreate = (props: historyProps) => {
           };
         });
         setRows(unitAndDevicesRows);
+        
       }
+      
     });
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
@@ -200,8 +204,9 @@ const UnitCreate = (props: historyProps) => {
   }, [buttonLogic]);
 
   React.useEffect(() => {
+    
     if (buttonLogic == true) setIsSaveButtonDisabled(true);
-  });
+  },[]);
 
   React.useEffect(() => {
     if (primaryDeviceInfo && configTemplateList && stationList && configTemplateList.length > 0 && stationList.length > 0) {
@@ -366,6 +371,7 @@ const UnitCreate = (props: historyProps) => {
 
   const useWindowSize = () => {
     const [size, setSize] = useState(0);
+
     useLayoutEffect(() => {
       const updateSize = () => {
         setSize(window.innerWidth);
@@ -381,10 +387,8 @@ const UnitCreate = (props: historyProps) => {
 
   const toggleChecker = () => {
     setresChecker(false);
-    console.log("false here");
     if (resChecker === false) {
       setresChecker(true);
-      console.log("true here");
     }
   };
 
@@ -397,6 +401,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
+      minWidth : "380"
     },
     {
       label: `${t("Device_Type")}`,
@@ -404,22 +409,26 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
+      minWidth : "350"
     },
     {
       label: `${t("Serial_Number")}`,
       id: "deviceSerialNumbers",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false
+      sort: false,
+      minWidth : "350"
     },
     {
       label: `${t("Version")}`,
       id: "deviceVersions",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false
+      sort: false,
+      minWidth : "400"
     }
   ]);
+
   const clearAll = () => {
     const clearButton: any = document.getElementsByClassName(
       "MuiAutocomplete-clearIndicator"
@@ -618,21 +627,22 @@ const UnitCreate = (props: historyProps) => {
           value={value}
           onChange={handleChange}
           tabitems={inCarTab === "DVR" ? tabs : tabs1}
+          stickyTab={292}
         />
         <CrxTabPanel value={value} index={0}>
-          <div className={showMessageError}>
+          <div className={showMessageError}></div>
             <UnitConfigurationInfo
               info={unitInfo}
               onChangeGroupInfo={onChangeGroupInfo}
               validationCheckOnButton={validationCheckOnButton}
             />
-          </div>
+          
         </CrxTabPanel>
 
 
         {inCarTab === "DVR" ? (
           <CrxTabPanel value={value} index={1}>
-            <div className="unitDeviceMain searchComponents unitDeviceMainUii unitDeviceRemoveMuiIcon">
+            <div className="unit_detail_tab_events unit_Device_tabUI">
               {rows && (
                 <CRXDataTable
                   id={t("Unit_Details")}
@@ -651,14 +661,12 @@ const UnitCreate = (props: historyProps) => {
                   dataRows={rows}
                   orderParam={order}
                   orderByParam={orderBy}
-                  searchHeader={true}
+                  searchHeader={false}
                   allowDragableToList={true}
                   showTotalSelectedText={false}
                   showActionSearchHeaderCell={true}
                   showCustomizeIcon={true}
-
-
-                  className=""
+                  className="unit_detail_tab_events_data_table"
                   onClearAll={clearAll}
                   getSelectedItems={(v: UnitAndDevice[]) => setSelectedItems(v)}
                   onResizeRow={resizeRowUnitDetail}
@@ -707,7 +715,7 @@ const UnitCreate = (props: historyProps) => {
     </CrxTabPanel>
           ) : null}
 
-        <div className="tab-bottom-buttons">
+        <div className="tab-bottom-buttons stickyFooter_Tab">
           <div className="save-cancel-button-box">
             <CRXButton
               variant="contained"

@@ -7,7 +7,11 @@ import  "./CrxTab.scss";
 
 const CrxTabsParent = withStyles({
   root: {
-    borderBottom: '1px solid #333',
+    borderBottom: "1px solid #878787",
+    position: "sticky",
+    top: "138px",
+    background: "#fff",
+    zIndex : 999,
   },
   indicator: {
     backgroundColor: '#C34400',
@@ -42,7 +46,7 @@ const CrxTabsParent = withStyles({
       FontWeight: theme.typography.fontWeightRegular,
       marginRight: theme.spacing(0),
       border: "1px solid #333",
-      borderBottom:"0px",
+      borderBottom:"0",
       borderRight: "0px",
       background:"#eee",
       color:"#333",
@@ -73,11 +77,12 @@ interface StyledTabsProps {
   onChange: (event: React.ChangeEvent<{}>, newValue : number) => void;
   tabitems : Array<CRXTabProps>,
   selectionFollowsFocus?: boolean;
+  stickyTab? : number
 }
 
 
 
-const CRXTabs = ({value, onChange, tabitems, selectionFollowsFocus = true} : StyledTabsProps) => {
+const CRXTabs = ({value, onChange, tabitems, stickyTab, selectionFollowsFocus = true} : StyledTabsProps) => {
     
     const tabItemsRender = tabitems && tabitems.map((item : CRXTabProps) => {
         return <CrxTab  icon={item.icon} label={item.label} index={item.index}/>
@@ -94,6 +99,7 @@ const CRXTabs = ({value, onChange, tabitems, selectionFollowsFocus = true} : Sty
             variant="scrollable"
             scrollButtons="auto"
             className="crxMainTab"
+            style={{"top" : stickyTab + "px"}}
             ScrollButtonComponent = {(props) => {
              
               if (

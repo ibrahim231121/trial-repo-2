@@ -394,7 +394,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       id: "assetId",
       align: "left",
       dataComponent: (event: any, evidence: any) => thumbTemplate(event, evidence),
-      minWidth: "150",
+      minWidth: "112",
       detailedDataComponentId: "evidence",
     },
     {
@@ -405,7 +405,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "263",
+      minWidth: "281",
       detailedDataComponentId: "evidence",
       isPopover: true,
     },
@@ -433,7 +433,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "338",
+      minWidth: "358",
     },
     {
       label: t("Captured"),
@@ -698,6 +698,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
               showToastMsg={(obj: any) => showToastMsg(obj)}
               portal={true}
               actionMenuPlacement={ActionMenuPlacement.AssetLister}
+              className="asset_lister_rc_menu"
             />
           }
           getRowOnActionClick={(val: SearchModel.Evidence) => setSelectedActionRow(val)}
@@ -723,9 +724,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={showAdvanceSearch == false ? 246 : 750}
-          topSpaceDrag = {!showAdvanceSearch == false ? 290 : 799}
+          offsetY={!showAdvanceSearch == false ? 157 : 750}
+          topSpaceDrag = {!showAdvanceSearch == false ? 188 : 799}
           headerPositionInit={178}
+          searchHeaderPosition={207}
+          dragableHeaderPosition={172}
+          stickyToolbar={120}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}

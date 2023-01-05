@@ -329,8 +329,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "150",
-      maxWidth: "200",
+      minWidth: "250",
       visible: true,
       attributeName: "UserName",
       attributeType: "String",
@@ -345,8 +344,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "130",
-      maxWidth: "200",
+      minWidth: "200",
       visible: true,
       attributeName: "FName",
       attributeType: "String",
@@ -361,8 +359,7 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "130",
-      maxWidth: "200",
+      minWidth: "200",
       visible: true,
       attributeName: "LName",
       attributeType: "String",
@@ -406,8 +403,7 @@ const User: React.FC = () => {
       align: "center",
       dataComponent: dateDisplayFormat,
       sort: true,
-      minWidth: "130",
-      maxWidth: "200",
+      minWidth: "230",
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,
@@ -440,8 +436,7 @@ const User: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
-      minWidth: "430",
-      maxWidth : "489px",
+      minWidth: "250",
       attributeName: "UserGroups",
       attributeType: "List",
       attributeOperator: "contains"
@@ -466,7 +461,7 @@ const User: React.FC = () => {
 
       return (
         <CBXMultiSelectForDatatable 
-          width = {430} 
+          width = {245} 
           option={status} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
           onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
@@ -735,9 +730,11 @@ const User: React.FC = () => {
           totalRecords={users.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
            //Please dont miss this block.
-           offsetY={70}
-           headerPositionInit={206.5}
-           topSpaceDrag = {114}
+           offsetY={-27}
+           topSpaceDrag = {5}
+           searchHeaderPosition={222}
+           dragableHeaderPosition={187}
+           stickyToolbar={133}
            //End here
         />
       )}

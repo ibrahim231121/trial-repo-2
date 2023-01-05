@@ -30,7 +30,7 @@ const UserGroupActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
             className="menuCss"
             arrow
             menuButton={
-                <MenuButton>
+                <MenuButton className="userGroup_lister_editIcon">
                     <i className="fas fa-pen"></i>
                 </MenuButton>
             }

@@ -39,6 +39,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
     else localStorage.setItem("AssetContainer", JSON.stringify([row]));
   };
 
+ 
   React.useEffect(() => {
     const trAtiveValue = document
       .querySelector(".rc-menu-button--open")
@@ -87,7 +88,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
   }
 
   let containerRows = selfPaging ? container.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : container.rows
-
+  
   return (
     <>
     
@@ -107,6 +108,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                 .map((row: any, index: number) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `checkbox with default color-${index}`;
+                 
                   return (
                     <React.Fragment key={index}>
                       <TableRow
@@ -123,13 +125,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         showCheckBoxesCol === undefined ? (
                           <TableCell
                             style={{
-                              //left: `${dragVisibility === false ? "0px" : "60px"}`,
-                              // left: `${fixedColumnAlignment(
-                              //   dragVisibility,
-                              //   showCheckBoxesCol,
-                              //   1
-                              // )}`,
-                              left : "0px"
+                              left : "0px",
+                              zIndex : "1"
                             }}
                             className="DataTableBodyCell CellCheckBox col-two"
                             scope="row"
@@ -182,12 +179,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         showActionCol === undefined ? (
                           <TableCell
                             style={{
-                              // left: `${dragVisibility === false ?
-                              //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "0px" : "62px"
-                              //   :
-                              //   (showCheckBoxesCol === false || showCheckBoxesCol !== undefined ) ? "62px" : "118px"
-                              // }`,
-                              left: "60px",
+                              left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "60px" : "0px"}`,
+                              zIndex : "1"
                             }}
                             className="DataTableBodyCell col-three"
                             scope="row"
@@ -236,7 +229,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                                       ]
                                     )
                                   : headCells[colIdx].dataComponent(
-                                      row[headCells[colIdx].id], row[keyId]
+                                      row[headCells[colIdx].id], row[keyId],
+                                      
                                     )
                               }
                               

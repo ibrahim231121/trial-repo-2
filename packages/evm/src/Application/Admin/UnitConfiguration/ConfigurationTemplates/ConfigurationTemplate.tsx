@@ -418,7 +418,7 @@ const ConfigurationTemplates: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "460",
+      minWidth: "430",
       detailedDataComponentId: "device",
       attributeName: "Name",
       attributeType: "String",
@@ -648,11 +648,13 @@ const ConfigurationTemplates: React.FC = () => {
             setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
             totalRecords={UnitConfigurationTemplates.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
-             //Please dont miss this block.
-             offsetY={65}
-             headerPositionInit={207}
-             topSpaceDrag = {99}
-             //End here
+            //Please dont miss this block.
+            offsetY={-27}
+            topSpaceDrag = {5}
+            searchHeaderPosition={222}
+            dragableHeaderPosition={187}
+            stickyToolbar={152}
+            //End here
           />
         )
       }

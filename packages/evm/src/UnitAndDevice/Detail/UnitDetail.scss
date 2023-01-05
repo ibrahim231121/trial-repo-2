@@ -5,11 +5,13 @@
     .unitDeviceDetail {
       margin-top: 0 !important;
       margin-left: 0 !important;
+      position: sticky;
+      top: 139px;
+      background: #fff;
+      z-index: 9999;
     }
     .tab-bottom-buttons {
-      width: 100%;
-      display: flex;
-      padding-top: 23px;
+    
       .save-cancel-button-box {
         width: 100%;
         .groupInfoTabButtons {
@@ -17,10 +19,6 @@
           margin-right: 33px;
         }
       }
-    }
-    div[id*="crx-tabpanel"] {
-      height: calc(100vh - 434px);
-      overflow-y: auto;
     }
     .crxMainTab {
       border-bottom: 1px solid #878787 !important;
@@ -256,8 +254,9 @@ iframe {
     align-items: center;
     justify-content: flex-end;
     height: 27px;
-    position: absolute;
-    top: 87px;
+    position: sticky;
+    top: 92px;
+
     a {
       color: #D74B00;
      font-size: 14px;
@@ -306,7 +305,7 @@ iframe {
     width: 130px !important;
   }
   .unitDeviceDetail {
-    margin-bottom: 20px;
+    padding-bottom: 23px;
   }
   .crx-menu-icon {
     display: flex;
@@ -376,5 +375,96 @@ iframe {
     .MainBoard {
       
     }
+  }
+}
+
+
+.unit_device_configuration_form {
+  display: table;
+  .unitConfiguration {
+    height: auto;
+  }
+}
+
+.unit_device_queued_tab_parent {
+  z-index: 9;
+  .queued_tab_DataTable {
+    table {
+      width: 100% !important;
+    }
+  }
+  .overlayPanel {
+    width: 28px;
+  }
+}
+
+
+.unit_detail_tab_events {
+  margin: 0px 81px;
+  position: relative;
+  font-family: var(--base-font-family);
+  .unit_detail_tab_events_data_table {
+    display:  block !important;
+    border:1px solid var(--color-ccc);
+    table {
+      thead {
+        top : 0px !important;
+        z-index: 99 !important;
+        
+      }
+      tbody {
+        tr {
+          td {
+            .status_grid_loader {
+              width: 100%;
+              .crx-progress-br {
+                display: flex;
+                justify-content: center;
+                place-items: center;
+                height: 100%;
+                .loadingAssets {
+                  padding-right: 12px;
+                }
+                .loader {
+                  .progressPercentage {
+                    color: var(--color-333333);
+                    line-height: 14px;
+                    left: auto !important;
+                    right: auto;
+                    bottom: auto;
+                    margin: auto;
+                    width: 100%;
+                    text-align: center;
+                    top: 1px;
+                  }
+                  .loadingIcon{
+                    .assetsLoadingBarIcon {
+                      top: 0px !important;
+                    }
+                  }
+                } 
+              }
+            }
+          }
+          
+          &:hover {
+            .status_grid_loader {
+              .crx-progress-br {
+                .loadingAssets {
+                  color: var(--color-d1d2d4);
+                }
+                .loadingIcon {
+                  color: var(--color-d1d2d4);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .stickyPos {
+    top: 0px !important;
+    z-index: 99 !important;
   }
 }

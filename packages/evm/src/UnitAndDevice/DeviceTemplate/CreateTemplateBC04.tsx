@@ -1051,7 +1051,7 @@ const CreateTemplate = (props: any) => {
                       })}
                     </>
                   }
-                  <div className="tctButton">
+                  <div className="tctButton stickyFooter_Tab">
                     <div className="tctLeft">
                       <CRXButton
                         className={validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}

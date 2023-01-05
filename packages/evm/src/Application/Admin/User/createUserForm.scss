@@ -133,20 +133,6 @@
   .Autocomplete_multi {
     width: 100%;
   }
-  .manageUserBtn {
-    height: 30px;
-    width: 108px;
-    padding: 0 0;
-    margin-top: -22px;
-    position: sticky;
-    top: 144px;
-    &:hover {
-      border: 1px solid #6e6e6e;
-    }
-  }
-  .CRXCheckBox {
-    margin-left: 2px !important;
-  }
 
   .AssetsDataGrid {
     .centerPosition {
@@ -186,7 +172,7 @@
       // }
       //   }
       td {
-        vertical-align: middle !important;
+        // vertical-align: middle !important;
         &:first-child {
           &:hover {
             border: 0 solid transparent !important;
@@ -290,19 +276,14 @@
     }
   }
 
-  .crxTableHeaderSize {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .rc-menu-button {
     font-size: 21px;
     margin-top: 0;
   }
 
-  .DataTableBodyCell {
-    text-indent: 0px !important;
-  }
+  // .DataTableBodyCell {
+  //   text-indent: 0px !important;
+  // }
   .rc-menu {
     width: 242px;
   }
@@ -376,7 +357,7 @@
     width: 92px;
   }
   .modalEditCrx {
-    margin-top: 137px;
+    margin-top: 17px;
     padding: 0 130px 0 130px;
   }
   .gridFilterTextBox {
@@ -514,10 +495,12 @@
   .CrxIndicates {
     position: fixed !important;
     top: 87px !important;
-    height: 50px;
-    background-color: white !important;
+    height: 58px;
+    background-color: #ffffff !important;
     padding-top: 19px;
     width: 100%;
+    padding-bottom: 13px;
+    border-bottom: 1px solid #dedede;
   }
   .crxDropdownValidationError {
     i {
@@ -790,6 +773,3 @@
   margin-right: 15px !important;
 }
 
-.crxManageUsers .col-two{
-  padding-left: 0px !important;
-}
