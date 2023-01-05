@@ -243,7 +243,7 @@ const CRXLefNavigation = () => {
     }
   })
 
-  return <CRXNestedMenu className="CRXLeftMenu" model={SubModulePermission} />;
+  return <CRXNestedMenu  className="CRXLeftMenu" model={SubModulePermission} />;
 };
 
 export default CRXLefNavigation;

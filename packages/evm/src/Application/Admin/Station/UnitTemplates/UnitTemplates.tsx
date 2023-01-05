@@ -103,6 +103,12 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
     <>
       <div className="stationDetailOne gepStationSetting CRXUnitTemplate">
         <div className="stationColumnSet">
+            <div className="itemIndicator itemIndicator_unitTemplate">
+                <label className="indicates-label"><b>*</b> Indicates required field</label>
+            </div>
+            <div className="indicatorMessage_unitTemplate">
+                  <p>Please select the station's unit default template(s).</p>
+            </div>
           <CRXRows
             className="crxStationDetail"
             container="container"
@@ -113,8 +119,8 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
                 className="stationDetailCol"
                 container="container"
                 item="item"
-                lg={12}
-                xs={12}
+                lg={6}
+                xs={6}
                 spacing={0}
                 key={deviceTypeObj.id}
               >
@@ -139,21 +145,14 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
                 </div>
               </CRXColumn>
             ))}
-          </CRXRows>
-        </div>
-        <div className="stationColumnSet">
-          <CRXRows
-            className="crxStationDetail"
-            container="container"
-            spacing={0}
-          >
-            {deviceTypeCollection.filter(x => x.showDevice == true).slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
+       
+              {deviceTypeCollection.filter(x => x.showDevice == true).slice(NoOFColumnInFirstRow, NoOFColumnInFirstRow + NoOFColumnInSecondRow).map((deviceTypeObj: any) => (
               <CRXColumn
                 className="stationDetailCol"
                 container="container"
                 item="item"
-                lg={12}
-                xs={12}
+                lg={6}
+                xs={6}
                 spacing={0}
                 key={deviceTypeObj.id}
               >
@@ -179,7 +178,7 @@ const UnitTemplates = ({ values, defaultUnitTemplateSelectBoxValues, deviceTypeC
               </CRXColumn>
             ))}
           </CRXRows>
-        </div>
+      </div>
       </div>
     </>
   );

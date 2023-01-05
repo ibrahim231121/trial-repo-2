@@ -393,7 +393,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       id: "assetId",
       align: "left",
       dataComponent: (event: any, evidence: any) => thumbTemplate(event, evidence),
-      minWidth: "112",
+      minWidth: "121",
       detailedDataComponentId: "evidence",
     },
     {
@@ -422,7 +422,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
       minWidth: "250",
-      visible: false,
+      visible: true,
     },
     {
       label: t("Description"),
@@ -709,7 +709,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
           orderByParam={orderBy}
           searchHeader={true}
           columnVisibilityBar={true}
-          className="ManageAssetDataTable MainAssetGridPage_Ui"
+          className="ManageAssetDataTable ManageAssetDataTable_Ui"
           onClearAll={clearAll}
           getSelectedItems={(v: any[]) => setSelectedItems(v)}
           onResizeRow={resizeRowAssetsDataTable}

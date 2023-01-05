@@ -157,6 +157,9 @@ const UserActionMenu: React.FC<Props> = ({
     }
   }, [responseError]);
  
+
+const manageDeactivateClass =  row?.status.toLocaleLowerCase() != "deactivated" ? 0 : 15 ;
+
   return (
     <>
       {/* <CRXModalDialog
@@ -217,9 +220,9 @@ const UserActionMenu: React.FC<Props> = ({
         viewScroll="close"
         direction="right"
         position="auto"
-        offsetX={0}
-        offsetY={0}
-        className="manageUsersMenuUi"
+        offsetX={-28}
+        offsetY={manageDeactivateClass}
+        className={`manageUsersMenuUi  ${manageDeactivateClass}`}
         portal={true}
         menuButton={
           <MenuButton>

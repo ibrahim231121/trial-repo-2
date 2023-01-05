@@ -37,7 +37,7 @@ export const resources = {
         "Log_In":"Log In",
         "assetDataTable":"Assets",
         "userGroup_DataTable":"User Groups",
-        "Tables_columns_filter":"Tables columns filter",
+        "Tables_columns_filter":"Table columns filter",
         "Close":"Close",
         "Reset_to_default":"Reset to default",
         "Clearall_filters":"Clear all filters",
@@ -350,7 +350,7 @@ export const resources = {
         "Create_Group":"Create Group",
         "GROUP_NAME":"GROUP NAME",
         "USERS":"USERS",
-        "APPLICATION_PERMISSIONS":"APPLICATION PERMISSIONS",
+        "APPLICATION_PERMISSIONS":"APPLICATION PERMISSION",
         "DATA_PERMISSIONS":"DATA PERMISSIONS",
         "User_group_saved_successfully.":"User group saved successfully.",
         "We_re_sorry_The_group_information_users_and_application_permissions_were_unable_to_be_saved__Please_retry_or_contact_your_System_Administrator.":"We're sorry. The group information, users, and application permissions were unable to be saved. Please retry or contact your System Administrator.",
@@ -469,9 +469,9 @@ export const resources = {
         "Admin":"Admin",
         "Manage_User_Groups_Permissions":"Manage User Groups & Permissions",
         "Manage_Users":"Manage Users",
-        "Manage_Device_Unit_Templates":"Manage Device & Unit Templates",
+        "Manage_Device_Unit_Templates":"Manage Units & Devices Templates",
         "Evidence(Dev)":"Evidence(Dev)",
-        "Manage_Station":"Manage Station",
+        "Manage_Station":"Manage Stations",
         "Create_Sensor_&_Trigger" : "Create Sensor & Trigger",
         "Edit_sensor_and_trigger": "Edit sensor and trigger",
         "Delete_sensor_and_trigger": "Delete sensor and trigger",
@@ -560,7 +560,7 @@ export const resources = {
         // -------------------------
         
         // --------- Data Table ----------
-        "Tables_columns_filter":"Tables columns filter",
+        "Tables_columns_filter":"Table columns filter",
         "Clear_all_filters":"Clear all filters",
         "Basic":"Basic",
         "Advance":"Advance",

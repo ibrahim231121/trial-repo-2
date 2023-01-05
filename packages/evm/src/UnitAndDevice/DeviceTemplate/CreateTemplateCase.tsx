@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useLayoutEffect, useState} from 'react';
 import { Field, FieldArray, ErrorMessage } from 'formik';
 import { CRXTooltip, CRXSelectBox, CRXRadio, CRXMultiSelectBoxLight } from '@cb/shared';
 import { CRXButton, CRXConfirmDialog  } from '@cb/shared';
@@ -237,15 +237,44 @@ let customEvent = (event: any, y: any, z: any) => {
 
 export const CreateTempelateCase = (props: any) => {
   const { t } = useTranslation<string>();
-
   let LocationPath: any = useLocation();
+
+
+  useLayoutEffect(()=>{
 
     if (LocationPath?.state?.deviceType === "Incar") {
       document.querySelector("main")?.classList.add("IncarTemplatePage")
     }  else {
       document.querySelector("main")?.classList.remove("IncarTemplatePage")
     }
+
+    if (LocationPath?.state?.deviceType === "BC03") {
+      document.querySelector("main")?.classList.add("BC03TemplatePage")
+    }  else {
+      document.querySelector("main")?.classList.remove("BC03TemplatePage")
+    }
+
+    if (LocationPath?.state?.deviceType === "BC02") {
+      document.querySelector("main")?.classList.add("BC02TemplatePage")
+    }  else {
+      document.querySelector("main")?.classList.remove("BC02TemplatePage")
+    }
  
+    if (LocationPath?.state?.deviceType === "BC04") {
+      document.querySelector("main")?.classList.add("BC04TemplatePage")
+    }  else {
+      document.querySelector("main")?.classList.remove("BC04TemplatePage")
+    }
+
+    if (LocationPath?.state?.deviceType === "BC03 LTE") {
+      document.querySelector("main")?.classList.add("LTETemplatePage")
+    }  else {
+      document.querySelector("main")?.classList.remove("LTETemplatePage")
+    }
+  
+   
+  })
+
 
 
 
@@ -540,14 +569,18 @@ export const CreateTempelateCase = (props: any) => {
                 placement="right"
               />) : (<></>)}
           </div>
-          <Restricted moduleId={52}>
+    
+        </div>
+        <Restricted moduleId={52}>
             {formObj.extraHtml ? (<div className='CreateSensorsEventForm'>
-                  <CRXButton onClick={sensorsEvent}>
+                  <CRXButton     
+                     color='primary'
+                     variant='contained'
+                     onClick={sensorsEvent}>
                       {t("Create Sensor & Trigger")}
                   </CRXButton>
             </div>) :(<></>)}
           </Restricted>
-        </div>
         </div>
      
       );

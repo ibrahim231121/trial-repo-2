@@ -364,3 +364,22 @@
 //   width: 100%;
 //   z-index: 5;
 // }
+
+
+.ManageAssetDataTable_Ui {
+  tbody {
+    tr {
+      .row_anchor_point {
+        i {
+          margin-left: -2px;
+        }
+      }
+      .CRXCheckBox  {
+        margin-left: -7px;
+      }
+    }
+  }
+  .dragableCellCustomize {
+    left: 4px;
+  } 
+}

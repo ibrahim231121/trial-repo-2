@@ -3,7 +3,7 @@ export const resources = {
       translation: {
         "assetDataTable": "ar-Assets",
         "userGroupDataTable": "ar-User Groups",
-        "Tables columns filter": "ar-Tables columns filter",
+        "Tables columns filter": "ar-Table columns filter",
         "Close" : "ar-Close",
         "Resettodefault" : "ar-Reset to default",
         "Clearallfilters": "ar-Clear all filters",

@@ -319,17 +319,18 @@ const User: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
+      width:"80"
     },
     {
       label: `${t("User_Name")}`,
       id: "userName",
       align: "left",
-      // width: "174",
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "250",
+      minWidth: "230",
+      width:"230",
       visible: true,
       attributeName: "UserName",
       attributeType: "String",
@@ -339,12 +340,12 @@ const User: React.FC = () => {
       label: `${t("First_Name")}`,
       id: "fName",
       align: "left",
-      //width: "156",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
+      width:"200",
       visible: true,
       attributeName: "FName",
       attributeType: "String",
@@ -354,12 +355,12 @@ const User: React.FC = () => {
       label: `${t("Last_Name")}`,
       id: "lName",
       align: "left",
-      //width: "156",
       dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "200",
+      width:"200",
       visible: true,
       attributeName: "LName",
       attributeType: "String",
@@ -374,8 +375,8 @@ const User: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "200",
-      maxWidth: "263",
+      minWidth: "250",
+      width: "250",
       visible: true,
       attributeName: "Email",
       attributeType: "String",
@@ -391,7 +392,7 @@ const User: React.FC = () => {
       searchComponent: (rowParam: User[], columns: HeadCellProps[], colIdx: number, initialRow: any) => multiSelectCheckbox(rowParam, columns, colIdx, initialRow),
       
       minWidth: "112",
-      maxWidth: "150",
+      width:"112",
       visible: true,
       attributeName: "Status",
       attributeType: "List",
@@ -404,6 +405,7 @@ const User: React.FC = () => {
       dataComponent: dateDisplayFormat,
       sort: true,
       minWidth: "230",
+      width:"230",
       searchFilter: true,
       searchComponent: searchDate,
       visible: true,
@@ -436,7 +438,8 @@ const User: React.FC = () => {
         colIdx: number,
         initialRow: any
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true),
-      minWidth: "250",
+      minWidth: "230",
+      width:"230",
       attributeName: "UserGroups",
       attributeType: "List",
       attributeOperator: "contains"
@@ -719,7 +722,7 @@ const User: React.FC = () => {
           dragVisibility={false}
           showCheckBoxes={true}
           showActionCol={true}
-          showActionSearchHeaderCell={false}
+          showActionSearchHeaderCell={true}
           showCountText={false}
           showCustomizeIcon={true}
           showTotalSelectedText={false}

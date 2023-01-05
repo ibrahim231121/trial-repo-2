@@ -26,6 +26,7 @@ const CRXBadge: React.FC<badgeProps> = ({
     setInvisible(checkVisiblity);
   }, [itemCount]);
 
+  const badgeBar = invisible ? "badgeBarEnable" : "badgeBarDisabled" ;
   return (
     <>
       <Badge
@@ -33,7 +34,7 @@ const CRXBadge: React.FC<badgeProps> = ({
         invisible={invisible}
         color={color}
         variant={variant}
-        className={`CRXBadge CRXBadgeComponent-${color}  ${className}`}
+        className={`CRXBadge CRXBadgeComponent-${color}  ${className} ${badgeBar}`}
       >
         {children}
       </Badge>

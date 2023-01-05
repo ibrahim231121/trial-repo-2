@@ -1,0 +1,18 @@
+.groupsAndPermissions  {
+    tbody {
+        tr {
+            td {
+                &:nth-child(3) {
+                    text-align: left !important;
+                    padding-left: 11px !important;
+                }
+            }
+        }
+    }
+}
+.groupPermissionInnerPage {
+    .dataTablePages {
+        position:inherit !important;
+        border-top: none !important;
+    }
+}

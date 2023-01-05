@@ -183,7 +183,7 @@ const Station: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: '80',
-      maxWidth: '100'
+      width: '80'
     },
     {
       label: t('Station'),
@@ -195,7 +195,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '650',
+      minWidth: '540',
+      width: '540',
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -208,7 +209,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '650',
+      minWidth: '540',
+      width: '540',
       attributeName: "Address.Street",
       attributeType: "String",
       attributeOperator: "contains"
@@ -221,7 +223,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '310',
+      minWidth: '542',
+      width: '542',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"
@@ -348,7 +351,7 @@ const Station: React.FC = () => {
           onHeadCellChange={onSetHeadCells}
           setSelectedItems={setSelectedItems}
           selectedItems={selectedItems}
-          showActionSearchHeaderCell={true}
+          showActionSearchHeaderCell={false}
           dragVisibility={false}
           showCheckBoxesCol={false}
           showActionCol={true}

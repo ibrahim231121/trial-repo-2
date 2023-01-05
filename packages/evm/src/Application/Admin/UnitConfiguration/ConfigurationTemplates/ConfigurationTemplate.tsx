@@ -627,12 +627,12 @@ const ConfigurationTemplates: React.FC = () => {
             showCountText={false}
             columnVisibilityBar={true}
             dragVisibility={false}
-            showCheckBoxesCol={true}
+            showCheckBoxesCol={false}
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}
             showTotalSelectedText={false}
-            showActionSearchHeaderCell={true}
+            showActionSearchHeaderCell={false}
             showCustomizeIcon={false}
             initialRows = {reformattedRows}
             className="crxTableHeight crxTableDataUi configTemplate"

@@ -364,7 +364,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     ) : (
       <CRXBadge itemCount={totalAssetBucketCount} color="primary">
         <CRXTooltip
-          className="bucketIcon"
+          className="bucketIcon bucketIcon_tooltip"
           title={t(
             "Asset_Bucket_can_be_used_to_build_cases_and_do_one_action_on_many_assets_at_the_same_time."
           )}

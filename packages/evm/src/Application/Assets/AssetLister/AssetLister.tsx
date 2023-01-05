@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PredictiveSearchBox from './PredictiveSearchBox/PredictiveSearchBox';
 import { CRXButton, CRXRows, CRXColumn,CRXAlert  } from '@cb/shared';
 import AdvanceOption from './AdvanceOption';
@@ -43,6 +43,7 @@ const SearchComponent = (props: any) => {
   const [predictiveText, setPredictiveText] = React.useState('');
   const [querryString, setQuerryString] = React.useState('');
   const [randomKey, setRandomKey] = React.useState(0);
+  const [stickyBorder, setStickyBorder] = React.useState(false);
   const [dateTimeDropDown, setDateTimeDropDown] = React.useState<DateTimeObject>({
     startDate: moment().startOf("day").subtract(10000, "days").set("second", 0).format(),
     endDate: moment().endOf("day").set("second", 0).format(),
@@ -487,6 +488,18 @@ const SearchComponent = (props: any) => {
     return modifiedQuery;
   }
 
+  useEffect(() => {
+   document.addEventListener("scroll",() =>{
+    if(window.pageYOffset > 100) {
+      setStickyBorder(true);
+    }else {
+      setStickyBorder(false);
+    }
+   })
+  })
+
+  const stickyBorderClass = stickyBorder ? "stickyBorder_Add" : "stickyBorder_Remove"; 
+
   return (
     <div className='advanceSearchChildren'>
       <div className='searchComponents'>
@@ -569,7 +582,7 @@ const SearchComponent = (props: any) => {
                   />
         }
         {(searchData.length > 0) && (
-          <div className='dataTabAssets dataTabAssets_table'>
+          <div className={`dataTabAssets dataTabAssets_table ${stickyBorderClass}`}>
             <MasterMain
               key={randomKey}
               rowsData={searchData}

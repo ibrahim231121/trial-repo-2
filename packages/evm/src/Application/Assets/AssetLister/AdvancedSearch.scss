@@ -230,5 +230,10 @@
     .advancedSearchBottom {
       margin-left: 7px;
     }
+    .select {
+      select {
+        text-transform: capitalize;
+      }
+    }
   }
 }

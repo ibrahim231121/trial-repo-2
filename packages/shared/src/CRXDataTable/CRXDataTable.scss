@@ -57,7 +57,7 @@
             box-shadow: 0px;
           }
           &.MuiTableCell-paddingCheckbox {
-            padding: 0 12px 0 16px !important;
+            padding: 0 12px 0 12px !important;
           }
           .dateRangeContainer {
             .select {
@@ -106,7 +106,7 @@
         }
         td.DataTableBodyCell {
           border-right: 1px solid var(--color-ccc);
-          padding: 4px 11px 4px 9px;
+          padding: 14px 11px 14px 9px;
           font-size: 14px;
           color: var(--color-333333);
           vertical-align: middle;
@@ -382,10 +382,22 @@
   z-index: 9999 !important;
   .MuiPopover-paper {
     max-width: 550px;
-    padding: 15px 25px 8px 25px;
+    padding: 15px 0px 8px 18px;
     box-shadow: rgb(0 0 0 / 7%) 0px 6px 9px 0px;
     border: 1px solid var(--color-d1d2d4);
     border-radius: 0px;
+    margin-top: 22px;
+    margin-left: -67px;
+    padding-bottom: 22px;
+    &::after {
+      content: "";
+      height: 1px;
+      width: 100%;
+      background-color: var(--color-d1d2d4);
+      position: absolute;
+      left: 0px;
+      bottom: 77px;
+    }
   }
 
   .MuiGrid-item {
@@ -408,6 +420,20 @@
     &:focus {
       outline: 0px;
     }
+  }
+  .DRPTitle {
+    padding-top: 6px;
+    padding-bottom: 20px;
+    padding-left: 8px;
+  }
+  .footerDRP {
+    border-top: none ;
+  }
+  .closeDRP  {
+    height: 30px;
+  }
+  .clearAllFilterBtn  {
+    margin-left: 15px;
   }
 }
 

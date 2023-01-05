@@ -423,7 +423,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                           menuItem: classes.menuItem, 
                           root : classes.pagination,
                         }}
-                        rowsPerPageOptions={[10, 20, 25]}
+                        rowsPerPageOptions={[10, 25, 50, 100]}
                         component="div"
                         count={totalRecords}
                         rowsPerPage={rowsPerPage}

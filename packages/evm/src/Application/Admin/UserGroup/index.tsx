@@ -12,6 +12,7 @@ import './index.scss'
 import { urlList, urlNames } from "../../../utils/urlList"
 import Restricted from '../../../ApplicationPermission/Restricted'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
 import {
   SearchObject,
   ValueString,
@@ -162,6 +163,10 @@ const UserGroup: React.FC = () => {
    
   }
 
+  const NonField = () =>{
+    
+  }
+
   const simpleFilter = (data : any) => {
     
     const option = data.map((x : any, i:any) => {
@@ -180,9 +185,9 @@ const UserGroup: React.FC = () => {
     )
   }
 
-  const AnchorDisplay = (e: string, className :string) => {
+  const AnchorDisplay = (e: string) => {
     if(getModuleIds().includes(7)) {
-    return anchorDisplay(e, className, urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url)
+    return anchorDisplay(e, "", urlList.filter((item:any) => item.name === urlNames.adminUserGroupId)[0].url)
     }
     else{
     let lastid = e.lastIndexOf("_");
@@ -202,17 +207,19 @@ const UserGroup: React.FC = () => {
       searchComponent: () => null,
       keyCol: true,
       visible: false,
-      minWidth: "100",
+      minWidth: "80",
+      width: "80"
     },
     {
       label: t("Group Name"),
       id: "name",
       align: "left",
-      dataComponent: (e: string) => AnchorDisplay(e, "dataTableEllipsesText"),
+      dataComponent: (e: string) => AnchorDisplay(e),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "520",
+      minWidth: "240",
+      width:"240",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -225,7 +232,8 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
-      minWidth: "510",
+      minWidth: "415",
+      width: "415",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -237,8 +245,37 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
+      searchComponent: NonField,
+      minWidth: "244",
+      width: "244",
+      attributeName: "UserCount",
+      attributeType: "Int",
+      attributeOperator: "eq"
+    },
+    {
+      label: t("Ad Sync Usage"),
+      id: "userCount",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
       searchComponent: searchText,
-      minWidth: "600",
+      minWidth: "195",
+      width: "195",
+      attributeName: "UserCount",
+      attributeType: "Int",
+      attributeOperator: "eq"
+    },
+    {
+      label: t("Containers"),
+      id: "userCount",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, ""),
+      sort: true,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "420",
+      width: "420",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -339,7 +376,7 @@ const UserGroup: React.FC = () => {
             toolBarButton = {
               <>
               <Restricted moduleId={6}>
-                <CRXButton className="primary managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
+                <CRXButton className="managePermissionBtn" onClick={() => { history.push(urlList.filter((item:any) => item.name === urlNames.userGroupCreate)[0].url) }}>
                   {t("Create_Group")}
                 </CRXButton>
               </Restricted>
@@ -374,11 +411,9 @@ const UserGroup: React.FC = () => {
             totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={-33}
-            topSpaceDrag = {-1}
-            searchHeaderPosition={227}
-            dragableHeaderPosition={192}
-            stickyToolbar={139}
+            offsetY={74}
+            headerPositionInit={201}
+            topSpaceDrag = {106}
             //End here
    
           />

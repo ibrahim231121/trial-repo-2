@@ -6,6 +6,7 @@ import textDisplay from "../../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsersInfoAsync, getUsersIdsAsync, getAllUserGroupKeyValuesAsync } from "../../../../../Redux/UserReducer";
 import { RootState } from "../../../../../Redux/rootReducer";
+import "./GroupPermissionUsers.scss";
 import {
     SearchObject,
     ValueString,
@@ -238,6 +239,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             searchFilter: true,
             searchComponent: searchText,
             minWidth: "380",
+            maxWidth: "381",
             visible: true,
             attributeName: "FName",
             attributeType: "String",
@@ -252,6 +254,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
             searchFilter: true,
             searchComponent: searchText,
             minWidth: "380",
+            maxWidth: "381",
             visible: true,
             attributeName: "LName",
             attributeType: "String",
@@ -390,7 +393,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
 
     return (
         <ClickAwayListener onClickAway={handleBlur}>
-        <div className="userDataTableParent " onKeyDown={handleKeyDown}>
+        <div className="userDataTableParent  groupPermissionInnerPage" onKeyDown={handleKeyDown}>
             {rows && (
                     <CRXDataTable 
                         id="group-userDataTable"
@@ -408,7 +411,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                         searchHeader={true}
                         columnVisibilityBar={true}
                         allowDragableToList={false}
-                        className="ManageAssetDataTable usersGroupDataTable"
+                        className="ManageAssetDataTable usersGroupDataTable groupsAndPermissions"
                         onClearAll={clearAll}
                         getSelectedItems={(v: User[]) => setSelectedItems(v)}
                         onResizeRow={resizeRowUserTab}

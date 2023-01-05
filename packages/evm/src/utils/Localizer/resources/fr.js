@@ -7,7 +7,7 @@ export const resources = {
         "Log In":"Connexion",
         "assetDataTable": "fr-Assets",
         "userGroupDataTable": "fr-User Groups",
-        "Tablescolumnsfilter": "fr-Tables columns filter",
+        "Tablescolumnsfilter": "fr-Table columns filter",
         "Close" : "fr-Close",
         "Resettodefault" : "fr-Reset to default",
         "Clearallfilters": "fr-Clear all filters",

@@ -17,6 +17,7 @@
     padding-right: 5px;
   }
 }
+
 ._Create_Template {
 
   input[type="checkbox"] {
@@ -235,6 +236,9 @@
               .multiSelectField {
                 margin-bottom: 27px;
               }
+              .multiSelectUiStar {
+                display: none;
+              }
             }
             &:nth-child(10) {
               padding-bottom: 0px;
@@ -440,7 +444,8 @@
                 margin: 0px auto;
               }
               .USBGPSIncar {
-                width: 746px;
+                width: 793px;
+                margin: auto;
                 .UiCheckbox {
                   display: flex;
                   .UiCheckboxLeft{
@@ -458,7 +463,7 @@
                 }
               }
               .MainHeadingDevices {
-                width: 414px;
+                width: auto;
                 &.Hardware{
                   &.Interface {
                     padding: 0px 0 0px 0px;
@@ -595,6 +600,8 @@
                     &:nth-child(2) {
                     padding-top: 75px;
                     padding-bottom: 49px;
+                    width: 918px;
+                    margin: auto
                     }
                   }
                   
@@ -831,6 +838,834 @@
           }
         }
 /*......... ak end.............*/
-._camera_setup_flieds.HideField {
-  display: none;
+
+
+
+/*......... INCAR TEMPLATE START.............*/
+.IncarTemplatePage {
+  div[id="crx-tabpanel-4"] {
+    .multiSelectUiRight {
+      .MuiAutocomplete-input {
+        border: none;
+        &:focus {
+          outline: none;
+        }
+      }
+      .fa-caret-down {
+        margin-top: -4px;
+      }
+    }
+
+    ._template_form_row {
+      margin-top: 47px;
+      ._label_and_form_field  {
+        margin: 0 auto;
+        width: 695px;
+      }
+      .multiSelectUiLabel {
+        display: inline-block;
+        width: 154px !important;
+      }
+    }
+    .CreateSensorsEventForm {
+      margin-top: 64px;
+      button {
+        height: 30px;
+      }
+    }
+  }
 }
+/*......... INCAR TEMPLATE END.............*/
+
+
+
+/*......... BC02 TEMPLATE START.............*/
+.BC02TemplatePage {
+  div[id="crx-tabpanel-1"] {
+    ._template_form_row {
+      width: calc(100% - 142px) !important;
+      .MainHeadingDevices {
+        width: 200px;
+      }
+      ._label_and_form_field  {
+        
+          .selectField {
+            width: 100%;
+            .UiStationSelect {
+              margin: 0 auto;
+              width: 695px;
+            }
+          }
+        
+        
+          ._template_checkbox  {
+              width: 100%;
+              .UiCheckbox {
+                width: 695px;
+                margin: 0 auto;
+              }
+            }
+
+       .NumberField  {
+         width: 100%;
+         .UiNumberSelectorMain {
+          width: 695px;
+          margin: 0 auto;
+         }
+       }     
+
+        .multiSelectField {
+          width: 100%;
+          .multiSelectUi  {
+            width: 695px;
+            margin: 0 auto;
+          }
+        }
+
+        ._template_radio_button {
+          width: 100%;
+        }
+  
+        //nth child start 
+
+        &:nth-child(1) {
+          margin-top: 33px;
+          .UiStationSelect {
+            margin-top: 47px;
+          }
+        }
+
+        &:nth-child(9) {
+          padding-bottom: 6px;
+        }
+
+        &:nth-child(10) {
+          .UiNumberSelectorDepend {
+            margin-bottom: 30px;
+          }
+        }
+
+        &:nth-child(3) {
+          padding-top: 0px !important;
+        }
+
+        &:nth-child(4) {
+          margin-top: 63px;
+          padding-bottom: 6px;
+        }
+
+        &:nth-child(5) {
+          .CRXSimpleSelect {
+            margin-top: -6px;
+            margin-bottom: 34px;
+          }
+        }
+
+        &:nth-child(6) {
+          margin-top: -32px;
+        }
+
+        &:nth-child(16) {
+          .UiCheckbox {
+            position: relative;
+            left: -87px;
+          }
+          .MainHeadingDevices {
+            margin-top: 48px;
+          }
+        }
+
+        &:nth-child(17) {
+          .multiSelectUiLeft {
+            .multiSelectUiStar {
+              display: none;
+            }
+          }
+        }
+
+        &:nth-child(18) {
+          .UiRadioMain {
+            display: flex;
+            width: 695px;
+            margin: auto;
+            .UiRadioCheck  {
+              margin-left: 220px;
+            }
+            .radio_label {
+              margin-left: 12px;
+            }
+          }
+        }
+
+
+        &:nth-child(20) , &:nth-child(19) {
+          .UiRadioMain {
+          margin: auto;
+          width: 695px;
+          position: relative;
+          left: 252px;
+           .radio_label {
+            margin-left: 12px;
+          }
+            .labelMutedText {
+              width: 477px;
+              margin-top: 0px;
+            }
+          }
+        }
+
+        &:nth-child(24) {
+          .UiCheckbox {
+              position: relative;
+              left: -88px;
+          } 
+          .MainHeadingDevices  {
+            margin-top: 44px;
+          }
+        }
+
+           //nth child end 
+      }
+    }
+    .RecordingHeadingSpacer {
+      margin-top: 9px;
+    }
+  }
+}
+/*......... BC02 TEMPLATE END.............*/
+
+
+
+/*......... BC03 TEMPLATE START.............*/
+.BC03TemplatePage {
+  div[id="crx-tabpanel-1"] {
+    ._template_form_row {
+      width: calc(100% - 142px) !important;
+      .MainHeadingDevices {
+        width: 200px;
+      }
+      ._label_and_form_field  {
+        
+          .selectField {
+            width: 100%;
+            .UiStationSelect {
+              margin: 0 auto;
+              width: 695px;
+            }
+          }
+        
+        
+          ._template_checkbox  {
+              width: 100%;
+              .UiCheckbox {
+                width: 695px;
+                margin: 0 auto;
+              }
+            }
+
+       .NumberField  {
+         width: 100%;
+         .UiNumberSelectorMain {
+          width: 695px;
+          margin: 0 auto;
+         }
+       }     
+
+        .multiSelectField {
+          width: 100%;
+          .multiSelectUi  {
+            width: 695px;
+            margin: 0 auto;
+          }
+        }
+
+        ._template_radio_button {
+          width: 100%;
+        }
+  
+        //nth child start 
+
+        &:nth-child(1) {
+          margin-top: 33px;
+          .UiStationSelect {
+            margin-top: 47px;
+          }
+        }
+
+        &:nth-child(3) {
+          padding-top: 0px !important;
+        }
+        &:nth-child(4) {
+          margin-top: 63px;
+          padding-bottom: 6px;
+        }
+
+        &:nth-child(5) {
+          .CRXSimpleSelect {
+            margin-top: -6px;
+            margin-bottom: 34px;
+          }
+        }
+
+        &:nth-child(6) {
+          margin-top: -32px;
+        }
+
+        &:nth-child(13) {
+          .multiSelectUiStar {
+            display: none;
+          }
+        }
+
+        &:nth-child(12) {
+          .UiCheckbox {
+            position: relative;
+            left: -87px;
+          }
+          .MainHeadingDevices {
+            margin-top: 48px;
+          }
+        }
+
+          &:nth-child(14){
+            padding-bottom: 38px !important;
+            padding-top: 0px !important;
+            .UiRadioMain {
+              display: flex;
+              width: 695px;
+              margin: auto;
+              .UiRadioCheck  {
+                margin-left: 220px;
+              }
+              .radio_label {
+                margin-left: 12px;
+              }
+            }
+          }
+
+          &:nth-child(15) , &:nth-child(16) {
+            .UiRadioMain {
+              margin: auto;
+              width: 695px;
+              position: relative;
+              left: 252px;
+               .radio_label {
+                margin-left: 12px;
+              }
+                .labelMutedText {
+                  width: 477px;
+                  margin-top: 0px;
+                }
+              }
+          }
+
+          &:nth-child(19) {
+            .UiCheckbox {
+                position: relative;
+                left: -88px;
+            } 
+            .MainHeadingDevices  {
+              margin-top: 71px;
+            }
+            .checkHelperText {
+              width: 400px;
+              margin-top: -10px;
+            }
+          }
+
+          &:nth-child(7) {
+            padding-bottom: 6px ;
+          }
+
+          &:nth-child(9) {
+            padding-bottom: 6px ;
+          }
+          &:nth-child(10) {
+            .UiNumberSelectorDepend {
+              padding-bottom: 33px;
+            }
+          }
+
+     
+
+           //nth child end 
+      }
+    }
+    .RecordingHeadingSpacer {
+      margin-top: 9px;
+    }
+  }
+  div[id="crx-tabpanel-0"] { 
+    ._label_and_form_field  {
+      &:nth-child(3) {
+        .UiNumberSelectorLeft  {
+          margin-right: 93px;
+        }
+        .timeShow {
+          margin-right: 6px;
+        }
+      }
+      }
+  }
+}
+/*......... BC03 TEMPLATE END.............*/
+
+
+
+/*......... LTE TEMPLATE START.............*/
+.LTETemplatePage {
+  div[id="crx-tabpanel-1"] {
+    ._template_form_row {
+      width: calc(100% - 142px) !important;
+      .MainHeadingDevices {
+        width: 200px;
+      }
+      ._label_and_form_field  {
+        
+          .selectField {
+            width: 100%;
+            .UiStationSelect {
+              margin: 0 auto;
+              width: 695px;
+            }
+          }
+        
+        
+          ._template_checkbox  {
+              width: 100%;
+              .UiCheckbox {
+                width: 695px;
+                margin: 0 auto;
+              }
+            }
+
+       .NumberField  {
+         width: 100%;
+         .UiNumberSelectorMain {
+          width: 695px;
+          margin: 0 auto;
+         }
+       }     
+
+        .multiSelectField {
+          width: 100%;
+          .multiSelectUi  {
+            width: 695px;
+            margin: 0 auto;
+          }
+        }
+
+        ._template_radio_button {
+          width: 100%;
+        }
+  
+        //nth child start 
+
+        &:nth-child(1) {
+          margin-top: 33px;
+          .UiStationSelect {
+            margin-top: 47px;
+          }
+        }
+
+        &:nth-child(3) {
+          padding-top: 0px !important;
+        }
+        &:nth-child(4) {
+          margin-top: 63px;
+          padding-bottom: 6px;
+        }
+        
+        &:nth-child(5) {
+          .CRXSimpleSelect {
+            margin-top: -6px;
+            margin-bottom: 34px;
+          }
+        }
+
+        &:nth-child(6) {
+          margin-top: -32px;
+        }
+
+        &:nth-child(13) {
+          .multiSelectUiStar {
+            display: none;
+          }
+        }
+
+        &:nth-child(12) {
+          .UiCheckbox {
+            position: relative;
+            left: -87px;
+          }
+          .MainHeadingDevices {
+            margin-top: 48px;
+          }
+        }
+
+          &:nth-child(14){
+            padding-bottom: 38px !important;
+            padding-top: 0px !important;
+            .UiRadioMain {
+              display: flex;
+              width: 695px;
+              margin: auto;
+              .UiRadioCheck  {
+                margin-left: 220px;
+              }
+              .radio_label {
+                margin-left: 12px;
+              }
+            }
+          }
+
+          &:nth-child(15) , &:nth-child(16) {
+            .UiRadioMain {
+              margin: auto;
+              width: 695px;
+              position: relative;
+              left: 252px;
+               .radio_label {
+                margin-left: 12px;
+              }
+                .labelMutedText {
+                  width: 477px;
+                  margin-top: 0px;
+                }
+              }
+          }
+
+          &:nth-child(19) {
+            .UiCheckbox {
+                position: relative;
+                left: -88px;
+            } 
+            .MainHeadingDevices  {
+              margin-top: 71px;
+            }
+            .checkHelperText {
+              width: 400px;
+              margin-top: -10px;
+            }
+          }
+
+          &:nth-child(7) {
+            padding-bottom: 6px ;
+          }
+
+          &:nth-child(9) {
+            padding-bottom: 6px ;
+          }
+          &:nth-child(10) {
+            .UiNumberSelectorDepend {
+              padding-bottom: 33px;
+            }
+          }
+
+     
+
+           //nth child end 
+      }
+    }
+    .RecordingHeadingSpacer {
+      margin-top: 9px;
+    }
+
+  }
+  div[id="crx-tabpanel-0"] { 
+    ._label_and_form_field  {
+      &:nth-child(3) {
+        .UiNumberSelectorLeft  {
+          margin-right: 93px;
+        }
+        .timeShow {
+          margin-right: 6px;
+        }
+      }
+      }
+  }
+
+  div[id="crx-tabpanel-2"] { 
+    ._label_and_form_field  {
+      ._template_form_group{
+        width: 695px !important;
+      }
+        ._template_checkbox {
+          width: 699px;
+          margin: auto;
+          .UiCheckbox {
+            display: flex;
+
+          }
+          .labelAdded {
+            width: 180px !important;
+            display: inline-block;
+          }
+        }
+
+        .textField {
+          width: 695px !important;
+
+          .labelRadioo {
+            width: 181px !important;
+          }
+          .UiLabelTextboxRight {
+            width: 430px;
+             input {
+               width: 430px !important;
+             }
+          }
+        }
+        .selectField {
+          width: 695px !important;
+          .UiStationSelect {
+            .UiStationSelectLabel {
+              width: 181px !important;
+  
+            }
+          }
+        }
+        &:nth-child(1) {
+          padding-top: 46px;
+        }
+        &:nth-child(2) {
+         ._template_checkbox {
+           padding-top: 12px !important;
+         }
+        }
+      }
+  }
+}
+/*......... LTE TEMPLATE END.............*/
+
+
+
+
+/*......... BC04 TEMPLATE START.............*/
+
+.BC04TemplatePage {
+  div[id="crx-tabpanel-1"] {
+    ._template_form_row {
+      width: calc(100% - 142px) !important;
+      .MainHeadingDevices {
+        width: 200px;
+      }
+      ._label_and_form_field  {
+        
+          .selectField {
+            width: 100%;
+            .UiStationSelect {
+              margin: 0 auto;
+              width: 695px;
+            }
+          }
+        
+        
+          ._template_checkbox  {
+              width: 100%;
+              .UiCheckbox {
+                width: 695px;
+                margin: 0 auto;
+              }
+            }
+
+       .NumberField  {
+         width: 100%;
+         .UiNumberSelectorMain {
+          width: 695px;
+          margin: 0 auto;
+         }
+       }     
+
+        .multiSelectField {
+          width: 100%;
+          .multiSelectUi  {
+            width: 695px;
+            margin: 0 auto;
+          }
+        }
+
+        ._template_radio_button {
+          width: 100%;
+        }
+  
+        //nth child start 
+
+        &:nth-child(1) {
+          margin-top: 33px;
+          .UiStationSelect {
+            margin-top: 47px;
+          }
+        }
+        &:nth-child(3) {
+          padding-top: 0px !important;
+        }
+        
+        &:nth-child(4) {
+          margin-top: 63px;
+          padding-bottom: 6px;
+        }
+
+        
+        &:nth-child(5) {
+          .CRXSimpleSelect {
+            margin-top: -6px;
+            margin-bottom: 34px;
+          }
+        }
+
+        &:nth-child(6) {
+          margin-top: -32px;
+        }
+
+        &:nth-child(13) {
+          .multiSelectUiStar {
+            display: none;
+          }
+        }
+
+        &:nth-child(14) {
+          .multiSelectUiStar {
+            display: none;
+          }
+        }
+
+          &:nth-child(17){
+            padding-bottom: 38px !important;
+            padding-top: 0px !important;
+            .UiRadioMain {
+              display: flex;
+              width: 695px;
+              margin: auto;
+              .UiRadioCheck  {
+                margin-left: 220px;
+              }
+              .radio_label {
+                margin-left: 12px;
+              }
+            }
+          }
+
+          &:nth-child(18) , &:nth-child(19) {
+            .UiRadioMain {
+              margin: auto;
+              width: 695px;
+              position: relative;
+              left: 252px;
+               .radio_label {
+                margin-left: 12px;
+              }
+                .labelMutedText {
+                  width: 477px;
+                  margin-top: 0px;
+                }
+              }
+          }
+
+          &:nth-child(22),&:nth-child(13) {
+            .UiCheckbox {
+                position: relative;
+                left: -88px;
+            } 
+            .MainHeadingDevices  {
+              margin-top: 71px;
+            }
+            .checkHelperText {
+              width: 400px;
+              margin-top: -10px;
+            }
+          }
+
+          &:nth-child(7) {
+            padding-bottom: 6px ;
+          }
+
+          &:nth-child(9) {
+            padding-bottom: 6px ;
+          }
+          &:nth-child(10) {
+            margin-bottom: 38px;
+          }
+
+          &:nth-child(8) {
+            margin-top: 56px;
+            margin-bottom: 3px;
+          }
+          &:nth-child(9) {
+            margin-bottom: 56px;
+          }
+
+           //nth child end 
+      }
+    }
+    .RecordingHeadingSpacer {
+      margin-top: 9px;
+    }
+  }
+  div[id="crx-tabpanel-0"] { 
+    ._label_and_form_field  {
+      &:nth-child(3) {
+        .UiNumberSelectorLeft  {
+          margin-right: 93px;
+        }
+        .timeShow {
+          margin-right: 6px;
+        }
+      }
+      }
+  }
+
+  div[id="crx-tabpanel-2"] { 
+    ._label_and_form_field  {
+        .selectField {
+          width: 695px !important;
+          .UiStationSelectLabel {
+            width: 145px !important;
+          }
+        }
+
+        &:nth-child(2) {
+        
+          .UiStationSelectLabel {
+            margin-left: -4px;
+          }
+        }
+
+        &:nth-child(1) {
+          margin-top: 39px;
+          ._template_checkbox {
+            width: 695px;
+            margin: auto;
+            .UiCheckbox {
+              display: flex;
+            }
+            label.labelAdded {
+              display: inline-block;
+              width: 145px !important;
+          }
+          }
+      
+        }
+      }
+  }
+  div[id="crx-tabpanel-3"] {  
+    ._label_and_form_field  {
+    
+      ._template_checkbox {
+        width: 695px;
+        margin: auto;
+        .UiCheckbox {
+          display: flex;
+        }
+        label.labelAdded {
+          display: inline-block;
+          width: 145px !important;
+      }
+      }
+      &:nth-child(1) {
+        margin-top: 39px;
+      }
+    }
+  }
+}
+/*......... BC04 TEMPLATE END.............*/

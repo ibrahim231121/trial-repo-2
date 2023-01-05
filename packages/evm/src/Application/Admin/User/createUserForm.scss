@@ -276,10 +276,6 @@
     }
   }
 
-  .rc-menu-button {
-    font-size: 21px;
-    margin-top: 0;
-  }
 
   // .DataTableBodyCell {
   //   text-indent: 0px !important;
@@ -348,7 +344,15 @@
       .SelectedActionMenu {
         background-color: transparent !important;
       }
+      .rc-menu-button {
+        i {
+          margin-left: -2px;
+        }
+      }
     }
+  }
+  .rc-menu-button {
+    font-size: 23px;
   }
 }
 .CreateUserUi {

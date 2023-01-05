@@ -377,5 +377,33 @@
 }
 
 .CRXUnitTemplate {
-  margin-top: 46px;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  height: calc(100vh - 41vh);
+  text-align: center;
+  .CRXSimpleSelect {
+    width: 430px;
+    min-width: 430px;
+  }
+  .crxStationDetail {
+    margin: 0 0 !important;
+  }
+  label {
+    width: 97px !important;
+  }
+  .stationColumnSet {
+    width: 80%;
+  }
+  .itemIndicator_unitTemplate {
+    position: fixed;
+    left: 206px;
+    top: 229px;
+  }
+  .indicatorMessage_unitTemplate {
+    position: fixed;
+    left: 206px;
+    top: 250px; 
+    font-size: 14px;
+  }
 }

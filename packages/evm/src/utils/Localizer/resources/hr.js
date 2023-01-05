@@ -297,7 +297,7 @@ export const resources = {
         "Create_Group":"hr-Create Group",
         "GROUP_NAME":"hr-GROUP NAME",
         "USERS":"hr-USERS",
-        "APPLICATION_PERMISSIONS":"hr-APPLICATION PERMISSIONS",
+        "APPLICATION_PERMISSIONS":"hr-APPLICATION PERMISSION",
         "DATA_PERMISSIONS":"hr-DATA PERMISSIONS",
         "User_group_saved_successfully.":"hr-User group saved successfully.",
         "We_re_sorry_The_group_information_users_and_application_permissions_were_unable_to_be_saved__Please_retry_or_contact_your_System_Administrator.":"hr-We're sorry. The group information, users, and application permissions were unable to be saved. Please retry or contact your System Administrator.",
@@ -415,9 +415,9 @@ export const resources = {
         "Admin":"hr-Admin",
         "Manage_User_Groups_Permissions":"hr-Manage User Groups & Permissions",
         "Manage_Users":"hr-Manage Users",
-        "Manage_Device_Unit_Templates":"hr-Manage Device & Unit Templates",
+        "Manage_Device_Unit_Templates":"hr-Manage Units & Devices Templates",
         "Evidence(Dev)":"hr-Evidence(Dev)",
-        "Manage_Station":"hr-Manage Station",
+        "Manage_Station":"hr-Manage Stations",
         "Create_Sensor_&_Trigger" : "Create Sensor & Trigger",
         "Edit_sensor_and_trigger": "hr-Edit sensor and trigger",
         "Delete_sensor_and_trigger": "hr-Delete sensor and trigger",
@@ -503,7 +503,7 @@ export const resources = {
         // -------------------------
         
         // --------- Data Table ----------
-        "Tables_columns_filter":"hr-Tables columns filter",
+        "Tables_columns_filter":"hr-Table columns filter",
         "Clear_all_filters":"hr-Clear all filters",
         "Basic":"hr-Basic",
         "Advance":"hr-Advance",

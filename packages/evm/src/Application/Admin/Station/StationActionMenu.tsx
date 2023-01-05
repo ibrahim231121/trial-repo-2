@@ -208,12 +208,15 @@ const StationActionMenu: React.FC<Props> = ({ selectedItems, row, showToastMsg }
 
       {row !== null ?
         <Menu
+          key="right"
           align='start'
-          viewScroll='initial'
+          viewScroll='close'
           direction='right'
           position='auto'
           className='menuCss'
-          arrow
+          offsetX={-18}
+          offsetY={-24}
+          portal={true}
           menuButton={
             <MenuButton>
               <i className='far fa-ellipsis-v'></i>

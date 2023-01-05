@@ -14,6 +14,7 @@ import { useHistory } from "react-router";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
 import { urlList, urlNames } from '../../../../utils/urlList';
+import { TrainOutlined } from "@material-ui/icons";
 
 type Props = {
   selectedItems?: any;
@@ -80,18 +81,21 @@ const ConfigTemplateActionMenu: React.FC<Props> = ({ selectedItems, row }) => {
       history.push('/admin/unitanddevices/createtemplate/template', { id: row.id, isclone: true, name: row.name, deviceId: row.device.deviceId, deviceType: row.deviceType });
     }
   }
+
+  const MenuActionY = row?.defaultTemplate !== "Default" ? -6 : 0 ; 
   return (
     <div className="table_Inner_Action">
 
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
         position="auto"
-        offsetX={25}
-        offsetY={12}
+        offsetX={-29}
+        offsetY={MenuActionY}
         className="menuCss"
+        portal={true}
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>

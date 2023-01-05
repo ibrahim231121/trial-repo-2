@@ -872,7 +872,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           position="auto"
           offsetX={25}
           offsetY={12}
-          className={"menuCss " + className}
+          className="menuCss mainListerAction"
           portal={portal}
           menuButton={
             <MenuButton>
@@ -1230,9 +1230,9 @@ const ActionMenu: React.FC<Props> = React.memo(
           showSticky={true}
         >
           <ShareAsset
-            items={assetlinks} //{selectedItems}
             filterValue={filterValue}
             rowData={row}
+            items={assetlinks} //{selectedItems}
             setRemovedOption={(e: any) => { }}
             setOnClose={() => setOpenAssetShare(false)}
             showToastMsg={(obj: any) => showToastMsg?.(obj)}
