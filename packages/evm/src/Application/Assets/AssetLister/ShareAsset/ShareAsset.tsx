@@ -223,7 +223,7 @@ const ShareAsset: React.FC<ShareAssetProps> = (props) => {
     setAssetSharing(temp);
   };
   const sendData = async () => { 
-    const url = '/Evidence/Share'// + `${props.items}`
+    const url = '/Evidences/Share'// + `${props.items}`
     EvidenceAgent.shareAsset(url, assetSharing).then(() => {
       props.setOnClose();
       props.showToastMsg({
