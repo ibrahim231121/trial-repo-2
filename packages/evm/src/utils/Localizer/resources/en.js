@@ -869,7 +869,6 @@ export const resources = {
         "Please_provide_a_valid_policy_name" : "Please provide a valid policy name",
         "Policy_Name_must_contains_atleast_three_characters" : "Policy Name must contains atleast three characters",
         "Policy_Name_must_not_exceed_128_characters" : "Policy Name must not exceed 128 characters",
-        "Upload_Policies" : "Upload Policies",
         "Policies" : "Policies ",
         "Policy" : "Policy",
         "Are_you_sure_you_would_like_to_delete_upload_policy?" : "Are you sure you would like to delete upload policy?",
