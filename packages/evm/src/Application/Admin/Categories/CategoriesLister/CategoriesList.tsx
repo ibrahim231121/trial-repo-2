@@ -171,7 +171,6 @@ const CategoriesList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "500",
       maxWidth: "600"
     },
     {
@@ -182,9 +181,8 @@ const CategoriesList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      width: "400",
-      maxWidth: "100"
+      minWidth: "400",
+      maxWidth: "400"
     },
     {
       label: `${t("Upload_Policy")}`,
@@ -194,9 +192,8 @@ const CategoriesList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "100",
-      width: "400",
-      maxWidth: "100"
+      minWidth: "400",
+      maxWidth: "400"
     },
     {
       label: `${t("Audio")}`,
@@ -206,8 +203,7 @@ const CategoriesList: React.FC = () => {
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "478",
+      minWidth: "400",
       maxWidth: "500"
     },
 

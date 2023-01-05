@@ -32,11 +32,12 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
         position="auto"
-        offsetX={25}
-        offsetY={12}
+        portal={true}
+        offsetX={-28}
+        offsetY={-5}
         className="menuCss"
         menuButton={
           <MenuButton>
