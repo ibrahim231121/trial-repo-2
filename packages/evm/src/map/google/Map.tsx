@@ -80,7 +80,7 @@ const Map: React.FC<IMap> = ({ mapType, mapTypeControl = false, zoomLevel = 5, g
 
     useEffect(() => {
         let mapCenter;
-        if(gpsData.length > 0)
+        if(gpsData && gpsData.length > 0)
         {
             let pnt = getLatLon(gpsData[0]);
             mapCenter = new google.maps.LatLng(pnt.latitude, pnt.longitude)

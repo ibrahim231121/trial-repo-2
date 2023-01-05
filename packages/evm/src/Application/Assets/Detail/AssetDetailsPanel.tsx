@@ -95,15 +95,16 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
   ]);
 
   React.useEffect(() => {
-    if (openMap && gpsJson.length > 0) {
+    if (openMap) {
       setOptions([...options, { value: "Map", displayText: "Map" }])
-
     }
-  }, [gpsJson]);
+  }, [openMap]);
 
   React.useEffect(() => {
-    setAssetDetailSelectValue("Map")
-    setSelectDropDown("Map")
+    if (openMap) {
+      setAssetDetailSelectValue("Map")
+      setSelectDropDown("Map")
+    }
   }, [options])
 
   const handleChangeDropDown = (event: any) => {
@@ -153,7 +154,7 @@ const AssetDetailsPanel = ({ data, evidenceId, setData, onClickBookmarkNote, upd
       </div>
 
 
-      {selectDropDown == "Map" && openMap &&
+      {selectDropDown == "Map" && openMap && gpsJson && gpsJson.length > 0 &&
         <GoogleMap
           apiKey={gMapApiKey}
           zoomLevel={15}

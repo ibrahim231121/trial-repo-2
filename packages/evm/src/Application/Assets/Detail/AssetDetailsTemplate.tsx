@@ -166,14 +166,6 @@ const AssetDetailsTemplate = () => {
     setRows(AssetTrail)
   }, [AssetTrail]);
 
-
-  useEffect(() => {
-    if (gpsJson && gpsJson.length > 0) {
-      setOpenMap(true);
-    }
-  }, [gpsJson]);
-
-
   useEffect(() => {
     if (res !== undefined) {
       setEvidence({
@@ -379,6 +371,9 @@ const AssetDetailsTemplate = () => {
   }
 
   const getMasterAssetFile = (dt: any) => {
+    if(dt?.some((x:any)=> x.type == "GPS")) {
+      setOpenMap(true);
+    }
     dt?.map((template: any, i: number) => {
       let responseResult: any = null;
       FileAgent.getFile(template.filesId).then((response) => {
