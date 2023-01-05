@@ -18,11 +18,12 @@ type Props = {
   onMessageShow: (isSuccess: boolean, message: string) => void;
 };
 
-const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
+const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
 
   const { t } = useTranslation<string>();
-  const openEditCategoryForm = () => {
-    onClickOpenModel(true, Number(row?.id), t("Edit_Category"));
+ 
+  const editFormFields = () => {
+    onClickOpenModel(true, Number(row?.id), t("Edit_Form_Fields"));
   };
 
   return (
@@ -44,14 +45,14 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, get
         }
       >
         {selectedItems.length <= 1 ? (
-          <MenuItem onClick={openEditCategoryForm}>
-            <Restricted moduleId={54}>
+          <MenuItem onClick={editFormFields}>
+            <Restricted moduleId={0}>
               <div className="crx-meu-content   crx-spac"  >
                 <div className="crx-menu-icon">
                   <i className="far fa-pencil"></i>
                 </div>
                 <div className="crx-menu-list">
-                  {t("Edit_Category")}
+                  {t("Edit_Form_Fields")}
                 </div>
               </div>
             </Restricted>
@@ -63,4 +64,4 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, get
     </div>
   );
 };
-export default CategoriesTemplateActionMenu;
+export default CategoryFormsTemplateActionMenu;

@@ -307,7 +307,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   ) => {
 
     if (initialRows) {
-
       let options = reformattedRows.map((row: any, _: any) => {
         let option: any = {};
         option["value"] = row[headCells[colIdx].id];

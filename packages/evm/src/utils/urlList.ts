@@ -79,7 +79,9 @@ export const urlNames: any = {
     uploadPoliciesEdit: "uploadPoliciesEdit",
     categories : 'categories',
     categoryForms : 'categoryForms',
-    about : 'about'
+    about : 'about',
+    categoryFormsCreate : 'categoryFormsCreate',
+    categoryFormsEdit : 'categoryFormsEdit'
 };
 
 export const urlList: any = [
@@ -410,7 +412,7 @@ export const urlList: any = [
         url: "/admin/categoryForms",
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/categoryForms', type: 'text', label: 'Category Forms' }
+            { routeTo: '/admin/categoryForms', type: 'text', label: 'Category Forms & Fields' }
         ],
     },
     {
@@ -419,5 +421,24 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Microservices Build Version' }
         ],
+    },
+    {
+        name: urlNames.categoryFormsCreate,
+        url: '/admin/categoryForms/categoryForm',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
+            { type: 'text', label: 'Create Category Forms' }
+        ]
+    },
+    {
+        name: urlNames.categoryFormsEdit,
+        url: '/admin/categoryForms/categoryForm/:id',
+        details: [
+            { type: 'text', label: 'Admin' },
+            { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
+            { type: 'text', label: 'Edit Category Forms' }
+        ]
     }
+    
 ];

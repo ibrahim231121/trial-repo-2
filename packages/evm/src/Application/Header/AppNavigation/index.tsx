@@ -226,7 +226,7 @@ const CRXLefNavigation = () => {
         },
         {
           moduleIds: 55,
-          label: t('Category_Forms'),
+          label: t('Category_Forms_And_Fields'),
           command: () => { navigateToPage(urlList.filter((item: any) => item.name === urlNames.categoryForms)[0].url) },
         }
       ],

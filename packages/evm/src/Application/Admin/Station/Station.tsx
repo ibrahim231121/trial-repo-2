@@ -354,7 +354,7 @@ const Station: React.FC = () => {
           showActionCol={true}
           showHeaderCheckAll={false}
           showCountText={false}
-          showCustomizeIcon={true}
+          showCustomizeIcon={false}
           showTotalSelectedText={false}
           page={page}
           rowsPerPage={rowsPerPage}

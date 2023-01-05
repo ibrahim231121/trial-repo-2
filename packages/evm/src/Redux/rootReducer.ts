@@ -26,6 +26,7 @@ import uploadPoliciesSlice from './UploadPolicies';
 import categoriesSlice from './Categories';
 import categoryFromsSlice from './CategoryForms';
 import groupedSelectedAssets from './groupedSelectedAssets';
+import fromFieldsSlice from './FormFields';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -54,6 +55,7 @@ export const reducer = combineReducers({
   retentionPoliciesSlice : retentionPoliciesSlice.reducer, 
   uploadPoliciesSlice : uploadPoliciesSlice.reducer,
   categoriesSlice : categoriesSlice.reducer,
-  CategoryFormSlice : categoryFromsSlice.reducer
+  CategoryFormSlice : categoryFromsSlice.reducer,
+  FormFieldsSlice : fromFieldsSlice.reducer,
 })
 export type RootState = ReturnType<typeof reducer>

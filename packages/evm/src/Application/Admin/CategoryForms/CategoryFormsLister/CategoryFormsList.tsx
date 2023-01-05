@@ -25,9 +25,8 @@ import {
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { getAllCategoriesFilter } from '../../../../Redux/Categories';
 import Restricted from "../../../../ApplicationPermission/Restricted";
-import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
-
-
+import { urlList, urlNames } from "../../../../utils/urlList";
+import { useHistory } from "react-router-dom";
 
 type CategoryFormsTemplate = {
   id: number;
@@ -52,7 +51,7 @@ const CategoryFormsList: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [openModel, setOpenModel] = React.useState<boolean>(false);
-
+  const history = useHistory();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -65,7 +64,7 @@ const CategoryFormsList: React.FC = () => {
   const isFirstRenderRef = useRef<boolean>(true);
   const [reformattedRows, setReformattedRows] = React.useState<CategoryFormsTemplate[]>([]);
   const filterCategoryForms: any = useSelector((state: RootState) => state.CategoryFormSlice.filterCategoryForms);
-  
+
   useEffect(() => {
     if (paging)
       setCategoryForms()
@@ -200,10 +199,6 @@ const CategoryFormsList: React.FC = () => {
     setCategoryForms();
   }, [filterCategoryForms?.data]);
 
-  React.useEffect(() => {
-    dispatch(getAllCategyFormsFilter(pageiGrid));
-  }, [])
-
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
@@ -253,6 +248,11 @@ const CategoryFormsList: React.FC = () => {
     });
   }
 
+  const handleClickOpen = () => {
+    const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsCreate)[0].url}`;
+    history.push(path);
+  };
+
   return (
     <div className="CrxCategoriesTable switchLeftComponents">
       <CRXToaster ref={retentionMsgFormRef} />
@@ -273,7 +273,7 @@ const CategoryFormsList: React.FC = () => {
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category_Forms")) }}>
+                  <CRXButton className="CategoriesBtn" onClick={handleClickOpen}>
                     {t("Create_Category_Forms")}
                   </CRXButton>
                 </Restricted>
@@ -290,7 +290,7 @@ const CategoryFormsList: React.FC = () => {
             orderParam={ORDER_BY}
             orderByParam={ORDER_BY_PARAM}
             dragVisibility={false}
-            showCheckBoxesCol={false}
+            showCheckBoxesCol={true}
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}

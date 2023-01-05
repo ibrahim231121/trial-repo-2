@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
+import CategoryFormsTemplateActionMenu from './FormFieldsTemplateActionMenu';
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
-import './categoriesList.scss'
+import './formFieldsList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton, CRXDataTable } from "@cb/shared";
+import { CRXButton, CRXDataTable, CRXToaster } from "@cb/shared";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
-import CategoriesDetail from "../CategoriesDetail/CategoriesDetail";
+
 import {
   SearchObject,
   ValueString,
@@ -22,35 +23,29 @@ import {
   PageiGrid,
   onTextCompare
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { CRXToaster } from "@cb/shared";
 import { getAllCategoriesFilter } from '../../../../Redux/Categories';
 import Restricted from "../../../../ApplicationPermission/Restricted";
-import { getAllCategoryForms } from "../../../../Redux/CategoryForms";
-import { getAllRetentionPolicies, getAllUploadPolicies } from "../../../../Redux/RetentionPolicies";
+import { CBXMultiSelectForDatatable } from "@cb/shared";
+import FormFieldsDetail from "./FormFieldsDetail";
+import { FormFieldsTemplate } from "../TypeConstant/types";
 
-type CategoriesTemplate = {
-  id: number;
-  name: string;
-  retentionPolicyId: number;
-  retentionPolicyName: string;
-  uploadPolicyId: number;
-  uploadPolicyName: string;
-  audio: string;
-  description: string;
+interface renderCheckMultiselect {
+  value: string,
+  id: string,
 }
 
 const ORDER_BY = "asc" as Order;
 const ORDER_BY_PARAM = "recordingStarted";
 
-const CategoriesList: React.FC = () => {
+const FormFieldsList: React.FC = () => {
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
   const [id, setId] = React.useState<number>(0);
   const [title, setTitle] = React.useState<string>("");
-  const [rows, setRows] = React.useState<CategoriesTemplate[]>([]);
+  const [rows, setRows] = React.useState<FormFieldsTemplate[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
-  const [selectedItems, setSelectedItems] = React.useState<CategoriesTemplate[]>([]);
-  const [selectedActionRow, setSelectedActionRow] = useState<CategoriesTemplate[]>();
+  const [selectedItems, setSelectedItems] = React.useState<FormFieldsTemplate[]>([]);
+  const [selectedActionRow, setSelectedActionRow] = useState<FormFieldsTemplate[]>();
   const [success, setSuccess] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
@@ -66,12 +61,12 @@ const CategoriesList: React.FC = () => {
   })
   const dispatch = useDispatch();
   const isFirstRenderRef = useRef<boolean>(true);
-  const [reformattedRows, setReformattedRows] = React.useState<CategoriesTemplate[]>([]);
-  const filterCategories: any = useSelector((state: RootState) => state.categoriesSlice.filterCategories);
-
+  const [reformattedRows, setReformattedRows] = React.useState<FormFieldsTemplate[]>([]);
+  const filterFormFields: any = useSelector((state: RootState) => state.FormFieldsSlice.filterFormFields);
+  
   useEffect(() => {
     if (paging)
-      setCategoriesData()
+      setFormFields()
     setPaging(false)
   }, [pageiGrid])
 
@@ -82,7 +77,7 @@ const CategoriesList: React.FC = () => {
   }, [page, rowsPerPage])
 
   useEffect(() => {
-    setCategoriesData();
+    setFormFields();
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
@@ -124,7 +119,7 @@ const CategoriesList: React.FC = () => {
   }
 
   const searchText = (
-    rowsParam: CategoriesTemplate[],
+    rowsParam: FormFieldsTemplate[],
     headCell: HeadCellProps[],
     colIdx: number
   ) => {
@@ -133,6 +128,60 @@ const CategoriesList: React.FC = () => {
     );
   };
 
+  const changeMultiselect = (
+    e: React.SyntheticEvent,
+    val: renderCheckMultiselect[],
+    colIdx: number
+  ) => {
+    onSelection(val, colIdx);
+    headCells[colIdx].headerArray = val;
+  };
+
+  const searchAndNonSearchMultiDropDown = (
+    rowsParam: FormFieldsTemplate[],
+    headCells: HeadCellProps[],
+    colIdx: number,
+    initialRows: any,
+    isSearchable: boolean
+  ) => {
+    if (initialRows) {
+      let options = rowsParam.map((row: any, _: any) => {
+        let option: any = {};
+        option["value"] = row[headCells[colIdx].id];
+        return option;
+      });
+      // For those properties which contains an array
+      if (
+        headCells[colIdx].id.toString() === "categories" ||
+        headCells[colIdx].id.toString() === "recordedBy"
+      ) {
+        let moreOptions: any = [];
+
+        reformattedRows.forEach((row: any, _: any) => {
+          let x = headCells[colIdx].id;
+          row[x]?.forEach((element: any) => {
+            let moreOption: any = {};
+            moreOption["value"] = element;
+            moreOptions.push(moreOption);
+          });
+        });
+        options = moreOptions;
+      }
+
+      return (
+        <CBXMultiSelectForDatatable
+          width={220}
+          option={options}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear={() => clearAll()}
+          isCheckBox={false}
+          isduplicate={true}
+        />
+      );
+    }
+  };
+  
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -145,98 +194,84 @@ const CategoriesList: React.FC = () => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: "",
-      maxWidth: "100",
+      width: "100",
+      maxWidth: "150",
     },
     {
-      label: `${t("Category_Name")}`,
+      label: `${t("Field_Display_Name")}`,
+      id: "displayName",
+      align: "left",
+      dataComponent: (e: string) => textDisplay(e, " "),
+      sort: false,
+      searchFilter: true,
+      searchComponent: searchText,
+      minWidth: "300",
+      width: "400",
+      maxWidth: "400"
+    },
+    {
+      label: `${t("Field_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer" }} onClick={(e) => onClickOpenModel(true, Number(id), t("Edit_Category"))} className={"dataTableText "}>{e}</div>
-      },
-      sort: false,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "300",
-      width: "500",
-      maxWidth: "600"
-    },
-    {
-      label: `${t("Description")}`,
-      id: "description",
-      align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "500",
-      maxWidth: "600"
+      width: "493",
+      maxWidth: "400"
     },
     {
-      label: `${t("Evidence_Retention_Policy")}`,
-      id: "retentionPolicyName",
+      label: `${t("Control_Type")}`,
+      id: "controlType",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "100",
-      width: "400",
-      maxWidth: "100"
+      searchComponent: (
+        rowData: FormFieldsTemplate[],
+        columns: HeadCellProps[],
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
+      minWidth: "300",
+      width: "200",
+      maxWidth: "800"
     },
     {
-      label: `${t("Upload_Policy")}`,
-      id: "uploadPolicyName",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "100",
-      width: "400",
-      maxWidth: "100"
-    },
-    {
-      label: `${t("Audio")}`,
-      id: "audio",
+      label: `${t("Width")}`,
+      id: "width",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
-      width: "478",
-      maxWidth: "500"
-    },
-
+      width: "500",
+      maxWidth: "800"
+    }
   ]);
 
-  const setCategoriesData = () => {
-    let CategoriesTemplateRows: CategoriesTemplate[] = [];
-
-    if (filterCategories?.data && filterCategories?.data.length > 0) {
-      CategoriesTemplateRows = filterCategories?.data.map((template: any) => {
+  const setFormFields = () => {
+    let FormFieldsTemplateRows: FormFieldsTemplate[] = [];
+    if (filterFormFields?.data && filterFormFields?.data.length > 0) {
+      FormFieldsTemplateRows = filterFormFields?.data.map((template: any) => {
         return {
-          id: template.id,
-          name: template.name,
-          retentionPolicyId: template.policies.retentionPolicyId,
-          retentionPolicyName: template.policies.retentionPolicyName,
-          uploadPolicyId: template.policies.uploadPolicyId,
-          uploadPolicyName: template.policies.uploadPolicyName,
-          Audio: "",
-          description: template.description,
+          id: template?.id,
+          name: template?.name,
+          displayName: template?.display?.caption,
+          controlType : template?.type,
+          width : template?.display?.width
         }
       })
     }
 
-    setRows(CategoriesTemplateRows);
-    setReformattedRows(CategoriesTemplateRows)
+    setRows(FormFieldsTemplateRows);
+    setReformattedRows(FormFieldsTemplateRows)
   }
 
   const dataArrayBuilder = () => {
-    let dataRows: CategoriesTemplate[] = reformattedRows;
+    let dataRows: FormFieldsTemplate[] = reformattedRows;
     searchData.forEach((el: SearchObject) => {
       dataRows = onTextCompare(dataRows, headCells, el);
     });
@@ -244,15 +279,8 @@ const CategoriesList: React.FC = () => {
   };
 
   React.useEffect(() => {
-    setCategoriesData();
-  }, [filterCategories?.data]);
-
-  React.useEffect(() => {
-    dispatch(getAllCategoriesFilter(pageiGrid));
-    dispatch(getAllRetentionPolicies());
-    dispatch(getAllUploadPolicies());
-    dispatch(getAllCategoryForms());
-  }, [])
+    setFormFields();
+  }, [filterFormFields?.data]);
 
   useEffect(() => {
     dataArrayBuilder();
@@ -295,17 +323,17 @@ const CategoriesList: React.FC = () => {
     setOpenModel(modelOpen);
   }
 
-  const updateOpenModel = (modelOpen: boolean) => {
-    setOpenModel(modelOpen);
-    dispatch(getAllCategoriesFilter(pageiGrid))
-  }
-
   const onMessageShow = (isSuccess: boolean, message: string) => {
     retentionFormMessages({
       message: message,
       variant: isSuccess ? 'success' : 'error',
       duration: 7000
     });
+  }
+
+  const updateOpenModel = (modelOpen: boolean) => {
+    setOpenModel(modelOpen);
+    dispatch(getAllCategoriesFilter(pageiGrid))
   }
 
   return (
@@ -315,12 +343,21 @@ const CategoriesList: React.FC = () => {
         rows && (
           <CRXDataTable
             id="CategoriesTemplateDataTable"
+            actionComponent={<CategoryFormsTemplateActionMenu
+              row={selectedActionRow}
+              selectedItems={selectedItems}
+              getRowData={CategoriesAction}
+              getSelectedData={getSelectedItemsUpdate}
+              getSuccess={getSuccessUpdate}
+              onClickOpenModel={onClickOpenModel}
+              onMessageShow={onMessageShow}
+            />}
             toolBarButton={
               <>
                 <Restricted moduleId={0}>
 
-                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
-                    {t("Create_Category")}
+                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Form_Fields")) }}>
+                    {t("Create_Form_Fields")}
                   </CRXButton>
                 </Restricted>
               </>
@@ -336,14 +373,14 @@ const CategoriesList: React.FC = () => {
             orderParam={ORDER_BY}
             orderByParam={ORDER_BY_PARAM}
             dragVisibility={false}
-            showCheckBoxesCol={false}
-            showActionCol={false}
+            showCheckBoxesCol={true}
+            showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}
             showActionSearchHeaderCell={true}
             className="crxTableHeight crxTableDataUi CategoriesTableTemplate CategoriesTable_UI"
             onClearAll={clearAll}
-            getSelectedItems={(v: CategoriesTemplate[]) => setSelectedItems(v)}
+            getSelectedItems={(v: FormFieldsTemplate[]) => setSelectedItems(v)}
             onResizeRow={resizeRowConfigTemp}
             onHeadCellChange={onSetHeadCells}
             setSelectedItems={setSelectedItems}
@@ -352,7 +389,7 @@ const CategoriesList: React.FC = () => {
             rowsPerPage={rowsPerPage}
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
-            totalRecords={filterCategories?.totalCount}
+            totalRecords={filterFormFields?.totalCount}
             offsetY={20}
             dragableHeaderPosition={207}
             topSpaceDrag={5}
@@ -361,11 +398,11 @@ const CategoriesList: React.FC = () => {
         )
       }
       {
-        openModel &&
-        (<CategoriesDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)
+          openModel &&
+          (<FormFieldsDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)
       }
     </div>
   );
 };
 
-export default CategoriesList;
+export default FormFieldsList;

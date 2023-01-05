@@ -190,10 +190,16 @@ const requests = {
     delete: <T>(baseUrl: string, url: string, config?: {}) => { setBaseUrl(baseUrl); return axios.delete<T>(url, config).then(responseBody) },
 }
 export const SetupConfigurationAgent = {
+    getAllControlTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Fields/GetAllControlTypesKeyValues", config),
+    getAllTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Forms/GetAllTypesKeyValues", config),
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     postCategories: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    postFormFields: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     putCategories: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    putFormField: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getSingleCategory: (id : number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
+    getSingleFormField: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields/${id}`, config),
+    getSingleCategoryForm: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms/${id}`, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
@@ -241,6 +247,9 @@ export const SetupConfigurationAgent = {
         return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms${url}`, config);
     },
     getSetupConfigurationBuildVersion: () => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, "/SetupConfigurations/Health/BuildVersion"),
+    getAllFormFields: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
 }
 export const EvidenceAgent = {
     getEvidences: () => requests.get<Evidence[]>(EVIDENCE_SERVICE_URL, '/Evidences', config),

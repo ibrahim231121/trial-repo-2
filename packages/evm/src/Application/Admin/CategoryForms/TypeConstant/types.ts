@@ -33,3 +33,11 @@ export type LimitExpand =
     hours:number,
     gracePeriodInHours: number 
 }
+
+export type FormFieldsTemplate = {
+    id: number;
+    name: string;
+    displayName : string;
+    controlType : string;
+    width : number;
+  }
