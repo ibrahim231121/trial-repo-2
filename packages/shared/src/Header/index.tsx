@@ -25,8 +25,6 @@ const headerStyle = createTheme({
         secondary: {
             main: "#f4f4f4",
         },
-        
-        
     },
     typography: {
         subtitle1: {
@@ -39,6 +37,10 @@ const headerStyle = createTheme({
             fontFamily: '-apple-system, BlinkMacSystemFont, Arial, Helvetica, sans-serif, "Segoe UI"',
         },
       },
+
+      zIndex : {
+        appBar : 1200
+      }
 });
 
 const CRXAppBar = ({children, id, className, position = "relative", color} : CRXAppBarProps) => {

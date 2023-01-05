@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import { InputBase, Select, MenuItem } from "@material-ui/core";
-import { withStyles} from "@material-ui/core/styles";
+import { withStyles, makeStyles} from "@material-ui/core/styles";
 import "./SelectBox.scss";
 
 //Select box props Types
@@ -15,7 +15,6 @@ type SelectBoxProps = {
   IconName?: React.ReactElement<any>;
   icon?: boolean;
   options: Object[];
-  popover?: string;
   defaultOption: boolean;
   defaultOptionText: string;
   ref?: any;
@@ -23,7 +22,8 @@ type SelectBoxProps = {
   disabled:boolean,
   isRequried? : boolean,
   errorMsg? : string,
-  error? : boolean
+  error? : boolean,
+  zIndex? : any
 
 };
 
@@ -70,6 +70,16 @@ const StyledMenuItem = withStyles(() => ({
 }
 }))(MenuItem);
 
+const CreateStyleProps = makeStyles(({
+  rounded : {
+    borderRadius : "0px",
+    background : "#fff",
+    boxShadow : "rgb(0 0 0 / 15%) 0px 0px 11px -2px",
+    marginTop : "10px",
+    maxHeight : "300px",
+    border: "1px solid #d1d2d4"
+  }
+}))
 const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
   (
     {
@@ -77,19 +87,21 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       value,
       id,
       className,
-      popover,
       options,
-      defaultOption = true,
+      defaultOption = false,
       defaultOptionText,
       isRequried,
       errorMsg,
       onClose,
       error,
+      zIndex,
       disabled=false,},
     ref
   ) => {
     const [errMsg, setErrorMsg] = useState<string | undefined>();
+    const MenuPropsStyle = CreateStyleProps()
     const errorMessage = (!error && <div className='crxDropdownValidationError'><i className="fas fa-exclamation-circle"></i>  <span className="crxErrorMsg"> {errMsg}</span> </div>)
+
     const option = Object.assign(options).map((data: any, i: number) => {
       return (
         <StyledMenuItem aria-label="None" key={i} value={data.value}>
@@ -99,9 +111,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
     });
 
     useEffect(() => {
-
       setErrorMsg(errorMsg)
-
     },[errorMsg])
 
     return (
@@ -123,6 +133,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
         onChange={onChange}
         input={<InputBase id={"input" + id} />}
         MenuProps={{
+          style: {zIndex : zIndex},
           anchorOrigin: {
             vertical: "bottom",
             horizontal: "center",
@@ -132,7 +143,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
             horizontal: "center",
           },
           classes: {
-            paper: popover
+            paper: MenuPropsStyle.rounded
           },
           getContentAnchorEl: null,
         }}

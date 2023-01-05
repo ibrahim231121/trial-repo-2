@@ -23,14 +23,16 @@ const theme = createTheme({
         secondary: {
             main: "#f4f4f4",
         },
-        
     },
+    zIndex : {
+        appBar: 1200,
+    }
 });
 
 const CRXAppBar = ({children, id, className, position = 'relative', color = 'primary'} : CBXAppBarProps) => {
     return (
         <ThemeProvider theme={theme}>
-        <AppBar id={id} className={"CBXAppBar " + className} position={position} color={color}>
+        <AppBar id={id} className={"CBXAppBar " + className} style={{ zIndex: 1200 }} position={position} color={color}>
             { children }
         </AppBar>
         </ThemeProvider>

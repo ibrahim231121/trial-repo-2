@@ -218,8 +218,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "240",
-      width:"240",
+      minWidth: "280",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -233,7 +232,6 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText, //(e : any ) => simpleFilter(e),
       minWidth: "415",
-      width: "415",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -247,7 +245,6 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: NonField,
       minWidth: "244",
-      width: "244",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -260,8 +257,7 @@ const UserGroup: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "195",
-      width: "195",
+      minWidth: "225",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -275,7 +271,6 @@ const UserGroup: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "420",
-      width: "420",
       attributeName: "UserCount",
       attributeType: "Int",
       attributeOperator: "eq"
@@ -411,9 +406,11 @@ const UserGroup: React.FC = () => {
             totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={74}
-            headerPositionInit={201}
-            topSpaceDrag = {106}
+            offsetY={-33}
+            topSpaceDrag = {-1}
+            searchHeaderPosition={227}
+            dragableHeaderPosition={192}
+            stickyToolbar={139}
             //End here
    
           />

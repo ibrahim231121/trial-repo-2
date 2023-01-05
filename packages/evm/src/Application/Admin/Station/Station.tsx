@@ -195,8 +195,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '540',
-      width: '540',
+      minWidth: '650',
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"
@@ -209,8 +208,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '540',
-      width: '540',
+      minWidth: '650',
       attributeName: "Address.Street",
       attributeType: "String",
       attributeOperator: "contains"
@@ -223,8 +221,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '542',
-      width: '542',
+      minWidth: '330',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"

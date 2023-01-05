@@ -30,10 +30,10 @@
             color: var(--color-d1d2d4);
         }
 
-        &:focus, &:visited{
+        &:focus{
             box-shadow: none;
             background: var(--color-151515) !important;
-            border-left:4px var(--color-d74b00) solid !important;
+            //border-left:4px var(--color-d74b00) solid !important;
             .p-menuitem-text {
                 color:var(--color-White);
             }

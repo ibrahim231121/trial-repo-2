@@ -1078,6 +1078,8 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                   }
                   options={masterAssetOption}
                   defaultValue=""
+                  zIndex={13001}
+                  popover="popover_master_asset"
                 />
               </div>
             </div>
@@ -1098,6 +1100,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
                   <CRXSelectBox
                     className="metaData-Station-Select metaData-Station-Select_ui_field"
                     id={"select_" + "selectBox"}
+                    zIndex={13001}
                     value={
                       formpayload.station === "" ? "" : formpayload.station
                     }
@@ -1237,7 +1240,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   return (
     <div className="metaData-Station-Parent">
       {handleActiveScreen(activeScreen)}
-      <div className="modalFooter CRXFooter">
+      <div className="modalFooter metaDataModalFooter">
         {!isNext ? (
           <div className="saveBtn">
             <CRXButton

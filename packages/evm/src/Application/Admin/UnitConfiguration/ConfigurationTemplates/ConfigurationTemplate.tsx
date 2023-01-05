@@ -474,7 +474,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectIndicatorCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "300",
+      minWidth: "375",
       attributeName: "IsDefaultTemplate",
       attributeType: "bool",
       attributeOperator: "eq"

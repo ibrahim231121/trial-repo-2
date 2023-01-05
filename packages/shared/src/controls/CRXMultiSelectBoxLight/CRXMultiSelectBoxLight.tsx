@@ -54,7 +54,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       marginTop: "0px",
       marginLeft: "-7px",
       maxHeight: "332px",
-      width: "388px",
+      width: "auto",
       minHeight: "165px",
       overflow: "hidden",
       position: "relative",
@@ -70,7 +70,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       }
     },
     popper: {
-
+      zIndex : 13001
     },
     option: {
       height: '33px',
@@ -273,6 +273,7 @@ const CRXMultiSelectBoxLight = ({
           </Typography>
         </>
       }
+      <div className='selectInner_content'>
       <Autocomplete
         defaultValue={defaultValue}
         autoComplete={autoComplete}
@@ -335,6 +336,7 @@ const CRXMultiSelectBoxLight = ({
         )}
       />
       {error && errorMessage}
+      </div>
     </>
   );
 }
