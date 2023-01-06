@@ -29,7 +29,7 @@ interface propsT {
     parentActive? :boolean,
     disabled? :boolean
 }
-const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : propsT) => {
+const CRXMenuSub = ({model, root, parentActive, disabled, activeClass} : propsT) => {
 
     const [activeItem, setActiveItem] = useState<any>(null);
     let MeuRef : React.RefObject<any> = createRef();
@@ -86,21 +86,21 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : 
         }
     }
 
-    const onItemMouseEnter = (event : any, item : itemsProps) => {
-        if (item.disabled) {
-            event.preventDefault();
-            return;
-        }
+    //const onItemMouseEnter = (event : any, item : itemsProps) => {
+        // if (item.disabled) {
+        //     event.preventDefault();
+        //     return;
+        // }
 
-        if (root) {
-            if (activeItem || popup) {
-                setActiveItem(item);
-            }
-        }
-        else {
-            setActiveItem(item);
-        }
-    }
+        // if (root) {
+        //     if (activeItem || popup) {
+        //         setActiveItem(item);
+        //     }
+        // }
+        // else {
+        //     //setActiveItem(item);
+        // }
+    //}
   
     const renderSubmenu = (item : itemsProps) => {
         if(item.items) {
@@ -140,7 +140,7 @@ const CRXMenuSub = ({model, root, popup, parentActive, disabled, activeClass} : 
 
         return (
             !disabled &&
-            <li ref={ref} key={item.label + '_' + index} className={className}  style={item.style} onMouseEnter={(event) => onItemMouseEnter(event, item)} role="none">
+            <li ref={ref} key={item.label + '_' + index} className={className}  style={item.style} role="none">
                 {content}
                {submenu}
             </li>

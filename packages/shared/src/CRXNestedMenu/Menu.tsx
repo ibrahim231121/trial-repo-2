@@ -29,26 +29,25 @@ const CRXNestedMenu = ({popup = false, model, style, className, disabled , appen
     }
 
     const onExit = () => {
-
     }
 
     const onExited = () => {
-
     }
 
     const onPanelClick = () => {
-
+       
     }
 
     useEffect(() => {
         setVisible(!popup)
+        console.log("unmountOnExit")
     }, [visible])
 
     const renderElement = () => {
         
         const classDYNames : any = classNames('p-tieredmenu p-component', { 'p-tieredmenu-overlay': popup });
         return (
-            <CSSTransition nodeRef={menuRef} classNames="p-connected-overlay" in={visible} timeout={{ enter: 120, exit: 100 }}
+            <CSSTransition nodeRef={menuRef} classNames="p-connected-overlay" in={visible}  timeout={{ enter: 120, exit: 100 }}
                 unmountOnExit onEnter={onEnter} onEntered={onEntered} onExit={onExit} onExited={onExited}>
                 <div ref={menuRef} id={id} className={classDYNames + " " + className} style={style} onClick={onPanelClick}>
                     <CRXMenuSub props model={model} root popup={popup} disabled ={disabled} activeClass={className}/>

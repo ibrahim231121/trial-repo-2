@@ -217,18 +217,16 @@
 .cbxTabsContent {
   .asset_detail_AT_table {
     .asset_detail_AT_dataTable {
-      display: inline-table !important;
-
       position: sticky !important;
 
       .CRXDataTableCustom {
         thead {
           &:nth-child(1) {
-            top: 51px !important;
+            top: 0px !important;
           }
 
           &:nth-child(2) {
-            top: 86px !important;
+            top: 35px !important;
           }
         }
       }

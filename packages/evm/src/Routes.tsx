@@ -137,6 +137,8 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url} exact={true} component={CategoryFormsDetail} />
                 <Route path="/token/:token" exact={true} component={Token} />
 
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.unitsAndDevicesDetail)[0].url} exact={true} component={UnitCreate} />
+                <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.tenantSettings)[0].url} exact={true} component={TenantSettings} />
                 <Route path="/notfound" component={ErrorPage} />
                 <Route path="*" component={ErrorPage} />
 

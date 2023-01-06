@@ -33,7 +33,7 @@
         &:focus{
             box-shadow: none;
             background: var(--color-151515) !important;
-            //border-left:4px var(--color-d74b00) solid !important;
+            border-color : var(--color-d74b00) !important;
             .p-menuitem-text {
                 color:var(--color-White);
             }
@@ -117,7 +117,8 @@
                         }
                         .p-menuitem-text {
                             text-align: left;
-                            display: initial;
+                            width: 100%;
+                            line-height: 33px;
                             padding-top: 0;
                         }
                     }

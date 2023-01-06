@@ -94,7 +94,7 @@ const CRXSelectBox: React.FC<SelectBoxProps> = forwardRef(
       errorMsg,
       onClose,
       error,
-      zIndex,
+      zIndex = 13001,
       disabled=false,},
     ref
   ) => {

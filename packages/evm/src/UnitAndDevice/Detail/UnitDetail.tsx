@@ -716,7 +716,7 @@ const UnitCreate = (props: historyProps) => {
           ) : null}
 
         <div className="tab-bottom-buttons stickyFooter_Tab">
-          <div className="save-cancel-button-box">
+          <div className="save-cancel-unitDevice">
             <CRXButton
               variant="contained"
               className="groupInfoTabButtons"

@@ -25,6 +25,7 @@ const CRXUseStyles = makeStyles(() => ({
     borderRadius: "0px",
     maxWidth: "250px",
     minWidth: "100px",
+    
   }
 }));
 

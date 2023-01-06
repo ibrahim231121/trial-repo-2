@@ -205,7 +205,7 @@ const placementActionClass = placementActionPopup == "top-start" ? "placementPop
         className={`CRXPopoverCss DetailAsset_Popover ${placementActionClass}`}
         title={t("Grouped_Assets")}
         arrowDown={true}
-        disablePortal={true}
+        disablePortal={false}
         placement={placementActionPopup}
         onSetAnchorE1={(v: HTMLElement) => setAnchorEl(v)}
       >

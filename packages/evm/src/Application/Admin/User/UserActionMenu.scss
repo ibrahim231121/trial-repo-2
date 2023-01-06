@@ -212,7 +212,7 @@
         }
       }
       .CrxUserEditForm {
-        width: 439px !important;
+        
         display: inline-flex;
         input {
           display: inline-block;
@@ -610,4 +610,8 @@
       }
     }
   }
+}
+
+.selectInner_content {
+  width: 439px;
 }

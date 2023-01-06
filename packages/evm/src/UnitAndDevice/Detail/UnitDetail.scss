@@ -12,11 +12,10 @@
     }
     .tab-bottom-buttons {
     
-      .save-cancel-button-box {
+      .save-cancel-unitDevice {
         width: 100%;
         .groupInfoTabButtons {
           height: 30px;
-          margin-right: 33px;
         }
       }
     }
@@ -234,7 +233,7 @@ iframe {
     text-transform: uppercase;
   }
 
-  .save-cancel-button-box {
+  .save-cancel-unitDevice {
     .CRXButton {
       &:nth-child(1) {
         color: #f5f5f5 !important;
