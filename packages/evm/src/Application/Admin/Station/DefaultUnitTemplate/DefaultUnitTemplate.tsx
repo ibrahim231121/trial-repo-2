@@ -39,6 +39,7 @@ const DefaultUnitTemplate: React.FC = () => {
         page: page,
         size: rowsPerPage
     });
+    const [stationCount, setStationCount] = React.useState(0);
     const configurationTemplatesFromStore = useSelector((state: any) => state.configurationTemplatesSlice.configurationTemplates);
     const dispatch = useDispatch();
     React.useEffect(() => {
@@ -63,7 +64,7 @@ const DefaultUnitTemplate: React.FC = () => {
             });
             for (const deviceObj of deviceTypeCollection) {
                 const headerCol = {
-                    id: deviceObj.id + 1,
+                    id: Number(deviceObj.id) + 1,
                     name: deviceObj.name,
                     type: 'dropdown',
                     dropdown_policy_id: deviceObj.id,
@@ -132,13 +133,14 @@ const DefaultUnitTemplate: React.FC = () => {
         UnitsAndDevicesAgent.getAllStations(`?Page=${pageiGrid.page + 1}&Size=${pageiGrid.size}`, [{ key: 'InquireDepth', value: 'deep' }])
             .then((response: any) => {
                 setStationCollection(response.data);
+                setStationCount(response.totalCount);
                 let stationInfo = response.data.map((x: any) => {
                     return {
                         id: x.id,
                         name: x.name
                     } as StationInfo
                 }) as StationInfo[];
-                setStationDataTableRow(stationInfo)
+                setStationDataTableRow(stationInfo);
             })
             .catch((error: any) => {
                 console.error(error.response.data);
@@ -276,7 +278,7 @@ const DefaultUnitTemplate: React.FC = () => {
                         rowsPerPage={rowsPerPage}
                         setPage={(page: any) => setPage(page)}
                         setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
-                        totalRecords={configurationTemplatesFromStore.length}
+                        totalRecords={stationCount}
                         offsetY={44}
                     />
                 }
