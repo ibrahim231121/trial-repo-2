@@ -709,7 +709,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
           orderByParam={orderBy}
           searchHeader={true}
           columnVisibilityBar={true}
-          className="ManageAssetDataTable ManageAssetDataTable_Ui"
+          className="ManageAssetDataTable ManageAssetDataTable_Ui MainAssetGridPage_Ui"
           onClearAll={clearAll}
           getSelectedItems={(v: any[]) => setSelectedItems(v)}
           onResizeRow={resizeRowAssetsDataTable}

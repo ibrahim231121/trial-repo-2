@@ -176,7 +176,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     onChange={onChangeDescription}
   />
 </div>
-<div className="groupInfoInputs"> 
+<div className="groupInfoInputs UnitDevice_GroupName_Field"> 
   <TextField
     label={t("Group_Name")}
     variant="outlined"

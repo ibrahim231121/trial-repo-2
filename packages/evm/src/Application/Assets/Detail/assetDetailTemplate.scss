@@ -78,11 +78,12 @@
 
   .asset_detail_tabs {
     padding: 0px 27px;
-    margin-top: 29px;
+    margin-top: 0px;
     margin-bottom: 20px;
     .list_data_main {
       div[id*="crx-tabpanel-"] {
         height: calc(100vh - 320px);
+        min-height: calc(100vh - 281px);
         margin-top: -1px;
         border-top: 1px solid #878787;
       }

@@ -39,7 +39,7 @@ const headerStyle = createTheme({
       },
 
       zIndex : {
-        appBar : 1200
+        appBar : 1201
       }
 });
 

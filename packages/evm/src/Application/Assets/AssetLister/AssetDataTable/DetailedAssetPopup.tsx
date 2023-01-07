@@ -164,16 +164,15 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   }
 
   useLayoutEffect(()=>{
-    const checkLastGroup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkLastPopup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5)  .DetailAsset_Popover ");
-    const checkSecondLastGroup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkSecondLastPopup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5)  .DetailAsset_Popover "); 
+    const checkLastGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
+    const checkLastPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5)  .DetailAsset_Popover ");
+    const checkSecondLastGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5) .CRXPopupOuterDiv #pop ");
+    const checkSecondLastPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5)  .DetailAsset_Popover "); 
 
-    const checkSecondFirstGroup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkSecondFirstPopup = document.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5)  .DetailAsset_Popover "); 
+    const checkSecondFirstGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
+    const checkSecondFirstPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5)  .DetailAsset_Popover "); 
 
 
-    console.log("checkLastPopup", checkLastPopup)
     if((checkLastGroup !== null && checkLastPopup !== null) || (checkSecondLastGroup !== null && checkSecondLastPopup !== null )) {
       setPlacementActionPopup("top-start");
     } else if(checkSecondFirstGroup !== null &&  checkSecondFirstPopup !== null) {

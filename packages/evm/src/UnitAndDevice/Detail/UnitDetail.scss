@@ -253,7 +253,7 @@ iframe {
     align-items: center;
     justify-content: flex-end;
     height: 27px;
-    position: sticky;
+    position: fixed;
     top: 92px;
 
     a {
@@ -347,7 +347,7 @@ iframe {
       width: 225px !important;
     }
     .select_label{
-      width: 225px;
+      width: 236px;
       padding: 0 6px 0 6px;
     }
     .groupInfoInputs h6{
@@ -465,5 +465,10 @@ iframe {
   .stickyPos {
     top: 0px !important;
     z-index: 99 !important;
+  }
+}
+.UnitDevice_GroupName_Field {
+  .MuiOutlinedInput-root {
+    border-radius: unset ;
   }
 }
