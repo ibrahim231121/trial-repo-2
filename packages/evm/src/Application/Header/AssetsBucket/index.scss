@@ -1116,9 +1116,14 @@ body {
         width: 380px;
       }
     }
+    .metaData-category  {
+      .selectInner_content {
+        width: 380px;
+      }
+    }
     .metaDataModalFooter {
-      .saveBtn {
-        margin-right: 25px;
+      .nextBtn {
+        margin-right: 0px;
       }
     }
   }

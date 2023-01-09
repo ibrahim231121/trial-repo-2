@@ -332,7 +332,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
       return (
         <CBXMultiSelectForDatatable
-          width={220}
+          width={249}
           option={options}
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
@@ -361,7 +361,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
       return (
         <CBXMultiSelectForDatatable
-          width={220}
+          width={249}
           option={options}
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
           onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
