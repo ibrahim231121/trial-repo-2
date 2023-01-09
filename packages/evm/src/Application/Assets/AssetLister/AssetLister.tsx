@@ -356,7 +356,7 @@ const SearchComponent = (props: any) => {
     window.scrollTo({ top: 180, behavior: "smooth" });
    }else {
     window.scrollTo({ top: 180, behavior: "smooth" });
-    CreateBorderWithScroll()
+    //CreateBorderWithScroll()
    }
    
   }, [searchData]);
@@ -447,7 +447,6 @@ const SearchComponent = (props: any) => {
     if(!props.isopen){
       dispatch(enterPathActionCreator({ val: t('Search_Results') }));
     }
-    CreateBorderWithScroll()
   }
   const onChangePredictiveSearch = (e: any) => {
     setQuerryString(e);
@@ -491,12 +490,12 @@ const SearchComponent = (props: any) => {
   useEffect(() => {
    document.addEventListener("scroll",() =>{
     if(window.pageYOffset > 100) {
-      setStickyBorder(true);
-    }else {
-      setStickyBorder(false);
-    }
-   })
-  })
+        setStickyBorder(true);
+      }else {
+        setStickyBorder(false);
+      }
+    })
+  },[])
 
   const stickyBorderClass = stickyBorder ? "stickyBorder_Add" : "stickyBorder_Remove"; 
 

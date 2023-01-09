@@ -310,7 +310,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
         open
         popupIcon=""
         closeIcon=""
-        onClose={OnCloseHandler}
+        // onClose={OnCloseHandler}
         id="multiple-limit-tags"
         options={option}
         onChange={(e,value) => {
@@ -355,7 +355,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
           ));
         }}
         renderInput={(params) => (
-          <TextField className={'select_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width - 3 + "px"}} {...params} variant="outlined" />
+          <TextField className={'select_input_field ' + `${ value.length > 0 && "bg-dp-value"}` } style={{width : props.width + "px"}} {...params}  variant="outlined" />
         )}
       />
       
