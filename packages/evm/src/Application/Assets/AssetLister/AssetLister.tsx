@@ -355,8 +355,8 @@ const SearchComponent = (props: any) => {
    if( showAdvanceSearch == true ) {
     window.scrollTo({ top: 180, behavior: "smooth" });
    }else {
-    window.scrollTo({ top: 180, behavior: "smooth" });
-    //CreateBorderWithScroll()
+    window.scrollTo({ top: 200, behavior: "smooth" });
+    
    }
    
   }, [searchData]);
