@@ -28,6 +28,7 @@ import AnchorDisplay from '../../../utils/AnchorDisplay';
 import { urlList, urlNames } from '../../../utils/urlList';
 import { useHistory } from 'react-router-dom';
 import './station.scss';
+import './responsive.scss';
 import ApplicationPermissionContext from "../../../ApplicationPermission/ApplicationPermissionContext";
 import moment from "moment";
 import { addNotificationMessages } from "../../../Redux/notificationPanelMessages";
