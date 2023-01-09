@@ -129,6 +129,8 @@ const CreateTemplate = (props: any) => {
     { device: "NF-22-N", url: "rtsp://192.168.5.47/live/0", port: 554, userId: "admin", password: 2200 },
     { device: "NF-22-W", url: "rtsp://192.168.5.48/live/1", port: 554, userId: "admin", password: 2200 },
     { device: "Zero-Dark", url: "http://192.168.5.8/live/stream1.cgi", port: 81, userId: "admin", password: 8131 },
+    { device: "NF-42-N", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
+    { device: "NF-42-W", url: "rtsp://192.168.5.51/live/0", port: 554, userId: "admin", password: 4200 },
   ]
 
 
