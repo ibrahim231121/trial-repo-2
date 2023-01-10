@@ -84,7 +84,7 @@ interface VolumecontrolProp {
         <span onMouseOver={VolumeBarHover} onClick={handleVoumeClick}>
           <CRXTooltip
             iconName={getVolumeIconClass()}
-            placement="bottom"
+            placement="right-end"
             title={
               <>
                 <p className="MuteTool MuteTool_1">{isMute ? "Unmute" : "Mute"} <span className={isMute ? "UnMuteSpacer" : "MuteSpacer"}>Shift + ALT + M</span></p>

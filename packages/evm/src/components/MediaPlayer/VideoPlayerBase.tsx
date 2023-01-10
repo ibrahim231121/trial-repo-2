@@ -2211,7 +2211,7 @@ useEffect(() => {
               <div id="volumePercentage" ref={volumeIcon}>
                 <div className="volume_video_icon animated">
                   <i className={volumePer}></i>
-                  <div className={`volume_percent_text ${volumPercent == 100 ? "volPercentSpace" : ""} `}>{volumPercent}%</div>
+                  <div className={`volume_percent_text ${volumPercent == 100 ? "volPercentSpace" : ""} `}>{isMute ? 0 : volume}%</div>
                 </div>
               </div>
             </div>

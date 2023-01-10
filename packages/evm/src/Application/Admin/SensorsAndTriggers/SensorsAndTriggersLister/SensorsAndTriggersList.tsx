@@ -156,8 +156,7 @@ React.useEffect(() => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: "",
-      maxWidth: "100",
+      width: ""
     },
     {
       label: `${t("Name")}`,
@@ -167,8 +166,8 @@ React.useEffect(() => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "300",
-      width: "calc(100% - 145px)",
+      minWidth: "1650",
+      width: "1650",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",

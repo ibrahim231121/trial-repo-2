@@ -33,7 +33,7 @@ export const resources = {
         "Asset_Lister":"Asset Lister",
         "Login To Getac Enterprise using Getac Authentication":"Login To Getac Enterprise using Getac Authentication",
         "Inspiring statement about Getac / Getac product that is relevant to user":"Inspiring statement about Getac / Getac product that is relevant to user",
-        "You are accessing a restricated information system. Your usage may be monitored, recoreded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalities. By using this system and clicking Log In, you consent to your usage being monitored and recorded.":"You are accessing a restricated information system. Your usage may be monitored, recoreded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalities. By using this system and clicking Log In , you consent to your usage being monitored and recorded.",
+        "You are accessing a restricated information system. Your usage may be monitored, recoreded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalities. By using this system and clicking Log In, you consent to your usage being monitored and recorded.":"You are accessing a restricted information system. Your usage may be monitored, recorded and subject to audit. Unauthorized use of the system is prohibited and may be subject to criminal and/or civil penalties. By using this system and clicking “Log In”, you consent to your usage being monitored and recorded.",
         "Log_In":"Log In",
         "assetDataTable":"Assets",
         "userGroup_DataTable":"User Groups",

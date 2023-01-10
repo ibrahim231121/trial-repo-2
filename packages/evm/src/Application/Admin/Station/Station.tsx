@@ -196,7 +196,8 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '650',
+      minWidth: '350',
+      width:"350",
       attributeName: "Name",
       attributeType: "String",
       attributeOperator: "contains"

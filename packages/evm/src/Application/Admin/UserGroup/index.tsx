@@ -163,9 +163,6 @@ const UserGroup: React.FC = () => {
    
   }
 
-  const NonField = () =>{
-    
-  }
 
   const simpleFilter = (data : any) => {
     
@@ -243,7 +240,7 @@ const UserGroup: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, ""),
       sort: true,
       searchFilter: true,
-      searchComponent: NonField,
+      searchComponent: searchText,
       minWidth: "244",
       attributeName: "UserCount",
       attributeType: "Int",
