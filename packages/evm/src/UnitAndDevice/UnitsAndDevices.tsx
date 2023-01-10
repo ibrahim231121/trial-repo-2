@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useRef } from "react";
-import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CBXMultiSelectForDatatable,CRXButton  } from "@cb/shared";
+import { CRXDataTable, CRXColumn,CRXGlobalSelectFilter,CBXMultiSelectForDatatable,CBXMultiCheckBoxDataFilter  } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import {DateTimeComponent } from '../GlobalComponents/DateTime';
@@ -243,12 +243,12 @@ const UnitAndDevices: React.FC = () => {
       );
     };
 
-    const [dateTime, setDateTime] = React.useState<DateTimeProps>({
+  const [dateTime, setDateTime] = React.useState<DateTimeProps>({
       dateTimeObj: {
           startDate: "",
           endDate: "",
           value: "",
-          displayText: "",
+          displayText: "", 
       },
       colIdx: 0,
   });
@@ -341,7 +341,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 
     return (
       <div>
-        <CBXMultiSelectForDatatable 
+        {/* <CBXMultiSelectForDatatable 
           width = {200} 
           option={status} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -349,25 +349,18 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
-        />
-        {/* <CRXGlobalSelectFilter
-            id="multiSelect"
-            multiple={true}
-            value={[]}
-            onChange={(e: React.SyntheticEvent, option: renderCheckMultiselect[]) => { return changeMultiselect(e, option, colIdx) }}
-            options={status}
-            CheckBox={true}
-            className="unitStatusMultiSelect"
-            checkSign={false}
-            statusIcon={true}
-            open={open}
-            theme="dark"
-            clearSelectedItems={(e: React.SyntheticEvent, options: renderCheckMultiselect[]) => null}
-            getOptionLabel={(option: renderCheckMultiselect) => option.value ? option.value : " "}
-            getOptionSelected={(option: renderCheckMultiselect, label: renderCheckMultiselect) => option.value === label.value}
-            onOpen={(e: React.SyntheticEvent) => { return setOpen(true) }}
-            noOptionsText={t("No_Status")}
         /> */}
+        <CBXMultiCheckBoxDataFilter 
+          width = {200} 
+          option={status} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          multiple={true}
+          isduplicate={true}
+          selectAllLabel="All"
+        />
       </div>
     )
   }
@@ -382,7 +375,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 
     return (
       <div>
-        <CBXMultiSelectForDatatable 
+        {/* <CBXMultiSelectForDatatable 
           width = {200} 
           option={template} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -390,6 +383,17 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
+        /> */}
+        <CBXMultiCheckBoxDataFilter 
+          width = {200} 
+          option={template} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          multiple={true}
+          isduplicate={true}
+          selectAllLabel="All"
         />
       </div>
     )
@@ -398,7 +402,7 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
 }
 
 
-const changeMultiselect = (e: React.SyntheticEvent, val: renderCheckMultiselect[], colIdx: number) => {
+const changeMultiselect = (val: renderCheckMultiselect[], colIdx: number) => {
   onSelection(val, colIdx)
   headCells[colIdx].headerArray = val;
 }
@@ -606,15 +610,28 @@ const searchAndNonSearchMultiDropDown = (
       });
 
     return (
-      <CBXMultiSelectForDatatable 
-        width = {200}  
-        option={status.filter((x: any) =>x.value != null && x.value != "")} 
-        value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-        onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-        onSelectedClear = {() => onSelectedClear(colIdx)}
-        isCheckBox={true}
-        isduplicate={true}
-      />
+      <>
+        {/* <CBXMultiSelectForDatatable 
+          width = {250} 
+          option={status.filter((x: any) =>x.value != null && x.value != "")} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          isduplicate={true}
+        /> */}
+        <CBXMultiCheckBoxDataFilter 
+          width = {250} 
+          option={status.filter((x: any) =>x.value != null && x.value != "")} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          multiple={true}
+          isduplicate={true}
+          selectAllLabel="All"
+        />
+      </>
     );
   }
  
@@ -626,15 +643,28 @@ const searchAndNonSearchMultiDropDown = (
       });
 
     return (
-      <CBXMultiSelectForDatatable 
-        width = {200} 
-        option={status} 
-        value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-        onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-        onSelectedClear = {() => onSelectedClear(colIdx)}
-        isCheckBox={true}
-        isduplicate={true}
-      />
+      <>
+        {/* <CBXMultiSelectForDatatable 
+          width = {200} 
+          option={status} 
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          isduplicate={true}
+        /> */}
+        <CBXMultiCheckBoxDataFilter 
+          width = {200} 
+          option={status} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => onSelectedClear(colIdx)}
+          isCheckBox={true}
+          multiple={true}
+          isduplicate={true}
+          selectAllLabel="All"
+        />
+      </>
     );
   }
 };

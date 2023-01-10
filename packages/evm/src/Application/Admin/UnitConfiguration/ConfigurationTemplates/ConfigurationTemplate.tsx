@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -275,7 +275,6 @@ const ConfigurationTemplates: React.FC = () => {
   }
 
   const changeMultiselect = (
-    e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
@@ -317,7 +316,7 @@ const ConfigurationTemplates: React.FC = () => {
 
       return (
         <div>
-          <CBXMultiSelectForDatatable 
+          {/* <CBXMultiSelectForDatatable 
             width = {400} 
             option={station} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -325,6 +324,16 @@ const ConfigurationTemplates: React.FC = () => {
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
+          /> */}
+          <CBXMultiCheckBoxDataFilter 
+            width = {400} 
+            option={station} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
+            isCheckBox={true}
+            multiple={true}
+            selectAllLabel="All"
           />
         </div>
       )
@@ -349,7 +358,7 @@ const ConfigurationTemplates: React.FC = () => {
 
       return (
         <div>
-          <CBXMultiSelectForDatatable 
+          {/* <CBXMultiSelectForDatatable 
             width = {400} 
             option={type} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -357,6 +366,16 @@ const ConfigurationTemplates: React.FC = () => {
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
+          /> */}
+          <CBXMultiCheckBoxDataFilter 
+            width = {400} 
+            option={type} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
+            isCheckBox={true}
+            multiple={true}
+            selectAllLabel="All"
           />
         </div>
       );
@@ -380,7 +399,7 @@ const ConfigurationTemplates: React.FC = () => {
       });
       return (
         <div>
-          <CBXMultiSelectForDatatable 
+          {/* <CBXMultiSelectForDatatable 
             width = {300} 
             option={indicator} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -388,6 +407,16 @@ const ConfigurationTemplates: React.FC = () => {
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
             isduplicate={true}
+          /> */}
+          <CBXMultiCheckBoxDataFilter 
+            width = {300} 
+            option={indicator} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
+            isCheckBox={true}
+            multiple={true}
+            selectAllLabel="All"
           />
         </div>
       );

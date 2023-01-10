@@ -1,7 +1,7 @@
-import { CBXMultiSelectForDatatable, CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip } from "@cb/shared";
+import { CBXMultiSelectForDatatable, CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"; 
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
@@ -290,7 +290,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   };
 
   const changeMultiselect = (
-    e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
@@ -331,14 +330,25 @@ const MasterMain: React.FC<MasterMainProps> = ({
       }
 
       return (
-        <CBXMultiSelectForDatatable
-          width={249}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
+        // <CBXMultiSelectForDatatable
+        //   width={220}
+        //   option={options}
+        //   value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+        //   onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+        //   onSelectedClear={() => clearAll()}
+        //   isCheckBox={false}
+        //   isduplicate={true}
+        // />
+        <CBXMultiCheckBoxDataFilter 
+          width = {220} 
+          option={options} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => clearAll()}
           isCheckBox={false}
+          multiple={true}
           isduplicate={true}
+          selectAllLabel="All"
         />
       );
     }
@@ -360,14 +370,25 @@ const MasterMain: React.FC<MasterMainProps> = ({
       ];
 
       return (
-        <CBXMultiSelectForDatatable
-          width={249}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
+        // <CBXMultiSelectForDatatable
+        //   width={220}
+        //   option={options}
+        //   value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+        //   onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+        //   onSelectedClear={() => clearAll()}
+        //   isCheckBox={true}
+        //   isduplicate={true}
+        // />
+        <CBXMultiCheckBoxDataFilter 
+          width = {220} 
+          option={options} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => clearAll()}
           isCheckBox={true}
+          multiple={true}
           isduplicate={true}
+          selectAllLabel="All"
         />
       );
     }
@@ -652,35 +673,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
       };
       dispatch(addNotificationMessages(notificationMessage));
     }
-  };
-  const abc = (obj: any) => {
-    var v = obj;
-    setSelectedChild(prevState => {
-       
-      let a:EvidenceChildSharingModel={masterId:0,assetId:[]};
-      let b:number[]=[];
-      selectedItems.map((x: any) => {
-        if (x?.isChecked == true) {
-          a.masterId=x.evidence.id;
-          a.assetId.push(x.assetId)              
-         }
-         else{
-           b.push(x.evidence.id);
-         }
-       });    
-       setSelectedMaster(b);
-             const new1 = [...prevState];
-             const rec = new1.find(x => x.masterId == a.masterId);
-             if (rec != undefined || rec != null) {
-               rec.assetId=a.assetId;
-               rec.masterId=a.masterId;
-             }
-             else{
-              new1.push({assetId:a.assetId,masterId:a.masterId})
-             }
-             return new1;
-           });
-           
   };
 
   return (

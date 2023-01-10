@@ -58,6 +58,7 @@ import { GroupedSelectedAssets } from "../AssetDataTable/AssetTypes";
 type Props = {
   row: any;
   selectedItems?: any;
+  setSelectedItems?: (obj: any) => void;
   isPrimaryOptionOpen?: boolean;
   asset?: any;
   portal?: boolean;
@@ -81,6 +82,7 @@ const ActionMenu: React.FC<Props> = React.memo(
   ({
     row,
     selectedItems = [],
+    setSelectedItems,
     isPrimaryOptionOpen = false,
     asset,
     portal,
@@ -626,7 +628,6 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     const addToAssetBucket = () => {
       //if undefined it means header is clicked
-
       if (row !== undefined && row !== null) {
         if (selectedItems.length > 0) {
           dispatch(addAssetToBucketActionCreator(selectedItems));
@@ -654,18 +655,30 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     const removeFromAssetBucket = () => {
       //if (row) {
+
+      // For Asset Bucket Top Action Menu
+      if(row == undefined && selectedItems.length > 0){
+        dispatch(removeAssetFromBucketActionCreator(selectedItems));
+        setSelectedItems && setSelectedItems([])
+        return 
+      }
+      // --------------------------------
+      
       const find = selectedItems.findIndex(
         (selected: SearchModel.Asset) => selected.assetId === row.id
       );
       const data = find === -1 ? row : selectedItems;
+
       dispatch(removeAssetFromBucketActionCreator(data));
       if (find !== -1) {
-        selectedItems = [];
+        setSelectedItems && setSelectedItems([])
+        return;
       }
       // }
       else {
         dispatch(removeAssetFromBucketActionCreator(selectedItems));
-        selectedItems = [];
+        setSelectedItems && setSelectedItems([])
+        return;
       }
     };
 

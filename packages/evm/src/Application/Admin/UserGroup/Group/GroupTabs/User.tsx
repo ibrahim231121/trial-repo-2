@@ -79,9 +79,6 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
     const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
     React.useEffect(() => {
-        
-        // dispatch(getUsersInfoAsync(pageiGrid));
-        // dispatch(getUsersIdsAsync());
         dispatch(getAllUserGroupKeyValuesAsync());
         let headCellsArray = onSetHeadCellVisibility(headCells);
         setHeadCells(headCellsArray);

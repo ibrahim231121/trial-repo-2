@@ -401,6 +401,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".avi":
       case ".mkv":
       case ".3gp":
+      case ".3gpp":
       case ".webm":
       case ".wmv":
         typeOfAsset = "Video";
@@ -464,6 +465,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       case ".avi":
       case ".mkv":
       case ".3gp":
+      case ".3gpp":
       case ".webm":
         typeOfFile = "Video";
         break;
@@ -847,6 +849,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setActiveScreen(0);
       return res;
     }).catch((error: any) => {
+      setIsDisable(false);
       if (error.response.status === 500) {
         setAlert(true);
         setResponseError(
@@ -954,6 +957,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       }
       if (res.status == 500 || res.status == 400) {
         setAlert(true);
+        setIsDisable(false);
         setResponseError(
           t(
             "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"
@@ -1231,6 +1235,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   }
   // Added to Seperate Submit Button Handler to handle Submission of Categories With No Form. 
   const SaveBtnSubmitForm = () => {
+    setIsDisable(true);
     if(isCategoriesFormEmpty){
       onSubmit(SubmitType.WithoutForm);
     } else {

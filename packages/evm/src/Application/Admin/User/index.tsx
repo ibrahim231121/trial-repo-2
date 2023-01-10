@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { CRXDataTable, CRXColumn, CRXToaster, CRXButton, CBXMultiSelectForDatatable} from "@cb/shared";
+import { CRXDataTable, CRXColumn, CRXToaster, CRXButton, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter} from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";
@@ -108,7 +108,7 @@ const User: React.FC = () => {
   const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    //dispatch(getUsersInfoAsync(pageiGrid));
+
     dispatch(getUserStatusKeyValuesAsync());
     dispatch(getAllUserGroupKeyValuesAsync());
     let headCellsArray = onSetHeadCellVisibility(headCells);
@@ -268,13 +268,23 @@ const User: React.FC = () => {
 
       return (
         <div>
-          <CBXMultiSelectForDatatable 
+          {/* <CBXMultiSelectForDatatable 
             width = {150} 
             option={status} 
             value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
             onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
             onSelectedClear = {() => onSelectedClear(colIdx)}
             isCheckBox={true}
+          /> */}
+          <CBXMultiCheckBoxDataFilter 
+            width = {150} 
+            option={status} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
+            isCheckBox={true}
+            multiple={true}
+            selectAllLabel="All"
           />
         </div>
       )
@@ -298,7 +308,6 @@ const User: React.FC = () => {
   }
 
   const changeMultiselect = (
-    e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
@@ -463,16 +472,27 @@ const User: React.FC = () => {
         });
 
       return (
-        <CBXMultiSelectForDatatable 
-          width = {245} 
-          option={status} 
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear = {() => onSelectedClear(colIdx)}
-          isCheckBox={true}
-          isduplicate={true}
-          multiple={true}
-        />
+        // <CBXMultiSelectForDatatable 
+        //   width = {245} 
+        //   option={status} 
+        //   value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
+        //   onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+        //   onSelectedClear = {() => onSelectedClear(colIdx)}
+        //   isCheckBox={true}
+        //   isduplicate={true}
+        //   multiple={true}
+        // />
+        <CBXMultiCheckBoxDataFilter 
+            width = {245} 
+            option={status} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => onSelectedClear(colIdx)}
+            isCheckBox={true}
+            multiple={true}
+            isduplicate={true}
+            selectAllLabel="All"
+          />
       );
     }
   };
@@ -497,17 +517,19 @@ const User: React.FC = () => {
 
   useEffect(() => {
     if(searchData.length > 0){
-      getFilteredUserData()
       setIsSearchable(true)
     }
-    if(
-      dateTime.dateTimeObj.startDate === "" && dateTime.dateTimeObj.endDate === "" 
-    ){
-      pageiGrid.gridFilter.filters = []
-      dispatch(getUsersInfoAsync(pageiGrid));
-    }
-    
   }, [searchData]);
+
+  // useEffect(() => {
+    
+  //   let lastLoginColIdx = searchData.filter(x => x.columnName == "lastLogin").map(x => x.colIdx)[0]
+  //   console.log("lastLoginColIdx ", lastLoginColIdx)
+  //   if(lastLoginColIdx && isSearchable && headCells[lastLoginColIdx].id == "lastLogin"){
+  //     getFilteredUserData()
+  //   }
+
+  // },[isSearchable])
 
   useEffect(() => {
     if (dateTime.colIdx !== 0) {
@@ -530,7 +552,6 @@ const User: React.FC = () => {
           )
         );
         setSearchData((prevArr) => [...prevArr, newItem]);
-        handleBlur()
       } else
         setSearchData((prevArr) =>
           prevArr.filter(
@@ -617,7 +638,6 @@ const User: React.FC = () => {
 
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
     setOpen(false);
-    dispatch(getUsersInfoAsync(pageiGrid));
   };
 
   const history = useHistory();
@@ -627,7 +647,7 @@ const User: React.FC = () => {
   }
 
   const getFilteredUserData = () => {
-    
+      console.log("User Population 2")
       pageiGrid.gridFilter.filters = []
       searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
           let x: GridFilter = {

@@ -1392,8 +1392,24 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             <span className="selectAllText">
                               {t("Select_All")}
                             </span>
-                            {t("View_on_assets_bucket_page")}{" "}
-                            <i className="icon icon-arrow-up-right2"></i>{" "}
+                            {/* {t("View_on_assets_bucket_page")}{" "}
+                            <i className="icon icon-arrow-up-right2"></i>{" "} */}
+
+                            <div 
+                              className={
+                                  selectedItems.length > 1 ? "" : " disableHeaderActionMenu"
+                                }>
+                              <ActionMenu
+                                row={undefined}
+                                className="bucketActionMenu"
+                                selectedItems={selectedItems}
+                                setSelectedItems={setSelectedItems}
+                                actionMenuPlacement={
+                                  ActionMenuPlacement.AssetBucket
+                                }
+                              />
+                            </div> 
+
                           </div>
                           <div className="bucketScroll">
                             <div className="bucketList" id="assetBucketLists">

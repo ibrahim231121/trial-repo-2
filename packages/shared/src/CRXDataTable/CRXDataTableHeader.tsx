@@ -156,7 +156,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                   className="GridSortIcon"
                   onClick={() => onHandleRequestSort(id == "assetDataTable" ? headCells[colIdx].id : headCells[colIdx].attributeName)} 
                 >
-                  {orderData.orderBy === headCells[colIdx].id ? (
+                  {orderData.orderBy === (id == "assetDataTable" ? headCells[colIdx].id : headCells[colIdx].attributeName) ? (
                     <span>
                       {orderData.order === "desc" ? (
                         <IconButton
@@ -164,7 +164,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                           size="small"
                           className={classes.iconArrows}
                         >
-                          <i className="fas fa-sort-up"></i>
+                          <i className="fas fa-sort-down"></i>
                         </IconButton>
                       ) : (
                         <IconButton
@@ -172,7 +172,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
                           size="small"
                           className={classes.iconArrows}
                         >
-                          <i className="fas fa-sort-down"></i>
+                          <i className="fas fa-sort-up"></i>
                         </IconButton>
                       )}
                     </span>

@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 const CRXLefNavigation = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
- 
   const navigateToPage = (path: string) => {
     history.push(path);
     

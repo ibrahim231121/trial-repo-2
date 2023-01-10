@@ -264,7 +264,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
   const checkBoxClass = CheckBoxStyle()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [singleValue, setSingleValue] = useState<any>()
-  const [selectAllText, setAllselectText] = useState<any>("")
+  //const [selectAllText, setAllselectText] = useState<any>("")
   const selectRefs = useRef(null)
   
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
@@ -334,7 +334,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
         handleToggleSelectAll();
         let result = [];
         result = option.filter(el => el.value !== selectAllLabel);
-        setAllselectText(result)
+        //setAllselectText(result)
         return onChange(result);
       } else {
         handleToggleOption && handleToggleOption(selectedOptions);
@@ -381,7 +381,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
     <div  ref={selectRefs} style={{width : props.width + "px"}} className={"cbx_multi_data_filter " + classes.root}>
     
     <ClickInput className={'clickable_input ' + `${anchorEl ? "selectedInput" : " clickable_input"}` }>
-        {console.log("selectAllText", selectAllText)}
+
         {selectedOptions.length > 0 && multiple == true && singleValue && allSelected == false ?
         <SingleTag label={singleValue[0].value} /> : <SingleTag label={selectedOptions.length > 0 && selectAllLabel} /> }
 
