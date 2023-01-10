@@ -113,7 +113,6 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
     });
 
     const navigateToCategoryFormsAndFields = () => {
-        debugger
         history.push(
             urlList.filter((item: any) => item.name === urlNames.categoryFormsAndFields)[0].url
         );

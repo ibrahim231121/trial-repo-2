@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../../GlobalComponents/Display/TextDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './categoriesList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton, CRXDataTable } from "@cb/shared";
+import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
 import CategoriesDetail from "../CategoriesDetail/CategoriesDetail";
 import {
@@ -27,6 +27,8 @@ import { getAllCategoriesFilter } from '../../../../Redux/Categories';
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { getAllCategoryForms } from "../../../../Redux/CategoryForms";
 import { getAllRetentionPolicies, getAllUploadPolicies } from "../../../../Redux/RetentionPolicies";
+import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
+import { renderCheckMultiselect } from "../../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
 
 type CategoriesTemplate = {
   id: number;
@@ -52,6 +54,7 @@ const CategoriesList: React.FC = () => {
   const [selectedItems, setSelectedItems] = React.useState<CategoriesTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = useState<CategoriesTemplate[]>();
   const [success, setSuccess] = React.useState<boolean>(false);
+  const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
@@ -78,7 +81,6 @@ const CategoriesList: React.FC = () => {
   useEffect(() => {
     setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
     setPaging(true)
-
   }, [page, rowsPerPage])
 
   useEffect(() => {
@@ -89,15 +91,7 @@ const CategoriesList: React.FC = () => {
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
     dispatch(enterPathActionCreator({ val: "" }));
   }, []);
-
-  const retentionFormMessages = (obj: any) => {
-    retentionMsgFormRef?.current?.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration,
-      clearButtton: true,
-    });
-  }
+  
   const onChange = (valuesObject: ValueString[], colIdx: number) => {
     headCells[colIdx].headerArray = valuesObject;
     onSelection(valuesObject, colIdx);
@@ -133,6 +127,76 @@ const CategoriesList: React.FC = () => {
     );
   };
 
+  const openEditForm = (categoryId : number) => {
+    if (getModuleIds().includes(54)) {
+      onClickOpenModel(true, Number(categoryId), t("Edit_Category"))
+    }
+  }
+
+  const changeMultiselect = (
+    e: React.SyntheticEvent,
+    val: renderCheckMultiselect[],
+    colIdx: number
+  ) => {
+    onSelection(val, colIdx);
+    headCells[colIdx].headerArray = val;
+  };
+
+  const searchAndNonSearchMultiDropDown = (
+    rowsParam: CategoriesTemplate[],
+    headCells: HeadCellProps[],
+    colIdx: number,
+    initialRows: any,
+    isSearchable: boolean
+  ) => {
+    if (initialRows) {
+      let options = rowsParam.map((row: any, _: any) => {
+        let option: any = {};
+        option["value"] = row[headCells[colIdx].id];
+        return option;
+      });
+
+      options = options?.length > 0 ? options.sort((a, b) => (a.value > b.value) ? 1 : -1): options;
+      
+      // For those properties which contains an array
+      if (
+        headCells[colIdx].id.toString() === "categories" ||
+        headCells[colIdx].id.toString() === "recordedBy"
+      ) {
+        let moreOptions: any = [];
+
+        reformattedRows.forEach((row: any, _: any) => {
+          let x = headCells[colIdx].id;
+          row[x]?.forEach((element: any) => {
+            let moreOption: any = {};
+            moreOption["value"] = element;
+            moreOptions.push(moreOption);
+          });
+        });
+
+        
+        options = moreOptions;
+      }
+      
+
+      return (
+        <CBXMultiSelectForDatatable
+          width={220}
+          option={options}
+          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
+          onSelectedClear={() => clearAll()}
+          isCheckBox={false}
+          isduplicate={true}
+        />
+      );
+    }
+  };
+
+  const NonField = () =>{
+    
+  }
+
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -153,7 +217,7 @@ const CategoriesList: React.FC = () => {
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
-        return <div style={{ cursor: "pointer" }} onClick={(e) => onClickOpenModel(true, Number(id), t("Edit_Category"))} className={"dataTableText "}>{e}</div>
+        return <div style={{ cursor: "pointer" }} onClick={(e) => openEditForm(id)} className={"dataTableText "}>{e}</div>
       },
       sort: false,
       searchFilter: true,
@@ -180,7 +244,12 @@ const CategoriesList: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: (
+        rowData: CategoriesTemplate[],
+        columns: HeadCellProps[],
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
       minWidth: "400",
       maxWidth: "400"
     },
@@ -191,7 +260,12 @@ const CategoriesList: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: (
+        rowData: CategoriesTemplate[],
+        columns: HeadCellProps[],
+        colIdx: number,
+        initialRow: any
+      ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
       minWidth: "400",
       maxWidth: "400"
     },
@@ -202,7 +276,7 @@ const CategoriesList: React.FC = () => {
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
       searchFilter: true,
-      searchComponent: searchText,
+      searchComponent: NonField,
       minWidth: "400",
       maxWidth: "500"
     },
@@ -254,18 +328,6 @@ const CategoriesList: React.FC = () => {
     dataArrayBuilder();
   }, [searchData]);
 
-  const getSelectedItemsUpdate = () => {
-    setSelectedItems([]);
-  }
-
-  const getSuccessUpdate = () => {
-    setSuccess(true);
-  }
-
-  const CategoriesAction = () => {
-    dispatch(getAllCategoriesFilter(pageiGrid));
-  }
-
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
     setHeadCells(headCellReset);
@@ -296,14 +358,6 @@ const CategoriesList: React.FC = () => {
     dispatch(getAllCategoriesFilter(pageiGrid))
   }
 
-  const onMessageShow = (isSuccess: boolean, message: string) => {
-    retentionFormMessages({
-      message: message,
-      variant: isSuccess ? 'success' : 'error',
-      duration: 7000
-    });
-  }
-
   return (
     <div className="CrxCategoriesTable switchLeftComponents">
       <CRXToaster ref={retentionMsgFormRef} />
@@ -313,7 +367,7 @@ const CategoriesList: React.FC = () => {
             id="CategoriesTemplateDataTable"
             toolBarButton={
               <>
-                <Restricted moduleId={0}>
+                <Restricted moduleId={56}>
 
                   <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
                     {t("Create_Category")}

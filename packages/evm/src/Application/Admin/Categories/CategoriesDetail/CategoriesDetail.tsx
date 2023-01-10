@@ -27,6 +27,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const [openModal, setOpenModal] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [success, setSuccess] = React.useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = React.useState<string>('');
   const [isOpen, setIsOpen] = React.useState(false);
   const [error, setError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
@@ -99,27 +100,40 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       url += "/" + id;
       SetupConfigurationAgent.putCategories(url, body).then(() => {
         setSuccess(true);
+        setSuccessMessage(t("Category_Edited_Successfully"))
         setError(false);
         dispatch(getAllCategoriesFilter(props.pageiGrid));
         setTimeout(() => { handleClose() }, 500);
       })
         .catch((e: any) => {
-
-          console.error(e.message);
-          setError(false);
+          if (e?.response?.status === 409) {
+            setError(true);
+            setResponseError(e?.response?.data)
+          }
+          else {
+            setError(true);
+            setResponseError("An issue occurred while saving, please try again.")
+          }
           return e;
         })
     }
     else {
       SetupConfigurationAgent.postCategories(url, body).then(() => {
         setSuccess(true);
+        setSuccessMessage(t("Category_Saved_Successfully"))
         setError(false);
         dispatch(getAllCategoriesFilter(props.pageiGrid));
         setTimeout(() => { handleClose() }, 500);
       })
         .catch((e: any) => {
-          console.error(e.message);
-          setError(false);
+          if (e?.response?.status === 409) {
+            setError(true);
+            setResponseError(e?.response?.data)
+          }
+          else {
+            setError(true);
+            setResponseError("An issue occurred while saving, please try again.")
+          }
           return e;
         })
     }
@@ -133,9 +147,13 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const handleClose = () => {
     setOpenModal(false);
     props.openModel(false);
+    setError(false)
+    setSuccess(false);
   };
   React.useEffect(() => {
     setOpenModal(true)
+    setError(false)
+    setSuccess(false);
   }, []);
 
 
@@ -212,7 +230,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               >
                 {success && (
                   <CRXAlert
-                    message={t("Success_You_have_saved_the_Retention_Policy")}
+                    message={successMessage}
                     alertType="toast"
                     open={true}
                   />

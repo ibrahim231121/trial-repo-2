@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox } from "@cb/shared";
+import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './formFieldsDetail.scss';
 import { useDispatch, useSelector } from "react-redux";
@@ -170,11 +170,12 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
       >
         {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
           <>
-            <div className="categories">
+
+            <div className="FormFields">
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
-                className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__'}
+                className={'CRXModal ___CRXCreateFormFields__ ___CRXEditFormFields__'}
                 modelOpen={openModal}
                 onClose={closeDialog}
                 defaultButton={false}
@@ -198,127 +199,118 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                     open={true}
                   />
                 )}
+                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
+                  <CRXColumn item={true} xs={4}>
 
-                <div className="retention-type">
-                  <label className="">
-                    {t("Control_Type")} <span>*</span>
-                  </label>
-                  <CRXSelectBox
-                    name="type"
-                    id="type"
-                    value={values.type}
-                    onChange={(e: any) => {
-                      setFieldValue("type", e.target.value)
-                    }
-                    }
-                    options={controlTypesOptions}
-                    onClose={(e: any) => {
-                      handleBlur(e);
-                      setTouched({
-                        ...touched,
-                        ["type"]: true,
-                      });
-                    }}
-                    isRequried={touched.type && ((errors.type?.length ?? 0) > 0)}
-                    error={!((errors.type?.length ?? 0) > 0)}
-                    errorMsg={errors.type}
-                  />
-                </div>
-                <div className="settingsContent">
-                  <span className="gridFilterTextBox">
+                    <label className="">
+                      {t("Control_Type")} <span>*</span>
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <CRXSelectBox
+                      name="type"
+                      id="type"
+                      value={values.type}
+                      onChange={(e: any) => {
+                        setFieldValue("type", e.target.value)
+                      }
+                      }
+                      options={controlTypesOptions}
+                      onClose={(e: any) => {
+                        handleBlur(e);
+                        setTouched({
+                          ...touched,
+                          ["type"]: true,
+                        });
+                      }}
+                      isRequried={touched.type && ((errors.type?.length ?? 0) > 0)}
+                      error={!((errors.type?.length ?? 0) > 0)}
+                      errorMsg={errors.type}
+                    />
 
-                    <div className="text-field">
-                      <div className="CBX-input">
-                        <label htmlFor="name">
-                          {t("Field_Name")} <span>*</span>
-                        </label>
-                        <Field
-                          id="name"
-                          key="name"
-                          name="name"
-                        />
-                        {errors.name !== undefined &&
-                          touched.name ? (
-                          <div className="errorTenantStyle">
-                            <i className="fas fa-exclamation-circle"></i>
-                            {errors.name}
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                  </CRXColumn>
+                </CRXRows>
+                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
+                  <CRXColumn item={true} xs={4}>
+                    <label htmlFor="name">
+                      {t("Field_Name")} <span>*</span>
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <Field
+                      id="name"
+                      key="name"
+                      name="name"
+                    />
+                    {errors.name !== undefined &&
+                      touched.name ? (
+                      <div className="errorTenantStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {errors.name}
                       </div>
-                    </div>
+                    ) : (
+                      <></>
+                    )}
 
-                  </span>
-                </div>
+                  </CRXColumn>
+                </CRXRows>
 
-                <div className="settingsContent">
-                  <span className="gridFilterTextBox">
+                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
+                  <CRXColumn item={true} xs={4}>
+                    <label htmlFor="displayName">
+                      {t("Field_Display_Name")}
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <Field
+                      id="displayName"
+                      key="displayName"
+                      name="displayName"
+                    />
+                  </CRXColumn>
+                </CRXRows>
 
-                    <div className="text-field">
-                      <div className="CBX-input">
-                        <label htmlFor="displayName">
-                          {t("Field_Display_Name")}
-                        </label>
-                        <Field
-                          id="displayName"
-                          key="displayName"
-                          name="displayName"
-                        />
+                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
+                  <CRXColumn item={true} xs={4}>
+                    <label htmlFor="width">
+                      Width <span>*</span>
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <Field
+                      type="number"
+                      id="width"
+                      key="width"
+                      name="width"
+                    />
+                    {errors.width !== undefined &&
+                      touched.width ? (
+                      <div className="errorTenantStyle">
+                        <i className="fas fa-exclamation-circle"></i>
+                        {errors.width}
                       </div>
-                    </div>
+                    ) : (
+                      <></>
+                    )}
+                  </CRXColumn>
+                </CRXRows>
 
-                  </span>
-                </div>
+                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
+                  <CRXColumn item={true} xs={4}>
+                    <label htmlFor="defaultFieldValue">
+                      {t("Default_Field_Value")}
+                    </label>
+                  </CRXColumn>
+                  <CRXColumn item={true} xs={8}>
+                    <Field
+                      id="defaultFieldValue"
+                      key="defaultFieldValue"
+                      name="defaultFieldValue"
+                    />
+                  </CRXColumn>
+                </CRXRows>
 
-                <div className="settingsContent">
-                  <span className="gridFilterTextBox">
-
-                    <div className="text-field">
-                      <div className="CBX-input">
-                        <label htmlFor="width">
-                          Width <span>*</span>
-                        </label>
-                        <Field
-                          type="number"
-                          id="width"
-                          key="width"
-                          name="width"
-                        />
-                        {errors.width !== undefined &&
-                          touched.width ? (
-                          <div className="errorTenantStyle">
-                            <i className="fas fa-exclamation-circle"></i>
-                            {errors.width}
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                    </div>
-
-                  </span>
-                </div>
-
-                <div className="settingsContent">
-                  <span className="gridFilterTextBox">
-
-                    <div className="text-field">
-                      <div className="CBX-input">
-                        <label htmlFor="defaultFieldValue">
-                          {t("Default_Field_Value")}
-                        </label>
-                        <Field
-                          id="defaultFieldValue"
-                          key="defaultFieldValue"
-                          name="defaultFieldValue"
-                        />
-                      </div>
-                    </div>
-
-                  </span>
-                </div>
-                <div className="tab-bottom-buttons retention-type-btns">
+                <div className="tab-bottom-buttons form-fields-btns">
                   <div className="save-cancel-button-box">
                     <CRXButton
                       variant="contained"

@@ -64,6 +64,19 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         ) : (
           <div></div>
         )}
+
+        <MenuItem >
+          <Restricted moduleId={0}>
+            <div className="crx-meu-content  crx-spac"  >
+              <div className="crx-menu-icon">
+                <i className="far fa-trash-alt"></i>
+              </div>
+              <div className="crx-menu-list">
+                {t("Delete_Category_Forms")}
+              </div>
+            </div>
+          </Restricted>
+        </MenuItem>
       </Menu>
     </div>
   );

@@ -92,7 +92,7 @@ const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Eleme
   else
     date = moment(evidence.expireOn).toDate();
 
-  if (moment(date).format('DD-MM-YYYY') == "31-12-9999") { //NOTE: Case in which the expiry date for asset is infinite.       
+  if (moment(date).format('DD-MM-YYYY') == "31-12-9999" || date.getFullYear() === 9999) { //NOTE: Case in which the expiry date for asset is infinite.       
     return (
       <CRXIcon className=""><i className="fas fa-infinity"></i></CRXIcon>
     );
