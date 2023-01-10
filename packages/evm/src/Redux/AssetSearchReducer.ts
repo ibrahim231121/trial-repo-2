@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { SearchAgent } from '../utils/Api/ApiAgent';
 import { SearchModel } from '../utils/Api/models/SearchModel';
+import { setLoaderValue } from './loaderSlice';
 
 interface assetSearchType{
     QUERRY:any,
@@ -9,7 +10,8 @@ interface assetSearchType{
 }
 export const getAssetSearchInfoAsync: any = createAsyncThunk(
     'getAssetSearchInfo',
-    async ({QUERRY, searchType}:assetSearchType) => {
+    async ({QUERRY, searchType}:assetSearchType, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
     if (QUERRY === '') {
         let assetSearchQueeryGet = localStorage.getItem('assetSearchQuerry');
         if (assetSearchQueeryGet !== null) {
@@ -18,7 +20,13 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
     } else {
         localStorage.setItem('assetSearchQuerry', JSON.stringify(QUERRY));
     }
-    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}]).then((response: SearchModel.Evidence[]) => response);
+    return SearchAgent.getAssetBySearch(JSON.stringify(QUERRY), [{key: "SearchType", value:searchType}]).then((response: SearchModel.Evidence[]) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+        return response
+    }).catch((error: any) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
+        console.error(error.response.data);
+      });
 });
 
 export const getAssetSearchNameAsync: any = createAsyncThunk(

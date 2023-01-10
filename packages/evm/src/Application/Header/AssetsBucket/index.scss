@@ -233,7 +233,9 @@
 
 .crxTooltipNotificationIcon {
   &.crxTooltipAll {
-    margin-left: -42px;
+    margin-left: -80px;
+    position: fixed;
+    top: -5px;
   }
   text-transform: lowercase;
 }
@@ -244,7 +246,7 @@
   width: 59px !important;
   border-radius: 0px !important;
   justify-content: left !important;
-  top: 4px;
+  top: 3px;
 }
 
 .bucketIconButton:hover,
@@ -1405,7 +1407,8 @@ body {
 text-transform: lowercase;
 }
 #bucket_tooltip_asset_2 {
-  text-transform: lowercase;
+  text-transform: initial !important;
+  text-align: left;
 }
 
 .popover_master_asset {

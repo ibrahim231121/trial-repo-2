@@ -350,7 +350,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
             )}
             iconName={"fas " + bucketIconByState}
             placement="left"
-            arrow={true}
+            arrow
             id="bucket_tooltip_asset_1"
           ></CRXTooltip>
         </div>

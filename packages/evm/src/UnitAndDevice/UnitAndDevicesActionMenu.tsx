@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 type Props = {
     selectedItems?: any;
     row?: any;
+    portal?: boolean;
 };
 
 const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
@@ -31,7 +32,8 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
             direction="right"
             position="auto"
             className="menuCss unitDeviceMenuCss"
-            arrow
+            offsetX={-16}
+            portal={true}
             menuButton={ <MenuButton><i className="far fa-ellipsis-v"></i></MenuButton> }
         >
         <MenuItem>

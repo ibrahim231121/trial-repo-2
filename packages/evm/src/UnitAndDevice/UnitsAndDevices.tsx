@@ -451,7 +451,7 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "120",
+    minWidth: "127",
     attributeName: "UnitId",
     attributeType: "String",
     attributeOperator: "contains"
@@ -466,8 +466,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     searchFilter: true,
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
     multiSelectCheckbox(rowData, columns, colIdx, initialRows),      
-    minWidth: "100",
-    maxWidth: "100",
+    minWidth: "175",
+    maxWidth: "175",
     attributeName: "Status",
     attributeType: "List",
     attributeOperator: "contains"
@@ -480,8 +480,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "265",
-    maxWidth: "265",
+    minWidth: "242",
+    maxWidth: "242",
     attributeName: "Description",
     attributeType: "String",
     attributeOperator: "contains"
@@ -495,8 +495,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-    minWidth: "20",
-    maxWidth: "20",
+    minWidth: "175",
+    maxWidth: "175",
     attributeName: "AssignedTo",
     attributeType: "List",
     attributeOperator: "contains"
@@ -509,8 +509,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "160",
-    maxWidth: "160",
+    minWidth: "142",
+    maxWidth: "142",
     attributeName: "SerialNumber",
     attributeType: "String",
     attributeOperator: "contains"
@@ -539,8 +539,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     // searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRows:Unit[]) =>
     // multiSelectVersionCheckbox(rowData, columns, colIdx, initialRows),  
     searchComponent: (rowData: Unit[], columns: HeadCellProps[], colIdx: number, initialRow: any) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, initialRow, true), 
-    minWidth: "80",
-    maxWidth: "100",
+    minWidth: "120",
+    maxWidth: "120",
     attributeName: "Version",
     attributeType: "List",
     attributeOperator: "contains"
@@ -553,8 +553,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchText,
-    minWidth: "185",
-    maxWidth: "185",
+    minWidth: "153",
+    maxWidth: "153",
     attributeName: "Station",
     attributeType: "String",
     attributeOperator: "contains"
@@ -567,7 +567,8 @@ const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     sort: true,
     searchFilter: true,
     searchComponent: searchDate,
-    minWidth: "190",
+    minWidth: "174",
+    maxWidth: "174",
     attributeName: "LastCheckedIn",
     attributeType: "DateTime",
     attributeOperator: "between"
@@ -606,7 +607,7 @@ const searchAndNonSearchMultiDropDown = (
 
     return (
       <CBXMultiSelectForDatatable 
-        width = {250} 
+        width = {200}  
         option={status.filter((x: any) =>x.value != null && x.value != "")} 
         value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
         onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
