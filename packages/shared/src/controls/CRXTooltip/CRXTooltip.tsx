@@ -13,7 +13,7 @@ type tooltipProps = {
 };
 const CRXUseStyles = makeStyles(() => ({
   arrow: {
-    color: "#333",
+    
   },
   tooltip: {
     backgroundColor: "#333333",
@@ -26,6 +26,9 @@ const CRXUseStyles = makeStyles(() => ({
     maxWidth: "250px",
     minWidth: "100px",
     
+  },
+  popper : {
+    color : "#d1d2d4"
   }
 }));
 
@@ -34,6 +37,9 @@ const CRXIconStyle = makeStyles(() => ({
     position: "relative",
     top: "0px",
     height: "17px",
+    '&:hover': {
+      color : "#333",
+    }
 
   },
 }));
@@ -55,7 +61,9 @@ function CRXCustomizedTooltip(props: any) {
           props.placement.length && classes.arrow + " crxArrowTooltip",
 
         tooltip:
-          props.placement.length && classes.tooltip + " " + props.className + " crxTooltipAll",
+          props.placement.length && classes.tooltip + " " + " crxTooltipAll",
+
+          popper : classes.popper
       }}
       {...props}
     />

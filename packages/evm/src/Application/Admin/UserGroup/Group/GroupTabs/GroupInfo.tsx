@@ -19,24 +19,35 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
   
   const onChangeName = (e: any) => {
     let groupName = e.target.value;
-    
-    if(groupName.length > 0 && groupName.length <=2)
+   
+    if(groupName.length > 2)
+    {
+      setErrorMessage("")
+    }
+
+    onChangeGroupInfo(groupName, description);
+    setName(groupName);
+  }
+
+  const OnFieldlBur = () => {
+
+    if(name.length > 0 && name.length <=2)
     {
       setErrorMessage("Group Name is Less than 3 characters")
       setIsSaveButtonDisabled(true)
     }
-    else if(groupName.length > 128)
+    else if(name.length > 128)
     {
       setErrorMessage("Group Name is Greater than 128 characters")
       setIsSaveButtonDisabled(true)
     }
-    else if(groupName.length == 0)
+    else if(name.length == 0)
     {
       setErrorMessage("Group Name is required");
       setIsSaveButtonDisabled(true)
     }
     else {
-      const chracterRegx = /^[a-zA-Z0-9-_.\s]+$/.test(String(groupName).toLowerCase());
+      const chracterRegx = /^[a-zA-Z0-9-_.\s]+$/.test(String(name).toLowerCase());
       if (!chracterRegx) {
         setErrorMessage("Please Provide a Valid Group Name");
         setIsSaveButtonDisabled(true)
@@ -46,9 +57,6 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
         setIsSaveButtonDisabled(false)
       }
     }
-
-    onChangeGroupInfo(groupName, description);
-    setName(groupName);
   }
 
   const onChangeDescription = (e: any) => {
@@ -70,7 +78,7 @@ const GroupInfo: React.FC<infoProps> = ({ info, onChangeGroupInfo, setIsSaveButt
       <label className="indicates-label"><b>*</b> {t("Indicates_required_field")}</label>
       <div className="crx-group-info">
         <div className="groupInfoInputs">
-          <TextField required={true} label={t("Group_Name")} value={name} className="userError" onChange={onChangeName} error={errorMessage.length > 0} errorMsg={errorMessage} onBlur={onChangeName}/>
+          <TextField required={true} label={t("Group_Name")} value={name} className="userError" onChange={onChangeName} error={errorMessage.length > 0} errorMsg={errorMessage} onBlur={OnFieldlBur}/>
        
         </div>
         <div className="groupInfoInputs">

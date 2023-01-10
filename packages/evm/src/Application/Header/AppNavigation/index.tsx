@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 const CRXLefNavigation = () => {
   const { t } = useTranslation<string>();
   const history = useHistory();
-  console.log("urlList", urlList)
+ 
   const navigateToPage = (path: string) => {
     history.push(path);
     
@@ -22,7 +22,7 @@ const CRXLefNavigation = () => {
     if(path !== "/assetdetail") {
         pathBody?.classList.remove("pathAssetDetail");
       }
-      console.log("path", path)
+      
       urlList.map((items : any, i : number) => {
         const footerRemove : any = document.getElementsByClassName("footerDiv");
         if(items.type == "form") {

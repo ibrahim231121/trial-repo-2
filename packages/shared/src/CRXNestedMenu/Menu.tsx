@@ -40,7 +40,6 @@ const CRXNestedMenu = ({popup = false, model, style, className, disabled , appen
 
     useEffect(() => {
         setVisible(!popup)
-        console.log("unmountOnExit")
     }, [visible])
 
     const renderElement = () => {
