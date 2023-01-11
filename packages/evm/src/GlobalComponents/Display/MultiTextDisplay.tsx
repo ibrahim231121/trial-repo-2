@@ -1,7 +1,9 @@
-const multitextDisplay = (text: any, classes: string | undefined) => {
+import { CRXTruncation } from "@cb/shared"
+
+const multitextDisplay = (text: any, classes: string | undefined, placement? : string) => {
     return (
         <div className={"dataTableEllipsesText " + classes}>
-            {text?.map((item: any) => item).join(", ")}
+            <CRXTruncation placement={placement} content={text?.map((item: any) => item).join(", ")}/>
         </div>
     )
   };

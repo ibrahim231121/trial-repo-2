@@ -63,3 +63,4 @@ export { default as CRXMultiViewStyle } from "./JssStyles/VideoPlayerStyle/CRXMu
 export { default as useSelectBoxStyle } from "./controls/CRXMultiSelectAutocomplete/CBXMultiselectStyle"
 export { default as CBXMultiCheckBoxDataFilter } from "./controls/CBXMultiDataFilter/CBXMultiCheckBoxDataFilter"
 export { default as NumberField } from "./controls/CRXInputNumberField/CRXNumberField"
+export { default as CRXTruncation } from "./controls/CRXTextPopover/CRXTruncation"

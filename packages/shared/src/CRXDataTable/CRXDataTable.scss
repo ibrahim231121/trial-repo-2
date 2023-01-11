@@ -164,6 +164,9 @@
             background-color: #333;
             .dataTableText {
                 color: var(--color-d1d2d4);
+                .truncation_button {
+                  color: var(--color-d1d2d4);
+                }
             }
             .linkColor {
                 color: var(--color-ff6e20);
@@ -199,11 +202,19 @@
                     }
                 }
             }
+            .dataTableEllipsesText {
+              .truncation_button {
+                color: var(--color-d1d2d4);
+              }
+            }
           }
           &.Mui-selected {
             background-color: var(--color-231f20);
             .dataTableText {
                 color: var(--color-d1d2d4) ;
+                .truncation_button {
+                  color: var(--color-d1d2d4);
+                }
             }
             .linkColor {
                 color: var(--color-ff6e20);
@@ -220,11 +231,21 @@
                 &.col-two {
                   background-color: var(--color-231f20);
               }
+              .dataTableEllipsesText {
+                .truncation_button {
+                  color: var(--color-d1d2d4);
+                }
+              }
             }
             &:hover {
                 &:not(.col-two, .col-three) {
                     background: var(--color-333333);
                     color: var(--color-d1d2d4);
+                }
+                .dataTableEllipsesText {
+                  .truncation_button {
+                    color: var(--color-d1d2d4);
+                  }
                 }
             }
           }
