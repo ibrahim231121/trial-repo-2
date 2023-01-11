@@ -1,5 +1,6 @@
+
 export const assetSizeFormat = (size: number) => {
-    const sizes = ["MB", "GB", "TB"]
+    const sizes = ["Bytes","KB","MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
     if (size == 0) {
         return size + " " + sizes[size]
     }
@@ -32,7 +33,7 @@ export const assetDurationFormat = (duration: number) => {
             break;
 
             default:
-            assetDuration = duration + " " + time[duration];
+            assetDuration = "N/A";
     }
     return assetDuration
 }
