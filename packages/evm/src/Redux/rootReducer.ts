@@ -27,6 +27,7 @@ import categoriesSlice from './Categories';
 import categoryFromsSlice from './CategoryForms';
 import groupedSelectedAssets from './groupedSelectedAssets';
 import fromFieldsSlice from './FormFields';
+import assetBucketBasketSlice from './assetBucketBasketSlice';
 //combine Reducers
 export const reducer = combineReducers({
   pathName: pathNameReducer.reducer,
@@ -57,5 +58,6 @@ export const reducer = combineReducers({
   categoriesSlice : categoriesSlice.reducer,
   CategoryFormSlice : categoryFromsSlice.reducer,
   FormFieldsSlice : fromFieldsSlice.reducer,
+  assetBucketBasketSlice : assetBucketBasketSlice.reducer,
 })
 export type RootState = ReturnType<typeof reducer>

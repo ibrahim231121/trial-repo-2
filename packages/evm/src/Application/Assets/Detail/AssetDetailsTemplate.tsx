@@ -124,6 +124,10 @@ const AssetDetailsTemplate = () => {
     (state: RootState) => state.assetDetailReducer.assetTrailInfo
   );
 
+  const assetBucketBasketIsOpen: any = useSelector(
+    (state: RootState) => state.assetBucketBasketSlice.isOpen
+  );
+
   useEffect(() => {
     dispatch(setLoaderValue({ isLoading: true }))
     EvidenceAgent.getEvidence(evidenceId).then((response: Evidence) => {
@@ -898,10 +902,11 @@ const AssetDetailsTemplate = () => {
     }
   }
 
+  const actionBucketClass = assetBucketBasketIsOpen ? "actionBucketIndex" : "";
   return (
     <div id="_asset_detail_view_idx" className="_asset_detail_view switchLeftComponents">
       <CRXToaster ref={targetRef} />
-      <div id="videoPlayer_with_category_view" className="CRXAssetDetail">
+      <div id="videoPlayer_with_category_view" className={`CRXAssetDetail ${actionBucketClass}`}>
         {/* <div className="asset_date_categories">
               <span><strong>{t("Captured Date")}</strong> : {assetInfo.capturedDate}</span>
               <span><strong>{t("Categories")}</strong> : {assetInfo.categoriesForm}</span>

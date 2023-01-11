@@ -58,6 +58,7 @@ import "./overrideMainBucket.scss";
 import ActionMenu from "../../Assets/AssetLister/ActionMenu";
 import { Asset } from "../../../utils/Api/models/EvidenceModels";
 import { SearchModel } from "../../../utils/Api/models/SearchModel";
+import { setAssetBucketBasket } from "../../../Redux/assetBucketBasketSlice";
 declare const window: any;
 // window.onRecvData = new CustomEvent("onUploadStatusUpdate");
 // window.onRecvError = new CustomEvent("onUploadError");
@@ -107,6 +108,11 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   useEffect(() => {
     setIsOpen(isOpenBucket);
   }, [isOpenBucket]);
+
+  useEffect(() => {
+    dispatch(setAssetBucketBasket({ isOpen: isOpen }))
+  }, [isOpen]);
+
   const dataTableStickyPos = document.querySelector(".stickyPos");
   useEffect(() => {
     if (isOpen) {
