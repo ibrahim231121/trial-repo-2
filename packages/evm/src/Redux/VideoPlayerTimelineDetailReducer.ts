@@ -37,16 +37,16 @@ const timelineDetailSlice = createSlice({
         if(action.payload.length>0){
           let temp : Timeline[] = action.payload;
           
-          if(state.data.length>0){ //Update Case
-            let tempstate = JSON.stringify(state.data)
-            let temppayload = JSON.stringify(temp)
-            if(tempstate != temppayload){
-              state.data = [...temp]
-            }
-          }
-          else{ // Add Case
+          // if(state.data.length>0){ //Update Case
+          //   let tempstate = JSON.stringify(state.data)
+          //   let temppayload = JSON.stringify(temp)
+          //   if(tempstate != temppayload){
+          //   state.data = [...temp]
+          //   }
+          // }
+          // else{ // Add Case
             state.data = [...temp]
-          }
+          // }
         }
     }
   },

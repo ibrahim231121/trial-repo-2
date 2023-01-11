@@ -85,9 +85,8 @@ type DurationFinderModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   dispatch: any
-  setViewNumber: any
-  viewNumberFirstTime: any
-  setViewNumberFirstTime: any
+  screenChangeVideoId: any
+  setscreenChangeVideoId: any
 }
 type TimelineGeneratorModel = {
   data: any
@@ -103,9 +102,8 @@ type TimelineGeneratorModel = {
   setupdateVideoSelection: any
   isDetailPageAccess: boolean
   dispatch: any
-  setViewNumber: any
-  viewNumberFirstTime: any
-  setViewNumberFirstTime: any
+  screenChangeVideoId : any
+  setscreenChangeVideoId : any
 }
 type ViewReasonTimerObject = {
   evidenceId: number;
@@ -170,7 +168,7 @@ const milliSecondsToTimeFormat = (date: Date) => {
   return padTo2Digits(date.getUTCHours()) + ":" + padTo2Digits(date.getUTCMinutes()) + ":" + padTo2Digits(date.getUTCSeconds());
 }
 async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorModel) {
-  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, setViewNumber, viewNumberFirstTime, setViewNumberFirstTime } = TimelineGeneratorModel
+  const { data, minstartpoint, duration, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, screenChangeVideoId, setscreenChangeVideoId } = TimelineGeneratorModel
   let rowdetail: Timeline[] = [];
   let bufferingArr: any[] = [];
   for (let x = 0; x < data.length; x++) {
@@ -234,8 +232,8 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
         id: "Video-" + x,
         dataId: data[x].id,
         unitId: data[x].unitId,
-        enableDisplay: true,
-        indexNumberToDisplay: x + 1,
+        enableDisplay: x == 0 ? true : false,
+        indexNumberToDisplay: x == 0 ? 1 : 0,
         camera: data[x].camera,
         timeOffset: timeOffset,
         assetbuffering: assetbuffering
@@ -266,16 +264,18 @@ async function TimelineData_generator(TimelineGeneratorModel: TimelineGeneratorM
   if (!updateVideoSelection) {
     await setBufferingArray(bufferingArr)
   }
-  if(viewNumberFirstTime)
-  {
-    setViewNumber(rowdetail.filter(x => x.enableDisplay).length)
-    setViewNumberFirstTime(false);
-  }
   await dispatch(addTimelineDetailActionCreator(rowdetail));
+  if (screenChangeVideoId) {
+    rowdetail.filter((y: any) => y.enableDisplay && y.id == screenChangeVideoId).forEach((x: any) => {
+      let videoElement : any = document.querySelector("#" + x.id);
+      videoElement?.load();
+    })
+    setscreenChangeVideoId(null);
+  }
   setupdateVideoSelection(false);
 }
 async function Durationfinder(DurationFinderModel: DurationFinderModel) {
-  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, setViewNumber, viewNumberFirstTime, setViewNumberFirstTime } = DurationFinderModel
+  const { Data, setfinalduration, settimelineduration, setmaxminendpoint, updateVideoSelection, timelinedetail, timelineSyncHistory, setTimelineSyncHistory, timelineSyncHistoryCounter, setTimelineSyncHistoryCounter, setBufferingArray, setupdateVideoSelection, isDetailPageAccess, dispatch, screenChangeVideoId, setscreenChangeVideoId } = DurationFinderModel
 
   let data = JSON.parse(JSON.stringify(Data));
   let timeOffset = data[0].recording.timeOffset ?? 0;
@@ -315,9 +315,8 @@ async function Durationfinder(DurationFinderModel: DurationFinderModel) {
     setupdateVideoSelection,
     isDetailPageAccess : isDetailPageAccess,
     dispatch,
-    setViewNumber,
-    viewNumberFirstTime, 
-    setViewNumberFirstTime
+    screenChangeVideoId,
+    setscreenChangeVideoId
   });
 }
 
@@ -533,6 +532,7 @@ const VideoPlayerBase = (props: any) => {
   const addingSnapshot = useRef(false);
  const [showControlConatiner , setShowControlConatiner] = useState(false);
  const [isMute, setIsMute] = useState(false);
+ const [screenChangeVideoId, setscreenChangeVideoId] = useState<any>();
 
   const keydownListener = (event: any) => {
     const { code, shiftKey, altKey } = event;
@@ -688,9 +688,8 @@ const VideoPlayerBase = (props: any) => {
         setupdateVideoSelection,
         isDetailPageAccess: props.history !== undefined ? false : true,
         dispatch: dispatch,
-        setViewNumber,
-        viewNumberFirstTime, 
-        setViewNumberFirstTime
+        screenChangeVideoId,
+        setscreenChangeVideoId
       });
       setLoading(true)
     }
@@ -852,13 +851,15 @@ const VideoPlayerBase = (props: any) => {
   }
 
   const getFps = (videoHandle: any) => {
-    videoHandle.requestVideoFrameCallback(ticker);
-    videoHandle.addEventListener("seeked", function () {
-      let fps_rounder1 = fps_rounder.current;
-      fps_rounder1.pop();
-      fps_rounder.current = fps_rounder1;
-      frame_not_seeked.current = false;
-    });
+    if(videoHandle){
+      videoHandle.requestVideoFrameCallback(ticker);
+      videoHandle.addEventListener("seeked", function () {
+        let fps_rounder1 = fps_rounder.current;
+        fps_rounder1.pop();
+        fps_rounder.current = fps_rounder1;
+        frame_not_seeked.current = false;
+      });
+    }
   };
 
   const ticker = (useless: any, metadata: any) => { // GetFps Work
@@ -903,16 +904,41 @@ const VideoPlayerBase = (props: any) => {
   };
 
   const screenClick = async (view: number, event: any) => {
+    if (isPlaying) {
+      handlePlayPause();
+    }
     var tempTimelines = JSON.parse(JSON.stringify(timelinedetail));
     var disableTimline = tempTimelines.filter((x: any) => x.indexNumberToDisplay > view);
-    disableTimline.forEach((x: any) => {
-      x.indexNumberToDisplay = 0;
-      x.enableDisplay = false;
-    })
-    if(disableTimline.length>0){
-      await dispatch(addTimelineDetailActionCreator(tempTimelines));
-      setupdateVideoSelection(true);
+    var enableTimline = tempTimelines.slice(0, view);
+
+    if(viewNumber < view){
+      var max = Math.max(...tempTimelines.map((x:any) => x.indexNumberToDisplay));
+      
+      enableTimline.forEach((x: any) => {
+        if(x.indexNumberToDisplay == 0){
+          x.indexNumberToDisplay = max + 1;
+          x.enableDisplay = true;
+          max++;
+        }
+      })
+
+      if(enableTimline.length>0){
+        await dispatch(addTimelineDetailActionCreator(tempTimelines));
+        setupdateVideoSelection(true);
+      }
     }
+
+    if(viewNumber > view){
+      disableTimline.forEach((x: any) => {
+        x.indexNumberToDisplay = 0;
+        x.enableDisplay = false;
+      })
+      if(disableTimline.length>0){
+        await dispatch(addTimelineDetailActionCreator(tempTimelines));
+        setupdateVideoSelection(true);
+      }
+    }
+    
     return setViewNumber(view);
   }
 
@@ -2192,6 +2218,7 @@ useEffect(() => {
                 toasterMsgRef={toasterMsgRef}
                 isAudioGraph={isAudioGraph}
                 ffScreenIcon = {fwfScreenIcon}
+                setscreenChangeVideoId={setscreenChangeVideoId}
               />
 
              

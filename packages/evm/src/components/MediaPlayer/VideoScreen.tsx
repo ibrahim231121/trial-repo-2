@@ -32,7 +32,8 @@ interface VideoScreenProp {
   setOnMarkerClickTimeData: any;
   toasterMsgRef: any;
   isAudioGraph: any;
-  ffScreenIcon ? : any
+  ffScreenIcon ? : any;
+  setscreenChangeVideoId : any
 }
 
 const VideoScreen = ({
@@ -59,6 +60,7 @@ const VideoScreen = ({
   toasterMsgRef,
   isAudioGraph,
   ffScreenIcon,
+  setscreenChangeVideoId,
 }: VideoScreenProp) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [indexAnchorE1, setIndexAnchorE1] = React.useState<number>(0);
@@ -223,6 +225,7 @@ const VideoScreen = ({
           indexNumber={indexNumber}
           setupdateVideoSelection={setupdateVideoSelection}
           anchorRef={anchorRef}
+          setscreenChangeVideoId={setscreenChangeVideoId}
         />}
         </div>
         

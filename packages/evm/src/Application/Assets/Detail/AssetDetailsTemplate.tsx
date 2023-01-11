@@ -592,7 +592,7 @@ const AssetDetailsTemplate = () => {
 
       return {
         id: template.id,
-        files: childFileData,
+        files: childFileData.filter((x: any) =>template.name == x.filename),
         assetduration: template.duration,
         assetbuffering: template.buffering,
         recording: template.recording,

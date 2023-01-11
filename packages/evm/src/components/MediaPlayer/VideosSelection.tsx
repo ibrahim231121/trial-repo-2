@@ -22,6 +22,7 @@ interface VideosSelectionProp {
   indexNumber: any;
   setupdateVideoSelection: any;
   anchorRef: any;
+  setscreenChangeVideoId : any;
 }
 
 type CheckValue = {
@@ -37,6 +38,7 @@ const VideosSelection = ({
   indexNumber,
   setupdateVideoSelection,
   anchorRef,
+  setscreenChangeVideoId,
 }: VideosSelectionProp) => {
   const [checkedVideo, setCheckedVideo] = React.useState<string>("");
   const dispatch = useDispatch();
@@ -53,6 +55,7 @@ const VideosSelection = ({
       }
       var tempItem = tempArray.find((x: any) => x.id == checkedVideo);
       if (tempItem !== undefined) {
+        setscreenChangeVideoId(tempItem.id);
         tempItem.enableDisplay = true;
         tempItem.indexNumberToDisplay = indexNumber;
         setIndexAnchorE1(0);
