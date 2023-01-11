@@ -232,6 +232,7 @@ const placementActionClass = placementActionPopup == "top-start" ? "placementPop
                             evidenceId: row.id,
                             assetId: asset.assetId,
                             assetName: asset.assetName,
+                            evidenceSearchObject: row
                           },
                         }}
                       >
