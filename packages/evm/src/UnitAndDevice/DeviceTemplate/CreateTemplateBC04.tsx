@@ -354,7 +354,7 @@ const CreateTemplate = (props: any) => {
 
   const setSensorsAndTriggersDropDown = () => {
     let sensorsAndTriggersOptions: any = [];
-    sensorsAndTriggersOptions.push({value : "Add All", label: "Add All"})
+    sensorsAndTriggersOptions.push({value : "All", label: "All"})
     sensorEvents.map((x:any) => {
       sensorsAndTriggersOptions.push({value : x.id, label: x.description})
     })
@@ -799,6 +799,11 @@ const CreateTemplate = (props: any) => {
         {
           if((cameraField ? nonDependantValue : nonDependantFormValue))
           {
+            if(split[2] == "Multiselect")
+            {
+              valueRaw = Array.isArray(valueRaw) ? valueRaw : valueRaw.split(',');
+              valueRaw = valueRaw.filter((x: any) => x.toLowerCase() !== "all");
+            }
             Initial_Values.push({
               key: split[1],
               value: valueRaw,
@@ -831,7 +836,7 @@ const CreateTemplate = (props: any) => {
     // let defaultTemplate = Initial_Values.filter((o: any) => {
     //   return o.key == "defaultTemplate";
     // });
-
+    
     var templateNames = templateName[0].value;
     //var defaultTemplates = defaultTemplate[0].value;
 
