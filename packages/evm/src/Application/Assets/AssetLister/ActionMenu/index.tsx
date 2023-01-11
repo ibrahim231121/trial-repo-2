@@ -885,6 +885,7 @@ const ActionMenu: React.FC<Props> = React.memo(
           position="auto"
           offsetX={25}
           offsetY={12}
+          onItemClick={(e) => (e.keepOpen = true)}
           className="menuCss mainListerAction"
           portal={portal}
           menuButton={
@@ -1107,9 +1108,8 @@ const ActionMenu: React.FC<Props> = React.memo(
                 <div className="crx-menu-list">
                   <SubMenu label={t("Export")}>
                     {!CheckEvidenceExpire(row?.evidence) ? (
-                      <MenuItem onClick={(e) => {
+                      <MenuItem onClick={() => {
                         handleDownloadAssetClick()
-                        e.keepOpen = true
                       }}>
                         {t("Download_asset(s)")}
                       </MenuItem>
