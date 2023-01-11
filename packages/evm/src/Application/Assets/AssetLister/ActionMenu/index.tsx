@@ -356,8 +356,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {
-      const masterAsset = row.files ? row : row.evidence.masterAsset;
-      const assetFileId = masterAsset.files && masterAsset.files[0].filesId;
+      const assetId =  row.evidence.asset.find((x:any) => x.assetId === row.assetId  )
+      const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
       if (!assetFileId) {
         showToastMsg?.({
           message: t("There_is_no_File_against_this_Asset"),
@@ -1107,7 +1107,10 @@ const ActionMenu: React.FC<Props> = React.memo(
                 <div className="crx-menu-list">
                   <SubMenu label={t("Export")}>
                     {!CheckEvidenceExpire(row?.evidence) ? (
-                      <MenuItem onClick={handleDownloadAssetClick}>
+                      <MenuItem onClick={(e) => {
+                        handleDownloadAssetClick()
+                        e.keepOpen = true
+                      }}>
                         {t("Download_asset(s)")}
                       </MenuItem>
                     ) : null}
