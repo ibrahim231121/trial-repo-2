@@ -9,11 +9,11 @@ export interface AutoCompleteOptionType {
 }
 
 export interface userStateProps {
-    userName: string;
+    email: string;
     firstName: string;
     middleInitial: string;
     lastName: string;
-    email: string;
+    secondaryEmail: string;
     mobileNumber: string;
     userGroups: AutoCompleteOptionType[];
     deactivationDate: string;

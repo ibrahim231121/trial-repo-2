@@ -2,7 +2,7 @@ import { History } from "../../../Application/Admin/Station/DefaultUnitTemplate/
 
 
 export interface UsersInfo {
-    email: string,
+    secondaryEmail: string,
     fName: string,
     lName: number
     lastLogin: Date,
@@ -59,7 +59,7 @@ export interface UserStatus{
 
 export interface AccountBase {
     status: string,
-    userName: string,
+    email: string,
     lastLogin: Date,
     isAdministrator: boolean,
     passwordDetail: PasswordDetail,
@@ -77,7 +77,7 @@ export interface PasswordDetail {
 }
 
 export interface User {
-    email: string;
+    secondaryEmail: string;
     deactivationDate: string;
     name: {
         first: string;
@@ -95,7 +95,7 @@ export interface Account {
     lastLogin: Date;
     passwordDetail: any;
     status: number;
-    userName: string;
+    email: string;
     password: string;
     isPasswordResetRequired: boolean;
 

@@ -42,7 +42,7 @@ type User = {
   userName: string;
   fName: string;
   lName: string;
-  email: string;
+  secondaryEmail: string;
   status: string;
   lastLogin: string;
   userGroups: string[];
@@ -133,7 +133,7 @@ const User: React.FC = () => {
                   return x.trim();
                 })
               : [],
-          email: user.email,
+          secondaryEmail: user.secondaryEmail,
           isADUser : user.isADUser,
           status: user.status,
         };
@@ -331,7 +331,7 @@ const User: React.FC = () => {
       width:"80"
     },
     {
-      label: `${t("User_Name")}`,
+      label: `${t("Email")}`,
       id: "userName",
       align: "left",
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -376,8 +376,8 @@ const User: React.FC = () => {
       attributeOperator: "contains"
     },
     {
-      label: `${t("Email")}`,
-      id: "email",
+      label: `${t("Secondary_Email")}`,
+      id: "secondaryEmail",
       align: "left",
       
       dataComponent: (e: string) => textDisplay(e, ""),
@@ -569,7 +569,7 @@ const User: React.FC = () => {
           el.columnName === "userName" ||
           el.columnName === "fName" ||
           el.columnName === "lName" ||
-          el.columnName === "email" ||
+          el.columnName === "secondaryEmail" ||
           el.columnName === "userGroups" 
         )
           dataRows = onTextCompare(dataRows, headCells, el);
