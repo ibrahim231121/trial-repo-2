@@ -113,6 +113,7 @@
           line-height: 21px;
           text-indent: 0px;
           height: inherit;
+          position: relative;
           &:last-child {
             border-right: 0px solid var(--color-ccc);
           }

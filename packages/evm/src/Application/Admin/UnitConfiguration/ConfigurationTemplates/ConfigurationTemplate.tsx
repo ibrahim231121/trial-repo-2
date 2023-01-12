@@ -13,7 +13,7 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import {
   getConfigurationInfoAsync,
   getDeviceTypeInfoAsync,
-  getAllConfigurationValuesAsync
+  getAllConfigurationValuesAsync,
 } from "../../../../Redux/TemplateConfiguration";
 import { Link } from "react-router-dom";
 import { urlList, urlNames } from "../../../../utils/urlList";
@@ -30,10 +30,10 @@ import {
   onSetHeadCellVisibility,
   onSaveHeadCellData,
   GridFilter,
-  PageiGrid
+  PageiGrid,
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 type ConfigTemplate = {
   id: number;
@@ -78,17 +78,37 @@ const configTemplate = (name: string, device: any) => {
         children={name}
         key={device.recId}
         to={{
-          pathname: urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url,
+          pathname: urlList.filter(
+            (item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4
+          )[0].url,
           state: {
             id: device.recId,
             name: name,
             isedit: true,
             deviceId: device.deviceId,
             deviceType: device.deviceType,
-            isDefaultTemplate: device.isDefaultTemplate
+            isDefaultTemplate: device.isDefaultTemplate,
           },
         }}
       />
+
+      <div className="touch-baseLink">
+        <Link
+          to={{
+            pathname: urlList.filter(
+              (item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4
+            )[0].url,
+            state: {
+              id: device.recId,
+              name: name,
+              isedit: true,
+              deviceId: device.deviceId,
+              deviceType: device.deviceType,
+              isDefaultTemplate: device.isDefaultTemplate,
+            },
+          }}
+        />
+      </div>
     </>
   );
 };
@@ -98,7 +118,7 @@ const ConfigurationTemplates: React.FC = () => {
   const dispatch = useDispatch();
   let history = useHistory();
   const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-  
+
   React.useEffect(() => {
     //dispatch(getConfigurationInfoAsync(pageiGrid));
     dispatch(getDeviceTypeInfoAsync());
@@ -133,7 +153,7 @@ const ConfigurationTemplates: React.FC = () => {
     //     "deviceTypeCategory": "BodyWorn"
     //   }
     // ]);
-    let headCellsArray = onSetHeadCellVisibility(headCells); 
+    let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "unitConfifTemplateDataTable"); // will check this
   }, []);
@@ -148,15 +168,17 @@ const ConfigurationTemplates: React.FC = () => {
 
   const createTemplateDropdown: DeviceType[] = useSelector(
     (state: RootState) => state.templateSlice.deviceType
-  ).filter((x: any) => x.showDevice == true).map((x: any) => {
-    return {
-      id: x.id,
-      name: x.name,
-      description: x.description,
-      deviceType: x.name,
-      deviceTypeCategory: x.category
-    }
-  });
+  )
+    .filter((x: any) => x.showDevice == true)
+    .map((x: any) => {
+      return {
+        id: x.id,
+        name: x.name,
+        description: x.description,
+        deviceType: x.name,
+        deviceTypeCategory: x.category,
+      };
+    });
 
   // const [createTemplateDropdown, setCreateTemplateDropdown] = React.useState<
   //   DeviceType[]
@@ -168,8 +190,7 @@ const ConfigurationTemplates: React.FC = () => {
   const [selectedItems, setSelectedItems] = React.useState<ConfigTemplate[]>(
     []
   );
-  const [reformattedRows, setReformattedRows] =
-    React.useState<any>();
+  const [reformattedRows, setReformattedRows] = React.useState<any>();
   const [selectedActionRow, setSelectedActionRow] =
     React.useState<ConfigTemplate>();
   const [open, setOpen] = React.useState<boolean>(false);
@@ -179,20 +200,23 @@ const ConfigurationTemplates: React.FC = () => {
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
-      filters: []
+      filters: [],
     },
     page: page,
     size: rowsPerPage,
     gridSort: {
       field: orderBy,
-      dir: order
-    }
-  })
-  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+      dir: order,
+    },
+  });
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
 
   const setData = () => {
     let configTemplateRows: ConfigTemplate[] = [];
-    if (UnitConfigurationTemplates.data && UnitConfigurationTemplates.data.length > 0) {
+    if (
+      UnitConfigurationTemplates.data &&
+      UnitConfigurationTemplates.data.length > 0
+    ) {
       configTemplateRows = UnitConfigurationTemplates.data.map(
         (template: any, i: number) => {
           return {
@@ -200,7 +224,9 @@ const ConfigurationTemplates: React.FC = () => {
             name: template.name,
             deviceType: template.deviceType,
             station: template.stationName,
-            defaultTemplate: template.isDefaultTemplate ? "Default" : "Not a Default",
+            defaultTemplate: template.isDefaultTemplate
+              ? "Default"
+              : "Not a Default",
             device: template,
           };
         }
@@ -209,29 +235,41 @@ const ConfigurationTemplates: React.FC = () => {
 
     setRows(configTemplateRows);
 
-    let stations = UnitConfigurationTemplateValues.map((item:any, i:number) => {
-      let element: any = {
-        id: item.stationId,
-        name: item.stationName ?? ""
+    let stations = UnitConfigurationTemplateValues.map(
+      (item: any, i: number) => {
+        let element: any = {
+          id: item.stationId,
+          name: item.stationName ?? "",
+        };
+        return element;
       }
-      return element
-    }).filter((x: any) => x.name !== "")
+    ).filter((x: any) => x.name !== "");
 
-    let deviceType = UnitConfigurationTemplateValues.map((item:any, i:number) => {
-      let element: any = {
-        id: item.deviceId,
-        name: item.deviceType
+    let deviceType = UnitConfigurationTemplateValues.map(
+      (item: any, i: number) => {
+        let element: any = {
+          id: item.deviceId,
+          name: item.deviceType,
+        };
+        return element;
       }
-      return element
-    })
+    );
 
-    let indicator = UnitConfigurationTemplateValues.map((item:any, i:number) => {
-      let element: any = {
-        name: item.isDefaultTemplate ? "Default" : "Not a Default",
+    let indicator = UnitConfigurationTemplateValues.map(
+      (item: any, i: number) => {
+        let element: any = {
+          name: item.isDefaultTemplate ? "Default" : "Not a Default",
+        };
+        return element;
       }
-      return element
-    })
-    setReformattedRows({...reformattedRows, rows: configTemplateRows, stations: stations, deviceType: deviceType, indicator: indicator });
+    );
+    setReformattedRows({
+      ...reformattedRows,
+      rows: configTemplateRows,
+      stations: stations,
+      deviceType: deviceType,
+      indicator: indicator,
+    });
   };
 
   React.useEffect(() => {
@@ -239,10 +277,9 @@ const ConfigurationTemplates: React.FC = () => {
   }, [UnitConfigurationTemplates.data, UnitConfigurationTemplateValues]);
 
   useEffect(() => {
-    if(paging)
-      dispatch(getConfigurationInfoAsync(pageiGrid));
-    setPaging(false)
-  },[pageiGrid])
+    if (paging) dispatch(getConfigurationInfoAsync(pageiGrid));
+    setPaging(false);
+  }, [pageiGrid]);
 
   const searchText = (
     rowsParam: ConfigTemplate[],
@@ -259,20 +296,26 @@ const ConfigurationTemplates: React.FC = () => {
     );
   };
 
-  const onSelectedIndividualClear = (headCells: HeadCellProps[], colIdx: number) => {
-    let headCellReset = headCells.map((headCell: HeadCellProps, index: number) => {
-      if(colIdx === index)
-        headCell.headerArray = [{ value: "" }];
-      return headCell;
-    });
+  const onSelectedIndividualClear = (
+    headCells: HeadCellProps[],
+    colIdx: number
+  ) => {
+    let headCellReset = headCells.map(
+      (headCell: HeadCellProps, index: number) => {
+        if (colIdx === index) headCell.headerArray = [{ value: "" }];
+        return headCell;
+      }
+    );
     return headCellReset;
   };
 
   const onSelectedClear = (colIdx: number) => {
-    setSearchData((prevArr) => prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString()));
-    let headCellReset = onSelectedIndividualClear(headCells,colIdx);
+    setSearchData((prevArr) =>
+      prevArr.filter((e) => e.columnName !== headCells[colIdx].id.toString())
+    );
+    let headCellReset = onSelectedIndividualClear(headCells, colIdx);
     setHeadCells(headCellReset);
-  }
+  };
 
   const changeMultiselect = (
     val: renderCheckMultiselect[],
@@ -282,7 +325,6 @@ const ConfigurationTemplates: React.FC = () => {
     headCells[colIdx].headerArray = val;
   };
   const onSelection = (v: ValueString[], colIdx: number) => {
-  
     if (v.length > 0) {
       for (var i = 0; i < v.length; i++) {
         let searchDataValue = onSetSearchDataValue(v, headCells, colIdx);
@@ -306,12 +348,15 @@ const ConfigurationTemplates: React.FC = () => {
     colIdx: number,
     initialRows: any
   ) => {
-
-    if(colIdx === 2 && initialRows && initialRows.stations && initialRows.stations.length > 0) { 
-
-      let station: any = [{id: 0,  value: t("No_Station") }];
+    if (
+      colIdx === 2 &&
+      initialRows &&
+      initialRows.stations &&
+      initialRows.stations.length > 0
+    ) {
+      let station: any = [{ id: 0, value: t("No_Station") }];
       initialRows.stations.map((x: any) => {
-        station.push({id: x.id, value: x.name });
+        station.push({ id: x.id, value: x.name });
       });
 
       return (
@@ -336,8 +381,8 @@ const ConfigurationTemplates: React.FC = () => {
             selectAllLabel="All"
           />
         </div>
-      )
-    } 
+      );
+    }
   };
 
   // ------------------STATION DROP DOWN END
@@ -349,11 +394,15 @@ const ConfigurationTemplates: React.FC = () => {
     colIdx: number,
     initialRows: any
   ) => {
-    if (colIdx === 3 && initialRows && initialRows.deviceType && initialRows.deviceType.length > 0) {
-
-      let type: any = [{id: 0,  value: t("No_type") }];
+    if (
+      colIdx === 3 &&
+      initialRows &&
+      initialRows.deviceType &&
+      initialRows.deviceType.length > 0
+    ) {
+      let type: any = [{ id: 0, value: t("No_type") }];
       initialRows.deviceType.map((x: any) => {
-        type.push({id: x.id, value: x.name });
+        type.push({ id: x.id, value: x.name });
       });
 
       return (
@@ -391,11 +440,15 @@ const ConfigurationTemplates: React.FC = () => {
     colIdx: number,
     initialRows: any
   ) => {
-    if (colIdx === 4 && initialRows && initialRows.indicator && initialRows.indicator.length > 0) {
-
-      let indicator: any = [{id: 0,  value: t("Default") }];
+    if (
+      colIdx === 4 &&
+      initialRows &&
+      initialRows.indicator &&
+      initialRows.indicator.length > 0
+    ) {
+      let indicator: any = [{ id: 0, value: t("Default") }];
       initialRows.indicator.map((x: any) => {
-        indicator.push({id: x.id, value: x.name });
+        indicator.push({ id: x.id, value: x.name });
       });
       return (
         <div>
@@ -443,7 +496,7 @@ const ConfigurationTemplates: React.FC = () => {
       id: "name",
       align: "left",
       //dataComponent: configTemplate,
-      dataComponent: getModuleIds().includes(24) ? configTemplate: textDisplay,
+      dataComponent: getModuleIds().includes(24) ? configTemplate : textDisplay,
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -451,13 +504,14 @@ const ConfigurationTemplates: React.FC = () => {
       detailedDataComponentId: "device",
       attributeName: "Name",
       attributeType: "String",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
     },
     {
       label: t("Station"),
       id: "station",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+      dataComponent: (e: string) =>
+        textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -470,13 +524,14 @@ const ConfigurationTemplates: React.FC = () => {
       detailedDataComponentId: "id",
       attributeName: "StationName",
       attributeType: "List",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
     },
     {
       label: t("Type"),
       id: "deviceType",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+      dataComponent: (e: string) =>
+        textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -488,13 +543,14 @@ const ConfigurationTemplates: React.FC = () => {
       minWidth: "400",
       attributeName: "DeviceType",
       attributeType: "List",
-      attributeOperator: "contains"
+      attributeOperator: "contains",
     },
     {
       label: t("Default_Template"),
       id: "defaultTemplate",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, "data_table_fixedWidth_wrapText"),
+      dataComponent: (e: string) =>
+        textDisplay(e, "data_table_fixedWidth_wrapText"),
       sort: true,
       searchFilter: true,
       searchComponent: (
@@ -506,22 +562,21 @@ const ConfigurationTemplates: React.FC = () => {
       minWidth: "375",
       attributeName: "IsDefaultTemplate",
       attributeType: "bool",
-      attributeOperator: "eq"
+      attributeOperator: "eq",
     },
   ]);
 
   useEffect(() => {
     //dataArrayBuilder();
-    console.log("searchData", searchData)
-    if(searchData.length > 0)
-      setIsSearchable(true)
+    console.log("searchData", searchData);
+    if (searchData.length > 0) setIsSearchable(true);
   }, [searchData]);
 
   const dataArrayBuilder = () => {
     if (reformattedRows !== undefined) {
       let dataRows: ConfigTemplate[] = reformattedRows;
       searchData.forEach((el: SearchObject) => {
-        if(el.columnName === "name")
+        if (el.columnName === "name")
           dataRows = onTextCompare(dataRows, headCells, el);
       });
       setRows(dataRows);
@@ -534,7 +589,7 @@ const ConfigurationTemplates: React.FC = () => {
   };
 
   const clearAll = () => {
-    pageiGrid.gridFilter.filters = []
+    pageiGrid.gridFilter.filters = [];
     dispatch(getConfigurationInfoAsync(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
@@ -553,100 +608,118 @@ const ConfigurationTemplates: React.FC = () => {
   });
 
   const getFilteredConfigurationTemplateData = () => {
+    pageiGrid.gridFilter.filters = [];
 
-      pageiGrid.gridFilter.filters = []
+    searchData
+      .filter((x) => x.value[0] !== "")
+      .forEach((item: any, index: number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join("@") : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        };
+        pageiGrid.gridFilter.filters?.push(x);
+      });
+    pageiGrid.page = 0;
+    pageiGrid.size = rowsPerPage;
 
-      searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
-          let x: GridFilter = {
-            operator: headCells[item.colIdx].attributeOperator,
-            //field: item.columnName.charAt(0).toUpperCase() + item.columnName.slice(1),
-            field: headCells[item.colIdx].attributeName,
-            value: item.value.length > 1 ? item.value.join('@') : item.value[0],
-            fieldType: headCells[item.colIdx].attributeType,
-          }
-          pageiGrid.gridFilter.filters?.push(x)
-      })
-      pageiGrid.page = 0
-      pageiGrid.size = rowsPerPage
-
-      if(page !== 0)
-        setPage(0)
-      else{
-        dispatch(getConfigurationInfoAsync(pageiGrid));
-        //dispatch(getGroupUserCountAsync());
-      }
-      setIsSearchable(false)
-  }
+    if (page !== 0) setPage(0);
+    else {
+      dispatch(getConfigurationInfoAsync(pageiGrid));
+      //dispatch(getGroupUserCountAsync());
+    }
+    setIsSearchable(false);
+  };
 
   useEffect(() => {
-    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});
-    setPaging(true)
-  },[page, rowsPerPage])
+    setPageiGrid({
+      ...pageiGrid,
+      page: page,
+      size: rowsPerPage,
+      gridSort: { field: orderBy, dir: order },
+    });
+    setPaging(true);
+  }, [page, rowsPerPage]);
 
   const sortingOrder = (sort: any) => {
-    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
-    setPaging(true)
-  }
+    setPageiGrid({
+      ...pageiGrid,
+      gridSort: { field: sort.orderBy, dir: sort.order },
+    });
+    setPaging(true);
+  };
 
-  const handleKeyDown = (event:any) => {
-    if (event.key === 'Enter') {
-      getFilteredConfigurationTemplateData()
+  const handleKeyDown = (event: any) => {
+    if (event.key === "Enter") {
+      getFilteredConfigurationTemplateData();
     }
-  }
+  };
   const handleBlur = () => {
-    if(isSearchable)
-      getFilteredConfigurationTemplateData()
-  }
+    if (isSearchable) getFilteredConfigurationTemplateData();
+  };
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>
-    <div className="CrxConfigTemplate switchLeftComponents" onKeyDown={handleKeyDown} onBlur={handleBlur}>
-
-      {
-        rows && (
+      <div
+        className="CrxConfigTemplate switchLeftComponents"
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+      >
+        {rows && (
           <CRXDataTable
             id="unitConfifTemplateDataTable"
-            actionComponent={<ConfigTemplateActionMenu
-              row={selectedActionRow}
-              selectedItems={selectedItems}
-            />}
-            toolBarButton=
-            {
-              getModuleIds().includes(23) ? 
-              <div className="menu_List_Button">
-                <Menu
-                  style={{ backgroundColor: '#FFFFFF' }}
-                  align="start"
-                  viewScroll="initial"
-                  direction="bottom"
-                  position="auto"
-                  arrow
-                  menuButton={
-                    <MenuButton>
-                      {t("Create_Template")}
-                    </MenuButton>
-                  }
-                >
-                  {createTemplateDropdown.map((x, y) => {
-                    return (
-                      <MenuItem >
-                        <Link to={{ pathname: urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url,
-                                    state: { id: y,
-                                             isedit: false,
-                                             type: x.name,
-                                             deviceId: x.id,
-                                             deviceType: x.deviceType
-                                           }
-                                  }}>
-                          <div style={{ backgroundColor: '#FFFFFF' }}>{t("Create")} {x.name}</div>
-                        </Link>
-                      </MenuItem>
-                    )
-                  })}
-                </Menu >
-              </div>
-            :<div></div>
-             }
+            actionComponent={
+              <ConfigTemplateActionMenu
+                row={selectedActionRow}
+                selectedItems={selectedItems}
+              />
+            }
+            toolBarButton={
+              getModuleIds().includes(23) ? (
+                <div className="menu_List_Button">
+                  <Menu
+                    style={{ backgroundColor: "#FFFFFF" }}
+                    align="start"
+                    viewScroll="initial"
+                    direction="bottom"
+                    position="auto"
+                    arrow
+                    menuButton={<MenuButton>{t("Create_Template")}</MenuButton>}
+                  >
+                    {createTemplateDropdown.map((x, y) => {
+                      return (
+                        <MenuItem>
+                          <Link
+                            to={{
+                              pathname: urlList.filter(
+                                (item: any) =>
+                                  item.name ===
+                                  urlNames.unitDeviceTemplateCreateBCO4
+                              )[0].url,
+                              state: {
+                                id: y,
+                                isedit: false,
+                                type: x.name,
+                                deviceId: x.id,
+                                deviceType: x.deviceType,
+                              },
+                            }}
+                          >
+                            <div style={{ backgroundColor: "#FFFFFF" }}>
+                              {t("Create")} {x.name}
+                            </div>
+                          </Link>
+                        </MenuItem>
+                      );
+                    })}
+                  </Menu>
+                </div>
+              ) : (
+                <div></div>
+              )
+            }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}
             dataRows={rows}
             headCells={headCells}
@@ -663,7 +736,7 @@ const ConfigurationTemplates: React.FC = () => {
             showTotalSelectedText={false}
             showActionSearchHeaderCell={false}
             showCustomizeIcon={false}
-            initialRows = {reformattedRows}
+            initialRows={reformattedRows}
             className="crxTableHeight crxTableDataUi configTemplate"
             onClearAll={clearAll}
             getSelectedItems={(v: ConfigTemplate[]) => setSelectedItems(v)}
@@ -673,21 +746,20 @@ const ConfigurationTemplates: React.FC = () => {
             selectedItems={selectedItems}
             page={page}
             rowsPerPage={rowsPerPage}
-            setPage= {(page:any) => setPage(page)}
-            setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+            setPage={(page: any) => setPage(page)}
+            setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
             totalRecords={UnitConfigurationTemplates.totalCount}
-            setSortOrder={(sort:any) => sortingOrder(sort)}
+            setSortOrder={(sort: any) => sortingOrder(sort)}
             //Please dont miss this block.
             offsetY={-27}
-            topSpaceDrag = {5}
+            topSpaceDrag={5}
             searchHeaderPosition={222}
             dragableHeaderPosition={187}
             stickyToolbar={152}
             //End here
           />
-        )
-      }
-    </div>
+        )}
+      </div>
     </ClickAwayListener>
   );
 };
