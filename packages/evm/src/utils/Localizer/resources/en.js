@@ -505,7 +505,7 @@ export const resources = {
         
         // --------- Asset buctet ----------
         "An_asset_you_are_attempting_to_add_to_the_asset_bucket_has_already_been_added.":"An asset you are attempting to add to the asset bucket has already been added.",
-        "You_have_added_the_selected_assets_to_the_asset_bucket.":"You have added the selected assets to the asset bucket.",
+        "You_have_added_the_selected_assets_to_the_asset_bucket.":"You have added the asset(s) to the asset bucket.",
         "assets":"assets",
         "asset":"asset",  
         "removed_the_asset_bucket":"removed the asset bucket",

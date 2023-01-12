@@ -1095,7 +1095,7 @@ const ActionMenu: React.FC<Props> = React.memo(
             </MenuItem>
           <MenuItem>
             <ActionMenuCheckList
-              moduleId={EXPORT_ASSETS_AND_METADATA_PERMISSION}
+              moduleId={35}
               descriptorId={2}
               maximumDescriptor={maximumDescriptor}
               evidence={row?.evidence}

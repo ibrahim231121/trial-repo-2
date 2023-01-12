@@ -172,7 +172,16 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   }, []);
 
   useEffect(() => {
-    setContainers(initialContainers);
+      let containerTable: any = {
+        tableId: {
+          id: id,
+          rows: stableSort(
+            dataRows,
+            getComparator(orderData.order, orderData.orderBy)
+          ),
+        },
+      };
+      setContainers(containerTable);
   }, [dataRows]);
 
   function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
