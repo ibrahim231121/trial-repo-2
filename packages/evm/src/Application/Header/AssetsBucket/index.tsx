@@ -47,11 +47,12 @@ import {
   AddFilesToFileService,
   getFileSize,
   resumeFileUpload,
+  updateStatus,
 } from "../../../GlobalFunctions/FileUpload";
 import { CRXModalDialog } from "@cb/shared";
 import AddMetadataForm from "./AddMetadataForm";
 import Cookies from "universal-cookie";
-import { FILE_SERVICE_URL } from "../../../utils/Api/url";
+import { EVIDENCE_SERVICE_URL, FILE_SERVICE_URL } from "../../../utils/Api/url";
 import Restricted from "../../../ApplicationPermission/Restricted";
 import { FileAgent } from "../../../utils/Api/ApiAgent";
 import "./overrideMainBucket.scss";
@@ -138,6 +139,8 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     React.useState<boolean>(false);
   const [errorCount, setErrorCount] = React.useState<number>(0);
   const [onAddEvidence, setonAddEvidence] = React.useState<boolean>(false);
+  const [onSaveEvidence, setonSaveEvidence] = React.useState<number>(0);
+
   const [sucess, setSucess] = React.useState<{ msg: string }>({
     msg: "",
   });
@@ -214,6 +217,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           fileName: x.fileName,
           fileId: x.file.uploadedFileId,
           isCompleted: loadedBytes == x.file.size,
+          state:x.file.state,
           uploadInfo: {
             uploadValue: Math.round(
               (Math.ceil(loadedBytes) / x.file.size) * 100
@@ -293,7 +297,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           message: `${totalRemoved} ${totalRemoved > 1 ? t("assets") : t("asset")} ${t("removed_the_asset_bucket")}`,
           variant: "success",
           duration: 7000,
-
         });
 
         let notificationMessage: NotificationMessage = {
@@ -484,6 +487,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const emptyfileOnClick = async (e: any) => {
     e.target.value = null;
   };
+
   const handleOnUpload = async (e: any) => {
     setMessageRedisplay(false)
     var av = [];
@@ -543,6 +547,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     setFiles((prev) => {
       return [...prev, ...e.target.files];
     });
+    
     AddFilesToFileService(e.target.files, window.onRecvBucketData);
 
     av.forEach(async (x) => {
@@ -604,9 +609,18 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       rec.uploadInfo.removed = true;
       return [...newUploadInfo];
     }
+    const checkValue = () => {
+      if(data.data.loadedBytes == data.data.fileSize){
+        changeUploadedFileStatus(data.data.fileId);
+        return true
+      }
+      else{
+        return false
+      }
+    }
     rec.fileName = data.data.fileName;
     rec.fileId = data.data.fileId;
-    rec.isCompleted = data.data.loadedBytes == data.data.fileSize;
+    rec.isCompleted = checkValue();
     rec.uploadInfo = {
       uploadValue:
         data.data.percent > rec.uploadInfo.uploadValue
@@ -640,7 +654,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       },
       body: JSON.stringify(body),
     };
-    fetch(FILE_SERVICE_URL + `/Files?id=` + id, requestOptions)
+    fetch(FILE_SERVICE_URL + `/Files/` + id, requestOptions)
       .then((resp: any) => {
         console.info(resp);
       })
@@ -649,7 +663,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       });
   };
 
-  
   let firstExecution = 0; // Store the first execution time
   const interval = 7000; // 7 seconds
   const onFileUploadError = () => {
@@ -687,6 +700,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     fileId: string;
     isPause: boolean;
     isCompleted: boolean;
+    state:string;
   }
 
   const handleClickOpen = () => {
@@ -788,11 +802,41 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     });
   };
 
-  const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
+  const onUploadingComplete = async(evidenceId:number,assetName: string) => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookies.get("access_token")}`,
+      TenantId: "1"
+        
+      },
+    };
+     await fetch(
+      EVIDENCE_SERVICE_URL + `/Evidences/` + evidenceId + `/Assets/`+ assetName + `/UploadingComplete` ,
+      requestOptions
+    );
+  }
 
   useEffect(() => {
+// This case execute when there is a delay in response from evidence and the progress bar reaches to 100%
+if(onSaveEvidence > 0 && totalFilePer == 100){
+  files.map((x:any) => {
+    onUploadingComplete(onSaveEvidence,x.uploadedFileName.substring(0,  x.uploadedFileName.lastIndexOf(".")));
+  })
+  setonSaveEvidence(0);
+}
+  },[onSaveEvidence])
+
+  const [isCheckTrue, setIsCheckTrue] = useState<boolean>(false);
+  useEffect(() => {
     if (totalFilePer === 100 ) {
-     
+      if(onSaveEvidence > 0){
+  files.forEach((x:any) => {
+    onUploadingComplete(onSaveEvidence,x.uploadedFileName.substring(0,  x.uploadedFileName.lastIndexOf(".")))
+  })
+  setonSaveEvidence(0);
+      }
       if(!isMessageRedisplay)
       {
       toasterRef.current.showToaster({
@@ -860,6 +904,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
           setUploadInfo([]);
         }
         setFileCount(0);
+        
       } else {
         setIsCheckTrue(true);
       }
@@ -869,10 +914,20 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   }, [onAddEvidence]);
 
   const getUploadInfo = (data: any) => {
+    const checkValue = () => {
+      if(data.data.loadedBytes == data.data.fileSize){
+        changeUploadedFileStatus(data.data.fileId)
+        return true
+      }
+      else{
+        return false
+      }
+    }
     return {
       fileName: data.data.fileName,
       fileId: data.data.fileId,
-      isCompleted: data.data.loadedBytes == data.data.fileSize,
+      isCompleted: checkValue(),
+      state: data.data.state,
       uploadInfo: {
         uploadValue: data.data.percent,
         uploadText: data.data.fileName,
@@ -883,6 +938,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       isPause: false,
     };
   };
+
 
   //Error message system administrator
   const [errorMsg, setErrorMsg] = useState<any>({
@@ -966,6 +1022,34 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     });
     return prog;
   };
+  
+  const changeUploadedFileStatus = async(file:any) => {
+    let body = [
+      {
+        op: "replace",
+        path: "state",
+        value: "Uploaded",
+      },
+    ];
+    const requestOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookies.get("access_token")}`,
+      TenantId: "1"
+      },
+      body: JSON.stringify(body),
+    };
+    const resp = await fetch(
+      FILE_SERVICE_URL + `/Files/` + file,
+      requestOptions
+    );
+    if (resp.ok) {
+      updateStatus(file,window.onRecvBucketData,true)
+    }
+  }
+
+  
   const retryFile = (file: FileUploadInfo) => {
     resumeFile(file);
   };
@@ -1066,7 +1150,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
       body: JSON.stringify(body),
     };
     const resp = await fetch(
-      FILE_SERVICE_URL + `/Files?id=` + file.uploadedFileId,
+      FILE_SERVICE_URL + `/Files/` + file.uploadedFileId,
       requestOptions
     );
     if (resp.ok) {
@@ -1297,6 +1381,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
                             }
                             uploadFile={files}
                             setAddEvidence={setonAddEvidence}
+                            setEvidenceId = {setonSaveEvidence}
                             uploadAssetBucket={assetBucketData}
                             activeScreen={activeScreen}
                             setActiveScreen={setActiveScreen}

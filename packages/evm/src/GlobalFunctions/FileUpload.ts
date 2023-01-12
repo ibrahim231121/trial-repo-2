@@ -23,12 +23,14 @@ interface FileInfo {
 let filesId = [0];
 let fileCountAtError = 0;
 let isErrorOccured = false;
+let fileData: any 
 export const AddFilesToFileService = async (files: any, onRecvData: any) => {
     const promises = [];
     filesId = [];
     fileCountAtError = files.length;
     isErrorOccured = false;
-
+    
+    fileData = files
     for (const file of files) {
         filesId.push(file.id);
         const fileInfo: FileInfo = {
@@ -61,7 +63,7 @@ export const AddFilesToFileService = async (files: any, onRecvData: any) => {
         console.log("error", e)
     });
 }
-const filesToUpload = async (files: any, onRecvData: any) => {
+export const filesToUpload = async (files: any, onRecvData: any) => {
     const promises: any = [];
     for (const file of files) {
         promises.push(new Promise((resolve, reject) => {
@@ -93,8 +95,8 @@ const onAddFile = async (payload: any, file: any, resolve: any, reject: any) => 
             if (error.errors !== undefined) {
             }
             else if (!isNaN(+error)) {
-                //console.log("post", resp)
-                fetchFile(resp, file, resolve);
+                
+                fetchFile(resp, file, resolve,false);
             }
             else {
                 window.onRecvError.data = {
@@ -127,8 +129,18 @@ const dispatchError = () => {
     }
 
 }
-const fetchFile = async (id: string, file: any, resolve: any) => {
 
+export const updateStatus = async (fileId: any, onRecvData: any, fileUpdate:boolean) => {
+    const promises = [];
+    promises.push(
+        new Promise((resolve, reject) => {
+            fetchFile(fileId, fileData, resolve,fileUpdate);
+        }));
+
+    
+}
+
+export const fetchFile = async (id: string, file: any, resolve: any,fileUpdate: boolean) => {
     await fetch(`${FILE_SERVICE_URL}/Files/${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cookies.get("access_token")}
@@ -147,11 +159,23 @@ const fetchFile = async (id: string, file: any, resolve: any) => {
         else return res.text();
     }).then(function (resp) {
         if (resp !== undefined) {
-            //console.log("resp", resp);
-            file.uploadUri = resp.upload.uri;
-            file.uploadedFileName = resp.name;
-            file.uploadedFileId = resp.id;
-            file.url = resp.url;
+            
+            if(!fileUpdate){
+
+                file.uploadUri = resp.upload.uri;
+                file.uploadedFileName = resp.name;
+                file.uploadedFileId = resp.id;
+                file.url = resp.url;
+                file.state = resp.state;
+            }
+            else{
+                for(const file of fileData){
+                    if(file.uploadedFileId == resp.id){
+                        file.state = resp.state;
+                    }
+                    
+                }
+            }
             resolve("resolve", resp)
         }
         else {

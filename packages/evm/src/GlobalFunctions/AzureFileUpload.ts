@@ -84,7 +84,8 @@ const saveFileToLocalStorage = async (usb: UploadStageBlockInfo) => {
             lastModifiedDate: usb.file.lastModifiedDate,
             name: usb.file.name,
             size: usb.file.size,
-            type: usb.file.type
+            type: usb.file.type,
+            state:usb.file.state,
         }
     };
     if (index == -1)

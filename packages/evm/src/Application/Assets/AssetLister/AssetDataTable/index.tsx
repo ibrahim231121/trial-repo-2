@@ -115,6 +115,14 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const { t } = useTranslation<string>();
   let reformattedRows: SearchModel.Evidence[] = [];
   rowsData.forEach((row: SearchModel.Evidence, i: number) => {
+    const checkStatus = () => {
+  if((row.masterAsset.state == "Deleted" || row.masterAsset.state == "Trash") && row.masterAsset.status == "Available"){
+    return "Expired"
+  }
+  else{
+    return row.masterAsset.status
+  }
+    }
     let evidence: any = {
       id: row.id,
       assetId: row.masterAsset.assetId,
@@ -128,7 +136,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       station: row.station,
       recordedBy: row.masterAsset.owners === null ? [] : row.masterAsset.owners,
       recordingStarted: row.masterAsset.recordingStarted,
-      status: row.masterAsset.status,
+      status: checkStatus(),
       evidence: row,
       holdUntil: row.holdUntil,
       expireOn: row.expireOn,

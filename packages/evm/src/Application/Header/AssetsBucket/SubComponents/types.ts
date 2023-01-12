@@ -5,6 +5,7 @@ export interface AddMetadataFormProps {
     uploadAssetBucket: any;
     activeScreen: number;
     setAddEvidence: any;
+    setEvidenceId: any;
     setActiveScreen: (param: number) => void;
 }
 

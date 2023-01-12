@@ -24,6 +24,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
   setCloseWithConfirm,
   setAddEvidence,
+  setEvidenceId,
   uploadFile,
   uploadAssetBucket,
   activeScreen,
@@ -457,6 +458,15 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     return typeOfAsset;
   };
 
+  const checkFileStatus = (fileStatus: string) => {
+    if(fileStatus === "Uploaded"){
+      return "Available"
+    }
+    else{
+      return fileStatus
+    }
+  }
+
   const checkFileType = (fileType: string) => {
     let typeOfFile: string = "";
     switch (fileType) {
@@ -732,7 +742,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         id: index.uploadedFileId,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
         typeOfAsset: checkAssetType(extension),
-        status: "Uploading",
+        status: checkFileStatus(index.state),
         state: "Normal",
         unitId: 20,
         isRestrictedView: false,
@@ -846,6 +856,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     EvidenceAgent.addEvidence(payload).then((res) => {
       onClose();
       setAddEvidence(true);
+      setEvidenceId(+res);
       setActiveScreen(0);
       return res;
     }).catch((error: any) => {
@@ -912,7 +923,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         id: 0,
         name: index.uploadedFileName.substring(0, masterAssetValueIndex),
         typeOfAsset: checkAssetType(extension),
-        status: "Uploading",
+        status: checkFileStatus(index.state),
         state: "Normal",
         unitId: 20,
         isRestrictedView: false,
