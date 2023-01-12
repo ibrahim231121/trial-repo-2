@@ -103,7 +103,7 @@ const Application: React.FC<Props> = ({resAppPermission, onSetAppPermissions, ap
   }
 
   useEffect(() => {
-    if (selectedUserGroup !== undefined) {
+    if (selectedUserGroup !== undefined && selectedUserGroup.id !== "") {
       UsersAndIdentitiesServiceAgent.getUserGroupsById(selectedUserGroup?.id).then((response: UserGroups) => {
         setResponseSelectedGroups(response)
      });
