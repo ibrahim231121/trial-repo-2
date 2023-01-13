@@ -42,6 +42,7 @@ import { setLoaderValue } from "../../Redux/loaderSlice";
 import { getStationsInfoAllAsync } from "../../Redux/StationReducer";
 import { RootState } from "../../Redux/rootReducer";
 import { subscribeGroupToSocket, unSubscribeGroupFromSocket } from "../../utils/hub_config";
+import Restricted from "../../ApplicationPermission/Restricted";
 const cookies = new Cookies();
 
 export type UnitInfoModel = {
@@ -466,10 +467,12 @@ const UnitCreate = (props: historyProps) => {
             }
           >
             <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${stationID}&unitSysSerial=${unitID}&unitId=${primaryDeviceInfo ? primaryDeviceInfo.name : ""}`} target="_blank">
-              <div className="crx-meu-content ">
-                <div className="crx-menu-list">{t("View_Live_Video")}</div>
-              </div>
-            </MenuItem>
+              <Restricted moduleId={57}>
+                <div className="crx-meu-content ">
+                  <div className="crx-menu-list">{t("View_Live_Video")}</div>
+                </div>
+              </Restricted>
+              </MenuItem>
           </Menu>
         </div>
         <CBXLink  children = "Exit"   onClick={() => history.goBack()} />

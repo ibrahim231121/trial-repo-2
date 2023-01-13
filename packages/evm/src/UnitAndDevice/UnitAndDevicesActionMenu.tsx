@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useHistory } from 'react-router-dom';
 import { urlList, urlNames } from '../utils/urlList';
+import Restricted from "../ApplicationPermission/Restricted";
 
 import {
     Menu,
@@ -64,7 +65,9 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
                 </div>
             </div>
         </MenuItem>
-        {(selectedItems?.length < 2 || !selectedItems) && <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId != null ? JSON.parse(row?.unitId).unitName : ""}`} target="_blank">
+            {(selectedItems?.length < 2 || !selectedItems) &&  
+            <MenuItem href={`${urlList.filter((item: any) => item.name === urlNames.singleLiveView)[0].url}&stationId=${row?.stationId}&unitSysSerial=${row?.id}&unitId=${row?.unitId != null ? JSON.parse(row?.unitId).unitName : ""}`} target="_blank">
+            <Restricted moduleId={57}>
             <div className="crx-meu-content crx-spac">
                 <div className="crx-menu-icon">
                 </div>
@@ -72,7 +75,9 @@ const UnitAndDevicesActionMenu: React.FC<Props> = ({ selectedItems, row}) => {
                 {t("View_Live_Video")}
                 </div>
             </div>
-        </MenuItem>}
+            </Restricted>
+            </MenuItem>
+            }
         </Menu>
     );
 };

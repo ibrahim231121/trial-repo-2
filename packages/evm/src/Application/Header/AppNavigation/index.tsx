@@ -97,7 +97,7 @@ const CRXLefNavigation = () => {
       },
     },
     {
-      moduleId:0,
+      moduleId:57,
       label: "Live Video",
       icon: "fas fa-video NaveIcon",
       classes: "liveVideoTab",
@@ -105,7 +105,7 @@ const CRXLefNavigation = () => {
       target: "_blank"
     },
     {
-      moduleId:0,
+      moduleId:57,
       label: "AVL Map",
       icon:"icon icon-compass5 NaveIcon", 
       classes: "mapsTab",
