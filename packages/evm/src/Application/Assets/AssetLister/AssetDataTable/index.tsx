@@ -2,7 +2,7 @@ import { CBXMultiSelectForDatatable, CRXDataTable, CRXDataTableTextPopover, CRXI
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next"; 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import { DateTimeComponent } from "../../../../GlobalComponents/DateTime";
@@ -25,6 +25,7 @@ import { AssetThumbnail } from "./AssetThumbnail";
 import DetailedAssetPopup from "./DetailedAssetPopup";
 import "./index.scss";
 import { EvidenceChildSharingModel } from "../../../../utils/Api/models/EvidenceModels";
+import { RootState } from "../../../../Redux/rootReducer";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
@@ -44,7 +45,7 @@ const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
       return <div className={"dataTableText " + classes}>{assetType}</div>;
     }
   }
-  else 
+  else
   {
     return <div className={"dataTableText " + classes}></div>;
   }
@@ -53,36 +54,36 @@ const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
-  let dataLink = 
-  <>
-    <Link
-      className="linkColor"
-      to={{
-        pathname: "/assetdetail",
-        state: {
-          evidenceId: evidence.id,
-          assetId: masterAsset.assetId,
-          assetName: assetName,
-          evidenceSearchObject: evidence
-        } as AssetDetailRouteStateType,
-      }}
-    >
-      <div className="assetName">{assetName}</div>
-    </Link>
-    {assets  && evidence.masterAsset.lock &&
-    <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
-    }
-    <DetailedAssetPopup asset={assets} row={evidence} />
-  </>
-    return (<CRXDataTableTextPopover
-      content={dataLink}
-      id="dataAssets"
-      isPopover={true}
-      counts={assetName}
-      title="Assets ID"
-      minWidth="130"
-      maxWidth="263"
-    />);
+  let dataLink =
+    <>
+      <Link
+        className="linkColor"
+        to={{
+          pathname: "/assetdetail",
+          state: {
+            evidenceId: evidence.id,
+            assetId: masterAsset.assetId,
+            assetName: assetName,
+            evidenceSearchObject: evidence
+          } as AssetDetailRouteStateType,
+        }}
+      >
+        <div className="assetName">{assetName}</div>
+      </Link>
+      {assets && evidence.masterAsset.lock &&
+        <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock" />
+      }
+      <DetailedAssetPopup asset={assets} row={evidence} />
+    </>
+  return (<CRXDataTableTextPopover
+    content={dataLink}
+    id="dataAssets"
+    isPopover={true}
+    counts={assetName}
+    title="Assets ID"
+    minWidth="130"
+    maxWidth="263"
+  />);
 };
 
 const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
@@ -163,8 +164,9 @@ const MasterMain: React.FC<MasterMainProps> = ({
   const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<SearchModel.Evidence>();
   const [selectedMaster, setSelectedMaster] = React.useState<number[]>();
+  const [groupedSelectedAsset, setGroupedSelectedAsset] = React.useState<SearchModel.Evidence[]>([]);
 
-    const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
+  const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
   const [dateTime, setDateTime] = React.useState<DateTimeProps>({
     dateTimeObj: {
       startDate: "",
@@ -174,12 +176,43 @@ const MasterMain: React.FC<MasterMainProps> = ({
     },
     colIdx: 0,
   });
-
+  const groupedSelectedAssetsActions: any = useSelector(
+    (state: RootState) => state.groupedSelectedAssetsActionsReducer.groupedSelectedAssetsActions
+  );
   useEffect(() => {
-  },[selectedItems])
+    var tempRows:SearchModel.Evidence[] = [];
+    if (groupedSelectedAsset != undefined && groupedSelectedAsset.length > 0) {
+      let groupedMasterIds = groupedSelectedAsset?.map((x: any) => x.evidence.masterAsset.assetId);
+      rows.map((r: any) => {
+        let tempRow = r;
+        if (groupedMasterIds?.includes(tempRow.evidence.masterAsset.assetId)) {
+          tempRow.onlyforlinkedasset = groupedSelectedAssetsActions[0].actionType.toString();
+        }
+        else {
+          tempRow.onlyforlinkedasset = "";
+        }
+        tempRows.push(tempRow);
+      });
+      setRows(tempRows);
+    }
+  }, [groupedSelectedAsset]);
+  useEffect(() => {
+    let tempSelectedAssets: any = [];
+    groupedSelectedAssetsActions.forEach((el: any) => {
+      let x: any = rows.find((x: any) => x.assetId == el.masterId);
+      tempSelectedAssets.push(x);
+    });
+    setGroupedSelectedAsset(tempSelectedAssets);
+   
+  }, [groupedSelectedAssetsActions])
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
+  useEffect(() => {
+    console.log('Rows before and after: ',rows);
+    console.log('order: ',order);
+    console.log('orderBy :',orderBy);
+  },[rows]);
 
   useEffect(() => {
     if (dateTime.colIdx !== 0) {
@@ -283,7 +316,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       setDateTime(dateTimeObject);
       headCells[colIdx].headerObject = dateTimeObject.dateTimeObj;
     }
-    
+
     return (
       <DateTimeComponent
         showCompact={showDateCompact}
@@ -373,7 +406,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
     if (initialRows) {
 
       let options: any[] = [
-        { value: t("Available") }, 
+        { value: t("Available") },
         { value: t("Expired") }
       ];
 
@@ -429,7 +462,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
       label: `${t("Asset_ID")}`,
       id: "assetName",
       align: "left",
-      dataComponent: (e: any, d: any) => assetNameTemplate(e, d), 
+      dataComponent: (e: any, d: any) => assetNameTemplate(e, d),
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
@@ -618,12 +651,12 @@ const MasterMain: React.FC<MasterMainProps> = ({
   ) => {
 
     dataRows = dataRows.filter((x: any) => {
-      return el.value.includes((x[headCells[el.colIdx].id] !== "Expired" && 
-                                x[headCells[el.colIdx].id] !== "" && 
-                                x[headCells[el.colIdx].id] !== null && 
-                                x[headCells[el.colIdx].id].length > 2) 
-                                ?  "Available" 
-                                : x[headCells[el.colIdx].id]);
+      return el.value.includes((x[headCells[el.colIdx].id] !== "Expired" &&
+        x[headCells[el.colIdx].id] !== "" &&
+        x[headCells[el.colIdx].id] !== null &&
+        x[headCells[el.colIdx].id].length > 2)
+        ?  "Available"
+        : x[headCells[el.colIdx].id]);
     });
 
     return dataRows;
@@ -685,7 +718,7 @@ const MasterMain: React.FC<MasterMainProps> = ({
 
   return (
     <>
-    
+
       <CRXToaster ref={toasterRef} />
       {rows && (
         <CRXDataTable

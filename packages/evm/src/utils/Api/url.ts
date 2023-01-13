@@ -21,6 +21,8 @@ export const EVIDENCE_PREDITIVE_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/predi
 
 export const EVIDENCE_GET_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence?Size=1000&Page=1`
 
+export const EVIDENCE_GET_BY_ID_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence`
+
 export const EVIDENCE_SEARCH_VERSION_URL = `${BASE_URL_SEARCH_SERVICE}/Evidence/Version`
 
 export const AUTHENTICATION_NewAccessToken_URL = `${BASE_URL_AUTHENTICATION_SERVICE}/Authentication/GetAccessToken`

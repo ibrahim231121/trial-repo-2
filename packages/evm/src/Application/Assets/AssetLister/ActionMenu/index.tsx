@@ -52,8 +52,9 @@ import autoTable from "jspdf-autotable";
 import moment from "moment";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
-import { getGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
+import { addGroupedSelectedAssets, clearAllGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
 import { GroupedSelectedAssets } from "../AssetDataTable/AssetTypes";
+import { addGroupedSelectedAssetsActions, clearAddGroupedSelectedAssetsActions, clearAllGroupedSelectedAssetsActions } from "../../../../Redux/groupedSelectedAssetsActions";
 
 type Props = {
   row: any;
@@ -65,7 +66,7 @@ type Props = {
   showToastMsg?: (obj: any) => void;
   setIsPrimaryOptionOpen?: (obj: boolean) => void;
   actionMenuPlacement: ActionMenuPlacement;
-  className? : string
+  className?: string
 };
 
 type AssetLink = {
@@ -73,6 +74,12 @@ type AssetLink = {
   assetId: number,
   evidenceId: number
 };
+type AssetAction = {
+  masterId: number,
+  assetId: number,
+  evidenceId: number,
+  actionType: string,
+}
 type MasterAssetEvidence = {
   masterId: number,
   evidenceId: number
@@ -102,6 +109,9 @@ const ActionMenu: React.FC<Props> = React.memo(
     const groupedSelectedAssets: any = useSelector(
       (state: RootState) => state.groupedSelectedAssetsReducer.groupedSelectedAssets
     );
+    const groupedSelectedAssetsActions: any = useSelector(
+      (state: RootState) => state.groupedSelectedAssetsActionsReducer.groupedSelectedAssetsActions
+    );
     const [multiAssetDisabled, setMultiAssetDisabled] =
       React.useState<boolean>(false);
     const [isCategoryEmpty, setIsCategoryEmpty] =
@@ -112,6 +122,9 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
     const [assetlinks, setAssetLinks] = React.useState<AssetLink[]>([]);
+    const [showAssetActions, setShowAssetActions] = React.useState<boolean>(false);
+    const [selectedAssetActionType, setSelectedAssetActionType] = React.useState<string>("");
+
 
     const [assetLockUnLockError, setAssetLockUnLockError] =
       React.useState<AssetLockUnLockErrorType>({
@@ -126,6 +139,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [openAssignUser, setOpenAssignUser] = React.useState(false);
     const [openManageRetention, setOpenManageRetention] = React.useState(false);
     const [openAssetShare, setOpenAssetShare] = React.useState(false);
+    const [openAssetAction, setOpenAssetAction] = React.useState<AssetAction[]>([]);
+
     const [openSubmitAnalysis, setOpenSubmitAnalysis] = React.useState(false);
     const [openRestrictAccessDialogue, setOpenRestrictAccessDialogue] =
       React.useState(false);
@@ -138,60 +153,23 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [selectedChild, setSelectedChild] = React.useState<EvidenceChildSharingModel[]>([]);
     const [isMultiSelectEvidenceExpired, setIsMultiSelectEvidenceExpired] =
       React.useState(false);
+
+    const [isAssetLinkedOrMoved, setisAssetLinkedOrMoved] = React.useState<string>("");
     const EXPORT_ASSETS_AND_METADATA_PERMISSION = 60;
     React.useEffect(() => {
-      dispatch(getGroupedSelectedAssets());
+    }, [groupedSelectedAssetsActions])
+    React.useEffect(() => {
       if (row == undefined && selectedItems != null) {
         let masterIds: MasterAssetEvidence[] = [];
         selectedItems.map((obj: any) => {
           masterIds.push({
-            masterId:obj.assetId,
+            masterId: obj.assetId,
             evidenceId: obj.evidence.id,
           });
         });
+
         setSelectedMaster(masterIds);
       }
-      //const filterRetentionPolicies: any = useSelector((state: RootState) => state.retentionPoliciesSlice.filterRetentionPolicies);
-
-
-
-      // const rec = selectedItems.find(y => y?.isChecked == true); 
-      //  setSelectedChild(prevState => {
-
-      //   let a:EvidenceChildSharingModel={masterId:0,assetId:[]};
-      //   let b:number[]=[];
-      //   selectedItems.map((x: any) => {
-      //     if (x?.isChecked == true) {
-      //       a.masterId=x.evidence.id;
-      //       a.assetId.push(x.assetId)              
-      //      }
-      //      else{
-      //        b.push(x.evidence.id);
-      //      }
-      //    });    
-      //    setSelectedMaster(b);
-      //          const new1 = [...prevState];
-      //          const rec = new1.find(x => x.masterId == a.masterId);
-      //          if (rec != undefined || rec != null) {
-      //            rec.assetId=a.assetId;
-      //            rec.masterId=a.masterId;
-      //          }
-      //          else{
-      //           new1.push({assetId:a.assetId,masterId:a.masterId})
-      //          }
-      //          return new1;
-      //        });
-
-      // let groupedSelectedAssets = selectedItems.map((select: any, i: number) => {
-      //   let obj: any = {
-      //     evidenceId: select.evidence.id,
-      //     assetId: select.assetId,
-
-      //   }
-      //   return obj;
-      // });
-
-      //dispatch(addGroupedSelectedAssets(groupedSelectedAssets));
 
       calculateSecurityDescriptor();
       if (selectedItems.length > 1) {
@@ -219,13 +197,31 @@ const ActionMenu: React.FC<Props> = React.memo(
         if (row?.categories.length == 0) {
           setIsCategoryEmpty(true);
         }
+
       } else {
         if (row?.evidence.categories.length == 0) {
           setIsCategoryEmpty(true);
         }
       }
-    }, [row, selectedItems]);
+      if (row?.onlyforlinkedasset == "link") {
+        setisAssetLinkedOrMoved("");
 
+      }
+      else if (row?.onlyforlinkedasset == "move") {
+        setisAssetLinkedOrMoved("");
+
+      }
+      else {
+        setisAssetLinkedOrMoved(groupedSelectedAssetsActions[0]?.actionType?.toString());
+
+      }
+    }, [row, selectedItems]);
+    React.useEffect(() => {
+      if (openAssetAction.length > 0) {
+        dispatch(clearAddGroupedSelectedAssetsActions(openAssetAction));
+      }
+
+    }, [openAssetAction]);
     React.useEffect(() => {
       let assetsList: AssetLink[] = [];
       groupedSelectedAssets.map((obj: any) => {
@@ -356,7 +352,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {
-      const assetId =  row.evidence.asset.find((x:any) => x.assetId === row.assetId  )
+      const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
       const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
       if (!assetFileId) {
         showToastMsg?.({
@@ -657,13 +653,13 @@ const ActionMenu: React.FC<Props> = React.memo(
       //if (row) {
 
       // For Asset Bucket Top Action Menu
-      if(row == undefined && selectedItems.length > 0){
+      if (row == undefined && selectedItems.length > 0) {
         dispatch(removeAssetFromBucketActionCreator(selectedItems));
         setSelectedItems && setSelectedItems([])
-        return 
+        return
       }
       // --------------------------------
-      
+
       const find = selectedItems.findIndex(
         (selected: SearchModel.Asset) => selected.assetId === row.id
       );
@@ -856,7 +852,7 @@ const ActionMenu: React.FC<Props> = React.memo(
     }
 
     const evidenceCategorizedBy = (): number | null => {
-      if(row?.evidence){
+      if (row?.evidence) {
         if (row?.evidence.categorizedBy) {
           return Number(row?.evidence.categorizedBy);
         } else {
@@ -865,7 +861,69 @@ const ActionMenu: React.FC<Props> = React.memo(
       }
       return null;
     }
+    const linkAssetHandler = () => {
+      let tempLinkedAssets: AssetAction[] = [];
+      if (assetlinks.length > 0) 
+      {
+        assetlinks.map((x: AssetLink) => {
 
+          tempLinkedAssets.push({
+            masterId: x.masterId,
+            assetId: x.assetId,
+            evidenceId: x.evidenceId,
+            actionType: "link"
+          });
+
+        });
+      }
+      else
+      {
+        tempLinkedAssets.push({
+          masterId: row.evidence.masterAssetId,
+          assetId: row.assetId,
+          evidenceId: row.evidence.id,
+          actionType: "link"
+        });
+      }
+      setOpenAssetAction(tempLinkedAssets);
+
+    }
+    const linkToAssetHandler = () => {
+      let tempLinkedAssets: AssetAction[] = [];
+      dispatch(clearAllGroupedSelectedAssetsActions());
+
+    }
+    const moveAssetHandler = () => {
+      let tempLinkedAssets: AssetAction[] = [];
+      if (assetlinks.length > 0) 
+      {
+      assetlinks.map((x: AssetLink) => {
+        tempLinkedAssets.push({
+          masterId: x.masterId,
+          assetId: x.assetId,
+          evidenceId: x.evidenceId,
+          actionType: "move"
+        });
+      });
+    }
+    else
+    {
+      tempLinkedAssets.push({
+        masterId: row.evidence.masterAssetId,
+        assetId: row.assetId,
+        evidenceId: row.evidence.id,
+        actionType: "move"
+      });
+    }
+      setOpenAssetAction(tempLinkedAssets);
+
+    }
+    const moveToAssetHandler = () => {
+      let tempLinkedAssets: AssetAction[] = [];
+      dispatch(clearAllGroupedSelectedAssetsActions());
+      //setOpenAssetAction(tempLinkedAssets);
+
+    }
     return (
       <>
         <FormContainer
@@ -1075,24 +1133,137 @@ const ActionMenu: React.FC<Props> = React.memo(
             </MenuItem>
           ) : null}
 
+          <MenuItem>
+            <ActionMenuCheckList
+              moduleId={0}
+              descriptorId={2}
+              maximumDescriptor={maximumDescriptor}
+              evidence={row?.evidence}
+              actionMenuName={t("Share_asset")}
+              securityDescriptors={securityDescriptorsArray}
+              isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+            >
+              <div className="crx-meu-content" onClick={handleOpenAssetShare}>
+                <div className="crx-menu-icon">
+                  <i className="fa-regular fa-envelope"></i>
+                </div>
+                <div className="crx-menu-list">{t("Share_asset")}</div>
+              </div>
+            </ActionMenuCheckList>
+          </MenuItem>
+
+
+
+          {groupedSelectedAssetsActions.length == 0 && (
             <MenuItem>
               <ActionMenuCheckList
                 moduleId={0}
                 descriptorId={2}
                 maximumDescriptor={maximumDescriptor}
                 evidence={row?.evidence}
-                actionMenuName={t("Share_asset")}
+                actionMenuName={t("Link_asset")}
                 securityDescriptors={securityDescriptorsArray}
                 isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
               >
-                <div className="crx-meu-content" onClick={handleOpenAssetShare}>
+                <div
+                  className="crx-meu-content crx-spac"
+                  onClick={linkAssetHandler}
+                >
                   <div className="crx-menu-icon">
-                    <i className="fa-regular fa-envelope"></i>
+                    <i className="far fa-user-lock fa-md"></i>
                   </div>
-                  <div className="crx-menu-list">{t("Share_asset")}</div>
+
+                  <div className="crx-menu-list">{t("Link_asset")}</div>
+
                 </div>
               </ActionMenuCheckList>
             </MenuItem>
+          )}
+          {actionMenuPlacement == ActionMenuPlacement.DetailedAssets && groupedSelectedAssetsActions.length == 0 ? (
+            <MenuItem>
+              <ActionMenuCheckList
+                moduleId={0}
+                descriptorId={2}
+                maximumDescriptor={maximumDescriptor}
+                evidence={row?.evidence}
+                actionMenuName={t("Move_asset")}
+                securityDescriptors={securityDescriptorsArray}
+                isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+              >
+                <div
+                  className="crx-meu-content crx-spac"
+                  onClick={moveAssetHandler}
+                >
+                  <div className="crx-menu-icon">
+                    <i className="far fa-user-lock fa-md"></i>
+                  </div>
+
+                  <div className="crx-menu-list">{t("Move_asset")}</div>
+
+                </div>
+              </ActionMenuCheckList>
+            </MenuItem>
+          ) : null}
+          {actionMenuPlacement == ActionMenuPlacement.AssetLister
+            && groupedSelectedAssetsActions.length > 0
+            //&& selectedAssetActionType == "link" 
+            && isAssetLinkedOrMoved == "link"
+            ? (
+
+              <MenuItem>
+                <ActionMenuCheckList
+                  moduleId={0}
+                  descriptorId={2}
+                  maximumDescriptor={maximumDescriptor}
+                  evidence={row?.evidence}
+                  actionMenuName={t("Link_to_this_group")}
+                  securityDescriptors={securityDescriptorsArray}
+                  isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+                >
+                  <div
+                    className="crx-meu-content crx-spac"
+                    onClick={linkToAssetHandler}
+                  >
+                    <div className="crx-menu-icon">
+                      <i className="far fa-user-lock fa-md"></i>
+                    </div>
+
+                    <div className="crx-menu-list">{t("Link_to_this_group")}</div>
+
+                  </div>
+                </ActionMenuCheckList>
+              </MenuItem>
+            ) : null
+          }
+          {actionMenuPlacement == ActionMenuPlacement.AssetLister
+            && groupedSelectedAssetsActions.length > 0
+            //&& selectedAssetActionType == "move" 
+            && isAssetLinkedOrMoved == "move"
+            ? (
+              <MenuItem>
+                <ActionMenuCheckList
+                  moduleId={0}
+                  descriptorId={2}
+                  maximumDescriptor={maximumDescriptor}
+                  evidence={row?.evidence}
+                  actionMenuName={t("Move_to_this_group")}
+                  securityDescriptors={securityDescriptorsArray}
+                  isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}
+                >
+                  <div
+                    className="crx-meu-content crx-spac"
+                    onClick={moveToAssetHandler}
+                  >
+                    <div className="crx-menu-icon">
+                      <i className="far fa-user-lock fa-md"></i>
+                    </div>
+
+                    <div className="crx-menu-list">{t("Move_to_this_group")}</div>
+
+                  </div>
+                </ActionMenuCheckList>
+              </MenuItem>
+            ) : null}
           <MenuItem>
             <ActionMenuCheckList
               moduleId={35}

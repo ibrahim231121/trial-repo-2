@@ -26,6 +26,8 @@ import uploadPoliciesSlice from './UploadPolicies';
 import categoriesSlice from './Categories';
 import categoryFromsSlice from './CategoryForms';
 import groupedSelectedAssets from './groupedSelectedAssets';
+import groupedSelectedAssetsActions from './groupedSelectedAssetsActions';
+
 import fromFieldsSlice from './FormFields';
 import assetBucketBasketSlice from './assetBucketBasketSlice';
 //combine Reducers
@@ -39,6 +41,7 @@ export const reducer = combineReducers({
   stationReducer: stationsSlice.reducer,
   notificationReducer: notificationMessages.reducer,
   groupedSelectedAssetsReducer: groupedSelectedAssets.reducer,
+  groupedSelectedAssetsActionsReducer: groupedSelectedAssetsActions.reducer,
   timerReducers: timerSlice.reducer,
   loaderSlice: loaderSlice.reducer,
   templateSlice: templateSlice.reducer,

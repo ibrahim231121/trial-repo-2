@@ -39,6 +39,7 @@ import {
     CountryStateApiUrl,
     EVIDENCE_GET_URL,
     BASE_URL_AUTHENTICATION_SERVICE,
+    EVIDENCE_GET_BY_ID_URL,
     BASE_URL_Cases_SERVICE,
     BASE_URL_Configuration_SERVICE,
     BASE_URL_DeviceHeartBeat_SERVICE,
@@ -286,6 +287,7 @@ export const EvidenceAgent = {
             responseType: "blob",
         });
     },
+    getUploadedEvidence: (evidenceId: string) => requests.get<any>(EVIDENCE_GET_BY_ID_URL, '/' + evidenceId, config),
     getEvidenceBuildVersion: () => requests.get<any>(EVIDENCE_SERVICE_URL, "/Evidence/Health/BuildVersion"),
 }
 

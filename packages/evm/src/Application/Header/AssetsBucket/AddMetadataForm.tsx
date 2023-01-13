@@ -19,6 +19,7 @@ import { SubmitType } from "../../Assets/AssetLister/Category/Model/CategoryForm
 import { MAX_REQUEST_SIZE_FOR } from "../../../utils/constant";
 import DisplayCategoryForm from "../../Assets/AssetLister/Category/SubComponents/DisplayCategoryForm";
 import { applyValidation, RemapFormFieldKeyName, RevertKeyName } from "../../Assets/AssetLister/Category/Utility/UtilityFunctions";
+import {  addAssetToBucketActionCreator} from "../../../Redux/AssetActionReducer";
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
@@ -850,6 +851,41 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
     };
   };
 
+  const getUploadedEvidence = async (evidenceId: any) => {
+    EvidenceAgent.getUploadedEvidence(evidenceId).then((res) => {
+      if (res != null && res != undefined) {
+        let bucketAssets: any = [];
+        res.asset.map((x: any) => {
+          bucketAssets.push({
+            "assetId": x.assetId,
+            "evidence": {
+              "id": res.id,
+              "tenantId": res.tenantId,
+              "masterAssetId": res.masterAssetId,
+              "holdUntil": res.holdUntil,
+              "station": res.station,
+              "cadId": res.cadId,
+              "retentionPolicyName": res.retentionPolicyName,
+              "devices": res.devices,
+              "categories": res.categories,
+              "categorizedBy": res.categorizedBy,
+              "formData": res.formData,
+              "masterAsset": res.masterAsset,
+              "asset": res.asset,
+              "assetEventGeoData": res.assetEventGeoData,
+              "securityDescriptors": res.securityDescriptors,
+              "expireOn": res.expireOn,
+              "description": res.description
+            }
+          });
+        })
+        dispatch(addAssetToBucketActionCreator(bucketAssets));
+      }
+    }).catch((error: any) => {
+      if (error.response.status === 500) {
+      }
+    })
+  }
   const onAdd = async (submitType: SubmitType) => {
     const payload: any = await onAddMetaData(submitType);
 
@@ -858,6 +894,9 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       setAddEvidence(true);
       setEvidenceId(+res);
       setActiveScreen(0);
+    setTimeout(() => {
+      getUploadedEvidence(res);
+    }, 2000); 
       return res;
     }).catch((error: any) => {
       setIsDisable(false);

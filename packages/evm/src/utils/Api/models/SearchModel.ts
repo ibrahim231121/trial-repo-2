@@ -18,6 +18,7 @@ export namespace SearchModel {
         expireOn: Date;
         description: string;
         retentionSpanText: string;
+        onlyforlinkedasset?:string;
     };
 
     export type FormDataKeyValue = {
