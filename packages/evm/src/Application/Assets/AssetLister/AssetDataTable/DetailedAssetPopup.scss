@@ -3,7 +3,7 @@
     justify-content: flex-end;
     height: max-content;
     align-items: flex-end;
-    position: absolute;
+    position: relative;
     right: 3px;
     bottom: -1px;
   span {
@@ -65,7 +65,13 @@
         color: var(--color-333333);
         line-height: 20px;
       }
-      
+      ._asset_group_list_link {
+        .linkColor {
+          .assetName {
+            width: 100%;
+          }
+        }
+      }
     }
     .CRXPopupActionIcon {
       height: 61px;

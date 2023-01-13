@@ -50,14 +50,10 @@ body {
   color: var(--color-ff6e20) !important;
 } */
 
-.linkColor > div {
+.linkColor > div.assetName {
   line-height: 17px;
-  white-space: break-spaces;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   word-break: break-all;
+  width: 79%;
 }
 
 .testClass {

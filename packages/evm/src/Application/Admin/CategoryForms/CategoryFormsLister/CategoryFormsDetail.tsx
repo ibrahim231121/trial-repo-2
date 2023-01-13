@@ -119,6 +119,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
     };
 
     return (
+        <div className="create_category_view switchLeftComponents">
         <Formik
             enableReinitialize={true}
             initialValues={categoryFormsPayload}
@@ -130,7 +131,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
             {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
 
 
-                <div className="crx-datapermission-tab">
+                <div className="create_category_form_area">
                     <FormFieldInfo setFieldValue={setFieldValue} name={values.name} description={values.description} type={values.type} errors={errors} touched={touched} handleBlur={handleBlur} setTouched={setTouched}></FormFieldInfo>
                     {
                         openModel &&
@@ -139,24 +140,24 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                     <div className="addFormFields formFieldBtn">
                         <CRXButton
                             // disabled={isdisable}
-                            className='PreSearchButton'
+                            className='add_exist_button'
                             onClick={onAddFormFields}
                             color='primary'
                             variant='contained'
                         > {t("Add_Existing_Form_Fields")}
                         </CRXButton>
                     </div>
-                    <div className="dataPermissionContent">
+                    <div className="create_category_Content">
                         <CRXRows container="container" spacing={0}>
-                            <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
-                            <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
-                            <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
-                            <CRXColumn className="dataPermissionColumn" container="container" item="item" xs={3} spacing={0}>{t("Width")}</CRXColumn>
+                            <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Display_Name")}</CRXColumn>
+                            <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Field_Name")}</CRXColumn>
+                            <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Control_Type")}</CRXColumn>
+                            <CRXColumn className="create_category_column" container="container" item="item" xs={3} spacing={0}>{t("Width")}</CRXColumn>
                         </CRXRows>
                     </div>
                     <FieldRowLister selectedFields={selectedFields} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FieldRowLister>
                     <div className="formFieldFooterButton">
-                        <div>
+                        <div className="submit_cancel_btn">
                             <CRXButton
                                 type="submit"
                                 disabled={!(isValid && dirty)}
@@ -174,7 +175,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                                 {t("Cancel")}
                             </CRXButton>
                         </div>
-                        <div>
+                        <div className="category_view_exit">
                             <CRXButton
                                 //   onClick={() => redirectPage(values)}
                                 className="groupInfoTabButtons-Close secondary"
@@ -190,6 +191,7 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
 
             )}
         </Formik>
+        </div>
     )
 }
 

@@ -171,6 +171,9 @@
             }
             .linkColor {
                 color: var(--color-ff6e20);
+                .truncation_button {
+                  color: var(--color-ff6e20);
+                }
             }
             .DataTableBodyCell {
                 &:not(.col-two, .col-three) {
@@ -219,6 +222,9 @@
             }
             .linkColor {
                 color: var(--color-ff6e20);
+                .truncation_button {
+                  color: var(--color-ff6e20);
+                }
             }
             .DataTableBodyCell {
                 color: var(--color-d1d2d4);
@@ -305,8 +311,10 @@
   .dragableCellCustomize {
       position: absolute;
       left: 3px;
-      top: 15px;
-      display: block;
+      top: -5px;
+      display: flex;
+      height: 100%;
+      place-items: center;
     }
 
   .draggableCellIcon {
@@ -331,6 +339,11 @@
   color: var(--color-c34400);
   cursor: pointer;
   box-shadow: none !important;
+  .assetName {
+    .truncation_button {
+      color: var(--color-c34400);
+    }
+  }
 }
 
 .linkColor:hover {

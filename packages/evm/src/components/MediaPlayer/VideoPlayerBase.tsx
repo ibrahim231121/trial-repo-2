@@ -1594,9 +1594,10 @@ const VideoPlayerBase = (props: any) => {
 
 
     if (Thumbnail) {
+      
       TimeLinePipe.style.left = (event.pageX - leftPadding) + "px";
       Thumbnail.currentTime = ttt > x.video_duration_in_second ? 0 : ttt;
-      ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 128)) : 0) + "px";
+       ThumbnailContainer.style.left = (event.pageX - SliderControlBarOffset) + (displayAll ? (((x.indexNumberToDisplay - 1) * 128)) : 0) + "px";
       ThumbnailTime.innerHTML = secondsToHms(ttt)
       //ThumbnailCameraDesc.innerHTML = x.camera;
       if (withdescription) {

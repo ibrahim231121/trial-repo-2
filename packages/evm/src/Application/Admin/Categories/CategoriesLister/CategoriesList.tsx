@@ -359,7 +359,7 @@ const CategoriesList: React.FC = () => {
   }
 
   return (
-    <div className="CrxCategoriesTable switchLeftComponents">
+    <div className="switchLeftComponents">
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -403,9 +403,13 @@ const CategoriesList: React.FC = () => {
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterCategories?.totalCount}
-            offsetY={20}
-            dragableHeaderPosition={207}
-            topSpaceDrag={5}
+             //Please dont miss this block.
+            offsetY={-27}
+            topSpaceDrag = {5}
+            searchHeaderPosition={222}
+            dragableHeaderPosition={187}
+            stickyToolbar={133}
+            //End here
           />
 
         )

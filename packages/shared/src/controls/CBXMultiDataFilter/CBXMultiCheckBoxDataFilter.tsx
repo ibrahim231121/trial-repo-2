@@ -264,12 +264,10 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
   const checkBoxClass = CheckBoxStyle()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [singleValue, setSingleValue] = useState<any>()
-  //const [selectAllText, setAllselectText] = useState<any>("")
   const selectRefs = useRef(null)
   
   const icon = <i className='fa-light fa-square checkbox_icon_default'></i>;
   const checkedIcon = <i className="fa-light fa-square-check"></i>;
-  //const tickMarked = <i className="fa-solid fa-check selectBox_Tick_Marked"></i>
 
  if(isduplicate) {
     let unique: any = option.map((x: any) => x);
@@ -297,6 +295,7 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
 
   const open = Boolean(anchorEl);
   const id = open ? 'data-table-filter-select' : undefined;
+
   useLayoutEffect(() => {
     
     let tableContainer : any = document.querySelector("#customizedStickyHeader")
@@ -305,16 +304,31 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
     }else {
       tableContainer && (tableContainer.style.overflow = "hidden");
     }
+
   },[open])
   
+  useLayoutEffect(() => {
+    const handleScroll = () => { 
+      if (window.pageYOffset > 1) {
+        setAnchorEl(null)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   //If now working will remove from here
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const allSelected = option.length === selectedOptions.length;
 
   const handleToggleOption = (selectedOptions : any) =>
     setSelectedOptions(selectedOptions);
+
   const handleClearOptions = () => setSelectedOptions([]);
   const getOptionLabel = (option : any) => `${option.value}`;
+
   const handleSelectAll = (isSelected : any) => {
     if (isSelected) {
       setSelectedOptions(option);
@@ -344,11 +358,13 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
       handleClearOptions && handleClearOptions();
     }
   };
+
   const optionRenderer = (option : any, { selected } : any) => {
     const selectAllProps =
       option.value === selectAllLabel // To control the state of 'select-all' checkbox
         ? { checked: allSelected }
         : {};
+
     return (
       <>
 
@@ -393,9 +409,6 @@ export default function CBXMultiCheckBoxDataFilter({onChange, multiple = true, v
         <ClearButton onClick={(e : any) => onSelectedClear(e)}>
           <i className="icon icon-cross2 clearItem"></i>
         </ClearButton></> :  */}
-       
-        
-      
     </ClickInput>
     
     {selectedOptions.length > 1 && selectedOptions.length !== option.length && open == false || selectedOptions.length > 1 && open === true && selectedOptions.length !== option.length ?  

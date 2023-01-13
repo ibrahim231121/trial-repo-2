@@ -47,7 +47,6 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
   const [checkAll, setCheckAll] = useState<boolean>(false);
   const [selected, setSelected] = useState<CheckValue[]>([]);
   const [selectedActionRow, setSelectedActionRow] = React.useState<any>();
-  const [placementActionPopup,setPlacementActionPopup] = React.useState("right");
 
   const widgetStyle = makeStyles({
     CRXArrowStyle: {
@@ -163,26 +162,6 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
       }   
   }
 
-  useLayoutEffect(()=>{
-    const checkLastGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkLastPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:last-child td:nth-child(5)  .DetailAsset_Popover ");
-    const checkSecondLastGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkSecondLastPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:nth-last-child(2) td:nth-child(5)  .DetailAsset_Popover "); 
-
-    const checkSecondFirstGroup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5) .CRXPopupOuterDiv #pop ");
-    const checkSecondFirstPopup = document?.querySelector(".MainAssetGridPage_Ui  tbody tr:first-child td:nth-child(5)  .DetailAsset_Popover "); 
-
-
-    if((checkLastGroup !== null && checkLastPopup !== null) || (checkSecondLastGroup !== null && checkSecondLastPopup !== null )) {
-      setPlacementActionPopup("top-start");
-    } else if(checkSecondFirstGroup !== null &&  checkSecondFirstPopup !== null) {
-      setPlacementActionPopup("bottom-start");
-    }
-    else {
-      setPlacementActionPopup("right");
-    }
-  })
-const placementActionClass = placementActionPopup == "top-start" ? "placementPopper" : placementActionPopup == "bottom-start" ? "bottomStartPlacement" : "placementRight";
   return (
     <ClickAwayListener onClickAway={() => onClose()}>
     <div className="CRXPopupOuterDiv">
@@ -200,12 +179,12 @@ const placementActionClass = placementActionPopup == "top-start" ? "placementPop
       }
       <CRXPopOver
         open={open}
-        anchorEl={anchorEl}
-        className={`CRXPopoverCss DetailAsset_Popover ${placementActionClass}`}
+        anchorEl={popOverRef.current}
+        className={`CRXPopoverCss DetailAsset_Popover`}
         title={t("Grouped_Assets")}
         arrowDown={true}
         disablePortal={false}
-        placement={placementActionPopup}
+        placement="right"
         onSetAnchorE1={(v: HTMLElement) => setAnchorEl(v)}
       >
         

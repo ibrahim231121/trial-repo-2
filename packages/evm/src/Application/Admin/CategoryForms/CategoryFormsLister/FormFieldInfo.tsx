@@ -52,7 +52,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
   return (
     <>
       <div className="formDetailInfo">
-        <span className="gridFilterTextBox">
+        <div className="category_create_form_fields">
 
           <div className="text-field">
             <div className="CBX-input">
@@ -64,6 +64,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
                 id="name"
                 name="name"
                 key="name"
+                className="CBX-input"
               />
               {errors.name !== undefined &&
                 touched.name ? (
@@ -119,7 +120,7 @@ const FormFieldInfo: React.FC<infoProps> = ({ setFieldValue, name, description, 
             />
           </div>
 
-        </span>
+        </div>
       </div>
     </>
   )

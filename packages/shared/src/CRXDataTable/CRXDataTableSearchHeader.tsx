@@ -74,7 +74,7 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
   }
   
   useEffect(() => {
-    const tblBlock : any = document.getElementsByClassName('tableScrollValue')[0]
+    const tblBlock : any = document.getElementsByClassName('tableScrollValue')[0] as HTMLElement;
     let minSticky : any =  offsetY && (offsetY - 3)
     
     createScrollStopListener(window, function() {

@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { CRXDataTable, CRXColumn, CRXToaster, CRXButton, CBXMultiSelectForDatatable, CBXMultiCheckBoxDataFilter} from "@cb/shared";
+import { CRXDataTable, 
+  CRXColumn, 
+  CRXToaster, 
+  CRXButton, 
+  CBXMultiCheckBoxDataFilter,
+  CRXTruncation
+} from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
 import { DateTimeComponent } from "../../../GlobalComponents/DateTime";

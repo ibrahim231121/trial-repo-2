@@ -264,6 +264,18 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
     setAnchorEl(null)
   }
 
+  useLayoutEffect(() => {
+    const handleScroll = () => { 
+      if (window.pageYOffset > 1) {
+        setAnchorEl(null)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   const open = Boolean(anchorEl);
   const id = open ? 'data-table-filter-select' : undefined;
   useLayoutEffect(() => {

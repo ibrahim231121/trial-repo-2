@@ -1,4 +1,4 @@
-import { CBXMultiSelectForDatatable, CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter } from "@cb/shared";
+import { CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next"; 
@@ -54,36 +54,39 @@ const assetTypeText = (classes: string,evidence: SearchModel.Evidence) => {
 const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) => {
   let masterAsset = evidence.masterAsset;
   let assets = evidence.asset.filter(x => x.assetId != masterAsset.assetId);
-  let dataLink =
-    <>
-      <Link
-        className="linkColor"
-        to={{
-          pathname: "/assetdetail",
-          state: {
-            evidenceId: evidence.id,
-            assetId: masterAsset.assetId,
-            assetName: assetName,
-            evidenceSearchObject: evidence
-          } as AssetDetailRouteStateType,
-        }}
-      >
-        <div className="assetName">{assetName}</div>
-      </Link>
-      {assets && evidence.masterAsset.lock &&
-        <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock" />
-      }
-      <DetailedAssetPopup asset={assets} row={evidence} />
-    </>
-  return (<CRXDataTableTextPopover
-    content={dataLink}
-    id="dataAssets"
-    isPopover={true}
-    counts={assetName}
-    title="Assets ID"
-    minWidth="130"
-    maxWidth="263"
-  />);
+  let dataLink = 
+  <>
+    <Link
+      className="linkColor"
+      to={{
+        pathname: "/assetdetail",
+        state: {
+          evidenceId: evidence.id,
+          assetId: masterAsset.assetId,
+          assetName: assetName,
+          evidenceSearchObject: evidence
+        } as AssetDetailRouteStateType,
+      }}
+    >
+      <div className="assetName">
+      <CRXTruncation placement="top" content={assetName} />
+      </div>
+    </Link>
+    {assets  && evidence.masterAsset.lock &&
+    <CRXTooltip iconName="fas fa-lock-keyhole" arrow={false} title="Access Restricted" placement="right" className="CRXLock"/>
+    }
+    <DetailedAssetPopup asset={assets} row={evidence} />
+  </>
+  return dataLink;
+    // return (<CRXDataTableTextPopover
+    //   content={dataLink}
+    //   id="dataAssets"
+    //   isPopover={true}
+    //   counts={assetName}
+    //   title="Assets ID"
+    //   minWidth="130"
+    //   maxWidth="263"
+    // />);
 };
 
 const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {
