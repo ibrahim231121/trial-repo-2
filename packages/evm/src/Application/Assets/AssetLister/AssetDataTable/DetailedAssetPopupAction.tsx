@@ -2,9 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch } from 'react-redux';
 import "@szhsin/react-menu/dist/index.css";
 import "./index.scss";
-import { CRXConfirmDialog, CRXToaster } from '@cb/shared';
+import { CRXConfirmDialog, CRXToaster,CRXAlert } from '@cb/shared';
 import { getAssetSearchInfoAsync } from '../../../../Redux/AssetSearchReducer';
-import { CRXAlert } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import { EvidenceAgent } from '../../../../utils/Api/ApiAgent';
 import ActionMenu from "../ActionMenu";
@@ -29,9 +28,6 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
   const [showSuccess, setShowSuccess] = React.useState<boolean>(true);
   const DetailedPopupMsgRef = React.useRef<typeof CRXToaster>(null);
   const [isPrimaryAsset, setIsPrimaryAsset] = React.useState(true);
-  const message = [
-    { messageType: "success", message: `${asset.assetName}` + ` ${t("is_successfully_set_as_primary_asset")}` },
-  ];
 
   useEffect(() => {
   }, [isOpen]);
@@ -40,9 +36,9 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
     setIsOpen(true);
   };
 
-  const showToastMsg = () => {
+  const showToastMsgs = (message: string) => {
     DetailedPopupMsgRef.current.showToaster({
-      message: message[0].message,
+      message: message,
       variant: "success",
       duration: 4000,
       clearButtton: true,
@@ -54,7 +50,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
     EvidenceAgent.setPrimaryAsset(url).then(() => {
       setIsOpen(false);
       setTimeout(async () => { dispatch(getAssetSearchInfoAsync({ QUERRY: "", searchType: SearchType.SimpleSearch })) }, 1000);
-      showToastMsg();
+      showToastMsgs( `${asset.assetName}` + ` ${t("is_successfully_set_as_primary_asset")}`);
     })
       .catch(function (error) {
         setAlert(true);
@@ -78,6 +74,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
 
   return (
     <>
+    <CRXToaster ref={DetailedPopupMsgRef} />
       <CRXConfirmDialog
         className={`crx-unblock-modal __set__Primary__Modal__ ${alert === true ? "__crx__Set_primary_Show" : "__crx__Set_primary_Hide"} `}
         title={t("Please_confirm")}
@@ -110,7 +107,7 @@ const DetailedAssetPopupAction: React.FC<Props> = React.memo(({ row, asset, sele
         row={ReFormatPropsForActionMenu(row, asset.assetId)}
         selectedItems={reformatSelectedAsset(selectedItems)}
         asset={asset}
-        showToastMsg={() => showToastMsg()}
+        showToastMsg={(obj) => showToastMsgs(obj.message)}
         setIsPrimaryOptionOpen={setIsOpen}
         isPrimaryOptionOpen={isPrimaryAsset}
         portal={true}

@@ -297,7 +297,7 @@ const ActionMenu: React.FC<Props> = React.memo(
         });
       } else {
         _requestBody.push({
-          evidenceId: row?.id,
+          evidenceId: row?.evidence.id,
           assetId: row.assetId,
           groupRecIdList: groupRecIdArray,
           operation: operation,
@@ -306,7 +306,7 @@ const ActionMenu: React.FC<Props> = React.memo(
       const _body = JSON.stringify(_requestBody);
       EvidenceAgent.LockOrUnLockAsset(_body)
         .then(() => {
-          showToastMsg?.({
+          showToastMsg && showToastMsg({
             message:
               operation === AssetRestriction.Lock
                 ? t("Access_Restricted")
