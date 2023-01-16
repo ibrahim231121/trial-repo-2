@@ -86,7 +86,7 @@ export interface DeviceType {
     isLogicalDevice?: boolean,
     schema?: string,
     typeCategory?: string,
-    showDevice?:boolean
+    showDevice?: boolean
 }
 
 export interface ConfigurationField {
@@ -101,7 +101,8 @@ export interface ConfigurationField {
 
 export interface UnitTemplateConfigurationInfo {
     id: number,
-    name: string
+    name: string,
+    stationId: number | null
 }
 
 export interface GetPrimaryDeviceInfo {
@@ -157,10 +158,9 @@ export interface UnitInfo {
     Status: string
 }
 
-export interface QueuedAssets 
-{
-    filename:string;
-    status:string;
+export interface QueuedAssets {
+    filename: string;
+    status: string;
 }
 
 export interface DefaultUnitTemplate {

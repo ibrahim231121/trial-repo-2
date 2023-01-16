@@ -53,13 +53,14 @@ export type UnitInfoModel = {
   configTemplateList: any;
   stationList: any;
   stationId: any;
+  allconfigTemplateList: any
 };
 
 type UnitAndDevice = {
-  deviceNames:string;
-  deviceTypes:string;
-  deviceSerialNumbers:string;
-  deviceVersions:string
+  deviceNames: string;
+  deviceTypes: string;
+  deviceSerialNumbers: string;
+  deviceVersions: string
 };
 
 type stateProps = {
@@ -90,7 +91,8 @@ const UnitCreate = (props: historyProps) => {
     configTemp: "",
     configTemplateList: [],
     stationList: [],
-    stationId: ""
+    stationId: "",
+    allconfigTemplateList: []
   });
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -103,8 +105,8 @@ const UnitCreate = (props: historyProps) => {
   const [order] = React.useState<Order>("asc");
   const [orderBy] = React.useState<string>("name");
   const [open, setOpen] = React.useState<boolean>(false);
-  const validationCheckOnButton = (checkError: boolean) => {setButton(checkError);};
-  const [selectedActionRow, setSelectedActionRow] =React.useState<UnitAndDevice>();
+  const validationCheckOnButton = (checkError: boolean) => { setButton(checkError); };
+  const [selectedActionRow, setSelectedActionRow] = React.useState<UnitAndDevice>();
   const [selectedItems, setSelectedItems] = React.useState<UnitAndDevice[]>([]);
   const [reformattedRows, setReformattedRows] = React.useState<UnitAndDevice[]>();
   const targetRef = React.useRef<typeof CRXToaster>(null);
@@ -123,17 +125,17 @@ const UnitCreate = (props: historyProps) => {
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
-      gridFilter: {
+    gridFilter: {
       logic: "and",
       filters: []
-      },
-      page: page,
-      size: rowsPerPage
+    },
+    page: page,
+    size: rowsPerPage
   })
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
-    const overlay : any = document.getElementsByClassName("overlayPanel");
+    const overlay: any = document.getElementsByClassName("overlayPanel");
     overlay.length > 0 && (overlay[0].style.width = "28px")
   }
 
@@ -155,7 +157,7 @@ const UnitCreate = (props: historyProps) => {
     { label: t("Events"), index: 3 },
     { label: t("Device_Diagnostic"), index: 4 },
   ];
-
+  const [allconfigTemplateList, setAllconfigTemplateList] = useState<any[]>([]);
   const [configTemplateList, setConfigTemplateList] = useState<any[]>([]);
   const [primaryDeviceInfo, setPrimaryDeviceInfo] = useState<any>();
   const stationList: any = useSelector((state: RootState) => state.stationReducer.stationInfo);
@@ -164,34 +166,38 @@ const UnitCreate = (props: historyProps) => {
   React.useEffect(() => {
     singleEventListener("onWSMsgRecEvent", onMsgReceived);
     subscribeGroupToSocket("UnitStatus");
-      UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response:GetPrimaryDeviceInfo) =>
-      {
-        setPrimaryDeviceInfo(response);
-        if (response != undefined) {
-         setUnitStatus(response.status.toUpperCase());
-        }
-      });
-   
-    UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response:UnitTemplateConfigurationInfo[]) => setConfigTemplateList(response));
+    UnitsAndDevicesAgent.getPrimaryDeviceInfo("/Stations/" + stationID + "/Units/" + unitID + "/PrimaryDeviceInfo").then((response: GetPrimaryDeviceInfo) => {
+      setPrimaryDeviceInfo(response);
+      if (response != undefined) {
+        setUnitStatus(response.status.toUpperCase());
+      }
+    });
+
+    UnitsAndDevicesAgent.getConfigurationTemplateList("/Stations/" + stationID + "/Units/" + unitID + "/ConfigurationTemplate").then((response: UnitTemplateConfigurationInfo[]) => {
+      setConfigTemplateList(response)
+      var result = response.map((x: any) => { return { displayText: x.name, value: x.stationId } })
+      setAllconfigTemplateList(result)
+    });
     dispatch(getStationsInfoAllAsync());
-    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response:Unit) => {
-      let unitAndDevicesRows: UnitAndDevice[] = [];  
+    UnitsAndDevicesAgent.getUnit("/Stations/" + stationID + "/Units/" + unitID + "/UnitDeviceBannerInfo").then((response: Unit) => {
+      let unitAndDevicesRows: UnitAndDevice[] = [];
       if (response != undefined) {
         unitAndDevicesRows = response.devices.map((data) => {
-          return { id: data.id,deviceNames:"", deviceTypes:data.publicKey.format,deviceSerialNumbers:data.identifier,
-            deviceVersions:data.version.current.major+"."+data.version.current.minor+"."+data.version.current.build+"."+data.version.current.revision
+          return {
+            id: data.id, deviceNames: "", deviceTypes: data.publicKey.format, deviceSerialNumbers: data.identifier,
+            deviceVersions: data.version.current.major + "." + data.version.current.minor + "." + data.version.current.build + "." + data.version.current.revision
           };
         });
         setRows(unitAndDevicesRows);
-        
+
       }
-      
+
     });
     return () => {
       dispatch(enterPathActionCreator({ val: "" }));
       singleEventListener("onWSMsgRecEvent");
       unSubscribeGroupFromSocket("UnitStatus");
-           };
+    };
   }, []);
 
   React.useEffect(() => {
@@ -205,23 +211,23 @@ const UnitCreate = (props: historyProps) => {
   }, [buttonLogic]);
 
   React.useEffect(() => {
-    
+
     if (buttonLogic == true) setIsSaveButtonDisabled(true);
-  },[]);
+  }, []);
 
   React.useEffect(() => {
     if (primaryDeviceInfo && configTemplateList && stationList && configTemplateList.length > 0 && stationList.length > 0) {
       SetStationName(primaryDeviceInfo.station)
-      let template: any = [{ displayText: t("None"), value: "0" }];
+      let template: any = [{ displayText: t("None"), value: "0", stationId: null }];
       configTemplateList.map((x: any) => {
-        template.push({ displayText: x.name, value: x.id });
+        template.push({ displayText: x.name, value: x.id, stationId: x.stationId });
       });
 
 
-        let stationlst: any = [{ displayText: t("None"), value: "0" }];
-        stationList.map((x: any) => {
-          stationlst.push({ displayText: x.name, value: x.id });
-        });
+      let stationlst: any = [{ displayText: t("None"), value: "0" }];
+      stationList.map((x: any) => {
+        stationlst.push({ displayText: x.name, value: x.id });
+      });
 
       setUnitInfo({
         name: primaryDeviceInfo.name,
@@ -230,7 +236,8 @@ const UnitCreate = (props: historyProps) => {
         configTemp: primaryDeviceInfo.configTemplateId,
         configTemplateList: template,
         stationList: stationlst,
-        stationId: stationID
+        stationId: stationID,
+        allconfigTemplateList: allconfigTemplateList
       });
       dispatch(
         enterPathActionCreator({
@@ -241,30 +248,37 @@ const UnitCreate = (props: historyProps) => {
         })
       );
     }
-  }, [primaryDeviceInfo, configTemplateList, stationList]);
+  }, [primaryDeviceInfo, configTemplateList, stationList, allconfigTemplateList]);
+
+  // React.useEffect(() => {
+
+  //   var templates = filterTemplatesByStation(allconfigTemplateList, unitInfo.stationId);
+  //   console.log(templates, "templates")
+  //   setConfigTemplateList(templates)
+  // }, [unitInfo])
 
   function onMsgReceived(e: any) {
-       if(e !=null && e.data != null && e.data.body !=null) { 
-          statusJson.current = JSON.parse(e.data.body.data);
-          if(statusJson.current.UnitId === unitID){
-            setUnitStatus(statusJson.current.Data.toUpperCase());
-          }
-        }
-       };
-
-  const singleEventListener = (function(element: any) {
-      var eventListenerHandlers:any = {};
-      return function(eventName: string, func?: any) {
-        eventListenerHandlers.hasOwnProperty(eventName) && element.removeEventListener(eventName, eventListenerHandlers[eventName]);
-        if(func) {
-          eventListenerHandlers[eventName] = func;
-          element.addEventListener(eventName, func);
-        }
-        else {
-          delete eventListenerHandlers[eventName];
-        }
+    if (e != null && e.data != null && e.data.body != null) {
+      statusJson.current = JSON.parse(e.data.body.data);
+      if (statusJson.current.UnitId === unitID) {
+        setUnitStatus(statusJson.current.Data.toUpperCase());
       }
-    })(window);
+    }
+  };
+
+  const singleEventListener = (function (element: any) {
+    var eventListenerHandlers: any = {};
+    return function (eventName: string, func?: any) {
+      eventListenerHandlers.hasOwnProperty(eventName) && element.removeEventListener(eventName, eventListenerHandlers[eventName]);
+      if (func) {
+        eventListenerHandlers[eventName] = func;
+        element.addEventListener(eventName, func);
+      }
+      else {
+        delete eventListenerHandlers[eventName];
+      }
+    }
+  })(window);
 
 
   const onChangeGroupInfo = (
@@ -283,8 +297,10 @@ const UnitCreate = (props: historyProps) => {
       configTemp: configTemp,
       configTemplateList: configTemplateList,
       stationList: stationList,
-      stationId: stationId
+      stationId: stationId,
+      allconfigTemplateList: allconfigTemplateList
     });
+
   };
 
   const redirectPage = () => {
@@ -295,7 +311,8 @@ const UnitCreate = (props: historyProps) => {
       configTemp: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.configTemplateId, // none
       configTemplateList: configTemplateList,
       stationList: stationList,
-      stationId: primaryDeviceInfo === undefined ? "" : stationID
+      stationId: primaryDeviceInfo === undefined ? "" : stationID,
+      allconfigTemplateList: allconfigTemplateList
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -315,7 +332,8 @@ const UnitCreate = (props: historyProps) => {
       configTemp: primaryDeviceInfo === undefined ? "" : primaryDeviceInfo.configTemplateId,
       configTemplateList: primaryDeviceInfo === undefined ? [] : unitInfo.configTemplateList,
       stationList: primaryDeviceInfo === undefined ? [] : unitInfo.stationList,
-      stationId: primaryDeviceInfo === undefined ? "": stationID
+      stationId: primaryDeviceInfo === undefined ? "" : stationID,
+      allconfigTemplateList: allconfigTemplateList
     };
 
     if (JSON.stringify(unitInfo) !== JSON.stringify(unitInfo_temp)) {
@@ -337,7 +355,7 @@ const UnitCreate = (props: historyProps) => {
     //let editCase = !isNaN(+id);
     var url = "/Stations/" + stationID + "/Units/" + unitID + "/ChangeUnitInfo";
 
-    let unitData: UnitTemp = { 
+    let unitData: UnitTemp = {
       name: unitInfo.name,
       description: unitInfo.description,
       triggerGroup: unitInfo.groupName,
@@ -347,22 +365,21 @@ const UnitCreate = (props: historyProps) => {
 
     UnitsAndDevicesAgent.changeUnitInfo(url, unitData).then(() => {
       setIsSaveButtonDisabled(true);
-      SetStationName(unitInfo.stationList.find((y:any)=> y.value == unitInfo.stationId).displayText);
+      SetStationName(unitInfo.stationList.find((y: any) => y.value == unitInfo.stationId).displayText);
       SetStationID(unitData.stationId);
-      targetRef.current.showToaster({message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true});  
+      targetRef.current.showToaster({ message: t("Unit_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true });
     })
-    .catch(function (e: any) {
-      catchError(e);
-    })
-      
+      .catch(function (e: any) {
+        catchError(e);
+      })
+
   };
-  const catchError = (e : any) => {   
-    if (e.request.status == 500) {  
-      targetRef.current.showToaster({message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"), variant: "error", duration: 5000, clearButtton: true}); 
+  const catchError = (e: any) => {
+    if (e.request.status == 500) {
+      targetRef.current.showToaster({ message: t("We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator"), variant: "error", duration: 5000, clearButtton: true });
     }
-    else
-    {
-      targetRef.current.showToaster({message: e.response.data, variant: "error", duration: 5000, clearButtton: true});    
+    else {
+      targetRef.current.showToaster({ message: e.response.data, variant: "error", duration: 5000, clearButtton: true });
     }
     return e;
   }
@@ -395,14 +412,14 @@ const UnitCreate = (props: historyProps) => {
 
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
-  
+
     {
       label: `${t("Device_Name")}`,
       id: "deviceNames",
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth : "380"
+      minWidth: "380"
     },
     {
       label: `${t("Device_Type")}`,
@@ -410,7 +427,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth : "350"
+      minWidth: "350"
     },
     {
       label: `${t("Serial_Number")}`,
@@ -418,7 +435,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth : "350"
+      minWidth: "350"
     },
     {
       label: `${t("Version")}`,
@@ -426,7 +443,7 @@ const UnitCreate = (props: historyProps) => {
       align: "right",
       dataComponent: (e: string) => textDisplay(e, " "),
       sort: false,
-      minWidth : "400"
+      minWidth: "400"
     }
   ]);
 
@@ -475,7 +492,7 @@ const UnitCreate = (props: historyProps) => {
               </MenuItem>
           </Menu>
         </div>
-        <CBXLink  children = "Exit"   onClick={() => history.goBack()} />
+        <CBXLink children="Exit" onClick={() => history.goBack()} />
       </div>
 
       <div className="CrxUnitDetailId">
@@ -517,10 +534,10 @@ const UnitCreate = (props: historyProps) => {
                         primaryDeviceInfo.deviceType === "BC03"
                           ? BC03
                           : primaryDeviceInfo.deviceType === "BC04"
-                          ? BC04
-                          : primaryDeviceInfo.deviceType === "MasterDock"
-                          ? MASTERDOCK
-                          : DVRVRX20
+                            ? BC04
+                            : primaryDeviceInfo.deviceType === "MasterDock"
+                              ? MASTERDOCK
+                              : DVRVRX20
                       }
                       alt={primaryDeviceInfo.deviceType}
                     />
@@ -533,9 +550,9 @@ const UnitCreate = (props: historyProps) => {
                         : "pannelBoard mr-59"
                     }
                   >
-                   <div className="panel_Heading_unitDetail">{unitStatus}</div>
+                    <div className="panel_Heading_unitDetail">{unitStatus}</div>
                     <span className={`pdStatus ${unitStatus}`}>
-                      
+
                       <i className="fas fa-circle"></i>
                     </span>
                     <p>{t("STATUS")}</p>
@@ -560,7 +577,7 @@ const UnitCreate = (props: historyProps) => {
                     <span className="noRow"></span>
                     <p>{t("STATION")}</p>
                   </div>
-                  
+
                 </div>
 
                 <div className="RightBoard">
@@ -596,7 +613,7 @@ const UnitCreate = (props: historyProps) => {
                     <p>{t("ASSIGNED_TO")}</p>
                   </div>
                 </div>
-                
+
                 <div
                   onClick={() => {
                     toggleChecker();
@@ -613,9 +630,9 @@ const UnitCreate = (props: historyProps) => {
             </div>
           </div>
         ) : null}
-    
 
-        
+
+
         {/* <CRXAlert
         ref={alertRef}
         message={responseError}
@@ -634,12 +651,12 @@ const UnitCreate = (props: historyProps) => {
         />
         <CrxTabPanel value={value} index={0}>
           <div className={showMessageError}></div>
-            <UnitConfigurationInfo
-              info={unitInfo}
-              onChangeGroupInfo={onChangeGroupInfo}
-              validationCheckOnButton={validationCheckOnButton}
-            />
-          
+          <UnitConfigurationInfo
+            info={unitInfo}
+            onChangeGroupInfo={onChangeGroupInfo}
+            validationCheckOnButton={validationCheckOnButton}
+          />
+
         </CrxTabPanel>
 
 
@@ -679,8 +696,8 @@ const UnitCreate = (props: historyProps) => {
                   offsetY={190}
                   page={page}
                   rowsPerPage={rowsPerPage}
-                  setPage= {(page:any) => setPage(page)}
-                  setRowsPerPage= {(rowsPerPage:any) => setRowsPerPage(rowsPerPage)}
+                  setPage={(page: any) => setPage(page)}
+                  setRowsPerPage={(rowsPerPage: any) => setRowsPerPage(rowsPerPage)}
                   totalRecords={500}
                 />
               )}
@@ -688,35 +705,35 @@ const UnitCreate = (props: historyProps) => {
             {/* {`station ID == ${stationID}`} <br />
             {`unit ID == ${unitID}`} <br />
             {`template name == ${inCarTab}`} */}
-           </CrxTabPanel>
-        ) : <CrxTabPanel value={value} index={1}>    
-        <QueuedAsstsDataTable unitId={unitID} />       
-      </CrxTabPanel>} 
+          </CrxTabPanel>
+        ) : <CrxTabPanel value={value} index={1}>
+          <QueuedAsstsDataTable unitId={unitID} />
+        </CrxTabPanel>}
 
 
-      {inCarTab === "DVR" ? (
-        <CrxTabPanel value={value} index={2}>    
-          <QueuedAsstsDataTable unitId={unitID} />       
-        </CrxTabPanel>
-          ) : (<CrxTabPanel value={value} index={2}>    
-            <UnitDeviceEvents id={unitID} />       
-          </CrxTabPanel>)}
+        {inCarTab === "DVR" ? (
+          <CrxTabPanel value={value} index={2}>
+            <QueuedAsstsDataTable unitId={unitID} />
+          </CrxTabPanel>
+        ) : (<CrxTabPanel value={value} index={2}>
+          <UnitDeviceEvents id={unitID} />
+        </CrxTabPanel>)}
 
-          {inCarTab === "DVR" ? (
-      <CrxTabPanel value={value} index={3}>    
-      <UnitDeviceEvents id={unitID} />       
-    </CrxTabPanel>
-          ) : ( <CrxTabPanel value={value} index={3}>    
-            <UnitDeviceDiagnosticLogs id={unitID} />       
-          </CrxTabPanel>)}
+        {inCarTab === "DVR" ? (
+          <CrxTabPanel value={value} index={3}>
+            <UnitDeviceEvents id={unitID} />
+          </CrxTabPanel>
+        ) : (<CrxTabPanel value={value} index={3}>
+          <UnitDeviceDiagnosticLogs id={unitID} />
+        </CrxTabPanel>)}
 
 
 
-          {inCarTab === "DVR" ? (
-      <CrxTabPanel value={value} index={4}>    
-      <UnitDeviceDiagnosticLogs id={unitID} />       
-    </CrxTabPanel>
-          ) : null}
+        {inCarTab === "DVR" ? (
+          <CrxTabPanel value={value} index={4}>
+            <UnitDeviceDiagnosticLogs id={unitID} />
+          </CrxTabPanel>
+        ) : null}
 
         <div className="tab-bottom-buttons stickyFooter_Tab">
           <div className="save-cancel-unitDevice">
@@ -762,12 +779,12 @@ const UnitCreate = (props: historyProps) => {
           text="unit configuration form"
         >
           <div className="confirmMessage">
-          {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
+            {t("You_are_attempting_to")} <strong>{t("close")}</strong> {t("the")}{" "}
             <strong>{t("'unit_configuration_form'")}</strong>. {t("If_you_close_the_form")},
-            {t("any_changes_you_ve_made_will_not_be_saved.")} 
+            {t("any_changes_you_ve_made_will_not_be_saved.")}
             {t("You_will_not_be_able_to_undo_this_action.")}
             <div className="confirmMessageBottom">
-            {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
+              {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}
             </div>
           </div>
         </CRXConfirmDialog>

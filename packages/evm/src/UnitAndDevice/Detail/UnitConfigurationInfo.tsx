@@ -2,12 +2,13 @@ import { TextField, CRXSelectBox } from "@cb/shared";
 import React, { useEffect, useState } from "react";
 import { UnitInfoModel } from "./UnitDetail";
 import { useTranslation } from "react-i18next";
+import { UnitTemplateConfigurationInfo } from "../../utils/Api/models/UnitModels";
 
 
 type infoProps = {
   info: UnitInfoModel;
   onChangeGroupInfo: any;
-  validationCheckOnButton:(p: boolean) => void;
+  validationCheckOnButton: (p: boolean) => void;
 }
 
 const UnitConfigurationInfo: React.FC<infoProps> = ({
@@ -24,8 +25,17 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   const [stationlst, setstationList] = React.useState(info.stationList);
   const [stationId, setstationId] = React.useState(info.stationId);
 
+
+
+  const filterTemplatesByStation = (templates: any[], stationId: number) => {
+    var filteredTemplates = templates.filter(function (item: any) {
+      return item.value == stationId;
+    })
+
+    return filteredTemplates;
+  }
   const onChangeName = (e: any) => {
-    onChangeGroupInfo(     
+    onChangeGroupInfo(
       e.target.value,
       description,
       groupName,
@@ -61,7 +71,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     setGroupName(e.target.value);
   };
   useEffect(() => {
-    
+
     setName(info.name);
     setDescription(info.description);
     setGroupName(info.groupName);
@@ -80,11 +90,21 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   };
 
   const onChangeStation = (e: any) => {
-    onChangeGroupInfo(name, description, groupName, configTemplate, configList, stationlst, e.target.value);
+    debugger
+    console.log([{ displayText: t("None"), value: "0" }, ...filterTemplatesByStation(info.allconfigTemplateList, e.target.value)], "templates")
+    onChangeGroupInfo(
+      name,
+      description,
+      groupName,
+      "0",
+      [{ displayText: t("None"), value: "0" }, ...filterTemplatesByStation(info.allconfigTemplateList, e.target.value)],
+      stationlst,
+      e.target.value);
+    setconfigList(filterTemplatesByStation(info.allconfigTemplateList, e.target.value))
     setstationId(e.target.value);
   };
 
-  const validateUserName = ( name: string):{ error: boolean; errorMessage: string } => {
+  const validateUserName = (name: string): { error: boolean; errorMessage: string } => {
     const chracterRegx = /^[a-zA-Z0-9-_.]+$/.test(
       String(name).toLowerCase()
     );
@@ -95,7 +115,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
         error: true,
         errorMessage: t("Unit_Id_must_contains_atleast_three_characters."),
       };
-    } else if (name.length > 10) { 
+    } else if (name.length > 10) {
       return {
         error: true,
         errorMessage: t("Unit_Id_must_not_exceed_10_characters."),
@@ -120,72 +140,72 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
     }
   };
 
-  React.useEffect(()=>{
-       validationCheckOnButton(!!formpayloadErr.nameErr)
-  },[formpayloadErr.nameErr])
+  React.useEffect(() => {
+    validationCheckOnButton(!!formpayloadErr.nameErr)
+  }, [formpayloadErr.nameErr])
   return (
     <div className="crx-group-info-form CBX-input unit_device_configuration_form">
       <div className="crx-group-info unitConfiguration">
 
-<div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
-  <div className="select_label">{t("Unit_Configuration_Template")}</div>
-  <CRXSelectBox
-    name="configurationTemplate"
-    value={info.configTemp == "" ? 0 : info.configTemp}
-    icon={true}
-    options={configList}
-    onChange={onChange}
-  />
-</div>
+        <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
+          <div className="select_label">{t("Unit_Configuration_Template")}</div>
+          <CRXSelectBox
+            name="configurationTemplate"
+            value={info.configTemp == "" ? 0 : info.configTemp}
+            icon={true}
+            options={configList}
+            onChange={onChange}
+          />
+        </div>
 
 
-<div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
-  <div className="select_label">{t("Station")}</div>
-  <div>
-  <CRXSelectBox
-    label={t("Station")}
-    name="Station"
-    value={info.stationId == "" ? 0 : info.stationId}
-    icon={true}
-    options={stationlst}
-    onChange={onChangeStation}
-  />
-  </div>
-</div>
+        <div className="configurationTemplateLabel groupInfoInputs unitConfiguration_select">
+          <div className="select_label">{t("Station")}</div>
+          <div>
+            <CRXSelectBox
+              label={t("Station")}
+              name="Station"
+              value={info.stationId == "" ? 0 : info.stationId}
+              icon={true}
+              options={stationlst}
+              onChange={onChangeStation}
+            />
+          </div>
+        </div>
 
 
-<div className="groupInfoInputs">
-  <TextField
-    error={!!formpayloadErr.nameErr}
-    errorMsg={formpayloadErr.nameErr}
-    onBlur={checkUserName}
-    required={true}
-    label={t("Unit_ID")}
-    value={name}
-    className='users-input'
-    onChange={onChangeName}
-  />
-</div>
-<div className="groupInfoInputs">
-  <TextField
-    label={t("Description")}
-    multiline
-    variant="outlined"
-    rows={1}
-    value={description}
-    onChange={onChangeDescription}
-  />
-</div>
-<div className="groupInfoInputs UnitDevice_GroupName_Field"> 
-  <TextField
-    label={t("Group_Name")}
-    variant="outlined"
-    rows={2}
-    value={groupName}
-    onChange={onChangeGroupName}
-  />
-</div>
-</div>
+        <div className="groupInfoInputs">
+          <TextField
+            error={!!formpayloadErr.nameErr}
+            errorMsg={formpayloadErr.nameErr}
+            onBlur={checkUserName}
+            required={true}
+            label={t("Unit_ID")}
+            value={name}
+            className='users-input'
+            onChange={onChangeName}
+          />
+        </div>
+        <div className="groupInfoInputs">
+          <TextField
+            label={t("Description")}
+            multiline
+            variant="outlined"
+            rows={1}
+            value={description}
+            onChange={onChangeDescription}
+          />
+        </div>
+        <div className="groupInfoInputs UnitDevice_GroupName_Field">
+          <TextField
+            label={t("Group_Name")}
+            variant="outlined"
+            rows={2}
+            value={groupName}
+            onChange={onChangeGroupName}
+          />
+        </div>
+      </div>
     </div>
   );
 };
