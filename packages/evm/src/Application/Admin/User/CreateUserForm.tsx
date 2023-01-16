@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AUTHENTICATION_EMAIL_SERVICE, GROUP_USER_LIST, USER } from '../../../utils/Api/url';
 import moment from 'moment';
+import _ from 'lodash';
 import './createUserForm.scss';
 import { useDispatch } from 'react-redux';
 import { addNotificationMessages } from '../../../Redux/notificationPanelMessages';
@@ -693,7 +694,7 @@ else {
 
       functionalityAfterRequest()
     }).catch((e: any) => {
-        catchError(e);
+      catchError(e);
     });
   };
 
@@ -998,10 +999,10 @@ else {
   };
 
   const redirectPage = () => {
-
+  
     if (id) {
       const phoneNumber = userPayload.mobileNumber;
-        const userGroupNames = userPayload.userGroups?.map((x: any) => x.groupName);
+        const userGroupNames = userPayload.userGroups?.map((x: any) => ( {id:x.groupId, label : x.groupName}));
         const user_temp = {
         email: userPayload.account.email,
         firstName: userPayload.name.first,
@@ -1010,9 +1011,10 @@ else {
         secondaryEmail: userPayload.secondaryEmail,
         mobileNumber: phoneNumber,
         userGroups: userGroupNames,
+        pin: userPayload.pin,
         deactivationDate: userPayload.deactivationDate,
       }
-      if (JSON.stringify(formpayload) !== JSON.stringify(user_temp)) {
+      if (!_.isEqual(formpayload,user_temp)) {
         setIsOpen(true);
       }
       else {
@@ -1022,7 +1024,7 @@ else {
       }
     }
     else {
-      if (JSON.stringify(formpayload) !== JSON.stringify(actual_formPayload))
+      if (!_.isEqual(JSON.stringify(formpayload),JSON.stringify(actual_formPayload)))
         setIsOpen(true);
       else {
         history.push(
