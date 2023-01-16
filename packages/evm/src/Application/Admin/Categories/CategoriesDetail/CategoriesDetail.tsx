@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
-import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField } from "@cb/shared";
+import React, { FC, useEffect, useState, useRef } from "react";
+import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './categoriesDetail.scss';
 import {  useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,7 @@ type CategoriesDetailProps = {
 }
 
 const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProps) => {
+  const categoriesFormRef = useRef<typeof CRXToaster>(null);
   const [id, setId] = useState<number>(props?.id);
   const retentionPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllRetentionPolicies);
   const uploadPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllUploadPolicies);
@@ -84,6 +85,16 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     setUploadPolicesOptions(UploadPoliciesTemplateRows);
   }
 
+  const categoryFormMessages = (obj: any) => {
+    categoriesFormRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+
+  }
+
   const onSave = async (payload: CategoryModel) => {
     let url = "Categories";
     let categoryForms : number [] = payload.categoryForms.map((x: any) => x.id );
@@ -99,8 +110,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     if (id > 0) {
       url += "/" + id;
       SetupConfigurationAgent.putCategories(url, body).then(() => {
-        setSuccess(true);
-        setSuccessMessage(t("Category_Edited_Successfully"))
+        // setSuccess(true);
+        // setSuccessMessage(t("Category_Edited_Successfully"))
+        categoryFormMessages({message : t("Category_Edited_Successfully"), variant : "success", duration : 7000})
         setError(false);
         dispatch(getAllCategoriesFilter(props.pageiGrid));
         setTimeout(() => { handleClose() }, 500);
@@ -119,8 +131,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     }
     else {
       SetupConfigurationAgent.postCategories(url, body).then(() => {
-        setSuccess(true);
-        setSuccessMessage(t("Category_Saved_Successfully"))
+        categoryFormMessages({message : t("Category_Saved_Successfully"), variant : "success", duration : 7000})
         setError(false);
         dispatch(getAllCategoriesFilter(props.pageiGrid));
         setTimeout(() => { handleClose() }, 500);
@@ -139,8 +150,13 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     }
   }
 
-  const closeDialog = () => {
-    handleClose();
+  const closeDialog = (dirty: any) => {
+    if (dirty) {
+      setIsOpen(true);
+    }
+    else {
+      handleClose();
+    }
   };
 
 
@@ -149,6 +165,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     props.openModel(false);
     setError(false)
     setSuccess(false);
+    setIsOpen(false);
   };
   React.useEffect(() => {
     setOpenModal(true)
@@ -217,24 +234,18 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
           <>
             <div className="categories">
+            <CRXToaster ref={categoriesFormRef} />
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
                 className={'CRXModal ___CRXCreateRetentionPolicy__ ___CRXEditRetentionPolicy__'}
                 modelOpen={openModal}
-                onClose={closeDialog}
+                onClose={() => closeDialog(dirty)}
                 defaultButton={false}
                 showSticky={false}
                 closeWithConfirm={closeWithConfirm}
 
               >
-                {success && (
-                  <CRXAlert
-                    message={successMessage}
-                    alertType="toast"
-                    open={true}
-                  />
-                )}
                 {error && (
                   <CRXAlert
                     className=""
@@ -244,7 +255,6 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     open={true}
                   />
                 )}
-
 
                 <div className="settingsContent">
                   <span className="gridFilterTextBox">
@@ -391,7 +401,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               >
                 <div className="confirmMessage">
                   {t("You_are_attempting_to")} <strong> {t("close")}</strong> {t("the")}{" "}
-                  <strong>{t("retention_policy_Form")}</strong>. {t("If_you_close_the_form")},
+                  <strong>{props.title + "Form"}</strong>. {t("If_you_close_the_form")},
                   {t("any_changes_you_ve_made_will_not_be_saved.")} {t("You_will_not_be_able_to_undo_this_action.")}
                   <div className="confirmMessageBottom">
                     {t("Are_you_sure_you_would_like_to")} <strong>{t("close")}</strong> {t("the_form?")}

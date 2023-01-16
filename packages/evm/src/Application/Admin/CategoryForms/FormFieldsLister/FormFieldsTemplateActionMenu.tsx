@@ -7,24 +7,39 @@ import {
 import "@szhsin/react-menu/dist/index.css";
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { useTranslation } from 'react-i18next';
+import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
+import { FormFieldsTemplate } from "../TypeConstant/types";
+import { useDispatch } from "react-redux";
+import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 
 type Props = {
-  selectedItems?: any;
+  selectedItems?: FormFieldsTemplate[];
   row?: any;
-  getRowData: () => void;
-  getSelectedData: () => void;
-  getSuccess: () => void;
   onClickOpenModel: (modelOpen: boolean, id: number, title: string) => void;
-  onMessageShow: (isSuccess: boolean, message: string) => void;
+  pageGrid: any;
 };
 
-const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
-
+const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, onClickOpenModel, pageGrid }) => {
   const { t } = useTranslation<string>();
- 
+  const dispatch = useDispatch();
   const editFormFields = () => {
     onClickOpenModel(true, Number(row?.id), t("Edit_Form_Fields"));
   };
+
+  const deleteFormFields = () => {
+    let formFieldIds: string = row?.id;
+    if (selectedItems && selectedItems?.length > 0) {
+      formFieldIds = selectedItems?.map(({ id }) => id).join(', ')
+    }
+
+    let headers = [{key : 'fieldIds', value : formFieldIds}]
+    SetupConfigurationAgent.deleteFormFields(headers).then(() => {
+      dispatch(getAllFormFieldsFilter(pageGrid));
+    })
+      .catch((e: any) => {
+        return e;
+      })
+  }
 
   return (
     <div className="table_Inner_Action">
@@ -45,7 +60,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
           </MenuButton>
         }
       >
-        {selectedItems.length <= 1 ? (
+        {selectedItems && selectedItems?.length <= 1 ? (
           <MenuItem onClick={editFormFields}>
             <Restricted moduleId={0}>
               <div className="crx-meu-content   crx-spac"  >
@@ -64,7 +79,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
 
         <MenuItem >
           <Restricted moduleId={0}>
-            <div className="crx-meu-content  crx-spac"  >
+            <div className="crx-meu-content  crx-spac" onClick={deleteFormFields} >
               <div className="crx-menu-icon">
                 <i className="far fa-trash-alt"></i>
               </div>

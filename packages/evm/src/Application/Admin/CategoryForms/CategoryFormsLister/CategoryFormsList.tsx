@@ -263,11 +263,7 @@ const CategoryFormsList: React.FC = () => {
             actionComponent={<CategoryFormsTemplateActionMenu
               row={selectedActionRow}
               selectedItems={selectedItems}
-              getRowData={CategoriesAction}
-              getSelectedData={getSelectedItemsUpdate}
-              getSuccess={getSuccessUpdate}
-              onClickOpenModel={onClickOpenModel}
-              onMessageShow={onMessageShow}
+              pageiGrid={pageiGrid}
             />}
             toolBarButton={
               <>

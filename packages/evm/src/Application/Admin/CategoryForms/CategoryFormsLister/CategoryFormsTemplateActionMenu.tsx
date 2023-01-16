@@ -9,25 +9,47 @@ import { useTranslation } from 'react-i18next';
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
+import { getAllCategoriesFilter } from "../../../../Redux/Categories";
+
+type CategoryFormsTemplate = {
+  id: number;
+  name: string;
+  description: string;
+}
 
 type Props = {
-  selectedItems?: any;
+  selectedItems?: CategoryFormsTemplate[];
   row?: any;
-  getRowData: () => void;
-  getSelectedData: () => void;
-  getSuccess: () => void;
-  onClickOpenModel: (modelOpen: boolean, id: number, title: string) => void;
-  onMessageShow: (isSuccess: boolean, message: string) => void;
+  pageiGrid: any;
 };
 
-const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, getRowData, getSelectedData, getSuccess, onClickOpenModel, onMessageShow }) => {
+
+
+const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, pageiGrid }) => {
   const history = useHistory();
   const { t } = useTranslation<string>();
-
+  const dispatch = useDispatch();
   const editFormFields = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url}`;
     history.push(path.substring(0, path.lastIndexOf("/")) + "/" + row?.id);
   };
+
+  const deleteCategoryForms = () => {
+    let categoryFormIds: string = row?.id;
+    if (selectedItems && selectedItems?.length > 0) {
+      categoryFormIds = selectedItems?.map(({ id }) => id).join(', ')
+    }
+
+    let headers = [{key : 'formsIds', value : categoryFormIds}]
+    SetupConfigurationAgent.deleteCategoryForms(headers).then(() => {
+      dispatch(getAllCategoriesFilter(pageiGrid));
+    })
+      .catch((e: any) => {
+        return e;
+      })
+  }
 
   return (
     <div className="table_Inner_Action">
@@ -48,7 +70,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
         }
       >
 
-        {selectedItems.length <= 1 ? (
+        {selectedItems && selectedItems?.length <= 1 ? (
           <MenuItem onClick={editFormFields}>
             <Restricted moduleId={0}>
               <div className="crx-meu-content   crx-spac"  >
@@ -67,7 +89,7 @@ const CategoryFormsTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, 
 
         <MenuItem >
           <Restricted moduleId={0}>
-            <div className="crx-meu-content  crx-spac"  >
+            <div className="crx-meu-content  crx-spac" onClick={deleteCategoryForms} >
               <div className="crx-menu-icon">
                 <i className="far fa-trash-alt"></i>
               </div>
