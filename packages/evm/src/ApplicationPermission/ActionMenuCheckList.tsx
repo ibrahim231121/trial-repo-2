@@ -17,9 +17,15 @@ type Props = {
 };
 
 const ActionMenuCheckList: React.FunctionComponent<Props> = ({ evidence, moduleId, descriptorId, maximumDescriptor, actionMenuName, securityDescriptors, isMultiSelectEvidenceExpired, isCategorizedByCheck, isCategorizedBy, children }) => {
+
+    const isCategorizedCheck = (isCategorizedByCheck: boolean | undefined, isCategorizedBy: boolean | undefined) : boolean => {
+        if (isCategorizedByCheck && isCategorizedBy) return true;
+        else return false;
+    }
+
     return (<CheckEvidenceExpiry evidence={evidence} actionMenuName={actionMenuName} isMultiSelectEvidenceExpired={isMultiSelectEvidenceExpired}>
-        <Restricted moduleId={moduleId}>
-            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={securityDescriptors} isCategorizedByCheck={isCategorizedByCheck} isCategorizedBy={isCategorizedBy}>
+        <Restricted moduleId={moduleId} isCategorizedByCheck={isCategorizedCheck(isCategorizedByCheck, isCategorizedBy)}>
+            <SecurityDescriptor descriptorId={descriptorId} maximumDescriptor={maximumDescriptor} securityDescriptors={securityDescriptors} isCategorizedByCheck={isCategorizedCheck(isCategorizedByCheck, isCategorizedBy)}>
                 <>{children}</>
             </SecurityDescriptor>
         </Restricted>
