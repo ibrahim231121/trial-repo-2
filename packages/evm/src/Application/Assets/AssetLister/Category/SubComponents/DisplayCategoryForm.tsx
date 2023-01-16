@@ -30,19 +30,22 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                 validationSchema={Yup.object({
                   ...props.validationSchema,
                 })}>
-                {({ errors }) => (
+                {({ errors,touched }) => (
                   <Form>
                     {formObj.fields.map((field: any) => (
                       <div className={`categoryInnerField `} key={field.id}>
-                        <label className="categoryFormLabel  " htmlFor={field.id}>
-                          {field?.display?.caption}
-                        </label>
-                        <b className={errors[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</b>
+                        <div className="categoryFormLabel_UI">
+                            <label className="categoryFormLabel  " htmlFor={field.id}>
+                              {field?.display?.caption}
+                            </label>
+                            <div className={errors[field.name ?? field.key] && touched[field.name ?? field.key] ? "errorStaric" : "formStaric"}>*</div>
+                        </div>
+                       
                         <div className="CBX-input">
                           {(IsFieldtypeEquals(field, FieldTypes.FieldTextBoxType) || IsFieldtypeEquals(field, FieldTypes.CaseNO) || IsFieldtypeEquals(field, FieldTypes.PolygraphLogNumber) || IsFieldtypeEquals(field, FieldTypes.CADID) || IsFieldtypeEquals(field, FieldTypes.Unknown)) &&
                             <Field
                               className={
-                                `editCategoryField ${errors[field.name ?? field.key] ? 'errorBrdr' : ''}`
+                                `editCategoryField ${errors[field.name ?? field.key] && touched[field.name ?? field.key]  ? 'errorBrdr' : ''}`
                               }
                               id={field.id}
                               name={
@@ -130,7 +133,7 @@ const DisplayCategoryForm: React.FC<DisplayCategoryFormProps> = (props) => {
                               }
                             />
                           }
-                          {errors[field.name ?? field.key] && (
+                          {errors[field.name ?? field.key] && touched[field.name ?? field.key] &&(
                             <div className="errorStyle">
                               <i className="fas fa-exclamation-circle"></i>
                               {errors[field.name ?? field.key]}
