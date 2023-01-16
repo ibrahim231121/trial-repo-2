@@ -267,16 +267,16 @@ const CreateTemplate = (props: any) => {
     })
     if(historyState.deviceType == "Incar"){
       FormSchema["Unit Settings"].map((x: any, y: number) => {
-        if (x.key == "unitSettings/categories/Multiselect" && x.options.length == 1) {
-          x.options.push(...categoriesOptions)
+        if (x.key == "unitSettings/categories/Multiselect") {
+          x.options = [{value: "All", label: "All"}, ...categoriesOptions]
         }
       })
     }
     else{
-      let x = FormSchema["Device"].find((x:any) => x.key == "device/categories/Multiselect" && x.options.length == 1)
+      let x = FormSchema["Device"].find((x:any) => x.key == "device/categories/Multiselect")
       if(x)
       {
-        x.options.push(...categoriesOptions)
+        x.options = [{value: "All", label: "All"}, ...categoriesOptions]
       }
     }
     setFormSchema(FormSchema);

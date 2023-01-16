@@ -69,7 +69,7 @@ const CustomizedMultiSelectForFormik = (props: any) => {
   const [allSelected, setAllSelected] = useState<boolean>(false);
 
   useEffect(() => {
-    let allOptionsSelected = valueArray.filter((x: any) => x.toLowerCase() !== "all").length == options.filter((x: any) => x.label.toLowerCase() !== "all").length;
+    let allOptionsSelected: any = valueArray.filter((x: any) => x.toLowerCase() !== "all").length == options.filter((x: any) => x.label.toLowerCase() !== "all").length;
     if (allSelected == false && allOptionsSelected) { //All option selected individually
       setAllSelected(true);
       setValueArray([...valueArray, "All"]);
