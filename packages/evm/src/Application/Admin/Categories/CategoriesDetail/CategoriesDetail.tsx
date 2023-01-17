@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState, useRef } from "react";
 import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, TextField, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './categoriesDetail.scss';
-import {  useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CategoryModel, DropdownModel, RequestCategoryModel } from "../../../../utils/Api/models/CategoryModels";
@@ -32,19 +32,21 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const [isOpen, setIsOpen] = React.useState(false);
   const [error, setError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
+  const [requestCategoryModel, setRequestCategoryModel] = React.useState<RequestCategoryModel>();
   const { t } = useTranslation<string>();
   const [categoryPayLoad, setCategoryPayLoad] = React.useState<CategoryModel>({
     name: "",
     description: "",
     evidenceRetentionPolicy: 0,
     uploadPolicy: 0,
-    categoryForms: []
+    categoryForms: [],
+    audioprompt: ""
   });
   const dispatch = useDispatch();
   const [evidenceRetentionPoliciesOptions, setEvidenceRetentionPoliciesOptions] = React.useState<any[]>([]);
   const [categoryFormsOptions, setCategoryFormsOptions] = React.useState<DropdownModel[]>([]);
   const [uploadPolicesOptions, setUploadPolicesOptions] = React.useState<DropdownModel[]>([]);
-  
+
   const setEvidenceRetentionPolicies = () => {
     let RetentionPoliciesTemplateRows: DropdownModel[] = [];
     if (retentionPoliciesList?.data && retentionPoliciesList?.data.length > 0) {
@@ -85,69 +87,93 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     setUploadPolicesOptions(UploadPoliciesTemplateRows);
   }
 
-  const categoryFormMessages = (obj: any) => {
-    categoriesFormRef?.current?.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration,
-      clearButtton: true,
-    });
+  useEffect(() => {
+    if (requestCategoryModel?.Name != "") {
+      var body = requestCategoryModel;
+      let url = "Categories";
+      if (id > 0) {
+        url += "/" + id;
+        SetupConfigurationAgent.putCategories(url, body).then(() => {
+          setSuccess(true);
+          setError(false);
+          dispatch(getAllCategoriesFilter(props.pageiGrid));
+          setTimeout(() => { handleClose() }, 500);
+          setRequestCategoryModel({
+            Name: "",
+            Description: "",
+            Policies: {
+              RetentionPolicyId: 0,
+              UploadPolicyId: 0,
+            },
+            Forms: [],
+            AudioPrompt: ""
+          })
+        })
+          .catch((e: any) => {
+            if (e?.response?.status === 409) {
+              setError(true);
+              setResponseError(e?.response?.data)
+            }
+            else {
+              setError(true);
+              setResponseError("An issue occurred while saving, please try again.")
+            }
+            return e;
+          })
+      }
+      else {
+        SetupConfigurationAgent.postCategories(url, body).then(() => {
+          setSuccess(true);
+          setError(false);
+          dispatch(getAllCategoriesFilter(props.pageiGrid));
+          setTimeout(() => { handleClose() }, 500);
+          setRequestCategoryModel({
+            Name: "",
+            Description: "",
+            Policies: {
+              RetentionPolicyId: 0,
+              UploadPolicyId: 0,
+            },
+            Forms: [],
+            AudioPrompt: ""
+          })
+        }).catch((e: any) => {
+          if (e?.response?.status === 409) {
+            setError(true);
+            setResponseError(e?.response?.data)
+          }
+          else {
+            setError(true);
+            setResponseError("An issue occurred while saving, please try again.")
+          }
+          return e;
+        })
+      }
 
-  }
+    }
+
+
+  }, [requestCategoryModel])
+
 
   const onSave = async (payload: CategoryModel) => {
-    let url = "Categories";
-    let categoryForms : number [] = payload.categoryForms.map((x: any) => x.id );
-    let body: RequestCategoryModel  = {
-      Name: payload.name,
-      Description: payload.description,
-      Policies: {
-        RetentionPolicyId: payload.evidenceRetentionPolicy,
-        UploadPolicyId: payload.uploadPolicy
-      },
-      Forms : payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type : "Unknown" } })
-    }
-    if (id > 0) {
-      url += "/" + id;
-      SetupConfigurationAgent.putCategories(url, body).then(() => {
-        // setSuccess(true);
-        // setSuccessMessage(t("Category_Edited_Successfully"))
-        categoryFormMessages({message : t("Category_Edited_Successfully"), variant : "success", duration : 7000})
-        setError(false);
-        dispatch(getAllCategoriesFilter(props.pageiGrid));
-        setTimeout(() => { handleClose() }, 500);
-      })
-        .catch((e: any) => {
-          if (e?.response?.status === 409) {
-            setError(true);
-            setResponseError(e?.response?.data)
-          }
-          else {
-            setError(true);
-            setResponseError("An issue occurred while saving, please try again.")
-          }
-          return e;
-        })
+    if (payload.audioprompt != "" && payload.audioprompt != null) {
+      getBase64(payload)
     }
     else {
-      SetupConfigurationAgent.postCategories(url, body).then(() => {
-        categoryFormMessages({message : t("Category_Saved_Successfully"), variant : "success", duration : 7000})
-        setError(false);
-        dispatch(getAllCategoriesFilter(props.pageiGrid));
-        setTimeout(() => { handleClose() }, 500);
-      })
-        .catch((e: any) => {
-          if (e?.response?.status === 409) {
-            setError(true);
-            setResponseError(e?.response?.data)
-          }
-          else {
-            setError(true);
-            setResponseError("An issue occurred while saving, please try again.")
-          }
-          return e;
-        })
+      var Obj: RequestCategoryModel = {
+        AudioPrompt: "",
+        Name: payload.name,
+        Description: payload.description,
+        Policies: {
+          RetentionPolicyId: payload.evidenceRetentionPolicy,
+          UploadPolicyId: payload.uploadPolicy
+        },
+        Forms: payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type: "Unknown" } })
+      }
+      setRequestCategoryModel(Obj)
     }
+
   }
 
   const closeDialog = (dirty: any) => {
@@ -173,6 +199,30 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     setSuccess(false);
   }, []);
 
+  const getBase64 = async (payload: CategoryModel) => {
+    console.log(payload.audioprompt)
+    let reader = new FileReader();
+    reader.readAsDataURL(payload.audioprompt);
+    reader.onload = function () {
+      var Obj: RequestCategoryModel = {
+        AudioPrompt: reader.result ? reader.result : "",
+        Name: payload.name,
+        Description: payload.description,
+        Policies: {
+          RetentionPolicyId: payload.evidenceRetentionPolicy,
+          UploadPolicyId: payload.uploadPolicy
+        },
+        Forms: payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type: "Unknown" } })
+      }
+      setRequestCategoryModel(Obj)
+    };
+    reader.onerror = function (error) {
+      console.log(error)
+    };
+
+  }
+
+
 
   useEffect(() => {
     if (id != undefined && id != null && id > 0) {
@@ -183,7 +233,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
             evidenceRetentionPolicy: response.policies.retentionPolicyId,
             uploadPolicy: response.policies.uploadPolicyId,
             description: response.description,
-            categoryForms: response.forms.map((x: any) => { return { id: x.id, label: x.name } })
+            categoryForms: response.forms.map((x: any) => { return { id: x.id, label: x.name } }),
+            audioprompt: ""
           };
           setCategoryPayLoad(category);
         }
@@ -198,7 +249,8 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         description: "",
         evidenceRetentionPolicy: 0,
         uploadPolicy: 0,
-        categoryForms: []
+        categoryForms: [],
+        audioprompt: ""
       });
     }
   }, [id]);
@@ -218,7 +270,13 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   const categoriesFromValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     evidenceRetentionPolicy: Yup.number().min(1, "Evidence Retention Policy is required"),
-    uploadPolicy: Yup.number().min(1, "Upload Policy is required")
+    uploadPolicy: Yup.number().min(1, "Upload Policy is required"),
+    audioprompt: Yup.mixed()
+      .test(
+        "fileSize",
+        "File is too large",
+        value => !value || (value && value.size <= 512000)
+      )
   });
 
   return (
@@ -367,7 +425,19 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     }}
                   />
                 </div>
-
+                <div>
+                  <input
+                    type="file"
+                    accept=".wav"
+                    id="audioprompt"
+                    name="audioprompt"
+                    onChange={(e) => { setFieldValue("audioprompt", e.currentTarget.files ? e.currentTarget.files[0] : null) }}
+                  />
+                  {errors.audioprompt &&
+                    <div>
+                      {errors.audioprompt}
+                    </div>}
+                </div>
                 <div className="tab-bottom-buttons retention-type-btns">
                   <div className="save-cancel-button-box">
                     <CRXButton

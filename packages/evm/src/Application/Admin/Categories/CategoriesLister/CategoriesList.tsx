@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './categoriesList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
-import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable } from "@cb/shared";
+import { CRXButton, CRXDataTable, CBXMultiSelectForDatatable, CRXTooltip } from "@cb/shared";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
 import CategoriesDetail from "../CategoriesDetail/CategoriesDetail";
 import {
@@ -40,7 +40,7 @@ type CategoriesTemplate = {
   retentionPolicyName: string;
   uploadPolicyId: number;
   uploadPolicyName: string;
-  audio: string;
+  audio: boolean;
   description: string;
 }
 
@@ -170,7 +170,7 @@ const CategoriesList: React.FC = () => {
     );
   };
 
-  const openEditForm = (categoryId : number) => {
+  const openEditForm = (categoryId: number) => {
     if (getModuleIds().includes(54)) {
       onClickOpenModel(true, Number(categoryId), t("Edit_Category"))
     }
@@ -216,7 +216,7 @@ const CategoriesList: React.FC = () => {
       initialRows.uploadPolicies.map((x: any) => {
         options.push({id : x.id, value: x.name });
       });
-      
+
 
       return (
         <CBXMultiSelectForDatatable
@@ -232,8 +232,8 @@ const CategoriesList: React.FC = () => {
     }
   };
 
-  const NonField = () =>{
-    
+  const NonField = () => {
+
   }
 
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
@@ -322,9 +322,9 @@ const CategoriesList: React.FC = () => {
     },
     {
       label: `${t("Audio")}`,
-      id: "audio",
+      id: "hasAudio",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: boolean) => SpeakerIcon(e),
       sort: false,
       searchFilter: true,
       searchComponent: NonField,
@@ -333,7 +333,9 @@ const CategoriesList: React.FC = () => {
     },
 
   ]);
-
+  const SpeakerIcon = (e: any) => {
+    return e ? <i className="fa-solid fa-volume"></i> : <></>
+  }
   const setCategoriesData = () => {
     let CategoriesTemplateRows: CategoriesTemplate[] = [];
 
@@ -347,11 +349,11 @@ const CategoriesList: React.FC = () => {
           uploadPolicyId: template.policies.uploadPolicyId,
           uploadPolicyName: template.policies.uploadPolicyName,
           Audio: "",
+          hasAudio: template.hasAudio,
           description: template.description,
         }
       })
     }
-
     setRows(CategoriesTemplateRows);
     setReformattedRows({...reformattedRows, rows: CategoriesTemplateRows, uploadPolicies: uploadPolicesOptions, retentionPolcies: retentionPoliciesOptions});
   }
@@ -470,12 +472,12 @@ const handleBlur = () => {
             />}
             toolBarButton={
               <>
-                <Restricted moduleId={56}>
 
-                  <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
-                    {t("Create_Category")}
-                  </CRXButton>
-                </Restricted>
+
+                <CRXButton className="CategoriesBtn" onClick={() => { onClickOpenModel(true, 0, t("Create_Category")) }}>
+                  {t("Create_Category")}
+                </CRXButton>
+
               </>
             }
             showTotalSelectedText={false}

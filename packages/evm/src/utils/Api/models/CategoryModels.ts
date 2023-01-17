@@ -1,3 +1,4 @@
+import { Stream } from "stream"
 import { History } from "./CommonModels"
 
 export interface Category {
@@ -50,6 +51,7 @@ export type CategoryModel = {
   evidenceRetentionPolicy: number;
   uploadPolicy: number;
   categoryForms: DropdownModel[] | any[];
+  audioprompt: any;
 }
 
 export type PoliciesModel = {
@@ -59,13 +61,14 @@ export type PoliciesModel = {
 
 export type FormModel = {
   Id: number;
-  Name : string;
-  Type : string;
+  Name: string;
+  Type: string;
 }
 
 export type RequestCategoryModel = {
   Name: string;
   Description: string;
   Policies: PoliciesModel;
-  Forms: FormModel[]
-  }
+  Forms: FormModel[];
+  AudioPrompt: string | ArrayBuffer;
+}
