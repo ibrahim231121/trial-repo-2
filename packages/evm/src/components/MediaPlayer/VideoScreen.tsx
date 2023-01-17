@@ -313,7 +313,12 @@ const VideoScreen = ({
         
          {viewNumber && viewNumber == 6 ? <VideoColumn className="" sx={4}>
           {getVideoTag(3)}
-        </VideoColumn> : ""}     
+        </VideoColumn> : ""} 
+
+        {viewNumber && viewNumber == 4 && <VideoColumn className="" sx={viewNumber == 4 ? 6 : 1}>
+          {getVideoTag(3)}
+        </VideoColumn>}
+
         <VideoColumn
           className=""
           sx={viewNumber == 4 ? 6 : viewNumber == 6 ? 4 : 1}
@@ -321,10 +326,9 @@ const VideoScreen = ({
           {getVideoTag(4)}
         </VideoColumn>
 
-        <VideoColumn className="" sx={viewNumber == 6 ? 4 : viewNumber == 4
-              ? 6 : 1}>
+        {viewNumber && viewNumber == 6 && <VideoColumn className="" sx={viewNumber == 6 ? 4 : 1}>
           {getVideoTag(5)}
-        </VideoColumn>
+        </VideoColumn>}
 
         <VideoColumn className="" sx={viewNumber == 6 ? 4 : 1}>
           {getVideoTag(6)}
