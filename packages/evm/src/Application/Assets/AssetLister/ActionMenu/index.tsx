@@ -1154,7 +1154,7 @@ const ActionMenu: React.FC<Props> = React.memo(
 
 
 
-          {groupedSelectedAssetsActions.length == 0 && (
+       
             <MenuItem>
               <ActionMenuCheckList
                 moduleId={0}
@@ -1178,8 +1178,8 @@ const ActionMenu: React.FC<Props> = React.memo(
                 </div>
               </ActionMenuCheckList>
             </MenuItem>
-          )}
-          {actionMenuPlacement == ActionMenuPlacement.DetailedAssets && groupedSelectedAssetsActions.length == 0 ? (
+          
+          {actionMenuPlacement == ActionMenuPlacement.DetailedAssets ? (
             <MenuItem>
               <ActionMenuCheckList
                 moduleId={0}
