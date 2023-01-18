@@ -644,16 +644,16 @@ const searchAndNonSearchMultiDropDown = (
 
     return (
       <>
-        {/* <CBXMultiSelectForDatatable 
+        <CBXMultiSelectForDatatable 
           width = {200} 
           option={status} 
           value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
-          onChange={(e: any, value : any) => changeMultiselect(e, value, colIdx)}
+          onChange={(e: any, value : any) => changeMultiselect(value, colIdx)}
           onSelectedClear = {() => onSelectedClear(colIdx)}
           isCheckBox={true}
           isduplicate={true}
-        /> */}
-        <CBXMultiCheckBoxDataFilter 
+        />
+        {/* <CBXMultiCheckBoxDataFilter 
           width = {200} 
           option={status} 
           defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v:any) => v.value !== "") : []} 
@@ -663,7 +663,7 @@ const searchAndNonSearchMultiDropDown = (
           multiple={true}
           isduplicate={true}
           selectAllLabel="All"
-        />
+        /> */}
       </>
     );
   }

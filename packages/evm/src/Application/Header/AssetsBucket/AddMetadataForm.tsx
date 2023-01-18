@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { EVIDENCE_ASSET_DATA_URL } from "../../../utils/Api/url";
 import { useDispatch, useSelector } from "react-redux";
-import { CRXSelectBox, CRXMultiSelectBoxLight } from "@cb/shared";
+import { CRXSelectBox, CRXMultiSelectBoxLight, CRXConfirmDialog } from "@cb/shared";
 import { RootState } from "../../../Redux/rootReducer";
 import { getUsersInfoAsync } from "../../../Redux/UserReducer";
 import { CRXButton } from "@cb/shared";
@@ -23,13 +23,13 @@ import {  addAssetToBucketActionCreator} from "../../../Redux/AssetActionReducer
 
 const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   onClose,
-  setCloseWithConfirm,
   setAddEvidence,
   setEvidenceId,
   uploadFile,
   uploadAssetBucket,
   activeScreen,
   setActiveScreen,
+  setIsformUpdated
 }) => {
   let displayText = "";
   if (uploadFile.length != 0) {
@@ -67,6 +67,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
   const [meteDataErrMsg, setMetaDataErrMsg] = useState({
     required: "",
   });
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const [alertType, setAlertType] = useState<string>("inline");
   const [alert, setAlert] = useState<boolean>(false);
   const [responseError, setResponseError] = useState<string>("");
@@ -131,10 +132,19 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
       !formpayload.station ||
       formpayload.owner.length == 0
     ) {
+      
       setIsDisable(true);
     } else {
       setIsDisable(false);
     }
+
+    if(formpayload && (formpayload.station !== "" || formpayload.owner.length > 0 || formpayload.category.length > 0)) {
+      setIsformUpdated(true)
+    }
+    else{
+      setIsformUpdated(false)
+    }
+
   }, [formpayload]);
 
   React.useEffect(() => {

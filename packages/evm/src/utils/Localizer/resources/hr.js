@@ -294,6 +294,7 @@ export const resources = {
         "any_un-saved_any_changes_will_not_be_saved. You_will_not_be_able_to_undo_this_action.":"hr-any un-saved any changes will not be saved. You will not be able to undo this action.",
         "Would_you_like_to":"hr-Would you like to",
         "this_screen?": "hr-this screen?",
+        "'asset_metadata'":"hr-'asset metadata'",
         // ------------------------------
 
         // --------- User Group----------

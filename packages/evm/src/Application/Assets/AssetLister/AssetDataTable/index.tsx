@@ -1,4 +1,4 @@
-import { CRXDataTable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
+import { CRXDataTable, CBXMultiSelectForDatatable, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next"; 
@@ -374,26 +374,30 @@ const MasterMain: React.FC<MasterMainProps> = ({
       }
 
       return (
-        // <CBXMultiSelectForDatatable
-        //   width={220}
-        //   option={options}
-        //   value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-        //   onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-        //   onSelectedClear={() => clearAll()}
-        //   isCheckBox={false}
-        //   isduplicate={true}
-        // />
-        <CBXMultiCheckBoxDataFilter 
-          width = {220} 
-          option={options} 
-          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
-          onChange={(value : any) => changeMultiselect(value, colIdx)}
-          onSelectedClear = {() => clearAll()}
-          isCheckBox={false}
-          multiple={true}
-          isduplicate={true}
-          selectAllLabel="All"
-        />
+        <div>
+          {["categories", "unit", "station","recordedBy"].includes(headCells[colIdx].id.toString())  ?
+            <CBXMultiSelectForDatatable
+              width={220}
+              option={options}
+              value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+              onChange={(e: any, value: any) => changeMultiselect(value, colIdx)}
+              onSelectedClear={() => clearAll()}
+              isCheckBox={false}
+              isduplicate={true}
+            /> :
+            <CBXMultiCheckBoxDataFilter 
+              width = {220} 
+              option={options} 
+              defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []} 
+              onChange={(value : any) => changeMultiselect(value, colIdx)}
+              onSelectedClear = {() => clearAll()}
+              isCheckBox={false}
+              multiple={true}
+              isduplicate={true}
+              selectAllLabel="All"
+            />
+          }
+        </div>
       );
     }
   };

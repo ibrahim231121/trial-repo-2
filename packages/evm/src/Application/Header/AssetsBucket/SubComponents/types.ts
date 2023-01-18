@@ -1,12 +1,12 @@
 export interface AddMetadataFormProps {
     onClose: any;
-    setCloseWithConfirm: any;
     uploadFile: any;
     uploadAssetBucket: any;
     activeScreen: number;
     setAddEvidence: any;
     setEvidenceId: any;
     setActiveScreen: (param: number) => void;
+    setIsformUpdated: (param: boolean) => void;
 }
 
 export type NameAndValue = {

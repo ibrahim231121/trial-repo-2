@@ -99,6 +99,7 @@ type isBucket = {
 
 const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [isOpenMeta, setIsOpenMeta] = React.useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [isChecked, setChecked] = useState<any>([]);
   const [isCheckedAll, setCheckedAll] = useState<boolean>(false);
@@ -153,7 +154,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [showAttention, setShowAttention] = React.useState<boolean>(false);
   const [showUploadAttention, setShowUploadAttention] =
     React.useState<boolean>(false);
-  const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
+
   const [isNext, setIsNext] = React.useState(false);
 
   const prevCount = usePrevious(assetBucketData.length);
@@ -178,7 +179,7 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
   const [isFileUploadHide, setIsFileUploadHide] = useState<boolean>(false);
   const [fileToRemove, setFileToRemove] = React.useState<string>("");
   const [isMessageRedisplay, setMessageRedisplay] = React.useState<boolean>(false);
- 
+  const [IsformUpdated, setIsformUpdated] = React.useState(false);
   //--for asset upload
   const dispatch = useDispatch();
 
@@ -705,10 +706,6 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
 
   const handleClickOpen = () => {
     setIsModalOpen(true);
-  };
-  const handleClose = (e: any) => {
-    setActiveScreen(0);
-    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -1249,6 +1246,24 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
     }, 10000);
   }, [showWifiIcon == true]);
 
+  const closeDialog = () => {
+    setIsOpenMeta(false);
+    setIsModalOpen(false);
+  };
+
+  const onCloseCrossMeta = (e: any) => {
+    if (IsformUpdated) 
+      setIsOpenMeta(true);
+    else 
+      setIsModalOpen(false);
+    
+  }
+
+  const onCloseCancelMeta = (e: any) => {
+    setActiveScreen(0);
+    setIsModalOpen(false);
+  }
+
   return (
     <>
       <CRXToaster ref={toasterRef} className="assetsBucketToster" />
@@ -1371,13 +1386,12 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                           showSticky={true}
                           modelOpen={isModalOpen}
                           onClose={(e: React.MouseEvent<HTMLElement>) =>
-                            handleClose(e)
+                            onCloseCrossMeta(e)
                           }
                         >
                           <AddMetadataForm
-                            setCloseWithConfirm={setCloseWithConfirm}
                             onClose={(e: React.MouseEvent<HTMLElement>) =>
-                              handleClose(e)
+                              onCloseCancelMeta(e)
                             }
                             uploadFile={files}
                             setAddEvidence={setonAddEvidence}
@@ -1385,6 +1399,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                             uploadAssetBucket={assetBucketData}
                             activeScreen={activeScreen}
                             setActiveScreen={setActiveScreen}
+                            setIsformUpdated={(e: boolean) => setIsformUpdated(e)}
                           />
                         </CRXModalDialog>
                       </CRXRows>
@@ -1621,6 +1636,28 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
           </div>
         </div>
       </CRXConfirmDialog>
+      <CRXConfirmDialog
+          setIsOpen={() => setIsOpenMeta(false)}
+          onConfirm={closeDialog}
+          isOpen={isOpenMeta}
+          className="userGroupNameConfirm"
+          primary={t("Yes_close")}
+          secondary={t("No,_do_not_close")}
+          text="user group form"
+        >
+          <div className="confirmMessage">
+            {t("You_are_attempting_to")}{" "}
+            <strong> {t("close")}</strong> {t("the")}{" "}
+            <strong>{t("'asset_metadata'")}</strong>.{" "}
+            {t("If_you_close_the_form")},
+            {t("any_changes_you_ve_made_will_not_be_saved.")}{" "}
+            {t("You_will_not_be_able_to_undo_this_action.")}
+            <div className="confirmMessageBottom">
+              {t("Are_you_sure_you_would_like_to")}{" "}
+              <strong>{t("close")}</strong> {t("the_form?")}
+            </div>
+          </div>
+        </CRXConfirmDialog>
     </>
   );
 };
