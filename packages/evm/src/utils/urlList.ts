@@ -36,12 +36,12 @@
 
 // };
 
-import {BASE_URL_COMMAND_SERVICE} from './Api/url';
+import { BASE_URL_COMMAND_SERVICE } from './Api/url';
 
 
 export const urlNames: any = {
     assets: "assets",
-    assetSearchResult:"assetSearchResult",
+    assetSearchResult: "assetSearchResult",
     adminUserGroups: "adminUserGroups",
     adminUserGroup: "adminUserGroup",
     adminUserGroupId: "adminUserGroupId",
@@ -64,27 +64,27 @@ export const urlNames: any = {
     adminStationCreate: 'adminStationCreate',
     adminStationEdit: 'adminStationEdit',
     createUser: 'createUser',
-    editUser : 'editUser',
-    sharedMedia : 'sharedMedia',    
-    manageUnitDeviceTemplate : 'manageUnitDeviceTemplate',
-    liveVideo : 'liveVideo',
+    editUser: 'editUser',
+    sharedMedia: 'sharedMedia',
+    manageUnitDeviceTemplate: 'manageUnitDeviceTemplate',
+    liveVideo: 'liveVideo',
     avlMap: 'avlMap',
     sensorsAndTriggers: 'sensorsAndTriggers',
     sensorsAndTriggersCreate: 'sensorsAndTriggersCreate',
     sensorsAndTriggersEdit: "sensorsAndTriggersEdit",
-    singleLiveView:'singleLiveView',
+    singleLiveView: 'singleLiveView',
     retentionPolicies: 'retentionPolicies',
     uploadPolicies: 'uploadPolicies',
     uploadPoliciesCreate: 'uploadPoliciesCreate',
     uploadPoliciesEdit: "uploadPoliciesEdit",
 
-    defaultUnitTemplate:"defaultUnitTemplate",
-    
-    categories : 'categories',
-    categoryForms : 'categoryForms',
-    about : 'about',
-    categoryFormsCreate : 'categoryFormsCreate',
-    categoryFormsEdit : 'categoryFormsEdit'
+    defaultUnitTemplate: "defaultUnitTemplate",
+
+    categories: 'categories',
+    categoryForms: 'categoryForms',
+    about: 'about',
+    categoryFormsCreate: 'categoryFormsCreate',
+    categoryFormsEdit: 'categoryFormsEdit'
 };
 
 export const urlList: any = [
@@ -94,7 +94,7 @@ export const urlList: any = [
         details: [
             { type: "text", label: "Assets", }
         ],
-    }, 
+    },
     {
         name: urlNames.tenantSettings,
         url: "/tenantSettings",
@@ -114,7 +114,7 @@ export const urlList: any = [
         url: '/assetdetail',
         details: [
             { routeTo: "/assets", type: "link", label: "Assets", },
-            { routeTo:'/assetSearchResult', type: 'text', label: 'Search Results' },
+            { routeTo: '/assetSearchResult', type: 'text', label: 'Search Results' },
         ]
     },
     {
@@ -122,8 +122,8 @@ export const urlList: any = [
         url: '/assetSearchResult',
         details: [
             { routeTo: "/assets", type: "link", label: "Assets", },
-            { routeTo:'/assetSearchResult', type: 'text', label: 'Search Results' },
-            
+            { routeTo: '/assetSearchResult', type: 'text', label: 'Search Results' },
+
         ]
     },
     // {
@@ -154,7 +154,7 @@ export const urlList: any = [
     {
         name: urlNames.adminUserGroupId,
         url: "/admin/usergroups/group/:id",
-        type : "form",
+        type: "form",
         details: [
             { type: "text", label: "Admin", },
             { routeTo: "/admin/usergroups", type: "link", label: "Manage User Groups & Permissions", },
@@ -278,7 +278,7 @@ export const urlList: any = [
         url: "/admin/configurationtemplate",
         details: [
             { type: "text", label: "Admin" },
-            { type: "Link", label: "Manage Units & Devices Templates", },
+            { type: "text", label: "Manage Units & Devices Templates", },
         ],
     },
     {
@@ -452,5 +452,5 @@ export const urlList: any = [
             { type: 'text', label: 'Edit Category Forms' }
         ]
     }
-    
+
 ];
