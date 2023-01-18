@@ -887,7 +887,7 @@ const CreateTemplate = (props: any) => {
       const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
         setDataFetched(false);
-        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true });
         loadData(historyState.id);
         dispatch(enterPathActionCreator({ val: t("Template, ") + historyState.deviceType + ": " + templateNames }));
         resetForm();
