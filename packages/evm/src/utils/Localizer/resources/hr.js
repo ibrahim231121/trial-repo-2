@@ -84,6 +84,7 @@ export const resources = {
         "Please_confirm":"hr-Please confirm",
         "Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire":"hr-Please be aware that by removing this category, you are reducing the assets lifetime and the asset will expire",
         "in":"hr-in",
+        "No_Templates":"hr-No Templates",
         "Hours.":"hr-Hours.",
         "Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in":"hr-Please be aware that by removing this category, you are reducing the assets lifetime and the asset will expire in",
         "Unclassified_retention_policy_of_station_will_be_applied_on_this_evidence_group.":"hr-Unclassified retention policy of station will be applied on this evidence group.",

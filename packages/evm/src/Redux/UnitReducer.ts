@@ -55,7 +55,7 @@ export const getAllUnitTemplateKeyValuesAsync: any = createAsyncThunk(
     'getAllUnitTemplateKeyValues',
     async () => {
             return await UnitsAndDevicesAgent
-            .getAllUnitTemplateKeyValues(`/Stations/0/Units/GetAllUnitTemplateKeyValues`)
+            .getAllUnitTemplateKeyValues(`/Stations/0/Units/GetAllAssignedUnitConfigurationTemplates`)
             .then((response) => {        
                 return response
         })

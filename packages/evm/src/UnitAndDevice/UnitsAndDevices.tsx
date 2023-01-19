@@ -148,7 +148,7 @@ const UnitAndDevices: React.FC = () => {
         })(window);
 
   const setData = () => {
- 
+
     let unitRows: Unit[] = [];
     
         if (units.data && units.data.length > 0) {
@@ -365,14 +365,16 @@ const multiSelectCheckbox = (rowParam: Unit[],headCells: HeadCellProps[], colIdx
     )
   }
 
+  
 
-  if(colIdx === 10 && initialRows) {
-     
-    let template: any = [{id: 0, value: t("No_Templates") }];
+  if(colIdx === 10 && initialRows && initialRows.unitTemplates) {
+   
+   let template: any = [{id: 0, value: t("No_Templates") }];
     initialRows.unitTemplates.map((x: any) => {
-      template.push({id : x.id, value: x.name });
-    });
-
+        var duplicate = template.find((a:any)=>a.id === x.id);
+        if(!duplicate)
+           template.push({id : x.id, value: x.name });
+    });   
     return (
       <div>
         {/* <CBXMultiSelectForDatatable 

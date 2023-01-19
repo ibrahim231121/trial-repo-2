@@ -249,6 +249,7 @@ export const resources = {
         "Are_you_sure_want_to_unlock_access_to_the_selected_asset(s)?" : "Are you sure want to unlock access to the selected asset(s)?.",
         "Access_Unlocked" : "Access Unlocked",
         "Access_Restricted" : "Access Restricted",
+        "No_Templates": "No Templates",
         "The_asset_is_already_locked." : "The asset(s) is already locked.",
         "The_asset_is_already_unlocked." : "The asset(s) is already unlocked.",
         "We_re_sorry_The_asset_cant_be_locked_Please_retry_or_contact_your_Systems_Administrator" : "We 're sorry. The asset(s) can't be locked. Please retry or contact your Systems Administrator.",
