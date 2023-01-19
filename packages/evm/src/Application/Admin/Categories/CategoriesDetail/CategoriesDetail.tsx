@@ -87,9 +87,10 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
     setUploadPolicesOptions(UploadPoliciesTemplateRows);
   }
 
-  useEffect(() => {
-    if (requestCategoryModel?.Name != "") {
-      var body = requestCategoryModel;
+
+  const SendSaveRequest = (Obj: RequestCategoryModel) => {
+    if (Obj.Name != "") {
+      var body = Obj;
       let url = "Categories";
       if (id > 0) {
         url += "/" + id;
@@ -106,7 +107,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               UploadPolicyId: 0,
             },
             Forms: [],
-            AudioPrompt: ""
+            AudioPrompt: body.AudioPrompt.toString().length > 0 ? body.AudioPrompt : ""
           })
         })
           .catch((e: any) => {
@@ -135,7 +136,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
               UploadPolicyId: 0,
             },
             Forms: [],
-            AudioPrompt: ""
+            AudioPrompt: body.AudioPrompt.toString().length > 0 ? body.AudioPrompt : ""
           })
         }).catch((e: any) => {
           if (e?.response?.status === 409) {
@@ -151,14 +152,11 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
       }
 
     }
-
-
-  }, [requestCategoryModel])
-
+  }
 
   const onSave = async (payload: CategoryModel) => {
     if (payload.audioprompt != "" && payload.audioprompt != null) {
-      getBase64(payload)
+      await getBase64(payload)
     }
     else {
       var Obj: RequestCategoryModel = {
@@ -172,6 +170,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         Forms: payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type: "Unknown" } })
       }
       setRequestCategoryModel(Obj)
+      SendSaveRequest(Obj)
     }
 
   }
@@ -200,10 +199,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
   }, []);
 
   const getBase64 = async (payload: CategoryModel) => {
-    console.log(payload.audioprompt)
     let reader = new FileReader();
     reader.readAsDataURL(payload.audioprompt);
-    reader.onload = function () {
+    reader.onloadend = function () {
       var Obj: RequestCategoryModel = {
         AudioPrompt: reader.result ? reader.result : "",
         Name: payload.name,
@@ -215,7 +213,9 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         Forms: payload.categoryForms.map((x: any) => { return { Id: x.id, Name: x.label, Type: "Unknown" } })
       }
       setRequestCategoryModel(Obj)
+      SendSaveRequest(Obj)
     };
+
     reader.onerror = function (error) {
       console.log(error)
     };
@@ -292,7 +292,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
         {({ setFieldValue, values, errors, touched, dirty, isValid, handleBlur, setTouched }) => (
           <>
             <div className="categories">
-            <CRXToaster ref={categoriesFormRef} />
+              <CRXToaster ref={categoriesFormRef} />
               <CRXModalDialog
                 maxWidth="gl"
                 title={props.title}
@@ -443,7 +443,7 @@ const CategoriesDetail: FC<CategoriesDetailProps> = (props: CategoriesDetailProp
                     <CRXButton
                       variant="contained"
                       className="groupInfoTabButtons"
-                      onClick={() => onSave(values)}
+                      onClick={() => { onSave(values) }}
                       disabled={!isValid || !dirty}
                     >
                       {t("Save")}
