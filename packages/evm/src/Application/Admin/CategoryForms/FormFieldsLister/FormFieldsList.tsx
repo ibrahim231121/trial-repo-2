@@ -237,18 +237,6 @@ const FormFieldsList: React.FC = () => {
       minWidth: "300",
       width: "200",
       maxWidth: "800"
-    },
-    {
-      label: `${t("Width")}`,
-      id: "width",
-      align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
-      sort: false,
-      searchFilter: true,
-      searchComponent: searchText,
-      minWidth: "300",
-      width: "500",
-      maxWidth: "800"
     }
   ]);
 
@@ -261,7 +249,6 @@ const FormFieldsList: React.FC = () => {
           name: template?.name,
           displayName: template?.display?.caption,
           controlType : template?.type,
-          width : template?.display?.width
         }
       })
     }

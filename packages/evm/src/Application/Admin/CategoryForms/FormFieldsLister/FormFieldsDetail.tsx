@@ -2,14 +2,14 @@ import React, { FC, useEffect, useState } from "react";
 import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './formFieldsDetail.scss';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { RootState } from "../../../../Redux/rootReducer";
 import { DropdownModel } from "../../../../utils/Api/models/CategoryModels";
 import { SetupConfigurationAgent } from "../../../../utils/Api/ApiAgent";
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
-import { getAllControlTypes, getAllFormFieldsFilter } from "../../../../Redux/FormFields";
+import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
+import { controlTypes } from "../TypeConstant/constants";
 
 type FormFieldsDetailProps = {
   id: number,
@@ -23,13 +23,11 @@ type FormFieldDetailModel = {
   type: string;
   name: string;
   displayName: string;
-  width: number;
   defaultFieldValue: string;
 }
 
 const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProps) => {
   const [id, setId] = useState<number>(props?.id);
-  const controlTypesList: any = useSelector((state: RootState) => state.FormFieldsSlice.controlTypes);
   const [openModal, setOpenModal] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -42,19 +40,18 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
     type: "",
     name: "",
     displayName: "",
-    width: 0,
     defaultFieldValue: ""
   });
   const dispatch = useDispatch();
   const [controlTypesOptions, setControlTypesOptions] = React.useState<DropdownModel[]>([]);
 
   const setControlTypes = () => {
-    let ControlTypesTemplateRows: DropdownModel[] = [];
-    if (controlTypesList?.length > 0) {
-      ControlTypesTemplateRows = controlTypesList?.map((template: any) => {
+    let ControlTypesTemplateRows: any[] = [];
+    if (controlTypes?.length > 0) {
+      ControlTypesTemplateRows = controlTypes?.map((template: any) => {
         return {
-          value: template.name,
-          displayText: template.name,
+          value: template.value,
+          displayText: template.displayText,
         }
       })
     }
@@ -69,7 +66,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
       name: payload.name,
       Display: {
         caption: payload.displayName,
-        width: payload.width
       },
       defaultFieldValue: payload.defaultFieldValue
     }
@@ -113,12 +109,8 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
   };
 
   React.useEffect(() => {
-    setControlTypes();
-  }, [controlTypesList]);
-
-  React.useEffect(() => {
     setOpenModal(true)
-    dispatch(getAllControlTypes())
+    setControlTypes();
   }, []);
 
 
@@ -129,7 +121,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
           setFormFieldPayLoad({
             id: id,
             displayName: response?.display?.caption,
-            width: response?.display?.width,
             name: response?.name,
             type: response?.type,
             defaultFieldValue: response?.defaultFieldValue
@@ -146,7 +137,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
         type: "",
         name: "",
         displayName: "",
-        width: 0,
         defaultFieldValue: ""
       });
     }
@@ -154,8 +144,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
 
   const formFieldsValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    type: Yup.string().required("Control Type is required"),
-    width: Yup.number().min(1, "Width is required")
+    type: Yup.string().required("Control Type is required")
   });
 
   return (
@@ -269,32 +258,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                     />
                   </CRXColumn>
                 </CRXRows>
-
-                <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
-                  <CRXColumn item={true} xs={4}>
-                    <label htmlFor="width">
-                      Width <span>*</span>
-                    </label>
-                  </CRXColumn>
-                  <CRXColumn item={true} xs={8}>
-                    <Field
-                      type="number"
-                      id="width"
-                      key="width"
-                      name="width"
-                    />
-                    {errors.width !== undefined &&
-                      touched.width ? (
-                      <div className="errorTenantStyle">
-                        <i className="fas fa-exclamation-circle"></i>
-                        {errors.width}
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-                  </CRXColumn>
-                </CRXRows>
-
                 <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
                   <CRXColumn item={true} xs={4}>
                     <label htmlFor="defaultFieldValue">

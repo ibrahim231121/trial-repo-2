@@ -24,17 +24,6 @@ export const getAllFormFields: any = createAsyncThunk(
     }
 );
 
-export const getAllControlTypes: any = createAsyncThunk(
-    'getAllControlTypes',
-    async () => {
-        return SetupConfigurationAgent.getAllControlTypes()
-            .then((response: any) => response)
-            .catch((error: any) => {
-                console.error(error.response.data);
-            });
-    }
-);
-
 export const getAllTypes: any = createAsyncThunk(
     'getAllTypes',
     async () => {
@@ -48,14 +37,12 @@ export const getAllTypes: any = createAsyncThunk(
 
 export const fromFieldsSlice = createSlice({
     name: 'FormFields',
-    initialState: { filterFormFields: [] , controlTypes: [], getAllFormFields : [], getAllTypes : []},
+    initialState: { filterFormFields: [] , getAllFormFields : [], getAllTypes : []},
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(getAllFormFieldsFilter.fulfilled, (state: any, { payload }) => {
                 state.filterFormFields = payload;
-            }).addCase(getAllControlTypes.fulfilled, (state: any, { payload }) => {
-                state.controlTypes = payload;
             }).addCase(getAllFormFields.fulfilled, (state: any, { payload }) => {
                 state.getAllFormFields = payload;
             }).addCase(getAllTypes.fulfilled, (state: any, { payload }) => {
