@@ -28,7 +28,7 @@ const CustomizedSelectForFormik = (props: any) => {
         options={options}
         isRequried={touched[field.name] == true && (errors[formObj.key]?.length > 0)}
         error={!(errors[formObj.key]?.length > 0)}
-        errorMsg={formObj.key.split(re)[1].split('_')[0] + " is " + errors[formObj.key]}
+        errorMsg={formObj.key.split(re)[1].split('_')[0] + " " + errors[formObj.key]}
         icon={true}
         popover={"selectFormikIncar_wraper"}
         defaultOptionText={value}
@@ -83,7 +83,7 @@ const CustomizedMultiSelectForFormik = (props: any) => {
         multiple={true}
         CheckBox={false}
         error={errors[formObj.key]?.length > 0}
-        errorMsg={formObj.key.split(re)[1].split('_')[0] + " is " + errors[formObj.key]}
+        errorMsg={formObj.key.split(re)[1].split('_')[0] + " " + errors[formObj.key]}
         options={options}
         value={options.filter((x: any) => valueArray.includes(x.value))}
         isSearchable={false}
@@ -371,7 +371,7 @@ export const CreateTempelateCase = (props: any) => {
                     render={(msg) => (
                       <>
                         <div className="UiLabelTextboxError">
-                          <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                          <i className="fas fa-exclamation-circle"></i>  {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                         </div>
                       </>
 
@@ -426,7 +426,7 @@ export const CreateTempelateCase = (props: any) => {
                 name={formObj.key}
                 render={(msg) => (
                   <div style={{ color: "red" }}>
-                    {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                    {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                   </div>
                 )}
               />
@@ -482,7 +482,7 @@ export const CreateTempelateCase = (props: any) => {
                         name={formObj.key}
                         render={(msg) => (
                           <div style={{ color: "red" }}>
-                            {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                            {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                           </div>
                         )}
                       />
@@ -588,7 +588,7 @@ export const CreateTempelateCase = (props: any) => {
                 name={formObj.key}
                 render={(msg) => (
                   <div style={{ color: "red" }}>
-                    {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                    {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                   </div>
                 )}
               />
@@ -668,7 +668,7 @@ export const CreateTempelateCase = (props: any) => {
                     name={formObj.key}
                     render={(msg) => (
                       <div style={{ color: "red" }}>
-                        {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                        {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                       </div>
                     )}
                   />
@@ -723,7 +723,7 @@ export const CreateTempelateCase = (props: any) => {
                       name={formObj.key}
                       render={(msg) => (
                         <div className={formObj.belowFieldText ? `UiNumberSelectorError checkHelperTextPresent ` : `UiNumberSelectorError`}>
-                          <i className="fas fa-exclamation-circle numberIconCircle"></i> {formObj.key.split(re)[1].split('_')[0] + " is " + msg}
+                          <i className="fas fa-exclamation-circle numberIconCircle"></i> {formObj.key.split(re)[1].split('_')[0] + " " + msg}
                         </div>
                       )}
                     />
