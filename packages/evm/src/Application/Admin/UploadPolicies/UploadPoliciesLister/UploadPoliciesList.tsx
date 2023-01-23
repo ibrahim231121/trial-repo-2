@@ -124,7 +124,12 @@ React.useEffect(() => {
       className: "policy"
     });    
   }
-
+  const openEditForm = (rowId: number) => {
+    let urlPathName =urlList.filter((item: any) => item.name === urlNames.uploadPoliciesEdit)[0].url;
+    history.push(
+      urlPathName.substring(0, urlPathName.lastIndexOf("/")) + "/" + rowId
+    );
+    }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -142,7 +147,13 @@ React.useEffect(() => {
       label: `${t("Policy_Name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e,""),
+      dataComponent: (e: string, id: number) => {
+          var selectedRow = reformattedRowsRef.current?.find((x:any) => x.name == e);
+        return <Restricted moduleId={0}>
+          <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={
+            (e) =>  openEditForm(selectedRow?.id ?? 0)}>{e}</div>
+          </Restricted>
+      },
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
@@ -268,6 +279,7 @@ React.useEffect(() => {
             setPage= {(pages:any) => setPage(pages)}
             setRowsPerPage= {(setRowsPages:any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterUploadPolicies?.totalCount}
+            // initialRows={rows}
           />
         )
       }

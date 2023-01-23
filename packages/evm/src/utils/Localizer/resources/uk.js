@@ -28,6 +28,9 @@ export const resources = {
         "FileStatus":"fr-File Status",
         "SelectAll":"fr-Select All",
         "GroupedAssets":"fr-Grouped Assets",
+        "Download_link":"fr-Download Link",
+        "Asset_name":"fr-Asset Name",
+        "Unit_name":"fr-Unit Name",
       }
     }
   };

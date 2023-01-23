@@ -153,6 +153,27 @@ export interface AssetSharingModel {
     revoked: RevokedModel;
     version: string;
 }
+export interface Form {
+    fields: Field[];
+}
+export interface categoriesModel {
+    categoryName: string;
+    form: Field[];
+    
+}
+export interface SharedAssetLister {
+    assetId:number;
+    downloadLink: string[];
+    assetName: string;
+    unitName: string;
+    checksum: string[];
+    capturedDate: Date;
+    duration: number;
+    categories: string;
+    fields: string;
+    //categories: categoriesModel[];
+    
+}
 export interface AssetShareLink {
     assetId: number;
     masterId: number;

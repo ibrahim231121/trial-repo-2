@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import RetentionPoliciesTemplateActionMenu from './RetentionPoliciesTemplateActionMenu';
 import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch";
 import './retentionPoliciesList.scss'
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton,CRXIcon } from "@cb/shared";
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
@@ -59,7 +59,8 @@ const RetentionPoliciesList: React.FC = () => {
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
-  const [openModel, setOpenModel] = React.useState<boolean>(false);  
+  const [openModel, setOpenModel] = React.useState<boolean>(false); 
+
 
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
@@ -158,7 +159,11 @@ const retentionFormMessages = (obj: any) => {
         return textDisplay(timeSpace, " ")   
       }
   }
-
+  const openEditForm = (rowId: number) => {
+    //if (getModuleIds().includes(67)) {
+      onClickOpenModel(true, Number(rowId), t("Edit_retention_policy"))
+    //}
+  }
   const [headCells, setHeadCells] = React.useState<HeadCellProps[]>([
     {
       label: t("ID"),
@@ -175,10 +180,14 @@ const retentionFormMessages = (obj: any) => {
       maxWidth: "400",
     },
     {
-      label: `${t("Name")}`,
+      label: `${t("Policy_name")}`,
       id: "name",
       align: "left",
-      dataComponent: (e: string) =>  textDisplay(e, " "),
+      dataComponent: (e: string, id: number) => {
+        return <Restricted moduleId={0}>
+          <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => openEditForm(id)} className={"dataTableText txtStyle"}>{e}</div>
+          </Restricted>
+      },
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
@@ -273,7 +282,7 @@ const retentionFormMessages = (obj: any) => {
 
   };
 
-  const onClickOpenModel = (modelOpen: boolean,id:number,title:string) => {    
+  const onClickOpenModel = (modelOpen: boolean, id: number, title: string) => {
     setId(id);
     setTitle(title);
     setOpenModel(modelOpen);

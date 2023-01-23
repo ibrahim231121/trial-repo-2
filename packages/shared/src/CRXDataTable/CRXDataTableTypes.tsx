@@ -236,7 +236,8 @@ export type DataTableProps = {
   dragableHeaderPosition? : number,
   topSpaceDrag? : number,
   headerPositionInit? : number,
-  stickyToolbar? : number
+  stickyToolbar? : number,
+  isPaginationRequired?: boolean,
 };
 
 export type OrderData = {

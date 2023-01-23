@@ -24,6 +24,9 @@ export const resources = {
         "FileStatus":"ar-File Status",
         "SelectAll":"ar-Select All",
         "GroupedAssets":"ar-Grouped Assets",
+        "Download_link":"ar-Download Link",
+        "Asset_name":"ar-Asset Name",
+        "Unit_name":"ar-Unit Name",
       }
     }
   };

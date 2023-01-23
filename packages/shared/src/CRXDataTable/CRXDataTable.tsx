@@ -111,6 +111,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
   topSpaceDrag,
   headerPositionInit,
   stickyToolbar,
+  isPaginationRequired,
 }) => {
   const classes = useStyles();
   
@@ -418,7 +419,7 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                       topSpaceDrag={topSpaceDrag}
                       headerPositionInit={headerPositionInit}
                     />
-                    {/* {(rowsPerPage  >= 25) ? */}
+                    {(isPaginationRequired == null || isPaginationRequired == true) ?
                       <TablePagination
                         className="dataTablePages"
                         //classes = {clxFooter.root}  
@@ -440,8 +441,8 @@ const CRXDataTable: React.FC<DataTableProps> = ({
                         onPageChange={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                       />
-                    {/* : null
-                    } */}
+                   : null
+                    }
                    <div className="overlayPanel"></div>
                   </div>
                 </ThemeProvider>
