@@ -411,6 +411,7 @@ const VideoPlayerBase = (props: any) => {
 
   const dispatch = useDispatch();
   const cookies = new Cookies();
+  const isGuestView : boolean = props.guestView;
   const [bufferingArray, setBufferingArray] = React.useState<any[]>([]);
   const [bufferingArrayFwRw, setBufferingArrayFwRw] = React.useState<any[]>([]);
   const [visibleThumbnail, setVisibleThumbnail] = useState<number[]>([]);
@@ -422,7 +423,6 @@ const VideoPlayerBase = (props: any) => {
 
 
   const [viewNumber, setViewNumber] = useState(1);
-  const [viewNumberFirstTime, setViewNumberFirstTime] = useState(true);
   const [mapEnabled, setMapEnabled] = useState<boolean>(true);
   const [overlayClass, setOverLayClass] = useState<string>()
   const [multiTimelineEnabled, setMultiTimelineEnabled] = useState<boolean>(false);
@@ -496,7 +496,7 @@ const VideoPlayerBase = (props: any) => {
   const [settingMenuEnabled, setSettingMenuEnabled] = useState<any>(null);
   const [overlayEnabled, setOverlayEnabled] = useState<any>(null);
   const [overlayCheckedItems, setOverlayCheckedItems] = useState<string[]>([]);
-  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(true);
+  const [viewReasonControlsDisabled, setViewReasonControlsDisabled] = useState<boolean>(!isGuestView ? true : false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [updateSeekMarker, setUpdateSeekMarker] = React.useState<any>();
   const [updatedGpsDataOverlay, setUpdatedGpsDataOverlay] = React.useState<any>();
@@ -504,7 +504,7 @@ const VideoPlayerBase = (props: any) => {
   const [onMarkerClickTimeData, setOnMarkerClickTimeData] = React.useState<Date>();
   const [onRefreshViewReasonOpen, setOnRefreshViewReasonOpen] = React.useState<boolean>(true);
   const [assetViewReasonRequiredGet, setAssetViewReasonRequiredGet] = React.useState<boolean>(false);
-  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(true);
+  const [viewReasonRequired, setViewReasonRequired] = React.useState<boolean>(!isGuestView ? true : false);
   const [reasons, setReasons] = React.useState<any[]>([]);
   const [openViewRequirement, setOpenViewRequirement] = React.useState<boolean>(false);
   const [reasonForViewing, setReasonForViewing] = React.useState<boolean>(false);
@@ -649,6 +649,9 @@ const VideoPlayerBase = (props: any) => {
       });
       setdata(propdata);
     }
+
+    setMapEnabled(((props.guestView && props.openMap) || !isGuestView) ? true : false); // Guest View Work
+
   }, []);
 
   useEffect(() => {
@@ -769,26 +772,29 @@ const VideoPlayerBase = (props: any) => {
       }
 
       // work for BookmarkNotePopup Component
-      var tempbookmarksnotesarray: any[] = [];
-      timelinedetail.forEach((x:Timeline) => 
-        {x.enableDisplay && x.bookmarks.forEach((y:any)=>
-          {
-            let tempData: any = JSON.parse(JSON.stringify(y));
-            tempData.timerValue = x.recording_start_point + (y.position/1000);
-            tempData.objtype = "Bookmark";
-            tempbookmarksnotesarray.push(tempData);
-          }
+      if(!isGuestView)
+      {
+        var tempbookmarksnotesarray: any[] = [];
+        timelinedetail.forEach((x:Timeline) => 
+          {x.enableDisplay && x.bookmarks.forEach((y:any)=>
+            {
+              let tempData: any = JSON.parse(JSON.stringify(y));
+              tempData.timerValue = x.recording_start_point + (y.position/1000);
+              tempData.objtype = "Bookmark";
+              tempbookmarksnotesarray.push(tempData);
+            }
+          )
+          x.enableDisplay && x.notes.forEach((y:any)=> 
+            {
+              let tempData: any = JSON.parse(JSON.stringify(y));
+              tempData.timerValue = x.recording_start_point + (y.position/1000);
+              tempData.objtype = "Note";
+              tempbookmarksnotesarray.push(tempData);
+            }
+          )}
         )
-        x.enableDisplay && x.notes.forEach((y:any)=> 
-          {
-            let tempData: any = JSON.parse(JSON.stringify(y));
-            tempData.timerValue = x.recording_start_point + (y.position/1000);
-            tempData.objtype = "Note";
-            tempbookmarksnotesarray.push(tempData);
-          }
-        )}
-      )
-      setBookmarksNotesPopup(tempbookmarksnotesarray);
+        setBookmarksNotesPopup(tempbookmarksnotesarray);
+      }
     }
   }, [timelinedetail]);
 
@@ -1190,7 +1196,7 @@ const VideoPlayerBase = (props: any) => {
               hanldeVideoStartStop(timerValue, videoHandle, true);
             });
             renderOnSeek(timerValue);
-            renderBookmarkNotePopupOnSeek(timerValue);
+            if(!isGuestView){ renderBookmarkNotePopupOnSeek(timerValue) }
           }
           else {
             videoHandlers.forEach((videoHandle: any) => {
@@ -1890,7 +1896,7 @@ const VideoPlayerBase = (props: any) => {
     sliderTest?.addEventListener("mousemove", () => {
       document?.querySelector<HTMLElement>("#SliderControlBar .MuiSlider-thumb")?.classList.add("cursorAdded");
     });
-  })
+  },[])
 
   const renderBookmarkNotePopupOnSeek = (timerValue: number) => {
     let temparray: any[] = [];
@@ -2220,6 +2226,7 @@ useEffect(() => {
                 isAudioGraph={isAudioGraph}
                 ffScreenIcon = {fwfScreenIcon}
                 setscreenChangeVideoId={setscreenChangeVideoId}
+                isGuestView={isGuestView}
               />
 
              
@@ -2255,7 +2262,7 @@ useEffect(() => {
                     {timelinedetail.length > 0 && timelinedetail.map((x: Timeline) => {
                       return (
                         <>
-                          {x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
+                          {!isGuestView && x.enableDisplay && x.bookmarks.map((y: any, index: any) => {
                             if ((multiTimelineEnabled ? y.madeBy == "User" : true) && (y.description == "Recording started")) {
                               return (
                                 <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(((x.recording_start_point * 1000) + x.assetbuffering?.pre), x.recording_start_point) }}>
@@ -2288,7 +2295,7 @@ useEffect(() => {
                             }
                           }
                           )}
-                          {notesEnabled && x.enableDisplay && x.notes.map((y: any) =>
+                          {!isGuestView && notesEnabled && x.enableDisplay && x.notes.map((y: any) =>
                             <div className="_timeLine_bookMark_note_pip" style={{ zIndex: 2, position: "absolute", left: getbookmarklocation(y.position, x.recording_start_point) }}>
                               <span className="pip_icon" style={{ backgroundColor: "#7D03D7" }} aria-hidden="true"
                                 onMouseOut={() => mouseOut()} onMouseOver={(e: any) => mouseOverNote(e, y, x)} onClick={() => onClickBookmarkNote(y, 2)}>
@@ -2464,9 +2471,10 @@ useEffect(() => {
                       notesEnabled={notesEnabled}
                       setnotesEnabled={setnotesEnabled}
                       ViewScreen={ViewScreen}
+                      isGuestView={isGuestView}
                     />
                   </div>
-                  {notesEnabled && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
+                  {!isGuestView && notesEnabled && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("note")} variant="contained" className="videoPlayerBtn commentAltBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-comment-alt-plus commentAltpPlus"}
                       placement="top"
@@ -2475,7 +2483,7 @@ useEffect(() => {
                     />
                   </CRXButton>}
 
-                  {ViewScreen && <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
+                  {!isGuestView && ViewScreen && <CRXButton color="primary" onClick={() => handleaction("bookmark")} variant="contained" className="videoPlayerBtn bookmarkBtn" disabled={viewReasonControlsDisabled}>
                     <CRXTooltip
                       iconName={"fas fa-bookmark faBookmarkIcon"}
                       placement="top"
@@ -2562,7 +2570,7 @@ useEffect(() => {
                           </div>
                         </div>
                       </MaterialMenuItem>}
-                      <MaterialMenuItem className="_Side_panel_menu_">
+                      {(isGuestView && props.openMap) || (!isGuestView) ? <MaterialMenuItem className="_Side_panel_menu_">
                 
                         <span className="_layout_text_content_">Side Data Panel</span>
                         <div className="_side_panel_grid_">
@@ -2571,7 +2579,7 @@ useEffect(() => {
                         </div>
                       <CBXSwitcher  rootClass="_layout_menu_switcher_" toggleLabel={true} theme="dark" checked={mapEnabled} size="small" onChange={(event: any) => sideDataPanel(event)} name="Side Data Panel" />
 
-                      </MaterialMenuItem>
+                      </MaterialMenuItem> : ""}
 
                     </MaterialMenu>
                   </div>

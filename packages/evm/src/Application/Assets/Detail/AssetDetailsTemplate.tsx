@@ -88,7 +88,7 @@ const AssetDetailsTemplate = () => {
   const [videoPlayerData, setVideoPlayerData] = React.useState<assetdata[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [assetInfo, setAssetData] = React.useState<AssetReformated>(assetObj);
-  const [openMap, setOpenMap] = React.useState(false);
+  const [openMap, setOpenMap] = React.useState<boolean>(false);
   const [gpsJson, setGpsJson] = React.useState<any>();
   const [sensorsDataJson, setSensorsDataJson] = React.useState<any>();
   const [apiKey, setApiKey] = React.useState<string>("");
@@ -845,14 +845,14 @@ const AssetDetailsTemplate = () => {
     }
   };
 
-  const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: any, apiKey: any) => {
+  const assetDisplay = (videoPlayerData: any, evidenceId: any, gpsJson: any, sensorsDataJson: any, openMap: boolean, apiKey: any) => {
     let availableAssets = videoPlayerData.filter((x: any) => x.status == "Available");
     if (availableAssets.length > 0) {
       let videos = availableAssets.filter((x: any) => x.typeOfAsset == "Video");
 
       switch (videoPlayerData[0]?.typeOfAsset) {
         case 'Video':
-          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} /> :
+          return videos.length > 0 ? <VideoPlayerBase data={videos} evidenceId={evidenceId} gpsJson={gpsJson} sensorsDataJson={sensorsDataJson} openMap={openMap} apiKey={apiKey} guestView={false} /> :
             <>
               <div className="_player_video_uploading">
                 <div className="layout_inner_container">

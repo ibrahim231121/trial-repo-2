@@ -6,7 +6,7 @@ import { FormControlLabel, Switch } from "@material-ui/core";
 import "./VideoPlayerSettingMenu.scss";
 const VideoPlayerSettingMenu = (props: any) => {
 
-  const {  fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen } = props;
+  const {  fullScreenControl, singleVideoLoad, multiTimelineEnabled, setMultiTimelineEnabled, settingMenuEnabled, setSettingMenuEnabled, overlayEnabled, setOverlayEnabled, overlayCheckedItems, setOverlayCheckedItems, isMultiViewEnable, setIsAudioGraph, setIsAudioGraphAnimate, notesEnabled, setnotesEnabled, ViewScreen, isGuestView } = props;
   const [overlayMenuEnabled, setOverlayMenuEnabled] = useState<any>(null);
   const [position, setPosition] = useState(false);
   const [annotationsEnabled, setannotationsEnabled] = useState(false);
@@ -112,7 +112,7 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
       >
         
 
-        <MaterialMenuItem className={`settingOverlay`}>
+        {!isGuestView && <MaterialMenuItem className={`settingOverlay`}>
           <span className="icon icon-pencil5 iconsLeft"></span>
 
           <div className="SwitcherControl"  >
@@ -121,9 +121,9 @@ const notesEnabledClass = notesEnabled ? "notesEnabled_On" : "notesEnabled_Off";
               <CBXSwitcher className="videoSetingMenu_toggle_button" rootClass="videoSetingMenu_toggle" toggleLabel={false} theme="dark" checked={annotationsEnabled} size="small" onChange={(e: any) => Annotations(e)} name="Annotations" />
             </label>
           </div>
-        </MaterialMenuItem>
+        </MaterialMenuItem>}
 
-        {ViewScreen && <MaterialMenuItem className="settingOverlay">
+        {!isGuestView && ViewScreen && <MaterialMenuItem className="settingOverlay">
           <span className='fas fa-comment-alt-plus iconsLeft'></span>
 
           <div className="SwitcherControl"  >
