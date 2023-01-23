@@ -104,6 +104,9 @@ const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Eleme
   return (
     <div className="dataTableText ">
       {AssetRetentionFormat(date)}
+      {
+        evidence.holdUntil != null && moment(evidence.holdUntil).format('DD-MM-YYYY') != "31-12-9999" ?<i className="fas fa-arrow-up"></i> : ""
+      }
     </div>
   );
 }
