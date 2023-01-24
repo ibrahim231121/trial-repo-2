@@ -78,15 +78,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     <DetailedAssetPopup asset={assets} row={evidence} />
   </>
   return dataLink;
-    // return (<CRXDataTableTextPopover
-    //   content={dataLink}
-    //   id="dataAssets"
-    //   isPopover={true}
-    //   counts={assetName}
-    //   title="Assets ID"
-    //   minWidth="130"
-    //   maxWidth="263"
-    // />);
+    
 };
 
 const retentionSpanText = (_: string, evidence: SearchModel.Evidence): JSX.Element => {

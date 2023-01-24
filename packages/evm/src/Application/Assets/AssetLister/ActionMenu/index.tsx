@@ -52,9 +52,7 @@ import autoTable from "jspdf-autotable";
 import moment from "moment";
 import { AssetRetentionFormat } from "../../../../GlobalFunctions/AssetRetentionFormat";
 import { CheckEvidenceExpire } from "../../../../GlobalFunctions/CheckEvidenceExpire";
-import { addGroupedSelectedAssets, clearAllGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
-import { GroupedSelectedAssets } from "../AssetDataTable/AssetTypes";
-import { addGroupedSelectedAssetsActions, clearAddGroupedSelectedAssetsActions, clearAllGroupedSelectedAssetsActions } from "../../../../Redux/groupedSelectedAssetsActions";
+import { clearAddGroupedSelectedAssetsActions, clearAllGroupedSelectedAssetsActions } from "../../../../Redux/groupedSelectedAssetsActions";
 
 type Props = {
   row: any;
@@ -122,9 +120,6 @@ const ActionMenu: React.FC<Props> = React.memo(
     const [isSelectedItem, setIsSelectedItem] = React.useState<boolean>(false);
     const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
     const [assetlinks, setAssetLinks] = React.useState<AssetLink[]>([]);
-    const [showAssetActions, setShowAssetActions] = React.useState<boolean>(false);
-    const [selectedAssetActionType, setSelectedAssetActionType] = React.useState<string>("");
-
 
     const [assetLockUnLockError, setAssetLockUnLockError] =
       React.useState<AssetLockUnLockErrorType>({
@@ -921,7 +916,6 @@ const ActionMenu: React.FC<Props> = React.memo(
     const moveToAssetHandler = () => {
       let tempLinkedAssets: AssetAction[] = [];
       dispatch(clearAllGroupedSelectedAssetsActions());
-      //setOpenAssetAction(tempLinkedAssets);
 
     }
     return (

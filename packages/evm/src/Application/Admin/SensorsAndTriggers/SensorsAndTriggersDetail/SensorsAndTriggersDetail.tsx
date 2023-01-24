@@ -565,7 +565,7 @@ const SensorsAndTriggersDetail: FC<SensorsAndTriggersDetailProps> = () => {
     const getFormatedLabel = (label: string) => {
         return <span className="requiredLable">
                     {label}{" "}
-                    {label === 'Action' || 'Icon' ? <span style={{color: "#000",paddingLeft: "8px", fontWeight: "bold"}}>*</span> : <span></span>}
+                    {label === 'Action' ? <span style={{color: "#000",paddingLeft: "8px", fontWeight: "bold"}}>*</span> : <span></span>}
                 </span>
     }
 

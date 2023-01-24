@@ -266,7 +266,7 @@ export default function CBXMultiSelectForDatatable({onChange, multiple = true, v
 
   useLayoutEffect(() => {
     const handleScroll = () => { 
-      if (window.pageYOffset > 1) {
+      if (window.scrollY > 1) {
         setAnchorEl(null)
       }
     }

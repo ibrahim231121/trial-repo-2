@@ -892,8 +892,7 @@ const AddMetadataForm: React.FC<AddMetadataFormProps> = ({
         dispatch(addAssetToBucketActionCreator(bucketAssets));
       }
     }).catch((error: any) => {
-      if (error.response.status === 500) {
-      }
+     
     })
   }
   const onAdd = async (submitType: SubmitType) => {

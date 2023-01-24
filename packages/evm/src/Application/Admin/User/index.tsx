@@ -4,7 +4,6 @@ import { CRXDataTable,
   CRXToaster, 
   CRXButton, 
   CBXMultiCheckBoxDataFilter,
-  CRXTruncation
 } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import textDisplay from "../../../GlobalComponents/Display/TextDisplay";
