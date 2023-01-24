@@ -822,6 +822,8 @@ export const resources = {
           "Unit_Default_Templates":"Default Unit Templates",
           "Manage_Default_Unit_Templates": "Manage Default Unit Templates",
 
+          
+
       }
     }
   };

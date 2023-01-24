@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { StringIfPlural } from 'react-i18next';
 import { Category, CategoryModel } from './models/CategoryModels';
 import { Policy } from './models/PolicyModels';
+import { Cases } from './models/CasesModels';
 import { CRXLoader } from "@cb/shared"
 import jwt_decode from 'jwt-decode';
 
@@ -40,7 +41,7 @@ import {
     EVIDENCE_GET_URL,
     BASE_URL_AUTHENTICATION_SERVICE,
     EVIDENCE_GET_BY_ID_URL,
-    BASE_URL_Cases_SERVICE,
+    BASE_URL_CASES_SERVICE,
     BASE_URL_Configuration_SERVICE,
     BASE_URL_DeviceHeartBeat_SERVICE,
     BASE_URL_COMMAND_SERVICE
@@ -74,6 +75,8 @@ import { SensorsAndTriggers, DeleteAllSensorsAndTriggers } from './models/Sensor
 import { RetentionPolicies, DeleteAllRetentionPolicies } from './models/RetentionPolicies';
 import { UploadPolicies, DeleteAllUploadPolicies } from './models/UploadPolicies';
 import { logOutUser } from '../../Logout/API/auth';
+import { url } from 'inspector';
+import { Case } from '../../Application/Cases/CaseTypes';
 
 
 
@@ -391,7 +394,19 @@ export const SearchAgent = {
 }
 
 export const CasesAgent = {
-    getCasesBuildVersion: () => requests.get<any>(BASE_URL_Cases_SERVICE, "/Cases/Health/BuildVersion"),
+    getCasesBuildVersion: () => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/Health/BuildVersion"),
+    getCaseStates: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStates"),
+    getCaseStatus: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseStatus"),
+    getCaseCreationType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseCreationType"),
+    getCaseClosedType: (url: string) => requests.get<any>(BASE_URL_CASES_SERVICE, "/Cases/GetCaseClosedType"),
+    addCase: (url:string, caseBody: Case) => requests.post<any>(BASE_URL_CASES_SERVICE, "/Cases", caseBody, config),
+
+
+    getAllCases: (url: string, extraHeader?: Headers[]) => {
+        return requests.getAll<Paginated<Cases[]>>(BASE_URL_CASES_SERVICE, `/Case/GetAll${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
+    },
+    // getAllCasesInfo: (url: string) => requests.get<Cases[]>(BASE_URL_CASES_SERVICE, "/Case/GetAllCases" + url, config),
+    deleteCase: (url: string) => requests.delete<void>(BASE_URL_CASES_SERVICE, url, config),
 }
 
 export const ConfigurationAgent = {
@@ -426,3 +441,6 @@ export const useApiAgent = <T>(request: Promise<T>): [T | undefined] => {
     }, []);
     return [data];
 };
+
+
+

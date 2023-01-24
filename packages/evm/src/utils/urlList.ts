@@ -42,6 +42,9 @@ import { BASE_URL_COMMAND_SERVICE } from './Api/url';
 export const urlNames: any = {
     assets: "assets",
     assetSearchResult: "assetSearchResult",
+    cases:"cases",
+    createCase:"createCase",
+    editCase:"editCase",
     adminUserGroups: "adminUserGroups",
     adminUserGroup: "adminUserGroup",
     adminUserGroupId: "adminUserGroupId",
@@ -95,6 +98,31 @@ export const urlList: any = [
             { type: "text", label: "Assets", }
         ],
     },
+    {
+        name: urlNames.cases,
+        url: "/cases",
+        details: [
+            { type: "text", label: "Manage Cases", },
+        ],
+    }, 
+    {
+        name: urlNames.createCase,
+        url: "/cases/caseDetail",
+        details: [
+            
+            { routeTo: "/cases", type: "link", label: "Manage Cases", },
+            { type: "text", label: "Create Case", }
+        ],
+    }, 
+    {
+     
+        name: urlNames.editCase,
+        url: "/cases/caseDetail/:id",
+        details: [
+            { type: 'text', label: 'Edit Case' },
+            { routeTo: '/cases/caseDetail', type: 'link', label: 'Manage Case' },            
+        ],
+    }, 
     {
         name: urlNames.tenantSettings,
         url: "/tenantSettings",

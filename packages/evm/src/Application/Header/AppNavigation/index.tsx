@@ -54,6 +54,9 @@ const CRXLefNavigation = () => {
       moduleId: 0,
       label: t("Cases"),
       icon: "fas fa-briefcase NaveIcon",
+      // command: () => {
+      //   navigateToPage(urlList.filter((item: any) => item.name === urlNames.cases)[0].url);
+      // },
       // items: [
       //   {
       //     moduleIds:0,

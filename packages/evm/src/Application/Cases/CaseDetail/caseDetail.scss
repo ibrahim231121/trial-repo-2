@@ -1,0 +1,179 @@
+.ManageCase {
+    .MuiCollapse-wrapperInner {
+      [aria-labelledby="accorIdx1"] {
+        .MuiAccordionDetails-root {
+          padding: 47px 25px 75px;
+        }
+      }
+    }
+    &.switchLeftComponents {
+        padding: 0 4px 0px 65px;
+        padding-top: 113px;
+        transition: 1s padding ease-out;
+      }
+  }
+  .CaseSettingsUpdate {
+    .crxCaseDetail {
+        margin: 20px 0;
+        label {
+            width:190px;
+        }
+        input {
+            min-width: auto;
+        }
+    }
+   .CaseDetailCol1 {
+    .MuiGrid-root {
+        margin: 20px 0;
+    }
+   }
+  
+}
+  // Case Detail page start
+.ManageCaseUi {
+    margin-top: 21px;
+    
+      .indicates-label {
+        font-style: italic;
+        font-size: 14px;
+        color: var(--color-333333);
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: -43px;
+        margin-left: -16px;
+        b {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+  
+      }
+      .generalPanelRow {
+        align-items: flex-end;
+      }
+      .centerGeneralTab {
+        // padding: 70px 0 0 91px;
+        .itemIndicator {
+          position: fixed;
+          top: 229px;
+          background: white;
+          z-index: 1;
+          left: 207px;
+        }
+        .crxLocationBtn {
+          margin-top: 114px;
+          display: flex;
+          text-align: left;
+        }
+        .generalContainer {
+          display: flex;
+          text-align: center;
+          align-items: flex-end;
+          justify-content: space-evenly;
+          // margin: 0 28px;
+          // @media only screen and (min-width:1700px) {
+          //   margin: 0 83px;
+          // }
+          .CaseDetailCol {
+            display: block;
+          }
+      }
+      label {
+        text-align: left;
+      }
+  
+      }
+      .CaseDetailButton {
+        justify-content: space-between;
+        .groupInfoTabButtons {
+          margin-right: 25px;
+        }
+      }
+      .MuiTab-wrapper {
+        text-transform: uppercase;
+      }
+      .centerSettingTab {
+        width: 50%;
+        margin: auto;
+        padding: 45px 0px;
+        margin-top: 69px;
+        label {
+          width: 244px ;
+        }
+         .itemIndicator {
+          position: fixed;
+          left: 206px;
+          top: 229px;
+        }
+        .passwordCaseField {
+          margin-bottom: -8px;
+          .passEyeIcon {
+            font-weight: 400;
+            font-size: 14px;
+            padding-top: 8px;
+            span {
+            font-family: Arial, Helvetica, sans-serif;
+  
+            }
+          }
+        }
+        .Uncategorized_Retention_Policy  {
+          margin-top: -1px;
+        }
+      }
+      .crxMainTab {
+        z-index: 2;
+      } 
+      .CaseDetailCol  {
+        input {
+          width: 430px;
+          min-width: 430px;
+  
+        }
+        .CrxCaseError  {
+          width: 430px;
+          min-width: 430px;
+          height: 30px;
+          input {
+            width: 430px;
+          min-width: 430px;
+  
+          }
+        }
+      }
+      .passErrorStyle {
+        bottom: -39px !important;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .crx-d-h {
+      display: none !important;
+    }
+    .crxCaseDetail {
+      .CaseDetailCol {
+        input {
+          width: 100%;
+        }
+        .CBX-input {
+          .CrxCaseError {
+            min-width: 100%;
+          }
+        }
+        label {
+          width: 100%;
+        }
+      }
+      .colCase {
+        .crx_MultiSelectBoxLight {
+          width: 100%;
+        }
+      }
+    }
+    .crxCaseDetailBtn {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .crxLocationBtn {
+      position: static;
+    }
+  }
+  

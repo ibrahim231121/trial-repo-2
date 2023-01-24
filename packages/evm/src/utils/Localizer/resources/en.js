@@ -899,7 +899,25 @@ export const resources = {
         "Policies" : "Policies ",
         "Policy" : "Policy",
         "Are_you_sure_you_would_like_to_delete_upload_policy?" : "Are you sure you would like to delete upload policy?",
-        "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully"
+        "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully",
+      
+            //----------  Cases  ---------       
+          "Create_Case" :"Create Case",
+          "Case_Summary":"Case Summary",
+          "Prosecutor":"Prosecutor",
+          "Lead_Officer":"Lead Officer",
+          "Created_On":"Created On",
+          "State":"State",
+          
+
+          "Case_deleted":"Case deleted",
+          "Delete_case":"Delete case",
+          "Edit_case":"Edit case",
+
+          "Case":"Case",
+          
+          "Title":"Title",
+          "You_have_saved_the_Case_successfully":"You have saved the Case successfully",
       }
     }
   };
