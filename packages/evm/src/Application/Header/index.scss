@@ -204,7 +204,8 @@
 
 .titlePage {
   position: relative;
-  top: -6px;
+  top: 5px;
+  padding-bottom: 16px;
   h2 {
     padding: 2px 0 0 0;
     margin: 0px;
@@ -224,15 +225,15 @@
     height: 1px;
     box-shadow: var(--color-black-10) 0px 0px 15px 0px;
   }
-  &:after {
-    position: absolute;
-    content: "";
-    left: 0px;
-    bottom: -22px;
-    height: 20px;
-    width: 101%;
-    background: #fff;
-  }
+  // &:after {
+  //   position: absolute;
+  //   content: "";
+  //   left: 0px;
+  //   bottom: -22px;
+  //   height: 20px;
+  //   width: 101%;
+  //   background: #fff;
+  // }
 }
 
 #applicationIcon_grid_tooltip {

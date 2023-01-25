@@ -1,4 +1,4 @@
-import { CRXDataTable, CBXMultiSelectForDatatable, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
+import { CRXDataTable,CBXMultiSelectForDatatable, CRXDataTableTextPopover, CRXIcon, CRXToaster, CRXTooltip, CBXMultiCheckBoxDataFilter, CRXTruncation } from "@cb/shared";
 import moment from "moment";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next"; 
@@ -758,12 +758,10 @@ const MasterMain: React.FC<MasterMainProps> = ({
           showHeaderCheckAll={false}
           showTotalSelectedText={false}
           //Kindly add this block for sticky header Please dont miss it.
-          offsetY={!showAdvanceSearch == false ? 163 : 750}
-          topSpaceDrag = {!showAdvanceSearch == false ? 195 : 799}
-          headerPositionInit={178}
-          searchHeaderPosition={207}
-          dragableHeaderPosition={172}
-          stickyToolbar={120}
+          offsetY={!showAdvanceSearch == false ? 180 : 750}
+          stickyToolbar={122}
+          searchHeaderPosition={227}
+          dragableHeaderPosition={192}
           //End here
           page={page}
           rowsPerPage={rowsPerPage}

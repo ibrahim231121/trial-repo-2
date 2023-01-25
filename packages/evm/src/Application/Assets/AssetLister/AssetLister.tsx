@@ -353,9 +353,10 @@ const SearchComponent = (props: any) => {
 
   React.useEffect(() => {
    if( showAdvanceSearch == true ) {
-    window.scrollTo({ top: 180, behavior: "smooth" });
+    window.scrollTo({ top: 14, behavior: "smooth" });
+
    }else {
-    window.scrollTo({ top: 200, behavior: "smooth" });
+    window.scrollTo({ top: 13, behavior: "smooth" });
     
    }
    
@@ -501,7 +502,9 @@ const SearchComponent = (props: any) => {
 
   return (
     <div className='advanceSearchChildren'>
-      <div className='searchComponents'>
+      <div className='searchComponents' style={{paddingTop : showShortCutSearch == false ? "79px" : "124px"}}>
+      {showShortCutSearch && 
+        <div className='predictiveSearch_wraper'>
         <div className={`predictiveSearch ${searchData.length > 0 ? "CRXPredictiveDisable" : ""}`}>
           <CRXRows container spacing={0}>
             <CRXColumn item xs={6} className='topColumn'>
@@ -539,7 +542,8 @@ const SearchComponent = (props: any) => {
             {t("Search")}
           </CRXButton>
         </div>
-
+        </div>
+      }
         {showShortCutSearch && (
           <>
             <div className='middleContent'>

@@ -462,7 +462,7 @@ const ConfigurationTemplates: React.FC = () => {
             isduplicate={true}
           /> */}
           <CBXMultiCheckBoxDataFilter 
-            width = {300} 
+            width = {380} 
             option={indicator} 
             defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
             onChange={(value : any) => changeMultiselect(value, colIdx)}
@@ -559,7 +559,7 @@ const ConfigurationTemplates: React.FC = () => {
         colIdx: number,
         initialRows: ConfigTemplate[]
       ) => multiSelectIndicatorCheckbox(rowData, columns, colIdx, initialRows),
-      minWidth: "375",
+      minWidth: "380",
       attributeName: "IsDefaultTemplate",
       attributeType: "bool",
       attributeOperator: "eq",
@@ -751,11 +751,10 @@ const ConfigurationTemplates: React.FC = () => {
             totalRecords={UnitConfigurationTemplates.totalCount}
             setSortOrder={(sort: any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={-27}
-            topSpaceDrag={5}
-            searchHeaderPosition={222}
-            dragableHeaderPosition={187}
-            stickyToolbar={152}
+            offsetY={143}
+            stickyToolbar={157}
+            searchHeaderPosition={240}
+            dragableHeaderPosition={206}
             //End here
           />
         )}

@@ -14,8 +14,10 @@
     
       .save-cancel-unitDevice {
         width: 100%;
+       
         .groupInfoTabButtons {
           height: 30px;
+          margin-right: 30px;
         }
       }
     }
@@ -409,7 +411,14 @@ iframe {
       thead {
         top : 0px !important;
         z-index: 99 !important;
-        
+        th{
+          &.crxTableHeaderSize {
+            left: 0px !important;
+          }
+          &.TableSearchAbleHead.MuiTableCell-paddingCheckbox {
+            left: 0px !important;
+          }
+        }
       }
       tbody {
         tr {
@@ -443,6 +452,9 @@ iframe {
                   }
                 } 
               }
+            }
+            &:first-child {
+              left: 0px !important;
             }
           }
           

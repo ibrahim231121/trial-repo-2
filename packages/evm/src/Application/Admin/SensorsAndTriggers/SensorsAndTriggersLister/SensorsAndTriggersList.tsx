@@ -156,7 +156,6 @@ React.useEffect(() => {
       keyCol: true,
       visible: false,
       minWidth: "80",
-      width: ""
     },
     {
       label: `${t("Name")}`,
@@ -166,8 +165,7 @@ React.useEffect(() => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "1650",
-      width: "1650",
+      minWidth: "1630",
       detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
@@ -302,9 +300,8 @@ React.useEffect(() => {
             setSelectedItems={setSelectedItems}
             selectedItems={selectedItems}
              //Please dont miss this block.
-             offsetY={65}
-             headerPositionInit={206}
-             topSpaceDrag = {99}
+            offsetY={119}
+            stickyToolbar={120}
              //End here
             page={page}
             rowsPerPage={rowsPerPage}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -25,16 +25,60 @@ const DataTableToolbar: React.FC<DataTableToolbarProps> = ({
   numSelected,
   showTotalSelectedText,
   toolBarButton,
-  stickyToolbar
+  stickyToolbar,
+  offsetY
 }) => {
   const classes = useToolbarStyles();
-  const { t } = useTranslation<string>();4
+  const { t } = useTranslation<string>();
 
   const [showCustomize,setShowCustomize] = useState<any>();
+  const ToolBarRefs:any = useRef()
 
+   
+  function createScrollStopListener(element : any, callback : any, timeout : number) {
+    let handle: any = null;
+    const onScroll = function() {
+        
+        if (handle) {
+            clearTimeout(handle);
+        }
+        
+        handle = setTimeout(callback, timeout || 100); 
+        
+        if(offsetY && element.pageYOffset > offsetY ) {
+         
+          ToolBarRefs.current.style.position = "fixed",
+          ToolBarRefs.current.style.width = "calc(100% - 118px)";
+        }
+        else if (offsetY && element.pageYOffset < offsetY && element.pageXOffset > 1) {
+          
+          ToolBarRefs.current.style.position = "fixed",
+          // footer && (footer.style.position = "fixed") 
+          ToolBarRefs.current.style.width = "calc(100% - 118px)";
+        }
+
+        
+    };
+
+    element.addEventListener('scroll', onScroll);
+    return function() {
+        element.removeEventListener('scroll', onScroll);
+    };
+  }
+  
+  useEffect(() => {
+    createScrollStopListener(window, function() {
+      if(offsetY && window.pageYOffset < offsetY && window.pageXOffset < 1) {
+          ToolBarRefs.current.style.position = "sticky",
+          ToolBarRefs.current.style.width = "100%";
+      }
+    },50);
+
+  },[])
+  
   return (
 
-    <Toolbar style={{"top" : stickyToolbar + "px"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
+    <Toolbar ref={ToolBarRefs} style={{"top" : stickyToolbar + "px", position : "sticky"}} className={clsx("crxClearfilter stickyPos " + classes.root)} disableGutters>
       
       <div className='toolbar-button'>
         {toolBarButton}

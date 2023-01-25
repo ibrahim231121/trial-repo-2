@@ -30,26 +30,29 @@
   border: 0px;
 }
 
-.predictiveSearch {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  .MuiGrid-container {
-    width: 65%;
-  }
-  &.CRXPredictiveDisable {
-    .combo-box-Search {
-      .MuiAutocomplete-endAdornment {
-        display: flex;
-        height: 100%;
-        right: 15px;
-        button {
-          visibility: visible;
-          background: transparent;
-          &:hover,
-          &:focus {
-            .MuiTouchRipple-root {
-              display: none;
+.predictiveSearch_wraper {
+  margin-bottom: 10px;
+  .predictiveSearch {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    .MuiGrid-container {
+      width: 65%;
+    }
+    &.CRXPredictiveDisable {
+      .combo-box-Search {
+        .MuiAutocomplete-endAdornment {
+          display: flex;
+          height: 100%;
+          right: 15px;
+          button {
+            visibility: visible;
+            background: transparent;
+            &:hover,
+            &:focus {
+              .MuiTouchRipple-root {
+                display: none;
+              }
             }
           }
         }
@@ -57,7 +60,6 @@
     }
   }
 }
-
 .makeStyles-content-9 {
   &.makeStyles-contentShift-10 {
     .searchComponents {
@@ -154,6 +156,19 @@
 
 .stickyBorder_Add {
   .crxClearfilter {
-    border-top: 1px solid #d1d2d4;
+    &::before {
+      position: absolute;
+      top: 4px;
+      left: auto;
+      right: auto;
+      width: 100%;
+      height: 1px;
+      background: #d1d2d4;
+      content: "";
+    }
   }
+}
+
+.crxClearfilter {
+  border-top: 1px solid transparent;
 }

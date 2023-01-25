@@ -214,6 +214,11 @@
   outline: 2px solid var(--color-aa1d1d);
 }
 
+.usersGroupDataTable {
+ &::before {
+   background: transparent !important;
+ }
+}
 
 @media only screen and (max-width: 1366px) {
   .crxTabsPermission div[role="tabpanel"]::before {
@@ -227,3 +232,4 @@
     width: 1243px;
   }
 }
+

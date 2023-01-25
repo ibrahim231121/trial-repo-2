@@ -11,10 +11,12 @@ export const useToolbarStyles = makeStyles((theme: Theme) =>
     root: {
       paddingLeft: theme.spacing(0),
       paddingRight: theme.spacing(0),
-      paddingBottom: theme.spacing(3.7),
-      paddingTop : theme.spacing(3),
+      paddingBottom: "34px",
+      paddingTop : "35px",
       minHeight : "30px !important",
       height : "30px",
+      position : "sticky",
+      width : "100%"
     },
     highlight:
       theme.palette.type === "light"
@@ -109,6 +111,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       width: "99.8%",
       height: "auto",
       overflowY : "hidden",
+      display : "table",
+      paddingRight: "26px",
+      paddingBottom: "46px",
       //scrollBehavior: "smooth"
     },
     multiTableStikcyHeader: {
@@ -119,7 +124,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#333333 !important",
     },
     headerStickness: {
-      top: "0px",
       left: 0,
       zIndex: 3,
       position: "sticky",
@@ -129,7 +133,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding : "0px 11px !important"
     },
     searchHeaderStickness: {
-      top: "35px !important",
       left: 0,
       zIndex: 2,
       position: "sticky",
@@ -191,7 +194,8 @@ export interface DataTableToolbarProps {
   showCustomizeIcon?: boolean;
   showTotalSelectedText?: boolean;
   toolBarButton? : React.ReactNode,
-  stickyToolbar? : number
+  stickyToolbar? : number,
+  offsetY? : number
 }
 
 export type DataTableProps = {

@@ -125,8 +125,8 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         showCheckBoxesCol === undefined ? (
                           <TableCell
                             style={{
-                              left : "0px",
-                              zIndex : "1"
+                              left : "90px",
+                              zIndex : "2"
                             }}
                             className="DataTableBodyCell CellCheckBox col-two"
                             scope="row"
@@ -179,7 +179,7 @@ const DataTableBody: React.FC<DataTableBodyProps> = ({
                         showActionCol === undefined ? (
                           <TableCell
                             style={{
-                              left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "60px" : "0px"}`,
+                              left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined ? "150px" : "89px"}`,
                               zIndex : "1"
                             }}
                             className="DataTableBodyCell col-three"

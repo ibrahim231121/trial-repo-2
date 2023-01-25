@@ -71,7 +71,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             width: "60px",
             minWidth: "60px",
             maxWidth : "96px",
-            left: "0px",
+            left: "90px",
             // left: `${fixedColumnAlignment(
             //   dragVisibility,
             //   showCheckBoxesCol,
@@ -97,7 +97,7 @@ const DataTableHeader: React.FC<DataTableHeaderProps> = ({
             //   showCheckBoxesCol,
             //   2
             // )}`,
-            left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined  ? "60px" : "0px"}`,
+            left :`${showCheckBoxesCol == true || showCheckBoxesCol == undefined  ? "150px" : "89px"}`,
             position: "sticky",
             zIndex: 4,
           }}

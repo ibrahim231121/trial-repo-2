@@ -408,7 +408,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                         searchHeader={true}
                         columnVisibilityBar={true}
                         allowDragableToList={false}
-                        className="ManageAssetDataTable usersGroupDataTable groupsAndPermissions"
+                        className="ManageAssetDataTable usersGroupDataTable"
                         onClearAll={clearAll}
                         getSelectedItems={(v: User[]) => setSelectedItems(v)}
                         onResizeRow={resizeRowUserTab}
@@ -424,10 +424,7 @@ const User: React.FC<infoProps> = ({ ids, onChangeUserIds }) => {
                         showTotalSelectedText={true}
                         lightMode={false}
                         //Please dont miss this block.
-                        offsetY={-33}
-                        topSpaceDrag = {-1}
-                        searchHeaderPosition={102}
-                        dragableHeaderPosition={67}
+                        offsetY={129}
                         stickyToolbar={0}
                         //End here
                         page={page}

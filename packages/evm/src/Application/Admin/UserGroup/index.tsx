@@ -403,11 +403,10 @@ const UserGroup: React.FC = () => {
             totalRecords={groups ? groups.totalCount : 0}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={-33}
-            topSpaceDrag = {-1}
-            searchHeaderPosition={227}
-            dragableHeaderPosition={192}
-            stickyToolbar={139}
+            offsetY={119}
+            stickyToolbar={137}
+            searchHeaderPosition={240}
+            dragableHeaderPosition={205}
             //End here
    
           />

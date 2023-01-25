@@ -723,7 +723,7 @@ const Group = () => {
      : ""}
       <CRXToaster ref={groupMsgRef} />
 
-      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={139}/>
+      <CRXTabs value={value} onChange={handleChange} tabitems={tabs} stickyTab={138}/>
       <CrxTabPanel value={value} index={0}>
         {/* <div className={showMessageError}> */}
         <div
@@ -737,9 +737,7 @@ const Group = () => {
 
       <CrxTabPanel value={value} index={1}>
         <div
-          className={`${
-            showSuccess ? "crxGroupTab1 isErrorHide" : "crxGroupTab1"
-          } ${messagesadd}`}
+          className="crxGroupTab1"
         >
           <User ids={userIds} onChangeUserIds={onChangeUserIds}></User>
         </div>

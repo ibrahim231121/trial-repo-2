@@ -103,6 +103,9 @@
         height: 1px;
         td.MuiTableCell-root {
           color: var(--color-333333);
+          &:first-child{
+            border-left: 1px solid var(--color-ccc);
+          }
         }
         td.DataTableBodyCell {
           border-right: 1px solid var(--color-ccc);
@@ -123,6 +126,7 @@
           &.col-two {
               vertical-align: middle;
               position: sticky !important;
+              border-left: 1px solid var(--color-ccc);
           }
           &.col-three {
               position: sticky !important;

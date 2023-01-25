@@ -222,31 +222,9 @@
   }
 }
 .crxGroupTab1 {
-  &.crxScrollGroupTop {
-    .userDataTableParent {
-      // .dataTablePages {
-      //   bottom: 112px;
-      // }
-    }
-    &.isErrorHide {
-      .userDataTableParent {
-        // .dataTablePages {
-        //   bottom: 56px;
-        // }
+  .userDataTableParent {
+      .overlayPanel_Right {
+        width: 24px !important;
       }
-    }
-  }
-  &.crxScrollGroup {
-    &.isErrorHide {
-      .userDataTableParent {
-        // .dataTablePages {
-        //   bottom: 108px;
-        // }
-        .crxClearfilter {
-          top: -25px;
-          min-height: 70px;
-        }
-      }
-    }
   }
 }

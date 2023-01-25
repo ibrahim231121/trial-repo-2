@@ -225,7 +225,7 @@ const RetentionPoliciesList: React.FC = () => {
       sort: false,
       searchFilter: false,
       searchComponent: searchText,
-      minWidth: "400",
+      minWidth: "412",
     },
 
   ]);
@@ -366,11 +366,8 @@ const RetentionPoliciesList: React.FC = () => {
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterRetentionPolicies?.totalCount}
             //Please dont miss this block.
-            offsetY={-27}
-            topSpaceDrag={5}
-            searchHeaderPosition={221}
-            dragableHeaderPosition={186}
-            stickyToolbar={133}
+            offsetY={50}
+            stickyToolbar={121}
           //End here
           />
 

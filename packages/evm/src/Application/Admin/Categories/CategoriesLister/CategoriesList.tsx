@@ -453,6 +453,7 @@ const sortingOrder = (sort: any) => {
 }
 
   return (
+   
     <ClickAwayListener onClickAway={handleBlur}>
     <div className="switchLeftComponents" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
@@ -511,11 +512,10 @@ const sortingOrder = (sort: any) => {
             dragableHeaderPosition={187}
             stickyToolbar={133}
             //End here
-            initialRows={reformattedRows}
-          />
+			      initialRows={reformattedRows}          />
 
-        )
-      }
+          )
+        }
       {
         openModel &&
         (<CategoriesDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)

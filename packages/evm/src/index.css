@@ -4,7 +4,7 @@ body {
   /*   
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; */
-  overflow-x: hidden;
+ 
   width: 100%;
 }
 
@@ -14,10 +14,6 @@ body {
   top: 32px;
   background: var(--color-White);
   border: 1px solid var(--color-ccc);
-}
-
-.dataTabAssets {
-  margin-top: 28px;
 }
 
 .makeStyles-content-9 .searchComponents {
@@ -247,14 +243,13 @@ body {
 }
 
 .stickyPos {
-  position: sticky !important;
-  top: 125px;
   background: var(--color-White) !important;
   height: 59px;
   width: 100%;
-  left: 7px;
   z-index: 1202;
   padding-top: 4px;
+  margin-left:  1px;
+  position: sticky;
 }
 .stickyPos.dataTableStickyPos {
   z-index: 1099;
@@ -415,14 +410,24 @@ input:-webkit-autofill {
   z-index: 999;
 }
 
-/* .AssetsDataGrid table thead  {
-  transition:transform 0s;
-  position: sticky;
-  z-index: 99;
-} */
+.overlayPanel_Right{
+  background-color: #fff;
+  height: calc(100vh - 60px);
+  width: 28px;
+  position: fixed;
+  left: 62px;
+  top: 60px;
+  z-index: 999;
+}
 
-.AssetsDataGrid {
-  overflow-x: overlay !important;
+.overlayPanel_bottom {
+    background-color: #fff;
+    height: 40px;
+    width: 100%;
+    position: fixed;
+    left: 62px;
+    bottom: 0px;
+    z-index: 999;
 }
 
 .scrollControler {

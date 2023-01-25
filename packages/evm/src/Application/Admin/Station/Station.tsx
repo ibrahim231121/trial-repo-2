@@ -222,7 +222,7 @@ const Station: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: '415',
+      minWidth: '435',
       attributeName: "Address.Phone",
       attributeType: "String",
       attributeOperator: "contains"
@@ -374,11 +374,10 @@ const Station: React.FC = () => {
           totalRecords={stations.totalCount}
           setSortOrder={(sort:any) => sortingOrder(sort)}
           //Please dont miss this block.
-          offsetY={-27}
-          topSpaceDrag = {5}
-          searchHeaderPosition={221}
-          dragableHeaderPosition={186}
-          stickyToolbar={133}
+          offsetY={50}
+          stickyToolbar={136}
+          searchHeaderPosition={240}
+          dragableHeaderPosition={206}
           //End here
         />
       )}
