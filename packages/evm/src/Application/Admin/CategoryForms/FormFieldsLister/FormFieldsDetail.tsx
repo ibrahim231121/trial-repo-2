@@ -16,6 +16,10 @@ type FormFieldsDetailProps = {
   title: string,
   pageiGrid: PageiGrid,
   openModel: React.Dispatch<React.SetStateAction<any>>;
+  isCategoryForms : boolean;
+  setSelectedFields: any;
+  selectedFields: any;
+  setFieldValue : any;
 }
 
 type FormFieldDetailModel = {
@@ -84,10 +88,25 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
         })
     }
     else {
-      SetupConfigurationAgent.postFormFields(url, body).then(() => {
+      SetupConfigurationAgent.postFormFields(url, body).then((res:any)=>{
         setSuccess(true);
         setError(false);
-        dispatch(getAllFormFieldsFilter(props.pageiGrid));
+        if(props.isCategoryForms)
+        {
+           let fields = [...props.selectedFields, {
+             id: res,
+             name: body?.name,
+             displayName: payload?.displayName,
+             controlType: controlTypes?.find((x: any) => x.value == payload.type || x.displayText == payload.type)?.displayText ?? "",
+             width: 0,
+           }];
+           props.setSelectedFields(fields);
+           props.setFieldValue("fields", fields.map((x: any) => { return x.id }));
+        }
+        else
+        {
+          dispatch(getAllFormFieldsFilter(props.pageiGrid));
+        }
         setTimeout(() => { handleClose() }, 500);
       })
         .catch((e: any) => {
@@ -98,10 +117,14 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
     }
   }
 
-  const closeDialog = () => {
-    handleClose();
+  const closeDialog = (dirty: any) => {
+    if (dirty) {
+      setIsOpen(true);
+    }
+    else {
+      handleClose();
+    }
   };
-
 
   const handleClose = () => {
     setOpenModal(false);
@@ -166,7 +189,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                 title={props.title}
                 className={'CRXModal ___CRXCreateFormFields__ ___CRXEditFormFields__'}
                 modelOpen={openModal}
-                onClose={closeDialog}
+                onClose={() => closeDialog(dirty)}
                 defaultButton={false}
                 showSticky={false}
                 closeWithConfirm={closeWithConfirm}
@@ -261,7 +284,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                 <CRXRows container={true} spacing={1} style={{ marginBottom: "15px" }}>
                   <CRXColumn item={true} xs={4}>
                     <label htmlFor="defaultFieldValue">
-                      {t("Default_Field_Value")}
+                      {t("Field_Values")}
                     </label>
                   </CRXColumn>
                   <CRXColumn item={true} xs={8}>

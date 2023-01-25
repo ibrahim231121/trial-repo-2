@@ -476,8 +476,7 @@ export const urlList: any = [
         url: '/admin/categoryForms/categoryForm/:id',
         details: [
             { type: 'text', label: 'Admin' },
-            { routeTo: '/admin/categoryForms/', type: 'link', label: 'Category Forms & Fields' },
-            { type: 'text', label: 'Edit Category Forms' }
+            { routeTo: '/admin/categoryForms', type: 'link', label: 'Category Forms & Fields' },
         ]
     }
 

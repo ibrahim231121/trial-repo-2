@@ -8,7 +8,6 @@ import './categoryFormsList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton, CRXDataTable, CRXToaster } from "@cb/shared";
 import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
-
 import {
   SearchObject,
   ValueString,
@@ -21,12 +20,13 @@ import {
   onSetHeadCellVisibility,
   onSaveHeadCellData,
   PageiGrid,
-  onTextCompare
+  GridFilter,
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
-import { getAllCategoriesFilter } from '../../../../Redux/Categories';
 import Restricted from "../../../../ApplicationPermission/Restricted";
 import { urlList, urlNames } from "../../../../utils/urlList";
 import { useHistory } from "react-router-dom";
+import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 type CategoryFormsTemplate = {
   id: number;
@@ -40,18 +40,17 @@ const ORDER_BY_PARAM = "recordingStarted";
 const CategoryFormsList: React.FC = () => {
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const { t } = useTranslation<string>();
-  const [id, setId] = React.useState<number>(0);
-  const [title, setTitle] = React.useState<string>("");
   const [rows, setRows] = React.useState<CategoryFormsTemplate[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
   const [selectedItems, setSelectedItems] = React.useState<CategoryFormsTemplate[]>([]);
   const [selectedActionRow, setSelectedActionRow] = useState<CategoryFormsTemplate[]>();
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = React.useState<number>(25);
   const [paging, setPaging] = React.useState<boolean>();
-  const [openModel, setOpenModel] = React.useState<boolean>(false);
   const history = useHistory();
+  const [order, setOrder] = React.useState<Order>("asc");
+  const [orderBy, setOrderBy] = React.useState<string>("Name");
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
   const [pageiGrid, setPageiGrid] = React.useState<PageiGrid>({
     gridFilter: {
       logic: "and",
@@ -67,15 +66,14 @@ const CategoryFormsList: React.FC = () => {
 
   useEffect(() => {
     if (paging)
-      setCategoryForms()
+      dispatch(getAllCategyFormsFilter(pageiGrid));
     setPaging(false)
   }, [pageiGrid])
 
   useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
-    setPaging(true)
-
-  }, [page, rowsPerPage])
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});  
+    setPaging(true);
+  },[page, rowsPerPage])
 
   useEffect(() => {
     setCategoryForms();
@@ -85,15 +83,7 @@ const CategoryFormsList: React.FC = () => {
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
     dispatch(enterPathActionCreator({ val: "" }));
   }, []);
-
-  const retentionFormMessages = (obj: any) => {
-    retentionMsgFormRef?.current?.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration,
-      clearButtton: true,
-    });
-  }
+  
   const onChange = (valuesObject: ValueString[], colIdx: number) => {
     headCells[colIdx].headerArray = valuesObject;
     onSelection(valuesObject, colIdx);
@@ -154,7 +144,10 @@ const CategoryFormsList: React.FC = () => {
       searchComponent: searchText,
       minWidth: "300",
       width: "926",
-      maxWidth: "800"
+      maxWidth: "800",
+      attributeName: "Name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Description")}`,
@@ -166,7 +159,10 @@ const CategoryFormsList: React.FC = () => {
       searchComponent: searchText,
       minWidth: "300",
       width: "926",
-      maxWidth: "800"
+      maxWidth: "800",
+      attributeName: "Description",
+      attributeType: "String",
+      attributeOperator: "contains"
     }
   ]);
 
@@ -187,33 +183,10 @@ const CategoryFormsList: React.FC = () => {
     setReformattedRows(CategoryFormTemplateRows)
   }
 
-  const dataArrayBuilder = () => {
-    let dataRows: CategoryFormsTemplate[] = reformattedRows;
-    searchData.forEach((el: SearchObject) => {
-      dataRows = onTextCompare(dataRows, headCells, el);
-    });
-    setRows(dataRows);
-  };
-
   React.useEffect(() => {
     setCategoryForms();
   }, [filterCategoryForms?.data]);
 
-  useEffect(() => {
-    dataArrayBuilder();
-  }, [searchData]);
-
-  const getSelectedItemsUpdate = () => {
-    setSelectedItems([]);
-  }
-
-  const getSuccessUpdate = () => {
-    setSuccess(true);
-  }
-
-  const CategoriesAction = () => {
-    dispatch(getAllCategoriesFilter(pageiGrid));
-  }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -222,7 +195,7 @@ const CategoryFormsList: React.FC = () => {
 
   const clearAll = () => {
     pageiGrid.gridFilter.filters = []
-    dispatch(getAllCategoriesFilter(pageiGrid));
+    dispatch(getAllCategyFormsFilter(pageiGrid));
     setSearchData([]);
     let headCellReset = onClearAll(headCells);
     setHeadCells(headCellReset);
@@ -234,27 +207,64 @@ const CategoryFormsList: React.FC = () => {
 
   };
 
-  const onClickOpenModel = (modelOpen: boolean, id: number, title: string) => {
-    setId(id);
-    setTitle(title);
-    setOpenModel(modelOpen);
-  }
-
-  const onMessageShow = (isSuccess: boolean, message: string) => {
-    retentionFormMessages({
-      message: message,
-      variant: isSuccess ? 'success' : 'error',
-      duration: 7000
-    });
-  }
-
   const handleClickOpen = () => {
     const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsCreate)[0].url}`;
     history.push(path);
   };
 
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});  
+    setPaging(true);
+  },[page, rowsPerPage])
+
+  const getFilteredCategoryFormsData = () => {
+    pageiGrid.gridFilter.filters = []
+    searchData.filter(x => x.value[0] !== '').forEach((item:any, index:number) => {
+        let x: GridFilter = {
+          operator: headCells[item.colIdx].attributeOperator,
+          field: headCells[item.colIdx].attributeName,
+          value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+          fieldType: headCells[item.colIdx].attributeType,
+        }
+        pageiGrid.gridFilter.filters?.push(x)
+    })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
+   
+    if(page !== 0)
+      setPage(0)
+    else
+      dispatch(getAllCategyFormsFilter(pageiGrid));
+    
+    setIsSearchable(false)
+}
+  
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredCategoryFormsData();
+    }
+  }
+  
+  const handleBlur = () => {
+    if(isSearchable) {     
+      getFilteredCategoryFormsData();
+    }
+  }
+  
+  const sortingOrder = (sort: any) => {
+    setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+    setPaging(true)
+  }
+
+  useEffect(() => {
+    if(searchData.length > 0){
+      setIsSearchable(true)
+    }
+  }, [searchData]);
+
   return (
-    <div className="CrxCategoriesTable switchLeftComponents">
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className="CrxCategoriesTable switchLeftComponents" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -307,12 +317,14 @@ const CategoryFormsList: React.FC = () => {
             offsetY={20}
             dragableHeaderPosition={207}
             topSpaceDrag={5}
+            setSortOrder={(sort:any) => sortingOrder(sort)}
           //End here
           />
 
         )
       }
     </div>
+    </ClickAwayListener>
   );
 };
 

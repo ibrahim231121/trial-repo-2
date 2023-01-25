@@ -17,7 +17,6 @@ import { UserGroups } from "../../../../utils/Api/models/UsersAndIdentitiesModel
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import CategoryFormsList from "../CategoryFormsLister/CategoryFormsList";
 import { getAllCategyFormsFilter } from "../../../../Redux/CategoryForms";
-import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
 import FormFieldsList from "../FormFieldsLister/FormFieldsList";
 
 const CategoryFormsAndFields = () => {
@@ -53,8 +52,7 @@ const CategoryFormsAndFields = () => {
   const [ids, setIds] = useState<string>(id);
 
   React.useEffect(() => {
-    dispatch(getAllCategyFormsFilter(pageiGrid));
-    dispatch(getAllFormFieldsFilter(pageiGrid));
+    // dispatch(getAllCategyFormsFilter(pageiGrid));
   }, []);
 
   useEffect(() => {

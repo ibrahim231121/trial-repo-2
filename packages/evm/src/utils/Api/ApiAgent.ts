@@ -195,7 +195,6 @@ const requests = {
 }
 export const SetupConfigurationAgent = {
     getAllControlTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Fields/GetAllControlTypesKeyValues", config),
-    getAllTypes: () => requests.get<UnitTemplateConfigurationInfo []>(SETUP_CONFIGURATION_SERVICE_URL, "/Forms/GetAllTypesKeyValues", config),
     getCategories: (url: string) => requests.get<Category[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     postCategories: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     deleteCategoryForms: (extraHeader?: Headers[]) => requests.delete<void>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config),
@@ -206,6 +205,8 @@ export const SetupConfigurationAgent = {
     getSingleCategory: (id : number) => requests.get<CategoryModel>(SETUP_CONFIGURATION_SERVICE_URL, `/Categories/${id}`, config),
     getSingleFormField: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Fields/${id}`, config),
     getSingleCategoryForm: (id : number) => requests.get<any>(SETUP_CONFIGURATION_SERVICE_URL, `/Forms/${id}`, config),
+    postCategoryForms: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
+    putCategoryForms: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getPoliciesAccordingToType: (url: string) => requests.get<Policy[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),
     getGetMaxRetentionDetail: (url: string, body: number[]) => requests.post<MaxRetentionPolicyDetail>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     getGlobalAssetViewReason: (url: string) => requests.get<SetupConfigurationsModel.GlobalAssetViewReason[]>(SETUP_CONFIGURATION_SERVICE_URL, url, config),

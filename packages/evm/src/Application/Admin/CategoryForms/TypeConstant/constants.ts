@@ -2,14 +2,12 @@ export const retentionTypeTimePeriod = "TimePeriod";
 export const retentionTypeDiskSpace = "DiskSpace";
 
 export const controlTypes = [
-    { value: "Unknown", displayText: 'Unknown' },
-    { value: "FieldTextBoxType", displayText: 'Textbox type' },
-    { value: "FieldDropDownListType", displayText: 'Dropdown list type' },
-    { value: "FieldCheckedBoxType", displayText: 'Checkbox type' },
-    { value: "FieldTextAreaType", displayText: 'Textarea type' },
-    { value: "FieldCheckedBoxListType", displayText: 'Checkbox list type' },
-    { value: "FieldRadioButtonListType", displayText: 'Radio button list type' },
-    { value: "CaseNO", displayText: 'Case number' },
-    { value: "PolygraphLogNumber", displayText: 'Polygraph log number' },
-    { value: "CADID", displayText: 'Computer aided dispatch identity' }
+    { value: "FieldTextBoxType", displayText: 'Text Field', id : 1 },
+    { value: "FieldDropDownListType", displayText: 'Single Select Dropdown', id : 2 },
+    { value: "FieldCheckedBoxType", displayText: 'Checkbox', id : 3 },
+    { value: "FieldTextAreaType", displayText: 'Text Box', id : 4 },
+    { value: "FieldCheckedBoxListType", displayText: 'Checkbox List', id : 5 },
+    { value: "FieldRadioButtonListType", displayText: 'Radio Button List', id : 6 },
+    { value: "CaseNO", displayText: 'Case Number', id : 7 },
+    { value: "CADID", displayText: 'CAD ID', id : 9 }
 ];

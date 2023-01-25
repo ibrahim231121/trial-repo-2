@@ -11,12 +11,10 @@ type infoProps = {
 }
 
 const FieldRowLister: React.FC<infoProps> = ({ selectedFields, setSelectedFields, setFieldValue }) => {
-
     return (
         <>
             <div className="crxPermissionPageScroll">
                 <div>
-
                     {
                         selectedFields?.map((fieldRow, i) => {
                             return <FormFieldRowValue selectedFields={selectedFields} rowField={fieldRow} setSelectedFields={setSelectedFields} setFieldValue={setFieldValue}></FormFieldRowValue>

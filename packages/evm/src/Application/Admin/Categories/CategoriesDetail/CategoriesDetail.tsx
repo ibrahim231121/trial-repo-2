@@ -11,6 +11,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import { CRXMultiSelectBoxLight } from "@cb/shared";
 import { getAllCategoriesFilter } from "../../../../Redux/Categories";
+import { enterPathActionCreator } from "../../../../Redux/breadCrumbReducer";
 
 type CategoriesDetailProps = {
   id: number,

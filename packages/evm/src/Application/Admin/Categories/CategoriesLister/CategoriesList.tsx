@@ -20,18 +20,17 @@ import {
   onSetHeadCellVisibility,
   onSaveHeadCellData,
   PageiGrid,
-  onTextCompare,
   GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { CRXToaster } from "@cb/shared";
 import { getAllCategoriesFilter } from '../../../../Redux/Categories';
-import Restricted from "../../../../ApplicationPermission/Restricted";
 import { getAllCategoryForms } from "../../../../Redux/CategoryForms";
 import { getAllRetentionPolicies, getAllUploadPolicies } from "../../../../Redux/RetentionPolicies";
 import ApplicationPermissionContext from "../../../../ApplicationPermission/ApplicationPermissionContext";
 import { renderCheckMultiselect } from "../../../Assets/AssetLister/AssetDataTable/AssetDataTableModel";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import CategoriesTemplateActionMenu from "./CategoriesTemplateActionMenu";
+import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 
 type CategoriesTemplate = {
   id: number;
@@ -45,12 +44,16 @@ type CategoriesTemplate = {
 }
 
 const CategoriesList: React.FC = () => {
-  const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
+  
   const { t } = useTranslation<string>();
-  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
+  const dispatch = useDispatch();
+ 
+  const filterCategories: any = useSelector((state: RootState) => state.categoriesSlice.filterCategories);
+  const retentionPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllRetentionPolicies);
+  const uploadPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllUploadPolicies);
   const [id, setId] = React.useState<number>(0);
-  const [order, setOrder] = React.useState<Order>("desc");
-  const [orderBy, setOrderBy] = React.useState<string>("LastLogin");
+  const [order, setOrder] = React.useState<Order>("asc");
+  const [orderBy, setOrderBy] = React.useState<string>("Name");
   const [title, setTitle] = React.useState<string>("");
   const [rows, setRows] = React.useState<CategoriesTemplate[]>([]);
   const [searchData, setSearchData] = React.useState<SearchObject[]>([]);
@@ -74,12 +77,11 @@ const CategoriesList: React.FC = () => {
       dir: order
     }
   })
-  const dispatch = useDispatch();
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false);
+  const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
   const isFirstRenderRef = useRef<boolean>(true);
   const [reformattedRows, setReformattedRows] = React.useState<any>([]);
-  const filterCategories: any = useSelector((state: RootState) => state.categoriesSlice.filterCategories);
-  const retentionPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllRetentionPolicies);
-  const uploadPoliciesList: any = useSelector((state: RootState) => state.retentionPoliciesSlice.getAllUploadPolicies);
+ 
   const [uploadPolicesOptions, setUploadPolicesOptions] = React.useState<any[]>([]);
   const [retentionPoliciesOptions, setRetentionPoliciesOptions] = React.useState<any[]>([]);
   
@@ -91,13 +93,42 @@ const CategoriesList: React.FC = () => {
 
 
   useEffect(() => {
-    setCategoriesData();
+    //setCategoriesData();
+    dispatch(getAllRetentionPolicies());
+    dispatch(getAllUploadPolicies());
+    dispatch(getAllCategoryForms());
     isFirstRenderRef.current = false;
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
-    dispatch(enterPathActionCreator({ val: "" }));
+    
   }, []);
+
+  const setCategoriesData = () => {
+    let CategoriesTemplateRows: CategoriesTemplate[] = [];
+
+    if (filterCategories?.data && filterCategories?.data.length > 0) {
+      CategoriesTemplateRows = filterCategories?.data.map((template: any) => {
+        return {
+          id: template.id,
+          name: template.name,
+          retentionPolicyId: template.policies.retentionPolicyId,
+          retentionPolicyName: template.policies.retentionPolicyName,
+          uploadPolicyId: template.policies.uploadPolicyId,
+          uploadPolicyName: template.policies.uploadPolicyName,
+          Audio: "",
+          hasAudio: template.hasAudio,
+          description: template.description,
+        }
+      })
+    }
+    setRows(CategoriesTemplateRows);
+    setReformattedRows({...reformattedRows, rows: CategoriesTemplateRows, uploadPolicies: uploadPolicesOptions, retentionPolcies: retentionPoliciesOptions});
+  }
+
+  React.useEffect(() => {
+    setCategoriesData();
+  }, [filterCategories?.data]);
 
   const setUploadPolicies = () => {
     let uploadPoliciesRows: any[] = [];
@@ -135,10 +166,6 @@ const CategoriesList: React.FC = () => {
     setData();
   },[uploadPoliciesList, retentionPoliciesList])
 
-  const onChange = (valuesObject: ValueString[], colIdx: number) => {
-    headCells[colIdx].headerArray = valuesObject;
-    onSelection(valuesObject, colIdx);
-  }
 
   const onSelection = (v: ValueString[], colIdx: number) => {
     if (v.length > 0) {
@@ -165,8 +192,12 @@ const CategoriesList: React.FC = () => {
     headCell: HeadCellProps[],
     colIdx: number
   ) => {
+    const onChange = (valuesObject: ValueString[]) => {
+      headCells[colIdx].headerArray = valuesObject;
+      onSelection(valuesObject, colIdx);
+    }
     return (
-      <TextSearch headCells={headCell} colIdx={colIdx} onChange={(valueObject) => onChange(valueObject, colIdx)} />
+      <TextSearch headCells={headCell} colIdx={colIdx} onChange={onChange} />
     );
   };
 
@@ -177,7 +208,6 @@ const CategoriesList: React.FC = () => {
   }
 
   const changeMultiselect = (
-    e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
@@ -197,17 +227,19 @@ const CategoriesList: React.FC = () => {
       initialRows.retentionPolcies.map((x: any) => {
         options.push({id : x.id, value: x.name });
       });
-      
+      options = options?.length > 0 ? options?.sort((a : any, b:any) => a.value > b.value ? 1 : -1,) : [];
 
       return (
-        <CBXMultiSelectForDatatable
-          width={220}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
-          isCheckBox={false}
+        <CBXMultiCheckBoxDataFilter 
+          width = {245} 
+          option={options} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => clearAll()}
+          isCheckBox={true}
+          multiple={true}
           isduplicate={true}
+          selectAllLabel="All"
         />
       );
     }
@@ -216,18 +248,20 @@ const CategoriesList: React.FC = () => {
       initialRows.uploadPolicies.map((x: any) => {
         options.push({id : x.id, value: x.name });
       });
-
-
+      options = options?.length > 0 ? options?.sort((a : any, b:any) => a.value > b.value ? 1 : -1,) : [];
+      
       return (
-        <CBXMultiSelectForDatatable
-          width={220}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
-          isCheckBox={false}
-          isduplicate={true}
-        />
+        <CBXMultiCheckBoxDataFilter 
+            width = {245} 
+            option={options} 
+            defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+            onChange={(value : any) => changeMultiselect(value, colIdx)}
+            onSelectedClear = {() => clearAll()}
+            isCheckBox={true}
+            multiple={true}
+            isduplicate={true}
+            selectAllLabel="All"
+          />
       );
     }
   };
@@ -298,7 +332,7 @@ const CategoriesList: React.FC = () => {
       minWidth: "400",
       maxWidth: "400",
       attributeName: "RetentionPolicyName",
-      attributeType: "Equals",
+      attributeType: "List",
       attributeOperator: "contains"
     },
     {
@@ -317,7 +351,7 @@ const CategoriesList: React.FC = () => {
       minWidth: "400",
       maxWidth: "400",
       attributeName: "UploadPolicyName",
-      attributeType: "Equal",
+      attributeType: "List",
       attributeOperator: "contains"
     },
     {
@@ -333,56 +367,16 @@ const CategoriesList: React.FC = () => {
     },
 
   ]);
-  const SpeakerIcon = (e: any) => {
-    return e ? <i className="fa-solid fa-volume"></i> : <></>
-  }
-  const setCategoriesData = () => {
-    let CategoriesTemplateRows: CategoriesTemplate[] = [];
-
-    if (filterCategories?.data && filterCategories?.data.length > 0) {
-      CategoriesTemplateRows = filterCategories?.data.map((template: any) => {
-        return {
-          id: template.id,
-          name: template.name,
-          retentionPolicyId: template.policies.retentionPolicyId,
-          retentionPolicyName: template.policies.retentionPolicyName,
-          uploadPolicyId: template.policies.uploadPolicyId,
-          uploadPolicyName: template.policies.uploadPolicyName,
-          Audio: "",
-          hasAudio: template.hasAudio,
-          description: template.description,
-        }
-      })
-    }
-    setRows(CategoriesTemplateRows);
-    setReformattedRows({...reformattedRows, rows: CategoriesTemplateRows, uploadPolicies: uploadPolicesOptions, retentionPolcies: retentionPoliciesOptions});
-  }
-
-  const dataArrayBuilder = () => {
-    let dataRows: CategoriesTemplate[] = reformattedRows;
-    searchData.forEach((el: SearchObject) => {
-      dataRows = onTextCompare(dataRows, headCells, el);
-    });
-    setRows(dataRows);
-  };
-
-  React.useEffect(() => {
-    setCategoriesData();
-  }, [filterCategories?.data]);
-
-  React.useEffect(() => {
-    // dispatch(getAllCategoriesFilter(pageiGrid));
-    dispatch(getAllRetentionPolicies());
-    dispatch(getAllUploadPolicies());
-    dispatch(getAllCategoryForms());
-  }, [])
 
   useEffect(() => {
     if(searchData.length > 0){
-      getFilteredCategoryData()
       setIsSearchable(true)
     }
   }, [searchData]);
+  
+  const SpeakerIcon = (e: any) => {
+    return e ? <i className="fa-solid fa-volume"></i> : <></>
+  }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -441,20 +435,21 @@ useEffect(() => {
   setPaging(true);
 },[page, rowsPerPage])
 
-const sortingOrder = (sort: any) => {
-  setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
-  setPaging(true)
-}
-
 const handleKeyDown = (event:any) => {
   if (event.key === 'Enter') {
     getFilteredCategoryData()
   }
 }
+
 const handleBlur = () => {
   if(isSearchable) {     
     getFilteredCategoryData()
   }
+}
+
+const sortingOrder = (sort: any) => {
+  setPageiGrid({...pageiGrid, gridSort:{field: sort.orderBy, dir:sort.order}})
+  setPaging(true)
 }
 
   return (
@@ -495,7 +490,7 @@ const handleBlur = () => {
             showActionCol={true}
             searchHeader={true}
             allowDragableToList={false}
-            showActionSearchHeaderCell={true}
+            showActionSearchHeaderCell={false}
             className="crxTableHeight crxTableDataUi CategoriesTableTemplate CategoriesTable_UI"
             onClearAll={clearAll}
             getSelectedItems={(v: CategoriesTemplate[]) => setSelectedItems(v)}
@@ -508,6 +503,7 @@ const handleBlur = () => {
             setPage={(pages: any) => setPage(pages)}
             setRowsPerPage={(setRowsPages: any) => setRowsPerPage(setRowsPages)}
             totalRecords={filterCategories?.totalCount}
+            setSortOrder={(sort:any) => sortingOrder(sort)}
              //Please dont miss this block.
             offsetY={-27}
             topSpaceDrag = {5}

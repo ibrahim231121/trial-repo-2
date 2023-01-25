@@ -7,8 +7,6 @@ import TextSearch from "../../../../GlobalComponents/DataTableSearch/TextSearch"
 import './formFieldsList.scss'
 import { RootState } from "../../../../Redux/rootReducer";
 import { CRXButton, CRXDataTable, CRXToaster } from "@cb/shared";
-import { enterPathActionCreator } from '../../../../Redux/breadCrumbReducer';
-
 import {
   SearchObject,
   ValueString,
@@ -21,13 +19,16 @@ import {
   onSetHeadCellVisibility,
   onSaveHeadCellData,
   PageiGrid,
-  onTextCompare
+  GridFilter
 } from "../../../../GlobalFunctions/globalDataTableFunctions";
 import { getAllCategoriesFilter } from '../../../../Redux/Categories';
 import Restricted from "../../../../ApplicationPermission/Restricted";
-import { CBXMultiSelectForDatatable } from "@cb/shared";
+import { CBXMultiCheckBoxDataFilter } from "@cb/shared";
 import FormFieldsDetail from "./FormFieldsDetail";
 import { FormFieldsTemplate } from "../TypeConstant/types";
+import { controlTypes } from "../TypeConstant/constants";
+import { getAllFormFieldsFilter } from "../../../../Redux/FormFields";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 interface renderCheckMultiselect {
   value: string,
@@ -38,7 +39,10 @@ const ORDER_BY = "asc" as Order;
 const ORDER_BY_PARAM = "recordingStarted";
 
 const FormFieldsList: React.FC = () => {
+  const [order, setOrder] = React.useState<Order>("desc");
+  const [orderBy, setOrderBy] = React.useState<string>("LastLogin");
   const retentionMsgFormRef = useRef<typeof CRXToaster>(null);
+  const [isSearchable, setIsSearchable] = React.useState<boolean>(false)
   const { t } = useTranslation<string>();
   const [id, setId] = React.useState<number>(0);
   const [title, setTitle] = React.useState<string>("");
@@ -63,18 +67,6 @@ const FormFieldsList: React.FC = () => {
   const isFirstRenderRef = useRef<boolean>(true);
   const [reformattedRows, setReformattedRows] = React.useState<FormFieldsTemplate[]>([]);
   const filterFormFields: any = useSelector((state: RootState) => state.FormFieldsSlice.filterFormFields);
-  
-  useEffect(() => {
-    if (paging)
-      setFormFields()
-    setPaging(false)
-  }, [pageiGrid])
-
-  useEffect(() => {
-    setPageiGrid({ ...pageiGrid, page: page, size: rowsPerPage });
-    setPaging(true)
-
-  }, [page, rowsPerPage])
 
   useEffect(() => {
     setFormFields();
@@ -82,17 +74,8 @@ const FormFieldsList: React.FC = () => {
     let headCellsArray = onSetHeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
     onSaveHeadCellData(headCells, "CategoriesTemplateDataTable");
-    dispatch(enterPathActionCreator({ val: "" }));
   }, []);
-
-  const retentionFormMessages = (obj: any) => {
-    retentionMsgFormRef?.current?.showToaster({
-      message: obj.message,
-      variant: obj.variant,
-      duration: obj.duration,
-      clearButtton: true,
-    });
-  }
+  
   const onChange = (valuesObject: ValueString[], colIdx: number) => {
     headCells[colIdx].headerArray = valuesObject;
     onSelection(valuesObject, colIdx);
@@ -118,6 +101,12 @@ const FormFieldsList: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if(searchData.length > 0){
+      setIsSearchable(true)
+    }
+  }, [searchData]);
+
   const searchText = (
     rowsParam: FormFieldsTemplate[],
     headCell: HeadCellProps[],
@@ -129,7 +118,6 @@ const FormFieldsList: React.FC = () => {
   };
 
   const changeMultiselect = (
-    e: React.SyntheticEvent,
     val: renderCheckMultiselect[],
     colIdx: number
   ) => {
@@ -144,39 +132,26 @@ const FormFieldsList: React.FC = () => {
     initialRows: any,
     isSearchable: boolean
   ) => {
-    if (initialRows) {
-      let options = rowsParam.map((row: any, _: any) => {
-        let option: any = {};
-        option["value"] = row[headCells[colIdx].id];
-        return option;
+    let options: any[] = [];
+    // For those properties which contains an array
+    if (colIdx === 3) {
+      controlTypes?.map((x: any) => {
+        options.push({ id: x.id, value: x.displayText });
       });
-      // For those properties which contains an array
-      if (
-        headCells[colIdx].id.toString() === "categories" ||
-        headCells[colIdx].id.toString() === "recordedBy"
-      ) {
-        let moreOptions: any = [];
+      options = options?.length > 0 ? options?.sort((a: any, b: any) => a.value > b.value ? 1 : -1,) : [];
 
-        reformattedRows.forEach((row: any, _: any) => {
-          let x = headCells[colIdx].id;
-          row[x]?.forEach((element: any) => {
-            let moreOption: any = {};
-            moreOption["value"] = element;
-            moreOptions.push(moreOption);
-          });
-        });
-        options = moreOptions;
-      }
 
       return (
-        <CBXMultiSelectForDatatable
-          width={220}
-          option={options}
-          value={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
-          onChange={(e: any, value: any) => changeMultiselect(e, value, colIdx)}
-          onSelectedClear={() => clearAll()}
-          isCheckBox={false}
+        <CBXMultiCheckBoxDataFilter 
+          width = {245} 
+          option={options} 
+          defaultValue={headCells[colIdx].headerArray !== undefined ? headCells[colIdx].headerArray?.filter((v: any) => v.value !== "") : []}
+          onChange={(value : any) => changeMultiselect(value, colIdx)}
+          onSelectedClear = {() => clearAll()}
+          isCheckBox={true}
+          multiple={true}
           isduplicate={true}
+          selectAllLabel="All"
         />
       );
     }
@@ -201,13 +176,18 @@ const FormFieldsList: React.FC = () => {
       label: `${t("Field_Display_Name")}`,
       id: "displayName",
       align: "left",
-      dataComponent: (e: string) => textDisplay(e, " "),
+      dataComponent: (e: string, id: number) => {
+        return <div style={{ cursor: "pointer", color: "var(--color-c34400)" }} onClick={(e) => onClickOpenModel(true, id, t("Edit_Form_Fields"))} className={"dataTableText txtStyle"}>{e}</div>
+      },
       sort: false,
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "300",
       width: "400",
-      maxWidth: "400"
+      maxWidth: "400",
+      attributeName: "displayName",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Field_Name")}`,
@@ -219,7 +199,10 @@ const FormFieldsList: React.FC = () => {
       searchComponent: searchText,
       minWidth: "300",
       width: "493",
-      maxWidth: "400"
+      maxWidth: "400",
+      attributeName: "name",
+      attributeType: "String",
+      attributeOperator: "contains"
     },
     {
       label: `${t("Control_Type")}`,
@@ -236,7 +219,10 @@ const FormFieldsList: React.FC = () => {
       ) => searchAndNonSearchMultiDropDown(rowData, columns, colIdx, reformattedRows, false),
       minWidth: "300",
       width: "200",
-      maxWidth: "800"
+      maxWidth: "800",
+      attributeName: "ControlType",
+      attributeType: "List",
+      attributeOperator: "contains"
     }
   ]);
 
@@ -248,42 +234,18 @@ const FormFieldsList: React.FC = () => {
           id: template?.id,
           name: template?.name,
           displayName: template?.display?.caption,
-          controlType : template?.type,
+          controlType :controlTypes?.find((x:any) => x.value ==template?.type)?.displayText,
         }
       })
     }
 
     setRows(FormFieldsTemplateRows);
-    setReformattedRows(FormFieldsTemplateRows)
+    setReformattedRows(FormFieldsTemplateRows);
   }
-
-  const dataArrayBuilder = () => {
-    let dataRows: FormFieldsTemplate[] = reformattedRows;
-    searchData.forEach((el: SearchObject) => {
-      dataRows = onTextCompare(dataRows, headCells, el);
-    });
-    setRows(dataRows);
-  };
 
   React.useEffect(() => {
     setFormFields();
   }, [filterFormFields?.data]);
-
-  useEffect(() => {
-    dataArrayBuilder();
-  }, [searchData]);
-
-  const getSelectedItemsUpdate = () => {
-    setSelectedItems([]);
-  }
-
-  const getSuccessUpdate = () => {
-    setSuccess(true);
-  }
-
-  const CategoriesAction = () => {
-    dispatch(getAllCategoriesFilter(pageiGrid));
-  }
 
   const resizeRowConfigTemp = (e: { colIdx: number; deltaX: number }) => {
     let headCellReset = onResizeRow(e, headCells);
@@ -310,21 +272,60 @@ const FormFieldsList: React.FC = () => {
     setOpenModel(modelOpen);
   }
 
-  const onMessageShow = (isSuccess: boolean, message: string) => {
-    retentionFormMessages({
-      message: message,
-      variant: isSuccess ? 'success' : 'error',
-      duration: 7000
-    });
-  }
-
   const updateOpenModel = (modelOpen: boolean) => {
     setOpenModel(modelOpen);
     dispatch(getAllCategoriesFilter(pageiGrid))
   }
 
+  const getFilteredFormFieldsData = () => {
+    pageiGrid.gridFilter.filters = []
+    searchData.filter(x => x.value[0] !== '').forEach((item: any, index: number, id: any) => {
+      let x: GridFilter = {
+        operator: headCells[item.colIdx].attributeOperator,
+        field: headCells[item.colIdx].attributeName,
+        value: item.value.length > 1 ? item.value.join('@') : item.value[0],
+        fieldType: headCells[item.colIdx].attributeType,
+      }
+      pageiGrid.gridFilter.filters?.push(x)
+    })
+    pageiGrid.page = 0
+    pageiGrid.size = rowsPerPage
+
+    if (page !== 0)
+      setPage(0)
+    else
+      dispatch(getAllFormFieldsFilter(pageiGrid))
+
+    setIsSearchable(false);
+  }
+
+
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      getFilteredFormFieldsData();
+    }
+  }
+
+  useEffect(() => {
+    if (paging)
+      dispatch(getAllFormFieldsFilter(pageiGrid));
+    setPaging(false)
+  }, [pageiGrid])
+
+  useEffect(() => {
+    setPageiGrid({...pageiGrid, page:page, size:rowsPerPage, gridSort:{field: orderBy, dir: order}});  
+    setPaging(true);
+  },[page, rowsPerPage])
+
+  const handleBlur = () => {
+    if(isSearchable) {     
+      getFilteredFormFieldsData();
+    }
+  }
+
   return (
-    <div className="CrxCategoriesTable switchLeftComponents">
+    <ClickAwayListener onClickAway={handleBlur}>
+    <div className="CrxCategoriesTable switchLeftComponents" onKeyDown={handleKeyDown}>
       <CRXToaster ref={retentionMsgFormRef} />
       {
         rows && (
@@ -383,9 +384,10 @@ const FormFieldsList: React.FC = () => {
       }
       {
           openModel &&
-          (<FormFieldsDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} />)
+          (<FormFieldsDetail id={id} title={title} pageiGrid={pageiGrid} openModel={updateOpenModel} isCategoryForms={false} setSelectedFields={null} selectedFields={null} setFieldValue={null}/>)
       }
     </div>
+    </ClickAwayListener>
   );
 };
 
