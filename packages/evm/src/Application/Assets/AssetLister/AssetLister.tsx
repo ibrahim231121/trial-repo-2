@@ -50,6 +50,11 @@ const SearchComponent = (props: any) => {
     value: basicDateDefaultValue,
     displayText: basicDateDefaultValue
   });
+  const [errorMessage, setErrorMessage] = React.useState<any>({
+    message: "",
+    type: "",
+    alertType: ""
+  });
   const [dateTimeAsset, setDateTimeAsset] = React.useState<DateTimeObject>({
     startDate: "",
     endDate: "",
@@ -243,12 +248,25 @@ const SearchComponent = (props: any) => {
   React.useEffect(() => {
     if(isEmptySearch && responseForSearch.length === 0){
       setSearchResult(true)
+      setErrorMessage({
+        message: t("No_Assets_found._Try_modifying_your_search_or_reach_out_to_your_admin_with_questions_on _permissions."),
+        type: "info",
+        alertType: "inline"
+      })
     }
     else if(responseForSearch.length !== 0){
       setSearchResult(false)
     }
     else{
       setSearchResult(false)
+    }
+    if(+responseForSearch === 500 || +responseForSearch === 400){
+      setSearchResult(true);
+      setErrorMessage({
+        message : "An Error occurred with your search, please try again. Contact your admin if issues persist.",
+        type : "error",
+        alertType : "inline"
+      })
     }
   },[responseForSearch])
 
@@ -577,9 +595,9 @@ const SearchComponent = (props: any) => {
 
         {searchResult &&  <CRXAlert
                     className=""
-                    message={t("No_Assets_found._Try_modifying_your_search_or_reach_out_to_your_admin_with_questions_on _permissions.")}
-                    type="info"
-                    alertType="inline"
+                    message= {errorMessage.message}
+                    type={errorMessage.type}
+                    alertType={errorMessage.alertType}
                     open={searchResult}
                     setShowSucess={() => null}
                   />

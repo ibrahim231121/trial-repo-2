@@ -25,7 +25,7 @@ export const getAssetSearchInfoAsync: any = createAsyncThunk(
         return response
     }).catch((error: any) => {
         thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
-        console.error(error.response.data);
+        return error.response.status;
       });
 });
 
