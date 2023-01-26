@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { SearchModel } from "../../../../utils/Api/models/SearchModel";
 import { addGroupedSelectedAssets } from "../../../../Redux/groupedSelectedAssets";
 import {useDispatch} from "react-redux";
+import { urlList, urlNames } from "../../../../utils/urlList";
 
 type CheckValue = {
   isChecked: boolean;
@@ -206,7 +207,7 @@ const DetailedAssetPopup: React.FC<Props> = ({asset, row}) => {
                       const links = <Link
                       className="linkColor"
                         to={{
-                          pathname: "/assetdetail",
+                          pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
                           state: {
                             evidenceId: row.id,
                             assetId: asset.assetId,

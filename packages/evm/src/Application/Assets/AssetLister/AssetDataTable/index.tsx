@@ -26,6 +26,7 @@ import DetailedAssetPopup from "./DetailedAssetPopup";
 import "./index.scss";
 import { EvidenceChildSharingModel } from "../../../../utils/Api/models/EvidenceModels";
 import { RootState } from "../../../../Redux/rootReducer";
+import { urlList, urlNames } from "../../../../utils/urlList";
 
 const thumbTemplate = (assetId: string, evidence: SearchModel.Evidence) => {
   let assetType = evidence.masterAsset.assetType;
@@ -59,7 +60,7 @@ const assetNameTemplate = (assetName: string, evidence: SearchModel.Evidence) =>
     <Link
       className="linkColor"
       to={{
-        pathname: "/assetdetail",
+        pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
         state: {
           evidenceId: evidence.id,
           assetId: masterAsset.assetId,
@@ -206,11 +207,6 @@ const MasterMain: React.FC<MasterMainProps> = ({
   useEffect(() => {
     dataArrayBuilder();
   }, [searchData]);
-  useEffect(() => {
-    console.log('Rows before and after: ',rows);
-    console.log('order: ',order);
-    console.log('orderBy :',orderBy);
-  },[rows]);
 
   useEffect(() => {
     if (dateTime.colIdx !== 0) {

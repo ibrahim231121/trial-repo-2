@@ -12,6 +12,7 @@ import CRXNotficationPanel from './CRXNotifications';
 import CRXGlobalSearchPanel from './CRXGlobalSearch';
 import AppLogo from '../../Assets/Images/getacLogo.png'
 import './index.scss'
+import { urlList, urlNames } from '../../utils/urlList';
 
 
 
@@ -46,7 +47,7 @@ const AppHeader = ({onClick, onClose, open} : propsTypes) => {
     let pathBody = document.querySelector("body");
     let htmlTag = document.querySelector('html')
     
-    if(viewUrl !== "/assetdetail") {
+    if(viewUrl !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
       pathBody?.classList.remove("pathAssetDetail");
       htmlTag && (htmlTag.style.overflowY = "auto")
     }

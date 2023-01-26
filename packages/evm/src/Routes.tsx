@@ -118,7 +118,7 @@ const Routes = () => {
                 <PrivateRoute moduleId={0} path={urlList.filter((item: any) => item.name === urlNames.editUser)[0].url} exact={true} component={CreateUserForm} />
                 {/* <PrivateRoute moduleId={0} path={urlList.filter((item:any) => item.name === urlNames.sharedMedia)[0].url}  component={SharedMedia}  /> */}
                 <Route path="/admin/TestDemo" exact={true} component={TestViewsForDemo} />
-                <Route path="/assets/SharedMedia" exact={true} component={SharedMedia} />
+                <Route path={urlList.filter((item: any) => item.name === urlNames.sharedMedia)[0].url} exact={true} component={SharedMedia} />
 
 
                 <PrivateRoute moduleId={17} path={urlList.filter((item: any) => item.name === urlNames.adminStation)[0].url} exact={true} component={Station} />

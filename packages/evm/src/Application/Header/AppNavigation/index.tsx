@@ -18,22 +18,21 @@ const CRXLefNavigation = () => {
     history.push(path);
 
     let pathBody = document.querySelector("body");
-    if (path !== "/assetdetail") {
-      pathBody?.classList.remove("pathAssetDetail");
-    }
 
-    urlList.map((items: any, i: number) => {
-      const footerRemove: any = document.getElementsByClassName("footerDiv");
-      if (items.type == "form") {
+    if(path !== urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
+        pathBody?.classList.remove("pathAssetDetail");
+      urlList.map((items: any, i: number) => {
+        const footerRemove: any = document.getElementsByClassName("footerDiv");
+        if (items.type == "form") {
 
-        footerRemove[0].style.display = "none"
-      }
-    })
+          footerRemove[0].style.display = "none"
+        }
+      })
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
-  const items = [
+    };
+  }
+    const { getModuleIds, moduleIds } = useContext(ApplicationPermissionContext);
+    const items = [
     {
       moduleId: 0,
       label: t("Home"),

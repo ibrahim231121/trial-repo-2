@@ -1,14 +1,29 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { SetupConfigurationAgent } from '../utils/Api/ApiAgent';
 import {SENSOR_AND_TRIGGERS_GET_ALL_EVENTS_DATA,SENSOR_AND_TRIGGERS_GET_ALL_DATA} from '../../../evm/src/utils/Api/url';
+import { setLoaderValue } from './loaderSlice';
 
-export const getAllSensorsFilterEvents: any = createAsyncThunk(
+export const getAllSensorsEventsInfoAsync: any = createAsyncThunk(
     'getAllFilterEvents',
-    async (pageiFilter?: any) => {
-        let headers = [{key : 'GridFilter', value : JSON.stringify(pageiFilter.gridFilter)}]
-        return await SetupConfigurationAgent.getAllFiltersSensorsAndTriggersEvents(`?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`, headers)
-        .then((response:any) => response)
+    async (pageiFilter: any, thunkAPI) => {
+        thunkAPI.dispatch(setLoaderValue({isLoading: true}))
+        const url = `?Page=${pageiFilter.page+1}&Size=${pageiFilter.size}`
+        let headers = [
+            {   
+                key : 'GridFilter', 
+                value : JSON.stringify(pageiFilter.gridFilter)
+            },
+            {
+                key: 'GridSort', 
+                value : JSON.stringify(pageiFilter.gridSort)
+            }]
+        return await SetupConfigurationAgent.getAllFiltersSensorsAndTriggersEvents(url, headers)
+        .then((response) => {
+            thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "" }))
+            return response
+        })
         .catch((error: any) => {
+            thunkAPI.dispatch(setLoaderValue({isLoading: false, message: "", error: true }))
             console.error(error.response.data);
         });
     }
@@ -43,7 +58,7 @@ export const sensorEventsSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getAllSensorsEvents.fulfilled, (state: any, { payload }) => {
             state.sensorEvents = payload;
-        }).addCase(getAllSensorsFilterEvents.fulfilled, (state: any, {payload}) => {
+        }).addCase(getAllSensorsEventsInfoAsync.fulfilled, (state: any, {payload}) => {
             state.filterSensorEvents = payload;
         }).addCase(getAllData.fulfilled, (state: any, {payload}) => {
             state.getAll = payload;

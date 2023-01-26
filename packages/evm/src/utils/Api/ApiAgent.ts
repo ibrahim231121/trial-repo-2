@@ -239,8 +239,7 @@ export const SetupConfigurationAgent = {
     getUploadPolicies: (id: number) => requests.get<UploadPolicies[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/DataUpload/" + id, config),
     GetUploadPolicyValues: () => requests.get<any[]>(SETUP_CONFIGURATION_SERVICE_URL, "/Policies/GetUploadPolicyValues", config),
     getAllFiltersUploadPolicies: (url: string, extraHeader?: Headers[]) => {
-        (extraHeader && extraHeader.length > 0) && addHeaders(extraHeader);
-        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, config);
+        return requests.getAll<Paginated<any>>(SETUP_CONFIGURATION_SERVICE_URL, `/Policies/GetPoliciesByType/DataUpload/${url}`, (extraHeader && extraHeader.length > 0) ? addHeaders(extraHeader) : config);
     },
     putUploadPoliciesTemplate: (url: string, body: any) => requests.put<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),
     postUploadPoliciesTemplate: (url: string, body: any) => requests.post<number>(SETUP_CONFIGURATION_SERVICE_URL, url, body, config),

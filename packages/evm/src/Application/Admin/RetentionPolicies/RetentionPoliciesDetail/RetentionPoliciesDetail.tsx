@@ -8,7 +8,7 @@ import './retentionPoliciesDetail.scss';
 import {SetupConfigurationAgent} from '../../../../utils/Api/ApiAgent';
 import {enterPathActionCreator} from '../../../../Redux/breadCrumbReducer';
 import { useDispatch,useSelector } from "react-redux";
- import { getAllRetentionPoliciesFilter } from "../../../../Redux/RetentionPolicies";
+ import { getAllRetentionPoliciesInfoAsync } from "../../../../Redux/RetentionPolicies";
 
  import {
     PageiGrid
@@ -278,6 +278,9 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
                 console.error(err);
             });
         }
+        return () => {
+            dispatch(enterPathActionCreator({ val: "" }));
+        }
     }, []);
 
    
@@ -341,7 +344,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             SetupConfigurationAgent.putRetentionPoliciesTemplate(urlEditRetentionPolicies,payload).then(()=>{        
                 setRetentionPolicies(defaultRetentionPolicies);           
                 onMessageShow(true,t("Success_You_have_saved_the_Retention_Policy"));
-                dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
+                dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {
@@ -360,7 +363,7 @@ const RetentionPoliciesDetail: FC<RetentionPoliciesDetailProps> = (props: Retent
             SetupConfigurationAgent.postRetentionPoliciesTemplate(urlAddRetentionPolicies,payload).then(()=>{        
                 setRetentionPolicies(defaultRetentionPolicies);           
                 onMessageShow(true,t("Success_You_have_saved_the_Retention_Policy"));
-                dispatch(getAllRetentionPoliciesFilter(props.pageiGrid));
+                dispatch(getAllRetentionPoliciesInfoAsync(props.pageiGrid));
                 setTimeout(() => {handleClose()}, 500);
               })
               .catch((e:any) => {

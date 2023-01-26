@@ -621,7 +621,7 @@ const AssetDetailsTemplate = () => {
   }
 
   const newRound = (x: any, y: any) => {
-    history.push('/assetdetail', {
+    history.push(urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url, {
       evidenceId: evidenceId,
       assetId: x,
       assetName: y,
@@ -1100,7 +1100,7 @@ const AssetDetailsTemplate = () => {
                               className="linkColor"
                               onClick={refresh}
                               to={{
-                                pathname: "/assetdetail",
+                                pathname: urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url,
                                 state: {
                                   evidenceId: evidenceId,
                                   assetId: asset.id,

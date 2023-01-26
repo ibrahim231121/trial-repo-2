@@ -31,6 +31,7 @@ import "./VideoPlayerResponsive.scss";
 import jwt_decode from "jwt-decode";
 import Cookies from "universal-cookie";
 import "./overRide_video_player_style.scss"
+import { urlList, urlNames } from "../../utils/urlList";
 
 type Timeline = {
   assetName: string;
@@ -657,9 +658,9 @@ const VideoPlayerBase = (props: any) => {
   useEffect(() => {
     let path = window.location.pathname;
     let pathBody = document.querySelector("body");
-    if (path == "/videoplayer") {
+    if (path == urlList.filter((item: any) => item.name === urlNames.testVideoPlayer)[0].url) {
       pathBody?.classList.add("pathVideoPlayer");
-    } else if (path == "/assetdetail") {
+    } else if (path == urlList.filter((item: any) => item.name === urlNames.assetsDetail)[0].url) {
       pathBody?.classList.add("pathAssetDetail");
     } else {
       pathBody?.classList.remove("pathVideoPlayer");

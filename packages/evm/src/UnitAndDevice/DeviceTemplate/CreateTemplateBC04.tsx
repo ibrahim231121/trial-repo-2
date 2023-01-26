@@ -865,7 +865,7 @@ const CreateTemplate = (props: any) => {
     if (editCase == false) {
       UnitsAndDevicesAgent.addTemplateConfiguration(body).then((response: number)=>{
         if (response > 0) {
-          history.replace('/admin/unitanddevices/createtemplate/template', { id: response, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
+          history.push(urlList.filter((item: any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: response, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
           history.go(0)
         }
         targetRef.current.showToaster({ message: t("Template_Sucessfully_Saved"), variant: 'success', duration: 5000, clearButtton: true });
