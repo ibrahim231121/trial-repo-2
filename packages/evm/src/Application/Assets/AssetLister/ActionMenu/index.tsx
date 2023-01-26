@@ -724,7 +724,8 @@ const ActionMenu: React.FC<Props> = React.memo(
 
     if (row !== undefined && row !== null) {
       assetBucketData.forEach((data) => {
-        if (data.id === row.id) addToAssetBucketDisabled = true;
+
+        if (data.assetId === row.assetId) addToAssetBucketDisabled = true;
       });
     } else if (selectedItems !== undefined && selectedItems.length > 0) {
       let value = multiCompareAssetBucketData(assetBucketData, selectedItems);

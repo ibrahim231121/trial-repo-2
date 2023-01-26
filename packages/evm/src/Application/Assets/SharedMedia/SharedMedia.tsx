@@ -312,12 +312,9 @@ const SharedMedia = () => {
     let headCellsArray = HeadCellVisibility(headCells);
     setHeadCells(headCellsArray);
   }, [isdownloadable,ismetaDataIncluded])
-  useEffect(() => {
-    console.log('rows:',rows);
-  },[rows]);
+
 
   useEffect(() => {
-    console.log('searchdata:',searchData);
     dataArrayBuilder();
   }, [searchData]);
 
@@ -649,7 +646,6 @@ const dataArrayBuilder = () => {
       dataRows = onTextCompare(dataRows, headCells, el);
     
   });
-  console.log('dataRows:',dataRows)
   setRows(dataRows);
 };
 

@@ -90,6 +90,7 @@ const UnitConfigurationInfo: React.FC<infoProps> = ({
   };
 
   const onChangeStation = (e: any) => {
+    //debugger
     console.log([{ displayText: t("None"), value: "0" }, ...filterTemplatesByStation(info.allconfigTemplateList, e.target.value)], "templates")
     onChangeGroupInfo(
       name,
