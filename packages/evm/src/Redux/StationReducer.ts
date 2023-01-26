@@ -53,7 +53,7 @@ export const getCountryRelatedStatesAsync: any = createAsyncThunk('getCountrySta
 });
 
 export const getRetentionStateAsync: any = createAsyncThunk('getRetentionStateAsync', async () => {
-  return await SetupConfigurationAgent.getPoliciesAccordingToType('/Policies/DataRetention')
+  return await SetupConfigurationAgent.getPoliciesAccordingToType(`/Policies/DataRetention?Page=1&Size=${MAX_REQUEST_SIZE_FOR.DATA_RETENTION}`)
     .then((response : any) => response)
     .catch((error: any) => {
         console.error(error.response.data);
@@ -61,7 +61,7 @@ export const getRetentionStateAsync: any = createAsyncThunk('getRetentionStateAs
 });
 
 export const getUploadStateAsync: any = createAsyncThunk('getUploadStateAsync', async () => {
-  return await SetupConfigurationAgent.getPoliciesAccordingToType('/Policies/DataUpload')
+  return await SetupConfigurationAgent.getPoliciesAccordingToType(`/Policies/DataUpload?Page=1&Size=${MAX_REQUEST_SIZE_FOR.DATE_UPLOAD}`)
   .then((response : any) => response)
   .catch((error: any) => {
       console.error(error.response.data);
