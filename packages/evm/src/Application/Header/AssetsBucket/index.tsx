@@ -1500,14 +1500,14 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                             </span>
                             {/* {t("View_on_assets_bucket_page")}{" "}
                             <i className="icon icon-arrow-up-right2"></i>{" "} */}
-
+                            <div className="bucketActionMenuAll">
                             <div 
                               className={
                                   selectedItems.length > 1 ? "" : " disableHeaderActionMenu"
                                 }>
                               <ActionMenu
                                 row={undefined}
-                                className="bucketActionMenu"
+                                className=""
                                 selectedItems={selectedItems}
                                 setSelectedItems={setSelectedItems}
                                 actionMenuPlacement={
@@ -1515,6 +1515,7 @@ if(onSaveEvidence > 0 && totalFilePer == 100){
                                 }
                               />
                             </div> 
+                            </div>
 
                           </div>
                           <div className="bucketScroll">
