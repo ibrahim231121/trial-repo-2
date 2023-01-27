@@ -78,8 +78,9 @@ const openCreateSensorsAndTriggersForm = () => {
       viewScroll="auto"
       direction="right"
       position="auto"
-      offsetX={25}
+      offsetX={-20}
       offsetY={12}
+      portal={true}
       className="menuCss"
       menuButton={
         <MenuButton>
@@ -91,11 +92,11 @@ const openCreateSensorsAndTriggersForm = () => {
         {selectedItems.length <=1 ? (
       <MenuItem onClick={openCreateSensorsAndTriggersForm}>
       <Restricted moduleId={51}>
-          <div className="crx-meu-content   crx-spac"  >
+          <div className="crx-meu-content groupingMenu crx-spac"  >
             <div className="crx-menu-icon">
             <i className="far fa-pencil"></i>
             </div>
-            <div className="crx-menu-list">
+            <div className="crx-menu-list ">
               {t("Edit_sensor_and_trigger")}
             </div>
           </div>

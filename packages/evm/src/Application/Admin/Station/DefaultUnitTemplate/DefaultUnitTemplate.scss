@@ -98,7 +98,8 @@
         bottom: 0px;
         border-top: 0px;
         z-index: 999;
-        height: 95px;
+        height: 70px;
+        padding-top: 0px;
     }
     .save-cancel-button-box{
         width: 100%;
@@ -120,6 +121,7 @@
     }
     .dataTablePages{
         margin-bottom: 25px;
+        z-index: 999;
     }
     table{
         thead{

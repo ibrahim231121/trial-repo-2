@@ -214,19 +214,14 @@ const DefaultUnitTemplate: React.FC = () => {
 
     const dropdownDataComponent = (_: any, _rowId: any, _deviceTypeId: any, _configurationTemplatesFromStore: any, _selectBoxValues: any) => {
         return (
-            // <CRXRows container="container" spacing={0}>
-            // <CRXColumn className="permissionCol" container="container" item="item" xs={3} spacing={0}>
-            
-            <DropdownComponent
-                // className='bilal'
+              
+            <DropdownComponent 
                 deviceTypeId={parseInt(_deviceTypeId)}
                 stationId={parseInt(_rowId)}
                 selectBoxValue={_selectBoxValues}
                 configurationTemplatesFromStore={_configurationTemplatesFromStore}
                 setSelectBoxValueIntoParent={(eventFromChild: any) => manipulateSelectBoxValueResponse(eventFromChild, parseInt(_rowId))} />
-
-                // </CRXColumn>
-                // </CRXRows>      
+   
         );
     }
 

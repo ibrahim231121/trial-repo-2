@@ -902,6 +902,13 @@ export const resources = {
         "Policy" : "Policy",
         "Are_you_sure_you_would_like_to_delete_upload_policy?" : "Are you sure you would like to delete upload policy?",
         "All_Upload_Policies_Deleted_Successfully" : "All Upload Policies Deleted Successfully",
+
+        //---------- Sensors and Triggers -------------------
+        "Settings" : "SETTINGS",
+        "Device_Parameters" : "DEVICE PARAMETERS",
+        "Sensors_and_triggers_name" : "Sensor & Trigger Name",
+        "Email alert" : "Email Alert",
+        "Add_device_parameters":"+ Add device parameters",
       
             //----------  Cases  ---------       
           "Create_Case" :"Create Case",

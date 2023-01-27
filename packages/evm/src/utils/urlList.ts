@@ -385,7 +385,7 @@ export const urlList: any = [
         details: [
             { type: 'text', label: 'Admin' },
             { routeTo: '/admin/sensorsAndTriggers', type: 'link', label: 'Sensors & Triggers' },
-            { type: "text", label: "Create Sensors & Triggers", }
+            { type: "text", label: "Create Sensor & Trigger", }
         ],
     },
     {

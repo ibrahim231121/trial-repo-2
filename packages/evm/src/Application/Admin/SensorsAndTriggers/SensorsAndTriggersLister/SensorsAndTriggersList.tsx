@@ -154,7 +154,7 @@ const SensorsAndTriggersList: React.FC = () => {
       minWidth: "80",
     },
     {
-      label: `${t("Name")}`,
+      label: `${t("Sensors_and_triggers_name")}`,
       id: "description",
       align: "left",
       dataComponent: (e: string) => AnchorDisplay(e),
@@ -162,7 +162,7 @@ const SensorsAndTriggersList: React.FC = () => {
       searchFilter: true,
       searchComponent: searchText,
       minWidth: "1550",
-      width: "1550",
+      detailedDataComponentId: "device",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -297,6 +297,7 @@ const SensorsAndTriggersList: React.FC = () => {
                   {t("Create_Sensor_&_Trigger")}
                 </CRXButton>
               </Restricted>
+              {/* <CRXButton className="secondary SensorsFilterBtn filterButton mr_L_10" onClick={() => getFilteredSensorsEventsData()}> {t("Filter")} </CRXButton> */}
               </>
             }
             getRowOnActionClick={(val: any) => setSelectedActionRow(val)}

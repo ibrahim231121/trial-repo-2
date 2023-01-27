@@ -822,8 +822,12 @@ export const resources = {
           "Unit_Default_Templates":"Default Unit Templates",
           "Manage_Default_Unit_Templates": "Manage Default Unit Templates",
 
-          
-
+          //---------- Sensors and Triggers -------------------
+          "Settings" : "SETTINGS",
+          "Device_Parameters" : "DEVICE PARAMETERS",
+          "Sensors_and_triggers_name" : "Sensor & Trigger Name",
+          "Email alert" : "Email Alert",
+          "Add_device_parameters":"+ Add device parameters",
       }
     }
   };
