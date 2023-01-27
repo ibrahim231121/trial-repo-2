@@ -251,8 +251,8 @@ body {
   margin-left:  1px;
   position: sticky;
 }
-.stickyPos.dataTableStickyPos {
-  z-index: 1099;
+.CRXAppBar.dataTableStickyPos {
+  z-index: 1203;
 }
 
 .stickyPos:hover {

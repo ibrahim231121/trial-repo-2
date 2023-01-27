@@ -115,11 +115,12 @@ const CRXAssetsBucketPanel = ({ isOpenBucket }: isBucket) => {
     dispatch(setAssetBucketBasket({ isOpen: isOpen }))
   }, [isOpen]);
 
-  const dataTableStickyPos = document.querySelector(".stickyPos");
+  const dataTableStickyPos = document.querySelector(".CRXAppBar");
   useEffect(() => {
     if (isOpen) {
       dataTableStickyPos?.classList.add("dataTableStickyPos");
-    } else {
+    } 
+    else {
       dataTableStickyPos?.classList.remove("dataTableStickyPos");
     }
   }, [isOpen]);

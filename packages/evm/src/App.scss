@@ -426,3 +426,23 @@ html {
         }
     }
   }
+
+  .stickyBorder_Add {
+    .stickyPos {
+      z-index: 1202;
+    }
+  }
+  
+  .dataTableStickyBodyPos {
+    .CRXAppBar {
+      z-index: 1202;
+    }
+    .stickyBorder_Add {
+      .stickyPos {
+        z-index: 1203;
+      }
+    }
+    .dataTableStickyPos {
+      z-index: 1204;
+    }
+  }

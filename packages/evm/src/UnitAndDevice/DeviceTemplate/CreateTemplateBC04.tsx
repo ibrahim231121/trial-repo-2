@@ -1058,7 +1058,7 @@ const CreateTemplate = (props: any) => {
                   <div className="tctButton stickyFooter_Tab">
                     <div className="tctLeft">
                       <CRXButton
-                        className={validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}
+                        className={`primary ${validationFailed || !dirty ? "tctSaveDisable " : " tctSaveEnable"}`}
                         disabled={validationFailed || !dirty}
                         type="submit"
                         onClick={() => handleSave(values, resetForm)}
