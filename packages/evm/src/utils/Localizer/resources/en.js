@@ -62,6 +62,7 @@ export const resources = {
         "File_Status":"File Status",
         "Asset_Duration":"Asset Duration",
         "Asset_Size":"Asset Size",
+        "Upload_Status":"Upload Status",
         "Select_All":"Select all",
         "Grouped_Assets":"Grouped Assets",
         "Link_to_this_group":"Link to this group",

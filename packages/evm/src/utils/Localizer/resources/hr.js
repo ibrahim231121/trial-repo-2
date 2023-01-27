@@ -86,6 +86,7 @@ export const resources = {
         "in":"hr-in",
         "No_Templates":"hr-No Templates",
         "Hours.":"hr-Hours.",
+        "Upload_Status":"hr-Upload Status",
         "Please_be_aware_that_by_removing_this_category,_you_are_reducing_the_assets_lifetime_and_the_asset_will_expire_in":"hr-Please be aware that by removing this category, you are reducing the assets lifetime and the asset will expire in",
         "Unclassified_retention_policy_of_station_will_be_applied_on_this_evidence_group.":"hr-Unclassified retention policy of station will be applied on this evidence group.",
         "We_re_sorry._The_form_was_unable_to_be_saved._Please_retry_or_contact_your_Systems_Administrator":"hr-We 're sorry. The form was unable to be saved. Please retry or contact your Systems Administrator",
