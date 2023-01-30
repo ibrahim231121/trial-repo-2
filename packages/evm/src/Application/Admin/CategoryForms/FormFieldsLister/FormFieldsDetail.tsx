@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
-import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, CRXRows, CRXColumn } from "@cb/shared";
+import React, { FC, useEffect, useState, useRef } from "react";
+import { CRXModalDialog, CRXButton, CRXConfirmDialog, CRXAlert, CRXSelectBox, CRXRows, CRXColumn, CRXToaster } from "@cb/shared";
 import { useTranslation } from "react-i18next";
 import './formFieldsDetail.scss';
 import { useDispatch } from "react-redux";
@@ -34,11 +34,11 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
   const [id, setId] = useState<number>(props?.id);
   const [openModal, setOpenModal] = React.useState(false);
   const [closeWithConfirm, setCloseWithConfirm] = React.useState(false);
-  const [success, setSuccess] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState(false);
   const [error, setError] = React.useState<boolean>(false);
   const [responseError, setResponseError] = React.useState<string>('');
   const { t } = useTranslation<string>();
+  const toasterRef = useRef<typeof CRXToaster>(null);
   const [formFieldPayLoad, setFormFieldPayLoad] = React.useState<FormFieldDetailModel>({
     id: 0,
     type: "",
@@ -76,7 +76,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
     if (id > 0) {
       url += "/" + id;
       SetupConfigurationAgent.putFormField(url, body).then(() => {
-        setSuccess(true);
+        onMessageShow(true,t("Form_Field_Edited_Successfully"));
         setError(false);
         dispatch(getAllFormFieldsFilter(props.pageiGrid));
         setTimeout(() => { handleClose() }, 500);
@@ -89,7 +89,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
     }
     else {
       SetupConfigurationAgent.postFormFields(url, body).then((res:any)=>{
-        setSuccess(true);
+        onMessageShow(true,t("Form_Field_Saved_Successfully"));
         setError(false);
         if(props.isCategoryForms)
         {
@@ -115,6 +115,23 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
           return e;
         })
     }
+  }
+
+  const FormFieldFormMessages = (obj: any) => {
+    toasterRef?.current?.showToaster({
+      message: obj.message,
+      variant: obj.variant,
+      duration: obj.duration,
+      clearButtton: true,
+    });
+  }
+
+  const onMessageShow = (isSuccess: boolean, message: string) => {
+    FormFieldFormMessages({
+      message: message,
+      variant: isSuccess ? 'success' : 'error',
+      duration: 7000
+    });
   }
 
   const closeDialog = (dirty: any) => {
@@ -172,6 +189,7 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
 
   return (
     <>
+    <CRXToaster ref={toasterRef} className="formFieldToaster" />
       <Formik
         enableReinitialize={true}
         initialValues={formFieldPayLoad}
@@ -195,13 +213,6 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
                 closeWithConfirm={closeWithConfirm}
 
               >
-                {success && (
-                  <CRXAlert
-                    message={t("Success_You_have_saved_the_Retention_Policy")}
-                    alertType="toast"
-                    open={true}
-                  />
-                )}
                 {error && (
                   <CRXAlert
                     className=""
