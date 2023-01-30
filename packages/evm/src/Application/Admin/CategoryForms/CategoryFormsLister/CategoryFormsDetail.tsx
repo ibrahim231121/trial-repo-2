@@ -141,8 +141,12 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                     dispatch(enterPathActionCreator({ val: values?.name }));
                 })
                     .catch((e: any) => {
-                        console.error(e.message);
-                        // setError(false);
+                        if (e?.response?.status === 409) {
+                            onMessageShow(false, e?.response?.data);
+                        }
+                        else {
+                            onMessageShow(false, "An issue occurred while saving, please try again.");
+                        }
                         return e;
                     })
             }
@@ -157,8 +161,12 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
                 // setIsSaveDisable(true);
             })
                 .catch((e: any) => {
-                    console.error(e.message);
-                    // setError(false);
+                    if (e?.response?.status === 409) {
+                        onMessageShow(false, e?.response?.data);
+                    }
+                    else {
+                        onMessageShow(false, "An issue occurred while saving, please try again.");
+                    }
                     return e;
                 })
         }

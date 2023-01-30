@@ -82,8 +82,14 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
         setTimeout(() => { handleClose() }, 500);
       })
         .catch((e: any) => {
-          console.error(e.message);
-          setError(false);
+          if (e?.response?.status === 409) {
+            setError(true);
+            setResponseError(e?.response?.data)
+          }
+          else {
+            setError(true);
+            setResponseError("An issue occurred while saving, please try again.")
+          }
           return e;
         })
     }
@@ -110,8 +116,15 @@ const FormFieldsDetail: FC<FormFieldsDetailProps> = (props: FormFieldsDetailProp
         setTimeout(() => { handleClose() }, 500);
       })
         .catch((e: any) => {
-          console.error(e.message);
-          setError(false);
+          if (e?.response?.status === 409) {
+            setError(true);
+            setResponseError(e?.response?.data)
+          }
+          else {
+            setError(true);
+            setResponseError("An issue occurred while saving, please try again.")
+          }
+          return e;
           return e;
         })
     }
