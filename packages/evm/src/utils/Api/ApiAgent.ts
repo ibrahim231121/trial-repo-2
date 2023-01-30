@@ -306,6 +306,7 @@ export const AuditLogAgent = {
 
 export const FileAgent = {
     getDownloadFileUrl: (fileId: number) => requests.get<string>(FILE_SERVICE_URL, '/Files/download/' + fileId, config),
+    getMultiDownloadFileUrl: (body: any) => requests.post<any>(FILE_SERVICE_URL, '/Files/multifiledownload' , config),
     getDownloadUrl: (url: string) => requests.get<string>(FILE_SERVICE_URL + "/Files", url, config),
     getFile: (id: number) => requests.get<FileF>(FILE_SERVICE_URL, "/Files/" + id, config),
     getHealthCheck: () => requests.get<string>(FILE_SERVICE_URL, '/Files/HealthCheck', config),

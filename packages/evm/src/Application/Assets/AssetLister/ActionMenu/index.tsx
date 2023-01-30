@@ -352,6 +352,8 @@ const ActionMenu: React.FC<Props> = React.memo(
     };
 
     const handleDownloadAssetClick = () => {
+      debugger;
+      if(row !== undefined && row !== null && row.evidence != null && row.evidence.asset !=null && row.evidence.asset.length == 1){// single asset export
       const assetId = row.evidence.asset.find((x: any) => x.assetId === row.assetId)
       const assetFileId = assetId.files.length > 0 ? assetId.files[0].filesId : null;
       if (!assetFileId) {
@@ -374,6 +376,54 @@ const ActionMenu: React.FC<Props> = React.memo(
             duration: 5000,
           });
         });
+      } else if (selectedItems !== undefined && selectedItems !== null){ // multi asset export
+        console.log(selectedItems);
+        //const assetId = selectedItems.evidence.asset;
+        let  totalFiles  = selectedItems.map((e:any) => {   
+          console.log(e);    
+          var filesArr  =  e.evidence.asset.map((a:any)  =>{
+              var files =   a.files;               
+            return files.map((x:any)  => {
+                  return { fileRecId: x.filesId, accessCode : "SOme Access Code" };
+                 })
+                //, operationType: 1   
+                       
+            });   
+            console.log("Files Array");
+            console.log(filesArr);  
+            
+            // console.log("flat Files Array");
+            // console.log(filesArr.flat(1));
+          return filesArr;
+        });
+        let me = {fileRequest : totalFiles.flat(1).flat(1),operationType : 1 }
+        console.log("Total Files");
+        console.log(me);
+        console.log(" stringify total files");
+        console.log(JSON.stringify(me));
+        // var flattenFileIds =  totalFiles.flat(1).flat(1);
+        // console.log("Flatten Ids");
+        // console.log(flattenFileIds);
+    
+        FileAgent.getMultiDownloadFileUrl(me)
+        .then((response) => {
+          downloadFileByURLResponse(response);
+        })
+        .catch(() => {
+          showToastMsg?.({
+            message: t("Unable_to_download_file"),
+            variant: "error",
+            duration: 5000,
+          });
+        });
+      } else{
+        showToastMsg?.({
+          message: t("There_is_no_File_against_this_Asset"),
+          variant: "error",
+          duration: 5000,
+        });
+      }
+
     };
 
     const handleDownloadMetaDataClick = () => {
