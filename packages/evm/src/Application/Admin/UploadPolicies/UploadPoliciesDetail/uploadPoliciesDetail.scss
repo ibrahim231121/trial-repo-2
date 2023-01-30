@@ -1,5 +1,5 @@
 .upload-policies {
-    padding: 120px 4px 0px 65px;
+    padding: 0px 4px 45px 65px;
     .settingsContent {
         position: relative;
         margin-top: 76px;
@@ -11,8 +11,10 @@
             display: flex;
             align-items: center;
             width: 100%;
+            padding: 0 0;
             h6 {
                 width: 220.66px !important;
+                font-size: 14px;
             }
             .gridFilterSpanUi {
                 width: 100%;
@@ -27,7 +29,7 @@
 
     .uploadPolicyDetailContent {
         position: relative;
-        margin-top: 100px;
+        margin-top: 138px;
             > h2 {
                 position: absolute;
                 top: -100px;
@@ -59,7 +61,6 @@
         .uploadPolicyDetailPageScroll {
             padding: 0;
             width: 100%;
-            max-height: 336px;
             margin: 0 auto;
             overflow-x: hidden;
             overflow-y: overlay;
@@ -118,7 +119,7 @@
             border-top: 1px solid var(--color-333333);
             .PreSearchButton {
                 background-color: var(--color-333333);
-                color: var(--color-d1d2d4) !important;
+                color: var(--color-d1d2d4) ;
                 font-size: 14px;
                 margin-top: 27px;
                 height: 30px;
@@ -149,31 +150,32 @@
     .tab-bottom-buttons {
         display: flex;
         justify-content: space-between;
-        padding: 0 81px;
-        margin-top: 19px;
+        position: fixed;
+        width: calc(100% - 117px);
+        left: 89px;
+        background-color: var(--color-White);
+        bottom: 0;
+        align-items: center;
+        border-top: 1px solid var(--color-878787);
+        padding-bottom: 49px;
+        padding-top: 20px;
         .groupInfoTabButtons {
-            margin-right: 20px;
+            margin-right: 34px;
         }
     }
     .nameFieldUploadPolicy {
     margin-left: 52px;
-    margin-bottom: 29px;
-    margin-top: 26px;
+    margin-top: 24px;
         .gridFilterTextBox {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
         }
-        .gridFilterSpanUi {
-            width: 100%;
-            margin-left: 119px;
-        }
+
         .MuiInput-root {
-            width: 255px;
-            margin-left: -83px;
+            width: 430px;
         } 
         .errorStateContent  {
-            width: 250px;
-            margin-left: -82px;
+            width: 430px;
         }
     }
 }
@@ -195,11 +197,66 @@
     }
 }
 .updated-policy-fields{
-    width: 749px;
+    width: 674px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
 }
 .metadataUploadAutocomplete {
     width: 100% !important;
+}
+
+.upload-policies-ui {
+    .cbxTabsContent  {
+        .updated-policy-fields {
+            padding-top: 218px;
+            .indicates-label {
+                font-style: italic;
+                font-size: 14px;
+                color: var(--color-333333);
+                margin-bottom: 44px;
+                b {
+                    font-size: 20px;
+                    margin-right: 8px;
+                }
+            }
+            h6 {
+                font-size: 14px;
+            }
+        }
+        .errorStateContent  {
+            margin-bottom: 0px;
+        }
+    }
+    .inputLabelReq {
+        top: -7px;
+        left: 9px; 
+    }
+    .cbxTabsContent {
+        min-height: calc(100vh - 166px);
+    }
+    .MuiTabs-scroller {
+        margin-top: 7px;
+    }
+    .UploadPolicyFirstField {
+   
+        .gridFilterSpanUi {
+            padding-left: 0px;
+        }
+    }
+    .assetUploadConnectionClass  {
+        width: 100%;
+    }
+    .MuiTab-wrapper {
+        text-transform: uppercase;
+    }
+
+    .crxMainTab {
+        .MuiButtonBase-root {
+            &[index="1"] {
+                min-width: 291px;
+
+            }
+        }
+    }
 }

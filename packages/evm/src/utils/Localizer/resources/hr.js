@@ -805,6 +805,8 @@ export const resources = {
         "Retention_Type":"Retention Type",
         "Retention_Time":"Retention Time",
         "Policy_Name":"Policy Name",
+        "Upload_Policy_Name":"Upload Policy Name",
+        "Upload_Connection_Criteria": "Upload Connection Criteria",
         "Retention_Time_Or_Space" : "Retention Time / Space",
         "Soft_Delete_Time" : "Soft Delete Time",        
         "Success_You_have_saved_the_Retention_Policy":"You have saved the Retention Policy Successfully",

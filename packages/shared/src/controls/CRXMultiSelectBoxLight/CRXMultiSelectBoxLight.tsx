@@ -55,7 +55,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       marginLeft: "-7px",
       maxHeight: "332px",
       width: "auto",
-      minHeight: "165px",
+      minHeight: "auto",
       overflow: "hidden",
       position: "relative",
       backgroundColor: "#fff",
@@ -64,7 +64,7 @@ const useSelectBoxStyle = makeStyles((theme: any) =>
       left: "0px",
       '& > ul': {
         padding: "0px",
-        minHeight: "165px",
+        minHeight: "auto",
         overflowY: "auto",
         maxHeight: "332px",
       }
@@ -273,7 +273,7 @@ const CRXMultiSelectBoxLight = ({
           </Typography>
         </>
       }
-      <div className='selectInner_content'>
+      <div className='selectInner_content selectInner_content_autoComplete '>
       <Autocomplete
         defaultValue={defaultValue}
         autoComplete={autoComplete}
@@ -281,7 +281,7 @@ const CRXMultiSelectBoxLight = ({
         disableClearable={isClear}
         disableCloseOnSelect={true}
         freeSolo={freeSolo}
-        //open={true}
+        // open={true}
         autoHighlight={true}
         selectOnFocus
         clearOnBlur

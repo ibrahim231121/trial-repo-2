@@ -182,7 +182,7 @@ const RetentionPoliciesList: React.FC = () => {
       maxWidth: "400",
     },
     {
-      label: `${t("Policy_name")}`,
+      label: `${t("Policy_Name")}`,
       id: "name",
       align: "left",
       dataComponent: (e: string, id: number) => {
@@ -231,7 +231,7 @@ const RetentionPoliciesList: React.FC = () => {
       sort: true,
       searchFilter: true,
       searchComponent: searchText,
-      minWidth: "412",
+      minWidth: "410",
       attributeName: "Description",
       attributeType: "String",
       attributeOperator: "contains"
@@ -421,8 +421,10 @@ const RetentionPoliciesList: React.FC = () => {
             totalRecords={filterRetentionPolicies?.totalCount}
             setSortOrder={(sort:any) => sortingOrder(sort)}
             //Please dont miss this block.
-            offsetY={50}
-            stickyToolbar={121}
+            offsetY={119}
+            stickyToolbar={137}
+            searchHeaderPosition={241}
+            dragableHeaderPosition={207}
           //End here
           />
 

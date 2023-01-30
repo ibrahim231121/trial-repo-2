@@ -885,7 +885,7 @@ const CreateTemplate = (props: any) => {
       body.id = historyState.id;
       const url = `/ConfigurationTemplates/${historyState.id}/KeyValue`;
       UnitsAndDevicesAgent.changeKeyValues(url,body).then(()=>{
-        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "Success", duration: 5000, clearButtton: true });
+        targetRef.current.showToaster({ message: t("Template_Edited_Sucessfully"), variant: "success", duration: 5000, clearButtton: true });
         history.replace(urlList.filter((item:any) => item.name === urlNames.unitDeviceTemplateCreateBCO4)[0].url, { id: historyState.id, name: templateNames, isedit: true, deviceId: historyState.deviceId, deviceType: historyState.deviceType })
         history.go(0)
       })

@@ -12,6 +12,8 @@ import { useDispatch,useSelector } from "react-redux";
 import { getAllUploadPoliciesInfoAsync, getAllData } from "../../../../Redux/UploadPolicies"; 
 import { RootState } from "../../../../Redux/rootReducer";
 import { urlList, urlNames } from "../../../../utils/urlList";
+import { CRXTabs } from "@cb/shared";
+import { CrxTabPanel } from "@cb/shared";
 import { PageiGrid } from "../../../../GlobalFunctions/globalDataTableFunctions";
 
 type UploadPoliciesDetailProps = {
@@ -59,6 +61,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
     const uploadMsgFormRef = useRef<typeof CRXToaster>(null);
     const history = useHistory();
     const dispatch = useDispatch();
+     const [value, setValue] = React.useState(0);  
     const getAll: any = useSelector((state: RootState) => state.uploadPoliciesSlice.getAll);
     const [UploadPolicyDetailErr, setUploadPolicyDetailErr] = React.useState({
         nameErr: "",
@@ -179,7 +182,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                 }
                 initialUpdatedHandler();
                 setUploadPolicyDetail(uploadPolicyDetailArray);    
-                dispatch(enterPathActionCreator({ val: Uploadpolicy.name }));
+                dispatch(enterPathActionCreator({ val: `Upload Policy:  ${Uploadpolicy.name}`}));
                 uploadPolicyDetailArrayCopy = JSON.parse(JSON.stringify(uploadPolicyDetailArray));
                 const temp = {                
                     uploadPolicyDetail: [...uploadPolicyDetailArrayCopy]
@@ -605,20 +608,32 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
         });    
       }
 
+      const tabs = [
+        { label: t("Upload_Policy_Name"), index: 0 },
+        { label: t("Upload_Connection_Criteria"), index: 1 }
+      ];
+
+      function handleChange(event: any, newValue: number) {
+        setValue(newValue);
+      }
     return (
         
-        <div className="upload-policies">
+        <div className="upload-policies upload-policies-ui">
             <CRXToaster ref={uploadMsgFormRef} />
-                <div className="updated-policy-fields">
-                    <div className="nameFieldUploadPolicy">
-                        <Grid  item xs={12} sm={12} md={12} lg={5}>
+
+            <CRXTabs value={value} onChange={handleChange} tabitems={tabs} />
+            <CrxTabPanel value={value} index={0}>
+            <div className="updated-policy-fields">
+                <div className="indicates-label"><b>*</b>Indicates required field</div>
+                    <div className="nameFieldUploadPolicy UploadPolicyFirstField">
+                
                             <TextField
                             error ={!!UploadPolicyDetailErr.nameErr}
                             errorMsg={UploadPolicyDetailErr.nameErr}
                             required={true}
                             value={name}
-                            label={t("Name")}
-                            className="upload-policies-input"
+                            label={t("Upload_Policy_Name")}
+                            className="upload-policies-input upload-policies-input-nameField"
                             onChange={(e: any) => setName(e.target.value)}
                             disabled = {false}
                             type="text"
@@ -626,11 +641,11 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             regex=""
                             onBlur={() => checkNameValidation()}
                             />
-                        </Grid>
+                 
                     </div>
                     <div className="nameFieldUploadPolicy">
                     
-                        <Grid  item xs={12} sm={12} md={12} lg={5}>                           
+                     
                             <TextField                            
                             required={false}
                             value={description}
@@ -643,18 +658,21 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             regex=""
                             multiline={true}
                             />
-                        </Grid>
+                      
                     </div>
                 </div>
+             </CrxTabPanel>
+
          
-            <div className="uploadPolicyDetailContent">             
+         <CrxTabPanel   value={value} index={1}>
+         <div className="uploadPolicyDetailContent">             
                 <div className="uploadPolicyDetailHeader">
                     <CRXRows container spacing={0}>
-                        <CRXColumn className="uploadPolicyDetailColumn" container item xs={1} spacing={0}>{t("Type")}</CRXColumn>
-                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={1} spacing={0}>{t("Upload")}</CRXColumn>
+                        <CRXColumn className="uploadPolicyDetailColumn" container item xs={2} spacing={0}>{t("Type")}</CRXColumn>
+                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={2} spacing={0}>{t("Upload")}</CRXColumn>
                         <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={3} spacing={0}>{t("Metadata_Upload_Connection")}</CRXColumn>
-                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={3} spacing={0}>{t("Asset_Upload_Priority")}</CRXColumn>
-                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={4} spacing={0}>{t("Asset_Upload_Connection")}</CRXColumn>
+                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={2} spacing={0}>{t("Asset_Upload_Priority")}</CRXColumn>
+                        <CRXColumn className="uploadPolicyDetailColumn" container="container" item xs={3} spacing={0}>{t("Asset_Upload_Connection")}</CRXColumn>
                     </CRXRows>
                 </div>
                 <div className="uploadPolicyDetailPageScroll">
@@ -663,7 +681,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                             uploadPolicyDetail?.map((uploadPolicyDetail, idx) => {
                                 return <div className="uploadPolicyDetailColumnItem" key={idx}>
                                     <CRXRows container="container" spacing={0}>
-                                        <CRXColumn className="uploadPolicyDetailCol" item xs={1}>
+                                        <CRXColumn className="uploadPolicyDetailCol" item xs={2}>
                                             <CRXSelectBox
                                                 className="select-box"
                                                 id={`upload-policy-detail-type-${idx}`}
@@ -677,7 +695,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                                 defaultOptionText={defaultType}
                                                 defaultValue={defaultType} />
                                         </CRXColumn>
-                                        <CRXColumn className="uploadPolicyDetailCol" item xs={1}>
+                                        <CRXColumn className="uploadPolicyDetailCol" item xs={2}>
                                             <CRXSelectBox
                                                 className="select-box"
                                                 id={`upload-policy-detail-upload-${idx}`}                                                
@@ -713,7 +731,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                                 />
 
                                         </CRXColumn>
-                                        <CRXColumn className="uploadPolicyDetailCol" item xs={3}>
+                                        <CRXColumn className="uploadPolicyDetailCol" item xs={2}>
                                             <CRXSelectBox
                                                 className="select-box"
                                                 id={`upload-policy-detail-asset-upload-priority-${idx}`}                                                
@@ -726,10 +744,10 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                                 defaultOptionText={defaultAssetUploadPriority}
                                                 defaultValue={defaultAssetUploadPriority} />
                                         </CRXColumn>
-                                        <CRXColumn className="uploadPolicyDetailCol" item xs={4}>
+                                        <CRXColumn className="uploadPolicyDetailCol" item xs={3}>
                                          
                                             <CRXMultiSelectBoxLight
-                                                className="assetUploadAutocomplete"                                                
+                                                className="assetUploadAutocomplete assetUploadConnectionClass"                                                 
                                                 multiple={true}
                                                 CheckBox={true}
                                                 required={true}
@@ -752,7 +770,7 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                                                 <button
                                                     className="removeBtn"
                                                     onClick={() => onRemoveUploadPolicyDetail(idx)}
-                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="bottom" className="crxTooltipNotificationIcon"/></button>
+                                                ><CRXTooltip iconName="fas fa-circle-minus" arrow={false} title="remove" placement="left" className="crxTooltipNotificationIcon"/></button>
                                             }
                                         </CRXColumn>
                                     </CRXRows>
@@ -768,10 +786,12 @@ const UploadPoliciesDetail: FC<UploadPoliciesDetailProps> = () => {
                         onClick={onAddUploadPolicyDetail}
                         color='primary'
                         variant='contained'
-                    > {t("Add_policy_rules")}
+                    > {t("Add_upload_connection_criteria")}
                     </CRXButton>
                 </div>
             </div>
+         </CrxTabPanel>
+        
 
             
             

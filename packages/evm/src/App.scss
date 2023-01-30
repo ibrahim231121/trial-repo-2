@@ -274,20 +274,6 @@ iframe {
     }
    
   }
-
-   .AssetsDataGrid {
-     tr {
-         td {
-            &:hover {
-             a{
-                 &.linkColor {
-                     text-decoration: underline;
-                 }
-               }
-             }
-         }
-     }
-   } 
 .AssetsDataGrid {
     &::after{
         position: fixed;

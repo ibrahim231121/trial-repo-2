@@ -27,12 +27,13 @@ const CategoriesTemplateActionMenu: React.FC<Props> = ({ selectedItems, row, onC
       <Menu
         key="right"
         align="center"
-        viewScroll="auto"
+        viewScroll="close"
         direction="right"
         position="auto"
-        offsetX={25}
-        offsetY={12}
-        className="menuCss"
+        offsetX={-15}
+        offsetY={0}
+        portal={true}
+        className="menuCss "
         menuButton={
           <MenuButton>
             <i className="far fa-ellipsis-v"></i>

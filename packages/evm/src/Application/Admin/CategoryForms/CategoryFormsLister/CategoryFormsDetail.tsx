@@ -137,12 +137,16 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
             if (categoryFormsId > 0) {
                 url += "/ChangeForm/" + id;
                 SetupConfigurationAgent.putCategoryForms(url, body).then((res:any)=>{
-                    onMessageShow(true,t("Success_You_have_edited_the_Category_Forms"));
+                    onMessageShow(true,t("Category_Form_Edited_Successfully"));
                     dispatch(enterPathActionCreator({ val: values?.name }));
                 })
                     .catch((e: any) => {
-                        console.error(e.message);
-                        // setError(false);
+                        if (e?.response?.status === 409) {
+                            onMessageShow(false, e?.response?.data);
+                        }
+                        else {
+                            onMessageShow(false, "An issue occurred while saving, please try again.");
+                        }
                         return e;
                     })
             }
@@ -150,15 +154,19 @@ const CategoryFormsDetail: React.FC<infoProps> = ({ dataPermissionsInfo, onChang
         else
         {
             SetupConfigurationAgent.postCategoryForms(url, body).then((res:any)=>{
-                onMessageShow(true,t("Success_You_have_saved_the_Category_Forms"));
+                onMessageShow(true,t("Category_Form_Saved_Successfully"));
                 dispatch(enterPathActionCreator({ val: values?.name }));
                 const path = `${urlList.filter((item: any) => item.name === urlNames.categoryFormsEdit)[0].url}`;
                 history.push(path.substring(0, path.lastIndexOf("/")) + "/" + res);
                 // setIsSaveDisable(true);
             })
                 .catch((e: any) => {
-                    console.error(e.message);
-                    // setError(false);
+                    if (e?.response?.status === 409) {
+                        onMessageShow(false, e?.response?.data);
+                    }
+                    else {
+                        onMessageShow(false, "An issue occurred while saving, please try again.");
+                    }
                     return e;
                 })
         }

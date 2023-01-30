@@ -92,52 +92,54 @@ const RetentionPoliciesTemplateActionMenu: React.FC<Props> = ({ selectedItems, r
 
   return (
     <div className="table_Inner_Action">
-
-      <Menu
-        key="right"
-        align="center"
-        viewScroll="auto"
-        direction="right"
-        position="auto"
-        offsetX={25}
-        offsetY={12}
-        className="menuCss"
-        menuButton={
-          <MenuButton>
-            <i className="far fa-ellipsis-v"></i>
-          </MenuButton>
-        }
-
-      >
-        {selectedItems.length <= 1 ? (
-          <MenuItem onClick={openCreateRetentionPoliciesForm}>
-            <Restricted moduleId={63}>
-              <div className="crx-meu-content   crx-spac"  >
-                <div className="crx-menu-icon">
-                  <i className="far fa-pencil"></i>
-                </div>
-                <div className="crx-menu-list">
+    
+    <Menu
+      key="right"
+      align="center"
+      viewScroll="close"
+      direction="right"
+      position="auto"
+      portal={true}
+      offsetX={-25}
+      onItemClick={(e) => (e.keepOpen = true)}
+      offsetY={0}
+      className="menuCss"
+      menuButton={
+        <MenuButton>
+          <i className="far fa-ellipsis-v"></i>
+        </MenuButton>
+      }
+    
+    >
+        {selectedItems.length <=1 ? (
+      <MenuItem onClick={openCreateRetentionPoliciesForm}>
+      <Restricted moduleId={0}>
+          <div className="crx-meu-content groupingMenu  crx-spac"  >
+            <div className="crx-menu-icon">
+            <i className="far fa-pencil"></i>
+            </div>
+            <div className="crx-menu-list">
                   {t("Edit_retention_policy")}
                 </div>
-              </div>
-            </Restricted>
-          </MenuItem>
-        ) : (
-          <div></div>
-        )}
-        <MenuItem >
-          <Restricted moduleId={64}>
-            <div className="crx-meu-content  crx-spac" onClick={deleteConfirm} >
-              <div className="crx-menu-icon">
-                <i className="far fa-trash-alt"></i>
-              </div>
-              <div className="crx-menu-list">
-                {t("Delete_retention_policy")}
-              </div>
             </div>
           </Restricted>
         </MenuItem>
-      </Menu>
+        ) : (
+          <div></div>
+          )}  
+      <MenuItem >
+      <Restricted moduleId={0}>
+        <div className="crx-meu-content crx-spac" onClick={deleteConfirm} >
+          <div className="crx-menu-icon">
+            <i className="far fa-trash-alt"></i>
+          </div>
+          <div className="crx-menu-list">
+          {t("Delete_retention_policy")}
+          </div>
+        </div>
+        </Restricted>
+      </MenuItem>
+    </Menu>
       <Dialogbox
         className="crx-unblock-modal crxConfigModal"
         title={""}
